@@ -364,7 +364,7 @@ extend self: Parser {
                 name = name.replace(", " + generic + "]", ", " + generic + ": " + constraint.name + "]")
             }
             self.lspHook.emit(ParseSymbolEnd(
-                name = name // TODO how do we show constraints, eg. extends self[T: Show]: MyType[T, T]
+                name = name
                 kind = 3 // Namespace
                 selectionStart = nameToken.at()
                 selectionEnd = nameToken.end()
@@ -383,7 +383,8 @@ extend self: Parser {
     }
 
     parseTraitDefinition(): DTrait {
-        self.rawSkip(LKeyword, "trait")
+        if(self.lspHook.trackSymbols) {self.lspHook.emit(ParseSymbolBegin)}
+        let traitToken = self.rawSkip(LKeyword, "trait")
         let typeParameterToken = self.skip(LUpper)
         self.skip(LColon)
         let nameToken = self.skip(LUpper)
@@ -404,7 +405,19 @@ extend self: Parser {
             let signatures = Stack.make[Signature]()
             self.rawSkip(LBracketLeft, "{")
             while {!self.current().is(LBracketRight)} {
+                if(self.lspHook.trackSymbols) {self.lspHook.emit(ParseSymbolBegin)}
+                let signatureNameToken = self.current()
                 let signature = self.parseSignature(member = True)
+                if(self.lspHook.trackSymbols) {
+                    self.lspHook.emit(ParseSymbolEnd(
+                        name = signatureNameToken.raw() 
+                        kind = 12  // Function   
+                        selectionStart = signatureNameToken.at()
+                        selectionEnd = signatureNameToken.end()
+                        start = signatureNameToken.at()
+                        end = self.behind().end()
+                    ))
+                }        
                 signatures.push(signature)
                 if(self.current().rawIs("{")) {
                     let generator = self.ahead().is(LKeyword) && self.ahead().rawIs("generate")
@@ -420,6 +433,16 @@ extend self: Parser {
             self.rawSkip(LBracketRight, "}")
             signatures.toList()
         }
+        if(self.lspHook.trackSymbols) {
+            self.lspHook.emit(ParseSymbolEnd(
+                name = nameToken.raw() 
+                kind = 11 // Interface 
+                selectionStart = nameToken.at()
+                selectionEnd = nameToken.end()
+                start = traitToken.at()
+                end = self.behind().end()
+            ))
+        }        
         DTrait(
             nameToken.at()
             nameToken.raw()
@@ -433,7 +456,8 @@ extend self: Parser {
     }
 
     parseInstanceDefinition(): DInstance {
-        self.rawSkip(LKeyword, "instance")
+        if(self.lspHook.trackSymbols) {self.lspHook.emit(ParseSymbolBegin)}
+        let instanceToken = self.rawSkip(LKeyword, "instance")
         let token = self.skip(LUpper)
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
         let typeArguments = Stack.make[Type]()
@@ -459,6 +483,17 @@ extend self: Parser {
             self.rawSkip(LBracketRight, "}")
             definitions.toList()
         }
+        if(self.lspHook.trackSymbols) {
+            let name = token.raw() + ": " + nameToken.raw()
+            self.lspHook.emit(ParseSymbolEnd(
+                name = name
+                kind = 19 // Object  
+                selectionStart = nameToken.at()
+                selectionEnd = nameToken.end()
+                start = instanceToken.at()
+                end = self.behind().end()
+            ))
+        }            
         DInstance(
             at = nameToken.at()
             generics = poly.generics

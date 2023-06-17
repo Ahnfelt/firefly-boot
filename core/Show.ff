@@ -14,15 +14,15 @@ instance Nothing: Show {
 }
 
 instance Char: Show {
-    show(value: Char): String { value.toString() }
+    show(value: Char): String {value.toString()}
 }
 
 instance Int: Show {
-    show(value: Int): String { "" + value }
+    show(value: Int): String {"" + value}
 }
 
 instance Float: Show {
-    show(value: Float): String { "" + value }
+    show(value: Float): String {"" + value}
 }
 
 instance String: Show {

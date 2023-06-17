@@ -26,7 +26,10 @@ reverse[T](compare: (T, T) => Ordering): (T, T) => Ordering {
     }}
 }
 
-pair[A, B](compareFirst: (A, A) => Ordering, compareSecond: (B, B) => Ordering): (Pair[A, B], Pair[A, B]) => Ordering {
+pair[A, B](
+    compareFirst: (A, A) => Ordering
+    compareSecond: (B, B) => Ordering
+): (Pair[A, B], Pair[A, B]) => Ordering {
     {x, y => compareFirst(x.first, y.first).{
         | OrderingSame => compareSecond(x.second, y.second)
         | ordering => ordering
@@ -52,11 +55,11 @@ instance Char: Order {
 }
 
 instance Int: Order {
-    compare(x: Int, y: Int): Ordering { fromInt(x - y) }
+    compare(x: Int, y: Int): Ordering {fromInt(x - y)}
 }
 
 instance Float: Order {
-    compare(x: Float, y: Float): Ordering { fromFloat(x - y) }
+    compare(x: Float, y: Float): Ordering {fromFloat(x - y)}
 }
 
 instance String: Order {
@@ -111,7 +114,7 @@ instance Ordering: Equal {
 fromInt(order: Int): Ordering {
     if(order < 0) {
         OrderingBefore
-    } elseIf { order == 0 } {
+    } elseIf {order == 0} {
         OrderingSame
     } else {
         OrderingAfter
@@ -121,7 +124,7 @@ fromInt(order: Int): Ordering {
 fromFloat(order: Float): Ordering {
     if(order < 0.0) {
         OrderingBefore
-    } elseIf { order == 0.0 } {
+    } elseIf {order == 0.0} {
         OrderingSame
     } else {
         OrderingAfter
@@ -130,8 +133,8 @@ fromFloat(order: Float): Ordering {
 
 fromLessThan[T](lessThan: (T, T) => Bool): (T, T) => Ordering {
     {
-        | x, y { lessThan(x, y) } => OrderingBefore
-        | x, y { lessThan(y, x) } => OrderingAfter
+        | x, y {lessThan(x, y)} => OrderingBefore
+        | x, y {lessThan(y, x)} => OrderingAfter
         | _, _ => OrderingSame
     }
 }
