@@ -1,0 +1,7 @@
+nodeMain(system: NodeSystem) {
+    if(True) {
+        42
+    } else {
+        "foo"
+    }
+}
