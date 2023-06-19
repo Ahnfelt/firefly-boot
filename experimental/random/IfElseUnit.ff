@@ -4,4 +4,10 @@ nodeMain(system: NodeSystem) {
     } else {
         "foo"
     }
+    
+    try {
+        42
+    } catchAny {_ =>
+        "foo"
+    }
 }
