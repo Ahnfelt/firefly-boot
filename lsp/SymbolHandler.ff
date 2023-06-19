@@ -1,14 +1,22 @@
 import LspHook from ff:compiler
 import Syntax from ff:compiler
 
-data Symbol(
+data DocumentSymbol(
     name: String
     kind: Int
     selectionStart: Location
     selectionEnd: Location
     start: Location
     end: Location
-    children: List[Symbol]
+    children: List[DocumentSymbol]
+)
+
+data WorkspaceSymbol(
+    name: String
+    kind: Int
+    containerName: Option[String]
+    selectionStart: Location
+    selectionEnd: Location
 )
 
 class Result[T](
@@ -18,13 +26,13 @@ class Result[T](
 
 data ReadSymbolsError()
 
-readAllSymbols(hooks: List[ResultHook]): List[Symbol]  {
+readAllSymbols(hooks: List[ResultHook]): List[DocumentSymbol]  {
     let result = readSymbols(hooks)
     if(!result.remaining.isEmpty()) {throw(ReadSymbolsError())}
     result.result
 }
 
-readSymbols(hooks: List[ResultHook]): Result[List[Symbol]]  {
+readSymbols(hooks: List[ResultHook]): Result[List[DocumentSymbol]]  {
     | [ParseSymbolBegin, ...rest] => 
         let symbol = readSymbol(rest)
         let symbols = readSymbols(symbol.remaining)
@@ -32,17 +40,17 @@ readSymbols(hooks: List[ResultHook]): Result[List[Symbol]]  {
     | _ => Result([], hooks)
 }
 
-readSymbol(hooks: List[ResultHook]): Result[Symbol] {
+readSymbol(hooks: List[ResultHook]): Result[DocumentSymbol] {
     let children = readSymbols(hooks)
     children.remaining.{
         | [ParseSymbolEnd(name, kind, selectionStart, selectionEnd, start, end), ...rest] => 
-            let symbol = Symbol(name, kind, selectionStart, selectionEnd, start, end, children.result)
+            let symbol = DocumentSymbol(name, kind, selectionStart, selectionEnd, start, end, children.result)
             Result(symbol, rest)
         | _ => throw(ReadSymbolsError())
         }
 }
 
-symbolToLsp(js: JsSystem, symbol: Symbol): JsValue {
+symbolToLsp(js: JsSystem, symbol: DocumentSymbol): JsValue {
     js.object()
         .with("name", symbol.name)
         .with("kind", symbol.kind)
@@ -68,6 +76,23 @@ handleDocumentSymbol(system: NodeSystem, lspHook: LspHook): JsValue {
     let symbols = readAllSymbols(lspHook.results())
     //symbols.each {Log.show(_)}
     system.js().array(symbols.map {symbolToLsp(system.js(), _)})
+}
+
+handleWorkspaceSymbol(system: NodeSystem, lspHook: LspHook, query: String): JsValue {
+    let symbols = readAllSymbols(lspHook.results())
+    system.js().array(symbols.map {symbolToLsp(system.js(), _)})
+}
+
+documentToWorkspaceSymbols(symbol: DocumentSymbol, parentName: Option[String]): List[WorkspaceSymbol] {
+    let s = WorkspaceSymbol(
+        symbol.name
+        kind = symbol.kind
+        containerName = parentName
+        selectionStart = symbol.selectionEnd
+        selectionEnd = symbol.selectionEnd
+    )
+    let children = symbol.children.flatMap {documentToWorkspaceSymbols(_, Some(symbol.name))}
+    [s, ... children]
 }
 
 showHook(lspHook: ResultHook): String {
