@@ -1,13 +1,9 @@
-nodeMain(system: NodeSystem) {
+nodeMain(fubar: NodeSystem) {
     if(True) {
         42
     } else {
         "foo"
     }
-    
-    try {
-        42
-    } catchAny {_ =>
-        "foo"
-    }
 }
+
+// Also elseIf, catch, catchAny
