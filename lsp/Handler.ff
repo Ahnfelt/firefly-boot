@@ -79,6 +79,7 @@ extend self: Handler {
                 self.handleTokenRequestWithCache(system, method, parameters) {targetAt => 
                     self.handleReferences(system, targetAt, local = True)
                 }
+            | "workspace/symbol" => self.handleWorkspaceSymbol(system, parameters)
             | "shutdown" => Result(system.js().null().toJson())
             | _ => self.handleUnsupported(system.js())
         }
@@ -142,6 +143,7 @@ extend self: Handler {
                     .with("retriggerCharacters", js.array([","].map {js.value(_)}))
                 )
                 .with("referencesProvider", True)
+                .with("workspaceSymbolProvider", True)
                 /*.with("workspace", js.object()
                     .with("workspaceFolders", js.object()
                          .with("supported", True)
@@ -192,18 +194,43 @@ extend self: Handler {
         let absolutePath = FileSystem.urlToPath(uri)
         let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
         let fixedPath = path.replace("\\", "/")
-        let lspHook = LspHook.make(at = None, definedAt = None, insertIdentifier = False, trackSymbols = True)
-        try {
+        let resultHooks = try {
+            let lspHook = LspHook.make(at = None, definedAt = None, insertIdentifier = False, trackSymbols = True)
             let code = self.virtualFiles.get(fixedPath).else {system.files().readText(fixedPath)}
             let tokens = Tokenizer.tokenize(fixedPath, code, None, True)
             let parser = Parser.make(PackagePair("script", "script"), fixedPath, tokens, False, lspHook)
             parser.parseModuleWithPackageInfo()
-            Unit // Think of a way to avoid writing this
+            lspHook.results()
         } catch {| CompileError(at, message), error =>
             Log.trace("handleDocumentSymbol parse error: " + message)
+            []
         } grab()
 
-        let o = SymbolHandler.handleDocumentSymbol(system, lspHook)
+        let o = SymbolHandler.handleDocumentSymbol(system, resultHooks)
+        Result(o.toJson())        
+    }
+
+    handleWorkspaceSymbol(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
+        let js = system.js()
+        let query = parameters.grab("query").grabString()
+        let path = FileSystem.urlToPath(self.rootUri.grab())
+        let files = Builder.findFireflyFiles(system.files(), path)
+        let resultHooks = [].toStack()
+        files.each {file => 
+            let code = self.virtualFiles.get(file).else {system.files().readText(file)}
+            try {
+                let tokens = Tokenizer.tokenize(file, code, None, True)
+                let lspHook = LspHook.make(at = None, definedAt = None, insertIdentifier = False, trackSymbols = True)
+                let parser = Parser.make(PackagePair("script", "script"), file, tokens, False, lspHook)
+                parser.parseModuleWithPackageInfo()
+                resultHooks.pushAll(lspHook.stackOfResults)
+                Unit
+            } catch {| CompileError(at, message), error =>
+                Log.trace("handleWorkspaceSymbol parse error " + at.show() + ": " + message)
+            } grab()
+        }
+
+        let o = SymbolHandler.handleWorkspaceSymbol(system, resultHooks.toList(), query)
         Result(o.toJson())        
     }
 
