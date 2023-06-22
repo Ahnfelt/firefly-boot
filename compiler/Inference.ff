@@ -454,7 +454,8 @@ extend self: Inference {
                 let signature = scheme.signature
                 if(self.lspHook.isEnabled()) {
                     e.arguments.pairs().each {| Pair(i, a) =>
-                        if(self.lspHook.isAt(a.at)) {
+                        let p = signature.parameters.find {_.name == a.name}
+                        if(self.lspHook.isAt(a.at) || p.any {self.lspHook.isDefinedAt(_.at)}) {
                             let arguments = e.arguments.map {f => f.Argument(name = Some(f.name))}
                             self.lspHook.emit(
                                 InferArgumentHook(
@@ -473,7 +474,8 @@ extend self: Inference {
                     e.arguments.find {_.name == name}.map {
                         | Field(at, _, value) => Argument(at, Some(name), value)
                     }.else {
-                        Argument(e.at, Some(name), EField(e.at, False, EVariable(e.at, "_c"), name))
+                        let at = e.at.Location(file = e.at.file + "/<copy>")
+                        Argument(at, Some(name), EField(at, False, EVariable(at, "_c"), name))
                     }
                 }
                 let body = EVariant(e.at, e.name, [], Some(arguments))
@@ -875,7 +877,8 @@ extend self: Inference {
     ): List[Argument] {
         if(self.lspHook.isEnabled()) {
             arguments.pairs().each {| Pair(i, a) =>
-                if(self.lspHook.isAt(a.at)) {
+                let p = parameters.find {p => a.name.any {_ == p.name}}
+                if(self.lspHook.isAt(a.at) || p.any {self.lspHook.isDefinedAt(_.at)}) {
                     self.lspHook.emit(
                         InferArgumentHook(
                             self.unification, environment

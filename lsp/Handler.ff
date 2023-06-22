@@ -376,6 +376,7 @@ extend self: Handler {
 
         let definedAtList = temporaryLspHook.results().collect {
             | ResolveSymbolHook h => Some(h.symbol.definedAt)
+            | ResolveVariantFieldHook h => Some(h.symbol.definedAt)
             | ResolveTypeHook h => Some(h.symbol.definedAt)
             | ResolveConstraintHook h => Some(h.symbol.definedAt)
             | ResolveSignatureHook h => Some(h.signature.at)
@@ -387,7 +388,7 @@ extend self: Handler {
             | InferPatternHook h {h.pattern | PVariable p} => Some(p.at)
             | InferPatternHook h {h.pattern | PAlias p} => Some(p.at)
             | _ => None
-        }.filter {at => !at.file.endsWith("/<derived>")}
+        }.filter {at => !at.file.endsWith(">")}
 
         Log.trace("definedAtList: " + Show.show(definedAtList))
 
@@ -405,6 +406,7 @@ extend self: Handler {
 
                 let referencesResult = lspHook.results().collect {
                     | ResolveSymbolHook h => Some(h.symbol.usageAt)
+                    | ResolveVariantFieldHook h => Some(h.symbol.usageAt)
                     | ResolveTypeHook h => Some(h.symbol.usageAt)
                     | ResolveConstraintHook h => Some(h.symbol.usageAt)
                     | ResolveSignatureHook h => Some(h.signature.at)
@@ -413,7 +415,7 @@ extend self: Handler {
                         h.parameters.find {_.name == n}.map {_ => a.at}
                     | InferLookupHook h => Some(h.symbol.value.usageAt)
                     | _ => None
-                }.filter {at => !at.file.endsWith("/<derived>")}
+                }.filter {at => !at.file.endsWith(">")}
 
                 //Log.trace("referencesResult: " + Show.show(referencesResult))
 
