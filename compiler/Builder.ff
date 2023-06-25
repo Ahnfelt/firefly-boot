@@ -40,7 +40,7 @@ build(
         if(printMeasurements) {compiler.printMeasurements()}
         resolvedDependencies.packagePaths.each {packagePair, packagePath =>
             resolvedDependencies.packages.get(packagePair).each {packageInfo =>
-                processIncludes(jsPathFile, packagePath, packageInfo)
+                processIncludes(jsPathFile, system.path(packagePath), packageInfo)
             }
         }
         True
@@ -55,10 +55,9 @@ build(
 
 processIncludes(jsPathFile: Path, packagePath: Path, info: PackageInfo): Unit {
     info.includes.each {include =>
-        fs.copy(
-            packagePath.slash(".firefly").slash("include").slash(include.path)
-            jsPathFile.slash(info.package.packagePair.groupName("/")).slash(include.path)
-        )
+        let fromPath = packagePath.slash(".firefly").slash("include").slash(include.path)
+        let toPath = jsPathFile.slash(info.package.packagePair.groupName("/")).slash(include.path)
+        fromPath.copyTo(toPath)
     }
 }
 
