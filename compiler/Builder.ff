@@ -135,13 +135,13 @@ capability PackageFiles(
 
 
 findPackageFiles(path: Path): List[PackageFiles] {
-    let files = findFireflyFiles(fs, rootUri)
+    let files = findFireflyFiles(path)
     let split = files.partition {_.endsWith(".firefly/package.ff")}
     let packageFiles = split.first
     mutable codeFiles = split.second
     let multiFileProjects = packageFiles.map {packageFile => 
-        let projectRoot = packageFile.removeLast(".firefly/package.ff").grab()
-        let files = codeFiles.filter {_.startsWith(projectRoot) }
+        let projectRoot = packageFile.parent().grab().parent.grab()
+        let files = codeFiles.filter {_.startsWith(projectRoot)}
         let filesSet = files.toSet()
         codeFiles = codeFiles.filter {file => !filesSet.contains(file)}
         PackageFiles(
@@ -166,12 +166,11 @@ findPackageFiles(path: Path): List[PackageFiles] {
     )}
 }
 
-findFireflyFiles(fs: FileSystem, rootUri: String): List[String] {
-    let split = fs.list(rootUri).partition {fs.isDirectory(_)}
+findFireflyFiles(path: Path): List[String] {
+    let split = path.list().partition {_.absolute().isDirectory()}
     let directories = split.first
-    let fireflyFiles = split.second.filter {_.endsWith(".ff")}
-    let fixedFiles = fireflyFiles.map {_.replace("\\", "/")}
-    [...fixedFiles, ...directories.flatMap {findFireflyFiles(fs, _)}]
+    let fireflyFiles = split.second.filter {_.extension() == ".ff"}
+    [...fireflyFiles, ...directories.flatMap {findFireflyFiles(_)}]
 }
 
 internalCreateExecutable(
