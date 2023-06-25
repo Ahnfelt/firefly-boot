@@ -22,7 +22,7 @@ data CommandLineError(problem: String)
 
 main(system: NodeSystem): Unit {
 
-    let fireflyPath = detectFireflyPath()
+    let fireflyPath = detectFireflyPath(system)
 
     function buildScript(
         mainFile: String
@@ -33,10 +33,10 @@ main(system: NodeSystem): Unit {
         let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
             resolvedDependencies.packagePaths
         } else {
-            resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
+            resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath.slash("core"))
         }
         let compilerModulePath = if(emitTarget != EmitBrowser && emitTarget != EmitExecutable) {
-            fireflyPath + "/output/js/ff/compiler/Builder.mjs"
+            fireflyPath.slash("output").slash("js").slash("ff").slash("compiler/Builder.mjs")
         }
         let targetName = emitTarget.{
             | EmitBuild => "build"
@@ -59,27 +59,27 @@ main(system: NodeSystem): Unit {
 
     function runCommand(command: MainCommand) {
         | RunCommand(mainFile, arguments) =>
-            let resolvedDependencies = Dependencies.process(system.files(), system.httpClient(), mainFile + ".ff")
-            prepareFireflyDirectory(system.files())
-            let localMainFile = FileSystem.baseName(mainFile.replace("\\", "/"))
+            let resolvedDependencies = Dependencies.process(system.path("."), system.httpClient(), mainFile + ".ff")
+            prepareFireflyDirectory(system.path("."))
+            let localMainFile = system.path(mainFile).base()
             buildScript(localMainFile, resolvedDependencies.mainPackagePair, EmitNode, resolvedDependencies)
-            importAndRun(system.files(), fireflyPath, "node", resolvedDependencies.mainPackagePair, localMainFile, arguments)
+            importAndRun(fireflyPath, "node", resolvedDependencies.mainPackagePair, localMainFile, arguments)
 
         | BrowserCommand(mainFile) =>
-            let resolvedDependencies = Dependencies.process(system.files(), system.httpClient(), mainFile + ".ff")
-            prepareFireflyDirectory(system.files())
-            let localMainFile = FileSystem.baseName(mainFile.replace("\\", "/"))
+            let resolvedDependencies = Dependencies.process(system.path("."), system.httpClient(), mainFile + ".ff")
+            prepareFireflyDirectory(system.path("."))
+            let localMainFile = system.path(mainFile).base()
             buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitBrowser, resolvedDependencies)
             bundleForBrowser(system, resolvedDependencies.mainPackagePair, localMainFile)
 
         | BuildCommand(mainFile) =>
-            let resolvedDependencies = Dependencies.process(system.files(), system.httpClient(), mainFile + ".ff")
-            prepareFireflyDirectory(system.files())
-            let localMainFile = FileSystem.baseName(mainFile.replace("\\", "/"))
+            let resolvedDependencies = Dependencies.process(system.path("."), system.httpClient(), mainFile + ".ff")
+            prepareFireflyDirectory(system.path("."))
+            let localMainFile = system.path(mainFile).base()
             buildScript(localMainFile, resolvedDependencies.mainPackagePair, EmitBuild, resolvedDependencies)
             buildScript(localMainFile, resolvedDependencies.mainPackagePair, EmitExecutable, resolvedDependencies)
             bundleForPkg(system, resolvedDependencies.mainPackagePair, localMainFile)
-            importAndRun(system.files(), fireflyPath, "build", resolvedDependencies.mainPackagePair, localMainFile, [])
+            importAndRun(fireflyPath, "build", resolvedDependencies.mainPackagePair, localMainFile, [])
 
         | CheckCommand(filePath) => 
             Builder.check(system, fireflyPath, filePath, Map.empty(), LspHook.disabled(), True)
@@ -194,14 +194,13 @@ bundleForBrowser(system: NodeSystem, packagePair: PackagePair, mainFile: String)
         packageGroup = packagePair.group
         packageName = packagePair.name
         mainFile = mainFile
-        assetSystem = AssetSystem([Pair("/", {system.files().readStream("")})].toMap())
+        assetSystem = AssetSystem([Pair("/", {system.path(".").readStream()})].toMap())
     ) // TODO
     BuildSystem.internalCallEsBuild(browserCode, mainJsFile, outputPath = file, minify = True, sourceMap = True)
 }
 
 importAndRun(
-    fs: FileSystem
-    fireflyPath: String
+    fireflyPath: Path
     target: String
     packagePair: PackagePair
     mainFile: String
@@ -216,21 +215,22 @@ importAndRun(
         await main.$run$(fireflyPath_, ff_core_List.List_toArray(arguments_))
     """
 
-prepareFireflyDirectory(fs: FileSystem) {
-    if(!fs.exists(".firefly/output")) {
-        if(!fs.exists(".firefly")) {
-            fs.createDirectory(".firefly")
+prepareFireflyDirectory(path: Path) {
+    if(!path.slash(".firefly").slash("output").exists()) {
+        if(!path.slash(".firefly").exists()) {
+            path.slash(".firefly").createDirectory()
         }
-        fs.createDirectory(".firefly/output")
+        path.slash(".firefly").slash("output").createDirectory()
     }
 }
 
-detectFireflyPath(): String
+detectFireflyPath(system: NodeSystem): Path
     target node sync """
-        const suffix = '/output/js/ff/compiler/Main.mjs';
-        const moduleUrl = import.meta.url;
+        import * as url from 'url'
+        const suffix = '/output/js/ff/compiler/Main.mjs'
+        const moduleUrl = import.meta.url
         if(!import.meta.url.endsWith(suffix)) {
             throw 'Expected module path to end with: ' + suffix + ", but got: " + moduleUrl;
         }
-        return '' + new URL(moduleUrl.slice(0, -suffix.length))
+        return url.fileURLToPath(new URL(moduleUrl.slice(0, -suffix.length)))
     """

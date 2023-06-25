@@ -143,6 +143,12 @@ extend self: Path {
             return path.join(self_, relativePath_)
         """
 
+    path(relativePath: String): Path
+        target node async """
+            import * as path from 'path'
+            return path.resolve(relativePath_)
+        """
+
     copyTo(path: Path, retries: Int = 0, retryDelay: Int = 100) {
         if(self.isDirectory()) {
             if(path.exists()) {path.delete(retries, retryDelay)}

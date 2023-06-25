@@ -4,10 +4,10 @@ import Tokenizer
 import Workspace
 import LspHook
 
-class Dependencies(
+capability Dependencies(
     workspace: Workspace
     mutable packages: Map[PackagePair, PackageInfo]
-    mutable packagePaths: Map[PackagePair, String]
+    mutable packagePaths: Map[PackagePair, Path]
     mutable singleFilePackages: Set[PackagePair]
 )
 
@@ -21,21 +21,20 @@ data ResolvedDependencies(
 extend self: Dependencies {
 
     loadPackageInfo(
-        fs: FileSystem
         packagePair: PackagePair
-        path: String
+        path: Path
     ): PackageInfo {
-        let packageDirectory = if(path.endsWith(".ff")) {FileSystem.directoryName(path) + "/"} else {path}
-        let sharedPackageFile = packageDirectory + "/.firefly/package.ff"
-        let packageFile = if(fs.exists(sharedPackageFile)) {
+        let packageDirectory = if(path.extension() == ".ff") {path.parent().grab()} else {path}
+        let sharedPackageFile = packageDirectory.slash(".firefly").slash("package.ff")
+        let packageFile = if(sharedPackageFile.exists()) {
             sharedPackageFile
         } else {
             self.singleFilePackages = self.singleFilePackages.add(packagePair)
             path
         }
-        let code = fs.readText(packageFile) // Crashes when file:///...
-        let tokens = Tokenizer.tokenize(packageFile, code, None, True)
-        let parser = Parser.make(packagePair, packageFile, tokens, False, LspHook.disabled())
+        let code = packageFile.readText()
+        let tokens = Tokenizer.tokenize(packageFile.relativeTo(path), code, None, True)
+        let parser = Parser.make(packagePair, packageFile.relativeTo(path), tokens, False, LspHook.disabled())
         let info = parser.parsePackageInfo()
         self.addCoreDependencyIfMissing(info)
     }
@@ -65,18 +64,18 @@ extend self: Dependencies {
     }
 
     fetchDependency(
-        fs: FileSystem
+        path: Path
         httpClient: HttpClient
         dependency: DDependency
-    ): String {
+    ): Path {
         let location = self.workspace.findPackageLocation(dependency.packagePair, dependency.version)
         if(location.contains(":") && !location.dropFirst(1).startsWith(":")) {
             if(location.startsWith("http://") || location.startsWith("https://")) {
                 let packagePair = dependency.packagePair
-                let dependenciesPath = ".firefly/dependencies"
-                let dependencyPath = dependenciesPath + "/" + packagePair.group + "/" + packagePair.name
-                let tarGzPath = dependenciesPath + "/" + Workspace.tarGzName(packagePair, dependency.version)
-                let donePath = dependenciesPath + "/" + Workspace.tarGzName(packagePair, dependency.version) + ".done"
+                let dependenciesPath = path.slash(".firefly").slash("dependencies")
+                let dependencyPath = dependenciesPath.slash(packagePair.group).slash(packagePair.name)
+                let tarGzPath = dependenciesPath.slash(Workspace.tarGzName(packagePair, dependency.version))
+                let donePath = dependenciesPath.slash(Workspace.tarGzName(packagePair, dependency.version) + ".done")
                 if(!fs.exists(donePath)) {
                     Log.debug("Fetching " + location)
                     let response = httpClient.fetch(location, throw = False)
@@ -84,52 +83,51 @@ extend self: Dependencies {
                         panic("Could not download dependency: " + location)
                     }
                     let buffer = response.readBuffer()
-                    if(fs.exists(dependencyPath)) {
-                        fs.deleteDirectory(dependencyPath)
+                    if(dependencyPath.exists()) {
+                        dependencyPath.delete()
                     }
-                    fs.createDirectories(dependencyPath)
-                    fs.writeStream(tarGzPath, [buffer].toStream())
-                    internalExtractTarGz(fs, tarGzPath, dependencyPath)
-                    fs.rename(tarGzPath, donePath)
+                    dependencyPath.createDirectory(createParentDirectories = True)
+                    tarGzPath.writeStream([buffer].toStream())
+                    internalExtractTarGz(tarGzPath, dependencyPath)
+                    tarGzPath.renameTo(donePath)
                 }
                 dependencyPath
             } else {
                 panic("Loading packages by this protocol is not supported: " + location)
             }
         } else {
-            location
+            path.path(location)
         }
     }
 
     processDependencies(
-        fs: FileSystem
+        path: Path
         httpClient: HttpClient
         dependencies: List[DDependency]
     ): Unit {
         // Remember to check for cycles
         let packageInfos = dependencies.map {dependency =>
-            let path = self.fetchDependency(fs, httpClient, dependency)
-            self.packagePaths = self.packagePaths.add(dependency.packagePair, path)
-            let packageInfo = self.loadPackageInfo(fs, dependency.packagePair, path)
+            let dependencyPath = self.fetchDependency(path, httpClient, dependency)
+            self.packagePaths = self.packagePaths.add(dependency.packagePair, dependencyPath)
+            let packageInfo = self.loadPackageInfo(dependency.packagePair, dependencyPath)
             checkPackagePairs(dependency.packagePair, packageInfo.package.packagePair)
             packageInfo
         }
         let newDependencies = packageInfos.flatMap {self.processPackageInfo(_)}
         if(newDependencies != []) {
-            self.processDependencies(fs, httpClient, newDependencies)
+            self.processDependencies(path, httpClient, newDependencies)
         }
     }
 
 }
 
-process(fs: FileSystem, fetch: HttpClient, path: String): ResolvedDependencies {
-    let fixedPath = path.replace("\\", "/")
-    let workspace = Workspace.loadWorkspace(fs, fixedPath)
+process(fetch: HttpClient, path: Path): ResolvedDependencies {
+    let workspace = Workspace.loadWorkspace(path)
     let self = Dependencies(workspace, [].toMap(), [].toMap(), [].toSet())
-    let packageInfo = self.loadPackageInfo(fs, PackagePair("script", "script"), fixedPath)
+    let packageInfo = self.loadPackageInfo(PackagePair("script", "script"), path)
     let newDependencies = self.processPackageInfo(packageInfo)
-    self.processDependencies(fs, fetch, newDependencies)
-    let packagePaths = self.packagePaths.add(packageInfo.package.packagePair, findScriptPackageLocation(fs, fixedPath))
+    self.processDependencies(path, fetch, newDependencies)
+    let packagePaths = self.packagePaths.add(packageInfo.package.packagePair, findScriptPackageLocation(path))
     ResolvedDependencies(
         mainPackagePair = packageInfo.package.packagePair
         packages = self.packages
@@ -138,16 +136,14 @@ process(fs: FileSystem, fetch: HttpClient, path: String): ResolvedDependencies {
     )
 }
 
-findScriptPackageLocation(fs: FileSystem, path: String): String {
-    let fixedPath = path.replace("\\", "/")
-    let packageDirectory = if(fixedPath.endsWith(".ff")) {FileSystem.directoryName(fixedPath)} else {fixedPath}
-    let fixedPackageDirectory = if(packageDirectory == "") {"."} else {packageDirectory}
-    function go(directory: String): String {
-        let packageFile = directory + "/.firefly/package.ff"
-        if(fs.exists(packageFile)) {
+findScriptPackageLocation(path: Path): Path {
+    let packageDirectory = if(path.extension() == ".ff") {path.parent().grab()} else {path}
+    function go(directory: Path): Path {
+        let packageFile = directory.slash(".firefly").slash("package.ff")
+        if(packageFile.exists()) {
             directory
-        } elseIf {fs.exists(directory + "/..") && fs.absolutePath(directory) != fs.absolutePath(directory + "/..")} {
-            go(directory + "/..")
+        } elseIf {!directory.parent().isEmpty()} {
+            go(directory.parent().grab())
         } else {
             fixedPackageDirectory
         }
@@ -167,7 +163,7 @@ checkPackagePairs(dependencyPair: PackagePair, packagePair: PackagePair): Unit {
     }
 }
 
-internalExtractTarGz(fs: FileSystem, tarGzPath: String, path: String): Unit
+internalExtractTarGz(tarGzPath: Path, path: Path): Unit
     target node async """
         import * as tar from 'tar'
         await tar.extract({file: tarGzPath_, cwd: path_, strict: true})
