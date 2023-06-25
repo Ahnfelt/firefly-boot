@@ -20,18 +20,15 @@ build(
     printMeasurements: Bool
 ): Unit {
 
-    let fs = system.files()
+    if(tempPath.exists()) {tempPath.delete()}
+    tempPath.createDirectory()
 
-    if(fs.exists(tempPath)) {fs.deleteDirectory(tempPath)}
-    fs.createDirectory(tempPath)
-
-    let jsPathFile = tempPath + "/js"
-    fs.createDirectories(jsPathFile)
+    let jsPathFile = tempPath.slash("js")
+    jsPathFile.createDirectory(createParentDirectories = True)
 
     let success = do {
         let compiler = Compiler.make(
             emitTarget
-            fs
             system.time()
             compilerModulePath
             jsPathFile
@@ -43,7 +40,7 @@ build(
         if(printMeasurements) {compiler.printMeasurements()}
         resolvedDependencies.packagePaths.each {packagePair, packagePath =>
             resolvedDependencies.packages.get(packagePair).each {packageInfo =>
-                processIncludes(fs, jsPathFile, packagePath, packageInfo)
+                processIncludes(jsPathFile, packagePath, packageInfo)
             }
         }
         True
@@ -56,11 +53,11 @@ build(
 
 }
 
-processIncludes(fs: FileSystem, jsPathFile: String, packagePath: String, info: PackageInfo): Unit {
+processIncludes(jsPathFile: Path, packagePath: Path, info: PackageInfo): Unit {
     info.includes.each {include =>
         fs.copy(
-            packagePath + "/.firefly/include/" + include.path
-            jsPathFile + "/" + info.package.packagePair.groupName("/") + "/" + include.path
+            packagePath.slash(".firefly").slash("include").slash(include.path)
+            jsPathFile.slash(info.package.packagePair.groupName("/")).slash(include.path)
         )
     }
 }

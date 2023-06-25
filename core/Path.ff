@@ -143,10 +143,10 @@ extend self: Path {
             return path.join(self_, relativePath_)
         """
 
-    path(relativePath: String): Path
+    path(absoluteOrRelativePath: String): Path
         target node async """
             import * as path from 'path'
-            return path.resolve(relativePath_)
+            return path.resolve(self_, absoluteOrRelativePath_)
         """
 
     copyTo(path: Path, retries: Int = 0, retryDelay: Int = 100) {

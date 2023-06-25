@@ -82,7 +82,7 @@ main(system: NodeSystem): Unit {
             importAndRun(fireflyPath, "build", resolvedDependencies.mainPackagePair, localMainFile, [])
 
         | CheckCommand(filePath) => 
-            Builder.check(system, fireflyPath, filePath, Map.empty(), LspHook.disabled(), True)
+            Builder.check(system, fireflyPath, system.path(filePath), Map.empty(), LspHook.disabled(), True)
         
         | BootstrapCommand =>
             Builder.build(
@@ -100,8 +100,8 @@ main(system: NodeSystem): Unit {
                     singleFilePackages = [].toSet()
                 )
                 compilerModulePath = None
-                tempPath = "output/temporary"
-                jsOutputPath = "output/js"
+                tempPath = system.path("output/temporary")
+                jsOutputPath = system.path("output/js")
                 printMeasurements = True
             )
     }

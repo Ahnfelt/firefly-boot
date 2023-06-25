@@ -11,10 +11,9 @@ import LspHook
 
 capability Compiler(
     emitTarget: EmitTarget
-    files: FileSystem
     time: TimeSystem
-    compilerModulePath: Option[String]
-    jsOutputPath: String
+    compilerModulePath: Option[Path]
+    jsOutputPath: Path
     packagePaths: Map[PackagePair, String]
     singleFilePackages: Set[PackagePair]
     virtualFiles: Map[String, String]
@@ -30,17 +29,15 @@ capability Compiler(
 
 make(
     emitTarget: EmitTarget
-    files: FileSystem
     time: TimeSystem
-    compilerModulePath: Option[String]
-    jsOutputPath: String
+    compilerModulePath: Option[Path]
+    jsOutputPath: Path
     resolvedDependencies: ResolvedDependencies
     virtualFiles: Map[String, String]
     lspHook: LspHook
 ): Compiler {
     Compiler(
         emitTarget = emitTarget
-        files = files
         time = time
         compilerModulePath = compilerModulePath
         jsOutputPath = jsOutputPath
