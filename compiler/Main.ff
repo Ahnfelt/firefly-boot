@@ -33,7 +33,7 @@ main(system: NodeSystem): Unit {
         let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
             resolvedDependencies.packagePaths
         } else {
-            resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath.slash("core"))
+            resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath.slash("core").absolute())
         }
         let compilerModulePath = if(emitTarget != EmitBrowser && emitTarget != EmitExecutable) {
             fireflyPath.slash("output").slash("js").slash("ff").slash("compiler/Builder.mjs")
@@ -51,29 +51,29 @@ main(system: NodeSystem): Unit {
             mainModule = mainFile
             resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
             compilerModulePath = compilerModulePath
-            tempPath = ".firefly/temporary"
-            jsOutputPath = ".firefly/output/" + targetName
+            tempPath = system.path(".firefly").slash("temporary")
+            jsOutputPath = system.path(".firefly").path("output").path(targetName)
             printMeasurements = False
         )
     }
 
     function runCommand(command: MainCommand) {
         | RunCommand(mainFile, arguments) =>
-            let resolvedDependencies = Dependencies.process(system.path("."), system.httpClient(), mainFile + ".ff")
+            let resolvedDependencies = Dependencies.process(system.httpClient(), system.path(mainFile + ".ff"))
             prepareFireflyDirectory(system.path("."))
             let localMainFile = system.path(mainFile).base()
             buildScript(localMainFile, resolvedDependencies.mainPackagePair, EmitNode, resolvedDependencies)
             importAndRun(fireflyPath, "node", resolvedDependencies.mainPackagePair, localMainFile, arguments)
 
         | BrowserCommand(mainFile) =>
-            let resolvedDependencies = Dependencies.process(system.path("."), system.httpClient(), mainFile + ".ff")
+            let resolvedDependencies = Dependencies.process(system.httpClient(), system.path(mainFile + ".ff"))
             prepareFireflyDirectory(system.path("."))
             let localMainFile = system.path(mainFile).base()
             buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitBrowser, resolvedDependencies)
             bundleForBrowser(system, resolvedDependencies.mainPackagePair, localMainFile)
 
         | BuildCommand(mainFile) =>
-            let resolvedDependencies = Dependencies.process(system.path("."), system.httpClient(), mainFile + ".ff")
+            let resolvedDependencies = Dependencies.process(system.httpClient(), system.path(mainFile + ".ff"))
             prepareFireflyDirectory(system.path("."))
             let localMainFile = system.path(mainFile).base()
             buildScript(localMainFile, resolvedDependencies.mainPackagePair, EmitBuild, resolvedDependencies)

@@ -14,9 +14,9 @@ build(
     mainPackage: PackagePair
     mainModule: String
     resolvedDependencies: ResolvedDependencies
-    compilerModulePath: Option[String]
-    tempPath: String
-    jsOutputPath: String
+    compilerModulePath: Option[Path]
+    tempPath: Path
+    jsOutputPath: Path
     printMeasurements: Bool
 ): Unit {
 
@@ -89,17 +89,16 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String, t
 }
 
 check(
-    system: NodeSystem, 
-    fireflyPath: String, 
-    path: String, 
-    virtualFiles: Map[String, String], 
+    system: NodeSystem
+    fireflyPath: Path
+    path: Path
+    virtualFiles: Map[String, String]
     lspHook: LspHook
     infer: Bool
 ) {
-    let fs = system.files()
-    let packages = fs.isDirectory(path).{
-        | True => findPackageFiles(fs, path)
-        | False => [PackageFiles(FileSystem.directoryName(path), None, [path])] // TODO
+    let packages = path.isDirectory().{
+        | True => findPackageFiles(path)
+        | False => [PackageFiles(path.parent().grab(), None, [path])]
     }
 
     packages.each {package => 
@@ -108,21 +107,20 @@ check(
         let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
             resolvedDependencies.packagePaths
         } else {
-            resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
+            resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath.slash("core"))
         }
         let fixedResolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
         let compiler = Compiler.make(
             EmitBuild
-            system.files()
             system.time() 
             None
-            ".firefly/temporary"
+            package.root.slash(".firefly").slash("temporary")
             fixedResolvedDependencies
             virtualFiles
             lspHook
         )
         package.files.each {file =>
-            let localFile = FileSystem.baseName(file.replace("\\", "/"))
+            let localFile = file.base()
             if(infer) {
                 compiler.infer(resolvedDependencies.mainPackagePair, localFile.dropLast(".ff".size()))
             } else {
@@ -133,10 +131,10 @@ check(
 
 }
 
-data PackageFiles(
-    root: String
-    packageFile: Option[String]
-    files: List[String]
+capability PackageFiles(
+    root: Path
+    packageFile: Option[Path]
+    files: List[Path]
 )
 
 
