@@ -134,7 +134,7 @@ capability PackageFiles(
 )
 
 
-findPackageFiles(fs: FileSystem, rootUri: String): List[PackageFiles] {
+findPackageFiles(path: Path): List[PackageFiles] {
     let files = findFireflyFiles(fs, rootUri)
     let split = files.partition {_.endsWith(".firefly/package.ff")}
     let packageFiles = split.first
