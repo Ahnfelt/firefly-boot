@@ -76,7 +76,7 @@ extend self: Dependencies {
                 let dependencyPath = dependenciesPath.slash(packagePair.group).slash(packagePair.name)
                 let tarGzPath = dependenciesPath.slash(Workspace.tarGzName(packagePair, dependency.version))
                 let donePath = dependenciesPath.slash(Workspace.tarGzName(packagePair, dependency.version) + ".done")
-                if(!fs.exists(donePath)) {
+                if(!donePath.exists()) {
                     Log.debug("Fetching " + location)
                     let response = httpClient.fetch(location, throw = False)
                     if(!response.ok()) {
@@ -131,7 +131,7 @@ process(fetch: HttpClient, path: Path): ResolvedDependencies {
     ResolvedDependencies(
         mainPackagePair = packageInfo.package.packagePair
         packages = self.packages
-        packagePaths = packagePaths
+        packagePaths = packagePaths.mapValues {_, v => v.absolute()}
         singleFilePackages = self.singleFilePackages
     )
 }
@@ -145,10 +145,10 @@ findScriptPackageLocation(path: Path): Path {
         } elseIf {!directory.parent().isEmpty()} {
             go(directory.parent().grab())
         } else {
-            fixedPackageDirectory
+            packageDirectory
         }
     }
-    go(fixedPackageDirectory)
+    go(packageDirectory)
 }
 
 checkPackagePairs(dependencyPair: PackagePair, packagePair: PackagePair): Unit {

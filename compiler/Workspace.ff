@@ -18,7 +18,7 @@ loadWorkspace(path: Path): Workspace {
     let packageDirectory = if(path.extension() == ".ff") {path.parent().grab()} else {path}
     let workspaceFile = packageDirectory.slash(".firefly-workspace")
     if(workspaceFile.exists()) {
-        parseWorkspaceFile(workspaceFile, fixedPackageDirectory)
+        parseWorkspaceFile(workspaceFile, packageDirectory)
     } elseIf {!packageDirectory.parent().isEmpty()} {
         loadWorkspace(packageDirectory.parent().grab())
     } else {
@@ -26,8 +26,8 @@ loadWorkspace(path: Path): Workspace {
     }
 }
 
-parseWorkspaceFile(path: Path, packageDirectory: String): Workspace {
-    let text = fs.readText(path)
+parseWorkspaceFile(path: Path, packageDirectory: Path): Workspace {
+    let text = path.readText()
     mutable defaultLocation = None
     let lines = text.split('\n').toList().map {_.replace("\r", "").takeWhile {_ != '#'}}.filter {_.size() != 0}
     let rules = lines.collect {line =>
@@ -59,7 +59,7 @@ parseWorkspaceFile(path: Path, packageDirectory: String): Workspace {
             ))
         }
     }
-    Workspace(rules, defaultLocation.else {centralLocation}, packageDirectory)
+    Workspace(rules, defaultLocation.else {centralLocation}, packageDirectory.absolute())
 }
 
 extend self: Workspace {
