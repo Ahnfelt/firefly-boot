@@ -188,6 +188,13 @@ extend self: Resolver {
     }
 
     resolveTraitDefinition(definition: DTrait): DTrait {
+        if(self.lspHook.isAt(definition.at) || self.lspHook.isDefinedAt(definition.at)) {
+            self.lspHook.emit(
+                ResolveSymbolHook(
+                    SymbolHook(definition.name, definition.at, definition.at), None
+                )
+            )
+        }        
         let generics = definition.generics.map {g => Pair(g, g)}.toMap()
         let self2 = self.Resolver(
             types = self.types.addAll(generics)
@@ -210,6 +217,14 @@ extend self: Resolver {
     }
 
     resolveInstanceDefinition(definition: DInstance): DInstance {
+        let traitDefinedAt = self.traitLocations.get(definition.traitName).else {definition.at}
+        if(self.lspHook.isAt(definition.at) || self.lspHook.isDefinedAt(traitDefinedAt)) {
+            self.lspHook.emit(
+                ResolveSymbolHook(
+                    SymbolHook(definition.traitName, definition.at, traitDefinedAt), None
+                )
+            )
+        }
         let generics = definition.generics.map { g => Pair(g, g) }.toMap()
         let self2 = self.Resolver(
             types = self.types.addAll(generics)
@@ -441,10 +456,10 @@ extend self: Resolver {
     }
 
     resolveConstraint(constraint: Constraint, topLevel: Bool): Constraint {
-        if(self.lspHook.isAt(constraint.at)) {
-            let at = self.traitLocations.get(constraint.name).else {constraint.at}
+        let traitDefinedAt = self.traitLocations.get(constraint.name).else {constraint.at}
+        if(self.lspHook.isAt(constraint.at) || self.lspHook.isDefinedAt(traitDefinedAt)) {
             self.lspHook.emit(
-                ResolveConstraintHook(SymbolHook(constraint.name, constraint.at, at), constraint)
+                ResolveConstraintHook(SymbolHook(constraint.name, constraint.at, traitDefinedAt), constraint)
             )
         }
         let name =
