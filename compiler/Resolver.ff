@@ -263,6 +263,13 @@ extend self: Resolver {
     }
 
     resolveLetDefinition(definition: DLet, topLevel: Bool): DLet {
+        if(self.lspHook.isAt(definition.at) || self.lspHook.isDefinedAt(definition.at)) {
+            self.lspHook.emit(
+                ResolveSymbolHook(
+                    SymbolHook(definition.name, definition.at, definition.at), None
+                )
+            )
+        }
         definition.DLet(
             variableType = self.resolveType(definition.variableType, topLevel)
             value = self.resolveTerm(definition.value, True)

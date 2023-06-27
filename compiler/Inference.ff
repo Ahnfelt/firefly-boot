@@ -209,8 +209,12 @@ extend self: Inference {
     inferPattern(environment: Environment, expected: Type, pattern: MatchPattern): Map[String, Type] {
         if(self.lspHook.isEnabled()) {
             if(pattern.{
-                | PVariantAs(at, _, variableAt, _) => self.lspHook.isAt(at) || self.lspHook.isAt(variableAt)
-                | _ => self.lspHook.isAt(pattern.at)
+                | PVariantAs(at, _, variableAt, _) => 
+                    self.lspHook.isAt(at) || self.lspHook.isAt(variableAt) || self.lspHook.isDefinedAt(variableAt)
+                | PAlias(at, _, _) => 
+                    self.lspHook.isAt(at) || self.lspHook.isDefinedAt(at)
+                | _ => 
+                    self.lspHook.isAt(pattern.at)
             }) {
                 self.lspHook.emit(
                     InferPatternHook(self.unification, environment, expected, pattern)
