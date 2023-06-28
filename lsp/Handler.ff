@@ -94,9 +94,7 @@ extend self: Handler {
         let targetAt = self.findTokenFromParameters(system, parameters)
         let cacheKey = Pair(method, targetAt)
             self.responseCache.get(cacheKey).{
-                | Some(hit) => 
-                    Log.trace("Cache hit: " + method)
-                    hit
+                | Some(hit) => hit
                 | None => 
                     let result = handle(targetAt)
                     self.responseCache = self.responseCache.add(cacheKey, result)
@@ -390,12 +388,12 @@ extend self: Handler {
             | _ => None
         }.filter {at => !at.file.endsWith(">")}
 
-        Log.trace("definedAtList: " + Show.show(definedAtList))
+        //Log.trace("definedAtList: " + Show.show(definedAtList))
 
         let js = system.js()
         definedAtList.first().{
             | Some(definedAt) =>
-                Log.trace("handleReferences definedAt: " + Show.show(definedAt))
+                //Log.trace("handleReferences definedAt: " + Show.show(definedAt))
                 let lspHook = LspHook.make(at = None, definedAt = Some(definedAt), insertIdentifier = False, trackSymbols = False)
                 try {
                     let path = if(local) {targetAt.file} else {FileSystem.urlToPath(self.rootUri.grab())}

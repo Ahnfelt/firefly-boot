@@ -183,9 +183,9 @@ extend self: Inference {
         )
         self.unification.unify(case.at, expected, functionType)
         let environment1 = parameterTypes.zip(case.patterns).foldLeft(environment) {| environment1, Pair(t, c) =>
-            let symbols = self.inferPattern(environment, t, c).mapValues {name, type =>
-                let noEffect = TConstructor(c.at, "ff:core/Nothing.Nothing", [])
-                Scheme(True, False, False, False, Signature(c.at, name, False, [], [], [], type, noEffect))
+            let symbols = self.inferPattern(environment, t, c).mapValues {| name, Pair(at, type) =>
+                let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
+                Scheme(True, False, False, False, Signature(at, name, False, [], [], [], type, noEffect))
             }
             environment.Environment(symbols = environment1.symbols.addAll(symbols))
         }
@@ -193,9 +193,9 @@ extend self: Inference {
         let environment3 = case.guards.foldLeft(environment1) {environment2, g =>
             let guardType = self.unification.freshUnificationVariable(g.at)
             let guardTerm = self.inferTerm(environment2, guardType, g.term)
-            let symbols = self.inferPattern(environment2, guardType, g.pattern).mapValues {name, type =>
-                let noEffect = TConstructor(g.at, "ff:core/Nothing.Nothing", [])
-                Scheme(True, False, False, False, Signature(g.at, name, False, [], [], [], type, noEffect))
+            let symbols = self.inferPattern(environment2, guardType, g.pattern).mapValues {| name, Pair(at, type) =>
+                let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
+                Scheme(True, False, False, False, Signature(at, name, False, [], [], [], type, noEffect))
             }
             guards = [g.MatchGuard(term = guardTerm), ...guards]
             environment2.Environment(symbols = environment2.symbols.addAll(symbols))
@@ -206,7 +206,7 @@ extend self: Inference {
         )
     }
 
-    inferPattern(environment: Environment, expected: Type, pattern: MatchPattern): Map[String, Type] {
+    inferPattern(environment: Environment, expected: Type, pattern: MatchPattern): Map[String, Pair[Location, Type]] {
         if(self.lspHook.isEnabled()) {
             if(pattern.{
                 | PVariantAs(at, _, variableAt, _) => 
@@ -221,7 +221,7 @@ extend self: Inference {
                 )
             }
         }
-        function literal(coreTypeName: String): Map[String, Type] {
+        function literal(coreTypeName: String): Map[String, Pair[Location, Type]] {
             self.unification.unify(pattern.at, expected, TConstructor(pattern.at, core(coreTypeName), []))
             Map.empty()
         }
@@ -235,9 +235,9 @@ extend self: Inference {
             | PVariable(at, None) =>
                 Map.empty()
             | PVariable(at, Some(name)) =>
-                [Pair(name, expected)].toMap()
+                [Pair(name, Pair(at, expected))].toMap()
             | PAlias(at, pattern, variable) =>
-                self.inferPattern(environment, expected, pattern).add(variable, expected)
+                self.inferPattern(environment, expected, pattern).add(variable, Pair(at, expected))
             | PVariantAs(at, name, variableAt, variableOption) =>
                 let instantiated = self.lookup(environment, expected, at, name, [], None).else {
                     throw(CompileError(at, "No such variant: " + name))
@@ -249,7 +249,7 @@ extend self: Inference {
                 let parameters = instantiated.scheme.signature.parameters.sortBy {_.name}
                 let recordType =
                     TConstructor(at, "Record$" + parameters.map {_.name}.join("$"), parameters.map {_.valueType})
-                variableOption.toList().map {Pair(_, recordType)}.toMap()
+                variableOption.toList().map {Pair(_, Pair(variableAt, recordType))}.toMap()
             | PVariant(at, name, patterns) =>
                 let instantiated = self.lookup(environment, expected, at, name, [], None).else {
                     throw(CompileError(at, "No such variant: " + name))
@@ -262,7 +262,7 @@ extend self: Inference {
                 }
                 patterns.zip(instantiated.scheme.signature.parameters).map {| Pair(pattern, parameter) =>
                     self.inferPattern(environment, parameter.valueType, pattern)
-                }.foldLeft(Map.empty[String, Type]()) {_.addAll(_)}
+                }.foldLeft(Map.empty[String, Pair[Location, Type]]()) {_.addAll(_)}
         }
     }
 
