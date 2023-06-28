@@ -373,7 +373,7 @@ extend self: Handler {
             Log.trace("findReferences first check error: " + message)
         } grab()
 
-        Log.trace("defined at hooks: " + Show.show(temporaryLspHook.results().map(LspHook.showHook)))
+        //Log.trace("defined at hooks: " + Show.show(temporaryLspHook.results().map(LspHook.showHook)))
         let definedAtList = temporaryLspHook.results().collect {
             | ResolveSymbolHook h => Some(h.symbol.definedAt)
             | ResolveVariantFieldHook h => Some(h.symbol.definedAt)
@@ -390,7 +390,7 @@ extend self: Handler {
             | _ => None
         }.filter {at => !at.file.endsWith(">")}
             
-        Log.trace("definedAtList: " + Show.show(definedAtList))
+        //Log.trace("definedAtList: " + Show.show(definedAtList))
 
         let js = system.js()
         definedAtList.first().{
