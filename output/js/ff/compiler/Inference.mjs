@@ -260,16 +260,6 @@ return
 }
 }));
 const returnType_ = ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, traitMethodScheme_.signature_.returnType_);
-ff_core_List.List_each(ff_core_List.List_zip(parameters_, instanceFunction_.signature_.parameters_), ((_1) => {
-{
-const traitParameter_ = _1.first_;
-const instanceParameter_ = _1.second_;
-if((traitParameter_.name_ !== instanceParameter_.name_)) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(instanceParameter_.at_, ("Expected a parameter named: " + traitParameter_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
-return
-}
-}));
 ff_core_List.List_each(ff_core_List.List_dropFirst(instanceFunction_.signature_.parameters_, ff_core_List.List_size(parameters_)), ((instanceParameter_) => {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(instanceParameter_.at_, ("Unexpected parameter: " + instanceParameter_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
@@ -285,8 +275,12 @@ return
 }
 }));
 ff_compiler_Unification.Unification_unify(self_.unification_, instanceFunction_.signature_.returnType_.at_, returnType_, instanceFunction_.signature_.returnType_);
-const newInstanceFunction_ = ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environment_, instanceFunction_);
-return newInstanceFunction_
+if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, instanceFunction_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, traitMethodScheme_.signature_.at_))) {
+const symbolHook_ = ff_compiler_LspHook.SymbolHook(instanceFunction_.signature_.name_, instanceFunction_.at_, traitMethodScheme_.signature_.at_);
+const h_ = ff_compiler_LspHook.InferLookupHook(self_.unification_, environment_, instanceFunction_.signature_.returnType_, ff_core_Option.None(), ff_compiler_LspHook.Box(symbolHook_), ff_compiler_LspHook.Box(ff_core_Option.None()));
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, h_)
+};
+return ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environment_, instanceFunction_)
 })), _c.derived_)
 return
 }
@@ -2309,16 +2303,6 @@ return
 }
 }));
 const returnType_ = ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, traitMethodScheme_.signature_.returnType_);
-ff_core_List.List_each(ff_core_List.List_zip(parameters_, instanceFunction_.signature_.parameters_), ((_1) => {
-{
-const traitParameter_ = _1.first_;
-const instanceParameter_ = _1.second_;
-if((traitParameter_.name_ !== instanceParameter_.name_)) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(instanceParameter_.at_, ("Expected a parameter named: " + traitParameter_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
-return
-}
-}));
 ff_core_List.List_each(ff_core_List.List_dropFirst(instanceFunction_.signature_.parameters_, ff_core_List.List_size(parameters_)), ((instanceParameter_) => {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(instanceParameter_.at_, ("Unexpected parameter: " + instanceParameter_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
@@ -2334,8 +2318,12 @@ return
 }
 }));
 ff_compiler_Unification.Unification_unify(self_.unification_, instanceFunction_.signature_.returnType_.at_, returnType_, instanceFunction_.signature_.returnType_);
-const newInstanceFunction_ = ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environment_, instanceFunction_);
-return newInstanceFunction_
+if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, instanceFunction_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, traitMethodScheme_.signature_.at_))) {
+const symbolHook_ = ff_compiler_LspHook.SymbolHook(instanceFunction_.signature_.name_, instanceFunction_.at_, traitMethodScheme_.signature_.at_);
+const h_ = ff_compiler_LspHook.InferLookupHook(self_.unification_, environment_, instanceFunction_.signature_.returnType_, ff_core_Option.None(), ff_compiler_LspHook.Box(symbolHook_), ff_compiler_LspHook.Box(ff_core_Option.None()));
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, h_)
+};
+return ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environment_, instanceFunction_)
 })), _c.derived_)
 return
 }
