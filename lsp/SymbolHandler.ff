@@ -50,12 +50,12 @@ readSymbol(hooks: List[ResultHook]): Result[DocumentSymbol] {
         }
 }
 
-handleDocumentSymbol(system: NodeSystem, resultHooks: List[ResultHook]): JsValue {
+handleDocumentSymbol(system: NodeSystem, resultHooks: List[ResultHook]): List[JsValue] {
     let symbols = readAllSymbols(resultHooks)
-    system.js().array(symbols.map {documentSymbolToLsp(system.js(), _)})
+    symbols.map {documentSymbolToLsp(system.js(), _)}
 }
 
-handleWorkspaceSymbol(system: NodeSystem, resultHooks: List[ResultHook], query: String): JsValue {
+handleWorkspaceSymbol(system: NodeSystem, resultHooks: List[ResultHook], query: String): List[JsValue] {
     let documentSymbols = readAllSymbols(resultHooks)
     let workspaceSymbols = documentSymbols.flatMap {documentToWorkspaceSymbols(_, None)}
     let foundSymbols = workspaceSymbols.filter {_.name.startsWith(query)}
@@ -63,7 +63,7 @@ handleWorkspaceSymbol(system: NodeSystem, resultHooks: List[ResultHook], query: 
     //workspaceSymbols.each {Log.show(_)}
     let jsSymbols = foundSymbols.map {workspaceSymbolToLsp(system.js(), system.files(), _)}
     //workspaceSymbolsJs.each {Log.trace(_.toJson(None))}
-    system.js().array(jsSymbols)
+    jsSymbols
 }
 
 documentToWorkspaceSymbols(symbol: DocumentSymbol, parentName: Option[String]): List[WorkspaceSymbol] {

@@ -49,6 +49,8 @@ main(system: NodeSystem) {
                         let problem = if(error.name() == "AbortError") {
                             Error(-32800, "Request cancelled")
                         } else {
+                            Log.trace("ERROR: " + error.message())
+                            Log.trace(error.stack())
                             Error(-32603, "Internal error")
                         }
                         message.id.each {id => 
