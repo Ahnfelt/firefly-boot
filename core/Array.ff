@@ -206,10 +206,10 @@ extend self: Array[String] {
 }
 
 instance Array[T: Show]: Show {
-    show(array: Array[T]): String {
+    show(value: Array[T]): String {
         let stack = Stack.make()
         stack.push("[")
-        array.each {x =>
+        value.each {x =>
             if(stack.size() > 1) {stack.push(", ")}
             stack.push(Show.show(x))
         }
@@ -219,29 +219,29 @@ instance Array[T: Show]: Show {
 }
 
 instance Array[T: Equal]: Equal {
-    equals(left: Array[T], right: Array[T]): Bool {
-        if(internalSame(left, right)) {True} else:
-        if(left.size() != right.size()) {False} else:
+    equals(x: Array[T], y: Array[T]): Bool {
+        if(internalSame(x, y)) {True} else:
+        if(x.size() != y.size()) {False} else:
         mutable i = -1
-        left.all {x =>
+        x.all {l =>
             i += 1
-            x == right.grab(i)
+            l == y.grab(i)
         }
     }
 }
 
 instance Array[T: Order]: Order {
-    compare(left: Array[T], right: Array[T]): Ordering {
-        if(internalSame(left, right)) {OrderingSame} else:
-        let size = left.size().min(right.size())
+    compare(x: Array[T], y: Array[T]): Ordering {
+        if(internalSame(x, y)) {OrderingSame} else:
+        let size = x.size().min(y.size())
         mutable i = 0
         mutable ordering = OrderingSame
         while {ordering == OrderingSame && i < size} {
-            ordering = Ordering.compare(left.grab(i), right.grab(i))
+            ordering = Ordering.compare(x.grab(i), y.grab(i))
             i += 1
         }
         if(ordering != OrderingSame) {ordering} else:
-        Ordering.compare(left.size(), right.size())
+        Ordering.compare(x.size(), y.size())
     }
 }
 
