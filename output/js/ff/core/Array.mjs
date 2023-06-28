@@ -497,10 +497,10 @@ throw new Error('Function Array_join is missing on this target in async context.
 }
 
 export function ff_core_Show_Show$ff_core_Array_Array(ff_core_Show_Show$T) { return {
-show_(array_) {
+show_(value_) {
 const stack_ = ff_core_Stack.make_();
 ff_core_Stack.Stack_push(stack_, "[");
-ff_core_Array.Array_each(array_, ((x_) => {
+ff_core_Array.Array_each(value_, ((x_) => {
 if((ff_core_Stack.Stack_size(stack_) > 1)) {
 ff_core_Stack.Stack_push(stack_, ", ")
 };
@@ -509,10 +509,10 @@ ff_core_Stack.Stack_push(stack_, ff_core_Show_Show$T.show_(x_))
 ff_core_Stack.Stack_push(stack_, "].toArray()");
 return ff_core_Stack.Stack_join(stack_, "")
 },
-async show_$(array_, $task) {
+async show_$(value_, $task) {
 const stack_ = ff_core_Stack.make_();
 ff_core_Stack.Stack_push(stack_, "[");
-ff_core_Array.Array_each(array_, ((x_) => {
+ff_core_Array.Array_each(value_, ((x_) => {
 if((ff_core_Stack.Stack_size(stack_) > 1)) {
 ff_core_Stack.Stack_push(stack_, ", ")
 };
@@ -524,32 +524,32 @@ return ff_core_Stack.Stack_join(stack_, "")
 }}
 
 export function ff_core_Equal_Equal$ff_core_Array_Array(ff_core_Equal_Equal$T) { return {
-equals_(left_, right_) {
-if(ff_core_Array.internalSame_(left_, right_)) {
+equals_(x_, y_) {
+if(ff_core_Array.internalSame_(x_, y_)) {
 return true
 } else {
-if((ff_core_Array.Array_size(left_) !== ff_core_Array.Array_size(right_))) {
+if((ff_core_Array.Array_size(x_) !== ff_core_Array.Array_size(y_))) {
 return false
 } else {
 let i_ = (-1);
-return ff_core_Array.Array_all(left_, ((x_) => {
+return ff_core_Array.Array_all(x_, ((l_) => {
 i_ += 1;
-return ff_core_Equal_Equal$T.equals_(x_, ff_core_Array.Array_grab(right_, i_))
+return ff_core_Equal_Equal$T.equals_(l_, ff_core_Array.Array_grab(y_, i_))
 }))
 }
 }
 },
-async equals_$(left_, right_, $task) {
-if(ff_core_Array.internalSame_(left_, right_)) {
+async equals_$(x_, y_, $task) {
+if(ff_core_Array.internalSame_(x_, y_)) {
 return true
 } else {
-if((ff_core_Array.Array_size(left_) !== ff_core_Array.Array_size(right_))) {
+if((ff_core_Array.Array_size(x_) !== ff_core_Array.Array_size(y_))) {
 return false
 } else {
 let i_ = (-1);
-return ff_core_Array.Array_all(left_, ((x_) => {
+return ff_core_Array.Array_all(x_, ((l_) => {
 i_ += 1;
-return ff_core_Equal_Equal$T.equals_(x_, ff_core_Array.Array_grab(right_, i_))
+return ff_core_Equal_Equal$T.equals_(l_, ff_core_Array.Array_grab(y_, i_))
 }))
 }
 }
@@ -557,39 +557,39 @@ return ff_core_Equal_Equal$T.equals_(x_, ff_core_Array.Array_grab(right_, i_))
 }}
 
 export function ff_core_Ordering_Order$ff_core_Array_Array(ff_core_Ordering_Order$T) { return {
-compare_(left_, right_) {
-if(ff_core_Array.internalSame_(left_, right_)) {
+compare_(x_, y_) {
+if(ff_core_Array.internalSame_(x_, y_)) {
 return ff_core_Ordering.OrderingSame()
 } else {
-const size_ = ff_core_Int.Int_min(ff_core_Array.Array_size(left_), ff_core_Array.Array_size(right_));
+const size_ = ff_core_Int.Int_min(ff_core_Array.Array_size(x_), ff_core_Array.Array_size(y_));
 let i_ = 0;
 let ordering_ = ff_core_Ordering.OrderingSame();
 while(((ordering_ === ff_core_Ordering.OrderingSame()) && (i_ < size_))) {
-ordering_ = ff_core_Ordering_Order$T.compare_(ff_core_Array.Array_grab(left_, i_), ff_core_Array.Array_grab(right_, i_));
+ordering_ = ff_core_Ordering_Order$T.compare_(ff_core_Array.Array_grab(x_, i_), ff_core_Array.Array_grab(y_, i_));
 i_ += 1
 };
 if((ordering_ !== ff_core_Ordering.OrderingSame())) {
 return ordering_
 } else {
-return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(ff_core_Array.Array_size(left_), ff_core_Array.Array_size(right_))
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(ff_core_Array.Array_size(x_), ff_core_Array.Array_size(y_))
 }
 }
 },
-async compare_$(left_, right_, $task) {
-if(ff_core_Array.internalSame_(left_, right_)) {
+async compare_$(x_, y_, $task) {
+if(ff_core_Array.internalSame_(x_, y_)) {
 return ff_core_Ordering.OrderingSame()
 } else {
-const size_ = ff_core_Int.Int_min(ff_core_Array.Array_size(left_), ff_core_Array.Array_size(right_));
+const size_ = ff_core_Int.Int_min(ff_core_Array.Array_size(x_), ff_core_Array.Array_size(y_));
 let i_ = 0;
 let ordering_ = ff_core_Ordering.OrderingSame();
 while(((ordering_ === ff_core_Ordering.OrderingSame()) && (i_ < size_))) {
-ordering_ = ff_core_Ordering_Order$T.compare_(ff_core_Array.Array_grab(left_, i_), ff_core_Array.Array_grab(right_, i_));
+ordering_ = ff_core_Ordering_Order$T.compare_(ff_core_Array.Array_grab(x_, i_), ff_core_Array.Array_grab(y_, i_));
 i_ += 1
 };
 if((ordering_ !== ff_core_Ordering.OrderingSame())) {
 return ordering_
 } else {
-return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(ff_core_Array.Array_size(left_), ff_core_Array.Array_size(right_))
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(ff_core_Array.Array_size(x_), ff_core_Array.Array_size(y_))
 }
 }
 }

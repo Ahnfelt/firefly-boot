@@ -223,10 +223,10 @@ extend self: Stack[String] {
 }
 
 instance Stack[T: Show]: Show {
-    show(array: Array[T]): String {
+    show(value: Stack[T]): String {
         let stack = Stack.make()
         stack.push("[")
-        array.each {x =>
+        value.each {x =>
             if(stack.size() > 1) {stack.push(", ")}
             stack.push(Show.show(x))
         }

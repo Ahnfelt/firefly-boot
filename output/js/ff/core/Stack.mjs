@@ -570,10 +570,10 @@ throw new Error('Function Stack_join is missing on this target in async context.
 }
 
 export function ff_core_Show_Show$ff_core_Stack_Stack(ff_core_Show_Show$T) { return {
-show_(array_) {
+show_(value_) {
 const stack_ = ff_core_Stack.make_();
 ff_core_Stack.Stack_push(stack_, "[");
-ff_core_Array.Array_each(array_, ((x_) => {
+ff_core_Stack.Stack_each(value_, ((x_) => {
 if((ff_core_Stack.Stack_size(stack_) > 1)) {
 ff_core_Stack.Stack_push(stack_, ", ")
 };
@@ -582,10 +582,10 @@ ff_core_Stack.Stack_push(stack_, ff_core_Show_Show$T.show_(x_))
 ff_core_Stack.Stack_push(stack_, "].toStack()");
 return ff_core_Stack.Stack_join(stack_, "")
 },
-async show_$(array_, $task) {
+async show_$(value_, $task) {
 const stack_ = ff_core_Stack.make_();
 ff_core_Stack.Stack_push(stack_, "[");
-ff_core_Array.Array_each(array_, ((x_) => {
+ff_core_Stack.Stack_each(value_, ((x_) => {
 if((ff_core_Stack.Stack_size(stack_) > 1)) {
 ff_core_Stack.Stack_push(stack_, ", ")
 };

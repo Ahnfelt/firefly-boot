@@ -702,38 +702,38 @@ return
 }
 
 export function ff_core_Show_Show$ff_core_Option_Option(ff_core_Show_Show$T) { return {
-show_(x_) {
+show_(value_) {
 {
-const x_a = x_;
+const value_a = value_;
 {
-if(x_a.None) {
-const z_ = x_a;
+if(value_a.None) {
+const z_ = value_a;
 return "None"
 return
 }
 }
 {
-if(x_a.Some) {
-const z_ = x_a;
+if(value_a.Some) {
+const z_ = value_a;
 return ((("Some" + "(") + ff_core_Show_Show$T.show_(z_.value_)) + ")")
 return
 }
 }
 }
 },
-async show_$(x_, $task) {
+async show_$(value_, $task) {
 {
-const x_a = x_;
+const value_a = value_;
 {
-if(x_a.None) {
-const z_ = x_a;
+if(value_a.None) {
+const z_ = value_a;
 return "None"
 return
 }
 }
 {
-if(x_a.Some) {
-const z_ = x_a;
+if(value_a.Some) {
+const z_ = value_a;
 return ((("Some" + "(") + ff_core_Show_Show$T.show_(z_.value_)) + ")")
 return
 }
@@ -901,13 +901,13 @@ return
 }}
 
 export function ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable_Serializable$T) { return {
-serializeUsing_(serialization_, x_) {
+serializeUsing_(serialization_, value_) {
 {
 const serialization_a = serialization_;
-const x_a = x_;
+const value_a = value_;
 {
-if(x_a.None) {
-const value_ = x_a;
+if(value_a.None) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1
@@ -915,12 +915,12 @@ return
 }
 }
 {
-if(x_a.Some) {
-const value_ = x_a;
+if(value_a.Some) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1);
 serialization_.offset_ += 1;
-ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, value_.value_)
+ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, v_.value_)
 return
 }
 }
@@ -951,13 +951,13 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $task) {
+async serializeUsing_$(serialization_, value_, $task) {
 {
 const serialization_a = serialization_;
-const x_a = x_;
+const value_a = value_;
 {
-if(x_a.None) {
-const value_ = x_a;
+if(value_a.None) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1
@@ -965,12 +965,12 @@ return
 }
 }
 {
-if(x_a.Some) {
-const value_ = x_a;
+if(value_a.Some) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1);
 serialization_.offset_ += 1;
-ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, value_.value_)
+ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, v_.value_)
 return
 }
 }

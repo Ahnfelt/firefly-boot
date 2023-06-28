@@ -1240,21 +1240,21 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Token.TokenKind" + "[") + "]")
 };
 
 export const ff_core_Show_Show$ff_compiler_Token_Token = {
-show_(x_) {
+show_(value_) {
 {
-const x_a = x_;
+const value_a = value_;
 {
-const z_ = x_a;
+const z_ = value_a;
 return ((((((((((((((((((("Token" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.code_)) + ", ") + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(z_.kind_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startLine_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startLineOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopLine_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopLineOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopOffset_)) + ")")
 return
 }
 }
 },
-async show_$(x_, $task) {
+async show_$(value_, $task) {
 {
-const x_a = x_;
+const value_a = value_;
 {
-const z_ = x_a;
+const z_ = value_a;
 return ((((((((((((((((((("Token" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.code_)) + ", ") + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(z_.kind_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startLine_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startLineOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopLine_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopLineOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopOffset_)) + ")")
 return
 }
@@ -1263,360 +1263,360 @@ return
 };
 
 export const ff_core_Show_Show$ff_compiler_Token_TokenKind = {
-show_(x_) {
+show_(value_) {
 {
-const x_a = x_;
+const value_a = value_;
 {
-if(x_a.LEnd) {
-const z_ = x_a;
+if(value_a.LEnd) {
+const z_ = value_a;
 return "LEnd"
 return
 }
 }
 {
-if(x_a.LString) {
-const z_ = x_a;
+if(value_a.LString) {
+const z_ = value_a;
 return "LString"
 return
 }
 }
 {
-if(x_a.LChar) {
-const z_ = x_a;
+if(value_a.LChar) {
+const z_ = value_a;
 return "LChar"
 return
 }
 }
 {
-if(x_a.LInt) {
-const z_ = x_a;
+if(value_a.LInt) {
+const z_ = value_a;
 return "LInt"
 return
 }
 }
 {
-if(x_a.LFloat) {
-const z_ = x_a;
+if(value_a.LFloat) {
+const z_ = value_a;
 return "LFloat"
 return
 }
 }
 {
-if(x_a.LKeyword) {
-const z_ = x_a;
+if(value_a.LKeyword) {
+const z_ = value_a;
 return "LKeyword"
 return
 }
 }
 {
-if(x_a.LNamespace) {
-const z_ = x_a;
+if(value_a.LNamespace) {
+const z_ = value_a;
 return "LNamespace"
 return
 }
 }
 {
-if(x_a.LLower) {
-const z_ = x_a;
+if(value_a.LLower) {
+const z_ = value_a;
 return "LLower"
 return
 }
 }
 {
-if(x_a.LUpper) {
-const z_ = x_a;
+if(value_a.LUpper) {
+const z_ = value_a;
 return "LUpper"
 return
 }
 }
 {
-if(x_a.LWildcard) {
-const z_ = x_a;
+if(value_a.LWildcard) {
+const z_ = value_a;
 return "LWildcard"
 return
 }
 }
 {
-if(x_a.LBracketLeft) {
-const z_ = x_a;
+if(value_a.LBracketLeft) {
+const z_ = value_a;
 return "LBracketLeft"
 return
 }
 }
 {
-if(x_a.LBracketRight) {
-const z_ = x_a;
+if(value_a.LBracketRight) {
+const z_ = value_a;
 return "LBracketRight"
 return
 }
 }
 {
-if(x_a.LOperator) {
-const z_ = x_a;
+if(value_a.LOperator) {
+const z_ = value_a;
 return "LOperator"
 return
 }
 }
 {
-if(x_a.LComma) {
-const z_ = x_a;
+if(value_a.LComma) {
+const z_ = value_a;
 return "LComma"
 return
 }
 }
 {
-if(x_a.LSeparator) {
-const z_ = x_a;
+if(value_a.LSeparator) {
+const z_ = value_a;
 return "LSeparator"
 return
 }
 }
 {
-if(x_a.LDot) {
-const z_ = x_a;
+if(value_a.LDot) {
+const z_ = value_a;
 return "LDot"
 return
 }
 }
 {
-if(x_a.LSemicolon) {
-const z_ = x_a;
+if(value_a.LSemicolon) {
+const z_ = value_a;
 return "LSemicolon"
 return
 }
 }
 {
-if(x_a.LPipe) {
-const z_ = x_a;
+if(value_a.LPipe) {
+const z_ = value_a;
 return "LPipe"
 return
 }
 }
 {
-if(x_a.LColon) {
-const z_ = x_a;
+if(value_a.LColon) {
+const z_ = value_a;
 return "LColon"
 return
 }
 }
 {
-if(x_a.LDotDotDot) {
-const z_ = x_a;
+if(value_a.LDotDotDot) {
+const z_ = value_a;
 return "LDotDotDot"
 return
 }
 }
 {
-if(x_a.LArrowThick) {
-const z_ = x_a;
+if(value_a.LArrowThick) {
+const z_ = value_a;
 return "LArrowThick"
 return
 }
 }
 {
-if(x_a.LAssign) {
-const z_ = x_a;
+if(value_a.LAssign) {
+const z_ = value_a;
 return "LAssign"
 return
 }
 }
 {
-if(x_a.LAssignPlus) {
-const z_ = x_a;
+if(value_a.LAssignPlus) {
+const z_ = value_a;
 return "LAssignPlus"
 return
 }
 }
 {
-if(x_a.LAssignMinus) {
-const z_ = x_a;
+if(value_a.LAssignMinus) {
+const z_ = value_a;
 return "LAssignMinus"
 return
 }
 }
 {
-if(x_a.LAssignLink) {
-const z_ = x_a;
+if(value_a.LAssignLink) {
+const z_ = value_a;
 return "LAssignLink"
 return
 }
 }
 }
 },
-async show_$(x_, $task) {
+async show_$(value_, $task) {
 {
-const x_a = x_;
+const value_a = value_;
 {
-if(x_a.LEnd) {
-const z_ = x_a;
+if(value_a.LEnd) {
+const z_ = value_a;
 return "LEnd"
 return
 }
 }
 {
-if(x_a.LString) {
-const z_ = x_a;
+if(value_a.LString) {
+const z_ = value_a;
 return "LString"
 return
 }
 }
 {
-if(x_a.LChar) {
-const z_ = x_a;
+if(value_a.LChar) {
+const z_ = value_a;
 return "LChar"
 return
 }
 }
 {
-if(x_a.LInt) {
-const z_ = x_a;
+if(value_a.LInt) {
+const z_ = value_a;
 return "LInt"
 return
 }
 }
 {
-if(x_a.LFloat) {
-const z_ = x_a;
+if(value_a.LFloat) {
+const z_ = value_a;
 return "LFloat"
 return
 }
 }
 {
-if(x_a.LKeyword) {
-const z_ = x_a;
+if(value_a.LKeyword) {
+const z_ = value_a;
 return "LKeyword"
 return
 }
 }
 {
-if(x_a.LNamespace) {
-const z_ = x_a;
+if(value_a.LNamespace) {
+const z_ = value_a;
 return "LNamespace"
 return
 }
 }
 {
-if(x_a.LLower) {
-const z_ = x_a;
+if(value_a.LLower) {
+const z_ = value_a;
 return "LLower"
 return
 }
 }
 {
-if(x_a.LUpper) {
-const z_ = x_a;
+if(value_a.LUpper) {
+const z_ = value_a;
 return "LUpper"
 return
 }
 }
 {
-if(x_a.LWildcard) {
-const z_ = x_a;
+if(value_a.LWildcard) {
+const z_ = value_a;
 return "LWildcard"
 return
 }
 }
 {
-if(x_a.LBracketLeft) {
-const z_ = x_a;
+if(value_a.LBracketLeft) {
+const z_ = value_a;
 return "LBracketLeft"
 return
 }
 }
 {
-if(x_a.LBracketRight) {
-const z_ = x_a;
+if(value_a.LBracketRight) {
+const z_ = value_a;
 return "LBracketRight"
 return
 }
 }
 {
-if(x_a.LOperator) {
-const z_ = x_a;
+if(value_a.LOperator) {
+const z_ = value_a;
 return "LOperator"
 return
 }
 }
 {
-if(x_a.LComma) {
-const z_ = x_a;
+if(value_a.LComma) {
+const z_ = value_a;
 return "LComma"
 return
 }
 }
 {
-if(x_a.LSeparator) {
-const z_ = x_a;
+if(value_a.LSeparator) {
+const z_ = value_a;
 return "LSeparator"
 return
 }
 }
 {
-if(x_a.LDot) {
-const z_ = x_a;
+if(value_a.LDot) {
+const z_ = value_a;
 return "LDot"
 return
 }
 }
 {
-if(x_a.LSemicolon) {
-const z_ = x_a;
+if(value_a.LSemicolon) {
+const z_ = value_a;
 return "LSemicolon"
 return
 }
 }
 {
-if(x_a.LPipe) {
-const z_ = x_a;
+if(value_a.LPipe) {
+const z_ = value_a;
 return "LPipe"
 return
 }
 }
 {
-if(x_a.LColon) {
-const z_ = x_a;
+if(value_a.LColon) {
+const z_ = value_a;
 return "LColon"
 return
 }
 }
 {
-if(x_a.LDotDotDot) {
-const z_ = x_a;
+if(value_a.LDotDotDot) {
+const z_ = value_a;
 return "LDotDotDot"
 return
 }
 }
 {
-if(x_a.LArrowThick) {
-const z_ = x_a;
+if(value_a.LArrowThick) {
+const z_ = value_a;
 return "LArrowThick"
 return
 }
 }
 {
-if(x_a.LAssign) {
-const z_ = x_a;
+if(value_a.LAssign) {
+const z_ = value_a;
 return "LAssign"
 return
 }
 }
 {
-if(x_a.LAssignPlus) {
-const z_ = x_a;
+if(value_a.LAssignPlus) {
+const z_ = value_a;
 return "LAssignPlus"
 return
 }
 }
 {
-if(x_a.LAssignMinus) {
-const z_ = x_a;
+if(value_a.LAssignMinus) {
+const z_ = value_a;
 return "LAssignMinus"
 return
 }
 }
 {
-if(x_a.LAssignLink) {
-const z_ = x_a;
+if(value_a.LAssignLink) {
+const z_ = value_a;
 return "LAssignLink"
 return
 }
@@ -2174,24 +2174,24 @@ return
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Token_Token = {
-serializeUsing_(serialization_, x_) {
+serializeUsing_(serialization_, value_) {
 {
 const serialization_a = serialization_;
-const x_a = x_;
+const value_a = value_;
 {
-const value_ = x_a;
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.file_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.code_);
-ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_TokenKind.serializeUsing_(serialization_, value_.kind_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.startLine_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.startLineOffset_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.startOffset_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.stopLine_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.stopLineOffset_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.stopOffset_)
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.file_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.code_);
+ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_TokenKind.serializeUsing_(serialization_, v_.kind_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.startLine_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.startLineOffset_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.startOffset_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.stopLine_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.stopLineOffset_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.stopOffset_)
 return
 }
 }
@@ -2214,24 +2214,24 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $task) {
+async serializeUsing_$(serialization_, value_, $task) {
 {
 const serialization_a = serialization_;
-const x_a = x_;
+const value_a = value_;
 {
-const value_ = x_a;
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.file_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.code_);
-ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_TokenKind.serializeUsing_(serialization_, value_.kind_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.startLine_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.startLineOffset_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.startOffset_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.stopLine_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.stopLineOffset_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.stopOffset_)
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.file_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.code_);
+ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_TokenKind.serializeUsing_(serialization_, v_.kind_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.startLine_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.startLineOffset_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.startOffset_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.stopLine_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.stopLineOffset_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.stopOffset_)
 return
 }
 }
@@ -2257,13 +2257,13 @@ return
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Token_TokenKind = {
-serializeUsing_(serialization_, x_) {
+serializeUsing_(serialization_, value_) {
 {
 const serialization_a = serialization_;
-const x_a = x_;
+const value_a = value_;
 {
-if(x_a.LEnd) {
-const value_ = x_a;
+if(value_a.LEnd) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1
@@ -2271,8 +2271,8 @@ return
 }
 }
 {
-if(x_a.LString) {
-const value_ = x_a;
+if(value_a.LString) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1);
 serialization_.offset_ += 1
@@ -2280,8 +2280,8 @@ return
 }
 }
 {
-if(x_a.LChar) {
-const value_ = x_a;
+if(value_a.LChar) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2);
 serialization_.offset_ += 1
@@ -2289,8 +2289,8 @@ return
 }
 }
 {
-if(x_a.LInt) {
-const value_ = x_a;
+if(value_a.LInt) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 3);
 serialization_.offset_ += 1
@@ -2298,8 +2298,8 @@ return
 }
 }
 {
-if(x_a.LFloat) {
-const value_ = x_a;
+if(value_a.LFloat) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 4);
 serialization_.offset_ += 1
@@ -2307,8 +2307,8 @@ return
 }
 }
 {
-if(x_a.LKeyword) {
-const value_ = x_a;
+if(value_a.LKeyword) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 5);
 serialization_.offset_ += 1
@@ -2316,8 +2316,8 @@ return
 }
 }
 {
-if(x_a.LNamespace) {
-const value_ = x_a;
+if(value_a.LNamespace) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 6);
 serialization_.offset_ += 1
@@ -2325,8 +2325,8 @@ return
 }
 }
 {
-if(x_a.LLower) {
-const value_ = x_a;
+if(value_a.LLower) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 7);
 serialization_.offset_ += 1
@@ -2334,8 +2334,8 @@ return
 }
 }
 {
-if(x_a.LUpper) {
-const value_ = x_a;
+if(value_a.LUpper) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 8);
 serialization_.offset_ += 1
@@ -2343,8 +2343,8 @@ return
 }
 }
 {
-if(x_a.LWildcard) {
-const value_ = x_a;
+if(value_a.LWildcard) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 9);
 serialization_.offset_ += 1
@@ -2352,8 +2352,8 @@ return
 }
 }
 {
-if(x_a.LBracketLeft) {
-const value_ = x_a;
+if(value_a.LBracketLeft) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 10);
 serialization_.offset_ += 1
@@ -2361,8 +2361,8 @@ return
 }
 }
 {
-if(x_a.LBracketRight) {
-const value_ = x_a;
+if(value_a.LBracketRight) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 11);
 serialization_.offset_ += 1
@@ -2370,8 +2370,8 @@ return
 }
 }
 {
-if(x_a.LOperator) {
-const value_ = x_a;
+if(value_a.LOperator) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 12);
 serialization_.offset_ += 1
@@ -2379,8 +2379,8 @@ return
 }
 }
 {
-if(x_a.LComma) {
-const value_ = x_a;
+if(value_a.LComma) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 13);
 serialization_.offset_ += 1
@@ -2388,8 +2388,8 @@ return
 }
 }
 {
-if(x_a.LSeparator) {
-const value_ = x_a;
+if(value_a.LSeparator) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 14);
 serialization_.offset_ += 1
@@ -2397,8 +2397,8 @@ return
 }
 }
 {
-if(x_a.LDot) {
-const value_ = x_a;
+if(value_a.LDot) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 15);
 serialization_.offset_ += 1
@@ -2406,8 +2406,8 @@ return
 }
 }
 {
-if(x_a.LSemicolon) {
-const value_ = x_a;
+if(value_a.LSemicolon) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 16);
 serialization_.offset_ += 1
@@ -2415,8 +2415,8 @@ return
 }
 }
 {
-if(x_a.LPipe) {
-const value_ = x_a;
+if(value_a.LPipe) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 17);
 serialization_.offset_ += 1
@@ -2424,8 +2424,8 @@ return
 }
 }
 {
-if(x_a.LColon) {
-const value_ = x_a;
+if(value_a.LColon) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 18);
 serialization_.offset_ += 1
@@ -2433,8 +2433,8 @@ return
 }
 }
 {
-if(x_a.LDotDotDot) {
-const value_ = x_a;
+if(value_a.LDotDotDot) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 19);
 serialization_.offset_ += 1
@@ -2442,8 +2442,8 @@ return
 }
 }
 {
-if(x_a.LArrowThick) {
-const value_ = x_a;
+if(value_a.LArrowThick) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 20);
 serialization_.offset_ += 1
@@ -2451,8 +2451,8 @@ return
 }
 }
 {
-if(x_a.LAssign) {
-const value_ = x_a;
+if(value_a.LAssign) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 21);
 serialization_.offset_ += 1
@@ -2460,8 +2460,8 @@ return
 }
 }
 {
-if(x_a.LAssignPlus) {
-const value_ = x_a;
+if(value_a.LAssignPlus) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 22);
 serialization_.offset_ += 1
@@ -2469,8 +2469,8 @@ return
 }
 }
 {
-if(x_a.LAssignMinus) {
-const value_ = x_a;
+if(value_a.LAssignMinus) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 23);
 serialization_.offset_ += 1
@@ -2478,8 +2478,8 @@ return
 }
 }
 {
-if(x_a.LAssignLink) {
-const value_ = x_a;
+if(value_a.LAssignLink) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 24);
 serialization_.offset_ += 1
@@ -2674,13 +2674,13 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $task) {
+async serializeUsing_$(serialization_, value_, $task) {
 {
 const serialization_a = serialization_;
-const x_a = x_;
+const value_a = value_;
 {
-if(x_a.LEnd) {
-const value_ = x_a;
+if(value_a.LEnd) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1
@@ -2688,8 +2688,8 @@ return
 }
 }
 {
-if(x_a.LString) {
-const value_ = x_a;
+if(value_a.LString) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1);
 serialization_.offset_ += 1
@@ -2697,8 +2697,8 @@ return
 }
 }
 {
-if(x_a.LChar) {
-const value_ = x_a;
+if(value_a.LChar) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2);
 serialization_.offset_ += 1
@@ -2706,8 +2706,8 @@ return
 }
 }
 {
-if(x_a.LInt) {
-const value_ = x_a;
+if(value_a.LInt) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 3);
 serialization_.offset_ += 1
@@ -2715,8 +2715,8 @@ return
 }
 }
 {
-if(x_a.LFloat) {
-const value_ = x_a;
+if(value_a.LFloat) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 4);
 serialization_.offset_ += 1
@@ -2724,8 +2724,8 @@ return
 }
 }
 {
-if(x_a.LKeyword) {
-const value_ = x_a;
+if(value_a.LKeyword) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 5);
 serialization_.offset_ += 1
@@ -2733,8 +2733,8 @@ return
 }
 }
 {
-if(x_a.LNamespace) {
-const value_ = x_a;
+if(value_a.LNamespace) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 6);
 serialization_.offset_ += 1
@@ -2742,8 +2742,8 @@ return
 }
 }
 {
-if(x_a.LLower) {
-const value_ = x_a;
+if(value_a.LLower) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 7);
 serialization_.offset_ += 1
@@ -2751,8 +2751,8 @@ return
 }
 }
 {
-if(x_a.LUpper) {
-const value_ = x_a;
+if(value_a.LUpper) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 8);
 serialization_.offset_ += 1
@@ -2760,8 +2760,8 @@ return
 }
 }
 {
-if(x_a.LWildcard) {
-const value_ = x_a;
+if(value_a.LWildcard) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 9);
 serialization_.offset_ += 1
@@ -2769,8 +2769,8 @@ return
 }
 }
 {
-if(x_a.LBracketLeft) {
-const value_ = x_a;
+if(value_a.LBracketLeft) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 10);
 serialization_.offset_ += 1
@@ -2778,8 +2778,8 @@ return
 }
 }
 {
-if(x_a.LBracketRight) {
-const value_ = x_a;
+if(value_a.LBracketRight) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 11);
 serialization_.offset_ += 1
@@ -2787,8 +2787,8 @@ return
 }
 }
 {
-if(x_a.LOperator) {
-const value_ = x_a;
+if(value_a.LOperator) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 12);
 serialization_.offset_ += 1
@@ -2796,8 +2796,8 @@ return
 }
 }
 {
-if(x_a.LComma) {
-const value_ = x_a;
+if(value_a.LComma) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 13);
 serialization_.offset_ += 1
@@ -2805,8 +2805,8 @@ return
 }
 }
 {
-if(x_a.LSeparator) {
-const value_ = x_a;
+if(value_a.LSeparator) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 14);
 serialization_.offset_ += 1
@@ -2814,8 +2814,8 @@ return
 }
 }
 {
-if(x_a.LDot) {
-const value_ = x_a;
+if(value_a.LDot) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 15);
 serialization_.offset_ += 1
@@ -2823,8 +2823,8 @@ return
 }
 }
 {
-if(x_a.LSemicolon) {
-const value_ = x_a;
+if(value_a.LSemicolon) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 16);
 serialization_.offset_ += 1
@@ -2832,8 +2832,8 @@ return
 }
 }
 {
-if(x_a.LPipe) {
-const value_ = x_a;
+if(value_a.LPipe) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 17);
 serialization_.offset_ += 1
@@ -2841,8 +2841,8 @@ return
 }
 }
 {
-if(x_a.LColon) {
-const value_ = x_a;
+if(value_a.LColon) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 18);
 serialization_.offset_ += 1
@@ -2850,8 +2850,8 @@ return
 }
 }
 {
-if(x_a.LDotDotDot) {
-const value_ = x_a;
+if(value_a.LDotDotDot) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 19);
 serialization_.offset_ += 1
@@ -2859,8 +2859,8 @@ return
 }
 }
 {
-if(x_a.LArrowThick) {
-const value_ = x_a;
+if(value_a.LArrowThick) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 20);
 serialization_.offset_ += 1
@@ -2868,8 +2868,8 @@ return
 }
 }
 {
-if(x_a.LAssign) {
-const value_ = x_a;
+if(value_a.LAssign) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 21);
 serialization_.offset_ += 1
@@ -2877,8 +2877,8 @@ return
 }
 }
 {
-if(x_a.LAssignPlus) {
-const value_ = x_a;
+if(value_a.LAssignPlus) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 22);
 serialization_.offset_ += 1
@@ -2886,8 +2886,8 @@ return
 }
 }
 {
-if(x_a.LAssignMinus) {
-const value_ = x_a;
+if(value_a.LAssignMinus) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 23);
 serialization_.offset_ += 1
@@ -2895,8 +2895,8 @@ return
 }
 }
 {
-if(x_a.LAssignLink) {
-const value_ = x_a;
+if(value_a.LAssignLink) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 24);
 serialization_.offset_ += 1
