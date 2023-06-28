@@ -422,7 +422,8 @@ extend self: Handler {
                 }.map {at =>
                     self.findToken(system, at)
                 }
-                Some(clientLocations)
+                let sorted = clientLocations.sortBy {c => Location(c.file, c.startLine, c.startColumn)}
+                Some(sorted)
             | None =>
                 None
         }

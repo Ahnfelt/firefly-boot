@@ -31,11 +31,11 @@ extend self: Inference {
     inferModule(module: Module, otherModules: List[Module]): Module {
         let environment = Environment.make(module, otherModules, alreadyFlat = False)
 
+        let traits = module.traits.map {self.inferTraitDefinition(environment, _)}
+        let instances = module.instances.map {self.inferInstanceDefinition(environment, _)}
         let lets = module.lets.map {self.inferLetDefinition(environment, _)}
         let functions = module.functions.map {self.inferFunctionDefinition(environment, _)}
         let extends = module.extends.map {self.inferExtendDefinition(environment, _)}
-        let traits = module.traits.map {self.inferTraitDefinition(environment, _)}
-        let instances = module.instances.map {self.inferInstanceDefinition(environment, _)}
         let result = module.Module(
             traits = traits
             instances = instances
@@ -57,19 +57,71 @@ extend self: Inference {
         if(self.lspHook.isEnabled() && definition.derived) {definition} else:
         let instances = constraintsToInstances(definition.constraints)
         self.unification.withLocalInstances(instances) {
+            let traitName = definition.traitName
+            let traitDefinition = environment.traits.get(traitName).else {
+                throw(CompileError(definition.at
+                    "No such trait: " + traitName
+                ))
+            }
+
+            if(traitDefinition.generics.size() != definition.typeArguments.size()) {
+                throw(CompileError(definition.at
+                    "Wrong number of type arguments for " + traitName +
+                    ", expected " + (traitDefinition.generics.size() - 1) +
+                    ", got " + (definition.typeArguments.size() - 1)
+                ))
+            }            
+            
+            let instantiationMap = traitDefinition.generics.zip(definition.typeArguments).toMap()
+            
+            traitDefinition.methods.each {traitMethod =>
+                let found = definition.methods.filter {_.signature.name == traitMethod.name}
+                if(found.isEmpty()) {
+                    throw(CompileError(definition.at
+                        "Missing instance method: " + traitMethod.name
+                    ))
+                }
+                found.dropFirst().each {duplicateMethod =>
+                    throw(CompileError(duplicateMethod.at
+                        "Duplicated instance method: " + traitMethod.name
+                    ))
+                }
+            }
+            
             definition.DInstance(
-                // TODO: Check that the methods adhere to the instantiated trait method signatures
-                // It needs to look at the instantiated trait, e.g. `trait T: Show` and `instance Foo: Show`
-                // gives an instantiation `T = Foo`, which should be applied to all the methods before checking.
                 methods = definition.methods.map {instanceFunction =>
                     let methodName = instanceFunction.signature.name
-                    let traitName = definition.traitName
                     let traitMethodName = traitName.reverse().dropWhile {_ != '.'}.reverse() + methodName
-                    let traitMethod = environment.symbols.get(traitMethodName).else {
+                    let traitMethodScheme = environment.symbols.get(traitMethodName).else {
                         throw(CompileError(instanceFunction.at
                             "Trait " + traitName + " has no such method: " + methodName
                         ))
                     }
+                    let parameters = traitMethodScheme.signature.parameters.map {p =>
+                        p.Parameter(valueType = self.unification.instantiate(instantiationMap, p.valueType))
+                    }
+                    let returnType = self.unification.instantiate(instantiationMap, traitMethodScheme.signature.returnType)
+                                        
+                    parameters.zip(instanceFunction.signature.parameters).each {| Pair(traitParameter, instanceParameter) => 
+                        if(traitParameter.name != instanceParameter.name) {
+                            throw(CompileError(instanceParameter.at, "Expected a parameter named: " + traitParameter.name))
+                        }
+                    }
+                    
+                    instanceFunction.signature.parameters.dropFirst(parameters.size()).each {instanceParameter => 
+                        throw(CompileError(instanceParameter.at, "Unexpected parameter: " + instanceParameter.name))
+                    }
+
+                    parameters.dropFirst(instanceFunction.signature.parameters.size()).each {traitParameter => 
+                        throw(CompileError(instanceFunction.at, "Missing parameter: " + traitParameter.name))
+                    }
+
+                    parameters.zip(instanceFunction.signature.parameters).each {| Pair(traitParameter, instanceParameter) => 
+                        self.unification.unify(instanceParameter.valueType.at, traitParameter.valueType, instanceParameter.valueType)
+                    }
+
+                    self.unification.unify(instanceFunction.signature.returnType.at, returnType, instanceFunction.signature.returnType)
+
                     let newInstanceFunction = self.inferFunctionDefinition(environment, instanceFunction)
                     newInstanceFunction
                 }
