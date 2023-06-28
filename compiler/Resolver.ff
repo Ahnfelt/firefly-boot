@@ -58,7 +58,7 @@ extend self: Resolver {
             instances = module.instances.map { self3.resolveInstanceDefinition(_) }
             extends = module.extends.map { self3.resolveExtendDefinition(_) }
             lets = module.lets.map { self3.resolveLetDefinition(_, True) }
-            functions = module.functions.map { self3.resolveFunctionDefinition(_, True) }
+            functions = module.functions.map { self3.resolveFunctionDefinition(_, True, False) }
         )
         module2.instances.each {_.typeArguments.each {self3.checkInstanceType(_)}}
         module2
@@ -203,11 +203,11 @@ extend self: Resolver {
         )
         definition.DTrait(
             constraints = definition.constraints.map {self2.resolveConstraint(_, True)}
-            methods = definition.methods.map {self2.resolveSignature(_, True)}
+            methods = definition.methods.map {self2.resolveSignature(_, True, False)}
             methodDefaults = definition.methodDefaults.map {| Pair(name, lambda) =>
                 let signature = definition.methods.find {_.name == name}.grab()
                 let function1 = DFunction(signature.at, signature, FireflyTarget(lambda))
-                let function2 = self2.resolveFunctionDefinition(function1, True)
+                let function2 = self2.resolveFunctionDefinition(function1, True, False)
                 Pair(name, function2.body.{
                     | FireflyTarget(lambda) => lambda
                     | _ => throw(CompileError(signature.at, "Internal error: Expected method default to be a lambda"))
@@ -225,7 +225,7 @@ extend self: Resolver {
                 )
             )
         }
-        let generics = definition.generics.map { g => Pair(g, g) }.toMap()
+        let generics = definition.generics.map {g => Pair(g, g) }.toMap()
         let self2 = self.Resolver(
             types = self.types.addAll(generics)
             asyncTypes = self.asyncTypes.removeAll(definition.generics.toSet())
@@ -238,7 +238,7 @@ extend self: Resolver {
             constraints = definition.constraints.map { self2.resolveConstraint(_, True) }
             traitName = traitName
             typeArguments = definition.typeArguments.map { self2.resolveType(_, True) }
-            methods = definition.methods.map { self2.resolveFunctionDefinition(_, True) }
+            methods = definition.methods.map { self2.resolveFunctionDefinition(_, True, True) }
         )
     }
 
@@ -258,7 +258,7 @@ extend self: Resolver {
         definition.DExtend(
             constraints = definition.constraints.map {selfWithQ.resolveConstraint(_, True)}
             type = selfWithQ.resolveType(definition.type, True)
-            methods = definition.methods.map {selfWithNoQ.resolveFunctionDefinition(_, True)}
+            methods = definition.methods.map {selfWithNoQ.resolveFunctionDefinition(_, True, False)}
         )
     }
 
@@ -357,7 +357,7 @@ extend self: Resolver {
             )
             EFunctions(
                 at = at
-                functions = functions.map {self2.resolveFunctionDefinition(_, topLevel)}
+                functions = functions.map {self2.resolveFunctionDefinition(_, topLevel, False)}
                 body = self2.resolveTerm(body, topLevel)
             )
         | ELet e, _ =>
@@ -479,8 +479,8 @@ extend self: Resolver {
         )
     }
 
-    resolveFunctionDefinition(definition: DFunction, topLevel: Bool): DFunction {
-        let signature = self.resolveSignature(definition.signature, topLevel)
+    resolveFunctionDefinition(definition: DFunction, topLevel: Bool, isInstanceMethod: Bool): DFunction {
+        let signature = self.resolveSignature(definition.signature, topLevel, isInstanceMethod)
         let self2 = self.withSignature(signature)
         let body = definition.body.mapFirefly {lambda => lambda.Lambda(
             effect = signature.effect
@@ -489,10 +489,10 @@ extend self: Resolver {
         DFunction(definition.at, signature, body)
     }
 
-    resolveSignature(signature: Signature, topLevel: Bool): Signature {
+    resolveSignature(signature: Signature, topLevel: Bool, isInstanceMethod: Bool): Signature {
         if(self.lspHook.isAt(signature.at) || self.lspHook.isDefinedAt(signature.at)) {
             self.lspHook.emit(
-                ResolveSignatureHook(signature)
+                ResolveSignatureHook(signature, isInstanceMethod)
             )
         }
         let newSignature = if(topLevel) {

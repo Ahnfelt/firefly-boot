@@ -372,12 +372,13 @@ extend self: Handler {
             Log.trace("findReferences first check error: " + message)
         } grab()
 
+        Log.trace("defined at hooks: " + Show.show(temporaryLspHook.results().map(LspHook.showHook)))
         let definedAtList = temporaryLspHook.results().collect {
             | ResolveSymbolHook h => Some(h.symbol.definedAt)
             | ResolveVariantFieldHook h => Some(h.symbol.definedAt)
             | ResolveTypeHook h => Some(h.symbol.definedAt)
             | ResolveConstraintHook h => Some(h.symbol.definedAt)
-            | ResolveSignatureHook h => Some(h.signature.at)
+            | ResolveSignatureHook h {!h.isInstanceMethod} => Some(h.signature.at)
             | InferParameterHook h => Some(h.parameter.at)
             | InferArgumentHook h {h.arguments.dropFirst(h.argumentIndex).first() | Some(a)} {a.name | Some(n)} => 
                 h.parameters.find {_.name == n}.map {_.at}
@@ -388,7 +389,7 @@ extend self: Handler {
             | _ => None
         }.filter {at => !at.file.endsWith(">")}
 
-        //Log.trace("definedAtList: " + Show.show(definedAtList))
+        Log.trace("definedAtList: " + Show.show(definedAtList))
 
         let js = system.js()
         definedAtList.first().{

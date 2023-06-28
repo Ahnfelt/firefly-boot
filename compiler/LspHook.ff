@@ -97,6 +97,7 @@ class ResultHook {
     )
     ResolveSignatureHook(
         signature: Signature
+        isInstanceMethod: Bool
     )
     ResolveVariantFieldHook(
         symbol: SymbolHook
@@ -164,4 +165,24 @@ class ResultHook {
         recordType: Type
         fieldName: String
     )
+}
+
+showHook(hook: ResultHook): String {
+    | InferArgumentHook(unification, environment, isCopy, callAt, callName, parameters, arguments, argumentIndex) => "InferArgumentHook(...)"
+    | InferFunctionDefinitionHook(unification, environment, definition, missing) => "InferFunctionDefinitionHook(...)"
+    | InferLambdaStartHook(unification, environment, lambdaType) => "InferLambdaStartHook(...)"
+    | InferLookupHook(unification, environment, expected, selfVariable, symbol, instantiated) => "InferLookupHook(...)"
+    | InferParameterHook(unification, environment, parameter, missing) => "InferParameterHook(...)"
+    | InferPatternHook(unification, environment, expected, pattern) => "InferPatternHook(...)"
+    | InferRecordFieldHook(unification, environment, expected, recordType, fieldName) => "InferRecordFieldHook(...)"
+    | InferSequentialStartHook(unification, term, missing) => "InferSequentialStartHook(...)"
+    | InferTermHook(unification, environment, expected, term, recordType, missing) => "InferTermHook(...)"
+    | ParseArgumentHook(callAt, argumentIndex, parameterName) => "ParseArgumentHook(...)"
+    | ParseSymbolBegin => "ParseSymbolBegin(...)"
+    | ParseSymbolEnd(name, kind, selectionStart, selectionEnd, start, end) => "ParseSymbolEnd(...)"
+    | ResolveConstraintHook(symbol, constrant) => "ResolveConstraintHook(...)"
+    | ResolveSignatureHook(signature, _) => "ResolveSignatureHook(...)"
+    | ResolveSymbolHook(symbol, annotation) => "ResolveSymbolHook(...)"
+    | ResolveTypeHook(types, typeGenerics, symbol, explicitType) => "ResolveTypeHook(...)"
+    | ResolveVariantFieldHook(symbol, type, commonField) => "ResolveVariantFieldHook(...)"
 }

@@ -102,12 +102,6 @@ extend self: Inference {
                     }
                     let returnType = self.unification.instantiate(instantiationMap, traitMethodScheme.signature.returnType)
                                         
-                    parameters.zip(instanceFunction.signature.parameters).each {| Pair(traitParameter, instanceParameter) => 
-                        if(traitParameter.name != instanceParameter.name) {
-                            throw(CompileError(instanceParameter.at, "Expected a parameter named: " + traitParameter.name))
-                        }
-                    }
-                    
                     instanceFunction.signature.parameters.dropFirst(parameters.size()).each {instanceParameter => 
                         throw(CompileError(instanceParameter.at, "Unexpected parameter: " + instanceParameter.name))
                     }
@@ -121,9 +115,14 @@ extend self: Inference {
                     }
 
                     self.unification.unify(instanceFunction.signature.returnType.at, returnType, instanceFunction.signature.returnType)
-
-                    let newInstanceFunction = self.inferFunctionDefinition(environment, instanceFunction)
-                    newInstanceFunction
+                    
+                    if(self.lspHook.isAt(instanceFunction.at) || self.lspHook.isDefinedAt(traitMethodScheme.signature.at)) {
+                        let symbolHook = SymbolHook(instanceFunction.signature.name, instanceFunction.at, traitMethodScheme.signature.at)
+                        let h = InferLookupHook(self.unification, environment, instanceFunction.signature.returnType, None, Box(symbolHook), Box(None))
+                        self.lspHook.emit(h)
+                    }
+                    
+                    self.inferFunctionDefinition(environment, instanceFunction)
                 }
             )
         }
