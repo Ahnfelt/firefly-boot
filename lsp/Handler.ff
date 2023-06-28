@@ -128,7 +128,7 @@ extend self: Handler {
                 .with("definitionProvider", True)
                 .with("documentHighlightProvider", True)
                 .with("diagnosticProvider", js.object()
-                    .with("interFileDependencies", True)
+                    .with("interFileDependencies", False)
                     .with("workspaceDiagnostics", False)
                 )
                 .with("documentSymbolProvider", True)
