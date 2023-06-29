@@ -94,9 +94,7 @@ extend self: Handler {
         let targetAt = self.findTokenFromParameters(system, parameters)
         let cacheKey = Pair(method, targetAt)
             self.responseCache.get(cacheKey).{
-                | Some(hit) => 
-                    Log.trace("Cache hit: " + method)
-                    hit
+                | Some(hit) => hit
                 | None => 
                     let result = handle(targetAt)
                     self.responseCache = self.responseCache.add(cacheKey, result)
@@ -130,7 +128,7 @@ extend self: Handler {
                 .with("definitionProvider", True)
                 .with("documentHighlightProvider", True)
                 .with("diagnosticProvider", js.object()
-                    .with("interFileDependencies", True)
+                    .with("interFileDependencies", False)
                     .with("workspaceDiagnostics", False)
                 )
                 .with("documentSymbolProvider", True)
@@ -194,20 +192,21 @@ extend self: Handler {
         let absolutePath = FileSystem.urlToPath(uri)
         let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
         let fixedPath = path.replace("\\", "/")
-        let resultHooks = try {
+        let symbols = try {
             let lspHook = LspHook.make(at = None, definedAt = None, insertIdentifier = False, trackSymbols = True)
             let code = self.virtualFiles.get(fixedPath).else {system.files().readText(fixedPath)}
             let tokens = Tokenizer.tokenize(fixedPath, code, None, True)
             let parser = Parser.make(PackagePair("script", "script"), fixedPath, tokens, False, lspHook)
             parser.parseModuleWithPackageInfo()
-            lspHook.results()
+            SymbolHandler.handleDocumentSymbol(system, lspHook.results())
         } catch {| CompileError(at, message), error =>
             Log.trace("handleDocumentSymbol parse error: " + message)
             []
+        } catch {| ReadSymbolsError e, _ => 
+            Log.trace("handleDocumentSymbol ReadSymbolsError")
+            []
         } grab()
-
-        let o = SymbolHandler.handleDocumentSymbol(system, resultHooks)
-        Result(o.toJson())        
+        Result(system.js().array(symbols).toJson())
     }
 
     handleWorkspaceSymbol(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
@@ -215,23 +214,23 @@ extend self: Handler {
         let query = parameters.grab("query").grabString()
         let path = FileSystem.urlToPath(self.rootUri.grab())
         let files = Builder.findFireflyFiles(system.files(), path)
-        let resultHooks = [].toStack()
-        files.each {file => 
+        let symbols = files.flatMap {file => 
             let code = self.virtualFiles.get(file).else {system.files().readText(file)}
             try {
                 let tokens = Tokenizer.tokenize(file, code, None, True)
                 let lspHook = LspHook.make(at = None, definedAt = None, insertIdentifier = False, trackSymbols = True)
                 let parser = Parser.make(PackagePair("script", "script"), file, tokens, False, lspHook)
                 parser.parseModuleWithPackageInfo()
-                resultHooks.pushAll(lspHook.stackOfResults)
-                Unit
+                SymbolHandler.handleWorkspaceSymbol(system, lspHook.stackOfResults.toList(), query)
             } catch {| CompileError(at, message), error =>
                 Log.trace("handleWorkspaceSymbol parse error " + at.show() + ": " + message)
+                []
+            } catch {| ReadSymbolsError e, error => 
+                Log.trace("handleWorkspaceSymbol ReadSymbolsError")
+                []
             } grab()
         }
-
-        let o = SymbolHandler.handleWorkspaceSymbol(system, resultHooks.toList(), query)
-        Result(o.toJson())        
+        Result(system.js().array(symbols).toJson())        
     }
 
     handleDidChange(system: NodeSystem, parameters: Map[String, JsValue]): Unit {
@@ -374,12 +373,13 @@ extend self: Handler {
             Log.trace("findReferences first check error: " + message)
         } grab()
 
+        //Log.trace("defined at hooks: " + Show.show(temporaryLspHook.results().map(LspHook.showHook)))
         let definedAtList = temporaryLspHook.results().collect {
             | ResolveSymbolHook h => Some(h.symbol.definedAt)
             | ResolveVariantFieldHook h => Some(h.symbol.definedAt)
             | ResolveTypeHook h => Some(h.symbol.definedAt)
             | ResolveConstraintHook h => Some(h.symbol.definedAt)
-            | ResolveSignatureHook h => Some(h.signature.at)
+            | ResolveSignatureHook h {!h.isInstanceMethod} => Some(h.signature.at)
             | InferParameterHook h => Some(h.parameter.at)
             | InferArgumentHook h {h.arguments.dropFirst(h.argumentIndex).first() | Some(a)} {a.name | Some(n)} => 
                 h.parameters.find {_.name == n}.map {_.at}
@@ -389,13 +389,13 @@ extend self: Handler {
             | InferPatternHook h {h.pattern | PAlias p} => Some(p.at)
             | _ => None
         }.filter {at => !at.file.endsWith(">")}
-
-        Log.trace("definedAtList: " + Show.show(definedAtList))
+            
+        //Log.trace("definedAtList: " + Show.show(definedAtList))
 
         let js = system.js()
         definedAtList.first().{
             | Some(definedAt) =>
-                Log.trace("handleReferences definedAt: " + Show.show(definedAt))
+                //Log.trace("handleReferences definedAt: " + Show.show(definedAt))
                 let lspHook = LspHook.make(at = None, definedAt = Some(definedAt), insertIdentifier = False, trackSymbols = False)
                 try {
                     let path = if(local) {targetAt.file} else {FileSystem.urlToPath(self.rootUri.grab())}
@@ -424,7 +424,8 @@ extend self: Handler {
                 }.map {at =>
                     self.findToken(system, at)
                 }
-                Some(clientLocations)
+                let sorted = clientLocations.sortBy {c => Location(c.file, c.startLine, c.startColumn)}
+                Some(sorted)
             | None =>
                 None
         }

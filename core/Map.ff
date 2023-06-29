@@ -120,7 +120,7 @@ instance Map[K: Order, V: Order]: Order {
 }
 
 instance Map[K: Show: Order, V: Show]: Show {
-    show(x: Map[K, V]): String {
-        Show.show(x.pairs()) + ".toMap()"
+    show(value: Map[K, V]): String {
+        Show.show(value.pairs()) + ".toMap()"
     }
 }

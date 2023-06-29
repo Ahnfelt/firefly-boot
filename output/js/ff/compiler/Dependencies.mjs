@@ -393,21 +393,21 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Dependencies.ResolvedDependenc
 };
 
 export const ff_core_Show_Show$ff_compiler_Dependencies_ResolvedDependencies = {
-show_(x_) {
+show_(value_) {
 {
-const x_a = x_;
+const value_a = value_;
 {
-const z_ = x_a;
+const z_ = value_a;
 return ((((((((("ResolvedDependencies" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.mainPackagePair_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackageInfo).show_(z_.packages_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.packagePaths_)) + ", ") + ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).show_(z_.singleFilePackages_)) + ")")
 return
 }
 }
 },
-async show_$(x_, $task) {
+async show_$(value_, $task) {
 {
-const x_a = x_;
+const value_a = value_;
 {
-const z_ = x_a;
+const z_ = value_a;
 return ((((((((("ResolvedDependencies" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.mainPackagePair_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackageInfo).show_(z_.packages_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.packagePaths_)) + ", ") + ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).show_(z_.singleFilePackages_)) + ")")
 return
 }
@@ -530,19 +530,19 @@ return
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Dependencies_ResolvedDependencies = {
-serializeUsing_(serialization_, x_) {
+serializeUsing_(serialization_, value_) {
 {
 const serialization_a = serialization_;
-const x_a = x_;
+const value_a = value_;
 {
-const value_ = x_a;
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 45), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.serializeUsing_(serialization_, value_.mainPackagePair_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackageInfo).serializeUsing_(serialization_, value_.packages_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.packagePaths_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).serializeUsing_(serialization_, value_.singleFilePackages_)
+ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.serializeUsing_(serialization_, v_.mainPackagePair_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackageInfo).serializeUsing_(serialization_, v_.packages_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.packagePaths_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).serializeUsing_(serialization_, v_.singleFilePackages_)
 return
 }
 }
@@ -565,19 +565,19 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $task) {
+async serializeUsing_$(serialization_, value_, $task) {
 {
 const serialization_a = serialization_;
-const x_a = x_;
+const value_a = value_;
 {
-const value_ = x_a;
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 45), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.serializeUsing_(serialization_, value_.mainPackagePair_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackageInfo).serializeUsing_(serialization_, value_.packages_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.packagePaths_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).serializeUsing_(serialization_, value_.singleFilePackages_)
+ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.serializeUsing_(serialization_, v_.mainPackagePair_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackageInfo).serializeUsing_(serialization_, v_.packages_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.packagePaths_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).serializeUsing_(serialization_, v_.singleFilePackages_)
 return
 }
 }

@@ -140,7 +140,7 @@ return ff_compiler_Resolver.Resolver_resolveExtendDefinition(self3_, _w1)
 })), ff_core_List.List_map(module_.lets_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveLetDefinition(self3_, _w1, true)
 })), ff_core_List.List_map(module_.functions_, ((_w1) => {
-return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self3_, _w1, true)
+return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self3_, _w1, true, false)
 })))
 }))(module_);
 ff_core_List.List_each(module2_.instances_, ((_w1) => {
@@ -389,6 +389,9 @@ return
 }
 
 export function Resolver_resolveTraitDefinition(self_, definition_) {
+if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, definition_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, definition_.at_))) {
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.name_, definition_.at_, definition_.at_), ff_core_Option.None()))
+};
 const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.generics_, ((g_) => {
 return ff_core_Pair.Pair(g_, g_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -402,7 +405,7 @@ const _c = _1;
 return ff_compiler_Syntax.DTrait(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(definition_.constraints_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveConstraint(self2_, _w1, true)
 })), _c.generatorParameters_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
-return ff_compiler_Resolver.Resolver_resolveSignature(self2_, _w1, true)
+return ff_compiler_Resolver.Resolver_resolveSignature(self2_, _w1, true, false)
 })), ff_core_List.List_map(definition_.methodDefaults_, ((_1) => {
 {
 const name_ = _1.first_;
@@ -411,7 +414,7 @@ const signature_ = ff_core_Option.Option_grab(ff_core_List.List_find(definition_
 return (_w1.name_ === name_)
 })));
 const function1_ = ff_compiler_Syntax.DFunction(signature_.at_, signature_, ff_compiler_Syntax.FireflyTarget(lambda_));
-const function2_ = ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, function1_, true);
+const function2_ = ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, function1_, true, false);
 return ff_core_Pair.Pair(name_, (((_1) => {
 {
 if(_1.FireflyTarget) {
@@ -434,6 +437,12 @@ return
 }
 
 export function Resolver_resolveInstanceDefinition(self_, definition_) {
+const traitDefinedAt_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.traitLocations_, definition_.traitName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
+return definition_.at_
+}));
+if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, definition_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, traitDefinedAt_))) {
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.traitName_, definition_.at_, traitDefinedAt_), ff_core_Option.None()))
+};
 const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.generics_, ((g_) => {
 return ff_core_Pair.Pair(g_, g_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -452,7 +461,7 @@ return ff_compiler_Resolver.Resolver_resolveConstraint(self2_, _w1, true)
 })), traitName_, ff_core_List.List_map(definition_.typeArguments_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveType(self2_, _w1, true)
 })), _c.generatorArguments_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
-return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, _w1, true)
+return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, _w1, true, true)
 })), _c.derived_)
 return
 }
@@ -476,7 +485,7 @@ const _c = _1;
 return ff_compiler_Syntax.DExtend(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(definition_.constraints_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveConstraint(selfWithQ_, _w1, true)
 })), ff_compiler_Resolver.Resolver_resolveType(selfWithQ_, definition_.type_, true), ff_core_List.List_map(definition_.methods_, ((_w1) => {
-return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(selfWithNoQ_, _w1, true)
+return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(selfWithNoQ_, _w1, true, false)
 })))
 return
 }
@@ -484,6 +493,9 @@ return
 }
 
 export function Resolver_resolveLetDefinition(self_, definition_, topLevel_) {
+if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, definition_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, definition_.at_))) {
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.name_, definition_.at_, definition_.at_), ff_core_Option.None()))
+};
 {
 const _1 = definition_;
 {
@@ -749,7 +761,7 @@ const self2_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(ff_core_Map.Map_addAll(self_.variables_, functionMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_addAll(self_.variableLocations_, locationMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.typeGenerics_, _c.typeLocations_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.traitLocations_, _c.state_, _c.lspHook_)
 }))(self_);
 return ff_compiler_Syntax.EFunctions(at_, ff_core_List.List_map(functions_, ((_w1) => {
-return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, _w1, topLevel_)
+return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, _w1, topLevel_, false)
 })), ff_compiler_Resolver.Resolver_resolveTerm(self2_, body_, topLevel_))
 return
 }
@@ -889,11 +901,11 @@ return ff_compiler_Resolver.Resolver_freshUnificationVariable(self_, at_)
 }
 
 export function Resolver_resolveConstraint(self_, constraint_, topLevel_) {
-if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, constraint_.at_)) {
-const at_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.traitLocations_, constraint_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
+const traitDefinedAt_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.traitLocations_, constraint_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 return constraint_.at_
 }));
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveConstraintHook(ff_compiler_LspHook.SymbolHook(constraint_.name_, constraint_.at_, at_), constraint_))
+if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, constraint_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, traitDefinedAt_))) {
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveConstraintHook(ff_compiler_LspHook.SymbolHook(constraint_.name_, constraint_.at_, traitDefinedAt_), constraint_))
 };
 const name_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.traits_, constraint_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(constraint_.at_, ("No such trait: " + constraint_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -910,8 +922,8 @@ return
 }
 }
 
-export function Resolver_resolveFunctionDefinition(self_, definition_, topLevel_) {
-const signature_ = ff_compiler_Resolver.Resolver_resolveSignature(self_, definition_.signature_, topLevel_);
+export function Resolver_resolveFunctionDefinition(self_, definition_, topLevel_, isInstanceMethod_) {
+const signature_ = ff_compiler_Resolver.Resolver_resolveSignature(self_, definition_.signature_, topLevel_, isInstanceMethod_);
 const self2_ = ff_compiler_Resolver.Resolver_withSignature(self_, signature_);
 const body_ = ff_compiler_Syntax.Target_mapFirefly(definition_.body_, ((lambda_) => {
 {
@@ -928,9 +940,9 @@ return
 return ff_compiler_Syntax.DFunction(definition_.at_, signature_, body_)
 }
 
-export function Resolver_resolveSignature(self_, signature_, topLevel_) {
+export function Resolver_resolveSignature(self_, signature_, topLevel_, isInstanceMethod_) {
 if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, signature_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, signature_.at_))) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSignatureHook(signature_))
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSignatureHook(signature_, isInstanceMethod_))
 };
 const newSignature_ = (topLevel_
 ? (((_c) => {
@@ -1222,7 +1234,7 @@ return ff_compiler_Resolver.Resolver_resolveExtendDefinition(self3_, _w1)
 })), ff_core_List.List_map(module_.lets_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveLetDefinition(self3_, _w1, true)
 })), ff_core_List.List_map(module_.functions_, ((_w1) => {
-return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self3_, _w1, true)
+return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self3_, _w1, true, false)
 })))
 }))(module_);
 ff_core_List.List_each(module2_.instances_, ((_w1) => {
@@ -1471,6 +1483,9 @@ return
 }
 
 export async function Resolver_resolveTraitDefinition$(self_, definition_, $task) {
+if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, definition_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, definition_.at_))) {
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.name_, definition_.at_, definition_.at_), ff_core_Option.None()))
+};
 const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.generics_, ((g_) => {
 return ff_core_Pair.Pair(g_, g_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -1484,7 +1499,7 @@ const _c = _1;
 return ff_compiler_Syntax.DTrait(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(definition_.constraints_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveConstraint(self2_, _w1, true)
 })), _c.generatorParameters_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
-return ff_compiler_Resolver.Resolver_resolveSignature(self2_, _w1, true)
+return ff_compiler_Resolver.Resolver_resolveSignature(self2_, _w1, true, false)
 })), ff_core_List.List_map(definition_.methodDefaults_, ((_1) => {
 {
 const name_ = _1.first_;
@@ -1493,7 +1508,7 @@ const signature_ = ff_core_Option.Option_grab(ff_core_List.List_find(definition_
 return (_w1.name_ === name_)
 })));
 const function1_ = ff_compiler_Syntax.DFunction(signature_.at_, signature_, ff_compiler_Syntax.FireflyTarget(lambda_));
-const function2_ = ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, function1_, true);
+const function2_ = ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, function1_, true, false);
 return ff_core_Pair.Pair(name_, (((_1) => {
 {
 if(_1.FireflyTarget) {
@@ -1516,6 +1531,12 @@ return
 }
 
 export async function Resolver_resolveInstanceDefinition$(self_, definition_, $task) {
+const traitDefinedAt_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.traitLocations_, definition_.traitName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
+return definition_.at_
+}));
+if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, definition_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, traitDefinedAt_))) {
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.traitName_, definition_.at_, traitDefinedAt_), ff_core_Option.None()))
+};
 const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.generics_, ((g_) => {
 return ff_core_Pair.Pair(g_, g_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -1534,7 +1555,7 @@ return ff_compiler_Resolver.Resolver_resolveConstraint(self2_, _w1, true)
 })), traitName_, ff_core_List.List_map(definition_.typeArguments_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveType(self2_, _w1, true)
 })), _c.generatorArguments_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
-return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, _w1, true)
+return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, _w1, true, true)
 })), _c.derived_)
 return
 }
@@ -1558,7 +1579,7 @@ const _c = _1;
 return ff_compiler_Syntax.DExtend(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(definition_.constraints_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveConstraint(selfWithQ_, _w1, true)
 })), ff_compiler_Resolver.Resolver_resolveType(selfWithQ_, definition_.type_, true), ff_core_List.List_map(definition_.methods_, ((_w1) => {
-return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(selfWithNoQ_, _w1, true)
+return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(selfWithNoQ_, _w1, true, false)
 })))
 return
 }
@@ -1566,6 +1587,9 @@ return
 }
 
 export async function Resolver_resolveLetDefinition$(self_, definition_, topLevel_, $task) {
+if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, definition_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, definition_.at_))) {
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.name_, definition_.at_, definition_.at_), ff_core_Option.None()))
+};
 {
 const _1 = definition_;
 {
@@ -1831,7 +1855,7 @@ const self2_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(ff_core_Map.Map_addAll(self_.variables_, functionMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_addAll(self_.variableLocations_, locationMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.typeGenerics_, _c.typeLocations_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.traitLocations_, _c.state_, _c.lspHook_)
 }))(self_);
 return ff_compiler_Syntax.EFunctions(at_, ff_core_List.List_map(functions_, ((_w1) => {
-return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, _w1, topLevel_)
+return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, _w1, topLevel_, false)
 })), ff_compiler_Resolver.Resolver_resolveTerm(self2_, body_, topLevel_))
 return
 }
@@ -1971,11 +1995,11 @@ return ff_compiler_Resolver.Resolver_freshUnificationVariable(self_, at_)
 }
 
 export async function Resolver_resolveConstraint$(self_, constraint_, topLevel_, $task) {
-if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, constraint_.at_)) {
-const at_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.traitLocations_, constraint_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
+const traitDefinedAt_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.traitLocations_, constraint_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 return constraint_.at_
 }));
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveConstraintHook(ff_compiler_LspHook.SymbolHook(constraint_.name_, constraint_.at_, at_), constraint_))
+if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, constraint_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, traitDefinedAt_))) {
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveConstraintHook(ff_compiler_LspHook.SymbolHook(constraint_.name_, constraint_.at_, traitDefinedAt_), constraint_))
 };
 const name_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.traits_, constraint_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(constraint_.at_, ("No such trait: " + constraint_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -1992,8 +2016,8 @@ return
 }
 }
 
-export async function Resolver_resolveFunctionDefinition$(self_, definition_, topLevel_, $task) {
-const signature_ = ff_compiler_Resolver.Resolver_resolveSignature(self_, definition_.signature_, topLevel_);
+export async function Resolver_resolveFunctionDefinition$(self_, definition_, topLevel_, isInstanceMethod_, $task) {
+const signature_ = ff_compiler_Resolver.Resolver_resolveSignature(self_, definition_.signature_, topLevel_, isInstanceMethod_);
 const self2_ = ff_compiler_Resolver.Resolver_withSignature(self_, signature_);
 const body_ = ff_compiler_Syntax.Target_mapFirefly(definition_.body_, ((lambda_) => {
 {
@@ -2010,9 +2034,9 @@ return
 return ff_compiler_Syntax.DFunction(definition_.at_, signature_, body_)
 }
 
-export async function Resolver_resolveSignature$(self_, signature_, topLevel_, $task) {
+export async function Resolver_resolveSignature$(self_, signature_, topLevel_, isInstanceMethod_, $task) {
 if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, signature_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, signature_.at_))) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSignatureHook(signature_))
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSignatureHook(signature_, isInstanceMethod_))
 };
 const newSignature_ = (topLevel_
 ? (((_c) => {

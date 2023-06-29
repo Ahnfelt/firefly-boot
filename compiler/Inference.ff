@@ -31,11 +31,11 @@ extend self: Inference {
     inferModule(module: Module, otherModules: List[Module]): Module {
         let environment = Environment.make(module, otherModules, alreadyFlat = False)
 
+        let traits = module.traits.map {self.inferTraitDefinition(environment, _)}
+        let instances = module.instances.map {self.inferInstanceDefinition(environment, _)}
         let lets = module.lets.map {self.inferLetDefinition(environment, _)}
         let functions = module.functions.map {self.inferFunctionDefinition(environment, _)}
         let extends = module.extends.map {self.inferExtendDefinition(environment, _)}
-        let traits = module.traits.map {self.inferTraitDefinition(environment, _)}
-        let instances = module.instances.map {self.inferInstanceDefinition(environment, _)}
         let result = module.Module(
             traits = traits
             instances = instances
@@ -57,21 +57,72 @@ extend self: Inference {
         if(self.lspHook.isEnabled() && definition.derived) {definition} else:
         let instances = constraintsToInstances(definition.constraints)
         self.unification.withLocalInstances(instances) {
+            let traitName = definition.traitName
+            let traitDefinition = environment.traits.get(traitName).else {
+                throw(CompileError(definition.at
+                    "No such trait: " + traitName
+                ))
+            }
+
+            if(traitDefinition.generics.size() != definition.typeArguments.size()) {
+                throw(CompileError(definition.at
+                    "Wrong number of type arguments for " + traitName +
+                    ", expected " + (traitDefinition.generics.size() - 1) +
+                    ", got " + (definition.typeArguments.size() - 1)
+                ))
+            }            
+            
+            let instantiationMap = traitDefinition.generics.zip(definition.typeArguments).toMap()
+            
+            traitDefinition.methods.each {traitMethod =>
+                let found = definition.methods.filter {_.signature.name == traitMethod.name}
+                if(found.isEmpty()) {
+                    throw(CompileError(definition.at
+                        "Missing instance method: " + traitMethod.name
+                    ))
+                }
+                found.dropFirst().each {duplicateMethod =>
+                    throw(CompileError(duplicateMethod.at
+                        "Duplicated instance method: " + traitMethod.name
+                    ))
+                }
+            }
+            
             definition.DInstance(
-                // TODO: Check that the methods adhere to the instantiated trait method signatures
-                // It needs to look at the instantiated trait, e.g. `trait T: Show` and `instance Foo: Show`
-                // gives an instantiation `T = Foo`, which should be applied to all the methods before checking.
                 methods = definition.methods.map {instanceFunction =>
                     let methodName = instanceFunction.signature.name
-                    let traitName = definition.traitName
                     let traitMethodName = traitName.reverse().dropWhile {_ != '.'}.reverse() + methodName
-                    let traitMethod = environment.symbols.get(traitMethodName).else {
+                    let traitMethodScheme = environment.symbols.get(traitMethodName).else {
                         throw(CompileError(instanceFunction.at
                             "Trait " + traitName + " has no such method: " + methodName
                         ))
                     }
-                    let newInstanceFunction = self.inferFunctionDefinition(environment, instanceFunction)
-                    newInstanceFunction
+                    let parameters = traitMethodScheme.signature.parameters.map {p =>
+                        p.Parameter(valueType = self.unification.instantiate(instantiationMap, p.valueType))
+                    }
+                    let returnType = self.unification.instantiate(instantiationMap, traitMethodScheme.signature.returnType)
+                                        
+                    instanceFunction.signature.parameters.dropFirst(parameters.size()).each {instanceParameter => 
+                        throw(CompileError(instanceParameter.at, "Unexpected parameter: " + instanceParameter.name))
+                    }
+
+                    parameters.dropFirst(instanceFunction.signature.parameters.size()).each {traitParameter => 
+                        throw(CompileError(instanceFunction.at, "Missing parameter: " + traitParameter.name))
+                    }
+
+                    parameters.zip(instanceFunction.signature.parameters).each {| Pair(traitParameter, instanceParameter) => 
+                        self.unification.unify(instanceParameter.valueType.at, traitParameter.valueType, instanceParameter.valueType)
+                    }
+
+                    self.unification.unify(instanceFunction.signature.returnType.at, returnType, instanceFunction.signature.returnType)
+                    
+                    if(self.lspHook.isAt(instanceFunction.at) || self.lspHook.isDefinedAt(traitMethodScheme.signature.at)) {
+                        let symbolHook = SymbolHook(instanceFunction.signature.name, instanceFunction.at, traitMethodScheme.signature.at)
+                        let h = InferLookupHook(self.unification, environment, instanceFunction.signature.returnType, None, Box(symbolHook), Box(None))
+                        self.lspHook.emit(h)
+                    }
+                    
+                    self.inferFunctionDefinition(environment, instanceFunction)
                 }
             )
         }
@@ -183,9 +234,9 @@ extend self: Inference {
         )
         self.unification.unify(case.at, expected, functionType)
         let environment1 = parameterTypes.zip(case.patterns).foldLeft(environment) {| environment1, Pair(t, c) =>
-            let symbols = self.inferPattern(environment, t, c).mapValues {name, type =>
-                let noEffect = TConstructor(c.at, "ff:core/Nothing.Nothing", [])
-                Scheme(True, False, False, False, Signature(c.at, name, False, [], [], [], type, noEffect))
+            let symbols = self.inferPattern(environment, t, c).mapValues {| name, Pair(at, type) =>
+                let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
+                Scheme(True, False, False, False, Signature(at, name, False, [], [], [], type, noEffect))
             }
             environment.Environment(symbols = environment1.symbols.addAll(symbols))
         }
@@ -193,9 +244,9 @@ extend self: Inference {
         let environment3 = case.guards.foldLeft(environment1) {environment2, g =>
             let guardType = self.unification.freshUnificationVariable(g.at)
             let guardTerm = self.inferTerm(environment2, guardType, g.term)
-            let symbols = self.inferPattern(environment2, guardType, g.pattern).mapValues {name, type =>
-                let noEffect = TConstructor(g.at, "ff:core/Nothing.Nothing", [])
-                Scheme(True, False, False, False, Signature(g.at, name, False, [], [], [], type, noEffect))
+            let symbols = self.inferPattern(environment2, guardType, g.pattern).mapValues {| name, Pair(at, type) =>
+                let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
+                Scheme(True, False, False, False, Signature(at, name, False, [], [], [], type, noEffect))
             }
             guards = [g.MatchGuard(term = guardTerm), ...guards]
             environment2.Environment(symbols = environment2.symbols.addAll(symbols))
@@ -206,18 +257,22 @@ extend self: Inference {
         )
     }
 
-    inferPattern(environment: Environment, expected: Type, pattern: MatchPattern): Map[String, Type] {
+    inferPattern(environment: Environment, expected: Type, pattern: MatchPattern): Map[String, Pair[Location, Type]] {
         if(self.lspHook.isEnabled()) {
             if(pattern.{
-                | PVariantAs(at, _, variableAt, _) => self.lspHook.isAt(at) || self.lspHook.isAt(variableAt)
-                | _ => self.lspHook.isAt(pattern.at)
+                | PVariantAs(at, _, variableAt, _) => 
+                    self.lspHook.isAt(at) || self.lspHook.isAt(variableAt) || self.lspHook.isDefinedAt(variableAt)
+                | PAlias(at, _, _) => 
+                    self.lspHook.isAt(at) || self.lspHook.isDefinedAt(at)
+                | _ => 
+                    self.lspHook.isAt(pattern.at)
             }) {
                 self.lspHook.emit(
                     InferPatternHook(self.unification, environment, expected, pattern)
                 )
             }
         }
-        function literal(coreTypeName: String): Map[String, Type] {
+        function literal(coreTypeName: String): Map[String, Pair[Location, Type]] {
             self.unification.unify(pattern.at, expected, TConstructor(pattern.at, core(coreTypeName), []))
             Map.empty()
         }
@@ -231,9 +286,9 @@ extend self: Inference {
             | PVariable(at, None) =>
                 Map.empty()
             | PVariable(at, Some(name)) =>
-                [Pair(name, expected)].toMap()
+                [Pair(name, Pair(at, expected))].toMap()
             | PAlias(at, pattern, variable) =>
-                self.inferPattern(environment, expected, pattern).add(variable, expected)
+                self.inferPattern(environment, expected, pattern).add(variable, Pair(at, expected))
             | PVariantAs(at, name, variableAt, variableOption) =>
                 let instantiated = self.lookup(environment, expected, at, name, [], None).else {
                     throw(CompileError(at, "No such variant: " + name))
@@ -245,7 +300,7 @@ extend self: Inference {
                 let parameters = instantiated.scheme.signature.parameters.sortBy {_.name}
                 let recordType =
                     TConstructor(at, "Record$" + parameters.map {_.name}.join("$"), parameters.map {_.valueType})
-                variableOption.toList().map {Pair(_, recordType)}.toMap()
+                variableOption.toList().map {Pair(_, Pair(variableAt, recordType))}.toMap()
             | PVariant(at, name, patterns) =>
                 let instantiated = self.lookup(environment, expected, at, name, [], None).else {
                     throw(CompileError(at, "No such variant: " + name))
@@ -258,7 +313,7 @@ extend self: Inference {
                 }
                 patterns.zip(instantiated.scheme.signature.parameters).map {| Pair(pattern, parameter) =>
                     self.inferPattern(environment, parameter.valueType, pattern)
-                }.foldLeft(Map.empty[String, Type]()) {_.addAll(_)}
+                }.foldLeft(Map.empty[String, Pair[Location, Type]]()) {_.addAll(_)}
         }
     }
 

@@ -853,80 +853,80 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Main.CommandLineError" + "[") 
 };
 
 export const ff_core_Show_Show$ff_compiler_Main_MainCommand = {
-show_(x_) {
+show_(value_) {
 {
-const x_a = x_;
+const value_a = value_;
 {
-if(x_a.BootstrapCommand) {
-const z_ = x_a;
+if(value_a.BootstrapCommand) {
+const z_ = value_a;
 return "BootstrapCommand"
 return
 }
 }
 {
-if(x_a.RunCommand) {
-const z_ = x_a;
+if(value_a.RunCommand) {
+const z_ = value_a;
 return ((((("RunCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.argument_)) + ")")
 return
 }
 }
 {
-if(x_a.BrowserCommand) {
-const z_ = x_a;
+if(value_a.BrowserCommand) {
+const z_ = value_a;
 return ((("BrowserCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ")")
 return
 }
 }
 {
-if(x_a.BuildCommand) {
-const z_ = x_a;
+if(value_a.BuildCommand) {
+const z_ = value_a;
 return ((("BuildCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ")")
 return
 }
 }
 {
-if(x_a.CheckCommand) {
-const z_ = x_a;
+if(value_a.CheckCommand) {
+const z_ = value_a;
 return ((("CheckCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.filePath_)) + ")")
 return
 }
 }
 }
 },
-async show_$(x_, $task) {
+async show_$(value_, $task) {
 {
-const x_a = x_;
+const value_a = value_;
 {
-if(x_a.BootstrapCommand) {
-const z_ = x_a;
+if(value_a.BootstrapCommand) {
+const z_ = value_a;
 return "BootstrapCommand"
 return
 }
 }
 {
-if(x_a.RunCommand) {
-const z_ = x_a;
+if(value_a.RunCommand) {
+const z_ = value_a;
 return ((((("RunCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.argument_)) + ")")
 return
 }
 }
 {
-if(x_a.BrowserCommand) {
-const z_ = x_a;
+if(value_a.BrowserCommand) {
+const z_ = value_a;
 return ((("BrowserCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ")")
 return
 }
 }
 {
-if(x_a.BuildCommand) {
-const z_ = x_a;
+if(value_a.BuildCommand) {
+const z_ = value_a;
 return ((("BuildCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ")")
 return
 }
 }
 {
-if(x_a.CheckCommand) {
-const z_ = x_a;
+if(value_a.CheckCommand) {
+const z_ = value_a;
 return ((("CheckCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.filePath_)) + ")")
 return
 }
@@ -936,21 +936,21 @@ return
 };
 
 export const ff_core_Show_Show$ff_compiler_Main_CommandLineError = {
-show_(x_) {
+show_(value_) {
 {
-const x_a = x_;
+const value_a = value_;
 {
-const z_ = x_a;
+const z_ = value_a;
 return ((("CommandLineError" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.problem_)) + ")")
 return
 }
 }
 },
-async show_$(x_, $task) {
+async show_$(value_, $task) {
 {
-const x_a = x_;
+const value_a = value_;
 {
-const z_ = x_a;
+const z_ = value_a;
 return ((("CommandLineError" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.problem_)) + ")")
 return
 }
@@ -1397,13 +1397,13 @@ return
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Main_MainCommand = {
-serializeUsing_(serialization_, x_) {
+serializeUsing_(serialization_, value_) {
 {
 const serialization_a = serialization_;
-const x_a = x_;
+const value_a = value_;
 {
-if(x_a.BootstrapCommand) {
-const value_ = x_a;
+if(value_a.BootstrapCommand) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1
@@ -1411,43 +1411,43 @@ return
 }
 }
 {
-if(x_a.RunCommand) {
-const value_ = x_a;
+if(value_a.RunCommand) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.mainPath_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.argument_)
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.argument_)
 return
 }
 }
 {
-if(x_a.BrowserCommand) {
-const value_ = x_a;
+if(value_a.BrowserCommand) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.mainPath_)
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_)
 return
 }
 }
 {
-if(x_a.BuildCommand) {
-const value_ = x_a;
+if(value_a.BuildCommand) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 3);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.mainPath_)
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_)
 return
 }
 }
 {
-if(x_a.CheckCommand) {
-const value_ = x_a;
+if(value_a.CheckCommand) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 4);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.filePath_)
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.filePath_)
 return
 }
 }
@@ -1499,13 +1499,13 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $task) {
+async serializeUsing_$(serialization_, value_, $task) {
 {
 const serialization_a = serialization_;
-const x_a = x_;
+const value_a = value_;
 {
-if(x_a.BootstrapCommand) {
-const value_ = x_a;
+if(value_a.BootstrapCommand) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1
@@ -1513,43 +1513,43 @@ return
 }
 }
 {
-if(x_a.RunCommand) {
-const value_ = x_a;
+if(value_a.RunCommand) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.mainPath_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.argument_)
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.argument_)
 return
 }
 }
 {
-if(x_a.BrowserCommand) {
-const value_ = x_a;
+if(value_a.BrowserCommand) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.mainPath_)
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_)
 return
 }
 }
 {
-if(x_a.BuildCommand) {
-const value_ = x_a;
+if(value_a.BuildCommand) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 3);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.mainPath_)
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_)
 return
 }
 }
 {
-if(x_a.CheckCommand) {
-const value_ = x_a;
+if(value_a.CheckCommand) {
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 4);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.filePath_)
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.filePath_)
 return
 }
 }
@@ -1604,16 +1604,16 @@ return
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Main_CommandLineError = {
-serializeUsing_(serialization_, x_) {
+serializeUsing_(serialization_, value_) {
 {
 const serialization_a = serialization_;
-const x_a = x_;
+const value_a = value_;
 {
-const value_ = x_a;
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.problem_)
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.problem_)
 return
 }
 }
@@ -1636,16 +1636,16 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $task) {
+async serializeUsing_$(serialization_, value_, $task) {
 {
 const serialization_a = serialization_;
-const x_a = x_;
+const value_a = value_;
 {
-const value_ = x_a;
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.problem_)
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.problem_)
 return
 }
 }

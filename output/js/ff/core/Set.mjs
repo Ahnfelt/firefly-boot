@@ -243,11 +243,11 @@ return ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Orderin
 }}
 
 export function ff_core_Show_Show$ff_core_Set_Set(ff_core_Show_Show$A, ff_core_Ordering_Order$A) { return {
-show_(x_) {
-return (ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show_Show$A).show_(ff_core_Set.Set_toList(x_, ff_core_Ordering_Order$A)) + ".toSet()")
+show_(value_) {
+return (ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show_Show$A).show_(ff_core_Set.Set_toList(value_, ff_core_Ordering_Order$A)) + ".toSet()")
 },
-async show_$(x_, $task) {
-return (ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show_Show$A).show_(ff_core_Set.Set_toList(x_, ff_core_Ordering_Order$A)) + ".toSet()")
+async show_$(value_, $task) {
+return (ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show_Show$A).show_(ff_core_Set.Set_toList(value_, ff_core_Ordering_Order$A)) + ".toSet()")
 }
 }}
 

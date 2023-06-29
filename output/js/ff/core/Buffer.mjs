@@ -423,47 +423,47 @@ throw new Error('Function Buffer_toBase64 is missing on this target in async con
 }
 
 export const ff_core_Show_Show$ff_core_Buffer_Buffer = {
-show_(buffer_) {
-return ((`Buffer.fromHex("` + ff_core_Buffer.Buffer_toHex(buffer_)) + `")`)
+show_(value_) {
+return ((`Buffer.fromHex("` + ff_core_Buffer.Buffer_toHex(value_)) + `")`)
 },
-async show_$(buffer_, $task) {
-return ((`Buffer.fromHex("` + ff_core_Buffer.Buffer_toHex(buffer_)) + `")`)
+async show_$(value_, $task) {
+return ((`Buffer.fromHex("` + ff_core_Buffer.Buffer_toHex(value_)) + `")`)
 }
 };
 
 export const ff_core_Equal_Equal$ff_core_Buffer_Buffer = {
-equals_(left_, right_) {
+equals_(x_, y_) {
 
-            if(left_.buffer.byteLength !== right_.buffer.byteLength) return false
-            if(left_.buffer === right_.buffer) return true
-            for(let i = 0; i + 4 <= left_.buffer.byteLength; i += 4) {
-                if(left_.getInt32(i) !== right_.getInt32(i)) return false
+            if(x_.buffer.byteLength !== y_.buffer.byteLength) return false
+            if(x_.buffer === y_.buffer) return true
+            for(let i = 0; i + 4 <= x_.buffer.byteLength; i += 4) {
+                if(x_.getInt32(i) !== y_.getInt32(i)) return false
             }
-            for(; i < left_.buffer.byteLength; i++) {
-                if(left_.getUint8(i) !== right_.getUint8(i)) return false
+            for(; i < x_.buffer.byteLength; i++) {
+                if(x_.getUint8(i) !== y_.getUint8(i)) return false
             }
             return true
         
 },
-async equals_$(left_, right_, $task) {
+async equals_$(x_, y_, $task) {
 throw new Error('Function equals is missing on this target in async context.');
 }
 };
 
 export const ff_core_Ordering_Order$ff_core_Buffer_Buffer = {
-compare_(left_, right_) {
+compare_(x_, y_) {
 
-            if(left_.buffer === right_.buffer) return ff_core_Ordering.OrderingSame()
-            const minLength = Math.min(left_.buffer.byteLength, right_.buffer.byteLength)
+            if(x_.buffer === y_.buffer) return ff_core_Ordering.OrderingSame()
+            const minLength = Math.min(x_.buffer.byteLength, y_.buffer.byteLength)
             for(let i = 0; i < minLength; i++) {
-                if(left_.getUint8(i) !== right_.getUint8(i)) {
-                    return ff_core_Ordering.fromInt_(left_.getUint8(i) - right_.getUint8(i))
+                if(x_.getUint8(i) !== y_.getUint8(i)) {
+                    return ff_core_Ordering.fromInt_(x_.getUint8(i) - y_.getUint8(i))
                 }
             }
-            return ff_core_Ordering.fromInt_(left_.buffer.byteLength - right_.buffer.byteLength)
+            return ff_core_Ordering.fromInt_(x_.buffer.byteLength - y_.buffer.byteLength)
         
 },
-async compare_$(left_, right_, $task) {
+async compare_$(x_, y_, $task) {
 throw new Error('Function compare is missing on this target in async context.');
 }
 };

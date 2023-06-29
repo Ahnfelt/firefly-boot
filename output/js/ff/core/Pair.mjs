@@ -229,17 +229,17 @@ return
 }}
 
 export function ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$A, ff_core_Serializable_Serializable$B) { return {
-serializeUsing_(serialization_, x_) {
+serializeUsing_(serialization_, value_) {
 {
 const serialization_a = serialization_;
-const x_a = x_;
+const value_a = value_;
 {
-const value_ = x_a;
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_core_Serializable_Serializable$A.serializeUsing_(serialization_, value_.first_);
-ff_core_Serializable_Serializable$B.serializeUsing_(serialization_, value_.second_)
+ff_core_Serializable_Serializable$A.serializeUsing_(serialization_, v_.first_);
+ff_core_Serializable_Serializable$B.serializeUsing_(serialization_, v_.second_)
 return
 }
 }
@@ -262,17 +262,17 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $task) {
+async serializeUsing_$(serialization_, value_, $task) {
 {
 const serialization_a = serialization_;
-const x_a = x_;
+const value_a = value_;
 {
-const value_ = x_a;
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_core_Serializable_Serializable$A.serializeUsing_(serialization_, value_.first_);
-ff_core_Serializable_Serializable$B.serializeUsing_(serialization_, value_.second_)
+ff_core_Serializable_Serializable$A.serializeUsing_(serialization_, v_.first_);
+ff_core_Serializable_Serializable$B.serializeUsing_(serialization_, v_.second_)
 return
 }
 }

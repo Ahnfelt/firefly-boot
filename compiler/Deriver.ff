@@ -116,7 +116,7 @@ extend self: Deriver {
             member = False
             generics = []
             constraints = []
-            parameters = [Parameter(at, False, "x", selfType, None)]
+            parameters = [Parameter(at, False, "value", selfType, None)]
             returnType = TConstructor(at, "ff:core/String.String", [])
             effect = noEffect
         )
@@ -142,7 +142,7 @@ extend self: Deriver {
         let wildcardPattern = PVariable(at, None)
         declaration.variants.{
             | variants =>
-                variants.map { variant =>
+                variants.map {variant =>
                     let variantName = modulePrefix + "." + variant.name
                     let fields = [...declaration.commonFields, ...variant.fields]
                     let strings = if(fields.size() == 0) {[]} else {[
@@ -155,7 +155,7 @@ extend self: Deriver {
                         EString(at, "\")\"")
                     ]}
                     MatchCase(
-                        at = at,
+                        at = at
                         patterns = [PVariantAs(at, variantName, at, Some("z"))]
                         guards = []
                         body = strings.foldLeft(EString(at, "\"" + variant.name + "\"")) {a, b =>
@@ -455,7 +455,7 @@ extend self: Deriver {
             constraints = []
             parameters = [
                 Parameter(at, False, "serialization", serializationType, None)
-                Parameter(at, False, "x", selfType, None)
+                Parameter(at, False, "value", selfType, None)
             ]
             returnType = TConstructor(at, "ff:core/Unit.Unit", [])
             effect = noEffect
@@ -515,12 +515,12 @@ extend self: Deriver {
             let fieldSerializations = fields.map {field =>
                 self.makeSimpleCall(at, "ff:core/Serializable.serializeUsing", [
                     EVariable(at, "serialization")
-                    EField(at, False, EVariable(at, "value"), field.name)
+                    EField(at, False, EVariable(at, "v"), field.name)
                 ])
             }
             MatchCase(
                 at = at,
-                patterns = [wildcardPattern, PVariantAs(at, variantName, at, Some("value"))]
+                patterns = [wildcardPattern, PVariantAs(at, variantName, at, Some("v"))]
                 guards = []
                 body = [
                     setVariantIndex

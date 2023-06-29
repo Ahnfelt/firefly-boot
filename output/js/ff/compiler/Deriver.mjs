@@ -181,7 +181,7 @@ return ff_compiler_Syntax.TConstructor(at_, t_, ff_core_List.Empty())
 }));
 const selfType_ = ff_compiler_Syntax.TConstructor(at_, ((modulePrefix_ + ".") + declaration_.name_), typeArguments_);
 const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-const signature_ = ff_compiler_Syntax.Signature(at_, "show", false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Parameter(at_, false, "x", selfType_, ff_core_Option.None()), ff_core_List.Empty()), ff_compiler_Syntax.TConstructor(at_, "ff:core/String.String", ff_core_List.Empty()), noEffect_);
+const signature_ = ff_compiler_Syntax.Signature(at_, "show", false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Parameter(at_, false, "value", selfType_, ff_core_Option.None()), ff_core_List.Empty()), ff_compiler_Syntax.TConstructor(at_, "ff:core/String.String", ff_core_List.Empty()), noEffect_);
 const body_ = ff_compiler_Syntax.FireflyTarget(ff_compiler_Syntax.Lambda(at_, noEffect_, ff_compiler_Deriver.Deriver_makeShowCases(self_, modulePrefix_, declaration_, selfType_)));
 const showMethod_ = ff_compiler_Syntax.DFunction(at_, signature_, body_);
 return ff_compiler_Syntax.DInstance(at_, declaration_.generics_, constraints_, "ff:core/Show.Show", ff_core_List.Link(selfType_, ff_core_List.Empty()), ff_core_List.Empty(), ff_core_List.Link(showMethod_, ff_core_List.Empty()), true)
@@ -438,7 +438,7 @@ return ff_compiler_Syntax.TConstructor(at_, t_, ff_core_List.Empty())
 const selfType_ = ff_compiler_Syntax.TConstructor(at_, ((modulePrefix_ + ".") + declaration_.name_), typeArguments_);
 const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
 const serializationType_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Serializable.Serialization", ff_core_List.Empty());
-const serializeSignature_ = ff_compiler_Syntax.Signature(at_, "serializeUsing", false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Parameter(at_, false, "serialization", serializationType_, ff_core_Option.None()), ff_core_List.Link(ff_compiler_Syntax.Parameter(at_, false, "x", selfType_, ff_core_Option.None()), ff_core_List.Empty())), ff_compiler_Syntax.TConstructor(at_, "ff:core/Unit.Unit", ff_core_List.Empty()), noEffect_);
+const serializeSignature_ = ff_compiler_Syntax.Signature(at_, "serializeUsing", false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Parameter(at_, false, "serialization", serializationType_, ff_core_Option.None()), ff_core_List.Link(ff_compiler_Syntax.Parameter(at_, false, "value", selfType_, ff_core_Option.None()), ff_core_List.Empty())), ff_compiler_Syntax.TConstructor(at_, "ff:core/Unit.Unit", ff_core_List.Empty()), noEffect_);
 const deserializeSignature_ = ff_compiler_Syntax.Signature(at_, "deserializeUsing", false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Parameter(at_, false, "serialization", serializationType_, ff_core_Option.None()), ff_core_List.Empty()), selfType_, noEffect_);
 const wildcardPattern_ = ff_compiler_Syntax.PVariable(at_, ff_core_Option.None());
 const serializeBody_ = ff_compiler_Syntax.FireflyTarget(ff_compiler_Syntax.Lambda(at_, noEffect_, ff_compiler_Deriver.Deriver_makeSerializeBody(self_, modulePrefix_, declaration_, selfType_)));
@@ -460,9 +460,9 @@ const fields_ = ff_core_List.List_addAll(declaration_.commonFields_, variant_.fi
 const updateChecksum_ = ff_compiler_Deriver.Deriver_makeUpdateChecksum(self_, at_, variantName_, declaration_, variant_);
 const setVariantIndex_ = ff_compiler_Deriver.Deriver_makeMethodCall(self_, at_, ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "serialization"), "buffer"), "setUint8", ff_core_List.Link(ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "serialization"), "offset"), ff_core_List.Link(ff_compiler_Syntax.EInt(at_, ("" + index_)), ff_core_List.Empty())));
 const fieldSerializations_ = ff_core_List.List_map(fields_, ((field_) => {
-return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Serializable.serializeUsing", ff_core_List.Link(ff_compiler_Syntax.EVariable(at_, "serialization"), ff_core_List.Link(ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "value"), field_.name_), ff_core_List.Empty())), ff_core_List.Empty())
+return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Serializable.serializeUsing", ff_core_List.Link(ff_compiler_Syntax.EVariable(at_, "serialization"), ff_core_List.Link(ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "v"), field_.name_), ff_core_List.Empty())), ff_core_List.Empty())
 }));
-return ff_compiler_Syntax.MatchCase(at_, ff_core_List.Link(wildcardPattern_, ff_core_List.Link(ff_compiler_Syntax.PVariantAs(at_, variantName_, at_, ff_core_Option.Some("value")), ff_core_List.Empty())), ff_core_List.Empty(), ff_core_List.List_foldLeft(ff_core_List.Link(setVariantIndex_, ff_core_List.Link(ff_compiler_Syntax.EAssignField(at_, "+", ff_compiler_Syntax.EVariable(at_, "serialization"), "offset", ff_compiler_Syntax.EInt(at_, "1")), fieldSerializations_)), updateChecksum_, ((_w1, _w2) => {
+return ff_compiler_Syntax.MatchCase(at_, ff_core_List.Link(wildcardPattern_, ff_core_List.Link(ff_compiler_Syntax.PVariantAs(at_, variantName_, at_, ff_core_Option.Some("v")), ff_core_List.Empty())), ff_core_List.Empty(), ff_core_List.List_foldLeft(ff_core_List.Link(setVariantIndex_, ff_core_List.Link(ff_compiler_Syntax.EAssignField(at_, "+", ff_compiler_Syntax.EVariable(at_, "serialization"), "offset", ff_compiler_Syntax.EInt(at_, "1")), fieldSerializations_)), updateChecksum_, ((_w1, _w2) => {
 return ff_compiler_Syntax.ESequential(at_, _w1, _w2)
 })))
 return
@@ -621,7 +621,7 @@ return ff_compiler_Syntax.TConstructor(at_, t_, ff_core_List.Empty())
 }));
 const selfType_ = ff_compiler_Syntax.TConstructor(at_, ((modulePrefix_ + ".") + declaration_.name_), typeArguments_);
 const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-const signature_ = ff_compiler_Syntax.Signature(at_, "show", false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Parameter(at_, false, "x", selfType_, ff_core_Option.None()), ff_core_List.Empty()), ff_compiler_Syntax.TConstructor(at_, "ff:core/String.String", ff_core_List.Empty()), noEffect_);
+const signature_ = ff_compiler_Syntax.Signature(at_, "show", false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Parameter(at_, false, "value", selfType_, ff_core_Option.None()), ff_core_List.Empty()), ff_compiler_Syntax.TConstructor(at_, "ff:core/String.String", ff_core_List.Empty()), noEffect_);
 const body_ = ff_compiler_Syntax.FireflyTarget(ff_compiler_Syntax.Lambda(at_, noEffect_, ff_compiler_Deriver.Deriver_makeShowCases(self_, modulePrefix_, declaration_, selfType_)));
 const showMethod_ = ff_compiler_Syntax.DFunction(at_, signature_, body_);
 return ff_compiler_Syntax.DInstance(at_, declaration_.generics_, constraints_, "ff:core/Show.Show", ff_core_List.Link(selfType_, ff_core_List.Empty()), ff_core_List.Empty(), ff_core_List.Link(showMethod_, ff_core_List.Empty()), true)
@@ -878,7 +878,7 @@ return ff_compiler_Syntax.TConstructor(at_, t_, ff_core_List.Empty())
 const selfType_ = ff_compiler_Syntax.TConstructor(at_, ((modulePrefix_ + ".") + declaration_.name_), typeArguments_);
 const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
 const serializationType_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Serializable.Serialization", ff_core_List.Empty());
-const serializeSignature_ = ff_compiler_Syntax.Signature(at_, "serializeUsing", false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Parameter(at_, false, "serialization", serializationType_, ff_core_Option.None()), ff_core_List.Link(ff_compiler_Syntax.Parameter(at_, false, "x", selfType_, ff_core_Option.None()), ff_core_List.Empty())), ff_compiler_Syntax.TConstructor(at_, "ff:core/Unit.Unit", ff_core_List.Empty()), noEffect_);
+const serializeSignature_ = ff_compiler_Syntax.Signature(at_, "serializeUsing", false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Parameter(at_, false, "serialization", serializationType_, ff_core_Option.None()), ff_core_List.Link(ff_compiler_Syntax.Parameter(at_, false, "value", selfType_, ff_core_Option.None()), ff_core_List.Empty())), ff_compiler_Syntax.TConstructor(at_, "ff:core/Unit.Unit", ff_core_List.Empty()), noEffect_);
 const deserializeSignature_ = ff_compiler_Syntax.Signature(at_, "deserializeUsing", false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Parameter(at_, false, "serialization", serializationType_, ff_core_Option.None()), ff_core_List.Empty()), selfType_, noEffect_);
 const wildcardPattern_ = ff_compiler_Syntax.PVariable(at_, ff_core_Option.None());
 const serializeBody_ = ff_compiler_Syntax.FireflyTarget(ff_compiler_Syntax.Lambda(at_, noEffect_, ff_compiler_Deriver.Deriver_makeSerializeBody(self_, modulePrefix_, declaration_, selfType_)));
@@ -900,9 +900,9 @@ const fields_ = ff_core_List.List_addAll(declaration_.commonFields_, variant_.fi
 const updateChecksum_ = ff_compiler_Deriver.Deriver_makeUpdateChecksum(self_, at_, variantName_, declaration_, variant_);
 const setVariantIndex_ = ff_compiler_Deriver.Deriver_makeMethodCall(self_, at_, ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "serialization"), "buffer"), "setUint8", ff_core_List.Link(ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "serialization"), "offset"), ff_core_List.Link(ff_compiler_Syntax.EInt(at_, ("" + index_)), ff_core_List.Empty())));
 const fieldSerializations_ = ff_core_List.List_map(fields_, ((field_) => {
-return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Serializable.serializeUsing", ff_core_List.Link(ff_compiler_Syntax.EVariable(at_, "serialization"), ff_core_List.Link(ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "value"), field_.name_), ff_core_List.Empty())), ff_core_List.Empty())
+return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Serializable.serializeUsing", ff_core_List.Link(ff_compiler_Syntax.EVariable(at_, "serialization"), ff_core_List.Link(ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "v"), field_.name_), ff_core_List.Empty())), ff_core_List.Empty())
 }));
-return ff_compiler_Syntax.MatchCase(at_, ff_core_List.Link(wildcardPattern_, ff_core_List.Link(ff_compiler_Syntax.PVariantAs(at_, variantName_, at_, ff_core_Option.Some("value")), ff_core_List.Empty())), ff_core_List.Empty(), ff_core_List.List_foldLeft(ff_core_List.Link(setVariantIndex_, ff_core_List.Link(ff_compiler_Syntax.EAssignField(at_, "+", ff_compiler_Syntax.EVariable(at_, "serialization"), "offset", ff_compiler_Syntax.EInt(at_, "1")), fieldSerializations_)), updateChecksum_, ((_w1, _w2) => {
+return ff_compiler_Syntax.MatchCase(at_, ff_core_List.Link(wildcardPattern_, ff_core_List.Link(ff_compiler_Syntax.PVariantAs(at_, variantName_, at_, ff_core_Option.Some("v")), ff_core_List.Empty())), ff_core_List.Empty(), ff_core_List.List_foldLeft(ff_core_List.Link(setVariantIndex_, ff_core_List.Link(ff_compiler_Syntax.EAssignField(at_, "+", ff_compiler_Syntax.EVariable(at_, "serialization"), "offset", ff_compiler_Syntax.EInt(at_, "1")), fieldSerializations_)), updateChecksum_, ((_w1, _w2) => {
 return ff_compiler_Syntax.ESequential(at_, _w1, _w2)
 })))
 return
@@ -1006,21 +1006,21 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Deriver.Deriver" + "[") + "]")
 };
 
 export const ff_core_Show_Show$ff_compiler_Deriver_Deriver = {
-show_(x_) {
+show_(value_) {
 {
-const x_a = x_;
+const value_a = value_;
 {
-const z_ = x_a;
+const z_ = value_a;
 return "Deriver"
 return
 }
 }
 },
-async show_$(x_, $task) {
+async show_$(value_, $task) {
 {
-const x_a = x_;
+const value_a = value_;
 {
-const z_ = x_a;
+const z_ = value_a;
 return "Deriver"
 return
 }
@@ -1103,12 +1103,12 @@ return
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Deriver_Deriver = {
-serializeUsing_(serialization_, x_) {
+serializeUsing_(serialization_, value_) {
 {
 const serialization_a = serialization_;
-const x_a = x_;
+const value_a = value_;
 {
-const value_ = x_a;
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1
@@ -1134,12 +1134,12 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $task) {
+async serializeUsing_$(serialization_, value_, $task) {
 {
 const serialization_a = serialization_;
-const x_a = x_;
+const value_a = value_;
 {
-const value_ = x_a;
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1

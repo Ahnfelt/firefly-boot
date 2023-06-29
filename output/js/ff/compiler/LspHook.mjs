@@ -116,8 +116,8 @@ const ParseSymbolBegin$ = {ParseSymbolBegin: true};
 export function ParseSymbolBegin() {
 return ParseSymbolBegin$;
 }
-export function ParseSymbolEnd(name_, kind_, selectionStart_, start_, end_) {
-return {ParseSymbolEnd: true, name_, kind_, selectionStart_, start_, end_};
+export function ParseSymbolEnd(name_, kind_, selectionStart_, selectionEnd_, start_, end_) {
+return {ParseSymbolEnd: true, name_, kind_, selectionStart_, selectionEnd_, start_, end_};
 }
 export function ParseArgumentHook(callAt_, argumentIndex_, parameterName_) {
 return {ParseArgumentHook: true, callAt_, argumentIndex_, parameterName_};
@@ -131,8 +131,8 @@ return {ResolveTypeHook: true, types_, typeGenerics_, symbol_, explicitType_};
 export function ResolveConstraintHook(symbol_, constrant_) {
 return {ResolveConstraintHook: true, symbol_, constrant_};
 }
-export function ResolveSignatureHook(signature_) {
-return {ResolveSignatureHook: true, signature_};
+export function ResolveSignatureHook(signature_, isInstanceMethod_) {
+return {ResolveSignatureHook: true, signature_, isInstanceMethod_};
 }
 export function ResolveVariantFieldHook(symbol_, type_, commonField_) {
 return {ResolveVariantFieldHook: true, symbol_, type_, commonField_};
@@ -183,6 +183,178 @@ export function strictlyBetween_(afterAt_, beforeAt_, at_, extraColumns_) {
 return (((at_.file_ === afterAt_.file_) && (((at_.line_ === afterAt_.line_) && (at_.column_ > afterAt_.column_)) || (at_.line_ > afterAt_.line_))) && (((at_.line_ === beforeAt_.line_) && (at_.column_ < (beforeAt_.column_ + extraColumns_))) || (at_.line_ < beforeAt_.line_)))
 }
 
+export function showHook_(hook_) {
+{
+const hook_a = hook_;
+{
+if(hook_a.InferArgumentHook) {
+const unification_ = hook_a.unification_;
+const environment_ = hook_a.environment_;
+const isCopy_ = hook_a.isCopy_;
+const callAt_ = hook_a.callAt_;
+const callName_ = hook_a.callName_;
+const parameters_ = hook_a.parameters_;
+const arguments_ = hook_a.arguments_;
+const argumentIndex_ = hook_a.argumentIndex_;
+return "InferArgumentHook(...)"
+return
+}
+}
+{
+if(hook_a.InferFunctionDefinitionHook) {
+const unification_ = hook_a.unification_;
+const environment_ = hook_a.environment_;
+const definition_ = hook_a.definition_;
+const missing_ = hook_a.missing_;
+return "InferFunctionDefinitionHook(...)"
+return
+}
+}
+{
+if(hook_a.InferLambdaStartHook) {
+const unification_ = hook_a.unification_;
+const environment_ = hook_a.environment_;
+const lambdaType_ = hook_a.lambdaType_;
+return "InferLambdaStartHook(...)"
+return
+}
+}
+{
+if(hook_a.InferLookupHook) {
+const unification_ = hook_a.unification_;
+const environment_ = hook_a.environment_;
+const expected_ = hook_a.expected_;
+const selfVariable_ = hook_a.selfVariable_;
+const symbol_ = hook_a.symbol_;
+const instantiated_ = hook_a.instantiated_;
+return "InferLookupHook(...)"
+return
+}
+}
+{
+if(hook_a.InferParameterHook) {
+const unification_ = hook_a.unification_;
+const environment_ = hook_a.environment_;
+const parameter_ = hook_a.parameter_;
+const missing_ = hook_a.missing_;
+return "InferParameterHook(...)"
+return
+}
+}
+{
+if(hook_a.InferPatternHook) {
+const unification_ = hook_a.unification_;
+const environment_ = hook_a.environment_;
+const expected_ = hook_a.expected_;
+const pattern_ = hook_a.pattern_;
+return "InferPatternHook(...)"
+return
+}
+}
+{
+if(hook_a.InferRecordFieldHook) {
+const unification_ = hook_a.unification_;
+const environment_ = hook_a.environment_;
+const expected_ = hook_a.expected_;
+const recordType_ = hook_a.recordType_;
+const fieldName_ = hook_a.fieldName_;
+return "InferRecordFieldHook(...)"
+return
+}
+}
+{
+if(hook_a.InferSequentialStartHook) {
+const unification_ = hook_a.unification_;
+const term_ = hook_a.term_;
+const missing_ = hook_a.missing_;
+return "InferSequentialStartHook(...)"
+return
+}
+}
+{
+if(hook_a.InferTermHook) {
+const unification_ = hook_a.unification_;
+const environment_ = hook_a.environment_;
+const expected_ = hook_a.expected_;
+const term_ = hook_a.term_;
+const recordType_ = hook_a.recordType_;
+const missing_ = hook_a.missing_;
+return "InferTermHook(...)"
+return
+}
+}
+{
+if(hook_a.ParseArgumentHook) {
+const callAt_ = hook_a.callAt_;
+const argumentIndex_ = hook_a.argumentIndex_;
+const parameterName_ = hook_a.parameterName_;
+return "ParseArgumentHook(...)"
+return
+}
+}
+{
+if(hook_a.ParseSymbolBegin) {
+return "ParseSymbolBegin(...)"
+return
+}
+}
+{
+if(hook_a.ParseSymbolEnd) {
+const name_ = hook_a.name_;
+const kind_ = hook_a.kind_;
+const selectionStart_ = hook_a.selectionStart_;
+const selectionEnd_ = hook_a.selectionEnd_;
+const start_ = hook_a.start_;
+const end_ = hook_a.end_;
+return "ParseSymbolEnd(...)"
+return
+}
+}
+{
+if(hook_a.ResolveConstraintHook) {
+const symbol_ = hook_a.symbol_;
+const constrant_ = hook_a.constrant_;
+return "ResolveConstraintHook(...)"
+return
+}
+}
+{
+if(hook_a.ResolveSignatureHook) {
+const signature_ = hook_a.signature_;
+return "ResolveSignatureHook(...)"
+return
+}
+}
+{
+if(hook_a.ResolveSymbolHook) {
+const symbol_ = hook_a.symbol_;
+const annotation_ = hook_a.annotation_;
+return "ResolveSymbolHook(...)"
+return
+}
+}
+{
+if(hook_a.ResolveTypeHook) {
+const types_ = hook_a.types_;
+const typeGenerics_ = hook_a.typeGenerics_;
+const symbol_ = hook_a.symbol_;
+const explicitType_ = hook_a.explicitType_;
+return "ResolveTypeHook(...)"
+return
+}
+}
+{
+if(hook_a.ResolveVariantFieldHook) {
+const symbol_ = hook_a.symbol_;
+const type_ = hook_a.type_;
+const commonField_ = hook_a.commonField_;
+return "ResolveVariantFieldHook(...)"
+return
+}
+}
+}
+}
+
 export async function disabled_$($task) {
 return ff_compiler_LspHook.make_(ff_core_Option.None(), ff_core_Option.None(), false, false)
 }
@@ -197,6 +369,178 @@ return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
 
 export async function strictlyBetween_$(afterAt_, beforeAt_, at_, extraColumns_, $task) {
 return (((at_.file_ === afterAt_.file_) && (((at_.line_ === afterAt_.line_) && (at_.column_ > afterAt_.column_)) || (at_.line_ > afterAt_.line_))) && (((at_.line_ === beforeAt_.line_) && (at_.column_ < (beforeAt_.column_ + extraColumns_))) || (at_.line_ < beforeAt_.line_)))
+}
+
+export async function showHook_$(hook_, $task) {
+{
+const hook_a = hook_;
+{
+if(hook_a.InferArgumentHook) {
+const unification_ = hook_a.unification_;
+const environment_ = hook_a.environment_;
+const isCopy_ = hook_a.isCopy_;
+const callAt_ = hook_a.callAt_;
+const callName_ = hook_a.callName_;
+const parameters_ = hook_a.parameters_;
+const arguments_ = hook_a.arguments_;
+const argumentIndex_ = hook_a.argumentIndex_;
+return "InferArgumentHook(...)"
+return
+}
+}
+{
+if(hook_a.InferFunctionDefinitionHook) {
+const unification_ = hook_a.unification_;
+const environment_ = hook_a.environment_;
+const definition_ = hook_a.definition_;
+const missing_ = hook_a.missing_;
+return "InferFunctionDefinitionHook(...)"
+return
+}
+}
+{
+if(hook_a.InferLambdaStartHook) {
+const unification_ = hook_a.unification_;
+const environment_ = hook_a.environment_;
+const lambdaType_ = hook_a.lambdaType_;
+return "InferLambdaStartHook(...)"
+return
+}
+}
+{
+if(hook_a.InferLookupHook) {
+const unification_ = hook_a.unification_;
+const environment_ = hook_a.environment_;
+const expected_ = hook_a.expected_;
+const selfVariable_ = hook_a.selfVariable_;
+const symbol_ = hook_a.symbol_;
+const instantiated_ = hook_a.instantiated_;
+return "InferLookupHook(...)"
+return
+}
+}
+{
+if(hook_a.InferParameterHook) {
+const unification_ = hook_a.unification_;
+const environment_ = hook_a.environment_;
+const parameter_ = hook_a.parameter_;
+const missing_ = hook_a.missing_;
+return "InferParameterHook(...)"
+return
+}
+}
+{
+if(hook_a.InferPatternHook) {
+const unification_ = hook_a.unification_;
+const environment_ = hook_a.environment_;
+const expected_ = hook_a.expected_;
+const pattern_ = hook_a.pattern_;
+return "InferPatternHook(...)"
+return
+}
+}
+{
+if(hook_a.InferRecordFieldHook) {
+const unification_ = hook_a.unification_;
+const environment_ = hook_a.environment_;
+const expected_ = hook_a.expected_;
+const recordType_ = hook_a.recordType_;
+const fieldName_ = hook_a.fieldName_;
+return "InferRecordFieldHook(...)"
+return
+}
+}
+{
+if(hook_a.InferSequentialStartHook) {
+const unification_ = hook_a.unification_;
+const term_ = hook_a.term_;
+const missing_ = hook_a.missing_;
+return "InferSequentialStartHook(...)"
+return
+}
+}
+{
+if(hook_a.InferTermHook) {
+const unification_ = hook_a.unification_;
+const environment_ = hook_a.environment_;
+const expected_ = hook_a.expected_;
+const term_ = hook_a.term_;
+const recordType_ = hook_a.recordType_;
+const missing_ = hook_a.missing_;
+return "InferTermHook(...)"
+return
+}
+}
+{
+if(hook_a.ParseArgumentHook) {
+const callAt_ = hook_a.callAt_;
+const argumentIndex_ = hook_a.argumentIndex_;
+const parameterName_ = hook_a.parameterName_;
+return "ParseArgumentHook(...)"
+return
+}
+}
+{
+if(hook_a.ParseSymbolBegin) {
+return "ParseSymbolBegin(...)"
+return
+}
+}
+{
+if(hook_a.ParseSymbolEnd) {
+const name_ = hook_a.name_;
+const kind_ = hook_a.kind_;
+const selectionStart_ = hook_a.selectionStart_;
+const selectionEnd_ = hook_a.selectionEnd_;
+const start_ = hook_a.start_;
+const end_ = hook_a.end_;
+return "ParseSymbolEnd(...)"
+return
+}
+}
+{
+if(hook_a.ResolveConstraintHook) {
+const symbol_ = hook_a.symbol_;
+const constrant_ = hook_a.constrant_;
+return "ResolveConstraintHook(...)"
+return
+}
+}
+{
+if(hook_a.ResolveSignatureHook) {
+const signature_ = hook_a.signature_;
+return "ResolveSignatureHook(...)"
+return
+}
+}
+{
+if(hook_a.ResolveSymbolHook) {
+const symbol_ = hook_a.symbol_;
+const annotation_ = hook_a.annotation_;
+return "ResolveSymbolHook(...)"
+return
+}
+}
+{
+if(hook_a.ResolveTypeHook) {
+const types_ = hook_a.types_;
+const typeGenerics_ = hook_a.typeGenerics_;
+const symbol_ = hook_a.symbol_;
+const explicitType_ = hook_a.explicitType_;
+return "ResolveTypeHook(...)"
+return
+}
+}
+{
+if(hook_a.ResolveVariantFieldHook) {
+const symbol_ = hook_a.symbol_;
+const type_ = hook_a.type_;
+const commonField_ = hook_a.commonField_;
+return "ResolveVariantFieldHook(...)"
+return
+}
+}
+}
 }
 
 export function LspHook_isEnabled(self_) {
@@ -249,21 +593,21 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/LspHook.SymbolHook" + "[") + "
 };
 
 export const ff_core_Show_Show$ff_compiler_LspHook_SymbolHook = {
-show_(x_) {
+show_(value_) {
 {
-const x_a = x_;
+const value_a = value_;
 {
-const z_ = x_a;
+const z_ = value_a;
 return ((((((("SymbolHook" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.qualifiedName_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.usageAt_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.definedAt_)) + ")")
 return
 }
 }
 },
-async show_$(x_, $task) {
+async show_$(value_, $task) {
 {
-const x_a = x_;
+const value_a = value_;
 {
-const z_ = x_a;
+const z_ = value_a;
 return ((((((("SymbolHook" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.qualifiedName_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.usageAt_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.definedAt_)) + ")")
 return
 }
@@ -376,18 +720,18 @@ return
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_LspHook_SymbolHook = {
-serializeUsing_(serialization_, x_) {
+serializeUsing_(serialization_, value_) {
 {
 const serialization_a = serialization_;
-const x_a = x_;
+const value_a = value_;
 {
-const value_ = x_a;
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.qualifiedName_);
-ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, value_.usageAt_);
-ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, value_.definedAt_)
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.qualifiedName_);
+ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, v_.usageAt_);
+ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, v_.definedAt_)
 return
 }
 }
@@ -410,18 +754,18 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $task) {
+async serializeUsing_$(serialization_, value_, $task) {
 {
 const serialization_a = serialization_;
-const x_a = x_;
+const value_a = value_;
 {
-const value_ = x_a;
+const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.qualifiedName_);
-ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, value_.usageAt_);
-ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, value_.definedAt_)
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.qualifiedName_);
+ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, v_.usageAt_);
+ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, v_.definedAt_)
 return
 }
 }

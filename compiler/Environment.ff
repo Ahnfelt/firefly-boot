@@ -3,6 +3,7 @@ import Syntax
 data Environment(
     modulePrefix: String
     symbols: Map[String, Scheme]
+    traits: Map[String, DTrait]
     imports: Map[String, DImport]
     effect: Type
     selfVariable: Option[String]
@@ -22,11 +23,12 @@ data Instantiated(
 )
 
 make(module: Module, otherModules: List[Module], alreadyFlat: Bool): Environment {
+    let processed = processModule(module, True, alreadyFlat)
+    let otherProcessed = otherModules.map {processModule(_, False, False)}
     Environment(
         modulePrefix = fullName(module, "")
-        symbols = processModule(module, True, alreadyFlat).symbols.addAll(
-            otherModules.map {processModule(_, False, False).symbols}.foldLeft(Map.empty()) {_.addAll(_)}
-        )
+        symbols = processed.symbols.addAll(otherProcessed.map {_.symbols}.foldLeft(Map.empty()) {_.addAll(_)})
+        traits = processed.traits.addAll(otherProcessed.map {_.traits}.foldLeft(Map.empty()) {_.addAll(_)})
         imports = module.imports.map {i => Pair(i.alias, i)}.toMap()
         effect = TConstructor(Location(module.file, 0, 0), "ff:core/Nothing.Nothing", [])
         selfVariable = None
@@ -146,7 +148,19 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
                 )
             }
         }
+        
+    let traits = 
+        module.traits.map {d =>
+            Pair(fullName(module, d.name), d)
+        }
 
     let effect = TConstructor(Location(module.file, 0, 0), "ff:core/Nothing.Nothing", [])
-    Environment("", [...functions, ...lets, ...fields, ...extends, ...variants, ...traitMethods].toMap(), [].toMap(), effect, None)
+    Environment(
+        modulePrefix = ""
+        symbols = [...functions, ...lets, ...fields, ...extends, ...variants, ...traitMethods].toMap()
+        traits = traits.toMap()
+        imports = [].toMap()
+        effect = effect
+        selfVariable = None
+    )
 }

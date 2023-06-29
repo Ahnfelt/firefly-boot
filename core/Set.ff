@@ -32,7 +32,7 @@ instance Set[A: Order]: Order {
 }
 
 instance Set[A: Show: Order]: Show {
-    show(x: Set[A]): String {
-        Show.show(x.toList()) + ".toSet()"
+    show(value: Set[A]): String {
+        Show.show(value.toList()) + ".toSet()"
     }
 }

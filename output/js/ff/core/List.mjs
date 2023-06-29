@@ -1917,6 +1917,16 @@ return ff_core_List.List_addAll(separator_, ff_core_List.Link(e_, ff_core_List.E
 })), ff_core_List.List_size(separator_))
 }
 
+export function List_sort(self_, ff_core_Ordering_Order$T) {
+if((ff_core_List.List_size(self_) <= 1)) {
+return self_
+} else {
+const stack_ = ff_core_List.List_toStack(self_);
+ff_core_Stack.Stack_sort(stack_, ff_core_Ordering_Order$T);
+return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
+}
+}
+
 export function List_toSet(self_, ff_core_Ordering_Order$T) {
 return ff_core_List.List_foldLeft(self_, ff_core_Set.empty_(), ((set_, value_) => {
 return ff_core_Set.Set_add(set_, value_, ff_core_Ordering_Order$T)
@@ -1940,6 +1950,16 @@ return false
 return
 }
 }))
+}
+
+export async function List_sort$(self_, ff_core_Ordering_Order$T, $task) {
+if((ff_core_List.List_size(self_) <= 1)) {
+return self_
+} else {
+const stack_ = ff_core_List.List_toStack(self_);
+ff_core_Stack.Stack_sort(stack_, ff_core_Ordering_Order$T);
+return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
+}
 }
 
 export async function List_toSet$(self_, ff_core_Ordering_Order$T, $task) {
@@ -2153,26 +2173,6 @@ return
 }
 }
 return go_(self_, ff_core_List.Empty())
-}
-
-export function List_sort(self_, ff_core_Ordering_Order$T) {
-if((ff_core_List.List_size(self_) <= 1)) {
-return self_
-} else {
-const stack_ = ff_core_List.List_toStack(self_);
-ff_core_Stack.Stack_sort(stack_, ff_core_Ordering_Order$T);
-return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
-}
-}
-
-export async function List_sort$(self_, ff_core_Ordering_Order$T, $task) {
-if((ff_core_List.List_size(self_) <= 1)) {
-return self_
-} else {
-const stack_ = ff_core_List.List_toStack(self_);
-ff_core_Stack.Stack_sort(stack_, ff_core_Ordering_Order$T);
-return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
-}
 }
 
 export function List_toMap(self_, ff_core_Ordering_Order$K) {
