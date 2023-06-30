@@ -97,6 +97,14 @@ extend self: Path {
             import * as path from 'path';
             return path.relative(self_, path_);
         """
+    
+    endsWith(parts: List[String]): Bool {
+        function go(reversed: List[String]): Bool {
+            | [] => True
+            | [p, ...ps] => self.base() == p && go(ps)
+        }
+        go(parts.reverse())
+    }
 
     base(): String
         target node sync """

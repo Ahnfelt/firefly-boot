@@ -99,11 +99,11 @@ check(
 
     packages.each {package => 
         let firstFile = package.files.grabFirst()
-        let resolvedDependencies = Dependencies.process(system.files(), system.httpClient(), firstFile)
+        let resolvedDependencies = Dependencies.process(system.httpClient(), firstFile)
         let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
             resolvedDependencies.packagePaths
         } else {
-            resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath.slash("core"))
+            resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath.slash("core").absolute())
         }
         let fixedResolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
         let compiler = Compiler.make(
@@ -136,38 +136,24 @@ capability PackageFiles(
 
 findPackageFiles(path: Path): List[PackageFiles] {
     let files = findFireflyFiles(path)
-    let split = files.partition {_.endsWith(".firefly/package.ff")}
+    let split = files.partition {_.endsWith([".firefly", "package.ff"])}
     let packageFiles = split.first
-    mutable codeFiles = split.second
+    mutable singleFiles = split.second
     let multiFileProjects = packageFiles.map {packageFile => 
-        let projectRoot = packageFile.parent().grab().parent.grab()
-        let files = codeFiles.filter {_.startsWith(projectRoot)}
-        let filesSet = files.toSet()
-        codeFiles = codeFiles.filter {file => !filesSet.contains(file)}
-        PackageFiles(
-            FileSystem.relative(fs.workingDirectory(), projectRoot), 
-            Some(FileSystem.relative(fs.workingDirectory(), packageFile)), 
-            files.map {FileSystem.relative(fs.workingDirectory(), _)}
-        )
+        let projectRoot = packageFile.parent().grab().parent().grab()
+        let files = singleFiles.partition {_.isInsideOf(projectRoot)}
+        singleFiles = files.second
+        PackageFiles(projectRoot, Some(packageFile), files.first)
     }
-    let singleFileProjects = codeFiles.map {file => 
-        let projectRoot = file.reverse().dropWhile {_ != '/'}.reverse()
-        PackageFiles(
-            FileSystem.relative(fs.workingDirectory(), projectRoot), 
-            None, 
-            [FileSystem.relative(fs.workingDirectory(), file)]
-        )
+    let singleFileProjects = singleFiles.map {file => 
+        let projectRoot = file.parent().grab()
+        PackageFiles(projectRoot, None, [file])
     }
-    let unfixedProjects = [...multiFileProjects, ...singleFileProjects]
-    unfixedProjects.map {project => PackageFiles(
-        root = project.root.replace("\\", "/")
-        packageFile = project.packageFile.map {_.replace("\\", "/")}
-        files = project.files.map {_.replace("\\", "/")}
-    )}
+    [...multiFileProjects, ...singleFileProjects]
 }
 
-findFireflyFiles(path: Path): List[String] {
-    let split = path.list().partition {_.absolute().isDirectory()}
+findFireflyFiles(path: Path): List[Path] {
+    let split = path.list().partition {_.isDirectory()}
     let directories = split.first
     let fireflyFiles = split.second.filter {_.extension() == ".ff"}
     [...fireflyFiles, ...directories.flatMap {findFireflyFiles(_)}]
