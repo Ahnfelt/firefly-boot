@@ -17,6 +17,7 @@ class Handler(
     mutable virtualFiles: Map[String, String]
     mutable cancelledRequests: Set[MessageId]
     mutable responseCache: Map[Pair[String, Location], ResultOrError]
+    mutable fileSymbolsCache: Map[String, List[DocumentSymbol]]
 )
 
 data MessageId {
@@ -47,7 +48,6 @@ extend self: Handler {
         method.{
             | "initialized" =>
             | "textDocument/didChange" => 
-                self.responseCache = Map.empty()
                 self.handleDidChange(system, parameters)
             | "textDocument/didClose" => self.handleDidClose(system, parameters)
             | "exit" => system.exit(0)
@@ -192,21 +192,39 @@ extend self: Handler {
         let absolutePath = FileSystem.urlToPath(uri)
         let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
         let fixedPath = path.replace("\\", "/")
-        let symbols = try {
+        let symbols = self.getDocumentSymbolsWithCache(system, fixedPath)
+        let lspSymbols = symbols.map {SymbolHandler.documentSymbolToLsp(js, _)}
+        Result(js.array(lspSymbols).toJson())
+    }
+
+    getDocumentSymbols(system: NodeSystem, file: String): List[DocumentSymbol] {
+        try {
             let lspHook = LspHook.make(at = None, definedAt = None, insertIdentifier = False, trackSymbols = True)
-            let code = self.virtualFiles.get(fixedPath).else {system.files().readText(fixedPath)}
-            let tokens = Tokenizer.tokenize(fixedPath, code, None, True)
-            let parser = Parser.make(PackagePair("script", "script"), fixedPath, tokens, False, lspHook)
+            let code = self.virtualFiles.get(file).else {system.files().readText(file)}
+            let tokens = Tokenizer.tokenize(file, code, None, True)
+            let parser = Parser.make(PackagePair("script", "script"), file, tokens, False, lspHook)
             parser.parseModuleWithPackageInfo()
-            SymbolHandler.handleDocumentSymbol(system, lspHook.results())
+            SymbolHandler.readAllSymbols(lspHook.results())
         } catch {| CompileError(at, message), error =>
             Log.trace("handleDocumentSymbol parse error: " + message)
             []
         } catch {| ReadSymbolsError e, _ => 
             Log.trace("handleDocumentSymbol ReadSymbolsError")
             []
-        } grab()
-        Result(system.js().array(symbols).toJson())
+        } grab()        
+    }
+
+    getDocumentSymbolsWithCache(system: NodeSystem, file: String): List[DocumentSymbol] {
+        self.fileSymbolsCache.get(file).{
+            | Some(symbols) => 
+                Log.trace("HIT symbols: " + file)
+                symbols
+            | None => 
+                Log.trace("MISS symbols: " + file)
+                let symbols = self.getDocumentSymbols(system, file)
+                self.fileSymbolsCache = self.fileSymbolsCache.add(file, symbols)
+                symbols
+        }
     }
 
     handleWorkspaceSymbol(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
@@ -215,30 +233,23 @@ extend self: Handler {
         let path = FileSystem.urlToPath(self.rootUri.grab())
         let files = Builder.findFireflyFiles(system.files(), path)
         let symbols = files.flatMap {file => 
-            let code = self.virtualFiles.get(file).else {system.files().readText(file)}
-            try {
-                let tokens = Tokenizer.tokenize(file, code, None, True)
-                let lspHook = LspHook.make(at = None, definedAt = None, insertIdentifier = False, trackSymbols = True)
-                let parser = Parser.make(PackagePair("script", "script"), file, tokens, False, lspHook)
-                parser.parseModuleWithPackageInfo()
-                SymbolHandler.handleWorkspaceSymbol(system, lspHook.stackOfResults.toList(), query)
-            } catch {| CompileError(at, message), error =>
-                Log.trace("handleWorkspaceSymbol parse error " + at.show() + ": " + message)
-                []
-            } catch {| ReadSymbolsError e, error => 
-                Log.trace("handleWorkspaceSymbol ReadSymbolsError")
-                []
-            } grab()
+            let documentSymbols = self.getDocumentSymbolsWithCache(system, file)
+            let workspaceSymbols = documentSymbols.flatMap {SymbolHandler.documentToWorkspaceSymbols(_, None)}
+            let foundSymbols = workspaceSymbols.filter {_.name.startsWith(query)}
+            foundSymbols
         }
-        Result(system.js().array(symbols).toJson())        
+        let jsSymbols = symbols.map {SymbolHandler.workspaceSymbolToLsp(js, system.files(), _)}
+        Result(js.array(jsSymbols).toJson())        
     }
-
+    
     handleDidChange(system: NodeSystem, parameters: Map[String, JsValue]): Unit {
         let js = system.js()
         let uri = parameters.grab("textDocument").get("uri").grabString()
         let absolutePath = FileSystem.urlToPath(uri)
         let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
         let fixedPath = path.replace("\\", "/")
+        self.responseCache = Map.empty()
+        self.fileSymbolsCache = self.fileSymbolsCache.remove(fixedPath)
         let contentChanges = parameters.grab("contentChanges").grabArray()
         if(contentChanges.size() != 1) {throw(LanguageServerException("Expected a single element in contentChanges"))} else:
         let contentChange = contentChanges.grab(0)

@@ -19,7 +19,7 @@ capability RequestMessage(
 
 
 main(system: NodeSystem) {
-    let handler = Handler(None, Map.empty(), [].toSet(), Map.empty())
+    let handler = Handler(None, Map.empty(), [].toSet(), Map.empty(), Map.empty())
     try {
         mutable input = system.readStream()
         let responseChannel: Channel[JsValue] = system.mainTask().channel()
