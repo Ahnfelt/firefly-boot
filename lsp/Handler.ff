@@ -79,7 +79,7 @@ extend self: Handler {
                 self.handleTokenRequestWithCache(system, method, parameters) {targetAt => 
                     self.handleReferences(system, targetAt, local = True)
                 }
-            | "workspace/symbol" => self.handleWorkspaceSymbol(system, parameters)
+            | "workspace/symbol" => self.printTime(system.time(), "handleWorkspaceSymbol") {self.handleWorkspaceSymbol(system, parameters)}
             | "shutdown" => Result(system.js().null().toJson())
             | _ => self.handleUnsupported(system.js())
         }
@@ -231,7 +231,7 @@ extend self: Handler {
         let js = system.js()
         let query = parameters.grab("query").grabString()
         let path = FileSystem.urlToPath(self.rootUri.grab())
-        let files = Builder.findFireflyFiles(system.files(), path)
+        let files = self.printTime(system.time(), "findFireflyFiles") {Builder.findFireflyFiles(system.files(), path)}
         let symbols = files.flatMap {file => 
             let documentSymbols = self.getDocumentSymbolsWithCache(system, file)
             let workspaceSymbols = documentSymbols.flatMap {SymbolHandler.documentToWorkspaceSymbols(_, None)}
@@ -520,6 +520,15 @@ extend self: Handler {
                 .with("line", tokenLocation.endLine - 1)
                 .with("character", tokenLocation.endColumn - 1)
             )
+    }
+    
+    printTime[R](ts: TimeSystem, label: String, body: () => R): R {
+        let start = ts.elapsed()
+        let result = body()
+        let stop = ts.elapsed()
+        let duration = ("" + (stop.seconds - start.seconds)).slice(0, 5)
+        Log.trace(label + ": " + duration + "s")
+        result
     }
 
 }
