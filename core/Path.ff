@@ -111,11 +111,12 @@ extend self: Path {
         """
     
     endsWith(parts: List[String]): Bool {
-        function go(reversed: List[String]): Bool {
-            | [] => True
-            | [p, ...ps] => self.base() == p && go(ps)
+        function go(pathOption: Option[Path], reversed: List[String]): Bool {
+            | _, [] => True
+            | Some(path), [p, ...ps] => path.base() == p && go(path.parent(), ps)
+            | None, _ => False
         }
-        go(parts.reverse())
+        go(Some(self), parts.reverse())
     }
 
     base(): String
