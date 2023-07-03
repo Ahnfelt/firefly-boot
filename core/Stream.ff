@@ -64,7 +64,9 @@ extend self[T]: Stream[T] {
                     | None =>
                         self.next().{
                             | None => result = Some(None)
-                            | Some(o) => inner = body(o)
+                            | Some(o) => 
+                                inner.close()
+                                inner = body(o)
                         }
                 }
             }

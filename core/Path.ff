@@ -90,7 +90,6 @@ extend self: Path {
     entries(): Stream[PathEntry]
         target node async """
             import * as fsPromises from 'fs/promises'
-            import * as path from 'path'
             let dir = null
             return ff_core_Stream.Stream(
                 async () => {
