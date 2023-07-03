@@ -207,7 +207,7 @@ extend self: Path {
         """
     
     truncate(length: Int = 0)
-        target js async """
+        target node async """
             import * as fsPromises from 'fs/promises'
             await fsPromises.truncate(self_, length_)
         """
