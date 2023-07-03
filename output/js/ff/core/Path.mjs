@@ -97,6 +97,9 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 // type Path
 
 
+// type PathEntry
+
+
 
 
 
@@ -145,6 +148,10 @@ throw new Error('Function Path_modified is missing on this target in sync contex
 
 export function Path_list(self_) {
 throw new Error('Function Path_list is missing on this target in sync context.');
+}
+
+export function Path_entries(self_) {
+throw new Error('Function Path_entries is missing on this target in sync context.');
 }
 
 export function Path_absolute(self_) {
@@ -381,6 +388,26 @@ export async function Path_list$(self_, $task) {
             const fsPromises = import$1
             const path = import$2
             return ff_core_Array.Array_toList((await fsPromises.readdir(self_)).map(f => path.join(self_, f)))
+        
+}
+
+export async function Path_entries$(self_, $task) {
+
+            const fsPromises = import$1
+            const path = import$2
+            let dir = null
+            return ff_core_Stream.Stream(
+                async () => {
+                    if(dir === null) dir = await fsPromises.opendir(self_, {bufferSize: 128})
+                    const entry = await dir.read()
+                    if(entry === null) return ff_core_Option.None()
+                    entry.ffPath = self_
+                    return ff_core_Option.Some(entry)
+                },
+                async () => {
+                    await dir.close()
+                }
+            )
         
 }
 
@@ -643,6 +670,47 @@ export async function Path_appendHandle$(self_, alsoRead_ = false, mustCreate_ =
 
             const fsPromises = import$1
             return await fsPromises.open(self_, (mustCreate_ ? 'wx' : 'w') + (alsoRead_ ? '+' : ''))
+        
+}
+
+export function PathEntry_path(self_) {
+throw new Error('Function PathEntry_path is missing on this target in sync context.');
+}
+
+export function PathEntry_isDirectory(self_) {
+throw new Error('Function PathEntry_isDirectory is missing on this target in sync context.');
+}
+
+export function PathEntry_isFile(self_) {
+throw new Error('Function PathEntry_isFile is missing on this target in sync context.');
+}
+
+export function PathEntry_isSymbolicLink(self_) {
+throw new Error('Function PathEntry_isSymbolicLink is missing on this target in sync context.');
+}
+
+export async function PathEntry_path$(self_, $task) {
+
+            const path = import$2
+            return path.join(self_.ffPath, self_.name)
+        
+}
+
+export async function PathEntry_isDirectory$(self_, $task) {
+
+            return self_.isDirectory()
+        
+}
+
+export async function PathEntry_isFile$(self_, $task) {
+
+            return self_.isFile()
+        
+}
+
+export async function PathEntry_isSymbolicLink$(self_, $task) {
+
+            return self_.isSymbolicLink()
         
 }
 
