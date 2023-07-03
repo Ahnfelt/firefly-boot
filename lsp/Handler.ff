@@ -211,7 +211,7 @@ extend self: Handler {
     handleWorkspaceSymbol(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
         let js = system.js()
         let query = parameters.grab("query").grabString()
-        let files = Builder.findFireflyFiles(self.rootPath.grab())
+        let files = self.printTime(system.time(), "findFireflyFiles") {Builder.findFireflyFiles(self.rootPath.grab())}
         let symbols = files.flatMap {file => 
             let code = self.virtualFiles.get(file.absolute()).else {file.readText()}
             try {
@@ -502,5 +502,14 @@ extend self: Handler {
                 .with("character", tokenLocation.endColumn - 1)
             )
     }
+    
+    printTime[R](ts: TimeSystem, label: String, body: () => R): R {
+        let start = ts.elapsed()
+        let result = body()
+        let stop = ts.elapsed()
+        let duration = ("" + (stop.seconds - start.seconds)).slice(0, 5)
+        Log.trace(label + ": " + duration + "s")
+        result
+    }    
 
 }
