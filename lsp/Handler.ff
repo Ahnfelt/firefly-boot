@@ -12,8 +12,9 @@ import CompletionHandler
 import SignatureHelpHandler
 import SymbolHandler
 
-class Handler(
-    mutable rootUri: Option[String]
+capability Handler(
+    fireflyPath: Path
+    mutable rootPath: Option[Path]
     mutable virtualFiles: Map[String, String]
     mutable cancelledRequests: Set[MessageId]
     mutable responseCache: Map[Pair[String, Location], ResultOrError]
@@ -57,7 +58,7 @@ extend self: Handler {
 
     handleRequest(system: NodeSystem, method: String, parameters: Map[String, JsValue]): ResultOrError {
         method.{
-            | "initialize" => self.handleInitialize(system.js(), parameters)
+            | "initialize" => self.handleInitialize(system, parameters)
             | "textDocument/diagnostic" => self.handleDiagnostic(system, parameters)
             | "textDocument/documentSymbol" => self.handleDocumentSymbol(system, parameters)
             | "textDocument/completion" => self.handleCompletion(system, parameters)
@@ -106,8 +107,9 @@ extend self: Handler {
         Error(1234, "Unsupported method")
     }
 
-    handleInitialize(js: JsSystem, parameters: Map[String, JsValue]): ResultOrError {
-        self.rootUri = Some(parameters.grab("rootUri").grabString())
+    handleInitialize(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
+        let js = system.js()
+        self.rootPath = Some(system.pathFromUrl(parameters.grab("rootUri").grabString()))
 
         let anyFireflyFile = js.object()
             .with("filters", [
@@ -165,11 +167,10 @@ extend self: Handler {
     handleDiagnostic(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
         let js = system.js()
         let uri = parameters.grab("textDocument").get("uri").grabString()
-        let absolutePath = FileSystem.urlToPath(uri)
-        let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
-        let fixedPath = path.replace("\\", "/")
+        let path = system.pathFromUrl(uri)
+        let fireflyPath = system.path(".")
         let diagnostics = try {
-            Builder.check(system, ".", fixedPath, self.virtualFiles, LspHook.disabled(), True)
+            Builder.check(system, fireflyPath, path, self.virtualFiles, LspHook.disabled(), True)
             []
         } catch {| CompileError(at, message), error =>
             let tokenLocation = self.findToken(system, at)
@@ -212,14 +213,13 @@ extend self: Handler {
     handleWorkspaceSymbol(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
         let js = system.js()
         let query = parameters.grab("query").grabString()
-        let path = FileSystem.urlToPath(self.rootUri.grab())
-        let files = Builder.findFireflyFiles(system.files(), path)
+        let files = Builder.findFireflyFiles(self.rootPath.grab())
         let symbols = files.flatMap {file => 
-            let code = self.virtualFiles.get(file).else {system.files().readText(file)}
+            let code = self.virtualFiles.get(file.absolute()).else {file.readText()}
             try {
-                let tokens = Tokenizer.tokenize(file, code, None, True)
+                let tokens = Tokenizer.tokenize(file.absolute(), code, None, True)
                 let lspHook = LspHook.make(at = None, definedAt = None, insertIdentifier = False, trackSymbols = True)
-                let parser = Parser.make(PackagePair("script", "script"), file, tokens, False, lspHook)
+                let parser = Parser.make(PackagePair("script", "script"), file.absolute(), tokens, False, lspHook)
                 parser.parseModuleWithPackageInfo()
                 SymbolHandler.handleWorkspaceSymbol(system, lspHook.stackOfResults.toList(), query)
             } catch {| CompileError(at, message), error =>
@@ -259,7 +259,7 @@ extend self: Handler {
     handleHover(system: NodeSystem, targetAt: Location, goToDefinition: Bool): ResultOrError {
         let lspHook = LspHook.make(at = Some(targetAt), definedAt = None, insertIdentifier = False, trackSymbols = False)
         try {
-            Builder.check(system, ".", targetAt.file, self.virtualFiles, lspHook, True)
+            Builder.check(system, self.fireflyPath, system.path(targetAt.file), self.virtualFiles, lspHook, True)
         } catch {| CompileError(at, message), error =>
             Log.trace("handleHover check error: " + message)
         } grab()
@@ -275,7 +275,7 @@ extend self: Handler {
         let completionAt = self.findTokenFromParameters(system, parameters)
         let lspHook = LspHook.make(at = Some(completionAt), definedAt = None, insertIdentifier = True, trackSymbols = False)
         try {
-            Builder.check(system, ".", completionAt.file, self.virtualFiles, lspHook, True)
+            Builder.check(system, self.fireflyPath, system.path(completionAt.file), self.virtualFiles, lspHook, True)
         } catch {| CompileError(at, message), error =>
             Log.trace("handleCompletion check error: " + message)
         } grab()
@@ -309,7 +309,7 @@ extend self: Handler {
             | ParseArgumentHook h => 
                 let callLspHook = LspHook.make(at = Some(h.callAt), definedAt = None, insertIdentifier = False, trackSymbols = False)
                 try {
-                    Builder.check(system, ".", cursorAt.file, self.virtualFiles, callLspHook, True)
+                    Builder.check(system, self.fireflyPath, system.path(cursorAt.file), self.virtualFiles, callLspHook, True)
                 } catch {| CompileError(at, message), error =>
                     Log.trace("handleSignatureHelp check 2 error: " + message)
                 } grab()
@@ -368,7 +368,7 @@ extend self: Handler {
     findReferences(system: NodeSystem, targetAt: Location, local: Bool): Option[List[TokenLocation]] {
         let temporaryLspHook = LspHook.make(at = Some(targetAt), definedAt = None, insertIdentifier = False, trackSymbols = False)
         try {
-            Builder.check(system, ".", targetAt.file, self.virtualFiles, temporaryLspHook, True)
+            Builder.check(system, self.fireflyPath, system.path(targetAt.file), self.virtualFiles, temporaryLspHook, True)
         } catch {| CompileError(at, message), error =>
             Log.trace("findReferences first check error: " + message)
         } grab()
@@ -398,8 +398,8 @@ extend self: Handler {
                 //Log.trace("handleReferences definedAt: " + Show.show(definedAt))
                 let lspHook = LspHook.make(at = None, definedAt = Some(definedAt), insertIdentifier = False, trackSymbols = False)
                 try {
-                    let path = if(local) {targetAt.file} else {FileSystem.urlToPath(self.rootUri.grab())}
-                    Builder.check(system, ".", path, self.virtualFiles, lspHook, True)
+                    let path = if(local) {system.path(targetAt.file)} else {self.rootPath.grab()}
+                    Builder.check(system, self.fireflyPath, path, self.virtualFiles, lspHook, True)
                 } catch {| CompileError(at, message), error =>
                     Log.trace("findReferences second check error: " + message)
                 } grab()

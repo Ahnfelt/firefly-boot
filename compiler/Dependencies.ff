@@ -11,10 +11,10 @@ capability Dependencies(
     mutable singleFilePackages: Set[PackagePair]
 )
 
-data ResolvedDependencies(
+capability ResolvedDependencies(
     mainPackagePair: PackagePair
     packages: Map[PackagePair, PackageInfo]
-    packagePaths: Map[PackagePair, String]
+    packagePaths: Map[PackagePair, Path]
     singleFilePackages: Set[PackagePair]
 )
 
@@ -131,7 +131,7 @@ process(fetch: HttpClient, path: Path): ResolvedDependencies {
     ResolvedDependencies(
         mainPackagePair = packageInfo.package.packagePair
         packages = self.packages
-        packagePaths = packagePaths.mapValues {_, v => v.absolute()}
+        packagePaths = packagePaths
         singleFilePackages = self.singleFilePackages
     )
 }

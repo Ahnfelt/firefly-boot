@@ -14,7 +14,7 @@ capability Compiler(
     time: TimeSystem
     compilerModulePath: Option[Path]
     jsOutputPath: Path
-    packagePaths: Map[PackagePair, String]
+    packagePaths: Map[PackagePair, Path]
     singleFilePackages: Set[PackagePair]
     virtualFiles: Map[String, String]
     lspHook: LspHook
@@ -143,16 +143,15 @@ extend self: Compiler {
             panic("Internal error - package path missing: " + packagePair.groupName())
         }
         let file = moduleName + ".ff"
-        let path = FileSystem.relative(self.files.workingDirectory(), packagePath + "/" + file)
-        let fixedPath = path.replace("\\", "/")
-        let code = self.virtualFiles.get(fixedPath).else {
-            importedAt.each {at => if(!self.files.exists(fixedPath)) {
+        let path = packagePath.slash(file)
+        let code = self.virtualFiles.get(path.absolute()).else {
+            importedAt.each {at => if(!path.exists()) {
                 throw(CompileError(at, "Imported module not found: " + packageName + "/" + moduleName))
             }}
-            self.files.readText(fixedPath)
+            path.readText()
         }
         let completionAt = if(self.lspHook.isEnabled() && self.lspHook.insertIdentifier) {self.lspHook.at}
-        let tokens = Tokenizer.tokenize(fixedPath, code, completionAt, self.lspHook.isEnabled())
+        let tokens = Tokenizer.tokenize(path.absolute(), code, completionAt, self.lspHook.isEnabled())
         let parser = Parser.make(packagePair, file, tokens, self.emitTarget != EmitBrowser, self.lspHook)
         let module = if(self.singleFilePackages.contains(packagePair)) {
             parser.parseModuleWithPackageInfo().module
@@ -235,10 +234,10 @@ extend self: Compiler {
 
         let js = JsEmitter.make([module, ...otherModules], self.emitTarget, isMainModule, self.compilerModulePath)
             .emitModule(packagePair, module)
-        let jsPath = self.jsOutputPath + "/" + packagePair.groupName("/")
-        let jsFile = jsPath + "/" + moduleName + ".mjs"
-        self.files.createDirectories(jsPath)
-        self.files.writeText(jsFile, js)
+        let jsPath = self.jsOutputPath.slash(packagePair.group).slash(packagePair.name)
+        let jsFile = jsPath.slash(moduleName + ".mjs")
+        jsPath.createDirectory(createParentDirectories = True)
+        jsFile.writeText(js)
     }
 
 }

@@ -33,7 +33,7 @@ main(system: NodeSystem): Unit {
         let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
             resolvedDependencies.packagePaths
         } else {
-            resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath.slash("core").absolute())
+            resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath.slash("core"))
         }
         let compilerModulePath = if(emitTarget != EmitBrowser && emitTarget != EmitExecutable) {
             fireflyPath.slash("output").slash("js").slash("ff").slash("compiler/Builder.mjs")
@@ -85,6 +85,7 @@ main(system: NodeSystem): Unit {
             Builder.check(system, fireflyPath, system.path(filePath), Map.empty(), LspHook.disabled(), True)
         
         | BootstrapCommand =>
+            let workingDirectory = system.path(".")
             Builder.build(
                 system = system
                 emitTarget = EmitNode
@@ -94,14 +95,14 @@ main(system: NodeSystem): Unit {
                     mainPackagePair = PackagePair("ff", "compiler")
                     packages = [].toMap() // Only used for includes currently
                     packagePaths = [
-                        Pair(PackagePair("ff", "compiler"), "compiler")
-                        Pair(PackagePair("ff", "core"), "core")
+                        Pair(PackagePair("ff", "compiler"), workingDirectory.slash("compiler"))
+                        Pair(PackagePair("ff", "core"), workingDirectory.slash("core"))
                     ].toMap()
                     singleFilePackages = [].toSet()
                 )
                 compilerModulePath = None
-                tempPath = system.path("output/temporary")
-                jsOutputPath = system.path("output/js")
+                tempPath = workingDirectory.slash("output").slash("temporary")
+                jsOutputPath = workingDirectory.slash("output").slash("js")
                 printMeasurements = True
             )
     }

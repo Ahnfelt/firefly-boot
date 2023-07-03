@@ -19,7 +19,8 @@ capability RequestMessage(
 
 
 main(system: NodeSystem) {
-    let handler = Handler(None, Map.empty(), [].toSet(), Map.empty())
+    let fireflyPath = system.path(".")
+    let handler = Handler(fireflyPath, None, Map.empty(), [].toSet(), Map.empty())
     try {
         mutable input = system.readStream()
         let responseChannel: Channel[JsValue] = system.mainTask().channel()
