@@ -194,7 +194,7 @@ bundleForBrowser(system: NodeSystem, packagePair: PackagePair, mainFile: String)
     let browserCode = BrowserCode(
         packageGroup = packagePair.group
         packageName = packagePair.name
-        mainFile = mainFile
+        mainFile = system.path(mainFile)
         assetSystem = AssetSystem([Pair("/", {system.path(".").readStream()})].toMap())
     ) // TODO
     BuildSystem.internalCallEsBuild(browserCode, mainJsFile, outputPath = file, minify = True, sourceMap = True)

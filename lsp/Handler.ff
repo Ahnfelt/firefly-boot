@@ -281,7 +281,7 @@ extend self: Handler {
         let cursorAt = self.findLocationFromParameters(system, parameters)
         let lspHook = LspHook.make(at = Some(cursorAt), definedAt = None, insertIdentifier = False, trackSymbols = False)
         try {
-            let code = self.virtualFiles.get(cursorAt.file).else {system.files().readText(cursorAt.file)}
+            let code = self.virtualFiles.get(cursorAt.file).else {system.path(cursorAt.file).readText()}
             let tokens = Tokenizer.tokenize(cursorAt.file, code, None, True)
             let parser = Parser.make(PackagePair("script", "script"), cursorAt.file, tokens, False, lspHook)
             parser.parseModuleWithPackageInfo()
@@ -442,7 +442,7 @@ extend self: Handler {
             raw = ""
         )
         try {
-            let code = self.virtualFiles.get(at.file).else {system.files().readText(at.file)}
+            let code = self.virtualFiles.get(at.file).else {system.path(at.file).readText()}
             let tokens = Tokenizer.tokenize(at.file, code, None, True)
             let token = tokens.toStream().find {token =>
                 at.line >= token.startLine && at.line <= token.stopLine && (

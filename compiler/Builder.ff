@@ -161,18 +161,17 @@ findFireflyFiles(path: Path): List[Path] {
 
 internalCreateExecutable(
     self: BuildSystem
-    mainJsFile: String = ".firefly/output/executable/Main.bundle.js"
-    outputPath: String = ".firefly/output"
+    mainJsFile: Path = ".firefly/output/executable/Main.bundle.js"
+    outputPath: Path = ".firefly/output"
     targets: List[String] = ["host"]
     assets: AssetSystem = AssetSystem.create()
 ): Unit
     target node {
-        let fs = internalFileSystem(self)
-        let assetOutputPath = outputPath + "/assets"
+        let assetOutputPath = outputPath.slash("assets")
         assets.files.pairs().each {| Pair(path, makeStream) =>
-            let p = assetOutputPath + path
-            fs.createDirectories(p.reverse().dropWhile {_ != '/'}.reverse())
-            fs.writeStream(p, makeStream())
+            let p = assetOutputPath.slash(path)
+            p.parent().grab().createDirectory(createParentDirectories = True)
+            p.writeStream(makeStream())
         }
         let json = """{
             "name": "main",
@@ -193,15 +192,15 @@ internalCreateExecutable(
                 ]
             }
         }"""
-        let packageFile = outputPath + "/executable/package.json"
-        fs.writeText(packageFile, json)
+        let packageFile = outputPath.slash("executable/package.json")
+        packageFile.writeText(json)
         internalCallPkg(self, packageFile, outputPath, targets)
     }
 
 internalCallPkg(
-    self: BuildSystem,
-    packageFile: String,
-    outputPath: String,
+    self: BuildSystem
+    packageFile: Path
+    outputPath: Path
     targets: List[String]
 ): Unit
     target node async """
@@ -211,9 +210,4 @@ internalCallPkg(
             '--out-path', outputPath_,
             '--target', ff_core_List.List_toArray(targets_).join(',')
         ])
-    """
-
-internalFileSystem(dummy: BuildSystem): FileSystem
-    target node async """
-        return null;
     """

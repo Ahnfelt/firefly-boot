@@ -76,7 +76,6 @@ coreImports: List[DImport] =
         "Equal"
         "Error"
         "FileHandle"
-        "FileSystem"
         "Float"
         "HttpClient"
         "Instant"
@@ -209,7 +208,7 @@ extend self: Compiler {
 
         let module = self.derive(packagePair, moduleName)
         let otherModules = self.imports(module).map {i =>
-            self.derive(i.packagePair, FileSystem.prefixName(i.file))
+            self.derive(i.packagePair, i.file.dropLast(".ff".size()))
         }
         let inference = Inference.make([module, ...otherModules], self.lspHook)
         let inferredModule = inference.inferModule(module, otherModules)
@@ -227,7 +226,7 @@ extend self: Compiler {
 
         let module = self.infer(packagePair, moduleName)
         let otherModules = self.imports(module).map {i =>
-            let newModuleName = FileSystem.prefixName(i.file)
+            let newModuleName = i.file.dropLast(".ff".size())
             self.emit(i.packagePair, newModuleName, isMainModule = False)
             self.infer(i.packagePair, newModuleName)
         }

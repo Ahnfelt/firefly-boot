@@ -50,8 +50,6 @@ import * as ff_core_Error from "../../ff/core/Error.mjs"
 
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
-import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
-
 import * as ff_core_Float from "../../ff/core/Float.mjs"
 
 import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
@@ -223,11 +221,15 @@ return ff_core_List.List_addAll(multiFileProjects_, singleFileProjects_)
 }
 
 export function findFireflyFiles_(path_) {
-const split_ = ff_core_List.List_partition(ff_core_Path.Path_list(path_), ((_w1) => {
-return ff_core_Path.Path_isDirectory(_w1)
+const split_ = ff_core_List.List_partition(ff_core_Stream.Stream_toList(ff_core_Path.Path_entries(path_)), ((_w1) => {
+return ff_core_Path.PathEntry_isDirectory(_w1)
 }));
-const directories_ = split_.first_;
-const fireflyFiles_ = ff_core_List.List_filter(split_.second_, ((_w1) => {
+const directories_ = ff_core_List.List_map(split_.first_, ((_w1) => {
+return ff_core_Path.PathEntry_path(_w1)
+}));
+const fireflyFiles_ = ff_core_List.List_filter(ff_core_List.List_map(split_.second_, ((_w1) => {
+return ff_core_Path.PathEntry_path(_w1)
+})), ((_w1) => {
 return (ff_core_Path.Path_extension(_w1) === ".ff")
 }));
 return ff_core_List.List_addAll(fireflyFiles_, ff_core_List.List_flatMap(directories_, ((_w1) => {
@@ -236,17 +238,14 @@ return ff_compiler_Builder.findFireflyFiles_(_w1)
 }
 
 export function internalCreateExecutable_(self_, mainJsFile_ = ".firefly/output/executable/Main.bundle.js", outputPath_ = ".firefly/output", targets_ = ff_core_List.Link("host", ff_core_List.Empty()), assets_ = ff_core_AssetSystem.create_()) {
-const fs_ = ff_compiler_Builder.internalFileSystem_(self_);
-const assetOutputPath_ = (outputPath_ + "/assets");
+const assetOutputPath_ = ff_core_Path.Path_slash(outputPath_, "assets");
 ff_core_List.List_each(ff_core_Map.Map_pairs(assets_.files_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
 {
 const path_ = _1.first_;
 const makeStream_ = _1.second_;
-const p_ = (assetOutputPath_ + path_);
-ff_core_FileSystem.FileSystem_createDirectories(fs_, ff_core_String.String_reverse(ff_core_String.String_dropWhile(ff_core_String.String_reverse(p_), ((_w1) => {
-return (_w1 !== 47)
-}))));
-ff_core_FileSystem.FileSystem_writeStream(fs_, p_, makeStream_(), false)
+const p_ = ff_core_Path.Path_slash(assetOutputPath_, path_);
+ff_core_Path.Path_createDirectory(ff_core_Option.Option_grab(ff_core_Path.Path_parent(p_)), true);
+ff_core_Path.Path_writeStream(p_, makeStream_(), false)
 return
 }
 }));
@@ -269,17 +268,13 @@ const json_ = `{
                 ]
             }
         }`;
-const packageFile_ = (outputPath_ + "/executable/package.json");
-ff_core_FileSystem.FileSystem_writeText(fs_, packageFile_, json_);
+const packageFile_ = ff_core_Path.Path_slash(outputPath_, "executable/package.json");
+ff_core_Path.Path_writeText(packageFile_, json_);
 ff_compiler_Builder.internalCallPkg_(self_, packageFile_, outputPath_, targets_)
 }
 
 export function internalCallPkg_(self_, packageFile_, outputPath_, targets_) {
 throw new Error('Function internalCallPkg is missing on this target in sync context.');
-}
-
-export function internalFileSystem_(dummy_) {
-throw new Error('Function internalFileSystem is missing on this target in sync context.');
 }
 
 export async function build_$(system_, emitTarget_, mainPackage_, mainModule_, resolvedDependencies_, compilerModulePath_, tempPath_, jsOutputPath_, printMeasurements_, $task) {
@@ -390,11 +385,15 @@ return ff_core_List.List_addAll(multiFileProjects_, singleFileProjects_)
 }
 
 export async function findFireflyFiles_$(path_, $task) {
-const split_ = (await ff_core_List.List_partition$((await ff_core_Path.Path_list$(path_, $task)), (async (_w1, $task) => {
-return (await ff_core_Path.Path_isDirectory$(_w1, $task))
+const split_ = (await ff_core_List.List_partition$((await ff_core_Stream.Stream_toList$((await ff_core_Path.Path_entries$(path_, $task)), $task)), (async (_w1, $task) => {
+return (await ff_core_Path.PathEntry_isDirectory$(_w1, $task))
 }), $task));
-const directories_ = split_.first_;
-const fireflyFiles_ = (await ff_core_List.List_filter$(split_.second_, (async (_w1, $task) => {
+const directories_ = (await ff_core_List.List_map$(split_.first_, (async (_w1, $task) => {
+return (await ff_core_Path.PathEntry_path$(_w1, $task))
+}), $task));
+const fireflyFiles_ = (await ff_core_List.List_filter$((await ff_core_List.List_map$(split_.second_, (async (_w1, $task) => {
+return (await ff_core_Path.PathEntry_path$(_w1, $task))
+}), $task)), (async (_w1, $task) => {
 return ((await ff_core_Path.Path_extension$(_w1, $task)) === ".ff")
 }), $task));
 return ff_core_List.List_addAll(fireflyFiles_, (await ff_core_List.List_flatMap$(directories_, (async (_w1, $task) => {
@@ -403,17 +402,14 @@ return (await ff_compiler_Builder.findFireflyFiles_$(_w1, $task))
 }
 
 export async function internalCreateExecutable_$(self_, mainJsFile_ = ".firefly/output/executable/Main.bundle.js", outputPath_ = ".firefly/output", targets_ = ff_core_List.Link("host", ff_core_List.Empty()), assets_ = ff_core_AssetSystem.create_(), $task) {
-const fs_ = (await ff_compiler_Builder.internalFileSystem_$(self_, $task));
-const assetOutputPath_ = (outputPath_ + "/assets");
+const assetOutputPath_ = (await ff_core_Path.Path_slash$(outputPath_, "assets", $task));
 (await ff_core_List.List_each$(ff_core_Map.Map_pairs(assets_.files_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async (_1, $task) => {
 {
 const path_ = _1.first_;
 const makeStream_ = _1.second_;
-const p_ = (assetOutputPath_ + path_);
-(await ff_core_FileSystem.FileSystem_createDirectories$(fs_, ff_core_String.String_reverse(ff_core_String.String_dropWhile(ff_core_String.String_reverse(p_), ((_w1) => {
-return (_w1 !== 47)
-}))), $task));
-(await ff_core_FileSystem.FileSystem_writeStream$(fs_, p_, (await makeStream_($task)), false, $task))
+const p_ = (await ff_core_Path.Path_slash$(assetOutputPath_, path_, $task));
+(await ff_core_Path.Path_createDirectory$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(p_, $task))), true, $task));
+(await ff_core_Path.Path_writeStream$(p_, (await makeStream_($task)), false, $task))
 return
 }
 }), $task));
@@ -436,8 +432,8 @@ const json_ = `{
                 ]
             }
         }`;
-const packageFile_ = (outputPath_ + "/executable/package.json");
-(await ff_core_FileSystem.FileSystem_writeText$(fs_, packageFile_, json_, $task));
+const packageFile_ = (await ff_core_Path.Path_slash$(outputPath_, "executable/package.json", $task));
+(await ff_core_Path.Path_writeText$(packageFile_, json_, $task));
 (await ff_compiler_Builder.internalCallPkg_$(self_, packageFile_, outputPath_, targets_, $task))
 }
 
@@ -449,12 +445,6 @@ export async function internalCallPkg_$(self_, packageFile_, outputPath_, target
             '--out-path', outputPath_,
             '--target', ff_core_List.List_toArray(targets_).join(',')
         ])
-    
-}
-
-export async function internalFileSystem_$(dummy_, $task) {
-
-        return null;
     
 }
 

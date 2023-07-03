@@ -36,8 +36,6 @@ import * as ff_core_Error from "../../ff/core/Error.mjs"
 
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
-import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
-
 import * as ff_core_Float from "../../ff/core/Float.mjs"
 
 import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
@@ -102,9 +100,55 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
+export function internalReadStream_(createReadStream_) {
+throw new Error('Function internalReadStream is missing on this target in sync context.');
+}
 
+export async function internalReadStream_$(createReadStream_, $task) {
 
-
+        let task = null
+        let readable = null
+        let doResolve = null
+        let doReject = null
+        let seenError = null
+        const abort = () => {
+            if(task != null) {
+                task.controller.signal.removeEventListener('abort', abort)
+                readable.destroy()
+            }
+        }
+        function open($task) {
+            ff_core_Task.Task_throwIfAborted($task)
+            task = $task
+            readable = createReadStream_()
+            readable.on('readable', () => {
+                if(doResolve != null) doResolve()
+            })
+            readable.on('error', error => {
+                task.controller.signal.removeEventListener('abort', abort)
+                seenError = error
+                if(doReject != null) doReject(error)
+            })
+            readable.on('close', () => {
+                task.controller.signal.removeEventListener('abort', abort)
+                if(doResolve != null) doResolve()
+            })
+            $task.controller.signal.addEventListener('abort', abort)
+        }
+        return ff_core_Stream.Stream(async function go($task) {
+            if(task == null) open($task)
+            let buffer = readable.read()
+            if(buffer != null) return ff_core_Option.Some(new DataView(buffer.buffer, buffer.byteOffset, buffer.length))
+            if(seenError != null) throw seenError
+            if(readable.destroyed) return ff_core_Option.None()
+            let promise = new Promise((resolve, reject) => {
+                doResolve = () => {doResolve = null; doReject = null; resolve()}
+                doReject = error => {doResolve = null; doReject = null; reject(error)}
+            }).then(() => go($task))
+            return await promise
+        }, abort)
+    
+}
 
 export function Path_exists(self_, checkReadable_ = false, checkWritable_ = false, checkExecutable_ = false) {
 throw new Error('Function Path_exists is missing on this target in sync context.');
@@ -604,7 +648,7 @@ export async function Path_appendBuffer$(self_, buffer_, $task) {
 export async function Path_readStream$(self_, $task) {
 
             const fs = import$0
-            return ff_core_FileSystem.internalReadStream_$(() => fs.createReadStream(self_))
+            return ff_core_Path.internalReadStream_$(() => fs.createReadStream(self_))
         
 }
 
