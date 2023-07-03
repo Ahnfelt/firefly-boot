@@ -226,7 +226,7 @@ prepareFireflyDirectory(path: Path) {
 }
 
 detectFireflyPath(system: NodeSystem): Path
-    target node sync """
+    target node async """
         import * as url from 'url'
         const suffix = '/output/js/ff/compiler/Main.mjs'
         const moduleUrl = import.meta.url

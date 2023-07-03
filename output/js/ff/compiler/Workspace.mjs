@@ -104,25 +104,22 @@ return {packageGroup_, packageName_, location_};
 
 export const centralLocation_ = "http://ting.ahnfelt.dk/firefly/repository/";
 
-export function loadWorkspace_(fs_, path_) {
-const packageDirectory_ = (ff_core_String.String_endsWith(path_, ".ff")
-? ff_core_FileSystem.directoryName_(path_)
+export function loadWorkspace_(path_) {
+const packageDirectory_ = ((ff_core_Path.Path_extension(path_) === ".ff")
+? ff_core_Option.Option_grab(ff_core_Path.Path_parent(path_))
 : path_);
-const fixedPackageDirectory_ = ((packageDirectory_ === "")
-? "."
-: packageDirectory_);
-const workspaceFile_ = (fixedPackageDirectory_ + "/.firefly-workspace");
-if(ff_core_FileSystem.FileSystem_exists(fs_, workspaceFile_)) {
-return ff_compiler_Workspace.parseWorkspaceFile_(fs_, workspaceFile_, fixedPackageDirectory_)
-} else if(ff_core_FileSystem.FileSystem_exists(fs_, (fixedPackageDirectory_ + "/.."))) {
-return ff_compiler_Workspace.loadWorkspace_(fs_, (fixedPackageDirectory_ + "/.."))
+const workspaceFile_ = ff_core_Path.Path_slash(packageDirectory_, ".firefly-workspace");
+if(ff_core_Path.Path_exists(workspaceFile_, false, false, false)) {
+return ff_compiler_Workspace.parseWorkspaceFile_(workspaceFile_, packageDirectory_)
+} else if((!ff_core_Option.Option_isEmpty(ff_core_Path.Path_parent(packageDirectory_)))) {
+return ff_compiler_Workspace.loadWorkspace_(ff_core_Option.Option_grab(ff_core_Path.Path_parent(packageDirectory_)))
 } else {
 return ff_compiler_Workspace.Workspace(ff_core_List.Empty(), ff_compiler_Workspace.centralLocation_, ".")
 }
 }
 
-export function parseWorkspaceFile_(fs_, path_, packageDirectory_) {
-const text_ = ff_core_FileSystem.FileSystem_readText(fs_, path_);
+export function parseWorkspaceFile_(path_, packageDirectory_) {
+const text_ = ff_core_Path.Path_readText(path_);
 let defaultLocation_ = ff_core_Option.None();
 const lines_ = ff_core_List.List_filter(ff_core_List.List_map(ff_core_Array.Array_toList(ff_core_String.String_split(text_, 10)), ((_w1) => {
 return ff_core_String.String_takeWhile(ff_core_String.String_replace(_w1, "\r", ""), ((_w1) => {
@@ -164,32 +161,29 @@ return ff_core_Option.Some(ff_compiler_Workspace.WorkspaceRule(ff_core_Array.Arr
 }));
 return ff_compiler_Workspace.Workspace(rules_, ff_core_Option.Option_else(defaultLocation_, (() => {
 return ff_compiler_Workspace.centralLocation_
-})), packageDirectory_)
+})), ff_core_Path.Path_absolute(packageDirectory_))
 }
 
 export function tarGzName_(packagePair_, version_) {
 return (((((((((packagePair_.group_ + "_") + packagePair_.name_) + "_") + version_.major_) + "_") + version_.minor_) + "_") + version_.patch_) + ".tar.gz")
 }
 
-export async function loadWorkspace_$(fs_, path_, $task) {
-const packageDirectory_ = (ff_core_String.String_endsWith(path_, ".ff")
-? ff_core_FileSystem.directoryName_(path_)
+export async function loadWorkspace_$(path_, $task) {
+const packageDirectory_ = (((await ff_core_Path.Path_extension$(path_, $task)) === ".ff")
+? ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(path_, $task)))
 : path_);
-const fixedPackageDirectory_ = ((packageDirectory_ === "")
-? "."
-: packageDirectory_);
-const workspaceFile_ = (fixedPackageDirectory_ + "/.firefly-workspace");
-if((await ff_core_FileSystem.FileSystem_exists$(fs_, workspaceFile_, $task))) {
-return (await ff_compiler_Workspace.parseWorkspaceFile_$(fs_, workspaceFile_, fixedPackageDirectory_, $task))
-} else if((await ff_core_FileSystem.FileSystem_exists$(fs_, (fixedPackageDirectory_ + "/.."), $task))) {
-return (await ff_compiler_Workspace.loadWorkspace_$(fs_, (fixedPackageDirectory_ + "/.."), $task))
+const workspaceFile_ = (await ff_core_Path.Path_slash$(packageDirectory_, ".firefly-workspace", $task));
+if((await ff_core_Path.Path_exists$(workspaceFile_, false, false, false, $task))) {
+return (await ff_compiler_Workspace.parseWorkspaceFile_$(workspaceFile_, packageDirectory_, $task))
+} else if((!ff_core_Option.Option_isEmpty((await ff_core_Path.Path_parent$(packageDirectory_, $task))))) {
+return (await ff_compiler_Workspace.loadWorkspace_$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(packageDirectory_, $task))), $task))
 } else {
 return ff_compiler_Workspace.Workspace(ff_core_List.Empty(), ff_compiler_Workspace.centralLocation_, ".")
 }
 }
 
-export async function parseWorkspaceFile_$(fs_, path_, packageDirectory_, $task) {
-const text_ = (await ff_core_FileSystem.FileSystem_readText$(fs_, path_, $task));
+export async function parseWorkspaceFile_$(path_, packageDirectory_, $task) {
+const text_ = (await ff_core_Path.Path_readText$(path_, $task));
 let defaultLocation_ = ff_core_Option.None();
 const lines_ = ff_core_List.List_filter(ff_core_List.List_map(ff_core_Array.Array_toList(ff_core_String.String_split(text_, 10)), ((_w1) => {
 return ff_core_String.String_takeWhile(ff_core_String.String_replace(_w1, "\r", ""), ((_w1) => {
@@ -231,7 +225,7 @@ return ff_core_Option.Some(ff_compiler_Workspace.WorkspaceRule(ff_core_Array.Arr
 }));
 return ff_compiler_Workspace.Workspace(rules_, ff_core_Option.Option_else(defaultLocation_, (() => {
 return ff_compiler_Workspace.centralLocation_
-})), packageDirectory_)
+})), (await ff_core_Path.Path_absolute$(packageDirectory_, $task)))
 }
 
 export async function tarGzName_$(packagePair_, version_, $task) {

@@ -112,36 +112,31 @@ return {mainPackagePair_, packages_, packagePaths_, singleFilePackages_};
 
 
 
-export function process_(fs_, fetch_, path_) {
-const fixedPath_ = ff_core_String.String_replace(path_, "\\", "/");
-const workspace_ = ff_compiler_Workspace.loadWorkspace_(fs_, fixedPath_);
+export function process_(fetch_, path_) {
+const workspace_ = ff_compiler_Workspace.loadWorkspace_(path_);
 const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, fs_, ff_compiler_Syntax.PackagePair("script", "script"), fixedPath_);
+const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, ff_compiler_Syntax.PackagePair("script", "script"), path_);
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
-ff_compiler_Dependencies.Dependencies_processDependencies(self_, fs_, fetch_, newDependencies_);
-const packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, packageInfo_.package_.packagePair_, ff_compiler_Dependencies.findScriptPackageLocation_(fs_, fixedPath_), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
+ff_compiler_Dependencies.Dependencies_processDependencies(self_, path_, fetch_, newDependencies_);
+const packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, packageInfo_.package_.packagePair_, ff_compiler_Dependencies.findScriptPackageLocation_(path_), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 return ff_compiler_Dependencies.ResolvedDependencies(packageInfo_.package_.packagePair_, self_.packages_, packagePaths_, self_.singleFilePackages_)
 }
 
-export function findScriptPackageLocation_(fs_, path_) {
-const fixedPath_ = ff_core_String.String_replace(path_, "\\", "/");
-const packageDirectory_ = (ff_core_String.String_endsWith(fixedPath_, ".ff")
-? ff_core_FileSystem.directoryName_(fixedPath_)
-: fixedPath_);
-const fixedPackageDirectory_ = ((packageDirectory_ === "")
-? "."
-: packageDirectory_);
+export function findScriptPackageLocation_(path_) {
+const packageDirectory_ = ((ff_core_Path.Path_extension(path_) === ".ff")
+? ff_core_Option.Option_grab(ff_core_Path.Path_parent(path_))
+: path_);
 function go_(directory_) {
-const packageFile_ = (directory_ + "/.firefly/package.ff");
-if(ff_core_FileSystem.FileSystem_exists(fs_, packageFile_)) {
+const packageFile_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(directory_, ".firefly"), "package.ff");
+if(ff_core_Path.Path_exists(packageFile_, false, false, false)) {
 return directory_
-} else if((ff_core_FileSystem.FileSystem_exists(fs_, (directory_ + "/..")) && (ff_core_FileSystem.FileSystem_absolutePath(fs_, directory_) !== ff_core_FileSystem.FileSystem_absolutePath(fs_, (directory_ + "/.."))))) {
-return go_((directory_ + "/.."))
+} else if((!ff_core_Option.Option_isEmpty(ff_core_Path.Path_parent(directory_)))) {
+return go_(ff_core_Option.Option_grab(ff_core_Path.Path_parent(directory_)))
 } else {
-return fixedPackageDirectory_
+return packageDirectory_
 }
 }
-return go_(fixedPackageDirectory_)
+return go_(packageDirectory_)
 }
 
 export function checkPackagePairs_(dependencyPair_, packagePair_) {
@@ -150,40 +145,35 @@ ff_core_Core.panic_(((("Dependency declaration and package declaration disagree 
 }
 }
 
-export function internalExtractTarGz_(fs_, tarGzPath_, path_) {
+export function internalExtractTarGz_(tarGzPath_, path_) {
 throw new Error('Function internalExtractTarGz is missing on this target in sync context.');
 }
 
-export async function process_$(fs_, fetch_, path_, $task) {
-const fixedPath_ = ff_core_String.String_replace(path_, "\\", "/");
-const workspace_ = (await ff_compiler_Workspace.loadWorkspace_$(fs_, fixedPath_, $task));
+export async function process_$(fetch_, path_, $task) {
+const workspace_ = (await ff_compiler_Workspace.loadWorkspace_$(path_, $task));
 const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, fs_, ff_compiler_Syntax.PackagePair("script", "script"), fixedPath_, $task));
-const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
-(await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, fetch_, newDependencies_, $task));
-const packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, packageInfo_.package_.packagePair_, (await ff_compiler_Dependencies.findScriptPackageLocation_$(fs_, fixedPath_, $task)), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
+const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, ff_compiler_Syntax.PackagePair("script", "script"), path_, $task));
+const newDependencies_ = (await ff_compiler_Dependencies.Dependencies_processPackageInfo$(self_, packageInfo_, $task));
+(await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, path_, fetch_, newDependencies_, $task));
+const packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, packageInfo_.package_.packagePair_, (await ff_compiler_Dependencies.findScriptPackageLocation_$(path_, $task)), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 return ff_compiler_Dependencies.ResolvedDependencies(packageInfo_.package_.packagePair_, self_.packages_, packagePaths_, self_.singleFilePackages_)
 }
 
-export async function findScriptPackageLocation_$(fs_, path_, $task) {
-const fixedPath_ = ff_core_String.String_replace(path_, "\\", "/");
-const packageDirectory_ = (ff_core_String.String_endsWith(fixedPath_, ".ff")
-? ff_core_FileSystem.directoryName_(fixedPath_)
-: fixedPath_);
-const fixedPackageDirectory_ = ((packageDirectory_ === "")
-? "."
-: packageDirectory_);
+export async function findScriptPackageLocation_$(path_, $task) {
+const packageDirectory_ = (((await ff_core_Path.Path_extension$(path_, $task)) === ".ff")
+? ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(path_, $task)))
+: path_);
 async function go_$(directory_, $task) {
-const packageFile_ = (directory_ + "/.firefly/package.ff");
-if((await ff_core_FileSystem.FileSystem_exists$(fs_, packageFile_, $task))) {
+const packageFile_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(directory_, ".firefly", $task)), "package.ff", $task));
+if((await ff_core_Path.Path_exists$(packageFile_, false, false, false, $task))) {
 return directory_
-} else if(((await ff_core_FileSystem.FileSystem_exists$(fs_, (directory_ + "/.."), $task)) && ((await ff_core_FileSystem.FileSystem_absolutePath$(fs_, directory_, $task)) !== (await ff_core_FileSystem.FileSystem_absolutePath$(fs_, (directory_ + "/.."), $task))))) {
-return (await go_$((directory_ + "/.."), $task))
+} else if((!ff_core_Option.Option_isEmpty((await ff_core_Path.Path_parent$(directory_, $task))))) {
+return (await go_$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(directory_, $task))), $task))
 } else {
-return fixedPackageDirectory_
+return packageDirectory_
 }
 }
-return (await go_$(fixedPackageDirectory_, $task))
+return (await go_$(packageDirectory_, $task))
 }
 
 export async function checkPackagePairs_$(dependencyPair_, packagePair_, $task) {
@@ -192,27 +182,27 @@ ff_core_Core.panic_(((("Dependency declaration and package declaration disagree 
 }
 }
 
-export async function internalExtractTarGz_$(fs_, tarGzPath_, path_, $task) {
+export async function internalExtractTarGz_$(tarGzPath_, path_, $task) {
 
         const tar = import$0
         await tar.extract({file: tarGzPath_, cwd: path_, strict: true})
     
 }
 
-export function Dependencies_loadPackageInfo(self_, fs_, packagePair_, path_) {
-const packageDirectory_ = (ff_core_String.String_endsWith(path_, ".ff")
-? (ff_core_FileSystem.directoryName_(path_) + "/")
+export function Dependencies_loadPackageInfo(self_, packagePair_, path_) {
+const packageDirectory_ = ((ff_core_Path.Path_extension(path_) === ".ff")
+? ff_core_Option.Option_grab(ff_core_Path.Path_parent(path_))
 : path_);
-const sharedPackageFile_ = (packageDirectory_ + "/.firefly/package.ff");
-const packageFile_ = (ff_core_FileSystem.FileSystem_exists(fs_, sharedPackageFile_)
+const sharedPackageFile_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(packageDirectory_, ".firefly"), "package.ff");
+const packageFile_ = (ff_core_Path.Path_exists(sharedPackageFile_, false, false, false)
 ? sharedPackageFile_
 : (function() {
 self_.singleFilePackages_ = ff_core_Set.Set_add(self_.singleFilePackages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 return path_
 })());
-const code_ = ff_core_FileSystem.FileSystem_readText(fs_, packageFile_);
-const tokens_ = ff_compiler_Tokenizer.tokenize_(packageFile_, code_, ff_core_Option.None(), true);
-const parser_ = ff_compiler_Parser.make_(packagePair_, packageFile_, tokens_, false, ff_compiler_LspHook.disabled_());
+const code_ = ff_core_Path.Path_readText(packageFile_);
+const tokens_ = ff_compiler_Tokenizer.tokenize_(ff_core_Path.Path_relativeTo(packageFile_, path_), code_, ff_core_Option.None(), true);
+const parser_ = ff_compiler_Parser.make_(packagePair_, ff_core_Path.Path_relativeTo(packageFile_, path_), tokens_, false, ff_compiler_LspHook.disabled_());
 const info_ = ff_compiler_Parser.Parser_parsePackageInfo(parser_);
 return ff_compiler_Dependencies.Dependencies_addCoreDependencyIfMissing(self_, info_)
 }
@@ -242,44 +232,44 @@ return (!ff_core_Map.Map_contains(self_.packages_, _w1.packagePair_, ff_compiler
 }))
 }
 
-export function Dependencies_fetchDependency(self_, fs_, httpClient_, dependency_) {
+export function Dependencies_fetchDependency(self_, path_, httpClient_, dependency_) {
 const location_ = ff_compiler_Workspace.Workspace_findPackageLocation(self_.workspace_, dependency_.packagePair_, dependency_.version_);
 if((ff_core_String.String_contains(location_, ":") && (!ff_core_String.String_startsWith(ff_core_String.String_dropFirst(location_, 1), ":", 0)))) {
 if((ff_core_String.String_startsWith(location_, "http://", 0) || ff_core_String.String_startsWith(location_, "https://", 0))) {
 const packagePair_ = dependency_.packagePair_;
-const dependenciesPath_ = ".firefly/dependencies";
-const dependencyPath_ = ((((dependenciesPath_ + "/") + packagePair_.group_) + "/") + packagePair_.name_);
-const tarGzPath_ = ((dependenciesPath_ + "/") + ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_));
-const donePath_ = (((dependenciesPath_ + "/") + ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_)) + ".done");
-if((!ff_core_FileSystem.FileSystem_exists(fs_, donePath_))) {
+const dependenciesPath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(path_, ".firefly"), "dependencies");
+const dependencyPath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(dependenciesPath_, packagePair_.group_), packagePair_.name_);
+const tarGzPath_ = ff_core_Path.Path_slash(dependenciesPath_, ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_));
+const donePath_ = ff_core_Path.Path_slash(dependenciesPath_, (ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_) + ".done"));
+if((!ff_core_Path.Path_exists(donePath_, false, false, false))) {
 ff_core_Log.debug_(("Fetching " + location_));
 const response_ = ff_core_HttpClient.HttpClient_fetch(httpClient_, location_, "GET", ff_core_HttpClient.emptyList_, ff_core_Option.None(), ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), false);
 if((!ff_core_HttpClient.FetchResponse_ok(response_))) {
 ff_core_Core.panic_(("Could not download dependency: " + location_))
 };
 const buffer_ = ff_core_HttpClient.FetchResponse_readBuffer(response_);
-if(ff_core_FileSystem.FileSystem_exists(fs_, dependencyPath_)) {
-ff_core_FileSystem.FileSystem_deleteDirectory(fs_, dependencyPath_)
+if(ff_core_Path.Path_exists(dependencyPath_, false, false, false)) {
+ff_core_Path.Path_delete(dependencyPath_, 0, 100)
 };
-ff_core_FileSystem.FileSystem_createDirectories(fs_, dependencyPath_);
-ff_core_FileSystem.FileSystem_writeStream(fs_, tarGzPath_, ff_core_List.List_toStream(ff_core_List.Link(buffer_, ff_core_List.Empty()), false), false);
-ff_compiler_Dependencies.internalExtractTarGz_(fs_, tarGzPath_, dependencyPath_);
-ff_core_FileSystem.FileSystem_rename(fs_, tarGzPath_, donePath_)
+ff_core_Path.Path_createDirectory(dependencyPath_, true);
+ff_core_Path.Path_writeStream(tarGzPath_, ff_core_List.List_toStream(ff_core_List.Link(buffer_, ff_core_List.Empty()), false), false);
+ff_compiler_Dependencies.internalExtractTarGz_(tarGzPath_, dependencyPath_);
+ff_core_Path.Path_renameTo(tarGzPath_, donePath_)
 };
 return dependencyPath_
 } else {
 return ff_core_Core.panic_(("Loading packages by this protocol is not supported: " + location_))
 }
 } else {
-return location_
+return ff_core_Path.Path_path(path_, location_)
 }
 }
 
-export function Dependencies_processDependencies(self_, fs_, httpClient_, dependencies_) {
+export function Dependencies_processDependencies(self_, path_, httpClient_, dependencies_) {
 const packageInfos_ = ff_core_List.List_map(dependencies_, ((dependency_) => {
-const path_ = ff_compiler_Dependencies.Dependencies_fetchDependency(self_, fs_, httpClient_, dependency_);
-self_.packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, dependency_.packagePair_, path_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
-const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, fs_, dependency_.packagePair_, path_);
+const dependencyPath_ = ff_compiler_Dependencies.Dependencies_fetchDependency(self_, path_, httpClient_, dependency_);
+self_.packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, dependency_.packagePair_, dependencyPath_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
+const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, dependency_.packagePair_, dependencyPath_);
 ff_compiler_Dependencies.checkPackagePairs_(dependency_.packagePair_, packageInfo_.package_.packagePair_);
 return packageInfo_
 }));
@@ -287,26 +277,26 @@ const newDependencies_ = ff_core_List.List_flatMap(packageInfos_, ((_w1) => {
 return ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, _w1)
 }));
 if(ff_core_Equal.notEquals_(newDependencies_, ff_core_List.Empty(), ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DDependency))) {
-ff_compiler_Dependencies.Dependencies_processDependencies(self_, fs_, httpClient_, newDependencies_)
+ff_compiler_Dependencies.Dependencies_processDependencies(self_, path_, httpClient_, newDependencies_)
 }
 }
 
-export async function Dependencies_loadPackageInfo$(self_, fs_, packagePair_, path_, $task) {
-const packageDirectory_ = (ff_core_String.String_endsWith(path_, ".ff")
-? (ff_core_FileSystem.directoryName_(path_) + "/")
+export async function Dependencies_loadPackageInfo$(self_, packagePair_, path_, $task) {
+const packageDirectory_ = (((await ff_core_Path.Path_extension$(path_, $task)) === ".ff")
+? ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(path_, $task)))
 : path_);
-const sharedPackageFile_ = (packageDirectory_ + "/.firefly/package.ff");
-const packageFile_ = ((await ff_core_FileSystem.FileSystem_exists$(fs_, sharedPackageFile_, $task))
+const sharedPackageFile_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(packageDirectory_, ".firefly", $task)), "package.ff", $task));
+const packageFile_ = ((await ff_core_Path.Path_exists$(sharedPackageFile_, false, false, false, $task))
 ? sharedPackageFile_
 : (await (async function() {
 self_.singleFilePackages_ = ff_core_Set.Set_add(self_.singleFilePackages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 return path_
 })()));
-const code_ = (await ff_core_FileSystem.FileSystem_readText$(fs_, packageFile_, $task));
-const tokens_ = ff_compiler_Tokenizer.tokenize_(packageFile_, code_, ff_core_Option.None(), true);
-const parser_ = ff_compiler_Parser.make_(packagePair_, packageFile_, tokens_, false, ff_compiler_LspHook.disabled_());
+const code_ = (await ff_core_Path.Path_readText$(packageFile_, $task));
+const tokens_ = ff_compiler_Tokenizer.tokenize_((await ff_core_Path.Path_relativeTo$(packageFile_, path_, $task)), code_, ff_core_Option.None(), true);
+const parser_ = ff_compiler_Parser.make_(packagePair_, (await ff_core_Path.Path_relativeTo$(packageFile_, path_, $task)), tokens_, false, ff_compiler_LspHook.disabled_());
 const info_ = ff_compiler_Parser.Parser_parsePackageInfo(parser_);
-return ff_compiler_Dependencies.Dependencies_addCoreDependencyIfMissing(self_, info_)
+return (await ff_compiler_Dependencies.Dependencies_addCoreDependencyIfMissing$(self_, info_, $task))
 }
 
 export async function Dependencies_addCoreDependencyIfMissing$(self_, info_, $task) {
@@ -334,272 +324,55 @@ return (!ff_core_Map.Map_contains(self_.packages_, _w1.packagePair_, ff_compiler
 }))
 }
 
-export async function Dependencies_fetchDependency$(self_, fs_, httpClient_, dependency_, $task) {
+export async function Dependencies_fetchDependency$(self_, path_, httpClient_, dependency_, $task) {
 const location_ = ff_compiler_Workspace.Workspace_findPackageLocation(self_.workspace_, dependency_.packagePair_, dependency_.version_);
 if((ff_core_String.String_contains(location_, ":") && (!ff_core_String.String_startsWith(ff_core_String.String_dropFirst(location_, 1), ":", 0)))) {
 if((ff_core_String.String_startsWith(location_, "http://", 0) || ff_core_String.String_startsWith(location_, "https://", 0))) {
 const packagePair_ = dependency_.packagePair_;
-const dependenciesPath_ = ".firefly/dependencies";
-const dependencyPath_ = ((((dependenciesPath_ + "/") + packagePair_.group_) + "/") + packagePair_.name_);
-const tarGzPath_ = ((dependenciesPath_ + "/") + ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_));
-const donePath_ = (((dependenciesPath_ + "/") + ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_)) + ".done");
-if((!(await ff_core_FileSystem.FileSystem_exists$(fs_, donePath_, $task)))) {
+const dependenciesPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(path_, ".firefly", $task)), "dependencies", $task));
+const dependencyPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(dependenciesPath_, packagePair_.group_, $task)), packagePair_.name_, $task));
+const tarGzPath_ = (await ff_core_Path.Path_slash$(dependenciesPath_, ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_), $task));
+const donePath_ = (await ff_core_Path.Path_slash$(dependenciesPath_, (ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_) + ".done"), $task));
+if((!(await ff_core_Path.Path_exists$(donePath_, false, false, false, $task)))) {
 ff_core_Log.debug_(("Fetching " + location_));
 const response_ = (await ff_core_HttpClient.HttpClient_fetch$(httpClient_, location_, "GET", ff_core_HttpClient.emptyList_, ff_core_Option.None(), ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), false, $task));
 if((!(await ff_core_HttpClient.FetchResponse_ok$(response_, $task)))) {
 ff_core_Core.panic_(("Could not download dependency: " + location_))
 };
 const buffer_ = (await ff_core_HttpClient.FetchResponse_readBuffer$(response_, $task));
-if((await ff_core_FileSystem.FileSystem_exists$(fs_, dependencyPath_, $task))) {
-(await ff_core_FileSystem.FileSystem_deleteDirectory$(fs_, dependencyPath_, $task))
+if((await ff_core_Path.Path_exists$(dependencyPath_, false, false, false, $task))) {
+(await ff_core_Path.Path_delete$(dependencyPath_, 0, 100, $task))
 };
-(await ff_core_FileSystem.FileSystem_createDirectories$(fs_, dependencyPath_, $task));
-(await ff_core_FileSystem.FileSystem_writeStream$(fs_, tarGzPath_, (await ff_core_List.List_toStream$(ff_core_List.Link(buffer_, ff_core_List.Empty()), false, $task)), false, $task));
-(await ff_compiler_Dependencies.internalExtractTarGz_$(fs_, tarGzPath_, dependencyPath_, $task));
-(await ff_core_FileSystem.FileSystem_rename$(fs_, tarGzPath_, donePath_, $task))
+(await ff_core_Path.Path_createDirectory$(dependencyPath_, true, $task));
+(await ff_core_Path.Path_writeStream$(tarGzPath_, (await ff_core_List.List_toStream$(ff_core_List.Link(buffer_, ff_core_List.Empty()), false, $task)), false, $task));
+(await ff_compiler_Dependencies.internalExtractTarGz_$(tarGzPath_, dependencyPath_, $task));
+(await ff_core_Path.Path_renameTo$(tarGzPath_, donePath_, $task))
 };
 return dependencyPath_
 } else {
 return ff_core_Core.panic_(("Loading packages by this protocol is not supported: " + location_))
 }
 } else {
-return location_
+return (await ff_core_Path.Path_path$(path_, location_, $task))
 }
 }
 
-export async function Dependencies_processDependencies$(self_, fs_, httpClient_, dependencies_, $task) {
+export async function Dependencies_processDependencies$(self_, path_, httpClient_, dependencies_, $task) {
 const packageInfos_ = (await ff_core_List.List_map$(dependencies_, (async (dependency_, $task) => {
-const path_ = (await ff_compiler_Dependencies.Dependencies_fetchDependency$(self_, fs_, httpClient_, dependency_, $task));
-self_.packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, dependency_.packagePair_, path_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
-const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, fs_, dependency_.packagePair_, path_, $task));
+const dependencyPath_ = (await ff_compiler_Dependencies.Dependencies_fetchDependency$(self_, path_, httpClient_, dependency_, $task));
+self_.packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, dependency_.packagePair_, dependencyPath_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
+const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, dependency_.packagePair_, dependencyPath_, $task));
 ff_compiler_Dependencies.checkPackagePairs_(dependency_.packagePair_, packageInfo_.package_.packagePair_);
 return packageInfo_
 }), $task));
-const newDependencies_ = ff_core_List.List_flatMap(packageInfos_, ((_w1) => {
-return ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, _w1)
-}));
+const newDependencies_ = (await ff_core_List.List_flatMap$(packageInfos_, (async (_w1, $task) => {
+return (await ff_compiler_Dependencies.Dependencies_processPackageInfo$(self_, _w1, $task))
+}), $task));
 if(ff_core_Equal.notEquals_(newDependencies_, ff_core_List.Empty(), ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DDependency))) {
-(await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, httpClient_, newDependencies_, $task))
+(await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, path_, httpClient_, newDependencies_, $task))
 }
 }
 
-export const ff_core_Any_HasAnyTag$ff_compiler_Dependencies_ResolvedDependencies = {
-anyTag_() {
-return ff_core_Any.internalAnyTag_((("ff:compiler/Dependencies.ResolvedDependencies" + "[") + "]"))
-},
-async anyTag_$($task) {
-return ff_core_Any.internalAnyTag_((("ff:compiler/Dependencies.ResolvedDependencies" + "[") + "]"))
-}
-};
 
-export const ff_core_Show_Show$ff_compiler_Dependencies_ResolvedDependencies = {
-show_(value_) {
-{
-const value_a = value_;
-{
-const z_ = value_a;
-return ((((((((("ResolvedDependencies" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.mainPackagePair_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackageInfo).show_(z_.packages_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.packagePaths_)) + ", ") + ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).show_(z_.singleFilePackages_)) + ")")
-return
-}
-}
-},
-async show_$(value_, $task) {
-{
-const value_a = value_;
-{
-const z_ = value_a;
-return ((((((((("ResolvedDependencies" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.mainPackagePair_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackageInfo).show_(z_.packages_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.packagePaths_)) + ", ") + ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).show_(z_.singleFilePackages_)) + ")")
-return
-}
-}
-}
-};
-
-export const ff_core_Equal_Equal$ff_compiler_Dependencies_ResolvedDependencies = {
-equals_(x_, y_) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return true
-return
-}
-}
-{
-return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.mainPackagePair_, y_.mainPackagePair_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackageInfo).equals_(x_.packages_, y_.packages_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.packagePaths_, y_.packagePaths_) && ff_core_Set.ff_core_Equal_Equal$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).equals_(x_.singleFilePackages_, y_.singleFilePackages_))))
-return
-}
-}
-},
-async equals_$(x_, y_, $task) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return true
-return
-}
-}
-{
-return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.mainPackagePair_, y_.mainPackagePair_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackageInfo).equals_(x_.packages_, y_.packages_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.packagePaths_, y_.packagePaths_) && ff_core_Set.ff_core_Equal_Equal$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).equals_(x_.singleFilePackages_, y_.singleFilePackages_))))
-return
-}
-}
-}
-};
-
-export const ff_core_Ordering_Order$ff_compiler_Dependencies_ResolvedDependencies = {
-compare_(x_, y_) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-{
-const mainPackagePairOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair.compare_(x_.mainPackagePair_, y_.mainPackagePair_);
-if((mainPackagePairOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return mainPackagePairOrdering_
-} else {
-const packagesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackageInfo).compare_(x_.packages_, y_.packages_);
-if((packagesOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return packagesOrdering_
-} else {
-const packagePathsOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.packagePaths_, y_.packagePaths_);
-if((packagePathsOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return packagePathsOrdering_
-} else {
-const singleFilePackagesOrdering_ = ff_core_Set.ff_core_Ordering_Order$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).compare_(x_.singleFilePackages_, y_.singleFilePackages_);
-if((singleFilePackagesOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return singleFilePackagesOrdering_
-} else {
-return ff_core_Ordering.OrderingSame()
-}
-}
-}
-}
-return
-}
-}
-},
-async compare_$(x_, y_, $task) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-{
-const mainPackagePairOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair.compare_(x_.mainPackagePair_, y_.mainPackagePair_);
-if((mainPackagePairOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return mainPackagePairOrdering_
-} else {
-const packagesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackageInfo).compare_(x_.packages_, y_.packages_);
-if((packagesOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return packagesOrdering_
-} else {
-const packagePathsOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.packagePaths_, y_.packagePaths_);
-if((packagePathsOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return packagePathsOrdering_
-} else {
-const singleFilePackagesOrdering_ = ff_core_Set.ff_core_Ordering_Order$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).compare_(x_.singleFilePackages_, y_.singleFilePackages_);
-if((singleFilePackagesOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return singleFilePackagesOrdering_
-} else {
-return ff_core_Ordering.OrderingSame()
-}
-}
-}
-}
-return
-}
-}
-}
-};
-
-export const ff_core_Serializable_Serializable$ff_compiler_Dependencies_ResolvedDependencies = {
-serializeUsing_(serialization_, value_) {
-{
-const serialization_a = serialization_;
-const value_a = value_;
-{
-const v_ = value_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 45), 0);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
-serialization_.offset_ += 1;
-ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.serializeUsing_(serialization_, v_.mainPackagePair_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackageInfo).serializeUsing_(serialization_, v_.packages_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.packagePaths_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).serializeUsing_(serialization_, v_.singleFilePackages_)
-return
-}
-}
-},
-deserializeUsing_(serialization_) {
-const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
-serialization_.offset_ += 1;
-{
-const _1 = variantIndex_;
-{
-if(_1 == 0) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 45), 0);
-return ff_compiler_Dependencies.ResolvedDependencies(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackageInfo).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).deserializeUsing_(serialization_))
-return
-}
-}
-{
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
-}
-}
-},
-async serializeUsing_$(serialization_, value_, $task) {
-{
-const serialization_a = serialization_;
-const value_a = value_;
-{
-const v_ = value_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 45), 0);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
-serialization_.offset_ += 1;
-ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.serializeUsing_(serialization_, v_.mainPackagePair_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackageInfo).serializeUsing_(serialization_, v_.packages_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.packagePaths_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).serializeUsing_(serialization_, v_.singleFilePackages_)
-return
-}
-}
-},
-async deserializeUsing_$(serialization_, $task) {
-const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
-serialization_.offset_ += 1;
-{
-const _1 = variantIndex_;
-{
-if(_1 == 0) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 45), 0);
-return ff_compiler_Dependencies.ResolvedDependencies(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackageInfo).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).deserializeUsing_(serialization_))
-return
-}
-}
-{
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
-}
-}
-}
-};
 
 
