@@ -93,7 +93,7 @@ extend self: Path {
         """
 
     relativeTo(path: Path): String
-        target node sync """
+        target node async """
             import * as path from 'path';
             return path.relative(self_, path_);
         """
@@ -107,37 +107,37 @@ extend self: Path {
     }
 
     base(): String
-        target node sync """
+        target node async """
             import * as path from 'path'
             return path.basename(self_)
         """
 
     extension(): String
-        target node sync """
+        target node async """
             import * as path from 'path'
             return path.extname(self_)
         """
 
     url(): String
-        target node sync """
+        target node async """
             import * as url from 'url';
             return '' + url.pathToFileURL(self_);
         """
 
     delimiter(): String
-        target node sync """
+        target node async """
             import * as path from 'path';
             return path.delimiter(self_);
         """
 
     separator(): String
-        target node sync """
+        target node async """
             import * as path from 'path';
             return path.separator();
         """
 
     parent(): Option[Path]
-        target node sync """
+        target node async """
             import * as path from 'path'
             const result = path.dirname(self_)
             return result !== "" && result !== self_
@@ -146,7 +146,7 @@ extend self: Path {
         """
 
     slash(relativePath: String): Path
-        target node sync """
+        target node async """
             import * as path from 'path'
             return path.join(self_, relativePath_)
         """
