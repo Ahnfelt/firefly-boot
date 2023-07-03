@@ -190,14 +190,12 @@ extend self: Handler {
     handleDocumentSymbol(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
         let js = system.js()
         let uri = parameters.grab("textDocument").get("uri").grabString()
-        let absolutePath = FileSystem.urlToPath(uri)
-        let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
-        let fixedPath = path.replace("\\", "/")
+        let path = system.pathFromUrl(uri)
         let symbols = try {
             let lspHook = LspHook.make(at = None, definedAt = None, insertIdentifier = False, trackSymbols = True)
-            let code = self.virtualFiles.get(fixedPath).else {system.files().readText(fixedPath)}
-            let tokens = Tokenizer.tokenize(fixedPath, code, None, True)
-            let parser = Parser.make(PackagePair("script", "script"), fixedPath, tokens, False, lspHook)
+            let code = self.virtualFiles.get(path.absolute()).else {path.readText()}
+            let tokens = Tokenizer.tokenize(path.absolute(), code, None, True)
+            let parser = Parser.make(PackagePair("script", "script"), path.absolute(), tokens, False, lspHook)
             parser.parseModuleWithPackageInfo()
             SymbolHandler.handleDocumentSymbol(system, lspHook.results())
         } catch {| CompileError(at, message), error =>
@@ -236,24 +234,20 @@ extend self: Handler {
     handleDidChange(system: NodeSystem, parameters: Map[String, JsValue]): Unit {
         let js = system.js()
         let uri = parameters.grab("textDocument").get("uri").grabString()
-        let absolutePath = FileSystem.urlToPath(uri)
-        let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
-        let fixedPath = path.replace("\\", "/")
+        let path = system.pathFromUrl(uri)
         let contentChanges = parameters.grab("contentChanges").grabArray()
         if(contentChanges.size() != 1) {throw(LanguageServerException("Expected a single element in contentChanges"))} else:
         let contentChange = contentChanges.grab(0)
         if(!contentChange.get("range").isNullOrUndefined()) {throw(LanguageServerException("Expected a complete contentChange"))} else:
         let content = contentChange.get("text").grabString()
-        self.virtualFiles = self.virtualFiles.add(fixedPath, content)
+        self.virtualFiles = self.virtualFiles.add(path.absolute(), content)
     }
 
     handleDidClose(system: NodeSystem, parameters: Map[String, JsValue]): Unit {
         let js = system.js()
         let uri = parameters.grab("textDocument").get("uri").grabString()
-        let absolutePath = FileSystem.urlToPath(uri)
-        let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
-        let fixedPath = path.replace("\\", "/")
-        self.virtualFiles = self.virtualFiles.remove(fixedPath)
+        let path = system.pathFromUrl(uri)
+        self.virtualFiles = self.virtualFiles.remove(path.absolute())
     }
 
     handleHover(system: NodeSystem, targetAt: Location, goToDefinition: Bool): ResultOrError {
@@ -484,18 +478,16 @@ extend self: Handler {
 
     findLocationFromParameters(system: NodeSystem, parameters: Map[String, JsValue]): Location {
         let uri = parameters.grab("textDocument").get("uri").grabString()
-        let absolutePath = FileSystem.urlToPath(uri)
-        let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
-        let fixedPath = path.replace("\\", "/")
+        let path = system.pathFromUrl(uri)
         let line = parameters.grab("position").get("line").grabInt() + 1
         let column = parameters.grab("position").get("character").grabInt() + 1
-        Location(fixedPath, line, column)
+        Location(path.absolute(), line, column)
     }
 
     tokenLocationToLspLocation(system: NodeSystem, tokenLocation: TokenLocation): JsValue {
         let js = system.js()
         js.object()
-            .with("uri", FileSystem.pathToUrl(system.files().absolutePath(tokenLocation.file)))
+            .with("uri", system.path(tokenLocation.file).url())
             .with("range", self.tokenLocationToLspRange(js, tokenLocation))
     }
 
