@@ -4,15 +4,15 @@ capability BrowserBundle(assetSystem: AssetSystem)
 
 extend self: BuildSystem {
 
-    compileForBrowser(mainFile: Path): BrowserCode {
+    compileForBrowser(mainFile: String): BrowserCode {
         // TODO: Check that the mainFile is in the current package directory
-        internalCompile(self, mainFile, "browser")
+        internalCompile(self, internalPath(self, mainFile), "browser")
         let streams = internalListDirectory(internalPath(self, ".firefly/output/browser"))
         let mainPackagePair = internalMainPackagePair(self)
         BrowserCode(
             packageGroup = mainPackagePair.first
             packageName = mainPackagePair.second
-            mainFile = mainFile
+            mainFile = internalPath(self, mainFile)
             assetSystem = AssetSystem(streams.toMap())
         )
     }
@@ -124,13 +124,13 @@ internalListDirectory(path: Path): List[Pair[String, () => Stream[Buffer]]] {
         }
     }
     go(path).map {file =>
-        Pair(file.relativeTo(path), {file.readStream()})
+        Pair("/" + file.relativeTo(path), {file.readStream()})
     }.toList()
 }
 
 internalPath(buildSystem: BuildSystem, absoluteOrRelative: String): Path
     target node async """
-        return absoluteOrRelative
+        return absoluteOrRelative_
     """
 
 internalCompile(buildSystem: BuildSystem, mainFile: Path, target: String): Unit

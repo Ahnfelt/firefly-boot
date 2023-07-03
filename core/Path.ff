@@ -115,7 +115,7 @@ extend self: Path {
     relativeTo(path: Path): String
         target node async """
             import * as path from 'path';
-            return path.relative(self_, path_);
+            return path.relative(path_, self_);
         """
     
     endsWith(parts: List[String]): Bool {
