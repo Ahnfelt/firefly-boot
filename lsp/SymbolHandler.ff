@@ -61,7 +61,7 @@ handleWorkspaceSymbol(system: NodeSystem, resultHooks: List[ResultHook], query: 
     let foundSymbols = workspaceSymbols.filter {_.name.startsWith(query)}
     //Log.trace("handleWorkspaceSymbol")
     //workspaceSymbols.each {Log.show(_)}
-    let jsSymbols = foundSymbols.map {workspaceSymbolToLsp(system.js(), system.files(), _)}
+    let jsSymbols = foundSymbols.map {workspaceSymbolToLsp(system.js(), system.path("."), _)}
     //workspaceSymbolsJs.each {Log.trace(_.toJson(None))}
     jsSymbols
 }
@@ -99,12 +99,12 @@ documentSymbolToLsp(js: JsSystem, symbol: DocumentSymbol): JsValue {
         .with("children", js.array(symbol.children.map {documentSymbolToLsp(js, _)}))
 }
 
-workspaceSymbolToLsp(js: JsSystem, fs: FileSystem, symbol: WorkspaceSymbol): JsValue {
+workspaceSymbolToLsp(js: JsSystem, rootPath: Path, symbol: WorkspaceSymbol): JsValue {
     let o = js.object()
         .with("name", symbol.name)
         .with("kind", symbol.kind)
         .with("location", js.object()
-            .with("uri", FileSystem.pathToUrl(fs.absolutePath(symbol.selectionStart.file)))
+            .with("uri", rootPath.path(symbol.selectionStart.file).url())
             .with("range", locationsToLspRange(js, symbol.selectionStart, symbol.selectionEnd))
         )
     symbol.containerName.{

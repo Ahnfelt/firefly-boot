@@ -6,16 +6,14 @@ extend self: NodeSystem {
         target node async "return self_.array_"
 
     assets(): AssetSystem {
-        let assetPkgSnapshotPath = "/snapshot/output/assets"
-        if(self.files().isDirectory(assetPkgSnapshotPath)) {
-            let fs = self.files()
-            function streams(path: String): List[Pair[String, () => Stream[Buffer]]] {
-                let files = fs.list(path)
-                files.flatMap {file =>
-                    if(fs.isDirectory(file)) {
-                        streams(file)
+        let assetPkgSnapshotPath = self.path("/snapshot/output/assets")
+        if(assetPkgSnapshotPath.isDirectory()) {
+            function streams(path: Path): Stream[Pair[String, () => Stream[Buffer]]] {
+                path.entries().flatMap {file =>
+                    if(file.isDirectory()) {
+                        streams(file.path())
                     } else {
-                        [Pair(file.dropFirst(assetPkgSnapshotPath.size()), {fs.readStream(file)})]
+                        [Pair(file.path().relativeTo(assetPkgSnapshotPath), {file.path().readStream()})].toStream()
                     }
                 }
             }
@@ -24,9 +22,6 @@ extend self: NodeSystem {
             internalAssets(self)
         }
     }
-
-    files(): FileSystem
-        target node async "return null"
 
     path(relativePath: String): Path
         target node async """
@@ -57,7 +52,7 @@ extend self: NodeSystem {
 
     readStream(): Stream[Buffer]
         target js async """
-            return ff_core_FileSystem.internalReadStream_$(() => process.stdin)
+            return ff_core_Path.internalReadStream_$(() => process.stdin)
         """
 
     writeBuffer(buffer: Buffer): Unit

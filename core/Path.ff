@@ -1,4 +1,5 @@
 capability Path {}
+capability PathEntry {}
 
 extend self: Path {
 
@@ -79,11 +80,22 @@ extend self: Path {
             return (await fs.promises.stat(file)).mtimeMs * 0.001
         """
 
-    list(): List[Path]
+    entries(): Stream[PathEntry]
         target node async """
             import * as fsPromises from 'fs/promises'
-            import * as path from 'path'
-            return ff_core_Array.Array_toList((await fsPromises.readdir(self_)).map(f => path.join(self_, f)))
+            let dir = null
+            return ff_core_Stream.Stream(
+                async () => {
+                    if(dir === null) dir = await fsPromises.opendir(self_, {bufferSize: 128})
+                    const entry = await dir.read()
+                    if(entry === null) return ff_core_Option.None()
+                    entry.ffPath = self_
+                    return ff_core_Option.Some(entry)
+                },
+                async () => {
+                    await dir.close()
+                }
+            )
         """
 
     absolute(): String
@@ -93,43 +105,52 @@ extend self: Path {
         """
 
     relativeTo(path: Path): String
-        target node sync """
+        target node async """
             import * as path from 'path';
-            return path.relative(self_, path_);
+            return path.relative(path_, self_);
         """
+    
+    endsWith(parts: List[String]): Bool {
+        function go(pathOption: Option[Path], reversed: List[String]): Bool {
+            | _, [] => True
+            | Some(path), [p, ...ps] => path.base() == p && go(path.parent(), ps)
+            | None, _ => False
+        }
+        go(Some(self), parts.reverse())
+    }
 
     base(): String
-        target node sync """
+        target node async """
             import * as path from 'path'
             return path.basename(self_)
         """
 
     extension(): String
-        target node sync """
+        target node async """
             import * as path from 'path'
             return path.extname(self_)
         """
 
     url(): String
-        target node sync """
+        target node async """
             import * as url from 'url';
             return '' + url.pathToFileURL(self_);
         """
 
     delimiter(): String
-        target node sync """
+        target node async """
             import * as path from 'path';
             return path.delimiter(self_);
         """
 
     separator(): String
-        target node sync """
+        target node async """
             import * as path from 'path';
             return path.separator();
         """
 
     parent(): Option[Path]
-        target node sync """
+        target node async """
             import * as path from 'path'
             const result = path.dirname(self_)
             return result !== "" && result !== self_
@@ -138,17 +159,23 @@ extend self: Path {
         """
 
     slash(relativePath: String): Path
-        target node sync """
+        target node async """
             import * as path from 'path'
             return path.join(self_, relativePath_)
+        """
+
+    path(absoluteOrRelativePath: String): Path
+        target node async """
+            import * as path from 'path'
+            return path.resolve(self_, absoluteOrRelativePath_)
         """
 
     copyTo(path: Path, retries: Int = 0, retryDelay: Int = 100) {
         if(self.isDirectory()) {
             if(path.exists()) {path.delete(retries, retryDelay)}
             path.createDirectory()
-            self.list().each {file =>
-                self.copyTo(path.slash(file.relativeTo(self)), retries, retryDelay)
+            self.entries().each {file =>
+                self.copyTo(path.slash(file.path().relativeTo(self)), retries, retryDelay)
             }
         } else {
             path.writeStream(self.readStream())
@@ -174,7 +201,7 @@ extend self: Path {
         """
     
     truncate(length: Int = 0)
-        target js async """
+        target node async """
             import * as fsPromises from 'fs/promises'
             await fsPromises.truncate(self_, length_)
         """
@@ -230,7 +257,7 @@ extend self: Path {
     readStream(): Stream[Buffer]
         target node async """
             import * as fs from 'fs'
-            return ff_core_FileSystem.internalReadStream_$(() => fs.createReadStream(self_))
+            return ff_core_Path.internalReadStream_$(() => fs.createReadStream(self_))
         """
 
     writeStream(stream: Stream[Buffer], createOnly: Bool = False)
@@ -294,3 +321,73 @@ extend self: Path {
         """
 
 }
+
+extend self: PathEntry {
+    
+    path(): Path
+        target node async """
+            import * as path from 'path'
+            return path.join(self_.ffPath, self_.name)
+        """
+
+    isDirectory(): Bool
+        target node async """
+            return self_.isDirectory()
+        """
+
+    isFile(): Bool
+        target node async """
+            return self_.isFile()
+        """
+
+    isSymbolicLink(): Bool
+        target node async """
+            return self_.isSymbolicLink()
+        """
+
+}
+
+internalReadStream(createReadStream: () => JsValue): Stream[Buffer]
+    target node async """
+        let task = null
+        let readable = null
+        let doResolve = null
+        let doReject = null
+        let seenError = null
+        const abort = () => {
+            if(task != null) {
+                task.controller.signal.removeEventListener('abort', abort)
+                readable.destroy()
+            }
+        }
+        function open($task) {
+            ff_core_Task.Task_throwIfAborted($task)
+            task = $task
+            readable = createReadStream_()
+            readable.on('readable', () => {
+                if(doResolve != null) doResolve()
+            })
+            readable.on('error', error => {
+                task.controller.signal.removeEventListener('abort', abort)
+                seenError = error
+                if(doReject != null) doReject(error)
+            })
+            readable.on('close', () => {
+                task.controller.signal.removeEventListener('abort', abort)
+                if(doResolve != null) doResolve()
+            })
+            $task.controller.signal.addEventListener('abort', abort)
+        }
+        return ff_core_Stream.Stream(async function go($task) {
+            if(task == null) open($task)
+            let buffer = readable.read()
+            if(buffer != null) return ff_core_Option.Some(new DataView(buffer.buffer, buffer.byteOffset, buffer.length))
+            if(seenError != null) throw seenError
+            if(readable.destroyed) return ff_core_Option.None()
+            let promise = new Promise((resolve, reject) => {
+                doResolve = () => {doResolve = null; doReject = null; resolve()}
+                doReject = error => {doResolve = null; doReject = null; reject(error)}
+            }).then(() => go($task))
+            return await promise
+        }, abort)
+    """

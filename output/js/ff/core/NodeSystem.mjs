@@ -32,8 +32,6 @@ import * as ff_core_Error from "../../ff/core/Error.mjs"
 
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
-import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
-
 import * as ff_core_Float from "../../ff/core/Float.mjs"
 
 import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
@@ -108,29 +106,23 @@ throw new Error('Function NodeSystem_arguments is missing on this target in sync
 }
 
 export function NodeSystem_assets(self_) {
-const assetPkgSnapshotPath_ = "/snapshot/output/assets";
-if(ff_core_FileSystem.FileSystem_isDirectory(ff_core_NodeSystem.NodeSystem_files(self_), assetPkgSnapshotPath_)) {
-const fs_ = ff_core_NodeSystem.NodeSystem_files(self_);
+const assetPkgSnapshotPath_ = ff_core_NodeSystem.NodeSystem_path(self_, "/snapshot/output/assets");
+if(ff_core_Path.Path_isDirectory(assetPkgSnapshotPath_)) {
 function streams_(path_) {
-const files_ = ff_core_FileSystem.FileSystem_list(fs_, path_);
-return ff_core_List.List_flatMap(files_, ((file_) => {
-if(ff_core_FileSystem.FileSystem_isDirectory(fs_, file_)) {
-return streams_(file_)
+return ff_core_Stream.Stream_flatMap(ff_core_Path.Path_entries(path_), ((file_) => {
+if(ff_core_Path.PathEntry_isDirectory(file_)) {
+return streams_(ff_core_Path.PathEntry_path(file_))
 } else {
-return ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(assetPkgSnapshotPath_)), (() => {
-return ff_core_FileSystem.FileSystem_readStream(fs_, file_)
-})), ff_core_List.Empty())
+return ff_core_List.List_toStream(ff_core_List.Link(ff_core_Pair.Pair(ff_core_Path.Path_relativeTo(ff_core_Path.PathEntry_path(file_), assetPkgSnapshotPath_), (() => {
+return ff_core_Path.Path_readStream(ff_core_Path.PathEntry_path(file_))
+})), ff_core_List.Empty()), false)
 }
 }))
 }
-return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_(assetPkgSnapshotPath_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+return ff_core_AssetSystem.AssetSystem(ff_core_Stream.Stream_toMap(streams_(assetPkgSnapshotPath_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 } else {
 return ff_core_NodeSystem.internalAssets_(self_)
 }
-}
-
-export function NodeSystem_files(self_) {
-throw new Error('Function NodeSystem_files is missing on this target in sync context.');
 }
 
 export function NodeSystem_path(self_, relativePath_) {
@@ -206,29 +198,23 @@ return self_.array_
 }
 
 export async function NodeSystem_assets$(self_, $task) {
-const assetPkgSnapshotPath_ = "/snapshot/output/assets";
-if((await ff_core_FileSystem.FileSystem_isDirectory$((await ff_core_NodeSystem.NodeSystem_files$(self_, $task)), assetPkgSnapshotPath_, $task))) {
-const fs_ = (await ff_core_NodeSystem.NodeSystem_files$(self_, $task));
+const assetPkgSnapshotPath_ = (await ff_core_NodeSystem.NodeSystem_path$(self_, "/snapshot/output/assets", $task));
+if((await ff_core_Path.Path_isDirectory$(assetPkgSnapshotPath_, $task))) {
 async function streams_$(path_, $task) {
-const files_ = (await ff_core_FileSystem.FileSystem_list$(fs_, path_, $task));
-return (await ff_core_List.List_flatMap$(files_, (async (file_, $task) => {
-if((await ff_core_FileSystem.FileSystem_isDirectory$(fs_, file_, $task))) {
-return (await streams_$(file_, $task))
+return (await ff_core_Stream.Stream_flatMap$((await ff_core_Path.Path_entries$(path_, $task)), (async (file_, $task) => {
+if((await ff_core_Path.PathEntry_isDirectory$(file_, $task))) {
+return (await streams_$((await ff_core_Path.PathEntry_path$(file_, $task)), $task))
 } else {
-return ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(assetPkgSnapshotPath_)), (async ($task) => {
-return (await ff_core_FileSystem.FileSystem_readStream$(fs_, file_, $task))
-})), ff_core_List.Empty())
+return (await ff_core_List.List_toStream$(ff_core_List.Link(ff_core_Pair.Pair((await ff_core_Path.Path_relativeTo$((await ff_core_Path.PathEntry_path$(file_, $task)), assetPkgSnapshotPath_, $task)), (async ($task) => {
+return (await ff_core_Path.Path_readStream$((await ff_core_Path.PathEntry_path$(file_, $task)), $task))
+})), ff_core_List.Empty()), false, $task))
 }
 }), $task))
 }
-return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap((await streams_$(assetPkgSnapshotPath_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+return ff_core_AssetSystem.AssetSystem((await ff_core_Stream.Stream_toMap$((await streams_$(assetPkgSnapshotPath_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, $task)))
 } else {
 return (await ff_core_NodeSystem.internalAssets_$(self_, $task))
 }
-}
-
-export async function NodeSystem_files$(self_, $task) {
-return null
 }
 
 export async function NodeSystem_path$(self_, relativePath_, $task) {
@@ -267,7 +253,7 @@ process.exit(exitCode_)
 
 export async function NodeSystem_readStream$(self_, $task) {
 
-            return ff_core_FileSystem.internalReadStream_$(() => process.stdin)
+            return ff_core_Path.internalReadStream_$(() => process.stdin)
         
 }
 

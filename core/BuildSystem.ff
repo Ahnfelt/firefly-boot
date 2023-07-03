@@ -1,19 +1,18 @@
 capability BuildSystem {}
-capability BrowserCode(packageGroup: String, packageName: String, mainFile: String, assetSystem: AssetSystem)
+capability BrowserCode(packageGroup: String, packageName: String, mainFile: Path, assetSystem: AssetSystem)
 capability BrowserBundle(assetSystem: AssetSystem)
 
 extend self: BuildSystem {
 
     compileForBrowser(mainFile: String): BrowserCode {
         // TODO: Check that the mainFile is in the current package directory
-        internalCompile(self, mainFile, "browser")
-        let fs = internalFileSystem(self)
-        let streams = internalListDirectory(fs, ".firefly/output/browser")
+        internalCompile(self, internalPath(self, mainFile), "browser")
+        let streams = internalListDirectory(internalPath(self, ".firefly/output/browser"))
         let mainPackagePair = internalMainPackagePair(self)
         BrowserCode(
             packageGroup = mainPackagePair.first
             packageName = mainPackagePair.second
-            mainFile = mainFile
+            mainFile = internalPath(self, mainFile)
             assetSystem = AssetSystem(streams.toMap())
         )
     }
@@ -25,8 +24,7 @@ extend self: BuildSystem {
         target node async "self_.assets_ = assetSystem_"
 
     packageAssets(): AssetSystem {
-        let fs = internalFileSystem(self)
-        let streams = internalListDirectory(fs, ".")
+        let streams = internalListDirectory(internalPath(self, "."))
         AssetSystem(streams.toMap())
     }
 
@@ -50,15 +48,14 @@ extend self: BrowserCode {
 
     bundle(minify: Bool = True, sourceMap: Bool = False): BrowserBundle {
         let prefix = ".firefly/output/browser"
-        let mainJsBaseFile = self.mainFile.removeLast(".ff").grab() + ".mjs"
+        let mainJsBaseFile = self.mainFile.absolute().removeLast(".ff").grab() + ".mjs"
         let mainJsFile = prefix + "/" + self.packageGroup + "/" + self.packageName + "/" + mainJsBaseFile
         let file = prefix + "/Main.bundle.js"
         internalCallEsBuild(self, mainJsFile = mainJsFile, outputPath = file, minify = minify, sourceMap = sourceMap)
-        let fs = internalBrowserCodeFileSystem(self)
         let assets = AssetSystem([
-            Pair(file.dropFirst(prefix.size()), {fs.readStream(file)})
+            Pair(file.dropFirst(prefix.size()), {self.mainFile.path(file).readStream()})
             ...if(sourceMap) {[
-                Pair(file.dropFirst(prefix.size()) + ".map", {fs.readStream(file + ".map")})
+                Pair(file.dropFirst(prefix.size()) + ".map", {self.mainFile.path(file + ".map").readStream()})
             ]} else {[]}
         ].toMap())
         BrowserBundle(assets)
@@ -116,33 +113,27 @@ internalNodeCallEsBuild(
         })
     """
 
-internalListDirectory(fs: FileSystem, path: String): List[Pair[String, () => Stream[Buffer]]] {
-    let prefix = if(path.endsWith("/")) {path.dropLast(1)} else {path}
-    function go(currentPath: String): List[String] {
-        fs.list(currentPath).flatMap {file =>
-            if(fs.isDirectory(file)) {
-                go(file)
+internalListDirectory(path: Path): List[Pair[String, () => Stream[Buffer]]] {
+    function go(currentPath: Path): Stream[Path] {
+        currentPath.entries().flatMap {file =>
+            if(file.isDirectory()) {
+                go(file.path())
             } else {
-                [file]
+                [file.path()].toStream()
             }
         }
     }
     go(path).map {file =>
-        Pair(file.dropFirst(prefix.size()), {fs.readStream(file)})
-    }
+        Pair("/" + file.relativeTo(path), {file.readStream()})
+    }.toList()
 }
 
-internalFileSystem(dummy: BuildSystem): FileSystem
+internalPath(buildSystem: BuildSystem, absoluteOrRelative: String): Path
     target node async """
-        return null;
+        return absoluteOrRelative_
     """
 
-internalBrowserCodeFileSystem(dummy: BrowserCode): FileSystem
-    target node async """
-        return null;
-    """
-
-internalCompile(buildSystem: BuildSystem, mainFile: String, target: String): Unit
+internalCompile(buildSystem: BuildSystem, mainFile: Path, target: String): Unit
     target node async """
         return await $firefly_compiler.buildViaBuildSystem_$(buildSystem_, buildSystem_.fireflyPath_, mainFile_, target_, $task)
     """

@@ -2,12 +2,12 @@ import Syntax
 import Patterns
 import JsImporter
 
-class JsEmitter(
+capability JsEmitter(
     otherModules: Map[String, Module]
     jsImporter: JsImporter
     emitTarget: EmitTarget
     isMainModule: Bool
-    compilerModulePath: Option[String]
+    compilerModulePath: Option[Path]
     mutable emittingAsync: Bool
     mutable tailCallUsed: Bool
 )
@@ -23,10 +23,10 @@ make(
     otherModules: List[Module]
     emitTarget: EmitTarget
     isMainModule: Bool
-    compilerModulePath: Option[String]
+    compilerModulePath: Option[Path]
 ): JsEmitter {
     JsEmitter(
-        otherModules = otherModules.map { m =>
+        otherModules = otherModules.map {m =>
             let moduleName = m.packagePair.groupName() + "/" + m.file.dropLast(3)
             Pair(moduleName, m)
         }.toMap()
@@ -50,17 +50,17 @@ extend self: JsEmitter {
             "import * as " + packagePair.groupName("_") + "_" + module.file.dropLast(3) + " " +
             "from \"../../" + packagePair.groupName("/") + "/" + module.file.dropLast(3) + ".mjs\""
         let imports = [
-            self.compilerModulePath.map { "import * as $firefly_compiler from '" + _ + "'" }.toList()
-            module.imports.sortBy { i => Pair(i.package, i.file) }.map { self.emitImportDefinition(_) }
+            self.compilerModulePath.map {"import * as $firefly_compiler from '" + _.url() + "'"}.toList()
+            module.imports.sortBy {i => Pair(i.package, i.file) }.map {self.emitImportDefinition(_)}
         ].flatten()
         let parts = [
-            if(imports.any { _ == selfImport }) { imports } else { [selfImport, ...imports] }
-            module.types.map { self.emitTypeDefinition(_) }
-            module.lets.map { "export " + self.emitLetDefinition(_, False, False) }
-            module.functions.map { "export " + self.emitFunctionDefinition(_, False) }
-            self.withEmittingAsync {module.functions.map { "export " + self.emitFunctionDefinition(_, True) }}
-            module.extends.map { self.emitExtendsDefinition(_) }
-            module.instances.map { self.emitInstanceDefinition(_) }
+            if(imports.any {_ == selfImport}) {imports} else {[selfImport, ...imports]}
+            module.types.map {self.emitTypeDefinition(_)}
+            module.lets.map {"export " + self.emitLetDefinition(_, False, False)}
+            module.functions.map {"export " + self.emitFunctionDefinition(_, False)}
+            self.withEmittingAsync {module.functions.map {"export " + self.emitFunctionDefinition(_, True)}}
+            module.extends.map {self.emitExtendsDefinition(_)}
+            module.instances.map {self.emitInstanceDefinition(_)}
             if(self.isMainModule) {
                 self.emitRun(module.functions, packagePair, packagePair.group == "ff" && packagePair.name == "compiler")
             } else {[]}

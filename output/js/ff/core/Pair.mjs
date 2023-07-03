@@ -30,8 +30,6 @@ import * as ff_core_Error from "../../ff/core/Error.mjs"
 
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
-import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
-
 import * as ff_core_Float from "../../ff/core/Float.mjs"
 
 import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
@@ -151,6 +149,17 @@ export async function Pair_swap$(self_, $task) {
 return ff_core_Pair.Pair(self_.second_, self_.first_)
 }
 
+export function Pair_mapBoth(self_, body_) {
+{
+const _1 = self_;
+{
+const _c = _1;
+return ff_core_Pair.Pair(body_(self_.first_), body_(self_.second_))
+return
+}
+}
+}
+
 export function Pair_toList(self_) {
 return ff_core_List.Link(self_.first_, ff_core_List.Link(self_.second_, ff_core_List.Empty()))
 }
@@ -161,6 +170,17 @@ return ff_core_List.List_toArray(ff_core_Pair.Pair_toList(self_))
 
 export function Pair_toStack(self_) {
 return ff_core_List.List_toStack(ff_core_Pair.Pair_toList(self_))
+}
+
+export async function Pair_mapBoth$(self_, body_, $task) {
+{
+const _1 = self_;
+{
+const _c = _1;
+return ff_core_Pair.Pair((await body_(self_.first_, $task)), (await body_(self_.second_, $task)))
+return
+}
+}
 }
 
 export async function Pair_toList$(self_, $task) {

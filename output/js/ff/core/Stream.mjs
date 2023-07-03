@@ -30,8 +30,6 @@ import * as ff_core_Error from "../../ff/core/Error.mjs"
 
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
-import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
-
 import * as ff_core_Float from "../../ff/core/Float.mjs"
 
 import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
@@ -208,6 +206,7 @@ break
 {
 if(_1.Some) {
 const o_ = _1.value_;
+inner_.close_();
 inner_ = body_(o_)
 break
 }
@@ -733,6 +732,7 @@ break
 {
 if(_1.Some) {
 const o_ = _1.value_;
+(await inner_.close_($task));
 inner_ = (await body_(o_, $task))
 break
 }

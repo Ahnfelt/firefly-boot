@@ -20,6 +20,10 @@ extend self[A, B]: Pair[A, B] {
 
 extend self[A, A]: Pair[A, A] {
 
+    mapBoth[C](body: A => C): Pair[C, C] {
+        self.Pair(first = body(self.first), second = body(self.second))
+    }
+
     toList(): List[A] {
         [self.first, self.second]
     }

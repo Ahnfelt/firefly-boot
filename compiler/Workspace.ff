@@ -14,21 +14,20 @@ data WorkspaceRule(
 
 centralLocation = "http://ting.ahnfelt.dk/firefly/repository/"
 
-loadWorkspace(fs: FileSystem, path: String): Workspace {
-    let packageDirectory = if(path.endsWith(".ff")) {FileSystem.directoryName(path)} else {path}
-    let fixedPackageDirectory = if(packageDirectory == "") {"."} else {packageDirectory}
-    let workspaceFile = fixedPackageDirectory + "/.firefly-workspace"
-    if(fs.exists(workspaceFile)) {
-        parseWorkspaceFile(fs, workspaceFile, fixedPackageDirectory)
-    } elseIf {fs.exists(fixedPackageDirectory + "/..")} {
-        loadWorkspace(fs, fixedPackageDirectory + "/..")
+loadWorkspace(path: Path): Workspace {
+    let packageDirectory = if(path.extension() == ".ff") {path.parent().grab()} else {path}
+    let workspaceFile = packageDirectory.slash(".firefly-workspace")
+    if(workspaceFile.exists()) {
+        parseWorkspaceFile(workspaceFile, packageDirectory)
+    } elseIf {!packageDirectory.parent().isEmpty()} {
+        loadWorkspace(packageDirectory.parent().grab())
     } else {
         Workspace([], centralLocation, ".")
     }
 }
 
-parseWorkspaceFile(fs: FileSystem, path: String, packageDirectory: String): Workspace {
-    let text = fs.readText(path)
+parseWorkspaceFile(path: Path, packageDirectory: Path): Workspace {
+    let text = path.readText()
     mutable defaultLocation = None
     let lines = text.split('\n').toList().map {_.replace("\r", "").takeWhile {_ != '#'}}.filter {_.size() != 0}
     let rules = lines.collect {line =>
@@ -60,7 +59,7 @@ parseWorkspaceFile(fs: FileSystem, path: String, packageDirectory: String): Work
             ))
         }
     }
-    Workspace(rules, defaultLocation.else {centralLocation}, packageDirectory)
+    Workspace(rules, defaultLocation.else {centralLocation}, packageDirectory.absolute())
 }
 
 extend self: Workspace {

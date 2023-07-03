@@ -14,24 +14,21 @@ build(
     mainPackage: PackagePair
     mainModule: String
     resolvedDependencies: ResolvedDependencies
-    compilerModulePath: Option[String]
-    tempPath: String
-    jsOutputPath: String
+    compilerModulePath: Option[Path]
+    tempPath: Path
+    jsOutputPath: Path
     printMeasurements: Bool
 ): Unit {
 
-    let fs = system.files()
+    if(tempPath.exists()) {tempPath.delete()}
+    tempPath.createDirectory()
 
-    if(fs.exists(tempPath)) {fs.deleteDirectory(tempPath)}
-    fs.createDirectory(tempPath)
-
-    let jsPathFile = tempPath + "/js"
-    fs.createDirectories(jsPathFile)
+    let jsPathFile = tempPath.slash("js")
+    jsPathFile.createDirectory(createParentDirectories = True)
 
     let success = do {
         let compiler = Compiler.make(
             emitTarget
-            fs
             system.time()
             compilerModulePath
             jsPathFile
@@ -43,34 +40,33 @@ build(
         if(printMeasurements) {compiler.printMeasurements()}
         resolvedDependencies.packagePaths.each {packagePair, packagePath =>
             resolvedDependencies.packages.get(packagePair).each {packageInfo =>
-                processIncludes(fs, jsPathFile, packagePath, packageInfo)
+                processIncludes(jsPathFile, packagePath, packageInfo)
             }
         }
         True
     }
 
     if(success) {
-        if(fs.exists(jsOutputPath)) {fs.deleteDirectory(jsOutputPath)}
-        fs.rename(jsPathFile, jsOutputPath)
+        if(jsOutputPath.exists()) {jsOutputPath.delete()}
+        jsPathFile.renameTo(jsOutputPath)
     }
 
 }
 
-processIncludes(fs: FileSystem, jsPathFile: String, packagePath: String, info: PackageInfo): Unit {
+processIncludes(jsPathFile: Path, packagePath: Path, info: PackageInfo): Unit {
     info.includes.each {include =>
-        fs.copy(
-            packagePath + "/.firefly/include/" + include.path
-            jsPathFile + "/" + info.package.packagePair.groupName("/") + "/" + include.path
-        )
+        let fromPath = packagePath.slash(".firefly").slash("include").slash(include.path)
+        let toPath = jsPathFile.slash(info.package.packagePair.groupName("/")).slash(include.path)
+        fromPath.copyTo(toPath)
     }
 }
 
-buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String, target: String) {
-    let resolvedDependencies = Dependencies.process(system.files(), system.httpClient(), mainFile)
+buildViaBuildSystem(system: NodeSystem, fireflyPath: Path, mainFile: String, target: String) {
+    let resolvedDependencies = Dependencies.process(system.httpClient(), system.path(mainFile))
     let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
         resolvedDependencies.packagePaths
     } else {
-        resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
+        resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath.slash("core"))
     }
     if(target != "browser") {
         panic("buildViaBuildSystem is currently limited to browser target only - the restriction can be lifted")
@@ -82,47 +78,45 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String, t
         mainModule = mainFile.dropLast(".ff".size())
         resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
         compilerModulePath = None
-        tempPath = ".firefly/temporary"
-        jsOutputPath = ".firefly/output/" + target
+        tempPath = system.path(".firefly/temporary")
+        jsOutputPath = system.path(".firefly/output").slash(target)
         printMeasurements = False
     )
 }
 
 check(
-    system: NodeSystem, 
-    fireflyPath: String, 
-    path: String, 
-    virtualFiles: Map[String, String], 
+    system: NodeSystem
+    fireflyPath: Path
+    path: Path
+    virtualFiles: Map[String, String]
     lspHook: LspHook
     infer: Bool
 ) {
-    let fs = system.files()
-    let packages = fs.isDirectory(path).{
-        | True => findPackageFiles(fs, path)
-        | False => [PackageFiles(FileSystem.directoryName(path), None, [path])] // TODO
+    let packages = path.isDirectory().{
+        | True => findPackageFiles(path)
+        | False => [PackageFiles(path.parent().grab(), None, [path])]
     }
 
     packages.each {package => 
         let firstFile = package.files.grabFirst()
-        let resolvedDependencies = Dependencies.process(system.files(), system.httpClient(), firstFile)
+        let resolvedDependencies = Dependencies.process(system.httpClient(), firstFile)
         let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
             resolvedDependencies.packagePaths
         } else {
-            resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
+            resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath.slash("core"))
         }
         let fixedResolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
         let compiler = Compiler.make(
             EmitBuild
-            system.files()
             system.time() 
             None
-            ".firefly/temporary"
+            package.root.slash(".firefly").slash("temporary")
             fixedResolvedDependencies
             virtualFiles
             lspHook
         )
         package.files.each {file =>
-            let localFile = FileSystem.baseName(file.replace("\\", "/"))
+            let localFile = file.base()
             if(infer) {
                 compiler.infer(resolvedDependencies.mainPackagePair, localFile.dropLast(".ff".size()))
             } else {
@@ -133,67 +127,55 @@ check(
 
 }
 
-data PackageFiles(
-    root: String
-    packageFile: Option[String]
-    files: List[String]
+capability PackageFiles(
+    root: Path
+    packageFile: Option[Path]
+    files: List[Path]
 )
 
 
-findPackageFiles(fs: FileSystem, rootUri: String): List[PackageFiles] {
-    let files = findFireflyFiles(fs, rootUri)
-    let split = files.partition {_.endsWith(".firefly/package.ff")}
+findPackageFiles(path: Path): List[PackageFiles] {
+    let files = findFireflyFiles(path)
+    let split = files.partition {_.endsWith([".firefly", "package.ff"])}
     let packageFiles = split.first
-    mutable codeFiles = split.second
+    mutable singleFiles = split.second
     let multiFileProjects = packageFiles.map {packageFile => 
-        let projectRoot = packageFile.removeLast(".firefly/package.ff").grab()
-        let files = codeFiles.filter {_.startsWith(projectRoot) }
-        let filesSet = files.toSet()
-        codeFiles = codeFiles.filter {file => !filesSet.contains(file)}
-        PackageFiles(
-            FileSystem.relative(fs.workingDirectory(), projectRoot), 
-            Some(FileSystem.relative(fs.workingDirectory(), packageFile)), 
-            files.map {FileSystem.relative(fs.workingDirectory(), _)}
-        )
+        let projectRoot = packageFile.parent().grab().parent().grab()
+        let files = singleFiles.partition {_.isInsideOf(projectRoot)}
+        singleFiles = files.second
+        PackageFiles(projectRoot, Some(packageFile), files.first)
     }
-    let singleFileProjects = codeFiles.map {file => 
-        let projectRoot = file.reverse().dropWhile {_ != '/'}.reverse()
-        PackageFiles(
-            FileSystem.relative(fs.workingDirectory(), projectRoot), 
-            None, 
-            [FileSystem.relative(fs.workingDirectory(), file)]
-        )
+    let singleFileProjects = singleFiles.map {file => 
+        let projectRoot = file.parent().grab()
+        PackageFiles(projectRoot, None, [file])
     }
-    let unfixedProjects = [...multiFileProjects, ...singleFileProjects]
-    unfixedProjects.map {project => PackageFiles(
-        root = project.root.replace("\\", "/")
-        packageFile = project.packageFile.map {_.replace("\\", "/")}
-        files = project.files.map {_.replace("\\", "/")}
-    )}
+    [...multiFileProjects, ...singleFileProjects]
 }
 
-findFireflyFiles(fs: FileSystem, rootUri: String): List[String] {
-    let split = fs.list(rootUri).partition {fs.isDirectory(_)}
-    let directories = split.first
-    let fireflyFiles = split.second.filter {_.endsWith(".ff")}
-    let fixedFiles = fireflyFiles.map {_.replace("\\", "/")}
-    [...fixedFiles, ...directories.flatMap {findFireflyFiles(fs, _)}]
+findFireflyFiles(path: Path): List[Path] {
+    let split = path.entries().toList().partition {_.isDirectory()}
+    let directories = split.first.map {_.path()}.filter {_.base().all {c => 
+        c == '.' || c.isAsciiLower() || c.isAsciiDigit()
+    }}
+    let fireflyFiles = split.second.map {_.path()}.filter {
+        _.extension() == ".ff"
+    }
+    [...fireflyFiles, ...directories.flatMap {findFireflyFiles(_)}]
 }
 
 internalCreateExecutable(
     self: BuildSystem
-    mainJsFile: String = ".firefly/output/executable/Main.bundle.js"
-    outputPath: String = ".firefly/output"
+    mainJsFile: Path = ".firefly/output/executable/Main.bundle.js"
+    outputPath: Path = ".firefly/output"
     targets: List[String] = ["host"]
     assets: AssetSystem = AssetSystem.create()
 ): Unit
     target node {
-        let fs = internalFileSystem(self)
-        let assetOutputPath = outputPath + "/assets"
+        let assetOutputPath = outputPath.slash("assets")
         assets.files.pairs().each {| Pair(path, makeStream) =>
-            let p = assetOutputPath + path
-            fs.createDirectories(p.reverse().dropWhile {_ != '/'}.reverse())
-            fs.writeStream(p, makeStream())
+            let p = assetOutputPath.slash(path)
+            p.parent().grab().createDirectory(createParentDirectories = True)
+            p.writeStream(makeStream())
         }
         let json = """{
             "name": "main",
@@ -214,15 +196,15 @@ internalCreateExecutable(
                 ]
             }
         }"""
-        let packageFile = outputPath + "/executable/package.json"
-        fs.writeText(packageFile, json)
+        let packageFile = outputPath.slash("executable/package.json")
+        packageFile.writeText(json)
         internalCallPkg(self, packageFile, outputPath, targets)
     }
 
 internalCallPkg(
-    self: BuildSystem,
-    packageFile: String,
-    outputPath: String,
+    self: BuildSystem
+    packageFile: Path
+    outputPath: Path
     targets: List[String]
 ): Unit
     target node async """
@@ -232,9 +214,4 @@ internalCallPkg(
             '--out-path', outputPath_,
             '--target', ff_core_List.List_toArray(targets_).join(',')
         ])
-    """
-
-internalFileSystem(dummy: BuildSystem): FileSystem
-    target node async """
-        return null;
     """
