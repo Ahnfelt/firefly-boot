@@ -153,7 +153,7 @@ findPackageFiles(path: Path): List[PackageFiles] {
 }
 
 findFireflyFiles(path: Path): List[Path] {
-    let split = path.list().partition {_.isDirectory()}
+    let split = path.entries().toList().partition {_.isDirectory()}.mapBoth {_.map {_.path()}}
     let directories = split.first
     let fireflyFiles = split.second.filter {_.extension() == ".ff"}
     [...fireflyFiles, ...directories.flatMap {findFireflyFiles(_)}]
