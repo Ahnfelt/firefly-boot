@@ -80,13 +80,6 @@ extend self: Path {
             return (await fs.promises.stat(file)).mtimeMs * 0.001
         """
 
-    list(): List[Path]
-        target node async """
-            import * as fsPromises from 'fs/promises'
-            import * as path from 'path'
-            return ff_core_Array.Array_toList((await fsPromises.readdir(self_)).map(f => path.join(self_, f)))
-        """
-        
     entries(): Stream[PathEntry]
         target node async """
             import * as fsPromises from 'fs/promises'
@@ -180,8 +173,8 @@ extend self: Path {
         if(self.isDirectory()) {
             if(path.exists()) {path.delete(retries, retryDelay)}
             path.createDirectory()
-            self.list().each {file =>
-                self.copyTo(path.slash(file.relativeTo(self)), retries, retryDelay)
+            self.entries().each {file =>
+                self.copyTo(path.slash(file.path().relativeTo(self)), retries, retryDelay)
             }
         } else {
             path.writeStream(self.readStream())
