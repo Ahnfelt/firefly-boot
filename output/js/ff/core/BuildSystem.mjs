@@ -120,7 +120,7 @@ return ff_core_List.List_toStream(ff_core_List.Link(ff_core_Path.PathEntry_path(
 }))
 }
 return ff_core_Stream.Stream_toList(ff_core_Stream.Stream_map(go_(path_), ((file_) => {
-return ff_core_Pair.Pair(ff_core_Path.Path_relativeTo(file_, path_), (() => {
+return ff_core_Pair.Pair(("/" + ff_core_Path.Path_relativeTo(file_, path_)), (() => {
 return ff_core_Path.Path_readStream(file_)
 }))
 })))
@@ -181,7 +181,7 @@ return (await ff_core_List.List_toStream$(ff_core_List.Link((await ff_core_Path.
 }), $task))
 }
 return (await ff_core_Stream.Stream_toList$((await ff_core_Stream.Stream_map$((await go_$(path_, $task)), (async (file_, $task) => {
-return ff_core_Pair.Pair((await ff_core_Path.Path_relativeTo$(file_, path_, $task)), (async ($task) => {
+return ff_core_Pair.Pair(("/" + (await ff_core_Path.Path_relativeTo$(file_, path_, $task))), (async ($task) => {
 return (await ff_core_Path.Path_readStream$(file_, $task))
 }))
 }), $task)), $task))
@@ -189,7 +189,7 @@ return (await ff_core_Path.Path_readStream$(file_, $task))
 
 export async function internalPath_$(buildSystem_, absoluteOrRelative_, $task) {
 
-        return absoluteOrRelative
+        return absoluteOrRelative_
     
 }
 
@@ -206,10 +206,10 @@ export async function internalMainPackagePair_$(buildSystem_, $task) {
 }
 
 export function BuildSystem_compileForBrowser(self_, mainFile_) {
-ff_core_BuildSystem.internalCompile_(self_, mainFile_, "browser");
+ff_core_BuildSystem.internalCompile_(self_, ff_core_BuildSystem.internalPath_(self_, mainFile_), "browser");
 const streams_ = ff_core_BuildSystem.internalListDirectory_(ff_core_BuildSystem.internalPath_(self_, ".firefly/output/browser"));
 const mainPackagePair_ = ff_core_BuildSystem.internalMainPackagePair_(self_);
-return ff_core_BuildSystem.BrowserCode(mainPackagePair_.first_, mainPackagePair_.second_, mainFile_, ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
+return ff_core_BuildSystem.BrowserCode(mainPackagePair_.first_, mainPackagePair_.second_, ff_core_BuildSystem.internalPath_(self_, mainFile_), ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
 }
 
 export function BuildSystem_buildMode(self_) {
@@ -238,10 +238,10 @@ throw new Error('Function BuildSystem_mainTask is missing on this target in sync
 }
 
 export async function BuildSystem_compileForBrowser$(self_, mainFile_, $task) {
-(await ff_core_BuildSystem.internalCompile_$(self_, mainFile_, "browser", $task));
+(await ff_core_BuildSystem.internalCompile_$(self_, (await ff_core_BuildSystem.internalPath_$(self_, mainFile_, $task)), "browser", $task));
 const streams_ = (await ff_core_BuildSystem.internalListDirectory_$((await ff_core_BuildSystem.internalPath_$(self_, ".firefly/output/browser", $task)), $task));
 const mainPackagePair_ = (await ff_core_BuildSystem.internalMainPackagePair_$(self_, $task));
-return ff_core_BuildSystem.BrowserCode(mainPackagePair_.first_, mainPackagePair_.second_, mainFile_, ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
+return ff_core_BuildSystem.BrowserCode(mainPackagePair_.first_, mainPackagePair_.second_, (await ff_core_BuildSystem.internalPath_$(self_, mainFile_, $task)), ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
 }
 
 export async function BuildSystem_buildMode$(self_, $task) {

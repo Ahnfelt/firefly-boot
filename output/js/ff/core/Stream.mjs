@@ -206,6 +206,7 @@ break
 {
 if(_1.Some) {
 const o_ = _1.value_;
+inner_.close_();
 inner_ = body_(o_)
 break
 }
@@ -731,6 +732,7 @@ break
 {
 if(_1.Some) {
 const o_ = _1.value_;
+(await inner_.close_($task));
 inner_ = (await body_(o_, $task))
 break
 }

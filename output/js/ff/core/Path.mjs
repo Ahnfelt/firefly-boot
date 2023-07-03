@@ -438,7 +438,6 @@ export async function Path_list$(self_, $task) {
 export async function Path_entries$(self_, $task) {
 
             const fsPromises = import$1
-            const path = import$2
             let dir = null
             return ff_core_Stream.Stream(
                 async () => {
@@ -465,7 +464,7 @@ export async function Path_absolute$(self_, $task) {
 export async function Path_relativeTo$(self_, path_, $task) {
 
             const path = import$2;
-            return path.relative(self_, path_);
+            return path.relative(path_, self_);
         
 }
 
