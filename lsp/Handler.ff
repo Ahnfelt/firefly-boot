@@ -217,10 +217,10 @@ extend self: Handler {
     getDocumentSymbolsWithCache(system: NodeSystem, file: String): List[DocumentSymbol] {
         self.fileSymbolsCache.get(file).{
             | Some(symbols) => 
-                Log.trace("HIT symbols: " + file)
+                //Log.trace("HIT symbols: " + file)
                 symbols
             | None => 
-                Log.trace("MISS symbols: " + file)
+                //Log.trace("MISS symbols: " + file)
                 let symbols = self.getDocumentSymbols(system, file)
                 self.fileSymbolsCache = self.fileSymbolsCache.add(file, symbols)
                 symbols
