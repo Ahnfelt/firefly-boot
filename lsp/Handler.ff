@@ -233,7 +233,7 @@ extend self: Handler {
         let symbols = files.flatMap {file => 
             let documentSymbols = self.getDocumentSymbolsWithCache(system, file)
             let workspaceSymbols = documentSymbols.flatMap {SymbolHandler.documentToWorkspaceSymbols(_, None)}
-            let foundSymbols = workspaceSymbols.filter {_.name.startsWith(query)}
+            let foundSymbols = workspaceSymbols.filter {SymbolHandler.symbolFilter(_, query)}
             foundSymbols
         }
         let jsSymbols = symbols.map {SymbolHandler.workspaceSymbolToLsp(js, self.rootPath.grab(), _)}
