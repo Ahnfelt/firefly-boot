@@ -12,8 +12,9 @@ nodeMain(system: NodeSystem) {
     
     test(["add", "addAll", "addToList"], "al")
     test(["aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ"], "abcdefghijklmnopqrstuvwxyz")
-    test(["aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ"], "abcdefghijklmnopqrstuvwxyza")
+    test(["aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ"], "abcdefghijklmnopqrstuvwxyzA")
     test(["aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ"], "aabcdefghijklmnopqrstuvwxyz")
+    Log.show(matchSymbol(splitCamelCased("aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ"), "abcdefghijklmnopqrstuvwxyzA"))
 }
 
 test(symbols: List[String], query: String) {
