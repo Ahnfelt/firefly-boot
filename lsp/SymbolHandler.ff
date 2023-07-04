@@ -126,17 +126,18 @@ locationsToLspRange(js: JsSystem, start: Location, end: Location): JsValue {
 }
 
 symbolFilter(symbol: WorkspaceSymbol, query: String): Bool {
-    let sylbolWords = splitCamelCased(symbol.name)
-    matchSymbol(sylbolWords, query)
+    let lower = !query.any {_.isAsciiUpper()}
+    let sylbolWords = splitCamelCased(symbol.name.takeWhile {_.isAsciiLetterOrDigit()}, lower)
+    matchSymbol(sylbolWords, query, lower)
 }
 
-matchSymbol(symbolWords: List[String], query: String): Bool {
+matchSymbol(symbolWords: List[String], query: String, lower: Bool): Bool {
     if(query == "") {True} else:
     symbolWords.{
         | [] => False
         | [w, ...ws] =>
             prefixes(query).any {prefix => 
-                w.startsWith(prefix) && matchSymbol(ws, query.dropFirst(prefix.size()))
+                w.startsWith(prefix) && matchSymbol(ws, query.dropFirst(prefix.size()), lower)
             }
     }
 }
@@ -149,12 +150,12 @@ prefixes(string: String): List[String] {
     }
 }
 
-splitCamelCased(name: String): List[String] {
+splitCamelCased(name: String, lower: Bool): List[String] {
     name.first().{
         | None => []
         | Some(c) => 
             let word = c.toString() + name.dropFirst().takeWhile {_.isAsciiLower()}
             let rest = name.dropFirst(word.size())
-            [word.lower(), ...splitCamelCased(rest)]
+            [if(lower) {word.lower()} else {word}, ...splitCamelCased(rest, lower)]
     }
 }
