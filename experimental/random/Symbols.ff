@@ -1,4 +1,5 @@
 nodeMain(system: NodeSystem) {
+    /*
     Log.show(splitCamelCased(""))
     Log.show(splitCamelCased("ABC"))
     Log.show(splitCamelCased("abc"))
@@ -14,20 +15,22 @@ nodeMain(system: NodeSystem) {
     test(["aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ"], "abcdefghijklmnopqrstuvwxyz")
     test(["aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ"], "abcdefghijklmnopqrstuvwxyzA")
     test(["aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ"], "aabcdefghijklmnopqrstuvwxyz")
-    Log.show(matchSymbol(splitCamelCased("aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ", True), "abcdefghijklmnopqrstuvwxyzA"))
+    */
+    Log.show(matchSymbol(splitCamelCased("aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ", True), "abcdefghijklmnopqrstuvwxyzA", True))
 }
 
 test(symbols: List[String], query: String) {
     Log.debug("")
     Log.debug("#" + query)
     symbols.each {s => 
-        let symbolWords = splitCamelCased(s)
+        let symbolWords = splitCamelCased(s, True)
         let match = matchSymbol(symbolWords, query, !query.any {_.isAsciiUpper()})
         Log.debug(s + " (" + Show.show(symbolWords) + " ): " + Show.show(match))
     }
 }
 
 matchSymbol(symbolWords: List[String], query: String, lower: Bool): Bool {
+    Log.debug("matchSymbol("+Show.show(symbolWords)+", "+query+")")
     if(query == "") {True} else:
     symbolWords.{
         | [] => False
