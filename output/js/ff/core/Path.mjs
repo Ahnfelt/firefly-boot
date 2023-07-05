@@ -190,10 +190,6 @@ export function Path_modified(self_) {
 throw new Error('Function Path_modified is missing on this target in sync context.');
 }
 
-export function Path_list(self_) {
-throw new Error('Function Path_list is missing on this target in sync context.');
-}
-
 export function Path_entries(self_) {
 throw new Error('Function Path_entries is missing on this target in sync context.');
 }
@@ -207,8 +203,9 @@ throw new Error('Function Path_relativeTo is missing on this target in sync cont
 }
 
 export function Path_endsWith(self_, parts_) {
-function go_(reversed_) {
+function go_(pathOption_, reversed_) {
 {
+const pathOption_a = pathOption_;
 const reversed_a = reversed_;
 {
 if(reversed_a.Empty) {
@@ -217,16 +214,25 @@ return
 }
 }
 {
+if(pathOption_a.Some) {
+const path_ = pathOption_a.value_;
 if(reversed_a.Link) {
 const p_ = reversed_a.head_;
 const ps_ = reversed_a.tail_;
-return ((ff_core_Path.Path_base(self_) === p_) && go_(ps_))
+return ((ff_core_Path.Path_base(path_) === p_) && go_(ff_core_Path.Path_parent(path_), ps_))
+return
+}
+}
+}
+{
+if(pathOption_a.None) {
+return false
 return
 }
 }
 }
 }
-return go_(ff_core_List.List_reverse(parts_))
+return go_(ff_core_Option.Some(self_), ff_core_List.List_reverse(parts_))
 }
 
 export function Path_base(self_) {
@@ -267,8 +273,8 @@ if(ff_core_Path.Path_exists(path_, false, false, false)) {
 ff_core_Path.Path_delete(path_, retries_, retryDelay_)
 };
 ff_core_Path.Path_createDirectory(path_, false);
-ff_core_List.List_each(ff_core_Path.Path_list(self_), ((file_) => {
-ff_core_Path.Path_copyTo(self_, ff_core_Path.Path_slash(path_, ff_core_Path.Path_relativeTo(file_, self_)), retries_, retryDelay_)
+ff_core_Stream.Stream_each(ff_core_Path.Path_entries(self_), ((file_) => {
+ff_core_Path.Path_copyTo(self_, ff_core_Path.Path_slash(path_, ff_core_Path.Path_relativeTo(ff_core_Path.PathEntry_path(file_), self_)), retries_, retryDelay_)
 }))
 } else {
 ff_core_Path.Path_writeStream(path_, ff_core_Path.Path_readStream(self_), false)
@@ -427,14 +433,6 @@ export async function Path_modified$(self_, $task) {
         
 }
 
-export async function Path_list$(self_, $task) {
-
-            const fsPromises = import$1
-            const path = import$2
-            return ff_core_Array.Array_toList((await fsPromises.readdir(self_)).map(f => path.join(self_, f)))
-        
-}
-
 export async function Path_entries$(self_, $task) {
 
             const fsPromises = import$1
@@ -469,8 +467,9 @@ export async function Path_relativeTo$(self_, path_, $task) {
 }
 
 export async function Path_endsWith$(self_, parts_, $task) {
-async function go_$(reversed_, $task) {
+async function go_$(pathOption_, reversed_, $task) {
 {
+const pathOption_a = pathOption_;
 const reversed_a = reversed_;
 {
 if(reversed_a.Empty) {
@@ -479,16 +478,25 @@ return
 }
 }
 {
+if(pathOption_a.Some) {
+const path_ = pathOption_a.value_;
 if(reversed_a.Link) {
 const p_ = reversed_a.head_;
 const ps_ = reversed_a.tail_;
-return (((await ff_core_Path.Path_base$(self_, $task)) === p_) && (await go_$(ps_, $task)))
+return (((await ff_core_Path.Path_base$(path_, $task)) === p_) && (await go_$((await ff_core_Path.Path_parent$(path_, $task)), ps_, $task)))
+return
+}
+}
+}
+{
+if(pathOption_a.None) {
+return false
 return
 }
 }
 }
 }
-return (await go_$(ff_core_List.List_reverse(parts_), $task))
+return (await go_$(ff_core_Option.Some(self_), ff_core_List.List_reverse(parts_), $task))
 }
 
 export async function Path_base$(self_, $task) {
@@ -556,8 +564,8 @@ if((await ff_core_Path.Path_exists$(path_, false, false, false, $task))) {
 (await ff_core_Path.Path_delete$(path_, retries_, retryDelay_, $task))
 };
 (await ff_core_Path.Path_createDirectory$(path_, false, $task));
-(await ff_core_List.List_each$((await ff_core_Path.Path_list$(self_, $task)), (async (file_, $task) => {
-(await ff_core_Path.Path_copyTo$(self_, (await ff_core_Path.Path_slash$(path_, (await ff_core_Path.Path_relativeTo$(file_, self_, $task)), $task)), retries_, retryDelay_, $task))
+(await ff_core_Stream.Stream_each$((await ff_core_Path.Path_entries$(self_, $task)), (async (file_, $task) => {
+(await ff_core_Path.Path_copyTo$(self_, (await ff_core_Path.Path_slash$(path_, (await ff_core_Path.Path_relativeTo$((await ff_core_Path.PathEntry_path$(file_, $task)), self_, $task)), $task)), retries_, retryDelay_, $task))
 }), $task))
 } else {
 (await ff_core_Path.Path_writeStream$(path_, (await ff_core_Path.Path_readStream$(self_, $task)), false, $task))

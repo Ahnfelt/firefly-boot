@@ -224,8 +224,12 @@ export function findFireflyFiles_(path_) {
 const split_ = ff_core_List.List_partition(ff_core_Stream.Stream_toList(ff_core_Path.Path_entries(path_)), ((_w1) => {
 return ff_core_Path.PathEntry_isDirectory(_w1)
 }));
-const directories_ = ff_core_List.List_map(split_.first_, ((_w1) => {
+const directories_ = ff_core_List.List_filter(ff_core_List.List_map(split_.first_, ((_w1) => {
 return ff_core_Path.PathEntry_path(_w1)
+})), ((_w1) => {
+return ff_core_String.String_all(ff_core_Path.Path_base(_w1), ((c_) => {
+return (((c_ === 46) || ff_core_Char.Char_isAsciiLower(c_)) || ff_core_Char.Char_isAsciiDigit(c_))
+}))
 }));
 const fireflyFiles_ = ff_core_List.List_filter(ff_core_List.List_map(split_.second_, ((_w1) => {
 return ff_core_Path.PathEntry_path(_w1)
@@ -388,8 +392,12 @@ export async function findFireflyFiles_$(path_, $task) {
 const split_ = (await ff_core_List.List_partition$((await ff_core_Stream.Stream_toList$((await ff_core_Path.Path_entries$(path_, $task)), $task)), (async (_w1, $task) => {
 return (await ff_core_Path.PathEntry_isDirectory$(_w1, $task))
 }), $task));
-const directories_ = (await ff_core_List.List_map$(split_.first_, (async (_w1, $task) => {
+const directories_ = (await ff_core_List.List_filter$((await ff_core_List.List_map$(split_.first_, (async (_w1, $task) => {
 return (await ff_core_Path.PathEntry_path$(_w1, $task))
+}), $task)), (async (_w1, $task) => {
+return ff_core_String.String_all((await ff_core_Path.Path_base$(_w1, $task)), ((c_) => {
+return (((c_ === 46) || ff_core_Char.Char_isAsciiLower(c_)) || ff_core_Char.Char_isAsciiDigit(c_))
+}))
 }), $task));
 const fireflyFiles_ = (await ff_core_List.List_filter$((await ff_core_List.List_map$(split_.second_, (async (_w1, $task) => {
 return (await ff_core_Path.PathEntry_path$(_w1, $task))
