@@ -132,15 +132,39 @@ symbolFilter(symbol: WorkspaceSymbol, query: String): Bool {
 }
 
 matchSymbol(symbolWords: List[String], query: String, lower: Bool): Bool {
+    let memo: IntMap[IntMap[Bool]] = IntMap.make()
+    function go(wordIndex: Int, queryOffset: Int): Bool {
+        let innerMemo = memo.get(wordIndex).else {
+            let m = IntMap.make()
+            memo.set(wordIndex, m)
+            m
+        }
+        innerMemo.get(queryOffset).else:
+        let result = do {
+            if(queryOffset >= query.size()) {True} else:
+            if(wordIndex >= symbolWords.size()) {False} else:
+            prefixes(query.dropFirst(queryOffset)).any {prefix => 
+                symbolWords.grab(wordIndex).startsWith(prefix) && 
+                go(wordIndex + 1, queryOffset + prefix.size())
+            }
+        }
+        innerMemo.set(queryOffset, result)
+        result
+    }
+    go(0, 0)
+}
+
+/*matchSymbol(symbolWords: List[String], query: String, lower: Bool): Bool {
     if(query == "") {True} else:
     symbolWords.{
         | [] => False
         | [w, ...ws] =>
             prefixes(query).any {prefix => 
-                w.startsWith(prefix) && matchSymbol(ws, query.dropFirst(prefix.size()), lower)
+                w.startsWith(prefix) && 
+                matchSymbol(ws, query.dropFirst(prefix.size()), lower)
             }
     }
-}
+}*/
 
 prefixes(string: String): List[String] {
     if(string == "") {

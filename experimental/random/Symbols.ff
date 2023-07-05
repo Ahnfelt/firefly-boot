@@ -16,7 +16,10 @@ nodeMain(system: NodeSystem) {
     test(["aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ"], "abcdefghijklmnopqrstuvwxyzA")
     test(["aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ"], "aabcdefghijklmnopqrstuvwxyz")
     */
-    Log.show(matchSymbol(splitCamelCased("aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ", True), "abcdefghijklmnopqrstuvwxyzA", True))
+    printTime(system.time(), "matchSymbol") {
+        Log.show(matchSymbol(splitCamelCased("aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ", True), "abcdefghijklmnopqrstuvwxyzA", True))
+    }
+    
 }
 
 test(symbols: List[String], query: String) {
@@ -30,15 +33,27 @@ test(symbols: List[String], query: String) {
 }
 
 matchSymbol(symbolWords: List[String], query: String, lower: Bool): Bool {
-    Log.debug("matchSymbol("+Show.show(symbolWords)+", "+query+")")
-    if(query == "") {True} else:
-    symbolWords.{
-        | [] => False
-        | [w, ...ws] =>
-            prefixes(query).any {prefix => 
-                w.startsWith(prefix) && matchSymbol(ws, query.dropFirst(prefix.size()), lower)
+    let memo: IntMap[IntMap[Bool]] = IntMap.make()
+    function go(wordIndex: Int, queryOffset: Int): Bool {
+        let innerMemo = memo.get(wordIndex).else {
+            let m = IntMap.make()
+            memo.set(wordIndex, m)
+            m
+        }
+        innerMemo.get(queryOffset).else:
+        //Log.debug("matchSymbol("+Show.show(symbolWords2)+", "+query2+")")
+        let result = do {
+            if(queryOffset >= query.size()) {True} else:
+            if(wordIndex >= symbolWords.size()) {False} else:
+            prefixes(query.dropFirst(queryOffset)).any {prefix => 
+                symbolWords.grab(wordIndex).startsWith(prefix) && 
+                go(wordIndex + 1, queryOffset + prefix.size())
             }
+        }
+        innerMemo.set(queryOffset, result)
+        result
     }
+    go(0, 0)
 }
 
 prefixes(string: String): List[String] {
@@ -57,4 +72,13 @@ splitCamelCased(name: String, lower: Bool): List[String] {
             let rest = name.dropFirst(word.size())
             [if(lower) {word.lower()} else {word}, ...splitCamelCased(rest, lower)]
     }
+}
+
+printTime[R](ts: TimeSystem, label: String, body: () => R): R {
+    let start = ts.elapsed()
+    let result = body()
+    let stop = ts.elapsed()
+    let duration = ("" + (stop.seconds - start.seconds)).slice(0, 5)
+    Log.trace(label + ": " + duration + "s")
+    result
 }
