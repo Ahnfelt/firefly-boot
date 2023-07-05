@@ -81,7 +81,7 @@ extend self[V]: IntMap[V] {
 
 memo[T](body: (Int => T, Int) => T): Int => T {
     let memo: IntMap[T] = IntMap.make()
-    mutable f: Int => T = {_ => panic("Not initialized")}
+    mutable f: Int => T = {_ => throw(GrabException())}
     function go(key: Int): T {
         if(memo.has(key)) {memo.grab(key)} else:
         let value = body(f, key)

@@ -81,7 +81,7 @@ extend self[V]: StringMap[V] {
 
 memo[T](body: (String => T, String) => T): String => T {
     let memo: StringMap[T] = StringMap.make()
-    mutable f: String => T = {_ => panic("Not initialized")}
+    mutable f: String => T = {_ => throw(GrabException())}
     function go(key: String): T {
         if(memo.has(key)) {memo.grab(key)} else:
         let value = body(f, key)
