@@ -126,12 +126,11 @@ locationsToLspRange(js: JsSystem, start: Location, end: Location): JsValue {
 }
 
 symbolFilter(symbol: WorkspaceSymbol, query: String): Bool {
-    let lower = !query.any {_.isAsciiUpper()}
-    let sylbolWords = splitCamelCased(symbol.name.takeWhile {_.isAsciiLetterOrDigit()}, lower)
-    matchSymbol(sylbolWords, query, lower)
+    let symbolWords = splitCamelCased(symbol.name.takeWhile {_.isAsciiLetterOrDigit()})
+    matchSymbol(symbolWords, query)
 }
 
-matchSymbol(symbolWords: List[String], query: String, lower: Bool): Bool {
+matchSymbol(symbolWords: List[String], query: String): Bool {
     let go = IntMap.memo {f, wordIndex => IntMap.memo {_, queryOffset =>
         if(queryOffset >= query.size()) {True} else:
         if(wordIndex >= symbolWords.size()) {False} else:
@@ -144,19 +143,23 @@ matchSymbol(symbolWords: List[String], query: String, lower: Bool): Bool {
 }
 
 prefixes(string: String): List[String] {
-    if(string == "") {
-        [""]
-    } else {
-        [string, ...prefixes(string.dropLast())]
+    if(string == "") {[""]} else:
+    function go(rest: String): List[String] {
+        if(rest == "") {
+            [""]
+        } else {
+            [rest, ...go(rest.dropLast())]
+        }
     }
+    go(string.grab(0).toString().lower() + string.dropFirst().takeWhile {!_.isAsciiUpper()})
 }
 
-splitCamelCased(name: String, lower: Bool): List[String] {
+splitCamelCased(name: String): List[String] {
     name.first().{
         | None => []
         | Some(c) => 
-            let word = c.toString() + name.dropFirst().takeWhile {_.isAsciiLower()}
+            let word = c.toString().lower() + name.dropFirst().takeWhile {_.isAsciiLower()}
             let rest = name.dropFirst(word.size())
-            [if(lower) {word.lower()} else {word}, ...splitCamelCased(rest, lower)]
+            [word, ...splitCamelCased(rest)]
     }
 }
