@@ -234,7 +234,7 @@ extend self: Handler {
             let documentSymbols = self.getDocumentSymbolsWithCache(system, file)
             let workspaceSymbols = documentSymbols.flatMap {SymbolHandler.documentToWorkspaceSymbols(_, None)}
             let foundSymbols = workspaceSymbols.filter {SymbolHandler.symbolFilter(_, query)}
-            foundSymbols
+            foundSymbols.sortBy {s => s.name.size()}.takeFirst(100)
         }
         let jsSymbols = symbols.map {SymbolHandler.workspaceSymbolToLsp(js, self.rootPath.grab(), _)}
         Result(js.array(jsSymbols).toJson())        
