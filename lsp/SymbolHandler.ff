@@ -143,18 +143,6 @@ matchSymbol(symbolWords: List[String], query: String, lower: Bool): Bool {
     go(0)(0)
 }
 
-/*matchSymbol(symbolWords: List[String], query: String, lower: Bool): Bool {
-    if(query == "") {True} else:
-    symbolWords.{
-        | [] => False
-        | [w, ...ws] =>
-            prefixes(query).any {prefix => 
-                w.startsWith(prefix) && 
-                matchSymbol(ws, query.dropFirst(prefix.size()), lower)
-            }
-    }
-}*/
-
 prefixes(string: String): List[String] {
     if(string == "") {
         [""]
