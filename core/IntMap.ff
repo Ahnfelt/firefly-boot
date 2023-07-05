@@ -76,5 +76,18 @@ extend self[V]: IntMap[V] {
 
     copy(): IntMap[V]
         target js sync "return new Map(self_)"
+        
+}
 
+memo[T](body: (Int => T, Int) => T): Int => T {
+    let memo: IntMap[T] = IntMap.make()
+    mutable f: Int => T = {_ => panic("Not initialized")}
+    function go(key: Int): T {
+        if(memo.has(key)) {memo.grab(key)} else:
+        let value = body(f, key)
+        memo.set(key, value)
+        value
+    }
+    f = {go(_)}
+    f
 }
