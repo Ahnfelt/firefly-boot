@@ -410,6 +410,7 @@ extend self: Handler {
                     let path = if(local) {system.path(targetAt.file)} else {self.rootPath.grab()}
                     Builder.check(system, self.fireflyPath, path, self.virtualFiles, lspHook, True)
                 } catch {| CompileError(at, message), error =>
+                    // TODO: This skips checking all the other files
                     Log.trace("findReferences second check error: " + message)
                 } grab()
 
