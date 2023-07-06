@@ -77,17 +77,9 @@ extend self[V]: StringMap[V] {
     copy(): StringMap[V]
         target js sync "return new Map(self_)"
 
-}
-
-memo[T](body: (String => T, String) => T): String => T {
-    let memo: StringMap[T] = StringMap.make()
-    mutable f: String => T = {_ => throw(GrabException())}
-    function go(key: String): T {
-        if(memo.has(key)) {memo.grab(key)} else:
-        let value = body(f, key)
-        memo.set(key, value)
-        value
+    getOrSet(key: String, body: () => V): V {
+        if(!self.has(key)) {self.set(key, body())}
+        self.grab(key)
     }
-    f = {go(_)}
-    f
+            
 }

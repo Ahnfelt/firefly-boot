@@ -33,15 +33,17 @@ test(symbols: List[String], query: String) {
 }
 
 matchSymbol(symbolWords: List[String], query: String, lower: Bool): Bool {
-    let go = IntMap.memo {f, wordIndex => IntMap.memo {_, queryOffset =>
+    let memo: IntMap[IntMap[Bool]] = IntMap.make()
+    function go(wordIndex: Int, queryOffset: Int): Bool {
+        memo.getOrSet(wordIndex) {IntMap.make()}.getOrSet(queryOffset):
         if(queryOffset >= query.size()) {True} else:
         if(wordIndex >= symbolWords.size()) {False} else:
         prefixes(query.dropFirst(queryOffset)).any {prefix => 
             symbolWords.grab(wordIndex).startsWith(prefix) && 
-            f(wordIndex + 1)(queryOffset + prefix.size())
+            go(wordIndex + 1, queryOffset + prefix.size())
         }
-    }}
-    go(0)(0)
+    }
+    go(0, 0)
 }
 
 prefixes(string: String): List[String] {

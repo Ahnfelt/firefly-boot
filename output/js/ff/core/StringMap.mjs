@@ -95,48 +95,8 @@ export function make_() {
 return new Map()
 }
 
-export function memo_(body_) {
-const memo_ = ff_core_StringMap.make_();
-let f_ = ((_) => {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-});
-function go_(key_) {
-if(ff_core_StringMap.StringMap_has(memo_, key_)) {
-return ff_core_StringMap.StringMap_grab(memo_, key_)
-} else {
-const value_ = body_(f_, key_);
-ff_core_StringMap.StringMap_set(memo_, key_, value_);
-return value_
-}
-}
-f_ = ((_w1) => {
-return go_(_w1)
-});
-return f_
-}
-
 export async function make_$($task) {
 throw new Error('Function make is missing on this target in async context.');
-}
-
-export async function memo_$(body_, $task) {
-const memo_ = ff_core_StringMap.make_();
-let f_ = (async (_, $task) => {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-});
-async function go_$(key_, $task) {
-if(ff_core_StringMap.StringMap_has(memo_, key_)) {
-return ff_core_StringMap.StringMap_grab(memo_, key_)
-} else {
-const value_ = (await body_(f_, key_, $task));
-ff_core_StringMap.StringMap_set(memo_, key_, value_);
-return value_
-}
-}
-f_ = (async (_w1, $task) => {
-return (await go_$(_w1, $task))
-});
-return f_
 }
 
 export function StringMap_get(self_, key_) {
@@ -225,6 +185,13 @@ export function StringMap_copy(self_) {
 return new Map(self_)
 }
 
+export function StringMap_getOrSet(self_, key_, body_) {
+if((!ff_core_StringMap.StringMap_has(self_, key_))) {
+ff_core_StringMap.StringMap_set(self_, key_, body_())
+};
+return ff_core_StringMap.StringMap_grab(self_, key_)
+}
+
 export async function StringMap_get$(self_, key_, $task) {
 throw new Error('Function StringMap_get is missing on this target in async context.');
 }
@@ -303,6 +270,13 @@ return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
 
 export async function StringMap_copy$(self_, $task) {
 throw new Error('Function StringMap_copy is missing on this target in async context.');
+}
+
+export async function StringMap_getOrSet$(self_, key_, body_, $task) {
+if((!ff_core_StringMap.StringMap_has(self_, key_))) {
+ff_core_StringMap.StringMap_set(self_, key_, (await body_($task)))
+};
+return ff_core_StringMap.StringMap_grab(self_, key_)
 }
 
 
