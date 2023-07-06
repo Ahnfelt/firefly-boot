@@ -131,7 +131,7 @@ symbolFilter(symbol: WorkspaceSymbol, query: String): Bool {
 }
 
 matchSymbol(symbolWords: List[String], query: String): Bool {
-    let memo: IntMap[IntMap[Bool]] = IntMap.make()
+    let memo = IntMap.make()
     function go(wordIndex: Int, queryOffset: Int): Bool {
         memo.getOrSet(wordIndex) {IntMap.make()}.getOrSet(queryOffset):
         if(queryOffset >= query.size()) {True} else:
