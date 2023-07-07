@@ -1,3 +1,0 @@
-Content-Length: 157
-
-{"jsonrpc":"2.0","id":1,"method":"textDocument/diagnostic","params":{"textDocument":{"uri":"file:///home/werk/projects/firefly-boot/lsp/LanguageServer.ff"}}}
