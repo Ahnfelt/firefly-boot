@@ -1,0 +1,47 @@
+
+nodeMain(system: NodeSystem) {
+    
+    let urlFile = system.arguments().grab(0)
+    let urls = system.path(urlFile).readText().lines()
+    
+    let urlChannel = system.mainTask().channel(urls.size())
+    let htmlChannel = system.mainTask().channel(urls.size())
+    let resultChannel = system.mainTask().channel(urls.size())
+    
+    1.to(1000).each {_ => 
+        system.mainTask().spawn {task =>
+            let url = urlChannel.read()
+            let html = system.httpClient().fetch(url).readText()
+            htmlChannel.write(html)
+        }
+    }
+
+    1.to(10).each {_ => 
+        system.mainTask().spawn {task =>
+            let html = htmlChannel.read()
+            let result = scrape(html)
+            resultChannel.write(result)
+        }
+    }
+
+    urls.each {url => urlChannel.write(url)}
+    let results = urls.map {_ => resultChannel.read()}
+    system.writeText(results.join("\n"))
+    
+}
+
+scrape(html: String): String {
+    html // Uhm...
+}
+
+foo() {
+    
+    let result = urls.toStream()
+        .parallelMap(threads = 1000) {url => timeout(Duration(5)) {download(url)}}
+        .parallelMap(threads = 10) {result => result.map(scrape)}
+
+    let result = urls.toStream()
+        .parallelMap(threads = 1000) {url => timeout(Duration(5)) {download(url)}}
+        .parallelMap(threads = 10) {result => result.map(scrape)}
+        
+}
