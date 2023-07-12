@@ -37,11 +37,15 @@ scrape(html: String): String {
 foo() {
     
     let result = urls.toStream()
-        .parallelMap(threads = 1000) {url => timeout(Duration(5)) {download(url)}}
+        .parallelMap(threads = 1000) {url => download(url)}
         .parallelMap(threads = 10) {result => result.map(scrape)}
 
     let result = urls.toStream()
-        .parallelMap(threads = 1000) {url => timeout(Duration(5)) {download(url)}}
-        .parallelMap(threads = 10) {result => result.map(scrape)}
-        
+        .parallelMap(threads = 1000) {task, url => task.timeout(Duration(5)) {download(url)}}
+        .parallelMap(threads = 10) {_, result => result.map(scrape)}
+
+    let result = urls.toStream()
+        .parallelMap(1000) {task, url => task.deadline(task.now().add(Duration(5))) {download(url)}}
+        .parallelMap(10) {_, result => result.map(scrape)}
+    
 }
