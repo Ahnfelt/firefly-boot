@@ -104,8 +104,6 @@ import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
 import * as ff_core_Task from "../../ff/core/Task.mjs"
 
-import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
-
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
@@ -1673,7 +1671,7 @@ return
 
 export async function $run$(fireflyPath_, arguments_) {
 Error.stackTraceLimit = 50
-const $task = {controller: new AbortController(), subtasks: new Set(), promise: new Promise(() => {})}
+const $task = {controller: new AbortController(), subtasks: new Set(), promise: new Promise(() => {}), started: performance.now() * 0.001}
 let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)
 let system = {
 task_: $task,

@@ -8,9 +8,6 @@ extend self: BrowserSystem {
     mainTask(): Task
         target js async "return self_.task_"
 
-    time(): TimeSystem
-        target js async "return null"
-
     js(): JsSystem
         target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
 

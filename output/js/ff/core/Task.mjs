@@ -80,8 +80,6 @@ import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
 import * as ff_core_Task from "../../ff/core/Task.mjs"
 
-import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
-
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
@@ -98,7 +96,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 export function Task_spawn(self_, body_) {
 
             ff_core_Task.Task_throwIfAborted(self_)
-            const task = {controller: new AbortController(), subtasks: new Set()}
+            const task = {controller: new AbortController(), subtasks: new Set(), started: performance.now() * 0.001}
             self_.subtasks.add(task)
             task.promise = Promise.resolve(task).then(async () => {
                 try {
@@ -138,6 +136,22 @@ export function Task_lock(self_) {
 throw new Error('Function Task_lock is missing on this target in sync context.');
 }
 
+export function Task_now(self_) {
+return Date.now() * 0.001
+}
+
+export function Task_elapsed(self_) {
+return performance.now() * 0.001 - self_.started
+}
+
+export function Task_time(self_, body_) {
+const start_ = ff_core_Task.Task_elapsed(self_);
+const result_ = body_();
+const stop_ = ff_core_Task.Task_elapsed(self_);
+const duration_ = (stop_ - start_);
+return ff_core_Pair.Pair(result_, duration_)
+}
+
 export async function Task_spawn$(self_, body_, $task) {
 
             return ff_core_Task.Task_spawn(self_, body_)
@@ -162,6 +176,22 @@ return ff_core_Task.Task_channel(capacity_)
 
 export async function Task_lock$(self_, $task) {
 return {owner: null, level: 0, stack: [], queue: []}
+}
+
+export async function Task_now$(self_, $task) {
+return Date.now() * 0.001
+}
+
+export async function Task_elapsed$(self_, $task) {
+return performance.now() * 0.001 - self_.started
+}
+
+export async function Task_time$(self_, body_, $task) {
+const start_ = (await ff_core_Task.Task_elapsed$(self_, $task));
+const result_ = (await body_($task));
+const stop_ = (await ff_core_Task.Task_elapsed$(self_, $task));
+const duration_ = (stop_ - start_);
+return ff_core_Pair.Pair(result_, duration_)
 }
 
 export function Task_sleep(self_, duration_) {

@@ -80,7 +80,7 @@ extend self: Handler {
                 self.handleTokenRequestWithCache(system, method, parameters) {targetAt => 
                     self.handleReferences(system, targetAt, local = True)
                 }
-            | "workspace/symbol" => self.printTime(system.time(), "handleWorkspaceSymbol") {self.handleWorkspaceSymbol(system, parameters)}
+            | "workspace/symbol" => self.printTime(system.mainTask(), "handleWorkspaceSymbol") {self.handleWorkspaceSymbol(system, parameters)}
             | "shutdown" => Result(system.js().null().toJson())
             | _ => self.handleUnsupported(system.js())
         }
@@ -229,7 +229,7 @@ extend self: Handler {
     handleWorkspaceSymbol(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
         let js = system.js()
         let query = parameters.grab("query").grabString()
-        let files = self.printTime(system.time(), "findFireflyFiles") {Builder.findFireflyFiles(self.rootPath.grab())}
+        let files = self.printTime(system.mainTask(), "findFireflyFiles") {Builder.findFireflyFiles(self.rootPath.grab())}
         let symbols = files.flatMap {file => 
             let documentSymbols = self.getDocumentSymbolsWithCache(system, file)
             let workspaceSymbols = documentSymbols.flatMap {SymbolHandler.documentToWorkspaceSymbols(_, None)}
@@ -519,10 +519,10 @@ extend self: Handler {
             )
     }
     
-    printTime[R](ts: TimeSystem, label: String, body: () => R): R {
-        let start = ts.elapsed()
+    printTime[R](task: Task, label: String, body: () => R): R {
+        let start = task.elapsed()
         let result = body()
-        let stop = ts.elapsed()
+        let stop = task.elapsed()
         let duration = ("" + (stop.seconds - start.seconds)).slice(0, 5)
         Log.trace(label + ": " + duration + "s")
         result

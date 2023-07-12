@@ -82,8 +82,6 @@ import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
 import * as ff_core_Task from "../../ff/core/Task.mjs"
 
-import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
-
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
@@ -139,10 +137,6 @@ throw new Error('Function NodeSystem_httpClient is missing on this target in syn
 
 export function NodeSystem_mainTask(self_) {
 throw new Error('Function NodeSystem_mainTask is missing on this target in sync context.');
-}
-
-export function NodeSystem_time(self_) {
-throw new Error('Function NodeSystem_time is missing on this target in sync context.');
 }
 
 export function NodeSystem_js(self_) {
@@ -237,10 +231,6 @@ return null
 
 export async function NodeSystem_mainTask$(self_, $task) {
 return self_.task_
-}
-
-export async function NodeSystem_time$(self_, $task) {
-return null
 }
 
 export async function NodeSystem_js$(self_, $task) {

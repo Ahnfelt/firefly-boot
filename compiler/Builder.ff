@@ -29,7 +29,7 @@ build(
     let success = do {
         let compiler = Compiler.make(
             emitTarget
-            system.time()
+            system.mainTask()
             compilerModulePath
             jsPathFile
             resolvedDependencies
@@ -108,7 +108,7 @@ check(
         let fixedResolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
         let compiler = Compiler.make(
             EmitBuild
-            system.time() 
+            system.mainTask() 
             None
             package.root.slash(".firefly").slash("temporary")
             fixedResolvedDependencies

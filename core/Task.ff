@@ -10,7 +10,7 @@ extend self: Task {
         """
         target js sync """
             ff_core_Task.Task_throwIfAborted(self_)
-            const task = {controller: new AbortController(), subtasks: new Set()}
+            const task = {controller: new AbortController(), subtasks: new Set(), started: performance.now() * 0.001}
             self_.subtasks.add(task)
             task.promise = Promise.resolve(task).then(async () => {
                 try {
@@ -56,6 +56,22 @@ extend self: Task {
     lock(): Lock
         target js async """return {owner: null, level: 0, stack: [], queue: []}"""
     
+    now(): Instant
+        target js sync "return Date.now() * 0.001"
+        target js async "return Date.now() * 0.001" // TODO: Mark now() as sync and remove async version
+
+    elapsed(): Duration
+        target js sync "return performance.now() * 0.001 - self_.started"
+        target js async "return performance.now() * 0.001 - self_.started" // TODO: Mark sync and remove async version
+
+    time[R](body: () => R): Pair[R, Duration] {
+        let start = self.elapsed()
+        let result = body()
+        let stop = self.elapsed()
+        let duration = Duration(stop.seconds - start.seconds)
+        Pair(result, duration)
+    }
+
 }
 
 // Convenience methods

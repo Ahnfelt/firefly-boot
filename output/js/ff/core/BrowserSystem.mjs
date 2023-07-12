@@ -80,8 +80,6 @@ import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
 import * as ff_core_Task from "../../ff/core/Task.mjs"
 
-import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
-
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
@@ -103,10 +101,6 @@ export function BrowserSystem_mainTask(self_) {
 throw new Error('Function BrowserSystem_mainTask is missing on this target in sync context.');
 }
 
-export function BrowserSystem_time(self_) {
-throw new Error('Function BrowserSystem_time is missing on this target in sync context.');
-}
-
 export function BrowserSystem_js(self_) {
 throw new Error('Function BrowserSystem_js is missing on this target in sync context.');
 }
@@ -117,10 +111,6 @@ return null
 
 export async function BrowserSystem_mainTask$(self_, $task) {
 return self_.task_
-}
-
-export async function BrowserSystem_time$(self_, $task) {
-return null
 }
 
 export async function BrowserSystem_js$(self_, $task) {

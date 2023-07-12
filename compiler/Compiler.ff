@@ -11,7 +11,7 @@ import LspHook
 
 capability Compiler(
     emitTarget: EmitTarget
-    time: TimeSystem
+    task: Task
     compilerModulePath: Option[Path]
     jsOutputPath: Path
     packagePaths: Map[PackagePair, Path]
@@ -29,7 +29,7 @@ capability Compiler(
 
 make(
     emitTarget: EmitTarget
-    time: TimeSystem
+    task: Task
     compilerModulePath: Option[Path]
     jsOutputPath: Path
     resolvedDependencies: ResolvedDependencies
@@ -38,7 +38,7 @@ make(
 ): Compiler {
     Compiler(
         emitTarget = emitTarget
-        time = time
+        task = task
         compilerModulePath = compilerModulePath
         jsOutputPath = jsOutputPath
         packagePaths = resolvedDependencies.packagePaths
@@ -101,7 +101,6 @@ coreImports: List[DImport] =
         "String"
         "StringMap"
         "Task"
-        "TimeSystem"
         "Try"
         "Unit"
     ].map {moduleName =>
@@ -117,9 +116,9 @@ coreImports: List[DImport] =
 extend self: Compiler {
 
     measure[T](phase: String, packagePair: PackagePair, moduleName: String, body: () => T): T {
-        let start = Duration(self.time.elapsed().seconds - self.phaseDurationDelta.seconds)
+        let start = Duration(self.task.elapsed().seconds - self.phaseDurationDelta.seconds)
         let result = body()
-        let stop = Duration(self.time.elapsed().seconds - self.phaseDurationDelta.seconds)
+        let stop = Duration(self.task.elapsed().seconds - self.phaseDurationDelta.seconds)
         let duration = Duration(stop.seconds - start.seconds)
         self.phaseDurationDelta = Duration(self.phaseDurationDelta.seconds + duration.seconds)
         let text = phase + " " + packagePair.groupName() + "/" + moduleName
