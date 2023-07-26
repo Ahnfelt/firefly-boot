@@ -40,6 +40,7 @@ data TokenLocation(
     endLine: Int
     endColumn: Int
     raw: String
+    followedByLeftBracket: Bool
 )
 
 
@@ -281,14 +282,21 @@ extend self: Handler {
     }
 
     handleCompletion(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
-        let completionAt = self.findTokenFromParameters(system, parameters)
+        let location = self.findLocationFromParameters(system, parameters)
+        let token = self.findToken(system, location, insertToken = True)
+        let completionAt = Location(
+            file = location.file
+            line = token.startLine
+            column = token.startColumn
+        )
+        Log.show(token.followedByLeftBracket)
         let lspHook = LspHook.make(at = Some(completionAt), definedAt = None, insertIdentifier = True, trackSymbols = False)
         try {
             Builder.check(system, self.fireflyPath, system.path(completionAt.file), self.virtualFiles, lspHook, True)
         } catch {| CompileError(at, message), error =>
             Log.trace("handleCompletion check error: " + message)
         } grab()
-        let o = CompletionHandler.handleCompletion(system, lspHook, completionAt.column == 1)
+        let o = CompletionHandler.handleCompletion(system, lspHook, completionAt.column == 1, token.followedByLeftBracket)
         Result(o.toJson())
     }
 
@@ -448,7 +456,7 @@ extend self: Handler {
             .with("params", params)
     }
 
-    findToken(system: NodeSystem, at: Location): TokenLocation {
+    findToken(system: NodeSystem, at: Location, insertToken: Bool = False): TokenLocation {
         let fallback = TokenLocation(
             file = at.file
             startLine = at.line
@@ -456,10 +464,11 @@ extend self: Handler {
             endLine = at.line
             endColumn = at.column + 1
             raw = ""
+            followedByLeftBracket = True
         )
         try {
             let code = self.virtualFiles.get(at.file).else {system.path(at.file).readText()}
-            let tokens = Tokenizer.tokenize(at.file, code, None, True)
+            let tokens = Tokenizer.tokenize(at.file, code, Some(at).filter {_ => insertToken}, True)
             let token = tokens.toStream().find {token =>
                 at.line >= token.startLine && at.line <= token.stopLine && (
                     (at.line > token.startLine || at.column >= 1 + token.startOffset - token.startLineOffset) &&
@@ -469,14 +478,25 @@ extend self: Handler {
                     ))
                 )
             }
-            token.map {t => TokenLocation(
-                file = t.file
-                startLine = t.startLine
-                startColumn = 1 + t.startOffset - t.startLineOffset
-                endLine = t.stopLine
-                endColumn = 1 + t.stopOffset - t.stopLineOffset
-                raw = t.raw()
-            )}.else {fallback}
+            token.map {t => 
+                function leftBracketAt(i: Int): Bool {
+                    i >= 0 && i < code.size() && 
+                    (code.grab(i) == '(' || code.grab(i) == '[' || code.grab(i) == '{')
+                }
+                let followedByLeftBracket = 
+                    leftBracketAt(t.startOffset) || 
+                    leftBracketAt(t.stopOffset) || 
+                    leftBracketAt(t.stopOffset + 1)
+                TokenLocation(
+                    file = t.file
+                    startLine = t.startLine
+                    startColumn = 1 + t.startOffset - t.startLineOffset
+                    endLine = t.stopLine
+                    endColumn = 1 + t.stopOffset - t.stopLineOffset
+                    raw = t.raw()
+                    followedByLeftBracket = followedByLeftBracket
+                )
+            }.else {fallback}
         } catchAny {_ =>
             fallback
         } grab()

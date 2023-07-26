@@ -15,7 +15,7 @@ data CompletionInfo(
     secondarySort: Int = 5
 )
 
-handleCompletion(system: NodeSystem, lspHook: LspHook, toplevel: Bool): JsValue {
+handleCompletion(system: NodeSystem, lspHook: LspHook, toplevel: Bool, followedByOpenBracket: Bool): JsValue {
     let topLevelCompletions = if(!toplevel) {[]} else {toplevelCompletion(lspHook)}
     let patternCompletions = lspHook.results().collectFirst {
         | InferPatternHook h =>
@@ -149,7 +149,14 @@ handleCompletion(system: NodeSystem, lspHook: LspHook, toplevel: Bool): JsValue 
             (c.snippet.slice(0, 1).lower() + c.snippet.dropFirst()).takeWhile {_ != '['} + ": " + c.snippet
         )}
     }
-    completionsToJson(system.js(), [...completions, ...fixedTypeCompletions, ...topLevelCompletions])
+    let fixedCompletions = if(!followedByOpenBracket) {completions} else {
+        completions.map {c =>
+            if(c.snippet.dropFirst(1).any {c => c != '(' && c != '[' && c != '{'}) {
+                c.CompletionInfo(snippet = c.snippet.takeWhile {c => c != ' ' && c != '(' && c != '[' && c != '{'})
+            } else {c}
+        }
+    }
+    completionsToJson(system.js(), [...fixedCompletions, ...fixedTypeCompletions, ...topLevelCompletions])
 }
 
 completionsToJson(js: JsSystem, completions: List[CompletionInfo]): JsValue {
