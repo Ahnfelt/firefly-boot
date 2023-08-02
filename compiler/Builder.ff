@@ -94,10 +94,11 @@ check(
 ) {
     let packages = path.isDirectory().{
         | True => findPackageFiles(path)
+        | False {path.endsWith([".firefly", "package.ff"])} => [PackageFiles(path.parent().grab(), Some(path), [])]
         | False => [PackageFiles(path.parent().grab(), None, [path])]
     }
 
-    packages.each {package => 
+    packages.filter {!_.files.isEmpty()}.each {package => 
         let firstFile = package.files.grabFirst()
         let resolvedDependencies = Dependencies.process(system.httpClient(), firstFile)
         let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {

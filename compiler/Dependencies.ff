@@ -33,8 +33,16 @@ extend self: Dependencies {
             path
         }
         let code = packageFile.readText()
-        let tokens = Tokenizer.tokenize(packageFile.relativeTo(path), code, None, True)
-        let parser = Parser.make(packagePair, packageFile.relativeTo(path), tokens, False, LspHook.disabled())
+        self.parsePackageFile(packagePair, packageFile.relativeTo(path), code)
+    }
+    
+    parsePackageFile(
+        packagePair: PackagePair
+        fileName: String
+        code: String
+    ): PackageInfo {
+        let tokens = Tokenizer.tokenize(fileName, code, None, True)
+        let parser = Parser.make(packagePair, fileName, tokens, False, LspHook.disabled())
         let info = parser.parsePackageInfo()
         self.addCoreDependencyIfMissing(info)
     }
