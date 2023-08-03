@@ -1,9 +1,15 @@
 nodeMain(system: NodeSystem) {
     if(!system.path(".").endsWith(["vscode"])) {
-        panic("Must stand in the firefly vscode/ directory.")
+        panic("Must stand in the Firefly vscode/ directory.")
     }
     let fireflyOutputPath = system.path("firefly")
     if(fireflyOutputPath.exists()) {fireflyOutputPath.delete()}
+    fireflyOutputPath.createDirectory()
     system.path("../output").copyTo(fireflyOutputPath.path("output"))
-    Log.trace("Done.")
+    system.path("../compiler").copyTo(fireflyOutputPath.path("compiler"))
+    system.path("../core").copyTo(fireflyOutputPath.path("core"))
+    system.path("../lsp").copyTo(fireflyOutputPath.path("lsp"))
+    system.path("../.firefly-workspace").copyTo(fireflyOutputPath.path(".firefly-workspace"))
+    system.path("../package.json").copyTo(fireflyOutputPath.path("package.json"))
+    system.path("../node_modules").copyTo(fireflyOutputPath.path("node_modules"))
 }

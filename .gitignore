@@ -6,13 +6,14 @@
 **/*_?_?_?.tar.gz
 
 /package-lock.json
-/vscode/client/out/
-/vscode/*.vsix
 /experimental/random/lsp-debug.txt
 /output/temporary
 /output/temporaryjs
 
+/vscode/client/out/
+/vscode/*.vsix
+/vscode/firefly
+
 /lsp/stdin.txt
 /lsp/stdout.txt
 /lsp/stderr.txt
-

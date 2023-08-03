@@ -84,11 +84,6 @@
             "type": "object",
             "title": "Firefly language support configuration",
             "properties": {
-                "firefly.path": {
-					"scope": "window",
-					"type": "string",
-					"description": "Path to the directory containing the Firefly compiler."
-                },
                 "firefly.trace.server": {
 					"scope": "window",
 					"type": "string",

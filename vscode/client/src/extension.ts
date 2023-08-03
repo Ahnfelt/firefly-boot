@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 
@@ -12,11 +13,9 @@ let client: LanguageClient;
 
 export function activate(context: vscode.ExtensionContext) {
 
-    let fireflyPath = vscode.workspace.getConfiguration().get<string>('firefly.path')
-    if(fireflyPath == null || fireflyPath == '') {
-        vscode.window.showErrorMessage("Please set firefly.path in your configuration and reload.")
-        return
-    }
+    const fireflyPath = fs.existsSync(path.join(context.extensionPath, '.vsixmanifest'))
+        ? path.join(context.extensionPath, 'firefly')
+        : path.join(context.extensionPath, '..')
 
     const commandName = 'firefly.run';
     const commandHandler = () => {
@@ -31,11 +30,8 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerCommand(commandName, commandHandler));
 
     const runOrDebug = {
-        //command: fireflyPath + '/firefly.sh',
-        //command: "./languageServer.sh",
         module: fireflyPath + '/output/js/ff/compiler/Main.mjs',
         args: ['LanguageServer.ff'],
-        //args: [fireflyPath + '/lsp/LanguageServer.ff'],
         options: {cwd: fireflyPath + '/lsp'},
         transport: TransportKind.stdio // ipc
     };
