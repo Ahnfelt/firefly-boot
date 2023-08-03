@@ -1,5 +1,6 @@
 {
     "name": "firefly",
+    "displayName": "Firefly",
     "description": "Firefly language support",
     "author": "Firefly team",
     "license": "MIT",
@@ -19,6 +20,7 @@
         "vscode": "^1.75.0"
     },
     "main": "./client/out/extension",
+    "icon": "./icons/firefly-logo.png",
     "contributes": {
         "languages": [
             {
