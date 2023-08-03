@@ -1,0 +1,9 @@
+nodeMain(system: NodeSystem) {
+    if(!system.path(".").endsWith(["vscode"])) {
+        panic("Must stand in the firefly vscode/ directory.")
+    }
+    let fireflyOutputPath = system.path("firefly")
+    if(fireflyOutputPath.exists()) {fireflyOutputPath.delete()}
+    system.path("../output").copyTo(fireflyOutputPath)
+    Log.trace("Done.")
+}
