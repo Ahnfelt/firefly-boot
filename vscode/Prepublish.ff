@@ -4,6 +4,6 @@ nodeMain(system: NodeSystem) {
     }
     let fireflyOutputPath = system.path("firefly")
     if(fireflyOutputPath.exists()) {fireflyOutputPath.delete()}
-    system.path("../output").copyTo(fireflyOutputPath)
+    system.path("../output").copyTo(fireflyOutputPath.path("output"))
     Log.trace("Done.")
 }
