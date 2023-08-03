@@ -12,7 +12,11 @@ let client: LanguageClient;
 
 export function activate(context: vscode.ExtensionContext) {
 
-    let fireflyPath = process.env.FIREFLY_HOME // Start code from the vscode directory with: FIREFLY_HOME=$PWD/.. code .
+    let fireflyPath = vscode.workspace.getConfiguration().get<string>('firefly.path')
+    if(fireflyPath == null || fireflyPath == '') {
+        vscode.window.showErrorMessage("Please set firefly.path in your configuration and reload.")
+        return
+    }
 
     const commandName = 'firefly.run';
     const commandHandler = () => {
