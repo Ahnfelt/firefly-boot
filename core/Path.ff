@@ -175,7 +175,7 @@ extend self: Path {
             if(path.exists()) {path.delete(retries, retryDelay)}
             path.createDirectory()
             self.entries().each {file =>
-                self.copyTo(path.slash(file.path().relativeTo(self)), retries, retryDelay)
+                file.path().copyTo(path.slash(file.path().relativeTo(self)), retries, retryDelay)
             }
         } else {
             path.writeStream(self.readStream())
