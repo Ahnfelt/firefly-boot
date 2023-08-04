@@ -5,11 +5,11 @@ nodeMain(system: NodeSystem) {
     let fireflyOutputPath = system.path("firefly")
     if(fireflyOutputPath.exists()) {fireflyOutputPath.delete()}
     fireflyOutputPath.createDirectory()
-    system.path("../output").copyTo(fireflyOutputPath.path("output"))
-    system.path("../compiler").copyTo(fireflyOutputPath.path("compiler"))
-    system.path("../core").copyTo(fireflyOutputPath.path("core"))
-    system.path("../lsp").copyTo(fireflyOutputPath.path("lsp"))
-    system.path("../.firefly-workspace").copyTo(fireflyOutputPath.path(".firefly-workspace"))
-    system.path("../package.json").copyTo(fireflyOutputPath.path("package.json"))
-    system.path("../node_modules").copyTo(fireflyOutputPath.path("node_modules"))
+    system.slash("..").slash("output").copyTo(fireflyOutputPath.slash("output"))
+    system.slash("..").slash("compiler").copyTo(fireflyOutputPath.slash("compiler"))
+    system.slash("..").slash("core").copyTo(fireflyOutputPath.slash("core"))
+    system.slash("..").slash("lsp").copyTo(fireflyOutputPath.slash("lsp"))
+    system.slash("..").slash(".firefly-workspace").copyTo(fireflyOutputPath.slash(".firefly-workspace"))
+    system.slash("..").slash("package.json").copyTo(fireflyOutputPath.slash("package.json"))
+    system.slash("..").slash("node_modules").copyTo(fireflyOutputPath.slash("node_modules"))
 }
