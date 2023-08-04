@@ -22,7 +22,10 @@ handleSignatureHelp(system: NodeSystem, lspHook: LspHook): JsValue {
         let realGenerics = s.generics.filter {_ != "Q$"}
         let generics = if(realGenerics.isEmpty()) {""} else {"[" + realGenerics.join(", ") + "]"}
         // TODO only instantiate acording to self. Eg. Some("foo").map {...}
-        let parameters = s.parameters.map {p => p.name + ": " + unification.substitute(p.valueType).show(shownTypes)}
+        let parameters = s.parameters.map {p => 
+            let text = p.name + ": " + unification.substitute(p.valueType).show(shownTypes)
+            if(p.default.isEmpty()) {text} else {"[" + text + "]"}
+        }
         let label = 
             s.name + generics + "(" + parameters.join(", ") + "): " + unification.substitute(s.returnType).show(shownTypes)
         js.object()

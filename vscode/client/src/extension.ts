@@ -28,6 +28,8 @@ export function activate(context: vscode.ExtensionContext) {
         }
     };
     context.subscriptions.push(vscode.commands.registerCommand(commandName, commandHandler));
+    
+    
 
     const runOrDebug = {
         module: fireflyPath + '/output/js/ff/compiler/Main.mjs',
