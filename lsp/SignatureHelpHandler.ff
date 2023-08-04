@@ -3,6 +3,7 @@ import Unification from ff:compiler
 import Environment from ff:compiler
 import Syntax from ff:compiler
 import Handler
+import CompletionHandler
 
 handleSignatureHelp(system: NodeSystem, lspHook: LspHook): JsValue {
     let signatureAndUnification = lspHook.results().collectFirst {
@@ -23,8 +24,7 @@ handleSignatureHelp(system: NodeSystem, lspHook: LspHook): JsValue {
         let generics = if(realGenerics.isEmpty()) {""} else {"[" + realGenerics.join(", ") + "]"}
         // TODO only instantiate acording to self. Eg. Some("foo").map {...}
         let parameters = s.parameters.map {p => 
-            let text = p.name + ": " + unification.substitute(p.valueType).show(shownTypes)
-            if(p.default.isEmpty()) {text} else {"[" + text + "]"}
+            CompletionHandler.showCompletionParameter("", p.Parameter(valueType = unification.substitute(p.valueType)))
         }
         let label = 
             s.name + generics + "(" + parameters.join(", ") + "): " + unification.substitute(s.returnType).show(shownTypes)
