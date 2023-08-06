@@ -76,8 +76,8 @@
         ],
         "commands": [
             {
-                "command": "firefly.run",
-                "title": "Run Current Firefly Main File"
+                "command": "extension.firefly.getFireflyPath",
+                "title": "Get the Firefly path"
             }
         ],
         "configuration": {
@@ -95,9 +95,24 @@
 					"default": "verbose",
 					"description": "Traces the communication between VS Code and the language server."
 				}
-            },
-            "required": ["firefly.path"]
-        }
+            }
+        },
+        "debuggers": [
+            {
+                "type": "firefly",
+                "runtime": "node",
+                "languages": ["firefly"],
+                "initialConfigurations": [
+                    {
+                        "type": "node",
+                        "request": "launch",
+                        "name": "Launch Firefly",
+                        "args": ["${command:extension.firefly.getFireflyPath}/output/js/ff/compiler/Main.mjs", "${file}"],
+                        "outFiles": ["${workspaceFolder}/.firefly/**/*.mjs"]
+                    }
+                ]
+            }
+        ]
     },
     "scripts": {
         "vscode:prepublish": "node ../output/js/ff/compiler/Main.mjs Prepublish.ff && npm run compile",

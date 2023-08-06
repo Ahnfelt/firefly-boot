@@ -17,19 +17,9 @@ export function activate(context: vscode.ExtensionContext) {
         ? path.join(context.extensionPath, 'firefly')
         : path.join(context.extensionPath, '..')
 
-    const commandName = 'firefly.run';
-    const commandHandler = () => {
-        const editor = vscode.window.activeTextEditor;
-        if(editor) {
-            const fileName = vscode.workspace.asRelativePath(editor.document.fileName);;
-            const terminal = vscode.window.createTerminal('Firefly');
-            terminal.show();
-            terminal.sendText(`${fireflyPath}/firefly.sh "${fileName}"`);
-        }
-    };
-    context.subscriptions.push(vscode.commands.registerCommand(commandName, commandHandler));
-    
-    
+    context.subscriptions.push(vscode.commands.registerCommand('extension.firefly.getFireflyPath', config => {
+        return fireflyPath;
+    }));
 
     const runOrDebug = {
         module: fireflyPath + '/output/js/ff/compiler/Main.mjs',
