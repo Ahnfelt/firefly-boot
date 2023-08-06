@@ -1,4 +1,8 @@
-# firefly-boot
+# Firefly programming language
+
+[Get the VSCode extension](https://marketplace.visualstudio.com/items?itemName=firefly-team.firefly-lang)
+
+## About the compiler
 This is a bootstrap transpiler for converting Firefly code to JavaScript code.
 
 Status: Firefly has been bootstrapped and now transpiles itself into JavaScript.
