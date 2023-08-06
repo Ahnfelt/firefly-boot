@@ -1,6 +1,6 @@
 {
-    "name": "firefly",
-    "displayName": "Firefly",
+    "name": "firefly-lang",
+    "displayName": "Firefly Language",
     "description": "Firefly language support",
     "author": "Firefly team",
     "license": "MIT",
@@ -9,7 +9,7 @@
         "type": "git",
         "url": "https://github.com/Ahnfelt/firefly-boot"
     },
-    "publisher": "Firefly team",
+    "publisher": "firefly-team",
     "categories": [
         "Programming Languages"
     ],
@@ -76,7 +76,7 @@
         ],
         "commands": [
             {
-                "command": "extension.firefly.getFireflyPath",
+                "command": "extension.firefly-lang.getFireflyPath",
                 "title": "Get the Firefly path"
             }
         ],
@@ -107,7 +107,7 @@
                         "type": "node",
                         "request": "launch",
                         "name": "Launch Firefly",
-                        "args": ["${command:extension.firefly.getFireflyPath}/output/js/ff/compiler/Main.mjs", "${file}"],
+                        "args": ["${command:extension.firefly-lang.getFireflyPath}/output/js/ff/compiler/Main.mjs", "${file}"],
                         "outFiles": ["${workspaceFolder}/.firefly/**/*.mjs"]
                     }
                 ]
