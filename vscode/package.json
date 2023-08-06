@@ -4,7 +4,7 @@
     "description": "Firefly language support",
     "author": "Firefly team",
     "license": "MIT",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "repository": {
         "type": "git",
         "url": "https://github.com/Ahnfelt/firefly-boot"
@@ -85,30 +85,37 @@
             "title": "Firefly language support configuration",
             "properties": {
                 "firefly.trace.server": {
-					"scope": "window",
-					"type": "string",
-					"enum": [
-						"off",
-						"messages",
-						"verbose"
-					],
-					"default": "verbose",
-					"description": "Traces the communication between VS Code and the language server."
-				}
+                    "scope": "window",
+                    "type": "string",
+                    "enum": [
+                        "off",
+                        "messages",
+                        "verbose"
+                    ],
+                    "default": "verbose",
+                    "description": "Traces the communication between VS Code and the language server."
+                }
             }
         },
         "debuggers": [
             {
                 "type": "firefly",
                 "runtime": "node",
-                "languages": ["firefly"],
+                "languages": [
+                    "firefly"
+                ],
                 "initialConfigurations": [
                     {
                         "type": "node",
                         "request": "launch",
                         "name": "Launch Firefly",
-                        "args": ["${command:extension.firefly-lang.getFireflyPath}/output/js/ff/compiler/Main.mjs", "${file}"],
-                        "outFiles": ["${workspaceFolder}/.firefly/**/*.mjs"]
+                        "args": [
+                            "${command:extension.firefly-lang.getFireflyPath}/output/js/ff/compiler/Main.mjs",
+                            "${file}"
+                        ],
+                        "outFiles": [
+                            "${workspaceFolder}/.firefly/**/*.mjs"
+                        ]
                     }
                 ]
             }
