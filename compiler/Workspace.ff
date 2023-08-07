@@ -12,7 +12,7 @@ data WorkspaceRule(
     location: String
 )
 
-centralLocation = "http://ting.ahnfelt.dk/firefly/repository/"
+centralLocation = "https://www.firefly-lang.org/packages/"
 
 loadWorkspace(path: Path): Workspace {
     let packageDirectory = if(path.extension() == ".ff") {path.parent().grab()} else {path}

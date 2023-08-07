@@ -98,7 +98,7 @@ export function WorkspaceRule(packageGroup_, packageName_, location_) {
 return {packageGroup_, packageName_, location_};
 }
 
-export const centralLocation_ = "http://ting.ahnfelt.dk/firefly/repository/";
+export const centralLocation_ = "https://www.firefly-lang.org/packages/";
 
 export function loadWorkspace_(path_) {
 const packageDirectory_ = ((ff_core_Path.Path_extension(path_) === ".ff")
