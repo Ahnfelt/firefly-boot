@@ -272,7 +272,7 @@ ff_core_Path.Path_delete(path_, retries_, retryDelay_)
 };
 ff_core_Path.Path_createDirectory(path_, false);
 ff_core_Stream.Stream_each(ff_core_Path.Path_entries(self_), ((file_) => {
-ff_core_Path.Path_copyTo(self_, ff_core_Path.Path_slash(path_, ff_core_Path.Path_relativeTo(ff_core_Path.PathEntry_path(file_), self_)), retries_, retryDelay_)
+ff_core_Path.Path_copyTo(ff_core_Path.PathEntry_path(file_), ff_core_Path.Path_slash(path_, ff_core_Path.Path_relativeTo(ff_core_Path.PathEntry_path(file_), self_)), retries_, retryDelay_)
 }))
 } else {
 ff_core_Path.Path_writeStream(path_, ff_core_Path.Path_readStream(self_), false)
@@ -563,7 +563,7 @@ if((await ff_core_Path.Path_exists$(path_, false, false, false, $task))) {
 };
 (await ff_core_Path.Path_createDirectory$(path_, false, $task));
 (await ff_core_Stream.Stream_each$((await ff_core_Path.Path_entries$(self_, $task)), (async (file_, $task) => {
-(await ff_core_Path.Path_copyTo$(self_, (await ff_core_Path.Path_slash$(path_, (await ff_core_Path.Path_relativeTo$((await ff_core_Path.PathEntry_path$(file_, $task)), self_, $task)), $task)), retries_, retryDelay_, $task))
+(await ff_core_Path.Path_copyTo$((await ff_core_Path.PathEntry_path$(file_, $task)), (await ff_core_Path.Path_slash$(path_, (await ff_core_Path.Path_relativeTo$((await ff_core_Path.PathEntry_path$(file_, $task)), self_, $task)), $task)), retries_, retryDelay_, $task))
 }), $task))
 } else {
 (await ff_core_Path.Path_writeStream$(path_, (await ff_core_Path.Path_readStream$(self_, $task)), false, $task))

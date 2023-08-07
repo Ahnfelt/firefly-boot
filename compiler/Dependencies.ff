@@ -80,7 +80,8 @@ extend self: Dependencies {
         if(location.contains(":") && !location.dropFirst(1).startsWith(":")) {
             if(location.startsWith("http://") || location.startsWith("https://")) {
                 let packagePair = dependency.packagePair
-                let dependenciesPath = path.slash(".firefly").slash("dependencies")
+                let directory = if(path.isDirectory()) {path} else {path.parent().grab()}
+                let dependenciesPath = directory.slash(".firefly").slash("dependencies")
                 let dependencyPath = dependenciesPath.slash(packagePair.group).slash(packagePair.name)
                 let tarGzPath = dependenciesPath.slash(Workspace.tarGzName(packagePair, dependency.version))
                 let donePath = dependenciesPath.slash(Workspace.tarGzName(packagePair, dependency.version) + ".done")

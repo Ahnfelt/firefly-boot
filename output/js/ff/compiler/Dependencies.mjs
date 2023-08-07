@@ -197,8 +197,12 @@ self_.singleFilePackages_ = ff_core_Set.Set_add(self_.singleFilePackages_, packa
 return path_
 })());
 const code_ = ff_core_Path.Path_readText(packageFile_);
-const tokens_ = ff_compiler_Tokenizer.tokenize_(ff_core_Path.Path_relativeTo(packageFile_, path_), code_, ff_core_Option.None(), true);
-const parser_ = ff_compiler_Parser.make_(packagePair_, ff_core_Path.Path_relativeTo(packageFile_, path_), tokens_, false, ff_compiler_LspHook.disabled_());
+return ff_compiler_Dependencies.Dependencies_parsePackageFile(self_, packagePair_, ff_core_Path.Path_relativeTo(packageFile_, path_), code_)
+}
+
+export function Dependencies_parsePackageFile(self_, packagePair_, fileName_, code_) {
+const tokens_ = ff_compiler_Tokenizer.tokenize_(fileName_, code_, ff_core_Option.None(), true);
+const parser_ = ff_compiler_Parser.make_(packagePair_, fileName_, tokens_, false, ff_compiler_LspHook.disabled_());
 const info_ = ff_compiler_Parser.Parser_parsePackageInfo(parser_);
 return ff_compiler_Dependencies.Dependencies_addCoreDependencyIfMissing(self_, info_)
 }
@@ -233,7 +237,10 @@ const location_ = ff_compiler_Workspace.Workspace_findPackageLocation(self_.work
 if((ff_core_String.String_contains(location_, ":") && (!ff_core_String.String_startsWith(ff_core_String.String_dropFirst(location_, 1), ":", 0)))) {
 if((ff_core_String.String_startsWith(location_, "http://", 0) || ff_core_String.String_startsWith(location_, "https://", 0))) {
 const packagePair_ = dependency_.packagePair_;
-const dependenciesPath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(path_, ".firefly"), "dependencies");
+const directory_ = (ff_core_Path.Path_isDirectory(path_)
+? path_
+: ff_core_Option.Option_grab(ff_core_Path.Path_parent(path_)));
+const dependenciesPath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(directory_, ".firefly"), "dependencies");
 const dependencyPath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(dependenciesPath_, packagePair_.group_), packagePair_.name_);
 const tarGzPath_ = ff_core_Path.Path_slash(dependenciesPath_, ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_));
 const donePath_ = ff_core_Path.Path_slash(dependenciesPath_, (ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_) + ".done"));
@@ -289,8 +296,12 @@ self_.singleFilePackages_ = ff_core_Set.Set_add(self_.singleFilePackages_, packa
 return path_
 })()));
 const code_ = (await ff_core_Path.Path_readText$(packageFile_, $task));
-const tokens_ = ff_compiler_Tokenizer.tokenize_((await ff_core_Path.Path_relativeTo$(packageFile_, path_, $task)), code_, ff_core_Option.None(), true);
-const parser_ = ff_compiler_Parser.make_(packagePair_, (await ff_core_Path.Path_relativeTo$(packageFile_, path_, $task)), tokens_, false, ff_compiler_LspHook.disabled_());
+return (await ff_compiler_Dependencies.Dependencies_parsePackageFile$(self_, packagePair_, (await ff_core_Path.Path_relativeTo$(packageFile_, path_, $task)), code_, $task))
+}
+
+export async function Dependencies_parsePackageFile$(self_, packagePair_, fileName_, code_, $task) {
+const tokens_ = ff_compiler_Tokenizer.tokenize_(fileName_, code_, ff_core_Option.None(), true);
+const parser_ = ff_compiler_Parser.make_(packagePair_, fileName_, tokens_, false, ff_compiler_LspHook.disabled_());
 const info_ = ff_compiler_Parser.Parser_parsePackageInfo(parser_);
 return (await ff_compiler_Dependencies.Dependencies_addCoreDependencyIfMissing$(self_, info_, $task))
 }
@@ -325,7 +336,10 @@ const location_ = ff_compiler_Workspace.Workspace_findPackageLocation(self_.work
 if((ff_core_String.String_contains(location_, ":") && (!ff_core_String.String_startsWith(ff_core_String.String_dropFirst(location_, 1), ":", 0)))) {
 if((ff_core_String.String_startsWith(location_, "http://", 0) || ff_core_String.String_startsWith(location_, "https://", 0))) {
 const packagePair_ = dependency_.packagePair_;
-const dependenciesPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(path_, ".firefly", $task)), "dependencies", $task));
+const directory_ = ((await ff_core_Path.Path_isDirectory$(path_, $task))
+? path_
+: ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(path_, $task))));
+const dependenciesPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(directory_, ".firefly", $task)), "dependencies", $task));
 const dependencyPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(dependenciesPath_, packagePair_.group_, $task)), packagePair_.name_, $task));
 const tarGzPath_ = (await ff_core_Path.Path_slash$(dependenciesPath_, ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_), $task));
 const donePath_ = (await ff_core_Path.Path_slash$(dependenciesPath_, (ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_) + ".done"), $task));

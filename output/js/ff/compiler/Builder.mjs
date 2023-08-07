@@ -170,12 +170,23 @@ return
 }
 {
 if(!_1) {
+const _guard1 = ff_core_Path.Path_endsWith(path_, ff_core_List.Link(".firefly", ff_core_List.Link("package.ff", ff_core_List.Empty())));
+if(_guard1) {
+return ff_core_List.Link(ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab(ff_core_Path.Path_parent(path_)), ff_core_Option.Some(path_), ff_core_List.Empty()), ff_core_List.Empty())
+return
+}
+}
+}
+{
+if(!_1) {
 return ff_core_List.Link(ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab(ff_core_Path.Path_parent(path_)), ff_core_Option.None(), ff_core_List.Link(path_, ff_core_List.Empty())), ff_core_List.Empty())
 return
 }
 }
 }))(ff_core_Path.Path_isDirectory(path_));
-ff_core_List.List_each(packages_, ((package_) => {
+ff_core_List.List_each(ff_core_List.List_filter(packages_, ((_w1) => {
+return (!ff_core_List.List_isEmpty(_w1.files_))
+})), ((package_) => {
 const firstFile_ = ff_core_List.List_grabFirst(package_.files_);
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), firstFile_);
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
@@ -338,12 +349,23 @@ return
 }
 {
 if(!_1) {
+const _guard1 = (await ff_core_Path.Path_endsWith$(path_, ff_core_List.Link(".firefly", ff_core_List.Link("package.ff", ff_core_List.Empty())), $task));
+if(_guard1) {
+return ff_core_List.Link(ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(path_, $task))), ff_core_Option.Some(path_), ff_core_List.Empty()), ff_core_List.Empty())
+return
+}
+}
+}
+{
+if(!_1) {
 return ff_core_List.Link(ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(path_, $task))), ff_core_Option.None(), ff_core_List.Link(path_, ff_core_List.Empty())), ff_core_List.Empty())
 return
 }
 }
 }))((await ff_core_Path.Path_isDirectory$(path_, $task)), $task));
-(await ff_core_List.List_each$(packages_, (async (package_, $task) => {
+(await ff_core_List.List_each$(ff_core_List.List_filter(packages_, ((_w1) => {
+return (!ff_core_List.List_isEmpty(_w1.files_))
+})), (async (package_, $task) => {
 const firstFile_ = ff_core_List.List_grabFirst(package_.files_);
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), firstFile_, $task));
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
