@@ -245,7 +245,7 @@ const dependencyPath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(dependen
 const tarGzPath_ = ff_core_Path.Path_slash(dependenciesPath_, ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_));
 const donePath_ = ff_core_Path.Path_slash(dependenciesPath_, (ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_) + ".done"));
 if((!ff_core_Path.Path_exists(donePath_, false, false, false))) {
-ff_core_Log.debug_(("Fetching " + location_));
+ff_core_Log.trace_(("Fetching " + location_));
 const response_ = ff_core_HttpClient.HttpClient_fetch(httpClient_, location_, "GET", ff_core_HttpClient.emptyList_, ff_core_Option.None(), ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), false);
 if((!ff_core_HttpClient.FetchResponse_ok(response_))) {
 ff_core_Core.panic_(("Could not download dependency: " + location_))
@@ -344,7 +344,7 @@ const dependencyPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path
 const tarGzPath_ = (await ff_core_Path.Path_slash$(dependenciesPath_, ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_), $task));
 const donePath_ = (await ff_core_Path.Path_slash$(dependenciesPath_, (ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_) + ".done"), $task));
 if((!(await ff_core_Path.Path_exists$(donePath_, false, false, false, $task)))) {
-ff_core_Log.debug_(("Fetching " + location_));
+ff_core_Log.trace_(("Fetching " + location_));
 const response_ = (await ff_core_HttpClient.HttpClient_fetch$(httpClient_, location_, "GET", ff_core_HttpClient.emptyList_, ff_core_Option.None(), ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), false, $task));
 if((!(await ff_core_HttpClient.FetchResponse_ok$(response_, $task)))) {
 ff_core_Core.panic_(("Could not download dependency: " + location_))

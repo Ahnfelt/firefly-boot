@@ -86,7 +86,7 @@ extend self: Dependencies {
                 let tarGzPath = dependenciesPath.slash(Workspace.tarGzName(packagePair, dependency.version))
                 let donePath = dependenciesPath.slash(Workspace.tarGzName(packagePair, dependency.version) + ".done")
                 if(!donePath.exists()) {
-                    Log.debug("Fetching " + location)
+                    Log.trace("Fetching " + location)
                     let response = httpClient.fetch(location, throw = False)
                     if(!response.ok()) {
                         panic("Could not download dependency: " + location)
