@@ -16,13 +16,19 @@ export function activate(context: vscode.ExtensionContext) {
     const fireflyPath = fs.existsSync(path.join(context.extensionPath, '.vsixmanifest'))
         ? path.join(context.extensionPath, 'firefly')
         : path.join(context.extensionPath, '..')
+        
+    const fireflyCompiler = fireflyPath + '/output/js/ff/compiler/Main.mjs';
 
     context.subscriptions.push(vscode.commands.registerCommand('extension.firefly-lang.getFireflyPath', config => {
         return fireflyPath;
     }));
 
+    context.subscriptions.push(vscode.commands.registerCommand('extension.firefly-lang.getFireflyCompiler', config => {
+        return fireflyCompiler;
+    }));
+
     const runOrDebug = {
-        module: fireflyPath + '/output/js/ff/compiler/Main.mjs',
+        module: fireflyCompiler,
         args: ['LanguageServer.ff'],
         options: {cwd: fireflyPath + '/lsp'},
         transport: TransportKind.stdio // ipc

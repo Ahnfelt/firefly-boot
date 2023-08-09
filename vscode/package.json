@@ -78,6 +78,10 @@
             {
                 "command": "extension.firefly-lang.getFireflyPath",
                 "title": "Get the Firefly path"
+            },
+            {
+                "command": "extension.firefly-lang.getFireflyCompiler",
+                "title": "Get the Firefly compiler main"
             }
         ],
         "configuration": {
@@ -110,12 +114,13 @@
                         "request": "launch",
                         "name": "Launch Firefly",
                         "args": [
-                            "${command:extension.firefly-lang.getFireflyPath}/output/js/ff/compiler/Main.mjs",
+                            "${command:extension.firefly-lang.getFireflyCompiler}",
                             "${file}"
                         ],
                         "outFiles": [
                             "${workspaceFolder}/.firefly/**/*.mjs"
-                        ]
+                        ],
+                        "outputCapture": "std"
                     }
                 ]
             }
