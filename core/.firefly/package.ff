@@ -1,1 +1,2 @@
 package ff:core:0.0.0
+include "node_modules"
