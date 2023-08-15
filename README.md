@@ -1,6 +1,10 @@
 # Firefly programming language
 
-[Get the VSCode extension](https://marketplace.visualstudio.com/items?itemName=firefly-team.firefly-lang)
+**[Get the VSCode extension](https://marketplace.visualstudio.com/items?itemName=firefly-team.firefly-lang)**
+
+You can also install the command line interface (`firefly`):
+
+```npm install -g firefly-compiler```
 
 ## About the compiler
 This is a bootstrap transpiler for converting Firefly code to JavaScript code.
