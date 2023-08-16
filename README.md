@@ -1,100 +1,77 @@
 # Firefly programming language
 
-**[Get the VSCode extension](https://marketplace.visualstudio.com/items?itemName=firefly-team.firefly-lang)**
+A straightforward language for full-stack development. 
 
-You can also install the command line interface (`firefly`):
+* Hybrid imperative+functional style with uncomplicated types.
+* Code sharing between the browser and the server.
+* Comprehensive IDE support (MacOS/Windows/Linux).
+* Cross-compilation of executables (MacOS/Windows/Linux).
+* Asynchronous functions without the async/await hassle.
+* Super simple package management with repeatable builds.
 
-```npm install -g firefly-compiler```
+*This is a preview. Please take it for a ride and tell us what you think!*
 
-## About the compiler
-This is a bootstrap transpiler for converting Firefly code to JavaScript code.
+## Writing your first webapp
 
-Status: Firefly has been bootstrapped and now transpiles itself into JavaScript.
+Install the [VSCode extension](https://marketplace.visualstudio.com/items?itemName=firefly-team.firefly-lang).
 
-You can create a whole webapp (frontend+backend) in a single file and it can be build as an executable for linux, windows and osx.
+Create a `WebApp.ff` file.
 
-[See an example webapp](https://github.com/Ahnfelt/firefly-boot/blob/master/experimental/random/rhymeapp/Main.ff)
+Type `webapp` and autocomplete to get a minimalistic client and server (you may need to give the extension a few seconds to initialize first).
 
-**Async/await inference:** https://www.ahnfelt.net/async-await-inference-in-firefly/
+Go to the *Run and debug* side bar and choose *create a launch.json file*.
 
+Press F5 or click *Run*. View the running webapp at http://localhost:8080/
 
-## Running a main file
-
-```
-firefly.sh MyApp.ff
-```
-
-*You must stand in the project directory when running this command.*
-
-This will run `main` or `nodeMain` in MyApp.ff.
-
-If there is a `buildMain(system: BuildSystem)` method, it will be run before `main`,
-and if it calls `system.setAssets(assets)`, those assets will be available to the main file via `system.assets()`.
-
-You can also have a `browserMain(system: BrowserSystem)` in the file, which can be compiled to a browser JS-file and included as an asset.
-
-Missing dependencies are fetched from the central or configured package repository before building and running.
+In the `WebApp.ff` file you'll see a `nodeMain`, which runs on the server, and a `browserMain`, which runs on the client. There's also a `buildMain` which is the build step that compiles the client side code to JavaScript so that it can be served to the browser.
 
 ## Building an executable
 
-```
-firefly.sh build MyApp.ff
-```
+Install the `firefly` compiler:
 
-*You must stand in the project directory when running this command.*
+```npm install -g firefly-compiler```
 
-This will generate a stand-alone executable file `MyApp` with the necessary assets and dependencies, compatible with most linux distributions, windows and osx.
+Build executables for Linux, MacOS and Windows:
 
-If there is a `buildMain(system: BuildSystem)` method, it will be run before producing the executables,
-and if it calls `system.setAssets(assets)`, those assets will be included in the executables and thus be available to the main file via `system.assets()`.
+```firefly build WebApp.ff```
 
-## Building for the browser
+You can find the executables in `.firefly/`
 
-```
-firefly.sh browser MyApp.ff
-```
+The command line interface can also run `WebApp.ff` directly by typing: 
 
-*You must stand in the project directory when running this command.*
+```firefly WebApp.ff```
 
-This generates a single, minified `MyApp.min.js`, compatible with all modern browsers (ES6+).
+## Connecting to PostgreSQL
 
-## Bootstrapping the compiler
+To connect to a PostgreSQL database, add this dependency to the top of the file:
 
-```
-firefly.sh bootstrap
-```
+```dependency ff:postgresql:0.0.0```
 
-*You must stand in the project directory when running this command.*
+And import the `Pg` module from it:
 
-If you botch the compiler, just roll back the output directory and try again.
+```import Pg from ff:postgresql```
 
-## Dependencies and imports
+Create a connection pool with the appropriate connection parameters:
 
-You may list your dependencies either in the top of the main file or in `.firefly/package.ff`.
+```let pool = Pg.makePool(...)```
 
-In order to establish a package directory, and thus allow importing other files from the current package, you must place a `.firefly/package.ff` file. 
-
-Example (all lines optional):
-```
-package john:stuff:0.1.7
-dependency anne:goodies:2.1.0
-dependency chris:images:0.7.0
-```
-
-You don't have to manually install dependencies - they will be automatically downloaded when necessary.
-
-## Workspaces
-
-You may place a `.firefly-workspace` file somewhere in a parent directory.
-
-The workspace file configures where source code is fetched from. 
-
-It can be a local directory or a remote repository.
-
-Example:
+And run your first transaction, e.g.:
 
 ```
-foo:stuff projects/foo/stuff
-bar:* projects/foo
-* https://example.com/repository
+pool.transaction {connection =>
+    let emails = connection.statement("""
+        select email from users
+    """).map {row =>
+        row.getString("email").grab()
+    }
+    Log.debug(emails)
+}
 ```
+
+## What's next
+
+For now, you're on your own! Lots of things you'll be missing. We're working on it.
+
+To follow the development or get help, join `#firefly` on https://discord.gg/FHv8vXJNVf - we're a friendly bunch, and your feedback is appreciated!
+
+This repository contains the source code of the compiler and language server. It's all written in Firefly! Apart from `extension.js`, the JavaScript files you see in this repository are generated from Firefly code.
