@@ -7,5 +7,36 @@ extend self: LuxEvent {
 
     stopPropagation(): Unit {unsupported()}
         target js sync """self_.stopPropagation()"""
+        
+    target(): JsValue {unsupported()}
+        target js sync """return self_.target"""
+
+    currentTarget(): JsValue {unsupported()}
+        target js sync """return self_.currentTarget"""
+
+    nativeEvent(): JsValue {unsupported()}
+        target js sync """return self_"""
+
+    type(): String {unsupported()}
+        target js sync """return self_.type"""
+
+    altKey(): Bool {unsupported()}
+        target js sync """return self_.altKey || false"""
+
+    ctrlKey(): Bool {unsupported()}
+        target js sync """return self_.ctrlKey || false"""
+
+    shiftKey(): Bool {unsupported()}
+        target js sync """return self_.shiftKey || false"""
+
+    metaKey(): Bool {unsupported()}
+        target js sync """return self_.metaKey || false"""
+
+    button(): Int {unsupported()}
+        target js sync """return self_.button || 0"""
 
 }
+
+primaryButton: Int = 0
+middleButton: Int = 1
+secondaryButton: Int = 2
