@@ -3,9 +3,9 @@ import LuxEvent
 capability Lux {}
 data LuxException(message: String)
 
-new(tag: String): Lux {unsupported()}
+new(tagName: String): Lux {unsupported()}
     target js sync """
-        return {key: '', tag: tag_, props: [], children: []}
+        return {key: '', tag: tagName_, props: [], children: []}
     """
 
 useState[T](initialValue: T, body: (T, T => Unit) => Lux): Lux {unsupported()}
