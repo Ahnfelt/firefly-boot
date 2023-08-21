@@ -91,11 +91,12 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
                         let effect = method.signature.generics.filter {_ == "Q$"}
                         let normalGenerics = method.signature.generics.filter {_ != "Q$"}
                         let outerGenerics = if(alreadyFlat) {[]} else {d.generics}
+                        let outerConstraints = if(alreadyFlat) {[]} else {d.constraints}
                         Pair(
                             prefix + method.signature.name
                             Scheme(False, False, False, False, method.signature.Signature(
                                 generics = [...effect, ...outerGenerics, ...normalGenerics]
-                                constraints = [...d.constraints, ...method.signature.constraints]
+                                constraints = [...outerConstraints, ...method.signature.constraints]
                                 parameters = [selfParameter, ...method.signature.parameters]
                             ))
                         )

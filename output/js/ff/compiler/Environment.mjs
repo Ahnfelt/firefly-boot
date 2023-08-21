@@ -182,8 +182,11 @@ return (_w1 !== "Q$")
 const outerGenerics_ = (alreadyFlat_
 ? ff_core_List.Empty()
 : d_.generics_);
+const outerConstraints_ = (alreadyFlat_
+? ff_core_List.Empty()
+: d_.constraints_);
 return ff_core_Pair.Pair((prefix_ + method_.signature_.name_), ff_compiler_Environment.Scheme(false, false, false, false, (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, ff_core_List.List_addAll(effect_, ff_core_List.List_addAll(outerGenerics_, normalGenerics_)), ff_core_List.List_addAll(d_.constraints_, method_.signature_.constraints_), ff_core_List.Link(selfParameter_, method_.signature_.parameters_), _c.returnType_, _c.effect_)
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, ff_core_List.List_addAll(effect_, ff_core_List.List_addAll(outerGenerics_, normalGenerics_)), ff_core_List.List_addAll(outerConstraints_, method_.signature_.constraints_), ff_core_List.Link(selfParameter_, method_.signature_.parameters_), _c.returnType_, _c.effect_)
 }))(method_.signature_)))
 }))
 return
@@ -295,8 +298,11 @@ return (_w1 !== "Q$")
 const outerGenerics_ = (alreadyFlat_
 ? ff_core_List.Empty()
 : d_.generics_);
+const outerConstraints_ = (alreadyFlat_
+? ff_core_List.Empty()
+: d_.constraints_);
 return ff_core_Pair.Pair((prefix_ + method_.signature_.name_), ff_compiler_Environment.Scheme(false, false, false, false, (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, ff_core_List.List_addAll(effect_, ff_core_List.List_addAll(outerGenerics_, normalGenerics_)), ff_core_List.List_addAll(d_.constraints_, method_.signature_.constraints_), ff_core_List.Link(selfParameter_, method_.signature_.parameters_), _c.returnType_, _c.effect_)
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, ff_core_List.List_addAll(effect_, ff_core_List.List_addAll(outerGenerics_, normalGenerics_)), ff_core_List.List_addAll(outerConstraints_, method_.signature_.constraints_), ff_core_List.Link(selfParameter_, method_.signature_.parameters_), _c.returnType_, _c.effect_)
 }))(method_.signature_)))
 }))
 return

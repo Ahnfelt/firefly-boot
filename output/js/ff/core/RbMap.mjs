@@ -1446,13 +1446,13 @@ const b_ = _1.right_;
 const _1 = ff_core_Ordering_Order$K.compare_(key_, y_);
 {
 if(_1.OrderingBefore) {
-return ff_core_RbMap.RB_get(a_, key_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
+return ff_core_RbMap.RB_get(a_, key_, ff_core_Ordering_Order$K)
 return
 }
 }
 {
 if(_1.OrderingAfter) {
-return ff_core_RbMap.RB_get(b_, key_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
+return ff_core_RbMap.RB_get(b_, key_, ff_core_Ordering_Order$K)
 return
 }
 }
@@ -1482,7 +1482,7 @@ return
 if(_1.T) {
 const l_ = _1.left_;
 const r_ = _1.right_;
-return ((ff_core_RbMap.RB_size(l_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K) + 1) + ff_core_RbMap.RB_size(r_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K))
+return ((ff_core_RbMap.RB_size(l_, ff_core_Ordering_Order$K) + 1) + ff_core_RbMap.RB_size(r_, ff_core_Ordering_Order$K))
 return
 }
 }
@@ -1493,7 +1493,7 @@ export function RB_pairs(self_, ff_core_Ordering_Order$K) {
 let result_ = ff_core_List.Empty();
 ff_core_RbMap.RB_each(self_, ((k_, v_) => {
 result_ = ff_core_List.Link(ff_core_Pair.Pair(k_, v_), result_)
-}), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K);
+}), ff_core_Ordering_Order$K);
 return ff_core_List.List_reverse(result_)
 }
 
@@ -1603,9 +1603,9 @@ const l_ = _1.left_;
 const k_ = _1.key_;
 const v_ = _1.value_;
 const r_ = _1.right_;
-ff_core_RbMap.RB_each(l_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K);
+ff_core_RbMap.RB_each(l_, body_, ff_core_Ordering_Order$K);
 body_(k_, v_);
-ff_core_RbMap.RB_each(r_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
+ff_core_RbMap.RB_each(r_, body_, ff_core_Ordering_Order$K)
 return
 }
 }
@@ -1627,7 +1627,7 @@ const l_ = _1.left_;
 const k_ = _1.key_;
 const v_ = _1.value_;
 const r_ = _1.right_;
-return ((ff_core_RbMap.RB_eachWhile(l_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K) && body_(k_, v_)) && ff_core_RbMap.RB_eachWhile(r_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K))
+return ((ff_core_RbMap.RB_eachWhile(l_, body_, ff_core_Ordering_Order$K) && body_(k_, v_)) && ff_core_RbMap.RB_eachWhile(r_, body_, ff_core_Ordering_Order$K))
 return
 }
 }
@@ -1639,7 +1639,7 @@ let result_ = ff_core_RbMap.E();
 ff_core_RbMap.RB_each(self_, ((k_, v_) => {
 const pair_ = body_(k_, v_);
 result_ = ff_core_RbMap.insert_(pair_.first_, pair_.second_, result_, ff_core_Ordering_Order$K2)
-}), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K);
+}), ff_core_Ordering_Order$K);
 return result_
 }
 
@@ -1659,7 +1659,7 @@ const l_ = _1.left_;
 const k_ = _1.key_;
 const v_ = _1.value_;
 const r_ = _1.right_;
-return ff_core_RbMap.T(c_, ff_core_RbMap.RB_mapValues(l_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K), k_, body_(k_, v_), ff_core_RbMap.RB_mapValues(r_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K))
+return ff_core_RbMap.T(c_, ff_core_RbMap.RB_mapValues(l_, body_, ff_core_Ordering_Order$K), k_, body_(k_, v_), ff_core_RbMap.RB_mapValues(r_, body_, ff_core_Ordering_Order$K))
 return
 }
 }
@@ -1675,7 +1675,7 @@ return false
 } else {
 return true
 }
-}), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K);
+}), ff_core_Ordering_Order$K);
 return result_
 }
 
@@ -1698,13 +1698,13 @@ const b_ = _1.right_;
 const _1 = ff_core_Ordering_Order$K.compare_(key_, y_);
 {
 if(_1.OrderingBefore) {
-return ff_core_RbMap.RB_get(a_, key_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
+return ff_core_RbMap.RB_get(a_, key_, ff_core_Ordering_Order$K)
 return
 }
 }
 {
 if(_1.OrderingAfter) {
-return ff_core_RbMap.RB_get(b_, key_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
+return ff_core_RbMap.RB_get(b_, key_, ff_core_Ordering_Order$K)
 return
 }
 }
@@ -1734,7 +1734,7 @@ return
 if(_1.T) {
 const l_ = _1.left_;
 const r_ = _1.right_;
-return ((ff_core_RbMap.RB_size(l_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K) + 1) + ff_core_RbMap.RB_size(r_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K))
+return ((ff_core_RbMap.RB_size(l_, ff_core_Ordering_Order$K) + 1) + ff_core_RbMap.RB_size(r_, ff_core_Ordering_Order$K))
 return
 }
 }
@@ -1745,7 +1745,7 @@ export async function RB_pairs$(self_, ff_core_Ordering_Order$K, $task) {
 let result_ = ff_core_List.Empty();
 ff_core_RbMap.RB_each(self_, ((k_, v_) => {
 result_ = ff_core_List.Link(ff_core_Pair.Pair(k_, v_), result_)
-}), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K);
+}), ff_core_Ordering_Order$K);
 return ff_core_List.List_reverse(result_)
 }
 
@@ -1855,9 +1855,9 @@ const l_ = _1.left_;
 const k_ = _1.key_;
 const v_ = _1.value_;
 const r_ = _1.right_;
-(await ff_core_RbMap.RB_each$(l_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K, $task));
+(await ff_core_RbMap.RB_each$(l_, body_, ff_core_Ordering_Order$K, $task));
 (await body_(k_, v_, $task));
-(await ff_core_RbMap.RB_each$(r_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K, $task))
+(await ff_core_RbMap.RB_each$(r_, body_, ff_core_Ordering_Order$K, $task))
 return
 }
 }
@@ -1879,7 +1879,7 @@ const l_ = _1.left_;
 const k_ = _1.key_;
 const v_ = _1.value_;
 const r_ = _1.right_;
-return (((await ff_core_RbMap.RB_eachWhile$(l_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K, $task)) && (await body_(k_, v_, $task))) && (await ff_core_RbMap.RB_eachWhile$(r_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K, $task)))
+return (((await ff_core_RbMap.RB_eachWhile$(l_, body_, ff_core_Ordering_Order$K, $task)) && (await body_(k_, v_, $task))) && (await ff_core_RbMap.RB_eachWhile$(r_, body_, ff_core_Ordering_Order$K, $task)))
 return
 }
 }
@@ -1891,7 +1891,7 @@ let result_ = ff_core_RbMap.E();
 (await ff_core_RbMap.RB_each$(self_, (async (k_, v_, $task) => {
 const pair_ = (await body_(k_, v_, $task));
 result_ = ff_core_RbMap.insert_(pair_.first_, pair_.second_, result_, ff_core_Ordering_Order$K2)
-}), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K, $task));
+}), ff_core_Ordering_Order$K, $task));
 return result_
 }
 
@@ -1911,7 +1911,7 @@ const l_ = _1.left_;
 const k_ = _1.key_;
 const v_ = _1.value_;
 const r_ = _1.right_;
-return ff_core_RbMap.T(c_, (await ff_core_RbMap.RB_mapValues$(l_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K, $task)), k_, (await body_(k_, v_, $task)), (await ff_core_RbMap.RB_mapValues$(r_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K, $task)))
+return ff_core_RbMap.T(c_, (await ff_core_RbMap.RB_mapValues$(l_, body_, ff_core_Ordering_Order$K, $task)), k_, (await body_(k_, v_, $task)), (await ff_core_RbMap.RB_mapValues$(r_, body_, ff_core_Ordering_Order$K, $task)))
 return
 }
 }
@@ -1927,7 +1927,7 @@ return false
 } else {
 return true
 }
-}), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K, $task));
+}), ff_core_Ordering_Order$K, $task));
 return result_
 }
 
