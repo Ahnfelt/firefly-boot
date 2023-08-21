@@ -273,7 +273,7 @@ return self_.assetSystem_
 
 export function BrowserCode_bundle(self_, minify_ = true, sourceMap_ = false) {
 const prefix_ = ".firefly/output/browser";
-const mainJsBaseFile_ = (ff_core_Option.Option_grab(ff_core_String.String_removeLast(ff_core_Path.Path_absolute(self_.mainFile_), ".ff")) + ".mjs");
+const mainJsBaseFile_ = (ff_core_Option.Option_grab(ff_core_String.String_removeLast(ff_core_Path.Path_base(self_.mainFile_), ".ff")) + ".mjs");
 const mainJsFile_ = ((((((prefix_ + "/") + self_.packageGroup_) + "/") + self_.packageName_) + "/") + mainJsBaseFile_);
 const file_ = (prefix_ + "/Main.bundle.js");
 ff_core_BuildSystem.internalCallEsBuild_(self_, mainJsFile_, file_, minify_, sourceMap_);
@@ -293,7 +293,7 @@ return self_.assetSystem_
 
 export async function BrowserCode_bundle$(self_, minify_ = true, sourceMap_ = false, $task) {
 const prefix_ = ".firefly/output/browser";
-const mainJsBaseFile_ = (ff_core_Option.Option_grab(ff_core_String.String_removeLast((await ff_core_Path.Path_absolute$(self_.mainFile_, $task)), ".ff")) + ".mjs");
+const mainJsBaseFile_ = (ff_core_Option.Option_grab(ff_core_String.String_removeLast((await ff_core_Path.Path_base$(self_.mainFile_, $task)), ".ff")) + ".mjs");
 const mainJsFile_ = ((((((prefix_ + "/") + self_.packageGroup_) + "/") + self_.packageName_) + "/") + mainJsBaseFile_);
 const file_ = (prefix_ + "/Main.bundle.js");
 (await ff_core_BuildSystem.internalCallEsBuild_$(self_, mainJsFile_, file_, minify_, sourceMap_, $task));
