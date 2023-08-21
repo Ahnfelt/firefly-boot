@@ -56,6 +56,13 @@ extend self: Lux {
             return self_
         """
 
+    onIf(event: String, condition: Bool, body: LuxEvent => Unit): Lux {unsupported()}
+        target js sync """
+            if(self_.hook) return self_
+            if(condition) self_.props.push({name: name_, value: body_})
+            return self_
+        """
+
     add(node: Lux): Lux {unsupported()}
         target js sync """
             if(!self_.children) return self_
