@@ -1,4 +1,5 @@
 import Lux
+import LuxEvent
 
 browserMain(system: BrowserSystem) {
     Lux.useState(0): counter, setCounter =>
