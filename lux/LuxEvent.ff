@@ -14,6 +14,9 @@ extend self: LuxEvent {
     currentTarget(): JsValue {unsupported()}
         target js sync """return self_.currentTarget"""
 
+    relatedTarget(): JsValue {unsupported()}
+        target js sync """return self_.relatedTarget"""
+
     nativeEvent(): JsValue {unsupported()}
         target js sync """return self_"""
 
@@ -35,8 +38,76 @@ extend self: LuxEvent {
     button(): Int {unsupported()}
         target js sync """return self_.button || 0"""
 
-}
+    primaryButton(): Bool {unsupported()}
+        target js sync """return !!(self_.buttons & 1)"""
+        
+    secondaryButton(): Bool {unsupported()}
+        target js sync """return !!(self_.buttons & 2)"""
+        
+    middleButton(): Bool {unsupported()}
+        target js sync """return !!(self_.buttons & 4)"""
+        
+    clientX(): Float {unsupported()}
+        target js sync """return self_.clientX || 0"""
 
-primaryButton: Int = 0
-middleButton: Int = 1
-secondaryButton: Int = 2
+    clientY(): Float {unsupported()}
+        target js sync """return self_.clientY || 0"""
+
+    movementX(): Float {unsupported()}
+        target js sync """return self_.movementX || 0"""
+
+    movementY(): Float {unsupported()}
+        target js sync """return self_.movementY || 0"""
+
+    offsetX(): Float {unsupported()}
+        target js sync """return self_.offsetX || 0"""
+
+    offsetY(): Float {unsupported()}
+        target js sync """return self_.offsetY || 0"""
+
+    pageX(): Float {unsupported()}
+        target js sync """return self_.opageX || 0"""
+
+    pageY(): Float {unsupported()}
+        target js sync """return self_.pageY || 0"""
+
+    screenX(): Float {unsupported()}
+        target js sync """return self_.screenX || 0"""
+
+    screenY(): Float {unsupported()}
+        target js sync """return self_.screenY || 0"""
+
+    key(): String {unsupported()}
+        target js sync """return self_.key || ''"""
+        
+    code(): String {unsupported()}
+        target js sync """return self_.code || ''"""
+        
+    repeat(): Bool {unsupported()}
+        target js sync """return !!self_.repeat"""
+        
+    leftKeyLocation(): Bool {unsupported()}
+        target js sync """return self_.location === 1"""
+        
+    rightKeyLocation(): Bool {unsupported()}
+        target js sync """return self_.location === 2"""
+        
+    numpadKeyLocation(): Bool {unsupported()}
+        target js sync """return self_.location === 3"""
+        
+    isComposing(): Bool {unsupported()}
+        target js sync """return !!self_.isComposing"""
+        
+    data(): String {unsupported()}
+        target js sync """return self_.data || ''"""
+
+    inputType(): String {unsupported()}
+        target js sync """return self_.inputType || ''"""
+
+    dataTransfer(): JsValue {unsupported()}
+        target js sync """return self_.dataTransfer"""
+
+    getTargetRanges(): JsValue {unsupported()}
+        target js sync """return self_.getTargetRanges()"""
+        
+}
