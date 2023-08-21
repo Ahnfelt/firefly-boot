@@ -112,3 +112,28 @@ extend self: Lux {
         """
 
 }
+
+update(element: JsValue, old: Lux, new: Lux): Lux {unsupported()}
+    target js sync """
+        function update(element, oldLux, newLux) {
+            if(oldLux === newLux) return newLux
+            const children = new Map()
+            for(const child of oldLux.children_) {
+                if(child.key_ != '') child.set(child.key_, child)
+            }
+            for(const child of newLux.children_) {
+                if(child.key_ != '') {
+                    const old = children.get(child.key_)
+                    if(old !== void 0) {
+                        children.delete(child.key_)
+                        update(childElement, old, child)
+                    } else {
+                        childElement.insertBeforeThis(...)
+                    }
+                } else {
+                    
+                }
+            }
+        }
+        update(element_, old_, new_)
+    """
