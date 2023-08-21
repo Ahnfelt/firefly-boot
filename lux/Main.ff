@@ -1,0 +1,12 @@
+import Lux
+
+browserMain(system: BrowserSystem) {
+    Lux.useState(0): counter, setCounter =>
+    Lux.new("div").key("counter")
+        .add(Lux.new("div").text("Counter is: " + counter))
+        .add(Lux.new("button").with("type", "button").text("Increment").on("click") {event =>
+            event.preventDefault()
+            setCounter(counter + 1)
+        })
+        .addIf(counter >= 10) {Lux.new("div").text("Big!")}
+}

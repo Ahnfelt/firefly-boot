@@ -1,0 +1,99 @@
+import LuxEvent
+
+capability Lux {}
+data LuxException(message: String)
+
+new(tag: String): Lux {unsupported()}
+    target js sync """return {key: '', tag: tag_, props: [], children: []}"""
+
+useState[T](initialValue: T, body: (T, T => Unit) => Lux): Lux {unsupported()}
+    target js sync """return {key: '', hook: 'state', value: initialValue_, callback: null, body: body_}"""
+
+useEffect[T: Equal](dependency: T, update: T => (() => Unit), body: () => Lux): Lux {unsupported()}
+    target js sync """return {key: '', hook: 'effect', value: dependency_, callback: update_, body: body_}"""
+
+useMemo[T: Equal, R](dependency: T, update: T => R, body: R => Lux): Lux {unsupported()}
+    target js sync """return {key: '', hook: 'memo', value: dependency_, callback: update_, body: body_}"""
+
+unsupported() {
+    throw(LuxException("Lux should not be used directly in async or non-js contexts."))
+}
+
+extend self: Lux {
+
+    key(key: String): Lux {unsupported()}
+        target js sync """
+            self_.key = key_
+            return self_
+        """
+    
+    with(name: String, value: String): Lux {unsupported()}
+        target js sync """
+            if(!self_.props) return self_
+            self_.props.push({name: name_, value: value_})
+            return self_
+        """
+
+    withIf(name: String, condition: Bool, body: () => String): Lux {unsupported()}
+        target js sync """
+            if(!self_.props) return self_
+            if(condition_) self_.props.push({name: name_, value: body_()})
+            return self_
+        """
+
+    on(event: String, body: LuxEvent => Unit): Lux {unsupported()}
+        target js sync """
+            if(self_.hook) return self_
+            self_.props.push({name: name_, value: body_})
+            return self_
+        """
+
+    add(node: Lux): Lux {unsupported()}
+        target js sync """
+            if(!self_.children) return self_
+            self_.children.push(node_)
+            return self_
+        """
+
+    addIf(condition: Bool, body: () => Lux): Lux {unsupported()}
+        target js sync """
+            if(!self_.children) return self_
+            if(condition_) self_.children.push(body_())
+            return self_
+        """
+
+    addList(nodes: List[Lux]): Lux {unsupported()}
+        target js sync """
+            if(!self_.children) return self_
+            let n = nodes_
+            while(n.tail_) { 
+                n = n.tail_
+                self_.children.push(n.head_)
+            }
+            return self_
+        """
+        
+    addArray(nodes: Array[Lux]): Lux {unsupported()}
+        target js sync """
+            if(!self_.children) return self_
+            for(let i = 0; i < nodes_.length; i++) {
+                self_.children.push(nodes_[i])
+            }
+            return self_
+        """
+        
+    text(text: String): Lux {unsupported()}
+        target js sync """
+            if(!self_.children) return self_
+            self_.children.push(text_)
+            return self_
+        """
+
+    textIf(condition: Bool, body: () => String): Lux {unsupported()}
+        target js sync """
+            if(!self_.children) return self_
+            if(condition_) self_.children.push(body_())
+            return self_
+        """
+
+}

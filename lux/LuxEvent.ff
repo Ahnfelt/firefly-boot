@@ -1,0 +1,11 @@
+capability LuxEvent {}
+
+extend self: LuxEvent {
+    
+    preventDefault(): Unit {unsupported()}
+        target js sync """self_.preventDefault()"""
+
+    stopPropagation(): Unit {unsupported()}
+        target js sync """self_.stopPropagation()"""
+
+}
