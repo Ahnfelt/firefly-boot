@@ -4,16 +4,24 @@ capability Lux {}
 data LuxException(message: String)
 
 new(tag: String): Lux {unsupported()}
-    target js sync """return {key: '', tag: tag_, props: [], children: []}"""
+    target js sync """
+        return {key: '', tag: tag_, props: [], children: []}
+    """
 
 useState[T](initialValue: T, body: (T, T => Unit) => Lux): Lux {unsupported()}
-    target js sync """return {key: '', hook: 'state', value: initialValue_, callback: null, body: body_}"""
+    target js sync """
+        return {key: '', hook: 'state', value: initialValue_, callback: null, body: body_}
+    """
 
 useEffect[T: Equal](dependency: T, update: T => (() => Unit), body: () => Lux): Lux {unsupported()}
-    target js sync """return {key: '', hook: 'effect', value: dependency_, callback: update_, body: body_}"""
+    target js sync """
+        return {key: '', hook: 'effect', value: dependency_, callback: update_, body: body_}
+    """
 
 useMemo[T: Equal, R](dependency: T, update: T => R, body: R => Lux): Lux {unsupported()}
-    target js sync """return {key: '', hook: 'memo', value: dependency_, callback: update_, body: body_}"""
+    target js sync """
+        return {key: '', hook: 'memo', value: dependency_, callback: update_, body: body_}
+    """
 
 unsupported() {
     throw(LuxException("Lux should not be used directly in async or non-js contexts."))
