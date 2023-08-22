@@ -1,26 +1,35 @@
 import LuxEvent
 
-capability Lux {}
+class Lux {}
 data LuxException(message: String)
 
-new(tagName: String): Lux {unsupported()}
+new(tagName: String): Lux
     target js sync """
         return {key: '', tag: tagName_, props: [], children: []}
     """
 
-useState[T](initialValue: T, body: (T, T => Unit) => Lux): Lux {unsupported()}
+useState[T](initialValue: T, body: (T, T => Unit) => Lux): Lux
+    target js async """
+        return {key: '', hook: 'stateAsync', value: initialValue_, callback: null, body: body_}
+    """
     target js sync """
-        return {key: '', hook: 'state', value: initialValue_, callback: null, body: body_}
+        return {key: '', hook: 'stateSync', value: initialValue_, callback: null, body: body_}
     """
 
-useEffect[T: Equal](dependency: T, update: T => (() => Unit), body: () => Lux): Lux {unsupported()}
+useEffect[T: Equal](dependency: T, update: T => (() => Unit), body: () => Lux): Lux
+    target js async """
+        return {key: '', hook: 'effectAsync', value: dependency_, callback: update_, body: body_}
+    """
     target js sync """
-        return {key: '', hook: 'effect', value: dependency_, callback: update_, body: body_}
+        return {key: '', hook: 'effectSync', value: dependency_, callback: update_, body: body_}
     """
 
-useMemo[T: Equal, R](dependency: T, update: T => R, body: R => Lux): Lux {unsupported()}
+useMemo[T: Equal, R](dependency: T, update: T => R, body: R => Lux): Lux
+    target js async """
+        return {key: '', hook: 'memoAsync', value: dependency_, callback: update_, body: body_}
+    """
     target js sync """
-        return {key: '', hook: 'memo', value: dependency_, callback: update_, body: body_}
+        return {key: '', hook: 'memoSync', value: dependency_, callback: update_, body: body_}
     """
 
 unsupported() {
