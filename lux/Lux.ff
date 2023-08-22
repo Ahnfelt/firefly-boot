@@ -38,55 +38,75 @@ unsupported() {
 
 extend self: Lux {
 
-    key(key: String): Lux {unsupported()}
+    key(key: String): Lux
         target js sync """
             self_.key = key_
             return self_
         """
     
-    with(name: String, value: String): Lux {unsupported()}
+    with(name: String, value: String): Lux
         target js sync """
             if(!self_.props) return self_
             self_.props.push({name: name_, value: value_})
             return self_
         """
 
-    withIf(name: String, condition: Bool, body: () => String): Lux {unsupported()}
+    withIf(name: String, condition: Bool, body: () => String): Lux
+        target js async """
+            if(!self_.props) return self_
+            if(condition_) self_.props.push({name: name_, value: body_()})
+            return self_
+        """
         target js sync """
             if(!self_.props) return self_
             if(condition_) self_.props.push({name: name_, value: body_()})
             return self_
         """
 
-    on(event: String, body: LuxEvent => Unit): Lux {unsupported()}
+    on(event: String, body: LuxEvent => Unit): Lux
+        target js async """
+            if(self_.hook) return self_
+            self_.props.push({name: name_, value: body_})
+            return self_
+        """
         target js sync """
             if(self_.hook) return self_
             self_.props.push({name: name_, value: body_})
             return self_
         """
 
-    onIf(event: String, condition: Bool, body: LuxEvent => Unit): Lux {unsupported()}
+    onIf(event: String, condition: Bool, body: LuxEvent => Unit): Lux
+        target js async """
+            if(self_.hook) return self_
+            if(condition) self_.props.push({name: name_, value: body_})
+            return self_
+        """
         target js sync """
             if(self_.hook) return self_
             if(condition) self_.props.push({name: name_, value: body_})
             return self_
         """
 
-    add(node: Lux): Lux {unsupported()}
+    add(node: Lux): Lux
         target js sync """
             if(!self_.children) return self_
             self_.children.push(node_)
             return self_
         """
 
-    addIf(condition: Bool, body: () => Lux): Lux {unsupported()}
+    addIf(condition: Bool, body: () => Lux): Lux
+        target js async """
+            if(!self_.children) return self_
+            if(condition_) self_.children.push(body_())
+            return self_
+        """
         target js sync """
             if(!self_.children) return self_
             if(condition_) self_.children.push(body_())
             return self_
         """
 
-    addList(nodes: List[Lux]): Lux {unsupported()}
+    addList(nodes: List[Lux]): Lux
         target js sync """
             if(!self_.children) return self_
             let n = nodes_
@@ -97,7 +117,7 @@ extend self: Lux {
             return self_
         """
         
-    addArray(nodes: Array[Lux]): Lux {unsupported()}
+    addArray(nodes: Array[Lux]): Lux
         target js sync """
             if(!self_.children) return self_
             for(let i = 0; i < nodes_.length; i++) {
@@ -106,14 +126,19 @@ extend self: Lux {
             return self_
         """
         
-    text(text: String): Lux {unsupported()}
+    text(text: String): Lux
         target js sync """
             if(!self_.children) return self_
             self_.children.push(text_)
             return self_
         """
 
-    textIf(condition: Bool, body: () => String): Lux {unsupported()}
+    textIf(condition: Bool, body: () => String): Lux
+        target js async """
+            if(!self_.children) return self_
+            if(condition_) self_.children.push(body_())
+            return self_
+        """
         target js sync """
             if(!self_.children) return self_
             if(condition_) self_.children.push(body_())
@@ -122,7 +147,7 @@ extend self: Lux {
 
 }
 
-update(element: JsValue, old: Lux, new: Lux): Lux {unsupported()}
+update(element: JsValue, old: Lux, new: Lux): Lux
     target js sync """
         function update(element, oldLux, newLux) {
             if(oldLux === newLux) return newLux
