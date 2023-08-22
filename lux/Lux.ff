@@ -10,26 +10,26 @@ new(tagName: String): Lux
 
 useState[T](initialValue: T, body: (T, T => Unit) => Lux): Lux
     target js async """
-        return {key: '', hook: 'state', value: initialValue_, callback: null, body: body_}
+        return {key: '', hook: 'useState', value: initialValue_, callback: null, body: body_}
     """
     target js sync """
-        return {key: '', hook: 'state', value: initialValue_, callback: null, body: body_}
+        return {key: '', hook: 'useState', value: initialValue_, callback: null, body: body_}
     """
 
 useEffect[T: Equal](dependency: T, update: T => (() => Unit), body: () => Lux): Lux
     target js async """
-        return {key: '', hook: 'effect', value: dependency_, callback: update_, body: body_}
+        return {key: '', hook: 'useEffect', value: dependency_, callback: update_, body: body_}
     """
     target js sync """
-        return {key: '', hook: 'effect', value: dependency_, callback: update_, body: body_}
+        return {key: '', hook: 'useEffect', value: dependency_, callback: update_, body: body_}
     """
 
 useMemo[T: Equal, R](dependency: T, update: T => R, body: R => Lux): Lux
     target js async """
-        return {key: '', hook: 'memo', value: dependency_, callback: update_, body: body_}
+        return {key: '', hook: 'useMemo', value: dependency_, callback: update_, body: body_}
     """
     target js sync """
-        return {key: '', hook: 'memo', value: dependency_, callback: update_, body: body_}
+        return {key: '', hook: 'useMemo', value: dependency_, callback: update_, body: body_}
     """
 
 extend self: Lux {
