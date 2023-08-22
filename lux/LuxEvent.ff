@@ -1,4 +1,4 @@
-capability LuxEvent {}
+class LuxEvent {}
 
 extend self: LuxEvent {
     
