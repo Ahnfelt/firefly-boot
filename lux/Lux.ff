@@ -147,21 +147,27 @@ update(element: JsValue, old: Lux, new: Lux): Lux
     target js sync """
         function update(element, oldLux, newLux) {
             if(oldLux === newLux) return newLux
-            const children = new Map()
-            for(const child of oldLux.children) {
-                if(child.key != '') child.set(child.key, child)
+            // Skip matching prefixes
+            const oldChildren = oldLux.children
+            const newChildren = newLux.children
+            const minLength = Math.min(oldChildren.length, newChildren.length)
+            let i = 0
+            for(; i < minLength && oldChildren[i] === newChildren[i]; i++) {}
+            for(; i < minLength && oldChildren[i].key === newChildren[i].key; i++) {
+                
             }
-            for(const child of newLux.children) {
-                if(child.key != '') {
-                    const old = children.get(child.key)
-                    if(old !== void 0) {
-                        children.delete(child.key)
-                        update(childElement, old, child)
-                    } else {
-                        childElement.insertBeforeThis(...)
-                    }
+            if(i == oldChildren.length && i == newChildren.length) return newLux
+            // If not done, do the complicated rearrange
+            const old = new Map()
+            for(let j = i; j < oldChildrenlength; j++) {
+                const child = oldChildren[j]
+                const matches = old.get(child)
+                if(matches === void 0) {
+                    old.set(child.key, child)
+                } else if(matches.length === void 0) {
+                    old.set(child.key, [matches, child])
                 } else {
-                    
+                    matches.push(child)
                 }
             }
         }
