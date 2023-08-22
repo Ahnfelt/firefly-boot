@@ -148,14 +148,14 @@ update(element: JsValue, old: Lux, new: Lux): Lux
         function update(element, oldLux, newLux) {
             if(oldLux === newLux) return newLux
             const children = new Map()
-            for(const child of oldLux.children_) {
-                if(child.key_ != '') child.set(child.key_, child)
+            for(const child of oldLux.children) {
+                if(child.key != '') child.set(child.key, child)
             }
-            for(const child of newLux.children_) {
-                if(child.key_ != '') {
-                    const old = children.get(child.key_)
+            for(const child of newLux.children) {
+                if(child.key != '') {
+                    const old = children.get(child.key)
                     if(old !== void 0) {
-                        children.delete(child.key_)
+                        children.delete(child.key)
                         update(childElement, old, child)
                     } else {
                         childElement.insertBeforeThis(...)
