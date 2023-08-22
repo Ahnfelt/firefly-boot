@@ -1,7 +1,12 @@
 import Lux
 import LuxEvent
+import LuxDom
 
 browserMain(system: BrowserSystem) {
+    LuxDom.mountById("main", countButton(system))
+}
+
+countButton(system: BrowserSystem): Lux {
     Lux.useState(0): counter, setCounter =>
     Lux.new("div").key("counter")
         .add(Lux.new("div").text("Counter is: " + counter))
