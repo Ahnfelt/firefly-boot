@@ -93,7 +93,7 @@ extend self: Path {
                     return ff_core_Option.Some(entry)
                 },
                 async () => {
-                    await dir.close()
+                    if(dir !== null) await dir.close()
                 }
             )
         """
