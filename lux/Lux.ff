@@ -5,7 +5,7 @@ data LuxException(message: String)
 
 new(tagName: String): Lux
     target js sync """
-        return {key: '', tag: tagName_, props: [], children: []}
+        return {key: '', tag: tagName_, props: new Map(), children: []}
     """
 
 useState[T](initialValue: T, body: (T, T => Unit) => Lux): Lux
@@ -43,19 +43,19 @@ extend self: Lux {
     with(name: String, value: String): Lux
         target js sync """
             if(!self_.props) return self_
-            self_.props.push({name: name_, value: value_})
+            self_.props.set(name_, value_)
             return self_
         """
 
     withIf(name: String, condition: Bool, body: () => String): Lux
         target js async """
             if(!self_.props) return self_
-            if(condition_) self_.props.push({name: name_, value: body_()})
+            if(condition_) self_.props.set(name_, await body_())
             return self_
         """
         target js sync """
             if(!self_.props) return self_
-            if(condition_) self_.props.push({name: name_, value: body_()})
+            if(condition_) self_.props.set(name_, body_())
             return self_
         """
 
@@ -93,7 +93,7 @@ extend self: Lux {
     addIf(condition: Bool, body: () => Lux): Lux
         target js async """
             if(!self_.children) return self_
-            if(condition_) self_.children.push(body_())
+            if(condition_) self_.children.push(await body_())
             return self_
         """
         target js sync """
@@ -132,7 +132,7 @@ extend self: Lux {
     textIf(condition: Bool, body: () => String): Lux
         target js async """
             if(!self_.children) return self_
-            if(condition_) self_.children.push(body_())
+            if(condition_) self_.children.push(await body_())
             return self_
         """
         target js sync """
