@@ -3,16 +3,17 @@ import LuxEvent
 import LuxDom
 
 browserMain(system: BrowserSystem) {
-    LuxDom.mountById("main", countButton(system))
+    LuxDom.mountById("main", countButton(system, {Log.trace("A hundred!")}))
 }
 
-countButton(system: BrowserSystem): Lux {
-    Lux.useState(0): counter, setCounter =>
+countButton(system: BrowserSystem, on100: () => Unit): Lux {
+    Lux.useState(0): count, setCount =>
     Lux.new("div").key("counter")
-        .add(Lux.new("div").text("Counter is: " + counter))
+        .add(Lux.new("div").text("Counter is: " + count))
         .add(Lux.new("button").with("type", "button").text("Increment").on("click") {event =>
             event.preventDefault()
-            setCounter(counter + 1)
+            setCount(count + 1)
+            if(count == 100) {on100()}
         })
-        .addIf(counter >= 10) {Lux.new("div").text("Big!")}
+        .addIf(count >= 10) {Lux.new("div").text("Big!")}
 }
