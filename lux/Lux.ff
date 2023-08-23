@@ -147,29 +147,68 @@ update(element: JsValue, old: Lux, new: Lux): Lux
     target js sync """
         function update(element, oldLux, newLux) {
             if(oldLux === newLux) return newLux
-            // Skip matching prefixes
+            // Speed through matching prefix
             const oldChildren = oldLux.children
             const newChildren = newLux.children
             const minLength = Math.min(oldChildren.length, newChildren.length)
             let i = 0
             for(; i < minLength && oldChildren[i] === newChildren[i]; i++) {}
             for(; i < minLength && oldChildren[i].key === newChildren[i].key; i++) {
-                
+                update(element.childNodes[i], oldChildren[i], newChildren[i])
             }
             if(i == oldChildren.length && i == newChildren.length) return newLux
             // If not done, do the complicated rearrange
-            const old = new Map()
-            for(let j = i; j < oldChildrenlength; j++) {
+            const indexMap = new Map()
+            // First build a multimap from old keys to indexes
+            for(let j = i; j < oldChildren.length; j++) {
                 const child = oldChildren[j]
-                const matches = old.get(child)
-                if(matches === void 0) {
-                    old.set(child.key, child)
-                } else if(matches.length === void 0) {
-                    old.set(child.key, [matches, child])
+                const indexes = indexMap.get(child.key)
+                if(indexes === void 0) {
+                    indexMap.set(child.key, j)
+                } else if(typeof indexes === 'number') {
+                    indexMap.set(child.key, [indexes, j])
                 } else {
-                    matches.push(child)
+                    indexes.push(j)
                 }
             }
+            // Then go through the new children, diff and patch
+            let k = i
+            for(; k < newChildren.length; k++) {
+                const child = newChildren[k]
+                const indexes = indexMap.get(child.key)
+                if(indexes === k) {
+                    // Preserve element
+                    indexMap.delete(child.key)
+                    update(element.childNodes[k], oldChildren[k], newChildren[k])
+                } else if(indexes === void 0) {
+                    // Create and insert new element
+                    const newElement = document.createElement(newChildren[k].tag)
+                    element.insertBefore(newElement, element.childNodes[k + 1] || null)
+                    update(newElement, {...newChildren[k], props: new Map(), children: []}, newChildren[k])
+                } else {
+                    // Preserve and move element
+                    const index = 
+                        typeof indexes === 'number' ? indexes : 
+                        indexes.length === 2 ? (indexMap.set(child.key, indexes[1]), indexes[0]) :
+                        indexes.shift()
+                    element.insertBefore(element.childNodes[index], element.childNodes[k + 1] || null)
+                    update(element.childNodes[k], oldChildren[index], newChildren[k])
+                }
+            }
+            // Delete any trailing elements and unused old vdom nodes
+            for(; k < oldChildren.length; k++) {
+                element.removeChild(element.childNodes[k])
+            }
+            indexMap.forEach(indexes => { 
+                if(typeof indexes === 'number') {
+                    if(oldChildren[indexes].stop) oldChildren[indexes].stop()
+                } else {
+                    for(const index of indexes) {
+                        if(oldChildren[index].stop) oldChildren[index].stop()
+                    }
+                }
+            })
+            return newLux
         }
         update(element_, old_, new_)
     """
