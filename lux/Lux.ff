@@ -36,7 +36,8 @@ extend self: Lux {
 
     key(key: String): Lux
         target js sync """
-            self_.key = self_.tag + '>' + key_
+            const k = self_.key + '>'
+            self_.key = k.slice(0, k.indexOf('>') + 1) + key_
             return self_
         """
     
@@ -182,7 +183,9 @@ update(element: JsValue, old: Lux, new: Lux): Lux
                     update(element.childNodes[k], oldChildren[k], newChildren[k])
                 } else if(indexes === void 0) {
                     // Create and insert new element
-                    const newElement = document.createElement(newChildren[k].tag)
+                    const tagEnd = newChildren[k].key.indexOf('>')
+                    const tag = tagEnd === -1 ? newChildren[k].key : newChildren[k].key.slice(0, tagEnd)
+                    const newElement = document.createElement(tag)
                     element.insertBefore(newElement, element.childNodes[k + 1] || null)
                     update(newElement, {...newChildren[k], props: new Map(), children: []}, newChildren[k])
                 } else {
