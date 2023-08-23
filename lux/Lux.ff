@@ -195,19 +195,19 @@ update(element: JsValue, old: Lux, new: Lux): Lux
                     update(element.childNodes[k], oldChildren[index], newChildren[k])
                 }
             }
-            // Delete any trailing elements and unused old vdom nodes
-            for(; k < oldChildren.length; k++) {
-                element.removeChild(element.childNodes[k])
-            }
+            // Unmount the vdom nodes that didn't survive and delete the corresponding trailing elements
             indexMap.forEach(indexes => { 
                 if(typeof indexes === 'number') {
-                    if(oldChildren[indexes].stop) oldChildren[indexes].stop()
+                    if(oldChildren[indexes].unmount) oldChildren[indexes].unmount()
                 } else {
                     for(const index of indexes) {
-                        if(oldChildren[index].stop) oldChildren[index].stop()
+                        if(oldChildren[index].unmount) oldChildren[index].unmount()
                     }
                 }
             })
+            for(; k < oldChildren.length; k++) {
+                element.removeChild(element.childNodes[k])
+            }
             return newLux
         }
         update(element_, old_, new_)
