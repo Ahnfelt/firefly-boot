@@ -188,6 +188,7 @@ update(element: JsValue, old: Lux, new: Lux): Lux
                     const newElement = document.createElement(tag)
                     element.insertBefore(newElement, element.childNodes[k + 1] || null)
                     update(newElement, {...newChildren[k], props: new Map(), children: []}, newChildren[k])
+                    if(newChildren[k].mount) newChildren[k].mount(newElement)
                 } else {
                     // Preserve and move element
                     const index = 
