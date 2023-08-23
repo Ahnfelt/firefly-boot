@@ -5,38 +5,38 @@ data LuxException(message: String)
 
 new(tagName: String): Lux
     target js sync """
-        return {key: '', tag: tagName_, props: new Map(), children: []}
+        return {key: tagName_, props: new Map(), children: []}
     """
 
 useState[T](initialValue: T, body: (T, T => Unit) => Lux): Lux
     target js async """
-        return {key: '', hook: 'useState', value: initialValue_, callback: null, body: body_}
+        return {key: '<state', value: initialValue_, callback: null, body: body_}
     """
     target js sync """
-        return {key: '', hook: 'useState', value: initialValue_, callback: null, body: body_}
+        return {key: '<state', value: initialValue_, callback: null, body: body_}
     """
 
 useEffect[T: Equal](dependency: T, update: T => (() => Unit), body: () => Lux): Lux
     target js async """
-        return {key: '', hook: 'useEffect', value: dependency_, callback: update_, body: body_}
+        return {key: '<effect', value: dependency_, callback: update_, body: body_}
     """
     target js sync """
-        return {key: '', hook: 'useEffect', value: dependency_, callback: update_, body: body_}
+        return {key: '<effect', value: dependency_, callback: update_, body: body_}
     """
 
 useMemo[T: Equal, R](dependency: T, update: T => R, body: R => Lux): Lux
     target js async """
-        return {key: '', hook: 'useMemo', value: dependency_, callback: update_, body: body_}
+        return {key: '<memo', value: dependency_, callback: update_, body: body_}
     """
     target js sync """
-        return {key: '', hook: 'useMemo', value: dependency_, callback: update_, body: body_}
+        return {key: '<memo', value: dependency_, callback: update_, body: body_}
     """
 
 extend self: Lux {
 
     key(key: String): Lux
         target js sync """
-            self_.key = key_
+            self_.key = self_.tag + '>' + key_
             return self_
         """
     
@@ -61,24 +61,24 @@ extend self: Lux {
 
     on(event: String, body: LuxEvent => Unit): Lux
         target js async """
-            if(self_.hook) return self_
+            if(self_.tag.charCodeAt(0) === 60) return self_
             self_.props.push({name: name_, value: body_})
             return self_
         """
         target js sync """
-            if(self_.hook) return self_
+            if(self_.tag.charCodeAt(0) === 60) return self_
             self_.props.push({name: name_, value: body_})
             return self_
         """
 
     onIf(event: String, condition: Bool, body: LuxEvent => Unit): Lux
         target js async """
-            if(self_.hook) return self_
+            if(self_.tag.charCodeAt(0) === 60) return self_
             if(condition) self_.props.push({name: name_, value: body_})
             return self_
         """
         target js sync """
-            if(self_.hook) return self_
+            if(self_.tag.charCodeAt(0) === 60) return self_
             if(condition) self_.props.push({name: name_, value: body_})
             return self_
         """
@@ -125,19 +125,19 @@ extend self: Lux {
     text(text: String): Lux
         target js sync """
             if(!self_.children) return self_
-            self_.children.push(text_)
+            self_.children.push({key: '<text', text: text_})
             return self_
         """
 
     textIf(condition: Bool, body: () => String): Lux
         target js async """
             if(!self_.children) return self_
-            if(condition_) self_.children.push(await body_())
+            if(condition_) self_.children.push({key: '<text', text: await body_()})
             return self_
         """
         target js sync """
             if(!self_.children) return self_
-            if(condition_) self_.children.push(body_())
+            if(condition_) self_.children.push({key: '<text', text: body_()})
             return self_
         """
 
