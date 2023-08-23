@@ -183,20 +183,32 @@ update(element: JsValue, old: Lux, new: Lux): Lux
                     update(element.childNodes[k], oldChildren[k], newChildren[k])
                 } else if(indexes === void 0) {
                     // Create and insert new element
-                    const tagEnd = newChildren[k].key.indexOf('>')
-                    const tag = tagEnd === -1 ? newChildren[k].key : newChildren[k].key.slice(0, tagEnd)
-                    const newElement = document.createElement(tag)
-                    element.insertBefore(newElement, element.childNodes[k + 1] || null)
-                    update(newElement, {...newChildren[k], props: new Map(), children: []}, newChildren[k])
-                    if(newChildren[k].mount) newChildren[k].mount(newElement)
+                    if(newChildren[k].key.startsWith('<text')) {
+                        const newNode = document.createTextNode(newChildren[k].text);
+                        element.insertBefore(newNode, element.childNodes[k + 1] || null)
+                    } else {
+                        const tagEnd = newChildren[k].key.indexOf('>')
+                        const tag = tagEnd === -1 ? newChildren[k].key : newChildren[k].key.slice(0, tagEnd)
+                        const newElement = document.createElement(tag)
+                        element.insertBefore(newElement, element.childNodes[k + 1] || null)
+                        update(newElement, {...newChildren[k], props: new Map(), children: []}, newChildren[k])
+                        if(newChildren[k].mount) newChildren[k].mount(newElement)
+                    }
                 } else {
                     // Preserve and move element
                     const index = 
                         typeof indexes === 'number' ? indexes : 
                         indexes.length === 2 ? (indexMap.set(child.key, indexes[1]), indexes[0]) :
                         indexes.shift()
-                    element.insertBefore(element.childNodes[index], element.childNodes[k + 1] || null)
-                    update(element.childNodes[k], oldChildren[index], newChildren[k])
+                    if(newChildren[k].key.startsWith('<text')) {
+                        if(oldChildren[index].text !== newChildren[k].text) {
+                            const newNode = document.createTextNode(newChildren[k].text);
+                            element.insertBefore(newNode, element.childNodes[k + 1] || null)
+                        }
+                    } else {
+                        element.insertBefore(element.childNodes[index], element.childNodes[k + 1] || null)
+                        update(element.childNodes[k], oldChildren[index], newChildren[k])
+                    }
                 }
             }
             // Unmount the vdom nodes that didn't survive and delete the corresponding trailing elements
@@ -214,5 +226,6 @@ update(element: JsValue, old: Lux, new: Lux): Lux
             }
             return newLux
         }
+        function el(key) {return {key, children: ([...arguments].slice(1) || []).map(c => typeof c === 'string' ? {key: '<string', text: c} : c)}} // Convenience
         update(element_, old_, new_)
     """
