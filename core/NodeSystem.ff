@@ -8,12 +8,13 @@ extend self: NodeSystem {
     assets(): AssetSystem {
         let assetPkgSnapshotPath = self.path("/snapshot/output/assets")
         if(assetPkgSnapshotPath.isDirectory()) {
+            // Opendir gives ENOENT: no such file or directory, opendir '/snapshot/output/assets'
             function streams(path: Path): Stream[Pair[String, () => Stream[Buffer]]] {
-                path.entries().flatMap {file =>
+                internalListDirectoryWithoutOpendir(self, path).toStream().flatMap {file =>
                     if(file.isDirectory()) {
-                        streams(file.path())
+                        streams(file)
                     } else {
-                        [Pair(file.path().relativeTo(assetPkgSnapshotPath), {file.path().readStream()})].toStream()
+                        [Pair("/" + file.relativeTo(assetPkgSnapshotPath), {file.readStream()})].toStream()
                     }
                 }
             }
@@ -86,3 +87,11 @@ extend self: NodeSystem {
 
 internalAssets(system: NodeSystem): AssetSystem
     target node async "return system_.assets_"
+
+internalListDirectoryWithoutOpendir(system: NodeSystem, path: Path): Array[Path]
+    target node async """
+        import * as fsPromises from 'fs/promises'
+        import * as path from 'path'
+        let files = await fsPromises.readdir(path_)
+        return files.map(file => path.join(path_, file))
+    """
