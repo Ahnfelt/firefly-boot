@@ -157,7 +157,7 @@ update(element: JsValue, old: Lux, new: Lux): Lux
             for(; i < minLength && oldChildren[i].key === newChildren[i].key; i++) {
                 update(element.childNodes[i], oldChildren[i], newChildren[i])
             }
-            if(i == oldChildren.length && i == newChildren.length) return newLux
+            if(i === oldChildren.length && i === newChildren.length) return newLux
             // If not done, do the complicated rearrange
             const indexMap = new Map()
             // First build a multimap from old keys to indexes
@@ -173,26 +173,32 @@ update(element: JsValue, old: Lux, new: Lux): Lux
                 }
             }
             // Then go through the new children, diff and patch
-            let k = i
-            for(; k < newChildren.length; k++) {
-                const child = newChildren[k]
+            for(; i < newChildren.length; i++) {
+                const child = newChildren[i]
                 const indexes = indexMap.get(child.key)
-                if(indexes === k) {
+                if(indexes === i) {
                     // Preserve element
-                    indexMap.delete(child.key)
-                    update(element.childNodes[k], oldChildren[k], newChildren[k])
+                    if(newChildren[i].key.startsWith('<text')) {
+                        if(oldChildren[i].text !== newChildren[i].text) {
+                            const newNode = document.createTextNode(newChildren[i].text);
+                            element.insertBefore(newNode, element.childNodes[i] || null)
+                        }
+                    } else {
+                        indexMap.delete(child.key)
+                        update(element.childNodes[i], oldChildren[i], newChildren[i])
+                    }
                 } else if(indexes === void 0) {
                     // Create and insert new element
-                    if(newChildren[k].key.startsWith('<text')) {
-                        const newNode = document.createTextNode(newChildren[k].text);
-                        element.insertBefore(newNode, element.childNodes[k + 1] || null)
+                    if(newChildren[i].key.startsWith('<text')) {
+                        const newNode = document.createTextNode(newChildren[i].text);
+                        element.insertBefore(newNode, element.childNodes[i] || null)
                     } else {
-                        const tagEnd = newChildren[k].key.indexOf('>')
-                        const tag = tagEnd === -1 ? newChildren[k].key : newChildren[k].key.slice(0, tagEnd)
+                        const tagEnd = newChildren[i].key.indexOf('>')
+                        const tag = tagEnd === -1 ? newChildren[i].key : newChildren[i].key.slice(0, tagEnd)
                         const newElement = document.createElement(tag)
-                        element.insertBefore(newElement, element.childNodes[k + 1] || null)
-                        update(newElement, {...newChildren[k], props: new Map(), children: []}, newChildren[k])
-                        if(newChildren[k].mount) newChildren[k].mount(newElement)
+                        element.insertBefore(newElement, element.childNodes[i] || null)
+                        update(newElement, {...newChildren[i], props: new Map(), children: []}, newChildren[i])
+                        if(newChildren[i].mount) newChildren[i].mount(newElement)
                     }
                 } else {
                     // Preserve and move element
@@ -200,14 +206,14 @@ update(element: JsValue, old: Lux, new: Lux): Lux
                         typeof indexes === 'number' ? indexes : 
                         indexes.length === 2 ? (indexMap.set(child.key, indexes[1]), indexes[0]) :
                         indexes.shift()
-                    if(newChildren[k].key.startsWith('<text')) {
-                        if(oldChildren[index].text !== newChildren[k].text) {
-                            const newNode = document.createTextNode(newChildren[k].text);
-                            element.insertBefore(newNode, element.childNodes[k + 1] || null)
+                    if(newChildren[i].key.startsWith('<text')) {
+                        if(oldChildren[index].text !== newChildren[i].text) {
+                            const newNode = document.createTextNode(newChildren[i].text);
+                            element.insertBefore(newNode, element.childNodes[i] || null)
                         }
                     } else {
-                        element.insertBefore(element.childNodes[index], element.childNodes[k + 1] || null)
-                        update(element.childNodes[k], oldChildren[index], newChildren[k])
+                        element.insertBefore(element.childNodes[index], element.childNodes[i] || null)
+                        update(element.childNodes[i], oldChildren[index], newChildren[i])
                     }
                 }
             }
@@ -221,11 +227,11 @@ update(element: JsValue, old: Lux, new: Lux): Lux
                     }
                 }
             })
-            for(; k < oldChildren.length; k++) {
-                element.removeChild(element.childNodes[k])
+            while(i < element.childNodes.length) {
+                element.removeChild(element.childNodes[i])
             }
             return newLux
         }
-        function el(key) {return {key, children: ([...arguments].slice(1) || []).map(c => typeof c === 'string' ? {key: '<string', text: c} : c)}} // Convenience
+        function el(key) {return {key, children: ([...arguments].slice(1) || []).map(c => typeof c === 'string' ? {key: '<text', text: c} : c)}} // Convenience
         update(element_, old_, new_)
     """
