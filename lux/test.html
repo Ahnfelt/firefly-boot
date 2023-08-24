@@ -126,12 +126,12 @@
         } // Convenience
         function useState(initialValue_, body_) {
             let node = {key: '<state', children: [], callback: null, props: new Map([['value', initialValue_]])}
-            node.callback = forceUpdate => {
-                if(forceUpdate) {
+            node.callback = rerender => {
+                if(rerender) {
                     const setValue = newValue => {
                         node.props.set('value', newValue)
                         node.children[0] = body_(newValue, setValue)
-                        forceUpdate()
+                        rerender()
                     }
                     node.children[0] = body_(node.props.get('value'), setValue)
                 }
