@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VDOM diff and patch test</title>
+</head>
+<body>
+    <script>
+        const empty = {key: '', props: new Map(), children: []}
+        function update(element, oldLux, newLux) {
+            if(oldLux === newLux) return newLux
+            // Patch props
+            if(oldLux.props !== newLux.props) {
+                newLux.props.forEach((value, name) => {
+                    const oldValue = oldLux.props.get(name)
+                    if(oldValue !== value) {
+                        element[name] = value
+                        if(oldValue !== void 0) oldLux.props.delete(name)
+                    }
+                })
+                oldLux.props.forEach((_, name) => element[name] = void 0)
+            }
+            // Speed through matching prefix
+            const oldChildren = oldLux.children
+            const newChildren = newLux.children
+            const minLength = Math.min(oldChildren.length, newChildren.length)
+            let i = 0
+            while(i < minLength && oldChildren[i] === newChildren[i]) i++
+            for(; i < minLength && oldChildren[i].key === newChildren[i].key; i++) {
+                update(element.childNodes[i], oldChildren[i], newChildren[i])
+            }
+            if(i === oldChildren.length && i === newChildren.length) return newLux
+            // If not done, do the complicated rearrange
+            const indexMap = new Map()
+            // First build a multimap from old keys to indexes
+            for(let j = i; j < oldChildren.length; j++) {
+                const child = oldChildren[j]
+                const indexes = indexMap.get(child.key)
+                if(indexes === void 0) {
+                    indexMap.set(child.key, j)
+                } else if(typeof indexes === 'number') {
+                    indexMap.set(child.key, [indexes, j])
+                } else {
+                    indexes.push(j)
+                }
+            }
+            // Then go through the new children, diff and patch
+            for(; i < newChildren.length; i++) {
+                const child = newChildren[i]
+                const indexes = indexMap.get(child.key)
+                if(indexes === i) {
+                    // Preserve element
+                    indexMap.delete(child.key)
+                    if(!newChildren[i].key.startsWith('<text')) {
+                        update(element.childNodes[i], oldChildren[i], newChildren[i])
+                    }
+                } else if(indexes === void 0) {
+                    // Create and insert new element
+                    if(newChildren[i].key.startsWith('<text')) {
+                        const text = newChildren[i].key.slice(newChildren[i].key.indexOf('>') + 1)
+                        const newNode = document.createTextNode(text);
+                        element.insertBefore(newNode, element.childNodes[i] || null)
+                    } else {
+                        const tagEnd = newChildren[i].key.indexOf('>')
+                        const tag = tagEnd === -1 ? newChildren[i].key : newChildren[i].key.slice(0, tagEnd)
+                        const newElement = document.createElement(tag)
+                        element.insertBefore(newElement, element.childNodes[i] || null)
+                        update(newElement, empty, newChildren[i])
+                        if(newChildren[i].mount) newChildren[i].mount(newElement)
+                    }
+                } else {
+                    // Preserve and move element
+                    const index = 
+                        typeof indexes === 'number' ? indexes : 
+                        indexes.length === 2 ? (indexMap.set(child.key, indexes[1]), indexes[0]) :
+                        indexes.shift()
+                    element.insertBefore(element.childNodes[index], element.childNodes[i] || null)
+                    if(!newChildren[i].key.startsWith('<text')) {
+                        update(element.childNodes[i], oldChildren[index], newChildren[i])
+                    }
+                }
+            }
+            // Unmount the vdom nodes that didn't survive and delete the corresponding trailing elements
+            indexMap.forEach(indexes => { 
+                if(typeof indexes === 'number') {
+                    if(oldChildren[indexes].unmount) oldChildren[indexes].unmount()
+                } else {
+                    for(const index of indexes) {
+                        if(oldChildren[index].unmount) oldChildren[index].unmount()
+                    }
+                }
+            })
+            while(i < element.childNodes.length) {
+                element.removeChild(element.childNodes[i])
+            }
+            return newLux
+        }
+    </script>
+    <div id="main"><hr></div>
+    <script>
+        function el(key) {
+            const hasProps = typeof arguments[1] === 'object' && !arguments[1].key
+            return {
+                key: key, 
+                props: new Map(Object.entries(hasProps ? arguments[1] : {})),
+                children: ([...arguments].slice(hasProps ? 2 : 1) || []).map(c => 
+                    typeof c === 'string' ? {key: '<text>' + c} : c
+                )
+            }
+        } // Convenience
+        update(document.getElementById("main"), el("div", el("hr")), el("div", el("button", "his")))
+        update(document.getElementById("main"), el("div", el("button", "his")), el("div", "ok"))
+        update(document.getElementById("main"), el("div", "ok"), el("div", "now", "now", "now"))
+        update(document.getElementById("main"), el("div", "now", "now", "now"), el("div", {style: 'color: red'}, "cow", "now", "bow"))
+    </script>
+</body>
+</html>

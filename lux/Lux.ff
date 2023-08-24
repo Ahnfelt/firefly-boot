@@ -5,6 +5,7 @@ data LuxException(message: String)
 
 new(tagName: String): Lux
     target js sync """
+        if(tagName_.charCodeAt(0) === 60) throw new Error('Invalid tag name: ' + tagName_)
         return {key: tagName_, props: new Map(), children: []}
     """
 
@@ -41,14 +42,14 @@ extend self: Lux {
             return self_
         """
     
-    with(name: String, value: String): Lux
+    with[V: IsJsValue](name: String, value: V): Lux
         target js sync """
             if(!self_.props) return self_
             self_.props.set(name_, value_)
             return self_
         """
 
-    withIf(name: String, condition: Bool, body: () => String): Lux
+    withIf[V: IsJsValue](name: String, condition: Bool, body: () => V): Lux
         target js async """
             if(!self_.props) return self_
             if(condition_) self_.props.set(name_, await body_())
@@ -126,19 +127,19 @@ extend self: Lux {
     text(text: String): Lux
         target js sync """
             if(!self_.children) return self_
-            self_.children.push({key: '<text', text: text_})
+            self_.children.push({key: '<text>' + text_})
             return self_
         """
 
     textIf(condition: Bool, body: () => String): Lux
         target js async """
             if(!self_.children) return self_
-            if(condition_) self_.children.push({key: '<text', text: await body_()})
+            if(condition_) self_.children.push({key: '<text>' + await body_()})
             return self_
         """
         target js sync """
             if(!self_.children) return self_
-            if(condition_) self_.children.push({key: '<text', text: body_()})
+            if(condition_) self_.children.push({key: '<text>' + body_()})
             return self_
         """
 
@@ -146,14 +147,26 @@ extend self: Lux {
 
 update(element: JsValue, old: Lux, new: Lux): Lux
     target js sync """
+        const empty = {key: '', props: new Map(), children: []}
         function update(element, oldLux, newLux) {
             if(oldLux === newLux) return newLux
+            // Patch props
+            if(oldLux.props !== newLux.props) {
+                newLux.props.forEach((value, name) => {
+                    const oldValue = oldLux.props.get(name)
+                    if(oldValue !== value) {
+                        element[name] = value
+                        if(oldValue !== void 0) oldLux.props.delete(name)
+                    }
+                })
+                oldLux.props.forEach((_, name) => element[name] = void 0)
+            }
             // Speed through matching prefix
             const oldChildren = oldLux.children
             const newChildren = newLux.children
             const minLength = Math.min(oldChildren.length, newChildren.length)
             let i = 0
-            for(; i < minLength && oldChildren[i] === newChildren[i]; i++) {}
+            while(i < minLength && oldChildren[i] === newChildren[i]) i++
             for(; i < minLength && oldChildren[i].key === newChildren[i].key; i++) {
                 update(element.childNodes[i], oldChildren[i], newChildren[i])
             }
@@ -178,26 +191,22 @@ update(element: JsValue, old: Lux, new: Lux): Lux
                 const indexes = indexMap.get(child.key)
                 if(indexes === i) {
                     // Preserve element
-                    if(newChildren[i].key.startsWith('<text')) {
-                        if(oldChildren[i].text !== newChildren[i].text) {
-                            const newNode = document.createTextNode(newChildren[i].text);
-                            element.insertBefore(newNode, element.childNodes[i] || null)
-                        }
-                    } else {
-                        indexMap.delete(child.key)
+                    indexMap.delete(child.key)
+                    if(!newChildren[i].key.startsWith('<text')) {
                         update(element.childNodes[i], oldChildren[i], newChildren[i])
                     }
                 } else if(indexes === void 0) {
                     // Create and insert new element
                     if(newChildren[i].key.startsWith('<text')) {
-                        const newNode = document.createTextNode(newChildren[i].text);
+                        const text = newChildren[i].key.slice(newChildren[i].key.indexOf('>') + 1)
+                        const newNode = document.createTextNode(text);
                         element.insertBefore(newNode, element.childNodes[i] || null)
                     } else {
                         const tagEnd = newChildren[i].key.indexOf('>')
                         const tag = tagEnd === -1 ? newChildren[i].key : newChildren[i].key.slice(0, tagEnd)
                         const newElement = document.createElement(tag)
                         element.insertBefore(newElement, element.childNodes[i] || null)
-                        update(newElement, {...newChildren[i], props: new Map(), children: []}, newChildren[i])
+                        update(newElement, empty, newChildren[i])
                         if(newChildren[i].mount) newChildren[i].mount(newElement)
                     }
                 } else {
@@ -206,13 +215,8 @@ update(element: JsValue, old: Lux, new: Lux): Lux
                         typeof indexes === 'number' ? indexes : 
                         indexes.length === 2 ? (indexMap.set(child.key, indexes[1]), indexes[0]) :
                         indexes.shift()
-                    if(newChildren[i].key.startsWith('<text')) {
-                        if(oldChildren[index].text !== newChildren[i].text) {
-                            const newNode = document.createTextNode(newChildren[i].text);
-                            element.insertBefore(newNode, element.childNodes[i] || null)
-                        }
-                    } else {
-                        element.insertBefore(element.childNodes[index], element.childNodes[i] || null)
+                    element.insertBefore(element.childNodes[index], element.childNodes[i] || null)
+                    if(!newChildren[i].key.startsWith('<text')) {
                         update(element.childNodes[i], oldChildren[index], newChildren[i])
                     }
                 }
@@ -232,6 +236,5 @@ update(element: JsValue, old: Lux, new: Lux): Lux
             }
             return newLux
         }
-        function el(key) {return {key, children: ([...arguments].slice(1) || []).map(c => typeof c === 'string' ? {key: '<text', text: c} : c)}} // Convenience
         update(element_, old_, new_)
     """
