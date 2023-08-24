@@ -50,12 +50,13 @@ extend self: BrowserCode {
         let prefix = ".firefly/output/browser"
         let mainJsBaseFile = self.mainFile.base().removeLast(".ff").grab() + ".mjs"
         let mainJsFile = prefix + "/" + self.packageGroup + "/" + self.packageName + "/" + mainJsBaseFile
+        let mainDirectory = self.mainFile.parent().grab()
         let file = prefix + "/Main.bundle.js"
         internalCallEsBuild(self, mainJsFile = mainJsFile, outputPath = file, minify = minify, sourceMap = sourceMap)
         let assets = AssetSystem([
-            Pair(file.dropFirst(prefix.size()), {self.mainFile.path(file).readStream()})
+            Pair(file.dropFirst(prefix.size()), {mainDirectory.path(file).readStream()})
             ...if(sourceMap) {[
-                Pair(file.dropFirst(prefix.size()) + ".map", {self.mainFile.path(file + ".map").readStream()})
+                Pair(file.dropFirst(prefix.size()) + ".map", {mainDirectory.path(file + ".map").readStream()})
             ]} else {[]}
         ].toMap())
         BrowserBundle(assets)
