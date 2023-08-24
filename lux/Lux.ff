@@ -153,7 +153,7 @@ mount(element: JsValue, lux: Lux): Lux {
 
 update(element: JsValue, old: Lux, new: Lux): Lux
     target js sync """
-        const empty = {key: '', children: [], props: new Map()}
+        const empty = {key: '', children: [], body: null, props: new Map()}
         function update(element, oldLux, newLux) {
             if(oldLux === newLux) return newLux
             // Patch props
