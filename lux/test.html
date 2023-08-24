@@ -7,11 +7,10 @@
 </head>
 <body>
     <script>
-        const empty = {key: '', props: new Map(), children: []}
+        const empty = {key: '', children: [], props: new Map()}
         function update(element, oldLux, newLux) {
             if(oldLux === newLux) return newLux
             // Patch props
-            if(oldLux.hasOwnProperty('value')) newLux.value = oldLux.value
             if(oldLux.props !== newLux.props) {
                 newLux.props.forEach((value, name) => {
                     const oldValue = oldLux.props.get(name)
@@ -27,6 +26,9 @@
                 })
             }
             // Speed through matching prefix
+            if(newLux.body) {
+                newLux.children = newLux.body()
+            }
             const oldChildren = oldLux.children
             const newChildren = newLux.children
             const minLength = Math.min(oldChildren.length, newChildren.length)

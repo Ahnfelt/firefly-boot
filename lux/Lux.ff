@@ -7,31 +7,31 @@ data LuxException(message: String)
 new(tagName: String): Lux
     target js sync """
         if(tagName_.charCodeAt(0) === 60) throw new Error('Invalid tag name: ' + tagName_)
-        return {key: tagName_, props: new Map(), children: []}
+        return {key: tagName_, children: [], body: null, props: new Map()}
     """
 
 useState[T](initialValue: T, body: (T, T => Unit) => Lux): Lux
     target js async """
-        return {key: '<state', value: initialValue_, callback: null, body: body_}
+        return {key: '<state', children: [], body: body_, props: new Map([['value', initialValue_]])}
     """
     target js sync """
-        return {key: '<state', value: initialValue_, callback: null, body: body_}
+        return {key: '<state', children: [], body: body_, props: new Map([['value', initialValue_]])}
     """
 
 useEffect[T: Equal](dependency: T, update: T => (() => Unit), body: () => Lux): Lux
     target js async """
-        return {key: '<effect', value: dependency_, callback: update_, body: body_}
+        return {key: '<effect', children: [], body: body_, props: new Map([['dependency', dependency_], ['update', update_]])}
     """
     target js sync """
-        return {key: '<effect', value: dependency_, callback: update_, body: body_}
+        return {key: '<effect', children: [], body: body_, props: new Map([['dependency', dependency_], ['update', update_]])}
     """
 
-useMemo[T: Equal, R](dependency: T, update: T => R, body: R => Lux): Lux
+useMemo[T: Equal, R](dependency: T, compute: T => R, body: R => Lux): Lux
     target js async """
-        return {key: '<memo', value: dependency_, callback: update_, body: body_}
+        return {key: '<memo', children: [], body: body_, props: new Map([['dependency', dependency_], ['compute', compute_]])}
     """
     target js sync """
-        return {key: '<memo', value: dependency_, callback: update_, body: body_}
+        return {key: '<memo', children: [], body: body_, props: new Map([['dependency', dependency_], ['compute', compute_]])}
     """
 
 extend self: Lux {
@@ -153,11 +153,10 @@ mount(element: JsValue, lux: Lux): Lux {
 
 update(element: JsValue, old: Lux, new: Lux): Lux
     target js sync """
-        const empty = {key: '', props: new Map(), children: []}
+        const empty = {key: '', children: [], props: new Map()}
         function update(element, oldLux, newLux) {
             if(oldLux === newLux) return newLux
             // Patch props
-            if(oldLux.hasOwnProperty('value')) newLux.value = oldLux.value
             if(oldLux.props !== newLux.props) {
                 newLux.props.forEach((value, name) => {
                     const oldValue = oldLux.props.get(name)
@@ -173,6 +172,9 @@ update(element: JsValue, old: Lux, new: Lux): Lux
                 })
             }
             // Speed through matching prefix
+            if(newLux.body) {
+                newLux.children = newLux.body()
+            }
             const oldChildren = oldLux.children
             const newChildren = newLux.children
             const minLength = Math.min(oldChildren.length, newChildren.length)
