@@ -11,6 +11,7 @@
         function update(element, oldLux, newLux) {
             if(oldLux === newLux) return newLux
             // Patch props
+            if(oldLux.hasOwnProperty('value')) newLux.value = oldLux.value
             if(oldLux.props !== newLux.props) {
                 newLux.props.forEach((value, name) => {
                     const oldValue = oldLux.props.get(name)
