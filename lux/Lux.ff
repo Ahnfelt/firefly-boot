@@ -77,12 +77,12 @@ extend self: Lux {
     onIf(event: String, condition: Bool, body: LuxEvent => Unit): Lux
         target js async """
             if(self_.tag.charCodeAt(0) === 60) return self_
-            if(condition) self_.props.push({name: '!' + event_, value: body_})
+            if(condition) self_.props.push({name: '$' + event_, value: body_})
             return self_
         """
         target js sync """
             if(self_.tag.charCodeAt(0) === 60) return self_
-            if(condition) self_.props.push({name: '!' + event_, value: body_})
+            if(condition) self_.props.push({name: '$' + event_, value: body_})
             return self_
         """
 
