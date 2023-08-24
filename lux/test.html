@@ -7,9 +7,23 @@
 </head>
 <body>
     <script>
-        const empty = {key: '', children: [], body: null, props: new Map()}
+        const empty = {key: '', children: [], callback: null, props: new Map()}
         function update(element, oldLux, newLux) {
-            if(oldLux === newLux) return newLux
+            if(oldLux === newLux) return element
+            // If it's a hook, transfer the props, invoke the callback and patch recursively
+            if(typeof newLux.callback === 'function') {
+                if(typeof oldLux.callback === 'function') {
+                    newLux.props = oldLux.props
+                }
+                newLux.callback(true)
+                return update(element, oldLux.children[0] || empty, newLux.children[0])
+            }
+            // Create the element if it doesn't already exist
+            if(!element) {
+                const tagEnd = newLux.key.indexOf('>')
+                const tag = tagEnd === -1 ? newLux.key : newLux.key.slice(0, tagEnd)
+                element = document.createElement(tag)
+            }
             // Patch props
             if(oldLux.props !== newLux.props) {
                 newLux.props.forEach((value, name) => {
@@ -26,9 +40,6 @@
                 })
             }
             // Speed through matching prefix
-            if(newLux.body) {
-                newLux.children = newLux.body()
-            }
             const oldChildren = oldLux.children
             const newChildren = newLux.children
             const minLength = Math.min(oldChildren.length, newChildren.length)
@@ -37,7 +48,7 @@
             for(; i < minLength && oldChildren[i].key === newChildren[i].key; i++) {
                 update(element.childNodes[i], oldChildren[i], newChildren[i])
             }
-            if(i === oldChildren.length && i === newChildren.length) return newLux
+            if(i === oldChildren.length && i === newChildren.length) return element
             // If not done, do the complicated rearrange
             const indexMap = new Map()
             // First build a multimap from old keys to indexes
@@ -69,12 +80,8 @@
                         const newNode = document.createTextNode(text);
                         element.insertBefore(newNode, element.childNodes[i] || null)
                     } else {
-                        const tagEnd = newChildren[i].key.indexOf('>')
-                        const tag = tagEnd === -1 ? newChildren[i].key : newChildren[i].key.slice(0, tagEnd)
-                        const newElement = document.createElement(tag)
+                        const newElement = update(null, empty, newChildren[i])
                         element.insertBefore(newElement, element.childNodes[i] || null)
-                        update(newElement, empty, newChildren[i])
-                        if(newChildren[i].mount) newChildren[i].mount(newElement)
                     }
                 } else {
                     // Preserve and move element
@@ -90,18 +97,17 @@
             }
             // Unmount the vdom nodes that didn't survive and delete the corresponding trailing elements
             indexMap.forEach(indexes => { 
-                if(typeof indexes === 'number') {
-                    if(oldChildren[indexes].unmount) oldChildren[indexes].unmount()
-                } else {
-                    for(const index of indexes) {
-                        if(oldChildren[index].unmount) oldChildren[index].unmount()
-                    }
-                }
+                if(typeof indexes === 'number') unmount(oldChildren[indexes])
+                else for(const index of indexes) unmount(oldChildren[index])
             })
             while(i < element.childNodes.length) {
                 element.removeChild(element.childNodes[i])
             }
-            return newLux
+            return element
+        }
+        function unmount(oldLux) {
+            if(oldLux.children) for(child of oldLux.children) unmount(child)
+            if(typeof oldLux.callback === 'function') oldLux.callback(false)
         }
     </script>
     <div id="main"><hr></div>
@@ -110,12 +116,27 @@
             const hasProps = typeof arguments[1] === 'object' && !arguments[1].key
             return {
                 key: key, 
-                props: new Map(Object.entries(hasProps ? arguments[1] : {})),
                 children: ([...arguments].slice(hasProps ? 2 : 1) || []).map(c => 
-                    typeof c === 'string' ? {key: '<text>' + c} : c
-                )
+                    typeof c === 'string' || typeof c === 'number' || typeof c === 'boolean' ? {key: '<text>' + c} : c
+                ),
+                callback: hasProps ? arguments[1].$ || null : null,
+                props: new Map(Object.entries(hasProps ? arguments[1] : {})),
             }
         } // Convenience
+        function useState(initialValue_, body_) {
+            let vdom = null // Set this somehow
+            let node = {key: '<state', children: [], callback: null, props: new Map([['value', initialValue_]])}
+            const setValue = newValue => {
+                node.props.set('value', newValue)
+                vdom.update()
+            }
+            node.callback = live => {
+                if(live) {
+                    node.children.push(body_(node.props.get('value'), setValue))
+                }
+            }
+            return node
+        }
         update(document.getElementById("main"), 
             el("div", el("hr")), 
             el("div", el("button", "his"))
@@ -130,7 +151,7 @@
         )
         update(document.getElementById("main"), 
             el("div", "now", "now", "now"), 
-            el("div", {style: 'color: red', $click: () => alert('hi')}, "cow", "now", "bow")
+            el("div", {style: 'color: red', $click: () => alert('hi')}, "cow", useState(1, v => el("b", v)), "bow")
         )
     </script>
 </body>

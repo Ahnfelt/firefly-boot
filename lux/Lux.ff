@@ -11,27 +11,19 @@ new(tagName: String): Lux
     """
 
 useState[T](initialValue: T, body: (T, T => Unit) => Lux): Lux
-    target js async """
-        return {key: '<state', children: [], body: body_, props: new Map([['value', initialValue_]])}
-    """
     target js sync """
-        return {key: '<state', children: [], body: body_, props: new Map([['value', initialValue_]])}
-    """
-
-useEffect[T: Equal](dependency: T, update: T => (() => Unit), body: () => Lux): Lux
-    target js async """
-        return {key: '<effect', children: [], body: body_, props: new Map([['dependency', dependency_], ['update', update_]])}
-    """
-    target js sync """
-        return {key: '<effect', children: [], body: body_, props: new Map([['dependency', dependency_], ['update', update_]])}
-    """
-
-useMemo[T: Equal, R](dependency: T, compute: T => R, body: R => Lux): Lux
-    target js async """
-        return {key: '<memo', children: [], body: body_, props: new Map([['dependency', dependency_], ['compute', compute_]])}
-    """
-    target js sync """
-        return {key: '<memo', children: [], body: body_, props: new Map([['dependency', dependency_], ['compute', compute_]])}
+        let vdom = null // Set this somehow
+        let node = {key: '<state', children: [], callback: null, props: new Map([['value', initialValue_]])}
+        const setValue = newValue => {
+            node.props.set('value', newValue)
+            vdom.update()
+        }
+        node.callback = live => {
+            if(live) {
+                node.children.push(body_(node.props.get('value'), setValue))
+            }
+        }
+        return node
     """
 
 extend self: Lux {
@@ -153,9 +145,23 @@ mount(element: JsValue, lux: Lux): Lux {
 
 update(element: JsValue, old: Lux, new: Lux): Lux
     target js sync """
-        const empty = {key: '', children: [], body: null, props: new Map()}
+        const empty = {key: '', children: [], callback: null, props: new Map()}
         function update(element, oldLux, newLux) {
-            if(oldLux === newLux) return newLux
+            if(oldLux === newLux) return element
+            // If it's a hook, transfer the props, invoke the callback and patch recursively
+            if(typeof newLux.callback === 'function') {
+                if(typeof oldLux.callback === 'function') {
+                    newLux.props = oldLux.props
+                }
+                newLux.callback(true)
+                return update(element, oldLux.children[0] || empty, newLux.children[0])
+            }
+            // Create the element if it doesn't already exist
+            if(!element) {
+                const tagEnd = newLux.key.indexOf('>')
+                const tag = tagEnd === -1 ? newLux.key : newLux.key.slice(0, tagEnd)
+                element = document.createElement(tag)
+            }
             // Patch props
             if(oldLux.props !== newLux.props) {
                 newLux.props.forEach((value, name) => {
@@ -172,9 +178,6 @@ update(element: JsValue, old: Lux, new: Lux): Lux
                 })
             }
             // Speed through matching prefix
-            if(newLux.body) {
-                newLux.children = newLux.body()
-            }
             const oldChildren = oldLux.children
             const newChildren = newLux.children
             const minLength = Math.min(oldChildren.length, newChildren.length)
@@ -183,7 +186,7 @@ update(element: JsValue, old: Lux, new: Lux): Lux
             for(; i < minLength && oldChildren[i].key === newChildren[i].key; i++) {
                 update(element.childNodes[i], oldChildren[i], newChildren[i])
             }
-            if(i === oldChildren.length && i === newChildren.length) return newLux
+            if(i === oldChildren.length && i === newChildren.length) return element
             // If not done, do the complicated rearrange
             const indexMap = new Map()
             // First build a multimap from old keys to indexes
@@ -215,12 +218,8 @@ update(element: JsValue, old: Lux, new: Lux): Lux
                         const newNode = document.createTextNode(text);
                         element.insertBefore(newNode, element.childNodes[i] || null)
                     } else {
-                        const tagEnd = newChildren[i].key.indexOf('>')
-                        const tag = tagEnd === -1 ? newChildren[i].key : newChildren[i].key.slice(0, tagEnd)
-                        const newElement = document.createElement(tag)
+                        const newElement = update(null, empty, newChildren[i])
                         element.insertBefore(newElement, element.childNodes[i] || null)
-                        update(newElement, empty, newChildren[i])
-                        if(newChildren[i].mount) newChildren[i].mount(newElement)
                     }
                 } else {
                     // Preserve and move element
@@ -236,18 +235,17 @@ update(element: JsValue, old: Lux, new: Lux): Lux
             }
             // Unmount the vdom nodes that didn't survive and delete the corresponding trailing elements
             indexMap.forEach(indexes => { 
-                if(typeof indexes === 'number') {
-                    if(oldChildren[indexes].unmount) oldChildren[indexes].unmount()
-                } else {
-                    for(const index of indexes) {
-                        if(oldChildren[index].unmount) oldChildren[index].unmount()
-                    }
-                }
+                if(typeof indexes === 'number') unmount(oldChildren[indexes])
+                else for(const index of indexes) unmount(oldChildren[index])
             })
             while(i < element.childNodes.length) {
                 element.removeChild(element.childNodes[i])
             }
-            return newLux
+            return element
+        }
+        function unmount(oldLux) {
+            if(oldLux.children) for(child of oldLux.children) unmount(child)
+            if(typeof oldLux.callback === 'function') oldLux.callback(false)
         }
         if(old_.key !== new_.key) throw new Error('Tried to update mismatching keys: ' + old_.key + ' vs. ' + new_.key)
         update(element_, old_, new_)
