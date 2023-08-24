@@ -1,10 +1,8 @@
+import HttpServer from ff:httpserver
+
 import Lux
 import LuxEvent
 import LuxDom
-
-browserMain(system: BrowserSystem) {
-    LuxDom.mountById("main", countButton(system, {Log.trace("A hundred!")}))
-}
 
 countButton(system: BrowserSystem, on100: () => Unit): Lux {
     Lux.useState(0): count, setCount =>
@@ -16,4 +14,33 @@ countButton(system: BrowserSystem, on100: () => Unit): Lux {
             if(count == 100) {on100()}
         })
         .addIf(count >= 10) {Lux.new("div").text("Big!")}
+}
+
+
+
+
+browserMain(system: BrowserSystem): Unit {
+    LuxDom.mountById("main", countButton(system, {Log.trace("A hundred!")}))
+}
+
+nodeMain(system: NodeSystem): Unit {
+    HttpServer.listen(system, "localhost", 8080) {request, response =>
+        if(request.path() == "/") {
+            response.setHeader("Content-Type", ["text/html; charset=UTF-8"])
+            response.writeText("<!doctype html>")
+            response.writeText("<div id='main'></div>")
+            response.writeText("<script type='module' src='/js/script/script/Main.mjs'></script>")
+        } elseIf {request.path().startsWith("/js/") && !request.path().contains("..")} {
+            response.setHeader("Content-Type", ["text/javascript; charset=UTF-8"])
+            response.writeText(system.assets().readText(request.path()))
+        } else {
+            response.writeStatus(404, Some("Not found"))
+        }
+    }
+}
+
+buildMain(system: BuildSystem) {
+    let browser = system.compileForBrowser("Main.ff")
+    let assets = AssetSystem.create().addAssets("/js", browser.assets())
+    system.setAssets(assets)
 }
