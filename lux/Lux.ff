@@ -1,3 +1,4 @@
+import Lux
 import LuxEvent
 
 class Lux {}
@@ -143,6 +144,10 @@ extend self: Lux {
             return self_
         """
 
+}
+
+mount(element: JsValue, lux: Lux): Lux {
+    update(element, Lux.new("div"), Lux.new("div").add(lux))
 }
 
 update(element: JsValue, old: Lux, new: Lux): Lux
