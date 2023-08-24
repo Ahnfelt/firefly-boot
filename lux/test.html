@@ -12,9 +12,7 @@
             if(oldLux === newLux) return element
             // If it's a hook, transfer the props, invoke the callback and patch recursively
             if(typeof newLux.callback === 'function') {
-                if(typeof oldLux.callback === 'function') {
-                    newLux.props = oldLux.props
-                }
+                if(typeof oldLux.callback === 'function') newLux.props = oldLux.props
                 newLux.callback(true)
                 return update(element, oldLux.children[0] || empty, newLux.children[0])
             }
