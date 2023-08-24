@@ -148,6 +148,7 @@ extend self: Lux {
 
 mount(element: JsValue, lux: Lux): Lux {
     update(element, Lux.new("div"), Lux.new("div").add(lux))
+    lux
 }
 
 update(element: JsValue, old: Lux, new: Lux): Lux
