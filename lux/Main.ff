@@ -2,7 +2,6 @@ import HttpServer from ff:httpserver
 
 import Lux
 import LuxEvent
-import LuxDom
 
 countButton(system: BrowserSystem, on100: () => Unit): Lux {
     Lux.useState(0): count, setCount =>
@@ -11,7 +10,7 @@ countButton(system: BrowserSystem, on100: () => Unit): Lux {
         .add(Lux.new("button").with("type", "button").text("Increment").on("click") {event =>
             event.preventDefault()
             setCount(count + 1)
-            if(count == 100) {on100()}
+            //if(count == 100) {on100()}
         })
         .addIf(count >= 10) {Lux.new("div").text("Big!")}
 }
@@ -20,7 +19,10 @@ countButton(system: BrowserSystem, on100: () => Unit): Lux {
 
 
 browserMain(system: BrowserSystem): Unit {
-    LuxDom.mountById("main", countButton(system, {Log.trace("A hundred!")}))
+    Lux.mount(
+        element = system.js().global().get("document").call1("getElementById", "main")
+        lux = countButton(system, {Log.trace("A hundred!")})
+    )
 }
 
 nodeMain(system: NodeSystem): Unit {

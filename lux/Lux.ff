@@ -7,10 +7,24 @@ data LuxException(message: String)
 new(tagName: String): Lux
     target js sync """
         if(tagName_.charCodeAt(0) === 60) throw new Error('Invalid tag name: ' + tagName_)
-        return {key: tagName_, children: [], body: null, props: new Map()}
+        return {key: tagName_, children: [], callback: null, props: new Map()}
     """
 
 useState[T](initialValue: T, body: (T, T => Unit) => Lux): Lux
+    target js async """
+        let node = {key: '<state', children: [], callback: null, props: new Map([['value', initialValue_]])}
+        node.callback = rerender => {
+            if(rerender) {
+                const setValue = newValue => {
+                    node.props.set('value', newValue)
+                    node.children[0] = body_(newValue, setValue)
+                    rerender()
+                }
+                node.children[0] = body_(node.props.get('value'), setValue)
+            }
+        }
+        return node
+    """
     target js sync """
         let node = {key: '<state', children: [], callback: null, props: new Map([['value', initialValue_]])}
         node.callback = rerender => {
@@ -56,25 +70,25 @@ extend self: Lux {
 
     on(event: String, body: LuxEvent => Unit): Lux
         target js async """
-            if(self_.tag.charCodeAt(0) === 60) return self_
-            self_.props.push({name: '$' + event_, value: body_})
+            if(self_.key.charCodeAt(0) === 60) return self_
+            self_.props.set('$' + event_, body_)
             return self_
         """
         target js sync """
-            if(self_.tag.charCodeAt(0) === 60) return self_
-            self_.props.push({name: '$' + event_, value: body_})
+            if(self_.key.charCodeAt(0) === 60) return self_
+            self_.props.set('$' + event_, body_)
             return self_
         """
 
     onIf(event: String, condition: Bool, body: LuxEvent => Unit): Lux
         target js async """
-            if(self_.tag.charCodeAt(0) === 60) return self_
-            if(condition) self_.props.push({name: '$' + event_, value: body_})
+            if(self_.key.charCodeAt(0) === 60) return self_
+            if(condition) self_.props.set('$' + event_, body_)
             return self_
         """
         target js sync """
-            if(self_.tag.charCodeAt(0) === 60) return self_
-            if(condition) self_.props.push({name: '$' + event_, value: body_})
+            if(self_.key.charCodeAt(0) === 60) return self_
+            if(condition) self_.props.set('$' + event_, body_)
             return self_
         """
 
@@ -152,9 +166,12 @@ update(element: JsValue, old: Lux, new: Lux): Lux
             if(typeof newLux.callback === 'function') {
                 if(typeof oldLux.callback === 'function') newLux.props = oldLux.props
                 let oldChild = oldLux.children[0] || empty
-                newLux.callback(() => update(element, oldChild, newLux.children[0]))
-                element = update(element, oldChild, newLux.children[0])
-                oldChild = newLux.children[0]
+                const rerender = () => {
+                    element = update(element, oldChild, newLux.children[0])
+                    oldChild = newLux.children[0]
+                }
+                newLux.callback(rerender)
+                rerender()
                 return element
             }
             // Create the element if it doesn't already exist

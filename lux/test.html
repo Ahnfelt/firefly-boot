@@ -14,9 +14,12 @@
             if(typeof newLux.callback === 'function') {
                 if(typeof oldLux.callback === 'function') newLux.props = oldLux.props
                 let oldChild = oldLux.children[0] || empty
-                newLux.callback(() => update(element, oldChild, newLux.children[0]))
-                element = update(element, oldChild, newLux.children[0])
-                oldChild = newLux.children[0]
+                const rerender = () => {
+                    element = update(element, oldChild, newLux.children[0])
+                    oldChild = newLux.children[0]
+                }
+                newLux.callback(rerender)
+                rerender()
                 return element
             }
             // Create the element if it doesn't already exist
