@@ -241,5 +241,6 @@ update(element: JsValue, old: Lux, new: Lux): Lux
             }
             return newLux
         }
+        if(old_.key !== new_.key) throw new Error('Tried to update mismatching keys: ' + old_.key + ' vs. ' + new_.key)
         update(element_, old_, new_)
     """
