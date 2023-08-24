@@ -13,8 +13,11 @@
             // If it's a hook, transfer the props, invoke the callback and patch recursively
             if(typeof newLux.callback === 'function') {
                 if(typeof oldLux.callback === 'function') newLux.props = oldLux.props
-                newLux.callback(true)
-                return update(element, oldLux.children[0] || empty, newLux.children[0])
+                let oldChild = oldLux.children[0] || empty
+                newLux.callback(() => update(element, oldChild, newLux.children[0]))
+                element = update(element, oldChild, newLux.children[0])
+                oldChild = newLux.children[0]
+                return element
             }
             // Create the element if it doesn't already exist
             if(!element) {
@@ -105,7 +108,7 @@
         }
         function unmount(oldLux) {
             if(oldLux.children) for(child of oldLux.children) unmount(child)
-            if(typeof oldLux.callback === 'function') oldLux.callback(false)
+            if(typeof oldLux.callback === 'function') oldLux.callback(null)
         }
     </script>
     <div id="main"><hr></div>
@@ -122,15 +125,15 @@
             }
         } // Convenience
         function useState(initialValue_, body_) {
-            let vdom = null // Set this somehow
             let node = {key: '<state', children: [], callback: null, props: new Map([['value', initialValue_]])}
-            const setValue = newValue => {
-                node.props.set('value', newValue)
-                vdom.update()
-            }
-            node.callback = live => {
-                if(live) {
-                    node.children.push(body_(node.props.get('value'), setValue))
+            node.callback = forceUpdate => {
+                if(forceUpdate) {
+                    const setValue = newValue => {
+                        node.props.set('value', newValue)
+                        node.children[0] = body_(newValue, setValue)
+                        forceUpdate()
+                    }
+                    node.children[0] = body_(node.props.get('value'), setValue)
                 }
             }
             return node
@@ -149,7 +152,7 @@
         )
         update(document.getElementById("main"), 
             el("div", "now", "now", "now"), 
-            el("div", {style: 'color: red', $click: () => alert('hi')}, "cow", useState(1, v => el("b", v)), "bow")
+            el("div", {style: 'color: red'}, "cow", useState(1, (value, setValue) => el("b", {$click: () => setValue(value + 1)}, value)), "bow")
         )
     </script>
 </body>
