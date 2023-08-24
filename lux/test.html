@@ -15,11 +15,15 @@
                 newLux.props.forEach((value, name) => {
                     const oldValue = oldLux.props.get(name)
                     if(oldValue !== value) {
-                        element[name] = value
+                        if(name[0] === '$') element.addEventListener(name.slice(1), value)
+                        else element[name] = value
                         if(oldValue !== void 0) oldLux.props.delete(name)
                     }
                 })
-                oldLux.props.forEach((_, name) => element[name] = void 0)
+                oldLux.props.forEach((value, name) => {
+                    if(name[0] === '$') element.removeEventListener(name.slice(1), value)
+                    else element[name] = void 0
+                })
             }
             // Speed through matching prefix
             const oldChildren = oldLux.children
@@ -112,7 +116,7 @@
         update(document.getElementById("main"), el("div", el("hr")), el("div", el("button", "his")))
         update(document.getElementById("main"), el("div", el("button", "his")), el("div", "ok"))
         update(document.getElementById("main"), el("div", "ok"), el("div", "now", "now", "now"))
-        update(document.getElementById("main"), el("div", "now", "now", "now"), el("div", {style: 'color: red'}, "cow", "now", "bow"))
+        update(document.getElementById("main"), el("div", "now", "now", "now"), el("div", {style: 'color: red', $click: () => alert('hi')}, "cow", "now", "bow"))
     </script>
 </body>
 </html>

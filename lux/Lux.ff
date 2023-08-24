@@ -65,24 +65,24 @@ extend self: Lux {
     on(event: String, body: LuxEvent => Unit): Lux
         target js async """
             if(self_.tag.charCodeAt(0) === 60) return self_
-            self_.props.push({name: name_, value: body_})
+            self_.props.push({name: '!' + event_, value: body_})
             return self_
         """
         target js sync """
             if(self_.tag.charCodeAt(0) === 60) return self_
-            self_.props.push({name: name_, value: body_})
+            self_.props.push({name: '!' + event_, value: body_})
             return self_
         """
 
     onIf(event: String, condition: Bool, body: LuxEvent => Unit): Lux
         target js async """
             if(self_.tag.charCodeAt(0) === 60) return self_
-            if(condition) self_.props.push({name: name_, value: body_})
+            if(condition) self_.props.push({name: '!' + event_, value: body_})
             return self_
         """
         target js sync """
             if(self_.tag.charCodeAt(0) === 60) return self_
-            if(condition) self_.props.push({name: name_, value: body_})
+            if(condition) self_.props.push({name: '!' + event_, value: body_})
             return self_
         """
 
@@ -160,11 +160,15 @@ update(element: JsValue, old: Lux, new: Lux): Lux
                 newLux.props.forEach((value, name) => {
                     const oldValue = oldLux.props.get(name)
                     if(oldValue !== value) {
-                        element[name] = value
+                        if(name[0] === '$') element.addEventListener(name.slice(1), value)
+                        else element[name] = value
                         if(oldValue !== void 0) oldLux.props.delete(name)
                     }
                 })
-                oldLux.props.forEach((_, name) => element[name] = void 0)
+                oldLux.props.forEach((value, name) => {
+                    if(name[0] === '$') element.removeEventListener(name.slice(1), value)
+                    else element[name] = void 0
+                })
             }
             // Speed through matching prefix
             const oldChildren = oldLux.children
