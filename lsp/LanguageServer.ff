@@ -17,17 +17,26 @@ capability RequestMessage(
     parameters: Map[String, JsValue]
 )
 
+logMessages = False
 
 main(system: NodeSystem) {
+    let logDirectory = if(logMessages) {
+        let directory = system.path(".").slash("messages")
+        if(directory.isDirectory()) {directory.delete()}
+        directory.createDirectory()
+        directory
+    }
+    
     let fireflyPath = system.path(".")
     let handler = Handler(fireflyPath, None, Map.empty(), [].toSet(), Map.empty(), Map.empty())
     try {
         mutable input = system.readStream()
-        let responseChannel: Channel[JsValue] = system.mainTask().channel()
+        let responseChannel: Channel[Pair[JsValue, String]] = system.mainTask().channel()
         system.mainTask().spawn {_ =>
             while {True} {
                 let body = responseChannel.read()
-                let json = body.toJson(Some("    ")).toBuffer()
+                let json = body.first.toJson(Some("    ")).toBuffer()
+                logDirectory.each {logMessage(_, "response", body.first, body.second)}
                 system.writeText("Content-Length: " + json.size() + "\r\n\r\n")
                 system.writeBuffer(json)
             }
@@ -38,13 +47,14 @@ main(system: NodeSystem) {
                 input = requestPair.second
                 let request = requestPair.first
                 let message = parseRequestMessage(request.object)
+                logDirectory.each {logMessage(_, "request", request.object, message.method)}
                 spawn(message.id) {_ =>
                     if(message.method == "$/cancelRequest") {
                         abort(Some(parseMessageId(message.parameters.grab("id"))))
                     }
                     try {
                         handleRequestMessage(system, handler, message).each {body =>
-                            responseChannel.write(body)
+                            responseChannel.write(Pair(body, message.method))
                         }
                     } catchAny {error =>
                         let problem = if(error.name() == "AbortError") {
@@ -55,7 +65,8 @@ main(system: NodeSystem) {
                             Error(-32603, "Internal error")
                         }
                         message.id.each {id => 
-                            responseChannel.write(makeResponseMessage(system.js(), id, problem))
+                            let body = makeResponseMessage(system.js(), id, problem)
+                            responseChannel.write(Pair(body, message.method))
                         }
                     } grab()
                 }
@@ -226,4 +237,18 @@ makeResponseMessage(js: JsSystem, id: MessageId, result: ResultOrError): JsValue
             o.set("error", e)
     }
     o
+}
+
+logMessage(directory: Path, messageType: String, body: JsValue, method: String) {
+    let id = if(method == "$/cancelRequest") {
+        Some(body.get("params").get("id").grabInt())
+    } else {
+        body.getOwn("id").map {_.grabInt()}
+    }
+    let number = directory.entries().toList().size()
+    let idName = id.map {_ + ""}.else {"_"}
+    let methodName = method.replace("$", "notification").replace("/", "_")
+    let fileName = number + "-id-" + idName + "-" + messageType + "-" + methodName + ".json"
+    let path = directory.slash(fileName)
+    path.writeText(body.toJson(Some("    ")))
 }
