@@ -3,16 +3,16 @@ import HttpServer from ff:httpserver
 import Lux
 import LuxEvent
 
-countButton(system: BrowserSystem, on100: () => Unit): Lux {
+countButton(system: BrowserSystem, on20: () => Unit): Lux {
     Lux.useState(0): count, setCount =>
     Lux.new("div").key("counter")
         .add(Lux.new("div").text("Counter is: " + count))
         .add(Lux.new("button").with("type", "button").text("Increment").on("click") {event =>
             event.preventDefault()
             setCount(count + 1)
-            //if(count == 100) {on100()}
+            //if(count == 20) {on20()}
         })
-        //.addIf(count >= 10) {Lux.new("div").text("Big!")}
+        .addIf(count >= 10) {Lux.new("div").text("Big!")}
 }
 
 
@@ -21,7 +21,7 @@ countButton(system: BrowserSystem, on100: () => Unit): Lux {
 browserMain(system: BrowserSystem): Unit {
     Lux.mount(
         element = system.js().global().get("document").call1("getElementById", "main")
-        lux = countButton(system, {Log.trace("A hundred!")})
+        lux = countButton(system, {Log.trace("Twenty!")})
     )
 }
 
