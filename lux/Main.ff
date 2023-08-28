@@ -12,7 +12,7 @@ countButton(system: BrowserSystem, on100: () => Unit): Lux {
             setCount(count + 1)
             //if(count == 100) {on100()}
         })
-        .addIf(count >= 10) {Lux.new("div").text("Big!")}
+        //.addIf(count >= 10) {Lux.new("div").text("Big!")}
 }
 
 
