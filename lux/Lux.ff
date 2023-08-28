@@ -157,7 +157,7 @@ mount(element: JsValue, lux: Lux): Lux {
     lux
 }
 
-update(element: JsValue, old: Lux, new: Lux): Lux
+update(element: JsValue, old: Lux, new: Lux): Unit
     target js sync """
         const empty = {key: '', children: [], callback: null, props: new Map()}
         function update(element, oldLux, newLux) {
@@ -187,8 +187,8 @@ update(element: JsValue, old: Lux, new: Lux): Lux
                     if(oldValue !== value) {
                         if(name[0] === '$') element.addEventListener(name.slice(1), value)
                         else element[name] = value
-                        if(oldValue !== void 0) oldLux.props.delete(name)
                     }
+                    if(oldValue !== void 0) oldLux.props.delete(name)
                 })
                 oldLux.props.forEach((value, name) => {
                     if(name[0] === '$') element.removeEventListener(name.slice(1), value)
