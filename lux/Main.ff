@@ -5,30 +5,18 @@ import LuxEvent
 
 countButton(): Lux {
     Lux.component:
-    Lux.useState(0): count, setCount =>
-    Lux.new("div").key("counter")
-        .add(Lux.new("div").text("Counter is: " + count))
-        .add(Lux.new("button")
-            .with("type", "button")
-            .text("Increment")
-            .on("click") {event =>
-                event.preventDefault()
-                setCount(count + 1)
-            })
+    Lux.useState(0): apples, setApples =>
+    Lux.new("div")
+        .add(Lux.new("h1").text(apples + " apples"))
+        .add(
+            Lux.new("button")
+                .text("More apples!")
+                .on("click") {event =>
+                    event.preventDefault()
+                    setApples(apples + 1)
+                }
+        )
 }
-
-/*
-enableButton(): Lux {
-    Lux.useState(True): enabled, setEnabled =>
-    Lux.new("button")
-        .with("type", "button")
-        .text(if(enabled) {"Disable"} else {"Enable"})
-        .on("click") {event =>
-            event.preventDefault()
-            setEnabled(!enabled)
-        }
-}
-*/
 
 browserMain(system: BrowserSystem): Unit {
     Lux.mount(
