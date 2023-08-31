@@ -1,7 +1,11 @@
 newtype SourceLocation(location: String) // E.g. "directory/Module:line:column,group,package>Type>function"
 
-here(): SourceLocation {
-    panic("magic")
+here(location: SourceLocation = SourceLocation.callSite()): SourceLocation {
+    location
+}
+
+callSite(): SourceLocation {
+    panic("SourceLocation.callSite() can only occur as the default value of an argument")
 }
 
 extend self: SourceLocation {

@@ -231,7 +231,9 @@ extend self: Compiler {
             self.infer(i.packagePair, newModuleName)
         }
 
-        let js = JsEmitter.make([module, ...otherModules], self.emitTarget, isMainModule, self.compilerModulePath)
+        let allModules = [module, ...otherModules]
+        let js = 
+            JsEmitter.make(allModules, self.emitTarget, isMainModule, self.compilerModulePath, packagePair, moduleName)
             .emitModule(packagePair, module)
         let jsPath = self.jsOutputPath.slash(packagePair.group).slash(packagePair.name)
         let jsFile = jsPath.slash(moduleName + ".mjs")

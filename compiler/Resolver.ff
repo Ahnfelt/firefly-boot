@@ -12,8 +12,6 @@ class Resolver(
     typeParameters: Set[String]
     traits: Map[String, String]
     traitLocations: Map[String, Location]
-    packagePair: PackagePair
-    moduleName: String
     state: ResolverState
     lspHook: LspHook
 )
@@ -34,8 +32,6 @@ make(packagePair: PackagePair, moduleName: String, lspHook: LspHook): Resolver {
         typeParameters = [].toSet()
         traits = [].toMap()
         traitLocations = [].toMap()
-        packagePair = packagePair
-        moduleName = moduleName
         state = ResolverState(
             nextUnificationVariableIndex = 2
         ) // To avoid collision with the parser and unification
@@ -334,22 +330,14 @@ extend self: Resolver {
                 function = self.resolveTerm(function, topLevel)
             )
         | ECall(at, DynamicCall target, effect, typeArguments, arguments, dictionaries), _ =>
-            self.resolveTerm(target.function, topLevel).{
-                | EVariable(_, name) {name == "ff:core/SourceLocation.here"} => 
-                    EVariant(at, "ff:core/SourceLocation.SourceLocation", [], Some([Argument(at, None, EString(at
-                        "\"" + self.moduleName + ":" + at.line + ":" + at.column + 
-                        "," + self.packagePair.group + "," + self.packagePair.name + "\""
-                    ))]))
-                | function => 
-                    ECall(
-                        at = at
-                        target = target.DynamicCall(function = function)
-                        effect = self.resolveType(effect, topLevel)
-                        typeArguments = typeArguments.map {self.resolveType(_, topLevel)}
-                        arguments = arguments.map {a => a.Argument(value = self.resolveTerm(a.value, topLevel))}
-                        dictionaries = dictionaries
-                    )
-            }
+            ECall(
+                at = at
+                target = target.DynamicCall(function = self.resolveTerm(target.function, topLevel))
+                effect = self.resolveType(effect, topLevel)
+                typeArguments = typeArguments.map {self.resolveType(_, topLevel)}
+                arguments = arguments.map {a => a.Argument(value = self.resolveTerm(a.value, topLevel))}
+                dictionaries = dictionaries
+            )
         | ECall(at, StaticCall _, _, _, _, _), _ =>
             throw(CompileError(at, "Internal error: Static calls not expected in the Resolver phase"))
         | ERecord(at, fields), _ =>

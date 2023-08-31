@@ -90,12 +90,20 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function here_() {
-return ff_core_Core.panic_("magic")
+export function here_(location_ = ff_core_SourceLocation.callSite_()) {
+return location_
 }
 
-export async function here_$($task) {
-return ff_core_Core.panic_("magic")
+export function callSite_() {
+return ff_core_Core.panic_("SourceLocation.callSite() can only occur as the default value of an argument")
+}
+
+export async function here_$(location_ = ff_core_SourceLocation.callSite_(), $task) {
+return location_
+}
+
+export async function callSite_$($task) {
+return ff_core_Core.panic_("SourceLocation.callSite() can only occur as the default value of an argument")
 }
 
 export function SourceLocation_group(self_) {

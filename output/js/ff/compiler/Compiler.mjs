@@ -261,7 +261,8 @@ const newModuleName_ = ff_core_String.String_dropLast(i_.file_, ff_core_String.S
 ff_compiler_Compiler.Compiler_emit(self_, i_.packagePair_, newModuleName_, false);
 return ff_compiler_Compiler.Compiler_infer(self_, i_.packagePair_, newModuleName_)
 }));
-const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.make_(ff_core_List.Link(module_, otherModules_), self_.emitTarget_, isMainModule_, self_.compilerModulePath_), packagePair_, module_);
+const allModules_ = ff_core_List.Link(module_, otherModules_);
+const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.make_(allModules_, self_.emitTarget_, isMainModule_, self_.compilerModulePath_, packagePair_, moduleName_), packagePair_, module_);
 const jsPath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(self_.jsOutputPath_, packagePair_.group_), packagePair_.name_);
 const jsFile_ = ff_core_Path.Path_slash(jsPath_, (moduleName_ + ".mjs"));
 ff_core_Path.Path_createDirectory(jsPath_, true);
@@ -398,7 +399,8 @@ const newModuleName_ = ff_core_String.String_dropLast(i_.file_, ff_core_String.S
 (await ff_compiler_Compiler.Compiler_emit$(self_, i_.packagePair_, newModuleName_, false, $task));
 return (await ff_compiler_Compiler.Compiler_infer$(self_, i_.packagePair_, newModuleName_, $task))
 }), $task));
-const js_ = (await ff_compiler_JsEmitter.JsEmitter_emitModule$((await ff_compiler_JsEmitter.make_$(ff_core_List.Link(module_, otherModules_), self_.emitTarget_, isMainModule_, self_.compilerModulePath_, $task)), packagePair_, module_, $task));
+const allModules_ = ff_core_List.Link(module_, otherModules_);
+const js_ = (await ff_compiler_JsEmitter.JsEmitter_emitModule$((await ff_compiler_JsEmitter.make_$(allModules_, self_.emitTarget_, isMainModule_, self_.compilerModulePath_, packagePair_, moduleName_, $task)), packagePair_, module_, $task));
 const jsPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(self_.jsOutputPath_, packagePair_.group_, $task)), packagePair_.name_, $task));
 const jsFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleName_ + ".mjs"), $task));
 (await ff_core_Path.Path_createDirectory$(jsPath_, true, $task));

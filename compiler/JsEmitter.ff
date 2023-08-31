@@ -8,6 +8,8 @@ capability JsEmitter(
     emitTarget: EmitTarget
     isMainModule: Bool
     compilerModulePath: Option[Path]
+    packagePair: PackagePair
+    moduleName: String
     mutable emittingAsync: Bool
     mutable tailCallUsed: Bool
 )
@@ -24,6 +26,8 @@ make(
     emitTarget: EmitTarget
     isMainModule: Bool
     compilerModulePath: Option[Path]
+    packagePair: PackagePair
+    moduleName: String
 ): JsEmitter {
     JsEmitter(
         otherModules = otherModules.map {m =>
@@ -34,6 +38,8 @@ make(
         emitTarget = emitTarget
         isMainModule = isMainModule
         compilerModulePath = compilerModulePath
+        packagePair = packagePair
+        moduleName = moduleName
         emittingAsync = False
         tailCallUsed = False
     )
@@ -298,7 +304,7 @@ extend self: JsEmitter {
         | EVariant(at, "ff:core/Unit.Unit", _, _) =>
             "(void 0)"
         | EVariant(at, name, _, arguments) =>
-            let argumentsString = arguments.toList().flatten().map {self.emitArgument(_, async)}.join(", ")
+            let argumentsString = arguments.toList().flatten().map {self.emitArgument(at, _, async)}.join(", ")
             let newtype = self.processVariant(name)
             if(newtype) { argumentsString } else:
             escapeResolved(name) + "(" + argumentsString + ")"
@@ -347,9 +353,9 @@ extend self: JsEmitter {
             let call = "(" + self.emitTerm(function, async) + ")(" + self.emitTerm(value, async) + c + ")"
             if(await) {"(await " + call + ")"} else {call}
         | ECall(at, StaticCall(operator, _, _), _, [], [value], _) {!operator.grabFirst().isAsciiLetter()} =>
-            "(" + operator + self.emitArgument(value, async) + ")"
+            "(" + operator + self.emitArgument(at, value, async) + ")"
         | ECall(at, StaticCall(operator, _, _), _, [], [left, right], _) {!operator.grabFirst().isAsciiLetter()} =>
-            "(" + self.emitArgument(left, async) + " " + operator + " " + self.emitArgument(right, async) + ")"
+            "(" + self.emitArgument(at, left, async) + " " + operator + " " + self.emitArgument(at, right, async) + ")"
         | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.import", _, _), _, _, [Argument(_, _, EString(_, url))], _) =>
             self.jsImporter.add(url.replace("\"", ""))
         | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.await", _, _), _, _, [Argument(_, _, body)], _) =>
@@ -362,27 +368,27 @@ extend self: JsEmitter {
         | ECall(at, StaticCall("ff:core/Equal.equals", _, _), _, _, [left, right], [Dictionary(_, _, _, typeName, [])]) {
             primitiveTypes.contains(typeName) || typeName == "ff:core/Ordering.Ordering"
         } =>
-            "(" + self.emitArgument(left, async) + " === " + self.emitArgument(right, async) + ")"
+            "(" + self.emitArgument(at, left, async) + " === " + self.emitArgument(at, right, async) + ")"
         | ECall(at, StaticCall("ff:core/Equal.notEquals", _, _), _, _, [left, right], [Dictionary(_, _, _, typeName, [])]) {
             primitiveTypes.contains(typeName) || typeName == "ff:core/Ordering.Ordering"
         } =>
-            "(" + self.emitArgument(left, async) + " !== " + self.emitArgument(right, async) + ")"
+            "(" + self.emitArgument(at, left, async) + " !== " + self.emitArgument(at, right, async) + ")"
         | ECall(at, StaticCall("ff:core/Ordering.before", _, _), _, _, [left, right], [Dictionary(_, _, _, typeName, [])]) {
             primitiveTypes.contains(typeName)
         } =>
-            "(" + self.emitArgument(left, async) + " < " + self.emitArgument(right, async) + ")"
+            "(" + self.emitArgument(at, left, async) + " < " + self.emitArgument(at, right, async) + ")"
         | ECall(at, StaticCall("ff:core/Ordering.notBefore", _, _), _, _, [left, right], [Dictionary(_, _, _, typeName, [])]) {
             primitiveTypes.contains(typeName)
         } =>
-            "(" + self.emitArgument(left, async) + " >= " + self.emitArgument(right, async) + ")"
+            "(" + self.emitArgument(at, left, async) + " >= " + self.emitArgument(at, right, async) + ")"
         | ECall(at, StaticCall("ff:core/Ordering.after", _, _), _, _, [left, right], [Dictionary(_, _, _, typeName, [])]) {
             primitiveTypes.contains(typeName)
         } =>
-            "(" + self.emitArgument(left, async) + " > " + self.emitArgument(right, async) + ")"
+            "(" + self.emitArgument(at, left, async) + " > " + self.emitArgument(at, right, async) + ")"
         | ECall(at, StaticCall("ff:core/Ordering.notAfter", _, _), _, _, [left, right], [Dictionary(_, _, _, typeName, [])]) {
             primitiveTypes.contains(typeName)
         } =>
-            "(" + self.emitArgument(left, async) + " <= " + self.emitArgument(right, async) + ")"
+            "(" + self.emitArgument(at, left, async) + " <= " + self.emitArgument(at, right, async) + ")"
         | ECall(_, StaticCall("ff:core/Array.fillBy", _, _), effect, _, [size, Argument(_, _, ELambda(at,
             Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], body)@c])@l
         ))], _) {
@@ -390,7 +396,7 @@ extend self: JsEmitter {
         } =>
             let n = name.map {escapeResolved(_)}.else {"i"}
             "((() => {\n" +
-            "const size = " + self.emitArgument(size, async) + ";\n" +
+            "const size = " + self.emitArgument(at, size, async) + ";\n" +
             "const result = [];\n" +
             "for(let " + n + " = 0; " + n + " < size; " + n + "++) {\n" +
             "result.push(" + self.emitTerm(body, async) + ");\n" +
@@ -404,7 +410,7 @@ extend self: JsEmitter {
             let d = dictionaryStrings.grabFirst()
             let asyncSuffix = if(await) {"$"} else {""}
             let n = escapeKeyword(name.reverse().takeWhile { _ != '.' }.reverse()) + asyncSuffix
-            let emittedArguments = arguments.map{self.emitArgument(_, async)}
+            let emittedArguments = arguments.map {self.emitArgument(at, _, async)}
             let controller = if(await) {["$task"]} else {[]}
             let call = d + "." + n + "(" + [...emittedArguments, ...ds, ...controller].join(", ") + ")"
             if(await) {"(await " + call + ")"} else {call}
@@ -414,7 +420,7 @@ extend self: JsEmitter {
                     let await = async && effectTypeIsAsync(effect)
                     let ds = dictionaries.map {self.emitDictionary(_)}
                     let functionCode = escapeResolved(name) + if(await) {"$"} else {""}
-                    let emittedArguments = arguments.map {self.emitArgument(_, async)}
+                    let emittedArguments = arguments.map {self.emitArgument(at, _, async)}
                     let controller = if(await) {["$task"]} else {[]}
                     let call = functionCode + "(" + [...emittedArguments, ...ds, ...controller].join(", ") + ")"
                     if(await) {"(await " + call + ")"} else {call}
@@ -433,7 +439,7 @@ extend self: JsEmitter {
             let await = async && effectTypeIsAsync(effect)
             if(!dictionaries.isEmpty()) {fail(at, "Internal error: Dictionaries in lambda call")}
             let functionCode = self.emitTerm(function, async)
-            let emittedArguments = arguments.map {self.emitArgument(_, async)}
+            let emittedArguments = arguments.map {self.emitArgument(at, _, async)}
             let controller = if(await) {["$task"]} else {[]}
             let call = functionCode + "(" + [...emittedArguments, ...controller].join(", ") + ")"
             if(await) {"(await " + call + ")"} else {call}
@@ -511,7 +517,7 @@ extend self: JsEmitter {
                 }
             | ECall(at, StaticCall("ff:core/Core.throw", _, _), _, _, [argument], [dictionary]) =>
                 let d = self.emitDictionary(dictionary)
-                let a = self.emitArgument(argument, async)
+                let a = self.emitArgument(at, argument, async)
                 "throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(" + a + ", " + d + ")})"
             | ECall(at, StaticCall("ff:core/Core.try", _, _), _, _, _, _) {!last} =>
                 throw(CompileError(at, "Statements can't be a try without a grab"))
@@ -769,8 +775,14 @@ extend self: JsEmitter {
         newtype
     }
 
-    emitArgument(argument: Argument, async: Bool): String {
-        self.emitTerm(argument.value, async)
+    emitArgument(callAt: Location, argument: Argument, async: Bool): String {
+        argument.value.{
+            | ECall(_, StaticCall("ff:core/SourceLocation.callSite", _, _), _, _, _, _) => 
+                "\"" + self.moduleName + ":" + callAt.line + ":" + callAt.column + 
+                "," + self.packagePair.group + "," + self.packagePair.name + "\""
+            | value =>
+                self.emitTerm(value, async)
+        }
     }
 
 }
