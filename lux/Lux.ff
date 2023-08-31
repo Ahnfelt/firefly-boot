@@ -2,7 +2,28 @@ import Lux
 import LuxEvent
 
 class Lux {}
+
+class LuxHook[H] {}
+
+trait L: LuxOrHook[H] {
+    toHook(luxOrHook: L): LuxHook[H]
+}
+
+instance Lux: LuxOrHook[Nothing] {
+    toHook(luxOrHook: Lux): LuxHook[Nothing]
+        target js sync """
+            return luxOrHook_
+        """
+}
+
+instance LuxHook[H]: LuxOrHook[H] {
+    toHook(luxOrHook: LuxHook[H]): LuxHook[H] {
+        luxOrHook
+    }
+}
+
 data LuxException(message: String)
+
 
 new(tagName: String): Lux
     target js sync """
@@ -10,7 +31,7 @@ new(tagName: String): Lux
         return {key: tagName_, children: [], callback: null, props: new Map()}
     """
 
-useState[T](initialValue: T, body: (T, T => Unit) => Lux): Lux
+useState[T, L: LuxOrHook[H], H](initial: T, body: (T, T => Unit) => L): LuxHook[Pair[T, H]]
     target js sync """
         const node = {key: '<state', children: [], callback: null, props: new Map([['value', initialValue_]])}
         node.callback = rerender => {
@@ -20,10 +41,15 @@ useState[T](initialValue: T, body: (T, T => Unit) => Lux): Lux
                     node.children[0] = body_(newValue, setValue)
                     rerender()
                 }
-                node.children[0] = body_(node.props.get('value'), setValue)
+                node.children[0] = ff_lux_Lux_LuxOrHook$L.toHook_(body_(node.props.get('value'), setValue))
             }
         }
         return node
+    """
+
+component[L: LuxOrHook[H], H](body: () => L): Lux
+    target js sync """
+        return ff_lux_Lux_LuxOrHook$L.toHook_(body_())
     """
 
 extend self: Lux {
