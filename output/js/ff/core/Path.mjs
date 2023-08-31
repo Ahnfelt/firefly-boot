@@ -76,6 +76,8 @@ import * as ff_core_Set from "../../ff/core/Set.mjs"
 
 import * as ff_core_Show from "../../ff/core/Show.mjs"
 
+import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
+
 import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
@@ -444,7 +446,7 @@ export async function Path_entries$(self_, $task) {
                     return ff_core_Option.Some(entry)
                 },
                 async () => {
-                    await dir.close()
+                    if(dir !== null) await dir.close()
                 }
             )
         

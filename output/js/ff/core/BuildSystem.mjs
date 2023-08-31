@@ -70,6 +70,8 @@ import * as ff_core_Set from "../../ff/core/Set.mjs"
 
 import * as ff_core_Show from "../../ff/core/Show.mjs"
 
+import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
+
 import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
@@ -118,7 +120,7 @@ return ff_core_List.List_toStream(ff_core_List.Link(ff_core_Path.PathEntry_path(
 }))
 }
 return ff_core_Stream.Stream_toList(ff_core_Stream.Stream_map(go_(path_), ((file_) => {
-return ff_core_Pair.Pair(("/" + ff_core_Path.Path_relativeTo(file_, path_)), (() => {
+return ff_core_Pair.Pair(("/" + ff_core_String.String_replace(ff_core_Path.Path_relativeTo(file_, path_), "\\", "/")), (() => {
 return ff_core_Path.Path_readStream(file_)
 }))
 })))
@@ -179,7 +181,7 @@ return (await ff_core_List.List_toStream$(ff_core_List.Link((await ff_core_Path.
 }), $task))
 }
 return (await ff_core_Stream.Stream_toList$((await ff_core_Stream.Stream_map$((await go_$(path_, $task)), (async (file_, $task) => {
-return ff_core_Pair.Pair(("/" + (await ff_core_Path.Path_relativeTo$(file_, path_, $task))), (async ($task) => {
+return ff_core_Pair.Pair(("/" + ff_core_String.String_replace((await ff_core_Path.Path_relativeTo$(file_, path_, $task)), "\\", "/")), (async ($task) => {
 return (await ff_core_Path.Path_readStream$(file_, $task))
 }))
 }), $task)), $task))
@@ -275,13 +277,14 @@ export function BrowserCode_bundle(self_, minify_ = true, sourceMap_ = false) {
 const prefix_ = ".firefly/output/browser";
 const mainJsBaseFile_ = (ff_core_Option.Option_grab(ff_core_String.String_removeLast(ff_core_Path.Path_base(self_.mainFile_), ".ff")) + ".mjs");
 const mainJsFile_ = ((((((prefix_ + "/") + self_.packageGroup_) + "/") + self_.packageName_) + "/") + mainJsBaseFile_);
+const mainDirectory_ = ff_core_Option.Option_grab(ff_core_Path.Path_parent(self_.mainFile_));
 const file_ = (prefix_ + "/Main.bundle.js");
 ff_core_BuildSystem.internalCallEsBuild_(self_, mainJsFile_, file_, minify_, sourceMap_);
 const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), (() => {
-return ff_core_Path.Path_readStream(ff_core_Path.Path_path(self_.mainFile_, file_))
+return ff_core_Path.Path_readStream(ff_core_Path.Path_path(mainDirectory_, file_))
 })), (sourceMap_
 ? ff_core_List.Link(ff_core_Pair.Pair((ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)) + ".map"), (() => {
-return ff_core_Path.Path_readStream(ff_core_Path.Path_path(self_.mainFile_, (file_ + ".map")))
+return ff_core_Path.Path_readStream(ff_core_Path.Path_path(mainDirectory_, (file_ + ".map")))
 })), ff_core_List.Empty())
 : ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
 return ff_core_BuildSystem.BrowserBundle(assets_)
@@ -295,13 +298,14 @@ export async function BrowserCode_bundle$(self_, minify_ = true, sourceMap_ = fa
 const prefix_ = ".firefly/output/browser";
 const mainJsBaseFile_ = (ff_core_Option.Option_grab(ff_core_String.String_removeLast((await ff_core_Path.Path_base$(self_.mainFile_, $task)), ".ff")) + ".mjs");
 const mainJsFile_ = ((((((prefix_ + "/") + self_.packageGroup_) + "/") + self_.packageName_) + "/") + mainJsBaseFile_);
+const mainDirectory_ = ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(self_.mainFile_, $task)));
 const file_ = (prefix_ + "/Main.bundle.js");
 (await ff_core_BuildSystem.internalCallEsBuild_$(self_, mainJsFile_, file_, minify_, sourceMap_, $task));
 const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), (async ($task) => {
-return (await ff_core_Path.Path_readStream$((await ff_core_Path.Path_path$(self_.mainFile_, file_, $task)), $task))
+return (await ff_core_Path.Path_readStream$((await ff_core_Path.Path_path$(mainDirectory_, file_, $task)), $task))
 })), (sourceMap_
 ? ff_core_List.Link(ff_core_Pair.Pair((ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)) + ".map"), (async ($task) => {
-return (await ff_core_Path.Path_readStream$((await ff_core_Path.Path_path$(self_.mainFile_, (file_ + ".map"), $task)), $task))
+return (await ff_core_Path.Path_readStream$((await ff_core_Path.Path_path$(mainDirectory_, (file_ + ".map"), $task)), $task))
 })), ff_core_List.Empty())
 : ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
 return ff_core_BuildSystem.BrowserBundle(assets_)

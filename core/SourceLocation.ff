@@ -1,0 +1,37 @@
+newtype SourceLocation(location: String) // E.g. "directory/Module:line:column,group,package>Type>function"
+
+here(): SourceLocation {
+    panic("magic")
+}
+
+extend self: SourceLocation {
+
+    group(): String {
+        self.location.dropWhile {_ != ','}.dropFirst().takeWhile {_ != ','}
+    }
+    
+    package(): String {
+        self.location.dropWhile {_ != ','}.dropFirst().dropWhile {_ != ','}.dropFirst().takeWhile {_ != '>'}
+    }
+    
+    directory(): String {
+        self.location.takeWhile {_ != ':'}.reverse().dropWhile {_ != '/'}.dropFirst().reverse()
+    }
+
+    module(): String {
+        self.location.takeWhile {_ != ':'}.reverse().takeWhile {_ != '/'}.reverse()
+    }
+    
+    line(): Int {
+        self.location.dropWhile {_ != ':'}.dropFirst().takeWhile {_ != ':'}.grabInt()
+    }
+
+    column(): Int {
+        self.location.dropWhile {_ != ':'}.dropFirst().dropWhile {_ != ':'}.dropFirst().takeWhile {_ != ','}.grabInt()
+    }
+    
+    breadcrumbs(): Array[String] {
+        self.location.dropWhile {_ != '>'}.dropFirst().split('>')
+    }
+
+}

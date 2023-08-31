@@ -1,6 +1,8 @@
-import * as import$0 from 'path';
+import * as import$0 from 'fs/promises';
 
-import * as import$1 from 'url';
+import * as import$1 from 'path';
+
+import * as import$2 from 'url';
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
@@ -72,6 +74,8 @@ import * as ff_core_Set from "../../ff/core/Set.mjs"
 
 import * as ff_core_Show from "../../ff/core/Show.mjs"
 
+import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
+
 import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
@@ -95,8 +99,21 @@ export function internalAssets_(system_) {
 throw new Error('Function internalAssets is missing on this target in sync context.');
 }
 
+export function internalListDirectoryWithoutOpendir_(system_, path_) {
+throw new Error('Function internalListDirectoryWithoutOpendir is missing on this target in sync context.');
+}
+
 export async function internalAssets_$(system_, $task) {
 return system_.assets_
+}
+
+export async function internalListDirectoryWithoutOpendir_$(system_, path_, $task) {
+
+        const fsPromises = import$0
+        const path = import$1
+        let files = await fsPromises.readdir(path_)
+        return files.map(file => path.join(path_, file))
+    
 }
 
 export function NodeSystem_arguments(self_) {
@@ -107,12 +124,12 @@ export function NodeSystem_assets(self_) {
 const assetPkgSnapshotPath_ = ff_core_NodeSystem.NodeSystem_path(self_, "/snapshot/output/assets");
 if(ff_core_Path.Path_isDirectory(assetPkgSnapshotPath_)) {
 function streams_(path_) {
-return ff_core_Stream.Stream_flatMap(ff_core_Path.Path_entries(path_), ((file_) => {
-if(ff_core_Path.PathEntry_isDirectory(file_)) {
-return streams_(ff_core_Path.PathEntry_path(file_))
+return ff_core_Stream.Stream_flatMap(ff_core_Array.Array_toStream(ff_core_NodeSystem.internalListDirectoryWithoutOpendir_(self_, path_), false), ((file_) => {
+if(ff_core_Path.Path_isDirectory(file_)) {
+return streams_(file_)
 } else {
-return ff_core_List.List_toStream(ff_core_List.Link(ff_core_Pair.Pair(ff_core_Path.Path_relativeTo(ff_core_Path.PathEntry_path(file_), assetPkgSnapshotPath_), (() => {
-return ff_core_Path.Path_readStream(ff_core_Path.PathEntry_path(file_))
+return ff_core_List.List_toStream(ff_core_List.Link(ff_core_Pair.Pair(("/" + ff_core_Path.Path_relativeTo(file_, assetPkgSnapshotPath_)), (() => {
+return ff_core_Path.Path_readStream(file_)
 })), ff_core_List.Empty()), false)
 }
 }))
@@ -195,12 +212,12 @@ export async function NodeSystem_assets$(self_, $task) {
 const assetPkgSnapshotPath_ = (await ff_core_NodeSystem.NodeSystem_path$(self_, "/snapshot/output/assets", $task));
 if((await ff_core_Path.Path_isDirectory$(assetPkgSnapshotPath_, $task))) {
 async function streams_$(path_, $task) {
-return (await ff_core_Stream.Stream_flatMap$((await ff_core_Path.Path_entries$(path_, $task)), (async (file_, $task) => {
-if((await ff_core_Path.PathEntry_isDirectory$(file_, $task))) {
-return (await streams_$((await ff_core_Path.PathEntry_path$(file_, $task)), $task))
+return (await ff_core_Stream.Stream_flatMap$((await ff_core_Array.Array_toStream$((await ff_core_NodeSystem.internalListDirectoryWithoutOpendir_$(self_, path_, $task)), false, $task)), (async (file_, $task) => {
+if((await ff_core_Path.Path_isDirectory$(file_, $task))) {
+return (await streams_$(file_, $task))
 } else {
-return (await ff_core_List.List_toStream$(ff_core_List.Link(ff_core_Pair.Pair((await ff_core_Path.Path_relativeTo$((await ff_core_Path.PathEntry_path$(file_, $task)), assetPkgSnapshotPath_, $task)), (async ($task) => {
-return (await ff_core_Path.Path_readStream$((await ff_core_Path.PathEntry_path$(file_, $task)), $task))
+return (await ff_core_List.List_toStream$(ff_core_List.Link(ff_core_Pair.Pair(("/" + (await ff_core_Path.Path_relativeTo$(file_, assetPkgSnapshotPath_, $task))), (async ($task) => {
+return (await ff_core_Path.Path_readStream$(file_, $task))
 })), ff_core_List.Empty()), false, $task))
 }
 }), $task))
@@ -213,14 +230,14 @@ return (await ff_core_NodeSystem.internalAssets_$(self_, $task))
 
 export async function NodeSystem_path$(self_, relativePath_, $task) {
 
-            const path = import$0
+            const path = import$1
             return path.resolve(relativePath_)
         
 }
 
 export async function NodeSystem_pathFromUrl$(self_, url_, $task) {
 
-            const url = import$1;
+            const url = import$2;
             return url.fileURLToPath(new URL(url_));
         
 }

@@ -96,6 +96,7 @@ coreImports: List[DImport] =
         "Serializable"
         "Set"
         "Show"
+        "SourceLocation"
         "Stack"
         "Stream"
         "String"
@@ -181,7 +182,7 @@ extend self: Compiler {
 
         let module = self.parse(packagePair, moduleName, None)
         let otherModules = self.imports(module)
-        let resolver = Resolver.make(self.lspHook)
+        let resolver = Resolver.make(packagePair, moduleName, self.lspHook)
         let result = resolver.resolveModule(module, otherModules)
 
         self.resolvedModules = self.resolvedModules.add(packageName + ":" + moduleName, result)
