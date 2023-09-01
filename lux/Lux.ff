@@ -121,7 +121,7 @@ extend self: Lux {
             return self_
         """
         
-    text(text: String): Lux
+    addString(text: String): Lux
         target js sync """
             if(!self_.children) return self_
             self_.children.push({key: '<text>' + text_})
