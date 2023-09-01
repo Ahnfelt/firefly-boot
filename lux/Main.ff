@@ -3,8 +3,23 @@ import HttpServer from ff:httpserver
 import Lux
 import LuxEvent
 
+buttons(): Lux {
+    Lux.useState(True): b, setB =>
+    Lux.new("div")
+        .add(
+            Lux.new("button")
+                .text("Boolean")
+                .on("click") {event =>
+                    event.preventDefault()
+                    setB(!b)
+                }
+        )
+        .add(
+            if(b) {countButton()} else {countStringButton()}
+        )
+}
+
 countButton(): Lux {
-    Lux.component:
     Lux.useState(0): apples, setApples =>
     Lux.new("div")
         .add(Lux.new("h1").text(apples + " apples"))
@@ -18,10 +33,24 @@ countButton(): Lux {
         )
 }
 
+countStringButton(): Lux {
+    Lux.useState("x"): text, setText =>
+    Lux.new("div")
+        .add(Lux.new("h1").text(text + " X's"))
+        .add(
+            Lux.new("button")
+                .text("More X's!")
+                .on("click") {event =>
+                    event.preventDefault()
+                    setText(text + "x")
+                }
+        )
+}
+
 browserMain(system: BrowserSystem): Unit {
     Lux.mount(
         element = system.js().global().get("document").call1("getElementById", "main")
-        lux = countButton() // (system, {Log.trace("Twenty!")})
+        lux = buttons()
     )
 }
 

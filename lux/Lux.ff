@@ -3,25 +3,6 @@ import LuxEvent
 
 class Lux {}
 
-class LuxHook[H] {}
-
-trait L: LuxOrHook[H] {
-    toHook(luxOrHook: L): LuxHook[H]
-}
-
-instance Lux: LuxOrHook[Nothing] {
-    toHook(luxOrHook: Lux): LuxHook[Nothing]
-        target js sync """
-            return luxOrHook_
-        """
-}
-
-instance LuxHook[H]: LuxOrHook[H] {
-    toHook(luxOrHook: LuxHook[H]): LuxHook[H] {
-        luxOrHook
-    }
-}
-
 data LuxException(message: String)
 
 
@@ -31,9 +12,9 @@ new(tagName: String): Lux
         return {key: tagName_, children: [], callback: null, props: new Map()}
     """
 
-useState[T, L: LuxOrHook[H], H](initialValue: T, body: (T, T => Unit) => L): LuxHook[Pair[T, H]]
+useState[T](initialValue: T, body: (T, T => Unit) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
     target js sync """
-        const node = {key: '<state', children: [], callback: null, props: new Map([['value', initialValue_]])}
+        const node = {key: '<state_' + location_, children: [], callback: null, props: new Map([['value', initialValue_]])}
         node.callback = rerender => {
             if(rerender) {
                 const setValue = newValue => {
@@ -47,10 +28,6 @@ useState[T, L: LuxOrHook[H], H](initialValue: T, body: (T, T => Unit) => L): Lux
         return node
     """
 
-component[L: LuxOrHook[H], H](body: () => L, location: SourceLocation = SourceLocation.callSite()): Lux
-    target js sync """
-        return body_()
-    """
 
 extend self: Lux {
 
@@ -276,7 +253,7 @@ update(element: JsValue, old: Lux, new: Lux): Unit
             return element
         }
         function unmount(oldLux) {
-            if(oldLux.children) for(child of oldLux.children) unmount(child)
+            if(oldLux.children) for(const child of oldLux.children) unmount(child)
             if(typeof oldLux.callback === 'function') oldLux.callback(null)
         }
         if(old_.key !== new_.key) throw new Error('Tried to update mismatching keys: ' + old_.key + ' vs. ' + new_.key)
