@@ -25,16 +25,6 @@ countButton(): Lux {
         })
 }
 
-countButton2(): Lux {
-    Lux.useState(0): apples, setApples =>
-    Lux.div()
-        .add(Lux.h1(apples + " apples"))
-        .add(Lux.button("More apples!").on("click") {event =>
-            event.preventDefault()
-            setApples(apples + 1)
-        })
-}
-
 countStringButton(): Lux {
     Lux.useState("x"): text, setText =>
     Lux.div()
