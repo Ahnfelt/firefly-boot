@@ -5,8 +5,8 @@ import LuxEvent
 
 buttons(): Lux {
     Lux.useState(True): b, setB =>
-    Lux.new("div")
-        .add(Lux.new("button", "Boolean").on("click") {event =>
+    Lux.div()
+        .add(Lux.button("Boolean").on("click") {event =>
             event.preventDefault()
             setB(!b)
         })
@@ -17,9 +17,9 @@ buttons(): Lux {
 
 countButton(): Lux {
     Lux.useState(0): apples, setApples =>
-    Lux.new("div")
-        .add(Lux.new("h1", apples + " apples"))
-        .add(Lux.new("button", "More apples!").on("click") {event =>
+    Lux.div()
+        .add(Lux.h1(apples + " apples"))
+        .add(Lux.button("More apples!").on("click") {event =>
             event.preventDefault()
             setApples(apples + 1)
         })
@@ -27,9 +27,9 @@ countButton(): Lux {
 
 countStringButton(): Lux {
     Lux.useState("x"): text, setText =>
-    Lux.new("div")
-        .add(Lux.new("h1", text + " X's"))
-        .add(Lux.new("button", "More X's!").on("click") {event =>
+    Lux.div()
+        .add(Lux.h1(text + " X's"))
+        .add(Lux.button("More X's!").on("click") {event =>
             event.preventDefault()
             setText(text + "x")
         })

@@ -121,7 +121,7 @@ extend self: Lux {
             return self_
         """
         
-    addString(text: String): Lux
+    addText(text: String): Lux
         target js sync """
             if(!self_.children) return self_
             self_.children.push({key: '<text>' + text_})
@@ -260,3 +260,114 @@ update(element: JsValue, old: Lux, new: Lux): Unit
         if(old_.key !== new_.key) throw new Error('Tried to update mismatching keys: ' + old_.key + ' vs. ' + new_.key)
         update(element_, old_, new_)
     """
+
+// HTML tags
+a(text: String = ""): Lux {Lux.new("a", text)}
+abbr(text: String = ""): Lux {Lux.new("abbr", text)}
+address(text: String = ""): Lux {Lux.new("address", text)}
+area(text: String = ""): Lux {Lux.new("area", text)}
+article(text: String = ""): Lux {Lux.new("article", text)}
+aside(text: String = ""): Lux {Lux.new("aside", text)}
+audio(text: String = ""): Lux {Lux.new("audio", text)}
+b(text: String = ""): Lux {Lux.new("b", text)}
+base(text: String = ""): Lux {Lux.new("base", text)}
+bdi(text: String = ""): Lux {Lux.new("bdi", text)}
+bdo(text: String = ""): Lux {Lux.new("bdo", text)}
+blockquote(text: String = ""): Lux {Lux.new("blockquote", text)}
+body(text: String = ""): Lux {Lux.new("body", text)}
+br(text: String = ""): Lux {Lux.new("br", text)}
+button(text: String = ""): Lux {Lux.new("button", text)}
+canvas(text: String = ""): Lux {Lux.new("canvas", text)}
+caption(text: String = ""): Lux {Lux.new("caption", text)}
+cite(text: String = ""): Lux {Lux.new("cite", text)}
+code(text: String = ""): Lux {Lux.new("code", text)}
+col(text: String = ""): Lux {Lux.new("col", text)}
+colgroup(text: String = ""): Lux {Lux.new("colgroup", text)}
+data(text: String = ""): Lux {Lux.new("data", text)}
+datalist(text: String = ""): Lux {Lux.new("datalist", text)}
+dd(text: String = ""): Lux {Lux.new("dd", text)}
+del(text: String = ""): Lux {Lux.new("del", text)}
+details(text: String = ""): Lux {Lux.new("details", text)}
+dfn(text: String = ""): Lux {Lux.new("dfn", text)}
+dialog(text: String = ""): Lux {Lux.new("dialog", text)}
+div(text: String = ""): Lux {Lux.new("div", text)}
+dl(text: String = ""): Lux {Lux.new("dl", text)}
+dt(text: String = ""): Lux {Lux.new("dt", text)}
+em(text: String = ""): Lux {Lux.new("em", text)}
+embed(text: String = ""): Lux {Lux.new("embed", text)}
+fieldset(text: String = ""): Lux {Lux.new("fieldset", text)}
+figcaption(text: String = ""): Lux {Lux.new("figcaption", text)}
+figure(text: String = ""): Lux {Lux.new("figure", text)}
+footer(text: String = ""): Lux {Lux.new("footer", text)}
+form(text: String = ""): Lux {Lux.new("form", text)}
+h1(text: String = ""): Lux {Lux.new("h1", text)}
+head(text: String = ""): Lux {Lux.new("head", text)}
+header(text: String = ""): Lux {Lux.new("header", text)}
+hgroup(text: String = ""): Lux {Lux.new("hgroup", text)}
+hr(text: String = ""): Lux {Lux.new("hr", text)}
+html(text: String = ""): Lux {Lux.new("html", text)}
+i(text: String = ""): Lux {Lux.new("i", text)}
+iframe(text: String = ""): Lux {Lux.new("iframe", text)}
+img(text: String = ""): Lux {Lux.new("img", text)}
+input(text: String = ""): Lux {Lux.new("input", text)}
+ins(text: String = ""): Lux {Lux.new("ins", text)}
+kbd(text: String = ""): Lux {Lux.new("kbd", text)}
+label(text: String = ""): Lux {Lux.new("label", text)}
+legend(text: String = ""): Lux {Lux.new("legend", text)}
+li(text: String = ""): Lux {Lux.new("li", text)}
+link(text: String = ""): Lux {Lux.new("link", text)}
+main(text: String = ""): Lux {Lux.new("main", text)}
+map(text: String = ""): Lux {Lux.new("map", text)}
+mark(text: String = ""): Lux {Lux.new("mark", text)}
+menu(text: String = ""): Lux {Lux.new("menu", text)}
+meta(text: String = ""): Lux {Lux.new("meta", text)}
+meter(text: String = ""): Lux {Lux.new("meter", text)}
+nav(text: String = ""): Lux {Lux.new("nav", text)}
+noscript(text: String = ""): Lux {Lux.new("noscript", text)}
+object(text: String = ""): Lux {Lux.new("object", text)}
+ol(text: String = ""): Lux {Lux.new("ol", text)}
+optgroup(text: String = ""): Lux {Lux.new("optgroup", text)}
+option(text: String = ""): Lux {Lux.new("option", text)}
+output(text: String = ""): Lux {Lux.new("output", text)}
+p(text: String = ""): Lux {Lux.new("p", text)}
+picture(text: String = ""): Lux {Lux.new("picture", text)}
+portal(text: String = ""): Lux {Lux.new("portal", text)}
+xperimenta(text: String = ""): Lux {Lux.new("xperimenta", text)}
+pre(text: String = ""): Lux {Lux.new("pre", text)}
+progress(text: String = ""): Lux {Lux.new("progress", text)}
+q(text: String = ""): Lux {Lux.new("q", text)}
+rp(text: String = ""): Lux {Lux.new("rp", text)}
+rt(text: String = ""): Lux {Lux.new("rt", text)}
+ruby(text: String = ""): Lux {Lux.new("ruby", text)}
+s(text: String = ""): Lux {Lux.new("s", text)}
+samp(text: String = ""): Lux {Lux.new("samp", text)}
+script(text: String = ""): Lux {Lux.new("script", text)}
+search(text: String = ""): Lux {Lux.new("search", text)}
+section(text: String = ""): Lux {Lux.new("section", text)}
+select(text: String = ""): Lux {Lux.new("select", text)}
+slot(text: String = ""): Lux {Lux.new("slot", text)}
+small(text: String = ""): Lux {Lux.new("small", text)}
+source(text: String = ""): Lux {Lux.new("source", text)}
+span(text: String = ""): Lux {Lux.new("span", text)}
+strong(text: String = ""): Lux {Lux.new("strong", text)}
+style(text: String = ""): Lux {Lux.new("style", text)}
+sub(text: String = ""): Lux {Lux.new("sub", text)}
+summary(text: String = ""): Lux {Lux.new("summary", text)}
+sup(text: String = ""): Lux {Lux.new("sup", text)}
+table(text: String = ""): Lux {Lux.new("table", text)}
+tbody(text: String = ""): Lux {Lux.new("tbody", text)}
+td(text: String = ""): Lux {Lux.new("td", text)}
+template(text: String = ""): Lux {Lux.new("template", text)}
+textarea(text: String = ""): Lux {Lux.new("textarea", text)}
+tfoot(text: String = ""): Lux {Lux.new("tfoot", text)}
+th(text: String = ""): Lux {Lux.new("th", text)}
+thead(text: String = ""): Lux {Lux.new("thead", text)}
+time(text: String = ""): Lux {Lux.new("time", text)}
+title(text: String = ""): Lux {Lux.new("title", text)}
+tr(text: String = ""): Lux {Lux.new("tr", text)}
+track(text: String = ""): Lux {Lux.new("track", text)}
+u(text: String = ""): Lux {Lux.new("u", text)}
+ul(text: String = ""): Lux {Lux.new("ul", text)}
+var(text: String = ""): Lux {Lux.new("var", text)}
+video(text: String = ""): Lux {Lux.new("video", text)}
+wbr(text: String = ""): Lux {Lux.new("wbr", text)}
