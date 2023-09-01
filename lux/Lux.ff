@@ -131,6 +131,7 @@ extend self: Lux {
             return self_
         """
 
+    // HTML attributes from https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes
     withAccept(value: String = ""): Lux {Lux.with("accept", value)}
     withAcceptCharset(value: String = ""): Lux {Lux.with("accept-charset", value)}
     withAccesskey(value: String = ""): Lux {Lux.with("accesskey", value)}
