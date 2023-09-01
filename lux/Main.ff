@@ -28,6 +28,7 @@ countButton(): Lux {
 countStringButton(): Lux {
     Lux.useState("x"): text, setText =>
     Lux.div()
+        .with("role", "button")
         .add(Lux.h1(text + " X's"))
         .add(Lux.button("More X's!").on("click") {event =>
             event.preventDefault()

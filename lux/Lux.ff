@@ -48,7 +48,19 @@ extend self: Lux {
             self_.props.set(name_, value_)
             return self_
         """
-
+    
+    withIf[V: IsJsValue](name: String, condition: Bool, body: () => V): Lux
+        target js async """
+            if(!self_.props) return self_
+            if(condition_) self_.props.set(name_, await body_())
+            return self_
+        """
+        target js sync """
+            if(!self_.props) return self_
+            if(condition_) self_.props.set(name_, body_())
+            return self_
+        """
+    
     on(event: String, body: LuxEvent => Unit): Lux
         target js async """
             if(self_.key.charCodeAt(0) === 60) return self_
@@ -130,122 +142,6 @@ extend self: Lux {
             if(condition_) self_.children.push({key: '<text>' + body_()})
             return self_
         """
-
-    // HTML attributes from https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes
-    withAccept(value: String = ""): Lux {Lux.with("accept", value)}
-    withAcceptCharset(value: String = ""): Lux {Lux.with("accept-charset", value)}
-    withAccesskey(value: String = ""): Lux {Lux.with("accesskey", value)}
-    withAction(value: String = ""): Lux {Lux.with("action", value)}
-    withAllow(value: String = ""): Lux {Lux.with("allow", value)}
-    withAlt(value: String = ""): Lux {Lux.with("alt", value)}
-    withAsync(value: String = ""): Lux {Lux.with("async", value)}
-    withAutocapitalize(value: String = ""): Lux {Lux.with("autocapitalize", value)}
-    withAutocomplete(value: String = ""): Lux {Lux.with("autocomplete", value)}
-    withAutoplay(value: String = ""): Lux {Lux.with("autoplay", value)}
-    withBackground(value: String = ""): Lux {Lux.with("background", value)}
-    withBgcolor(value: String = ""): Lux {Lux.with("bgcolor", value)}
-    withBorder(value: String = ""): Lux {Lux.with("border", value)}
-    withBuffered(value: String = ""): Lux {Lux.with("buffered", value)}
-    withCapture(value: String = ""): Lux {Lux.with("capture", value)}
-    withCharset(value: String = ""): Lux {Lux.with("charset", value)}
-    withChecked(value: String = ""): Lux {Lux.with("checked", value)}
-    withCite(value: String = ""): Lux {Lux.with("cite", value)}
-    withClass(value: String = ""): Lux {Lux.with("class", value)}
-    withColor(value: String = ""): Lux {Lux.with("color", value)}
-    withCols(value: String = ""): Lux {Lux.with("cols", value)}
-    withColspan(value: String = ""): Lux {Lux.with("colspan", value)}
-    withContent(value: String = ""): Lux {Lux.with("content", value)}
-    withContenteditable(value: String = ""): Lux {Lux.with("contenteditable", value)}
-    withControls(value: String = ""): Lux {Lux.with("controls", value)}
-    withCoords(value: String = ""): Lux {Lux.with("coords", value)}
-    withCrossorigin(value: String = ""): Lux {Lux.with("crossorigin", value)}
-    withData(value: String = ""): Lux {Lux.with("data", value)}
-    withDatetime(value: String = ""): Lux {Lux.with("datetime", value)}
-    withDecoding(value: String = ""): Lux {Lux.with("decoding", value)}
-    withDefault(value: String = ""): Lux {Lux.with("default", value)}
-    withDefer(value: String = ""): Lux {Lux.with("defer", value)}
-    withDir(value: String = ""): Lux {Lux.with("dir", value)}
-    withDirname(value: String = ""): Lux {Lux.with("dirname", value)}
-    withDisabled(value: String = ""): Lux {Lux.with("disabled", value)}
-    withDownload(value: String = ""): Lux {Lux.with("download", value)}
-    withDraggable(value: String = ""): Lux {Lux.with("draggable", value)}
-    withEnctype(value: String = ""): Lux {Lux.with("enctype", value)}
-    withFor(value: String = ""): Lux {Lux.with("for", value)}
-    withForm(value: String = ""): Lux {Lux.with("form", value)}
-    withFormaction(value: String = ""): Lux {Lux.with("formaction", value)}
-    withFormenctype(value: String = ""): Lux {Lux.with("formenctype", value)}
-    withFormmethod(value: String = ""): Lux {Lux.with("formmethod", value)}
-    withFormnovalidate(value: String = ""): Lux {Lux.with("formnovalidate", value)}
-    withFormtarget(value: String = ""): Lux {Lux.with("formtarget", value)}
-    withHeaders(value: String = ""): Lux {Lux.with("headers", value)}
-    withHeight(value: String = ""): Lux {Lux.with("height", value)}
-    withHidden(value: String = ""): Lux {Lux.with("hidden", value)}
-    withHigh(value: String = ""): Lux {Lux.with("high", value)}
-    withHref(value: String = ""): Lux {Lux.with("href", value)}
-    withHreflang(value: String = ""): Lux {Lux.with("hreflang", value)}
-    withHttpEquiv(value: String = ""): Lux {Lux.with("http-equiv", value)}
-    withId(value: String = ""): Lux {Lux.with("id", value)}
-    withIntegrity(value: String = ""): Lux {Lux.with("integrity", value)}
-    withInputmode(value: String = ""): Lux {Lux.with("inputmode", value)}
-    withIsmap(value: String = ""): Lux {Lux.with("ismap", value)}
-    withItemprop(value: String = ""): Lux {Lux.with("itemprop", value)}
-    withKind(value: String = ""): Lux {Lux.with("kind", value)}
-    withLabel(value: String = ""): Lux {Lux.with("label", value)}
-    withLang(value: String = ""): Lux {Lux.with("lang", value)}
-    withList(value: String = ""): Lux {Lux.with("list", value)}
-    withLoop(value: String = ""): Lux {Lux.with("loop", value)}
-    withLow(value: String = ""): Lux {Lux.with("low", value)}
-    withMax(value: String = ""): Lux {Lux.with("max", value)}
-    withMaxlength(value: String = ""): Lux {Lux.with("maxlength", value)}
-    withMinlength(value: String = ""): Lux {Lux.with("minlength", value)}
-    withMedia(value: String = ""): Lux {Lux.with("media", value)}
-    withMethod(value: String = ""): Lux {Lux.with("method", value)}
-    withMin(value: String = ""): Lux {Lux.with("min", value)}
-    withMultiple(value: String = ""): Lux {Lux.with("multiple", value)}
-    withMuted(value: String = ""): Lux {Lux.with("muted", value)}
-    withName(value: String = ""): Lux {Lux.with("name", value)}
-    withNovalidate(value: String = ""): Lux {Lux.with("novalidate", value)}
-    withOpen(value: String = ""): Lux {Lux.with("open", value)}
-    withOptimum(value: String = ""): Lux {Lux.with("optimum", value)}
-    withPattern(value: String = ""): Lux {Lux.with("pattern", value)}
-    withPing(value: String = ""): Lux {Lux.with("ping", value)}
-    withPlaceholder(value: String = ""): Lux {Lux.with("placeholder", value)}
-    withPlaysinline(value: String = ""): Lux {Lux.with("playsinline", value)}
-    withPoster(value: String = ""): Lux {Lux.with("poster", value)}
-    withPreload(value: String = ""): Lux {Lux.with("preload", value)}
-    withReadonly(value: String = ""): Lux {Lux.with("readonly", value)}
-    withReferrerpolicy(value: String = ""): Lux {Lux.with("referrerpolicy", value)}
-    withRel(value: String = ""): Lux {Lux.with("rel", value)}
-    withRequired(value: String = ""): Lux {Lux.with("required", value)}
-    withReversed(value: String = ""): Lux {Lux.with("reversed", value)}
-    withRole(value: String = ""): Lux {Lux.with("role", value)}
-    withRows(value: String = ""): Lux {Lux.with("rows", value)}
-    withRowspan(value: String = ""): Lux {Lux.with("rowspan", value)}
-    withSandbox(value: String = ""): Lux {Lux.with("sandbox", value)}
-    withScope(value: String = ""): Lux {Lux.with("scope", value)}
-    withSelected(value: String = ""): Lux {Lux.with("selected", value)}
-    withShape(value: String = ""): Lux {Lux.with("shape", value)}
-    withSize(value: String = ""): Lux {Lux.with("size", value)}
-    withSizes(value: String = ""): Lux {Lux.with("sizes", value)}
-    withSlot(value: String = ""): Lux {Lux.with("slot", value)}
-    withSpan(value: String = ""): Lux {Lux.with("span", value)}
-    withSpellcheck(value: String = ""): Lux {Lux.with("spellcheck", value)}
-    withSrc(value: String = ""): Lux {Lux.with("src", value)}
-    withSrcdoc(value: String = ""): Lux {Lux.with("srcdoc", value)}
-    withSrclang(value: String = ""): Lux {Lux.with("srclang", value)}
-    withSrcset(value: String = ""): Lux {Lux.with("srcset", value)}
-    withStart(value: String = ""): Lux {Lux.with("start", value)}
-    withStep(value: String = ""): Lux {Lux.with("step", value)}
-    withStyle(value: String = ""): Lux {Lux.with("style", value)}
-    withTabindex(value: String = ""): Lux {Lux.with("tabindex", value)}
-    withTarget(value: String = ""): Lux {Lux.with("target", value)}
-    withTitle(value: String = ""): Lux {Lux.with("title", value)}
-    withTranslate(value: String = ""): Lux {Lux.with("translate", value)}
-    withType(value: String = ""): Lux {Lux.with("type", value)}
-    withUsemap(value: String = ""): Lux {Lux.with("usemap", value)}
-    withValue(value: String = ""): Lux {Lux.with("value", value)}
-    withWidth(value: String = ""): Lux {Lux.with("width", value)}
-    withWrap(value: String = ""): Lux {Lux.with("wrap", value)}
 
 }
 
