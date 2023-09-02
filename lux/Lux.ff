@@ -29,7 +29,7 @@ useState[T](initialValue: T, body: (T, T => Unit) => Lux, location: SourceLocati
         return node
     """
 
-useCache1[A1, R](body: A1 => R, a1: A1): R {
+useCache1[A1](f: A1 => R, a1: A1, body: R => Lux): Lux {
     // TODO: Remember the old arguments. If they didn't change, return the old result.
     // For callbacks arguments (use A1: Typeable to detect these):
     // - Wrap them in a new function that calls the callback.
