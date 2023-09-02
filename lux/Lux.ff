@@ -29,12 +29,12 @@ useState[T](initialValue: T, body: (T, T => Unit) => Lux, location: SourceLocati
         return node
     """
 
-useCache1[A1, R](f: A1 => R, a1: A1, body: R => Lux): Lux {
+useMemo1[A1, R](a1: A1, f: A1 => R, body: R => Lux): Lux {
     // TODO: Remember the old arguments. If they didn't change, return the old result.
     // For callbacks arguments (use A1: Typeable to detect these):
-    // - Wrap them in a new function that calls the callback.
+    // - Wrap them in a fresh function that calls the callback.
     // - When a callback changes, instead of returning a new function:
-    // - just modify the old function to call new callback instead.
+    // - just modify the old functions closure to call new callback instead.
     // That way, callbacks never give rise to a new computation.
     body(f(a1))
 }
