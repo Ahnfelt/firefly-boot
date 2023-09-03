@@ -174,7 +174,7 @@ useEffect2[A1, A2, R](a1: A1, a2: A2, f: (A1, A2) => (() => Unit), body: () => L
             const value = node.props.get('value')
             value.clean()
             if(rerender) {
-                if(value.first || value.a1 !== a1_) {
+                if(value.first || value.a1 !== a1_ || value.a2 !== a2_) {
                     value.first = false
                     value.a1 = a1_
                     value.a2 = a2_
