@@ -13,6 +13,124 @@ new(tagName: String, text: String = ""): Lux
         return {key: tagName_, children: children, callback: null, props: new Map()}
     """
 
+mount(element: JsValue, lux: Lux): Lux {
+    update(element, Lux.new("div"), Lux.new("div").add(lux))
+    lux
+}
+
+extend self: Lux {
+
+    key(key: String): Lux
+        target js sync """
+            if(self_.key.startsWith("<text>")) return self_
+            self_.key = self_.key + '>' + key_
+            return self_
+        """
+    
+    with[V: IsJsValue](name: String, value: V): Lux
+        target js sync """
+            if(!self_.props) return self_
+            self_.props.set(name_, value_)
+            return self_
+        """
+    
+    withIf[V: IsJsValue](name: String, condition: Bool, body: () => V): Lux
+        target js async """
+            if(!self_.props) return self_
+            if(condition_) self_.props.set(name_, await body_())
+            return self_
+        """
+        target js sync """
+            if(!self_.props) return self_
+            if(condition_) self_.props.set(name_, body_())
+            return self_
+        """
+    
+    on(event: String, body: LuxEvent => Unit): Lux
+        target js async """
+            if(self_.key.charCodeAt(0) === 60) return self_
+            self_.props.set('$' + event_, body_)
+            return self_
+        """
+        target js sync """
+            if(self_.key.charCodeAt(0) === 60) return self_
+            self_.props.set('$' + event_, body_)
+            return self_
+        """
+
+    onIf(event: String, condition: Bool, body: LuxEvent => Unit): Lux
+        target js async """
+            if(self_.key.charCodeAt(0) === 60) return self_
+            if(condition) self_.props.set('$' + event_, body_)
+            return self_
+        """
+        target js sync """
+            if(self_.key.charCodeAt(0) === 60) return self_
+            if(condition) self_.props.set('$' + event_, body_)
+            return self_
+        """
+
+    add(node: Lux): Lux
+        target js sync """
+            if(!self_.children) return self_
+            self_.children.push(node_)
+            return self_
+        """
+
+    addIf(condition: Bool, body: () => Lux): Lux
+        target js async """
+            if(!self_.children) return self_
+            if(condition_) self_.children.push(await body_())
+            return self_
+        """
+        target js sync """
+            if(!self_.children) return self_
+            if(condition_) self_.children.push(body_())
+            return self_
+        """
+
+    addList(nodes: List[Lux]): Lux
+        target js sync """
+            if(!self_.children) return self_
+            let n = nodes_
+            while(n.tail_) { 
+                n = n.tail_
+                self_.children.push(n.head_)
+            }
+            return self_
+        """
+        
+    addArray(nodes: Array[Lux]): Lux
+        target js sync """
+            if(!self_.children) return self_
+            for(let i = 0; i < nodes_.length; i++) {
+                self_.children.push(nodes_[i])
+            }
+            return self_
+        """
+        
+    addText(text: String): Lux
+        target js sync """
+            if(!self_.children) return self_
+            self_.children.push({key: '<text>' + text_})
+            return self_
+        """
+
+    textIf(condition: Bool, body: () => String): Lux
+        target js async """
+            if(!self_.children) return self_
+            if(condition_) self_.children.push({key: '<text>' + await body_()})
+            return self_
+        """
+        target js sync """
+            if(!self_.children) return self_
+            if(condition_) self_.children.push({key: '<text>' + body_()})
+            return self_
+        """
+
+}
+
+
 useState[T](initialValue: T, body: (T, T => Unit) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
     target js sync """
         const node = {key: '<state_' + location_, children: [], callback: null, props: new Map([['value', initialValue_]])}
@@ -201,123 +319,6 @@ useEffect2[A1, A2, R](a1: A1, a2: A2, f: (A1, A2) => (() => Unit), body: () => L
 // TODO: Hooks with the same general type but different state types can still be mixed up.
 // It can be fixed by useState[T: Typeable] and then using Typeable.show[T]() as part of the key.
 
-extend self: Lux {
-
-    key(key: String): Lux
-        target js sync """
-            if(self_.key.startsWith("<text>")) return self_
-            self_.key = self_.key + '>' + key_
-            return self_
-        """
-    
-    with[V: IsJsValue](name: String, value: V): Lux
-        target js sync """
-            if(!self_.props) return self_
-            self_.props.set(name_, value_)
-            return self_
-        """
-    
-    withIf[V: IsJsValue](name: String, condition: Bool, body: () => V): Lux
-        target js async """
-            if(!self_.props) return self_
-            if(condition_) self_.props.set(name_, await body_())
-            return self_
-        """
-        target js sync """
-            if(!self_.props) return self_
-            if(condition_) self_.props.set(name_, body_())
-            return self_
-        """
-    
-    on(event: String, body: LuxEvent => Unit): Lux
-        target js async """
-            if(self_.key.charCodeAt(0) === 60) return self_
-            self_.props.set('$' + event_, body_)
-            return self_
-        """
-        target js sync """
-            if(self_.key.charCodeAt(0) === 60) return self_
-            self_.props.set('$' + event_, body_)
-            return self_
-        """
-
-    onIf(event: String, condition: Bool, body: LuxEvent => Unit): Lux
-        target js async """
-            if(self_.key.charCodeAt(0) === 60) return self_
-            if(condition) self_.props.set('$' + event_, body_)
-            return self_
-        """
-        target js sync """
-            if(self_.key.charCodeAt(0) === 60) return self_
-            if(condition) self_.props.set('$' + event_, body_)
-            return self_
-        """
-
-    add(node: Lux): Lux
-        target js sync """
-            if(!self_.children) return self_
-            self_.children.push(node_)
-            return self_
-        """
-
-    addIf(condition: Bool, body: () => Lux): Lux
-        target js async """
-            if(!self_.children) return self_
-            if(condition_) self_.children.push(await body_())
-            return self_
-        """
-        target js sync """
-            if(!self_.children) return self_
-            if(condition_) self_.children.push(body_())
-            return self_
-        """
-
-    addList(nodes: List[Lux]): Lux
-        target js sync """
-            if(!self_.children) return self_
-            let n = nodes_
-            while(n.tail_) { 
-                n = n.tail_
-                self_.children.push(n.head_)
-            }
-            return self_
-        """
-        
-    addArray(nodes: Array[Lux]): Lux
-        target js sync """
-            if(!self_.children) return self_
-            for(let i = 0; i < nodes_.length; i++) {
-                self_.children.push(nodes_[i])
-            }
-            return self_
-        """
-        
-    addText(text: String): Lux
-        target js sync """
-            if(!self_.children) return self_
-            self_.children.push({key: '<text>' + text_})
-            return self_
-        """
-
-    textIf(condition: Bool, body: () => String): Lux
-        target js async """
-            if(!self_.children) return self_
-            if(condition_) self_.children.push({key: '<text>' + await body_()})
-            return self_
-        """
-        target js sync """
-            if(!self_.children) return self_
-            if(condition_) self_.children.push({key: '<text>' + body_()})
-            return self_
-        """
-
-}
-
-mount(element: JsValue, lux: Lux): Lux {
-    update(element, Lux.new("div"), Lux.new("div").add(lux))
-    lux
-}
-
 update(element: JsValue, old: Lux, new: Lux): Unit
     target js sync """
         const empty = {key: '', children: [], callback: null, props: new Map()}
@@ -327,12 +328,16 @@ update(element: JsValue, old: Lux, new: Lux): Unit
             if(typeof newLux.callback === 'function') {
                 if(typeof oldLux.callback === 'function') newLux.props = oldLux.props
                 let oldChild = oldLux.children[0] || empty
-                const rerender = () => {
-                    element = update(element, oldChild, newLux.children[0])
-                    oldChild = newLux.children[0]
+                const rerender = renderNow => {
+                    const render = () => {
+                        element = update(element, oldChild, newLux.children[0])
+                        oldChild = newLux.children[0]
+                    }
+                    if(renderNow) render()
+                    else requestAnimationFrame(render)
                 }
                 newLux.callback(rerender)
-                rerender()
+                rerender(true)
                 return element
             }
             // Create the element if it doesn't already exist
