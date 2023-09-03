@@ -29,7 +29,7 @@ componentA(): Lux {
 }
 
 loaderExample(query: String): Lux {
-    useDebouncer(query): debouncedQuery =>
+    useDebouncer(query, Duration(0.2)): debouncedQuery =>
     useLoader1(debouncedQuery) {_}: loading, result, retry =>
     result.{
         | _ {loading} => Lux.div("Loading...")
@@ -106,11 +106,11 @@ useLoader1[A1, R](
     useLoader1(a1, load, body, location) // TODO
 }
 
-useDebounce[T](
+useDebouncer[T](
     value: T
     duration: Duration
     body: T => Lux
     location: SourceLocation = SourceLocation.callSite()
-) {
-    useDebounce(value, duration, body, location)
+): Lux {
+    useDebouncer(value, duration, body, location)
 }
