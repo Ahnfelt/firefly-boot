@@ -28,6 +28,15 @@ componentA(): Lux {
     )
 }
 
+loaderExample(query: String): Lux {
+    useLoader1(query) {fetchSearchResult(_)}: loading, result, retry =>
+    result.{
+        | _ {loading} => spinnerComponent()
+        | None => Lux.b("An error occurred! Click to retry.").on("click") {retry()}
+        | Some(value) => Lux.div(value)
+    }
+}
+
 buttons(): Lux {
     Lux.useState(True): b, setB =>
     Lux.div()
@@ -85,4 +94,13 @@ buildMain(system: BuildSystem) {
     let browser = system.compileForBrowser("Main.ff")
     let assets = AssetSystem.create().addAssets("/js", browser.assets())
     system.setAssets(assets)
+}
+
+useLoader1[A1, R](
+    a1: A1
+    load: A1 => R
+    body: (Bool, Option[R], () => Unit) => Lux
+    location: SourceLocation = SourceLocation.callSite()
+): Lux {
+    useLoader1(a1, load, body) // TODO
 }
