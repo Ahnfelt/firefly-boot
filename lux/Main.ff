@@ -29,7 +29,8 @@ componentA(): Lux {
 }
 
 loaderExample(query: String): Lux {
-    useLoader1(query) {_}: loading, result, retry =>
+    useDebounce(query): debouncedQuery =>
+    useLoader1(debouncedQuery) {_}: loading, result, retry =>
     result.{
         | _ {loading} => Lux.div("Loading...")
         | None => Lux.b("An error occurred! Click to retry.").on("click") {_ => retry()}
