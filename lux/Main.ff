@@ -29,7 +29,7 @@ componentA(): Lux {
 }
 
 loaderExample(query: String): Lux {
-    useLoader1(query) {fetchSearchResult(_)}: loading, result, retry =>
+    useLoader1(Duration(0.0), query) {fetchSearchResult(_)}: loading, result, retry =>
     result.{
         | _ {loading} => spinnerComponent()
         | None => Lux.b("An error occurred! Click to retry.").on("click") {retry()}
@@ -97,10 +97,11 @@ buildMain(system: BuildSystem) {
 }
 
 useLoader1[A1, R](
+    debounce: Duration
     a1: A1
     load: A1 => R
     body: (Bool, Option[R], () => Unit) => Lux
     location: SourceLocation = SourceLocation.callSite()
 ): Lux {
-    useLoader1(a1, load, body) // TODO
+    useLoader1(a1, debounce, load, body, location) // TODO
 }
