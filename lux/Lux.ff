@@ -5,8 +5,6 @@ class Lux {}
 
 data LuxException(message: String)
 
-class LuxRef[T](mutable current: T) // Should the stdlib have Box[T]?
-
 
 new(tagName: String, text: String = ""): Lux
     target js sync """
@@ -31,9 +29,9 @@ useState[T](initialValue: T, body: (T, T => Unit) => Lux, location: SourceLocati
         return node
     """
 
-useRef[T](initialValue: T, body: LuxRef[T] => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
+useBox[T](initialValue: T, body: Box[T] => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
     target js sync """
-        const ref = LuxRef(initialValue_)
+        const ref = ff_core_Box.Box(initialValue_)
         const node = {key: '<ref_' + location_, children: [], callback: null, props: new Map([['value', ref]])}
         node.callback = rerender => {
             if(rerender) {
