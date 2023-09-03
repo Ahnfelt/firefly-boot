@@ -29,15 +29,96 @@ useState[T](initialValue: T, body: (T, T => Unit) => Lux, location: SourceLocati
         return node
     """
 
-useMemo1[A1, R](a1: A1, f: A1 => R, body: R => Lux): Lux {
-    // TODO: Remember the old arguments. If they didn't change, return the old result.
-    // For callbacks arguments (use A1: Typeable to detect these):
-    // - Wrap them in a fresh function that calls the callback.
-    // - When a callback changes, instead of returning a new function:
-    // - just modify the old functions closure to call new callback instead.
-    // That way, callbacks never give rise to a new computation.
-    body(f(a1))
+useCallback0[R](f: () => R, body: (() => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    internalUseCallback(f, body, location)
 }
+
+useCallback1[A1, R](f: (A1) => R, body: (A1 => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    internalUseCallback(f, body, location)
+}
+
+useCallback2[A1, A2, R](f: (A1, A2) => R, body: ((A1, A2) => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    internalUseCallback(f, body, location)
+}
+
+internalUseCallback[F, G, R](f: F, body: G, location: SourceLocation): Lux
+    target js sync """
+        const node = {key: '<callback_' + location_, children: [], callback: null, props: new Map([['value', {
+            f: f_,
+            g: (...functionArguments) => node.props.get('value').f.apply(null, functionArguments)
+        }]])}
+        node.callback = rerender => {
+            if(rerender) {
+                const value = node.props.get('value')
+                value.f = f_
+                node.children[0] = body_(value.g)
+            }
+        }
+        return node
+    """
+
+useMemo0[R](f: () => R, body: R => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
+    target js sync """
+        const node = {key: '<memo1_' + location_, children: [], callback: null, props: new Map([['value', {
+            r: null,
+            first: true
+        }]])}
+        node.callback = rerender => {
+            if(rerender) {
+                const value = node.props.get('value')
+                if(value.first) {
+                    value.first = false
+                    value.r = f_()
+                }
+                node.children[0] = body_(value.r)
+            }
+        }
+        return node
+    """
+
+useMemo1[A1, R](a1: A1, f: A1 => R, body: R => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
+    target js sync """
+        const node = {key: '<memo1_' + location_, children: [], callback: null, props: new Map([['value', {
+            a1: a1_,
+            r: null,
+            first: true
+        }]])}
+        node.callback = rerender => {
+            if(rerender) {
+                const value = node.props.get('value')
+                if(value.first || value.a1 !== a1_) {
+                    value.first = false
+                    value.a1 = a1_
+                    value.r = f_(a1_)
+                }
+                node.children[0] = body_(value.r)
+            }
+        }
+        return node
+    """
+
+useMemo2[A1, A2, R](a1: A1, a2: A2, f: (A1, A2) => R, body: R => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
+    target js sync """
+        const node = {key: '<memo1_' + location_, children: [], callback: null, props: new Map([['value', {
+            a1: a1_,
+            a2: a2_,
+            r: null,
+            first: true
+        }]])}
+        node.callback = rerender => {
+            if(rerender) {
+                const value = node.props.get('value')
+                if(value.first || value.a1 !== a1_ || value.a2 !== a2_) {
+                    value.first = false
+                    value.a1 = a1_
+                    value.a2 = a2_
+                    value.r = f_(a1_, a2_)
+                }
+                node.children[0] = body_(value.r)
+            }
+        }
+        return node
+    """
 
 // TODO: Hooks with the same general type but different state types can still be mixed up.
 // It can be fixed by useState[T: Typeable] and then using Typeable.show[T]() as part of the key.
