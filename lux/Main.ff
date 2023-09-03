@@ -29,10 +29,10 @@ componentA(): Lux {
 }
 
 loaderExample(query: String): Lux {
-    useLoader1(Duration(0.0), query) {fetchSearchResult(_)}: loading, result, retry =>
+    useLoader1(query) {_}: loading, result, retry =>
     result.{
-        | _ {loading} => spinnerComponent()
-        | None => Lux.b("An error occurred! Click to retry.").on("click") {retry()}
+        | _ {loading} => Lux.div("Loading...")
+        | None => Lux.b("An error occurred! Click to retry.").on("click") {_ => retry()}
         | Some(value) => Lux.div(value)
     }
 }
@@ -97,11 +97,19 @@ buildMain(system: BuildSystem) {
 }
 
 useLoader1[A1, R](
-    debounce: Duration
     a1: A1
     load: A1 => R
     body: (Bool, Option[R], () => Unit) => Lux
     location: SourceLocation = SourceLocation.callSite()
 ): Lux {
-    useLoader1(a1, debounce, load, body, location) // TODO
+    useLoader1(a1, load, body, location) // TODO
+}
+
+useDebounce[T](
+    value: T
+    duration: Duration
+    body: T => Lux
+    location: SourceLocation = SourceLocation.callSite()
+) {
+    useDebounce(value, duration, body, location)
 }
