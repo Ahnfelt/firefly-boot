@@ -29,22 +29,36 @@ extend self: Lux {
     
     with[V: IsJsValue](name: String, value: V): Lux
         target js sync """
-            if(!self_.props) return self_
+            if(!self_.props || self_.key.startsWith("<")) return self_
             self_.props.set(name_, value_)
             return self_
         """
     
-    withIf[V: IsJsValue](name: String, condition: Bool, body: () => V): Lux
-        target js async """
-            if(!self_.props) return self_
-            if(condition_) self_.props.set(name_, await body_())
-            return self_
-        """
+    withIf[V: IsJsValue](condition: Bool, name: String, body: () => V): Lux {
+        if(condition) {self.with(name, body())} else {self}
+    }
+    
+    style(property: String, value: String): Lux
         target js sync """
-            if(!self_.props) return self_
-            if(condition_) self_.props.set(name_, body_())
+            if(!self_.props || self_.key.startsWith("<")) return self_
+            self_.props.set("style", (self_.props.get("style") || '') + '; ' + property_ + ': ' + value_)
             return self_
         """
+        
+    styleIf(condition: Bool, property: String, value: String): Lux {
+        if(condition) {self.style(property, value)} else {self}
+    }
+    
+    class(className: String): Lux
+        target js sync """
+            if(!self_.props || self_.key.startsWith("<")) return self_
+            self_.props.set("className", (self_.props.get("className") || '') + ' ' + className_)
+            return self_
+        """
+
+    classIf(condition: Bool, className: String): Lux {
+        if(condition) {self.class(className)} else {self}
+    }
     
     on(event: String, body: LuxEvent => Unit): Lux
         target js async """
@@ -58,18 +72,10 @@ extend self: Lux {
             return self_
         """
 
-    onIf(event: String, condition: Bool, body: LuxEvent => Unit): Lux
-        target js async """
-            if(self_.key.charCodeAt(0) === 60) return self_
-            if(condition) self_.props.set('$' + event_, body_)
-            return self_
-        """
-        target js sync """
-            if(self_.key.charCodeAt(0) === 60) return self_
-            if(condition) self_.props.set('$' + event_, body_)
-            return self_
-        """
-
+    onIf(condition: Bool, event: String, body: LuxEvent => Unit): Lux {
+        if(condition) {self.on(event, body)} else {self}
+    }
+    
     add(node: Lux): Lux
         target js sync """
             if(!self_.children) return self_
@@ -77,17 +83,9 @@ extend self: Lux {
             return self_
         """
 
-    addIf(condition: Bool, body: () => Lux): Lux
-        target js async """
-            if(!self_.children) return self_
-            if(condition_) self_.children.push(await body_())
-            return self_
-        """
-        target js sync """
-            if(!self_.children) return self_
-            if(condition_) self_.children.push(body_())
-            return self_
-        """
+    addIf(condition: Bool, body: () => Lux): Lux {
+        if(condition) {self.add(body())} else {self}
+    }
 
     addList(nodes: List[Lux]): Lux
         target js sync """
