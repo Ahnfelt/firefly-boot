@@ -114,17 +114,9 @@ extend self: Lux {
             return self_
         """
 
-    addTextIf(condition: Bool, body: () => String): Lux
-        target js async """
-            if(!self_.children) return self_
-            if(condition_) self_.children.push({key: '<text>' + await body_()})
-            return self_
-        """
-        target js sync """
-            if(!self_.children) return self_
-            if(condition_) self_.children.push({key: '<text>' + body_()})
-            return self_
-        """
+    addTextIf(condition: Bool, body: () => String): Lux {
+        if(condition) {self.addText(body())} else {self}
+    }
 
 }
 
