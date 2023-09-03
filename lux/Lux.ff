@@ -45,8 +45,8 @@ extend self: Lux {
             return self_
         """
         
-    styleIf(condition: Bool, property: String, value: String): Lux {
-        if(condition) {self.style(property, value)} else {self}
+    styleIf(condition: Bool, property: String, body: () => String): Lux {
+        if(condition) {self.style(property, body())} else {self}
     }
     
     class(className: String): Lux
@@ -56,8 +56,8 @@ extend self: Lux {
             return self_
         """
 
-    classIf(condition: Bool, className: String): Lux {
-        if(condition) {self.class(className)} else {self}
+    classIf(condition: Bool, body: () => String): Lux {
+        if(condition) {self.class(body())} else {self}
     }
     
     on(event: String, body: LuxEvent => Unit): Lux
