@@ -3,6 +3,31 @@ import HttpServer from ff:httpserver
 import Lux
 import LuxEvent
 
+componentCMemo(onClick: () => Unit, message: String): Lux {
+    Lux.useCallback0(onClick): onClick =>
+    Lux.useMemo2(onClick, message) {componentC(_, _)} {_}
+}
+
+componentC(onClick: () => Unit, message: String): Lux {
+    Lux.button(message).on("click") {event => onClick()}
+}
+
+componentB(onClick: () => Unit, message: String): Lux {
+    componentC(onClick, message)
+}
+
+componentA(): Lux {
+    let items = ["Click 1", "Click 2", "Click 3"]
+    Lux.div().addList(
+        items.pairs().map {| Pair(index, item) =>
+            componentB(
+                onClick = {Log.show(index)}
+                message = item
+            )
+        }
+    )
+}
+
 buttons(): Lux {
     Lux.useState(True): b, setB =>
     Lux.div()
