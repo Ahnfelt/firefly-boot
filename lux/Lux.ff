@@ -159,12 +159,12 @@ useBox[T](initialValue: T, body: Box[T] => Lux, location: SourceLocation = Sourc
         return node
     """
 
-useReducer[T, A](initialValue: T, f: (T, A) => T, body: (T, A => Unit) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+useReducer[T, A](initialValue: T, reducer: (T, A) => T, body: (T, A => Unit) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
     useState(
         initialValue
         {state, setState =>
             useCallback1(
-                {action => setState(f(state, action))}
+                {action => setState(reducer(state, action))}
                 {dispatch => body(state, dispatch)}
                 location
             )
@@ -201,7 +201,7 @@ internalUseCallback[F, G, R](f: F, body: G, location: SourceLocation): Lux
         return node
     """
 
-useMemo0[R](f: () => R, body: R => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
+useMemo0[R](compute: () => R, body: R => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
     target js sync """
         const node = {key: '<memo_' + location_, children: [], callback: null, props: new Map([['value', {
             r: null,
@@ -212,7 +212,7 @@ useMemo0[R](f: () => R, body: R => Lux, location: SourceLocation = SourceLocatio
                 const value = node.props.get('value')
                 if(value.first) {
                     value.first = false
-                    value.r = f_()
+                    value.r = compute_()
                 }
                 node.children[0] = body_(value.r)
             }
@@ -220,7 +220,7 @@ useMemo0[R](f: () => R, body: R => Lux, location: SourceLocation = SourceLocatio
         return node
     """
 
-useMemo1[A1, R](a1: A1, f: A1 => R, body: R => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
+useMemo1[A1, R](a1: A1, compute: A1 => R, body: R => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
     target js sync """
         const node = {key: '<memo_' + location_, children: [], callback: null, props: new Map([['value', {
             a1: a1_,
@@ -233,7 +233,7 @@ useMemo1[A1, R](a1: A1, f: A1 => R, body: R => Lux, location: SourceLocation = S
                 if(value.first || value.a1 !== a1_) {
                     value.first = false
                     value.a1 = a1_
-                    value.r = f_(a1_)
+                    value.r = compute_(a1_)
                 }
                 node.children[0] = body_(value.r)
             }
@@ -241,7 +241,7 @@ useMemo1[A1, R](a1: A1, f: A1 => R, body: R => Lux, location: SourceLocation = S
         return node
     """
 
-useMemo2[A1, A2, R](a1: A1, a2: A2, f: (A1, A2) => R, body: R => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
+useMemo2[A1, A2, R](a1: A1, a2: A2, compute: (A1, A2) => R, body: R => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
     target js sync """
         const node = {key: '<memo_' + location_, children: [], callback: null, props: new Map([['value', {
             a1: a1_,
@@ -256,7 +256,7 @@ useMemo2[A1, A2, R](a1: A1, a2: A2, f: (A1, A2) => R, body: R => Lux, location: 
                     value.first = false
                     value.a1 = a1_
                     value.a2 = a2_
-                    value.r = f_(a1_, a2_)
+                    value.r = compute_(a1_, a2_)
                 }
                 node.children[0] = body_(value.r)
             }
@@ -264,7 +264,7 @@ useMemo2[A1, A2, R](a1: A1, a2: A2, f: (A1, A2) => R, body: R => Lux, location: 
         return node
     """
 
-useEffect0[R](f: () => (() => Unit), body: () => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
+useEffect0[R](setup: () => (() => Unit), body: () => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
     target js sync """
         const node = {key: '<effect_' + location_, children: [], callback: null, props: new Map([['value', {
             clean: () => {},
@@ -276,7 +276,7 @@ useEffect0[R](f: () => (() => Unit), body: () => Lux, location: SourceLocation =
             if(rerender) {
                 if(value.first) {
                     value.first = false
-                    value.clean = f_()
+                    value.clean = setup_()
                 }
                 node.children[0] = body_()
             }
@@ -284,7 +284,7 @@ useEffect0[R](f: () => (() => Unit), body: () => Lux, location: SourceLocation =
         return node
     """
 
-useEffect1[A1, R](a1: A1, f: A1 => (() => Unit), body: () => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
+useEffect1[A1, R](a1: A1, setup: A1 => (() => Unit), body: () => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
     target js sync """
         const node = {key: '<effect_' + location_, children: [], callback: null, props: new Map([['value', {
             a1: a1_,
@@ -298,7 +298,7 @@ useEffect1[A1, R](a1: A1, f: A1 => (() => Unit), body: () => Lux, location: Sour
                 if(value.first || value.a1 !== a1_) {
                     value.first = false
                     value.a1 = a1_
-                    value.clean = f_(a1_)
+                    value.clean = setup_(a1_)
                 }
                 node.children[0] = body_()
             }
@@ -306,7 +306,7 @@ useEffect1[A1, R](a1: A1, f: A1 => (() => Unit), body: () => Lux, location: Sour
         return node
     """
 
-useEffect2[A1, A2, R](a1: A1, a2: A2, f: (A1, A2) => (() => Unit), body: () => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
+useEffect2[A1, A2, R](a1: A1, a2: A2, setup: (A1, A2) => (() => Unit), body: () => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
     target js sync """
         const node = {key: '<effect_' + location_, children: [], callback: null, props: new Map([['value', {
             a1: a1_,
@@ -322,7 +322,7 @@ useEffect2[A1, A2, R](a1: A1, a2: A2, f: (A1, A2) => (() => Unit), body: () => L
                     value.first = false
                     value.a1 = a1_
                     value.a2 = a2_
-                    value.clean = f_(a1_, a2_)
+                    value.clean = setup_(a1_, a2_)
                 }
                 node.children[0] = body_()
             }
