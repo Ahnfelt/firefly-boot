@@ -29,7 +29,7 @@ componentA(): Lux {
 }
 
 loaderExample(query: String): Lux {
-    useDebounce(query): debouncedQuery =>
+    useDebouncer(query): debouncedQuery =>
     useLoader1(debouncedQuery) {_}: loading, result, retry =>
     result.{
         | _ {loading} => Lux.div("Loading...")
