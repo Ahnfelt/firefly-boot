@@ -17,8 +17,6 @@ buttons(): Lux {
 
 countButton(): Lux {
     Lux.useState(0): apples, setApples =>
-    Lux.useCallback1(setApples): setApples =>
-    Lux.useMemo1(setApples, {Log.debug("Meme"); _}): setApples =>
     Lux.div()
         .add(Lux.h1(apples + " apples"))
         .add(Lux.button("More apples!").on("click") {event =>
