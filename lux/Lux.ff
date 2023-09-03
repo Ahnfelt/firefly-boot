@@ -59,7 +59,7 @@ internalUseCallback[F, G, R](f: F, body: G, location: SourceLocation): Lux
 
 useMemo0[R](f: () => R, body: R => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
     target js sync """
-        const node = {key: '<memo1_' + location_, children: [], callback: null, props: new Map([['value', {
+        const node = {key: '<memo_' + location_, children: [], callback: null, props: new Map([['value', {
             r: null,
             first: true
         }]])}
@@ -78,7 +78,7 @@ useMemo0[R](f: () => R, body: R => Lux, location: SourceLocation = SourceLocatio
 
 useMemo1[A1, R](a1: A1, f: A1 => R, body: R => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
     target js sync """
-        const node = {key: '<memo1_' + location_, children: [], callback: null, props: new Map([['value', {
+        const node = {key: '<memo_' + location_, children: [], callback: null, props: new Map([['value', {
             a1: a1_,
             r: null,
             first: true
@@ -99,7 +99,7 @@ useMemo1[A1, R](a1: A1, f: A1 => R, body: R => Lux, location: SourceLocation = S
 
 useMemo2[A1, A2, R](a1: A1, a2: A2, f: (A1, A2) => R, body: R => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
     target js sync """
-        const node = {key: '<memo1_' + location_, children: [], callback: null, props: new Map([['value', {
+        const node = {key: '<memo_' + location_, children: [], callback: null, props: new Map([['value', {
             a1: a1_,
             a2: a2_,
             r: null,
@@ -115,6 +115,72 @@ useMemo2[A1, A2, R](a1: A1, a2: A2, f: (A1, A2) => R, body: R => Lux, location: 
                     value.r = f_(a1_, a2_)
                 }
                 node.children[0] = body_(value.r)
+            }
+        }
+        return node
+    """
+
+useEffect0[R](f: () => (() => Unit), body: () => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
+    target js sync """
+        const node = {key: '<effect_' + location_, children: [], callback: null, props: new Map([['value', {
+            clean: () => {},
+            first: true
+        }]])}
+        node.callback = rerender => {
+            const value = node.props.get('value')
+            value.clean()
+            if(rerender) {
+                if(value.first) {
+                    value.first = false
+                    value.clean = f_()
+                }
+                node.children[0] = body_()
+            }
+        }
+        return node
+    """
+
+useEffect1[A1, R](a1: A1, f: A1 => (() => Unit), body: () => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
+    target js sync """
+        const node = {key: '<effect_' + location_, children: [], callback: null, props: new Map([['value', {
+            a1: a1_,
+            clean: () => {},
+            first: true
+        }]])}
+        node.callback = rerender => {
+            const value = node.props.get('value')
+            value.clean()
+            if(rerender) {
+                if(value.first || value.a1 !== a1_) {
+                    value.first = false
+                    value.a1 = a1_
+                    value.clean = f_(a1_)
+                }
+                node.children[0] = body_()
+            }
+        }
+        return node
+    """
+
+useEffect2[A1, A2, R](a1: A1, a2: A2, f: (A1, A2) => (() => Unit), body: () => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
+    target js sync """
+        const node = {key: '<effect_' + location_, children: [], callback: null, props: new Map([['value', {
+            a1: a1_,
+            a2: a2_,
+            clean: () => {},
+            first: true
+        }]])}
+        node.callback = rerender => {
+            const value = node.props.get('value')
+            value.clean()
+            if(rerender) {
+                if(value.first || value.a1 !== a1_) {
+                    value.first = false
+                    value.a1 = a1_
+                    value.a2 = a2_
+                    value.clean = f_(a1_, a2_)
+                }
+                node.children[0] = body_()
             }
         }
         return node
