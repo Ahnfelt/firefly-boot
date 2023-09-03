@@ -159,13 +159,13 @@ useBox[T](initialValue: T, body: Box[T] => Lux, location: SourceLocation = Sourc
         return node
     """
 
-useReducer[T, A](initialValue: T, f: (T, A) => T, body: (A => Unit) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+useReducer[T, A](initialValue: T, f: (T, A) => T, body: (T, A => Unit) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
     useState(
         initialValue
         {state, setState =>
             useCallback1(
                 {action => setState(f(state, action))}
-                {dispatch => body(dispatch)}
+                {dispatch => body(state, dispatch)}
                 location
             )
         }
