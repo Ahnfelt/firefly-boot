@@ -32,7 +32,7 @@ useState[T](initialValue: T, body: (T, T => Unit) => Lux, location: SourceLocati
 useBox[T](initialValue: T, body: Box[T] => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
     target js sync """
         const ref = ff_core_Box.Box(initialValue_)
-        const node = {key: '<ref_' + location_, children: [], callback: null, props: new Map([['value', ref]])}
+        const node = {key: '<box_' + location_, children: [], callback: null, props: new Map([['value', ref]])}
         node.callback = rerender => {
             if(rerender) {
                 node.children[0] = body_(node.props.get('value'))
