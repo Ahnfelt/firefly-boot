@@ -4,6 +4,7 @@ import LuxEvent
 class Lux {}
 
 data LuxException(message: String)
+
 class LuxRef[T](mutable current: T) // Should the stdlib have Box[T]?
 
 
