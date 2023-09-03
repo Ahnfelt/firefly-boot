@@ -13,9 +13,15 @@ new(tagName: String, text: String = ""): Lux
         return {key: tagName_, children: children, callback: null, props: new Map()}
     """
 
-mount(element: JsValue, lux: Lux): Lux {
+mount(element: JsValue, lux: Lux): Unit {
     update(element, Lux.new("div"), Lux.new("div").add(lux))
-    lux
+}
+
+mountById(system: BrowserSystem, id: String, lux: Lux): Unit {
+    Lux.mount(
+        element = system.js().global().get("document").call1("getElementById", id)
+        lux = lux
+    )
 }
 
 extend self: Lux {

@@ -62,10 +62,7 @@ countStringButton(): Lux {
 }
 
 browserMain(system: BrowserSystem): Unit {
-    Lux.mount(
-        element = system.js().global().get("document").call1("getElementById", "main")
-        lux = buttons()
-    )
+    Lux.mountById(system, "main", buttons())
 }
 
 nodeMain(system: NodeSystem): Unit {
