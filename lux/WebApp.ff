@@ -5,7 +5,7 @@ import LuxEvent
 
 mainComponent(): Lux {
     Lux.useState([]): chat, setChat => 
-    Lux.useState(""): message, setMessage => 
+    Lux.useState(""): message, setMessage =>
     Lux.div()
         .add(Lux.div().addList(chat.map {Lux.div(_)}))
         .add(Lux.form()

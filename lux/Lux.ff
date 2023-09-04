@@ -98,8 +98,8 @@ extend self: Lux {
             if(!self_.children) return self_
             let n = nodes_
             while(n.tail_) { 
-                n = n.tail_
                 self_.children.push(n.head_)
+                n = n.tail_
             }
             return self_
         """
