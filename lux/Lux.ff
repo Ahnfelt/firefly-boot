@@ -134,8 +134,7 @@ useState[T](initialValue: T, body: (T, T => Unit) => Lux, location: SourceLocati
             if(rerender) {
                 const setValue = newValue => {
                     node.props.set('value', newValue)
-                    node.children[0] = body_(newValue, setValue)
-                    rerender()
+                    rerender(() => node.children[0] = body_(newValue, setValue))
                 }
                 node.children[0] = body_(node.props.get('value'), setValue)
             }
@@ -338,16 +337,18 @@ update(element: JsValue, old: Lux, new: Lux): Unit
             if(typeof newLux.callback === 'function') {
                 if(typeof oldLux.callback === 'function') newLux.props = oldLux.props
                 let oldChild = oldLux.children[0] || empty
-                const rerender = renderNow => {
+                const rerender = renderer => {
+                    if(oldLux.animationFrame) cancelAnimationFrame(oldLux.animationFrame)
                     const render = () => {
+                        if(renderer) renderer()
                         element = update(element, oldChild, newLux.children[0])
                         oldChild = newLux.children[0]
                     }
-                    if(renderNow) render()
-                    else requestAnimationFrame(render)
+                    if(renderer === null) render()
+                    else newLux.animationFrame = requestAnimationFrame(render)
                 }
                 newLux.callback(rerender)
-                rerender(true)
+                rerender(null)
                 return element
             }
             // Create the element if it doesn't already exist

@@ -15,8 +15,8 @@ mainComponent(): Lux {
             )
             .on("submit") {event => 
                 event.preventDefault()
-                setChat([...chat, message])
                 setMessage("")
+                setChat([...chat, message])
             }
         )
 }
