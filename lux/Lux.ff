@@ -366,7 +366,7 @@ update(element: JsValue, old: Lux, new: Lux): Unit
                             element.addEventListener(name.slice(1), value)
                         } else element[name] = value
                     }
-                    if(oldValue !== void 0) oldLux.props.delete(name)
+                    oldLux.props.delete(name)
                 })
                 oldLux.props.forEach((value, name) => {
                     if(name[0] === '$') element.removeEventListener(name.slice(1), value)
