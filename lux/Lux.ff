@@ -267,13 +267,15 @@ useEffect0[R](setup: () => (() => Unit), body: () => Lux, location: SourceLocati
         }]])}
         node.callback = rerender => {
             const value = node.props.get('value')
-            value.clean()
             if(rerender) {
                 if(value.first) {
                     value.first = false
+                    value.clean()
                     value.clean = setup_()
                 }
                 node.children[0] = body_()
+            } else {
+                value.clean()
             }
         }
         return node
@@ -288,14 +290,16 @@ useEffect1[A1, R](a1: A1, setup: A1 => (() => Unit), body: () => Lux, location: 
         }]])}
         node.callback = rerender => {
             const value = node.props.get('value')
-            value.clean()
             if(rerender) {
                 if(value.first || value.a1 !== a1_) {
                     value.first = false
                     value.a1 = a1_
+                    value.clean()
                     value.clean = setup_(a1_)
                 }
                 node.children[0] = body_()
+            } else {
+                value.clean()
             }
         }
         return node
@@ -311,15 +315,17 @@ useEffect2[A1, A2, R](a1: A1, a2: A2, setup: (A1, A2) => (() => Unit), body: () 
         }]])}
         node.callback = rerender => {
             const value = node.props.get('value')
-            value.clean()
             if(rerender) {
                 if(value.first || value.a1 !== a1_ || value.a2 !== a2_) {
                     value.first = false
                     value.a1 = a1_
                     value.a2 = a2_
+                    value.clean()
                     value.clean = setup_(a1_, a2_)
                 }
                 node.children[0] = body_()
+            } else {
+                value.clean()
             }
         }
         return node
