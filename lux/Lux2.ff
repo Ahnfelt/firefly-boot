@@ -1,0 +1,40 @@
+import Lux2 as Lux
+import LuxEvent
+
+capability Lux(key: String) {
+    LuxText()
+    LuxTag(props: Map[String, JsValue], children: Array[Lux])
+    LuxHook(state: Any, render: Option[() => Unit] => Lux)
+}
+
+new(tagName: String, text: String = ""): Lux {
+    LuxTag("<" + tagName, Map.empty(), if(text == "") {[LuxText("'" + text)].toArray()} else {Array.empty()})
+}
+
+useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    LuxHook("$" + location.location + " " + Any.anyTag[T]().show(), {rerender =>
+        
+    })
+}
+
+extend self: Lux {
+    
+}
+
+data LuxElement {}
+
+extend self: LuxElement {
+    isNull(): Bool
+        target js sync """
+            return !self_
+        """
+}
+
+update(element: LuxElement, old: Lux, new: Lux): LuxElement {
+    if(same(old, new) || new.key.startsWith("'")) {element}:
+    new.{
+        | LuxHook(key, state, render) => 
+        | LuxTag(key, props, children) => 
+        | LuxText(key) => 
+    }
+}
