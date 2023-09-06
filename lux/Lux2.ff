@@ -15,7 +15,14 @@ useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: Source
     let box = Box(Any.toAny(initial))
     mutable oldChild = LuxText("")
     LuxHook("$" + location.location + "$" + Any.anyTag[T]().show() + "$", box, {oldNode, unmount =>
-        let value: T = Any.fromAny(box.get())
+        let value = Any.fromAny[T](box.get())
+        let setValue = {newValue => 
+            
+        }
+        let newChild = body(value, setValue)
+        let newNode = internalPatch(oldNode, oldChild, newChild)
+        oldChild = newChild
+        newNode
     })
 }
 
