@@ -57,6 +57,11 @@ internalText(key: String): LuxNode
         return document.createTextNode(key_.slice(1))
     """
 
+internalNull(): LuxNode
+    target js sync """
+        return null
+    """
+
 extend self: LuxNode {
     isNull(): Bool
         target js sync """
@@ -90,10 +95,61 @@ internalPatch(oldNode: LuxNode, old: Lux, new: Lux): LuxNode {
 }
 
 internalPatchProps(element: LuxNode, oldProps: StringMap[JsValue], newProps: StringMap[JsValue]) {
-    
+    newProps.each {name, value =>
+        oldProps.get(name).{
+            | None => element.setProp(name)
+            | Some(oldValue) {!same(value, oldValue)} => element.setProp(name, value)
+            | _ =>
+        }
+    }
+    oldProps.each {name, _ =>
+        if(!newProps.has(name)) {
+            element.clearProp(name)
+        }
+    }
 }
 
 internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: Stack[Lux]) {
+    mutable oldStart = 0
+    mutable newStart = 0
+    mutable oldStop = oldChildren.size() - 1
+    mutable newStop = newChildren.size() - 1
+    let stop = oldStop.min(newStop)
+    // Skip reference equal nodes from both ends
+    while(oldStart < stop && same(oldChildren.grab(oldStart), newChildren.grab(newStart))) {
+        oldStart += 1
+        newStart += 1
+    }
+    while(oldStop > oldStart && newStop > newStart && same(oldChildren.grab(oldStop), newChildren.grab(newStop))) {
+        oldStop -= 1
+        newStop -= 1
+    }
+    if(oldStart != oldStop || newStart != newStop):
+    // If we're not yet done, patch key equal nodes from both ends
+    while(oldStart < stop && oldChildren.grab(oldStart).key == newChildren.grab(newStart).key) {
+        internalPatch(element.childNodeAt(oldStart), oldChildren.grab(oldStart), newChildren.grab(newStart))
+        oldStart += 1
+        newStart += 1
+    }
+    while(oldStop > oldStart && newStop > newStart && same(oldChildren.grab(oldStop), newChildren.grab(newStop))) {
+        internalPatch(element.nodeAt(oldStop), oldChildren.grab(oldStop), newChildren.grab(newStop))
+        oldStop -= 1
+        newStop -= 1
+    }
+    // If we only need to delete nodes or only need to add nodes, do that
+    if(newStart == newStop) {
+        while {oldStart < oldStop} {
+            internalUnmount(oldChildren.grab(oldStart))
+            element.deleteNodeAt(oldStart)
+            oldStop -= 1
+        }
+    } elseIf {oldStart == oldStop} {
+        while {newStart < newStop} {
+            let childElement = internalPatch(internalNull(), LuxText(""), newChildren.grab(newStart))
+            element.insertNodeAt(newStart, childElement)
+            newStop -= 1
+        }
+    } else:
     
 }
 
