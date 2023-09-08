@@ -150,7 +150,7 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
             newStart += 1
         }
     } else:
-    // Otherwise, build an index multimap to and do out-of-order patching
+    // Otherwise, build an index multimap to, do out-of-order patching, and delete excess nodes
     let multiMap = StringMap.make()
     while {oldStart < oldStop} {
         multiMap.getOrSet(oldChildren.grab(oldStop).key) {Stack.make()}.push(oldStop)
