@@ -156,8 +156,17 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
         multiMap.getOrSet(oldChildren.grab(oldStop).key) {Stack.make()}.push(oldStop)
         oldStop -= 1
     }
+    let emptyStack = Stack.make()
     while(newStart < newStop) {
-        
+        let newLux = newChildren.grab(newStart)
+        let oldIndexes = multiMap.get(newLux.key).else {emptyStack}
+        oldIndexes.pop().{
+            | None =>
+                
+            | Some(index) =>
+                let oldLux = oldChildren.grab(index)
+                
+        }
         newStart += 1
     }
     multiMap.each {_, indexes => 
