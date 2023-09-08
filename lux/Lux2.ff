@@ -4,12 +4,7 @@ import LuxEvent
 capability Lux(mutable key: String) {
     LuxText()
     LuxTag(props: StringMap[JsValue], children: Stack[Lux])
-    LuxHook(
-        valueBox: Box[Any]
-        childBox: Box[Lux]
-        update: LuxNode => LuxNode
-        umount: LuxNode => Unit
-    )
+    LuxHook(valueBox: Box[Any], childBox: Box[Lux], update: LuxNode => LuxNode, umount: () => Unit)
 }
 
 new(tagName: String, text: String = ""): Lux {
@@ -38,9 +33,7 @@ useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: Source
         childBox.value = newChild
         newNode
     }
-    let unmount = {oldNode => 
-        internalUnmount(childBox.value)
-    }
+    let unmount = {internalUnmount(childBox.value)}
     LuxHook(key, valueBox, childBox, update, unmount)
 }
 
