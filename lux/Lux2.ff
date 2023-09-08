@@ -21,17 +21,18 @@ useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: Source
     let childBox = Box(LuxText(""))
     let key = "$" + location.location + "$" + Any.anyTag[T]().show() + "$"
     let update = {oldNode =>
-        let value = Any.fromAny[T](valueBox.value).grab()
         let oldChild = childBox.value
         mutable setValue = {_ => }
         setValue = {newValue => 
             valueBox.value = Any.toAny(newValue)
             internalRequestAnimationFrame {
-                let newChild = body(newValue, setValue)
+                let value = Any.fromAny[T](valueBox.value).grab()
+                let newChild = body(value, setValue)
                 internalPatch(oldNode, oldChild, newChild)
                 childBox.value = newChild
             }
         }
+        let value = Any.fromAny[T](valueBox.value).grab()
         let newChild = body(value, setValue)
         let newNode = internalPatch(oldNode, oldChild, newChild)
         childBox.value = newChild
@@ -73,10 +74,11 @@ extend self: LuxNode {
 internalPatch(oldNode: LuxNode, old: Lux, new: Lux): LuxNode {
     | _, _, _ {same(old, new)} => 
         oldNode
-    | _, LuxHook(_, oldBox, _), LuxHook(_, newBox, update) =>
-        newBox.set(oldBox.get())
+    | _, LuxHook(_, oldValueBox, oldChildBox, _, _), LuxHook(_, newValueBox, newChildBox, update, _) =>
+        newValueBox.value = oldValueBox.value
+        newChildBox.value = oldChildBox.value
         update(oldNode)
-    | _, _, LuxHook(_, newBox, update) =>
+    | _, _, LuxHook(_, _, _, update, _) =>
         update(oldNode)
     | _, LuxTag(_, oldProps, oldChildren), LuxTag(newKey, newProps, newChildren) => 
         let element = oldNode
@@ -103,5 +105,7 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
 }
 
 internalUnmount(lux: Lux) {
-    
+    | LuxHook(_, _, _, _, umount) => umount()
+    | LuxTag(_, _, children) => children.each {internalUnmount(_)}
+    | LuxText(_) => 
 }
