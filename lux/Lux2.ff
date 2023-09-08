@@ -131,7 +131,7 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
         oldStart += 1
         newStart += 1
     }
-    while(oldStop > oldStart && newStop > newStart && same(oldChildren.grab(oldStop), newChildren.grab(newStop))) {
+    while(oldStop > oldStart && newStop > newStart && oldChildren.grab(oldStop).key == newChildren.grab(newStop).key) {
         internalPatch(element.nodeAt(oldStop), oldChildren.grab(oldStop), newChildren.grab(newStop))
         oldStop -= 1
         newStop -= 1
