@@ -4,27 +4,48 @@ import LuxEvent
 capability Lux(mutable key: String) {
     LuxText()
     LuxTag(props: StringMap[JsValue], children: Stack[Lux])
-    LuxHook(box: Box[Any], update: (LuxNode, Any, Bool) => LuxNode)
+    LuxHook(
+        valueBox: Box[Any]
+        childBox: Box[Lux]
+        update: LuxNode => LuxNode
+        umount: LuxNode => Unit
+    )
 }
 
 new(tagName: String, text: String = ""): Lux {
-    LuxTag("<" + tagName + ">", Map.empty(), if(text == "") {[LuxText("'" + text)].toArray()} else {Array.empty()})
+    LuxTag("<" + tagName + ">", StringMap.make(), if(text != "") {[LuxText("'" + text)].toStack()} else {[].toStack()})
 }
 
 useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
-    let box = Box(Any.toAny(initial))
-    mutable oldChild = LuxText("")
-    LuxHook("$" + location.location + "$" + Any.anyTag[T]().show() + "$", box, {oldNode, unmount =>
-        let value = Any.fromAny[T](box.get())
-        let setValue = {newValue => 
-            
+    let valueBox = Box(Any.toAny(initial))
+    let childBox = Box(LuxText(""))
+    let key = "$" + location.location + "$" + Any.anyTag[T]().show() + "$"
+    let update = {oldNode =>
+        let value = Any.fromAny[T](valueBox.value).grab()
+        let oldChild = childBox.value
+        mutable setValue = {_ => }
+        setValue = {newValue => 
+            valueBox.value = Any.toAny(newValue)
+            internalRequestAnimationFrame {
+                let newChild = body(newValue, setValue)
+                internalPatch(oldNode, oldChild, newChild)
+                childBox.value = newChild
+            }
         }
         let newChild = body(value, setValue)
         let newNode = internalPatch(oldNode, oldChild, newChild)
-        oldChild = newChild
+        childBox.value = newChild
         newNode
-    })
+    }
+    let unmount = {oldNode => 
+        internalUnmount(childBox.value)
+    }
+    LuxHook(key, valueBox, childBox, update, unmount)
 }
+
+internalRequestAnimationFrame(body: () => Unit): Unit
+    target js async "requestAnimationFrame(() => body_($task))" // TODO: frame won't wait for promise
+    target js sync "requestAnimationFrame(body_)"
 
 extend self: Lux {
     
@@ -49,14 +70,14 @@ extend self: LuxNode {
         """
 }
 
-internalPatch(oldNode: LuxNode, old: Lux, new: Lux): LuxElement {
+internalPatch(oldNode: LuxNode, old: Lux, new: Lux): LuxNode {
     | _, _, _ {same(old, new)} => 
         oldNode
     | _, LuxHook(_, oldBox, _), LuxHook(_, newBox, update) =>
         newBox.set(oldBox.get())
-        update(oldNode, False)
+        update(oldNode)
     | _, _, LuxHook(_, newBox, update) =>
-        update(oldNode, False)
+        update(oldNode)
     | _, LuxTag(_, oldProps, oldChildren), LuxTag(newKey, newProps, newChildren) => 
         let element = oldNode
         if(!same(oldProps, newProps)) {internalPatchProps(element, oldProps, newProps)}
@@ -78,5 +99,9 @@ internalPatchProps(element: LuxNode, oldProps: StringMap[JsValue], newProps: Str
 }
 
 internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: Stack[Lux]) {
+    
+}
+
+internalUnmount(lux: Lux) {
     
 }

@@ -33,6 +33,7 @@ extend self: Deriver {
         let coreWhitelist = [
             "ff:core/Serializable.DeserializationChecksumException"
             "ff:core/Core.GrabException"
+            "ff:core/Pair.Pair"
         ].toSet() // Maybe whitelist all?
         let missingInstance =
             self.findTypesThatNeedInstances("ff:core/Any.HasAnyTag", modulePrefix, coreWhitelist, True, module)

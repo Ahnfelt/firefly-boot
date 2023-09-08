@@ -3,6 +3,40 @@ import HttpServer from ff:httpserver
 import Lux
 import LuxEvent
 
+
+mainComponent(http: HttpClient): Lux {
+    Lux.useState([]): chat, setChat => 
+    Lux.useState(""): message, setMessage =>
+    Lux.div()
+        .add(Lux.div().addList(chat.map {questionComponent(http, _)}))
+        .add(Lux.form()
+            .add(Lux.input()
+                .with("value", message)
+                .on("input") {event => setMessage(event.text())}
+            )
+            .on("submit") {event => 
+                event.preventDefault()
+                setMessage("")
+                setChat([...chat, message])
+            }
+        )
+}
+
+questionComponent(http: HttpClient, question: String): Lux {
+    Lux.div()
+        .add(Lux.div("User: " + question))
+        .add(
+            Lux.useMemo1(question): _ =>
+            Lux.useSuspense {Lux.div("Assistant typing...")}:
+            let answer = http.fetch(
+                url = "/chat"
+                method = "POST"
+                body = Some(HttpClient.bodyText(question))
+            ).readText()
+            Lux.div("Assistant: " + answer)
+        )
+}
+
 componentCMemo(onClick: () => Unit, message: String): Lux {
     Lux.useCallback0(onClick): onClick =>
     Lux.useMemo2(onClick, message) {componentC(_, _)} {_}

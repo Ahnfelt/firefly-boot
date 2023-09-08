@@ -213,6 +213,15 @@ export async function Pair_toMap$(self_, ff_core_Ordering_Order$A, $task) {
 return ff_core_List.List_toMap(ff_core_List.Link(self_, ff_core_List.Empty()), ff_core_Ordering_Order$A)
 }
 
+export function ff_core_Any_HasAnyTag$ff_core_Pair_Pair(ff_core_Any_HasAnyTag$A, ff_core_Any_HasAnyTag$B) { return {
+anyTag_() {
+return ff_core_Any.internalAnyTag_(((((("ff:core/Pair.Pair" + "[") + ff_core_Any.AnyTag_show(ff_core_Any_HasAnyTag$A.anyTag_())) + ",") + ff_core_Any.AnyTag_show(ff_core_Any_HasAnyTag$B.anyTag_())) + "]"))
+},
+async anyTag_$($task) {
+return ff_core_Any.internalAnyTag_(((((("ff:core/Pair.Pair" + "[") + ff_core_Any.AnyTag_show(ff_core_Any_HasAnyTag$A.anyTag_())) + ",") + ff_core_Any.AnyTag_show(ff_core_Any_HasAnyTag$B.anyTag_())) + "]"))
+}
+}}
+
 export function ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal_Equal$A, ff_core_Equal_Equal$B) { return {
 equals_(x_, y_) {
 {
