@@ -139,18 +139,33 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
     // If we only need to delete nodes or only need to add nodes, do that
     if(newStart == newStop) {
         while {oldStart < oldStop} {
-            internalUnmount(oldChildren.grab(oldStart))
-            element.deleteNodeAt(oldStart)
+            internalUnmount(oldChildren.grab(oldStop))
+            element.deleteNodeAt(oldStop)
             oldStop -= 1
         }
     } elseIf {oldStart == oldStop} {
         while {newStart < newStop} {
             let childElement = internalPatch(internalNull(), LuxText(""), newChildren.grab(newStart))
             element.insertNodeAt(newStart, childElement)
-            newStop -= 1
+            newStart += 1
         }
     } else:
-    
+    // Otherwise, build an index multimap to and do out-of-order patching
+    let multiMap = StringMap.make()
+    while {oldStart < oldStop} {
+        multiMap.getOrSet(oldChildren.grab(oldStop).key) {Stack.make()}.push(oldStop)
+        oldStop -= 1
+    }
+    while(newStart < newStop) {
+        
+        newStart += 1
+    }
+    multiMap.each {_, indexes => 
+        indexes.each {index =>
+            internalUnmount(oldChildren.grab(index))
+            element.deleteNodeAt(newStop)
+        }
+    }
 }
 
 internalUnmount(lux: Lux) {
