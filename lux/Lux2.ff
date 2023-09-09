@@ -185,12 +185,12 @@ internalPatch(oldNode: LuxNode, old: Lux, new: Lux): LuxNode {
         update(oldNode)
     | _, _, LuxHook(_, _, _, update, _) =>
         update(oldNode)
-    | _, LuxTag(_, oldProps, oldChildren), LuxTag(newKey, newProps, newChildren) => 
+    | _, LuxTag(o, oldProps, oldChildren), LuxTag(newKey, newProps, newChildren) => 
         let element = oldNode
         if(!same(oldProps, newProps)) {internalPatchProps(element, oldProps, newProps)}
         if(!same(oldChildren, newChildren)) {internalPatchChildren(element, oldChildren, newChildren)}
         element
-    | _, _, LuxTag(newKey, newProps, newChildren) => 
+    | _, o, LuxTag(newKey, newProps, newChildren) => 
         let element = internalElement(newKey)
         if(newProps.size() != 0) {internalPatchProps(element, StringMap.make(), newProps)}
         if(newChildren.size() != 0) {internalPatchChildren(element, [].toStack(), newChildren)}
@@ -258,6 +258,7 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
         newStop -= 1
     }
     // If we only need to delete nodes or only need to add nodes, do that
+    let emptyNode = LuxText("")
     if(newStart > newStop) {
         while {oldStart <= oldStop} {
             internalUnmount(oldChildren.grab(oldStop))
@@ -266,7 +267,7 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
         }
     } elseIf {oldStart > oldStop} {
         while {newStart <= newStop} {
-            let childElement = internalPatch(internalNull(), LuxText(""), newChildren.grab(newStart))
+            let childElement = internalPatch(internalNull(), emptyNode, newChildren.grab(newStart))
             element.insertAt(newStart, childElement)
             newStart += 1
         }
@@ -278,7 +279,6 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
         stack.push(Pair(oldStop, element.grab(oldStop)))
         oldStop -= 1
     }
-    let emptyNode = LuxText("")
     let emptyStack = Stack.make()
     while {newStart <= newStop} {
         let newLux = newChildren.grab(newStart)
