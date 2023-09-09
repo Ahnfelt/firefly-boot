@@ -38,13 +38,56 @@ useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: Source
 }
 
 extend self: Lux {
-    add(lux: Lux): Lux {
-        | LuxTag(_, _, children) => 
-            children.push(lux)
-            self
-        | _ => 
-            self
+    
+    key(key: String): Lux {
+        self.{
+            | LuxHook lux => lux.LuxHook(internalKey = lux.internalKey + "|" + key)
+            | LuxTag lux => lux.LuxTag(internalKey = lux.internalKey + "|" + key)
+            | _ =>
+        }
+        self
     }
+    
+    add(lux: Lux): Lux {
+        self.{
+            | LuxTag(_, _, children) => children.push(lux)
+            | _ => 
+        }
+        self
+    }
+    
+    addList(list: List[Lux]): Lux {
+        self.{
+            | LuxTag(_, _, children) => list.each {children.push(_)}
+            | _ => 
+        }
+        self
+    }
+    
+    addArray(array: Array[Lux]): Lux {
+        self.{
+            | LuxTag(_, _, children) => children.pushArray(array)
+            | _ => 
+        }
+        self
+    }
+    
+    addText(text: String): Lux {
+        self.{
+            | LuxTag(_, _, children) => children.push(LuxText("'" + text))
+            | _ => 
+        }
+        self
+    }
+    
+    with[V: IsJsValue](name: String, value: V): Lux {
+        self.{
+            | LuxTag lux => lux.props.set(name, internalJsValue(value))
+            | _ =>
+        }
+        self
+    }
+   
 }
 
 
@@ -62,6 +105,9 @@ internalRequestAnimationFrame(body: () => Unit): Unit
     target js async "requestAnimationFrame(() => body_($task))" // TODO: frame won't wait for promise
     target js sync "requestAnimationFrame(body_)"
 
+internalJsValue[V: IsJsValue](value: V): JsValue
+    target js sync "return value_"
+    
 internalElement(key: String): LuxNode
     target js sync """
         return document.createElement(key_.slice(1, key_.indexOf('>')))
