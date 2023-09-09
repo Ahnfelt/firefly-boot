@@ -173,7 +173,6 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
     }
     let emptyNode = LuxText("")
     let emptyStack = Stack.make()
-    mutable inserted = 0
     while {newStart < newStop} {
         let newLux = newChildren.grab(newStart)
         let oldPairs = multiMap.get(newLux.key).else {emptyStack}
