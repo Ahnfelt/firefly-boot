@@ -156,16 +156,20 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
         multiMap.getOrSet(oldChildren.grab(oldStop).key) {Stack.make()}.push(oldStop)
         oldStop -= 1
     }
+    let emptyNode = LuxText("")
     let emptyStack = Stack.make()
+    mutable inserted = 0
     while(newStart < newStop) {
         let newLux = newChildren.grab(newStart)
         let oldIndexes = multiMap.get(newLux.key).else {emptyStack}
         oldIndexes.pop().{
             | None =>
-                
-            | Some(index) =>
+                inserted += 1
+                internalPatch(element.nodeAt(newStart), emptyNode, newLux)
+            | Some(oldIndex) =>
+                element.insertNodeAt(newStart, element.nodeAt(oldIndex + inserted))
                 let oldLux = oldChildren.grab(index)
-                
+                internalPatch(element.nodeAt(newStart), oldLux, newLux)
         }
         newStart += 1
     }
