@@ -432,6 +432,13 @@ export async function String_toBuffer$(self_, $task) {
 throw new Error('Function String_toBuffer is missing on this target in async context.');
 }
 
-
+export const ff_core_Any_HasAnyTag$ff_core_String_String = {
+anyTag_() {
+return ff_core_Any.internalAnyTag_((("ff:core/String.String" + "[") + "]"))
+},
+async anyTag_$($task) {
+return ff_core_Any.internalAnyTag_((("ff:core/String.String" + "[") + "]"))
+}
+};
 
 

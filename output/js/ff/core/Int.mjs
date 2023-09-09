@@ -253,6 +253,13 @@ return self_
 }
 }
 
-
+export const ff_core_Any_HasAnyTag$ff_core_Int_Int = {
+anyTag_() {
+return ff_core_Any.internalAnyTag_((("ff:core/Int.Int" + "[") + "]"))
+},
+async anyTag_$($task) {
+return ff_core_Any.internalAnyTag_((("ff:core/Int.Int" + "[") + "]"))
+}
+};
 
 

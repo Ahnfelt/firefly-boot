@@ -34,6 +34,11 @@ extend self: Deriver {
             "ff:core/Serializable.DeserializationChecksumException"
             "ff:core/Core.GrabException"
             "ff:core/Pair.Pair"
+            "ff:core/Int.Int"
+            "ff:core/Float.Float"
+            "ff:core/String.String"
+            "ff:core/Char.Char"
+            "ff:core/Bool.Bool"
         ].toSet() // Maybe whitelist all?
         let missingInstance =
             self.findTypesThatNeedInstances("ff:core/Any.HasAnyTag", modulePrefix, coreWhitelist, True, module)

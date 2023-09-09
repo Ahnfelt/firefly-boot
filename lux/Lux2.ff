@@ -87,7 +87,15 @@ extend self: Lux {
         }
         self
     }
-   
+
+    on(event: String, handler: LuxEvent => Unit): Lux {
+        self.{
+            | LuxTag lux => lux.props.set("@" + event, internalJsHandler(handler))
+            | _ =>
+        }
+        self
+    }
+    
 }
 
 
@@ -107,6 +115,10 @@ internalRequestAnimationFrame(body: () => Unit): Unit
 
 internalJsValue[V: IsJsValue](value: V): JsValue
     target js sync "return value_"
+    
+internalJsHandler(handler: LuxEvent => Unit): JsValue
+    target js async "return event => handler_(event, $task)"
+    target js sync "return handler_"
     
 internalElement(key: String): LuxNode
     target js sync """
@@ -140,6 +152,14 @@ extend self: LuxNode {
     clearProp(name: String)
         target js sync """
             self_[name_] = null
+        """
+    addEventListener(name: String, value: JsValue)
+        target js sync """
+            self_.addEventListener(name_, value_)
+        """
+    removeEventListener(name: String, value: JsValue)
+        target js sync """
+            self_.removeEventListener(name_, value_)
         """
     grab(index: Int): LuxNode
         target js sync """
@@ -183,14 +203,29 @@ internalPatch(oldNode: LuxNode, old: Lux, new: Lux): LuxNode {
 internalPatchProps(element: LuxNode, oldProps: StringMap[JsValue], newProps: StringMap[JsValue]) {
     newProps.each {name, value =>
         oldProps.get(name).{
-            | None => element.setProp(name, value)
-            | Some(oldValue) {!same(value, oldValue)} => element.setProp(name, value)
+            | None => 
+                if(name.startsWith("@")) {
+                    element.addEventListener(name.dropFirst(), value)
+                } else {
+                    element.setProp(name, value)
+                }
+            | Some(oldValue) {!same(value, oldValue)} =>
+                if(name.startsWith("@")) {
+                    element.removeEventListener(name.dropFirst(), oldValue)
+                    element.addEventListener(name.dropFirst(), value)
+                } else {
+                    element.setProp(name, value)
+                }
             | _ =>
         }
     }
-    oldProps.each {name, _ =>
+    oldProps.each {name, value =>
         if(!newProps.has(name)) {
-            element.clearProp(name)
+            if(name.startsWith("@")) {
+                element.removeEventListener(name.dropFirst(), value)
+            } else {
+                element.clearProp(name)
+            }
         }
     }
 }

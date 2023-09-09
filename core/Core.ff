@@ -57,8 +57,6 @@ panic[T](message: String): T
 
 
 same[T](x: T, y: T): Bool
-    target js sync """
-        return x === y
-    """
+    target js sync """return x_ === y_"""
     
 data GrabException()

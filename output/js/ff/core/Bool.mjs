@@ -140,6 +140,13 @@ return
 }
 }
 
-
+export const ff_core_Any_HasAnyTag$ff_core_Bool_Bool = {
+anyTag_() {
+return ff_core_Any.internalAnyTag_((("ff:core/Bool.Bool" + "[") + "]"))
+},
+async anyTag_$($task) {
+return ff_core_Any.internalAnyTag_((("ff:core/Bool.Bool" + "[") + "]"))
+}
+};
 
 
