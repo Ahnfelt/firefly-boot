@@ -258,7 +258,6 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
         newStop -= 1
     }
     // If we only need to delete nodes or only need to add nodes, do that
-    let emptyNode = LuxText("")
     if(newStart > newStop) {
         while {oldStart <= oldStop} {
             internalUnmount(oldChildren.grab(oldStop))
@@ -266,6 +265,7 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
             oldStop -= 1
         }
     } elseIf {oldStart > oldStop} {
+        let emptyNode = LuxText("")
         while {newStart <= newStop} {
             let childElement = internalPatch(internalNull(), emptyNode, newChildren.grab(newStart))
             element.insertAt(newStart, childElement)
@@ -279,6 +279,7 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
         stack.push(Pair(oldStop, element.grab(oldStop)))
         oldStop -= 1
     }
+    let emptyNode = LuxText("")
     let emptyStack = Stack.make()
     while {newStart <= newStop} {
         let newLux = newChildren.grab(newStart)
