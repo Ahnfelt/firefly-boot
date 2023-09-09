@@ -1,7 +1,7 @@
 import Lux2 as Lux
 import LuxEvent
 
-capability Lux(mutable key: String) {
+capability Lux(mutable internalKey: String) {
     LuxText()
     LuxTag(props: StringMap[JsValue], children: Stack[Lux])
     LuxHook(valueBox: Box[Any], childBox: Box[Lux], update: LuxNode => LuxNode, umount: () => Unit)
@@ -43,7 +43,7 @@ internalRequestAnimationFrame(body: () => Unit): Unit
 
 extend self: Lux {
     add(lux: Lux): Lux {
-        | LuxTag(key, props, children) => 
+        | LuxTag(_, _, children) => 
             children.push(lux)
             self
         | _ => 
@@ -127,7 +127,7 @@ internalPatch(oldNode: LuxNode, old: Lux, new: Lux): LuxNode {
         if(newProps.size() != 0) {internalPatchProps(element, StringMap.make(), newProps)}
         if(newChildren.size() != 0) {internalPatchChildren(element, [].toStack(), newChildren)}
         element
-    | _, _, LuxText(newKey) {old.key == ""} => // We use LuxText("") as "no vnode"
+    | _, _, LuxText(newKey) {old.internalKey == ""} => // We use LuxText("") as "no vnode"
         internalText(newKey)
     | _, _, _ => 
         oldNode
@@ -155,14 +155,20 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
     mutable newStop = newChildren.size() - 1
     let stop = oldStop.min(newStop)
     // If we're not yet done, patch key equal nodes from both ends
-    while {oldStart < stop && oldChildren.grab(oldStart).key == newChildren.grab(newStart).key} {
+    while {
+        oldStart < stop && 
+        oldChildren.grab(oldStart).internalKey == newChildren.grab(newStart).internalKey
+    } {
         let oldLux = oldChildren.grab(oldStart)
         let newLux = newChildren.grab(newStart)
         if(!same(oldLux, newLux)) {internalPatch(element.grab(oldStart), oldLux, newLux)}
         oldStart += 1
         newStart += 1
     }
-    while {oldStop > oldStart && newStop > newStart && oldChildren.grab(oldStop).key == newChildren.grab(newStop).key} {
+    while {
+        oldStop > oldStart && newStop > newStart && 
+        oldChildren.grab(oldStop).internalKey == newChildren.grab(newStop).internalKey
+    } {
         let oldLux = oldChildren.grab(oldStop)
         let newLux = newChildren.grab(newStop)
         if(!same(oldLux, newLux)) {internalPatch(element.grab(oldStop), oldLux, newLux)}
@@ -186,7 +192,7 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
     // Otherwise, build an index multimap to, do out-of-order patching, and delete excess nodes
     let multiMap = StringMap.make()
     while {oldStart < oldStop} {
-        let stack = multiMap.getOrSet(oldChildren.grab(oldStop).key) {Stack.make()}
+        let stack = multiMap.getOrSet(oldChildren.grab(oldStop).internalKey) {Stack.make()}
         stack.push(Pair(oldStop, element.grab(oldStop)))
         oldStop -= 1
     }
@@ -194,7 +200,7 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
     let emptyStack = Stack.make()
     while {newStart < newStop} {
         let newLux = newChildren.grab(newStart)
-        let oldPairs = multiMap.get(newLux.key).else {emptyStack}
+        let oldPairs = multiMap.get(newLux.internalKey).else {emptyStack}
         oldPairs.pop().{
             | None =>
                 internalPatch(element.grab(newStart), emptyNode, newLux)
