@@ -37,10 +37,6 @@ useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: Source
     LuxHook(key, valueBox, childBox, update, unmount)
 }
 
-internalRequestAnimationFrame(body: () => Unit): Unit
-    target js async "requestAnimationFrame(() => body_($task))" // TODO: frame won't wait for promise
-    target js sync "requestAnimationFrame(body_)"
-
 extend self: Lux {
     add(lux: Lux): Lux {
         | LuxTag(_, _, children) => 
@@ -51,6 +47,7 @@ extend self: Lux {
     }
 }
 
+
 data LuxNode {}
 
 mount(element: LuxNode, lux: Lux): Unit {
@@ -60,6 +57,10 @@ mount(element: LuxNode, lux: Lux): Unit {
 mountById(system: BrowserSystem, id: String, lux: Lux): Unit {
     Lux.mount(internalElementById(id), lux)
 }
+
+internalRequestAnimationFrame(body: () => Unit): Unit
+    target js async "requestAnimationFrame(() => body_($task))" // TODO: frame won't wait for promise
+    target js sync "requestAnimationFrame(body_)"
 
 internalElement(key: String): LuxNode
     target js sync """
