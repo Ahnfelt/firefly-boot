@@ -14,7 +14,7 @@ new(tagName: String, text: String = ""): Lux {
 useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
     let valueBox = Box(Any.toAny(initial))
     let childBox = Box(LuxText(""))
-    let key = "$" + location.location + "$" + Any.anyTag[T]().show() + "$"
+    let key = "$" + location.location + "$" + Any.anyTag[T]().show()
     let update = {node =>
         mutable currentNode = node
         mutable setValue = {_ => }
