@@ -163,15 +163,15 @@ extend self: LuxNode {
         """
     grab(index: Int): LuxNode
         target js sync """
-            return self_[index_]
+            return self_.childNodes[index_]
         """
-    insertAt(index: Int, node: LuxNode): LuxNode
+    insertAt(index: Int, node: LuxNode): Unit
         target js sync """
-            return self_.insertBefore(node_, self_[index_])
+            self_.insertBefore(node_, self_.childNodes[index_])
         """
-    delete(): LuxNode
+    delete(): Unit
         target js sync """
-            return self_.parentElement.removeChild(self_)
+            self_.parentElement.removeChild(self_)
         """
 }
 
@@ -194,7 +194,7 @@ internalPatch(oldNode: LuxNode, old: Lux, new: Lux): LuxNode {
         if(newProps.size() != 0) {internalPatchProps(element, StringMap.make(), newProps)}
         if(newChildren.size() != 0) {internalPatchChildren(element, [].toStack(), newChildren)}
         element
-    | _, _, LuxText(newKey) {old.internalKey == ""} => // We use LuxText("") as "no vnode"
+    | _, _, LuxText(newKey) {old.internalKey != newKey} =>
         internalText(newKey)
     | _, _, _ => 
         oldNode
@@ -256,8 +256,15 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
         oldStop -= 1
         newStop -= 1
     }
-    // If we only need to delete nodes or only need to add nodes, do that
-    if(newStart > newStop) {
+    // If it's a single swap, or we only need to delete nodes or only need to add nodes, do that
+    if(False && newStart == newStop && oldStart == oldStop) {
+        let oldLux = oldChildren.grab(oldStop)
+        let newLux = newChildren.grab(newStop)
+        internalUnmount(oldChildren.grab(oldStop))
+        element.grab(oldStop).delete()
+        let childElement = internalPatch(internalNull(), LuxText(""), newChildren.grab(newStart))
+        element.insertAt(newStart, childElement)
+    } elseIf {newStart > newStop} {
         while {oldStart <= oldStop} {
             internalUnmount(oldChildren.grab(oldStop))
             element.grab(oldStop).delete()
@@ -285,7 +292,8 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
         let oldPairs = multiMap.get(newLux.internalKey).else {emptyStack}
         oldPairs.pop().{
             | None =>
-                internalPatch(element.grab(newStart), emptyNode, newLux)
+                let newNode = internalPatch(internalNull(), emptyNode, newLux)
+                element.insertAt(newStart, newNode)
             | Some(Pair(oldIndex, oldNode)) =>
                 element.insertAt(newStart, oldNode)
                 let oldLux = oldChildren.grab(oldIndex)
