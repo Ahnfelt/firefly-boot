@@ -4,7 +4,7 @@ import LuxEvent
 capability Lux(mutable internalKey: String) {
     LuxText()
     LuxTag(props: StringMap[JsValue], children: Stack[Lux])
-    LuxHook(valueBox: Box[Any], childBox: Box[Lux], update: LuxNode => LuxNode, umount: () => Unit)
+    LuxHook(valueBox: Box[Any], childBox: Box[Lux], frameBox: Box[Int], update: LuxNode => LuxNode, umount: () => Unit)
 }
 
 new(tagName: String, text: String = ""): Lux {
@@ -14,11 +14,13 @@ new(tagName: String, text: String = ""): Lux {
 useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
     let valueBox = Box(Any.toAny(initial))
     let childBox = Box(LuxText(""))
+    let frameBox = Box(-1)
     let key = "$" + location.location + "$" + Any.anyTag[T]().show()
     let update = {node =>
         mutable currentNode = node
         mutable setValue = {_ => }
         function render(): LuxNode {
+            if(frameBox.value != -1) {internalCancelAnimationFrame(frameBox.value)}
             let value = Any.fromAny[T](valueBox.value).grab()
             let newChild = body(value, setValue)
             currentNode = internalPatch(currentNode, childBox.value, newChild)
@@ -27,12 +29,12 @@ useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: Source
         }
         setValue = {newValue => 
             valueBox.value = Any.toAny(newValue)
-            internalRequestAnimationFrame {render()}
+            frameBox.value = internalRequestAnimationFrame {render()}
         }
         render()
     }
     let unmount = {internalUnmount(childBox.value)}
-    LuxHook(key, valueBox, childBox, update, unmount)
+    LuxHook(key, valueBox, childBox, frameBox, update, unmount)
 }
 
 extend self: Lux {
@@ -107,9 +109,12 @@ mountById(system: BrowserSystem, id: String, lux: Lux): Unit {
     mount(internalElementById(id), lux)
 }
 
-internalRequestAnimationFrame(body: () => Unit): Unit
-    target js async "requestAnimationFrame(() => body_($task))" // TODO: frame won't wait for promise
-    target js sync "requestAnimationFrame(body_)"
+internalRequestAnimationFrame(body: () => Unit): Int
+    target js async "return requestAnimationFrame(() => body_($task))" // TODO: frame won't wait for promise
+    target js sync "return requestAnimationFrame(body_)"
+
+internalCancelAnimationFrame(handle: Int): Unit
+    target js sync "return cancelAnimationFrame(handle_)"
 
 internalJsValue[V: IsJsValue](value: V): JsValue
     target js sync "return value_"
@@ -176,11 +181,12 @@ extend self: LuxNode {
 internalPatch(oldNode: LuxNode, old: Lux, new: Lux): LuxNode {
     | _, _, _ {same(old, new)} => 
         oldNode
-    | _, LuxHook(_, oldValueBox, oldChildBox, _, _), LuxHook(_, newValueBox, newChildBox, update, _) =>
-        newValueBox.value = oldValueBox.value
-        newChildBox.value = oldChildBox.value
-        update(oldNode)
-    | _, _, LuxHook(_, _, _, update, _) =>
+    | _, LuxHook oldLux, LuxHook newLux =>
+        newLux.valueBox.value = oldLux.valueBox.value
+        newLux.childBox.value = oldLux.childBox.value
+        newLux.frameBox.value = oldLux.frameBox.value
+        newLux.update.{_(oldNode)} // Workaround for apparent type checker bug
+    | _, _, LuxHook(_, _, _, _, update, _) =>
         update(oldNode)
     | _, LuxTag(_, oldProps, oldChildren), LuxTag(newKey, newProps, newChildren) => 
         let element = oldNode
@@ -307,7 +313,7 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
 }
 
 internalUnmount(lux: Lux) {
-    | LuxHook(_, _, _, _, umount) => umount()
+    | LuxHook(_, _, _, _, _, umount) => umount()
     | LuxTag(_, _, children) => children.each {internalUnmount(_)}
     | LuxText(_) => 
 }
