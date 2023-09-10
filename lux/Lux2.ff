@@ -18,20 +18,18 @@ useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: Source
     let update = {node =>
         mutable currentNode = node
         mutable setValue = {_ => }
+        function render(): LuxNode {
+            let value = Any.fromAny[T](valueBox.value).grab()
+            let newChild = body(value, setValue)
+            currentNode = internalPatch(currentNode, childBox.value, newChild)
+            childBox.value = newChild
+            currentNode
+        }
         setValue = {newValue => 
             valueBox.value = Any.toAny(newValue)
-            internalRequestAnimationFrame {
-                let value = Any.fromAny[T](valueBox.value).grab()
-                let newChild = body(value, setValue)
-                currentNode = internalPatch(currentNode, childBox.value, newChild)
-                childBox.value = newChild
-            }
+            internalRequestAnimationFrame {render()}
         }
-        let value = Any.fromAny[T](valueBox.value).grab()
-        let newChild = body(value, setValue)
-        currentNode = internalPatch(currentNode, childBox.value, newChild)
-        childBox.value = newChild
-        currentNode
+        render()
     }
     let unmount = {internalUnmount(childBox.value)}
     LuxHook(key, valueBox, childBox, update, unmount)
