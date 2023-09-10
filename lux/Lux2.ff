@@ -17,10 +17,10 @@ useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: Source
     let frameBox = Box(0)
     let key = "$" + location.location + "$" + Any.anyTag[T]().show()
     let update = {node =>
+        if(frameBox.value != 0) {internalCancelAnimationFrame(frameBox.value)}
         mutable currentNode = node
         mutable setValue = {_ => }
         function render(): LuxNode {
-            if(frameBox.value != 0) {internalCancelAnimationFrame(frameBox.value)}
             let value = Any.fromAny[T](valueBox.value).grab()
             let newChild = body(value, setValue)
             currentNode = internalPatch(currentNode, childBox.value, newChild)
@@ -29,6 +29,7 @@ useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: Source
         }
         setValue = {newValue => 
             valueBox.value = Any.toAny(newValue)
+            if(frameBox.value != 0) {internalCancelAnimationFrame(frameBox.value)}
             frameBox.value = internalRequestAnimationFrame {render()}
         }
         render()
