@@ -257,7 +257,7 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
         newStop -= 1
     }
     // If it's a single swap, or we only need to delete nodes or only need to add nodes, do that
-    if(False && newStart == newStop && oldStart == oldStop) {
+    if(newStart == newStop && oldStart == oldStop) {
         let oldLux = oldChildren.grab(oldStop)
         let newLux = newChildren.grab(newStop)
         internalUnmount(oldChildren.grab(oldStop))
@@ -282,7 +282,7 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
     let multiMap = StringMap.make()
     while {oldStart <= oldStop} {
         let stack = multiMap.getOrSet(oldChildren.grab(oldStop).internalKey) {Stack.make()}
-        stack.push(Pair(oldStop, element.grab(oldStop)))
+        stack.push(Pair(oldChildren.grab(oldStop), element.grab(oldStop)))
         oldStop -= 1
     }
     let emptyNode = LuxText("")
@@ -294,16 +294,15 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
             | None =>
                 let newNode = internalPatch(internalNull(), emptyNode, newLux)
                 element.insertAt(newStart, newNode)
-            | Some(Pair(oldIndex, oldNode)) =>
+            | Some(Pair(oldLux, oldNode)) =>
                 element.insertAt(newStart, oldNode)
-                let oldLux = oldChildren.grab(oldIndex)
                 internalPatch(oldNode, oldLux, newLux)
         }
         newStart += 1
     }
     multiMap.each {_, pairs => 
-        pairs.each {| Pair(oldIndex, oldNode) =>
-            internalUnmount(oldChildren.grab(oldIndex))
+        pairs.each {| Pair(oldLux, oldNode) =>
+            internalUnmount(oldLux)
             oldNode.delete()
         }
     }
