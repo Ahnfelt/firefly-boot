@@ -260,9 +260,9 @@ internalPatchChildren(element: LuxNode, oldChildren: Stack[Lux], newChildren: St
     if(newStart == newStop && oldStart == oldStop) {
         let oldLux = oldChildren.grab(oldStop)
         let newLux = newChildren.grab(newStop)
-        internalUnmount(oldChildren.grab(oldStop))
+        internalUnmount(oldLux)
         element.grab(oldStop).delete()
-        let childElement = internalPatch(internalNull(), LuxText(""), newChildren.grab(newStart))
+        let childElement = internalPatch(internalNull(), LuxText(""), newLux)
         element.insertAt(newStart, childElement)
     } elseIf {newStart > newStop} {
         while {oldStart <= oldStop} {
