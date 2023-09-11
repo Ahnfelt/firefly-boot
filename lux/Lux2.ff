@@ -15,7 +15,7 @@ useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: Source
     let valueBox = Box(Any.toAny(initial))
     let childBox = Box(LuxText(""))
     let frameBox = Box(0)
-    let key = "$" + location.location + "$" + Any.anyTag[T]().show()
+    let key = "$S$" + location.location + "$" + Any.anyTag[T]().show()
     let update = {node =>
         if(frameBox.value != 0) {internalCancelAnimationFrame(frameBox.value)}
         mutable currentNode = node
@@ -41,7 +41,7 @@ useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: Source
 internalUseMemo[I: Equal: HasAnyTag, O: HasAnyTag](input: I, compute: I => O, body: O => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
     let valueBox = Box(Any.toAny[Pair[I, Option[O]]](Pair(input, None)))
     let childBox = Box(LuxText(""))
-    let key = "$" + location.location + "$" + Any.anyTag[Pair[I, Option[O]]]().show()
+    let key = "$M$" + location.location + "$" + Any.anyTag[Pair[I, Option[O]]]().show()
     let update = {node =>
         let pair = Any.fromAny[Pair[I, Option[O]]](valueBox.value).grab()
         let value = if(pair.second.isEmpty() || pair.first != input) {compute(input)} else {pair.second.grab()}
@@ -67,6 +67,42 @@ useMemo2[A1: Equal: HasAnyTag, A2: Equal: HasAnyTag, O: HasAnyTag](a1: A1, a2: A
     internalUseMemo(Pair(a1, a2), {pair => compute(pair.first, pair.second)}, body, location)
 }
 
+useCallback1[A1: HasAnyTag, R: HasAnyTag](callback: A1 => R, body: (A1 => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    let childBox = Box(LuxText(""))
+    let valueBox = Box(Any.toAny[LuxCallback1[A1, R]](LuxCallback1(
+        wrapper = internalFunctionToJsValue1(callback)
+        callback = internalFunctionToJsValue1(callback)
+    )))
+    Any.fromAny[LuxCallback1[A1, R]](valueBox.value).grab().wrapper =  internalFunctionToJsValue1 {a1 => 
+        internalJsValueToFunction1(Any.fromAny[LuxCallback1[A1, R]](valueBox.value).grab().callback)(a1)
+    }
+    let key = "$C$" + location.location + "$" + Any.anyTag[LuxCallback1[A1, R]]().show()
+    let update = {node =>
+        let luxCallback = Any.fromAny[LuxCallback1[A1, R]](valueBox.value).grab()
+        luxCallback.callback = internalFunctionToJsValue1(callback)
+        let newChild = body(internalJsValueToFunction1(luxCallback.wrapper))
+        let currentNode = internalPatch(node, childBox.value, newChild)
+        childBox.value = newChild
+        currentNode
+    }
+    let unmount = {internalUnmount(childBox.value)}
+    LuxHook(key, Box(Any.toAny(Unit)), childBox, Box(0), update, unmount)
+}
+
+class LuxCallback1[A1, R](mutable wrapper: JsValue, mutable callback: JsValue)
+instance LuxCallback1[A1: HasAnyTag, R: HasAnyTag]: HasAnyTag {
+    anyTag(): AnyTag[LuxCallback1[A1, R]] {
+        Any.internalAnyTag("LuxCallback[" + Any.anyTag[Pair[A1, R]]().show() + "]")
+    }
+}
+
+internalFunctionToJsValue1[A1, R](callback: A1 => R): JsValue
+    target js async """return a1 => callback_(a1, $task)"""
+    target js sync """return callback_"""
+
+internalJsValueToFunction1[A1, R](value: JsValue): A1 => R
+    target js sync """return value_"""
+        
 extend self: Lux {
     
     key(key: String): Lux {
