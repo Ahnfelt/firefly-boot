@@ -55,6 +55,24 @@ internalUseMemo[I: Equal: HasAnyTag, O: HasAnyTag](arguments: Int, input: I, com
     LuxHook(key, valueBox, childBox, Box(0), update, unmount)
 }
 
+internalUseCallback[A1: HasAnyTag, R: HasAnyTag](arguments: Int, callback: A1 => R, body: (A1 => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    let childBox = Box(LuxText(""))
+    let valueBox = Box(Any.toAny[LuxCallback1[A1, R]](LuxCallback1(internalFunctionToJsValue1(callback))))
+    let key = "$C" + arguments + "$" + location.location + "$" + Any.anyTag[LuxCallback1[A1, R]]().show()
+    let update = {node =>
+        let luxCallback = Any.fromAny[LuxCallback1[A1, R]](valueBox.value).grab()
+        luxCallback.callback = internalFunctionToJsValue1(callback)
+        let newChild = body {a1 =>
+            internalJsValueToFunction1(Any.fromAny[LuxCallback1[A1, R]](valueBox.value).grab().callback)(a1)
+        }
+        let currentNode = internalPatch(node, childBox.value, newChild)
+        childBox.value = newChild
+        currentNode
+    }
+    let unmount = {internalUnmount(childBox.value)}
+    LuxHook(key, Box(Any.toAny(Unit)), childBox, Box(0), update, unmount)
+}
+
 useMemo0[O: HasAnyTag](compute: () => O, body: O => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
     internalUseMemo(0, Unit, {_ => compute()}, body, location)
 }
@@ -77,24 +95,6 @@ useCallback1[A1: HasAnyTag, R: HasAnyTag](callback: A1 => R, body: (A1 => R) => 
 
 useCallback2[A1: HasAnyTag, A2: HasAnyTag, R: HasAnyTag](callback: (A1, A2) => R, body: ((A1, A2) => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
     internalUseCallback[Pair[A1, A2], R](2, {pair => callback(pair.first, pair.second)}, {f => body({x, y => f(Pair(x, y))})}, location)
-}
-
-internalUseCallback[A1: HasAnyTag, R: HasAnyTag](arguments: Int, callback: A1 => R, body: (A1 => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
-    let childBox = Box(LuxText(""))
-    let valueBox = Box(Any.toAny[LuxCallback1[A1, R]](LuxCallback1(internalFunctionToJsValue1(callback))))
-    let key = "$C" + arguments + "$" + location.location + "$" + Any.anyTag[LuxCallback1[A1, R]]().show()
-    let update = {node =>
-        let luxCallback = Any.fromAny[LuxCallback1[A1, R]](valueBox.value).grab()
-        luxCallback.callback = internalFunctionToJsValue1(callback)
-        let newChild = body {a1 =>
-            internalJsValueToFunction1(Any.fromAny[LuxCallback1[A1, R]](valueBox.value).grab().callback)(a1)
-        }
-        let currentNode = internalPatch(node, childBox.value, newChild)
-        childBox.value = newChild
-        currentNode
-    }
-    let unmount = {internalUnmount(childBox.value)}
-    LuxHook(key, Box(Any.toAny(Unit)), childBox, Box(0), update, unmount)
 }
 
 class LuxCallback1[A1, R](mutable callback: JsValue)
