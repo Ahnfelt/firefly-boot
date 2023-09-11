@@ -68,13 +68,21 @@ useMemo2[A1: Equal: HasAnyTag, A2: Equal: HasAnyTag, O: HasAnyTag](a1: A1, a2: A
 }
 
 useCallback0[R: HasAnyTag](callback: () => R, body: (() => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
-    useCallback1({_ => callback()}, {f => body({f(Unit)})}, location)
+    internalUseCallback(0, {_ => callback()}, {f => body({f(Unit)})}, location)
 }
 
 useCallback1[A1: HasAnyTag, R: HasAnyTag](callback: A1 => R, body: (A1 => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    internalUseCallback(1, callback, body, location)
+}
+
+useCallback2[A1: HasAnyTag, A2: HasAnyTag, R: HasAnyTag](callback: (A1, A2) => R, body: ((A1, A2) => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    internalUseCallback[Pair[A1, A2], R](2, {pair => callback(pair.first, pair.second)}, {f => body({x, y => f(Pair(x, y))})}, location)
+}
+
+internalUseCallback[A1: HasAnyTag, R: HasAnyTag](arguments: Int, callback: A1 => R, body: (A1 => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
     let childBox = Box(LuxText(""))
     let valueBox = Box(Any.toAny[LuxCallback1[A1, R]](LuxCallback1(internalFunctionToJsValue1(callback))))
-    let key = "$C$" + location.location + "$" + Any.anyTag[LuxCallback1[A1, R]]().show()
+    let key = "$C" + arguments + "$" + location.location + "$" + Any.anyTag[LuxCallback1[A1, R]]().show()
     let update = {node =>
         let luxCallback = Any.fromAny[LuxCallback1[A1, R]](valueBox.value).grab()
         luxCallback.callback = internalFunctionToJsValue1(callback)
@@ -87,10 +95,6 @@ useCallback1[A1: HasAnyTag, R: HasAnyTag](callback: A1 => R, body: (A1 => R) => 
     }
     let unmount = {internalUnmount(childBox.value)}
     LuxHook(key, Box(Any.toAny(Unit)), childBox, Box(0), update, unmount)
-}
-
-useCallback2[A1: HasAnyTag, A2: HasAnyTag, R: HasAnyTag](callback: (A1, A2) => R, body: ((A1, A2) => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
-    useCallback1[Pair[A1, A2], R]({pair => callback(pair.first, pair.second)}, {f => body({x, y => f(Pair(x, y))})}, location)
 }
 
 class LuxCallback1[A1, R](mutable callback: JsValue)
