@@ -38,10 +38,10 @@ useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: Source
     LuxHook(key, valueBox, childBox, frameBox, update, unmount)
 }
 
-internalUseMemo[I: Equal: HasAnyTag, O: HasAnyTag](input: I, compute: I => O, body: O => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+internalUseMemo[I: Equal: HasAnyTag, O: HasAnyTag](arguments: Int, input: I, compute: I => O, body: O => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
     let valueBox = Box(Any.toAny[Pair[I, Option[O]]](Pair(input, None)))
     let childBox = Box(LuxText(""))
-    let key = "$M$" + location.location + "$" + Any.anyTag[Pair[I, Option[O]]]().show()
+    let key = "$M" + arguments + "$" + location.location + "$" + Any.anyTag[Pair[I, Option[O]]]().show()
     let update = {node =>
         let pair = Any.fromAny[Pair[I, Option[O]]](valueBox.value).grab()
         let value = if(pair.second.isEmpty() || pair.first != input) {compute(input)} else {pair.second.grab()}
@@ -56,15 +56,15 @@ internalUseMemo[I: Equal: HasAnyTag, O: HasAnyTag](input: I, compute: I => O, bo
 }
 
 useMemo0[O: HasAnyTag](compute: () => O, body: O => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
-    internalUseMemo(Unit, {_ => compute()}, body, location)
+    internalUseMemo(0, Unit, {_ => compute()}, body, location)
 }
 
 useMemo1[A1: Equal: HasAnyTag, O: HasAnyTag](a1: A1, compute: A1 => O, body: O => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
-    internalUseMemo(a1, compute, body, location)
+    internalUseMemo(1, a1, compute, body, location)
 }
 
 useMemo2[A1: Equal: HasAnyTag, A2: Equal: HasAnyTag, O: HasAnyTag](a1: A1, a2: A2, compute: (A1, A2) => O, body: O => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
-    internalUseMemo(Pair(a1, a2), {pair => compute(pair.first, pair.second)}, body, location)
+    internalUseMemo(2, Pair(a1, a2), {pair => compute(pair.first, pair.second)}, body, location)
 }
 
 useCallback0[R: HasAnyTag](callback: () => R, body: (() => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
