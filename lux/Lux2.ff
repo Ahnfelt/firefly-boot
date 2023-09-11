@@ -92,7 +92,7 @@ useCallback1[A1: HasAnyTag, R: HasAnyTag](callback: A1 => R, body: (A1 => R) => 
 class LuxCallback1[A1, R](mutable wrapper: JsValue, mutable callback: JsValue)
 instance LuxCallback1[A1: HasAnyTag, R: HasAnyTag]: HasAnyTag {
     anyTag(): AnyTag[LuxCallback1[A1, R]] {
-        Any.internalAnyTag("LuxCallback[" + Any.anyTag[Pair[A1, R]]().show() + "]")
+        Any.internalAnyTag("LuxCallback1[" + Any.anyTag[Pair[A1, R]]().show() + "]")
     }
 }
 
