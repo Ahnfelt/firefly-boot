@@ -38,7 +38,7 @@ useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: Source
     LuxHook(key, valueBox, childBox, frameBox, update, unmount)
 }
 
-useMemo[I: Equal: HasAnyTag, O: HasAnyTag](input: I, compute: I => O, body: O => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+internalUseMemo[I: Equal: HasAnyTag, O: HasAnyTag](input: I, compute: I => O, body: O => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
     let valueBox = Box(Any.toAny[Pair[I, Option[O]]](Pair(input, None)))
     let childBox = Box(LuxText(""))
     let key = "$" + location.location + "$" + Any.anyTag[Pair[I, Option[O]]]().show()
@@ -53,6 +53,18 @@ useMemo[I: Equal: HasAnyTag, O: HasAnyTag](input: I, compute: I => O, body: O =>
     }
     let unmount = {internalUnmount(childBox.value)}
     LuxHook(key, valueBox, childBox, Box(0), update, unmount)
+}
+
+useMemo0[O: HasAnyTag](compute: () => O, body: O => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    internalUseMemo(Unit, {_ => compute()}, body, location)
+}
+
+useMemo1[A1: Equal: HasAnyTag, O: HasAnyTag](a1: A1, compute: A1 => O, body: O => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    internalUseMemo(a1, compute, body, location)
+}
+
+useMemo2[A1: Equal: HasAnyTag, A2: Equal: HasAnyTag, O: HasAnyTag](a1: A1, a2: A2, compute: (A1, A2) => O, body: O => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    internalUseMemo(Pair(a1, a2), {pair => compute(pair.first, pair.second)}, body, location)
 }
 
 extend self: Lux {

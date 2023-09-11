@@ -33,6 +33,7 @@ extend self: Deriver {
         let coreWhitelist = [
             "ff:core/Serializable.DeserializationChecksumException"
             "ff:core/Core.GrabException"
+            "ff:core/Unit.Unit"
             "ff:core/Pair.Pair"
             "ff:core/Option.Option"
             "ff:core/Int.Int"
@@ -317,6 +318,7 @@ extend self: Deriver {
             "ff:core/Option.Option"
             "ff:core/List.List"
             "ff:core/Pair.Pair"
+            "ff:core/Unit.Unit"
         ].toSet()
         let missingInstance =
             self.findTypesThatNeedInstances("ff:core/Equal.Equal", modulePrefix, coreWhitelist, True, module)

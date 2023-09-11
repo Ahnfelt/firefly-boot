@@ -102,6 +102,13 @@ return Unit$;
 
 
 
-
+export const ff_core_Any_HasAnyTag$ff_core_Unit_Unit = {
+anyTag_() {
+return ff_core_Any.internalAnyTag_((("ff:core/Unit.Unit" + "[") + "]"))
+},
+async anyTag_$($task) {
+return ff_core_Any.internalAnyTag_((("ff:core/Unit.Unit" + "[") + "]"))
+}
+};
 
 
