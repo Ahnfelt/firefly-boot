@@ -38,6 +38,23 @@ useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: Source
     LuxHook(key, valueBox, childBox, frameBox, update, unmount)
 }
 
+useMemo[I: Equal: HasAnyTag, O: HasAnyTag](input: I, compute: I => O, body: O => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    let valueBox = Box(Any.toAny[Pair[I, Option[O]]](Pair(input, None)))
+    let childBox = Box(LuxText(""))
+    let key = "$" + location.location + "$" + Any.anyTag[Pair[I, Option[O]]]().show()
+    let update = {node =>
+        let pair = Any.fromAny[Pair[I, Option[O]]](valueBox.value).grab()
+        let value = if(pair.second.isEmpty() || pair.first != input) {compute(input)} else {pair.second.grab()}
+        valueBox.value = Any.toAny[Pair[I, Option[O]]](Pair(input, Some(value)))
+        let newChild = body(value)
+        let currentNode = internalPatch(node, childBox.value, newChild)
+        childBox.value = newChild
+        currentNode
+    }
+    let unmount = {internalUnmount(childBox.value)}
+    LuxHook(key, valueBox, childBox, Box(0), update, unmount)
+}
+
 extend self: Lux {
     
     key(key: String): Lux {

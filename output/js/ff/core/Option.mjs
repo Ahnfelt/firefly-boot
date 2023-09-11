@@ -701,6 +701,15 @@ return
 }
 }
 
+export function ff_core_Any_HasAnyTag$ff_core_Option_Option(ff_core_Any_HasAnyTag$T) { return {
+anyTag_() {
+return ff_core_Any.internalAnyTag_(((("ff:core/Option.Option" + "[") + ff_core_Any.AnyTag_show(ff_core_Any_HasAnyTag$T.anyTag_())) + "]"))
+},
+async anyTag_$($task) {
+return ff_core_Any.internalAnyTag_(((("ff:core/Option.Option" + "[") + ff_core_Any.AnyTag_show(ff_core_Any_HasAnyTag$T.anyTag_())) + "]"))
+}
+}}
+
 export function ff_core_Show_Show$ff_core_Option_Option(ff_core_Show_Show$T) { return {
 show_(value_) {
 {

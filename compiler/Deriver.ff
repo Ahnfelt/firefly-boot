@@ -34,6 +34,7 @@ extend self: Deriver {
             "ff:core/Serializable.DeserializationChecksumException"
             "ff:core/Core.GrabException"
             "ff:core/Pair.Pair"
+            "ff:core/Option.Option"
             "ff:core/Int.Int"
             "ff:core/Float.Float"
             "ff:core/String.String"
