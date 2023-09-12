@@ -70,18 +70,31 @@ internalUseCallback[A1: HasAnyTag, R: HasAnyTag](arguments: Int, callback: A1 =>
         currentNode
     }
     let unmount = {internalUnmount(childBox.value)}
+    LuxHook(key, valueBox, childBox, Box(0), update, unmount)
+}
+
+useSuspense(suspense: () => Lux, body: () => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    let childBox = Box(LuxText(""))
+    let key = "$L$" + location.location
+    let update = {node =>
+        let newChild = body()
+        let currentNode = internalPatch(node, childBox.value, newChild)
+        childBox.value = newChild
+        currentNode
+    }
+    let unmount = {internalUnmount(childBox.value)}
     LuxHook(key, Box(Any.toAny(Unit)), childBox, Box(0), update, unmount)
 }
 
-useMemo0[O: HasAnyTag](compute: () => O, body: O => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+useMemo0[O: HasAnyTag](compute: () => O, body: O => Lux = {_}, location: SourceLocation = SourceLocation.callSite()): Lux {
     internalUseMemo(0, Unit, {_ => compute()}, body, location)
 }
 
-useMemo1[A1: Equal: HasAnyTag, O: HasAnyTag](a1: A1, compute: A1 => O, body: O => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+useMemo1[A1: Equal: HasAnyTag, O: HasAnyTag](a1: A1, compute: A1 => O, body: O => Lux = {_}, location: SourceLocation = SourceLocation.callSite()): Lux {
     internalUseMemo(1, a1, compute, body, location)
 }
 
-useMemo2[A1: Equal: HasAnyTag, A2: Equal: HasAnyTag, O: HasAnyTag](a1: A1, a2: A2, compute: (A1, A2) => O, body: O => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+useMemo2[A1: Equal: HasAnyTag, A2: Equal: HasAnyTag, O: HasAnyTag](a1: A1, a2: A2, compute: (A1, A2) => O, body: O => Lux = {_}, location: SourceLocation = SourceLocation.callSite()): Lux {
     internalUseMemo(2, Pair(a1, a2), {pair => compute(pair.first, pair.second)}, body, location)
 }
 
