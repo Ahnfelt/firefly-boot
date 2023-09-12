@@ -119,6 +119,9 @@ nodeMain(system: NodeSystem): Unit {
         } elseIf {request.path().startsWith("/js/") && !request.path().contains("..")} {
             response.setHeader("Content-Type", ["text/javascript; charset=UTF-8"])
             response.writeText(system.assets().readText(request.path()))
+        } elseIf {request.path() == "/chat"} {
+            response.setHeader("Content-Type", ["text/plain; charset=UTF-8"])
+            response.writeText("Hello there!")
         } else {
             response.writeStatus(404, Some("Not found"))
         }
