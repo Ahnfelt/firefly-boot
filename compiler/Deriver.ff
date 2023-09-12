@@ -41,6 +41,7 @@ extend self: Deriver {
             "ff:core/String.String"
             "ff:core/Char.Char"
             "ff:core/Bool.Bool"
+            "ff:core/List.List"
         ].toSet() // Maybe whitelist all?
         let missingInstance =
             self.findTypesThatNeedInstances("ff:core/Any.HasAnyTag", modulePrefix, coreWhitelist, True, module)
