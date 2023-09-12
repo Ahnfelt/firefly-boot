@@ -11,6 +11,7 @@ mainComponent(http: HttpClient): Lux {
         .add(Lux.div().addList(chat.map {questionComponent(http, _)}))
         .add(Lux.form()
             .add(Lux.input()
+                .with("autofocus", "true")
                 .with("value", message)
                 .on("input") {event => setMessage(event.text())}
             )
