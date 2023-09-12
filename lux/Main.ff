@@ -39,7 +39,7 @@ questionComponent(http: HttpClient, question: String): Lux {
 
 componentCMemo(onClick: () => Unit, message: String): Lux {
     Lux.useCallback0(onClick): onClick =>
-    Lux.useMemo2(onClick, message) {componentC(_, _)} {_}
+    Lux.useMemo1(message) {componentC(onClick, _)}
 }
 
 componentC(onClick: () => Unit, message: String): Lux {
@@ -106,7 +106,7 @@ countStringButton(): Lux {
 }
 
 browserMain(system: BrowserSystem): Unit {
-    Lux.mountById(system, "main", buttons())
+    Lux.mountById(system, "main", mainComponent(system.httpClient()))
 }
 
 nodeMain(system: NodeSystem): Unit {
