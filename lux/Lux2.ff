@@ -246,8 +246,17 @@ extend self: Lux {
 
 data LuxNode {}
 
-mount(task: Task, element: LuxNode, lux: Lux): Unit {
-    internalPatch(task, task.lock(), element, Lux.new("div"), Lux.new("div").add(lux))
+mount(parentTask: Task, element: LuxNode, lux: Lux): Unit {
+    parentTask.spawn {task =>
+        let forever = task.channel()
+        try {
+            internalPatch(task, task.lock(), element, Lux.new("div"), Lux.new("div").add(lux))
+            forever.read()
+        } catchAny {error =>
+            Log.debug("Oops, everthing was aborted.")
+            error.rethrow()
+        } grab()
+    }
 }
 
 mountById(system: BrowserSystem, id: String, lux: Lux): Unit {
