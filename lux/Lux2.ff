@@ -20,6 +20,7 @@ new(tagName: String, text: String = ""): Lux {
 }
 
 useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    Log.debug("useState " + location.location)
     let valueBox = Box(Any.toAny(initial))
     let childBox = Box(LuxText(""))
     let luxBox = childBox
@@ -50,6 +51,7 @@ useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: Source
 }
 
 internalUseMemo[I: Equal: HasAnyTag](arguments: Int, input: I, compute: I => Lux, body: Lux => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    Log.debug("useMemo " + location.location)
     let valueBox = Box(Any.toAny[I](input))
     let childBox = Box(LuxText(""))
     let luxBox = Box(LuxText(""))
@@ -88,25 +90,29 @@ internalUseEffect[I: Equal: HasAnyTag, O: HasAnyTag](arguments: Int, input: I, c
 }
 
 internalUseCallback[A1: HasAnyTag, R: HasAnyTag](arguments: Int, callback: A1 => R, body: (A1 => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    Log.debug("useCallback " + location.location)
     let childBox = Box(LuxText(""))
     let luxBox = childBox
     let valueBox = Box(Any.toAny[LuxCallback1[A1, R]](LuxCallback1(internalFunctionToJsValue1(callback))))
     let key = "$C" + arguments + "$" + location.location + "$" + Any.anyTag[LuxCallback1[A1, R]]().show()
     let update: (Task, Lock, LuxNode) => LuxNode = {parentTask, parentLock, node =>
-        let luxCallback = Any.fromAny[LuxCallback1[A1, R]](valueBox.value).grab()
-        luxCallback.callback = internalFunctionToJsValue1(callback)
-        let newChild = body {a1 =>
-            internalJsValueToFunction1(Any.fromAny[LuxCallback1[A1, R]](valueBox.value).grab().callback)(a1)
+        parentLock.do {
+            let luxCallback = Any.fromAny[LuxCallback1[A1, R]](valueBox.value).grab()
+            luxCallback.callback = internalFunctionToJsValue1(callback)
+            let newChild = body {a1 =>
+                internalJsValueToFunction1(Any.fromAny[LuxCallback1[A1, R]](valueBox.value).grab().callback)(a1)
+            }
+            let currentNode = internalPatch(parentTask, parentLock, node, childBox.value, newChild)
+            childBox.value = newChild
+            currentNode
         }
-        let currentNode = internalPatch(parentTask, parentLock, node, childBox.value, newChild)
-        childBox.value = newChild
-        currentNode
     }
     let unmount = {internalUnmount(childBox.value)}
     LuxHook(key, valueBox, luxBox, childBox, Box(None), Box(None), update, unmount)
 }
 
 useSuspense(suspense: () => Lux, body: () => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    Log.debug("useSuspense " + location.location)
     let childBox = Box(LuxText(""))
     let taskBox = Box[Option[Task]](None)
     let luxBox = childBox
