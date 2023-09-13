@@ -25,6 +25,7 @@ mainComponent(http: HttpClient): Lux {
 
 questionComponent(http: HttpClient, question: String): Lux {
     Lux.div()
+        .with("style", "margin-bottom: 10px")
         .add(Lux.div("User: " + question))
         .add(
             Lux.useMemo1(question): _ =>
