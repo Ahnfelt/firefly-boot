@@ -24,30 +24,27 @@ useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: Source
     let valueBox = Box(Any.toAny(initial))
     let childBox = Box(LuxText(""))
     let luxBox = childBox
-    let taskBox = Box[Option[Task]](None)
     let key = "$S$" + location.location + "$" + Any.anyTag[T]().show()
     let update: (Task, Lock, LuxNode) => LuxNode = {parentTask, parentLock, node =>
-        taskBox.value.each {_.abort()}
         mutable currentNode = node
         mutable setValue = {_ => }
-        function render(task: Task): LuxNode {
+        function render(): LuxNode {
             let value = Any.fromAny[T](valueBox.value).grab()
             let newChild = body(value, setValue)
             parentLock.do {
-                currentNode = internalPatch(task, parentLock, currentNode, childBox.value, newChild)
+                currentNode = internalPatch(parentTask, parentLock, currentNode, childBox.value, newChild)
                 childBox.value = newChild
                 currentNode
             }
         }
         setValue = {newValue => 
-            taskBox.value.each {_.abort()}
-            valueBox.value = Any.toAny(newValue)
-            taskBox.value = Some(parentTask.spawn {task => render(task)})
+            parentLock.do {valueBox.value = Any.toAny(newValue)}
+            render()
         }
-        render(parentTask)
+        render()
     }
-    let unmount = {internalUnmount(childBox.value); taskBox.value.each {_.abort()}}
-    LuxHook(key, valueBox, luxBox, childBox, taskBox, Box(None), update, unmount)
+    let unmount = {internalUnmount(childBox.value)}
+    LuxHook(key, valueBox, luxBox, childBox, Box(None), Box(None), update, unmount)
 }
 
 internalUseMemo[I: Equal: HasAnyTag](arguments: Int, input: I, compute: I => Lux, body: Lux => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {

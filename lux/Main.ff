@@ -121,6 +121,7 @@ nodeMain(system: NodeSystem): Unit {
             response.setHeader("Content-Type", ["text/javascript; charset=UTF-8"])
             response.writeText(system.assets().readText(request.path()))
         } elseIf {request.path() == "/chat"} {
+            system.mainTask().sleep(Duration(request.readText().size().toFloat()))
             response.setHeader("Content-Type", ["text/plain; charset=UTF-8"])
             response.writeText("Hello there!")
         } else {
