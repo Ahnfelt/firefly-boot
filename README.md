@@ -13,7 +13,7 @@ A straightforward language for full-stack development.
 
 ## Writing your first webapp
 
-Install the [VSCode extension](https://marketplace.visualstudio.com/items?itemName=firefly-team.firefly-lang) (requires the upcoming [VSCode 1.82](https://code.visualstudio.com/insiders/)).
+Install the [VSCode extension](https://marketplace.visualstudio.com/items?itemName=firefly-team.firefly-lang).
 
 Create a `WebApp.ff` file.
 
