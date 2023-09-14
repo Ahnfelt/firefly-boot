@@ -9,7 +9,6 @@ capability Lux(mutable internalKey: String) {
         luxBox: Box[Lux]
         childBox: Box[Lux]
         taskBox: Box[Option[Task]]
-        lockBox: Box[Option[Lock]]
         update: (Task, Lock, LuxNode) => LuxNode
         umount: () => Unit
     )
@@ -22,29 +21,44 @@ new(tagName: String, text: String = ""): Lux {
 useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
     Log.debug("useState " + location.location)
     let valueBox = Box(Any.toAny(initial))
+    let taskBox = Box[Option[Task]](None)
     let childBox = Box(LuxText(""))
     let luxBox = childBox
     let key = "$S$" + location.location + "$" + Any.anyTag[T]().show()
     let update: (Task, Lock, LuxNode) => LuxNode = {parentTask, parentLock, node =>
         mutable currentNode = node
         mutable setValue = {_ => }
-        function render(): LuxNode {
-            let value = Any.fromAny[T](valueBox.value).grab()
-            let newChild = body(value, setValue)
+        function render(task: Task, value: T): LuxNode {
             parentLock.do {
-                currentNode = internalPatch(parentTask, parentLock, currentNode, childBox.value, newChild)
+                let newChild = body(value, setValue)
+                currentNode = internalPatch(task, parentLock, currentNode, childBox.value, newChild)
                 childBox.value = newChild
                 currentNode
             }
         }
+        let channel = parentTask.channel(100000000)
         setValue = {newValue => 
-            parentLock.do {valueBox.value = Any.toAny(newValue)}
-            render()
+            channel.write(newValue)
         }
-        render()
+        taskBox.value.each {_.abort()}
+        taskBox.value = Some(parentTask.spawn {task =>
+            try {
+                while {True} {
+                    let value = channel.read()
+                    Log.debug("Recieved value")
+                    render(task, value)
+                }
+            } catchAny {error =>
+                if(error.name() != "AbortError") {error.rethrow()}
+            } grab()
+        })
+        render(parentTask, initial)
     }
-    let unmount = {internalUnmount(childBox.value)}
-    LuxHook(key, valueBox, luxBox, childBox, Box(None), Box(None), update, unmount)
+    let unmount = {
+        internalUnmount(childBox.value)
+        taskBox.value.each {_.abort()}
+    }
+    LuxHook(key, Box(Any.toAny(Unit)), luxBox, childBox, taskBox, update, unmount)
 }
 
 internalUseMemo[I: Equal: HasAnyTag](arguments: Int, input: I, compute: I => Lux, body: Lux => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
@@ -65,7 +79,7 @@ internalUseMemo[I: Equal: HasAnyTag](arguments: Int, input: I, compute: I => Lux
         }
     }
     let unmount = {internalUnmount(childBox.value)}
-    LuxHook(key, valueBox, luxBox, childBox, Box(None), Box(None), update, unmount)
+    LuxHook(key, valueBox, luxBox, childBox, Box(None), update, unmount)
 }
 
 internalUseEffect[I: Equal: HasAnyTag, O: HasAnyTag](arguments: Int, input: I, compute: I => O, body: O => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
@@ -83,7 +97,7 @@ internalUseEffect[I: Equal: HasAnyTag, O: HasAnyTag](arguments: Int, input: I, c
         currentNode
     }
     let unmount = {internalUnmount(childBox.value)}
-    LuxHook(key, valueBox, luxBox, childBox, Box(None), Box(None), update, unmount)
+    LuxHook(key, valueBox, luxBox, childBox, Box(None), update, unmount)
 }
 
 internalUseCallback[A1: HasAnyTag, R: HasAnyTag](arguments: Int, callback: A1 => R, body: (A1 => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
@@ -105,7 +119,7 @@ internalUseCallback[A1: HasAnyTag, R: HasAnyTag](arguments: Int, callback: A1 =>
         }
     }
     let unmount = {internalUnmount(childBox.value)}
-    LuxHook(key, valueBox, luxBox, childBox, Box(None), Box(None), update, unmount)
+    LuxHook(key, valueBox, luxBox, childBox, Box(None), update, unmount)
 }
 
 useSuspense(suspense: () => Lux, body: () => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
@@ -123,16 +137,23 @@ useSuspense(suspense: () => Lux, body: () => Lux, location: SourceLocation = Sou
             childBox.value = newChild
         }
         taskBox.value = Some(parentTask.spawn {task =>
-            let newChild = body()
-            parentLock.do {
-                currentNode = internalPatch(task, parentLock, currentNode, childBox.value, newChild)
-                childBox.value = newChild
-            }
+            try {
+                let newChild = body()
+                parentLock.do {
+                    currentNode = internalPatch(task, parentLock, currentNode, childBox.value, newChild)
+                    childBox.value = newChild
+                }
+            } catchAny {error =>
+                if(error.name() != "AbortError") {error.rethrow()}
+            } grab()
         })
         currentNode
     }
-    let unmount = {internalUnmount(childBox.value); taskBox.value.each {_.abort()}}
-    LuxHook(key, Box(Any.toAny(Unit)), luxBox, childBox, taskBox, Box(None), update, unmount)
+    let unmount = {
+        internalUnmount(childBox.value)
+        taskBox.value.each {_.abort()}
+    }
+    LuxHook(key, Box(Any.toAny(Unit)), luxBox, childBox, taskBox, update, unmount)
 }
 
 useMemo0(compute: () => Lux, body: Lux => Lux = {_}, location: SourceLocation = SourceLocation.callSite()): Lux {
@@ -346,7 +367,7 @@ internalPatch(parentTask: Task, parentLock: Lock, oldNode: LuxNode, old: Lux, ne
         newLux.childBox.value = oldLux.childBox.value
         newLux.taskBox.value = oldLux.taskBox.value
         newLux.update.{_(parentTask, parentLock, oldNode)} // Workaround for apparent type checker bug
-    | _, _, _, _, LuxHook(_, _, _, _, _, _, update, _) =>
+    | _, _, _, _, LuxHook(_, _, _, _, _, update, _) =>
         update(parentTask, parentLock, oldNode)
     | _, _, _, LuxTag(_, oldProps, oldChildren), LuxTag(newKey, newProps, newChildren) => 
         let element = oldNode
@@ -477,7 +498,7 @@ internalPatchChildren(parentTask: Task, parentLock: Lock, element: LuxNode, oldC
 }
 
 internalUnmount(lux: Lux) {
-    | LuxHook(_, _, _, _, _, _, _, umount) => umount()
+    | LuxHook(_, _, _, _, _, _, umount) => umount()
     | LuxTag(_, _, children) => children.each {internalUnmount(_)}
     | LuxText(_) => 
 }
