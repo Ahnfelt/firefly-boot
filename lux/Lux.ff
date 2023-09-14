@@ -1,458 +1,486 @@
 import Lux
 import LuxEvent
 
-class Lux {}
+capability Lux(mutable internalKey: String) {
+    LuxText()
+    LuxTag(props: StringMap[JsValue], children: Stack[Lux])
+    LuxHook(
+        valueBox: Box[Any]
+        luxBox: Box[Lux]
+        childBox: Box[Lux]
+        taskBox: Box[Option[Task]]
+        lockBox: Box[Option[Lock]]
+        update: (Task, Lock, LuxNode) => LuxNode
+        umount: () => Unit
+    )
+}
 
-data LuxException(message: String)
+new(tagName: String, text: String = ""): Lux {
+    LuxTag("<" + tagName + ">", StringMap.make(), if(text != "") {[LuxText("'" + text)].toStack()} else {[].toStack()})
+}
+
+useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    Log.debug("useState " + location.location)
+    let valueBox = Box(Any.toAny(initial))
+    let childBox = Box(LuxText(""))
+    let luxBox = childBox
+    let key = "$S$" + location.location + "$" + Any.anyTag[T]().show()
+    let update: (Task, Lock, LuxNode) => LuxNode = {parentTask, parentLock, node =>
+        mutable currentNode = node
+        mutable setValue = {_ => }
+        function render(): LuxNode {
+            let value = Any.fromAny[T](valueBox.value).grab()
+            let newChild = body(value, setValue)
+            parentLock.do {
+                currentNode = internalPatch(parentTask, parentLock, currentNode, childBox.value, newChild)
+                childBox.value = newChild
+                currentNode
+            }
+        }
+        setValue = {newValue => 
+            parentLock.do {valueBox.value = Any.toAny(newValue)}
+            render()
+        }
+        render()
+    }
+    let unmount = {internalUnmount(childBox.value)}
+    LuxHook(key, valueBox, luxBox, childBox, Box(None), Box(None), update, unmount)
+}
+
+internalUseMemo[I: Equal: HasAnyTag](arguments: Int, input: I, compute: I => Lux, body: Lux => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    Log.debug("useMemo " + location.location)
+    let valueBox = Box(Any.toAny[I](input))
+    let childBox = Box(LuxText(""))
+    let luxBox = Box(LuxText(""))
+    let key = "$M" + arguments + "$" + location.location + "$" + Any.anyTag[I]().show()
+    let update: (Task, Lock, LuxNode) => LuxNode = {parentTask, parentLock, node =>
+        let oldInput = Any.fromAny[I](valueBox.value).grab()
+        parentLock.do {
+            if(luxBox.value.internalKey == "" || oldInput != input) {luxBox.value = compute(input)}
+            valueBox.value = Any.toAny[I](input)
+            let newChild = body(luxBox.value)
+            let currentNode = internalPatch(parentTask, parentLock, node, childBox.value, newChild)
+            childBox.value = newChild
+            currentNode
+        }
+    }
+    let unmount = {internalUnmount(childBox.value)}
+    LuxHook(key, valueBox, luxBox, childBox, Box(None), Box(None), update, unmount)
+}
+
+internalUseEffect[I: Equal: HasAnyTag, O: HasAnyTag](arguments: Int, input: I, compute: I => O, body: O => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    let valueBox = Box(Any.toAny[Pair[I, Option[O]]](Pair(input, None)))
+    let childBox = Box(LuxText(""))
+    let luxBox = childBox
+    let key = "$E" + arguments + "$" + location.location + "$" + Any.anyTag[Pair[I, Option[O]]]().show()
+    let update: (Task, Lock, LuxNode) => LuxNode = {parentTask, parentLock, node =>
+        let pair = Any.fromAny[Pair[I, Option[O]]](valueBox.value).grab()
+        let value = if(pair.second.isEmpty() || pair.first != input) {compute(input)} else {pair.second.grab()}
+        valueBox.value = Any.toAny[Pair[I, Option[O]]](Pair(input, Some(value)))
+        let newChild = body(value)
+        let currentNode = internalPatch(parentTask, parentLock, node, childBox.value, newChild)
+        childBox.value = newChild
+        currentNode
+    }
+    let unmount = {internalUnmount(childBox.value)}
+    LuxHook(key, valueBox, luxBox, childBox, Box(None), Box(None), update, unmount)
+}
+
+internalUseCallback[A1: HasAnyTag, R: HasAnyTag](arguments: Int, callback: A1 => R, body: (A1 => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    Log.debug("useCallback " + location.location)
+    let childBox = Box(LuxText(""))
+    let luxBox = childBox
+    let valueBox = Box(Any.toAny[LuxCallback1[A1, R]](LuxCallback1(internalFunctionToJsValue1(callback))))
+    let key = "$C" + arguments + "$" + location.location + "$" + Any.anyTag[LuxCallback1[A1, R]]().show()
+    let update: (Task, Lock, LuxNode) => LuxNode = {parentTask, parentLock, node =>
+        parentLock.do {
+            let luxCallback = Any.fromAny[LuxCallback1[A1, R]](valueBox.value).grab()
+            luxCallback.callback = internalFunctionToJsValue1(callback)
+            let newChild = body {a1 =>
+                internalJsValueToFunction1(Any.fromAny[LuxCallback1[A1, R]](valueBox.value).grab().callback)(a1)
+            }
+            let currentNode = internalPatch(parentTask, parentLock, node, childBox.value, newChild)
+            childBox.value = newChild
+            currentNode
+        }
+    }
+    let unmount = {internalUnmount(childBox.value)}
+    LuxHook(key, valueBox, luxBox, childBox, Box(None), Box(None), update, unmount)
+}
+
+useSuspense(suspense: () => Lux, body: () => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    Log.debug("useSuspense " + location.location)
+    let childBox = Box(LuxText(""))
+    let taskBox = Box[Option[Task]](None)
+    let luxBox = childBox
+    let key = "$L$" + location.location
+    let update: (Task, Lock, LuxNode) => LuxNode = {parentTask, parentLock, node =>
+        taskBox.value.each {_.abort()}
+        mutable currentNode = node
+        parentLock.do {
+            let newChild = suspense()
+            currentNode = internalPatch(parentTask, parentLock, currentNode, childBox.value, newChild)
+            childBox.value = newChild
+        }
+        taskBox.value = Some(parentTask.spawn {task =>
+            let newChild = body()
+            parentLock.do {
+                currentNode = internalPatch(task, parentLock, currentNode, childBox.value, newChild)
+                childBox.value = newChild
+            }
+        })
+        currentNode
+    }
+    let unmount = {internalUnmount(childBox.value); taskBox.value.each {_.abort()}}
+    LuxHook(key, Box(Any.toAny(Unit)), luxBox, childBox, taskBox, Box(None), update, unmount)
+}
+
+useMemo0(compute: () => Lux, body: Lux => Lux = {_}, location: SourceLocation = SourceLocation.callSite()): Lux {
+    internalUseMemo(0, Unit, {_ => compute()}, body, location)
+}
+
+useMemo1[A1: Equal: HasAnyTag](a1: A1, compute: A1 => Lux, body: Lux => Lux = {_}, location: SourceLocation = SourceLocation.callSite()): Lux {
+    internalUseMemo(1, a1, compute, body, location)
+}
+
+useMemo2[A1: Equal: HasAnyTag, A2: Equal: HasAnyTag](a1: A1, a2: A2, compute: (A1, A2) => Lux, body: Lux => Lux = {_}, location: SourceLocation = SourceLocation.callSite()): Lux {
+    internalUseMemo(2, Pair(a1, a2), {pair => compute(pair.first, pair.second)}, body, location)
+}
+
+useEffect0[O: HasAnyTag](compute: () => O, body: O => Lux = {_}, location: SourceLocation = SourceLocation.callSite()): Lux {
+    internalUseEffect(0, Unit, {_ => compute()}, body, location)
+}
+
+useEffect1[A1: Equal: HasAnyTag, O: HasAnyTag](a1: A1, compute: A1 => O, body: O => Lux = {_}, location: SourceLocation = SourceLocation.callSite()): Lux {
+    internalUseEffect(1, a1, compute, body, location)
+}
+
+useEffect2[A1: Equal: HasAnyTag, A2: Equal: HasAnyTag, O: HasAnyTag](a1: A1, a2: A2, compute: (A1, A2) => O, body: O => Lux = {_}, location: SourceLocation = SourceLocation.callSite()): Lux {
+    internalUseEffect(2, Pair(a1, a2), {pair => compute(pair.first, pair.second)}, body, location)
+}
+
+useCallback0[R: HasAnyTag](callback: () => R, body: (() => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    internalUseCallback(0, {_ => callback()}, {f => body({f(Unit)})}, location)
+}
+
+useCallback1[A1: HasAnyTag, R: HasAnyTag](callback: A1 => R, body: (A1 => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    internalUseCallback(1, callback, body, location)
+}
+
+useCallback2[A1: HasAnyTag, A2: HasAnyTag, R: HasAnyTag](callback: (A1, A2) => R, body: ((A1, A2) => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
+    internalUseCallback[Pair[A1, A2], R](2, {pair => callback(pair.first, pair.second)}, {f => body({x, y => f(Pair(x, y))})}, location)
+}
+
+class LuxCallback1[A1, R](mutable callback: JsValue)
+instance LuxCallback1[A1: HasAnyTag, R: HasAnyTag]: HasAnyTag {
+    anyTag(): AnyTag[LuxCallback1[A1, R]] {
+        Any.internalAnyTag("LuxCallback1[" + Any.anyTag[Pair[A1, R]]().show() + "]")
+    }
+}
+
+internalFunctionToJsValue1[A1, R](callback: A1 => R): JsValue
+    target js async """return a1 => callback_(a1, $task)"""
+    target js sync """return callback_"""
+
+internalJsValueToFunction1[A1, R](value: JsValue): A1 => R
+    target js sync """return value_"""
+        
+extend self: Lux {
+    
+    key(key: String): Lux {
+        self.{
+            | LuxHook lux => lux.LuxHook(internalKey = lux.internalKey + "|" + key)
+            | LuxTag lux => lux.LuxTag(internalKey = lux.internalKey + "|" + key)
+            | _ =>
+        }
+        self
+    }
+    
+    add(lux: Lux): Lux {
+        self.{
+            | LuxTag(_, _, children) => children.push(lux)
+            | _ => 
+        }
+        self
+    }
+    
+    addList(list: List[Lux]): Lux {
+        self.{
+            | LuxTag(_, _, children) => list.each {children.push(_)}
+            | _ => 
+        }
+        self
+    }
+    
+    addArray(array: Array[Lux]): Lux {
+        self.{
+            | LuxTag(_, _, children) => children.pushArray(array)
+            | _ => 
+        }
+        self
+    }
+    
+    addText(text: String): Lux {
+        self.{
+            | LuxTag(_, _, children) => children.push(LuxText("'" + text))
+            | _ => 
+        }
+        self
+    }
+    
+    with[V: IsJsValue](name: String, value: V): Lux {
+        self.{
+            | LuxTag lux => lux.props.set(name, internalJsValue(value))
+            | _ =>
+        }
+        self
+    }
+
+    on(event: String, handler: LuxEvent => Unit): Lux {
+        self.{
+            | LuxTag lux => lux.props.set("@" + event, internalJsHandler(handler))
+            | _ =>
+        }
+        self
+    }
+    
+}
 
 
-new(tagName: String, text: String = ""): Lux
-    target js sync """
-        if(tagName_.charCodeAt(0) === 60) throw new Error('Invalid tag name: ' + tagName_)
-        const children = text_ === '' ? [] : [{key: '<text>' + text_}];
-        return {key: tagName_, children: children, callback: null, props: new Map()}
-    """
+data LuxNode {}
 
-mount(element: JsValue, lux: Lux): Unit {
-    update(element, Lux.new("div"), Lux.new("div").add(lux))
+mount(parentTask: Task, element: LuxNode, lux: Lux): Unit {
+    parentTask.spawn {task =>
+        let forever = task.channel()
+        try {
+            internalPatch(task, task.lock(), element, Lux.new("div"), Lux.new("div").add(lux))
+            forever.read()
+        } catchAny {error =>
+            Log.debug("Oops, everthing was aborted.")
+            error.rethrow()
+        } grab()
+    }
 }
 
 mountById(system: BrowserSystem, id: String, lux: Lux): Unit {
-    Lux.mount(
-        element = system.js().global().get("document").call1("getElementById", id)
-        lux = lux
-    )
+    mount(system.mainTask(), internalElementById(id), lux)
 }
 
-extend self: Lux {
+capability LuxSystem(task: Task, enqueue: () => Unit)
 
-    key(key: String): Lux
-        target js sync """
-            if(self_.key.startsWith("<text>")) return self_
-            self_.key = self_.key + '>' + key_
-            return self_
-        """
+internalRequestAnimationFrame(body: () => Unit): Int
+    target js async "return requestAnimationFrame(() => body_($task))" // TODO: frame won't wait for promise
+    target js sync "return requestAnimationFrame(body_)"
+
+internalCancelAnimationFrame(handle: Int): Unit
+    target js sync "return cancelAnimationFrame(handle_)"
+
+internalJsValue[V: IsJsValue](value: V): JsValue
+    target js sync "return value_"
     
-    with[V: IsJsValue](name: String, value: V): Lux
-        target js sync """
-            if(!self_.props || self_.key.startsWith("<")) return self_
-            self_.props.set(name_, value_)
-            return self_
-        """
+internalJsHandler(handler: LuxEvent => Unit): JsValue
+    target js async "return event => handler_(event, $task)"
+    target js sync "return handler_"
     
-    withIf[V: IsJsValue](condition: Bool, name: String, body: () => V): Lux {
-        if(condition) {self.with(name, body())} else {self}
-    }
-    
-    style(property: String, value: String): Lux
-        target js sync """
-            if(!self_.props || self_.key.startsWith("<")) return self_
-            self_.props.set("style", (self_.props.get("style") || '') + '; ' + property_ + ': ' + value_)
-            return self_
-        """
-        
-    styleIf(condition: Bool, property: String, body: () => String): Lux {
-        if(condition) {self.style(property, body())} else {self}
-    }
-    
-    class(className: String): Lux
-        target js sync """
-            if(!self_.props || self_.key.startsWith("<")) return self_
-            self_.props.set("className", (self_.props.get("className") || '') + ' ' + className_)
-            return self_
-        """
+internalElement(key: String): LuxNode
+    target js sync """
+        return document.createElement(key_.slice(1, key_.indexOf('>')))
+    """
 
-    classIf(condition: Bool, body: () => String): Lux {
-        if(condition) {self.class(body())} else {self}
-    }
-    
-    on(event: String, body: LuxEvent => Unit): Lux
-        target js async """
-            if(self_.key.charCodeAt(0) === 60) return self_
-            self_.props.set('$' + event_, body_)
-            return self_
-        """
-        target js sync """
-            if(self_.key.charCodeAt(0) === 60) return self_
-            self_.props.set('$' + event_, body_)
-            return self_
-        """
+internalText(key: String): LuxNode
+    target js sync """
+        return document.createTextNode(key_.slice(1))
+    """
 
-    onIf(condition: Bool, event: String, body: LuxEvent => Unit): Lux {
-        if(condition) {self.on(event, body)} else {self}
-    }
-    
-    add(node: Lux): Lux
-        target js sync """
-            if(!self_.children) return self_
-            self_.children.push(node_)
-            return self_
-        """
+internalNull(): LuxNode
+    target js sync """
+        return null
+    """
 
-    addIf(condition: Bool, body: () => Lux): Lux {
-        if(condition) {self.add(body())} else {self}
-    }
+internalElementById(id: String): LuxNode
+    target js sync """
+        return document.getElementById(id_)
+    """
 
-    addList(nodes: List[Lux]): Lux
+extend self: LuxNode {
+    isNull(): Bool
         target js sync """
-            if(!self_.children) return self_
-            let n = nodes_
-            while(n.tail_) { 
-                self_.children.push(n.head_)
-                n = n.tail_
-            }
-            return self_
+            return !self_
         """
-        
-    addArray(nodes: Array[Lux]): Lux
+    setProp(name: String, value: JsValue)
         target js sync """
-            if(!self_.children) return self_
-            for(let i = 0; i < nodes_.length; i++) {
-                self_.children.push(nodes_[i])
-            }
-            return self_
+            self_[name_] = value_
         """
-        
-    addText(text: String): Lux
+    clearProp(name: String)
         target js sync """
-            if(!self_.children) return self_
-            self_.children.push({key: '<text>' + text_})
-            return self_
+            self_[name_] = null
         """
-
-    addTextIf(condition: Bool, body: () => String): Lux {
-        if(condition) {self.addText(body())} else {self}
-    }
-
+    addEventListener(name: String, value: JsValue)
+        target js sync """
+            self_.addEventListener(name_, value_)
+        """
+    removeEventListener(name: String, value: JsValue)
+        target js sync """
+            self_.removeEventListener(name_, value_)
+        """
+    grab(index: Int): LuxNode
+        target js sync """
+            return self_.childNodes[index_]
+        """
+    insertAt(index: Int, node: LuxNode): Unit
+        target js sync """
+            self_.insertBefore(node_, self_.childNodes[index_])
+        """
+    delete(): Unit
+        target js sync """
+            self_.parentElement.removeChild(self_)
+        """
 }
 
-
-useState[T](initialValue: T, body: (T, T => Unit) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
-    target js sync """
-        const node = {key: '<state_' + location_, children: [], callback: null, props: new Map([['value', initialValue_]])}
-        node.callback = rerender => {
-            if(rerender) {
-                const setValue = newValue => {
-                    node.props.set('value', newValue)
-                    rerender(() => node.children[0] = body_(newValue, setValue))
-                }
-                node.children[0] = body_(node.props.get('value'), setValue)
-            }
+internalPatch(parentTask: Task, parentLock: Lock, oldNode: LuxNode, old: Lux, new: Lux): LuxNode {
+    | _, _, _, _, _ {same(old, new)} => 
+        oldNode
+    | _, _, _, LuxHook oldLux, LuxHook newLux =>
+        newLux.valueBox.value = oldLux.valueBox.value
+        newLux.luxBox.value = oldLux.luxBox.value
+        newLux.childBox.value = oldLux.childBox.value
+        newLux.taskBox.value = oldLux.taskBox.value
+        newLux.update.{_(parentTask, parentLock, oldNode)} // Workaround for apparent type checker bug
+    | _, _, _, _, LuxHook(_, _, _, _, _, _, update, _) =>
+        update(parentTask, parentLock, oldNode)
+    | _, _, _, LuxTag(_, oldProps, oldChildren), LuxTag(newKey, newProps, newChildren) => 
+        let element = oldNode
+        if(!same(oldProps, newProps)) {internalPatchProps(element, oldProps, newProps)}
+        if(!same(oldChildren, newChildren)) {
+            internalPatchChildren(parentTask, parentLock, element, oldChildren, newChildren)
         }
-        return node
-    """
-
-useBox[T](initialValue: T, body: Box[T] => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
-    target js sync """
-        const ref = ff_core_Box.Box(initialValue_)
-        const node = {key: '<box_' + location_, children: [], callback: null, props: new Map([['value', ref]])}
-        node.callback = rerender => {
-            if(rerender) {
-                node.children[0] = body_(node.props.get('value'))
-            }
+        element
+    | _, _, _, _, LuxTag(newKey, newProps, newChildren) => 
+        let element = internalElement(newKey)
+        if(newProps.size() != 0) {internalPatchProps(element, StringMap.make(), newProps)}
+        if(newChildren.size() != 0) {
+            internalPatchChildren(parentTask, parentLock, element, [].toStack(), newChildren)
         }
-        return node
-    """
-
-useReducer[T, A](initialValue: T, reducer: (T, A) => T, body: (T, A => Unit) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
-    useState(
-        initialValue
-        {state, setState =>
-            useCallback1(
-                {action => setState(reducer(state, action))}
-                {dispatch => body(state, dispatch)}
-                location
-            )
-        }
-        location
-    )
+        element
+    | _, _, _, _, LuxText(newKey) {old.internalKey != newKey} =>
+        internalText(newKey)
+    | _, _, _, _, _ => 
+        oldNode
 }
 
-useCallback0[R](f: () => R, body: (() => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
-    internalUseCallback(f, body, location)
-}
-
-useCallback1[A1, R](f: (A1) => R, body: (A1 => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
-    internalUseCallback(f, body, location)
-}
-
-useCallback2[A1, A2, R](f: (A1, A2) => R, body: ((A1, A2) => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
-    internalUseCallback(f, body, location)
-}
-
-internalUseCallback[F, G, R](f: F, body: G, location: SourceLocation): Lux
-    target js sync """
-        const node = {key: '<callback_' + location_, children: [], callback: null, props: new Map([['value', {
-            f: f_,
-            g: (...functionArguments) => node.props.get('value').f.apply(null, functionArguments)
-        }]])}
-        node.callback = rerender => {
-            if(rerender) {
-                const value = node.props.get('value')
-                value.f = f_
-                node.children[0] = body_(value.g)
-            }
-        }
-        return node
-    """
-
-useMemo0[R](compute: () => R, body: R => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
-    target js sync """
-        const node = {key: '<memo_' + location_, children: [], callback: null, props: new Map([['value', {
-            r: null,
-            first: true
-        }]])}
-        node.callback = rerender => {
-            if(rerender) {
-                const value = node.props.get('value')
-                if(value.first) {
-                    value.first = false
-                    value.r = compute_()
-                }
-                node.children[0] = body_(value.r)
-            }
-        }
-        return node
-    """
-
-useMemo1[A1, R](a1: A1, compute: A1 => R, body: R => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
-    target js sync """
-        const node = {key: '<memo_' + location_, children: [], callback: null, props: new Map([['value', {
-            a1: a1_,
-            r: null,
-            first: true
-        }]])}
-        node.callback = rerender => {
-            if(rerender) {
-                const value = node.props.get('value')
-                if(value.first || value.a1 !== a1_) {
-                    value.first = false
-                    value.a1 = a1_
-                    value.r = compute_(a1_)
-                }
-                node.children[0] = body_(value.r)
-            }
-        }
-        return node
-    """
-
-useMemo2[A1, A2, R](a1: A1, a2: A2, compute: (A1, A2) => R, body: R => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
-    target js sync """
-        const node = {key: '<memo_' + location_, children: [], callback: null, props: new Map([['value', {
-            a1: a1_,
-            a2: a2_,
-            r: null,
-            first: true
-        }]])}
-        node.callback = rerender => {
-            if(rerender) {
-                const value = node.props.get('value')
-                if(value.first || value.a1 !== a1_ || value.a2 !== a2_) {
-                    value.first = false
-                    value.a1 = a1_
-                    value.a2 = a2_
-                    value.r = compute_(a1_, a2_)
-                }
-                node.children[0] = body_(value.r)
-            }
-        }
-        return node
-    """
-
-useEffect0[R](setup: () => (() => Unit), body: () => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
-    target js sync """
-        const node = {key: '<effect_' + location_, children: [], callback: null, props: new Map([['value', {
-            clean: () => {},
-            first: true
-        }]])}
-        node.callback = rerender => {
-            const value = node.props.get('value')
-            if(rerender) {
-                if(value.first) {
-                    value.first = false
-                    value.clean()
-                    value.clean = setup_()
-                }
-                node.children[0] = body_()
-            } else {
-                value.clean()
-            }
-        }
-        return node
-    """
-
-useEffect1[A1, R](a1: A1, setup: A1 => (() => Unit), body: () => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
-    target js sync """
-        const node = {key: '<effect_' + location_, children: [], callback: null, props: new Map([['value', {
-            a1: a1_,
-            clean: () => {},
-            first: true
-        }]])}
-        node.callback = rerender => {
-            const value = node.props.get('value')
-            if(rerender) {
-                if(value.first || value.a1 !== a1_) {
-                    value.first = false
-                    value.a1 = a1_
-                    value.clean()
-                    value.clean = setup_(a1_)
-                }
-                node.children[0] = body_()
-            } else {
-                value.clean()
-            }
-        }
-        return node
-    """
-
-useEffect2[A1, A2, R](a1: A1, a2: A2, setup: (A1, A2) => (() => Unit), body: () => Lux, location: SourceLocation = SourceLocation.callSite()): Lux
-    target js sync """
-        const node = {key: '<effect_' + location_, children: [], callback: null, props: new Map([['value', {
-            a1: a1_,
-            a2: a2_,
-            clean: () => {},
-            first: true
-        }]])}
-        node.callback = rerender => {
-            const value = node.props.get('value')
-            if(rerender) {
-                if(value.first || value.a1 !== a1_ || value.a2 !== a2_) {
-                    value.first = false
-                    value.a1 = a1_
-                    value.a2 = a2_
-                    value.clean()
-                    value.clean = setup_(a1_, a2_)
-                }
-                node.children[0] = body_()
-            } else {
-                value.clean()
-            }
-        }
-        return node
-    """
-
-// TODO: Hooks with the same general type but different state types can still be mixed up.
-// It can be fixed by useState[T: Typeable] and then using Typeable.show[T]() as part of the key.
-
-update(element: JsValue, old: Lux, new: Lux): Unit
-    target js sync """
-        const empty = {key: '', children: [], callback: null, props: new Map()}
-        function update(element, oldLux, newLux) {
-            if(oldLux === newLux || newLux.key.startsWith('<text')) return element
-            // If it's a hook, transfer the props, invoke the callback and patch recursively
-            if(typeof newLux.callback === 'function') {
-                if(typeof oldLux.callback === 'function') newLux.props = oldLux.props
-                let oldChild = oldLux.children[0] || empty
-                const rerender = renderer => {
-                    if(oldLux.animationFrame) cancelAnimationFrame(oldLux.animationFrame)
-                    const render = () => {
-                        if(renderer) renderer()
-                        element = update(element, oldChild, newLux.children[0])
-                        oldChild = newLux.children[0]
-                    }
-                    if(renderer === null) render()
-                    else newLux.animationFrame = requestAnimationFrame(render)
-                }
-                newLux.callback(rerender)
-                rerender(null)
-                return element
-            }
-            // Create the element if it doesn't already exist
-            if(!element) {
-                const tagEnd = newLux.key.indexOf('>')
-                const tag = tagEnd === -1 ? newLux.key : newLux.key.slice(0, tagEnd)
-                element = document.createElement(tag)
-            }
-            // Patch props
-            if(oldLux.props !== newLux.props) {
-                newLux.props.forEach((value, name) => {
-                    const oldValue = oldLux.props.get(name)
-                    if(oldValue !== value) {
-                        if(name[0] === '$') {
-                            if(oldValue !== void 0) element.removeEventListener(name.slice(1), oldValue)
-                            element.addEventListener(name.slice(1), value)
-                        } else element[name] = value
-                    }
-                    oldLux.props.delete(name)
-                })
-                oldLux.props.forEach((value, name) => {
-                    if(name[0] === '$') element.removeEventListener(name.slice(1), value)
-                    else element[name] = void 0
-                })
-            }
-            // Speed through matching prefix
-            const oldChildren = oldLux.children
-            const newChildren = newLux.children
-            const minLength = Math.min(oldChildren.length, newChildren.length)
-            let i = 0
-            while(i < minLength && oldChildren[i] === newChildren[i]) i++
-            for(; i < minLength && oldChildren[i].key === newChildren[i].key; i++) {
-                update(element.childNodes[i], oldChildren[i], newChildren[i])
-            }
-            if(i === oldChildren.length && i === newChildren.length) return element
-            // If not done, do the complicated rearrange
-            const indexMap = new Map()
-            // First build a multimap from old keys to indexes
-            for(let j = i; j < oldChildren.length; j++) {
-                const child = oldChildren[j]
-                const indexes = indexMap.get(child.key)
-                if(indexes === void 0) {
-                    indexMap.set(child.key, j)
-                } else if(typeof indexes === 'number') {
-                    indexMap.set(child.key, [indexes, j])
+internalPatchProps(element: LuxNode, oldProps: StringMap[JsValue], newProps: StringMap[JsValue]) {
+    newProps.each {name, value =>
+        oldProps.get(name).{
+            | None => 
+                if(name.startsWith("@")) {
+                    element.addEventListener(name.dropFirst(), value)
                 } else {
-                    indexes.push(j)
+                    element.setProp(name, value)
                 }
-            }
-            // Then go through the new children, diff and patch
-            for(; i < newChildren.length; i++) {
-                const child = newChildren[i]
-                const indexes = indexMap.get(child.key)
-                if(indexes === i) {
-                    // Preserve element
-                    indexMap.delete(child.key)
-                    if(!newChildren[i].key.startsWith('<text')) {
-                        update(element.childNodes[i], oldChildren[i], newChildren[i])
-                    }
-                } else if(indexes === void 0) {
-                    // Create and insert new element
-                    if(newChildren[i].key.startsWith('<text')) {
-                        const text = newChildren[i].key.slice(newChildren[i].key.indexOf('>') + 1)
-                        const newNode = document.createTextNode(text);
-                        element.insertBefore(newNode, element.childNodes[i] || null)
-                    } else {
-                        const newElement = update(null, empty, newChildren[i])
-                        element.insertBefore(newElement, element.childNodes[i] || null)
-                    }
+            | Some(oldValue) {!same(value, oldValue)} =>
+                if(name.startsWith("@")) {
+                    element.removeEventListener(name.dropFirst(), oldValue)
+                    element.addEventListener(name.dropFirst(), value)
                 } else {
-                    // Preserve and move element
-                    const index = 
-                        typeof indexes === 'number' ? indexes : 
-                        indexes.length === 2 ? (indexMap.set(child.key, indexes[1]), indexes[0]) :
-                        indexes.shift()
-                    element.insertBefore(element.childNodes[index], element.childNodes[i] || null)
-                    if(!newChildren[i].key.startsWith('<text')) {
-                        update(element.childNodes[i], oldChildren[index], newChildren[i])
-                    }
+                    element.setProp(name, value)
                 }
-            }
-            // Unmount the vdom nodes that didn't survive and delete the corresponding trailing elements
-            indexMap.forEach(indexes => { 
-                if(typeof indexes === 'number') unmount(oldChildren[indexes])
-                else for(const index of indexes) unmount(oldChildren[index])
-            })
-            while(i < element.childNodes.length) {
-                element.removeChild(element.childNodes[i])
-            }
-            return element
+            | _ =>
         }
-        function unmount(oldLux) {
-            if(oldLux.children) for(const child of oldLux.children) unmount(child)
-            if(typeof oldLux.callback === 'function') oldLux.callback(null)
+    }
+    oldProps.each {name, value =>
+        if(!newProps.has(name)) {
+            if(name.startsWith("@")) {
+                element.removeEventListener(name.dropFirst(), value)
+            } else {
+                element.clearProp(name)
+            }
         }
-        if(old_.key !== new_.key) throw new Error('Tried to update mismatching keys: ' + old_.key + ' vs. ' + new_.key)
-        update(element_, old_, new_)
-    """
+    }
+}
+
+internalPatchChildren(parentTask: Task, parentLock: Lock, element: LuxNode, oldChildren: Stack[Lux], newChildren: Stack[Lux]) {
+    mutable oldStart = 0
+    mutable newStart = 0
+    mutable oldStop = oldChildren.size() - 1
+    mutable newStop = newChildren.size() - 1
+    // If we're not yet done, patch key equal nodes from both ends
+    while {
+        oldStart <= oldStop && newStart <= newStop && 
+        oldChildren.grab(oldStart).internalKey == newChildren.grab(newStart).internalKey
+    } {
+        let oldLux = oldChildren.grab(oldStart)
+        let newLux = newChildren.grab(newStart)
+        if(!same(oldLux, newLux)) {internalPatch(parentTask, parentLock, element.grab(oldStart), oldLux, newLux)}
+        oldStart += 1
+        newStart += 1
+    }
+    while {
+        oldStop >= oldStart && newStop >= newStart && 
+        oldChildren.grab(oldStop).internalKey == newChildren.grab(newStop).internalKey
+    } {
+        let oldLux = oldChildren.grab(oldStop)
+        let newLux = newChildren.grab(newStop)
+        if(!same(oldLux, newLux)) {internalPatch(parentTask, parentLock, element.grab(oldStop), oldLux, newLux)}
+        oldStop -= 1
+        newStop -= 1
+    }
+    // If it's a single swap, or we only need to delete nodes or only need to add nodes, do that
+    if(newStart == newStop && oldStart == oldStop) {
+        let oldLux = oldChildren.grab(oldStop)
+        let newLux = newChildren.grab(newStop)
+        internalUnmount(oldLux)
+        element.grab(oldStop).delete()
+        let childElement = internalPatch(parentTask, parentLock, internalNull(), LuxText(""), newLux)
+        element.insertAt(newStart, childElement)
+    } elseIf {newStart > newStop} {
+        while {oldStart <= oldStop} {
+            internalUnmount(oldChildren.grab(oldStop))
+            element.grab(oldStop).delete()
+            oldStop -= 1
+        }
+    } elseIf {oldStart > oldStop} {
+        let emptyNode = LuxText("")
+        while {newStart <= newStop} {
+            let childElement = internalPatch(parentTask, parentLock, internalNull(), emptyNode, newChildren.grab(newStart))
+            element.insertAt(newStart, childElement)
+            newStart += 1
+        }
+    } else:
+    // Otherwise, build an index multimap to, do out-of-order patching, and delete excess nodes
+    let multiMap = StringMap.make()
+    while {oldStart <= oldStop} {
+        let stack = multiMap.getOrSet(oldChildren.grab(oldStop).internalKey) {Stack.make()}
+        stack.push(Pair(oldChildren.grab(oldStop), element.grab(oldStop)))
+        oldStop -= 1
+    }
+    let emptyNode = LuxText("")
+    let emptyStack = Stack.make()
+    while {newStart <= newStop} {
+        let newLux = newChildren.grab(newStart)
+        let oldPairs = multiMap.get(newLux.internalKey).else {emptyStack}
+        oldPairs.pop().{
+            | None =>
+                let newNode = internalPatch(parentTask, parentLock, internalNull(), emptyNode, newLux)
+                element.insertAt(newStart, newNode)
+            | Some(Pair(oldLux, oldNode)) =>
+                element.insertAt(newStart, oldNode)
+                internalPatch(parentTask, parentLock, oldNode, oldLux, newLux)
+        }
+        newStart += 1
+    }
+    multiMap.each {_, pairs => 
+        pairs.each {| Pair(oldLux, oldNode) =>
+            internalUnmount(oldLux)
+            oldNode.delete()
+        }
+    }
+}
+
+internalUnmount(lux: Lux) {
+    | LuxHook(_, _, _, _, _, _, _, umount) => umount()
+    | LuxTag(_, _, children) => children.each {internalUnmount(_)}
+    | LuxText(_) => 
+}
 
 // HTML tags
 a(text: String = ""): Lux {Lux.new("a", text)}

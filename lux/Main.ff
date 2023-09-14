@@ -1,6 +1,6 @@
 import HttpServer from ff:httpserver
 
-import Lux2 as Lux
+import Lux
 import LuxEvent
 
 
