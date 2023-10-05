@@ -1,0 +1,57 @@
+import Lux2 as Lux
+import LuxEvent
+
+capability Lux {
+    
+}
+
+extend self: Lux {
+    
+    text(value: String) {
+        
+    }
+    
+    new(tag: String, body: () => Unit = {}) {
+        
+    }
+
+    div(body: () => Unit = {}) {self.new("div", body)}
+    label(body: () => Unit = {}) {self.new("label", body)}
+    button(body: () => Unit = {}) {self.new("button", body)}
+        
+    css(property: String, value: String) {
+        
+    }
+    
+    cssColor(value: String) {self.css("color", "red")}
+    
+    on(event: String, handler: LuxEvent => Unit) {
+        
+    }
+
+    onClick(handler: LuxEvent => Unit) {self.on("click", handler)}
+    onInput(handler: LuxEvent => Unit) {self.on("input", handler)}
+        
+    useState[T](initialValue: T, body: (T, T => Unit) => Unit) {
+        
+    }
+
+}
+
+render(element: JsValue, body: Lux => Unit) {
+    
+}
+
+buttonWithLabel(lux: Lux) {
+    lux.useState(0): count, setCount =>
+    lux.div {
+        lux.label {
+            lux.css("color", "red")
+            lux.text("Click this:")
+        }
+        lux.button {
+            lux.text("Clicked " + count + " times")
+            lux.onClick {_ => setCount(count + 1)}
+        }
+    }
+}
