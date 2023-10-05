@@ -18,7 +18,13 @@ extend self: Lux {
     div(body: () => Unit = {}) {self.new("div", body)}
     label(body: () => Unit = {}) {self.new("label", body)}
     button(body: () => Unit = {}) {self.new("button", body)}
-        
+    form(body: () => Unit = {}) {self.new("form", body)}
+    input(body: () => Unit = {}) {self.new("input", body)}
+
+    with(property: String, value: String) {
+    
+    }
+    
     css(property: String, value: String) {
         
     }
@@ -33,6 +39,14 @@ extend self: Lux {
     onInput(handler: LuxEvent => Unit) {self.on("input", handler)}
         
     useState[T](initialValue: T, body: (T, T => Unit) => Unit) {
+        
+    }
+
+    useMemo1[A1, T](a1: A1, compute: A1 => T, body: T => Unit = {_ => }) {
+        
+    }
+    
+    useSuspense(suspense: () => Unit, body: () => Unit) {
         
     }
 
@@ -53,5 +67,43 @@ buttonWithLabel(lux: Lux) {
             lux.text("Clicked " + count + " times")
             lux.onClick {_ => setCount(count + 1)}
         }
+    }
+}
+
+
+mainComponent(lux: Lux, http: HttpClient) {
+    lux.useState([]): chat, setChat => 
+    lux.useState(""): message, setMessage =>
+    lux.div {
+        lux.div {
+            chat.each {questionComponent(lux, http, _)}
+        }
+        lux.form {
+            lux.input {
+                lux.with("autofocus", "true")
+                lux.with("value", message)
+                lux.on("input") {event => setMessage(event.text())}
+            }
+            lux.on("submit") {event => 
+                event.preventDefault()
+                setMessage("")
+                setChat([...chat, message])
+            }
+        }
+    }
+}
+
+questionComponent(lux: Lux, http: HttpClient, question: String) {
+    lux.div {
+        lux.with("style", "margin-bottom: 10px")
+        lux.div {lux.text("User: " + question)}
+        lux.useMemo1(question): _ =>
+        lux.useSuspense {lux.div {lux.text("Assistant typing...")}}:
+        let answer = http.fetch(
+            url = "/chat"
+            method = "POST"
+            body = Some(HttpClient.bodyText(question))
+        ).readText()
+        lux.div {lux.text("Assistant: " + answer)}
     }
 }
