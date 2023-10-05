@@ -95,7 +95,7 @@ mainComponent(lux: Lux, http: HttpClient) {
 
 questionComponent(lux: Lux, http: HttpClient, question: String) {
     lux.div {
-        lux.with("style", "margin-bottom: 10px")
+        lux.css("margin-bottom", "10px")
         lux.div {lux.text("User: " + question)}
         lux.useMemo1(question): _ =>
         lux.useSuspense {lux.div {lux.text("Assistant typing...")}}:
