@@ -1,18 +1,68 @@
 import Lux2 as Lux
 import LuxEvent
 
-capability Lux {
-    
+capability Lux(
+    document: LuxDocument
+    hooks: Stack[LuxHook]
+    mutable render: Option[() => Unit]
+    mutable element: LuxElement
+)
+
+capability LuxHook(name: String, tag: AnyTag, location: SourceLocation)
+
+class LuxElement(element: JsValue, mutable child: Int)
+
+class LuxDocument(document: JsValue)
+
+extend self: LuxElement {
+    childAt(index: Int): JsValue {
+        self.element.call0("childNodes").get(index)
+    }
+    insertBefore(newNode: JsValue, referenceNode: JsValue): JsValue {
+        self.element.call2("insertBefore", newNode, referenceNode)
+    }
+}
+
+extend self: LuxDocument {
+    createTextNode(value: String): JsValue {
+        self.document.call1("createTextNode", value)
+    }
+
+    createElement(tagName: String): JsValue {
+        self.document.call1("createElement", tagName)
+    }
 }
 
 extend self: Lux {
     
     text(value: String) {
-        
+        let oldNode = self.element.childAt(self.element.child)
+        let oldValue = oldNode.get("data")
+        if(oldValue.isNullOrUndefined() || oldValue.grabString() != value) {
+            let node = self.document.createTextNode(value)
+            self.element.insertBefore(node, oldNode)
+        }
+        self.element.child += 1
     }
     
-    new(tag: String, body: () => Unit = {}) {
-        
+    new(tagName: String, body: () => Unit = {}) {
+        let oldNode = self.element.childAt(self.element.child)
+        let oldTagName = oldNode.get("tagName")
+        let node = if(!oldTagName.isNullOrUndefined() && oldTagName.grabString() == tagName.upper()) {
+            oldNode
+        } else {
+            let newNode = self.document.createElement(tagName)
+            self.element.insertBefore(newNode, oldNode)
+            newNode
+        }
+        let oldElement = self.element
+        self.element = LuxElement(node, 0)
+        try {
+            body()
+        } finally {
+            self.element = oldElement
+            self.element.child += 1
+        } grab()
     }
 
     div(body: () => Unit = {}) {self.new("div", body)}
@@ -38,8 +88,9 @@ extend self: Lux {
     onClick(handler: LuxEvent => Unit) {self.on("click", handler)}
     onInput(handler: LuxEvent => Unit) {self.on("input", handler)}
         
-    useState[T](initialValue: T, body: (T, T => Unit) => Unit) {
-        
+    useState[T: HasAnyTag](initialValue: T, body: (T, T => Unit) => Unit, location: SourceLocation = SourceLocation.callSite()) {
+        //let hook = UseState(initialValue, body, location)
+        //self.hooks.push(Any.toAny(hook))
     }
 
     useMemo1[A1, T](a1: A1, compute: A1 => T, body: T => Unit = {_ => }) {
