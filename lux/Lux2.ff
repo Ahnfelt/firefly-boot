@@ -21,6 +21,14 @@ extend self: LuxElement {
     insertBefore(newNode: JsValue, referenceNode: JsValue): JsValue {
         self.element.call2("insertBefore", newNode, referenceNode)
     }
+    removeAt(index: Int): Bool {
+        let node = self.childAt(index)
+        let remove = !node.isNullOrUndefined()
+        if(remove) {
+            self.element.call1("removeChild", node)
+        }
+        remove
+    }
 }
 
 extend self: LuxDocument {
@@ -60,6 +68,9 @@ extend self: Lux {
         try {
             body()
         } finally {
+            while {self.element.removeAt(self.element.child)} {
+                self.element.child += 1
+            }
             self.element = oldElement
             self.element.child += 1
         } grab()
