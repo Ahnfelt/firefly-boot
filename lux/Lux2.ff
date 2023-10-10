@@ -68,9 +68,7 @@ extend self: Lux {
         try {
             body()
         } finally {
-            while {self.element.removeAt(self.element.child)} {
-                self.element.child += 1
-            }
+            doWhile {self.element.removeAt(self.element.child)}
             self.element = oldElement
             self.element.child += 1
         } grab()
