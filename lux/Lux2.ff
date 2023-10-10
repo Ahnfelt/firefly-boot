@@ -113,7 +113,7 @@ extend self: Lux {
 }
 
 render(element: JsValue, body: Lux => Unit) {
-    mutable document: JsValue = element
+    mutable document = element
     while {!document.get("parentNode").isNullOrUndefined()} {document = document.get("parentNode")}
     let lux = Lux(LuxDocument(document), Stack.make(), None, LuxElement(element, 0))
     body(lux)
