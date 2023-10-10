@@ -113,7 +113,15 @@ extend self: Lux {
 }
 
 render(element: JsValue, body: Lux => Unit) {
-    
+    mutable document: JsValue = element
+    while {!document.get("parentNode").isNullOrUndefined()} {document = document.get("parentNode")}
+    let lux = Lux(LuxDocument(document), Stack.make(), None, LuxElement(element, 0))
+    body(lux)
+}
+
+renderById(browserSystem: BrowserSystem, id: String, body: Lux => Unit) {
+    let element = browserSystem.js().global().get("document").call1("getElementById", id)
+    render(element, body)
 }
 
 buttonWithLabel(lux: Lux) {
