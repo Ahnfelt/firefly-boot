@@ -6,6 +6,8 @@ capability Lux(
     hooks: Stack[LuxHook]
     mutable render: Option[() => Unit]
     mutable element: LuxElement
+    mutable keys: Option[StringMap[JsValue]]
+    mutable key: String
 )
 
 capability LuxHook(name: String, tag: AnyTag, location: SourceLocation)
@@ -54,21 +56,56 @@ extend self: Lux {
     }
     
     new(tagName: String, body: () => Unit = {}) {
+        let newKey = if(self.key != "") {tagName.upper() + ">" + self.key} else {""}
         let oldNode = self.element.childAt(self.element.child)
-        let oldTagName = oldNode.get("tagName")
-        let node = if(!oldTagName.isNullOrUndefined() && oldTagName.grabString() == tagName.upper()) {
+        let oldKey = oldNode.get("luxKey")
+        let match = if(newKey != "") {
+            !oldKey.isNullOrUndefined() && 
+            oldKey.grabString() == newKey
+        } else {
+            oldKey.isNullOrUndefined() && 
+            !oldNode.get("tagName").isNullOrUndefined() && 
+            oldNode.get("tagName").grabString() == tagName.upper()
+        }
+        let node = if(match) {
             oldNode
         } else {
-            let newNode = self.document.createElement(tagName)
+            let newNode = if(newKey == "") {self.document.createElement(tagName)} else {
+                let keys = self.keys.else {
+                    let map = StringMap.make()
+                    mutable i = self.element.child
+                    mutable c = self.element.childAt(i)
+                    while {!c.isNullOrUndefined()} {
+                        let k = c.get("luxKey")
+                        if(!k.isNullOrUndefined()) {map.set(k.grabString(), c)}
+                        c = self.element.childAt(i)
+                        i += 1
+                    }
+                    self.keys = Some(map)
+                    map
+                }
+                if(keys.has(newKey)) {
+                    let foundNode = keys.grab(newKey)
+                    keys.remove(newKey)
+                    foundNode
+                } else {
+                    let createdNode = self.document.createElement(tagName)
+                    createdNode.set("luxKey", newKey)
+                    createdNode
+                }
+            }
             self.element.insertBefore(newNode, oldNode)
             newNode
         }
+        let oldKeys = self.keys
         let oldElement = self.element
         self.element = LuxElement(node, 0)
+        self.key = ""
         try {
             body()
         } finally {
             doWhile {self.element.removeAt(self.element.child)}
+            self.keys = oldKeys
             self.element = oldElement
             self.element.child += 1
         } grab()
@@ -80,6 +117,15 @@ extend self: Lux {
     form(body: () => Unit = {}) {self.new("form", body)}
     input(body: () => Unit = {}) {self.new("input", body)}
 
+    keyed(key: String, body: () => Unit): Unit {
+        self.key = key
+        try {
+            body()
+        } finally {
+            self.key = ""
+        } grab()
+    }
+        
     with(property: String, value: String) {
     
     }
@@ -114,8 +160,17 @@ extend self: Lux {
 
 render(element: JsValue, body: Lux => Unit) {
     mutable document = element
-    while {!document.get("parentNode").isNullOrUndefined()} {document = document.get("parentNode")}
-    let lux = Lux(LuxDocument(document), Stack.make(), None, LuxElement(element, 0))
+    while {!document.get("parentNode").isNullOrUndefined()} {
+        document = document.get("parentNode")
+    }
+    let lux = Lux(
+        document = LuxDocument(document)
+        hooks = Stack.make()
+        render = None
+        element = LuxElement(element, 0)
+        keys = None
+        key = ""
+    )
     body(lux)
 }
 
