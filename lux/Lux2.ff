@@ -117,7 +117,7 @@ extend self: Lux {
     form(body: () => Unit = {}) {self.new("form", body)}
     input(body: () => Unit = {}) {self.new("input", body)}
 
-    keyed(key: String, body: T => Unit) {
+    keyed(key: String, body: () => Unit) {
         try {
             self.key = key
             body(item)
