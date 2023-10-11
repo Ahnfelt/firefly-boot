@@ -117,7 +117,16 @@ extend self: Lux {
     form(body: () => Unit = {}) {self.new("form", body)}
     input(body: () => Unit = {}) {self.new("input", body)}
 
-    each[T](values: List[T], getKey: T => String, body: T => Unit) {
+    keyed(key: String, body: T => Unit) {
+        try {
+            self.key = key
+            body(item)
+        } finally {
+            self.key = ""
+        } grab()
+    }
+    
+    keyedList[T](values: List[T], getKey: T => String, body: T => Unit) {
         try {
             values.each {item =>
                 self.key = getKey(item)
