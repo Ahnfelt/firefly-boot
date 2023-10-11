@@ -125,7 +125,7 @@ extend self: Lux {
             self.key = ""
         } grab()
     }
-        
+
     with(property: String, value: String) {
     
     }
