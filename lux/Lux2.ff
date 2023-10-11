@@ -117,10 +117,12 @@ extend self: Lux {
     form(body: () => Unit = {}) {self.new("form", body)}
     input(body: () => Unit = {}) {self.new("input", body)}
 
-    keyed(key: String, body: () => Unit): Unit {
-        self.key = key
+    each[T](values: List[T], getKey: T => String, body: T => Unit) {
         try {
-            body()
+            values.each {item =>
+                self.key = getKey(item)
+                body(item)
+            }
         } finally {
             self.key = ""
         } grab()
