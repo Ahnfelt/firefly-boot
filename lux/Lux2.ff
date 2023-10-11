@@ -55,7 +55,8 @@ extend self: Lux {
         self.element.child += 1
     }
     
-    new(tagName: String, body: () => Unit = {}) {
+    new(tagName: String, body: () => Unit = {}, key: String = "") {
+        if(key != "") {self.key = key}
         let newKey = if(self.key != "") {tagName.upper() + ">" + self.key} else {""}
         let oldNode = self.element.childAt(self.element.child)
         let oldKey = oldNode.get("luxKey")
@@ -111,11 +112,11 @@ extend self: Lux {
         } grab()
     }
 
-    div(body: () => Unit = {}) {self.new("div", body)}
-    label(body: () => Unit = {}) {self.new("label", body)}
-    button(body: () => Unit = {}) {self.new("button", body)}
-    form(body: () => Unit = {}) {self.new("form", body)}
-    input(body: () => Unit = {}) {self.new("input", body)}
+    div(body: () => Unit = {}, key: String = "") {self.new("div", body, key)}
+    label(body: () => Unit = {}, key: String = "") {self.new("label", body, key)}
+    button(body: () => Unit = {}, key: String = "") {self.new("button", body, key)}
+    form(body: () => Unit = {}, key: String = "") {self.new("form", body, key)}
+    input(body: () => Unit = {}, key: String = "") {self.new("input", body, key)}
 
     keyed(key: String, body: () => Unit) {
         try {
