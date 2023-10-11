@@ -120,7 +120,7 @@ extend self: Lux {
     keyed(key: String, body: () => Unit) {
         try {
             self.key = key
-            body(item)
+            body()
         } finally {
             self.key = ""
         } grab()
