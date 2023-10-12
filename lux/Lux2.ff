@@ -57,7 +57,7 @@ extend self: Lux {
         self.element.child += 1
     }
     
-    new(tagName: String, body: () => Unit = {}) {
+    add(tagName: String, body: () => Unit = {}) {
         let node = patchElement(self, tagName)
         let savedProperties = self.properties
         let savedKeys = self.keys
@@ -77,12 +77,12 @@ extend self: Lux {
         } grab()
     }
 
-    div(body: () => Unit = {}) {self.new("div", body)}
-    span(body: () => Unit = {}) {self.new("span", body)}
-    label(body: () => Unit = {}) {self.new("label", body)}
-    button(body: () => Unit = {}) {self.new("button", body)}
-    form(body: () => Unit = {}) {self.new("form", body)}
-    input(body: () => Unit = {}) {self.new("input", body)}
+    div(body: () => Unit = {}) {self.add("div", body)}
+    span(body: () => Unit = {}) {self.add("span", body)}
+    label(body: () => Unit = {}) {self.add("label", body)}
+    button(body: () => Unit = {}) {self.add("button", body)}
+    form(body: () => Unit = {}) {self.add("form", body)}
+    input(body: () => Unit = {}) {self.add("input", body)}
         
     keyed(key: String, body: () => Unit) {
         try {
