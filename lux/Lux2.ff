@@ -58,48 +58,7 @@ extend self: Lux {
     }
     
     new(tagName: String, body: () => Unit = {}) {
-        let newKey = if(self.key != "") {tagName.upper() + ">" + self.key} else {""}
-        let oldNode = self.element.childAt(self.element.child)
-        let oldKey = if(!oldNode.isNullOrUndefined()) {oldNode.get("luxKey")} else {oldNode}
-        let match = if(newKey != "") {
-            !oldKey.isNullOrUndefined() && 
-            oldKey.grabString() == newKey
-        } else {
-            oldKey.isNullOrUndefined() && 
-            !oldNode.isNullOrUndefined() &&
-            !oldNode.get("tagName").isNullOrUndefined() && 
-            oldNode.get("tagName").grabString() == tagName.upper()
-        }
-        let node = if(match) {
-            oldNode
-        } else {
-            let newNode = if(newKey == "") {self.document.createElement(tagName)} else {
-                let keys = self.keys.else {
-                    let map = StringMap.make()
-                    mutable i = self.element.child
-                    mutable c = self.element.childAt(i)
-                    while {!c.isNullOrUndefined()} {
-                        let k = c.get("luxKey")
-                        if(!k.isNullOrUndefined()) {map.set(k.grabString(), c)}
-                        c = self.element.childAt(i)
-                        i += 1
-                    }
-                    self.keys = Some(map)
-                    map
-                }
-                if(keys.has(newKey)) {
-                    let foundNode = keys.grab(newKey)
-                    keys.remove(newKey)
-                    foundNode
-                } else {
-                    let createdNode = self.document.createElement(tagName)
-                    createdNode.set("luxKey", newKey)
-                    createdNode
-                }
-            }
-            self.element.insertBefore(newNode, oldNode)
-            newNode
-        }
+        let node = patchElement(self, tagName)
         let savedProperties = self.properties
         let savedKeys = self.keys
         let savedElement = self.element
@@ -194,6 +153,51 @@ extend self: Lux {
         
     }
 
+}
+
+patchElement(self: Lux, tagName: String): JsValue {
+    let newKey = if(self.key != "") {tagName.upper() + ">" + self.key} else {""}
+    let oldNode = self.element.childAt(self.element.child)
+    let oldKey = if(!oldNode.isNullOrUndefined()) {oldNode.get("luxKey")} else {oldNode}
+    let match = if(newKey != "") {
+        !oldKey.isNullOrUndefined() && 
+        oldKey.grabString() == newKey
+    } else {
+        oldKey.isNullOrUndefined() && 
+        !oldNode.isNullOrUndefined() &&
+        !oldNode.get("tagName").isNullOrUndefined() && 
+        oldNode.get("tagName").grabString() == tagName.upper()
+    }
+    if(match) {
+        oldNode
+    } else {
+        let newNode = if(newKey == "") {self.document.createElement(tagName)} else {
+            let keys = self.keys.else {
+                let map = StringMap.make()
+                mutable i = self.element.child
+                mutable c = self.element.childAt(i)
+                while {!c.isNullOrUndefined()} {
+                    let k = c.get("luxKey")
+                    if(!k.isNullOrUndefined()) {map.set(k.grabString(), c)}
+                    c = self.element.childAt(i)
+                    i += 1
+                }
+                self.keys = Some(map)
+                map
+            }
+            if(keys.has(newKey)) {
+                let foundNode = keys.grab(newKey)
+                keys.remove(newKey)
+                foundNode
+            } else {
+                let createdNode = self.document.createElement(tagName)
+                createdNode.set("luxKey", newKey)
+                createdNode
+            }
+        }
+        self.element.insertBefore(newNode, oldNode)
+        newNode
+    }
 }
 
 patchProperties(self: Lux) {
