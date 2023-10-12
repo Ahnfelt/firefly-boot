@@ -110,35 +110,7 @@ extend self: Lux {
             body()
         } finally {
             doWhile {self.element.removeAt(self.element.child)}
-            let oldProperties = self.element.element.get("luxProperties")
-            self.properties.{
-                | None => 
-                    if(!oldProperties.isNullOrUndefined()) {
-                        oldProperties.grabStringMap().each {key, _ =>
-                            self.element.element.set(key, self.jsSystem.undefined())
-                        }
-                        self.element.element.set("luxProperties", self.jsSystem.undefined())
-                    }
-                | Some(map) => 
-                    if(!oldProperties.isNullOrUndefined()) {
-                        let oldMap = oldProperties.grabStringMap()
-                        oldMap.each {key, value =>
-                            if(!map.has(key)) {
-                                self.element.element.set(key, self.jsSystem.undefined())
-                            }
-                        }
-                        map.each {key, value =>
-                            if(!oldMap.has(key)) {
-                                self.element.element.set(key, value)
-                            }
-                        }
-                    } else {
-                        map.each {key, value =>
-                            self.element.element.set(key, value)
-                        }
-                    }
-                    self.element.element.set("luxProperties", map)
-            }
+            patchProperties(self)
             self.properties = savedProperties
             self.keys = savedKeys
             self.element = savedElement
@@ -206,6 +178,39 @@ extend self: Lux {
         
     }
 
+}
+
+patchProperties(self: Lux) {
+    let oldProperties = self.element.element.get("luxProperties")
+    self.properties.{
+        | None => 
+            if(!oldProperties.isNullOrUndefined()) {
+                oldProperties.grabStringMap().each {key, _ =>
+                    self.element.element.set(key, self.jsSystem.undefined())
+                }
+                self.element.element.set("luxProperties", self.jsSystem.undefined())
+            }
+            Unit
+        | Some(map) => 
+            if(!oldProperties.isNullOrUndefined()) {
+                let oldMap = oldProperties.grabStringMap()
+                oldMap.each {key, value =>
+                    if(!map.has(key)) {
+                        self.element.element.set(key, self.jsSystem.undefined())
+                    }
+                }
+                map.each {key, value =>
+                    if(!oldMap.has(key)) {
+                        self.element.element.set(key, value)
+                    }
+                }
+            } else {
+                map.each {key, value =>
+                    self.element.element.set(key, value)
+                }
+            }
+            self.element.element.set("luxProperties", map)
+    }    
 }
 
 render(jsSystem: JsSystem, element: JsValue, body: Lux => Unit) {
