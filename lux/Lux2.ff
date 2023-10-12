@@ -9,7 +9,7 @@ capability Lux(
     mutable element: LuxElement
     mutable keys: Option[StringMap[JsValue]]
     mutable key: String
-    mutable properties: Option[StringMap[JsValue]]
+    mutable attributes: Option[StringMap[String]]
 )
 
 capability LuxHook(name: String, tag: AnyTag, location: SourceLocation)
@@ -59,18 +59,18 @@ extend self: Lux {
     
     add(tagName: String, body: () => Unit = {}) {
         let node = patchElement(self, tagName)
-        let savedProperties = self.properties
+        let savedAttributes = self.attributes
         let savedKeys = self.keys
         let savedElement = self.element
-        self.properties = None
+        self.attributes = None
         self.element = LuxElement(node, 0)
         self.key = ""
         try {
             body()
         } finally {
             doWhile {self.element.removeAt(self.element.child)}
-            patchProperties(self)
-            self.properties = savedProperties
+            patchAttributes(self)
+            self.attributes = savedAttributes
             self.keys = savedKeys
             self.element = savedElement
             self.element.child += 1
@@ -104,13 +104,13 @@ extend self: Lux {
         } grab()
     }
 
-    set[V: IsJsValue](property: String, value: V) {
-        let properties = self.properties.else {
+    set(attribute: String, value: String) {
+        let attributes = self.attributes.else {
             let map = StringMap.make()
-            self.properties = Some(map)
+            self.attributes = Some(map)
             map
         }
-        properties.set(property, self.jsSystem.value(value))
+        attributes.set(attribute, value)
     }
     
     setId(value: String) {self.set("id", value)}
@@ -118,16 +118,15 @@ extend self: Lux {
     setStyle(value: String) {self.set("style", value)}
     
     css(key: String, value: String) {
-        let properties = self.properties.else {
+        let attributes = self.attributes.else {
             let map = StringMap.make()
-            self.properties = Some(map)
+            self.attributes = Some(map)
             map
         }
-        if(properties.has("style")) {
-            let style = properties.grab("style").grabString() + ";" + key + ":" + value
-            properties.set("style", self.jsSystem.value(style))
+        if(attributes.has("style")) {
+            attributes.set("style", attributes.grab("style") + ";" + key + ":" + value)
         } else {
-            properties.set("style", self.jsSystem.value(key + ":" + value))
+            attributes.set("style", key + ":" + value)
         }
     }
     
@@ -200,48 +199,31 @@ patchElement(self: Lux, tagName: String): JsValue {
     }
 }
 
-patchProperties(self: Lux) {
-    let oldProperties = self.element.element.get("luxProperties")
-    self.properties.{
+patchAttributes(self: Lux) {
+    let attributes = self.element.element.get("attributes")
+    self.attributes.{
         | None => 
-            if(!oldProperties.isNullOrUndefined()) {
-                oldProperties.grabStringMap().each {key, _ =>
-                    if(key == "id" || key == "style") {
-                        self.element.element.call1("removeAttribute", key)
-                        Unit
-                    } else {
-                        self.element.element.set(key, self.jsSystem.undefined())   
-                    }
-                }
-                self.element.element.delete("luxProperties")
+            mutable i = attributes.get("length").grabInt() - 1
+            while {i >= 0} {
+                let attribute = attributes.get(i)
+                self.element.element.call1("removeAttribute", attribute.get("name"))
+                i -= 1
             }
-            Unit
         | Some(map) => 
-            if(!oldProperties.isNullOrUndefined()) {
-                let oldMap = oldProperties.grabStringMap()
-                oldMap.each {key, value =>
-                    if(!map.has(key)) {
-                        if(key == "id" || key == "style") {
-                            self.element.element.call1("removeAttribute", key)
-                            Unit
-                        } else {
-                            self.element.element.set(key, self.jsSystem.undefined())   
-                        }
-                    }
+            mutable i = attributes.get("length").grabInt() - 1
+            while {i >= 0} {
+                let attribute = attributes.get(i)
+                if(!map.has(attribute.get("name").grabString())) {
+                    self.element.element.call1("removeAttribute", attribute.get("name"))
                 }
-                map.each {key, value =>
-                    if(!oldMap.has(key)) {
-                        self.element.element.set(key, value)
-                    } elseIf {!oldMap.grab(key).equals(value)} {
-                        self.element.element.set(key, value)
-                    }
-                }
-            } else {
-                map.each {key, value =>
-                    self.element.element.set(key, value)
+                i -= 1
+            }
+            map.each {name, value =>
+                let oldValue = self.element.element.call1("getAttribute", name)
+                if(oldValue.isNullOrUndefined() || !oldValue.equals(value)) {
+                    self.element.element.call2("setAttribute", name, value)
                 }
             }
-            self.element.element.set("luxProperties", map)
     }    
 }
 
@@ -258,7 +240,7 @@ render(jsSystem: JsSystem, element: JsValue, body: Lux => Unit) {
         element = LuxElement(element, 0)
         keys = None
         key = ""
-        properties = None
+        attributes = None
     )
     body(lux)
 }

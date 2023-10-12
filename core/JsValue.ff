@@ -26,7 +26,7 @@ extend self: JsValue {
             return self_
         """
 
-    equals(value: JsValue): Bool
+    equals[V: IsJsValue](value: V): Bool
         target js sync "return typeof self_ === value_"
 
     isString(): Bool

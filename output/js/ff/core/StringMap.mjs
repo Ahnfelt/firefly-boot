@@ -136,7 +136,7 @@ return self_.size
 }
 
 export function StringMap_each(self_, body_) {
-return self_.forEach((v, k) => body_(k, v))
+self_.forEach((v, k) => body_(k, v))
 }
 
 export function StringMap_eachWhile(self_, body_) {
