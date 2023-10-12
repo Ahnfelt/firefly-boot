@@ -104,7 +104,7 @@ extend self: Lux {
         } grab()
     }
 
-    with[V: IsJsValue](property: String, value: V) {
+    set[V: IsJsValue](property: String, value: V) {
         let properties = self.properties.else {
             let map = StringMap.make()
             self.properties = Some(map)
@@ -113,9 +113,9 @@ extend self: Lux {
         properties.set(property, self.jsSystem.value(value))
     }
     
-    withId(value: String) {self.with("id", value)}
-    withClassName(value: String) {self.with("className", value)}
-    withStyle(value: String) {self.with("style", value)}
+    setId(value: String) {self.set("id", value)}
+    setClassName(value: String) {self.set("className", value)}
+    setStyle(value: String) {self.set("style", value)}
     
     css(key: String, value: String) {
         let properties = self.properties.else {
@@ -206,9 +206,14 @@ patchProperties(self: Lux) {
         | None => 
             if(!oldProperties.isNullOrUndefined()) {
                 oldProperties.grabStringMap().each {key, _ =>
-                    self.element.element.set(key, self.jsSystem.undefined())
+                    if(key == "id" || key == "style") {
+                        self.element.element.call1("removeAttribute", key)
+                        Unit
+                    } else {
+                        self.element.element.set(key, self.jsSystem.undefined())   
+                    }
                 }
-                self.element.element.set("luxProperties", self.jsSystem.undefined())
+                self.element.element.delete("luxProperties")
             }
             Unit
         | Some(map) => 
@@ -216,7 +221,12 @@ patchProperties(self: Lux) {
                 let oldMap = oldProperties.grabStringMap()
                 oldMap.each {key, value =>
                     if(!map.has(key)) {
-                        self.element.element.set(key, self.jsSystem.undefined())
+                        if(key == "id" || key == "style") {
+                            self.element.element.call1("removeAttribute", key)
+                            Unit
+                        } else {
+                            self.element.element.set(key, self.jsSystem.undefined())   
+                        }
                     }
                 }
                 map.each {key, value =>

@@ -8,6 +8,7 @@ mainComponent(lux: Lux) {
     lux.div {
         lux.keyed("red") {
             lux.div {
+                lux.setId("red")
                 lux.cssColor("red")
                 lux.text("Red!")
             }
