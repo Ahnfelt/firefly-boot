@@ -171,6 +171,8 @@ extend self: Lux {
             properties.set("style", self.jsSystem.value(key + ":" + value))
         }
     }
+    
+    cssColor(value: String) {self.css("color", value)}
 
     on(event: String, handler: LuxEvent => Unit) {
         
