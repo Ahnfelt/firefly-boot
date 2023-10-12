@@ -4,10 +4,12 @@ import LuxEvent
 capability Lux(
     document: LuxDocument
     hooks: Stack[LuxHook]
+    jsSystem: JsSystem
     mutable render: Option[() => Unit]
     mutable element: LuxElement
     mutable keys: Option[StringMap[JsValue]]
     mutable key: String
+    mutable properties: Option[StringMap[JsValue]]
 )
 
 capability LuxHook(name: String, tag: AnyTag, location: SourceLocation)
@@ -55,8 +57,7 @@ extend self: Lux {
         self.element.child += 1
     }
     
-    new(tagName: String, body: () => Unit = {}, key: String = "") {
-        if(key != "") {self.key = key}
+    new(tagName: String, body: () => Unit = {}) {
         let newKey = if(self.key != "") {tagName.upper() + ">" + self.key} else {""}
         let oldNode = self.element.childAt(self.element.child)
         let oldKey = if(!oldNode.isNullOrUndefined()) {oldNode.get("luxKey")} else {oldNode}
@@ -99,26 +100,58 @@ extend self: Lux {
             self.element.insertBefore(newNode, oldNode)
             newNode
         }
-        let oldKeys = self.keys
-        let oldElement = self.element
+        let savedProperties = self.properties
+        let savedKeys = self.keys
+        let savedElement = self.element
+        self.properties = None
         self.element = LuxElement(node, 0)
         self.key = ""
         try {
             body()
         } finally {
             doWhile {self.element.removeAt(self.element.child)}
-            self.keys = oldKeys
-            self.element = oldElement
+            let oldProperties = self.element.element.get("luxProperties")
+            self.properties.{
+                | None => 
+                    if(!oldProperties.isNullOrUndefined()) {
+                        oldProperties.grabStringMap().each {key, _ =>
+                            self.element.element.set(key, self.jsSystem.undefined())
+                        }
+                        self.element.element.set("luxProperties", self.jsSystem.undefined())
+                    }
+                | Some(map) => 
+                    if(!oldProperties.isNullOrUndefined()) {
+                        let oldMap = oldProperties.grabStringMap()
+                        oldMap.each {key, value =>
+                            if(!map.has(key)) {
+                                self.element.element.set(key, self.jsSystem.undefined())
+                            }
+                        }
+                        map.each {key, value =>
+                            if(!oldMap.has(key)) {
+                                self.element.element.set(key, value)
+                            }
+                        }
+                    } else {
+                        map.each {key, value =>
+                            self.element.element.set(key, value)
+                        }
+                    }
+                    self.element.element.set("luxProperties", map)
+            }
+            self.properties = savedProperties
+            self.keys = savedKeys
+            self.element = savedElement
             self.element.child += 1
         } grab()
     }
 
-    div(body: () => Unit = {}, key: String = "") {self.new("div", body, key)}
-    span(body: () => Unit = {}, key: String = "") {self.new("span", body, key)}
-    label(body: () => Unit = {}, key: String = "") {self.new("label", body, key)}
-    button(body: () => Unit = {}, key: String = "") {self.new("button", body, key)}
-    form(body: () => Unit = {}, key: String = "") {self.new("form", body, key)}
-    input(body: () => Unit = {}, key: String = "") {self.new("input", body, key)}
+    div(body: () => Unit = {}) {self.new("div", body)}
+    span(body: () => Unit = {}) {self.new("span", body)}
+    label(body: () => Unit = {}) {self.new("label", body)}
+    button(body: () => Unit = {}) {self.new("button", body)}
+    form(body: () => Unit = {}) {self.new("form", body)}
+    input(body: () => Unit = {}) {self.new("input", body)}
 
     keyed(key: String, body: () => Unit) {
         try {
@@ -140,15 +173,18 @@ extend self: Lux {
         } grab()
     }
 
-    with(property: String, value: String) {
-    
+    with[V: IsJsValue](property: String, value: V) {
+        let properties = self.properties.else {
+            let map = StringMap.make()
+            self.properties = Some(map)
+            map
+        }
+        properties.set(property, self.jsSystem.value(value))
     }
     
-    css(property: String, value: String) {
-        self.element.element.get("style").set(property, value)
-    }
-    
-    cssColor(value: String) {self.css("color", "red")}
+    withId(value: String) {self.with("id", value)}
+    withClassName(value: String) {self.with("className", value)}
+    withStyle(value: String) {self.with("style", value)}
     
     on(event: String, handler: LuxEvent => Unit) {
         
@@ -172,75 +208,25 @@ extend self: Lux {
 
 }
 
-render(element: JsValue, body: Lux => Unit) {
+render(jsSystem: JsSystem, element: JsValue, body: Lux => Unit) {
     mutable document = element
     while {!document.get("parentNode").isNullOrUndefined()} {
         document = document.get("parentNode")
     }
     let lux = Lux(
+        jsSystem = jsSystem
         document = LuxDocument(document)
         hooks = Stack.make()
         render = None
         element = LuxElement(element, 0)
         keys = None
         key = ""
+        properties = None
     )
     body(lux)
 }
 
 renderById(browserSystem: BrowserSystem, id: String, body: Lux => Unit) {
     let element = browserSystem.js().global().get("document").call1("getElementById", id)
-    render(element, body)
-}
-
-buttonWithLabel(lux: Lux) {
-    lux.useState(0): count, setCount =>
-    lux.div {
-        lux.label {
-            lux.css("color", "red")
-            lux.text("Click this:")
-        }
-        lux.button {
-            lux.text("Clicked " + count + " times")
-            lux.onClick {_ => setCount(count + 1)}
-        }
-    }
-}
-
-
-mainComponent(lux: Lux, http: HttpClient) {
-    lux.useState([]): chat, setChat => 
-    lux.useState(""): message, setMessage =>
-    lux.div {
-        lux.div {
-            chat.each {questionComponent(lux, http, _)}
-        }
-        lux.form {
-            lux.input {
-                lux.with("autofocus", "true")
-                lux.with("value", message)
-                lux.on("input") {event => setMessage(event.text())}
-            }
-            lux.on("submit") {event => 
-                event.preventDefault()
-                setMessage("")
-                setChat([...chat, message])
-            }
-        }
-    }
-}
-
-questionComponent(lux: Lux, http: HttpClient, question: String) {
-    lux.div {
-        lux.css("margin-bottom", "10px")
-        lux.div {lux.text("User: " + question)}
-        lux.useMemo1(question): _ =>
-        lux.useSuspense {lux.div {lux.text("Assistant typing...")}}:
-        let answer = http.fetch(
-            url = "/chat"
-            method = "POST"
-            body = Some(HttpClient.bodyText(question))
-        ).readText()
-        lux.div {lux.text("Assistant: " + answer)}
-    }
+    render(browserSystem.js(), element, body)
 }

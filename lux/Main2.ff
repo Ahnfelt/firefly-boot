@@ -8,13 +8,13 @@ mainComponent(lux: Lux) {
     lux.div {
         lux.keyed("red") {
             lux.div {
-                lux.css("color", "red")
+                lux.withStyle("color: red")
                 lux.text("Red!")
             }
         }
         lux.keyed("blue") {
             lux.div {
-                lux.css("color", "blue")
+                lux.withStyle("color: blue")
                 lux.text("Blue!")
             }
         }

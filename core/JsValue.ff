@@ -219,6 +219,19 @@ extend self: JsValue {
     grabMap(): Map[String, JsValue] {
         self.grabPairs().toMap()
     }
+
+    grabIntMap(): IntMap[JsValue]
+        target js sync """
+            if(!(self_ instanceof Map)) throw new Error('Expected map, got '+ typeof self_);;
+            return self_
+        """
+
+    grabStringMap(): StringMap[JsValue]
+        target js sync """
+            if(!(self_ instanceof Map)) throw new Error('Expected map, got '+ typeof self_);;
+            return self_
+        """
+
     //toArray(): Array[JsValue] // TODO
     //toList(): List[JsValue] // TODO
     // TODO: JS operators
@@ -233,6 +246,8 @@ instance Int: IsJsValue {}
 instance Float: IsJsValue {}
 instance Bool: IsJsValue {}
 instance Array[T: IsJsValue]: IsJsValue {}
+instance IntMap[T: IsJsValue]: IsJsValue {}
+instance StringMap[T: IsJsValue]: IsJsValue {}
 instance Error: IsJsValue {}
 instance Instant: IsJsValue {}
 instance Duration: IsJsValue {}
