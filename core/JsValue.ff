@@ -26,6 +26,9 @@ extend self: JsValue {
             return self_
         """
 
+    equals(value: JsValue): Bool
+        target js sync "return typeof self_ === value_"
+
     isString(): Bool
         target js sync "return typeof self_ === 'string'"
 
@@ -52,7 +55,7 @@ extend self: JsValue {
 
     isFunction(): Bool
         target js sync "return typeof self_ === 'function'"
-
+        
     isNull(): Bool
         target js sync "return self_ === null"
 

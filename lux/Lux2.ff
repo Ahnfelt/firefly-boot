@@ -124,7 +124,7 @@ extend self: Lux {
     button(body: () => Unit = {}) {self.new("button", body)}
     form(body: () => Unit = {}) {self.new("form", body)}
     input(body: () => Unit = {}) {self.new("input", body)}
-
+        
     keyed(key: String, body: () => Unit) {
         try {
             self.key = key
@@ -158,6 +158,20 @@ extend self: Lux {
     withClassName(value: String) {self.with("className", value)}
     withStyle(value: String) {self.with("style", value)}
     
+    css(key: String, value: String) {
+        let properties = self.properties.else {
+            let map = StringMap.make()
+            self.properties = Some(map)
+            map
+        }
+        if(properties.has("style")) {
+            let style = properties.grab("style").grabString() + ";" + key + ":" + value
+            properties.set("style", self.jsSystem.value(style))
+        } else {
+            properties.set("style", self.jsSystem.value(key + ":" + value))
+        }
+    }
+
     on(event: String, handler: LuxEvent => Unit) {
         
     }
@@ -201,6 +215,8 @@ patchProperties(self: Lux) {
                 }
                 map.each {key, value =>
                     if(!oldMap.has(key)) {
+                        self.element.element.set(key, value)
+                    } elseIf {!oldMap.grab(key).equals(value)} {
                         self.element.element.set(key, value)
                     }
                 }
