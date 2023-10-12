@@ -18,7 +18,7 @@ class LuxDocument(document: JsValue)
 
 extend self: LuxElement {
     childAt(index: Int): JsValue {
-        self.element.call0("childNodes").get(index)
+        self.element.get("childNodes").get(index)
     }
     insertBefore(newNode: JsValue, referenceNode: JsValue): JsValue {
         self.element.call2("insertBefore", newNode, referenceNode)
@@ -47,7 +47,7 @@ extend self: Lux {
     
     text(value: String) {
         let oldNode = self.element.childAt(self.element.child)
-        let oldValue = oldNode.get("data")
+        let oldValue = if(!oldNode.isNullOrUndefined()) {oldNode.get("data")} else {oldNode}
         if(oldValue.isNullOrUndefined() || oldValue.grabString() != value) {
             let node = self.document.createTextNode(value)
             self.element.insertBefore(node, oldNode)
@@ -59,12 +59,13 @@ extend self: Lux {
         if(key != "") {self.key = key}
         let newKey = if(self.key != "") {tagName.upper() + ">" + self.key} else {""}
         let oldNode = self.element.childAt(self.element.child)
-        let oldKey = oldNode.get("luxKey")
+        let oldKey = if(!oldNode.isNullOrUndefined()) {oldNode.get("luxKey")} else {oldNode}
         let match = if(newKey != "") {
             !oldKey.isNullOrUndefined() && 
             oldKey.grabString() == newKey
         } else {
             oldKey.isNullOrUndefined() && 
+            !oldNode.isNullOrUndefined() &&
             !oldNode.get("tagName").isNullOrUndefined() && 
             oldNode.get("tagName").grabString() == tagName.upper()
         }
@@ -113,6 +114,7 @@ extend self: Lux {
     }
 
     div(body: () => Unit = {}, key: String = "") {self.new("div", body, key)}
+    span(body: () => Unit = {}, key: String = "") {self.new("span", body, key)}
     label(body: () => Unit = {}, key: String = "") {self.new("label", body, key)}
     button(body: () => Unit = {}, key: String = "") {self.new("button", body, key)}
     form(body: () => Unit = {}, key: String = "") {self.new("form", body, key)}
@@ -143,7 +145,7 @@ extend self: Lux {
     }
     
     css(property: String, value: String) {
-        
+        self.element.element.get("style").set(property, value)
     }
     
     cssColor(value: String) {self.css("color", "red")}

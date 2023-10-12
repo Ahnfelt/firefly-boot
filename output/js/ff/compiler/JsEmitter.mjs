@@ -1908,7 +1908,7 @@ const doWhileBody_ = _1.arguments_.head_.value_;
 if(_1.arguments_.tail_.Empty) {
 const _guard1 = ff_compiler_JsEmitter.invokeImmediately_(doWhileBody_);
 const body_ = _guard1;
-return (("while(!" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_)) + ") {}")
+return (("while(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_)) + ") {}")
 return
 }
 }
@@ -4003,7 +4003,7 @@ const doWhileBody_ = _1.arguments_.head_.value_;
 if(_1.arguments_.tail_.Empty) {
 const _guard1 = ff_compiler_JsEmitter.invokeImmediately_(doWhileBody_);
 const body_ = _guard1;
-return (("while(!" + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, body_, async_, $task))) + ") {}")
+return (("while(" + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, body_, async_, $task))) + ") {}")
 return
 }
 }

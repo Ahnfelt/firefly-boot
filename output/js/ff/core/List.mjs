@@ -2279,6 +2279,15 @@ export async function List_join$(self_, separator_ = "", $task) {
 return ff_core_Array.Array_join(ff_core_List.List_toArray(self_), separator_)
 }
 
+export function ff_core_Any_HasAnyTag$ff_core_List_List(ff_core_Any_HasAnyTag$T) { return {
+anyTag_() {
+return ff_core_Any.internalAnyTag_(((("ff:core/List.List" + "[") + ff_core_Any.AnyTag_show(ff_core_Any_HasAnyTag$T.anyTag_())) + "]"))
+},
+async anyTag_$($task) {
+return ff_core_Any.internalAnyTag_(((("ff:core/List.List" + "[") + ff_core_Any.AnyTag_show(ff_core_Any_HasAnyTag$T.anyTag_())) + "]"))
+}
+}}
+
 export function ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal_Equal$T) { return {
 equals_(x_, y_) {
 {

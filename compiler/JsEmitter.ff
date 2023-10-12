@@ -506,7 +506,7 @@ extend self: JsEmitter {
             | ECall(at, StaticCall("ff:core/Core.doWhile", _, _), _, _, [Argument(_, _, doWhileBody)], _) {
                 invokeImmediately(doWhileBody) | body
             } =>
-                "while(!" + self.emitTerm(body, async) + ") {}"
+                "while(" + self.emitTerm(body, async) + ") {}"
             | ECall(at, StaticCall("ff:core/Core.if", _, _), _, _, [condition, body], _) =>
                 "if(" + self.emitTerm(condition.value, async) + ") {\n" +
                 if(last) {
