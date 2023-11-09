@@ -6,17 +6,22 @@ import LuxEvent
 
 mainComponent(lux: Lux) {
     lux.div {
-        lux.keyed("red") {
-            lux.div {
-                lux.setId("red")
-                lux.cssColor("red")
-                lux.text("Red!")
+        lux.useState(0): count, setCount => 
+        lux.useState("Ɛ"): text, setText => 
+        lux.div {
+            lux.button {
+                lux.text("Count: " + count)
+                lux.onClick {event => 
+                    setCount(count + 1)
+                    setText(text + "y")
+                }
             }
-        }
-        lux.keyed("blue") {
-            lux.div {
-                lux.cssColor("blue")
-                lux.text("Blue!")
+            lux.button {
+                lux.text("Text: " + text)
+                lux.onClick {event => 
+                    setCount(count + 2)
+                    setText(text + "x")
+                }
             }
         }
     }
@@ -26,23 +31,6 @@ browserMain(system: BrowserSystem): Unit {
     Lux.renderById(system, "main") {lux =>
         lux.div {
             mainComponent(lux)
-        }
-    }
-    system.mainTask().sleep(Duration(2.0))
-    Lux.renderById(system, "main") {lux =>
-        lux.div {
-            lux.div {
-                lux.keyed("blue") {
-                    lux.div {
-                        lux.text("Blue!")
-                    }
-                }
-                lux.keyed("red") {
-                    lux.div {
-                        lux.text("Red!")
-                    }
-                }
-            }
         }
     }
 }

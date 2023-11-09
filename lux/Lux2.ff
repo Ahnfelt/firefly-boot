@@ -2,14 +2,20 @@ import Lux2 as Lux
 import LuxEvent
 
 capability Lux(
-    document: LuxDocument
-    hooks: Stack[LuxHook]
-    jsSystem: JsSystem
-    mutable render: Option[() => Unit]
+    mutable document: LuxDocument
+    mutable jsSystem: JsSystem
     mutable element: LuxElement
+    mutable depth: Int
     mutable keys: Option[StringMap[JsValue]]
     mutable key: String
     mutable attributes: Option[StringMap[String]]
+    mutable renderQueue: Stack[RenderQueueItem]
+)
+
+capability RenderQueueItem(
+    luxCopy: Lux
+    location: SourceLocation
+    render: () => Unit
 )
 
 capability LuxHook(name: String, tag: AnyTag, location: SourceLocation)
@@ -47,6 +53,17 @@ extend self: LuxDocument {
 
 extend self: Lux {
     
+    copyFrom(lux: Lux) {
+        self.document = lux.document
+        self.depth = lux.depth
+        self.jsSystem = lux.jsSystem
+        self.element = lux.element.LuxElement()
+        self.keys = lux.keys
+        self.key = lux.key
+        self.attributes = lux.attributes
+        self.renderQueue = lux.renderQueue
+    }
+    
     text(value: String) {
         let oldNode = self.element.childAt(self.element.child)
         let oldValue = if(!oldNode.isNullOrUndefined()) {oldNode.get("data")} else {oldNode}
@@ -59,17 +76,25 @@ extend self: Lux {
     
     add(tagName: String, body: () => Unit = {}) {
         let node = patchElement(self, tagName)
+        if(!node.get("luxHandlers").isNullOrUndefined()) {
+            node.get("luxHandlers").grabArray().each {pair =>
+                node.call2("removeEventListener", pair.get("event"), pair.get("handler"))
+            }
+            node.set("luxHandlers", self.jsSystem.array([]))
+        }
         let savedAttributes = self.attributes
         let savedKeys = self.keys
         let savedElement = self.element
         self.attributes = None
         self.element = LuxElement(node, 0)
         self.key = ""
+        self.depth += 1
         try {
             body()
         } finally {
             doWhile {self.element.removeAt(self.element.child)}
             patchAttributes(self)
+            self.depth -= 1
             self.attributes = savedAttributes
             self.keys = savedKeys
             self.element = savedElement
@@ -133,15 +158,58 @@ extend self: Lux {
     cssColor(value: String) {self.css("color", value)}
 
     on(event: String, handler: LuxEvent => Unit) {
-        
+        let jsHandler = unsafeAsyncFunction1ToJs(self) {jsEvent =>
+            handler(unsafeJsToValue(jsEvent))
+            self.renderQueue.sortBy {-_.luxCopy.depth}
+            let newLux = self.Lux(element = self.element.LuxElement())
+            try {
+                while {!self.renderQueue.isEmpty()} {
+                    let item = self.renderQueue.pop().grab()
+                    self.copyFrom(item.luxCopy)
+                    item.render()
+                }
+            } finally {
+                self.copyFrom(newLux)
+            } grab()
+        }
+        self.element.element.call2("addEventListener", event, jsHandler)
+        if(self.element.element.get("luxHandlers").isNullOrUndefined()) {
+            self.element.element.set("luxHandlers", self.jsSystem.array([]))
+        }
+        self.element.element.get("luxHandlers").call1("push"
+            self.jsSystem.object().with("event", event).with("handler", jsHandler)
+        )
     }
 
     onClick(handler: LuxEvent => Unit) {self.on("click", handler)}
     onInput(handler: LuxEvent => Unit) {self.on("input", handler)}
-        
+
     useState[T: HasAnyTag](initialValue: T, body: (T, T => Unit) => Unit, location: SourceLocation = SourceLocation.callSite()) {
-        //let hook = UseState(initialValue, body, location)
-        //self.hooks.push(Any.toAny(hook))
+        self.depth += 1
+        let value = getStateOnElement(self.element.element, location, initialValue)
+        mutable i = 0
+        while {i < self.renderQueue.size()} {
+            let item = self.renderQueue.grab(i)
+            if(item.luxCopy.element.element.equals(self.element.element) && item.luxCopy.depth == self.depth) {
+                self.renderQueue.delete(i, 1)
+            } else {
+                i += 1
+            }
+        }
+        let luxCopy = self.Lux(element = self.element.LuxElement())
+        function setState(newValue: T): Unit {
+            setStateOnElement(luxCopy.element.element, location, newValue)
+            self.renderQueue.push(RenderQueueItem(
+                luxCopy = luxCopy
+                location = location
+                render = {body(newValue, {setState(_)})}
+            ))
+        }
+        try {
+            body(value, {setState(_)})
+        } finally {
+            self.depth -= 1
+        } grab()
     }
 
     useMemo1[A1, T](a1: A1, compute: A1 => T, body: T => Unit = {_ => }) {
@@ -153,6 +221,27 @@ extend self: Lux {
     }
 
 }
+
+getStateOnElement[T: HasAnyTag](element: JsValue, location: SourceLocation, fallback: T): T {
+    let value = element.get("lux" + location.location)
+    if(value.isNullOrUndefined()) {fallback} else {
+        unsafeJsToValue(value)
+    }
+}
+
+setStateOnElement[T: HasAnyTag](element: JsValue, location: SourceLocation, value: T): Unit {
+    element.set("lux" + location.location, unsafeJsFromValue(value))
+}
+
+unsafeJsToValue[T](jsValue: JsValue): T
+    target js sync """return jsValue_"""
+
+unsafeJsFromValue[T](value: T): JsValue
+    target js sync """return value_"""
+
+unsafeAsyncFunction1ToJs[R](self: Lux, body: JsValue => R): JsValue
+    target js async "return async a1 => await body_(a1, $task)"
+
 
 patchElement(self: Lux, tagName: String): JsValue {
     let newKey = if(self.key != "") {tagName.upper() + ">" + self.key} else {""}
@@ -234,13 +323,13 @@ render(jsSystem: JsSystem, element: JsValue, body: Lux => Unit) {
     }
     let lux = Lux(
         jsSystem = jsSystem
+        depth = 0
         document = LuxDocument(document)
-        hooks = Stack.make()
-        render = None
         element = LuxElement(element, 0)
         keys = None
         key = ""
         attributes = None
+        renderQueue = Stack.make()
     )
     body(lux)
 }

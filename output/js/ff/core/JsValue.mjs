@@ -129,7 +129,7 @@ export function JsValue_grabBuffer(self_) {
 }
 
 export function JsValue_equals(self_, value_, ff_core_JsValue_IsJsValue$V) {
-return typeof self_ === value_
+return self_ === value_
 }
 
 export function JsValue_isString(self_) {

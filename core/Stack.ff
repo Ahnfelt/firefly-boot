@@ -99,32 +99,32 @@ extend self[T]: Stack[T] {
 
     fill(value: T, start: Int = 0, end: Int = 9007199254740991): Unit
         target js sync """
-            self.array.fill(value_, start, end);
+            self_.array.fill(value_, start_, end_);
         """
 
     copy(target: Int, start: Int, end: Int): Unit
         target js sync """
-            self.array.copyWithin(target, start, end);
+            self_.array.copyWithin(target_, start_, end_);
         """
 
     delete(start: Int, deleteCount: Int): Unit
         target js sync """
-            self.array.splice(start, deleteCount_);
+            self_.array.splice(start_, deleteCount_);
         """
 
     insert(start: Int, value: T, deleteCount: Int = 0): Unit
         target js sync """
-            self.array.splice(start, deleteCount_, value_);
+            self_.array.splice(start_, deleteCount_, value_);
         """
 
     insertAll(start: Int, value: Stack[T], deleteCount: Int = 0): Unit
         target js sync """
-            self.array.splice(start, deleteCount_, ...value_.array);
+            self_.array.splice(start_, deleteCount_, ...value_.array);
         """
 
     insertArray(start: Int, value: Array[T], deleteCount: Int = 0): Unit
         target js sync """
-            self.array.splice(start, deleteCount_, ...value_);
+            self_.array.splice(start_, deleteCount_, ...value_);
         """
 
     each(body: T => Unit): Unit
