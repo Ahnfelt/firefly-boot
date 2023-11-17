@@ -7,20 +7,24 @@ import LuxEvent
 mainComponent(lux: Lux) {
     lux.div {
         lux.useState(0): count, setCount => 
+        Log.debug("useState(0)")
         lux.useState("Ɛ"): text, setText => 
         lux.div {
             lux.button {
                 lux.text("Count: " + count)
                 lux.onClick {event => 
                     setCount(count + 1)
-                    setText(text + "y")
                 }
             }
-            lux.button {
-                lux.text("Text: " + text)
-                lux.onClick {event => 
-                    setCount(count + 2)
-                    setText(text + "x")
+            lux.div {
+                lux.useCallback1(setText): setText =>
+                lux.useLazy1(text): text =>
+                Log.debug("Computing memo")
+                lux.button {
+                    lux.text("Text: " + text)
+                    lux.onClick {event => 
+                        setText(text + "x")
+                    }
                 }
             }
         }
