@@ -2,14 +2,16 @@ import Lux2 as Lux
 import LuxEvent
 
 capability Lux(
-    mutable document: LuxDocument
-    mutable jsSystem: JsSystem
+    document: LuxDocument
+    jsSystem: JsSystem
+    mutable renderLock: Lock
+    mutable task: Task
+    mutable renderQueue: Stack[RenderQueueItem]
     mutable element: LuxElement
     mutable depth: Int
     mutable keys: Option[StringMap[JsValue]]
     mutable key: String
     mutable attributes: Option[StringMap[String]]
-    mutable renderQueue: Stack[RenderQueueItem]
 )
 
 capability RenderQueueItem(
@@ -46,19 +48,22 @@ extend self: LuxDocument {
     createElement(tagName: String): JsValue {
         self.document.call1("createElement", tagName)
     }
+    
+    createFragment(): JsValue {
+        self.document.call0("createDocumentFragment")
+    }
 }
 
 extend self: Lux {
     
     copyFrom(lux: Lux) {
-        self.document = lux.document
-        self.depth = lux.depth
-        self.jsSystem = lux.jsSystem
+        self.renderLock = lux.renderLock
+        self.renderQueue = lux.renderQueue
         self.element = lux.element.LuxElement()
+        self.depth = lux.depth
         self.keys = lux.keys
         self.key = lux.key
         self.attributes = lux.attributes
-        self.renderQueue = lux.renderQueue
     }
     
     text(value: String) {
@@ -90,6 +95,7 @@ extend self: Lux {
             body()
         } finally {
             if(!self.element.keepChildren) {
+                // TODO: Unmount
                 doWhile {self.element.removeAt(self.element.child)}
             }
             patchAttributes(self)
@@ -141,6 +147,10 @@ extend self: Lux {
     setClassName(value: String) {self.set("className", value)}
     setStyle(value: String) {self.set("style", value)}
     
+    setValue(value: String) { // TODO: Not an attribute
+        self.element.element.set("value", value)
+    }
+    
     css(key: String, value: String) {
         let attributes = self.attributes.else {
             let map = StringMap.make()
@@ -158,18 +168,20 @@ extend self: Lux {
 
     on(event: String, handler: LuxEvent => Unit) {
         let jsHandler = unsafeAsyncFunction1ToJs(self) {jsEvent =>
-            handler(unsafeJsToValue(jsEvent))
-            self.renderQueue.sortBy {-_.luxCopy.depth}
-            let newLux = self.Lux(element = self.element.LuxElement())
-            try {
-                while {!self.renderQueue.isEmpty()} {
-                    let item = self.renderQueue.pop().grab()
-                    self.copyFrom(item.luxCopy)
-                    item.render()
-                }
-            } finally {
-                self.copyFrom(newLux)
-            } grab()
+            self.renderLock.do(reentrant = False) {
+                handler(unsafeJsToValue(jsEvent))
+                self.renderQueue.sortBy {-_.luxCopy.depth}
+                let newLux = self.Lux(element = self.element.LuxElement())
+                try {
+                    while {!self.renderQueue.isEmpty()} {
+                        let item = self.renderQueue.pop().grab()
+                        self.copyFrom(item.luxCopy)
+                        item.render()
+                    }
+                } finally {
+                    self.copyFrom(newLux)
+                } grab()
+            }
         }
         self.element.element.call2("addEventListener", event, jsHandler)
         if(self.element.element.get("luxHandlers").isNullOrUndefined()) {
@@ -263,8 +275,35 @@ extend self: Lux {
         } grab()
     }
     
-    useSuspense(suspense: () => Unit, body: () => Unit) {
-        
+    useSuspense(suspense: () => Unit, body: Lux => Unit) {
+        let oldSubtask: Option[Task] = getStateOnElement(self.element.element, self.depth, None)
+        oldSubtask.each {task =>
+            forceAsyncAbort(self, task)
+        }
+        let fragment = self.document.createFragment()
+        let luxCopy = self.Lux(element = self.element.LuxElement())
+        let subtask = self.task.spawn {task =>
+            let lux = luxCopy.Lux(
+                task = task
+                renderLock = task.lock()
+                renderQueue = Stack.make()
+                element = luxCopy.element.LuxElement(element = fragment)
+            )
+            try {
+                body(lux)
+                task.throwIfAborted()
+                lux.copyFrom(luxCopy)
+                lux.element.removeAt(lux.element.child) // TODO: Unmount
+                lux.element.insertBefore(fragment, lux.jsSystem.null())
+                Unit
+            } catchAny {error =>
+                if(error.name() != "AbortError") {
+                    error.rethrow()
+                }
+            } grab()
+        }
+        setStateOnElement(self.element.element, self.depth, Some(subtask))
+        suspense()
     }
 
 }
@@ -289,7 +328,10 @@ unsafeJsFromValue[T](value: T): JsValue
 unsafeAsyncFunction1ToJs[R](self: Lux, body: JsValue => R): JsValue
     target js async "return async a1 => await body_(a1, $task)"
 
-
+forceAsyncAbort(self: Lux, task: Task): Unit {
+    task.abort()
+}
+        
 patchElement(self: Lux, tagName: String): JsValue {
     let newKey = if(self.key != "") {tagName.upper() + ">" + self.key} else {""}
     let oldNode = self.element.childAt(self.element.child)
@@ -363,13 +405,15 @@ patchAttributes(self: Lux) {
     }    
 }
 
-render(jsSystem: JsSystem, element: JsValue, body: Lux => Unit) {
+render(browserSystem: BrowserSystem, element: JsValue, body: Lux => Unit) {
     mutable document = element
     while {!document.get("parentNode").isNullOrUndefined()} {
         document = document.get("parentNode")
     }
     let lux = Lux(
-        jsSystem = jsSystem
+        jsSystem = browserSystem.js()
+        renderLock = browserSystem.mainTask().lock()
+        task = browserSystem.mainTask()
         depth = 0
         document = LuxDocument(document)
         element = LuxElement(element, 0, keepChildren = False)
@@ -378,10 +422,12 @@ render(jsSystem: JsSystem, element: JsValue, body: Lux => Unit) {
         attributes = None
         renderQueue = Stack.make()
     )
-    body(lux)
+    lux.renderLock.do(reentrant = False) {
+        body(lux)
+    }
 }
 
 renderById(browserSystem: BrowserSystem, id: String, body: Lux => Unit) {
     let element = browserSystem.js().global().get("document").call1("getElementById", id)
-    render(browserSystem.js(), element, body)
+    render(browserSystem, element, body)
 }

@@ -4,7 +4,7 @@ import Lux2 as Lux
 import LuxEvent
 
 
-mainComponent(lux: Lux) {
+mainComponent(lux: Lux, system: BrowserSystem) {
     lux.div {
         lux.useState(0): count, setCount => 
         Log.debug("useState(0)")
@@ -19,11 +19,22 @@ mainComponent(lux: Lux) {
             lux.div {
                 lux.useCallback1(setText): setText =>
                 lux.useLazy1(text): text =>
-                Log.debug("Computing memo")
-                lux.button {
-                    lux.text("Text: " + text)
-                    lux.onClick {event => 
-                        setText(text + "x")
+                lux.div {
+                    lux.div {
+                        lux.text("Text: " + text + " -> ")
+                        lux.useSuspense {lux.span {lux.text("Rhyming...")}} {lux => 
+                            lux.span {
+                                lux.text(rhyme(system, text))
+                            }
+                        }
+                    }
+                    lux.input {
+                        lux.setValue(text)
+                        Log.debug("setValue: " + text)
+                        lux.onInput {event => 
+                            Log.debug(text + " -> " + event.text())
+                            setText(event.text())
+                        }
                     }
                 }
             }
@@ -31,10 +42,16 @@ mainComponent(lux: Lux) {
     }
 }
 
+rhyme(system: BrowserSystem, text: String): String {
+    let result = system.httpClient().fetch("https://api.datamuse.com/words?rel_rhy=" + text)
+    let json = system.js().parseJson(result.readText())
+    if(json.get(0).isNullOrUndefined()) {"?"} else {json.get(0).get("word").grabString()}
+}
+
 browserMain(system: BrowserSystem): Unit {
     Lux.renderById(system, "main") {lux =>
         lux.div {
-            mainComponent(lux)
+            mainComponent(lux, system)
         }
     }
 }
