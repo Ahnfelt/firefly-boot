@@ -95,8 +95,11 @@ extend self: Lux {
             body()
         } finally {
             if(!self.element.keepChildren) {
-                // TODO: Unmount
-                doWhile {self.element.removeAt(self.element.child)}
+                doWhile {
+                    let child = self.element.childAt(self.element.child)
+                    if(!child.isNullOrUndefined() && child.hasOwn("children")) {abortTasksOnElement(self, child)}
+                    self.element.removeAt(self.element.child)
+                }
             }
             patchAttributes(self)
             self.depth -= 1
@@ -276,7 +279,7 @@ extend self: Lux {
     }
     
     useSuspense(suspense: () => Unit, body: Lux => Unit) {
-        let oldSubtask: Option[Task] = getStateOnElement(self.element.element, self.depth, None)
+        let oldSubtask = getTaskOnElement(self.element.element)
         oldSubtask.each {task =>
             forceAsyncAbort(self, task)
         }
@@ -293,8 +296,11 @@ extend self: Lux {
                 body(lux)
                 task.throwIfAborted()
                 lux.copyFrom(luxCopy)
-                lux.element.removeAt(lux.element.child) // TODO: Unmount
-                lux.element.insertBefore(fragment, lux.jsSystem.null())
+                lux.renderLock.do(reentrant = False) {
+                    abortTasksOnElement(lux, lux.element.childAt(lux.element.child))
+                    lux.element.removeAt(lux.element.child)
+                    lux.element.insertBefore(fragment, lux.jsSystem.null())
+                }
                 Unit
             } catchAny {error =>
                 if(error.name() != "AbortError") {
@@ -302,7 +308,7 @@ extend self: Lux {
                 }
             } grab()
         }
-        setStateOnElement(self.element.element, self.depth, Some(subtask))
+        setTaskOnElement(self.element.element, Some(subtask))
         suspense()
     }
 
@@ -317,6 +323,25 @@ getStateOnElement[T /*: HasAnyTag*/](element: JsValue, depth: Int, fallback: T):
 
 setStateOnElement[T /*: HasAnyTag*/](element: JsValue, depth: Int, value: T): Unit {
     element.set("lux" + depth, unsafeJsFromValue(value))
+}
+
+
+getTaskOnElement(element: JsValue): Option[Task] {
+    let value = element.get("luxTask")
+    if(value.isNullOrUndefined()) {None} else {
+        unsafeJsToValue(value)
+    }
+}
+
+setTaskOnElement(element: JsValue, task: Option[Task]): Unit {
+    element.set("luxTask", unsafeJsFromValue(task))
+}
+
+abortTasksOnElement(lux: Lux, element: JsValue): Unit {
+    getTaskOnElement(element).each {task => forceAsyncAbort(lux, task)}
+    element.get("children").each {child => 
+        abortTasksOnElement(lux, child)
+    }
 }
 
 unsafeJsToValue[T](jsValue: JsValue): T
