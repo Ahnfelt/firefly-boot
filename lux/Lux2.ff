@@ -97,7 +97,9 @@ extend self: Lux {
             if(!self.element.keepChildren) {
                 doWhile {
                     let child = self.element.childAt(self.element.child)
-                    if(!child.isNullOrUndefined() && child.hasOwn("children")) {abortTasksOnElement(self, child)}
+                    if(!child.isNullOrUndefined() && !child.get("children").isNullOrUndefined()) {
+                        abortTasksOnElement(self, child, False)
+                    }
                     self.element.removeAt(self.element.child)
                 }
             }
@@ -297,7 +299,7 @@ extend self: Lux {
                 task.throwIfAborted()
                 lux.copyFrom(luxCopy)
                 lux.renderLock.do(reentrant = False) {
-                    abortTasksOnElement(lux, lux.element.childAt(lux.element.child))
+                    abortTasksOnElement(lux, lux.element.childAt(lux.element.child), onlyChildren = True)
                     lux.element.removeAt(lux.element.child)
                     lux.element.insertBefore(fragment, lux.jsSystem.null())
                 }
@@ -308,8 +310,8 @@ extend self: Lux {
                 }
             } grab()
         }
-        setTaskOnElement(self.element.element, Some(subtask))
         suspense()
+        setTaskOnElement(self.element.childAt(self.element.child - 1), Some(subtask))
     }
 
 }
@@ -337,10 +339,12 @@ setTaskOnElement(element: JsValue, task: Option[Task]): Unit {
     element.set("luxTask", unsafeJsFromValue(task))
 }
 
-abortTasksOnElement(lux: Lux, element: JsValue): Unit {
-    getTaskOnElement(element).each {task => forceAsyncAbort(lux, task)}
+abortTasksOnElement(lux: Lux, element: JsValue, onlyChildren: Bool): Unit {
+    if(!onlyChildren) {
+        getTaskOnElement(element).each {task => forceAsyncAbort(lux, task)}
+    }
     element.get("children").each {child => 
-        abortTasksOnElement(lux, child)
+        abortTasksOnElement(lux, child, False)
     }
 }
 

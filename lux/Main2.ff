@@ -5,6 +5,42 @@ import LuxEvent
 
 
 mainComponent(lux: Lux, system: BrowserSystem) {
+    sleepComponent(lux, system)
+}
+
+sleepComponent(lux: Lux, system: BrowserSystem) {
+    lux.useState(False): start, setStart => 
+    lux.div { // Breaks if this wrapper div is removed
+        if(start) {
+            //lux.div {lux.text("Started")}
+            lux.useSuspense {
+                lux.div {
+                    lux.div {lux.text("Sleeping")}
+                    lux.button {
+                        lux.text("Cancel")
+                        lux.onClick {event => 
+                            event.preventDefault()
+                            setStart(False)
+                        }
+                    }
+                }
+            } {lux =>
+                trySleep(lux.task, "A")
+                lux.div {lux.text("Done sleeping")}
+            }
+        } else {
+            lux.button {
+                lux.text("Start")
+                lux.onClick {event => 
+                    event.preventDefault()
+                    setStart(True)
+                }
+            }
+        }
+    }
+}
+ 
+rhymeComponent(lux: Lux, system: BrowserSystem) {
     lux.div {
         lux.useState(0): count, setCount => 
         Log.debug("useState(0)")
@@ -41,6 +77,7 @@ mainComponent(lux: Lux, system: BrowserSystem) {
         }
     }
 }
+
 
 rhyme(system: BrowserSystem, text: String): String {
     let result = system.httpClient().fetch("https://api.datamuse.com/words?rel_rhy=" + text)
@@ -80,4 +117,16 @@ buildMain(system: BuildSystem) {
     let browser = system.compileForBrowser("Main2.ff")
     let assets = AssetSystem.create().addAssets("/js", browser.assets())
     system.setAssets(assets)
+}
+
+trySleep(task: Task, name: String) {
+    try {
+        task.sleep(Duration(4.0))
+        Log.debug("Slept!")
+    } catchAny {error =>
+        if(error.name() == "AbortError") {
+            Log.debug(name + " aborted")
+        }
+        error.rethrow()
+    } grab()    
 }
