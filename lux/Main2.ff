@@ -10,31 +10,43 @@ mainComponent(lux: Lux, system: BrowserSystem) {
 
 sleepComponent(lux: Lux, system: BrowserSystem) {
     lux.useState(False): start, setStart => 
-    lux.div { // Breaks if this wrapper div is removed
-        if(start) {
-            //lux.div {lux.text("Started")}
-            lux.useSuspense {
-                lux.div {
-                    lux.div {lux.text("Sleeping")}
-                    lux.button {
-                        lux.text("Cancel")
-                        lux.onClick {event => 
-                            event.preventDefault()
-                            setStart(False)
-                        }
+    if(start) {
+        lux.useSuspense {
+            lux.div {
+                lux.div {lux.text("Sleeping")}
+                lux.button {
+                    lux.text("Cancel")
+                    lux.onClick {event => 
+                        event.preventDefault()
+                        setStart(False)
                     }
                 }
-            } {lux =>
-                trySleep(lux.task, "A")
-                lux.div {lux.text("Done sleeping")}
             }
-        } else {
-            lux.button {
-                lux.text("Start")
-                lux.onClick {event => 
-                    event.preventDefault()
-                    setStart(True)
-                }
+        } {lux =>
+            trySleep(lux.task, "A")
+            lux.div {lux.text("Done sleeping")}
+        }
+    } else {
+        lux.button {
+            lux.text("Start")
+            lux.onClick {event => 
+                event.preventDefault()
+                setStart(True)
+            }
+        }
+    }
+}
+
+ifComponent(lux: Lux, system: BrowserSystem) {
+    lux.useState(False): start, setStart => 
+    if(start) {
+        lux.div {lux.text("Started")}
+    } else {
+        lux.button {
+            lux.text("Start")
+            lux.onClick {event => 
+                event.preventDefault()
+                setStart(True)
             }
         }
     }

@@ -95,13 +95,7 @@ extend self: Lux {
             body()
         } finally {
             if(!self.element.keepChildren) {
-                doWhile {
-                    let child = self.element.childAt(self.element.child)
-                    if(!child.isNullOrUndefined() && !child.get("children").isNullOrUndefined()) {
-                        abortTasksOnElement(self, child, False)
-                    }
-                    self.element.removeAt(self.element.child)
-                }
+                doWhile {removeCurrentChild(self)}
             }
             patchAttributes(self)
             self.depth -= 1
@@ -217,7 +211,16 @@ extend self: Lux {
             setStateOnElement(luxCopy.element.element, luxCopy.depth, newValue)
             self.renderQueue.push(RenderQueueItem(
                 luxCopy = luxCopy
-                render = {body(newValue, {setState(_)})}
+                render = {
+                    let child = luxCopy.element.child
+                    let element = luxCopy.element.childAt(child)
+                    body(newValue, {setState(_)})
+                    if(!element.equals(luxCopy.element.childAt(child))) {
+                        removeCurrentChild(luxCopy.Lux(
+                            element = luxCopy.element.LuxElement(child = luxCopy.element.child + 1)
+                        ))
+                    }
+                }
             ))
         }
         try {
@@ -314,6 +317,14 @@ extend self: Lux {
         setTaskOnElement(self.element.childAt(self.element.child - 1), Some(subtask))
     }
 
+}
+
+removeCurrentChild(self: Lux): Bool {
+    let child = self.element.childAt(self.element.child)
+    if(!child.isNullOrUndefined() && !child.get("children").isNullOrUndefined()) {
+        abortTasksOnElement(self, child, False)
+    }
+    self.element.removeAt(self.element.child)
 }
 
 getStateOnElement[T /*: HasAnyTag*/](element: JsValue, depth: Int, fallback: T): T {
