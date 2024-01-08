@@ -4,114 +4,48 @@ import Lux
 import LuxEvent
 
 
-mainComponent(http: HttpClient): Lux {
-    Lux.useState([]): chat, setChat => 
-    Lux.useState(""): message, setMessage =>
-    Lux.div()
-        .add(Lux.div().addList(chat.map {questionComponent(http, _)}))
-        .add(Lux.form()
-            .add(Lux.input()
-                .with("autofocus", "true")
-                .with("value", message)
-                .on("input") {event => setMessage(event.text())}
-            )
-            .on("submit") {event => 
+mainComponent(lux: Lux, http: HttpClient) {
+    lux.useState([]): chat, setChat => 
+    lux.useState(""): message, setMessage =>
+    lux.div {
+        lux.div {
+            chat.each {questionComponent(lux, http, _)}
+        }
+        lux.form {
+            lux.input {
+                //.with("autofocus", "true")
+                lux.setValue(message)
+                lux.onInput {event => setMessage(event.text())}
+            }
+            lux.on("submit") {event => 
                 event.preventDefault()
                 setMessage("")
                 setChat([...chat, message])
             }
-        )
-}
-
-questionComponent(http: HttpClient, question: String): Lux {
-    Lux.div()
-        .with("style", "margin-bottom: 10px")
-        .add(Lux.div("User: " + question))
-        .add(
-            Lux.useMemo1(question): _ =>
-            Lux.useSuspense {Lux.div("Assistant typing...")}:
-            let answer = http.fetch(
-                url = "/chat"
-                method = "POST"
-                body = Some(HttpClient.bodyText(question))
-            ).readText()
-            Lux.div("Assistant: " + answer)
-        )
-}
-
-componentCMemo(onClick: () => Unit, message: String): Lux {
-    Lux.useCallback0(onClick): onClick =>
-    Lux.useMemo1(message) {componentC(onClick, _)}
-}
-
-componentC(onClick: () => Unit, message: String): Lux {
-    Lux.button(message).on("click") {event => onClick()}
-}
-
-componentB(onClick: () => Unit, message: String): Lux {
-    componentC(onClick, message)
-}
-
-componentA(): Lux {
-    let items = ["Click 1", "Click 2", "Click 3"]
-    Lux.div().addList(
-        items.pairs().map {| Pair(index, item) =>
-            componentB(
-                onClick = {Log.show(index)}
-                message = item
-            )
         }
-    )
-}
-
-loaderExample(query: String): Lux {
-    useDebouncer(query, Duration(0.2)): debouncedQuery =>
-    useLoader1(debouncedQuery) {_}: loading, result, retry =>
-    result.{
-        | _ {loading} => Lux.div("Loading...")
-        | None => Lux.b("An error occurred! Click to retry.").on("click") {_ => retry()}
-        | Some(value) => Lux.div(value)
     }
 }
 
-buttons(): Lux {
-    Lux.useState(True): b, setB =>
-    Lux.div()
-        .add(Lux.button("Boolean").on("click") {event =>
-            event.preventDefault()
-            setB(!b)
-        })
-        .add(
-            if(b) {countButton()} else {countStringButton()}
-        )
+questionComponent(lux: Lux, http: HttpClient, question: String) {
+    lux.div {
+        //.with("style", "margin-bottom: 10px")
+        lux.div {lux.text("User: " + question)}
+        lux.useLazy1(question): _ =>
+        lux.useSuspense {lux.div {lux.text("Assistant typing...")}}: lux =>
+        let answer = http.fetch(
+            url = "/chat"
+            method = "POST"
+            body = Some(HttpClient.bodyText(question))
+        ).readText()
+        lux.div {lux.text("Assistant: " + answer)}
+    }
 }
 
-countButton(): Lux {
-    Lux.useState(0): apples, setApples =>
-    Lux.div()
-        .add(Lux.h1(apples + " apples"))
-        .add(Lux.button("More apples!").on("click") {event =>
-            event.preventDefault()
-            setApples(apples + 1)
-        })
+browserMain(system: BrowserSystem) {
+    Lux.renderById(system, "main") {lux => mainComponent(lux, system.httpClient())}
 }
 
-countStringButton(): Lux {
-    Lux.useState("x"): text, setText =>
-    Lux.div()
-        .with("role", "button")
-        .add(Lux.h1(text + " X's"))
-        .add(Lux.button("More X's!").on("click") {event =>
-            event.preventDefault()
-            setText(text + "x")
-        })
-}
-
-browserMain(system: BrowserSystem): Unit {
-    Lux.mountById(system, "main", mainComponent(system.httpClient()))
-}
-
-nodeMain(system: NodeSystem): Unit {
+nodeMain(system: NodeSystem) {
     HttpServer.listen(system, "localhost", 8080) {request, response =>
         if(request.path() == "/") {
             response.setHeader("Content-Type", ["text/html; charset=UTF-8"])
@@ -135,22 +69,4 @@ buildMain(system: BuildSystem) {
     let browser = system.compileForBrowser("Main.ff")
     let assets = AssetSystem.create().addAssets("/js", browser.assets())
     system.setAssets(assets)
-}
-
-useLoader1[A1, R](
-    a1: A1
-    load: A1 => R
-    body: (Bool, Option[R], () => Unit) => Lux
-    location: SourceLocation = SourceLocation.callSite()
-): Lux {
-    useLoader1(a1, load, body, location) // TODO
-}
-
-useDebouncer[T](
-    value: T
-    duration: Duration
-    body: T => Lux
-    location: SourceLocation = SourceLocation.callSite()
-): Lux {
-    useDebouncer(value, duration, body, location)
 }

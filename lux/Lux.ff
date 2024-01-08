@@ -1,615 +1,473 @@
 import Lux
 import LuxEvent
 
-capability Lux(mutable internalKey: String) {
-    LuxText()
-    LuxTag(props: StringMap[JsValue], children: Stack[Lux])
-    LuxHook(
-        valueBox: Box[Any]
-        luxBox: Box[Lux]
-        childBox: Box[Lux]
-        taskBox: Box[Option[Task]]
-        update: (Task, Lock, LuxNode) => LuxNode
-        umount: () => Unit
-    )
-}
+capability Lux(
+    document: LuxDocument
+    jsSystem: JsSystem
+    mutable renderLock: Lock
+    mutable task: Task
+    mutable renderQueue: Stack[RenderQueueItem]
+    mutable element: LuxElement
+    mutable depth: Int
+    mutable keys: Option[StringMap[JsValue]]
+    mutable key: String
+    mutable attributes: Option[StringMap[String]]
+)
 
-new(tagName: String, text: String = ""): Lux {
-    LuxTag("<" + tagName + ">", StringMap.make(), if(text != "") {[LuxText("'" + text)].toStack()} else {[].toStack()})
-}
+capability RenderQueueItem(
+    luxCopy: Lux
+    render: () => Unit
+)
 
-useState[T: HasAnyTag](initial: T, body: (T, T => Unit) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
-    Log.debug("useState " + location.location)
-    let valueBox = Box(Any.toAny(initial))
-    let taskBox = Box[Option[Task]](None)
-    let childBox = Box(LuxText(""))
-    let luxBox = childBox
-    let key = "$S$" + location.location + "$" + Any.anyTag[T]().show()
-    let update: (Task, Lock, LuxNode) => LuxNode = {parentTask, parentLock, node =>
-        mutable currentNode = node
-        mutable setValue = {_ => }
-        function render(task: Task, value: T): LuxNode {
-            parentLock.do {
-                let newChild = body(value, setValue)
-                currentNode = internalPatch(task, parentLock, currentNode, childBox.value, newChild)
-                childBox.value = newChild
-                currentNode
-            }
+class LuxElement(element: JsValue, mutable child: Int, mutable keepChildren: Bool)
+
+class LuxDocument(document: JsValue)
+
+extend self: LuxElement {
+    childAt(index: Int): JsValue {
+        self.element.get("childNodes").get(index)
+    }
+    insertBefore(newNode: JsValue, referenceNode: JsValue): JsValue {
+        self.element.call2("insertBefore", newNode, referenceNode)
+    }
+    removeAt(index: Int): Bool {
+        let node = self.childAt(index)
+        let remove = !node.isNullOrUndefined()
+        if(remove) {
+            self.element.call1("removeChild", node)
         }
-        let channel = parentTask.channel(100000000)
-        setValue = {newValue => 
-            channel.write(newValue)
-        }
-        taskBox.value.each {_.abort()}
-        taskBox.value = Some(parentTask.spawn {task =>
-            try {
-                while {True} {
-                    let value = channel.read()
-                    Log.debug("Recieved value")
-                    render(task, value)
-                }
-            } catchAny {error =>
-                if(error.name() != "AbortError") {error.rethrow()}
-            } grab()
-        })
-        render(parentTask, initial)
-    }
-    let unmount = {
-        internalUnmount(childBox.value)
-        taskBox.value.each {_.abort()}
-    }
-    LuxHook(key, Box(Any.toAny(Unit)), luxBox, childBox, taskBox, update, unmount)
-}
-
-internalUseMemo[I: Equal: HasAnyTag](arguments: Int, input: I, compute: I => Lux, body: Lux => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
-    Log.debug("useMemo " + location.location)
-    let valueBox = Box(Any.toAny[I](input))
-    let childBox = Box(LuxText(""))
-    let luxBox = Box(LuxText(""))
-    let key = "$M" + arguments + "$" + location.location + "$" + Any.anyTag[I]().show()
-    let update: (Task, Lock, LuxNode) => LuxNode = {parentTask, parentLock, node =>
-        let oldInput = Any.fromAny[I](valueBox.value).grab()
-        parentLock.do {
-            if(luxBox.value.internalKey == "" || oldInput != input) {luxBox.value = compute(input)}
-            valueBox.value = Any.toAny[I](input)
-            let newChild = body(luxBox.value)
-            let currentNode = internalPatch(parentTask, parentLock, node, childBox.value, newChild)
-            childBox.value = newChild
-            currentNode
-        }
-    }
-    let unmount = {internalUnmount(childBox.value)}
-    LuxHook(key, valueBox, luxBox, childBox, Box(None), update, unmount)
-}
-
-internalUseEffect[I: Equal: HasAnyTag, O: HasAnyTag](arguments: Int, input: I, compute: I => O, body: O => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
-    let valueBox = Box(Any.toAny[Pair[I, Option[O]]](Pair(input, None)))
-    let childBox = Box(LuxText(""))
-    let luxBox = childBox
-    let key = "$E" + arguments + "$" + location.location + "$" + Any.anyTag[Pair[I, Option[O]]]().show()
-    let update: (Task, Lock, LuxNode) => LuxNode = {parentTask, parentLock, node =>
-        let pair = Any.fromAny[Pair[I, Option[O]]](valueBox.value).grab()
-        let value = if(pair.second.isEmpty() || pair.first != input) {compute(input)} else {pair.second.grab()}
-        valueBox.value = Any.toAny[Pair[I, Option[O]]](Pair(input, Some(value)))
-        let newChild = body(value)
-        let currentNode = internalPatch(parentTask, parentLock, node, childBox.value, newChild)
-        childBox.value = newChild
-        currentNode
-    }
-    let unmount = {internalUnmount(childBox.value)}
-    LuxHook(key, valueBox, luxBox, childBox, Box(None), update, unmount)
-}
-
-internalUseCallback[A1: HasAnyTag, R: HasAnyTag](arguments: Int, callback: A1 => R, body: (A1 => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
-    Log.debug("useCallback " + location.location)
-    let childBox = Box(LuxText(""))
-    let luxBox = childBox
-    let valueBox = Box(Any.toAny[LuxCallback1[A1, R]](LuxCallback1(internalFunctionToJsValue1(callback))))
-    let key = "$C" + arguments + "$" + location.location + "$" + Any.anyTag[LuxCallback1[A1, R]]().show()
-    let update: (Task, Lock, LuxNode) => LuxNode = {parentTask, parentLock, node =>
-        parentLock.do {
-            let luxCallback = Any.fromAny[LuxCallback1[A1, R]](valueBox.value).grab()
-            luxCallback.callback = internalFunctionToJsValue1(callback)
-            let newChild = body {a1 =>
-                internalJsValueToFunction1(Any.fromAny[LuxCallback1[A1, R]](valueBox.value).grab().callback)(a1)
-            }
-            let currentNode = internalPatch(parentTask, parentLock, node, childBox.value, newChild)
-            childBox.value = newChild
-            currentNode
-        }
-    }
-    let unmount = {internalUnmount(childBox.value)}
-    LuxHook(key, valueBox, luxBox, childBox, Box(None), update, unmount)
-}
-
-useSuspense(suspense: () => Lux, body: () => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
-    Log.debug("useSuspense " + location.location)
-    let childBox = Box(LuxText(""))
-    let taskBox = Box[Option[Task]](None)
-    let luxBox = childBox
-    let key = "$L$" + location.location
-    let update: (Task, Lock, LuxNode) => LuxNode = {parentTask, parentLock, node =>
-        taskBox.value.each {_.abort()}
-        mutable currentNode = node
-        parentLock.do {
-            let newChild = suspense()
-            currentNode = internalPatch(parentTask, parentLock, currentNode, childBox.value, newChild)
-            childBox.value = newChild
-        }
-        taskBox.value = Some(parentTask.spawn {task =>
-            try {
-                let newChild = body()
-                parentLock.do {
-                    currentNode = internalPatch(task, parentLock, currentNode, childBox.value, newChild)
-                    childBox.value = newChild
-                }
-            } catchAny {error =>
-                if(error.name() != "AbortError") {error.rethrow()}
-            } grab()
-        })
-        currentNode
-    }
-    let unmount = {
-        internalUnmount(childBox.value)
-        taskBox.value.each {_.abort()}
-    }
-    LuxHook(key, Box(Any.toAny(Unit)), luxBox, childBox, taskBox, update, unmount)
-}
-
-useMemo0(compute: () => Lux, body: Lux => Lux = {_}, location: SourceLocation = SourceLocation.callSite()): Lux {
-    internalUseMemo(0, Unit, {_ => compute()}, body, location)
-}
-
-useMemo1[A1: Equal: HasAnyTag](a1: A1, compute: A1 => Lux, body: Lux => Lux = {_}, location: SourceLocation = SourceLocation.callSite()): Lux {
-    internalUseMemo(1, a1, compute, body, location)
-}
-
-useMemo2[A1: Equal: HasAnyTag, A2: Equal: HasAnyTag](a1: A1, a2: A2, compute: (A1, A2) => Lux, body: Lux => Lux = {_}, location: SourceLocation = SourceLocation.callSite()): Lux {
-    internalUseMemo(2, Pair(a1, a2), {pair => compute(pair.first, pair.second)}, body, location)
-}
-
-useEffect0[O: HasAnyTag](compute: () => O, body: O => Lux = {_}, location: SourceLocation = SourceLocation.callSite()): Lux {
-    internalUseEffect(0, Unit, {_ => compute()}, body, location)
-}
-
-useEffect1[A1: Equal: HasAnyTag, O: HasAnyTag](a1: A1, compute: A1 => O, body: O => Lux = {_}, location: SourceLocation = SourceLocation.callSite()): Lux {
-    internalUseEffect(1, a1, compute, body, location)
-}
-
-useEffect2[A1: Equal: HasAnyTag, A2: Equal: HasAnyTag, O: HasAnyTag](a1: A1, a2: A2, compute: (A1, A2) => O, body: O => Lux = {_}, location: SourceLocation = SourceLocation.callSite()): Lux {
-    internalUseEffect(2, Pair(a1, a2), {pair => compute(pair.first, pair.second)}, body, location)
-}
-
-useCallback0[R: HasAnyTag](callback: () => R, body: (() => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
-    internalUseCallback(0, {_ => callback()}, {f => body({f(Unit)})}, location)
-}
-
-useCallback1[A1: HasAnyTag, R: HasAnyTag](callback: A1 => R, body: (A1 => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
-    internalUseCallback(1, callback, body, location)
-}
-
-useCallback2[A1: HasAnyTag, A2: HasAnyTag, R: HasAnyTag](callback: (A1, A2) => R, body: ((A1, A2) => R) => Lux, location: SourceLocation = SourceLocation.callSite()): Lux {
-    internalUseCallback[Pair[A1, A2], R](2, {pair => callback(pair.first, pair.second)}, {f => body({x, y => f(Pair(x, y))})}, location)
-}
-
-class LuxCallback1[A1, R](mutable callback: JsValue)
-instance LuxCallback1[A1: HasAnyTag, R: HasAnyTag]: HasAnyTag {
-    anyTag(): AnyTag[LuxCallback1[A1, R]] {
-        Any.internalAnyTag("LuxCallback1[" + Any.anyTag[Pair[A1, R]]().show() + "]")
+        remove
     }
 }
 
-internalFunctionToJsValue1[A1, R](callback: A1 => R): JsValue
-    target js async """return a1 => callback_(a1, $task)"""
-    target js sync """return callback_"""
+extend self: LuxDocument {
+    createTextNode(value: String): JsValue {
+        self.document.call1("createTextNode", value)
+    }
 
-internalJsValueToFunction1[A1, R](value: JsValue): A1 => R
-    target js sync """return value_"""
-        
+    createElement(tagName: String): JsValue {
+        self.document.call1("createElement", tagName)
+    }
+    
+    createFragment(): JsValue {
+        self.document.call0("createDocumentFragment")
+    }
+}
+
 extend self: Lux {
     
-    key(key: String): Lux {
-        self.{
-            | LuxHook lux => lux.LuxHook(internalKey = lux.internalKey + "|" + key)
-            | LuxTag lux => lux.LuxTag(internalKey = lux.internalKey + "|" + key)
-            | _ =>
-        }
-        self
+    copyFrom(lux: Lux) {
+        self.renderLock = lux.renderLock
+        self.renderQueue = lux.renderQueue
+        self.element = lux.element.LuxElement()
+        self.depth = lux.depth
+        self.keys = lux.keys
+        self.key = lux.key
+        self.attributes = lux.attributes
     }
     
-    add(lux: Lux): Lux {
-        self.{
-            | LuxTag(_, _, children) => children.push(lux)
-            | _ => 
+    text(value: String) {
+        let oldNode = self.element.childAt(self.element.child)
+        let oldValue = if(!oldNode.isNullOrUndefined()) {oldNode.get("data")} else {oldNode}
+        if(oldValue.isNullOrUndefined() || oldValue.grabString() != value) {
+            let node = self.document.createTextNode(value)
+            self.element.insertBefore(node, oldNode)
         }
-        self
+        self.element.child += 1
     }
     
-    addList(list: List[Lux]): Lux {
-        self.{
-            | LuxTag(_, _, children) => list.each {children.push(_)}
-            | _ => 
+    add(tagName: String, body: () => Unit = {}) {
+        let node = patchElement(self, tagName)
+        if(!node.get("luxHandlers").isNullOrUndefined()) {
+            node.get("luxHandlers").grabArray().each {pair =>
+                node.call2("removeEventListener", pair.get("event"), pair.get("handler"))
+            }
+            node.set("luxHandlers", self.jsSystem.array([]))
         }
-        self
-    }
-    
-    addArray(array: Array[Lux]): Lux {
-        self.{
-            | LuxTag(_, _, children) => children.pushArray(array)
-            | _ => 
-        }
-        self
-    }
-    
-    addText(text: String): Lux {
-        self.{
-            | LuxTag(_, _, children) => children.push(LuxText("'" + text))
-            | _ => 
-        }
-        self
-    }
-    
-    with[V: IsJsValue](name: String, value: V): Lux {
-        self.{
-            | LuxTag lux => lux.props.set(name, internalJsValue(value))
-            | _ =>
-        }
-        self
-    }
-
-    on(event: String, handler: LuxEvent => Unit): Lux {
-        self.{
-            | LuxTag lux => lux.props.set("@" + event, internalJsHandler(handler))
-            | _ =>
-        }
-        self
-    }
-    
-}
-
-
-data LuxNode {}
-
-mount(parentTask: Task, element: LuxNode, lux: Lux): Unit {
-    parentTask.spawn {task =>
-        let forever = task.channel()
+        let savedAttributes = self.attributes
+        let savedKeys = self.keys
+        let savedElement = self.element
+        self.attributes = None
+        self.element = LuxElement(node, 0, keepChildren = False)
+        self.key = ""
+        self.depth += 1
         try {
-            internalPatch(task, task.lock(), element, Lux.new("div"), Lux.new("div").add(lux))
-            forever.read()
-        } catchAny {error =>
-            Log.debug("Oops, everthing was aborted.")
-            error.rethrow()
+            body()
+        } finally {
+            if(!self.element.keepChildren) {
+                doWhile {removeCurrentChild(self)}
+            }
+            patchAttributes(self)
+            self.depth -= 1
+            self.attributes = savedAttributes
+            self.keys = savedKeys
+            self.element = savedElement
+            self.element.child += 1
         } grab()
     }
-}
 
-mountById(system: BrowserSystem, id: String, lux: Lux): Unit {
-    mount(system.mainTask(), internalElementById(id), lux)
-}
-
-capability LuxSystem(task: Task, enqueue: () => Unit)
-
-internalRequestAnimationFrame(body: () => Unit): Int
-    target js async "return requestAnimationFrame(() => body_($task))" // TODO: frame won't wait for promise
-    target js sync "return requestAnimationFrame(body_)"
-
-internalCancelAnimationFrame(handle: Int): Unit
-    target js sync "return cancelAnimationFrame(handle_)"
-
-internalJsValue[V: IsJsValue](value: V): JsValue
-    target js sync "return value_"
+    div(body: () => Unit = {}) {self.add("div", body)}
+    span(body: () => Unit = {}) {self.add("span", body)}
+    label(body: () => Unit = {}) {self.add("label", body)}
+    button(body: () => Unit = {}) {self.add("button", body)}
+    form(body: () => Unit = {}) {self.add("form", body)}
+    input(body: () => Unit = {}) {self.add("input", body)}
+        
+    keyed(key: String, body: () => Unit) {
+        try {
+            self.key = key
+            body()
+        } finally {
+            self.key = ""
+        } grab()
+    }
     
-internalJsHandler(handler: LuxEvent => Unit): JsValue
-    target js async "return event => handler_(event, $task)"
-    target js sync "return handler_"
+    keyedList[T](values: List[T], getKey: T => String, body: T => Unit) {
+        try {
+            values.each {item =>
+                self.key = getKey(item)
+                body(item)
+            }
+        } finally {
+            self.key = ""
+        } grab()
+    }
+
+    set(attribute: String, value: String) {
+        let attributes = self.attributes.else {
+            let map = StringMap.make()
+            self.attributes = Some(map)
+            map
+        }
+        attributes.set(attribute, value)
+    }
     
-internalElement(key: String): LuxNode
-    target js sync """
-        return document.createElement(key_.slice(1, key_.indexOf('>')))
-    """
-
-internalText(key: String): LuxNode
-    target js sync """
-        return document.createTextNode(key_.slice(1))
-    """
-
-internalNull(): LuxNode
-    target js sync """
-        return null
-    """
-
-internalElementById(id: String): LuxNode
-    target js sync """
-        return document.getElementById(id_)
-    """
-
-extend self: LuxNode {
-    isNull(): Bool
-        target js sync """
-            return !self_
-        """
-    setProp(name: String, value: JsValue)
-        target js sync """
-            self_[name_] = value_
-        """
-    clearProp(name: String)
-        target js sync """
-            self_[name_] = null
-        """
-    addEventListener(name: String, value: JsValue)
-        target js sync """
-            self_.addEventListener(name_, value_)
-        """
-    removeEventListener(name: String, value: JsValue)
-        target js sync """
-            self_.removeEventListener(name_, value_)
-        """
-    grab(index: Int): LuxNode
-        target js sync """
-            return self_.childNodes[index_]
-        """
-    insertAt(index: Int, node: LuxNode): Unit
-        target js sync """
-            self_.insertBefore(node_, self_.childNodes[index_])
-        """
-    delete(): Unit
-        target js sync """
-            self_.parentElement.removeChild(self_)
-        """
-}
-
-internalPatch(parentTask: Task, parentLock: Lock, oldNode: LuxNode, old: Lux, new: Lux): LuxNode {
-    | _, _, _, _, _ {same(old, new)} => 
-        oldNode
-    | _, _, _, LuxHook oldLux, LuxHook newLux =>
-        newLux.valueBox.value = oldLux.valueBox.value
-        newLux.luxBox.value = oldLux.luxBox.value
-        newLux.childBox.value = oldLux.childBox.value
-        newLux.taskBox.value = oldLux.taskBox.value
-        newLux.update.{_(parentTask, parentLock, oldNode)} // Workaround for apparent type checker bug
-    | _, _, _, _, LuxHook(_, _, _, _, _, update, _) =>
-        update(parentTask, parentLock, oldNode)
-    | _, _, _, LuxTag(_, oldProps, oldChildren), LuxTag(newKey, newProps, newChildren) => 
-        let element = oldNode
-        if(!same(oldProps, newProps)) {internalPatchProps(element, oldProps, newProps)}
-        if(!same(oldChildren, newChildren)) {
-            internalPatchChildren(parentTask, parentLock, element, oldChildren, newChildren)
+    setId(value: String) {self.set("id", value)}
+    setClassName(value: String) {self.set("className", value)}
+    setStyle(value: String) {self.set("style", value)}
+    
+    setValue(value: String) { // TODO: Not an attribute
+        self.element.element.set("value", value)
+    }
+    
+    css(key: String, value: String) {
+        let attributes = self.attributes.else {
+            let map = StringMap.make()
+            self.attributes = Some(map)
+            map
         }
-        element
-    | _, _, _, _, LuxTag(newKey, newProps, newChildren) => 
-        let element = internalElement(newKey)
-        if(newProps.size() != 0) {internalPatchProps(element, StringMap.make(), newProps)}
-        if(newChildren.size() != 0) {
-            internalPatchChildren(parentTask, parentLock, element, [].toStack(), newChildren)
-        }
-        element
-    | _, _, _, _, LuxText(newKey) {old.internalKey != newKey} =>
-        internalText(newKey)
-    | _, _, _, _, _ => 
-        oldNode
-}
-
-internalPatchProps(element: LuxNode, oldProps: StringMap[JsValue], newProps: StringMap[JsValue]) {
-    newProps.each {name, value =>
-        oldProps.get(name).{
-            | None => 
-                if(name.startsWith("@")) {
-                    element.addEventListener(name.dropFirst(), value)
-                } else {
-                    element.setProp(name, value)
-                }
-            | Some(oldValue) {!same(value, oldValue)} =>
-                if(name.startsWith("@")) {
-                    element.removeEventListener(name.dropFirst(), oldValue)
-                    element.addEventListener(name.dropFirst(), value)
-                } else {
-                    element.setProp(name, value)
-                }
-            | _ =>
+        if(attributes.has("style")) {
+            attributes.set("style", attributes.grab("style") + ";" + key + ":" + value)
+        } else {
+            attributes.set("style", key + ":" + value)
         }
     }
-    oldProps.each {name, value =>
-        if(!newProps.has(name)) {
-            if(name.startsWith("@")) {
-                element.removeEventListener(name.dropFirst(), value)
-            } else {
-                element.clearProp(name)
+    
+    cssColor(value: String) {self.css("color", value)}
+
+    on(event: String, handler: LuxEvent => Unit) {
+        let jsHandler = unsafeAsyncFunction1ToJs(self) {jsEvent =>
+            self.renderLock.do(reentrant = False) {
+                handler(unsafeJsToValue(jsEvent))
+                self.renderQueue.sortBy {-_.luxCopy.depth}
+                let newLux = self.Lux(element = self.element.LuxElement())
+                try {
+                    while {!self.renderQueue.isEmpty()} {
+                        let item = self.renderQueue.pop().grab()
+                        self.copyFrom(item.luxCopy)
+                        item.render()
+                    }
+                } finally {
+                    self.copyFrom(newLux)
+                } grab()
             }
         }
+        self.element.element.call2("addEventListener", event, jsHandler)
+        if(self.element.element.get("luxHandlers").isNullOrUndefined()) {
+            self.element.element.set("luxHandlers", self.jsSystem.array([]))
+        }
+        self.element.element.get("luxHandlers").call1("push"
+            self.jsSystem.object().with("event", event).with("handler", jsHandler)
+        )
+    }
+
+    onClick(handler: LuxEvent => Unit) {self.on("click", handler)}
+    onInput(handler: LuxEvent => Unit) {self.on("input", handler)}
+
+    useState[T: HasAnyTag](initialValue: T, body: (T, T => Unit) => Unit) {
+        self.depth += 1
+        let value = getStateOnElement(self.element.element, self.depth, initialValue)
+        mutable i = 0
+        while {i < self.renderQueue.size()} {
+            let item = self.renderQueue.grab(i)
+            if(item.luxCopy.element.element.equals(self.element.element) && item.luxCopy.depth == self.depth) {
+                self.renderQueue.delete(i, 1)
+            } else {
+                i += 1
+            }
+        }
+        let luxCopy = self.Lux(element = self.element.LuxElement())
+        function setState(newValue: T): Unit {
+            setStateOnElement(luxCopy.element.element, luxCopy.depth, newValue)
+            self.renderQueue.push(RenderQueueItem(
+                luxCopy = luxCopy
+                render = {
+                    let child = luxCopy.element.child
+                    let element = luxCopy.element.childAt(child)
+                    body(newValue, {setState(_)})
+                    if(!element.equals(luxCopy.element.childAt(child))) {
+                        removeCurrentChild(luxCopy.Lux(
+                            element = luxCopy.element.LuxElement(child = luxCopy.element.child + 1)
+                        ))
+                    }
+                }
+            ))
+        }
+        try {
+            body(value, {setState(_)})
+        } finally {
+            self.depth -= 1
+        } grab()
+    }
+
+    useCallback1[A1: Equal: HasAnyTag](callback: A1 => Unit, body: (A1 => Unit) => Unit) {
+        self.depth += 1
+        setStateOnElement(self.element.element, self.depth, callback)
+        let element = self.element.element
+        let depth = self.depth
+        try {
+            body {a1 =>
+                let latestCallback = getStateOnElement(element, depth, callback)
+                latestCallback(a1)
+            }
+        } finally {
+            self.depth -= 1
+        } grab()
+    }
+
+    useLazy1[A1: Equal: HasAnyTag](a1: A1, body: A1 => Unit = {_ => }) {
+        self.depth += 1
+        try {
+            let old = getStateOnElement(self.element.element, self.depth, None)
+            old.{
+                | Some(o1) {a1 == o1} =>
+                    self.element.keepChildren = True
+                | _ =>
+                    setStateOnElement(self.element.element, self.depth, Some(a1))
+                    body(a1)
+            }
+        } finally {
+            self.depth -= 1
+        } grab()
+    }
+
+    useMemo1[A1: Equal: HasAnyTag, T: HasAnyTag](a1: A1, compute: A1 => T, body: T => Unit) {
+        self.depth += 1
+        try {
+            let old = getStateOnElement(self.element.element, self.depth, Pair(a1, None))
+            let computed = old.{
+                | Pair(o1, _) {a1 != o1} => 
+                    let v = compute(a1)
+                    setStateOnElement(self.element.element, self.depth, Pair(a1, Some(v)))
+                    v
+                | Pair(_, Some(v)) => 
+                    v
+                | Pair(_, None) =>
+                    let v = compute(a1)
+                    setStateOnElement(self.element.element, self.depth, Pair(a1, Some(v)))
+                    v
+            }
+            body(computed)
+        } finally {
+            self.depth -= 1
+        } grab()
+    }
+    
+    useSuspense(suspense: () => Unit, body: Lux => Unit) {
+        let oldSubtask = getTaskOnElement(self.element.element)
+        oldSubtask.each {task =>
+            forceAsyncAbort(self, task)
+        }
+        let fragment = self.document.createFragment()
+        let luxCopy = self.Lux(element = self.element.LuxElement())
+        let subtask = self.task.spawn {task =>
+            let lux = luxCopy.Lux(
+                task = task
+                renderLock = task.lock()
+                renderQueue = Stack.make()
+                element = luxCopy.element.LuxElement(element = fragment)
+            )
+            try {
+                body(lux)
+                task.throwIfAborted()
+                lux.copyFrom(luxCopy)
+                lux.renderLock.do(reentrant = False) {
+                    abortTasksOnElement(lux, lux.element.childAt(lux.element.child), onlyChildren = True)
+                    lux.element.removeAt(lux.element.child)
+                    lux.element.insertBefore(fragment, lux.jsSystem.null())
+                }
+                Unit
+            } catchAny {error =>
+                if(error.name() != "AbortError") {
+                    error.rethrow()
+                }
+            } grab()
+        }
+        suspense()
+        setTaskOnElement(self.element.childAt(self.element.child - 1), Some(subtask))
+    }
+
+}
+
+removeCurrentChild(self: Lux): Bool {
+    let child = self.element.childAt(self.element.child)
+    if(!child.isNullOrUndefined() && !child.get("children").isNullOrUndefined()) {
+        abortTasksOnElement(self, child, False)
+    }
+    self.element.removeAt(self.element.child)
+}
+
+getStateOnElement[T /*: HasAnyTag*/](element: JsValue, depth: Int, fallback: T): T {
+    let value = element.get("lux" + depth)
+    if(value.isNullOrUndefined()) {fallback} else {
+        unsafeJsToValue(value)
     }
 }
 
-internalPatchChildren(parentTask: Task, parentLock: Lock, element: LuxNode, oldChildren: Stack[Lux], newChildren: Stack[Lux]) {
-    mutable oldStart = 0
-    mutable newStart = 0
-    mutable oldStop = oldChildren.size() - 1
-    mutable newStop = newChildren.size() - 1
-    // If we're not yet done, patch key equal nodes from both ends
-    while {
-        oldStart <= oldStop && newStart <= newStop && 
-        oldChildren.grab(oldStart).internalKey == newChildren.grab(newStart).internalKey
-    } {
-        let oldLux = oldChildren.grab(oldStart)
-        let newLux = newChildren.grab(newStart)
-        if(!same(oldLux, newLux)) {internalPatch(parentTask, parentLock, element.grab(oldStart), oldLux, newLux)}
-        oldStart += 1
-        newStart += 1
-    }
-    while {
-        oldStop >= oldStart && newStop >= newStart && 
-        oldChildren.grab(oldStop).internalKey == newChildren.grab(newStop).internalKey
-    } {
-        let oldLux = oldChildren.grab(oldStop)
-        let newLux = newChildren.grab(newStop)
-        if(!same(oldLux, newLux)) {internalPatch(parentTask, parentLock, element.grab(oldStop), oldLux, newLux)}
-        oldStop -= 1
-        newStop -= 1
-    }
-    // If it's a single swap, or we only need to delete nodes or only need to add nodes, do that
-    if(newStart == newStop && oldStart == oldStop) {
-        let oldLux = oldChildren.grab(oldStop)
-        let newLux = newChildren.grab(newStop)
-        internalUnmount(oldLux)
-        element.grab(oldStop).delete()
-        let childElement = internalPatch(parentTask, parentLock, internalNull(), LuxText(""), newLux)
-        element.insertAt(newStart, childElement)
-    } elseIf {newStart > newStop} {
-        while {oldStart <= oldStop} {
-            internalUnmount(oldChildren.grab(oldStop))
-            element.grab(oldStop).delete()
-            oldStop -= 1
-        }
-    } elseIf {oldStart > oldStop} {
-        let emptyNode = LuxText("")
-        while {newStart <= newStop} {
-            let childElement = internalPatch(parentTask, parentLock, internalNull(), emptyNode, newChildren.grab(newStart))
-            element.insertAt(newStart, childElement)
-            newStart += 1
-        }
-    } else:
-    // Otherwise, build an index multimap to, do out-of-order patching, and delete excess nodes
-    let multiMap = StringMap.make()
-    while {oldStart <= oldStop} {
-        let stack = multiMap.getOrSet(oldChildren.grab(oldStop).internalKey) {Stack.make()}
-        stack.push(Pair(oldChildren.grab(oldStop), element.grab(oldStop)))
-        oldStop -= 1
-    }
-    let emptyNode = LuxText("")
-    let emptyStack = Stack.make()
-    while {newStart <= newStop} {
-        let newLux = newChildren.grab(newStart)
-        let oldPairs = multiMap.get(newLux.internalKey).else {emptyStack}
-        oldPairs.pop().{
-            | None =>
-                let newNode = internalPatch(parentTask, parentLock, internalNull(), emptyNode, newLux)
-                element.insertAt(newStart, newNode)
-            | Some(Pair(oldLux, oldNode)) =>
-                element.insertAt(newStart, oldNode)
-                internalPatch(parentTask, parentLock, oldNode, oldLux, newLux)
-        }
-        newStart += 1
-    }
-    multiMap.each {_, pairs => 
-        pairs.each {| Pair(oldLux, oldNode) =>
-            internalUnmount(oldLux)
-            oldNode.delete()
-        }
+setStateOnElement[T /*: HasAnyTag*/](element: JsValue, depth: Int, value: T): Unit {
+    element.set("lux" + depth, unsafeJsFromValue(value))
+}
+
+
+getTaskOnElement(element: JsValue): Option[Task] {
+    let value = element.get("luxTask")
+    if(value.isNullOrUndefined()) {None} else {
+        unsafeJsToValue(value)
     }
 }
 
-internalUnmount(lux: Lux) {
-    | LuxHook(_, _, _, _, _, _, umount) => umount()
-    | LuxTag(_, _, children) => children.each {internalUnmount(_)}
-    | LuxText(_) => 
+setTaskOnElement(element: JsValue, task: Option[Task]): Unit {
+    element.set("luxTask", unsafeJsFromValue(task))
 }
 
-// HTML tags
-a(text: String = ""): Lux {Lux.new("a", text)}
-abbr(text: String = ""): Lux {Lux.new("abbr", text)}
-address(text: String = ""): Lux {Lux.new("address", text)}
-area(text: String = ""): Lux {Lux.new("area", text)}
-article(text: String = ""): Lux {Lux.new("article", text)}
-aside(text: String = ""): Lux {Lux.new("aside", text)}
-audio(text: String = ""): Lux {Lux.new("audio", text)}
-b(text: String = ""): Lux {Lux.new("b", text)}
-base(text: String = ""): Lux {Lux.new("base", text)}
-bdi(text: String = ""): Lux {Lux.new("bdi", text)}
-bdo(text: String = ""): Lux {Lux.new("bdo", text)}
-blockquote(text: String = ""): Lux {Lux.new("blockquote", text)}
-body(text: String = ""): Lux {Lux.new("body", text)}
-br(text: String = ""): Lux {Lux.new("br", text)}
-button(text: String = ""): Lux {Lux.new("button", text)}
-canvas(text: String = ""): Lux {Lux.new("canvas", text)}
-caption(text: String = ""): Lux {Lux.new("caption", text)}
-cite(text: String = ""): Lux {Lux.new("cite", text)}
-code(text: String = ""): Lux {Lux.new("code", text)}
-col(text: String = ""): Lux {Lux.new("col", text)}
-colgroup(text: String = ""): Lux {Lux.new("colgroup", text)}
-data(text: String = ""): Lux {Lux.new("data", text)}
-datalist(text: String = ""): Lux {Lux.new("datalist", text)}
-dd(text: String = ""): Lux {Lux.new("dd", text)}
-del(text: String = ""): Lux {Lux.new("del", text)}
-details(text: String = ""): Lux {Lux.new("details", text)}
-dfn(text: String = ""): Lux {Lux.new("dfn", text)}
-dialog(text: String = ""): Lux {Lux.new("dialog", text)}
-div(text: String = ""): Lux {Lux.new("div", text)}
-dl(text: String = ""): Lux {Lux.new("dl", text)}
-dt(text: String = ""): Lux {Lux.new("dt", text)}
-em(text: String = ""): Lux {Lux.new("em", text)}
-embed(text: String = ""): Lux {Lux.new("embed", text)}
-fieldset(text: String = ""): Lux {Lux.new("fieldset", text)}
-figcaption(text: String = ""): Lux {Lux.new("figcaption", text)}
-figure(text: String = ""): Lux {Lux.new("figure", text)}
-footer(text: String = ""): Lux {Lux.new("footer", text)}
-form(text: String = ""): Lux {Lux.new("form", text)}
-h1(text: String = ""): Lux {Lux.new("h1", text)}
-head(text: String = ""): Lux {Lux.new("head", text)}
-header(text: String = ""): Lux {Lux.new("header", text)}
-hgroup(text: String = ""): Lux {Lux.new("hgroup", text)}
-hr(text: String = ""): Lux {Lux.new("hr", text)}
-html(text: String = ""): Lux {Lux.new("html", text)}
-i(text: String = ""): Lux {Lux.new("i", text)}
-iframe(text: String = ""): Lux {Lux.new("iframe", text)}
-img(text: String = ""): Lux {Lux.new("img", text)}
-input(text: String = ""): Lux {Lux.new("input", text)}
-ins(text: String = ""): Lux {Lux.new("ins", text)}
-kbd(text: String = ""): Lux {Lux.new("kbd", text)}
-label(text: String = ""): Lux {Lux.new("label", text)}
-legend(text: String = ""): Lux {Lux.new("legend", text)}
-li(text: String = ""): Lux {Lux.new("li", text)}
-link(text: String = ""): Lux {Lux.new("link", text)}
-main(text: String = ""): Lux {Lux.new("main", text)}
-map(text: String = ""): Lux {Lux.new("map", text)}
-mark(text: String = ""): Lux {Lux.new("mark", text)}
-menu(text: String = ""): Lux {Lux.new("menu", text)}
-meta(text: String = ""): Lux {Lux.new("meta", text)}
-meter(text: String = ""): Lux {Lux.new("meter", text)}
-nav(text: String = ""): Lux {Lux.new("nav", text)}
-noscript(text: String = ""): Lux {Lux.new("noscript", text)}
-object(text: String = ""): Lux {Lux.new("object", text)}
-ol(text: String = ""): Lux {Lux.new("ol", text)}
-optgroup(text: String = ""): Lux {Lux.new("optgroup", text)}
-option(text: String = ""): Lux {Lux.new("option", text)}
-output(text: String = ""): Lux {Lux.new("output", text)}
-p(text: String = ""): Lux {Lux.new("p", text)}
-picture(text: String = ""): Lux {Lux.new("picture", text)}
-portal(text: String = ""): Lux {Lux.new("portal", text)}
-xperimenta(text: String = ""): Lux {Lux.new("xperimenta", text)}
-pre(text: String = ""): Lux {Lux.new("pre", text)}
-progress(text: String = ""): Lux {Lux.new("progress", text)}
-q(text: String = ""): Lux {Lux.new("q", text)}
-rp(text: String = ""): Lux {Lux.new("rp", text)}
-rt(text: String = ""): Lux {Lux.new("rt", text)}
-ruby(text: String = ""): Lux {Lux.new("ruby", text)}
-s(text: String = ""): Lux {Lux.new("s", text)}
-samp(text: String = ""): Lux {Lux.new("samp", text)}
-script(text: String = ""): Lux {Lux.new("script", text)}
-search(text: String = ""): Lux {Lux.new("search", text)}
-section(text: String = ""): Lux {Lux.new("section", text)}
-select(text: String = ""): Lux {Lux.new("select", text)}
-slot(text: String = ""): Lux {Lux.new("slot", text)}
-small(text: String = ""): Lux {Lux.new("small", text)}
-source(text: String = ""): Lux {Lux.new("source", text)}
-span(text: String = ""): Lux {Lux.new("span", text)}
-strong(text: String = ""): Lux {Lux.new("strong", text)}
-style(text: String = ""): Lux {Lux.new("style", text)}
-sub(text: String = ""): Lux {Lux.new("sub", text)}
-summary(text: String = ""): Lux {Lux.new("summary", text)}
-sup(text: String = ""): Lux {Lux.new("sup", text)}
-table(text: String = ""): Lux {Lux.new("table", text)}
-tbody(text: String = ""): Lux {Lux.new("tbody", text)}
-td(text: String = ""): Lux {Lux.new("td", text)}
-template(text: String = ""): Lux {Lux.new("template", text)}
-textarea(text: String = ""): Lux {Lux.new("textarea", text)}
-tfoot(text: String = ""): Lux {Lux.new("tfoot", text)}
-th(text: String = ""): Lux {Lux.new("th", text)}
-thead(text: String = ""): Lux {Lux.new("thead", text)}
-time(text: String = ""): Lux {Lux.new("time", text)}
-title(text: String = ""): Lux {Lux.new("title", text)}
-tr(text: String = ""): Lux {Lux.new("tr", text)}
-track(text: String = ""): Lux {Lux.new("track", text)}
-u(text: String = ""): Lux {Lux.new("u", text)}
-ul(text: String = ""): Lux {Lux.new("ul", text)}
-var(text: String = ""): Lux {Lux.new("var", text)}
-video(text: String = ""): Lux {Lux.new("video", text)}
-wbr(text: String = ""): Lux {Lux.new("wbr", text)}
+abortTasksOnElement(lux: Lux, element: JsValue, onlyChildren: Bool): Unit {
+    if(!onlyChildren) {
+        getTaskOnElement(element).each {task => forceAsyncAbort(lux, task)}
+    }
+    element.get("children").each {child => 
+        abortTasksOnElement(lux, child, False)
+    }
+}
+
+unsafeJsToValue[T](jsValue: JsValue): T
+    target js sync """return jsValue_"""
+
+unsafeJsFromValue[T](value: T): JsValue
+    target js sync """return value_"""
+
+unsafeAsyncFunction1ToJs[R](self: Lux, body: JsValue => R): JsValue
+    target js async "return async a1 => await body_(a1, $task)"
+
+forceAsyncAbort(self: Lux, task: Task): Unit {
+    task.abort()
+}
+        
+patchElement(self: Lux, tagName: String): JsValue {
+    let newKey = if(self.key != "") {tagName.upper() + ">" + self.key} else {""}
+    let oldNode = self.element.childAt(self.element.child)
+    let oldKey = if(!oldNode.isNullOrUndefined()) {oldNode.get("luxKey")} else {oldNode}
+    let match = if(newKey != "") {
+        !oldKey.isNullOrUndefined() && 
+        oldKey.grabString() == newKey
+    } else {
+        oldKey.isNullOrUndefined() && 
+        !oldNode.isNullOrUndefined() &&
+        !oldNode.get("tagName").isNullOrUndefined() && 
+        oldNode.get("tagName").grabString() == tagName.upper()
+    }
+    if(match) {
+        oldNode
+    } else {
+        let newNode = if(newKey == "") {self.document.createElement(tagName)} else {
+            let keys = self.keys.else {
+                let map = StringMap.make()
+                mutable i = self.element.child
+                mutable c = self.element.childAt(i)
+                while {!c.isNullOrUndefined()} {
+                    let k = c.get("luxKey")
+                    if(!k.isNullOrUndefined()) {map.set(k.grabString(), c)}
+                    c = self.element.childAt(i)
+                    i += 1
+                }
+                self.keys = Some(map)
+                map
+            }
+            if(keys.has(newKey)) {
+                let foundNode = keys.grab(newKey)
+                keys.remove(newKey)
+                foundNode
+            } else {
+                let createdNode = self.document.createElement(tagName)
+                createdNode.set("luxKey", newKey)
+                createdNode
+            }
+        }
+        self.element.insertBefore(newNode, oldNode)
+        newNode
+    }
+}
+
+patchAttributes(self: Lux) {
+    let attributes = self.element.element.get("attributes")
+    self.attributes.{
+        | None => 
+            mutable i = attributes.get("length").grabInt() - 1
+            while {i >= 0} {
+                let attribute = attributes.get(i)
+                self.element.element.call1("removeAttribute", attribute.get("name"))
+                i -= 1
+            }
+        | Some(map) => 
+            mutable i = attributes.get("length").grabInt() - 1
+            while {i >= 0} {
+                let attribute = attributes.get(i)
+                if(!map.has(attribute.get("name").grabString())) {
+                    self.element.element.call1("removeAttribute", attribute.get("name"))
+                }
+                i -= 1
+            }
+            map.each {name, value =>
+                let oldValue = self.element.element.call1("getAttribute", name)
+                if(oldValue.isNullOrUndefined() || !oldValue.equals(value)) {
+                    self.element.element.call2("setAttribute", name, value)
+                }
+            }
+    }    
+}
+
+render(browserSystem: BrowserSystem, element: JsValue, body: Lux => Unit) {
+    mutable document = element
+    while {!document.get("parentNode").isNullOrUndefined()} {
+        document = document.get("parentNode")
+    }
+    let lux = Lux(
+        jsSystem = browserSystem.js()
+        renderLock = browserSystem.mainTask().lock()
+        task = browserSystem.mainTask()
+        depth = 0
+        document = LuxDocument(document)
+        element = LuxElement(element, 0, keepChildren = False)
+        keys = None
+        key = ""
+        attributes = None
+        renderQueue = Stack.make()
+    )
+    lux.renderLock.do(reentrant = False) {
+        body(lux)
+    }
+}
+
+renderById(browserSystem: BrowserSystem, id: String, body: Lux => Unit) {
+    let element = browserSystem.js().global().get("document").call1("getElementById", id)
+    render(browserSystem, element, body)
+}
