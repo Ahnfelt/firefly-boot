@@ -85,17 +85,17 @@ taskGroup[K: Order, R](
     mutable tasks = [].toMap()
     function spawn(key: K, body: Task => Unit): Task {
         let body2 = {task =>
-            lock.do {tasks = tasks.add(key, task)}
+            lock.do(reentrant = True) {tasks = tasks.add(key, task)}
             try {
                 body(task)
             } finally {
-                lock.do {tasks = tasks.remove(key)}
+                lock.do(reentrant = True) {tasks = tasks.remove(key)}
             } grab()
         }
         parentTask.spawn(body2)
     }
     function abort(key: K): Unit {
-        lock.do {tasks.get(key).each {_.abort()}}
+        lock.do(reentrant = True) {tasks.get(key).each {_.abort()}}
     }
     groupBody(spawn, abort)
 }
