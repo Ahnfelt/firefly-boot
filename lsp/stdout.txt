@@ -1,0 +1,41 @@
+Content-Length: 500
+
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "result": {
+        "capabilities": {
+            "textDocumentSync": {
+                "openClose": true,
+                "change": 1
+            },
+            "hoverProvider": false,
+            "diagnosticProvider": {
+                "interFileDependencies": true,
+                "workspaceDiagnostics": false
+            }
+        },
+        "serverInfo": {
+            "name": "Firefly Language Server",
+            "version": "0.0.0"
+        }
+    }
+}Content-Length: 104
+
+{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+        "kind": "full",
+        "items": []
+    }
+}Content-Length: 121
+
+{
+    "jsonrpc": "2.0",
+    "id": 2,
+    "error": {
+        "code": 1234,
+        "message": "Unsupported method"
+    }
+}

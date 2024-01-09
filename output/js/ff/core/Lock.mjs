@@ -104,7 +104,7 @@ export function Lock_condition(self_) {
 throw new Error('Function Lock_condition is missing on this target in sync context.');
 }
 
-export function Lock_acquire(self_) {
+export function Lock_acquire(self_, reentrant_) {
 throw new Error('Function Lock_acquire is missing on this target in sync context.');
 }
 
@@ -112,8 +112,8 @@ export function Lock_release(self_) {
 throw new Error('Function Lock_release is missing on this target in sync context.');
 }
 
-export function Lock_do(self_, body_) {
-ff_core_Lock.Lock_acquire(self_);
+export function Lock_do(self_, reentrant_, body_) {
+ff_core_Lock.Lock_acquire(self_, reentrant_);
 try {
 return body_()
 } finally {
@@ -127,13 +127,13 @@ export async function Lock_condition$(self_, $task) {
         
 }
 
-export async function Lock_acquire$(self_, $task) {
+export async function Lock_acquire$(self_, reentrant_, $task) {
 
             if(self_.level === 0) {
                 self_.owner = $task
                 self_.level += 1
             } else {
-                if(self_.owner !== $task) {
+                if(self_.owner !== $task || !reentrant_) {
                     try {
                         await new Promise((resolve, reject) => {
                             $task.controller.signal.addEventListener('abort', reject)
@@ -177,8 +177,8 @@ export async function Lock_release$(self_, $task) {
         
 }
 
-export async function Lock_do$(self_, body_, $task) {
-(await ff_core_Lock.Lock_acquire$(self_, $task));
+export async function Lock_do$(self_, reentrant_, body_, $task) {
+(await ff_core_Lock.Lock_acquire$(self_, reentrant_, $task));
 try {
 return (await body_($task))
 } finally {
