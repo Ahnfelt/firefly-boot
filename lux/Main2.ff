@@ -1,0 +1,144 @@
+import HttpServer from ff:httpserver
+
+import Lux
+import LuxEvent
+
+
+mainComponent(lux: Lux, system: BrowserSystem) {
+    sleepComponent(lux, system)
+}
+
+sleepComponent(lux: Lux, system: BrowserSystem) {
+    lux.useState(False): start, setStart => 
+    if(start) {
+        lux.useSuspense {
+            lux.div {
+                lux.div {lux.text("Sleeping")}
+                lux.button {
+                    lux.text("Cancel")
+                    lux.onClick {event => 
+                        event.preventDefault()
+                        setStart(False)
+                    }
+                }
+            }
+        } {lux =>
+            trySleep(lux.task, "A")
+            lux.div {lux.text("Done sleeping")}
+        }
+    } else {
+        lux.button {
+            lux.text("Start")
+            lux.onClick {event => 
+                event.preventDefault()
+                setStart(True)
+            }
+        }
+    }
+}
+
+ifComponent(lux: Lux, system: BrowserSystem) {
+    lux.useState(False): start, setStart => 
+    if(start) {
+        lux.div {lux.text("Started")}
+    } else {
+        lux.button {
+            lux.text("Start")
+            lux.onClick {event => 
+                event.preventDefault()
+                setStart(True)
+            }
+        }
+    }
+}
+ 
+rhymeComponent(lux: Lux, system: BrowserSystem) {
+    lux.div {
+        lux.useState(0): count, setCount => 
+        Log.debug("useState(0)")
+        lux.useState("Ɛ"): text, setText => 
+        lux.div {
+            lux.button {
+                lux.text("Count: " + count)
+                lux.onClick {event => 
+                    setCount(count + 1)
+                }
+            }
+            lux.div {
+                lux.useCallback1(setText): setText =>
+                lux.useLazy1(text): text =>
+                lux.div {
+                    lux.div {
+                        lux.text("Text: " + text + " -> ")
+                        lux.useSuspense {lux.span {lux.text("Rhyming...")}} {lux => 
+                            lux.span {
+                                lux.text(rhyme(system, text))
+                            }
+                        }
+                    }
+                    lux.input {
+                        lux.setValue(text)
+                        Log.debug("setValue: " + text)
+                        lux.onInput {event => 
+                            Log.debug(text + " -> " + event.text())
+                            setText(event.text())
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+rhyme(system: BrowserSystem, text: String): String {
+    let result = system.httpClient().fetch("https://api.datamuse.com/words?rel_rhy=" + text)
+    let json = system.js().parseJson(result.readText())
+    if(json.get(0).isNullOrUndefined()) {"?"} else {json.get(0).get("word").grabString()}
+}
+
+browserMain(system: BrowserSystem): Unit {
+    Lux.renderById(system, "main") {lux =>
+        lux.div {
+            mainComponent(lux, system)
+        }
+    }
+}
+
+nodeMain(system: NodeSystem): Unit {
+    HttpServer.listen(system, "localhost", 8080) {request, response =>
+        if(request.path() == "/") {
+            response.setHeader("Content-Type", ["text/html; charset=UTF-8"])
+            response.writeText("<!doctype html>")
+            response.writeText("<div id='main'></div>")
+            response.writeText("<script type='module' src='/js/script/script/Main2.mjs'></script>")
+        } elseIf {request.path().startsWith("/js/") && !request.path().contains("..")} {
+            response.setHeader("Content-Type", ["text/javascript; charset=UTF-8"])
+            response.writeText(system.assets().readText(request.path()))
+        } elseIf {request.path() == "/chat"} {
+            system.mainTask().sleep(Duration(request.readText().size().toFloat()))
+            response.setHeader("Content-Type", ["text/plain; charset=UTF-8"])
+            response.writeText("Hello there!")
+        } else {
+            response.writeStatus(404, Some("Not found"))
+        }
+    }
+}
+
+buildMain(system: BuildSystem) {
+    let browser = system.compileForBrowser("Main2.ff")
+    let assets = AssetSystem.create().addAssets("/js", browser.assets())
+    system.setAssets(assets)
+}
+
+trySleep(task: Task, name: String) {
+    try {
+        task.sleep(Duration(4.0))
+        Log.debug("Slept!")
+    } catchAny {error =>
+        if(error.name() == "AbortError") {
+            Log.debug(name + " aborted")
+        }
+        error.rethrow()
+    } grab()    
+}

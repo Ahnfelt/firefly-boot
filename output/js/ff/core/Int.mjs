@@ -10,6 +10,8 @@ import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
+import * as ff_core_Box from "../../ff/core/Box.mjs"
+
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
 
 import * as ff_core_Buffer from "../../ff/core/Buffer.mjs"
@@ -69,6 +71,8 @@ import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 import * as ff_core_Set from "../../ff/core/Set.mjs"
 
 import * as ff_core_Show from "../../ff/core/Show.mjs"
+
+import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
 
 import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 
@@ -249,6 +253,13 @@ return self_
 }
 }
 
-
+export const ff_core_Any_HasAnyTag$ff_core_Int_Int = {
+anyTag_() {
+return ff_core_Any.internalAnyTag_((("ff:core/Int.Int" + "[") + "]"))
+},
+async anyTag_$($task) {
+return ff_core_Any.internalAnyTag_((("ff:core/Int.Int" + "[") + "]"))
+}
+};
 
 

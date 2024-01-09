@@ -33,6 +33,15 @@ extend self: Deriver {
         let coreWhitelist = [
             "ff:core/Serializable.DeserializationChecksumException"
             "ff:core/Core.GrabException"
+            "ff:core/Unit.Unit"
+            "ff:core/Pair.Pair"
+            "ff:core/Option.Option"
+            "ff:core/Int.Int"
+            "ff:core/Float.Float"
+            "ff:core/String.String"
+            "ff:core/Char.Char"
+            "ff:core/Bool.Bool"
+            "ff:core/List.List"
         ].toSet() // Maybe whitelist all?
         let missingInstance =
             self.findTypesThatNeedInstances("ff:core/Any.HasAnyTag", modulePrefix, coreWhitelist, True, module)
@@ -310,6 +319,7 @@ extend self: Deriver {
             "ff:core/Option.Option"
             "ff:core/List.List"
             "ff:core/Pair.Pair"
+            "ff:core/Unit.Unit"
         ].toSet()
         let missingInstance =
             self.findTypesThatNeedInstances("ff:core/Equal.Equal", modulePrefix, coreWhitelist, True, module)

@@ -14,6 +14,8 @@ import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
+import * as ff_core_Box from "../../ff/core/Box.mjs"
+
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
 
 import * as ff_core_Buffer from "../../ff/core/Buffer.mjs"
@@ -74,6 +76,8 @@ import * as ff_core_Set from "../../ff/core/Set.mjs"
 
 import * as ff_core_Show from "../../ff/core/Show.mjs"
 
+import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
+
 import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
@@ -125,7 +129,7 @@ return
 }
 
 export function Deriver_makeHasAnyTagInstances(self_, modulePrefix_, module_) {
-const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Serializable.DeserializationChecksumException", ff_core_List.Link("ff:core/Core.GrabException", ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Serializable.DeserializationChecksumException", ff_core_List.Link("ff:core/Core.GrabException", ff_core_List.Link("ff:core/Unit.Unit", ff_core_List.Link("ff:core/Pair.Pair", ff_core_List.Link("ff:core/Option.Option", ff_core_List.Link("ff:core/Int.Int", ff_core_List.Link("ff:core/Float.Float", ff_core_List.Link("ff:core/String.String", ff_core_List.Link("ff:core/Char.Char", ff_core_List.Link("ff:core/Bool.Bool", ff_core_List.Link("ff:core/List.List", ff_core_List.Empty()))))))))))), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Any.HasAnyTag", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
 return ff_compiler_Deriver.Deriver_makeHasAnyTagInstance(self_, modulePrefix_, _w1)
@@ -316,7 +320,7 @@ return go_(fields_)
 }
 
 export function Deriver_makeEqualInstances(self_, modulePrefix_, module_) {
-const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Option.Option", ff_core_List.Link("ff:core/List.List", ff_core_List.Link("ff:core/Pair.Pair", ff_core_List.Empty()))), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Option.Option", ff_core_List.Link("ff:core/List.List", ff_core_List.Link("ff:core/Pair.Pair", ff_core_List.Link("ff:core/Unit.Unit", ff_core_List.Empty())))), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Equal.Equal", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
 return ff_compiler_Deriver.Deriver_makeEqualInstance(self_, modulePrefix_, _w1)
@@ -565,7 +569,7 @@ return
 }
 
 export async function Deriver_makeHasAnyTagInstances$(self_, modulePrefix_, module_, $task) {
-const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Serializable.DeserializationChecksumException", ff_core_List.Link("ff:core/Core.GrabException", ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Serializable.DeserializationChecksumException", ff_core_List.Link("ff:core/Core.GrabException", ff_core_List.Link("ff:core/Unit.Unit", ff_core_List.Link("ff:core/Pair.Pair", ff_core_List.Link("ff:core/Option.Option", ff_core_List.Link("ff:core/Int.Int", ff_core_List.Link("ff:core/Float.Float", ff_core_List.Link("ff:core/String.String", ff_core_List.Link("ff:core/Char.Char", ff_core_List.Link("ff:core/Bool.Bool", ff_core_List.Link("ff:core/List.List", ff_core_List.Empty()))))))))))), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Any.HasAnyTag", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
 return ff_compiler_Deriver.Deriver_makeHasAnyTagInstance(self_, modulePrefix_, _w1)
@@ -756,7 +760,7 @@ return go_(fields_)
 }
 
 export async function Deriver_makeEqualInstances$(self_, modulePrefix_, module_, $task) {
-const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Option.Option", ff_core_List.Link("ff:core/List.List", ff_core_List.Link("ff:core/Pair.Pair", ff_core_List.Empty()))), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Option.Option", ff_core_List.Link("ff:core/List.List", ff_core_List.Link("ff:core/Pair.Pair", ff_core_List.Link("ff:core/Unit.Unit", ff_core_List.Empty())))), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Equal.Equal", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
 return ff_compiler_Deriver.Deriver_makeEqualInstance(self_, modulePrefix_, _w1)

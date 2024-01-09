@@ -66,6 +66,7 @@ coreImports: List[DImport] =
         "AssetSystem"
         "Atomic"
         "Bool"
+        "Box"
         "BrowserSystem"
         "Buffer"
         "BuildSystem"
@@ -96,6 +97,7 @@ coreImports: List[DImport] =
         "Serializable"
         "Set"
         "Show"
+        "SourceLocation"
         "Stack"
         "Stream"
         "String"
@@ -181,7 +183,7 @@ extend self: Compiler {
 
         let module = self.parse(packagePair, moduleName, None)
         let otherModules = self.imports(module)
-        let resolver = Resolver.make(self.lspHook)
+        let resolver = Resolver.make(packagePair, moduleName, self.lspHook)
         let result = resolver.resolveModule(module, otherModules)
 
         self.resolvedModules = self.resolvedModules.add(packageName + ":" + moduleName, result)
@@ -230,7 +232,9 @@ extend self: Compiler {
             self.infer(i.packagePair, newModuleName)
         }
 
-        let js = JsEmitter.make([module, ...otherModules], self.emitTarget, isMainModule, self.compilerModulePath)
+        let allModules = [module, ...otherModules]
+        let js = 
+            JsEmitter.make(allModules, self.emitTarget, isMainModule, self.compilerModulePath, packagePair, moduleName)
             .emitModule(packagePair, module)
         let jsPath = self.jsOutputPath.slash(packagePair.group).slash(packagePair.name)
         let jsFile = jsPath.slash(moduleName + ".mjs")

@@ -20,7 +20,7 @@ class ResolverState(
     mutable nextUnificationVariableIndex: Int
 )
 
-make(lspHook: LspHook): Resolver {
+make(packagePair: PackagePair, moduleName: String, lspHook: LspHook): Resolver {
     Resolver(
         variables = [].toMap()
         variableLocations = [].toMap()

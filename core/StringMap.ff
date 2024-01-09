@@ -32,11 +32,11 @@ extend self[V]: StringMap[V] {
     size(): Int
         target js sync "return self_.size"
 
-    each(body: (String, V) => Unit): Bool
-        target js sync "return self_.forEach((v, k) => body_(k, v))"
+    each(body: (String, V) => Unit): Unit
+        target js sync "self_.forEach((v, k) => body_(k, v))"
         target js async "for(const [k, v] of self_) await body_(k, v)"
 
-    eachWhile(body: (String, V) => Bool): Bool
+    eachWhile(body: (String, V) => Bool): Unit
         target js sync "for(const [k, v] of self_) if(!body_(k, v)) break"
         target js async "for(const [k, v] of self_) if(!await body_(k, v)) break"
 

@@ -125,7 +125,7 @@ internalListDirectory(path: Path): List[Pair[String, () => Stream[Buffer]]] {
         }
     }
     go(path).map {file =>
-        Pair("/" + file.relativeTo(path), {file.readStream()})
+        Pair("/" + file.relativeTo(path).replace("\\", "/"), {file.readStream()})
     }.toList()
 }
 

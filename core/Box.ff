@@ -1,0 +1,7 @@
+class Box[T](mutable value: T)
+
+extend self[T]: Box[T] {
+    modify(body: T => T): Unit {
+        self.value = body(self.value)
+    }
+}

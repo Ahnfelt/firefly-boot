@@ -10,6 +10,8 @@ import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
+import * as ff_core_Box from "../../ff/core/Box.mjs"
+
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
 
 import * as ff_core_Buffer from "../../ff/core/Buffer.mjs"
@@ -69,6 +71,8 @@ import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 import * as ff_core_Set from "../../ff/core/Set.mjs"
 
 import * as ff_core_Show from "../../ff/core/Show.mjs"
+
+import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
 
 import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 
@@ -696,6 +700,15 @@ return
 }
 }
 }
+
+export function ff_core_Any_HasAnyTag$ff_core_Option_Option(ff_core_Any_HasAnyTag$T) { return {
+anyTag_() {
+return ff_core_Any.internalAnyTag_(((("ff:core/Option.Option" + "[") + ff_core_Any.AnyTag_show(ff_core_Any_HasAnyTag$T.anyTag_())) + "]"))
+},
+async anyTag_$($task) {
+return ff_core_Any.internalAnyTag_(((("ff:core/Option.Option" + "[") + ff_core_Any.AnyTag_show(ff_core_Any_HasAnyTag$T.anyTag_())) + "]"))
+}
+}}
 
 export function ff_core_Show_Show$ff_core_Option_Option(ff_core_Show_Show$T) { return {
 show_(value_) {

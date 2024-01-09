@@ -1,0 +1,72 @@
+import HttpServer from ff:httpserver
+
+import Lux
+import LuxEvent
+
+
+mainComponent(lux: Lux, http: HttpClient) {
+    lux.useState([]): chat, setChat => 
+    lux.useState(""): message, setMessage =>
+    lux.div {
+        lux.div {
+            chat.each {questionComponent(lux, http, _)}
+        }
+        lux.form {
+            lux.input {
+                //.with("autofocus", "true")
+                lux.setValue(message)
+                lux.onInput {event => setMessage(event.text())}
+            }
+            lux.on("submit") {event => 
+                event.preventDefault()
+                setMessage("")
+                setChat([...chat, message])
+            }
+        }
+    }
+}
+
+questionComponent(lux: Lux, http: HttpClient, question: String) {
+    lux.div {
+        //.with("style", "margin-bottom: 10px")
+        lux.div {lux.text("User: " + question)}
+        lux.useLazy1(question): _ =>
+        lux.useSuspense {lux.div {lux.text("Assistant typing...")}}: lux =>
+        let answer = http.fetch(
+            url = "/chat"
+            method = "POST"
+            body = Some(HttpClient.bodyText(question))
+        ).readText()
+        lux.div {lux.text("Assistant: " + answer)}
+    }
+}
+
+browserMain(system: BrowserSystem) {
+    Lux.renderById(system, "main") {lux => mainComponent(lux, system.httpClient())}
+}
+
+nodeMain(system: NodeSystem) {
+    HttpServer.listen(system, "localhost", 8080) {request, response =>
+        if(request.path() == "/") {
+            response.setHeader("Content-Type", ["text/html; charset=UTF-8"])
+            response.writeText("<!doctype html>")
+            response.writeText("<div id='main'></div>")
+            response.writeText("<script type='module' src='/js/script/script/Main.mjs'></script>")
+        } elseIf {request.path().startsWith("/js/") && !request.path().contains("..")} {
+            response.setHeader("Content-Type", ["text/javascript; charset=UTF-8"])
+            response.writeText(system.assets().readText(request.path()))
+        } elseIf {request.path() == "/chat"} {
+            system.mainTask().sleep(Duration(request.readText().size().toFloat()))
+            response.setHeader("Content-Type", ["text/plain; charset=UTF-8"])
+            response.writeText("Hello there!")
+        } else {
+            response.writeStatus(404, Some("Not found"))
+        }
+    }
+}
+
+buildMain(system: BuildSystem) {
+    let browser = system.compileForBrowser("Main.ff")
+    let assets = AssetSystem.create().addAssets("/js", browser.assets())
+    system.setAssets(assets)
+}

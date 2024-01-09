@@ -10,6 +10,8 @@ import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
+import * as ff_core_Box from "../../ff/core/Box.mjs"
+
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
 
 import * as ff_core_Buffer from "../../ff/core/Buffer.mjs"
@@ -70,6 +72,8 @@ import * as ff_core_Set from "../../ff/core/Set.mjs"
 
 import * as ff_core_Show from "../../ff/core/Show.mjs"
 
+import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
+
 import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
@@ -122,6 +126,10 @@ export function JsValue_grabBuffer(self_) {
             if(!(self_ instanceof DataView)) throw new Error('Expected buffer, got '+ typeof self_);
             return self_
         
+}
+
+export function JsValue_equals(self_, value_, ff_core_JsValue_IsJsValue$V) {
+return self_ === value_
 }
 
 export function JsValue_isString(self_) {
@@ -193,6 +201,10 @@ return ff_core_Option.None()
 
 export function JsValue_set(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff_core_JsValue_IsJsValue$V) {
 self_[key_] = value_
+}
+
+export function JsValue_delete(self_, key_, ff_core_JsValue_IsJsValue$K) {
+delete self_[key_]
 }
 
 export function JsValue_with(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff_core_JsValue_IsJsValue$V) {
@@ -367,6 +379,20 @@ export function JsValue_grabMap(self_) {
 return ff_core_List.List_toMap(ff_core_JsValue.JsValue_grabPairs(self_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 
+export function JsValue_grabIntMap(self_) {
+
+            if(!(self_ instanceof Map)) throw new Error('Expected map, got '+ typeof self_);;
+            return self_
+        
+}
+
+export function JsValue_grabStringMap(self_) {
+
+            if(!(self_ instanceof Map)) throw new Error('Expected map, got '+ typeof self_);;
+            return self_
+        
+}
+
 export async function JsValue_grabString$(self_, $task) {
 throw new Error('Function JsValue_grabString is missing on this target in async context.');
 }
@@ -393,6 +419,10 @@ throw new Error('Function JsValue_grabArray is missing on this target in async c
 
 export async function JsValue_grabBuffer$(self_, $task) {
 throw new Error('Function JsValue_grabBuffer is missing on this target in async context.');
+}
+
+export async function JsValue_equals$(self_, value_, ff_core_JsValue_IsJsValue$V, $task) {
+throw new Error('Function JsValue_equals is missing on this target in async context.');
 }
 
 export async function JsValue_isString$(self_, $task) {
@@ -461,6 +491,10 @@ return ff_core_Option.None()
 
 export async function JsValue_set$(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff_core_JsValue_IsJsValue$V, $task) {
 throw new Error('Function JsValue_set is missing on this target in async context.');
+}
+
+export async function JsValue_delete$(self_, key_, ff_core_JsValue_IsJsValue$K, $task) {
+throw new Error('Function JsValue_delete is missing on this target in async context.');
 }
 
 export async function JsValue_with$(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff_core_JsValue_IsJsValue$V, $task) {
@@ -627,6 +661,14 @@ export async function JsValue_grabMap$(self_, $task) {
 return ff_core_List.List_toMap(ff_core_JsValue.JsValue_grabPairs(self_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 
+export async function JsValue_grabIntMap$(self_, $task) {
+throw new Error('Function JsValue_grabIntMap is missing on this target in async context.');
+}
+
+export async function JsValue_grabStringMap$(self_, $task) {
+throw new Error('Function JsValue_grabStringMap is missing on this target in async context.');
+}
+
 export const ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue = {
 
 };
@@ -652,6 +694,14 @@ export const ff_core_JsValue_IsJsValue$ff_core_Bool_Bool = {
 };
 
 export function ff_core_JsValue_IsJsValue$ff_core_Array_Array(ff_core_JsValue_IsJsValue$T) { return {
+
+}}
+
+export function ff_core_JsValue_IsJsValue$ff_core_IntMap_IntMap(ff_core_JsValue_IsJsValue$T) { return {
+
+}}
+
+export function ff_core_JsValue_IsJsValue$ff_core_StringMap_StringMap(ff_core_JsValue_IsJsValue$T) { return {
 
 }}
 

@@ -10,6 +10,8 @@ import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
+import * as ff_core_Box from "../../ff/core/Box.mjs"
+
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
 
 import * as ff_core_Buffer from "../../ff/core/Buffer.mjs"
@@ -69,6 +71,8 @@ import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 import * as ff_core_Set from "../../ff/core/Set.mjs"
 
 import * as ff_core_Show from "../../ff/core/Show.mjs"
+
+import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
 
 import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 
@@ -189,6 +193,10 @@ export function panic_(message_) {
 throw new Error(message_)
 }
 
+export function same_(x_, y_) {
+return x_ === y_
+}
+
 export async function if_$(condition_, body_, $task) {
 {
 const _1 = condition_;
@@ -284,6 +292,10 @@ throw new Error('Function throwAny is missing on this target in async context.')
 
 export async function panic_$(message_, $task) {
 throw new Error('Function panic is missing on this target in async context.');
+}
+
+export async function same_$(x_, y_, $task) {
+throw new Error('Function same is missing on this target in async context.');
 }
 
 
