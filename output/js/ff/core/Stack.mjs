@@ -276,37 +276,37 @@ export function Stack_modify(self_, index_, body_) {
 
 export function Stack_fill(self_, value_, start_ = 0, end_ = 9007199254740991) {
 
-            self.array.fill(value_, start, end);
+            self_.array.fill(value_, start_, end_);
         
 }
 
 export function Stack_copy(self_, target_, start_, end_) {
 
-            self.array.copyWithin(target, start, end);
+            self_.array.copyWithin(target_, start_, end_);
         
 }
 
 export function Stack_delete(self_, start_, deleteCount_) {
 
-            self.array.splice(start, deleteCount_);
+            self_.array.splice(start_, deleteCount_);
         
 }
 
 export function Stack_insert(self_, start_, value_, deleteCount_ = 0) {
 
-            self.array.splice(start, deleteCount_, value_);
+            self_.array.splice(start_, deleteCount_, value_);
         
 }
 
 export function Stack_insertAll(self_, start_, value_, deleteCount_ = 0) {
 
-            self.array.splice(start, deleteCount_, ...value_.array);
+            self_.array.splice(start_, deleteCount_, ...value_.array);
         
 }
 
 export function Stack_insertArray(self_, start_, value_, deleteCount_ = 0) {
 
-            self.array.splice(start, deleteCount_, ...value_);
+            self_.array.splice(start_, deleteCount_, ...value_);
         
 }
 
