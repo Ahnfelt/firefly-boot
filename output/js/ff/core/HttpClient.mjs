@@ -138,7 +138,7 @@ export async function HttpClient_fetch$(self_, url_, method_ = "GET", headers_ =
             try {
                 const options = {headers: {}, signal: $task.controller.signal}
                 options.method = method_
-                ff_core_List.List_each(headers_, pair => {options.headers[pair.key_] = pair.value_})
+                ff_core_List.List_each(headers_, pair => {options.headers[pair.first_] = pair.second_})
                 if(body_.value_) options.body = body_.value_
                 if(redirect_.RedirectError) options.redirect = "error"
                 else if(redirect_.RedirectManual) options.redirect = "manual"
