@@ -3,6 +3,10 @@ import HttpServer from ff:httpserver
 import Lux
 import LuxEvent
 
+data ChatEntry(
+    question: String
+    answer: Option[String]
+)
 
 mainComponent(lux: Lux, http: HttpClient) {
     lux.useState([]): chat, setChat => 
@@ -46,6 +50,7 @@ browserMain(system: BrowserSystem) {
 }
 
 nodeMain(system: NodeSystem) {
+    let openAiKey = system.arguments().first()
     HttpServer.listen(system, "localhost", 8080) {request, response =>
         if(request.path() == "/") {
             response.setHeader("Content-Type", ["text/html; charset=UTF-8"])
@@ -56,15 +61,64 @@ nodeMain(system: NodeSystem) {
             response.setHeader("Content-Type", ["text/javascript; charset=UTF-8"])
             response.writeText(system.assets().readText(request.path()))
         } elseIf {request.path() == "/chat"} {
-            system.mainTask().sleep(Duration(request.readText().size().toFloat()))
+            let question = request.readText()
             response.setHeader("Content-Type", ["text/plain; charset=UTF-8"])
-            response.writeText("Hello there!")
+            openAiKey.{
+                | None => 
+                    system.mainTask().sleep(Duration(question.size().toFloat()))
+                    response.writeText("Hi! You need to give an OpenAI secret key at the command line.")
+                | Some(key) => 
+                    let chatJson = encodeChat(system.js(), question)
+                    let answer = fetchAnswer(system.httpClient(), system.js(), key, chatJson)
+                    response.writeText(answer)
+            }
         } else {
             response.writeStatus(404, Some("Not found"))
         }
     }
 }
 
+fetchAnswer(httpClient: HttpClient, js: JsSystem, key: String, question: JsValue): String {
+    let json = httpClient.fetch(
+        url = "https://api.openai.com/v1/chat/completions"
+        method = "POST"
+        headers = [
+            Pair("Authorization", "Bearer " + key)
+            Pair("Content-Type", "application/json")
+        ]
+        body = Some(HttpClient.bodyText(question.toJson()))
+    ).readText()
+    js.parseJson(json).get("choices").get(0).get("message").get("content").grabString()
+}
+
+encodeChat(js: JsSystem, question: String): JsValue {
+    let systemJson = js.object()
+        .with("role", "system")
+        .with("content", "You are a helpful assistant.")
+    let questionJson = js.object()
+        .with("role", "user")
+        .with("content", question)
+    let messagesJson = js.array([systemJson, questionJson])
+    js.object()
+        .with("model", "gpt-3.5-turbo")
+        .with("messages", messagesJson)
+}
+
+
+/*
+let
+encodeMessage role content = 
+    E.object  [ ("role", E.string role), ("content", E.string content) ]
+encodeEntry question maybeAnswer = case maybeAnswer of
+    Nothing -> [ encodeMessage "user" question ]
+    Just answer -> [ encodeMessage "user" question, encodeMessage "assistant" answer ]
+encodedMessages = encodeMessage "system" "You are a helpful assistant."
+    :: List.concatMap (\entry -> encodeEntry entry.question entry.answer) chat
+in E.object 
+[ ("model", E.string "gpt-3.5-turbo")
+, ("messages", E.list (\x -> x) encodedMessages)
+]
+*/
 buildMain(system: BuildSystem) {
     let browser = system.compileForBrowser("Main.ff")
     let assets = AssetSystem.create().addAssets("/js", browser.assets())
