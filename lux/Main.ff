@@ -31,8 +31,9 @@ mainComponent(lux: Lux, http: HttpClient) {
     }
 }
 
+questionCss = CssClass([Css.marginBottom("10px")], [])
+
 questionComponent(lux: Lux, http: HttpClient, question: String) {
-    let questionCss = CssClass([Css.marginBottom("10px")], [])
     lux.div {
         lux.cssClass(questionCss)
         lux.div {lux.text("User: " + question)}
