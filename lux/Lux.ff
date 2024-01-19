@@ -151,20 +151,22 @@ extend self: Lux {
         self.element.element.set("value", value)
     }
     
-    css(key: String, value: String) {
+    css(style: Css) {
         let attributes = self.attributes.else {
             let map = StringMap.make()
             self.attributes = Some(map)
             map
         }
         if(attributes.has("style")) {
-            attributes.set("style", attributes.grab("style") + ";" + key + ":" + value)
+            attributes.set("style", attributes.grab("style") + ";" + style.property + ":" + style.value)
         } else {
-            attributes.set("style", key + ":" + value)
+            attributes.set("style", style.property + ":" + style.value)
         }
     }
     
-    cssColor(value: String) {self.css("color", value)}
+    cssClass(class: CssClass) {
+        
+    }
 
     on(event: String, handler: LuxEvent => Unit) {
         let jsHandler = unsafeAsyncFunction1ToJs(self) {jsEvent =>

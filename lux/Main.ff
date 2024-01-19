@@ -2,6 +2,7 @@ import HttpServer from ff:httpserver
 
 import Lux
 import LuxEvent
+import Css
 
 data ChatEntry(
     question: String
@@ -32,7 +33,7 @@ mainComponent(lux: Lux, http: HttpClient) {
 
 questionComponent(lux: Lux, http: HttpClient, question: String) {
     lux.div {
-        //.with("style", "margin-bottom: 10px")
+        lux.css(Css.marginBottom("10px"))
         lux.div {lux.text("User: " + question)}
         lux.useLazy1(question): _ =>
         lux.useSuspense {lux.div {lux.text("Assistant typing...")}}: lux =>
