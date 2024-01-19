@@ -39,3 +39,30 @@ extend self: SourceLocation {
     }
 
 }
+
+instance SourceLocation: Show {
+    show(self: SourceLocation): String {
+        self.location
+    }
+}
+
+instance SourceLocation: Equal {
+    equals(a: SourceLocation, b: SourceLocation): Bool {
+        a.location == b.location
+    }
+}
+
+instance SourceLocation: Order {
+    compare(a: SourceLocation, b: SourceLocation): Ordering {
+        Ordering.compare(a.location, b.location)
+    }
+}
+
+instance SourceLocation: Serializable {
+    serializeUsing(serialization: Serialization, self: SourceLocation) {
+        Serializable.serializeUsing(serialization, self.location)
+    }
+    deserializeUsing(serialization: Serialization): SourceLocation {
+        SourceLocation(Serializable.deserializeUsing(serialization))
+    }
+}

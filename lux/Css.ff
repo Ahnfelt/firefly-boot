@@ -1,5 +1,6 @@
 import Css
 
+
 data Css(
     property: String, 
     value: String
@@ -75,9 +76,9 @@ extend self: CssKeyframes {
     }
     
     show(): String {
-        let frames = self.keyframes.map {f => 
-            let css = self.css.map {_.toCss() + ";"}
-            f.keyframe + " {\n" +
+        let frames = self.keyframes.map {frame => 
+            let css = frame.css.map {_.show() + ";"}
+            frame.keyframe + " {\n" +
             css.map {_ + "\n"}.join() + 
             "}"            
         }

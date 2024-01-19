@@ -224,6 +224,46 @@ return (_w1 !== 62)
 })), 1), 62)
 }
 
+export const ff_core_Show_Show$ff_core_SourceLocation_SourceLocation = {
+show_(self_) {
+return self_
+},
+async show_$(self_, $task) {
+return self_
+}
+};
 
+export const ff_core_Equal_Equal$ff_core_SourceLocation_SourceLocation = {
+equals_(a_, b_) {
+return (a_ === b_)
+},
+async equals_$(a_, b_, $task) {
+return (a_ === b_)
+}
+};
+
+export const ff_core_Ordering_Order$ff_core_SourceLocation_SourceLocation = {
+compare_(a_, b_) {
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(a_, b_)
+},
+async compare_$(a_, b_, $task) {
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(a_, b_)
+}
+};
+
+export const ff_core_Serializable_Serializable$ff_core_SourceLocation_SourceLocation = {
+serializeUsing_(serialization_, self_) {
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, self_)
+},
+deserializeUsing_(serialization_) {
+return ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_)
+},
+async serializeUsing_$(serialization_, self_, $task) {
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, self_)
+},
+async deserializeUsing_$(serialization_, $task) {
+return ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_)
+}
+};
 
 
