@@ -1,5 +1,6 @@
 import Lux
 import LuxEvent
+import Css
 
 capability Lux(
     document: LuxDocument
