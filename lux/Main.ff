@@ -32,8 +32,9 @@ mainComponent(lux: Lux, http: HttpClient) {
 }
 
 questionComponent(lux: Lux, http: HttpClient, question: String) {
+    let questionCss = CssClass([Css.marginBottom("10px")], [])
     lux.div {
-        lux.css(Css.marginBottom("10px"))
+        lux.cssClass(questionCss)
         lux.div {lux.text("User: " + question)}
         lux.useLazy1(question): _ =>
         lux.useSuspense {lux.div {lux.text("Assistant typing...")}}: lux =>

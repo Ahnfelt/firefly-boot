@@ -8,14 +8,14 @@ data Css(
 
 data CssClass(
     css: List[Css], 
-    nested: List[CssNest] = [], 
+    nested: List[CssNest], 
     sourceLocation: SourceLocation = SourceLocation.callSite()
 )
 
 data CssNest(
     condition: String, 
     css: List[Css], 
-    nested: List[CssNest] = []
+    nested: List[CssNest]
 )
 
 data CssKeyframes(
@@ -31,14 +31,17 @@ data CssKeyframe(
 
 extend self: CssClass {
     
-    selector(): String {
-        "." +
+    name(): String {
         self.sourceLocation.module() + "-" + 
         self.sourceLocation.line()
         // TODO add hash to make unique
     }
+
+    selector(): String {
+        "." + self.name()
+    }
     
-    toCss(): String {
+    show(): String {
         let css = self.css.map {_.show() + ";"}
         let nested = self.nested.map {_.show()}
         self.selector() + " {\n" +

@@ -5,6 +5,7 @@ import Css
 capability Lux(
     document: LuxDocument
     jsSystem: JsSystem
+    mutable cssClasses: StringMap[CssClass]
     mutable renderLock: Lock
     mutable task: Task
     mutable renderQueue: Stack[RenderQueueItem]
@@ -144,8 +145,6 @@ extend self: Lux {
     }
     
     setId(value: String) {self.set("id", value)}
-    setClassName(value: String) {self.set("className", value)}
-    setStyle(value: String) {self.set("style", value)}
     
     setValue(value: String) { // TODO: Not an attribute
         self.element.element.set("value", value)
@@ -165,7 +164,14 @@ extend self: Lux {
     }
     
     cssClass(class: CssClass) {
-        
+        if(!self.cssClasses.has(class.name())) {
+            self.cssClasses.set(class.name(), class)
+            let styleSheet = self.document.createElement("style")
+            styleSheet.set("textContent", class.show())
+            self.document.document.get("head").call1("appendChild", styleSheet)
+        }
+        self.element.element.get("classList").call1("add", class.name())
+        self.set("class", self.element.element.get("className").grabString())
     }
 
     on(event: String, handler: LuxEvent => Unit) {
@@ -456,6 +462,7 @@ render(browserSystem: BrowserSystem, element: JsValue, body: Lux => Unit) {
     let lux = Lux(
         jsSystem = browserSystem.js()
         renderLock = browserSystem.mainTask().lock()
+        cssClasses = StringMap.make()
         task = browserSystem.mainTask()
         depth = 0
         document = LuxDocument(document)
