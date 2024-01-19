@@ -1,0 +1,642 @@
+import Css
+
+data Css(
+    property: String, 
+    value: String
+)
+
+data CssClass(
+    css: List[Css], 
+    nested: List[CssNest] = [], 
+    sourceLocation: SourceLocation = SourceLocation.callSite()
+)
+
+data CssNest(
+    condition: String, 
+    css: List[Css], 
+    nested: List[CssNest] = []
+)
+
+data CssKeyframes(
+    keyframes: List[CssKeyframe], 
+    sourceLocation: SourceLocation = SourceLocation.callSite()
+)
+
+data CssKeyframe(
+    keyframe: String, 
+    css: List[Css]
+)
+
+
+extend self: CssClass {
+    
+    selector(): String {
+        "." +
+        self.sourceLocation.module() + "-" + 
+        self.sourceLocation.line()
+        // TODO add hash to make unique
+    }
+    
+    toCss(): String {
+        let css = self.css.map {_.show() + ";"}
+        let nested = self.nested.map {_.show()}
+        self.selector() + " {\n" +
+        [...css, ...nested].map {_ + "\n"}.join() + 
+        "}"
+    }
+    
+}
+
+
+extend self: Css {
+    show(): String {
+        self.property + ": " + self.value
+    }
+}
+
+
+extend self: CssNest {
+    show(): String {
+        let css = self.css.map {_.show() + ";"}
+        let nested = self.nested.map {_.show()}
+        self.condition + " {\n" +
+        [...css, ...nested].map {_ + "\n"}.join() + 
+        "}"
+    }
+}
+
+
+extend self: CssKeyframes {
+    
+    name(): String {
+        self.sourceLocation.module() + "-" + 
+        self.sourceLocation.line()        
+        // TODO add hash to make unique
+    }
+    
+    show(): String {
+        let frames = self.keyframes.map {f => 
+            let css = self.css.map {_.toCss() + ";"}
+            f.keyframe + " {\n" +
+            css.map {_ + "\n"}.join() + 
+            "}"            
+        }
+        "@keyframes " + self.name() + " {\n" +
+        frames.map {_ + "\n"}.join() + 
+        "}"
+    }
+    
+}
+
+
+// CSS properties from: https://github.com/mdn/data/blob/main/css/properties.json
+msAccelerator(value: String): Css {Css("-ms-accelerator", value)}
+msBlockProgression(value: String): Css {Css("-ms-block-progression", value)}
+msContentZoomChaining(value: String): Css {Css("-ms-content-zoom-chaining", value)}
+msContentZooming(value: String): Css {Css("-ms-content-zooming", value)}
+msContentZoomLimit(value: String): Css {Css("-ms-content-zoom-limit", value)}
+msContentZoomLimitMax(value: String): Css {Css("-ms-content-zoom-limit-max", value)}
+msContentZoomLimitMin(value: String): Css {Css("-ms-content-zoom-limit-min", value)}
+msContentZoomSnap(value: String): Css {Css("-ms-content-zoom-snap", value)}
+msContentZoomSnapPoints(value: String): Css {Css("-ms-content-zoom-snap-points", value)}
+msContentZoomSnapType(value: String): Css {Css("-ms-content-zoom-snap-type", value)}
+msFilter(value: String): Css {Css("-ms-filter", value)}
+msFlowFrom(value: String): Css {Css("-ms-flow-from", value)}
+msFlowInto(value: String): Css {Css("-ms-flow-into", value)}
+msGridColumns(value: String): Css {Css("-ms-grid-columns", value)}
+msGridRows(value: String): Css {Css("-ms-grid-rows", value)}
+msHighContrastAdjust(value: String): Css {Css("-ms-high-contrast-adjust", value)}
+msHyphenateLimitChars(value: String): Css {Css("-ms-hyphenate-limit-chars", value)}
+msHyphenateLimitLines(value: String): Css {Css("-ms-hyphenate-limit-lines", value)}
+msHyphenateLimitZone(value: String): Css {Css("-ms-hyphenate-limit-zone", value)}
+msImeAlign(value: String): Css {Css("-ms-ime-align", value)}
+msOverflowStyle(value: String): Css {Css("-ms-overflow-style", value)}
+msScrollbar3dlightColor(value: String): Css {Css("-ms-scrollbar-3dlight-color", value)}
+msScrollbarArrowColor(value: String): Css {Css("-ms-scrollbar-arrow-color", value)}
+msScrollbarBaseColor(value: String): Css {Css("-ms-scrollbar-base-color", value)}
+msScrollbarDarkshadowColor(value: String): Css {Css("-ms-scrollbar-darkshadow-color", value)}
+msScrollbarFaceColor(value: String): Css {Css("-ms-scrollbar-face-color", value)}
+msScrollbarHighlightColor(value: String): Css {Css("-ms-scrollbar-highlight-color", value)}
+msScrollbarShadowColor(value: String): Css {Css("-ms-scrollbar-shadow-color", value)}
+msScrollbarTrackColor(value: String): Css {Css("-ms-scrollbar-track-color", value)}
+msScrollChaining(value: String): Css {Css("-ms-scroll-chaining", value)}
+msScrollLimit(value: String): Css {Css("-ms-scroll-limit", value)}
+msScrollLimitXMax(value: String): Css {Css("-ms-scroll-limit-x-max", value)}
+msScrollLimitXMin(value: String): Css {Css("-ms-scroll-limit-x-min", value)}
+msScrollLimitYMax(value: String): Css {Css("-ms-scroll-limit-y-max", value)}
+msScrollLimitYMin(value: String): Css {Css("-ms-scroll-limit-y-min", value)}
+msScrollRails(value: String): Css {Css("-ms-scroll-rails", value)}
+msScrollSnapPointsX(value: String): Css {Css("-ms-scroll-snap-points-x", value)}
+msScrollSnapPointsY(value: String): Css {Css("-ms-scroll-snap-points-y", value)}
+msScrollSnapType(value: String): Css {Css("-ms-scroll-snap-type", value)}
+msScrollSnapX(value: String): Css {Css("-ms-scroll-snap-x", value)}
+msScrollSnapY(value: String): Css {Css("-ms-scroll-snap-y", value)}
+msScrollTranslation(value: String): Css {Css("-ms-scroll-translation", value)}
+msTextAutospace(value: String): Css {Css("-ms-text-autospace", value)}
+msTouchSelect(value: String): Css {Css("-ms-touch-select", value)}
+msUserSelect(value: String): Css {Css("-ms-user-select", value)}
+msWrapFlow(value: String): Css {Css("-ms-wrap-flow", value)}
+msWrapMargin(value: String): Css {Css("-ms-wrap-margin", value)}
+msWrapThrough(value: String): Css {Css("-ms-wrap-through", value)}
+mozAppearance(value: String): Css {Css("-moz-appearance", value)}
+mozBinding(value: String): Css {Css("-moz-binding", value)}
+mozBorderBottomColors(value: String): Css {Css("-moz-border-bottom-colors", value)}
+mozBorderLeftColors(value: String): Css {Css("-moz-border-left-colors", value)}
+mozBorderRightColors(value: String): Css {Css("-moz-border-right-colors", value)}
+mozBorderTopColors(value: String): Css {Css("-moz-border-top-colors", value)}
+mozContextProperties(value: String): Css {Css("-moz-context-properties", value)}
+mozFloatEdge(value: String): Css {Css("-moz-float-edge", value)}
+mozForceBrokenImageIcon(value: String): Css {Css("-moz-force-broken-image-icon", value)}
+mozImageRegion(value: String): Css {Css("-moz-image-region", value)}
+mozOrient(value: String): Css {Css("-moz-orient", value)}
+mozOutlineRadius(value: String): Css {Css("-moz-outline-radius", value)}
+mozOutlineRadiusBottomleft(value: String): Css {Css("-moz-outline-radius-bottomleft", value)}
+mozOutlineRadiusBottomright(value: String): Css {Css("-moz-outline-radius-bottomright", value)}
+mozOutlineRadiusTopleft(value: String): Css {Css("-moz-outline-radius-topleft", value)}
+mozOutlineRadiusTopright(value: String): Css {Css("-moz-outline-radius-topright", value)}
+mozStackSizing(value: String): Css {Css("-moz-stack-sizing", value)}
+mozTextBlink(value: String): Css {Css("-moz-text-blink", value)}
+mozUserFocus(value: String): Css {Css("-moz-user-focus", value)}
+mozUserInput(value: String): Css {Css("-moz-user-input", value)}
+mozUserModify(value: String): Css {Css("-moz-user-modify", value)}
+mozWindowDragging(value: String): Css {Css("-moz-window-dragging", value)}
+mozWindowShadow(value: String): Css {Css("-moz-window-shadow", value)}
+webkitAppearance(value: String): Css {Css("-webkit-appearance", value)}
+webkitBorderBefore(value: String): Css {Css("-webkit-border-before", value)}
+webkitBorderBeforeColor(value: String): Css {Css("-webkit-border-before-color", value)}
+webkitBorderBeforeStyle(value: String): Css {Css("-webkit-border-before-style", value)}
+webkitBorderBeforeWidth(value: String): Css {Css("-webkit-border-before-width", value)}
+webkitBoxReflect(value: String): Css {Css("-webkit-box-reflect", value)}
+webkitLineClamp(value: String): Css {Css("-webkit-line-clamp", value)}
+webkitMask(value: String): Css {Css("-webkit-mask", value)}
+webkitMaskAttachment(value: String): Css {Css("-webkit-mask-attachment", value)}
+webkitMaskClip(value: String): Css {Css("-webkit-mask-clip", value)}
+webkitMaskComposite(value: String): Css {Css("-webkit-mask-composite", value)}
+webkitMaskImage(value: String): Css {Css("-webkit-mask-image", value)}
+webkitMaskOrigin(value: String): Css {Css("-webkit-mask-origin", value)}
+webkitMaskPosition(value: String): Css {Css("-webkit-mask-position", value)}
+webkitMaskPositionX(value: String): Css {Css("-webkit-mask-position-x", value)}
+webkitMaskPositionY(value: String): Css {Css("-webkit-mask-position-y", value)}
+webkitMaskRepeat(value: String): Css {Css("-webkit-mask-repeat", value)}
+webkitMaskRepeatX(value: String): Css {Css("-webkit-mask-repeat-x", value)}
+webkitMaskRepeatY(value: String): Css {Css("-webkit-mask-repeat-y", value)}
+webkitMaskSize(value: String): Css {Css("-webkit-mask-size", value)}
+webkitOverflowScrolling(value: String): Css {Css("-webkit-overflow-scrolling", value)}
+webkitTapHighlightColor(value: String): Css {Css("-webkit-tap-highlight-color", value)}
+webkitTextFillColor(value: String): Css {Css("-webkit-text-fill-color", value)}
+webkitTextStroke(value: String): Css {Css("-webkit-text-stroke", value)}
+webkitTextStrokeColor(value: String): Css {Css("-webkit-text-stroke-color", value)}
+webkitTextStrokeWidth(value: String): Css {Css("-webkit-text-stroke-width", value)}
+webkitTouchCallout(value: String): Css {Css("-webkit-touch-callout", value)}
+webkitUserModify(value: String): Css {Css("-webkit-user-modify", value)}
+accentColor(value: String): Css {Css("accent-color", value)}
+alignContent(value: String): Css {Css("align-content", value)}
+alignItems(value: String): Css {Css("align-items", value)}
+alignSelf(value: String): Css {Css("align-self", value)}
+alignTracks(value: String): Css {Css("align-tracks", value)}
+all(value: String): Css {Css("all", value)}
+animation(value: String): Css {Css("animation", value)}
+animationComposition(value: String): Css {Css("animation-composition", value)}
+animationDelay(value: String): Css {Css("animation-delay", value)}
+animationDirection(value: String): Css {Css("animation-direction", value)}
+animationDuration(value: String): Css {Css("animation-duration", value)}
+animationFillMode(value: String): Css {Css("animation-fill-mode", value)}
+animationIterationCount(value: String): Css {Css("animation-iteration-count", value)}
+animationName(value: String): Css {Css("animation-name", value)}
+animationPlayState(value: String): Css {Css("animation-play-state", value)}
+animationRange(value: String): Css {Css("animation-range", value)}
+animationRangeEnd(value: String): Css {Css("animation-range-end", value)}
+animationRangeStart(value: String): Css {Css("animation-range-start", value)}
+animationTimingFunction(value: String): Css {Css("animation-timing-function", value)}
+animationTimeline(value: String): Css {Css("animation-timeline", value)}
+appearance(value: String): Css {Css("appearance", value)}
+aspectRatio(value: String): Css {Css("aspect-ratio", value)}
+azimuth(value: String): Css {Css("azimuth", value)}
+backdropFilter(value: String): Css {Css("backdrop-filter", value)}
+backfaceVisibility(value: String): Css {Css("backface-visibility", value)}
+background(value: String): Css {Css("background", value)}
+backgroundAttachment(value: String): Css {Css("background-attachment", value)}
+backgroundBlendMode(value: String): Css {Css("background-blend-mode", value)}
+backgroundClip(value: String): Css {Css("background-clip", value)}
+backgroundColor(value: String): Css {Css("background-color", value)}
+backgroundImage(value: String): Css {Css("background-image", value)}
+backgroundOrigin(value: String): Css {Css("background-origin", value)}
+backgroundPosition(value: String): Css {Css("background-position", value)}
+backgroundPositionX(value: String): Css {Css("background-position-x", value)}
+backgroundPositionY(value: String): Css {Css("background-position-y", value)}
+backgroundRepeat(value: String): Css {Css("background-repeat", value)}
+backgroundSize(value: String): Css {Css("background-size", value)}
+blockSize(value: String): Css {Css("block-size", value)}
+border(value: String): Css {Css("border", value)}
+borderBlock(value: String): Css {Css("border-block", value)}
+borderBlockColor(value: String): Css {Css("border-block-color", value)}
+borderBlockStyle(value: String): Css {Css("border-block-style", value)}
+borderBlockWidth(value: String): Css {Css("border-block-width", value)}
+borderBlockEnd(value: String): Css {Css("border-block-end", value)}
+borderBlockEndColor(value: String): Css {Css("border-block-end-color", value)}
+borderBlockEndStyle(value: String): Css {Css("border-block-end-style", value)}
+borderBlockEndWidth(value: String): Css {Css("border-block-end-width", value)}
+borderBlockStart(value: String): Css {Css("border-block-start", value)}
+borderBlockStartColor(value: String): Css {Css("border-block-start-color", value)}
+borderBlockStartStyle(value: String): Css {Css("border-block-start-style", value)}
+borderBlockStartWidth(value: String): Css {Css("border-block-start-width", value)}
+borderBottom(value: String): Css {Css("border-bottom", value)}
+borderBottomColor(value: String): Css {Css("border-bottom-color", value)}
+borderBottomLeftRadius(value: String): Css {Css("border-bottom-left-radius", value)}
+borderBottomRightRadius(value: String): Css {Css("border-bottom-right-radius", value)}
+borderBottomStyle(value: String): Css {Css("border-bottom-style", value)}
+borderBottomWidth(value: String): Css {Css("border-bottom-width", value)}
+borderCollapse(value: String): Css {Css("border-collapse", value)}
+borderColor(value: String): Css {Css("border-color", value)}
+borderEndEndRadius(value: String): Css {Css("border-end-end-radius", value)}
+borderEndStartRadius(value: String): Css {Css("border-end-start-radius", value)}
+borderImage(value: String): Css {Css("border-image", value)}
+borderImageOutset(value: String): Css {Css("border-image-outset", value)}
+borderImageRepeat(value: String): Css {Css("border-image-repeat", value)}
+borderImageSlice(value: String): Css {Css("border-image-slice", value)}
+borderImageSource(value: String): Css {Css("border-image-source", value)}
+borderImageWidth(value: String): Css {Css("border-image-width", value)}
+borderInline(value: String): Css {Css("border-inline", value)}
+borderInlineEnd(value: String): Css {Css("border-inline-end", value)}
+borderInlineColor(value: String): Css {Css("border-inline-color", value)}
+borderInlineStyle(value: String): Css {Css("border-inline-style", value)}
+borderInlineWidth(value: String): Css {Css("border-inline-width", value)}
+borderInlineEndColor(value: String): Css {Css("border-inline-end-color", value)}
+borderInlineEndStyle(value: String): Css {Css("border-inline-end-style", value)}
+borderInlineEndWidth(value: String): Css {Css("border-inline-end-width", value)}
+borderInlineStart(value: String): Css {Css("border-inline-start", value)}
+borderInlineStartColor(value: String): Css {Css("border-inline-start-color", value)}
+borderInlineStartStyle(value: String): Css {Css("border-inline-start-style", value)}
+borderInlineStartWidth(value: String): Css {Css("border-inline-start-width", value)}
+borderLeft(value: String): Css {Css("border-left", value)}
+borderLeftColor(value: String): Css {Css("border-left-color", value)}
+borderLeftStyle(value: String): Css {Css("border-left-style", value)}
+borderLeftWidth(value: String): Css {Css("border-left-width", value)}
+borderRadius(value: String): Css {Css("border-radius", value)}
+borderRight(value: String): Css {Css("border-right", value)}
+borderRightColor(value: String): Css {Css("border-right-color", value)}
+borderRightStyle(value: String): Css {Css("border-right-style", value)}
+borderRightWidth(value: String): Css {Css("border-right-width", value)}
+borderSpacing(value: String): Css {Css("border-spacing", value)}
+borderStartEndRadius(value: String): Css {Css("border-start-end-radius", value)}
+borderStartStartRadius(value: String): Css {Css("border-start-start-radius", value)}
+borderStyle(value: String): Css {Css("border-style", value)}
+borderTop(value: String): Css {Css("border-top", value)}
+borderTopColor(value: String): Css {Css("border-top-color", value)}
+borderTopLeftRadius(value: String): Css {Css("border-top-left-radius", value)}
+borderTopRightRadius(value: String): Css {Css("border-top-right-radius", value)}
+borderTopStyle(value: String): Css {Css("border-top-style", value)}
+borderTopWidth(value: String): Css {Css("border-top-width", value)}
+borderWidth(value: String): Css {Css("border-width", value)}
+bottom(value: String): Css {Css("bottom", value)}
+boxAlign(value: String): Css {Css("box-align", value)}
+boxDecorationBreak(value: String): Css {Css("box-decoration-break", value)}
+boxDirection(value: String): Css {Css("box-direction", value)}
+boxFlex(value: String): Css {Css("box-flex", value)}
+boxFlexGroup(value: String): Css {Css("box-flex-group", value)}
+boxLines(value: String): Css {Css("box-lines", value)}
+boxOrdinalGroup(value: String): Css {Css("box-ordinal-group", value)}
+boxOrient(value: String): Css {Css("box-orient", value)}
+boxPack(value: String): Css {Css("box-pack", value)}
+boxShadow(value: String): Css {Css("box-shadow", value)}
+boxSizing(value: String): Css {Css("box-sizing", value)}
+breakAfter(value: String): Css {Css("break-after", value)}
+breakBefore(value: String): Css {Css("break-before", value)}
+breakInside(value: String): Css {Css("break-inside", value)}
+captionSide(value: String): Css {Css("caption-side", value)}
+caret(value: String): Css {Css("caret", value)}
+caretColor(value: String): Css {Css("caret-color", value)}
+caretShape(value: String): Css {Css("caret-shape", value)}
+clear(value: String): Css {Css("clear", value)}
+clip(value: String): Css {Css("clip", value)}
+clipPath(value: String): Css {Css("clip-path", value)}
+color(value: String): Css {Css("color", value)}
+colorScheme(value: String): Css {Css("color-scheme", value)}
+columnCount(value: String): Css {Css("column-count", value)}
+columnFill(value: String): Css {Css("column-fill", value)}
+columnGap(value: String): Css {Css("column-gap", value)}
+columnRule(value: String): Css {Css("column-rule", value)}
+columnRuleColor(value: String): Css {Css("column-rule-color", value)}
+columnRuleStyle(value: String): Css {Css("column-rule-style", value)}
+columnRuleWidth(value: String): Css {Css("column-rule-width", value)}
+columnSpan(value: String): Css {Css("column-span", value)}
+columnWidth(value: String): Css {Css("column-width", value)}
+columns(value: String): Css {Css("columns", value)}
+contain(value: String): Css {Css("contain", value)}
+containIntrinsicSize(value: String): Css {Css("contain-intrinsic-size", value)}
+containIntrinsicBlockSize(value: String): Css {Css("contain-intrinsic-block-size", value)}
+containIntrinsicHeight(value: String): Css {Css("contain-intrinsic-height", value)}
+containIntrinsicInlineSize(value: String): Css {Css("contain-intrinsic-inline-size", value)}
+containIntrinsicWidth(value: String): Css {Css("contain-intrinsic-width", value)}
+container(value: String): Css {Css("container", value)}
+containerName(value: String): Css {Css("container-name", value)}
+containerType(value: String): Css {Css("container-type", value)}
+content(value: String): Css {Css("content", value)}
+contentVisibility(value: String): Css {Css("content-visibility", value)}
+counterIncrement(value: String): Css {Css("counter-increment", value)}
+counterReset(value: String): Css {Css("counter-reset", value)}
+counterSet(value: String): Css {Css("counter-set", value)}
+cursor(value: String): Css {Css("cursor", value)}
+direction(value: String): Css {Css("direction", value)}
+display(value: String): Css {Css("display", value)}
+emptyCells(value: String): Css {Css("empty-cells", value)}
+filter(value: String): Css {Css("filter", value)}
+flex(value: String): Css {Css("flex", value)}
+flexBasis(value: String): Css {Css("flex-basis", value)}
+flexDirection(value: String): Css {Css("flex-direction", value)}
+flexFlow(value: String): Css {Css("flex-flow", value)}
+flexGrow(value: String): Css {Css("flex-grow", value)}
+flexShrink(value: String): Css {Css("flex-shrink", value)}
+flexWrap(value: String): Css {Css("flex-wrap", value)}
+float(value: String): Css {Css("float", value)}
+font(value: String): Css {Css("font", value)}
+fontFamily(value: String): Css {Css("font-family", value)}
+fontFeatureSettings(value: String): Css {Css("font-feature-settings", value)}
+fontKerning(value: String): Css {Css("font-kerning", value)}
+fontLanguageOverride(value: String): Css {Css("font-language-override", value)}
+fontOpticalSizing(value: String): Css {Css("font-optical-sizing", value)}
+fontPalette(value: String): Css {Css("font-palette", value)}
+fontVariationSettings(value: String): Css {Css("font-variation-settings", value)}
+fontSize(value: String): Css {Css("font-size", value)}
+fontSizeAdjust(value: String): Css {Css("font-size-adjust", value)}
+fontSmooth(value: String): Css {Css("font-smooth", value)}
+fontStretch(value: String): Css {Css("font-stretch", value)}
+fontStyle(value: String): Css {Css("font-style", value)}
+fontSynthesis(value: String): Css {Css("font-synthesis", value)}
+fontSynthesisPosition(value: String): Css {Css("font-synthesis-position", value)}
+fontSynthesisSmallCaps(value: String): Css {Css("font-synthesis-small-caps", value)}
+fontSynthesisStyle(value: String): Css {Css("font-synthesis-style", value)}
+fontSynthesisWeight(value: String): Css {Css("font-synthesis-weight", value)}
+fontVariant(value: String): Css {Css("font-variant", value)}
+fontVariantAlternates(value: String): Css {Css("font-variant-alternates", value)}
+fontVariantCaps(value: String): Css {Css("font-variant-caps", value)}
+fontVariantEastAsian(value: String): Css {Css("font-variant-east-asian", value)}
+fontVariantEmoji(value: String): Css {Css("font-variant-emoji", value)}
+fontVariantLigatures(value: String): Css {Css("font-variant-ligatures", value)}
+fontVariantNumeric(value: String): Css {Css("font-variant-numeric", value)}
+fontVariantPosition(value: String): Css {Css("font-variant-position", value)}
+fontWeight(value: String): Css {Css("font-weight", value)}
+forcedColorAdjust(value: String): Css {Css("forced-color-adjust", value)}
+gap(value: String): Css {Css("gap", value)}
+grid(value: String): Css {Css("grid", value)}
+gridArea(value: String): Css {Css("grid-area", value)}
+gridAutoColumns(value: String): Css {Css("grid-auto-columns", value)}
+gridAutoFlow(value: String): Css {Css("grid-auto-flow", value)}
+gridAutoRows(value: String): Css {Css("grid-auto-rows", value)}
+gridColumn(value: String): Css {Css("grid-column", value)}
+gridColumnEnd(value: String): Css {Css("grid-column-end", value)}
+gridColumnGap(value: String): Css {Css("grid-column-gap", value)}
+gridColumnStart(value: String): Css {Css("grid-column-start", value)}
+gridGap(value: String): Css {Css("grid-gap", value)}
+gridRow(value: String): Css {Css("grid-row", value)}
+gridRowEnd(value: String): Css {Css("grid-row-end", value)}
+gridRowGap(value: String): Css {Css("grid-row-gap", value)}
+gridRowStart(value: String): Css {Css("grid-row-start", value)}
+gridTemplate(value: String): Css {Css("grid-template", value)}
+gridTemplateAreas(value: String): Css {Css("grid-template-areas", value)}
+gridTemplateColumns(value: String): Css {Css("grid-template-columns", value)}
+gridTemplateRows(value: String): Css {Css("grid-template-rows", value)}
+hangingPunctuation(value: String): Css {Css("hanging-punctuation", value)}
+height(value: String): Css {Css("height", value)}
+hyphenateCharacter(value: String): Css {Css("hyphenate-character", value)}
+hyphenateLimitChars(value: String): Css {Css("hyphenate-limit-chars", value)}
+hyphens(value: String): Css {Css("hyphens", value)}
+imageOrientation(value: String): Css {Css("image-orientation", value)}
+imageRendering(value: String): Css {Css("image-rendering", value)}
+imageResolution(value: String): Css {Css("image-resolution", value)}
+imeMode(value: String): Css {Css("ime-mode", value)}
+initialLetter(value: String): Css {Css("initial-letter", value)}
+initialLetterAlign(value: String): Css {Css("initial-letter-align", value)}
+inlineSize(value: String): Css {Css("inline-size", value)}
+inputSecurity(value: String): Css {Css("input-security", value)}
+inset(value: String): Css {Css("inset", value)}
+insetBlock(value: String): Css {Css("inset-block", value)}
+insetBlockEnd(value: String): Css {Css("inset-block-end", value)}
+insetBlockStart(value: String): Css {Css("inset-block-start", value)}
+insetInline(value: String): Css {Css("inset-inline", value)}
+insetInlineEnd(value: String): Css {Css("inset-inline-end", value)}
+insetInlineStart(value: String): Css {Css("inset-inline-start", value)}
+isolation(value: String): Css {Css("isolation", value)}
+justifyContent(value: String): Css {Css("justify-content", value)}
+justifyItems(value: String): Css {Css("justify-items", value)}
+justifySelf(value: String): Css {Css("justify-self", value)}
+justifyTracks(value: String): Css {Css("justify-tracks", value)}
+left(value: String): Css {Css("left", value)}
+letterSpacing(value: String): Css {Css("letter-spacing", value)}
+lineBreak(value: String): Css {Css("line-break", value)}
+lineClamp(value: String): Css {Css("line-clamp", value)}
+lineHeight(value: String): Css {Css("line-height", value)}
+lineHeightStep(value: String): Css {Css("line-height-step", value)}
+listStyle(value: String): Css {Css("list-style", value)}
+listStyleImage(value: String): Css {Css("list-style-image", value)}
+listStylePosition(value: String): Css {Css("list-style-position", value)}
+listStyleType(value: String): Css {Css("list-style-type", value)}
+margin(value: String): Css {Css("margin", value)}
+marginBlock(value: String): Css {Css("margin-block", value)}
+marginBlockEnd(value: String): Css {Css("margin-block-end", value)}
+marginBlockStart(value: String): Css {Css("margin-block-start", value)}
+marginBottom(value: String): Css {Css("margin-bottom", value)}
+marginInline(value: String): Css {Css("margin-inline", value)}
+marginInlineEnd(value: String): Css {Css("margin-inline-end", value)}
+marginInlineStart(value: String): Css {Css("margin-inline-start", value)}
+marginLeft(value: String): Css {Css("margin-left", value)}
+marginRight(value: String): Css {Css("margin-right", value)}
+marginTop(value: String): Css {Css("margin-top", value)}
+marginTrim(value: String): Css {Css("margin-trim", value)}
+mask(value: String): Css {Css("mask", value)}
+maskBorder(value: String): Css {Css("mask-border", value)}
+maskBorderMode(value: String): Css {Css("mask-border-mode", value)}
+maskBorderOutset(value: String): Css {Css("mask-border-outset", value)}
+maskBorderRepeat(value: String): Css {Css("mask-border-repeat", value)}
+maskBorderSlice(value: String): Css {Css("mask-border-slice", value)}
+maskBorderSource(value: String): Css {Css("mask-border-source", value)}
+maskBorderWidth(value: String): Css {Css("mask-border-width", value)}
+maskClip(value: String): Css {Css("mask-clip", value)}
+maskComposite(value: String): Css {Css("mask-composite", value)}
+maskImage(value: String): Css {Css("mask-image", value)}
+maskMode(value: String): Css {Css("mask-mode", value)}
+maskOrigin(value: String): Css {Css("mask-origin", value)}
+maskPosition(value: String): Css {Css("mask-position", value)}
+maskRepeat(value: String): Css {Css("mask-repeat", value)}
+maskSize(value: String): Css {Css("mask-size", value)}
+maskType(value: String): Css {Css("mask-type", value)}
+masonryAutoFlow(value: String): Css {Css("masonry-auto-flow", value)}
+mathDepth(value: String): Css {Css("math-depth", value)}
+mathShift(value: String): Css {Css("math-shift", value)}
+mathStyle(value: String): Css {Css("math-style", value)}
+maxBlockSize(value: String): Css {Css("max-block-size", value)}
+maxHeight(value: String): Css {Css("max-height", value)}
+maxInlineSize(value: String): Css {Css("max-inline-size", value)}
+maxLines(value: String): Css {Css("max-lines", value)}
+maxWidth(value: String): Css {Css("max-width", value)}
+minBlockSize(value: String): Css {Css("min-block-size", value)}
+minHeight(value: String): Css {Css("min-height", value)}
+minInlineSize(value: String): Css {Css("min-inline-size", value)}
+minWidth(value: String): Css {Css("min-width", value)}
+mixBlendMode(value: String): Css {Css("mix-blend-mode", value)}
+objectFit(value: String): Css {Css("object-fit", value)}
+objectPosition(value: String): Css {Css("object-position", value)}
+offset(value: String): Css {Css("offset", value)}
+offsetAnchor(value: String): Css {Css("offset-anchor", value)}
+offsetDistance(value: String): Css {Css("offset-distance", value)}
+offsetPath(value: String): Css {Css("offset-path", value)}
+offsetPosition(value: String): Css {Css("offset-position", value)}
+offsetRotate(value: String): Css {Css("offset-rotate", value)}
+opacity(value: String): Css {Css("opacity", value)}
+order(value: String): Css {Css("order", value)}
+orphans(value: String): Css {Css("orphans", value)}
+outline(value: String): Css {Css("outline", value)}
+outlineColor(value: String): Css {Css("outline-color", value)}
+outlineOffset(value: String): Css {Css("outline-offset", value)}
+outlineStyle(value: String): Css {Css("outline-style", value)}
+outlineWidth(value: String): Css {Css("outline-width", value)}
+overflow(value: String): Css {Css("overflow", value)}
+overflowAnchor(value: String): Css {Css("overflow-anchor", value)}
+overflowBlock(value: String): Css {Css("overflow-block", value)}
+overflowClipBox(value: String): Css {Css("overflow-clip-box", value)}
+overflowClipMargin(value: String): Css {Css("overflow-clip-margin", value)}
+overflowInline(value: String): Css {Css("overflow-inline", value)}
+overflowWrap(value: String): Css {Css("overflow-wrap", value)}
+overflowX(value: String): Css {Css("overflow-x", value)}
+overflowY(value: String): Css {Css("overflow-y", value)}
+overlay(value: String): Css {Css("overlay", value)}
+overscrollBehavior(value: String): Css {Css("overscroll-behavior", value)}
+overscrollBehaviorBlock(value: String): Css {Css("overscroll-behavior-block", value)}
+overscrollBehaviorInline(value: String): Css {Css("overscroll-behavior-inline", value)}
+overscrollBehaviorX(value: String): Css {Css("overscroll-behavior-x", value)}
+overscrollBehaviorY(value: String): Css {Css("overscroll-behavior-y", value)}
+padding(value: String): Css {Css("padding", value)}
+paddingBlock(value: String): Css {Css("padding-block", value)}
+paddingBlockEnd(value: String): Css {Css("padding-block-end", value)}
+paddingBlockStart(value: String): Css {Css("padding-block-start", value)}
+paddingBottom(value: String): Css {Css("padding-bottom", value)}
+paddingInline(value: String): Css {Css("padding-inline", value)}
+paddingInlineEnd(value: String): Css {Css("padding-inline-end", value)}
+paddingInlineStart(value: String): Css {Css("padding-inline-start", value)}
+paddingLeft(value: String): Css {Css("padding-left", value)}
+paddingRight(value: String): Css {Css("padding-right", value)}
+paddingTop(value: String): Css {Css("padding-top", value)}
+page(value: String): Css {Css("page", value)}
+pageBreakAfter(value: String): Css {Css("page-break-after", value)}
+pageBreakBefore(value: String): Css {Css("page-break-before", value)}
+pageBreakInside(value: String): Css {Css("page-break-inside", value)}
+paintOrder(value: String): Css {Css("paint-order", value)}
+perspective(value: String): Css {Css("perspective", value)}
+perspectiveOrigin(value: String): Css {Css("perspective-origin", value)}
+placeContent(value: String): Css {Css("place-content", value)}
+placeItems(value: String): Css {Css("place-items", value)}
+placeSelf(value: String): Css {Css("place-self", value)}
+pointerEvents(value: String): Css {Css("pointer-events", value)}
+position(value: String): Css {Css("position", value)}
+printColorAdjust(value: String): Css {Css("print-color-adjust", value)}
+quotes(value: String): Css {Css("quotes", value)}
+resize(value: String): Css {Css("resize", value)}
+right(value: String): Css {Css("right", value)}
+rotate(value: String): Css {Css("rotate", value)}
+rowGap(value: String): Css {Css("row-gap", value)}
+rubyAlign(value: String): Css {Css("ruby-align", value)}
+rubyMerge(value: String): Css {Css("ruby-merge", value)}
+rubyPosition(value: String): Css {Css("ruby-position", value)}
+scale(value: String): Css {Css("scale", value)}
+scrollbarColor(value: String): Css {Css("scrollbar-color", value)}
+scrollbarGutter(value: String): Css {Css("scrollbar-gutter", value)}
+scrollbarWidth(value: String): Css {Css("scrollbar-width", value)}
+scrollBehavior(value: String): Css {Css("scroll-behavior", value)}
+scrollMargin(value: String): Css {Css("scroll-margin", value)}
+scrollMarginBlock(value: String): Css {Css("scroll-margin-block", value)}
+scrollMarginBlockStart(value: String): Css {Css("scroll-margin-block-start", value)}
+scrollMarginBlockEnd(value: String): Css {Css("scroll-margin-block-end", value)}
+scrollMarginBottom(value: String): Css {Css("scroll-margin-bottom", value)}
+scrollMarginInline(value: String): Css {Css("scroll-margin-inline", value)}
+scrollMarginInlineStart(value: String): Css {Css("scroll-margin-inline-start", value)}
+scrollMarginInlineEnd(value: String): Css {Css("scroll-margin-inline-end", value)}
+scrollMarginLeft(value: String): Css {Css("scroll-margin-left", value)}
+scrollMarginRight(value: String): Css {Css("scroll-margin-right", value)}
+scrollMarginTop(value: String): Css {Css("scroll-margin-top", value)}
+scrollPadding(value: String): Css {Css("scroll-padding", value)}
+scrollPaddingBlock(value: String): Css {Css("scroll-padding-block", value)}
+scrollPaddingBlockStart(value: String): Css {Css("scroll-padding-block-start", value)}
+scrollPaddingBlockEnd(value: String): Css {Css("scroll-padding-block-end", value)}
+scrollPaddingBottom(value: String): Css {Css("scroll-padding-bottom", value)}
+scrollPaddingInline(value: String): Css {Css("scroll-padding-inline", value)}
+scrollPaddingInlineStart(value: String): Css {Css("scroll-padding-inline-start", value)}
+scrollPaddingInlineEnd(value: String): Css {Css("scroll-padding-inline-end", value)}
+scrollPaddingLeft(value: String): Css {Css("scroll-padding-left", value)}
+scrollPaddingRight(value: String): Css {Css("scroll-padding-right", value)}
+scrollPaddingTop(value: String): Css {Css("scroll-padding-top", value)}
+scrollSnapAlign(value: String): Css {Css("scroll-snap-align", value)}
+scrollSnapCoordinate(value: String): Css {Css("scroll-snap-coordinate", value)}
+scrollSnapDestination(value: String): Css {Css("scroll-snap-destination", value)}
+scrollSnapPointsX(value: String): Css {Css("scroll-snap-points-x", value)}
+scrollSnapPointsY(value: String): Css {Css("scroll-snap-points-y", value)}
+scrollSnapStop(value: String): Css {Css("scroll-snap-stop", value)}
+scrollSnapType(value: String): Css {Css("scroll-snap-type", value)}
+scrollSnapTypeX(value: String): Css {Css("scroll-snap-type-x", value)}
+scrollSnapTypeY(value: String): Css {Css("scroll-snap-type-y", value)}
+scrollTimeline(value: String): Css {Css("scroll-timeline", value)}
+scrollTimelineAxis(value: String): Css {Css("scroll-timeline-axis", value)}
+scrollTimelineName(value: String): Css {Css("scroll-timeline-name", value)}
+shapeImageThreshold(value: String): Css {Css("shape-image-threshold", value)}
+shapeMargin(value: String): Css {Css("shape-margin", value)}
+shapeOutside(value: String): Css {Css("shape-outside", value)}
+tabSize(value: String): Css {Css("tab-size", value)}
+tableLayout(value: String): Css {Css("table-layout", value)}
+textAlign(value: String): Css {Css("text-align", value)}
+textAlignLast(value: String): Css {Css("text-align-last", value)}
+textCombineUpright(value: String): Css {Css("text-combine-upright", value)}
+textDecoration(value: String): Css {Css("text-decoration", value)}
+textDecorationColor(value: String): Css {Css("text-decoration-color", value)}
+textDecorationLine(value: String): Css {Css("text-decoration-line", value)}
+textDecorationSkip(value: String): Css {Css("text-decoration-skip", value)}
+textDecorationSkipInk(value: String): Css {Css("text-decoration-skip-ink", value)}
+textDecorationStyle(value: String): Css {Css("text-decoration-style", value)}
+textDecorationThickness(value: String): Css {Css("text-decoration-thickness", value)}
+textEmphasis(value: String): Css {Css("text-emphasis", value)}
+textEmphasisColor(value: String): Css {Css("text-emphasis-color", value)}
+textEmphasisPosition(value: String): Css {Css("text-emphasis-position", value)}
+textEmphasisStyle(value: String): Css {Css("text-emphasis-style", value)}
+textIndent(value: String): Css {Css("text-indent", value)}
+textJustify(value: String): Css {Css("text-justify", value)}
+textOrientation(value: String): Css {Css("text-orientation", value)}
+textOverflow(value: String): Css {Css("text-overflow", value)}
+textRendering(value: String): Css {Css("text-rendering", value)}
+textShadow(value: String): Css {Css("text-shadow", value)}
+textSizeAdjust(value: String): Css {Css("text-size-adjust", value)}
+textTransform(value: String): Css {Css("text-transform", value)}
+textUnderlineOffset(value: String): Css {Css("text-underline-offset", value)}
+textUnderlinePosition(value: String): Css {Css("text-underline-position", value)}
+textWrap(value: String): Css {Css("text-wrap", value)}
+timelineScope(value: String): Css {Css("timeline-scope", value)}
+top(value: String): Css {Css("top", value)}
+touchAction(value: String): Css {Css("touch-action", value)}
+transform(value: String): Css {Css("transform", value)}
+transformBox(value: String): Css {Css("transform-box", value)}
+transformOrigin(value: String): Css {Css("transform-origin", value)}
+transformStyle(value: String): Css {Css("transform-style", value)}
+transition(value: String): Css {Css("transition", value)}
+transitionBehavior(value: String): Css {Css("transition-behavior", value)}
+transitionDelay(value: String): Css {Css("transition-delay", value)}
+transitionDuration(value: String): Css {Css("transition-duration", value)}
+transitionProperty(value: String): Css {Css("transition-property", value)}
+transitionTimingFunction(value: String): Css {Css("transition-timing-function", value)}
+translate(value: String): Css {Css("translate", value)}
+unicodeBidi(value: String): Css {Css("unicode-bidi", value)}
+userSelect(value: String): Css {Css("user-select", value)}
+verticalAlign(value: String): Css {Css("vertical-align", value)}
+viewTimeline(value: String): Css {Css("view-timeline", value)}
+viewTimelineAxis(value: String): Css {Css("view-timeline-axis", value)}
+viewTimelineInset(value: String): Css {Css("view-timeline-inset", value)}
+viewTimelineName(value: String): Css {Css("view-timeline-name", value)}
+viewTransitionName(value: String): Css {Css("view-transition-name", value)}
+visibility(value: String): Css {Css("visibility", value)}
+whiteSpace(value: String): Css {Css("white-space", value)}
+whiteSpaceCollapse(value: String): Css {Css("white-space-collapse", value)}
+widows(value: String): Css {Css("widows", value)}
+width(value: String): Css {Css("width", value)}
+willChange(value: String): Css {Css("will-change", value)}
+wordBreak(value: String): Css {Css("word-break", value)}
+wordSpacing(value: String): Css {Css("word-spacing", value)}
+wordWrap(value: String): Css {Css("word-wrap", value)}
+writingMode(value: String): Css {Css("writing-mode", value)}
+zIndex(value: String): Css {Css("z-index", value)}
+zoom(value: String): Css {Css("zoom", value)}
