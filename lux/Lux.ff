@@ -91,6 +91,7 @@ extend self: Lux {
         let savedElement = self.element
         self.attributes = None
         self.element = LuxElement(node, 0, keepChildren = False)
+        self.element.element.get("classList").set("value", "")
         self.key = ""
         self.depth += 1
         try {
