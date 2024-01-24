@@ -1,0 +1,48 @@
+import Lux
+import LuxEvent
+import Css
+import HttpServer from ff:httpserver
+
+mainComponent(lux: Lux, system: BrowserSystem) {
+    let redCss = CssClass([Css.color("red")], [])
+    let blueCss = CssClass([Css.color("blue")], [])
+
+    lux.useState(False): start, setStart => 
+    lux.div {
+        lux.cssClass(if(start) {redCss} else {blueCss})
+        lux.div {
+            lux.text(if(start) {"Start"} else {"Stop"})
+            lux.onClick {event => 
+                event.preventDefault()
+                setStart(!start)
+            }
+        }
+    }
+}
+
+browserMain(system: BrowserSystem) {
+    Lux.renderById(system, "main") {lux => mainComponent(lux, system)}
+}
+
+nodeMain(system: NodeSystem) {
+    let openAiKey = system.arguments().first()
+    HttpServer.listen(system, "localhost", 8080) {request, response =>
+        if(request.path() == "/") {
+            response.setHeader("Content-Type", ["text/html; charset=UTF-8"])
+            response.writeText("<!doctype html>")
+            response.writeText("<div id='main'></div>")
+            response.writeText("<script type='module' src='/js/script/script/CssTest.mjs'></script>")
+        } elseIf {request.path().startsWith("/js/") && !request.path().contains("..")} {
+            response.setHeader("Content-Type", ["text/javascript; charset=UTF-8"])
+            response.writeText(system.assets().readText(request.path()))
+        } else {
+            response.writeStatus(404, Some("Not found"))
+        }
+    }
+}
+
+buildMain(system: BuildSystem) {
+    let browser = system.compileForBrowser("CssTest.ff")
+    let assets = AssetSystem.create().addAssets("/js", browser.assets())
+    system.setAssets(assets)
+}
