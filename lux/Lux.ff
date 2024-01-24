@@ -174,22 +174,12 @@ extend self: Lux {
         self.element.element.get("classList").call1("add", class.name())
         self.set("class", self.element.element.get("className").grabString())
     }
-
+    
     on(event: String, handler: LuxEvent => Unit) {
         let jsHandler = unsafeAsyncFunction1ToJs(self) {jsEvent =>
             self.renderLock.do(reentrant = False) {
                 handler(unsafeJsToValue(jsEvent))
-                self.renderQueue.sortBy {-_.luxCopy.depth}
-                let newLux = self.Lux(element = self.element.LuxElement())
-                try {
-                    while {!self.renderQueue.isEmpty()} {
-                        let item = self.renderQueue.pop().grab()
-                        self.copyFrom(item.luxCopy)
-                        item.render()
-                    }
-                } finally {
-                    self.copyFrom(newLux)
-                } grab()
+                processRenderQueue(self)
             }
         }
         self.element.element.call2("addEventListener", event, jsHandler)
@@ -327,6 +317,20 @@ extend self: Lux {
         setTaskOnElement(self.element.childAt(self.element.child - 1), Some(subtask))
     }
 
+}
+
+processRenderQueue(self: Lux) {
+    self.renderQueue.sortBy {-_.luxCopy.depth}
+    let newLux = self.Lux(element = self.element.LuxElement())
+    try {
+        while {!self.renderQueue.isEmpty()} {
+            let item = self.renderQueue.pop().grab()
+            self.copyFrom(item.luxCopy)
+            item.render()
+        }
+    } finally {
+        self.copyFrom(newLux)
+    } grab()
 }
 
 removeCurrentChild(self: Lux): Bool {
