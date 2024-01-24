@@ -22,7 +22,7 @@ extend self: AssetSystem {
     assets(path: String): AssetSystem {
         let prefix = if(path.endsWith("/")) {path} else {path + "/"}
         let streams = self.files.pairs().collect {
-            | Pair(p, s) {p.startsWith(prefix)} => Some(Pair(p.dropFirst(prefix.size()), s))
+            | Pair(p, s) {p.startsWith(prefix)} => Some(Pair(p.dropFirst(prefix.size() - 1), s))
             | _ => None
         }
         AssetSystem(streams.toMap())

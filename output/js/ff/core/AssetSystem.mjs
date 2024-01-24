@@ -122,7 +122,7 @@ const p_ = _1.first_;
 const s_ = _1.second_;
 const _guard1 = ff_core_String.String_startsWith(p_, prefix_, 0);
 if(_guard1) {
-return ff_core_Option.Some(ff_core_Pair.Pair(ff_core_String.String_dropFirst(p_, ff_core_String.String_size(prefix_)), s_))
+return ff_core_Option.Some(ff_core_Pair.Pair(ff_core_String.String_dropFirst(p_, (ff_core_String.String_size(prefix_) - 1)), s_))
 return
 }
 }
@@ -205,7 +205,7 @@ const p_ = _1.first_;
 const s_ = _1.second_;
 const _guard1 = ff_core_String.String_startsWith(p_, prefix_, 0);
 if(_guard1) {
-return ff_core_Option.Some(ff_core_Pair.Pair(ff_core_String.String_dropFirst(p_, ff_core_String.String_size(prefix_)), s_))
+return ff_core_Option.Some(ff_core_Pair.Pair(ff_core_String.String_dropFirst(p_, (ff_core_String.String_size(prefix_) - 1)), s_))
 return
 }
 }

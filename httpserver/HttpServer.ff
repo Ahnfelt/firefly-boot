@@ -146,7 +146,7 @@ extend self: HttpResponse {
         target node async """
             import * as http from 'http'
             ff_core_Task.Task_throwIfAborted($task)
-            if(!self_.write(buffer_)) {
+            if(!self_.write(Buffer.from(buffer_.buffer))) {
                 let reject = null;
                 await new Promise((resolve, reject) => {
                     const abort = () => {
