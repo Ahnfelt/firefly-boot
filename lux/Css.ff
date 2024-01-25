@@ -47,8 +47,8 @@ extend self: CssClass {
         let nested = self.nested.map {_.show()}
         let keyframes = self.keyframes.map {_.show()}
         self.selector() + " {\n" +
-        [...css, ...nested, ...keyframes].map {_ + "\n"}.join() + 
-        "}"
+        [...css, ...nested].map {_ + "\n"}.join() + 
+        "}" + keyframes.map {"\n" + _}.join()
     }
     
 }
