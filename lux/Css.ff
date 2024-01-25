@@ -8,7 +8,8 @@ data Css(
 
 data CssClass(
     css: List[Css], 
-    nested: List[CssNest], 
+    nested: List[CssNest]
+    keyframes: List[CssKeyframes]
     sourceLocation: SourceLocation = SourceLocation.callSite()
 )
 
@@ -44,8 +45,9 @@ extend self: CssClass {
     show(): String {
         let css = self.css.map {_.show() + ";"}
         let nested = self.nested.map {_.show()}
+        let keyframes = self.keyframes.map {_.show()}
         self.selector() + " {\n" +
-        [...css, ...nested].map {_ + "\n"}.join() + 
+        [...css, ...nested, ...keyframes].map {_ + "\n"}.join() + 
         "}"
     }
     

@@ -31,7 +31,7 @@ mainComponent(lux: Lux, http: HttpClient) {
     }
 }
 
-questionCss = CssClass([Css.marginBottom("10px")], [])
+questionCss = CssClass([Css.marginBottom("10px")], [], [])
 
 questionComponent(lux: Lux, http: HttpClient, question: String) {
     lux.div {

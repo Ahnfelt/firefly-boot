@@ -4,8 +4,8 @@ import Css
 import HttpServer from ff:httpserver
 
 mainComponent(lux: Lux, system: BrowserSystem) {
-    let redCss = CssClass([Css.color("red")], [])
-    let blueCss = CssClass([Css.color("blue")], [])
+    let redCss = CssClass([Css.color("red")], [], [])
+    let blueCss = CssClass([Css.color("blue")], [], [])
 
     lux.useState(False): start, setStart => 
     lux.div {
