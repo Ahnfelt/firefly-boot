@@ -142,6 +142,10 @@ extend self[T]: List[T] {
                 tailcall tail.each(body)
         }
     }
+    
+    eachWhile(body: T => Bool): Bool {
+        self.all(body)
+    }
 
     all(body: T => Bool): Bool {
         self.{

@@ -14,6 +14,13 @@ fillBy[T](size: Int, body: Int => T): Array[T]
     target js sync """
         return Array.from({length: size_}, (_, i) => body_(i));
     """
+    target js async """
+        const array = new Array(size_);
+        for(let i = 0; i < size_; i++) {
+            array[i] = await(body_(_i));
+        }
+        return array;
+    """
 
 range(size: Int): Array[Int]
     target js sync """
