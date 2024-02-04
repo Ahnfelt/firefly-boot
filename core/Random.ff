@@ -1,0 +1,86 @@
+class Random {}
+
+// Using Alea PRNG by Johannes Baagøe <baagoe@baagoe.com>, 2010
+
+make(seed: Int): Random
+    target js sync """
+        var n = 0xefc8249d;
+        function mash(data) {
+            data = data.toString();
+            for (var i = 0; i < data.length; i++) {
+                n += data.charCodeAt(i);
+                var h = 0.02519603282416938 * n;
+                n = h >>> 0;
+                h -= n;
+                h *= n;
+                n = h >>> 0;
+                h -= n;
+                n += h * 0x100000000; // 2^32
+            }
+            return (n >>> 0) * 2.3283064365386963e-10; // 2^-32
+        }
+        var r = {
+            s0: mash(' '),
+            s1: mash(' '),
+            s2: mash(' '),
+            c: 1,
+        }
+        var args = [seed_];
+        for(var i = 0; i < args.length; i++) {
+            r.s0 -= mash(args[i]);
+            if(r.s0 < 0) r.s0 += 1;
+            r.s1 -= mash(args[i]);
+            if(r.s1 < 0) r.s1 += 1;
+            r.s2 -= mash(args[i]);
+            if(r.s2 < 0) r.s2 += 1;
+        }
+        return r;
+    """
+
+extend self: Random {
+    
+    nextInt(below: Int): Int
+        target js sync """
+            return (Random_nextFloat(self_) * below_) | 0;
+        """
+        
+    nextFloat(): Float
+        target js sync """
+            var t = 2091639 * self_.s0 + self_.c * 2.3283064365386963e-10; // 2^-32
+            self_.s0 = self_.s1;
+            self_.s1 = self_.s2;
+            return self_.s2 = t - (self_.c = t | 0);
+        """
+
+    nextBool(): Bool {
+        self.nextInt(2) == 0
+    }
+    
+    nextBuffer(buffer: Buffer): Unit {
+        0.until(buffer.size()).each {i =>
+            buffer.setUint8(i, self.nextInt(256))
+        }
+    }
+    
+    shuffleStack[T](stack: Stack[T]): Unit {
+        0.until(stack.size() - 1).each {i =>
+            let j = self.nextInt(stack.size() - i) + i
+            let value = stack.grab(i)
+            stack.set(i, stack.grab(j))
+            stack.set(j, value)
+        }
+    }
+    
+    shuffleArray[T](array: Array[T]): Array[T] {
+        let stack = array.toStack()
+        self.shuffleStack(array.toStack())
+        stack.drain()
+    }
+    
+    shuffleList[T](list: List[T]): List[T] {
+        let stack = list.toStack()
+        self.shuffleStack(list.toStack())
+        stack.toList()
+    }
+    
+}
