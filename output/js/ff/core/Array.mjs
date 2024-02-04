@@ -66,6 +66,8 @@ import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
 import * as ff_core_Path from "../../ff/core/Path.mjs"
 
+import * as ff_core_Random from "../../ff/core/Random.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -130,7 +132,13 @@ throw new Error('Function fill is missing on this target in async context.');
 }
 
 export async function fillBy_$(size_, body_, $task) {
-throw new Error('Function fillBy is missing on this target in async context.');
+
+        const array = new Array(size_);
+        for(let i = 0; i < size_; i++) {
+            array[i] = await(body_(_i));
+        }
+        return array;
+    
 }
 
 export async function range_$(size_, $task) {

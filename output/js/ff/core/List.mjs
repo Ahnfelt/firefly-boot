@@ -66,6 +66,8 @@ import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
 import * as ff_core_Path from "../../ff/core/Path.mjs"
 
+import * as ff_core_Random from "../../ff/core/Random.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -476,6 +478,10 @@ return
 }
 return
 }
+}
+
+export function List_eachWhile(self_, body_) {
+return ff_core_List.List_all(self_, body_)
 }
 
 export function List_all(self_, body_) {
@@ -1342,6 +1348,10 @@ return
 }
 return
 }
+}
+
+export async function List_eachWhile$(self_, body_, $task) {
+return (await ff_core_List.List_all$(self_, body_, $task))
 }
 
 export async function List_all$(self_, body_, $task) {
