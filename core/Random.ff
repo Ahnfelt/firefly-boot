@@ -70,7 +70,7 @@ extend self: Random {
         self.nextInt(0, 2) == 0
     }
 
-    nextBuffer(buffer: Buffer, start: Int, stop: Int): Unit {
+    nextBytes(buffer: Buffer, start: Int, stop: Int): Unit {
         start.until(stop).each {i =>
             buffer.setUint8(i, self.nextInt(0, 256))
         }
