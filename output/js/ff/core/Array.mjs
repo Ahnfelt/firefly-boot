@@ -194,6 +194,14 @@ export function Array_grabLast(self_) {
 return ff_core_Array.Array_grab(self_, (ff_core_Array.Array_size(self_) - 1))
 }
 
+export function Array_takeFirst(self_, count_ = 1) {
+return self_.slice(0, count_)
+}
+
+export function Array_takeLast(self_, count_ = 1) {
+return self_.slice(-count_)
+}
+
 export function Array_dropFirst(self_, count_ = 1) {
 return self_.slice(count_)
 }
@@ -347,6 +355,14 @@ return ff_core_Array.Array_grab(self_, 0)
 
 export async function Array_grabLast$(self_, $task) {
 return ff_core_Array.Array_grab(self_, (ff_core_Array.Array_size(self_) - 1))
+}
+
+export async function Array_takeFirst$(self_, count_ = 1, $task) {
+throw new Error('Function Array_takeFirst is missing on this target in async context.');
+}
+
+export async function Array_takeLast$(self_, count_ = 1, $task) {
+throw new Error('Function Array_takeLast is missing on this target in async context.');
 }
 
 export async function Array_dropFirst$(self_, count_ = 1, $task) {

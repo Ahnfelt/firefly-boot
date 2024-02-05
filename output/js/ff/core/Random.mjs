@@ -95,13 +95,22 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function make_(seed_) {
+export function seedInt_(seed_) {
+return ff_core_Random.seedFloat_(ff_core_Int.Int_toFloat(seed_))
+}
+
+export function seedFloat_(seed_) {
+const buffer_ = ff_core_Buffer.make_(8, false);
+ff_core_Buffer.Buffer_setFloat64(buffer_, 0, seed_, true);
+return ff_core_Random.seedBuffer_(buffer_)
+}
+
+export function seedBuffer_(buffer_) {
 
         var n = 0xefc8249d;
         function mash(data) {
-            data = data.toString();
-            for (var i = 0; i < data.length; i++) {
-                n += data.charCodeAt(i);
+            for(var i = 0; i < data.byteLength; i++) {
+                n += data.getUint8(i);
                 var h = 0.02519603282416938 * n;
                 n = h >>> 0;
                 h -= n;
@@ -112,57 +121,83 @@ export function make_(seed_) {
             }
             return (n >>> 0) * 2.3283064365386963e-10; // 2^-32
         }
+        var space = new DataView(new Uint8Array([32]).buffer);
         var r = {
-            s0: mash(' '),
-            s1: mash(' '),
-            s2: mash(' '),
+            s0: mash(space),
+            s1: mash(space),
+            s2: mash(space),
             c: 1,
-        }
-        var args = [seed_];
-        for(var i = 0; i < args.length; i++) {
-            r.s0 -= mash(args[i]);
-            if(r.s0 < 0) r.s0 += 1;
-            r.s1 -= mash(args[i]);
-            if(r.s1 < 0) r.s1 += 1;
-            r.s2 -= mash(args[i]);
-            if(r.s2 < 0) r.s2 += 1;
-        }
+            spareGauss: NaN
+        };
+        r.s0 -= mash(buffer_);
+        if(r.s0 < 0) r.s0 += 1;
+        r.s1 -= mash(buffer_);
+        if(r.s1 < 0) r.s1 += 1;
+        r.s2 -= mash(buffer_);
+        if(r.s2 < 0) r.s2 += 1;
         return r;
     
 }
 
-export async function make_$(seed_, $task) {
-throw new Error('Function make is missing on this target in async context.');
+export async function seedInt_$(seed_, $task) {
+return ff_core_Random.seedFloat_(ff_core_Int.Int_toFloat(seed_))
 }
 
-export function Random_nextInt(self_, below_) {
+export async function seedFloat_$(seed_, $task) {
+const buffer_ = ff_core_Buffer.make_(8, false);
+ff_core_Buffer.Buffer_setFloat64(buffer_, 0, seed_, true);
+return ff_core_Random.seedBuffer_(buffer_)
+}
 
-            return (Random_nextFloat(self_) * below_) | 0;
+export async function seedBuffer_$(buffer_, $task) {
+throw new Error('Function seedBuffer is missing on this target in async context.');
+}
+
+export function Random_nextInt(self_, from_, until_) {
+
+            return Random_nextFloat(self_, from_, until_) | 0;
         
 }
 
-export function Random_nextFloat(self_) {
+export function Random_nextFloat(self_, from_ = 0.0, until_ = 1.0) {
 
             var t = 2091639 * self_.s0 + self_.c * 2.3283064365386963e-10; // 2^-32
             self_.s0 = self_.s1;
             self_.s1 = self_.s2;
-            return self_.s2 = t - (self_.c = t | 0);
+            var uniform = self_.s2 = t - (self_.c = t | 0);
+            return from_ + uniform * (until_ - from_);
         
-}
-
-export function Random_nextBool(self_) {
-return (ff_core_Random.Random_nextInt(self_, 2) === 0)
 }
 
 export function Random_nextBuffer(self_, buffer_) {
 ff_core_List.List_each(ff_core_Int.Int_until(0, ff_core_Buffer.Buffer_size(buffer_)), ((i_) => {
-ff_core_Buffer.Buffer_setUint8(buffer_, i_, ff_core_Random.Random_nextInt(self_, 256))
+ff_core_Buffer.Buffer_setUint8(buffer_, i_, ff_core_Random.Random_nextInt(self_, 0, 256))
 }))
+}
+
+export function Random_gauss(self_, mean_, standardDeviation_) {
+
+            if(!isNaN(self_.spareGauss)) {
+                const result = self_.spareGauss * standardDeviation_ + mean_;
+                self_.spareGauss = NaN;
+                return result;
+            } else {
+                let u = 0.5, v = 0.5, s = 0.5;
+                do {
+                    u = Random_nextFloat(self_, 0.0, 1.0) * 2 - 1;
+                    v = Random_nextFloat(self_, 0.0, 1.0) * 2 - 1;
+                    s = u * u + v * v;
+                } while(s >= 1 || s == 0);
+                s = Math.sqrt(-2.0 * Math.log(s) / s);
+                self_.spareGauss = v * s;
+                return mean_ + standardDeviation_ * u * s;
+            }
+        
 }
 
 export function Random_shuffleStack(self_, stack_) {
 ff_core_List.List_each(ff_core_Int.Int_until(0, (ff_core_Stack.Stack_size(stack_) - 1)), ((i_) => {
-const j_ = (ff_core_Random.Random_nextInt(self_, (ff_core_Stack.Stack_size(stack_) - i_)) + i_);
+const j_ = (ff_core_Random.Random_nextInt(self_, 0, (ff_core_Stack.Stack_size(stack_) - i_)) + i_);
 const value_ = ff_core_Stack.Stack_grab(stack_, i_);
 ff_core_Stack.Stack_set(stack_, i_, ff_core_Stack.Stack_grab(stack_, j_));
 ff_core_Stack.Stack_set(stack_, j_, value_)
@@ -181,27 +216,41 @@ ff_core_Random.Random_shuffleStack(self_, ff_core_List.List_toStack(list_));
 return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
 }
 
-export async function Random_nextInt$(self_, below_, $task) {
+export function Random_sampleStack(self_, count_, stack_, body_) {
+ff_core_Array.Array_each(ff_core_Array.Array_takeFirst(ff_core_Random.Random_shuffleArray(self_, ff_core_Stack.Stack_toArray(stack_, 0, 9007199254740991)), count_), ((_w1) => {
+body_(_w1)
+}))
+}
+
+export function Random_sampleArray(self_, count_, array_) {
+return ff_core_Array.Array_takeFirst(ff_core_Random.Random_shuffleArray(self_, array_), count_)
+}
+
+export function Random_sampleList(self_, count_, list_) {
+return ff_core_List.List_takeFirst(ff_core_Random.Random_shuffleList(self_, list_), count_)
+}
+
+export async function Random_nextInt$(self_, from_, until_, $task) {
 throw new Error('Function Random_nextInt is missing on this target in async context.');
 }
 
-export async function Random_nextFloat$(self_, $task) {
+export async function Random_nextFloat$(self_, from_ = 0.0, until_ = 1.0, $task) {
 throw new Error('Function Random_nextFloat is missing on this target in async context.');
-}
-
-export async function Random_nextBool$(self_, $task) {
-return (ff_core_Random.Random_nextInt(self_, 2) === 0)
 }
 
 export async function Random_nextBuffer$(self_, buffer_, $task) {
 ff_core_List.List_each(ff_core_Int.Int_until(0, ff_core_Buffer.Buffer_size(buffer_)), ((i_) => {
-ff_core_Buffer.Buffer_setUint8(buffer_, i_, ff_core_Random.Random_nextInt(self_, 256))
+ff_core_Buffer.Buffer_setUint8(buffer_, i_, ff_core_Random.Random_nextInt(self_, 0, 256))
 }))
+}
+
+export async function Random_gauss$(self_, mean_, standardDeviation_, $task) {
+throw new Error('Function Random_gauss is missing on this target in async context.');
 }
 
 export async function Random_shuffleStack$(self_, stack_, $task) {
 ff_core_List.List_each(ff_core_Int.Int_until(0, (ff_core_Stack.Stack_size(stack_) - 1)), ((i_) => {
-const j_ = (ff_core_Random.Random_nextInt(self_, (ff_core_Stack.Stack_size(stack_) - i_)) + i_);
+const j_ = (ff_core_Random.Random_nextInt(self_, 0, (ff_core_Stack.Stack_size(stack_) - i_)) + i_);
 const value_ = ff_core_Stack.Stack_grab(stack_, i_);
 ff_core_Stack.Stack_set(stack_, i_, ff_core_Stack.Stack_grab(stack_, j_));
 ff_core_Stack.Stack_set(stack_, j_, value_)
@@ -218,6 +267,20 @@ export async function Random_shuffleList$(self_, list_, $task) {
 const stack_ = ff_core_List.List_toStack(list_);
 ff_core_Random.Random_shuffleStack(self_, ff_core_List.List_toStack(list_));
 return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
+}
+
+export async function Random_sampleStack$(self_, count_, stack_, body_, $task) {
+(await ff_core_Array.Array_each$(ff_core_Array.Array_takeFirst(ff_core_Random.Random_shuffleArray(self_, ff_core_Stack.Stack_toArray(stack_, 0, 9007199254740991)), count_), (async (_w1, $task) => {
+(await body_(_w1, $task))
+}), $task))
+}
+
+export async function Random_sampleArray$(self_, count_, array_, $task) {
+return ff_core_Array.Array_takeFirst(ff_core_Random.Random_shuffleArray(self_, array_), count_)
+}
+
+export async function Random_sampleList$(self_, count_, list_, $task) {
+return ff_core_List.List_takeFirst(ff_core_Random.Random_shuffleList(self_, list_), count_)
 }
 
 

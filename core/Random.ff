@@ -2,13 +2,22 @@ class Random {}
 
 // Using Alea PRNG by Johannes Baagøe <baagoe@baagoe.com>, 2010
 
-make(seed: Int): Random
+seedInt(seed: Int): Random {
+    seedFloat(seed.toFloat())
+}
+
+seedFloat(seed: Float): Random {
+    let buffer = Buffer.make(8)
+    buffer.setFloat64(0, seed)
+    seedBuffer(buffer)
+}
+
+seedBuffer(buffer: Buffer): Random
     target js sync """
         var n = 0xefc8249d;
         function mash(data) {
-            data = data.toString();
-            for (var i = 0; i < data.length; i++) {
-                n += data.charCodeAt(i);
+            for(var i = 0; i < data.byteLength; i++) {
+                n += data.getUint8(i);
                 var h = 0.02519603282416938 * n;
                 n = h >>> 0;
                 h -= n;
@@ -19,52 +28,67 @@ make(seed: Int): Random
             }
             return (n >>> 0) * 2.3283064365386963e-10; // 2^-32
         }
+        var space = new DataView(new Uint8Array([32]).buffer);
         var r = {
-            s0: mash(' '),
-            s1: mash(' '),
-            s2: mash(' '),
+            s0: mash(space),
+            s1: mash(space),
+            s2: mash(space),
             c: 1,
-        }
-        var args = [seed_];
-        for(var i = 0; i < args.length; i++) {
-            r.s0 -= mash(args[i]);
-            if(r.s0 < 0) r.s0 += 1;
-            r.s1 -= mash(args[i]);
-            if(r.s1 < 0) r.s1 += 1;
-            r.s2 -= mash(args[i]);
-            if(r.s2 < 0) r.s2 += 1;
-        }
+            spareGauss: NaN
+        };
+        r.s0 -= mash(buffer_);
+        if(r.s0 < 0) r.s0 += 1;
+        r.s1 -= mash(buffer_);
+        if(r.s1 < 0) r.s1 += 1;
+        r.s2 -= mash(buffer_);
+        if(r.s2 < 0) r.s2 += 1;
         return r;
     """
 
 extend self: Random {
-    
-    nextInt(below: Int): Int
+
+    nextInt(from: Int, until: Int): Int
         target js sync """
-            return (Random_nextFloat(self_) * below_) | 0;
+            return Random_nextFloat(self_, from_, until_) | 0;
         """
         
-    nextFloat(): Float
+    nextFloat(from: Float = 0.0, until: Float = 1.0): Float
         target js sync """
             var t = 2091639 * self_.s0 + self_.c * 2.3283064365386963e-10; // 2^-32
             self_.s0 = self_.s1;
             self_.s1 = self_.s2;
-            return self_.s2 = t - (self_.c = t | 0);
+            var uniform = self_.s2 = t - (self_.c = t | 0);
+            return from_ + uniform * (until_ - from_);
         """
 
-    nextBool(): Bool {
-        self.nextInt(2) == 0
-    }
-    
     nextBuffer(buffer: Buffer): Unit {
         0.until(buffer.size()).each {i =>
-            buffer.setUint8(i, self.nextInt(256))
+            buffer.setUint8(i, self.nextInt(0, 256))
         }
     }
-    
+
+    gauss(mean: Float, standardDeviation: Float): Float
+        target js sync """
+            if(!isNaN(self_.spareGauss)) {
+                const result = self_.spareGauss * standardDeviation_ + mean_;
+                self_.spareGauss = NaN;
+                return result;
+            } else {
+                let u = 0.5, v = 0.5, s = 0.5;
+                do {
+                    u = Random_nextFloat(self_, 0.0, 1.0) * 2 - 1;
+                    v = Random_nextFloat(self_, 0.0, 1.0) * 2 - 1;
+                    s = u * u + v * v;
+                } while(s >= 1 || s == 0);
+                s = Math.sqrt(-2.0 * Math.log(s) / s);
+                self_.spareGauss = v * s;
+                return mean_ + standardDeviation_ * u * s;
+            }
+        """
+
     shuffleStack[T](stack: Stack[T]): Unit {
         0.until(stack.size() - 1).each {i =>
-            let j = self.nextInt(stack.size() - i) + i
+            let j = self.nextInt(0, stack.size() - i) + i
             let value = stack.grab(i)
             stack.set(i, stack.grab(j))
             stack.set(j, value)
@@ -81,6 +105,18 @@ extend self: Random {
         let stack = list.toStack()
         self.shuffleStack(list.toStack())
         stack.toList()
+    }
+
+    sampleStack[T](count: Int, stack: Stack[T], body: T => Unit): Unit {
+        self.shuffleArray(stack.toArray()).takeFirst(count).each {body(_)}
+    }
+
+    sampleArray[T](count: Int, array: Array[T]): Array[T] {
+        self.shuffleArray(array).takeFirst(count)
+    }
+    
+    sampleList[T](count: Int, list: List[T]): List[T] {
+        self.shuffleList(list).takeFirst(count)
     }
     
 }

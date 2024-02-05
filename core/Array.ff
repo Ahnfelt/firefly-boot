@@ -53,13 +53,19 @@ extend self[T]: Array[T] {
             return self_[index_]
         """
 
-    first(): Option[T] { self.get(0) }
+    first(): Option[T] {self.get(0)}
 
-    last(): Option[T] { self.get(self.size() - 1) }
+    last(): Option[T] {self.get(self.size() - 1)}
 
-    grabFirst(): T { self.grab(0) }
+    grabFirst(): T {self.grab(0)}
 
-    grabLast(): T { self.grab(self.size() - 1) }
+    grabLast(): T {self.grab(self.size() - 1)}
+
+    takeFirst(count: Int = 1): Array[T]
+        target js sync "return self_.slice(0, count_)"
+
+    takeLast(count: Int = 1): Array[T]
+        target js sync "return self_.slice(-count_)"
 
     dropFirst(count: Int = 1): Array[T]
         target js sync "return self_.slice(count_)"
