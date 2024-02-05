@@ -105,6 +105,10 @@ ff_core_Buffer.Buffer_setFloat64(buffer_, 0, seed_, true);
 return ff_core_Random.seedBuffer_(buffer_)
 }
 
+export function seedInstant_(seed_) {
+return ff_core_Random.seedFloat_(seed_)
+}
+
 export function seedBuffer_(buffer_) {
 
         var n = 0xefc8249d;
@@ -149,6 +153,10 @@ ff_core_Buffer.Buffer_setFloat64(buffer_, 0, seed_, true);
 return ff_core_Random.seedBuffer_(buffer_)
 }
 
+export async function seedInstant_$(seed_, $task) {
+return ff_core_Random.seedFloat_(seed_)
+}
+
 export async function seedBuffer_$(buffer_, $task) {
 throw new Error('Function seedBuffer is missing on this target in async context.');
 }
@@ -169,13 +177,17 @@ export function Random_nextFloat(self_, from_ = 0.0, until_ = 1.0) {
         
 }
 
-export function Random_nextBuffer(self_, buffer_) {
-ff_core_List.List_each(ff_core_Int.Int_until(0, ff_core_Buffer.Buffer_size(buffer_)), ((i_) => {
+export function Random_nextBool(self_) {
+return (ff_core_Random.Random_nextInt(self_, 0, 2) === 0)
+}
+
+export function Random_nextBuffer(self_, buffer_, start_ = 0, stop_ = buffer_.size_()) {
+ff_core_List.List_each(ff_core_Int.Int_until(start_, stop_), ((i_) => {
 ff_core_Buffer.Buffer_setUint8(buffer_, i_, ff_core_Random.Random_nextInt(self_, 0, 256))
 }))
 }
 
-export function Random_gauss(self_, mean_, standardDeviation_) {
+export function Random_nextGauss(self_, mean_, standardDeviation_) {
 
             if(!isNaN(self_.spareGauss)) {
                 const result = self_.spareGauss * standardDeviation_ + mean_;
@@ -238,14 +250,18 @@ export async function Random_nextFloat$(self_, from_ = 0.0, until_ = 1.0, $task)
 throw new Error('Function Random_nextFloat is missing on this target in async context.');
 }
 
-export async function Random_nextBuffer$(self_, buffer_, $task) {
-ff_core_List.List_each(ff_core_Int.Int_until(0, ff_core_Buffer.Buffer_size(buffer_)), ((i_) => {
+export async function Random_nextBool$(self_, $task) {
+return (ff_core_Random.Random_nextInt(self_, 0, 2) === 0)
+}
+
+export async function Random_nextBuffer$(self_, buffer_, start_ = 0, stop_ = buffer_.size_(), $task) {
+ff_core_List.List_each(ff_core_Int.Int_until(start_, stop_), ((i_) => {
 ff_core_Buffer.Buffer_setUint8(buffer_, i_, ff_core_Random.Random_nextInt(self_, 0, 256))
 }))
 }
 
-export async function Random_gauss$(self_, mean_, standardDeviation_, $task) {
-throw new Error('Function Random_gauss is missing on this target in async context.');
+export async function Random_nextGauss$(self_, mean_, standardDeviation_, $task) {
+throw new Error('Function Random_nextGauss is missing on this target in async context.');
 }
 
 export async function Random_shuffleStack$(self_, stack_, $task) {
