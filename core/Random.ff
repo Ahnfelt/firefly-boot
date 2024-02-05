@@ -127,5 +127,17 @@ extend self: Random {
     sampleList[T](count: Int, list: List[T]): List[T] {
         self.shuffleList(list).takeFirst(count)
     }
-    
+
+    pickStack[T](stack: Stack[T]): T {
+        stack.grab(self.nextInt(0, stack.size()))
+    }
+
+    pickArray[T](array: Array[T]): T {
+        array.grab(self.nextInt(0, array.size()))
+    }
+
+    pickList[T](list: Stack[T]): T {
+        list.grab(self.nextInt(0, list.size()))
+    }
+
 }
