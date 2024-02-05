@@ -56,8 +56,8 @@ extend self: Random {
         target js sync """
             return Random_nextFloat(self_, from_, until_) | 0;
         """
-        
-    nextFloat(from: Float = 0.0, until: Float = 1.0): Float
+
+    nextFloat(from: Float, until: Float): Float
         target js sync """
             var t = 2091639 * self_.s0 + self_.c * 2.3283064365386963e-10; // 2^-32
             self_.s0 = self_.s1;
@@ -70,7 +70,7 @@ extend self: Random {
         self.nextInt(0, 2) == 0
     }
 
-    nextBuffer(buffer: Buffer, start: Int = 0, stop: Int = buffer.size()): Unit {
+    nextBuffer(buffer: Buffer, start: Int, stop: Int): Unit {
         start.until(stop).each {i =>
             buffer.setUint8(i, self.nextInt(0, 256))
         }
