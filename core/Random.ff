@@ -128,15 +128,15 @@ extend self: Random {
         self.shuffleList(list).takeFirst(count)
     }
 
-    pickStack[T](stack: Stack[T]): T {
+    grabStack[T](stack: Stack[T]): T {
         stack.grab(self.nextInt(0, stack.size()))
     }
 
-    pickArray[T](array: Array[T]): T {
+    grabArray[T](array: Array[T]): T {
         array.grab(self.nextInt(0, array.size()))
     }
 
-    pickList[T](list: Stack[T]): T {
+    grabList[T](list: Stack[T]): T {
         list.grab(self.nextInt(0, list.size()))
     }
 
