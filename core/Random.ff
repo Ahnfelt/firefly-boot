@@ -51,6 +51,11 @@ seedBuffer(buffer: Buffer): Random
     """
 
 extend self: Random {
+    
+    copy(): Random
+        target js sync """
+            return {...self_}
+        """
 
     nextInt(from: Int, until: Int): Int
         target js sync """
