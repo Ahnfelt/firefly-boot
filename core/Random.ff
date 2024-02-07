@@ -54,7 +54,7 @@ extend self: Random {
     
     copy(): Random
         target js sync """
-            return {...self_}
+            return {...self_};
         """
 
     nextInt(from: Int, until: Int): Int
