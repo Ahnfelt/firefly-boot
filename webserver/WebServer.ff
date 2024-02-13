@@ -1,0 +1,42 @@
+capability WebRequest {}
+
+listen(system: NodeSystem, host: String, port: Int, handler: WebRequest => Unit): Unit
+    target node async """
+        import * as uws from 'uWebSockets.js'
+        uws.App().any('/*', (res, req) => {
+            const webRequest = {res, req, routed: false}
+            const promise = handler_(webRequest)
+            console.dir(promise)
+        }).listen(host_, port_, listenSocket => {
+            if(listenSocket) {
+                console.log('Listening to port ' + port_);
+            }
+        });
+    """
+
+nodeMain(system: NodeSystem) {
+    listen(system, "localhost", 8080) {request =>
+        request.writeStatus("200 OK")
+        request.writeHeader("IsExample", "Oh Yes")
+        request.end("Hello!")
+    }
+}
+
+extend self: WebRequest {
+    
+    writeStatus(codeAndMessage: String)
+        target js async """
+            self_.res.writeStatus(codeAndMessage_)
+        """
+    
+    writeHeader(name: String, value: String)
+        target js async """
+            self_.res.writeHeader(name_, value_)
+        """
+
+    end(data: String)
+        target js async """
+            self_.res.end(data_)
+        """
+
+}
