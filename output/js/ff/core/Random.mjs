@@ -161,6 +161,12 @@ export async function seedBuffer_$(buffer_, $task) {
 throw new Error('Function seedBuffer is missing on this target in async context.');
 }
 
+export function Random_copy(self_) {
+
+            return {...self_};
+        
+}
+
 export function Random_nextInt(self_, from_, until_) {
 
             return Random_nextFloat(self_, from_, until_) | 0;
@@ -181,7 +187,7 @@ export function Random_nextBool(self_) {
 return (ff_core_Random.Random_nextInt(self_, 0, 2) === 0)
 }
 
-export function Random_nextBuffer(self_, buffer_, start_, stop_) {
+export function Random_nextBytes(self_, buffer_, start_, stop_) {
 ff_core_List.List_each(ff_core_Int.Int_until(start_, stop_), ((i_) => {
 ff_core_Buffer.Buffer_setUint8(buffer_, i_, ff_core_Random.Random_nextInt(self_, 0, 256))
 }))
@@ -242,6 +248,22 @@ export function Random_sampleList(self_, count_, list_) {
 return ff_core_List.List_takeFirst(ff_core_Random.Random_shuffleList(self_, list_), count_)
 }
 
+export function Random_grabStack(self_, stack_) {
+return ff_core_Stack.Stack_grab(stack_, ff_core_Random.Random_nextInt(self_, 0, ff_core_Stack.Stack_size(stack_)))
+}
+
+export function Random_grabArray(self_, array_) {
+return ff_core_Array.Array_grab(array_, ff_core_Random.Random_nextInt(self_, 0, ff_core_Array.Array_size(array_)))
+}
+
+export function Random_grabList(self_, list_) {
+return ff_core_Stack.Stack_grab(list_, ff_core_Random.Random_nextInt(self_, 0, ff_core_Stack.Stack_size(list_)))
+}
+
+export async function Random_copy$(self_, $task) {
+throw new Error('Function Random_copy is missing on this target in async context.');
+}
+
 export async function Random_nextInt$(self_, from_, until_, $task) {
 throw new Error('Function Random_nextInt is missing on this target in async context.');
 }
@@ -254,7 +276,7 @@ export async function Random_nextBool$(self_, $task) {
 return (ff_core_Random.Random_nextInt(self_, 0, 2) === 0)
 }
 
-export async function Random_nextBuffer$(self_, buffer_, start_, stop_, $task) {
+export async function Random_nextBytes$(self_, buffer_, start_, stop_, $task) {
 ff_core_List.List_each(ff_core_Int.Int_until(start_, stop_), ((i_) => {
 ff_core_Buffer.Buffer_setUint8(buffer_, i_, ff_core_Random.Random_nextInt(self_, 0, 256))
 }))
@@ -297,6 +319,18 @@ return ff_core_Array.Array_takeFirst(ff_core_Random.Random_shuffleArray(self_, a
 
 export async function Random_sampleList$(self_, count_, list_, $task) {
 return ff_core_List.List_takeFirst(ff_core_Random.Random_shuffleList(self_, list_), count_)
+}
+
+export async function Random_grabStack$(self_, stack_, $task) {
+return ff_core_Stack.Stack_grab(stack_, ff_core_Random.Random_nextInt(self_, 0, ff_core_Stack.Stack_size(stack_)))
+}
+
+export async function Random_grabArray$(self_, array_, $task) {
+return ff_core_Array.Array_grab(array_, ff_core_Random.Random_nextInt(self_, 0, ff_core_Array.Array_size(array_)))
+}
+
+export async function Random_grabList$(self_, list_, $task) {
+return ff_core_Stack.Stack_grab(list_, ff_core_Random.Random_nextInt(self_, 0, ff_core_Stack.Stack_size(list_)))
 }
 
 
