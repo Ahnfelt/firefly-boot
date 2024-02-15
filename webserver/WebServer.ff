@@ -1,12 +1,44 @@
-capability WebRequest {}
+class WebRequest[T](
+    internalMethod: String
+    internalUrl: String
+    internalHeaders: StringMap[String]
+    internalJsResponse: JsValue
+    internalResponse: T
+    internalResponseHeaders: StringMap[String]
+    internalResponseChunks: Stack[JsValue]
+    mutable internalResponseSize: Int
+    mutable internalResponseStatus: String
+    mutable internalResponseChunked: Bool
+    mutable internalCloseConnection: Bool
+)
 
-listen(system: NodeSystem, host: String, port: Int, handler: WebRequest => Unit): Unit
+capability WebResponse(
+    internalRequestBody: Stream[Buffer]
+)
+
+listen(system: NodeSystem, host: String, port: Int, handler: WebRequest[WebResponse] => Unit): Unit
     target node async """
         import * as uws from 'uWebSockets.js'
         uws.App().any('/*', (res, req) => {
-            const webRequest = {res, req, routed: false}
-            const promise = handler_(webRequest)
-            console.dir(promise)
+            const task = $task; // TODO
+            const body = internalBody_(res, task);
+            const method = req.getMethod();
+            const url = req.getUrl();
+            const headers = new Map();
+            req.forEach((key, value) => headers.set(key, value));
+            const chunks = internalStack_();
+            const webResponse = WebResponse(body);
+            const webRequest = WebRequest(
+                method, url, headers, 
+                res, webResponse, 
+                new Map(), internalStack_(), 
+                0, "200 OK", false, false
+            );
+            const handle = async () => {
+                await handler_(webRequest, task);
+                // TODO
+            };
+            handle();
         }).listen(host_, port_, listenSocket => {
             if(listenSocket) {
                 console.log('Listening to port ' + port_);
@@ -18,25 +50,85 @@ nodeMain(system: NodeSystem) {
     listen(system, "localhost", 8080) {request =>
         request.writeStatus("200 OK")
         request.writeHeader("IsExample", "Oh Yes")
-        request.end("Hello!")
+        request.writeText("Hello!")
     }
 }
 
-extend self: WebRequest {
-    
-    writeStatus(codeAndMessage: String)
-        target js async """
-            self_.res.writeStatus(codeAndMessage_)
-        """
-    
-    writeHeader(name: String, value: String)
-        target js async """
-            self_.res.writeHeader(name_, value_)
-        """
+extend self[T]: WebRequest[T] {
 
-    end(data: String)
-        target js async """
-            self_.res.end(data_)
-        """
+    readMethod(): String {
+        self.internalMethod
+    }
+
+    readRelativeUrl(): String {
+        self.internalUrl
+    }
+    
+    readHeader(lowerCaseName: String): Option[String] {
+        self.internalHeaders.get(lowerCaseName)
+    }
+    
+    eachHeader(body: (String, String) => Unit) {
+        self.internalHeaders.each {body(_, _)}
+    }
+    
+}
+
+extend self[T]: WebRequest[T] {
+    
+    writeStatus(codeAndMessage: String) {
+        self.internalResponseStatus = codeAndMessage
+    }
+    
+    writeHeader(lowerCaseName: String, value: String) {
+        self.internalResponseHeaders.set(lowerCaseName, value)
+    }
+
+    writeText(data: String) {
+        self.internalResponseChunks.push(internalTextChunk(data))
+    }
+
+    writeBuffer(data: Buffer) {
+        self.internalResponseChunks.push(internalBufferChunk(data))
+    }
+    
+    writeStream(data: Stream[Buffer]) {
+        data.each {self.writeBuffer(_)}
+    }
 
 }
+
+extend self[T]: WebRequest[T] {
+    
+    closeConnection() {
+        self.internalCloseConnection = True
+    }
+
+}
+
+extend self: WebRequest[WebResponse] {
+    
+    flush()
+        target js async """
+            // TODO
+        """
+    
+}
+
+internalBody(jsResponse: JsValue): Stream[Buffer] {
+    Stream {None} {} // TODO
+}
+
+internalStack[T](): Stack[T] {
+    Stack.make()
+}
+
+internalTextChunk(data: String): JsValue
+    target js sync """
+        return data
+    """
+    
+internalBufferChunk(data: Buffer): JsValue
+    target js sync """
+        return data.buffer; // TODO: Copy if byteOffset != 0 || byteLength != buffer.length
+    """
