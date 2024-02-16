@@ -8,7 +8,6 @@ class WebRequest[T](
     internalResponseChunks: Stack[JsValue]
     mutable internalResponseSize: Int
     mutable internalResponseStatus: String
-    mutable internalResponseChunked: Bool
     mutable internalCloseConnection: Bool
 )
 
@@ -19,26 +18,28 @@ capability WebResponse(
 listen(system: NodeSystem, host: String, port: Int, handler: WebRequest[WebResponse] => Unit): Unit
     target node async """
         import * as uws from 'uWebSockets.js'
+        ff_core_Task.Task_throwIfAborted($task);
         uws.App().any('/*', (res, req) => {
-            const task = $task; // TODO
-            const body = internalBody_(res, task);
-            const method = req.getMethod();
-            const url = req.getUrl();
-            const headers = new Map();
-            req.forEach((key, value) => headers.set(key, value));
-            const chunks = internalStack_();
-            const webResponse = WebResponse(body);
-            const webRequest = WebRequest(
-                method, url, headers, 
-                res, webResponse, 
-                new Map(), internalStack_(), 
-                0, "200 OK", false, false
-            );
-            const handle = async () => {
-                await handler_(webRequest, task);
-                // TODO
-            };
-            handle();
+            ff_core_Task.Task_spawn($task, async task => {
+                try {
+                    const body = internalBody_(res, task);
+                    const method = req.getMethod();
+                    const url = req.getUrl();
+                    const headers = new Map();
+                    req.forEach((key, value) => headers.set(key, value));
+                    const chunks = internalStack_();
+                    const webResponse = WebResponse(body);
+                    const webRequest = WebRequest(
+                        method, url, headers, 
+                        res, webResponse, 
+                        new Map(), internalStack_(), 
+                        0, "200 OK", false
+                    );
+                    await handler_(webRequest, task);
+                } catch(e) {
+                    
+                }
+            });
         }).listen(host_, port_, listenSocket => {
             if(listenSocket) {
                 console.log('Listening to port ' + port_);
@@ -48,7 +49,6 @@ listen(system: NodeSystem, host: String, port: Int, handler: WebRequest[WebRespo
 
 nodeMain(system: NodeSystem) {
     listen(system, "localhost", 8080) {request =>
-        request.writeStatus("200 OK")
         request.writeHeader("IsExample", "Oh Yes")
         request.writeText("Hello!")
     }
@@ -63,7 +63,15 @@ extend self[T]: WebRequest[T] {
     readRelativeUrl(): String {
         self.internalUrl
     }
-    
+
+    readPath(): String {
+        self.internalUrl.takeWhile {_ != '?'}
+    }
+
+    readQueryString(): String {
+        self.internalUrl.dropWhile {_ != '?'}
+    }
+
     readHeader(lowerCaseName: String): Option[String] {
         self.internalHeaders.get(lowerCaseName)
     }
@@ -80,8 +88,8 @@ extend self[T]: WebRequest[T] {
         self.internalResponseStatus = codeAndMessage
     }
     
-    writeHeader(lowerCaseName: String, value: String) {
-        self.internalResponseHeaders.set(lowerCaseName, value)
+    writeHeader(name: String, value: String) {
+        self.internalResponseHeaders.set(name, value)
     }
 
     writeText(data: String) {
@@ -112,6 +120,29 @@ extend self: WebRequest[WebResponse] {
         target js async """
             // TODO
         """
+
+    flushText(data: String) {
+        self.writeText(data)
+        self.flush()
+    }
+
+    flushBuffer(data: Buffer) {
+        self.writeBuffer(data)
+        self.flush()
+    }
+
+    flushStream(data: Stream[Buffer]) {
+        self.writeStream(data)
+        self.flush()
+    }
+
+}
+
+extend self: WebRequest[WebResponse] {
+    
+    readBody(): Stream[Buffer] {
+        self.internalResponse.internalRequestBody
+    }
     
 }
 
