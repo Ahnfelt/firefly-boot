@@ -172,8 +172,7 @@ extend self: WebRequest[WebResponse] {
     }
 
     flushStream(data: Stream[Buffer]) {
-        self.writeStream(data)
-        self.flush()
+        data.each {self.flushBuffer(_)}
     }
 
 }
