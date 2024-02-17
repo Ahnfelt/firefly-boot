@@ -179,7 +179,15 @@ extend self: WebRequest[WebResponse] {
 
 extend self: WebRequest[WebResponse] {
     
-    readBody(): Stream[Buffer] {
+    readText(encoding: String = "utf8", maxPendingBytes: Int = 4096): String {
+        self.readStream(maxPendingBytes).toString(encoding)
+    }
+    
+    readBuffer(maxPendingBytes: Int = 4096): Buffer {
+        self.readStream(maxPendingBytes).toBuffer()
+    }
+    
+    readStream(maxPendingBytes: Int = 4096): Stream[Buffer] {
         self.internalResponse.internalRequestBody
     }
     
