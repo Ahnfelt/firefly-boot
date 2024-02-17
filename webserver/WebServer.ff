@@ -1,6 +1,7 @@
 class WebRequest[T](
     internalMethod: String
-    internalUrl: String
+    internalPath: String
+    internalQuery: String
     internalHeaders: StringMap[String]
     internalJsResponse: JsValue
     internalResponse: T
@@ -25,13 +26,14 @@ listen(system: NodeSystem, host: String, port: Int, handler: WebRequest[WebRespo
                     ff_core_Task.Task_throwIfAborted(task);
                     const body = internalBody_(res, task);
                     const method = req.getMethod();
-                    const url = req.getUrl();
+                    const path = req.getUrl();
+                    const query = req.getQuery();
                     const headers = new Map();
                     req.forEach((key, value) => headers.set(key, value));
                     const chunks = internalStack_();
                     const webResponse = WebResponse(body);
                     const webRequest = WebRequest(
-                        method, url, headers, 
+                        method, path, query, headers, 
                         res, webResponse, 
                         new Map(), internalStack_(), 
                         "200 OK", false
@@ -80,7 +82,8 @@ listen(system: NodeSystem, host: String, port: Int, handler: WebRequest[WebRespo
 
 nodeMain(system: NodeSystem) {
     listen(system, "localhost", 8080) {request =>
-        request.writeHeader("IsExample", "Oh Yes")
+        if(request.readPath() != "/") {request.writeStatus("404 Not Found")} else:
+        request.writeHeader("IsExample", request.readQuery("foo").else {"None"})
         request.writeText("Hello!")
     }
 }
@@ -91,27 +94,22 @@ extend self[T]: WebRequest[T] {
         self.internalMethod
     }
 
-    readRelativeUrl(): String {
-        self.internalUrl
-    }
-
     readPath(): String {
-        self.internalUrl.takeWhile {_ != '?'}
+        self.internalPath
     }
 
     readRawQueryString(): String {
-        self.internalUrl.dropWhile {_ != '?'}
+        self.internalQuery
     }
 
     readQuery(name: String): Option[String]
-        target node async """
-            let i = self_.url.indexOf('?')
-            if(i === -1) return ff_core_Option.None()
-            let ps = self_.url.slice(i + 1).split('&')
-            let n = name_ + '='
-            let r = ps.find(p => p === name_ || p.startsWith(n))
-            if(r == null) return ff_core_Option.None()
-            return ff_core_Option.Some(decodeURIComponent(r.slice(name_.length + 1)))
+        target node sync """
+            if(self_.internalQuery_.length === 0) return ff_core_Option.None();
+            const ps = self_.internalQuery_.split('&');
+            const n = name_ + '=';
+            const r = ps.find(p => p === name_ || p.startsWith(n));
+            if(r == null) return ff_core_Option.None();
+            return ff_core_Option.Some(decodeURIComponent(r.slice(name_.length + 1)));
         """
     
     readHeader(lowerCaseName: String): Option[String] {
