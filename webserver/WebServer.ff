@@ -99,10 +99,21 @@ extend self[T]: WebRequest[T] {
         self.internalUrl.takeWhile {_ != '?'}
     }
 
-    readQueryString(): String {
+    readRawQueryString(): String {
         self.internalUrl.dropWhile {_ != '?'}
     }
 
+    readQuery(name: String): Option[String]
+        target node async """
+            let i = self_.url.indexOf('?')
+            if(i === -1) return ff_core_Option.None()
+            let ps = self_.url.slice(i + 1).split('&')
+            let n = name_ + '='
+            let r = ps.find(p => p === name_ || p.startsWith(n))
+            if(r == null) return ff_core_Option.None()
+            return ff_core_Option.Some(decodeURIComponent(r.slice(name_.length + 1)))
+        """
+    
     readHeader(lowerCaseName: String): Option[String] {
         self.internalHeaders.get(lowerCaseName)
     }
