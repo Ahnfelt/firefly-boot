@@ -6,7 +6,6 @@ class WebRequest[T](
     internalResponse: T
     internalResponseHeaders: StringMap[String]
     internalResponseChunks: Stack[JsValue]
-    mutable internalResponseSize: Int
     mutable internalResponseStatus: String
     mutable internalCloseConnection: Bool
 )
@@ -20,8 +19,9 @@ listen(system: NodeSystem, host: String, port: Int, handler: WebRequest[WebRespo
         import * as uws from 'uWebSockets.js'
         ff_core_Task.Task_throwIfAborted($task);
         uws.App().any('/*', (res, req) => {
-            ff_core_Task.Task_spawn($task, async task => {
+            const task = ff_core_Task.Task_spawn($task, async task => {
                 try {
+                    ff_core_Task.Task_throwIfAborted(task);
                     const body = internalBody_(res, task);
                     const method = req.getMethod();
                     const url = req.getUrl();
@@ -36,10 +36,30 @@ listen(system: NodeSystem, host: String, port: Int, handler: WebRequest[WebRespo
                         0, "200 OK", false
                     );
                     await handler_(webRequest, task);
+                    ff_core_Task.Task_throwIfAborted(task);
+                    await new Promise((resolve, reject) => {
+                        res.cork(() => {
+                            try {
+                                ff_core_Task.Task_throwIfAborted(task);
+                                res.writeStatus(webRequest.internalResponseStatus_);
+                                webRequest.internalResponseHeaders_.forEach((value, key) => res.writeHeader(key, value));
+                                const chunk = internalChunksToChunk_(webRequest.internalResponseChunks_);
+                                res.end(chunk, webRequest.internalCloseConnection_);
+                                resolve();
+                            } catch(e) {
+                                reject(e);
+                            }
+                        });
+                    });
                 } catch(e) {
-                    
+                    console.error(e);
+                    res.cork(() => {
+                        res.writeStatus("500 Internal Server Error");
+                        res.end();
+                    });
                 }
             });
+            res.onAborted(() => ff_core_Task.Task_abort(task));
         }).listen(host_, port_, listenSocket => {
             if(listenSocket) {
                 console.log('Listening to port ' + port_);
@@ -161,5 +181,40 @@ internalTextChunk(data: String): JsValue
     
 internalBufferChunk(data: Buffer): JsValue
     target js sync """
-        return data.buffer; // TODO: Copy if byteOffset != 0 || byteLength != buffer.length
+        return data;
+    """
+
+internalChunksToChunk(chunks: Stack[JsValue]): JsValue
+    target js sync """
+        const chunks = chunks_.array;
+        if(chunks.length === 0) return;
+        const firstIsString = typeof chunks[0] === 'string';
+        if(firstIsString && chunks.length === 1) return chunks[0];
+        if(firstIsString && chunks.every(c => typeof c === 'string')) {
+            let result = chunks[0];
+            for(let i = 1; i < chunks.length; i++) {
+                result += chunks[i];
+            }
+            return result;
+        }
+        let totalLength = 0;
+        for(let i = 0; i < chunks.length; i++) {
+            if(typeof chunks[i] === 'string') chunks[i] = new TextEncoder().encode(chunks[i]);
+            totalLength += chunks[i].byteLength;
+        }
+        const result = new Uint8Array(totalLength);
+        let offset = 0;
+        for(let i = 0; i < chunks.length; i++) {
+            let chunk = chunks[i];
+            if(chunk.buffer) {
+                if(chunk.byteLength !== chunk.buffer.byteLength) {
+                    chunk = chunk.buffer.subarray(chunk.byteOffset, chunk.byteOffset + chunk.byteLength);
+                } else {
+                    chunk = chunk.buffer;
+                }
+            }
+            result.set(chunk, offset);
+            offset += chunk.byteLength;
+        }
+        return result;
     """
