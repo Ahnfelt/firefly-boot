@@ -18,7 +18,8 @@ listen(system: NodeSystem, host: String, port: Int, handler: WebRequest[WebRespo
     target node async """
         import * as uws from 'uWebSockets.js'
         ff_core_Task.Task_throwIfAborted($task);
-        uws.App().any('/*', (res, req) => {
+        await new Promise((resolveServer, rejectServer) => uws.App().any('/*', (res, req) => {
+            let abortedByUws = false;
             const task = ff_core_Task.Task_spawn($task, async task => {
                 try {
                     ff_core_Task.Task_throwIfAborted(task);
@@ -33,7 +34,7 @@ listen(system: NodeSystem, host: String, port: Int, handler: WebRequest[WebRespo
                         method, url, headers, 
                         res, webResponse, 
                         new Map(), internalStack_(), 
-                        0, "200 OK", false
+                        "200 OK", false
                     );
                     await handler_(webRequest, task);
                     ff_core_Task.Task_throwIfAborted(task);
@@ -52,19 +53,29 @@ listen(system: NodeSystem, host: String, port: Int, handler: WebRequest[WebRespo
                         });
                     });
                 } catch(e) {
-                    console.error(e);
-                    res.cork(() => {
-                        res.writeStatus("500 Internal Server Error");
-                        res.end();
+                    if(!abortedByUws) console.error(e);
+                    if(!abortedByUws) res.cork(() => {
+                        if(!abortedByUws) res.writeStatus("500 Internal Server Error");
+                        if(!abortedByUws) res.end();
                     });
                 }
             });
-            res.onAborted(() => ff_core_Task.Task_abort(task));
+            res.onAborted(() => {
+                abortedByUws = true; 
+                ff_core_Task.Task_abort(task);
+            });
         }).listen(host_, port_, listenSocket => {
             if(listenSocket) {
                 console.log('Listening to port ' + port_);
+                const abort = () => {
+                    $task.controller.signal.removeEventListener(abort);
+                    uws.us_listen_socket_close(listenSocket);
+                }
+                $task.controller.signal.addEventListener('abort', abort);
+            } else {
+                rejectServer();
             }
-        });
+        }));
     """
 
 nodeMain(system: NodeSystem) {
@@ -176,12 +187,12 @@ internalStack[T](): Stack[T] {
 
 internalTextChunk(data: String): JsValue
     target js sync """
-        return data
+        return data_;
     """
     
 internalBufferChunk(data: Buffer): JsValue
     target js sync """
-        return data;
+        return data_;
     """
 
 internalChunksToChunk(chunks: Stack[JsValue]): JsValue
