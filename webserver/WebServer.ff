@@ -25,7 +25,7 @@ listen(system: NodeSystem, host: String, port: Int, handler: WebRequest[WebRespo
                     const body = internalBody_(res, task);
                     const method = req.getMethod();
                     const path = req.getUrl();
-                    const query = req.getQuery();
+                    const query = req.getQuery() || '';
                     const headers = new Map();
                     req.forEach((key, value) => headers.set(key, value));
                     const chunks = internalStack_();
