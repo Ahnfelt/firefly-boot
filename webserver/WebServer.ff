@@ -14,6 +14,8 @@ class WebRequest[T](
 
 capability WebResponse {}
 
+data MultipartField {}
+
 listen(system: NodeSystem, host: String, port: Int, handler: WebRequest[WebResponse] => Unit): Unit
     target node async """
         import * as uws from 'uWebSockets.js'
@@ -334,3 +336,33 @@ internalChunksToChunk(chunks: Stack[JsValue]): JsValue
         }
         return result;
     """
+
+parseMultipartFields(data: Buffer, contentType: String): Option[Array[MultipartField]]
+    target js sync """
+        const parts = getParts(data_, contentType_);
+        return parts == null ? ff_core_Option.None() : ff_core_Option.Some(parts);
+    """
+
+extend self: MultipartField {
+    
+    data(): Buffer
+        target js sync """
+            return new DataView(self_.data);
+        """
+
+    name(): String
+        target js sync """
+            return self_.name;
+        """
+
+    type(): Option[String]
+        target js sync """
+            return self_.type == null ? ff_core_Option.None() : ff_core_Option.Some(self_.type);
+        """
+
+    filename(): Option[String]
+        target js sync """
+            return self_.filename == null ? ff_core_Option.None() : ff_core_Option.Some(self_.filename);
+        """
+
+}
