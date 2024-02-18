@@ -11,9 +11,7 @@ class WebRequest[T](
     mutable internalCloseConnection: Bool
 )
 
-capability WebResponse(
-    internalRequestBody: Stream[Buffer]
-)
+capability WebResponse {}
 
 listen(system: NodeSystem, host: String, port: Int, handler: WebRequest[WebResponse] => Unit): Unit
     target node async """
@@ -31,10 +29,9 @@ listen(system: NodeSystem, host: String, port: Int, handler: WebRequest[WebRespo
                     const headers = new Map();
                     req.forEach((key, value) => headers.set(key, value));
                     const chunks = internalStack_();
-                    const webResponse = WebResponse(body);
                     const webRequest = WebRequest(
                         method, path, query, headers, 
-                        res, webResponse, 
+                        res, null, 
                         new Map(), internalStack_(), 
                         "200 OK", false
                     );
@@ -179,17 +176,68 @@ extend self: WebRequest[WebResponse] {
 
 extend self: WebRequest[WebResponse] {
     
-    readText(encoding: String = "utf8", maxPendingBytes: Int = 4096): String {
-        self.readStream(maxPendingBytes).toString(encoding)
+    readText(encoding: String = "utf8"): String {
+        self.readStream(1073741823).toString(encoding)
     }
     
-    readBuffer(maxPendingBytes: Int = 4096): Buffer {
-        self.readStream(maxPendingBytes).toBuffer()
+    readBuffer(): Buffer {
+        self.readStream(1073741823).toBuffer()
     }
     
-    readStream(maxPendingBytes: Int = 4096): Stream[Buffer] {
-        self.internalResponse.internalRequestBody
-    }
+    readStream(maxPendingBytes: Int = 65536): Stream[Buffer]
+        target js async """
+            const front = [];
+            const back = [];
+            let pendingBytes = 0
+            let closed = false;
+            let callResolve = null;
+            let callReject = null;
+            self_.internalJsResponse_.onData((chunk, isLast) => {
+                if(closed) return;
+                if(isLast) closed = true; 
+                else chunk = cunk.slice();
+                pendingBytes += chunk.byteLength;
+                back.push(new DataView(chunk));
+                if(pendingBytes >= maxPendingBytes) self_.internalJsResponse_.pause();
+                if(callResolve) callResolve();
+            });
+            const abort = () => {
+                $task.controller.signal.removeEventListener(abort);
+                if(callReject) callReject();
+            }
+            $task.controller.signal.addEventListener('abort', abort);
+            return ff_core_Stream.Stream(
+                async () => {
+                    while(true) {
+                        ff_core_Task.Task_throwIfAborted($task);
+                        if(front.length === 0) {
+                            while(back.length !== 0) font.push(back.pop());
+                        }
+                        if(front.length !== 0) {
+                            const chunk = front.pop();
+                            const paused = pendingBytes >= maxPendingBytes;
+                            pendingBytes -= chunk.byteLength;
+                            if(!closed && paused && pendingBytes < maxPendingBytes) self_.internalJsResponse_.unpause();
+                            return ff_core_Option.Some(chunk);
+                        } else if(closed) {
+                            return ff_core_Option.None();
+                        } else {
+                            await new Promise((resolve, reject) => {
+                                callResolve = resolve;
+                                callReject = reject;
+                            });
+                            callResolve = null;
+                            callReject = null;
+                        }
+                    }
+                },
+                async () => {
+                    closed = true;
+                    ff_core_Task.Task_throwIfAborted($task);
+                    if(callResolve) callResolve();
+                }
+            )
+        """
     
 }
 
