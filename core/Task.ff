@@ -46,6 +46,9 @@ extend self: Task {
         target js async """
             self_.controller.abort()
         """
+        target js sync """
+            self_.controller.abort()
+        """
 
     // Create a blocking channel with the specified capacity. The channel is not tied to the task.
     channel[T](capacity: Int = 0): Channel[T]

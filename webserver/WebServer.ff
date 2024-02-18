@@ -9,6 +9,7 @@ class WebRequest[T](
     internalResponseChunks: Stack[JsValue]
     mutable internalResponseStatus: String
     mutable internalCloseConnection: Bool
+    mutable internalResolveFlush: JsValue
 )
 
 capability WebResponse {}
@@ -33,7 +34,7 @@ listen(system: NodeSystem, host: String, port: Int, handler: WebRequest[WebRespo
                         method, path, query, headers, 
                         res, null, 
                         new Map(), internalStack_(), 
-                        "200 OK", false
+                        "200 OK", false, null
                     );
                     await handler_(webRequest, task);
                     ff_core_Task.Task_throwIfAborted(task);
@@ -41,8 +42,10 @@ listen(system: NodeSystem, host: String, port: Int, handler: WebRequest[WebRespo
                         res.cork(() => {
                             try {
                                 ff_core_Task.Task_throwIfAborted(task);
-                                res.writeStatus(webRequest.internalResponseStatus_);
-                                webRequest.internalResponseHeaders_.forEach((value, key) => res.writeHeader(key, value));
+                                if(!webRequest.internalResolveFlush_) {
+                                    res.writeStatus(webRequest.internalResponseStatus_);
+                                    webRequest.internalResponseHeaders_.forEach((value, key) => res.writeHeader(key, value));
+                                }
                                 const chunk = internalChunksToChunk_(webRequest.internalResponseChunks_);
                                 res.end(chunk, webRequest.internalCloseConnection_);
                                 resolve();
@@ -81,7 +84,9 @@ nodeMain(system: NodeSystem) {
     listen(system, "localhost", 8080) {request =>
         if(request.readPath() != "/") {request.writeStatus("404 Not Found")} else:
         request.writeHeader("IsExample", request.readQuery("foo").else {"None"})
-        request.writeText("Hello!")
+        request.writeText("Hello ")
+        request.flush()
+        request.writeText(" world!")
     }
 }
 
@@ -162,10 +167,36 @@ extend self[T]: WebRequest[T] {
 }
 
 extend self: WebRequest[WebResponse] {
-    
+
     flush()
         target js async """
-            // TODO
+            if(!self_.internalResolveFlush_) {
+                self_.internalJsResponse_.cork(() => {
+                    self_.internalJsResponse_.writeStatus(self_.internalResponseStatus_);
+                    self_.internalResponseHeaders_.forEach((value, key) => 
+                        self_.internalJsResponse_.writeHeader(key, value)
+                    );
+                    self_.internalResolveFlush_ = () => {};
+                    self_.internalJsResponse_.onWritable(() => {
+                        self_.internalResolveFlush_();
+                        return true;
+                    });
+                });
+            }
+            const chunk = internalChunksToChunk_(self_.internalResponseChunks_);
+            self_.internalResponseChunks_.array = [];
+            if(chunk && (chunk.byteLength || chunk.length)) {
+                await new Promise((resolve, reject) => {
+                    self_.internalJsResponse_.cork(() => {
+                        console.dir(chunk);
+                        if(self_.internalJsResponse_.write(chunk)) {
+                            resolve();
+                        } else {
+                            self_.internalResolveFlush_ = resolve;
+                        }
+                    });
+                });
+            }
         """
 
     flushText(data: String) {
