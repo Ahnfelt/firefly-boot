@@ -148,6 +148,16 @@ extend self[T]: WebRequest[T] {
     closeConnection() {
         self.internalCloseConnection = True
     }
+    
+    readRemoteAddress(): String
+        target js sync """
+            return new TextDecoder().decode(self_.internalJsResponse_.getRemoteAddressAsText())
+        """
+
+    readProxiedRemoteAddress(): String
+        target js sync """
+            return new TextDecoder().decode(self_.internalJsResponse_.getProxiedRemoteAddressAsText())
+        """
 
 }
 
