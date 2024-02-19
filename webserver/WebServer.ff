@@ -72,7 +72,6 @@ listen(system: NodeSystem, host: String, port: Int, handler: WebRequest[WebRespo
             });
         }).listen(host_, port_, listenSocket => {
             if(listenSocket) {
-                console.log('Listening to port ' + port_);
                 const abort = () => {
                     $task.controller.signal.removeEventListener('abort', abort);
                     uws.us_listen_socket_close(listenSocket);
@@ -212,7 +211,6 @@ extend self: WebRequest[WebResponse] {
                                 }
                             }
                         }
-                        console.log(backpressure);
                         if(backpressure && self_.internalContentSize_ >= 0) i -= 1;
                         if(i > 0) self_.internalResponseChunks_.array = self_.internalResponseChunks_.array.slice(i);
                         if(!backpressure) {
