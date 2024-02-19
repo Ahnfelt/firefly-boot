@@ -139,7 +139,9 @@ extend self[T]: WebRequest[T] {
     }
     
     writeContentSize(contentSize: Int) {
-        self.internalContentSize = contentSize
+        if(contentSize >= 0 && self.internalContentSize < 0) {
+            self.internalContentSize = contentSize
+        }
     }
 
     writeText(data: String) {
