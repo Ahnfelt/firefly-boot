@@ -86,9 +86,9 @@ nodeMain(system: NodeSystem) {
     listen(system, "localhost", 8080) {request =>
         if(request.readPath() != "/") {request.writeStatus("404 Not Found")} else:
         request.writeHeader("IsExample", request.readQuery("foo").else {"None"})
-        request.writeText("Hello ")
+        1.to(500000).each {_ => request.writeText("Hello ")}
         request.flush()
-        request.writeText(" world!")
+        request.writeText("world!")
     }
 }
 
@@ -173,24 +173,34 @@ extend self: WebRequest[WebResponse] {
     flush()
         target js async """
             if(!self_.internalResolveFlush_) {
+                self_.internalResolveFlush_ = () => {};
                 self_.internalJsResponse_.cork(() => {
                     self_.internalJsResponse_.writeStatus(self_.internalResponseStatus_);
-                    self_.internalResponseHeaders_.forEach((value, key) => 
+                    self_.internalResponseHeaders_.forEach((value, key) =>
                         self_.internalJsResponse_.writeHeader(key, value)
                     );
-                    self_.internalResolveFlush_ = () => {};
                     self_.internalJsResponse_.onWritable(() => {
                         self_.internalResolveFlush_();
                         return true;
                     });
                 });
             }
-            const chunk = internalChunksToChunk_(self_.internalResponseChunks_);
-            self_.internalResponseChunks_.array = [];
-            if(chunk && (chunk.byteLength || chunk.length)) {
+            while(self_.internalResponseChunks_.array.length !== 0) {
                 await new Promise((resolve, reject) => {
                     self_.internalJsResponse_.cork(() => {
-                        if(self_.internalJsResponse_.write(chunk)) {
+                        let backpressure = false;
+                        let i = 0;
+                        for(i = 0; i < self_.internalResponseChunks_.array.length && !backpressure; i++) {
+                            let chunk = self_.internalResponseChunks_.array[i];
+                            if(chunk && (chunk.byteLength || chunk.length)) {
+                                if(typeof chunk !== 'string' && chunk.byteLength !== chunk.buffer.byteLength) {
+                                    chunk = chunk.buffer.subarray(chunk.byteOffset, chunk.byteOffset + chunk.byteLength);
+                                }
+                                backpressure = !self_.internalJsResponse_.write(chunk);
+                            }
+                        }
+                        self_.internalResponseChunks_.array = self_.internalResponseChunks_.array.slice(i);
+                        if(!backpressure) {
                             resolve();
                         } else {
                             self_.internalResolveFlush_ = resolve;
