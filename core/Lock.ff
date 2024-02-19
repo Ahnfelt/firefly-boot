@@ -76,7 +76,7 @@ extend self: LockCondition {
             }
             const level = self_.lock.level
             self_.lock.level = 1
-            await ff_core.Lock_release$(self_.lock)
+            await ff_core_Lock.Lock_release$(self_.lock)
             try {
                 await new Promise((resolve, reject) => {
                     $task.controller.signal.addEventListener('abort', reject)
@@ -92,7 +92,7 @@ extend self: LockCondition {
                 let acquired = false
                 while(!acquired) {
                     try {
-                        await ff_core.Lock_acquire$(self_.lock)
+                        await ff_core_Lock.Lock_acquire$(self_.lock)
                         self_.lock.level = level
                         acquired = true
                     } catch(e) {
