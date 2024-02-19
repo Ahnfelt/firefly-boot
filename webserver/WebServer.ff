@@ -250,7 +250,7 @@ extend self: WebRequest[WebResponse] {
                 else chunk = cunk.slice();
                 pendingBytes += chunk.byteLength;
                 back.push(new DataView(chunk));
-                if(pendingBytes >= maxPendingBytes) self_.internalJsResponse_.pause();
+                if(pendingBytes >= maxPendingBytes_) self_.internalJsResponse_.pause();
                 if(callResolve) callResolve();
             });
             const abort = () => {
@@ -263,13 +263,13 @@ extend self: WebRequest[WebResponse] {
                     while(true) {
                         ff_core_Task.Task_throwIfAborted($task);
                         if(front.length === 0) {
-                            while(back.length !== 0) font.push(back.pop());
+                            while(back.length !== 0) front.push(back.pop());
                         }
                         if(front.length !== 0) {
                             const chunk = front.pop();
-                            const paused = pendingBytes >= maxPendingBytes;
+                            const paused = pendingBytes >= maxPendingBytes_;
                             pendingBytes -= chunk.byteLength;
-                            if(!closed && paused && pendingBytes < maxPendingBytes) self_.internalJsResponse_.unpause();
+                            if(!closed && paused && pendingBytes < maxPendingBytes_) self_.internalJsResponse_.unpause();
                             return ff_core_Option.Some(chunk);
                         } else if(closed) {
                             return ff_core_Option.None();
@@ -332,15 +332,9 @@ internalChunksToChunk(chunks: Stack[JsValue]): JsValue
         const result = new Uint8Array(totalLength);
         let offset = 0;
         for(let i = 0; i < chunks.length; i++) {
-            let chunk = chunks[i];
-            if(chunk.buffer) {
-                if(chunk.byteLength !== chunk.buffer.byteLength) {
-                    chunk = chunk.buffer.subarray(chunk.byteOffset, chunk.byteOffset + chunk.byteLength);
-                } else {
-                    chunk = chunk.buffer;
-                }
-            }
-            result.set(chunk, offset);
+            const chunk = chunks[i];
+            const uint8Array = new Uint8Array(chunk.buffer, chunk.byteOffset, chunk.byteLength);
+            result.set(uint8Array, offset);
             offset += chunk.byteLength;
         }
         return result;
