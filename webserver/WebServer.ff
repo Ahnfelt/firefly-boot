@@ -190,7 +190,6 @@ extend self: WebRequest[WebResponse] {
             if(chunk && (chunk.byteLength || chunk.length)) {
                 await new Promise((resolve, reject) => {
                     self_.internalJsResponse_.cork(() => {
-                        console.dir(chunk);
                         if(self_.internalJsResponse_.write(chunk)) {
                             resolve();
                         } else {
