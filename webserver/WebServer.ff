@@ -18,73 +18,102 @@ capability WebResponse {}
 
 data MultipartField {}
 
-listen(system: NodeSystem, host: String, port: Int, handler: WebRequest[WebResponse] => Unit): Unit
+class ExperimentalWebSocket {}
+
+capability ExperimentalWebSocketHandlers(
+    onOpen: ExperimentalWebSocket => Unit
+    onMessage: (ExperimentalWebSocket, Buffer, Bool) => Unit
+    onDrain: ExperimentalWebSocket => Unit
+    onClose: (ExperimentalWebSocket, Int) => Unit
+)
+
+listen(
+    system: NodeSystem
+    host: String
+    port: Int
+    handler: WebRequest[WebResponse] => Unit
+    experimentalWebSocketHandlers: Option[ExperimentalWebSocketHandlers] = None
+): Unit
     target node async """
         import * as uws from 'uWebSockets.js'
         ff_core_Task.Task_throwIfAborted($task);
-        await new Promise((resolveServer, rejectServer) => uws.App().any('/*', (res, req) => {
-            let abortedByUws = false;
-            const task = ff_core_Task.Task_spawn($task, async task => {
-                try {
-                    ff_core_Task.Task_throwIfAborted(task);
-                    const body = internalBody_(res, task);
-                    const method = req.getMethod();
-                    const path = req.getUrl();
-                    const query = req.getQuery() || '';
-                    const headers = new Map();
-                    req.forEach((key, value) => headers.set(key, value));
-                    const chunks = internalStack_();
-                    const webRequest = WebRequest(
-                        method, path, query, headers, 
-                        res, null, 
-                        new Map(), internalStack_(), 
-                        "200 OK", false, null, -1, false
-                    );
-                    await handler_(webRequest, task);
-                    ff_core_Task.Task_throwIfAborted(task);
-                    if(!webRequest.internalResponded_ && webRequest.internalContentSize_ >= 0) {
-                        await WebRequest_flush$(webRequest, task);
+        await new Promise((resolveServer, rejectServer) => {
+            const app = uws.App();
+            app.any('/*', (res, req) => {
+                let abortedByUws = false;
+                const task = ff_core_Task.Task_spawn($task, async task => {
+                    try {
                         ff_core_Task.Task_throwIfAborted(task);
-                    }
-                    if(!webRequest.internalResponded_) await new Promise((resolve, reject) => {
-                        res.cork(() => {
-                            try {
-                                ff_core_Task.Task_throwIfAborted(task);
-                                if(!webRequest.internalResolveFlush_) {
-                                    res.writeStatus(webRequest.internalResponseStatus_);
-                                    webRequest.internalResponseHeaders_.forEach((value, key) => res.writeHeader(key, value));
+                        const method = req.getMethod();
+                        const path = req.getUrl();
+                        const query = req.getQuery() || '';
+                        const headers = new Map();
+                        req.forEach((key, value) => headers.set(key, value));
+                        const chunks = internalStack_();
+                        const webRequest = WebRequest(
+                            method, path, query, headers, 
+                            res, null, 
+                            new Map(), internalStack_(), 
+                            "200 OK", false, null, -1, false
+                        );
+                        await handler_(webRequest, task);
+                        ff_core_Task.Task_throwIfAborted(task);
+                        if(!webRequest.internalResponded_ && webRequest.internalContentSize_ >= 0) {
+                            await WebRequest_flush$(webRequest, task);
+                            ff_core_Task.Task_throwIfAborted(task);
+                        }
+                        if(!webRequest.internalResponded_) await new Promise((resolve, reject) => {
+                            res.cork(() => {
+                                try {
+                                    ff_core_Task.Task_throwIfAborted(task);
+                                    if(!webRequest.internalResolveFlush_) {
+                                        res.writeStatus(webRequest.internalResponseStatus_);
+                                        webRequest.internalResponseHeaders_.forEach((value, key) => res.writeHeader(key, value));
+                                    }
+                                    const chunk = internalChunksToChunk_(webRequest.internalResponseChunks_);
+                                    res.end(chunk, webRequest.internalCloseConnection_);
+                                    resolve();
+                                } catch(e) {
+                                    reject(e);
                                 }
-                                const chunk = internalChunksToChunk_(webRequest.internalResponseChunks_);
-                                res.end(chunk, webRequest.internalCloseConnection_);
-                                resolve();
-                            } catch(e) {
-                                reject(e);
-                            }
+                            });
                         });
-                    });
-                } catch(e) {
-                    if(!abortedByUws) console.error(e);
-                    if(!abortedByUws) res.cork(() => {
-                        if(!abortedByUws) res.writeStatus("500 Internal Server Error");
-                        if(!abortedByUws) res.end();
-                    });
-                }
+                    } catch(e) {
+                        if(!abortedByUws) console.error(e);
+                        if(!abortedByUws) res.cork(() => {
+                            if(!abortedByUws) res.writeStatus("500 Internal Server Error");
+                            if(!abortedByUws) res.end();
+                        });
+                    }
+                });
+                res.onAborted(() => {
+                    abortedByUws = true; 
+                    ff_core_Task.Task_abort(task);
+                });
             });
-            res.onAborted(() => {
-                abortedByUws = true; 
-                ff_core_Task.Task_abort(task);
-            });
-        }).listen(host_, port_, listenSocket => {
-            if(listenSocket) {
-                const abort = () => {
-                    $task.controller.signal.removeEventListener('abort', abort);
-                    uws.us_listen_socket_close(listenSocket);
-                }
-                $task.controller.signal.addEventListener('abort', abort);
-            } else {
-                rejectServer();
+            if(experimentalWebSocketHandlers_.value_ != null) {
+                app.ws("/*", {
+                    compression: 0,
+                    maxPayloadLength: 16 * 1024 * 1024,
+                    idleTimeout: 10,
+                    open: experimentalWebSocketHandlers_.value_.open_,
+                    message: (ws, m, b) => experimentalWebSocketHandlers_.value_.message_(ws, new DataView(m), b),
+                    drain: experimentalWebSocketHandlers_.value_.drain_,
+                    close: experimentalWebSocketHandlers_.value_.close_,
+                });
             }
-        }));
+            app.listen(host_, port_, listenSocket => {
+                if(listenSocket) {
+                    const abort = () => {
+                        $task.controller.signal.removeEventListener('abort', abort);
+                        uws.us_listen_socket_close(listenSocket);
+                    }
+                    $task.controller.signal.addEventListener('abort', abort);
+                } else {
+                    rejectServer();
+                }
+            });
+        });
     """
 
 nodeMain(system: NodeSystem) {
@@ -320,10 +349,6 @@ extend self: WebRequest[WebResponse] {
     
 }
 
-internalBody(jsResponse: JsValue): Stream[Buffer] {
-    Stream {None} {} // TODO
-}
-
 internalStack[T](): Stack[T] {
     Stack.make()
 }
@@ -393,6 +418,54 @@ extend self: MultipartField {
     filename(): Option[String]
         target js sync """
             return self_.filename == null ? ff_core_Option.None() : ff_core_Option.Some(self_.filename);
+        """
+
+}
+
+extend self: ExperimentalWebSocket {
+    
+    sendBuffer(message: Buffer)
+        target js sync """
+            if(self_.send(message_.buffer, true) === 2) {
+                console.error("Send dropped message due to backpressure!");
+            };
+        """
+    
+    sendText(message: String)
+        target js sync """
+            if(self_.send(message_, false) === 2) {
+                console.error("Send dropped message due to backpressure!");
+            };
+        """
+    
+    publishBuffer(topic: String, message: Buffer)
+        target js sync """
+            self_.publish(topic_, message_.buffer, true);
+        """
+    
+    publishText(topic: String, message: Buffer)
+        target js sync """
+            self_.publish(topic_, message_.buffer, false);
+        """
+    
+    subscribe(topic: String)
+        target js sync """
+            self_.subscribe(topic_);
+        """
+
+    unsubscribe(topic: String)
+        target js sync """
+            self_.unsubscribe(topic_);
+        """
+
+    isSubscribedTo(topic: String): Bool
+        target js sync """
+            return self_.isSubscribed(topic_);
+        """
+        
+    subscriptions(): Array[String]
+        target js sync """
+            return self_.getTopics();
         """
 
 }
