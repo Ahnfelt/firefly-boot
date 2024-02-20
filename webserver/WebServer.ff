@@ -199,9 +199,9 @@ extend self[T]: WebRequest[T] {
             self_.internalJsApp_.publish(topic_, message_.buffer, true);
         """
     
-    publishText(topic: String, message: Buffer)
+    publishText(topic: String, message: String)
         target js sync """
-            self_.internalJsApp_.publish(topic_, message_.buffer, false);
+            self_.internalJsApp_.publish(topic_, message_, false);
         """
     
 }
@@ -458,9 +458,9 @@ extend self: ExperimentalWebSocket {
             self_.publish(topic_, message_.buffer, true);
         """
     
-    publishText(topic: String, message: Buffer)
+    publishText(topic: String, message: String)
         target js sync """
-            self_.publish(topic_, message_.buffer, false);
+            self_.publish(topic_, message_, false);
         """
     
     subscribe(topic: String)
