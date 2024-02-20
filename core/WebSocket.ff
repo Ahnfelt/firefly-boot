@@ -1,5 +1,7 @@
 capability WebSocket {}
 
+// TODO: Listen for $task aborted, make close() blocking
+
 open(browserSystem: BrowserSystem, url: String): WebSocket
     target browser async """
         const socket = new WebSocket(url_);
