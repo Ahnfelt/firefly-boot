@@ -94,6 +94,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_WebSocket from "../../ff/core/WebSocket.mjs"
+
 // type Environment
 export function Environment(modulePrefix_, symbols_, traits_, imports_, effect_, selfVariable_) {
 return {modulePrefix_, symbols_, traits_, imports_, effect_, selfVariable_};

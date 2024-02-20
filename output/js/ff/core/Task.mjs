@@ -90,6 +90,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_WebSocket from "../../ff/core/WebSocket.mjs"
+
 // type Task
 
 
@@ -131,7 +133,9 @@ export function Task_throwIfAborted(self_) {
 }
 
 export function Task_abort(self_) {
-throw new Error('Function Task_abort is missing on this target in sync context.');
+
+            self_.controller.abort()
+        
 }
 
 export function Task_channel(self_, capacity_ = 0) {

@@ -102,6 +102,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_WebSocket from "../../ff/core/WebSocket.mjs"
+
 // type Dependencies
 export function Dependencies(workspace_, packages_, packagePaths_, singleFilePackages_) {
 return {workspace_, packages_, packagePaths_, singleFilePackages_};

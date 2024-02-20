@@ -90,6 +90,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_WebSocket from "../../ff/core/WebSocket.mjs"
+
 // type Lock
 
 
@@ -236,7 +238,7 @@ export async function LockCondition_sleep$(self_, $task) {
             }
             const level = self_.lock.level
             self_.lock.level = 1
-            await ff_core.Lock_release$(self_.lock)
+            await ff_core_Lock.Lock_release$(self_.lock)
             try {
                 await new Promise((resolve, reject) => {
                     $task.controller.signal.addEventListener('abort', reject)
@@ -252,7 +254,7 @@ export async function LockCondition_sleep$(self_, $task) {
                 let acquired = false
                 while(!acquired) {
                     try {
-                        await ff_core.Lock_acquire$(self_.lock)
+                        await ff_core_Lock.Lock_acquire$(self_.lock)
                         self_.lock.level = level
                         acquired = true
                     } catch(e) {
