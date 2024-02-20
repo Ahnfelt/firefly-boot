@@ -1,4 +1,5 @@
 class WebRequest[T](
+    internalJsApp: JsValue
     internalMethod: String
     internalPath: String
     internalQuery: String
@@ -51,7 +52,7 @@ listen(
                         req.forEach((key, value) => headers.set(key, value));
                         const chunks = internalStack_();
                         const webRequest = WebRequest(
-                            method, path, query, headers, 
+                            app, method, path, query, headers, 
                             res, null, 
                             new Map(), internalStack_(), 
                             "200 OK", false, null, -1, false
@@ -189,6 +190,20 @@ extend self[T]: WebRequest[T] {
         data.each {self.writeBuffer(_)}
     }
 
+}
+
+extend self[T]: WebRequest[T] {
+
+    publishBuffer(topic: String, message: Buffer)
+        target js sync """
+            self_.internalJsApp_.publish(topic_, message_.buffer, true);
+        """
+    
+    publishText(topic: String, message: Buffer)
+        target js sync """
+            self_.internalJsApp_.publish(topic_, message_.buffer, false);
+        """
+    
 }
 
 extend self[T]: WebRequest[T] {
