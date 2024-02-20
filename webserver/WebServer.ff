@@ -19,13 +19,13 @@ capability WebResponse {}
 
 data MultipartField {}
 
-class ExperimentalWebSocket {}
+class WebSocketConnection {}
 
-capability ExperimentalWebSocketHandlers(
-    onOpen: ExperimentalWebSocket => Unit
-    onMessage: (ExperimentalWebSocket, Buffer, Bool) => Unit
-    onDrain: ExperimentalWebSocket => Unit
-    onClose: (ExperimentalWebSocket, Int) => Unit
+capability WebSocketHandlers(
+    onOpen: WebSocketConnection => Unit
+    onMessage: (WebSocketConnection, Buffer, Bool) => Unit
+    onDrain: WebSocketConnection => Unit
+    onClose: (WebSocketConnection, Int) => Unit
 )
 
 listen(
@@ -33,7 +33,7 @@ listen(
     host: String
     port: Int
     handler: WebRequest[WebResponse] => Unit
-    experimentalWebSocketHandlers: Option[ExperimentalWebSocketHandlers] = None
+    experimentalWebSocketHandlers: Option[WebSocketHandlers] = None
 ): Unit
     target node async """
         import * as uws from 'uWebSockets.js'
@@ -437,7 +437,7 @@ extend self: MultipartField {
 
 }
 
-extend self: ExperimentalWebSocket {
+extend self: WebSocketConnection {
     
     sendBuffer(message: Buffer)
         target js sync """
