@@ -97,10 +97,10 @@ listen(
                     compression: 0,
                     maxPayloadLength: 16 * 1024 * 1024,
                     idleTimeout: 10,
-                    open: webSocketHandlers_.value_.open_,
-                    message: (ws, m, b) => webSocketHandlers_.value_.message_(ws, new DataView(m), b),
-                    drain: webSocketHandlers_.value_.drain_,
-                    close: webSocketHandlers_.value_.close_,
+                    open: webSocketHandlers_.value_.onOpen_,
+                    message: (ws, m, b) => webSocketHandlers_.value_.onMessage_(ws, new DataView(m), b),
+                    drain: webSocketHandlers_.value_.onDrain_,
+                    close: webSocketHandlers_.value_.onClose_,
                 });
             }
             app.listen(host_, port_, listenSocket => {
