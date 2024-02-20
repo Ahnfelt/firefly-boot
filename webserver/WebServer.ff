@@ -33,7 +33,7 @@ listen(
     host: String
     port: Int
     handler: WebRequest[WebResponse] => Unit
-    experimentalWebSocketHandlers: Option[WebSocketHandlers] = None
+    webSocketHandlers: Option[WebSocketHandlers] = None
 ): Unit
     target node async """
         import * as uws from 'uWebSockets.js'
@@ -92,15 +92,15 @@ listen(
                     ff_core_Task.Task_abort(task);
                 });
             });
-            if(experimentalWebSocketHandlers_.value_ != null) {
+            if(webSocketHandlers_.value_ != null) {
                 app.ws("/*", {
                     compression: 0,
                     maxPayloadLength: 16 * 1024 * 1024,
                     idleTimeout: 10,
-                    open: experimentalWebSocketHandlers_.value_.open_,
-                    message: (ws, m, b) => experimentalWebSocketHandlers_.value_.message_(ws, new DataView(m), b),
-                    drain: experimentalWebSocketHandlers_.value_.drain_,
-                    close: experimentalWebSocketHandlers_.value_.close_,
+                    open: webSocketHandlers_.value_.open_,
+                    message: (ws, m, b) => webSocketHandlers_.value_.message_(ws, new DataView(m), b),
+                    drain: webSocketHandlers_.value_.drain_,
+                    close: webSocketHandlers_.value_.close_,
                 });
             }
             app.listen(host_, port_, listenSocket => {
