@@ -1,10 +1,10 @@
 capability WebSocket {}
 
-// TODO: Make close() blocking
-// TODO: Handle onclose in reads
-
 open(browserSystem: BrowserSystem, url: String): WebSocket
     target browser async """
+        if(!url_.includes("://") && location && location.href && location.href.startsWith("http")) {
+            url_ = new URL(url_, location.href).href.replace(/^http/, 'ws');
+        }
         const socket = new WebSocket(url_);
         socket.binaryType = "arraybuffer";
         socket.ffFront = [];
@@ -30,47 +30,51 @@ open(browserSystem: BrowserSystem, url: String): WebSocket
 
 extend self: WebSocket {
     
-    readText(encoding: String = "utf8"): String {
+    readText(encoding: String = "utf8"): Option[String] {
         self.readAny {_} {_.toString(encoding)}
     }
 
-    readBuffer(): Buffer {
+    readBuffer(): Option[Buffer] {
         self.readAny {_.toBuffer()} {_}
     }
     
-    readAny[T](fromText: String => T, fromBuffer: Buffer => T): T
+    readAny[T](fromText: String => T, fromBuffer: Buffer => T): Option[T]
         target browser async """
             ff_core_Task.Task_throwIfAborted($task);
-            let message;
-            if(self_.ffFront.length === 0) {
+            while(self_.ffFront.length === 0) {
                 if(self_.ffBack.length !== 0) {
                     const temp = self_.ffFront;
                     self_.ffFront = self_.ffBack;
                     self_.ffFront.reverse();
                     self_.ffBack = temp;
-                    message = self_.ffFront.pop();
-                } else {
-                    let callReject = null;
-                    const abort = () => {if(callReject) callReject()};
-                    try {
-                        message = await new Promise((resolve, reject) => {
-                            self_.onmessage = resolve;
-                            self_.onerror = reject;
-                            callReject = reject;
-                            $task.controller.signal.addEventListener('abort', abort);
-                        });
-                    } finally {
-                        self_.onmessage = null;
-                        self_.onerror = null;
-                        callReject = null;
-                        $task.controller.signal.removeEventListener('abort', abort);
-                    }
+                    break;
                 }
-            } else {
-                message = self_.ffFront.pop();
+                if(self_.readyState === 3) return ff_core_Option.None();
+                let callResolve = null;
+                let callReject = null;
+                const update = () => {if(callResolve) callResolve()};
+                const abort = e => {if(callReject) callReject(e)};
+                try {
+                    await new Promise((resolve, reject) => {
+                        callResolve = resolve;
+                        callReject = reject;
+                        self_.addEventListener('message', update);
+                        self_.addEventListener('close', update);
+                        self_.addEventListener('error', abort);
+                        $task.controller.signal.addEventListener('abort', abort);
+                    });
+                } finally {
+                    callResolve = null;
+                    callReject = null;
+                    self_.removeEventListener('message', update);
+                    self_.removeEventListener('close', update);
+                    self_.removeEventListener('error', abort);
+                    $task.controller.signal.removeEventListener('abort', abort);
+                }
             }
-            if(typeof message.data === 'string') return fromText_(message.data); 
-            return fromBuffer_(new DataView(data));
+            const data = self_.ffFront.pop().data;
+            if(typeof data === 'string') return ff_core_Option.Some(fromText_(data));
+            return ff_core_Option.Some(fromBuffer_(new DataView(data)));
         """
 
     writeBuffer(data: Buffer): Unit
@@ -87,7 +91,27 @@ extend self: WebSocket {
         
     close(code: Int = 1000, reason: String = ""): Unit
         target browser async """
-            self_.close(code_, reason !== "" ? reason : void 0);
+            if(self_.readyState === 2 || self_.readyState === 3) return;
+            await new Promise((resolve, reject) => {
+                self_.addEventListener('close', resolve);
+                self_.close(code_, reason !== "" ? reason : void 0);
+            });
+            return;
+        """
+
+    isOpen(): Bool
+        target browser async """
+            return self_.readyState === 1;
+        """
+
+    isClosing(): Bool
+        target browser async """
+            return self_.readyState === 2;
+        """
+
+    isClosed(): Bool
+        target browser async """
+            return self_.readyState === 3;
         """
 
 }
