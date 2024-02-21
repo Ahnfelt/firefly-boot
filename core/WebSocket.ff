@@ -41,7 +41,7 @@ extend self: WebSocket {
                 }
             }
             const message = self_.ffFront.pop();
-            if(!(message instanceof MessageEvent)) throw new Error("" + message);
+            if(!(message instanceof MessageEvent)) throw new Error("WebSocket error");
             const data = message.data;
             if(typeof data === 'string') return ff_core_Option.Some(await fromText_(data));
             return ff_core_Option.Some(await fromBuffer_(new DataView(data)));
