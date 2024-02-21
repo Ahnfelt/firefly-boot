@@ -97,13 +97,9 @@ import * as ff_core_WebSocket from "../../ff/core/WebSocket.mjs"
 
 
 
-export function open_(browserSystem_, url_) {
-throw new Error('Function open is missing on this target in sync context.');
-}
 
-export async function open_$(browserSystem_, url_, $task) {
-throw new Error('Function open is missing on this target in async context.');
-}
+
+
 
 export function WebSocket_readText(self_, encoding_ = "utf8") {
 return ff_core_WebSocket.WebSocket_readAny(self_, ((_w1) => {

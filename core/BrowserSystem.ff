@@ -1,5 +1,3 @@
-import WebSocket 
-
 capability BrowserSystem {}
 
 extend self: BrowserSystem {
