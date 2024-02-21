@@ -137,6 +137,18 @@ export function WebSocket_close(self_, code_ = 1000, reason_ = "") {
 throw new Error('Function WebSocket_close is missing on this target in sync context.');
 }
 
+export function WebSocket_isOpen(self_) {
+throw new Error('Function WebSocket_isOpen is missing on this target in sync context.');
+}
+
+export function WebSocket_isClosing(self_) {
+throw new Error('Function WebSocket_isClosing is missing on this target in sync context.');
+}
+
+export function WebSocket_isClosed(self_) {
+throw new Error('Function WebSocket_isClosed is missing on this target in sync context.');
+}
+
 export async function WebSocket_readText$(self_, encoding_ = "utf8", $task) {
 return (await ff_core_WebSocket.WebSocket_readAny$(self_, (async (_w1, $task) => {
 return _w1
@@ -167,6 +179,18 @@ throw new Error('Function WebSocket_writeText is missing on this target in async
 
 export async function WebSocket_close$(self_, code_ = 1000, reason_ = "", $task) {
 throw new Error('Function WebSocket_close is missing on this target in async context.');
+}
+
+export async function WebSocket_isOpen$(self_, $task) {
+throw new Error('Function WebSocket_isOpen is missing on this target in async context.');
+}
+
+export async function WebSocket_isClosing$(self_, $task) {
+throw new Error('Function WebSocket_isClosing is missing on this target in async context.');
+}
+
+export async function WebSocket_isClosed$(self_, $task) {
+throw new Error('Function WebSocket_isClosed is missing on this target in async context.');
 }
 
 
