@@ -14,13 +14,10 @@ extend self: WebSocket {
         target browser async """
             ff_core_Task.Task_throwIfAborted($task);
             while(self_.ffFront.length === 0) {
-                if(self_.ffBack.length !== 0) {
-                    const temp = self_.ffFront;
-                    self_.ffFront = self_.ffBack;
-                    self_.ffFront.reverse();
-                    self_.ffBack = temp;
-                    break;
+                while(self_.ffBack.length !== 0) {
+                    self_.ffFront.push(self_.ffBack.pop());
                 }
+                if(self_.ffFront.length !== 0) break;
                 if(self_.readyState === 3) return ff_core_Option.None();
                 let abort = null;
                 try {
