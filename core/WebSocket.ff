@@ -22,29 +22,27 @@ extend self: WebSocket {
                     break;
                 }
                 if(self_.readyState === 3) return ff_core_Option.None();
-                let callResolve = null;
-                let callReject = null;
-                const update = () => {if(callResolve) callResolve()};
-                const abort = e => {if(callReject) callReject(e)};
+                let abort = null;
                 try {
                     await new Promise((resolve, reject) => {
-                        callResolve = resolve;
-                        callReject = reject;
-                        self_.addEventListener('message', update);
-                        self_.addEventListener('close', update);
-                        self_.addEventListener('error', abort);
-                        $task.controller.signal.addEventListener('abort', abort);
+                        self_.ffListeners.push(resolve);
+                        if($task !== self_.ffTask) {
+                            abort = () => {
+                                self_.ffListeners = self_.ffListeners.filter(l => l != resolve);
+                                reject();
+                            };
+                            $task.controller.signal.addEventListener('abort', abort);
+                        }
                     });
                 } finally {
-                    callResolve = null;
-                    callReject = null;
-                    self_.removeEventListener('message', update);
-                    self_.removeEventListener('close', update);
-                    self_.removeEventListener('error', abort);
-                    $task.controller.signal.removeEventListener('abort', abort);
+                    if($task !== self_.ffTask) {
+                        $task.controller.signal.removeEventListener('abort', abort);
+                    }
                 }
             }
-            const data = self_.ffFront.pop().data;
+            const message = self_.ffFront.pop();
+            if(!(message instanceof MessageEvent)) throw new Error("" + message);
+            const data = message.data;
             if(typeof data === 'string') return ff_core_Option.Some(await fromText_(data));
             return ff_core_Option.Some(await fromBuffer_(new DataView(data)));
         """
@@ -99,21 +97,34 @@ internalOpenBrowserWebSocket(browserSystem: BrowserSystem, url: String): WebSock
         socket.binaryType = "arraybuffer";
         socket.ffFront = [];
         socket.ffBack = [];
-        socket.onmessage = m => socket.ffBack.push(m);
-        let callReject = null;
-        const abort = () => {if(callReject) callReject()};
+        socket.ffListeners = [];
+        socket.ffTask = $task;
+        $task.controller.signal.addEventListener('message', m => socket.ffBack.push(m));
+        const abort = () => socket.close();
         try {
             await new Promise((resolve, reject) => {
                 socket.onopen = resolve;
                 socket.onerror = reject;
-                callReject = reject;
                 $task.controller.signal.addEventListener('abort', abort);
             });
         } finally {
             socket.onopen = null;
             socket.onerror = null;
-            callReject = null;
-            $task.controller.signal.removeEventListener('abort', abort);
         }
+        socket.addEventListener('close', () => {
+            $task.controller.signal.removeEventListener('abort', abort);
+            for(let i = 0; i < socket.ffListeners.length; i++) socket.ffListeners[i]();
+            socket.ffListeners.length = 0;
+        });
+        socket.addEventListener('message', m => {
+            socket.ffBack.push(m);
+            for(let i = 0; i < socket.ffListeners.length; i++) socket.ffListeners[i]();
+            socket.ffListeners.length = 0;
+        });
+        socket.addEventListener('error', e => {
+            socket.ffBack.push(e);
+            for(let i = 0; i < socket.ffListeners.length; i++) socket.ffListeners[i]();
+            socket.ffListeners.length = 0;
+        });
         return socket;
     """
