@@ -1,8 +1,6 @@
 capability WebSocket {}
 
-// TODO: Listen for $task aborted
 // TODO: Make close() blocking
-// TODO: What about onmessage between reads?
 // TODO: Handle onclose in reads
 
 open(browserSystem: BrowserSystem, url: String): WebSocket
