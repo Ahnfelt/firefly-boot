@@ -9,64 +9,81 @@ open(browserSystem: BrowserSystem, url: String): WebSocket
     target browser async """
         const socket = new WebSocket(url_);
         socket.binaryType = "arraybuffer";
-        await new Promise((resolve, reject) => {
-            socket.onopen = resolve;
-            socket.onerror = reject;
-        });
-        socket.onopen = null;
-        socket.onerror = null;
+        socket.ffFront = [];
+        socket.ffBack = [];
+        socket.onmessage = m => socket.ffBack.push(m);
+        let callReject = null;
+        const abort = () => {if(callReject) callReject()};
+        try {
+            await new Promise((resolve, reject) => {
+                socket.onopen = resolve;
+                socket.onerror = reject;
+                callReject = reject;
+                $task.controller.signal.addEventListener('abort', abort);
+            });
+        } finally {
+            socket.onopen = null;
+            socket.onerror = null;
+            callReject = null;
+            $task.controller.signal.removeEventListener('abort', abort);
+        }
         return socket;
     """
 
 extend self: WebSocket {
     
-    readText(): String
-        target browser async """
-            const message = await new Promise((resolve, reject) => {
-                self_.onmessage = resolve;
-                self_.onerror = reject;
-            });
-            self_.onmessage = null;
-            self_.onerror = null;
-            const data = typeof message.data === 'string' 
-                ? message.data 
-                : new TextDecoder().decode(message.data);
-            return data;
-        """
+    readText(encoding: String = "utf8"): String {
+        self.readAny {_} {_.toString(encoding)}
+    }
 
-    readBuffer(): Buffer
-        target browser async """
-            const message = await new Promise((resolve, reject) => {
-                self_.onmessage = resolve;
-                self_.onerror = reject;
-            });
-            self_.onmessage = null;
-            self_.onerror = null;
-            const data = typeof message.data === 'string' 
-                ? new TextEncoder().encode(message.data).buffer 
-                : message.data;
-            return new DataView(data);
-        """
-
+    readBuffer(): Buffer {
+        self.readAny {_.toBuffer()} {_}
+    }
+    
     readAny[T](fromText: String => T, fromBuffer: Buffer => T): T
         target browser async """
-            const message = await new Promise((resolve, reject) => {
-                self_.onmessage = resolve;
-                self_.onerror = reject;
-            });
-            self_.onmessage = null;
-            self_.onerror = null;
+            ff_core_Task.Task_throwIfAborted($task);
+            let message;
+            if(self_.ffFront.length === 0) {
+                if(self_.ffBack.length !== 0) {
+                    const temp = self_.ffFront;
+                    self_.ffFront = self_.ffBack;
+                    self_.ffFront.reverse();
+                    self_.ffBack = temp;
+                    message = self_.ffFront.pop();
+                } else {
+                    let callReject = null;
+                    const abort = () => {if(callReject) callReject()};
+                    try {
+                        message = await new Promise((resolve, reject) => {
+                            self_.onmessage = resolve;
+                            self_.onerror = reject;
+                            callReject = reject;
+                            $task.controller.signal.addEventListener('abort', abort);
+                        });
+                    } finally {
+                        self_.onmessage = null;
+                        self_.onerror = null;
+                        callReject = null;
+                        $task.controller.signal.removeEventListener('abort', abort);
+                    }
+                }
+            } else {
+                message = self_.ffFront.pop();
+            }
             if(typeof message.data === 'string') return fromText_(message.data); 
             return fromBuffer_(new DataView(data));
         """
 
     writeBuffer(data: Buffer): Unit
         target browser async """
+            ff_core_Task.Task_throwIfAborted($task);
             self_.send(data_);
         """
 
     writeText(data: String): Unit
         target browser async """
+            ff_core_Task.Task_throwIfAborted($task);
             self_.send(data_);
         """
         

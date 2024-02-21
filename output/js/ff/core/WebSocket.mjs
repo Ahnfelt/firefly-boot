@@ -105,12 +105,20 @@ export async function open_$(browserSystem_, url_, $task) {
 throw new Error('Function open is missing on this target in async context.');
 }
 
-export function WebSocket_readText(self_) {
-throw new Error('Function WebSocket_readText is missing on this target in sync context.');
+export function WebSocket_readText(self_, encoding_ = "utf8") {
+return ff_core_WebSocket.WebSocket_readAny(self_, ((_w1) => {
+return _w1
+}), ((_w1) => {
+return ff_core_Buffer.Buffer_toString(_w1, encoding_)
+}))
 }
 
 export function WebSocket_readBuffer(self_) {
-throw new Error('Function WebSocket_readBuffer is missing on this target in sync context.');
+return ff_core_WebSocket.WebSocket_readAny(self_, ((_w1) => {
+return ff_core_String.String_toBuffer(_w1)
+}), ((_w1) => {
+return _w1
+}))
 }
 
 export function WebSocket_readAny(self_, fromText_, fromBuffer_) {
@@ -129,12 +137,20 @@ export function WebSocket_close(self_, code_ = 1000, reason_ = "") {
 throw new Error('Function WebSocket_close is missing on this target in sync context.');
 }
 
-export async function WebSocket_readText$(self_, $task) {
-throw new Error('Function WebSocket_readText is missing on this target in async context.');
+export async function WebSocket_readText$(self_, encoding_ = "utf8", $task) {
+return (await ff_core_WebSocket.WebSocket_readAny$(self_, (async (_w1, $task) => {
+return _w1
+}), (async (_w1, $task) => {
+return ff_core_Buffer.Buffer_toString(_w1, encoding_)
+}), $task))
 }
 
 export async function WebSocket_readBuffer$(self_, $task) {
-throw new Error('Function WebSocket_readBuffer is missing on this target in async context.');
+return (await ff_core_WebSocket.WebSocket_readAny$(self_, (async (_w1, $task) => {
+return ff_core_String.String_toBuffer(_w1)
+}), (async (_w1, $task) => {
+return _w1
+}), $task))
 }
 
 export async function WebSocket_readAny$(self_, fromText_, fromBuffer_, $task) {
