@@ -45,8 +45,8 @@ extend self: WebSocket {
                 }
             }
             const data = self_.ffFront.pop().data;
-            if(typeof data === 'string') return ff_core_Option.Some(fromText_(data));
-            return ff_core_Option.Some(fromBuffer_(new DataView(data)));
+            if(typeof data === 'string') return ff_core_Option.Some(await fromText_(data));
+            return ff_core_Option.Some(await fromBuffer_(new DataView(data)));
         """
 
     writeBuffer(data: Buffer): Unit
@@ -87,3 +87,33 @@ extend self: WebSocket {
         """
 
 }
+
+internalOpenBrowserWebSocket(browserSystem: BrowserSystem, url: String): WebSocket
+    target browser async """
+        if(typeof location !== 'undefined' && !url_.includes("://")) {
+            if(location.href && location.href.startsWith("http")) {
+                url_ = new URL(url_, location.href).href.replace(/^http/, 'ws');
+            }
+        }
+        const socket = new WebSocket(url_);
+        socket.binaryType = "arraybuffer";
+        socket.ffFront = [];
+        socket.ffBack = [];
+        socket.onmessage = m => socket.ffBack.push(m);
+        let callReject = null;
+        const abort = () => {if(callReject) callReject()};
+        try {
+            await new Promise((resolve, reject) => {
+                socket.onopen = resolve;
+                socket.onerror = reject;
+                callReject = reject;
+                $task.controller.signal.addEventListener('abort', abort);
+            });
+        } finally {
+            socket.onopen = null;
+            socket.onerror = null;
+            callReject = null;
+            $task.controller.signal.removeEventListener('abort', abort);
+        }
+        return socket;
+    """

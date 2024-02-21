@@ -114,7 +114,7 @@ throw new Error('Function BrowserSystem_js is missing on this target in sync con
 }
 
 export function BrowserSystem_webSocket(self_, url_) {
-throw new Error('Function BrowserSystem_webSocket is missing on this target in sync context.');
+return ff_core_WebSocket.internalOpenBrowserWebSocket_(self_, url_)
 }
 
 export async function BrowserSystem_httpClient$(self_, $task) {
@@ -130,7 +130,7 @@ return typeof globalThis !== 'undefined' ? globalThis : window
 }
 
 export async function BrowserSystem_webSocket$(self_, url_, $task) {
-throw new Error('Function BrowserSystem_webSocket is missing on this target in async context.');
+return (await ff_core_WebSocket.internalOpenBrowserWebSocket_$(self_, url_, $task))
 }
 
 
