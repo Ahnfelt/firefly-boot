@@ -2,8 +2,10 @@ capability WebSocket {}
 
 open(browserSystem: BrowserSystem, url: String): WebSocket
     target browser async """
-        if(!url_.includes("://") && location && location.href && location.href.startsWith("http")) {
-            url_ = new URL(url_, location.href).href.replace(/^http/, 'ws');
+        if(typeof location !== 'undefined' && !url_.includes("://")) {
+            if(location.href && location.href.startsWith("http")) {
+                url_ = new URL(url_, location.href).href.replace(/^http/, 'ws');
+            }
         }
         const socket = new WebSocket(url_);
         socket.binaryType = "arraybuffer";
