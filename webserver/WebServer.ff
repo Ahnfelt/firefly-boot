@@ -75,7 +75,7 @@ listen(
                         });
                     } catch(e) {
                         if(!abortedByUws) console.error(e);
-                        if(!abortedByUws) res.cork(() => {
+                        if(!abortedByUws && context == null) res.cork(() => {
                             if(!abortedByUws) res.writeStatus("500 Internal Server Error");
                             if(!abortedByUws) res.end();
                         });
