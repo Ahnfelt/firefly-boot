@@ -570,4 +570,9 @@ extend self: WebSocketConnection {
             return self_.getTopics();
         """
 
+    close(): Unit
+        target node async """
+            self_.close();
+        """
+
 }
