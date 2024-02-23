@@ -371,17 +371,21 @@ extend self: WebRequest[WebResponse] {
     openWebSocket(): WebSocketConnection
         target js async """
             ff_core_Task.Task_throwIfAborted($task);
-            const userData = {front: [], back: [], listeners: [], closed: false, task: $task};
-            let abort = null;
+            const userData = {front: [], back: [], listeners: [], closed: {isClosed: false}, task: $task};
             const promise = new Promise((resolve, reject) => {
+                const abort = () => {userData.closed.isClosed = true; reject()};
                 userData.onOpen = resolve;
-                userData.onClose = reject;
+                userData.onClose = () => {
+                    $task.controller.signal.removeEventListener('abort', abort);
+                    abort();
+                    for(let i = 0; i < userData.listeners.length; i++) userData.listeners[i]();
+                    userData.listeners.length = 0;
+                };
                 userData.onMessage = (message, isBinary) => {
                     userData.back.push(isBinary ? new DataView(message) : new TextDecoder().decode(message));
                     for(let i = 0; i < userData.listeners.length; i++) userData.listeners[i]();
                     userData.listeners.length = 0;
                 };
-                abort = () => {userData.closed = true; reject()};
                 $task.controller.signal.addEventListener('abort', abort);
             });
             self_.internalJsResponse_.cork(() => {
@@ -394,17 +398,7 @@ extend self: WebRequest[WebResponse] {
                     self_.internalJsContext_
                 )
             });
-            try {
-                return await promise;
-            } finally {
-                userData.onOpen = null;
-                userData.onClose = () => {
-                    $task.controller.signal.removeEventListener('abort', abort);
-                    abort();
-                    for(let i = 0; i < userData.listeners.length; i++) userData.listeners[i]();
-                    userData.listeners.length = 0;
-                };
-            }
+            return await promise;
         """
 
 }
@@ -501,7 +495,7 @@ extend self: WebSocketConnection {
                     userData.front.push(userData.back.pop());
                 }
                 if(userData.front.length !== 0) break;
-                if(userData.closed) return ff_core_Option.None();
+                if(userData.closed.isClosed) return ff_core_Option.None();
                 let abort = null;
                 try {
                     await new Promise((resolve, reject) => {
@@ -526,7 +520,7 @@ extend self: WebSocketConnection {
         """
         
     readStream(): Stream[Buffer] {
-        Stream {self.readBuffer()} {self.close()}
+        Stream {self.readBuffer()} {}
     }
     
     writeBuffer(message: Buffer)
