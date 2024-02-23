@@ -187,12 +187,12 @@ extend self[T]: WebRequest[T] {
 
 extend self[T]: WebRequest[T] {
 
-    publishBuffer(topic: String, message: Buffer)
+    publishBuffer(topic: String, message: Buffer) // Should this be corked?
         target js sync """
             self_.internalJsApp_.publish(topic_, message_.buffer, true);
         """
     
-    publishText(topic: String, message: String)
+    publishText(topic: String, message: String) // Should this be corked?
         target js sync """
             self_.internalJsApp_.publish(topic_, message_, false);
         """
@@ -452,76 +452,24 @@ extend self: WebSocketConnection {
     
     writeBuffer(message: Buffer)
         target node async """
-            let abort = null;
-            try {
-                await new Promise((resolve, reject) => {
-                    if(self_.webSocket == null) new Error("WebSocket is closed");
-                    else self_.webSocket.cork(() => {
-                        if($task !== self_.task) {
-                            abort = () => {
-                                self_.listeners = self_.listeners.filter(l => l != resolve);
-                                reject();
-                            };
-                            $task.controller.signal.addEventListener('abort', abort);
-                        }
-                        if(self_.webSocket == null) {
-                            reject(new Error("WebSocket is closed"));
-                        } else if(self_.webSocket.send(message_.buffer, true) === 2) {
-                            reject(new Error("Send dropped message due to backpressure"));
-                        } else {
-                            resolve();
-                        }
-                    })
-                });
-            } finally {
-                if($task !== self_.task) {
-                    $task.controller.signal.removeEventListener('abort', abort);
-                }
-            }
+            await internalSend_$(self_, () => self_.webSocket.send(message_.buffer, true) !== 2, $task);
         """
     
     writeText(message: String)
         target node async """
-            let abort = null;
-            try {
-                await new Promise((resolve, reject) => {
-                    if(self_.webSocket == null) new Error("WebSocket is closed");
-                    else self_.webSocket.cork(() => {
-                        if($task !== self_.task) {
-                            abort = () => {
-                                self_.listeners = self_.listeners.filter(l => l != resolve);
-                                reject();
-                            };
-                            $task.controller.signal.addEventListener('abort', abort);
-                        }
-                        if(self_.webSocket == null) {
-                            reject(new Error("WebSocket is closed"));
-                        } else if(self_.webSocket.send(message_, true) === 2) {
-                            reject(new Error("Send dropped message due to backpressure"));
-                        } else {
-                            resolve();
-                        }
-                    })
-                });
-            } finally {
-                if($task !== self_.task) {
-                    $task.controller.signal.removeEventListener('abort', abort);
-                }
-            }
+            await internalSend_$(self_, () => self_.webSocket.send(message_, false) !== 2, $task);
         """
     
     publishBuffer(topic: String, message: Buffer)
         target node async """
-            if(self_.webSocket == null) throw new Error("WebSocket is closed");
-            self_.webSocket.publish(topic_, message_.buffer, true);
+            await internalSend_$(self_, () => self_.webSocket.publish(topic_, message_.buffer, true), $task);
         """
     
     publishText(topic: String, message: String)
         target node async """
-            if(self_.webSocket == null) throw new Error("WebSocket is closed");
-            self_.webSocket.publish(topic_, message_, false);
+            await internalSend_$(self_, () => self_.webSocket.publish(topic_, message_, false), $task);
         """
-    
+
     subscribe(topic: String)
         target node async """
             if(self_.webSocket == null) throw new Error("WebSocket is closed");
@@ -555,6 +503,36 @@ extend self: WebSocketConnection {
         """
 
 }
+
+internalSend[T](self: WebSocketConnection, send: () => Bool): JsValue
+    target node async """
+        let abort = null;
+        try {
+            await new Promise((resolve, reject) => {
+                if(self_.webSocket == null) new Error("WebSocket is closed");
+                else self_.webSocket.cork(() => {
+                    if($task !== self_.task) {
+                        abort = () => {
+                            self_.listeners = self_.listeners.filter(l => l != resolve);
+                            reject();
+                        };
+                        $task.controller.signal.addEventListener('abort', abort);
+                    }
+                    if(self_.webSocket == null) {
+                        reject(new Error("WebSocket is closed"));
+                    } else if(!send_()) {
+                        reject(new Error("Dropped message due to backpressure"));
+                    } else {
+                        resolve();
+                    }
+                })
+            });
+        } finally {
+            if($task !== self_.task) {
+                $task.controller.signal.removeEventListener('abort', abort);
+            }
+        }
+    """
 
 internalStack[T](): Stack[T] {
     Stack.make()
