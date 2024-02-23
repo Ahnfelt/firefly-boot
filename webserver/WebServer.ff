@@ -445,10 +445,6 @@ extend self: WebSocketConnection {
             if(typeof data === 'string') return ff_core_Option.Some(await fromText_(data));
             return ff_core_Option.Some(await fromBuffer_(data));
         """
-        
-    readStream(): Stream[Buffer] {
-        Stream {self.readBuffer()} {self.close()}
-    }
     
     writeBuffer(message: Buffer)
         target node async """
