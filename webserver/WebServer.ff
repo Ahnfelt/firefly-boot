@@ -371,20 +371,21 @@ extend self: WebRequest[WebResponse] {
     openWebSocket(): WebSocketConnection
         target js async """
             ff_core_Task.Task_throwIfAborted($task);
-            const userData = {front: [], back: [], listeners: [], closed: {isClosed: false}, task: $task};
+            const userData = {};
+            const wrapper = {front: [], back: [], listeners: [], task: $task};
             const promise = new Promise((resolve, reject) => {
-                const abort = () => {userData.closed.isClosed = true; reject()};
-                userData.onOpen = resolve;
+                const abort = () => {wrapper.webSocket = null; reject()};
+                userData.onOpen = ws => {wrapper.webSocket = ws; resolve(wrapper)};
                 userData.onClose = () => {
                     $task.controller.signal.removeEventListener('abort', abort);
                     abort();
-                    for(let i = 0; i < userData.listeners.length; i++) userData.listeners[i]();
-                    userData.listeners.length = 0;
+                    for(let i = 0; i < wrapper.listeners.length; i++) wrapper.listeners[i]();
+                    wrapper.listeners.length = 0;
                 };
                 userData.onMessage = (message, isBinary) => {
-                    userData.back.push(isBinary ? new DataView(message) : new TextDecoder().decode(message));
-                    for(let i = 0; i < userData.listeners.length; i++) userData.listeners[i]();
-                    userData.listeners.length = 0;
+                    wrapper.back.push(isBinary ? new DataView(message) : new TextDecoder().decode(message));
+                    for(let i = 0; i < wrapper.listeners.length; i++) wrapper.listeners[i]();
+                    wrapper.listeners.length = 0;
                 };
                 $task.controller.signal.addEventListener('abort', abort);
             });
@@ -399,6 +400,112 @@ extend self: WebRequest[WebResponse] {
                 )
             });
             return await promise;
+        """
+
+}
+
+extend self: WebSocketConnection {
+    
+    readText(encoding: String = "utf8"): Option[String] {
+        self.readAny {_} {_.toString(encoding)}
+    }
+
+    readBuffer(): Option[Buffer] {
+        self.readAny {_.toBuffer()} {_}
+    }
+    
+    readAny[T](fromText: String => T, fromBuffer: Buffer => T): Option[T]
+        target node async """
+            ff_core_Task.Task_throwIfAborted($task);
+            while(self_.front.length === 0) {
+                while(self_.back.length !== 0) {
+                    self_.front.push(self_.back.pop());
+                }
+                if(self_.front.length !== 0) break;
+                if(self_.webSocket == null) return ff_core_Option.None();
+                let abort = null;
+                try {
+                    await new Promise((resolve, reject) => {
+                        self_.listeners.push(resolve);
+                        if($task !== self_.task) {
+                            abort = () => {
+                                self_.listeners = self_.listeners.filter(l => l != resolve);
+                                reject();
+                            };
+                            $task.controller.signal.addEventListener('abort', abort);
+                        }
+                    });
+                } finally {
+                    if($task !== self_.task) {
+                        $task.controller.signal.removeEventListener('abort', abort);
+                    }
+                }
+            }
+            const data = self_.front.pop();
+            if(typeof data === 'string') return ff_core_Option.Some(await fromText_(data));
+            return ff_core_Option.Some(await fromBuffer_(data));
+        """
+        
+    readStream(): Stream[Buffer] {
+        Stream {self.readBuffer()} {}
+    }
+    
+    writeBuffer(message: Buffer)
+        target node async """
+            if(self_.webSocket == null) throw new Error("Can't write to a closed websocket");
+            if(self_.webSocket.send(message_.buffer, true) === 2) {
+                throw new Error("Send dropped message due to backpressure");
+            };
+        """
+    
+    writeText(message: String)
+        target node async """
+            if(self_.webSocket == null) throw new Error("Can't write to a closed websocket");
+            if(self_.webSocket.send(message_, false) === 2) {
+                throw new Error("Send dropped message due to backpressure");
+            };
+        """
+    
+    publishBuffer(topic: String, message: Buffer)
+        target node async """
+            if(self_.webSocket == null) throw new Error("Can't write to a closed websocket");
+            self_.webSocket.publish(topic_, message_.buffer, true);
+        """
+    
+    publishText(topic: String, message: String)
+        target node async """
+            if(self_.webSocket == null) throw new Error("Can't write to a closed websocket");
+            self_.webSocket.publish(topic_, message_, false);
+        """
+    
+    subscribe(topic: String)
+        target node async """
+            if(self_.webSocket == null) throw new Error("Can't write to a closed websocket");
+            self_.webSocket.subscribe(topic_);
+        """
+
+    unsubscribe(topic: String)
+        target node async """
+            if(self_.webSocket == null) throw new Error("Can't write to a closed websocket");
+            self_.webSocket.unsubscribe(topic_);
+        """
+
+    isSubscribedTo(topic: String): Bool
+        target node async """
+            if(self_.webSocket == null) throw new Error("Can't write to a closed websocket");
+            return self_.webSocket.isSubscribed(topic_);
+        """
+        
+    subscriptions(): Array[String]
+        target node async """
+            if(self_.webSocket == null) throw new Error("Can't write to a closed websocket");
+            return self_.webSocket.getTopics();
+        """
+
+    close(): Unit
+        target node async """
+            if(self_.webSocket == null) throw new Error("Can't write to a closed websocket");
+            self_.webSocket.close();
         """
 
 }
@@ -472,104 +579,6 @@ extend self: MultipartField {
     filename(): Option[String]
         target js sync """
             return self_.filename == null ? ff_core_Option.None() : ff_core_Option.Some(self_.filename);
-        """
-
-}
-
-extend self: WebSocketConnection {
-    
-    readText(encoding: String = "utf8"): Option[String] {
-        self.readAny {_} {_.toString(encoding)}
-    }
-
-    readBuffer(): Option[Buffer] {
-        self.readAny {_.toBuffer()} {_}
-    }
-    
-    readAny[T](fromText: String => T, fromBuffer: Buffer => T): Option[T]
-        target node async """
-            ff_core_Task.Task_throwIfAborted($task);
-            const userData = self_.getUserData();
-            while(userData.front.length === 0) {
-                while(userData.back.length !== 0) {
-                    userData.front.push(userData.back.pop());
-                }
-                if(userData.front.length !== 0) break;
-                if(userData.closed.isClosed) return ff_core_Option.None();
-                let abort = null;
-                try {
-                    await new Promise((resolve, reject) => {
-                        userData.listeners.push(resolve);
-                        if($task !== userData.task) {
-                            abort = () => {
-                                userData.listeners = userData.listeners.filter(l => l != resolve);
-                                reject();
-                            };
-                            $task.controller.signal.addEventListener('abort', abort);
-                        }
-                    });
-                } finally {
-                    if($task !== userData.task) {
-                        $task.controller.signal.removeEventListener('abort', abort);
-                    }
-                }
-            }
-            const data = userData.front.pop();
-            if(typeof data === 'string') return ff_core_Option.Some(await fromText_(data));
-            return ff_core_Option.Some(await fromBuffer_(data));
-        """
-        
-    readStream(): Stream[Buffer] {
-        Stream {self.readBuffer()} {}
-    }
-    
-    writeBuffer(message: Buffer)
-        target node async """
-            if(self_.send(message_.buffer, true) === 2) {
-                console.error("Send dropped message due to backpressure!");
-            };
-        """
-    
-    writeText(message: String)
-        target node async """
-            if(self_.send(message_, false) === 2) {
-                console.error("Send dropped message due to backpressure!");
-            };
-        """
-    
-    publishBuffer(topic: String, message: Buffer)
-        target node async """
-            self_.publish(topic_, message_.buffer, true);
-        """
-    
-    publishText(topic: String, message: String)
-        target node async """
-            self_.publish(topic_, message_, false);
-        """
-    
-    subscribe(topic: String)
-        target node async """
-            self_.subscribe(topic_);
-        """
-
-    unsubscribe(topic: String)
-        target node async """
-            self_.unsubscribe(topic_);
-        """
-
-    isSubscribedTo(topic: String): Bool
-        target node async """
-            return self_.isSubscribed(topic_);
-        """
-        
-    subscriptions(): Array[String]
-        target node async """
-            return self_.getTopics();
-        """
-
-    close(): Unit
-        target node async """
-            self_.close();
         """
 
 }
