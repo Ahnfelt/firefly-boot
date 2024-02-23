@@ -447,7 +447,7 @@ extend self: WebSocketConnection {
         """
         
     readStream(): Stream[Buffer] {
-        Stream {self.readBuffer()} {}
+        Stream {self.readBuffer()} {self.close()}
     }
     
     writeBuffer(message: Buffer)
@@ -504,8 +504,10 @@ extend self: WebSocketConnection {
 
     close(): Unit
         target node async """
-            if(self_.webSocket == null) throw new Error("WebSocket is closed");
-            self_.webSocket.close();
+            if(self_.webSocket != null) {
+                self_.webSocket.close();
+                self_.webSocket = null;
+            }
         """
 
 }
