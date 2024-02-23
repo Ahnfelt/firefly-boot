@@ -452,18 +452,62 @@ extend self: WebSocketConnection {
     
     writeBuffer(message: Buffer)
         target node async """
-            if(self_.webSocket == null) throw new Error("WebSocket is closed");
-            if(self_.webSocket.send(message_.buffer, true) === 2) {
-                throw new Error("Send dropped message due to backpressure");
-            };
+            let abort = null;
+            try {
+                await new Promise((resolve, reject) => {
+                    if(self_.webSocket == null) new Error("WebSocket is closed");
+                    else self_.webSocket.cork(() => {
+                        if($task !== self_.task) {
+                            abort = () => {
+                                self_.listeners = self_.listeners.filter(l => l != resolve);
+                                reject();
+                            };
+                            $task.controller.signal.addEventListener('abort', abort);
+                        }
+                        if(self_.webSocket == null) {
+                            reject(new Error("WebSocket is closed"));
+                        } else if(self_.webSocket.send(message_.buffer, true) === 2) {
+                            reject(new Error("Send dropped message due to backpressure"));
+                        } else {
+                            resolve();
+                        }
+                    })
+                });
+            } finally {
+                if($task !== self_.task) {
+                    $task.controller.signal.removeEventListener('abort', abort);
+                }
+            }
         """
     
     writeText(message: String)
         target node async """
-            if(self_.webSocket == null) throw new Error("WebSocket is closed");
-            if(self_.webSocket.send(message_, false) === 2) {
-                throw new Error("Send dropped message due to backpressure");
-            };
+            let abort = null;
+            try {
+                await new Promise((resolve, reject) => {
+                    if(self_.webSocket == null) new Error("WebSocket is closed");
+                    else self_.webSocket.cork(() => {
+                        if($task !== self_.task) {
+                            abort = () => {
+                                self_.listeners = self_.listeners.filter(l => l != resolve);
+                                reject();
+                            };
+                            $task.controller.signal.addEventListener('abort', abort);
+                        }
+                        if(self_.webSocket == null) {
+                            reject(new Error("WebSocket is closed"));
+                        } else if(self_.webSocket.send(message_, true) === 2) {
+                            reject(new Error("Send dropped message due to backpressure"));
+                        } else {
+                            resolve();
+                        }
+                    })
+                });
+            } finally {
+                if($task !== self_.task) {
+                    $task.controller.signal.removeEventListener('abort', abort);
+                }
+            }
         """
     
     publishBuffer(topic: String, message: Buffer)
