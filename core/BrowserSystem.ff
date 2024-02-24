@@ -24,7 +24,7 @@ extend self: BrowserSystem {
     
     urlPath(): String
         target js async """
-            return location.path;
+            return location.pathname;
         """
 
     urlQuery(name: String): Option[String]
