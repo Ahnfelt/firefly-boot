@@ -271,6 +271,7 @@ const value_a = value_;
 {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
 ff_core_Serializable_Serializable$A.serializeUsing_(serialization_, v_.first_);
@@ -304,6 +305,7 @@ const value_a = value_;
 {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
 ff_core_Serializable_Serializable$A.serializeUsing_(serialization_, v_.first_);

@@ -105,6 +105,10 @@ export function BrowserSystem_httpClient(self_) {
 throw new Error('Function BrowserSystem_httpClient is missing on this target in sync context.');
 }
 
+export function BrowserSystem_webSocket(self_, url_) {
+return ff_core_WebSocket.internalOpenBrowserWebSocket_(self_, url_)
+}
+
 export function BrowserSystem_mainTask(self_) {
 throw new Error('Function BrowserSystem_mainTask is missing on this target in sync context.');
 }
@@ -113,12 +117,28 @@ export function BrowserSystem_js(self_) {
 throw new Error('Function BrowserSystem_js is missing on this target in sync context.');
 }
 
-export function BrowserSystem_webSocket(self_, url_) {
-return ff_core_WebSocket.internalOpenBrowserWebSocket_(self_, url_)
+export function BrowserSystem_url(self_) {
+throw new Error('Function BrowserSystem_url is missing on this target in sync context.');
+}
+
+export function BrowserSystem_urlPath(self_) {
+throw new Error('Function BrowserSystem_urlPath is missing on this target in sync context.');
+}
+
+export function BrowserSystem_urlQuery(self_, name_) {
+throw new Error('Function BrowserSystem_urlQuery is missing on this target in sync context.');
+}
+
+export function BrowserSystem_urlFragment(self_) {
+throw new Error('Function BrowserSystem_urlFragment is missing on this target in sync context.');
 }
 
 export async function BrowserSystem_httpClient$(self_, $task) {
 return null
+}
+
+export async function BrowserSystem_webSocket$(self_, url_, $task) {
+return (await ff_core_WebSocket.internalOpenBrowserWebSocket_$(self_, url_, $task))
 }
 
 export async function BrowserSystem_mainTask$(self_, $task) {
@@ -129,8 +149,31 @@ export async function BrowserSystem_js$(self_, $task) {
 return typeof globalThis !== 'undefined' ? globalThis : window
 }
 
-export async function BrowserSystem_webSocket$(self_, url_, $task) {
-return (await ff_core_WebSocket.internalOpenBrowserWebSocket_$(self_, url_, $task))
+export async function BrowserSystem_url$(self_, $task) {
+
+            return location.href;
+        
+}
+
+export async function BrowserSystem_urlPath$(self_, $task) {
+
+            return location.pathname;
+        
+}
+
+export async function BrowserSystem_urlQuery$(self_, name_, $task) {
+
+            const param = new URLSearchParams(location.search).get(name_)
+            if(param == null) return ff_core_Option.None();
+            return ff_core_Option.Some(param);
+        
+}
+
+export async function BrowserSystem_urlFragment$(self_, $task) {
+
+            if(!location.hash.startsWith('#')) return ff_core_Option.None();
+            return ff_core_Option.Some(location.hash.slice(1));
+        
 }
 
 
