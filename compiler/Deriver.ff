@@ -516,6 +516,12 @@ extend self: Deriver {
             let variantName = modulePrefix + "." + variant.name
             let fields = [...declaration.commonFields, ...variant.fields]
             let updateChecksum = self.makeUpdateChecksum(at, variantName, declaration, variant)
+            let autoResize = self.makeMethodCall(
+                at = at
+                target = EVariable(at, "serialization")
+                methodName = "autoResize"
+                arguments = [EInt(at, "1")]
+            )
             let setVariantIndex = self.makeMethodCall(
                 at = at
                 target = EField(at, False, EVariable(at, "serialization"), "buffer")
@@ -533,6 +539,7 @@ extend self: Deriver {
                 patterns = [wildcardPattern, PVariantAs(at, variantName, at, Some("v"))]
                 guards = []
                 body = [
+                    autoResize
                     setVariantIndex
                     EAssignField(at, "+", EVariable(at, "serialization"), "offset", EInt(at, "1"))
                     ...fieldSerializations
