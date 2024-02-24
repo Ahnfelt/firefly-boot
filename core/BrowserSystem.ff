@@ -7,14 +7,37 @@ extend self: BrowserSystem {
     httpClient(): HttpClient
         target js async "return null"
 
+    webSocket(url: String): WebSocket {
+        WebSocket.internalOpenBrowserWebSocket(self, url)
+    }
+    
     mainTask(): Task
         target js async "return self_.task_"
 
     js(): JsSystem
         target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
+        
+    url(): String
+        target js async """
+            return location.href;
+        """
+    
+    urlPath(): String
+        target js async """
+            return location.path;
+        """
 
-    webSocket(url: String): WebSocket {
-        WebSocket.internalOpenBrowserWebSocket(self, url)
-    }
+    urlQuery(name: String): Option[String]
+        target js async """
+            const param = new URLSearchParams(location.search).get(name_)
+            if(param == null) return ff_core_Option.None();
+            return ff_core_Option.Some(param);
+        """
+
+    urlFragment(): Option[String]
+        target js async """
+            if(!location.hash.startsWith('#')) return ff_core_Option.None();
+            return ff_core_Option.Some(location.hash.slice(1));
+        """
                
 }
