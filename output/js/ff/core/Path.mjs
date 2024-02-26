@@ -682,7 +682,9 @@ export async function Path_writeStream$(self_, stream_, createOnly_ = false, $ta
                     }
                 }, $task)
             } finally {
-                writeable.close()
+                await new Promise((resolve, reject) => {
+                    writeable.close(err => {if(err) reject(err); else resolve();});
+                });
             }
         
 }
@@ -704,7 +706,9 @@ export async function Path_appendStream$(self_, stream_, $task) {
                     }
                 }, $task)
             } finally {
-                writeable.close()
+                await new Promise((resolve, reject) => {
+                    writeable.close(err => {if(err) reject(err); else resolve();});
+                });
             }
         
 }
