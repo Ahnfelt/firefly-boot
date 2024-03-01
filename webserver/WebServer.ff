@@ -53,8 +53,8 @@ extend self: WebServer {
         self.internalJsWebSockets.set("maxPayloadLength", maxPayloadBytes)
         self.internalJsWebSockets.set("maxBackpressureBytes", maxBackpressureBytes)
         self.internalJsWebSockets.set("closeOnBackpressureLimit", closeDueToMaxBackpressureBytes)
-        maxLifetime.each {self.internalJsWebSockets.set("maxLifetime", (_.seconds / 60).ceil().toInt())}
-        idleTimeout.each {self.internalJsWebSockets.set("idleTimeout", _.seconds.ceil().toInt())}
+        maxLifetime.each {self.internalJsWebSockets.set("maxLifetime", (_.seconds / 60).round().toInt())}
+        idleTimeout.each {self.internalJsWebSockets.set("idleTimeout", _.seconds.round().toInt())}
     }
     
     addHost(
