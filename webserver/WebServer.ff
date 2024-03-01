@@ -3,6 +3,7 @@ capability WebServer(
     internalHost: String
     internalPort: Int
     mutable internalJsWebSockets: JsValue
+    mutable internalJsWildcard: JsValue
     mutable internalJsHosts: Stack[JsValue]
     mutable internalJsApp: JsValue
 )
@@ -36,7 +37,7 @@ make(
     host: String
     port: Int
 ): WebServer {
-    WebServer(system, host, port, system.js().null(), [].toStack(), system.js().null())
+    WebServer(system, host, port, system.js().null(), system.js().null(), [].toStack(), system.js().null())
 }
 
 extend self: WebServer {
@@ -66,23 +67,44 @@ extend self: WebServer {
         ciphers: Option[String] = None
         preferLowMemoryUsage: Bool = False
     ) {
-        let host = self.intenalSystem.js().object().with("hostname", hostname)
-        key.each {host.set("key_file_name", _.absolute())}
-        certificate.each {host.set("cert_file_name", _.absolute())}
-        certificateAuthority.each {host.set("ca_file_name", _.absolute())}
-        passphrase.each {host.set("passphrase", _)}
-        dhParameters.each {host.set("dh_params_file_name", _.absolute())}
-        ciphers.each {host.set("ssl_ciphers", _)}
-        if(preferLowMemoryUsage) {host.set("ssl_prefer_low_memory_usage", True)}
-        self.internalJsHosts.push(host)
+        let object = self.intenalSystem.js().object().with("hostname", hostname)
+        key.each {object.set("key_file_name", _.absolute())}
+        certificate.each {object.set("cert_file_name", _.absolute())}
+        certificateAuthority.each {object.set("ca_file_name", _.absolute())}
+        passphrase.each {object.set("passphrase", _)}
+        dhParameters.each {object.set("dh_params_file_name", _.absolute())}
+        ciphers.each {object.set("ssl_ciphers", _)}
+        if(preferLowMemoryUsage) {object.set("ssl_prefer_low_memory_usage", True)}
+        self.internalJsHosts.push(object)
     }
 
+    setWildcard(
+        key: Option[Path] = None
+        certificate: Option[Path] = None
+        certificateAuthority: Option[Path] = None
+        passphrase: Option[String] = None
+        dhParameters: Option[Path] = None
+        ciphers: Option[String] = None
+        preferLowMemoryUsage: Bool = False
+    ) {
+        let object = self.intenalSystem.js().object()
+        key.each {object.set("key_file_name", _.absolute())}
+        certificate.each {object.set("cert_file_name", _.absolute())}
+        certificateAuthority.each {object.set("ca_file_name", _.absolute())}
+        passphrase.each {object.set("passphrase", _)}
+        dhParameters.each {object.set("dh_params_file_name", _.absolute())}
+        ciphers.each {object.set("ssl_ciphers", _)}
+        if(preferLowMemoryUsage) {object.set("ssl_prefer_low_memory_usage", True)}
+        self.internalJsWildcard = object
+    }
+    
     listen(handler: WebRequest[WebResponse] => Unit)
         target node async """
             import * as uws from 'uWebSockets.js'
             ff_core_Task.Task_throwIfAborted($task);
             await new Promise((resolveServer, rejectServer) => {
-                self_.internalJsApp_ = self_.internalJsHosts_.array.some(h => h.key_file_name) ? uws.SSLApp() : uws.App();
+                self_.internalJsApp_ = self_.internalJsWilcard_ ? uws.SSLApp(self_.internalJsWilcard_) 
+                    : self_.internalJsHosts_.array.some(h => h.key_file_name) ? uws.SSLApp() : uws.App();
                 self_.internalJsHosts_.array.forEach(h => self_.internalJsApp_.addServerName(h.hostname, h));
                 const handleRequest = (res, req, context) => {
                     let abortedByUws = false;
