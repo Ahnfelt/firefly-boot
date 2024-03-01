@@ -194,17 +194,6 @@ extend self: WebServer {
     
 }
 
-nodeMain(system: NodeSystem) {
-    make(system, "localhost", 8080).listen {request =>
-        if(request.readPath() != "/") {request.writeStatus("404 Not Found")} else:
-        request.writeHeader("IsExample", request.readQuery("foo").else {"None"})
-        request.writeContentSize(10 * 500000 * "Hello ".size() + "world!".size())
-        1.to(10).each {_ => request.writeText(1.to(500000).map {_ => "Hello "}.join())}
-        request.flush()
-        request.writeText("world!")
-    }
-}
-
 extend self[T]: WebRequest[T] {
 
     readMethod(): String {
