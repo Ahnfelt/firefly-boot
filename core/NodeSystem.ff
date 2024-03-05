@@ -64,6 +64,10 @@ extend self: NodeSystem {
         self.writeBuffer(text.toBuffer())
     }
 
+    writeLine(text: String): Unit {
+        self.writeText(text + "\n")
+    }
+
     writeErrorBuffer(buffer: Buffer): Unit
         target js async "process.stderr.write(new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength))"
 

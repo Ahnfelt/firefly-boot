@@ -28,7 +28,7 @@ extend self: FileHandle {
     writeLine(text: String, position: Option[Int] = None, encoding: String = "utf8"): Unit
         target js async """
             ff_core_Task.Task_throwIfAborted($task)
-            await self_.write(text + "\n", position.value_, encoding_)
+            await self_.write(text + "\\n", position.value_, encoding_)
         """
         
     truncate(length: Int = 0): Unit
