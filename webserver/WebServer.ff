@@ -248,10 +248,6 @@ extend self[T]: WebRequest[T] {
         self.internalResponseChunks.push(internalTextChunk(data))
     }
 
-    writeLine(data: String) {
-        self.internalResponseChunks.push(internalTextChunk(data + "\n"))
-    }
-
     writeBuffer(data: Buffer) {
         self.internalResponseChunks.push(internalBufferChunk(data))
     }
