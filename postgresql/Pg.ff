@@ -62,11 +62,11 @@ extend self: PgPool {
 
     connect(): PgConnection {
         UnsafeJs.throwIfCancelled()
-        PgConnection(UnsafeJs.await { self.jsValue.call0("connect") })
+        PgConnection(UnsafeJs.await {self.jsValue.call0("connect")})
     }
 
     close(): Unit {
-        UnsafeJs.await { self.jsValue.call0("end") }
+        UnsafeJs.await {self.jsValue.call0("end")}
     }
 
     connectionCount(): Int {
@@ -300,7 +300,7 @@ extend self: PgStatement {
     }
 
     each(body: PgRow => Unit): Unit {
-        self.all { row =>
+        self.all {row =>
             body(row)
             True
         }
@@ -308,7 +308,7 @@ extend self: PgStatement {
 
     map[T](body: PgRow => T): List[T] {
         mutable result = []
-        self.each { row =>
+        self.each {row =>
             result = [body(row), ...result]
         }
         result.reverse()
@@ -379,12 +379,12 @@ internalRunStatement(statement: PgStatement, body: Option[PgRow => Bool]): Int {
     UnsafeJs.throwIfCancelled()
     let pair = internalParseParameters(statement.sql)
     let parameters = internalCheckParameters(pair.second, statement.parameters)
-    let result = UnsafeJs.await { statement.connection.grab().jsValue.call2("query", pair.first, parameters) }
+    let result = UnsafeJs.await {statement.connection.grab().jsValue.call2("query", pair.first, parameters)}
     body.{
         | None =>
             result.get("rowCount").grabInt()
         | Some(f) =>
-            let all = result.get("rows").grabArray().toList().all { row =>
+            let all = result.get("rows").grabArray().toList().all {row =>
                 f(PgRow(row))
             }
             if(all) {1} else {0}
@@ -392,9 +392,9 @@ internalRunStatement(statement: PgStatement, body: Option[PgRow => Bool]): Int {
 }
 
 internalBatchStatements(
-    connection: PgConnection,
-    statements: List[PgStatement],
-    body: Option[PgRow => Bool],
+    connection: PgConnection
+    statements: List[PgStatement]
+    body: Option[PgRow => Bool]
     endBody: Option[() => Unit]
 ): List[Int] {
     let sqlCache = statements.map {s => Pair(s.sql, s.sql)}.group().map {sql, list =>
@@ -409,7 +409,7 @@ internalBatchStatements(
         }
         Pair(sql, (newSql = pair.first, parameterNames = pair.second, prepared = prepared))
     }
-    let promises = statements.map { statement =>
+    let promises = statements.map {statement =>
         UnsafeJs.throwIfCancelled()
         let record = sqlCache.grab(statement.sql)
         let parameters = internalCheckParameters(record.parameterNames, statement.parameters)
@@ -418,15 +418,15 @@ internalBatchStatements(
             .with("values", parameters)
         connection.jsValue.call1("query", record.prepared.map {query.with("name", _)}.else {query})
     }
-    let results = promises.map { promise =>
+    let results = promises.map {promise =>
         UnsafeJs.throwIfCancelled()
-        let result = UnsafeJs.await { promise }
+        let result = UnsafeJs.await {promise }
         UnsafeJs.throwIfCancelled()
         body.{
             | None =>
                 result.get("rowCount").grabInt()
             | Some(f) =>
-                let all = result.get("rows").grabArray().toList().all { row =>
+                let all = result.get("rows").grabArray().toList().all {row =>
                     f(PgRow(row))
                 }
                 endBody.each {_()}
