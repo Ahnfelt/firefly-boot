@@ -58,12 +58,8 @@ extend self: Int {
         if(self <= from) {from} elseIf {self >= to} {to} else {self}
     }
     
-    padStart(length: Int, padding: String = " "): String {
-        ("" + self).padStart(length, padding)
-    }
-    
-    padEnd(length: Int, padding: String = " "): String {
-        ("" + self).padEnd(length, padding)
+    pad(padding: String): String {
+        ("" + self).padStart(padding.size(), padding)
     }
 
 }
