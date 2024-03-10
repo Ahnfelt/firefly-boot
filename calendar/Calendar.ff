@@ -1,0 +1,150 @@
+data Calendar {}
+
+make(timeZone: String, instant: Instant): Calendar {
+    let zoned = internalConsistentDateFormat(instant, timeZone)
+    let utc = internalConsistentDateFormat(instant, "UTC")
+    let bias = if(zoned > utc) {60 * 24} else {0}
+    let zonedHourMinutes = internalStringAsCalendar(zoned).hour() * 60 + bias
+    let utcHourMinutes = internalStringAsCalendar(utc).hour() * 60
+    let zonedMinutes = zonedHourMinutes + internalStringAsCalendar(zoned).minute()
+    let utcMinutes = utcHourMinutes + internalStringAsCalendar(utc).minute()
+    let offsetMinutes = (zonedMinutes - utcMinutes) % (12 * 60)
+    let hours = (offsetMinutes / 60).abs().toFloat().floor().toInt()
+    let minutes = offsetMinutes.abs() - 60 * hours
+    let offset = if(offsetMinutes < 0) {"-"} else {"+"} + hours.pad("00") + ":" + minutes.pad("00")
+    internalStringAsCalendar(zoned + offset + " [" + timeZone + "]")
+}
+
+// date(timeZone: String, year: Int, month: Int, day: Int, hour: Int = 0, minute: Int = 0, second: Int = 0): Calendar
+// This must be wrong, because it sets the date in UTC and then converts it to the time zone, yielding a different date
+//     target js sync """
+//         return make_(Date.UTC(year_, month_ - 1, day_, hour_, minute_, second_) * 0.001, timeZone_);
+//     """
+
+extend self: Calendar {
+
+    year(): Int
+        target js sync """
+            return parseInt(self_.slice(6, 10), 10);
+        """
+
+    month(): Int
+        target js sync """
+            return parseInt(self_.slice(3, 5), 10);
+        """
+
+    day(): Int
+        target js sync """
+            return parseInt(self_.slice(0, 2), 10);
+        """
+
+    hour(): Int
+        target js sync """
+            return parseInt(self_.slice(12, 14), 10);
+        """
+
+    minute(): Int
+        target js sync """
+            return parseInt(self_.slice(15, 17), 10);
+        """
+
+    second(): Int
+        target js sync """
+            return parseInt(self_.slice(18, 20), 10);
+        """
+
+    week(): Int {
+        internalWeek(self.year(), self.month(), self.day())
+    }
+    
+    weekDay(): Int {
+        internalWeekDay(self.year(), self.month(), self.day())
+    }
+
+    weekYear(): Int {
+        internalWeekYear(self.year(), self.month(), self.day())
+    }
+
+    timeZone(): String
+        target js sync """
+            return self_.slice(28, -1);
+        """
+
+    offset(): String
+        target js sync """
+            return self_.slice(20, 26);
+        """    
+
+    offsetMinutes(): Int
+        target js sync """
+            const sign = parseInt(self_.slice(20, 21) + "1", 10);
+            const hours = parseInt(self_.slice(21, 23), 10);
+            const minutes = parseInt(self_.slice(24, 26), 10);
+            return sign * (hours * 60 + minutes);
+        """    
+        
+    instant(): Instant {
+        Instant(Duration(internalParseDate(self.show(includeTimeZone = False)) * 1000.0))
+    }
+
+    show(includeTimeZone: Bool = True): String {
+        self.year() + "-" + self.month().pad("00") + "-" + self.day().pad("00") + 
+        "T" + self.hour().pad("00") + ":" + self.minute().pad("00") + ":" + self.second().pad("00") + 
+        if(includeTimeZone) {self.offset() + "[" + self.timeZone() + "]"} else {self.offset()}
+    }
+
+}
+
+nodeMain(system: NodeSystem) {
+    let calendar = make("Australia/Sydney", system.mainTask().now())
+    Log.debug(calendar.show())
+    Log.debug(calendar.offsetMinutes().pad(""))
+    Log.debug("" + calendar.instant().since1970.seconds)
+}
+
+
+internalWeek(year: Int, month: Int, day: Int): Int
+    target js sync """
+        // Modified from: https://weeknumber.com/how-to/javascript
+        const date = new Date(year_, month_, day_);
+        // Thursday in current week decides the year.
+        date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+        // January 4 is always in week 1.
+        const week1 = new Date(date.getFullYear(), 0, 4);
+        // Adjust to Thursday in week 1 and count number of weeks from date to week1.
+        return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
+            - 3 + (week1.getDay() + 6) % 7) / 7);
+    """
+  
+internalWeekYear(year: Int, month: Int, day: Int): Int
+    target js sync """
+        // Modified from: https://weeknumber.com/how-to/javascript
+        const date = new Date(year_, month_, day_);
+        date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+        return date.getFullYear();
+    """
+
+internalWeekDay(year: Int, month: Int, day: Int): Int
+    target js sync """
+        const date = new Date(year_, month_, day_);
+        const weekDay = date.getDay();
+        return weekDay === 0 ? 7 : weekDay;
+    """
+
+internalConsistentDateFormat(instant: Instant, timeZone: String): String
+    target js sync """
+        let d = new Date(instant_ * 1000).toLocaleString("en-UK", {timeZone: timeZone_});
+        while(d[0] < '0' || d[0] > '9') d = d.slice(1);
+        while(d[d.length - 1] < '0' || d[d.length - 1] > '9') d = d.slice(0, -1);
+        return d;
+    """
+
+internalParseDate(date: String): Float
+    target js sync """
+        return Date.parse(date_);
+    """
+    
+internalStringAsCalendar(calendar: String): Calendar
+    target js sync """
+        return calendar_;
+    """
