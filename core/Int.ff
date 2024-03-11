@@ -57,5 +57,9 @@ extend self: Int {
     clamp(from: Int, to: Int): Int {
         if(self <= from) {from} elseIf {self >= to} {to} else {self}
     }
+    
+    pad(padding: String): String {
+        ("" + self).padStart(padding.size(), padding)
+    }
 
 }

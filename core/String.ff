@@ -22,6 +22,18 @@ extend self: String {
     reverse(): String
         target js sync "return [...self_].reverse().join('')"
 
+    repeat(count: Int): String
+        target js sync "return self_.repeat(count_)"
+
+    trim(): String
+        target js sync "return self_.trim()"
+
+    trimStart(): String
+        target js sync "return self_.trimStart()"
+
+    trimEnd(): String
+        target js sync "return self_.trimEnd()"
+
     lower(): String
         target js sync "return self_.toLowerCase()"
 
@@ -137,6 +149,16 @@ extend self: String {
     removeLast(suffix: String): Option[String] {
         if(self.endsWith(suffix)) {Some(self.dropLast(suffix.size()))} else {None}
     }
+    
+    padStart(length: Int, padding: String = " "): String
+        target js sync """
+            return self_.padStart(length_, padding_);
+        """
+
+    padEnd(length: Int, padding: String = " "): String
+        target js sync """
+            return self_.padEnd(length_, padding_);
+        """
 
     any(body: Char => Bool): Bool
         target js sync """
