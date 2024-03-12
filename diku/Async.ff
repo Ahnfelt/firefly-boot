@@ -1,0 +1,16 @@
+
+nodeMain(system: NodeSystem) {
+    
+    let files = ["a.txt", "b.txt"]
+    
+    let contents = files.map {file =>
+        system.path(file).readText()
+    }
+    
+    let upper = contents.map {content =>
+        content.upper()
+    }
+    
+    Log.debug("Result: " + upper.join(""))
+    
+}
