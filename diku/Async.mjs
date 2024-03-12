@@ -16,7 +16,7 @@ export async function nodeMain_$(system_, $task) {
 
 
 
-export async function nodeMain_$(system) {
+export async function nodeMain$(system) {
     
     const files = Link("a.txt", Link("b.txt", Empty()));
     
@@ -28,7 +28,7 @@ export async function nodeMain_$(system) {
         return String_upper(content)
     });
     
-    Log.debug_("Result: " + List_join(upper, ""))
+    NodeSystem_writeLine$(system, "Result: " + List_join(upper, ""))
     
 }
 

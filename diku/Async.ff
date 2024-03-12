@@ -11,6 +11,7 @@ nodeMain(system: NodeSystem) {
         content.upper()
     }
     
-    Log.debug("Result: " + upper.join(""))
+    system.writeLine("Result: " + upper.join(""))
     
 }
+
