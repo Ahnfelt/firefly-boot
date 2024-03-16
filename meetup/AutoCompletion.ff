@@ -1,6 +1,0 @@
-main(system: NodeSystem) {
-    
-    let list = ["Meetup", "MF#K"]
-    list.map {a => a.}
-    
-}
