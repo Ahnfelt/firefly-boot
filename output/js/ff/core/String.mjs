@@ -126,6 +126,22 @@ export function String_reverse(self_) {
 return [...self_].reverse().join('')
 }
 
+export function String_repeat(self_, count_) {
+return self_.repeat(count_)
+}
+
+export function String_trim(self_) {
+return self_.trim()
+}
+
+export function String_trimStart(self_) {
+return self_.trimStart()
+}
+
+export function String_trimEnd(self_) {
+return self_.trimEnd()
+}
+
 export function String_lower(self_) {
 return self_.toLowerCase()
 }
@@ -265,6 +281,18 @@ return ff_core_Option.None()
 }
 }
 
+export function String_padStart(self_, length_, padding_ = " ") {
+
+            return self_.padStart(length_, padding_);
+        
+}
+
+export function String_padEnd(self_, length_, padding_ = " ") {
+
+            return self_.padEnd(length_, padding_);
+        
+}
+
 export function String_any(self_, body_) {
 
             for(let i = 0; i < self_.length; i++) {
@@ -308,6 +336,22 @@ throw new Error('Function String_replaceFirst is missing on this target in async
 
 export async function String_reverse$(self_, $task) {
 throw new Error('Function String_reverse is missing on this target in async context.');
+}
+
+export async function String_repeat$(self_, count_, $task) {
+throw new Error('Function String_repeat is missing on this target in async context.');
+}
+
+export async function String_trim$(self_, $task) {
+throw new Error('Function String_trim is missing on this target in async context.');
+}
+
+export async function String_trimStart$(self_, $task) {
+throw new Error('Function String_trimStart is missing on this target in async context.');
+}
+
+export async function String_trimEnd$(self_, $task) {
+throw new Error('Function String_trimEnd is missing on this target in async context.');
 }
 
 export async function String_lower$(self_, $task) {
@@ -412,6 +456,14 @@ return ff_core_Option.Some(ff_core_String.String_dropLast(self_, ff_core_String.
 } else {
 return ff_core_Option.None()
 }
+}
+
+export async function String_padStart$(self_, length_, padding_ = " ", $task) {
+throw new Error('Function String_padStart is missing on this target in async context.');
+}
+
+export async function String_padEnd$(self_, length_, padding_ = " ", $task) {
+throw new Error('Function String_padEnd is missing on this target in async context.');
 }
 
 export async function String_any$(self_, body_, $task) {

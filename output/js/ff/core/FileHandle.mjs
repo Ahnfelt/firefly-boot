@@ -117,6 +117,10 @@ export function FileHandle_writeText(self_, text_, position_ = ff_core_Option.No
 throw new Error('Function FileHandle_writeText is missing on this target in sync context.');
 }
 
+export function FileHandle_writeLine(self_, text_, position_ = ff_core_Option.None(), encoding_ = "utf8") {
+throw new Error('Function FileHandle_writeLine is missing on this target in sync context.');
+}
+
 export function FileHandle_truncate(self_, length_ = 0) {
 throw new Error('Function FileHandle_truncate is missing on this target in sync context.');
 }
@@ -149,6 +153,14 @@ export async function FileHandle_writeText$(self_, text_, position_ = ff_core_Op
 
             ff_core_Task.Task_throwIfAborted($task)
             await self_.write(text, position.value_, encoding_)
+        
+}
+
+export async function FileHandle_writeLine$(self_, text_, position_ = ff_core_Option.None(), encoding_ = "utf8", $task) {
+
+            ff_core_Task.Task_throwIfAborted($task)
+            await self_.write(text + "\
+", position.value_, encoding_)
         
 }
 

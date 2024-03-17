@@ -179,6 +179,10 @@ return self_
 }
 }
 
+export function Int_pad(self_, padding_) {
+return ff_core_String.String_padStart(("" + self_), ff_core_String.String_size(padding_), padding_)
+}
+
 export async function Int_abs$(self_, $task) {
 throw new Error('Function Int_abs is missing on this target in async context.');
 }
@@ -255,6 +259,10 @@ return to_
 } else {
 return self_
 }
+}
+
+export async function Int_pad$(self_, padding_, $task) {
+return ff_core_String.String_padStart(("" + self_), ff_core_String.String_size(padding_), padding_)
 }
 
 export const ff_core_Any_HasAnyTag$ff_core_Int_Int = {

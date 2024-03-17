@@ -395,11 +395,13 @@ extend self: JsEmitter {
             !effectTypeIsAsync(effect)
         } =>
             let n = name.map {escapeResolved(_)}.else {"i"}
-            "((() => {\n" +
-            "const size = " + self.emitArgument(at, size, async) + ";\n" +
+            let newAsync = self.emittingAsync && effectTypeIsAsync(effect)
+            let await = if(newAsync) {"await "} else {""}
+            await + "((() => {\n" +
+            "const size = " + self.emitArgument(at, size, async) + ";\n" + // Not correct if async and body isn't
             "const result = [];\n" +
             "for(let " + n + " = 0; " + n + " < size; " + n + "++) {\n" +
-            "result.push(" + self.emitTerm(body, async) + ");\n" +
+            "result.push(" + self.emitTerm(body, newAsync) + ");\n" +
             "}\n" +
             "return result;\n" +
             "})())"
