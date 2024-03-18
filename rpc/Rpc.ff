@@ -1,0 +1,45 @@
+trait I: Rpc[O, C] {
+    handle(context: C, input: I): O
+}
+
+make[I, O, C](): RpcHandlers[I, O, C] {
+    RpcHandlers(StringMap.make())
+}
+
+capability RpcHandlers[I, O, C](
+    handlers: StringMap[(C, I) => O]
+)
+
+extend self[I, O, C]: RpcHandlers[I, O, C] {
+    handle(name: String, context: C, input: I): Option[O] {
+        self.handlers.get(name).map {handler =>
+            handler(context, input)
+        }
+    }
+}
+
+extend self[C]: RpcHandlers[Buffer, Buffer, C] {
+    addSerializable[I: Serializable, O: Serializable](
+        handler: (C, I) => O
+    ): Unit {
+        let name = "TODO"
+        self.handlers.set(name) {context, message =>
+            let input = Serializable.deserialize(message)
+            let output = handler(context, input)
+            Serializable.serialize(output)
+        }
+    }
+}
+
+http[I: Rpc[I, O, C]: Serializable, O: Serializable, C](
+    httpClient: HttpClient, 
+    prefix: String, 
+    message: I
+): O {
+    let name = "TODO"
+    let input = Serializable.serialize(message)
+    let response = httpClient.fetch(prefix + name, method = "POST", body = Some(HttpClient.bodyBuffer(input)))
+    let output = response.readBuffer()
+    Serializable.deserialize(output)
+}
+
