@@ -53,7 +53,7 @@ extend self: RpcClient {
     }
 }
 
-makeHttpClient(
+makeClient(
     httpClient: HttpClient
     prefix: String
     method: String = "POST"

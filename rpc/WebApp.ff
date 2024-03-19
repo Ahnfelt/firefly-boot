@@ -32,7 +32,7 @@ buildMain(system: BuildSystem) {
 
 
 browserMain(system: BrowserSystem): Unit {
-    let rpc = Rpc.makeHttpClient(system.httpClient(), "/rpc/")
+    let rpc = Rpc.makeClient(system.httpClient(), "/rpc/")
     let response = rpc.call(HelloRpc("John"))
     let window = system.js().global().get("window")
     window.call1("alert", response)
