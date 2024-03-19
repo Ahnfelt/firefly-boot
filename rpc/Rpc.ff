@@ -1,14 +1,12 @@
-trait I: Rpc[O, C] {
-    handle(context: C, input: I): O
-}
-
-make[I, O, C](): RpcHandlers[I, O, C] {
-    RpcHandlers(StringMap.make())
-}
+trait I: Rpc[O] {}
 
 capability RpcHandlers[I, O, C](
     handlers: StringMap[(C, I) => O]
 )
+
+make[I, O, C](): RpcHandlers[I, O, C] {
+    RpcHandlers(StringMap.make())
+}
 
 extend self[I, O, C]: RpcHandlers[I, O, C] {
     handle(name: String, context: C, input: I): Option[O] {
@@ -19,7 +17,7 @@ extend self[I, O, C]: RpcHandlers[I, O, C] {
 }
 
 extend self[C]: RpcHandlers[Buffer, Buffer, C] {
-    addSerializable[I: Serializable, O: Serializable](
+    add[I: Rpc[O]: Serializable, O: Serializable](
         handler: (C, I) => O
     ): Unit {
         let name = "TODO"
@@ -31,7 +29,7 @@ extend self[C]: RpcHandlers[Buffer, Buffer, C] {
     }
 }
 
-http[I: Rpc[I, O, C]: Serializable, O: Serializable, C](
+http[I: Rpc[O]: Serializable, O: Serializable](
     httpClient: HttpClient, 
     prefix: String, 
     message: I
@@ -42,4 +40,3 @@ http[I: Rpc[I, O, C]: Serializable, O: Serializable, C](
     let output = response.readBuffer()
     Serializable.deserialize(output)
 }
-
