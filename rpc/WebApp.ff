@@ -1,4 +1,5 @@
 import WebServer from ff:webserver
+import Lux from ff:lux
 import Rpc
 
 nodeMain(system: NodeSystem): Unit {
@@ -9,6 +10,7 @@ nodeMain(system: NodeSystem): Unit {
         if(request.readPath() == "/") {
             request.writeHeader("Content-Type", "text/html; charset=UTF-8")
             request.writeText("<!doctype html>")
+            request.writeText("<div id='main'></div>")
             request.writeText("<script type='module' src='/js/ff/rpc/WebApp.mjs'></script>")
         } elseIf {request.readPath().startsWith("/rpc/")} {
             let name = request.readPath().dropFirst("/rpc/".size())
@@ -33,9 +35,24 @@ buildMain(system: BuildSystem) {
 
 browserMain(system: BrowserSystem): Unit {
     let rpc = Rpc.makeClient(system.httpClient(), "/rpc/")
-    let response = rpc.call(HelloRpc("John"))
-    let window = system.js().global().get("window")
-    window.call1("alert", response)
+    Lux.renderById(system, "main") {lux =>
+        renderHello(lux, rpc)
+    }
+}
+
+renderHello(lux: Lux, rpc: RpcClient) {
+    lux.div {
+        lux.useSuspense {
+            lux.div {
+                lux.text("Loading...")
+            }
+        } {lux =>
+            let greeting = rpc.call(HelloRpc("John"))
+            lux.div {
+                lux.text(greeting)
+            }
+        }
+    }
 }
 
 data HelloRpc(name: String)

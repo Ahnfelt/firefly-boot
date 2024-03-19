@@ -26,10 +26,10 @@ extend self[I, O, C]: RpcHandlers[I, O, C] {
 }
 
 extend self[C]: RpcHandlers[Buffer, Buffer, C] {
-    add[I: Rpc[O]: Serializable, O: Serializable](
+    add[I: Rpc[O]: HasAnyTag: Serializable, O: Serializable](
         handler: (C, I) => O
     ): Unit {
-        let name = "TODO"
+        let name = Any.anyTag[I]().show()
         self.handlers.set(name) {context, message =>
             let input = Serializable.deserialize(message)
             let output = handler(context, input)
@@ -43,10 +43,10 @@ capability RpcClient(
 )
 
 extend self: RpcClient {
-    call[I: Rpc[O]: Serializable, O: Serializable](
+    call[I: Rpc[O]: HasAnyTag: Serializable, O: Serializable](
         message: I
     ): O {
-        let name = "TODO"
+        let name = Any.anyTag[I]().show()
         let input = Serializable.serialize(message)
         let response = self.binaryCall(name, input)
         Serializable.deserialize(response)
