@@ -1,12 +1,6 @@
 import WebServer from ff:webserver
 import Rpc
 
-browserMain(system: BrowserSystem): Unit {
-    let response = Rpc.http(system.httpClient(), "/rpc/", HelloRpc("John"))
-    let window = system.js().global().get("window")
-    window.call1("alert", response)
-}
-
 nodeMain(system: NodeSystem): Unit {
     let handlers = Rpc.make()
     handlers.add {helloRpc(_, _)}
@@ -36,9 +30,17 @@ buildMain(system: BuildSystem) {
     system.setAssets(assets)
 }
 
+
+browserMain(system: BrowserSystem): Unit {
+    let rpc = Rpc.httpClient(system.httpClient(), "/rpc/")
+    let response = rpc.call(HelloRpc("John"))
+    let window = system.js().global().get("window")
+    window.call1("alert", response)
+}
+
 data HelloRpc(name: String)
 instance HelloRpc: Rpc[String] {}
 
-helloRpc(nodeSystem: NodeSystem, input: HelloRpc): String {
-    "Hello, " + input.name
+helloRpc(nodeSystem: NodeSystem, message: HelloRpc): String {
+    "Hello, " + message.name
 }

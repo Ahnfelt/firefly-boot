@@ -14,6 +14,15 @@ extend self[I, O, C]: RpcHandlers[I, O, C] {
             handler(context, input)
         }
     }
+    
+    addCustom(
+        handler: (C, I) => O
+    ): Unit {
+        let name = "TODO"
+        self.handlers.set(name) {context, input =>
+            handler(context, input)
+        }
+    }
 }
 
 extend self[C]: RpcHandlers[Buffer, Buffer, C] {
@@ -29,14 +38,32 @@ extend self[C]: RpcHandlers[Buffer, Buffer, C] {
     }
 }
 
-http[I: Rpc[O]: Serializable, O: Serializable](
-    httpClient: HttpClient, 
-    prefix: String, 
-    message: I
-): O {
-    let name = "TODO"
-    let input = Serializable.serialize(message)
-    let response = httpClient.fetch(prefix + name, method = "POST", body = Some(HttpClient.bodyBuffer(input)))
-    let output = response.readBuffer()
-    Serializable.deserialize(output)
+capability RpcClient(
+    binaryCall: (String, Buffer) => Buffer
+)
+
+extend self: RpcClient {
+    call[I: Rpc[O]: Serializable, O: Serializable](
+        message: I
+    ): O {
+        let name = "TODO"
+        let input = Serializable.serialize(message)
+        let response = self.binaryCall(name, input)
+        Serializable.deserialize(response)
+    }
+}
+
+httpClient(
+    httpClient: HttpClient
+    prefix: String
+    method: String = "POST"
+): RpcClient {
+    RpcClient {name, buffer =>
+        let response = httpClient.fetch(
+            url = prefix + name, 
+            method = method, 
+            body = Some(HttpClient.bodyBuffer(buffer))
+        )
+        response.readBuffer()
+    }
 }
