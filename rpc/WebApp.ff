@@ -3,8 +3,8 @@ import Lux from ff:lux
 import Rpc
 
 nodeMain(system: NodeSystem): Unit {
-    let handlers = Rpc.make()
-    handlers.add {helloRpc(_, _)}
+    let rpcServer = Rpc.makeServer()
+    rpcServer.add {helloRpc(_, _)}
     
     WebServer.make(system, "localhost", 8080).listen {request =>
         if(request.readPath() == "/") {
@@ -14,7 +14,7 @@ nodeMain(system: NodeSystem): Unit {
             request.writeText("<script type='module' src='/js/ff/rpc/WebApp.mjs'></script>")
         } elseIf {request.readPath().startsWith("/rpc/")} {
             let name = request.readPath().dropFirst("/rpc/".size())
-            let output = handlers.handle(name, system, request.readBuffer()).grab()
+            let output = rpcServer.handle(name, system, request.readBuffer()).grab()
             request.writeHeader("Content-Type", "application/octet-stream")
             request.writeBuffer(output)
         } elseIf {request.readPath().startsWith("/js/") && !request.readPath().contains("..")} {

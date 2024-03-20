@@ -1,14 +1,14 @@
 trait I: Rpc[O] {}
 
-capability RpcHandlers[I, O, C](
+capability RpcServer[I, O, C](
     handlers: StringMap[(C, I) => O]
 )
 
-make[I, O, C](): RpcHandlers[I, O, C] {
-    RpcHandlers(StringMap.make())
+makeServer[I, O, C](): RpcServer[I, O, C] {
+    RpcServer(StringMap.make())
 }
 
-extend self[I, O, C]: RpcHandlers[I, O, C] {
+extend self[I, O, C]: RpcServer[I, O, C] {
     handle(name: String, context: C, input: I): Option[O] {
         self.handlers.get(name).map {handler =>
             handler(context, input)
@@ -25,7 +25,7 @@ extend self[I, O, C]: RpcHandlers[I, O, C] {
     }
 }
 
-extend self[C]: RpcHandlers[Buffer, Buffer, C] {
+extend self[C]: RpcServer[Buffer, Buffer, C] {
     add[I: Rpc[O]: HasAnyTag: Serializable, O: Serializable](
         handler: (C, I) => O
     ): Unit {
