@@ -1,3 +1,4 @@
 package ff:rpc:0.0.0
 dependency ff:webserver:0.0.0
 dependency ff:lux:0.0.0
+dependency ff:postgresql:0.0.0

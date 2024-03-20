@@ -1,5 +1,6 @@
 import WebServer from ff:webserver
 import Lux from ff:lux
+import Pg from ff:postgresql
 import Rpc
 
 nodeMain(system: NodeSystem): Unit {
@@ -14,7 +15,7 @@ nodeMain(system: NodeSystem): Unit {
             request.writeText("<script type='module' src='/js/ff/rpc/WebApp.mjs'></script>")
         } elseIf {request.readPath().startsWith("/rpc/")} {
             let name = request.readPath().dropFirst("/rpc/".size())
-            let output = rpcServer.handle(name, system, request.readBuffer()).grab()
+            let output = rpcServer.handle(name, throw(""), request.readBuffer()).grab()
             request.writeHeader("Content-Type", "application/octet-stream")
             request.writeBuffer(output)
         } elseIf {request.readPath().startsWith("/js/") && !request.readPath().contains("..")} {
@@ -47,7 +48,7 @@ renderHello(lux: Lux, rpc: RpcClient) {
                 lux.text("Loading...")
             }
         } {lux =>
-            let greeting = rpc.call(HelloRpc("John"))
+            let greeting = rpc.call(HelloRpc(userId = 42))
             lux.div {
                 lux.text(greeting)
             }
@@ -55,9 +56,17 @@ renderHello(lux: Lux, rpc: RpcClient) {
     }
 }
 
-data HelloRpc(name: String)
+data HelloRpc(userId: Int)
 instance HelloRpc: Rpc[String] {}
 
-helloRpc(nodeSystem: NodeSystem, message: HelloRpc): String {
-    "Hello from the server, " + message.name
+helloRpc(pool: PgPool, message: HelloRpc): String {
+    let name = pool.transaction {transaction =>
+        transaction.statement(
+            "select name from users where id = $id"
+        ).withInt("id", message.userId).map {row =>
+            row.getString("name").grab()
+        }.grabFirst()
+    }
+    "Hello from the server, " + name
 }
+
