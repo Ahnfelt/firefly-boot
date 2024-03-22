@@ -1,0 +1,213 @@
+data Json {}
+
+read(json: String): Option[Json]
+    target js sync """
+        try {
+            return ff_core_Option.Some(JSON.parse(json_));
+        } catch(e) {
+            return ff_core_Option.None();
+        }
+    """
+
+write(json: Json, space: Option[String] = None): String
+    target js sync """
+        return JSON.stringify(json_, null, space_.value_);
+    """
+
+string(json: String): Json
+    target js sync """
+        return json_;
+    """
+
+int(json: Int): Json
+    target js sync """
+        return json_;
+    """
+
+float(json: Float): Json
+    target js sync """
+        return json_;
+    """
+
+bool(json: Bool): Json
+    target js sync """
+        return json_;
+    """
+
+null(): Json
+    target js sync """
+        return null;
+    """
+
+array(json: Array[Json]): Json
+    target js sync """
+        return json_;
+    """
+
+list(json: List[Json]): Json {
+    array(json.toArray())
+}
+
+object(): Json
+    target js sync """
+        return {};
+    """
+
+extend self: Json {
+    
+    with(field: String, value: Json)
+        target js sync """
+            if(typeof self_ !== 'object' || self_ === null || Array.isArray(self_)) {
+                throw new Error('Not an object: ' + JSON.stringify(self_));
+            }
+            return {...self_, [field_]: value_};
+        """
+        
+    merge(that: Json)
+        target js sync """
+            if(typeof self_ !== 'object' || self_ === null || Array.isArray(self_)) {
+                throw new Error('Not an object: ' + JSON.stringify(self_));
+            }
+            if(typeof that_ !== 'object' || that_ === null || Array.isArray(that_)) {
+                throw new Error('Not an object: ' + JSON.stringify(that_));
+            }
+            return {...self_, ...that_};
+        """
+
+    grabString(): String
+        target js sync """
+            if(typeof self_ !== 'string') throw new Error('Not a string: ' + JSON.stringify(self_));
+            return self_;
+        """
+
+    grabInt(): Int
+        target js sync """
+            if(!Number.isSafeInteger(self_)) throw new Error('Not an int: ' + JSON.stringify(self_));
+            return Math.trunc(self_);
+        """
+
+    grabFloat(): Float
+        target js sync """
+            if(typeof self_ !== 'number') throw new Error('Not a float: ' + JSON.stringify(self_));
+            return self_;
+        """
+
+    grabBool(): Bool
+        target js sync """
+            if(self_ === true) return true;
+            if(self_ === false) return false;
+            throw new Error('Not a bool: ' + JSON.stringify(self_));
+        """
+
+    grabArray(): Array[Json]
+        target js sync """
+            if(!Array.isArray(self_)) throw new Error('Not an array: ' + JSON.stringify(self_));
+            return self_;
+        """
+
+    isString(): Bool
+        target js sync """
+            return typeof self_ === 'string';
+        """
+
+    isInt(): Bool
+        target js sync """
+            return Number.isSafeInteger(self_);
+        """
+
+    isFloat(): Bool
+        target js sync """
+            return typeof self_ === 'number';
+        """
+
+    isBool(): Bool
+        target js sync """
+            return typeof self_ === 'boolean';
+        """
+
+    isArray(): Bool
+        target js sync """
+            return Array.isArray(self_);
+        """
+
+    isObject(): Bool
+        target js sync """
+            return typeof self_ === 'object' && self_ !== null && !Array.isArray(self_);
+        """
+
+    isNull(): Bool
+        target js sync """
+            return typeof self_ === null;
+        """
+
+    field(key: String): Json
+        target js sync """
+            return typeof self_ === 'object' && self_ !== null && !Array.isArray(self_) && Object.hasOwn(self_, key_)
+                ? self_[key_] : null;
+        """
+
+    index(key: Int): Json
+        target js sync """
+            return typeof self_ === 'array' ? self_[key] ?? null : null;
+        """
+
+    getField(key: String): Option[Json]
+        target js sync """
+            return typeof self_ === 'object' && self_ !== null && !Array.isArray(self_) && Object.hasOwn(self_, key_)
+                ? ff_core_Option.Some(self_[key_]) : ff_core_Option.None();
+        """
+
+    getIndex(key: Int): Option[Json]
+        target js sync """
+            return typeof self_ === 'array' ? ff_core_Option.Some(self_[key_] ?? null) : ff_core_Option.None();
+        """
+        
+    getFields(): Option[Array[String]]
+        target js sync """
+            return typeof self_ === 'object' && self_ !== null && !Array.isArray(self_)
+                ? ff_core_Option.Some(Object.keys(self_)) : ff_core_Option.None();
+        """
+
+    grabField(key: String): Json {
+        self.getField(key).else {
+            throw(GrabException())
+        }
+    }
+
+    grabIndex(key: Int): Json {
+        self.getIndex(key).else {
+            throw(GrabException())
+        }
+    }
+    
+    grabFields(): Array[String] {
+        self.getFields().else {
+            throw(GrabException())
+        }
+    }
+
+    map[T](body: (String, Json) => T): Array[T] {
+        let stack = Stack.make()
+        self.each {field, value => stack.push(body(field, value))}
+        stack.drain()
+    }
+    
+    each(body: (String, Json) => Unit) {
+        if(!self.isObject()) {throw(GrabException())}
+        internalEach(self, body)
+    }
+
+    eachWhile(body: (String, Json) => Bool) {
+        if(!self.isObject()) {throw(GrabException())}
+        internalEachWhile(self, body)
+    }
+
+}
+
+internalEach(self: Json, body: (String, Json) => Unit): Unit
+    target js sync "for(const [key, value] of Object.entries(self_)) body_(key, value)"
+    target js async "for(const [key, value] of Object.entries(self_)) await body_(key, value, $task)"
+
+internalEachWhile(self: Json, body: (String, Json) => Bool): Unit
+    target js sync "for(const [key, value] of Object.entries(self_)) if(!body_(key, value)) break"
+    target js async "for(const [key, value] of Object.entries(self_)) if(!await body_(key, value, $task)) break"
