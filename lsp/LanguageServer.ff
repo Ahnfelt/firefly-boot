@@ -8,13 +8,13 @@ data BadRequestException(reason: String)
 
 capability Request(
     headers: Map[String, String]
-    object: JsValue
+    object: Json
 )
 
 capability RequestMessage(
     id: Option[MessageId] // None when the request is a Notification Message
     method: String
-    parameters: Map[String, JsValue]
+    parameters: Map[String, Json]
 )
 
 logMessages = False
@@ -31,11 +31,11 @@ main(system: NodeSystem) {
     let handler = Handler(fireflyPath, None, Map.empty(), [].toSet(), Map.empty(), Map.empty())
     try {
         mutable input = system.readStream()
-        let responseChannel: Channel[Pair[JsValue, String]] = system.mainTask().channel()
+        let responseChannel: Channel[Pair[Json, String]] = system.mainTask().channel()
         system.mainTask().spawn {_ =>
             while {True} {
                 let body = responseChannel.read()
-                let json = body.first.toJson(Some("    ")).toBuffer()
+                let json = body.first.write(Some("    ")).toBuffer()
                 logDirectory.each {logMessage(_, "response", body.first, body.second)}
                 system.writeText("Content-Length: " + json.size() + "\r\n\r\n")
                 system.writeBuffer(json)
@@ -153,31 +153,29 @@ parseRequestHeaders(input: Stream[Buffer]): Pair[Map[String, String], Stream[Buf
     Pair(map, [buffer.view(offset, buffer.size())].toStream().addAll(input))
 }
 
-parseRequestBody(js: JsSystem, contentLength: Int, input: Stream[Buffer]): Pair[JsValue, Stream[Buffer]] {
+parseRequestBody(js: JsSystem, contentLength: Int, input: Stream[Buffer]): Pair[Json, Stream[Buffer]] {
     let bodyPair = try {
         input.readBytes(contentLength) // Should Stream.readBytes return an option?
     } catchAny {error =>
         throw(BadRequestException("End of input while parsing request body"))
     } grab()
     let body = Buffer.fromBufferArray(bodyPair.first).toString()
-    let json = try {
-        js.parseJson(body)
-    } catchAny {error =>
+    let json = Json.read(body).else {
         throw(BadRequestException("Invalid JSON in request body: " + body))
-    } grab()
+    }
     Pair(json, bodyPair.second)
 }
 
-parseRequestMessage(object: JsValue): RequestMessage {
-    let id = object.getOwn("id").map {parseMessageId(_)}
+parseRequestMessage(object: Json): RequestMessage {
+    let id = object.getField("id").map {parseMessageId(_)}
 
-    let method = object.getOwn("method").{
+    let method = object.getField("method").{
         | None => throw(BadRequestException("Bad JSON-RPC, missing method"))
         | Some(m) {!m.isString()} => throw(BadRequestException("Bad JSON-RPC method, string expected"))
         | Some(m) => m.grabString()
     }
 
-    let parameters = object.getOwn("params").{
+    let parameters = object.getField("params").{
         | None => [].toMap()
         | Some(o) {!o.isObject()} => throw(BadRequestException("Bad JSON-RPC params, object expected"))
         | Some(o) => o.grabMap()
@@ -186,7 +184,7 @@ parseRequestMessage(object: JsValue): RequestMessage {
     RequestMessage(id, method, parameters)
 }
 
-parseMessageId(id: JsValue): MessageId {
+parseMessageId(id: Json): MessageId {
     if(id.isInt()) {
         MessageIdInt(id.grabInt())
     } elseIf {id.isString()} {
@@ -196,7 +194,7 @@ parseMessageId(id: JsValue): MessageId {
     }
 }
 
-handleRequestMessage(system: NodeSystem, handler: Handler, message: RequestMessage): Option[JsValue] {
+handleRequestMessage(system: NodeSystem, handler: Handler, message: RequestMessage): Option[Json] {
     try {
         message.id.{
             | None {message.method == "$/cancelRequest"} => // TODO: Needs to read ahead to cancel anything
@@ -220,7 +218,7 @@ handleRequestMessage(system: NodeSystem, handler: Handler, message: RequestMessa
     } grab()
 }
 
-makeResponseMessage(js: JsSystem, id: MessageId, result: ResultOrError): JsValue {
+makeResponseMessage(js: JsSystem, id: MessageId, result: ResultOrError): Json {
     let o = js.object()
     o.set("jsonrpc", "2.0")
     id.{
@@ -239,7 +237,7 @@ makeResponseMessage(js: JsSystem, id: MessageId, result: ResultOrError): JsValue
     o
 }
 
-logMessage(directory: Path, messageType: String, body: JsValue, method: String) {
+logMessage(directory: Path, messageType: String, body: Json, method: String) {
     let id = if(method == "$/cancelRequest") {
         Some(body.get("params").get("id").grabInt())
     } else {

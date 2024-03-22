@@ -9,11 +9,6 @@ read(json: String): Option[Json]
         }
     """
 
-write(json: Json, space: Option[String] = None): String
-    target js sync """
-        return JSON.stringify(json_, null, space_.value_);
-    """
-
 string(json: String): Json
     target js sync """
         return json_;
@@ -55,6 +50,11 @@ object(): Json
 
 extend self: Json {
     
+    write(space: Option[String] = None): String
+        target js sync """
+            return JSON.stringify(self_, null, space_.value_);
+        """
+
     with(field: String, value: Json)
         target js sync """
             if(typeof self_ !== 'object' || self_ === null || Array.isArray(self_)) {
@@ -104,6 +104,38 @@ extend self: Json {
             if(!Array.isArray(self_)) throw new Error('Not an array: ' + JSON.stringify(self_));
             return self_;
         """
+        
+    grabMap(): Map[String, Json] {
+        mutable map = Map.empty()
+        self.each {key, value => 
+            map = map.add(key, value)
+        }
+        map
+    }
+
+    getString(): Option[String] {
+        if(self.isString()) {self.grabString()}
+    }
+
+    getInt(): Option[Int] {
+        if(self.isInt()) {self.grabInt()}
+    }
+
+    gretFloat(): Option[Float] {
+        if(self.isFloat()) {self.grabFloat()}
+    }
+
+    getBool(): Option[Bool] {
+        if(self.isBool()) {self.grabBool()}
+    }
+
+    getArray() {
+        if(self.isArray()) {self.grabArray()}
+    }
+
+    getMap(): Option[Map[String, Json]] {
+        if(self.isObject()) {self.grabMap()}
+    }
 
     isString(): Bool
         target js sync """
