@@ -46,6 +46,8 @@ import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
+import * as ff_core_Json from "../../ff/core/Json.mjs"
+
 import * as ff_core_List from "../../ff/core/List.mjs"
 
 import * as ff_core_Lock from "../../ff/core/Lock.mjs"
@@ -129,6 +131,10 @@ export function JsSystem_array(self_, values_) {
 return ff_core_List.List_toArray(values_)
 }
 
+export function JsSystem_json(self_, value_) {
+return value_
+}
+
 export function JsSystem_function0(self_, body_) {
 return body_
 }
@@ -195,6 +201,10 @@ throw new Error('Function JsSystem_object is missing on this target in async con
 
 export async function JsSystem_array$(self_, values_, $task) {
 throw new Error('Function JsSystem_array is missing on this target in async context.');
+}
+
+export async function JsSystem_json$(self_, value_, $task) {
+throw new Error('Function JsSystem_json is missing on this target in async context.');
 }
 
 export async function JsSystem_function0$(self_, body_, $task) {

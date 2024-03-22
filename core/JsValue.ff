@@ -25,6 +25,11 @@ extend self: JsValue {
             if(!(self_ instanceof DataView)) throw new Error('Expected buffer, got '+ typeof self_);
             return self_
         """
+        
+    grabJson(): Json
+        target js sync """
+            return self_
+        """
 
     equals[V: IsJsValue](value: V): Bool
         target js sync "return self_ === value_"

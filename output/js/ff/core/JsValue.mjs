@@ -46,6 +46,8 @@ import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
+import * as ff_core_Json from "../../ff/core/Json.mjs"
+
 import * as ff_core_List from "../../ff/core/List.mjs"
 
 import * as ff_core_Lock from "../../ff/core/Lock.mjs"
@@ -128,6 +130,12 @@ return self_
 export function JsValue_grabBuffer(self_) {
 
             if(!(self_ instanceof DataView)) throw new Error('Expected buffer, got '+ typeof self_);
+            return self_
+        
+}
+
+export function JsValue_grabJson(self_) {
+
             return self_
         
 }
@@ -423,6 +431,10 @@ throw new Error('Function JsValue_grabArray is missing on this target in async c
 
 export async function JsValue_grabBuffer$(self_, $task) {
 throw new Error('Function JsValue_grabBuffer is missing on this target in async context.');
+}
+
+export async function JsValue_grabJson$(self_, $task) {
+throw new Error('Function JsValue_grabJson is missing on this target in async context.');
 }
 
 export async function JsValue_equals$(self_, value_, ff_core_JsValue_IsJsValue$V, $task) {

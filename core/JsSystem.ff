@@ -22,6 +22,9 @@ extend self: JsSystem {
 
     array(values: List[JsValue]): JsValue
         target js sync "return ff_core_List.List_toArray(values_)"
+        
+    json(value: Json): JsValue
+        target js sync "return value_"
 
     function0[R](body: () => R): JsValue
         target js sync "return body_"
