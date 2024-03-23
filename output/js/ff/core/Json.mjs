@@ -163,7 +163,7 @@ export function fields_(body_) {
     
 }
 
-export function internalWith_(field_, json_) {
+export function internalWith_(self_, field_, json_) {
 
         if(typeof self_ !== 'object' || self_ === null || Array.isArray(self_)) {
             throw new Error('Not an object: ' + JSON.stringify(self_));
@@ -291,7 +291,7 @@ export async function fields_$(body_, $task) {
     
 }
 
-export async function internalWith_$(field_, json_, $task) {
+export async function internalWith_$(self_, field_, json_, $task) {
 throw new Error('Function internalWith is missing on this target in async context.');
 }
 
@@ -318,7 +318,7 @@ export function Json_write(self_, indentation_ = ff_core_Option.None()) {
 }
 
 export function Json_with(self_, field_, value_, ff_core_Json_JsonLike$T) {
-return ff_core_Json.internalWith_(field_, ff_core_Json_JsonLike$T.toJson_(value_))
+return ff_core_Json.internalWith_(self_, field_, ff_core_Json_JsonLike$T.toJson_(value_))
 }
 
 export function Json_merge(self_, that_) {
@@ -547,7 +547,7 @@ throw new Error('Function Json_write is missing on this target in async context.
 }
 
 export async function Json_with$(self_, field_, value_, ff_core_Json_JsonLike$T, $task) {
-return ff_core_Json.internalWith_(field_, ff_core_Json_JsonLike$T.toJson_(value_))
+return ff_core_Json.internalWith_(self_, field_, ff_core_Json_JsonLike$T.toJson_(value_))
 }
 
 export async function Json_merge$(self_, that_, $task) {

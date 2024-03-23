@@ -68,7 +68,7 @@ extend self: Json {
         """
 
     with[T: JsonLike](field: String, value: T): Json {
-        internalWith(field, toJson(value))
+        internalWith(self, field, toJson(value))
     }
         
     merge(that: Json): Json
@@ -255,7 +255,7 @@ extend self: Json {
 
 }
 
-internalWith(field: String, json: Json): Json
+internalWith(self: Json, field: String, json: Json): Json
     target js sync """
         if(typeof self_ !== 'object' || self_ === null || Array.isArray(self_)) {
             throw new Error('Not an object: ' + JSON.stringify(self_));
