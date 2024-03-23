@@ -313,7 +313,7 @@ throw new Error('Function internalCompare is missing on this target in async con
 
 export function Json_write(self_, indentation_ = ff_core_Option.None()) {
 
-            return JSON.stringify(self_, null, space_.value_);
+            return JSON.stringify(self_, null, indentation_.value_);
         
 }
 
