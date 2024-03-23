@@ -163,7 +163,7 @@ export function fields_(body_) {
     
 }
 
-export function internalWith_(self_, field_, json_) {
+export function internalWith_(self_, field_, value_) {
 
         if(typeof self_ !== 'object' || self_ === null || Array.isArray(self_)) {
             throw new Error('Not an object: ' + JSON.stringify(self_));
@@ -291,7 +291,7 @@ export async function fields_$(body_, $task) {
     
 }
 
-export async function internalWith_$(self_, field_, json_, $task) {
+export async function internalWith_$(self_, field_, value_, $task) {
 throw new Error('Function internalWith is missing on this target in async context.');
 }
 
