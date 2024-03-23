@@ -323,3 +323,99 @@ instance List[T: JsonLike]: JsonLike {
     toJson(value: List[T]): Json {list(value.map(toJson))}
     fromJson(json: Json): Option[List[T]] {fromJson[Array[T]](json).map {_.toList()}}
 }
+
+
+instance Json: HasAnyTag {
+    anyTag(): AnyTag[Json] {Any.internalAnyTag("ff:core/Json.Json[]")}
+}
+
+instance Json: Show {
+    show(value: Json): String {value.write(Some("    "))}
+}
+
+instance Json: Equal {
+    equals(a: Json, b: Json): Bool {
+        internalEquals(a, b)
+    }
+}
+
+instance Json: Order {
+    compare(a: Json, b: Json): Ordering {
+        Ordering.fromInt(internalCompare(a, b))
+    }
+}
+
+instance Json: Serializable {
+    serializeUsing(serialization: Serialization, value: Json): Unit {
+        Serializable.serializeUsing(serialization, value.write())
+    }
+    deserializeUsing(serialization: Serialization): Json {
+        Json.read(Serializable.deserializeUsing[String](serialization)).grab()
+    }
+}
+
+
+internalEquals(a: Json, b: Json): Bool
+    target js sync """
+        if(a_ === b_) {
+            return true;
+        } else if(Array.isArray(a_) || Array.isArray(b_)) {
+            if(!Array.isArray(a_) || !Array.isArray(b_)) return false;
+            if(a_.length !== b_.length) return false;
+            for(let i = 0; i < a_.length; i++) {
+                if(!internalEquals_(a_[i], b_[i])) return false;
+            }
+            return true;
+        } else if(typeof a_ === 'object' && typeof b_ === 'object' && a_ !== null && b_ !== null) {
+            const aKeys = Object.keys(a_);
+            const bKeys = Object.keys(b_);
+            if(aKeys.length !== bKeys.length) return false;
+            for(const key of aKeys) {
+                if(!Object.hasOwn(b_, key) || !internalEquals_(a_[key], b_[key])) return false;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    """
+
+internalCompare(a: Json, b: Json): Int
+    target js sync """
+        if(a_ === b_) {
+            return 0;
+        } else if (a_ === null || b_ === null) {
+            return a_ === null ? -1 : 1;
+        } else if (typeof a_ === 'boolean' || typeof b_ === 'boolean') {
+            if(typeof b_ !== 'boolean') return -1;
+            if(typeof a_ !== 'boolean') return 1;
+            return a_ < b_ ? -1 : 1;
+        } else if (typeof a_ === 'number' || typeof b_ === 'number') {
+            if(typeof b_ !== 'number') return -1;
+            if(typeof a_ !== 'number') return 1;
+            if(isNaB(a_)) return isNaB(b_) ? 0 : -1;
+            if(isNaB(b_)) return 1;
+            return a_ < b_ ? -1 : 1;
+        } else if (typeof a_ === 'string' || typeof b_ === 'string') {
+            if(typeof b_ !== 'string') return -1;
+            if(typeof a_ !== 'string') return 1;
+            return a_.localeCompare(b_, 'en');
+        } else if(Array.isArray(a_) || Array.isArray(b_)) {
+            if(!Array.isArray(a_) || !Array.isArray(b_)) return a_ < b_ ? -1 : 1;
+            const length = Math.min(a_.length, b_.length);
+            for(let i = 0; i < length; i++) {
+                const cmp = internalCompare_(a_[i], b_[i]);
+                if(cmp !== 0) return cmp;
+            }
+            return a_.length - b_.length;
+        } else {
+            const aKeys = Object.keys(a_).sort();
+            const bKeys = Object.keys(b_).sort();
+            const keyResult = internalCompare_(aKeys, bKeys);
+            if(keyResult !== 0) return keyResult;
+            for(const key of aKeys) {
+                const result = internalCompare_(a_[key], b_[key]);
+                if(result !== 0) return result;
+            }
+            return 0;
+        }
+    """

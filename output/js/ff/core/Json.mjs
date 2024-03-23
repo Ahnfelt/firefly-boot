@@ -180,6 +180,73 @@ export function internalEachWhile_(self_, body_) {
 for(const [key, value] of Object.entries(self_)) if(!body_(key, value)) break
 }
 
+export function internalEquals_(a_, b_) {
+
+        if(a_ === b_) {
+            return true;
+        } else if(Array.isArray(a_) || Array.isArray(b_)) {
+            if(!Array.isArray(a_) || !Array.isArray(b_)) return false;
+            if(a_.length !== b_.length) return false;
+            for(let i = 0; i < a_.length; i++) {
+                if(!internalEquals_(a_[i], b_[i])) return false;
+            }
+            return true;
+        } else if(typeof a_ === 'object' && typeof b_ === 'object' && a_ !== null && b_ !== null) {
+            const aKeys = Object.keys(a_);
+            const bKeys = Object.keys(b_);
+            if(aKeys.length !== bKeys.length) return false;
+            for(const key of aKeys) {
+                if(!Object.hasOwn(b_, key) || !internalEquals_(a_[key], b_[key])) return false;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    
+}
+
+export function internalCompare_(a_, b_) {
+
+        if(a_ === b_) {
+            return 0;
+        } else if (a_ === null || b_ === null) {
+            return a_ === null ? -1 : 1;
+        } else if (typeof a_ === 'boolean' || typeof b_ === 'boolean') {
+            if(typeof b_ !== 'boolean') return -1;
+            if(typeof a_ !== 'boolean') return 1;
+            return a_ < b_ ? -1 : 1;
+        } else if (typeof a_ === 'number' || typeof b_ === 'number') {
+            if(typeof b_ !== 'number') return -1;
+            if(typeof a_ !== 'number') return 1;
+            if(isNaB(a_)) return isNaB(b_) ? 0 : -1;
+            if(isNaB(b_)) return 1;
+            return a_ < b_ ? -1 : 1;
+        } else if (typeof a_ === 'string' || typeof b_ === 'string') {
+            if(typeof b_ !== 'string') return -1;
+            if(typeof a_ !== 'string') return 1;
+            return a_.localeCompare(b_, 'en');
+        } else if(Array.isArray(a_) || Array.isArray(b_)) {
+            if(!Array.isArray(a_) || !Array.isArray(b_)) return a_ < b_ ? -1 : 1;
+            const length = Math.min(a_.length, b_.length);
+            for(let i = 0; i < length; i++) {
+                const cmp = internalCompare_(a_[i], b_[i]);
+                if(cmp !== 0) return cmp;
+            }
+            return a_.length - b_.length;
+        } else {
+            const aKeys = Object.keys(a_).sort();
+            const bKeys = Object.keys(b_).sort();
+            const keyResult = internalCompare_(aKeys, bKeys);
+            if(keyResult !== 0) return keyResult;
+            for(const key of aKeys) {
+                const result = internalCompare_(a_[key], b_[key]);
+                if(result !== 0) return result;
+            }
+            return 0;
+        }
+    
+}
+
 export async function read_$(json_, $task) {
 throw new Error('Function read is missing on this target in async context.');
 }
@@ -234,6 +301,14 @@ for(const [key, value] of Object.entries(self_)) await body_(key, value, $task)
 
 export async function internalEachWhile_$(self_, body_, $task) {
 for(const [key, value] of Object.entries(self_)) if(!await body_(key, value, $task)) break
+}
+
+export async function internalEquals_$(a_, b_, $task) {
+throw new Error('Function internalEquals is missing on this target in async context.');
+}
+
+export async function internalCompare_$(a_, b_, $task) {
+throw new Error('Function internalCompare is missing on this target in async context.');
 }
 
 export function Json_write(self_, space_ = ff_core_Option.None()) {
@@ -865,5 +940,56 @@ return ff_core_Array.Array_toList(_w1)
 }))
 }
 }}
+
+export const ff_core_Any_HasAnyTag$ff_core_Json_Json = {
+anyTag_() {
+return ff_core_Any.internalAnyTag_("ff:core/Json.Json[]")
+},
+async anyTag_$($task) {
+return ff_core_Any.internalAnyTag_("ff:core/Json.Json[]")
+}
+};
+
+export const ff_core_Show_Show$ff_core_Json_Json = {
+show_(value_) {
+return ff_core_Json.Json_write(value_, ff_core_Option.Some("    "))
+},
+async show_$(value_, $task) {
+return ff_core_Json.Json_write(value_, ff_core_Option.Some("    "))
+}
+};
+
+export const ff_core_Equal_Equal$ff_core_Json_Json = {
+equals_(a_, b_) {
+return ff_core_Json.internalEquals_(a_, b_)
+},
+async equals_$(a_, b_, $task) {
+return ff_core_Json.internalEquals_(a_, b_)
+}
+};
+
+export const ff_core_Ordering_Order$ff_core_Json_Json = {
+compare_(a_, b_) {
+return ff_core_Ordering.fromInt_(ff_core_Json.internalCompare_(a_, b_))
+},
+async compare_$(a_, b_, $task) {
+return ff_core_Ordering.fromInt_(ff_core_Json.internalCompare_(a_, b_))
+}
+};
+
+export const ff_core_Serializable_Serializable$ff_core_Json_Json = {
+serializeUsing_(serialization_, value_) {
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, ff_core_Json.Json_write(value_, ff_core_Option.None()))
+},
+deserializeUsing_(serialization_) {
+return ff_core_Option.Option_grab(ff_core_Json.read_(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_)))
+},
+async serializeUsing_$(serialization_, value_, $task) {
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, ff_core_Json.Json_write(value_, ff_core_Option.None()))
+},
+async deserializeUsing_$(serialization_, $task) {
+return ff_core_Option.Option_grab(ff_core_Json.read_(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_)))
+}
+};
 
 
