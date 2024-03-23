@@ -180,6 +180,14 @@ extend self[T]: Array[T] {
             }
             return result;
         """
+        
+    flatMap[S](body: T => Array[S]): Array[S] {
+        let results = Stack.make()
+        self.each {x =>
+            results.pushArray(body(x))
+        }
+        results.drain()
+    }
 
     sortBy[S: Order](body: T => S): Array[T] {
         self.sortWith {Ordering.compare(body(_), body(_))}

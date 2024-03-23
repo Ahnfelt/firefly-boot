@@ -313,6 +313,14 @@ export function Array_map(self_, body_) {
         
 }
 
+export function Array_flatMap(self_, body_) {
+const results_ = ff_core_Stack.make_();
+ff_core_Array.Array_each(self_, ((x_) => {
+ff_core_Stack.Stack_pushArray(results_, body_(x_))
+}));
+return ff_core_Stack.Stack_drain(results_)
+}
+
 export function Array_sortBy(self_, body_, ff_core_Ordering_Order$S) {
 return ff_core_Array.Array_sortWith(self_, ((_w1, _w2) => {
 return ff_core_Ordering_Order$S.compare_(body_(_w1), body_(_w2))
@@ -474,6 +482,14 @@ export async function Array_map$(self_, body_, $task) {
             }
             return result;
         
+}
+
+export async function Array_flatMap$(self_, body_, $task) {
+const results_ = ff_core_Stack.make_();
+(await ff_core_Array.Array_each$(self_, (async (x_, $task) => {
+ff_core_Stack.Stack_pushArray(results_, (await body_(x_, $task)))
+}), $task));
+return ff_core_Stack.Stack_drain(results_)
 }
 
 export async function Array_sortBy$(self_, body_, ff_core_Ordering_Order$S, $task) {

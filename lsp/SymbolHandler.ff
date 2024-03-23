@@ -50,18 +50,18 @@ readSymbol(hooks: List[ResultHook]): Result[DocumentSymbol] {
         }
 }
 
-handleDocumentSymbol(system: NodeSystem, resultHooks: List[ResultHook]): List[JsValue] {
+handleDocumentSymbol(system: NodeSystem, resultHooks: List[ResultHook]): List[Json] {
     let symbols = readAllSymbols(resultHooks)
-    symbols.map {documentSymbolToLsp(system.js(), _)}
+    symbols.map {documentSymbolToLsp(_)}
 }
 
-handleWorkspaceSymbol(system: NodeSystem, resultHooks: List[ResultHook], query: String): List[JsValue] {
+handleWorkspaceSymbol(system: NodeSystem, resultHooks: List[ResultHook], query: String): List[Json] {
     let documentSymbols = readAllSymbols(resultHooks)
     let workspaceSymbols = documentSymbols.flatMap {documentToWorkspaceSymbols(_, None)}
     let foundSymbols = workspaceSymbols.filter {_.name.startsWith(query)}
     //Log.trace("handleWorkspaceSymbol")
     //workspaceSymbols.each {Log.show(_)}
-    let jsSymbols = foundSymbols.map {workspaceSymbolToLsp(system.js(), system.path("."), _)}
+    let jsSymbols = foundSymbols.map {workspaceSymbolToLsp(system.path("."), _)}
     //workspaceSymbolsJs.each {Log.trace(_.toJson(None))}
     jsSymbols
 }
@@ -90,22 +90,22 @@ showPosition(at: Location): String {
     at.line + ":" + at.column
 }
 
-documentSymbolToLsp(js: JsSystem, symbol: DocumentSymbol): JsValue {
-    js.object()
+documentSymbolToLsp(symbol: DocumentSymbol): Json {
+    Json.object()
         .with("name", symbol.name)
         .with("kind", symbol.kind)
-        .with("range", locationsToLspRange(js, symbol.start, symbol.end))
-        .with("selectionRange", locationsToLspRange(js, symbol.selectionStart, symbol.selectionEnd))
-        .with("children", js.array(symbol.children.map {documentSymbolToLsp(js, _)}))
+        .with("range", locationsToLspRange(symbol.start, symbol.end))
+        .with("selectionRange", locationsToLspRange(symbol.selectionStart, symbol.selectionEnd))
+        .with("children", symbol.children.toArray().map {documentSymbolToLsp(_)})
 }
 
-workspaceSymbolToLsp(js: JsSystem, rootPath: Path, symbol: WorkspaceSymbol): JsValue {
-    let o = js.object()
+workspaceSymbolToLsp(rootPath: Path, symbol: WorkspaceSymbol): Json {
+    let o = Json.object()
         .with("name", symbol.name)
         .with("kind", symbol.kind)
-        .with("location", js.object()
+        .with("location", Json.object()
             .with("uri", rootPath.path(symbol.selectionStart.file).url())
-            .with("range", locationsToLspRange(js, symbol.selectionStart, symbol.selectionEnd))
+            .with("range", locationsToLspRange(symbol.selectionStart, symbol.selectionEnd))
         )
     symbol.containerName.{
         | Some(n) => o.with("containerName", n)
@@ -113,13 +113,13 @@ workspaceSymbolToLsp(js: JsSystem, rootPath: Path, symbol: WorkspaceSymbol): JsV
     }   
 }
 
-locationsToLspRange(js: JsSystem, start: Location, end: Location): JsValue {
-    js.object()
-        .with("start", js.object()
+locationsToLspRange(start: Location, end: Location): Json {
+    Json.object()
+        .with("start", Json.object()
             .with("line", start.line - 1)
             .with("character", start.column - 1)
         )
-        .with("end", js.object()
+        .with("end", Json.object()
             .with("line", end.line - 1)
             .with("character", end.column - 1)
         )

@@ -4,8 +4,7 @@ import Environment from ff:compiler
 import Syntax from ff:compiler
 import Handler
 
-handleGoToDefinition(system: NodeSystem, handler: Handler, lspHook: LspHook): JsValue {
-    let js = system.js()
+handleGoToDefinition(system: NodeSystem, handler: Handler, lspHook: LspHook): Json {
     let definedAt = lspHook.results().collect {
         | ResolveSymbolHook h => Some(h.symbol.definedAt)
         | ResolveTypeHook h => Some(h.symbol.definedAt)
@@ -31,11 +30,10 @@ handleGoToDefinition(system: NodeSystem, handler: Handler, lspHook: LspHook): Js
     definedAt.first().map {at =>
         let token = handler.findToken(system, at)
         handler.tokenLocationToLspLocation(system, token)
-    }.else {js.null()}
+    }.else {Json.null()}
 }
 
-handleHover(system: NodeSystem, handler: Handler, lspHook: LspHook): JsValue {
-    let js = system.js()
+handleHover(system: NodeSystem, handler: Handler, lspHook: LspHook): Json {
     let typeAndEffect = lspHook.results().collectFirst {
         | InferLookupHook h {h.instantiated.value | Some(instantiated)} => 
             let t = h.unification.substitute(instantiated.scheme.signature.returnType)
@@ -73,10 +71,9 @@ handleHover(system: NodeSystem, handler: Handler, lspHook: LspHook): JsValue {
             | TConstructor(_, "Q$", _) => "*This call may be asynchronous.*"
             | _ => ""
         }
-        js.object().with("contents", 
-            js.object()
-                .with("kind", "markdown")
-                .with("value", "```\n" + t.show([]) + "\n```\n" + extra)
+        Json.object().with("contents", Json.object()
+            .with("kind", "markdown")
+            .with("value", "```\n" + t.show([]) + "\n```\n" + extra)
         )
-    }.else {js.null()}
+    }.else {Json.null()}
 }

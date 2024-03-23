@@ -65,7 +65,7 @@ main(system: NodeSystem) {
                             Error(-32603, "Internal error")
                         }
                         message.id.each {id => 
-                            let body = makeResponseMessage(system.js(), id, problem)
+                            let body = makeResponseMessage(id, problem)
                             responseChannel.write(Pair(body, message.method))
                         }
                     } grab()
@@ -106,7 +106,7 @@ parseRequest(system: NodeSystem, input: Stream[Buffer]): Pair[Request, Stream[Bu
     let contentLength = headers
         .get("content-length").else {throw(BadRequestException("'content-length' header is missing"))}
         .getInt().else {throw(BadRequestException("Value for 'content-length' is not an integer"))}
-    let bodyPair = parseRequestBody(system.js(), contentLength, headersPair.second)
+    let bodyPair = parseRequestBody(contentLength, headersPair.second)
     bodyPair.mapFirst {body => Request(headers, body)}
 }
 
@@ -153,7 +153,7 @@ parseRequestHeaders(input: Stream[Buffer]): Pair[Map[String, String], Stream[Buf
     Pair(map, [buffer.view(offset, buffer.size())].toStream().addAll(input))
 }
 
-parseRequestBody(js: JsSystem, contentLength: Int, input: Stream[Buffer]): Pair[Json, Stream[Buffer]] {
+parseRequestBody(contentLength: Int, input: Stream[Buffer]): Pair[Json, Stream[Buffer]] {
     let bodyPair = try {
         input.readBytes(contentLength) // Should Stream.readBytes return an option?
     } catchAny {error =>
@@ -207,10 +207,10 @@ handleRequestMessage(system: NodeSystem, handler: Handler, message: RequestMessa
                 None
             | Some(id) {handler.cancelledRequests.contains(id)} =>
                 handler.cancelledRequests = handler.cancelledRequests.remove(id)
-                Some(makeResponseMessage(system.js(), id, Error(-32800, "Request cancelled")))
+                Some(makeResponseMessage(id, Error(-32800, "Request cancelled")))
             | Some(id) =>
                 let result = handler.handleRequest(system, message.method, message.parameters)
-                Some(makeResponseMessage(system.js(), id, result))
+                Some(makeResponseMessage(id, result))
         }
     } catchAny {error =>
         //system.files().writeText("lsp-failure.txt", error.name() + ": " + error.message())
@@ -218,35 +218,34 @@ handleRequestMessage(system: NodeSystem, handler: Handler, message: RequestMessa
     } grab()
 }
 
-makeResponseMessage(js: JsSystem, id: MessageId, result: ResultOrError): Json {
-    let o = js.object()
-    o.set("jsonrpc", "2.0")
+makeResponseMessage(id: MessageId, result: ResultOrError): Json {
+    mutable o = Json.object().with("jsonrpc", "2.0")
     id.{
-        | MessageIdInt(id) => o.set("id", id)
-        | MessageIdString(id) => o.set("id", id)
+        | MessageIdInt(id) => o = o.with("id", id)
+        | MessageIdString(id) => o = o.with("id", id)
     }
     result.{
         | Result(result) =>
-            o.set("result", js.parseJson(result))
+            o = o.with("result", Json.read(result).grab())
         | Error(code, message) =>
-            let e = js.object()
-            e.set("code", code)
-            e.set("message", message)
-            o.set("error", e)
+            let e = Json.object()
+                .with("code", code)
+                .with("message", message)
+            o = o.with("error", e)
     }
     o
 }
 
 logMessage(directory: Path, messageType: String, body: Json, method: String) {
     let id = if(method == "$/cancelRequest") {
-        Some(body.get("params").get("id").grabInt())
+        Some(body.field("params").field("id").grabInt())
     } else {
-        body.getOwn("id").map {_.grabInt()}
+        body.field("id").getInt()
     }
     let number = directory.entries().toList().size()
     let idName = id.map {_ + ""}.else {"_"}
     let methodName = method.replace("$", "notification").replace("/", "_")
     let fileName = number + "-id-" + idName + "-" + messageType + "-" + methodName + ".json"
     let path = directory.slash(fileName)
-    path.writeText(body.toJson(Some("    ")))
+    path.writeText(body.write(Some("    ")))
 }

@@ -5,7 +5,7 @@ import Syntax from ff:compiler
 import Handler
 import CompletionHandler
 
-handleSignatureHelp(system: NodeSystem, lspHook: LspHook): JsValue {
+handleSignatureHelp(system: NodeSystem, lspHook: LspHook): Json {
     let signatureAndUnification = lspHook.results().collectFirst {
         | InferLookupHook h => 
             let isMember = h.symbol.value.qualifiedName.contains("_")
@@ -17,7 +17,6 @@ handleSignatureHelp(system: NodeSystem, lspHook: LspHook): JsValue {
             }
         | _ => None
     }
-    let js = system.js()
     signatureAndUnification.map {| Pair(s, unification) => 
         let shownTypes = [...s.parameters.map {_.valueType}, s.returnType].map {unification.substitute(_)}
         let realGenerics = s.generics.filter {_ != "Q$"}
@@ -28,26 +27,26 @@ handleSignatureHelp(system: NodeSystem, lspHook: LspHook): JsValue {
         }
         let label = 
             s.name + generics + "(" + parameters.join(", ") + "): " + unification.substitute(s.returnType).show(shownTypes)
-        js.object()
-            .with("signatures", js.array([js.object()
+        Json.object()
+            .with("signatures", [Json.object()
                 .with("label", label)
-                .with("parameters", js.array([
+                .with("parameters", [
                     ...parameters.map {p => 
-                        js.object().with("label", p)
+                        Json.object().with("label", p)
                     }
                     // Fake parameter to trick the client into remembering the call position
-                    js.object().with("label", "/* Call " + lspHook.at.show() + " */")
-                ]))
-            ]))
+                    Json.object().with("label", "/* Call " + lspHook.at.show() + " */")
+                ])
+            ])
             .with("activeSignature", 0)
-    }.else {js.null()}
+    }.else {Json.null()}
 }
 
-pickActiveParameter(help: JsValue, argumentIndex: Int, parameterName: Option[String]): JsValue {
+pickActiveParameter(help: Json, argumentIndex: Int, parameterName: Option[String]): Json {
     parameterName.flatMap {name =>
-        let parameters = help.get("signatures").get(0).get("parameters").grabArray().toList()
+        let parameters = help.field("signatures").index(0).field("parameters").grabArray().toList()
         parameters.pairs().collectFirst {| Pair(i, p) => 
-            if(name == p.get("label").grabString().takeWhile {_.isAsciiLetterOrDigit()}) {
+            if(name == p.field("label").grabString().takeWhile {_.isAsciiLetterOrDigit()}) {
                 help.with("activeParameter", i)
             }
         }

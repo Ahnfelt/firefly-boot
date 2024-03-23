@@ -46,7 +46,7 @@ data TokenLocation(
 
 extend self: Handler {
 
-    handleNotification(system: NodeSystem, method: String, parameters: Map[String, JsValue]): Unit {
+    handleNotification(system: NodeSystem, method: String, parameters: Map[String, Json]): Unit {
         method.{
             | "initialized" =>
             | "textDocument/didChange" => 
@@ -57,7 +57,7 @@ extend self: Handler {
         }
     }
 
-    handleRequest(system: NodeSystem, method: String, parameters: Map[String, JsValue]): ResultOrError {
+    handleRequest(system: NodeSystem, method: String, parameters: Map[String, Json]): ResultOrError {
         method.{
             | "initialize" => self.handleInitialize(system, parameters)
             | "textDocument/diagnostic" => self.handleDiagnostic(system, parameters)
@@ -82,15 +82,15 @@ extend self: Handler {
                     self.handleReferences(system, targetAt, local = True)
                 }
             | "workspace/symbol" => self.printTime(system.mainTask(), "handleWorkspaceSymbol") {self.handleWorkspaceSymbol(system, parameters)}
-            | "shutdown" => Result(system.js().null().toJson())
-            | _ => self.handleUnsupported(system.js())
+            | "shutdown" => Result(Json.null().write())
+            | _ => self.handleUnsupported()
         }
     }
 
     handleTokenRequestWithCache(
         system: NodeSystem
         method: String
-        parameters: Map[String, JsValue]
+        parameters: Map[String, Json]
         handle: Location => ResultOrError
     ): ResultOrError {
         let targetAt = self.findTokenFromParameters(system, parameters)
@@ -104,44 +104,43 @@ extend self: Handler {
             }
     }
 
-    handleUnsupported(js: JsSystem): ResultOrError {
+    handleUnsupported(): ResultOrError {
         Error(1234, "Unsupported method")
     }
 
-    handleInitialize(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
-        let js = system.js()
+    handleInitialize(system: NodeSystem, parameters: Map[String, Json]): ResultOrError {
         self.rootPath = Some(system.pathFromUrl(parameters.grab("rootUri").grabString()))
 
-        let anyFireflyFile = js.object()
+        let anyFireflyFile = Json.object()
             .with("filters", [
-                js.object()
-                    .with("pattern", js.object()
+                Json.object()
+                    .with("pattern", Json.object()
                         .with("glob", "**/*.ff")
                         .with("matches", "file")
                     )
-            ].toArray())
+            ])
 
-        let o = js.object()
-            .with("capabilities", js.object()
-                .with("textDocumentSync", js.object()
+        let o = Json.object()
+            .with("capabilities", Json.object()
+                .with("textDocumentSync", Json.object()
                     .with("openClose", True)
                     .with("change", 1 /* TextDocumentSyncKind.Full */)
                 )
                 .with("hoverProvider", True)
                 .with("definitionProvider", True)
                 .with("documentHighlightProvider", True)
-                .with("diagnosticProvider", js.object()
+                .with("diagnosticProvider", Json.object()
                     .with("interFileDependencies", False)
                     .with("workspaceDiagnostics", False)
                 )
                 .with("documentSymbolProvider", True)
-                .with("completionProvider", js.object()
-                    .with("triggerCharacters", js.array([".", " ", "("].map {js.value(_)}))
-                    .with("allCommitCharacters", js.array([";"].map {js.value(_)}))
+                .with("completionProvider", Json.object()
+                    .with("triggerCharacters", [".", " ", "("])
+                    .with("allCommitCharacters", [";"])
                 )
-                .with("signatureHelpProvider", js.object()
-                    .with("triggerCharacters", js.array(["("].map {js.value(_)}))
-                    .with("retriggerCharacters", js.array([","].map {js.value(_)}))
+                .with("signatureHelpProvider", Json.object()
+                    .with("triggerCharacters", ["("])
+                    .with("retriggerCharacters", [","])
                 )
                 .with("referencesProvider", True)
                 .with("workspaceSymbolProvider", True)
@@ -158,16 +157,16 @@ extend self: Handler {
                 )*/
                 .with("renameProvider", True)
             )
-            .with("serverInfo", js.object()
+            .with("serverInfo", Json.object()
                 .with("name", "Firefly Language Server")
                 .with("version", "0.0.0")
             )
-        Result(o.toJson())
+        Result(o.write())
     }
 
-    handleDiagnostic(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
+    handleDiagnostic(system: NodeSystem, parameters: Map[String, Json]): ResultOrError {
         let js = system.js()
-        let uri = parameters.grab("textDocument").get("uri").grabString()
+        let uri = parameters.grab("textDocument").field("uri").grabString()
         let path = system.pathFromUrl(uri)
         let fireflyPath = system.path(".")
         let diagnostics = try {
@@ -175,26 +174,25 @@ extend self: Handler {
             []
         } catch {| CompileError(at, message), error =>
             let tokenLocation = self.findToken(system, at)
-            let diagnostic = js.object()
-                .with("range", self.tokenLocationToLspRange(js, tokenLocation))
-                .with("severity", 1 /* Error */)
+            let diagnostic = Json.object()
+                .with("range", self.tokenLocationToLspRange(tokenLocation))
+                .with("severity", 1)
                 .with("message", message)
             [diagnostic]
         } grab()
 
-        let o = js.object()
+        let o = Json.object()
             .with("kind", "full")
-            .with("items", diagnostics.toArray())
-        Result(o.toJson())
+            .with("items", diagnostics)
+        Result(o.write())
     }
 
-    handleDocumentSymbol(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
-        let js = system.js()
-        let uri = parameters.grab("textDocument").get("uri").grabString()
+    handleDocumentSymbol(system: NodeSystem, parameters: Map[String, Json]): ResultOrError {
+        let uri = parameters.grab("textDocument").field("uri").grabString()
         let path = system.pathFromUrl(uri)
         let symbols = self.getDocumentSymbolsWithCache(system, path)
-        let lspSymbols = symbols.map {SymbolHandler.documentSymbolToLsp(js, _)}
-        Result(js.array(lspSymbols).toJson())
+        let lspSymbols = symbols.map {SymbolHandler.documentSymbolToLsp(_)}
+        Result(Json.list(lspSymbols).write())
     }
 
     getDocumentSymbols(system: NodeSystem, path: Path): List[DocumentSymbol] {
@@ -227,8 +225,7 @@ extend self: Handler {
         }
     }
 
-    handleWorkspaceSymbol(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
-        let js = system.js()
+    handleWorkspaceSymbol(system: NodeSystem, parameters: Map[String, Json]): ResultOrError {
         let query = parameters.grab("query").grabString()
         let files = self.printTime(system.mainTask(), "findFireflyFiles") {Builder.findFireflyFiles(self.rootPath.grab())}
         let symbols = files.flatMap {file => 
@@ -241,27 +238,25 @@ extend self: Handler {
             }
         }
         let limitedSymbols = symbols.sortBy {_.name.size()}.takeFirst(100)
-        let jsSymbols = limitedSymbols.map {SymbolHandler.workspaceSymbolToLsp(js, self.rootPath.grab(), _)}
-        Result(js.array(jsSymbols).toJson())        
+        let jsSymbols = limitedSymbols.map {SymbolHandler.workspaceSymbolToLsp(self.rootPath.grab(), _)}
+        Result(Json.list(jsSymbols).write())
     }
     
-    handleDidChange(system: NodeSystem, parameters: Map[String, JsValue]): Unit {
-        let js = system.js()
-        let uri = parameters.grab("textDocument").get("uri").grabString()
+    handleDidChange(system: NodeSystem, parameters: Map[String, Json]): Unit {
+        let uri = parameters.grab("textDocument").field("uri").grabString()
         let path = system.pathFromUrl(uri)
         self.responseCache = Map.empty()
         self.fileSymbolsCache = self.fileSymbolsCache.remove(path.absolute())
         let contentChanges = parameters.grab("contentChanges").grabArray()
         if(contentChanges.size() != 1) {throw(LanguageServerException("Expected a single element in contentChanges"))} else:
         let contentChange = contentChanges.grab(0)
-        if(!contentChange.get("range").isNullOrUndefined()) {throw(LanguageServerException("Expected a complete contentChange"))} else:
-        let content = contentChange.get("text").grabString()
+        if(!contentChange.field("range").isNull()) {throw(LanguageServerException("Expected a complete contentChange"))} else:
+        let content = contentChange.field("text").grabString()
         self.virtualFiles = self.virtualFiles.add(path.absolute(), content)
     }
 
-    handleDidClose(system: NodeSystem, parameters: Map[String, JsValue]): Unit {
-        let js = system.js()
-        let uri = parameters.grab("textDocument").get("uri").grabString()
+    handleDidClose(system: NodeSystem, parameters: Map[String, Json]): Unit {
+        let uri = parameters.grab("textDocument").field("uri").grabString()
         let path = system.pathFromUrl(uri)
         self.virtualFiles = self.virtualFiles.remove(path.absolute())
     }
@@ -278,10 +273,10 @@ extend self: Handler {
         } else {
             HoverHandler.handleHover(system, self, lspHook)
         }
-        Result(o.toJson())
+        Result(o.write())
     }
 
-    handleCompletion(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
+    handleCompletion(system: NodeSystem, parameters: Map[String, Json]): ResultOrError {
         let location = self.findLocationFromParameters(system, parameters)
         let token = self.findToken(system, location, insertToken = True)
         let completionAt = Location(
@@ -300,7 +295,7 @@ extend self: Handler {
         Result(o.toJson())
     }
 
-    handleSignatureHelp(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
+    handleSignatureHelp(system: NodeSystem, parameters: Map[String, Json]): ResultOrError {
         let cursorAt = self.findLocationFromParameters(system, parameters)
         let lspHook = LspHook.make(at = Some(cursorAt), definedAt = None, insertIdentifier = False, trackSymbols = False)
         try {
@@ -314,13 +309,13 @@ extend self: Handler {
         } grab()
         let o = lspHook.results().collectFirst {
             | ParseArgumentHook h {parameters.get("context") | Some(context)} {
-                context.get("activeSignatureHelp") | help
-            } {!help.isNullOrUndefined() && help.hasOwn("signatures")} {
-                help.get("signatures").get(0) | activeSignature
-            } {!activeSignature.isNullOrUndefined()} {
-                activeSignature.get("parameters").grabArray().last() | Some(fakeParameter)
+                context.field("activeSignatureHelp") | help
+            } {!help.isNull() && help.hasField("signatures")} {
+                help.field("signatures").index(0) | activeSignature
+            } {!activeSignature.isNull()} {
+                activeSignature.field("parameters").grabArray().last() | Some(fakeParameter)
             } {
-                fakeParameter.get("label").grabString() == "/* Call " + h.callAt.show() + " */"
+                fakeParameter.field("label").grabString() == "/* Call " + h.callAt.show() + " */"
             } => 
                 Some(SignatureHelpHandler.pickActiveParameter(help, h.argumentIndex, h.parameterName))
             | ParseArgumentHook h => 
@@ -335,29 +330,27 @@ extend self: Handler {
             | _ => 
                 None
         }
-        Result((o.else {system.js().null()}).toJson())
+        Result((o.else {Json.null()}).write())
     }
 
     handleReferences(system: NodeSystem, targetAt: Location, local: Bool): ResultOrError {
         let tokens = self.findReferences(system, targetAt, local)
-        let js = system.js()
         let o = tokens.{
-            | None => js.null()
+            | None => Json.null()
             | Some(tokens) =>
                 let lspTokens = tokens.map {self.tokenLocationToLspLocation(system, _)}
-                js.array(lspTokens)
+                Json.list(lspTokens)
         }
-        Result(o.toJson())
+        Result(o.write())
     }
 
-    handleRename(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
+    handleRename(system: NodeSystem, parameters: Map[String, Json]): ResultOrError {
         let newName = parameters.grab("newName").grabString()
         let targetAt = self.findTokenFromParameters(system, parameters)
         let tokens = self.findReferences(system, targetAt, False)
-        let js = system.js()
         tokens.{
             | None => Error(-32602, "Token definition not found") // InvalidParams
-            | Some([]) => Result(js.null().toJson())
+            | Some([]) => Result(Json.null().write())
             | Some([first, ..._] @ tokens) =>
                 let oldName = first.raw
                 Log.trace("Rename '" + oldName + "' to '" + newName + "'")
@@ -368,17 +361,17 @@ extend self: Handler {
                 badTokens.each {t => Log.trace("Rename bad token: " + Show.show(t))}
 
                 let byFile = goodTokens.map {t => Pair(t.file, t)}.group()
-                let allChanges = byFile.toList().foldLeft(js.object(), {| o, Pair(file, fileTokens) =>
+                let allChanges = byFile.toList().foldLeft(Json.object(), {| o, Pair(file, fileTokens) =>
                     let uri = system.path(file).url()
                     let fileChanges = fileTokens.map {tokenLocation =>
-                        js.object()
-                            .with("range", self.tokenLocationToLspRange(js, tokenLocation))
+                        Json.object()
+                            .with("range", self.tokenLocationToLspRange(tokenLocation))
                             .with("newText", newName)
                     }
-                    o.with(uri, js.array(fileChanges))
+                    o.with(uri, fileChanges)
                 })
-                let o = js.object().with("changes", allChanges)
-                Result(o.toJson())
+                let o = Json.object().with("changes", allChanges)
+                Result(o.write())
         }
     }
 
@@ -409,7 +402,6 @@ extend self: Handler {
             
         //Log.trace("definedAtList: " + Show.show(definedAtList))
 
-        let js = system.js()
         definedAtList.first().{
             | Some(definedAt) =>
                 //Log.trace("handleReferences definedAt: " + Show.show(definedAt))
@@ -449,8 +441,8 @@ extend self: Handler {
         }
     }
 
-    makeNotificationMessage(js: JsSystem, method: String, params: JsValue): JsValue {
-        js.object()
+    makeNotificationMessage(method: String, params: Json): Json {
+        Json.object()
             .with("jsonrpc", "2.0")
             .with("method", method)
             .with("params", params)
@@ -502,7 +494,7 @@ extend self: Handler {
         } grab()
     }
 
-    findTokenFromParameters(system: NodeSystem, parameters: Map[String, JsValue]): Location {
+    findTokenFromParameters(system: NodeSystem, parameters: Map[String, Json]): Location {
         let location = self.findLocationFromParameters(system, parameters)
         let token = self.findToken(system, location)
         Location(
@@ -512,28 +504,27 @@ extend self: Handler {
         )
     }
 
-    findLocationFromParameters(system: NodeSystem, parameters: Map[String, JsValue]): Location {
-        let uri = parameters.grab("textDocument").get("uri").grabString()
+    findLocationFromParameters(system: NodeSystem, parameters: Map[String, Json]): Location {
+        let uri = parameters.grab("textDocument").field("uri").grabString()
         let path = system.pathFromUrl(uri)
-        let line = parameters.grab("position").get("line").grabInt() + 1
-        let column = parameters.grab("position").get("character").grabInt() + 1
+        let line = parameters.grab("position").field("line").grabInt() + 1
+        let column = parameters.grab("position").field("character").grabInt() + 1
         Location(path.absolute(), line, column)
     }
 
-    tokenLocationToLspLocation(system: NodeSystem, tokenLocation: TokenLocation): JsValue {
-        let js = system.js()
-        js.object()
+    tokenLocationToLspLocation(system: NodeSystem, tokenLocation: TokenLocation): Json {
+        Json.object()
             .with("uri", system.path(tokenLocation.file).url())
-            .with("range", self.tokenLocationToLspRange(js, tokenLocation))
+            .with("range", self.tokenLocationToLspRange(tokenLocation))
     }
 
-    tokenLocationToLspRange(js: JsSystem, tokenLocation: TokenLocation): JsValue {
-        js.object()
-            .with("start", js.object()
+    tokenLocationToLspRange(tokenLocation: TokenLocation): Json {
+        Json.object()
+            .with("start", Json.object()
                 .with("line", tokenLocation.startLine - 1)
                 .with("character", tokenLocation.startColumn - 1)
             )
-            .with("end", js.object()
+            .with("end", Json.object()
                 .with("line", tokenLocation.endLine - 1)
                 .with("character", tokenLocation.endColumn - 1)
             )

@@ -48,6 +48,18 @@ object(): Json
         return {};
     """
 
+fields(body: ((String, Json) => Unit) => Unit): Json
+    target js sync """
+        const result = {};
+        body_((k, v) => {result[k] = v});
+        return result;
+    """
+    target js async """
+        const result = {};
+        await body_((k, v) => {result[k] = v}, $task);
+        return result;
+    """
+
 extend self: Json {
     
     write(space: Option[String] = None): String
@@ -55,15 +67,11 @@ extend self: Json {
             return JSON.stringify(self_, null, space_.value_);
         """
 
-    with(field: String, value: Json)
-        target js sync """
-            if(typeof self_ !== 'object' || self_ === null || Array.isArray(self_)) {
-                throw new Error('Not an object: ' + JSON.stringify(self_));
-            }
-            return {...self_, [field_]: value_};
-        """
+    with[T: JsonLike](field: String, value: T): Json {
+        internalWith(field, toJson(value))
+    }
         
-    merge(that: Json)
+    merge(that: Json): Json
         target js sync """
             if(typeof self_ !== 'object' || self_ === null || Array.isArray(self_)) {
                 throw new Error('Not an object: ' + JSON.stringify(self_));
@@ -121,7 +129,7 @@ extend self: Json {
         if(self.isInt()) {self.grabInt()}
     }
 
-    gretFloat(): Option[Float] {
+    getFloat(): Option[Float] {
         if(self.isFloat()) {self.grabFloat()}
     }
 
@@ -129,7 +137,7 @@ extend self: Json {
         if(self.isBool()) {self.grabBool()}
     }
 
-    getArray() {
+    getArray(): Option[Array[Json]] {
         if(self.isArray()) {self.grabArray()}
     }
 
@@ -183,6 +191,11 @@ extend self: Json {
             return typeof self_ === 'array' ? self_[key] ?? null : null;
         """
 
+    hasField(key: String): Bool
+        target js sync """
+            return typeof self_ === 'object' && self_ !== null && !Array.isArray(self_) && Object.hasOwn(self_, key_);
+        """
+
     getField(key: String): Option[Json]
         target js sync """
             return typeof self_ === 'object' && self_ !== null && !Array.isArray(self_) && Object.hasOwn(self_, key_)
@@ -223,6 +236,12 @@ extend self: Json {
         self.each {field, value => stack.push(body(field, value))}
         stack.drain()
     }
+
+    flatMap[T](body: (String, Json) => Array[T]): Array[T] {
+        let stack = Stack.make()
+        self.each {field, value => stack.pushArray(body(field, value))}
+        stack.drain()
+    }
     
     each(body: (String, Json) => Unit) {
         if(!self.isObject()) {throw(GrabException())}
@@ -236,6 +255,14 @@ extend self: Json {
 
 }
 
+internalWith(field: String, json: Json): Json
+    target js sync """
+        if(typeof self_ !== 'object' || self_ === null || Array.isArray(self_)) {
+            throw new Error('Not an object: ' + JSON.stringify(self_));
+        }
+        return {...self_, [field_]: value_};
+    """
+
 internalEach(self: Json, body: (String, Json) => Unit): Unit
     target js sync "for(const [key, value] of Object.entries(self_)) body_(key, value)"
     target js async "for(const [key, value] of Object.entries(self_)) await body_(key, value, $task)"
@@ -243,3 +270,56 @@ internalEach(self: Json, body: (String, Json) => Unit): Unit
 internalEachWhile(self: Json, body: (String, Json) => Bool): Unit
     target js sync "for(const [key, value] of Object.entries(self_)) if(!body_(key, value)) break"
     target js async "for(const [key, value] of Object.entries(self_)) if(!await body_(key, value, $task)) break"
+
+trait T: JsonLike {
+    toJson(value: T): Json
+    fromJson(json: Json): Option[T]
+}
+
+instance Json: JsonLike {
+    toJson(value: Json): Json {value}
+    fromJson(json: Json): Option[Json] {Some(json)}
+}
+
+instance String: JsonLike {
+    toJson(value: String): Json {string(value)}
+    fromJson(json: Json): Option[String] {_.getString()}
+}
+
+instance Int: JsonLike {
+    toJson(value: Int): Json {int(value)}
+    fromJson(json: Json): Option[Int] {_.getInt()}
+}
+
+instance Float: JsonLike {
+    toJson(value: Float): Json {float(value)}
+    fromJson(json: Json): Option[Float] {_.getFloat()}
+}
+
+instance Bool: JsonLike {
+    toJson(value: Bool): Json {bool(value)}
+    fromJson(json: Json): Option[Bool] {_.getBool()}
+}
+
+instance Array[T: JsonLike]: JsonLike {
+    toJson(value: Array[T]): Json {array(value.map(toJson))}
+    fromJson(json: Json): Option[Array[T]] {
+        json.getArray().flatMap {array => 
+            mutable convertible = True
+            let stack = Stack.make()
+            array.eachWhile {item =>
+                fromJson(item).{
+                    | None => convertible = False
+                    | Some(value) => stack.push(value)
+                }
+                convertible
+            }
+            if(convertible) {stack.drain()}
+        }
+    }
+}
+
+instance List[T: JsonLike]: JsonLike {
+    toJson(value: List[T]): Json {list(value.map(toJson))}
+    fromJson(json: Json): Option[List[T]] {fromJson[Array[T]](json).map {_.toList()}}
+}
