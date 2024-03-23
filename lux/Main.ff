@@ -90,8 +90,8 @@ fetchAnswer(httpClient: HttpClient, key: String, question: Json): String {
             Pair("Content-Type", "application/json")
         ]
         body = Some(HttpClient.bodyText(question.write()))
-    ).readText()
-    Json.read(json).grab().field("choices").index(0).field("message").field("content").grabString()
+    ).readJson()
+    json.field("choices").index(0).field("message").field("content").grabString()
 }
 
 encodeChat(question: String): Json {
