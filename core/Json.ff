@@ -64,7 +64,7 @@ extend self: Json {
     
     write(indentation: Option[String] = None): String
         target js sync """
-            return JSON.stringify(self_, null, space_.value_);
+            return JSON.stringify(self_, null, indentation_.value_);
         """
 
     with[T: JsonLike](field: String, value: T): Json {
