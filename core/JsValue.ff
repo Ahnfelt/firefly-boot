@@ -213,9 +213,6 @@ extend self: JsValue {
         target js sync "return new self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_)"
 
 
-    toJson(space: Option[String] = None): String
-        target js sync "return JSON.stringify(self_, null, space_.value_)"
-
     grabPairs(): List[Pair[String, JsValue]]
         target js sync """
             if(!(self_ instanceof Object)) throw new Error('Expected object, got '+ typeof self_);;

@@ -15,7 +15,7 @@ data CompletionInfo(
     secondarySort: Int = 5
 )
 
-handleCompletion(system: NodeSystem, lspHook: LspHook, toplevel: Bool, followedByOpenBracket: Bool): JsValue {
+handleCompletion(lspHook: LspHook, toplevel: Bool, followedByOpenBracket: Bool): Json {
     let topLevelCompletions = if(!toplevel) {[]} else {toplevelCompletion(lspHook)}
     let patternCompletions = lspHook.results().collectFirst {
         | InferPatternHook h =>
@@ -156,11 +156,11 @@ handleCompletion(system: NodeSystem, lspHook: LspHook, toplevel: Bool, followedB
             } else {c}
         }
     }
-    completionsToJson(system.js(), [...fixedCompletions, ...fixedTypeCompletions, ...topLevelCompletions])
+    completionsToJson([...fixedCompletions, ...fixedTypeCompletions, ...topLevelCompletions])
 }
 
-completionsToJson(js: JsSystem, completions: List[CompletionInfo]): JsValue {
-    js.object()
+completionsToJson(completions: List[CompletionInfo]): Json {
+    Json.object()
         .with("isIncomplete", False)
         .with("items", completions.distinct().toArray().map {| CompletionInfo i =>
             let shownType = i.type.show([])
@@ -179,7 +179,7 @@ completionsToJson(js: JsSystem, completions: List[CompletionInfo]): JsValue {
                 | Pair(TConstructor(_, n1, _), Some(TConstructor(_, n2, _))) => n1 == n2
                 | _ => False
             }
-            js.object()
+            Json.object()
                 // Namespace or Property or Constructor or EnumMember or Constructor or Method/Function or Field/Variable
                 .with("kind"
                     if(shownType == "") {3} else:
@@ -192,12 +192,12 @@ completionsToJson(js: JsSystem, completions: List[CompletionInfo]): JsValue {
                 .with("sortText", sortText)
                 .with("preselect", preselect)
                 .with("label", i.label)
-                .with("labelDetails", js.object()
+                .with("labelDetails", Json.object()
                     .with("detail", i.extra + if(shownType == "") {""} else {": " + shownType})
                 )
                 .with("insertText", i.snippet)
                 .with("insertTextFormat", 2 /* Snippet */)
-                .with("documentation", js.object()
+                .with("documentation", Json.object()
                     .with("kind", "markdown")
                     .with("value", "```\n" + i.documentation + "\n```")
                 )

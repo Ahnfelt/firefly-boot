@@ -371,10 +371,6 @@ export function JsValue_new9(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_,
 return new self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_)
 }
 
-export function JsValue_toJson(self_, space_ = ff_core_Option.None()) {
-return JSON.stringify(self_, null, space_.value_)
-}
-
 export function JsValue_grabPairs(self_) {
 
             if(!(self_ instanceof Object)) throw new Error('Expected object, got '+ typeof self_);;
@@ -663,10 +659,6 @@ throw new Error('Function JsValue_new8 is missing on this target in async contex
 
 export async function JsValue_new9$(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, ff_core_JsValue_IsJsValue$A9, $task) {
 throw new Error('Function JsValue_new9 is missing on this target in async context.');
-}
-
-export async function JsValue_toJson$(self_, space_ = ff_core_Option.None(), $task) {
-throw new Error('Function JsValue_toJson is missing on this target in async context.');
 }
 
 export async function JsValue_grabPairs$(self_, $task) {

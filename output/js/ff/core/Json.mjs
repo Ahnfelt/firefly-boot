@@ -311,7 +311,7 @@ export async function internalCompare_$(a_, b_, $task) {
 throw new Error('Function internalCompare is missing on this target in async context.');
 }
 
-export function Json_write(self_, space_ = ff_core_Option.None()) {
+export function Json_write(self_, indentation_ = ff_core_Option.None()) {
 
             return JSON.stringify(self_, null, space_.value_);
         
@@ -542,7 +542,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.G
 ff_core_Json.internalEachWhile_(self_, body_)
 }
 
-export async function Json_write$(self_, space_ = ff_core_Option.None(), $task) {
+export async function Json_write$(self_, indentation_ = ff_core_Option.None(), $task) {
 throw new Error('Function Json_write is missing on this target in async context.');
 }
 
@@ -938,6 +938,83 @@ async fromJson_$(json_, $task) {
 return ff_core_Option.Option_map(ff_core_Json.ff_core_Json_JsonLike$ff_core_Array_Array(ff_core_Json_JsonLike$T).fromJson_(json_), ((_w1) => {
 return ff_core_Array.Array_toList(_w1)
 }))
+}
+}}
+
+export function ff_core_Json_JsonLike$ff_core_StringMap_StringMap(ff_core_Json_JsonLike$T) { return {
+toJson_(value_) {
+return ff_core_Json.fields_(((setField_) => {
+ff_core_StringMap.StringMap_each(value_, ((key_, value_) => {
+setField_(key_, ff_core_Json_JsonLike$T.toJson_(value_))
+}))
+}))
+},
+fromJson_(json_) {
+return ff_core_Option.Option_flatten((ff_core_Json.Json_isObject(json_)
+? ff_core_Option.Some((function() {
+const map_ = ff_core_StringMap.make_();
+let convertible_ = true;
+ff_core_Json.Json_eachWhile(json_, ((key_, value_) => {
+do {
+const _1 = ff_core_Json_JsonLike$T.fromJson_(value_);
+{
+if(_1.None) {
+convertible_ = false
+break
+}
+}
+{
+if(_1.Some) {
+const v_ = _1.value_;
+ff_core_StringMap.StringMap_set(map_, key_, v_)
+break
+}
+}
+} while(false);
+return convertible_
+}));
+if(convertible_) {
+return ff_core_Option.Some(map_)
+} else return ff_core_Option.None()
+})())
+: ff_core_Option.None()))
+},
+async toJson_$(value_, $task) {
+return ff_core_Json.fields_(((setField_) => {
+ff_core_StringMap.StringMap_each(value_, ((key_, value_) => {
+setField_(key_, ff_core_Json_JsonLike$T.toJson_(value_))
+}))
+}))
+},
+async fromJson_$(json_, $task) {
+return ff_core_Option.Option_flatten((ff_core_Json.Json_isObject(json_)
+? ff_core_Option.Some((await (async function() {
+const map_ = ff_core_StringMap.make_();
+let convertible_ = true;
+ff_core_Json.Json_eachWhile(json_, ((key_, value_) => {
+do {
+const _1 = ff_core_Json_JsonLike$T.fromJson_(value_);
+{
+if(_1.None) {
+convertible_ = false
+break
+}
+}
+{
+if(_1.Some) {
+const v_ = _1.value_;
+ff_core_StringMap.StringMap_set(map_, key_, v_)
+break
+}
+}
+} while(false);
+return convertible_
+}));
+if(convertible_) {
+return ff_core_Option.Some(map_)
+} else return ff_core_Option.None()
+})()))
+: ff_core_Option.None()))
 }
 }}
 

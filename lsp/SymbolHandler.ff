@@ -62,7 +62,7 @@ handleWorkspaceSymbol(system: NodeSystem, resultHooks: List[ResultHook], query: 
     //Log.trace("handleWorkspaceSymbol")
     //workspaceSymbols.each {Log.show(_)}
     let jsSymbols = foundSymbols.map {workspaceSymbolToLsp(system.path("."), _)}
-    //workspaceSymbolsJs.each {Log.trace(_.toJson(None))}
+    //workspaceSymbolsJs.each {Log.trace(_.write(None))}
     jsSymbols
 }
 

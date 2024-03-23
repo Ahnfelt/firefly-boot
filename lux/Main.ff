@@ -71,8 +71,8 @@ nodeMain(system: NodeSystem) {
                     system.mainTask().sleep(Duration(question.size().toFloat()))
                     response.writeText("Hi! You need to give an OpenAI secret key at the command line.")
                 | Some(key) => 
-                    let chatJson = encodeChat(system.js(), question)
-                    let answer = fetchAnswer(system.httpClient(), system.js(), key, chatJson)
+                    let chatJson = encodeChat(question)
+                    let answer = fetchAnswer(system.httpClient(), key, chatJson)
                     response.writeText(answer)
             }
         } else {
@@ -81,7 +81,7 @@ nodeMain(system: NodeSystem) {
     }
 }
 
-fetchAnswer(httpClient: HttpClient, js: JsSystem, key: String, question: JsValue): String {
+fetchAnswer(httpClient: HttpClient, key: String, question: Json): String {
     let json = httpClient.fetch(
         url = "https://api.openai.com/v1/chat/completions"
         method = "POST"
@@ -89,22 +89,21 @@ fetchAnswer(httpClient: HttpClient, js: JsSystem, key: String, question: JsValue
             Pair("Authorization", "Bearer " + key)
             Pair("Content-Type", "application/json")
         ]
-        body = Some(HttpClient.bodyText(question.toJson()))
+        body = Some(HttpClient.bodyText(question.write()))
     ).readText()
-    js.parseJson(json).get("choices").get(0).get("message").get("content").grabString()
+    Json.read(json).grab().field("choices").index(0).field("message").field("content").grabString()
 }
 
-encodeChat(js: JsSystem, question: String): JsValue {
-    let systemJson = js.object()
+encodeChat(question: String): Json {
+    let systemJson = Json.object()
         .with("role", "system")
         .with("content", "You are a helpful assistant.")
-    let questionJson = js.object()
+    let questionJson = Json.object()
         .with("role", "user")
         .with("content", question)
-    let messagesJson = js.array([systemJson, questionJson])
-    js.object()
+    Json.object()
         .with("model", "gpt-3.5-turbo")
-        .with("messages", messagesJson)
+        .with("messages", [systemJson, questionJson])
 }
 
 

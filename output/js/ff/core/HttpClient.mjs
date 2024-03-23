@@ -182,6 +182,10 @@ export function FetchResponse_readText(self_) {
 throw new Error('Function FetchResponse_readText is missing on this target in sync context.');
 }
 
+export function FetchResponse_readJson(self_) {
+throw new Error('Function FetchResponse_readJson is missing on this target in sync context.');
+}
+
 export function FetchResponse_readBuffer(self_) {
 throw new Error('Function FetchResponse_readBuffer is missing on this target in sync context.');
 }
@@ -209,6 +213,10 @@ export async function FetchResponse_header$(self_, name_, $task) {
 
 export async function FetchResponse_readText$(self_, $task) {
 return await self_.text()
+}
+
+export async function FetchResponse_readJson$(self_, $task) {
+return await self_.json()
 }
 
 export async function FetchResponse_readBuffer$(self_, $task) {

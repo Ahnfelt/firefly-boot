@@ -291,8 +291,8 @@ extend self: Handler {
         } catch {| CompileError(at, message), error =>
             Log.trace("handleCompletion check error: " + message)
         } grab()
-        let o = CompletionHandler.handleCompletion(system, lspHook, completionAt.column == 1, token.followedByLeftBracket)
-        Result(o.toJson())
+        let o = CompletionHandler.handleCompletion(lspHook, completionAt.column == 1, token.followedByLeftBracket)
+        Result(o.write())
     }
 
     handleSignatureHelp(system: NodeSystem, parameters: Map[String, Json]): ResultOrError {
