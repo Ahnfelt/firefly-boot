@@ -62,7 +62,7 @@ fields(body: ((String, Json) => Unit) => Unit): Json
 
 extend self: Json {
     
-    write(space: Option[String] = None): String
+    write(indentation: Option[String] = None): String
         target js sync """
             return JSON.stringify(self_, null, space_.value_);
         """
