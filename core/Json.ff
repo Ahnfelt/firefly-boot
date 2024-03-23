@@ -177,7 +177,7 @@ extend self: Json {
 
     isNull(): Bool
         target js sync """
-            return typeof self_ === null;
+            return self_ === null;
         """
 
     field(key: String): Json
