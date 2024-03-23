@@ -78,6 +78,9 @@ extend self: FetchResponse {
     readText(): String
         target js async "return await self_.text()"
 
+    readJson(): Json
+        target js async "return await self_.json()"
+
     readBuffer(): Buffer
         target js async "return new DataView(await self_.arrayBuffer())"
 
