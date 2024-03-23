@@ -6,12 +6,12 @@ class LanguageServer(
 
 data BadRequestException(reason: String)
 
-capability Request(
+data Request(
     headers: Map[String, String]
     object: Json
 )
 
-capability RequestMessage(
+data RequestMessage(
     id: Option[MessageId] // None when the request is a Notification Message
     method: String
     parameters: Map[String, Json]
