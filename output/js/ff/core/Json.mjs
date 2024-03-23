@@ -451,7 +451,7 @@ export function Json_isObject(self_) {
 
 export function Json_isNull(self_) {
 
-            return typeof self_ === null;
+            return self_ === null;
         
 }
 
