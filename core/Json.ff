@@ -324,6 +324,28 @@ instance List[T: JsonLike]: JsonLike {
     fromJson(json: Json): Option[List[T]] {fromJson[Array[T]](json).map {_.toList()}}
 }
 
+instance StringMap[T: JsonLike]: JsonLike {
+    toJson(value: StringMap[T]): Json {
+        Json.fields {setField =>
+            value.each {key, value => setField(key, toJson(value))}
+        }
+    }
+    fromJson(json: Json): Option[StringMap[T]] {
+        if(json.isObject()) {
+            let map = StringMap.make()
+            mutable convertible = True
+            json.eachWhile {key, value => 
+                fromJson(value).{
+                    | None => convertible = False
+                    | Some(v) => map.set(key, v)
+                }
+                convertible
+            }
+            if(convertible) {map}
+        }.flatten()
+    }
+}
+
 
 instance Json: HasAnyTag {
     anyTag(): AnyTag[Json] {Any.internalAnyTag("ff:core/Json.Json[]")}
