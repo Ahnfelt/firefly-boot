@@ -26,7 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerCommand('extension.firefly-lang.getFireflyCompiler', config => {
         return fireflyCompiler;
     }));
-
+    
     const runOrDebug = {
         module: fireflyCompiler,
         args: ['LanguageServer.ff'],
@@ -54,6 +54,17 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     client.start();
+    
+    vscode.window.onDidChangeActiveTextEditor(editor => {
+        if(editor && editor.document.languageId === 'firefly') {
+            client.sendNotification('custom/focusDocument', {
+                "textDocument": {
+                    uri: editor.document.uri.toString(),
+                    version: editor.document.version,
+                }
+            });
+        }
+    });
 }
 
 export function deactivate(): Thenable<void> | undefined {

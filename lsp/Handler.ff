@@ -46,21 +46,33 @@ data TokenLocation(
 
 extend self: Handler {
 
-    handleNotification(system: NodeSystem, method: String, parameters: Map[String, Json]): Unit {
+    handleNotification(system: NodeSystem, method: String, parameters: Map[String, Json]): Option[Pair[String, Json]] {
         method.{
             | "initialized" =>
+                None
             | "textDocument/didChange" => 
                 self.handleDidChange(system, parameters)
-            | "textDocument/didClose" => self.handleDidClose(system, parameters)
-            | "exit" => system.exit(0)
+                let diagnostics = self.handleFocusDiagnostic(system, parameters)
+                Some(Pair("textDocument/publishDiagnostics", diagnostics))
+            | "textDocument/didClose" => 
+                self.handleDidClose(system, parameters)
+                let diagnostics = self.handleFocusDiagnostic(system, parameters)
+                Some(Pair("textDocument/publishDiagnostics", diagnostics))
+            | "custom/focusDocument" => 
+                let diagnostics = self.handleFocusDiagnostic(system, parameters)
+                Some(Pair("textDocument/publishDiagnostics", diagnostics))
+            | "exit" => 
+                system.exit(0)
+                None
             | _ =>
+                None
         }
     }
 
     handleRequest(system: NodeSystem, method: String, parameters: Map[String, Json]): ResultOrError {
         method.{
             | "initialize" => self.handleInitialize(system, parameters)
-            | "textDocument/diagnostic" => self.handleDiagnostic(system, parameters)
+            //| "textDocument/diagnostic" => self.handleDiagnostic(system, parameters)
             | "textDocument/documentSymbol" => self.handleDocumentSymbol(system, parameters)
             | "textDocument/completion" => self.handleCompletion(system, parameters)
             | "textDocument/signatureHelp" => self.handleSignatureHelp(system, parameters)
@@ -81,7 +93,10 @@ extend self: Handler {
                 self.handleTokenRequestWithCache(system, method, parameters) {targetAt => 
                     self.handleReferences(system, targetAt, local = True)
                 }
-            | "workspace/symbol" => self.printTime(system.mainTask(), "handleWorkspaceSymbol") {self.handleWorkspaceSymbol(system, parameters)}
+            | "workspace/symbol" => 
+                self.printTime(system.mainTask(), "handleWorkspaceSymbol") {
+                    self.handleWorkspaceSymbol(system, parameters)
+                }
             | "shutdown" => Result(Json.null().write())
             | _ => self.handleUnsupported()
         }
@@ -129,10 +144,10 @@ extend self: Handler {
                 .with("hoverProvider", True)
                 .with("definitionProvider", True)
                 .with("documentHighlightProvider", True)
-                .with("diagnosticProvider", Json.object()
+                /*.with("diagnosticProvider", Json.object()
                     .with("interFileDependencies", False)
                     .with("workspaceDiagnostics", False)
-                )
+                )*/
                 .with("documentSymbolProvider", True)
                 .with("completionProvider", Json.object()
                     .with("triggerCharacters", [".", " ", "("])
@@ -187,6 +202,29 @@ extend self: Handler {
         Result(o.write())
     }
 
+    handleFocusDiagnostic(system: NodeSystem, parameters: Map[String, Json]): Json {
+        let js = system.js()
+        let uri = parameters.grab("textDocument").field("uri").grabString()
+        let path = system.pathFromUrl(uri)
+        let fireflyPath = system.path(".")
+        let diagnostics = try {
+            Builder.check(system, fireflyPath, path, self.virtualFiles, LspHook.disabled(), True)
+            []
+        } catch {| CompileError(at, message), error =>
+            let tokenLocation = self.findToken(system, at)
+            let diagnostic = Json.object()
+                .with("range", self.tokenLocationToLspRange(tokenLocation))
+                .with("severity", 1)
+                .with("message", message)
+            [diagnostic]
+        } grab()
+
+        Json.object()
+            .with("uri", uri)
+            .with("version", parameters.grab("textDocument").field("version"))
+            .with("diagnostics", diagnostics)
+    }
+    
     handleDocumentSymbol(system: NodeSystem, parameters: Map[String, Json]): ResultOrError {
         let uri = parameters.grab("textDocument").field("uri").grabString()
         let path = system.pathFromUrl(uri)
@@ -326,7 +364,9 @@ extend self: Handler {
                     Log.trace("handleSignatureHelp check 2 error: " + message)
                 } grab()
                 let help = SignatureHelpHandler.handleSignatureHelp(system, callLspHook)
-                Some(SignatureHelpHandler.pickActiveParameter(help, h.argumentIndex, h.parameterName))
+                if(!help.isNull()) {
+                    SignatureHelpHandler.pickActiveParameter(help, h.argumentIndex, h.parameterName)
+                }
             | _ => 
                 None
         }

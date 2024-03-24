@@ -203,8 +203,8 @@ handleRequestMessage(system: NodeSystem, handler: Handler, message: RequestMessa
                 )
                 None
             | None => 
-                handler.handleNotification(system, message.method, message.parameters)
-                None
+                let notification = handler.handleNotification(system, message.method, message.parameters)
+                notification.map {| Pair(method, params) => makeNotificationMessage(method, params)}
             | Some(id) {handler.cancelledRequests.contains(id)} =>
                 handler.cancelledRequests = handler.cancelledRequests.remove(id)
                 Some(makeResponseMessage(id, Error(-32800, "Request cancelled")))
@@ -234,6 +234,13 @@ makeResponseMessage(id: MessageId, result: ResultOrError): Json {
             o = o.with("error", e)
     }
     o
+}
+
+makeNotificationMessage(method: String, params: Json): Json {
+    Json.object()
+        .with("jsonrpc", "2.0")
+        .with("method", method)
+        .with("params", params)
 }
 
 logMessage(directory: Path, messageType: String, body: Json, method: String) {

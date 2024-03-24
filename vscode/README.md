@@ -9,9 +9,6 @@ This extension adds support for the Firefly programming language (`.ff` files). 
 - Symbol renaming
 - Document and workspace symbols
 - Show type on hover
-- Diagnostics`*`
-
-`*` Diagnostics don't currently update automatically when included files have been edited. It's disabled for performance reasons, and we're working on a solution.
+- Diagnostics
 
 You can run `.ff` main files via the usual *Run and Debug* side panel - just choose *create a launch.json file*. After that you can also press *F5* to run the currently open file.
-
