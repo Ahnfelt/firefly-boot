@@ -216,7 +216,7 @@ extend self: Handler {
                 .with("range", self.tokenLocationToLspRange(tokenLocation))
                 .with("severity", 1)
                 .with("message", message)
-            [diagnostic]
+            [diagnostic].filter {_ => path.absolute() == system.path(at.file).absolute()}
         } grab()
 
         Json.object()
