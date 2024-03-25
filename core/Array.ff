@@ -258,7 +258,11 @@ extend self[T]: Array[T] {
     }
     
     collect[R](body: T => Option[R]): Array[R] {
-        self.toStream().collect(body).toArray()
+        mutable result = Stack.make()
+        self.each {x =>
+            body(x).each {result.push(_)}
+        }
+        result.drain()
     }
 
     collectFirst[R](body: T => Option[R]): Option[R] {
