@@ -20,10 +20,10 @@ extend self: Int {
     bitXor(that: Int): Int
         target js sync "return self_ ^ that_;"
 
-    bitLeft(bits: Int = 1): Int
+    bitLeft(bits: Int): Int
         target js sync "return self_ << bits_;"
 
-    bitRight(bits: Int = 1, signed: Bool = True): Int
+    bitRight(bits: Int, signed: Bool = True): Int
         target js sync "return signed_ ? self_ >> bits_ : self_ >>> bits_;"
 
     to(inclusiveEnd: Int): List[Int] {

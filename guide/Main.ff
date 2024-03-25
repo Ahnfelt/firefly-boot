@@ -1,3 +1,4 @@
 nodeMain(system: NodeSystem) {
-    Json.object()
+    let text = system.httpClient().fetch("https://www.example.com/").readText()
+    system.writeLine(text)
 }

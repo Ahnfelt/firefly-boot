@@ -127,11 +127,11 @@ export function Int_bitXor(self_, that_) {
 return self_ ^ that_;
 }
 
-export function Int_bitLeft(self_, bits_ = 1) {
+export function Int_bitLeft(self_, bits_) {
 return self_ << bits_;
 }
 
-export function Int_bitRight(self_, bits_ = 1, signed_ = true) {
+export function Int_bitRight(self_, bits_, signed_ = true) {
 return signed_ ? self_ >> bits_ : self_ >>> bits_;
 }
 
@@ -209,11 +209,11 @@ export async function Int_bitXor$(self_, that_, $task) {
 throw new Error('Function Int_bitXor is missing on this target in async context.');
 }
 
-export async function Int_bitLeft$(self_, bits_ = 1, $task) {
+export async function Int_bitLeft$(self_, bits_, $task) {
 throw new Error('Function Int_bitLeft is missing on this target in async context.');
 }
 
-export async function Int_bitRight$(self_, bits_ = 1, signed_ = true, $task) {
+export async function Int_bitRight$(self_, bits_, signed_ = true, $task) {
 throw new Error('Function Int_bitRight is missing on this target in async context.');
 }
 
