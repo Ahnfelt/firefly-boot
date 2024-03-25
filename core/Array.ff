@@ -351,12 +351,7 @@ extend self[K: Order, V]: Array[Pair[K, V]] {
     
     group(): Map[K, Array[V]] {
         mutable map = Map.empty[K, Stack[V]]()
-        self.each {| Pair(k, v) =>
-            map.get(k).{
-                | None => map.add(k, [v].toStack())
-                | Some(stack) => stack.push(v)
-            }
-        }
+        self.each {| Pair(k, v) => map = map.push(k, v)}
         map.mapValues {_, v => v.drain()}
     }
     

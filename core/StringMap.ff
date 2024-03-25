@@ -83,3 +83,14 @@ extend self[V]: StringMap[V] {
     }
             
 }
+
+extend self[V]: StringMap[Stack[V]] {
+
+    push(key: String, value: V) {
+        self.get(key).{
+            | None => self.set(key, [value].toStack())
+            | Some(stack) => stack.push(value)
+        }
+    }
+
+}
