@@ -73,7 +73,32 @@ extend self[T]: Array[T] {
     dropLast(count: Int = 1): Array[T]
         target js sync "return self_.slice(0, self_.length - count_)"
 
-    update(index: Int, body: T => T): Array[T]
+    pairs(): Array[Pair[Int, T]] {
+        mutable i = 0
+        self.map {x =>
+            let r = Pair(i, x)
+            i += 1
+            r
+        }
+    }
+    
+    slice(from: Int, until: Int): Array[T] {
+        self.dropFirst(from).takeFirst(until - from)
+    }
+    
+    foldLeft[R](initial: R, body: (R, T) => R): R {
+        mutable result = initial
+        self.each {x =>
+            result = body(result, x)
+        }
+        result
+    }    
+
+    update(index: Int, value: T): Array[T] {
+        self.modify(index) {_ => value}
+    }
+    
+    modify(index: Int, body: T => T): Array[T]
         target js sync """
             if(index_ < 0 || index_ >= self_.length) {
                 ff_core_Try.internalThrowGrabException_()
@@ -90,12 +115,28 @@ extend self[T]: Array[T] {
             result[index_] = await body_(result[index_], $task);
             return result;
         """
+        
+    zip[S](that: Array[S]): Array[Pair[T, S]] {
+        if(self.size() <= that.size()) {
+            mutable i = -1
+            self.map {x => 
+                i += 1
+                Pair(x, that.grab(i))
+            }
+        } else {
+            mutable i = -1
+            that.map {y => 
+                i += 1
+                Pair(self.grab(i), y)
+            }
+        }
+    }
 
     chunk(chunkSize: Int): Array[Array[T]] {
         let results = Stack.make()
         let result = Stack.make()
         mutable added = 0
-        self.each { item =>
+        self.each {item =>
             if(added < chunkSize) {
                 added += 1
             } else {
@@ -168,6 +209,33 @@ extend self[T]: Array[T] {
         }
         result
     }
+    
+    find(body: T => Bool): Option[T] {
+        mutable result = None
+        self.eachWhile {x =>
+            if(body(x)) {
+                result = Some(x)
+                False
+            } else {
+                True
+            }
+        }
+        result
+    }
+
+    filter(body: T => Bool): Array[T] {
+        let result = Stack.make()
+        self.each {x =>
+            if(body(x)) {
+                result.push(x)
+            }
+        }
+        result.drain()
+    }
+    
+    partition(body: T => Bool): Pair[Array[T], Array[T]] {
+        Pair(self.filter(body), self.filter {!body(_)})
+    }
 
     map[S](body: T => S): Array[S]
         target js sync """
@@ -188,6 +256,24 @@ extend self[T]: Array[T] {
         }
         results.drain()
     }
+    
+    collect[R](body: T => Option[R]): Array[R] {
+        self.toStream().collect(body).toArray()
+    }
+
+    collectFirst[R](body: T => Option[R]): Option[R] {
+        mutable result = None
+        self.eachWhile {x =>
+            body(x).{
+                | None =>
+                    True
+                | o =>
+                    result = o
+                    False
+            }
+        }
+        result
+    }
 
     sortBy[S: Order](body: T => S): Array[T] {
         self.sortWith {Ordering.compare(body(_), body(_))}
@@ -196,6 +282,23 @@ extend self[T]: Array[T] {
     sortWith(ordering: (T, T) => Ordering): Array[T] {
         let stack = self.toStack()
         stack.sortWith(ordering)
+        stack.drain()
+    }
+    
+    reverse(): Array[T] {
+        1.to(self.size()).toArray().map {i =>
+            self.grab(self.size() - i)
+        }
+    }
+    
+    separate(separator: Array[T]): Array[T] {
+        let stack = Stack.make()
+        self.pairs().each {| Pair(i, x) =>
+            if(i != 0) {
+                stack.pushArray(separator)
+            }
+            stack.push(x)
+        }
         stack.drain()
     }
 
@@ -210,13 +313,63 @@ extend self[T: Order]: Array[T] {
     toSet(): Set[T] {
         self.toList().toSet()
     }
+    
+    distinct(): Array[T] {
+        mutable seen = [].toSet()
+        self.filter {
+            | item {!seen.contains(item)} =>
+                seen = seen.add(item)
+                True
+            | _ =>
+                False
+        }
+    }
+
+}
+
+extend self[T]: Array[Array[T]] {
+
+    flatten(): Array[T] {
+        let result = Stack.make()
+        self.each {xs =>
+            result.pushArray(xs)
+        }
+        result.drain()
+    }
 
 }
 
 extend self[K: Order, V]: Array[Pair[K, V]] {
+    
     toMap(): Map[K, V] {
         self.toList().toMap()
     }
+    
+    group(): Map[K, Array[V]] {
+        mutable map = Map.empty[K, Stack[V]]()
+        self.each {| Pair(k, v) =>
+            map.get(k).{
+                | None => map.add(k, [v].toStack())
+                | Some(stack) => stack.push(v)
+            }
+        }
+        map.mapValues {_, v => v.drain()}
+    }
+    
+}
+
+extend self[K, V]: Array[Pair[K, V]] {
+
+    unzip(): Pair[Array[K], Array[V]] {
+        let first = Stack.make()
+        let second = Stack.make()
+        self.each {| Pair(x, y) =>
+            first.push(x)
+            second.push(y)
+        }
+        Pair(first.drain(), second.drain())
+    }
+
 }
 
 extend self: Array[String] {

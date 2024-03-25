@@ -241,7 +241,7 @@ extend self[T]: List[T] {
         go(initial, self)
     }
 
-    updated(index: Int, value: T): List[T] {
+    update(index: Int, value: T): List[T] {
         function go(list: List[T], i: Int, result: List[T]): List[T] {
             list.{
                 | [] =>
@@ -348,7 +348,7 @@ extend self[T]: List[T] {
         )
     }
 
-    insertBetween(separator: List[T]): List[T] {
+    separate(separator: List[T]): List[T] {
         self.flatMap {e => [...separator, e]}.dropFirst(separator.size())
     }
 

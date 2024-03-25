@@ -214,7 +214,34 @@ export function Array_dropLast(self_, count_ = 1) {
 return self_.slice(0, self_.length - count_)
 }
 
-export function Array_update(self_, index_, body_) {
+export function Array_pairs(self_) {
+let i_ = 0;
+return ff_core_Array.Array_map(self_, ((x_) => {
+const r_ = ff_core_Pair.Pair(i_, x_);
+i_ += 1;
+return r_
+}))
+}
+
+export function Array_slice(self_, from_, until_) {
+return ff_core_Array.Array_takeFirst(ff_core_Array.Array_dropFirst(self_, from_), (until_ - from_))
+}
+
+export function Array_foldLeft(self_, initial_, body_) {
+let result_ = initial_;
+ff_core_Array.Array_each(self_, ((x_) => {
+result_ = body_(result_, x_)
+}));
+return result_
+}
+
+export function Array_update(self_, index_, value_) {
+return ff_core_Array.Array_modify(self_, index_, ((_) => {
+return value_
+}))
+}
+
+export function Array_modify(self_, index_, body_) {
 
             if(index_ < 0 || index_ >= self_.length) {
                 ff_core_Try.internalThrowGrabException_()
@@ -223,6 +250,22 @@ export function Array_update(self_, index_, body_) {
             result[index_] = body_(result[index_]);
             return result;
         
+}
+
+export function Array_zip(self_, that_) {
+if((ff_core_Array.Array_size(self_) <= ff_core_Array.Array_size(that_))) {
+let i_ = (-1);
+return ff_core_Array.Array_map(self_, ((x_) => {
+i_ += 1;
+return ff_core_Pair.Pair(x_, ff_core_Array.Array_grab(that_, i_))
+}))
+} else {
+let i_ = (-1);
+return ff_core_Array.Array_map(that_, ((y_) => {
+i_ += 1;
+return ff_core_Pair.Pair(ff_core_Array.Array_grab(self_, i_), y_)
+}))
+}
 }
 
 export function Array_chunk(self_, chunkSize_) {
@@ -307,6 +350,35 @@ return (!result_)
 return result_
 }
 
+export function Array_find(self_, body_) {
+let result_ = ff_core_Option.None();
+ff_core_Array.Array_eachWhile(self_, ((x_) => {
+if(body_(x_)) {
+result_ = ff_core_Option.Some(x_);
+return false
+} else {
+return true
+}
+}));
+return result_
+}
+
+export function Array_filter(self_, body_) {
+const result_ = ff_core_Stack.make_();
+ff_core_Array.Array_each(self_, ((x_) => {
+if(body_(x_)) {
+ff_core_Stack.Stack_push(result_, x_)
+}
+}));
+return ff_core_Stack.Stack_drain(result_)
+}
+
+export function Array_partition(self_, body_) {
+return ff_core_Pair.Pair(ff_core_Array.Array_filter(self_, body_), ff_core_Array.Array_filter(self_, ((_w1) => {
+return (!body_(_w1))
+})))
+}
+
 export function Array_map(self_, body_) {
 
             return self_.map(body_)
@@ -321,6 +393,32 @@ ff_core_Stack.Stack_pushArray(results_, body_(x_))
 return ff_core_Stack.Stack_drain(results_)
 }
 
+export function Array_collect(self_, body_) {
+return ff_core_Stream.Stream_toArray(ff_core_Stream.Stream_collect(ff_core_Array.Array_toStream(self_, false), body_))
+}
+
+export function Array_collectFirst(self_, body_) {
+let result_ = ff_core_Option.None();
+ff_core_Array.Array_eachWhile(self_, ((x_) => {
+{
+const _1 = body_(x_);
+{
+if(_1.None) {
+return true
+return
+}
+}
+{
+const o_ = _1;
+result_ = o_;
+return false
+return
+}
+}
+}));
+return result_
+}
+
 export function Array_sortBy(self_, body_, ff_core_Ordering_Order$S) {
 return ff_core_Array.Array_sortWith(self_, ((_w1, _w2) => {
 return ff_core_Ordering_Order$S.compare_(body_(_w1), body_(_w2))
@@ -330,6 +428,28 @@ return ff_core_Ordering_Order$S.compare_(body_(_w1), body_(_w2))
 export function Array_sortWith(self_, ordering_) {
 const stack_ = ff_core_Array.Array_toStack(self_);
 ff_core_Stack.Stack_sortWith(stack_, ordering_);
+return ff_core_Stack.Stack_drain(stack_)
+}
+
+export function Array_reverse(self_) {
+return ff_core_Array.Array_map(ff_core_List.List_toArray(ff_core_Int.Int_to(1, ff_core_Array.Array_size(self_))), ((i_) => {
+return ff_core_Array.Array_grab(self_, (ff_core_Array.Array_size(self_) - i_))
+}))
+}
+
+export function Array_separate(self_, separator_) {
+const stack_ = ff_core_Stack.make_();
+ff_core_Array.Array_each(ff_core_Array.Array_pairs(self_), ((_1) => {
+{
+const i_ = _1.first_;
+const x_ = _1.second_;
+if((i_ !== 0)) {
+ff_core_Stack.Stack_pushArray(stack_, separator_)
+};
+ff_core_Stack.Stack_push(stack_, x_)
+return
+}
+}));
 return ff_core_Stack.Stack_drain(stack_)
 }
 
@@ -385,7 +505,34 @@ export async function Array_dropLast$(self_, count_ = 1, $task) {
 throw new Error('Function Array_dropLast is missing on this target in async context.');
 }
 
-export async function Array_update$(self_, index_, body_, $task) {
+export async function Array_pairs$(self_, $task) {
+let i_ = 0;
+return ff_core_Array.Array_map(self_, ((x_) => {
+const r_ = ff_core_Pair.Pair(i_, x_);
+i_ += 1;
+return r_
+}))
+}
+
+export async function Array_slice$(self_, from_, until_, $task) {
+return ff_core_Array.Array_takeFirst(ff_core_Array.Array_dropFirst(self_, from_), (until_ - from_))
+}
+
+export async function Array_foldLeft$(self_, initial_, body_, $task) {
+let result_ = initial_;
+(await ff_core_Array.Array_each$(self_, (async (x_, $task) => {
+result_ = (await body_(result_, x_, $task))
+}), $task));
+return result_
+}
+
+export async function Array_update$(self_, index_, value_, $task) {
+return ff_core_Array.Array_modify(self_, index_, ((_) => {
+return value_
+}))
+}
+
+export async function Array_modify$(self_, index_, body_, $task) {
 
             if(index_ < 0 || index_ >= self_.length) {
                 ff_core_Try.internalThrowGrabException_()
@@ -394,6 +541,22 @@ export async function Array_update$(self_, index_, body_, $task) {
             result[index_] = await body_(result[index_], $task);
             return result;
         
+}
+
+export async function Array_zip$(self_, that_, $task) {
+if((ff_core_Array.Array_size(self_) <= ff_core_Array.Array_size(that_))) {
+let i_ = (-1);
+return ff_core_Array.Array_map(self_, ((x_) => {
+i_ += 1;
+return ff_core_Pair.Pair(x_, ff_core_Array.Array_grab(that_, i_))
+}))
+} else {
+let i_ = (-1);
+return ff_core_Array.Array_map(that_, ((y_) => {
+i_ += 1;
+return ff_core_Pair.Pair(ff_core_Array.Array_grab(self_, i_), y_)
+}))
+}
 }
 
 export async function Array_chunk$(self_, chunkSize_, $task) {
@@ -474,6 +637,35 @@ return (!result_)
 return result_
 }
 
+export async function Array_find$(self_, body_, $task) {
+let result_ = ff_core_Option.None();
+(await ff_core_Array.Array_eachWhile$(self_, (async (x_, $task) => {
+if((await body_(x_, $task))) {
+result_ = ff_core_Option.Some(x_);
+return false
+} else {
+return true
+}
+}), $task));
+return result_
+}
+
+export async function Array_filter$(self_, body_, $task) {
+const result_ = ff_core_Stack.make_();
+(await ff_core_Array.Array_each$(self_, (async (x_, $task) => {
+if((await body_(x_, $task))) {
+ff_core_Stack.Stack_push(result_, x_)
+}
+}), $task));
+return ff_core_Stack.Stack_drain(result_)
+}
+
+export async function Array_partition$(self_, body_, $task) {
+return ff_core_Pair.Pair((await ff_core_Array.Array_filter$(self_, body_, $task)), (await ff_core_Array.Array_filter$(self_, (async (_w1, $task) => {
+return (!(await body_(_w1, $task)))
+}), $task)))
+}
+
 export async function Array_map$(self_, body_, $task) {
 
             let result = [];
@@ -492,6 +684,32 @@ ff_core_Stack.Stack_pushArray(results_, (await body_(x_, $task)))
 return ff_core_Stack.Stack_drain(results_)
 }
 
+export async function Array_collect$(self_, body_, $task) {
+return (await ff_core_Stream.Stream_toArray$((await ff_core_Stream.Stream_collect$((await ff_core_Array.Array_toStream$(self_, false, $task)), body_, $task)), $task))
+}
+
+export async function Array_collectFirst$(self_, body_, $task) {
+let result_ = ff_core_Option.None();
+(await ff_core_Array.Array_eachWhile$(self_, (async (x_, $task) => {
+{
+const _1 = (await body_(x_, $task));
+{
+if(_1.None) {
+return true
+return
+}
+}
+{
+const o_ = _1;
+result_ = o_;
+return false
+return
+}
+}
+}), $task));
+return result_
+}
+
 export async function Array_sortBy$(self_, body_, ff_core_Ordering_Order$S, $task) {
 return (await ff_core_Array.Array_sortWith$(self_, (async (_w1, _w2, $task) => {
 return ff_core_Ordering_Order$S.compare_((await body_(_w1, $task)), (await body_(_w2, $task)))
@@ -501,6 +719,28 @@ return ff_core_Ordering_Order$S.compare_((await body_(_w1, $task)), (await body_
 export async function Array_sortWith$(self_, ordering_, $task) {
 const stack_ = ff_core_Array.Array_toStack(self_);
 (await ff_core_Stack.Stack_sortWith$(stack_, ordering_, $task));
+return ff_core_Stack.Stack_drain(stack_)
+}
+
+export async function Array_reverse$(self_, $task) {
+return ff_core_Array.Array_map(ff_core_List.List_toArray(ff_core_Int.Int_to(1, ff_core_Array.Array_size(self_))), ((i_) => {
+return ff_core_Array.Array_grab(self_, (ff_core_Array.Array_size(self_) - i_))
+}))
+}
+
+export async function Array_separate$(self_, separator_, $task) {
+const stack_ = ff_core_Stack.make_();
+ff_core_Array.Array_each(ff_core_Array.Array_pairs(self_), ((_1) => {
+{
+const i_ = _1.first_;
+const x_ = _1.second_;
+if((i_ !== 0)) {
+ff_core_Stack.Stack_pushArray(stack_, separator_)
+};
+ff_core_Stack.Stack_push(stack_, x_)
+return
+}
+}));
 return ff_core_Stack.Stack_drain(stack_)
 }
 
@@ -514,6 +754,25 @@ export function Array_toSet(self_, ff_core_Ordering_Order$T) {
 return ff_core_List.List_toSet(ff_core_Array.Array_toList(self_), ff_core_Ordering_Order$T)
 }
 
+export function Array_distinct(self_, ff_core_Ordering_Order$T) {
+let seen_ = ff_core_List.List_toSet(ff_core_List.Empty(), ff_core_Ordering_Order$T);
+return ff_core_Array.Array_filter(self_, ((_1) => {
+{
+const item_ = _1;
+const _guard1 = (!ff_core_Set.Set_contains(seen_, item_, ff_core_Ordering_Order$T));
+if(_guard1) {
+seen_ = ff_core_Set.Set_add(seen_, item_, ff_core_Ordering_Order$T);
+return true
+return
+}
+}
+{
+return false
+return
+}
+}))
+}
+
 export async function Array_sort$(self_, ff_core_Ordering_Order$T, $task) {
 return ff_core_Array.Array_sortWith(self_, ((x_, y_) => {
 return ff_core_Ordering_Order$T.compare_(x_, y_)
@@ -524,12 +783,137 @@ export async function Array_toSet$(self_, ff_core_Ordering_Order$T, $task) {
 return ff_core_List.List_toSet(ff_core_Array.Array_toList(self_), ff_core_Ordering_Order$T)
 }
 
+export async function Array_distinct$(self_, ff_core_Ordering_Order$T, $task) {
+let seen_ = ff_core_List.List_toSet(ff_core_List.Empty(), ff_core_Ordering_Order$T);
+return ff_core_Array.Array_filter(self_, ((_1) => {
+{
+const item_ = _1;
+const _guard1 = (!ff_core_Set.Set_contains(seen_, item_, ff_core_Ordering_Order$T));
+if(_guard1) {
+seen_ = ff_core_Set.Set_add(seen_, item_, ff_core_Ordering_Order$T);
+return true
+return
+}
+}
+{
+return false
+return
+}
+}))
+}
+
+export function Array_flatten(self_) {
+const result_ = ff_core_Stack.make_();
+ff_core_Array.Array_each(self_, ((xs_) => {
+ff_core_Stack.Stack_pushArray(result_, xs_)
+}));
+return ff_core_Stack.Stack_drain(result_)
+}
+
+export async function Array_flatten$(self_, $task) {
+const result_ = ff_core_Stack.make_();
+ff_core_Array.Array_each(self_, ((xs_) => {
+ff_core_Stack.Stack_pushArray(result_, xs_)
+}));
+return ff_core_Stack.Stack_drain(result_)
+}
+
 export function Array_toMap(self_, ff_core_Ordering_Order$K) {
 return ff_core_List.List_toMap(ff_core_Array.Array_toList(self_), ff_core_Ordering_Order$K)
 }
 
+export function Array_group(self_, ff_core_Ordering_Order$K) {
+let map_ = ff_core_Map.empty_();
+ff_core_Array.Array_each(self_, ((_1) => {
+{
+const k_ = _1.first_;
+const v_ = _1.second_;
+{
+const _1 = ff_core_Map.Map_get(map_, k_, ff_core_Ordering_Order$K);
+{
+if(_1.None) {
+ff_core_Map.Map_add(map_, k_, ff_core_List.List_toStack(ff_core_List.Link(v_, ff_core_List.Empty())), ff_core_Ordering_Order$K)
+return
+}
+}
+{
+if(_1.Some) {
+const stack_ = _1.value_;
+ff_core_Stack.Stack_push(stack_, v_)
+return
+}
+}
+}
+return
+}
+}));
+return ff_core_Map.Map_mapValues(map_, ((_, v_) => {
+return ff_core_Stack.Stack_drain(v_)
+}), ff_core_Ordering_Order$K)
+}
+
 export async function Array_toMap$(self_, ff_core_Ordering_Order$K, $task) {
 return ff_core_List.List_toMap(ff_core_Array.Array_toList(self_), ff_core_Ordering_Order$K)
+}
+
+export async function Array_group$(self_, ff_core_Ordering_Order$K, $task) {
+let map_ = ff_core_Map.empty_();
+ff_core_Array.Array_each(self_, ((_1) => {
+{
+const k_ = _1.first_;
+const v_ = _1.second_;
+{
+const _1 = ff_core_Map.Map_get(map_, k_, ff_core_Ordering_Order$K);
+{
+if(_1.None) {
+ff_core_Map.Map_add(map_, k_, ff_core_List.List_toStack(ff_core_List.Link(v_, ff_core_List.Empty())), ff_core_Ordering_Order$K)
+return
+}
+}
+{
+if(_1.Some) {
+const stack_ = _1.value_;
+ff_core_Stack.Stack_push(stack_, v_)
+return
+}
+}
+}
+return
+}
+}));
+return ff_core_Map.Map_mapValues(map_, ((_, v_) => {
+return ff_core_Stack.Stack_drain(v_)
+}), ff_core_Ordering_Order$K)
+}
+
+export function Array_unzip(self_) {
+const first_ = ff_core_Stack.make_();
+const second_ = ff_core_Stack.make_();
+ff_core_Array.Array_each(self_, ((_1) => {
+{
+const x_ = _1.first_;
+const y_ = _1.second_;
+ff_core_Stack.Stack_push(first_, x_);
+ff_core_Stack.Stack_push(second_, y_)
+return
+}
+}));
+return ff_core_Pair.Pair(ff_core_Stack.Stack_drain(first_), ff_core_Stack.Stack_drain(second_))
+}
+
+export async function Array_unzip$(self_, $task) {
+const first_ = ff_core_Stack.make_();
+const second_ = ff_core_Stack.make_();
+ff_core_Array.Array_each(self_, ((_1) => {
+{
+const x_ = _1.first_;
+const y_ = _1.second_;
+ff_core_Stack.Stack_push(first_, x_);
+ff_core_Stack.Stack_push(second_, y_)
+return
+}
+}));
+return ff_core_Pair.Pair(ff_core_Stack.Stack_drain(first_), ff_core_Stack.Stack_drain(second_))
 }
 
 export function Array_join(self_, separator_ = "") {

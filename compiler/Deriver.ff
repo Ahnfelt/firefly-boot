@@ -73,10 +73,10 @@ extend self: Deriver {
             self.makeMethodCall(at, self.makeSimpleCall(at, "ff:core/Any.anyTag", [], [_]), "show", [])
         }
         let strings =
-            [EString(at, "\"[\""), ...typeArgumentStrings.insertBetween([EString(at, "\",\"")]), EString(at, "\"]\"")]
+            [EString(at, "\"[\""), ...typeArgumentStrings.separate([EString(at, "\",\"")]), EString(at, "\"]\"")]
         let body = FireflyTarget(
             Lambda(at, noEffect, [MatchCase(
-                at = at,
+                at = at
                 patterns = []
                 guards = []
                 body = self.makeSimpleCall(at, "ff:core/Any.internalAnyTag", [
@@ -160,7 +160,7 @@ extend self: Deriver {
                             self.makeSimpleCall(at, "ff:core/Show.show", [
                                 EField(at, False, EVariable(at, "z"), field.name)
                             ])
-                        }.insertBetween([EString(at, "\", \"")])
+                        }.separate([EString(at, "\", \"")])
                         EString(at, "\")\"")
                     ]}
                     MatchCase(

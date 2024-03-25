@@ -159,7 +159,7 @@ const signature_ = ff_compiler_Syntax.Signature(at_, "anyTag", false, ff_core_Li
 const typeArgumentStrings_ = ff_core_List.List_map(typeArguments_, ((_w1) => {
 return ff_compiler_Deriver.Deriver_makeMethodCall(self_, at_, ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Any.anyTag", ff_core_List.Empty(), ff_core_List.Link(_w1, ff_core_List.Empty())), "show", ff_core_List.Empty())
 }));
-const strings_ = ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\"[\""), ff_core_List.List_addAll(ff_core_List.List_insertBetween(typeArgumentStrings_, ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\",\""), ff_core_List.Empty())), ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\"]\""), ff_core_List.Empty())));
+const strings_ = ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\"[\""), ff_core_List.List_addAll(ff_core_List.List_separate(typeArgumentStrings_, ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\",\""), ff_core_List.Empty())), ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\"]\""), ff_core_List.Empty())));
 const body_ = ff_compiler_Syntax.FireflyTarget(ff_compiler_Syntax.Lambda(at_, noEffect_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.Empty(), ff_core_List.Empty(), ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Any.internalAnyTag", ff_core_List.Link(ff_core_List.List_foldLeft(strings_, ff_compiler_Syntax.EString(at_, (("\"" + selfTypeName_) + "\"")), ((a_, b_) => {
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "+", ff_core_List.Link(a_, ff_core_List.Link(b_, ff_core_List.Empty())), ff_core_List.Empty())
 })), ff_core_List.Empty()), ff_core_List.Empty())), ff_core_List.Empty())));
@@ -208,7 +208,7 @@ const variantName_ = ((modulePrefix_ + ".") + variant_.name_);
 const fields_ = ff_core_List.List_addAll(declaration_.commonFields_, variant_.fields_);
 const strings_ = ((ff_core_List.List_size(fields_) === 0)
 ? ff_core_List.Empty()
-: ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\"(\""), ff_core_List.List_addAll(ff_core_List.List_insertBetween(ff_core_List.List_map(fields_, ((field_) => {
+: ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\"(\""), ff_core_List.List_addAll(ff_core_List.List_separate(ff_core_List.List_map(fields_, ((field_) => {
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Show.show", ff_core_List.Link(ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "z"), field_.name_), ff_core_List.Empty()), ff_core_List.Empty())
 })), ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\", \""), ff_core_List.Empty())), ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\")\""), ff_core_List.Empty()))));
 return ff_compiler_Syntax.MatchCase(at_, ff_core_List.Link(ff_compiler_Syntax.PVariantAs(at_, variantName_, at_, ff_core_Option.Some("z")), ff_core_List.Empty()), ff_core_List.Empty(), ff_core_List.List_foldLeft(strings_, ff_compiler_Syntax.EString(at_, (("\"" + variant_.name_) + "\"")), ((a_, b_) => {
@@ -600,7 +600,7 @@ const signature_ = ff_compiler_Syntax.Signature(at_, "anyTag", false, ff_core_Li
 const typeArgumentStrings_ = ff_core_List.List_map(typeArguments_, ((_w1) => {
 return ff_compiler_Deriver.Deriver_makeMethodCall(self_, at_, ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Any.anyTag", ff_core_List.Empty(), ff_core_List.Link(_w1, ff_core_List.Empty())), "show", ff_core_List.Empty())
 }));
-const strings_ = ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\"[\""), ff_core_List.List_addAll(ff_core_List.List_insertBetween(typeArgumentStrings_, ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\",\""), ff_core_List.Empty())), ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\"]\""), ff_core_List.Empty())));
+const strings_ = ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\"[\""), ff_core_List.List_addAll(ff_core_List.List_separate(typeArgumentStrings_, ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\",\""), ff_core_List.Empty())), ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\"]\""), ff_core_List.Empty())));
 const body_ = ff_compiler_Syntax.FireflyTarget(ff_compiler_Syntax.Lambda(at_, noEffect_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.Empty(), ff_core_List.Empty(), ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Any.internalAnyTag", ff_core_List.Link(ff_core_List.List_foldLeft(strings_, ff_compiler_Syntax.EString(at_, (("\"" + selfTypeName_) + "\"")), ((a_, b_) => {
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "+", ff_core_List.Link(a_, ff_core_List.Link(b_, ff_core_List.Empty())), ff_core_List.Empty())
 })), ff_core_List.Empty()), ff_core_List.Empty())), ff_core_List.Empty())));
@@ -649,7 +649,7 @@ const variantName_ = ((modulePrefix_ + ".") + variant_.name_);
 const fields_ = ff_core_List.List_addAll(declaration_.commonFields_, variant_.fields_);
 const strings_ = ((ff_core_List.List_size(fields_) === 0)
 ? ff_core_List.Empty()
-: ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\"(\""), ff_core_List.List_addAll(ff_core_List.List_insertBetween(ff_core_List.List_map(fields_, ((field_) => {
+: ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\"(\""), ff_core_List.List_addAll(ff_core_List.List_separate(ff_core_List.List_map(fields_, ((field_) => {
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Show.show", ff_core_List.Link(ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "z"), field_.name_), ff_core_List.Empty()), ff_core_List.Empty())
 })), ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\", \""), ff_core_List.Empty())), ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\")\""), ff_core_List.Empty()))));
 return ff_compiler_Syntax.MatchCase(at_, ff_core_List.Link(ff_compiler_Syntax.PVariantAs(at_, variantName_, at_, ff_core_Option.Some("z")), ff_core_List.Empty()), ff_core_List.Empty(), ff_core_List.List_foldLeft(strings_, ff_compiler_Syntax.EString(at_, (("\"" + variant_.name_) + "\"")), ((a_, b_) => {

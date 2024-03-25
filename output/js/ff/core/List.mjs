@@ -800,7 +800,7 @@ return
 return go_(initial_, self_)
 }
 
-export function List_updated(self_, index_, value_) {
+export function List_update(self_, index_, value_) {
 function go_(list_, i_, result_) {
 _tailcall: for(;;) {
 {
@@ -1055,7 +1055,7 @@ remaining_ = ff_core_List.Empty()
 }))
 }
 
-export function List_insertBetween(self_, separator_) {
+export function List_separate(self_, separator_) {
 return ff_core_List.List_dropFirst(ff_core_List.List_flatMap(self_, ((e_) => {
 return ff_core_List.List_addAll(separator_, ff_core_List.Link(e_, ff_core_List.Empty()))
 })), ff_core_List.List_size(separator_))
@@ -1670,7 +1670,7 @@ return
 return (await go_$(initial_, self_, $task))
 }
 
-export async function List_updated$(self_, index_, value_, $task) {
+export async function List_update$(self_, index_, value_, $task) {
 function go_(list_, i_, result_) {
 _tailcall: for(;;) {
 {
@@ -1925,7 +1925,7 @@ remaining_ = ff_core_List.Empty()
 }))
 }
 
-export async function List_insertBetween$(self_, separator_, $task) {
+export async function List_separate$(self_, separator_, $task) {
 return ff_core_List.List_dropFirst(ff_core_List.List_flatMap(self_, ((e_) => {
 return ff_core_List.List_addAll(separator_, ff_core_List.Link(e_, ff_core_List.Empty()))
 })), ff_core_List.List_size(separator_))
