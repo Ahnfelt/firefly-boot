@@ -92,8 +92,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-import * as ff_core_WebSocket from "../../ff/core/WebSocket.mjs"
-
 // type BrowserSystem
 
 
@@ -105,10 +103,6 @@ import * as ff_core_WebSocket from "../../ff/core/WebSocket.mjs"
 
 export function BrowserSystem_httpClient(self_) {
 throw new Error('Function BrowserSystem_httpClient is missing on this target in sync context.');
-}
-
-export function BrowserSystem_webSocket(self_, url_) {
-return ff_core_WebSocket.internalOpenBrowserWebSocket_(self_, url_)
 }
 
 export function BrowserSystem_mainTask(self_) {
@@ -137,10 +131,6 @@ throw new Error('Function BrowserSystem_urlFragment is missing on this target in
 
 export async function BrowserSystem_httpClient$(self_, $task) {
 return null
-}
-
-export async function BrowserSystem_webSocket$(self_, url_, $task) {
-return (await ff_core_WebSocket.internalOpenBrowserWebSocket_$(self_, url_, $task))
 }
 
 export async function BrowserSystem_mainTask$(self_, $task) {

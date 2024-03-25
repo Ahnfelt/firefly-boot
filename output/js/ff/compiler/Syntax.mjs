@@ -94,8 +94,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-import * as ff_core_WebSocket from "../../ff/core/WebSocket.mjs"
-
 // type Location
 export function Location(file_, line_, column_) {
 return {file_, line_, column_};

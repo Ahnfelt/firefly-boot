@@ -94,8 +94,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-import * as ff_core_WebSocket from "../../ff/core/WebSocket.mjs"
-
 // newtype Map
 
 
@@ -336,6 +334,46 @@ return ff_core_List.Link(value_, _w1)
 }), (() => {
 return ff_core_List.Link(value_, ff_core_List.Empty())
 }), ff_core_Ordering_Order$K)
+}
+
+export function Map_push(self_, key_, value_, ff_core_Ordering_Order$K) {
+{
+const _1 = ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K);
+{
+if(_1.None) {
+return ff_core_Map.Map_add(self_, key_, ff_core_List.List_toStack(ff_core_List.Link(value_, ff_core_List.Empty())), ff_core_Ordering_Order$K)
+return
+}
+}
+{
+if(_1.Some) {
+const stack_ = _1.value_;
+ff_core_Stack.Stack_push(stack_, value_);
+return self_
+return
+}
+}
+}
+}
+
+export async function Map_push$(self_, key_, value_, ff_core_Ordering_Order$K, $task) {
+{
+const _1 = ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K);
+{
+if(_1.None) {
+return ff_core_Map.Map_add(self_, key_, ff_core_List.List_toStack(ff_core_List.Link(value_, ff_core_List.Empty())), ff_core_Ordering_Order$K)
+return
+}
+}
+{
+if(_1.Some) {
+const stack_ = _1.value_;
+ff_core_Stack.Stack_push(stack_, value_);
+return self_
+return
+}
+}
+}
 }
 
 export function ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal_Equal$K, ff_core_Ordering_Order$K, ff_core_Equal_Equal$V) { return {

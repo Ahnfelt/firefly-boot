@@ -96,8 +96,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-import * as ff_core_WebSocket from "../../ff/core/WebSocket.mjs"
-
 // type Workspace
 export function Workspace(rules_, defaultLocation_, packageDirectory_) {
 return {rules_, defaultLocation_, packageDirectory_};

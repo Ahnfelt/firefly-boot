@@ -92,8 +92,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-import * as ff_core_WebSocket from "../../ff/core/WebSocket.mjs"
-
 // type StringMap
 
 
@@ -285,6 +283,44 @@ if((!ff_core_StringMap.StringMap_has(self_, key_))) {
 ff_core_StringMap.StringMap_set(self_, key_, (await body_($task)))
 };
 return ff_core_StringMap.StringMap_grab(self_, key_)
+}
+
+export function StringMap_push(self_, key_, value_) {
+{
+const _1 = ff_core_StringMap.StringMap_get(self_, key_);
+{
+if(_1.None) {
+ff_core_StringMap.StringMap_set(self_, key_, ff_core_List.List_toStack(ff_core_List.Link(value_, ff_core_List.Empty())))
+return
+}
+}
+{
+if(_1.Some) {
+const stack_ = _1.value_;
+ff_core_Stack.Stack_push(stack_, value_)
+return
+}
+}
+}
+}
+
+export async function StringMap_push$(self_, key_, value_, $task) {
+{
+const _1 = ff_core_StringMap.StringMap_get(self_, key_);
+{
+if(_1.None) {
+ff_core_StringMap.StringMap_set(self_, key_, ff_core_List.List_toStack(ff_core_List.Link(value_, ff_core_List.Empty())))
+return
+}
+}
+{
+if(_1.Some) {
+const stack_ = _1.value_;
+ff_core_Stack.Stack_push(stack_, value_)
+return
+}
+}
+}
 }
 
 

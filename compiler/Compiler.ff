@@ -107,7 +107,6 @@ coreImports: List[DImport] =
         "Task"
         "Try"
         "Unit"
-        "WebSocket"
     ].map {moduleName =>
         DImport(
             at = Location("<prelude>", 1, 1)

@@ -1,5 +1,9 @@
 capability WebSocket {}
 
+open(browserSystem: BrowserSystem, url: String): WebSocket {
+    internalOpenBrowserWebSocket(browserSystem, url)
+}
+
 extend self: WebSocket {
     
     readText(encoding: String = "utf8"): Option[String] {

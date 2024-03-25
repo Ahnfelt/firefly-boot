@@ -92,8 +92,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-import * as ff_core_WebSocket from "../../ff/core/WebSocket.mjs"
-
 // type Array
 
 
@@ -394,7 +392,13 @@ return ff_core_Stack.Stack_drain(results_)
 }
 
 export function Array_collect(self_, body_) {
-return ff_core_Stream.Stream_toArray(ff_core_Stream.Stream_collect(ff_core_Array.Array_toStream(self_, false), body_))
+let result_ = ff_core_Stack.make_();
+ff_core_Array.Array_each(self_, ((x_) => {
+ff_core_Option.Option_each(body_(x_), ((_w1) => {
+ff_core_Stack.Stack_push(result_, _w1)
+}))
+}));
+return ff_core_Stack.Stack_drain(result_)
 }
 
 export function Array_collectFirst(self_, body_) {
@@ -685,7 +689,13 @@ return ff_core_Stack.Stack_drain(results_)
 }
 
 export async function Array_collect$(self_, body_, $task) {
-return (await ff_core_Stream.Stream_toArray$((await ff_core_Stream.Stream_collect$((await ff_core_Array.Array_toStream$(self_, false, $task)), body_, $task)), $task))
+let result_ = ff_core_Stack.make_();
+(await ff_core_Array.Array_each$(self_, (async (x_, $task) => {
+ff_core_Option.Option_each((await body_(x_, $task)), ((_w1) => {
+ff_core_Stack.Stack_push(result_, _w1)
+}))
+}), $task));
+return ff_core_Stack.Stack_drain(result_)
 }
 
 export async function Array_collectFirst$(self_, body_, $task) {
@@ -828,22 +838,7 @@ ff_core_Array.Array_each(self_, ((_1) => {
 {
 const k_ = _1.first_;
 const v_ = _1.second_;
-{
-const _1 = ff_core_Map.Map_get(map_, k_, ff_core_Ordering_Order$K);
-{
-if(_1.None) {
-ff_core_Map.Map_add(map_, k_, ff_core_List.List_toStack(ff_core_List.Link(v_, ff_core_List.Empty())), ff_core_Ordering_Order$K)
-return
-}
-}
-{
-if(_1.Some) {
-const stack_ = _1.value_;
-ff_core_Stack.Stack_push(stack_, v_)
-return
-}
-}
-}
+map_ = ff_core_Map.Map_push(map_, k_, v_, ff_core_Ordering_Order$K)
 return
 }
 }));
@@ -862,22 +857,7 @@ ff_core_Array.Array_each(self_, ((_1) => {
 {
 const k_ = _1.first_;
 const v_ = _1.second_;
-{
-const _1 = ff_core_Map.Map_get(map_, k_, ff_core_Ordering_Order$K);
-{
-if(_1.None) {
-ff_core_Map.Map_add(map_, k_, ff_core_List.List_toStack(ff_core_List.Link(v_, ff_core_List.Empty())), ff_core_Ordering_Order$K)
-return
-}
-}
-{
-if(_1.Some) {
-const stack_ = _1.value_;
-ff_core_Stack.Stack_push(stack_, v_)
-return
-}
-}
-}
+map_ = ff_core_Map.Map_push(map_, k_, v_, ff_core_Ordering_Order$K)
 return
 }
 }));

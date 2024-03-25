@@ -4,10 +4,6 @@ extend self: BrowserSystem {
 
     httpClient(): HttpClient
         target js async "return null"
-
-    webSocket(url: String): WebSocket {
-        WebSocket.internalOpenBrowserWebSocket(self, url)
-    }
     
     mainTask(): Task
         target js async "return self_.task_"
