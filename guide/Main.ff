@@ -1,4 +1,22 @@
 nodeMain(system: NodeSystem) {
-    let text = system.httpClient().fetch("https://www.example.com/").readText()
-    system.writeLine(text)
+    
+    //let lines = system.path("data.txt").readText().lines()
+    let lines = [
+        "Monday:    22.5"
+        "Tuesday:   25.7"
+        "Wednesday: 23.9"
+        "Thursday:  22.4"
+        "Friday:    20.3"
+        ""
+        "Saturday:  16.2"
+        "Sunday:    21.1        "
+    ]
+    let pairs = lines.map {_.split(':').toList()}.collect {
+        | [day, temp] => Some(Pair(day.trim(), temp.trim().grabFloat()))
+        | _ => None
+    }
+    let remaining = pairs.map {_.second}.sort().dropFirst().dropLast()
+    let average = remaining.foldLeft(0.0) {_ + _} / remaining.size()
+    system.writeLine("Average temperature: " + average)
+    
 }
