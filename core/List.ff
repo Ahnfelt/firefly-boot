@@ -1,4 +1,9 @@
-data List[T] {}
+//data List[T] {}
+
+data List[T] {
+    Empty
+    Link(head: T, tail: List[T])
+}
 
 empty[T](): List[T]
     target js sync """

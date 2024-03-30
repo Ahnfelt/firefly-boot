@@ -46,20 +46,16 @@ extend self[V]: IntMap[V] {
         stack
     }
 
-    toArray(): List[Pair[Int, V]] {
+    toList(): List[Pair[Int, V]] {
         self.toStack().drain()
     }
 
-    toList(): List[Pair[Int, V]] {
-        self.toArray().toList()
-    }
-
     toStream(): Stream[Pair[Int, V]] {
-        self.toArray().toStream()
+        self.toStack().toStream()
     }
 
     toMap(): Map[Int, V] {
-        self.toArray().toMap()
+        self.toList().toMap()
     }
 
     keys(): List[Int] {

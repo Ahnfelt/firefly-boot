@@ -34,9 +34,10 @@ null(): Json
         return null;
     """
 
-array(json: List[Json]): Json {
-    array(json.toArray())
-}
+array(json: List[Json]): Json
+    target js sync """
+        return json_;
+    """
 
 object(): Json
     target js sync """
@@ -234,7 +235,7 @@ extend self: Json {
 
     flatMap[T](body: (String, Json) => List[T]): List[T] {
         let stack = Stack.make()
-        self.each {field, value => stack.pushArray(body(field, value))}
+        self.each {field, value => stack.pushList(body(field, value))}
         stack.drain()
     }
     
