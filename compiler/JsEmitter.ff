@@ -746,8 +746,9 @@ extend self: JsEmitter {
     }
 
     emitList(items: List[Pair[Term, Bool]], async: Bool): String {
-        "[" + items.map {item =>
-            self.emitTerm(item, async)
+        "[" + items.map {
+            | Pair(item, False) => self.emitTerm(item, async)
+            | Pair(item, True) => "..." + self.emitTerm(item, async)
         }.join(", ") + "]"
     }
 
