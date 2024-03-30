@@ -151,15 +151,6 @@ extend self[T]: Array[T] {
         results.drain()
     }
 
-    toList(): List[T]
-        target js sync """
-            let result = ff_core_List.Empty();
-            for(let i = self_.length - 1; i >= 0; i--) {
-                result = ff_core_List.Link(self_[i], result);
-            }
-            return result;
-        """
-
     toStream(cycle: Bool = False): Stream[T] {
         mutable index = 0
         Stream.make {

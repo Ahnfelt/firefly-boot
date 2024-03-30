@@ -5,11 +5,7 @@ data List[T] {
 
 range(size: Int): List[Int]
     target js sync """
-        let result = ff_core_List.Empty();
-        for(let i = size_ - 1; i >= 0; i--) {
-            result = ff_core_List.Link(i, result);
-        }
-        return result;
+        return Array.from({length: size_}, (_, index) => index);
     """
 
 build[A, B](initial: A, body: A => Option[Pair[A, B]]): List[B] {

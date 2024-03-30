@@ -735,16 +735,11 @@ extend self: JsEmitter {
         }
     }
 
-    emitList(items: List[Pair[Term, Bool]], async: Bool): String {items.{
-        | [] =>
-            "ff_core_List.Empty()"
-        | [Pair(e, True)] =>
-            self.emitTerm(e, async)
-        | [Pair(e, False), ...list] =>
-            "ff_core_List.Link(" + self.emitTerm(e, async) + ", " + self.emitList(list, async) + ")"
-        | [Pair(e, True), ...list] =>
-            "ff_core_List.List_addAll(" + self.emitTerm(e, async) + ", " + self.emitList(list, async) + ")"
-    }}
+    emitList(items: List[Pair[Term, Bool]], async: Bool): String {
+        "[" + items.map {item =>
+            self.emitTerm(item, async)
+        }.join(", ") + "]"
+    }
 
     processVariantCase(name: String, argument: String): ProcessedVariantCase {
         let variantNameUnqualified = name.reverse().takeWhile { _ != '.' }.reverse()

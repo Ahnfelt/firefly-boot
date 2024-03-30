@@ -112,7 +112,7 @@ extend self: JsValue {
 
 
     call(name: String, arguments: List[JsValue]): JsValue
-        target js sync "return self_[name_].apply(this_, ff_core_List.List_toArray(arguments_))"
+        target js sync "return self_[name_].apply(this_, arguments_)"
 
     call0(name: String): JsValue
         target js sync "return self_[name_].call(self_)"
@@ -146,7 +146,7 @@ extend self: JsValue {
 
 
     callValue(this: JsValue, arguments: List[JsValue]): JsValue
-        target js sync "return self_.apply(this_, ff_core_List.List_toArray(arguments_))"
+        target js sync "return self_.apply(this_, arguments_)"
 
     callValue0(): JsValue
         target js sync "return self_.call(self_)"
@@ -180,7 +180,7 @@ extend self: JsValue {
 
 
     new(this: JsValue, arguments: List[JsValue]): JsValue
-        target js sync "return new (Function.prototype.bind.apply(self_, ff_core_List.List_toArray(arguments_)))"
+        target js sync "return new (Function.prototype.bind.apply(self_, arguments_))"
 
     new0(): JsValue
         target js sync "return new self_()"
@@ -216,12 +216,7 @@ extend self: JsValue {
     grabPairs(): List[Pair[String, JsValue]]
         target js sync """
             if(!(self_ instanceof Object)) throw new Error('Expected object, got '+ typeof self_);;
-            let result = ff_core_List.Empty();
-            Object.getOwnPropertyNames(self_).forEach((name, i) => {
-                let pair = ff_core_Pair.Pair(name, self_[name]);
-                result = ff_core_List.Link(pair, result);
-            })
-            return result;
+            return Object.getOwnPropertyNames(self_).map((name, i) => ff_core_Pair.Pair(name, self_[name]));
         """
 
     grabMap(): Map[String, JsValue] {
