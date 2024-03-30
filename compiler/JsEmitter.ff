@@ -715,7 +715,7 @@ extend self: JsEmitter {
                 self.emitCase(arguments, matchCase, jump, last, async) +
                 "\n}"
             | PVariant(_, "List$Link", [head, tail]) =>
-                let newArguments = [argument + "[0]", argument + ".slice(1)", arguments]
+                let newArguments = [argument + "[0]", argument + ".slice(1)", ...arguments]
                 let newMatchCase = matchCase.MatchCase(patterns = [head, tail, ...matchCase.patterns])
                 "if(" + argument + ".length !== 0) {\n" +
                 self.emitCase(newArguments, newMatchCase, jump, last, async) +
@@ -853,7 +853,7 @@ charLiteralToNumber(charLiteral: String): String {
 }
 
 escapeResolved(word: String): String {
-    let parts = word.replace(":", ".").replace("/", ".").split('.').toList()
+    let parts = word.replace(":", ".").replace("/", ".").split('.')
     let initialParts = parts.dropLast()
     if(initialParts.isEmpty()) {
         escapeKeyword(parts.grabLast())
