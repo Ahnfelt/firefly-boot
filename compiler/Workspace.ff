@@ -31,7 +31,7 @@ parseWorkspaceFile(path: Path, packageDirectory: Path): Workspace {
     mutable defaultLocation = None
     let lines = text.split('\n').map {_.replace("\r", "").takeWhile {_ != '#'}}.filter {_.size() != 0}
     let rules = lines.collect {line =>
-        let columns = line.replace("\t", " ").split(' ').toList().filter {_.size() != 0}
+        let columns = line.replace("\t", " ").split(' ').filter {_.size() != 0}
         defaultLocation.each {_ =>
             panic("Unexpected rule after the * rule: " + line)
         }
