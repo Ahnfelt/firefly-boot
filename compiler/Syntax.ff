@@ -264,7 +264,7 @@ extend self: Type {
                 | TConstructor(at, name, [_, ...generics]) {name.startsWith("Function$")} =>
                     "(" + generics.dropLast().map {go(_)}.join(", ") + ") => " + go(generics.grabLast())
                 | TConstructor(at, name, generics) {name.startsWith("Record$")} =>
-                    let as = name.split('$').toList().dropFirst().zip(generics)
+                    let as = name.split('$').dropFirst().zip(generics)
                     "(" + as.map {| Pair(label, t) => label + ": " + go(t)}.join(", ") + ")"
                 | TConstructor(at, name, generics) =>
                     let shortenedName = shortenType(name)
