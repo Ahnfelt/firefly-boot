@@ -177,7 +177,7 @@ extend self[T]: Stack[T] {
         target js sync """return self_.array.slice(start_, end_)"""
 
     toStream(start: Int = 0, end: Int = 9007199254740991): Stream[T] {
-        self.toArray(start, end).toStream()
+        self.toList(start, end).toStream()
     }
 
     reverse(): Unit
