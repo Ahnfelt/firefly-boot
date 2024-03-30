@@ -107,7 +107,7 @@ instance Set[T: Serializable: Order]: Serializable {
 
 instance Map[K: Serializable: Order, V: Serializable]: Serializable {
     serializeUsing(serialization: Serialization, value: Map[K, V]): Unit {
-        serializeUsing(serialization, value.toArray())
+        serializeUsing(serialization, value.toList())
     }
     deserializeUsing(serialization: Serialization): Map[K, V] {
         deserializeUsing[List[Pair[K, V]]](serialization).toMap()
