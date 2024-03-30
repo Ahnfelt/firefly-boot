@@ -11,7 +11,7 @@ nodeMain(system: NodeSystem) {
         "Saturday:  16.2"
         "Sunday:    21.1        "
     ]
-    let pairs = lines.map {_.split(':').toList()}.collect {
+    let pairs = lines.map {_.split(':')}.collect {
         | [day, temp] => Some(Pair(day.trim(), temp.trim().grabFloat()))
         | _ => None
     }
