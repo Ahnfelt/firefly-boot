@@ -378,7 +378,7 @@ extend self: Inference {
                                 InferRecordFieldHook(self.unification, environment, expected, t, e.field)
                             )
                         }
-                        let fieldNames = name.split('$').toList().dropFirst(1)
+                        let fieldNames = name.split('$').dropFirst(1)
                         fieldNames.pairs().find {_.second == e.field}.map {_.first}.map {index =>
                             let t1 = typeArguments.grab(index)
                             self.unification.unify(e.at, expected, t1)
