@@ -108,7 +108,7 @@ main(system: NodeSystem): Unit {
     }
 
     try {
-        let command = parseCommandLine(system.arguments().toList())
+        let command = parseCommandLine(system.arguments())
         runCommand(command)
     } catch {| CommandLineError(message), error =>
         Log.debug(message)
