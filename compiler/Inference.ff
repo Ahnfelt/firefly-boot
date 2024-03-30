@@ -301,6 +301,18 @@ extend self: Inference {
                 let recordType =
                     TConstructor(at, "Record$" + parameters.map {_.name}.join("$"), parameters.map {_.valueType})
                 variableOption.toList().map {Pair(_, Pair(variableAt, recordType))}.toMap()
+            | PVariant(at, "List$Empty", []) =>
+                let itemType = self.unification.freshUnificationVariable(at)
+                let listType = TConstructor(term.at, core("List"), [itemType])
+                self.unification.unify(at, expected, listType)
+                [].toMap()
+            | PVariant(at, "List$Link", [head, tail]) =>
+                let itemType = self.unification.freshUnificationVariable(at)
+                let listType = TConstructor(term.at, core("List"), [itemType])
+                self.unification.unify(at, expected, listType)
+                let headVariables = self.inferPattern(environment, itemType, head)
+                let tailVariables = self.inferPattern(environment, listType, tail)
+                headVariables.addAll(tailVariables)
             | PVariant(at, name, patterns) =>
                 let instantiated = self.lookup(environment, expected, at, name, [], None).else {
                     throw(CompileError(at, "No such variant: " + name))

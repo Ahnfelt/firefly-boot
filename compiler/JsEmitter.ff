@@ -675,12 +675,12 @@ extend self: JsEmitter {
     }
 
     emitPattern(
-        argument: String,
-        pattern: MatchPattern,
-        arguments: List[String],
-        matchCase: MatchCase,
-        jump: Bool,
-        last: Bool,
+        argument: String
+        pattern: MatchPattern
+        arguments: List[String]
+        matchCase: MatchCase
+        jump: Bool
+        last: Bool
         async: Bool
     ): String {
         pattern.{
@@ -700,7 +700,7 @@ extend self: JsEmitter {
                 self.emitCase(arguments, matchCase, jump, last, async)
             | PVariable(_, Some(name)) =>
                 let escaped = escapeKeyword(name)
-                if(escaped != argument) { "const " + escaped + " = " + argument + ";\n" } else { "" } +
+                if(escaped != argument) {"const " + escaped + " = " + argument + ";\n"} else {""} +
                 self.emitCase(arguments, matchCase, jump, last, async)
             | PVariant(_, "ff:core/Bool.False", []) =>
                 "if(!" + argument + ") {\n" +
@@ -710,27 +710,37 @@ extend self: JsEmitter {
                 "if(" + argument + ") {\n" +
                 self.emitCase(arguments, matchCase, jump, last, async) +
                 "\n}"
+            | PVariant(_, "List$Empty", []) =>
+                "if(" + argument + ".length === 0) {\n" +
+                self.emitCase(arguments, matchCase, jump, last, async) +
+                "\n}"
+            | PVariant(_, "List$Link", [head, tail]) =>
+                let newArguments = [argument + "[0]", argument + ".slice(1)", arguments]
+                let newMatchCase = matchCase.MatchCase(patterns = [head, tail, ...matchCase.patterns])
+                "if(" + argument + ".length !== 0) {\n" +
+                self.emitCase(newArguments, newMatchCase, jump, last, async) +
+                "\n}"
             | PVariant(_, name, patterns) =>
                 let processed = self.processVariantCase(name, argument)
                 let newMatchCase = matchCase.MatchCase(patterns = [...patterns, ...matchCase.patterns])
-                if(processed.loneVariant) { "" } else {
+                if(processed.loneVariant) {""} else {
                     "if(" + argument + "." + processed.variantName + ") {\n"
                 } +
                 self.emitCase([...processed.arguments, ...arguments], newMatchCase, jump, last, async) +
-                if(processed.loneVariant) { "" } else { "\n}" }
+                if(processed.loneVariant) {""} else {"\n}"}
             | PVariantAs(at, name, variableAt, variable) =>
                 let processed = self.processVariantCase(name, argument)
-                if(processed.loneVariant) { "" } else {
+                if(processed.loneVariant) {""} else {
                     "if(" + argument + "." + processed.variantName + ") {\n"
                 } +
-                variable.map(escapeKeyword).filter { _ != argument }.map {
+                variable.map(escapeKeyword).filter {_ != argument}.map {
                     "const " + _ + " = " + argument + ";\n"
                 }.else {""} +
                 self.emitCase(arguments, matchCase, jump, last, async) +
-                if(processed.loneVariant) { "" } else { "\n}" }
+                if(processed.loneVariant) {""} else {"\n}"}
             | PAlias(_, pattern, variable) =>
                 let escaped = escapeKeyword(variable)
-                if(escaped != argument) { "const " + escaped + " = " + argument + ";\n" } else { "" } +
+                if(escaped != argument) {"const " + escaped + " = " + argument + ";\n"} else {""} +
                 self.emitPattern(argument, pattern, arguments, matchCase, jump, last, async)
         }
     }

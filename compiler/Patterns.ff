@@ -50,6 +50,8 @@ convert(modules: Map[String, Module], cases: List[MatchCase]): List[PatternCaseI
         name.reverse().takeWhile {_ != '.'}.reverse()
     }
     function otherVariants(name: String): Set[String] {
+        if(name == "List$Empty") {["List$Link"].toSet()} else:
+        if(name == "List$Link") {["List$Empty"].toSet()} else:
         let variantName = unqualifiedName(name)
         let moduleName = name.dropLast(variantName.size() + 1)
         let variantModule = modules.grab(moduleName)
