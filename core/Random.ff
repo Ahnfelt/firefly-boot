@@ -116,7 +116,7 @@ extend self: Random {
     }
 
     sampleStack[T](count: Int, stack: Stack[T], body: T => Unit): Unit {
-        self.shuffleArray(stack.toArray()).takeFirst(count).each {body(_)}
+        self.shuffleList(stack.toList()).takeFirst(count).each {body(_)}
     }
 
     sampleList[T](count: Int, list: List[T]): List[T] {

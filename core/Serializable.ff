@@ -87,18 +87,18 @@ instance List[T: Serializable]: Serializable {
         let smallSize = serialization.buffer.grabUint8(serialization.offset)
         if(smallSize != 255) {
             serialization.offset += 1
-            Array.fillBy(smallSize) {_ => deserializeUsing(serialization)}
+            List.fillBy(smallSize) {_ => deserializeUsing(serialization)}
         } else {
             let size = serialization.buffer.grabUint32(serialization.offset + 1)
             serialization.offset += 1 + 4
-            Array.fillBy(size) {_ => deserializeUsing(serialization)}
+            List.fillBy(size) {_ => deserializeUsing(serialization)}
         }
     }
 }
 
 instance Set[T: Serializable: Order]: Serializable {
     serializeUsing(serialization: Serialization, value: Set[T]): Unit {
-        serializeUsing(serialization, value.toArray())
+        serializeUsing(serialization, value.toList())
     }
     deserializeUsing(serialization: Serialization): Set[T] {
         deserializeUsing[List[T]](serialization).toSet()

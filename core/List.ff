@@ -248,7 +248,7 @@ extend self[T]: List[T] {
     flatMap[S](body: T => List[S]): List[S] {
         let results = Stack.make()
         self.each {x =>
-            results.pushArray(body(x))
+            results.pushList(body(x))
         }
         results.drain()
     }
@@ -286,7 +286,7 @@ extend self[T]: List[T] {
     }
     
     reverse(): List[T] {
-        1.to(self.size()).toArray().map {i =>
+        1.to(self.size()).map {i =>
             self.grab(self.size() - i)
         }
     }
@@ -295,7 +295,7 @@ extend self[T]: List[T] {
         let stack = Stack.make()
         self.pairs().each {| Pair(i, x) =>
             if(i != 0) {
-                stack.pushArray(separator)
+                stack.pushList(separator)
             }
             stack.push(x)
         }
@@ -311,7 +311,7 @@ extend self[T: Order]: List[T] {
     }
 
     toSet(): Set[T] {
-        self.toList().toSet()
+        self.foldLeft(Set.empty()) {_.add(_)}
     }
     
     distinct(): List[T] {
@@ -332,7 +332,7 @@ extend self[T]: List[List[T]] {
     flatten(): List[T] {
         let result = Stack.make()
         self.each {xs =>
-            result.pushArray(xs)
+            result.pushList(xs)
         }
         result.drain()
     }
@@ -342,7 +342,7 @@ extend self[T]: List[List[T]] {
 extend self[K: Order, V]: List[Pair[K, V]] {
     
     toMap(): Map[K, V] {
-        self.toList().toMap()
+        self.foldLeft(Map.empty()) {| map, Pair(key, value) => map.add(key, value)}
     }
     
     group(): Map[K, List[V]] {
