@@ -2,7 +2,7 @@ capability NodeSystem {}
 
 extend self: NodeSystem {
 
-    arguments(): Array[String]
+    arguments(): List[String]
         target node async "return self_.array_"
 
     assets(): AssetSystem {
@@ -88,7 +88,7 @@ extend self: NodeSystem {
 internalAssets(system: NodeSystem): AssetSystem
     target node async "return system_.assets_"
 
-internalListDirectoryWithoutOpendir(system: NodeSystem, path: Path): Array[Path]
+internalListDirectoryWithoutOpendir(system: NodeSystem, path: Path): List[Path]
     target node async """
         import * as fsPromises from 'fs/promises'
         import * as path from 'path'

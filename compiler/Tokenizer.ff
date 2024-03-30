@@ -2,7 +2,7 @@ import Token
 import Syntax
 import LspHook
 
-tokenize(file: String, code: String, completionAt: Option[Location], attemptFixes: Bool): Array[Token] {
+tokenize(file: String, code: String, completionAt: Option[Location], attemptFixes: Bool): List[Token] {
 
     let completionLine = completionAt.filter {_.file == file}.map {_.line}.else {-1}
     let completionColumn = completionAt.filter {_.file == file}.map {_.column}.else {-1}

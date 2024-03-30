@@ -67,7 +67,7 @@ extend self: String {
     slice(from: Int, until: Int): String
         target js sync "return self_.slice(from_, until_)"
 
-    split(char: Char): Array[String]
+    split(char: Char): List[String]
         target js sync "return self_.split(String.fromCharCode(char_))"
 
     splitFirst(char: Char): Option[Pair[String, String]]

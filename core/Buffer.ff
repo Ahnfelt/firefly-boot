@@ -123,7 +123,7 @@ extend self: Buffer {
             return new TextDecoder().decode(self_)
         """
 
-    toByteArray(): Array[Int]
+    toByteArray(): List[Int]
         target js sync "return [...new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength)]"
 
     toHex(): String
@@ -143,10 +143,10 @@ extend self: Buffer {
 
 }
 
-fromByteArray(array: Array[Int]): Buffer
+fromByteArray(array: List[Int]): Buffer
     target js sync "return new DataView(new Uint8Array(array_).buffer)"
 
-fromBufferArray(array: Array[Buffer]): Buffer
+fromBufferArray(array: List[Buffer]): Buffer
     target js sync """
         let length = 0
         for(let b of array_) length += b.byteLength

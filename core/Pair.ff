@@ -28,10 +28,6 @@ extend self[A, A]: Pair[A, A] {
         [self.first, self.second]
     }
 
-    toArray(): Array[A] {
-        self.toList().toArray()
-    }
-
     toStack(): Stack[A] {
         self.toList().toStack()
     }

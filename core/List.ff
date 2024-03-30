@@ -35,7 +35,7 @@ extend self[T]: List[T] {
             return {array: result};
         """
 
-    toArray(): Array[T] {
+    toList(): List[T] {
         self.toStack().drain()
     }
 

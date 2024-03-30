@@ -46,7 +46,7 @@ extend self[V]: IntMap[V] {
         stack
     }
 
-    toArray(): Array[Pair[Int, V]] {
+    toArray(): List[Pair[Int, V]] {
         self.toStack().drain()
     }
 

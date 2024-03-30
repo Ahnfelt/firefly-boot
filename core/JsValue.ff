@@ -17,7 +17,7 @@ extend self: JsValue {
     grabBool(): Bool
         target js sync "return self_"
 
-    grabArray(): Array[JsValue]
+    grabArray(): List[JsValue]
         target js sync "return self_"
 
     grabBuffer(): Buffer
@@ -235,7 +235,6 @@ extend self: JsValue {
             return self_
         """
 
-    //toArray(): Array[JsValue] // TODO
     //toList(): List[JsValue] // TODO
     // TODO: JS operators
 
@@ -248,7 +247,7 @@ instance Char: IsJsValue {}
 instance Int: IsJsValue {}
 instance Float: IsJsValue {}
 instance Bool: IsJsValue {}
-instance Array[T: IsJsValue]: IsJsValue {}
+instance List[T: IsJsValue]: IsJsValue {}
 instance IntMap[T: IsJsValue]: IsJsValue {}
 instance StringMap[T: IsJsValue]: IsJsValue {}
 instance Error: IsJsValue {}

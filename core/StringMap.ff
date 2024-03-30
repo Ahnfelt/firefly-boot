@@ -46,10 +46,6 @@ extend self[V]: StringMap[V] {
         stack
     }
 
-    toArray(): Array[Pair[String, V]] {
-        self.toStack().drain()
-    }
-
     toList(): List[Pair[String, V]] {
         self.toArray().toList()
     }

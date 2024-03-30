@@ -6,7 +6,7 @@ import LspHook
 class Parser(
     packagePair: PackagePair
     file: String
-    tokens: Array[Token]
+    tokens: List[Token]
     end: Token
     targetIsNode: Bool
     lspHook: LspHook
@@ -32,7 +32,7 @@ data ParsedTargets(
 make(
     packagePair: PackagePair 
     file: String
-    tokens: Array[Token]
+    tokens: List[Token]
     targetIsNode: Bool
     lspHook: LspHook
 ): Parser {
@@ -1314,9 +1314,9 @@ extend self: Parser {
 
     parseListPattern(): MatchPattern {
         function convertListPattern(at: Location, items: List[Pair[MatchPattern, Bool]]): MatchPattern {
-            | _, [] => PVariant(at, "ff:core/List.Empty", [])
+            | _, [] => PVariant(at, "List$Empty", [])
             | _, [Pair(p, False), ...ps] =>
-                PVariant(at, "ff:core/List.Link", [p, convertListPattern(at, ps)])
+                PVariant(at, "List$Link", [p, convertListPattern(at, ps)])
             | _, [Pair(p, True)] => p
             | _, [Pair(p, True), ...] =>
                 throw(CompileError(p.at, "Invalid pattern: ... is only allowed for the last element in a list"))

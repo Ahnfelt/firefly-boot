@@ -109,26 +109,16 @@ extend self: Random {
         }
     }
     
-    shuffleArray[T](array: Array[T]): Array[T] {
-        let stack = array.toStack()
-        self.shuffleStack(array.toStack())
-        stack.drain()
-    }
-    
     shuffleList[T](list: List[T]): List[T] {
         let stack = list.toStack()
         self.shuffleStack(list.toStack())
-        stack.toList()
+        stack.drain()
     }
 
     sampleStack[T](count: Int, stack: Stack[T], body: T => Unit): Unit {
         self.shuffleArray(stack.toArray()).takeFirst(count).each {body(_)}
     }
 
-    sampleArray[T](count: Int, array: Array[T]): Array[T] {
-        self.shuffleArray(array).takeFirst(count)
-    }
-    
     sampleList[T](count: Int, list: List[T]): List[T] {
         self.shuffleList(list).takeFirst(count)
     }
@@ -137,11 +127,7 @@ extend self: Random {
         stack.grab(self.nextInt(0, stack.size()))
     }
 
-    grabArray[T](array: Array[T]): T {
-        array.grab(self.nextInt(0, array.size()))
-    }
-
-    grabList[T](list: Stack[T]): T {
+    grabList[T](list: List[T]): T {
         list.grab(self.nextInt(0, list.size()))
     }
 

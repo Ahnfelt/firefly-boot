@@ -343,12 +343,8 @@ extend self[T]: Stream[T] {
         stack
     }
 
-    toArray(): Array[T] {
-        self.toStack().drain()
-    }
-
     toList(): List[T] {
-        self.toStack().toList()
+        self.toStack().drain()
     }
 
 }
@@ -383,7 +379,7 @@ extend self: Stream[Buffer] {
         self.toBuffer().toString(encoding)
     }
 
-    readBytes(bytes: Int): Pair[Array[Buffer], Stream[Buffer]] {
+    readBytes(bytes: Int): Pair[List[Buffer], Stream[Buffer]] {
         if(bytes <= 0) {Pair([].toArray(), self)} else:
         let buffers = Stack.make()
         mutable buffer = self.next().grab()
