@@ -303,12 +303,12 @@ extend self: Inference {
                 variableOption.toList().map {Pair(_, Pair(variableAt, recordType))}.toMap()
             | PVariant(at, "List$Empty", []) =>
                 let itemType = self.unification.freshUnificationVariable(at)
-                let listType = TConstructor(term.at, core("List"), [itemType])
+                let listType = TConstructor(at, core("List"), [itemType])
                 self.unification.unify(at, expected, listType)
                 [].toMap()
             | PVariant(at, "List$Link", [head, tail]) =>
                 let itemType = self.unification.freshUnificationVariable(at)
-                let listType = TConstructor(term.at, core("List"), [itemType])
+                let listType = TConstructor(at, core("List"), [itemType])
                 self.unification.unify(at, expected, listType)
                 let headVariables = self.inferPattern(environment, itemType, head)
                 let tailVariables = self.inferPattern(environment, listType, tail)
