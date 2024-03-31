@@ -41,9 +41,9 @@ extend self[T]: Stack[T] {
             return self_.array[index_]
         """
 
-    grabFirst(): T { self.grab(0) }
+    grabFirst(): T {self.grab(0)}
 
-    grabLast(): T { self.grab(self.size() - 1) }
+    grabLast(): T {self.grab(self.size() - 1)}
 
     first(): Option[T]
         target js sync """
