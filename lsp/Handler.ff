@@ -391,7 +391,7 @@ extend self: Handler {
         tokens.{
             | None => Error(-32602, "Token definition not found") // InvalidParams
             | Some([]) => Result(Json.null().write())
-            | Some([first, ..._] @ tokens) =>
+            | Some([first, ...] @ tokens) =>
                 let oldName = first.raw
                 Log.trace("Rename '" + oldName + "' to '" + newName + "'")
 

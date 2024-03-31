@@ -144,7 +144,7 @@ parseCommandLine(arguments: List[String]): MainCommand {
         browserArguments.{
             | [mainFile] {mainFile.removeLast(".ff") | Some(mainName)} =>
                 BrowserCommand(mainName)
-            | [_, _, ..._] => throw(CommandLineError(
+            | [_, _, ...] => throw(CommandLineError(
                 "You must only specify a single argument to browser."  + usageString
             ))
             | _ => throw(CommandLineError(
@@ -155,7 +155,7 @@ parseCommandLine(arguments: List[String]): MainCommand {
         buildArguments.{
             | [mainFile] {mainFile.removeLast(".ff") | Some(mainName)} =>
                 BuildCommand(mainName)
-            | [_, _, ..._] => throw(CommandLineError(
+            | [_, _, ...] => throw(CommandLineError(
                 "You must only specify a single argument to build."  + usageString
             ))
             | _ => throw(CommandLineError(
@@ -166,7 +166,7 @@ parseCommandLine(arguments: List[String]): MainCommand {
         checkArguments.{
             | [fileName] {fileName.removeLast(".ff") | Some(_)} =>
                 CheckCommand(fileName)
-            | [_, _, ..._] => throw(CommandLineError(
+            | [_, _, ...] => throw(CommandLineError(
                 "You must only specify a single argument to check."  + usageString
             ))
             | _ => throw(CommandLineError(
@@ -177,7 +177,7 @@ parseCommandLine(arguments: List[String]): MainCommand {
         throw(CommandLineError("bootstrap takes no arguments" + usageString))
     | ["bootstrap"] => BootstrapCommand
     | [] => throw(CommandLineError("You must specify a command or a main file to run." + usageString))
-    | [s, ..._] => throw(CommandLineError("Unknown command '" + s + "'" + usageString))
+    | [s, ...] => throw(CommandLineError("Unknown command '" + s + "'" + usageString))
 }
 
 bundleForPkg(system: NodeSystem, packagePair: PackagePair, mainFile: String) {
