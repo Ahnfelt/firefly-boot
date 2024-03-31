@@ -417,6 +417,12 @@ extend self: JsEmitter {
             let call = d + "." + n + "(" + [...emittedArguments, ...ds, ...controller].join(", ") + ")"
             if(await) {"(await " + call + ")"} else {call}
         | ECall(at, StaticCall(name, _, _), effect, typeArguments, arguments, dictionaries) =>
+            if(name.contains("bundleForBrowser")) { // TODO: Delete this test (for branch arraysonly)
+                if(!arguments.grab(0).name.contains("system")) {
+                    Log.debug("Wrong arguments for bundleForBrowser: " + Show.show(arguments.map {_.name}))
+                    throw(GrabException())
+                }
+            }
             detectIfElse(term).{
                 | [] =>
                     let await = async && effectTypeIsAsync(effect)
