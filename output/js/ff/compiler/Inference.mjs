@@ -474,7 +474,7 @@ return
 return
 }
 }));
-let guards_ = [];
+const guards_ = ff_core_List.List_toArray([]);
 const environment3_ = ff_core_List.List_foldLeft(case_.guards_, environment1_, ((environment2_, g_) => {
 const guardType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, g_.at_);
 const guardTerm_ = ff_compiler_Inference.Inference_inferTerm(self_, environment2_, guardType_, g_.term_);
@@ -488,9 +488,9 @@ return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syn
 return
 }
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-guards_ = [(((_c) => {
+ff_core_Array.Array_push(guards_, (((_c) => {
 return ff_compiler_Syntax.MatchGuard(_c.at_, guardTerm_, _c.pattern_)
-}))(g_), ...guards_];
+}))(g_));
 {
 const _1 = environment2_;
 {
@@ -504,7 +504,7 @@ return
 const _1 = case_;
 {
 const _c = _1;
-return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, ff_core_List.List_reverse(guards_), ff_compiler_Inference.Inference_inferTerm(self_, environment3_, returnType_, case_.body_))
+return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, ff_core_Array.Array_drain(guards_), ff_compiler_Inference.Inference_inferTerm(self_, environment3_, returnType_, case_.body_))
 return
 }
 }
@@ -2067,7 +2067,8 @@ return
 }
 }))
 };
-let remainingArguments_ = arguments_;
+let remainingArguments_ = ff_core_List.List_toArray(arguments_);
+ff_core_Array.Array_reverse(remainingArguments_);
 const newArguments_ = ff_core_List.List_map(parameters_, ((p_) => {
 const t_ = p_.valueType_;
 function defaultArgument_() {
@@ -2082,36 +2083,23 @@ return ff_compiler_Syntax.Argument(callAt_, ff_core_Option.Some(p_.name_), ff_co
 }
 }))
 }
-{
-const _1 = remainingArguments_;
-{
-if(_1.length === 0) {
+if(ff_core_Array.Array_isEmpty(remainingArguments_)) {
 return defaultArgument_()
-return
-}
-}
-{
-if(_1.length > 0) {
-const at_ = _1[0].at_;
-if(_1[0].name_.None) {
-const e_ = _1[0].value_;
-const remaining_ = _1.slice(1);
-remainingArguments_ = remaining_;
-const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, e_);
-return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(p_.name_), e2_)
-return
-}
-}
-}
-{
-return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_List.List_find(remainingArguments_, ((_w1) => {
+} else if(ff_core_Option.Option_isEmpty(ff_core_Array.Array_grabLast(remainingArguments_).name_)) {
+const a_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(remainingArguments_));
+const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a_.value_);
+return ff_compiler_Syntax.Argument(a_.at_, ff_core_Option.Some(p_.name_), e2_)
+} else {
+return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Array.Array_find(remainingArguments_, ((_w1) => {
 return ff_core_Option.Option_contains(_w1.name_, p_.name_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
 })), ((_1) => {
 {
 const at_ = _1.at_;
 const e_ = _1.value_;
-remainingArguments_ = ff_core_List.List_filter(remainingArguments_, ((_w1) => {
-return (!ff_core_Option.Option_contains(_w1.name_, p_.name_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))
+ff_core_Option.Option_each(ff_core_Array.Array_indexWhere(remainingArguments_, ((_w1) => {
+return ff_core_Option.Option_contains(_w1.name_, p_.name_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
+})), ((_w1) => {
+ff_core_Array.Array_delete(remainingArguments_, _w1, 1)
 }));
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, e_);
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(p_.name_), e2_)
@@ -2120,12 +2108,10 @@ return
 })), (() => {
 return defaultArgument_()
 }))
-return
-}
 }
 }));
 if((!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_))) {
-ff_core_Option.Option_each(ff_core_List.List_first(remainingArguments_), ((_1) => {
+ff_core_Option.Option_each(ff_core_Array.Array_first(remainingArguments_), ((_1) => {
 {
 const callAt_ = _1.at_;
 if(_1.name_.None) {
@@ -2144,7 +2130,7 @@ return
 }));
 return newArguments_
 } else {
-return [...newArguments_, ...ff_core_List.List_map(remainingArguments_, ((a_) => {
+return [...newArguments_, ...ff_core_List.List_map(ff_core_Array.Array_drain(remainingArguments_), ((a_) => {
 {
 const _1 = a_;
 {
@@ -2553,7 +2539,7 @@ return
 return
 }
 }));
-let guards_ = [];
+const guards_ = ff_core_List.List_toArray([]);
 const environment3_ = ff_core_List.List_foldLeft(case_.guards_, environment1_, ((environment2_, g_) => {
 const guardType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, g_.at_);
 const guardTerm_ = ff_compiler_Inference.Inference_inferTerm(self_, environment2_, guardType_, g_.term_);
@@ -2567,9 +2553,9 @@ return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syn
 return
 }
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-guards_ = [(((_c) => {
+ff_core_Array.Array_push(guards_, (((_c) => {
 return ff_compiler_Syntax.MatchGuard(_c.at_, guardTerm_, _c.pattern_)
-}))(g_), ...guards_];
+}))(g_));
 {
 const _1 = environment2_;
 {
@@ -2583,7 +2569,7 @@ return
 const _1 = case_;
 {
 const _c = _1;
-return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, ff_core_List.List_reverse(guards_), ff_compiler_Inference.Inference_inferTerm(self_, environment3_, returnType_, case_.body_))
+return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, ff_core_Array.Array_drain(guards_), ff_compiler_Inference.Inference_inferTerm(self_, environment3_, returnType_, case_.body_))
 return
 }
 }
@@ -4146,7 +4132,8 @@ return
 }
 }))
 };
-let remainingArguments_ = arguments_;
+let remainingArguments_ = ff_core_List.List_toArray(arguments_);
+ff_core_Array.Array_reverse(remainingArguments_);
 const newArguments_ = ff_core_List.List_map(parameters_, ((p_) => {
 const t_ = p_.valueType_;
 function defaultArgument_() {
@@ -4161,36 +4148,23 @@ return ff_compiler_Syntax.Argument(callAt_, ff_core_Option.Some(p_.name_), ff_co
 }
 }))
 }
-{
-const _1 = remainingArguments_;
-{
-if(_1.length === 0) {
+if(ff_core_Array.Array_isEmpty(remainingArguments_)) {
 return defaultArgument_()
-return
-}
-}
-{
-if(_1.length > 0) {
-const at_ = _1[0].at_;
-if(_1[0].name_.None) {
-const e_ = _1[0].value_;
-const remaining_ = _1.slice(1);
-remainingArguments_ = remaining_;
-const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, e_);
-return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(p_.name_), e2_)
-return
-}
-}
-}
-{
-return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_List.List_find(remainingArguments_, ((_w1) => {
+} else if(ff_core_Option.Option_isEmpty(ff_core_Array.Array_grabLast(remainingArguments_).name_)) {
+const a_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(remainingArguments_));
+const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a_.value_);
+return ff_compiler_Syntax.Argument(a_.at_, ff_core_Option.Some(p_.name_), e2_)
+} else {
+return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Array.Array_find(remainingArguments_, ((_w1) => {
 return ff_core_Option.Option_contains(_w1.name_, p_.name_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
 })), ((_1) => {
 {
 const at_ = _1.at_;
 const e_ = _1.value_;
-remainingArguments_ = ff_core_List.List_filter(remainingArguments_, ((_w1) => {
-return (!ff_core_Option.Option_contains(_w1.name_, p_.name_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))
+ff_core_Option.Option_each(ff_core_Array.Array_indexWhere(remainingArguments_, ((_w1) => {
+return ff_core_Option.Option_contains(_w1.name_, p_.name_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
+})), ((_w1) => {
+ff_core_Array.Array_delete(remainingArguments_, _w1, 1)
 }));
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, e_);
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(p_.name_), e2_)
@@ -4199,12 +4173,10 @@ return
 })), (() => {
 return defaultArgument_()
 }))
-return
-}
 }
 }));
 if((!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_))) {
-ff_core_Option.Option_each(ff_core_List.List_first(remainingArguments_), ((_1) => {
+ff_core_Option.Option_each(ff_core_Array.Array_first(remainingArguments_), ((_1) => {
 {
 const callAt_ = _1.at_;
 if(_1.name_.None) {
@@ -4223,7 +4195,7 @@ return
 }));
 return newArguments_
 } else {
-return [...newArguments_, ...ff_core_List.List_map(remainingArguments_, ((a_) => {
+return [...newArguments_, ...ff_core_List.List_map(ff_core_Array.Array_drain(remainingArguments_), ((a_) => {
 {
 const _1 = a_;
 {

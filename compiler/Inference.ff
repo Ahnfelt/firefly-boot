@@ -240,7 +240,7 @@ extend self: Inference {
             }
             environment.Environment(symbols = environment1.symbols.addAll(symbols))
         }
-        mutable guards = []
+        let guards = [].toArray()
         let environment3 = case.guards.foldLeft(environment1) {environment2, g =>
             let guardType = self.unification.freshUnificationVariable(g.at)
             let guardTerm = self.inferTerm(environment2, guardType, g.term)
@@ -248,12 +248,12 @@ extend self: Inference {
                 let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
                 Scheme(True, False, False, False, Signature(at, name, False, [], [], [], type, noEffect))
             }
-            guards = [g.MatchGuard(term = guardTerm), ...guards]
+            guards.push(g.MatchGuard(term = guardTerm))
             environment2.Environment(symbols = environment2.symbols.addAll(symbols))
         }
         case.MatchCase(
             body = self.inferTerm(environment3, returnType, case.body)
-            guards = guards.reverse()
+            guards = guards.drain()
         )
     }
 
@@ -955,7 +955,8 @@ extend self: Inference {
                 }
             }
         }
-        mutable remainingArguments = arguments
+        mutable remainingArguments = arguments.toArray()
+        remainingArguments.reverse()
         let newArguments = parameters.map {p =>
             let t = p.valueType
             function defaultArgument(): Argument {
@@ -970,21 +971,20 @@ extend self: Inference {
                     }
                 }
             }
-            remainingArguments.{
-                | [] =>
-                    defaultArgument()
-                | [Argument(at, None, e), ...remaining] =>
-                    remainingArguments = remaining
+            if(remainingArguments.isEmpty()) {
+                defaultArgument()
+            } elseIf {remainingArguments.grabLast().name.isEmpty()} {
+                let a = remainingArguments.pop().grab()
+                let e2 = self.inferTerm(environment, t, a.value)
+                Argument(a.at, Some(p.name), e2)
+            } else {
+                remainingArguments.find {_.name.contains(p.name)}.map {| Argument(at, _, e) =>
+                    remainingArguments.indexWhere {_.name.contains(p.name)}.each {remainingArguments.delete(_, 1)}
                     let e2 = self.inferTerm(environment, t, e)
                     Argument(at, Some(p.name), e2)
-                | _ =>
-                    remainingArguments.find {_.name.contains(p.name)}.map {| Argument(at, _, e) =>
-                        remainingArguments = remainingArguments.filter {!_.name.contains(p.name)}
-                        let e2 = self.inferTerm(environment, t, e)
-                        Argument(at, Some(p.name), e2)
-                    }.else {
-                        defaultArgument()
-                    }
+                }.else {
+                    defaultArgument()
+                }
             }
         }
         if(!self.lspHook.isEnabled()) {
@@ -994,7 +994,7 @@ extend self: Inference {
             }
             newArguments
         } else {
-            [...newArguments, ...remainingArguments.map {a => a.Argument(
+            [...newArguments, ...remainingArguments.drain().map {a => a.Argument(
                 value = self.inferTerm(environment, self.unification.freshUnificationVariable(a.at), a.value)
             )}]
         }

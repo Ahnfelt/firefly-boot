@@ -340,6 +340,19 @@ return (!result_)
 return result_
 }
 
+export function Array_find(self_, body_) {
+let result_ = ff_core_Option.None();
+ff_core_Array.Array_eachWhile(self_, ((x_) => {
+if(body_(x_)) {
+result_ = ff_core_Option.Some(x_);
+return false
+} else {
+return true
+}
+}));
+return result_
+}
+
 export function Array_indexWhere(self_, body_) {
 let i_ = (-1);
 let result_ = false;
@@ -490,6 +503,19 @@ let result_ = false;
 (await ff_core_Array.Array_eachWhile$(self_, (async (x_, $task) => {
 result_ = (await body_(x_, $task));
 return (!result_)
+}), $task));
+return result_
+}
+
+export async function Array_find$(self_, body_, $task) {
+let result_ = ff_core_Option.None();
+(await ff_core_Array.Array_eachWhile$(self_, (async (x_, $task) => {
+if((await body_(x_, $task))) {
+result_ = ff_core_Option.Some(x_);
+return false
+} else {
+return true
+}
 }), $task));
 return result_
 }

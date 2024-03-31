@@ -158,6 +158,19 @@ extend self[T]: Array[T] {
         }
         result
     }
+    
+    find(body: T => Bool): Option[T] {
+        mutable result = None
+        self.eachWhile {x =>
+            if(body(x)) {
+                result = Some(x)
+                False
+            } else {
+                True
+            }
+        }
+        result
+    }
 
     indexWhere(body: T => Bool): Option[Int] {
         mutable i = -1
