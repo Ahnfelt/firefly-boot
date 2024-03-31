@@ -268,7 +268,7 @@ export function parseCommandLine_(arguments_) {
 {
 const arguments_a = arguments_;
 {
-if(arguments_a.length !== 0) {
+if(arguments_a.length > 0) {
 const mainFile_ = arguments_a[0];
 const mainArguments_ = arguments_a.slice(1);
 const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
@@ -280,13 +280,13 @@ return
 }
 }
 {
-if(arguments_a.length !== 0) {
+if(arguments_a.length > 0) {
 if(arguments_a[0] == "run") {
 const runArguments_ = arguments_a.slice(1);
 {
 const _1 = runArguments_;
 {
-if(_1.length !== 0) {
+if(_1.length > 0) {
 const mainFile_ = _1[0];
 const mainArguments_ = _1.slice(1);
 const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
@@ -307,15 +307,15 @@ return
 }
 }
 {
-if(arguments_a.length !== 0) {
+if(arguments_a.length > 0) {
 if(arguments_a[0] == "browser") {
 const browserArguments_ = arguments_a.slice(1);
 {
 const _1 = browserArguments_;
 {
-if(_1.length !== 0) {
+if(_1.length > 0) {
 const mainFile_ = _1[0];
-if(_1.slice(1).length === 0) {
+if(_1.length === 1) {
 const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
 if(_guard1.Some) {
 const mainName_ = _guard1.value_;
@@ -326,8 +326,8 @@ return
 }
 }
 {
-if(_1.length !== 0) {
-if(_1.slice(1).length !== 0) {
+if(_1.length > 0) {
+if(_1.length > 1) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to browser." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 return
 }
@@ -343,15 +343,15 @@ return
 }
 }
 {
-if(arguments_a.length !== 0) {
+if(arguments_a.length > 0) {
 if(arguments_a[0] == "build") {
 const buildArguments_ = arguments_a.slice(1);
 {
 const _1 = buildArguments_;
 {
-if(_1.length !== 0) {
+if(_1.length > 0) {
 const mainFile_ = _1[0];
-if(_1.slice(1).length === 0) {
+if(_1.length === 1) {
 const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
 if(_guard1.Some) {
 const mainName_ = _guard1.value_;
@@ -362,8 +362,8 @@ return
 }
 }
 {
-if(_1.length !== 0) {
-if(_1.slice(1).length !== 0) {
+if(_1.length > 0) {
+if(_1.length > 1) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to build." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 return
 }
@@ -379,15 +379,15 @@ return
 }
 }
 {
-if(arguments_a.length !== 0) {
+if(arguments_a.length > 0) {
 if(arguments_a[0] == "check") {
 const checkArguments_ = arguments_a.slice(1);
 {
 const _1 = checkArguments_;
 {
-if(_1.length !== 0) {
+if(_1.length > 0) {
 const fileName_ = _1[0];
-if(_1.slice(1).length === 0) {
+if(_1.length === 1) {
 const _guard1 = ff_core_String.String_removeLast(fileName_, ".ff");
 if(_guard1.Some) {
 return ff_compiler_Main.CheckCommand(fileName_)
@@ -397,8 +397,8 @@ return
 }
 }
 {
-if(_1.length !== 0) {
-if(_1.slice(1).length !== 0) {
+if(_1.length > 0) {
+if(_1.length > 1) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to check." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 return
 }
@@ -414,10 +414,10 @@ return
 }
 }
 {
-if(arguments_a.length !== 0) {
+if(arguments_a.length > 0) {
 if(arguments_a[0] == "bootstrap") {
-if(arguments_a.slice(1).length !== 0) {
-if(arguments_a.slice(1).slice(1).length === 0) {
+if(arguments_a.length > 1) {
+if(arguments_a.length === 2) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("bootstrap takes no arguments" + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 return
 }
@@ -426,9 +426,9 @@ return
 }
 }
 {
-if(arguments_a.length !== 0) {
+if(arguments_a.length > 0) {
 if(arguments_a[0] == "bootstrap") {
-if(arguments_a.slice(1).length === 0) {
+if(arguments_a.length === 1) {
 return ff_compiler_Main.BootstrapCommand()
 return
 }
@@ -442,7 +442,7 @@ return
 }
 }
 {
-if(arguments_a.length !== 0) {
+if(arguments_a.length > 0) {
 const s_ = arguments_a[0];
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(((("Unknown command '" + s_) + "'") + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 return
@@ -605,7 +605,7 @@ export async function parseCommandLine_$(arguments_, $task) {
 {
 const arguments_a = arguments_;
 {
-if(arguments_a.length !== 0) {
+if(arguments_a.length > 0) {
 const mainFile_ = arguments_a[0];
 const mainArguments_ = arguments_a.slice(1);
 const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
@@ -617,13 +617,13 @@ return
 }
 }
 {
-if(arguments_a.length !== 0) {
+if(arguments_a.length > 0) {
 if(arguments_a[0] == "run") {
 const runArguments_ = arguments_a.slice(1);
 {
 const _1 = runArguments_;
 {
-if(_1.length !== 0) {
+if(_1.length > 0) {
 const mainFile_ = _1[0];
 const mainArguments_ = _1.slice(1);
 const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
@@ -644,15 +644,15 @@ return
 }
 }
 {
-if(arguments_a.length !== 0) {
+if(arguments_a.length > 0) {
 if(arguments_a[0] == "browser") {
 const browserArguments_ = arguments_a.slice(1);
 {
 const _1 = browserArguments_;
 {
-if(_1.length !== 0) {
+if(_1.length > 0) {
 const mainFile_ = _1[0];
-if(_1.slice(1).length === 0) {
+if(_1.length === 1) {
 const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
 if(_guard1.Some) {
 const mainName_ = _guard1.value_;
@@ -663,8 +663,8 @@ return
 }
 }
 {
-if(_1.length !== 0) {
-if(_1.slice(1).length !== 0) {
+if(_1.length > 0) {
+if(_1.length > 1) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to browser." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 return
 }
@@ -680,15 +680,15 @@ return
 }
 }
 {
-if(arguments_a.length !== 0) {
+if(arguments_a.length > 0) {
 if(arguments_a[0] == "build") {
 const buildArguments_ = arguments_a.slice(1);
 {
 const _1 = buildArguments_;
 {
-if(_1.length !== 0) {
+if(_1.length > 0) {
 const mainFile_ = _1[0];
-if(_1.slice(1).length === 0) {
+if(_1.length === 1) {
 const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
 if(_guard1.Some) {
 const mainName_ = _guard1.value_;
@@ -699,8 +699,8 @@ return
 }
 }
 {
-if(_1.length !== 0) {
-if(_1.slice(1).length !== 0) {
+if(_1.length > 0) {
+if(_1.length > 1) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to build." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 return
 }
@@ -716,15 +716,15 @@ return
 }
 }
 {
-if(arguments_a.length !== 0) {
+if(arguments_a.length > 0) {
 if(arguments_a[0] == "check") {
 const checkArguments_ = arguments_a.slice(1);
 {
 const _1 = checkArguments_;
 {
-if(_1.length !== 0) {
+if(_1.length > 0) {
 const fileName_ = _1[0];
-if(_1.slice(1).length === 0) {
+if(_1.length === 1) {
 const _guard1 = ff_core_String.String_removeLast(fileName_, ".ff");
 if(_guard1.Some) {
 return ff_compiler_Main.CheckCommand(fileName_)
@@ -734,8 +734,8 @@ return
 }
 }
 {
-if(_1.length !== 0) {
-if(_1.slice(1).length !== 0) {
+if(_1.length > 0) {
+if(_1.length > 1) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to check." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 return
 }
@@ -751,10 +751,10 @@ return
 }
 }
 {
-if(arguments_a.length !== 0) {
+if(arguments_a.length > 0) {
 if(arguments_a[0] == "bootstrap") {
-if(arguments_a.slice(1).length !== 0) {
-if(arguments_a.slice(1).slice(1).length === 0) {
+if(arguments_a.length > 1) {
+if(arguments_a.length === 2) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("bootstrap takes no arguments" + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 return
 }
@@ -763,9 +763,9 @@ return
 }
 }
 {
-if(arguments_a.length !== 0) {
+if(arguments_a.length > 0) {
 if(arguments_a[0] == "bootstrap") {
-if(arguments_a.slice(1).length === 0) {
+if(arguments_a.length === 1) {
 return ff_compiler_Main.BootstrapCommand()
 return
 }
@@ -779,7 +779,7 @@ return
 }
 }
 {
-if(arguments_a.length !== 0) {
+if(arguments_a.length > 0) {
 const s_ = arguments_a[0];
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(((("Unknown command '" + s_) + "'") + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 return

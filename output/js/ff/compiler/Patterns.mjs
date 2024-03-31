@@ -110,7 +110,7 @@ export function check_(variants_, fields_, cases_, success_, guard_) {
 {
 const _1 = ff_core_Pair.Pair(fields_, cases_);
 {
-if(_1.first_.length !== 0) {
+if(_1.first_.length > 0) {
 const f_ = _1.first_[0].first_;
 const p_ = _1.first_[0].second_;
 const fs_ = _1.first_.slice(1);
@@ -145,7 +145,7 @@ return
 }
 {
 if(_1.first_.length === 0) {
-if(_1.second_.length !== 0) {
+if(_1.second_.length > 0) {
 const fs_ = _1.second_[0].fields_;
 const g_ = _1.second_[0].guard_;
 const cs_ = _1.second_.slice(1);
@@ -326,7 +326,7 @@ export async function check_$(variants_, fields_, cases_, success_, guard_, $tas
 {
 const _1 = ff_core_Pair.Pair(fields_, cases_);
 {
-if(_1.first_.length !== 0) {
+if(_1.first_.length > 0) {
 const f_ = _1.first_[0].first_;
 const p_ = _1.first_[0].second_;
 const fs_ = _1.first_.slice(1);
@@ -361,7 +361,7 @@ return
 }
 {
 if(_1.first_.length === 0) {
-if(_1.second_.length !== 0) {
+if(_1.second_.length > 0) {
 const fs_ = _1.second_[0].fields_;
 const g_ = _1.second_[0].guard_;
 const cs_ = _1.second_.slice(1);

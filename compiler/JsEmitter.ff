@@ -717,13 +717,25 @@ extend self: JsEmitter {
                 self.emitCase(arguments, matchCase, jump, last, async) +
                 "\n}"
             | PVariant(_, "List$Empty", []) =>
-                "if(" + argument + ".length === 0) {\n" +
+                mutable shortArgument = argument
+                mutable shortCount = 0
+                while {shortArgument.endsWith(".slice(1)")} {
+                    shortArgument = shortArgument.dropLast(".slice(1)".size())
+                    shortCount += 1
+                }
+                "if(" + shortArgument + ".length === " + shortCount + ") {\n" +
                 self.emitCase(arguments, matchCase, jump, last, async) +
                 "\n}"
             | PVariant(_, "List$Link", [head, tail]) =>
-                let newArguments = [argument + "[0]", argument + ".slice(1)", ...arguments]
+                mutable shortArgument = argument
+                mutable shortCount = 0
+                while {shortArgument.endsWith(".slice(1)")} {
+                    shortArgument = shortArgument.dropLast(".slice(1)".size())
+                    shortCount += 1
+                }
+                let newArguments = [shortArgument + "[" + shortCount + "]", argument + ".slice(1)", ...arguments]
                 let newMatchCase = matchCase.MatchCase(patterns = [head, tail, ...matchCase.patterns])
-                "if(" + argument + ".length !== 0) {\n" +
+                "if(" + shortArgument + ".length > " + shortCount + ") {\n" +
                 self.emitCase(newArguments, newMatchCase, jump, last, async) +
                 "\n}"
             | PVariant(_, name, patterns) =>

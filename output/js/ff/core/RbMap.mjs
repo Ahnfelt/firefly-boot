@@ -1536,7 +1536,7 @@ return
 }
 }
 {
-if(_1.length !== 0) {
+if(_1.length > 0) {
 if(_1[0].E) {
 const tail_ = _1.slice(1);
 array_ = tail_;
@@ -1550,7 +1550,7 @@ return
 }
 }
 {
-if(_1.length !== 0) {
+if(_1.length > 0) {
 if(_1[0].T) {
 if(_1[0].left_.E) {
 const k_ = _1[0].key_;
@@ -1566,7 +1566,7 @@ return
 }
 }
 {
-if(_1.length !== 0) {
+if(_1.length > 0) {
 if(_1[0].T) {
 const l_ = _1[0].left_;
 const k_ = _1[0].key_;
@@ -1788,7 +1788,7 @@ return
 }
 }
 {
-if(_1.length !== 0) {
+if(_1.length > 0) {
 if(_1[0].E) {
 const tail_ = _1.slice(1);
 array_ = tail_;
@@ -1802,7 +1802,7 @@ return
 }
 }
 {
-if(_1.length !== 0) {
+if(_1.length > 0) {
 if(_1[0].T) {
 if(_1[0].left_.E) {
 const k_ = _1[0].key_;
@@ -1818,7 +1818,7 @@ return
 }
 }
 {
-if(_1.length !== 0) {
+if(_1.length > 0) {
 if(_1[0].T) {
 const l_ = _1[0].left_;
 const k_ = _1[0].key_;

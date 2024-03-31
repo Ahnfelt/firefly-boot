@@ -220,7 +220,7 @@ return
 {
 if(pathOption_a.Some) {
 const path_ = pathOption_a.value_;
-if(reversed_a.length !== 0) {
+if(reversed_a.length > 0) {
 const p_ = reversed_a[0];
 const ps_ = reversed_a.slice(1);
 return ((ff_core_Path.Path_base(path_) === p_) && go_(ff_core_Path.Path_parent(path_), ps_))
@@ -484,7 +484,7 @@ return
 {
 if(pathOption_a.Some) {
 const path_ = pathOption_a.value_;
-if(reversed_a.length !== 0) {
+if(reversed_a.length > 0) {
 const p_ = reversed_a[0];
 const ps_ = reversed_a.slice(1);
 return (((await ff_core_Path.Path_base$(path_, $task)) === p_) && (await go_$((await ff_core_Path.Path_parent$(path_, $task)), ps_, $task)))

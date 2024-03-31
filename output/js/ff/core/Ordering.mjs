@@ -587,10 +587,10 @@ return
 }
 }
 {
-if(x_a.length !== 0) {
+if(x_a.length > 0) {
 const a_ = x_a[0];
 const as_ = x_a.slice(1);
-if(y_a.length !== 0) {
+if(y_a.length > 0) {
 const b_ = y_a[0];
 const bs_ = y_a.slice(1);
 {
@@ -638,10 +638,10 @@ return
 }
 }
 {
-if(x_a.length !== 0) {
+if(x_a.length > 0) {
 const a_ = x_a[0];
 const as_ = x_a.slice(1);
-if(y_a.length !== 0) {
+if(y_a.length > 0) {
 const b_ = y_a[0];
 const bs_ = y_a.slice(1);
 {
