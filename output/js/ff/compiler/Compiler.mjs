@@ -113,8 +113,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Compiler
-export function Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, lspHook_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_) {
-return {emitTarget_, task_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, lspHook_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_};
+export function Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, lspHook_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_, phaseDurationDelta_, phaseDurations_) {
+return {emitTarget_, task_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, lspHook_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_, phaseDurationDelta_, phaseDurations_};
 }
 
 export const coreImports_ = ff_core_List.List_map(["Any", "Array", "AssetSystem", "Atomic", "Bool", "Box", "BrowserSystem", "Buffer", "BuildSystem", "Channel", "Char", "Core", "Duration", "Equal", "Error", "FileHandle", "Float", "HttpClient", "Instant", "Int", "IntMap", "Json", "JsValue", "JsSystem", "List", "Lock", "Log", "Map", "NodeSystem", "Nothing", "Option", "Ordering", "Pair", "Path", "Random", "Serializable", "Set", "Show", "SourceLocation", "Stream", "String", "StringMap", "Task", "Try", "Unit"], ((moduleName_) => {
@@ -122,7 +122,7 @@ return ff_compiler_Syntax.DImport(ff_compiler_Syntax.Location("<prelude>", 1, 1)
 }));
 
 export function make_(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_, virtualFiles_, lspHook_) {
-return ff_compiler_Compiler.Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, lspHook_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), [], 0.0)
+return ff_compiler_Compiler.Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, lspHook_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), 0.0, ff_core_List.List_toArray([]))
 }
 
 export function fail_(at_, message_) {
@@ -130,7 +130,7 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 }
 
 export async function make_$(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_, virtualFiles_, lspHook_, $task) {
-return ff_compiler_Compiler.Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, lspHook_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), [], 0.0)
+return ff_compiler_Compiler.Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, lspHook_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), 0.0, ff_core_List.List_toArray([]))
 }
 
 export async function fail_$(at_, message_, $task) {
@@ -144,12 +144,12 @@ const stop_ = (ff_core_Task.Task_elapsed(self_.task_) - self_.phaseDurationDelta
 const duration_ = (stop_ - start_);
 self_.phaseDurationDelta_ = (self_.phaseDurationDelta_ + duration_);
 const text_ = ((((phase_ + " ") + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")) + "/") + moduleName_);
-self_.phaseDurations_ = [ff_core_Pair.Pair(text_, duration_), ...self_.phaseDurations_];
+ff_core_Array.Array_push(self_.phaseDurations_, ff_core_Pair.Pair(text_, duration_));
 return result_
 }
 
 export function Compiler_printMeasurements(self_) {
-const worst_ = ff_core_List.List_reverse(ff_core_List.List_takeLast(ff_core_List.List_sortBy(self_.phaseDurations_, ((_w1) => {
+const worst_ = ff_core_List.List_reverse(ff_core_List.List_takeLast(ff_core_List.List_sortBy(ff_core_Array.Array_toList(self_.phaseDurations_, 0, 9007199254740991), ((_w1) => {
 return ((_w1.second_ + 1000000.0) + "")
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), 5));
 ff_core_List.List_each(worst_, ((_1) => {
@@ -282,12 +282,12 @@ const stop_ = ((await ff_core_Task.Task_elapsed$(self_.task_, $task)) - self_.ph
 const duration_ = (stop_ - start_);
 self_.phaseDurationDelta_ = (self_.phaseDurationDelta_ + duration_);
 const text_ = ((((phase_ + " ") + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")) + "/") + moduleName_);
-self_.phaseDurations_ = [ff_core_Pair.Pair(text_, duration_), ...self_.phaseDurations_];
+ff_core_Array.Array_push(self_.phaseDurations_, ff_core_Pair.Pair(text_, duration_));
 return result_
 }
 
 export async function Compiler_printMeasurements$(self_, $task) {
-const worst_ = ff_core_List.List_reverse(ff_core_List.List_takeLast(ff_core_List.List_sortBy(self_.phaseDurations_, ((_w1) => {
+const worst_ = ff_core_List.List_reverse(ff_core_List.List_takeLast(ff_core_List.List_sortBy(ff_core_Array.Array_toList(self_.phaseDurations_, 0, 9007199254740991), ((_w1) => {
 return ((_w1.second_ + 1000000.0) + "")
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), 5));
 ff_core_List.List_each(worst_, ((_1) => {
