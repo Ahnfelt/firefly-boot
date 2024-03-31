@@ -62,7 +62,7 @@ extend self[T]: Stack[T] {
     push(value: T): Unit
         target js sync "self_.array.push(value_)"
 
-    pushAll(value: Stack[T]): Unit
+    pushStack(value: Stack[T]): Unit
         target js sync "self_.array.push(...value_.array)"
 
     pushList(value: List[T]): Unit

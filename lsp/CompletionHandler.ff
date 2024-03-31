@@ -258,7 +258,7 @@ completion(
                 None
         }.toMap()
     } else {
-        members.pushAll(exhaustiveMatchCompletion(environment, prefix, False).toStack())
+        members.pushStack(exhaustiveMatchCompletion(environment, prefix, False).toStack())
         let shorterPrefix = prefix.dropLast()
         let recordFields = shorterPrefix.split('$').dropFirst().toSet()
         environment.symbols.each {
