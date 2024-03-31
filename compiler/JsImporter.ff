@@ -37,7 +37,7 @@ extend self: JsImporter {
         let rest4 = rest3.dropFirst(" from '".size())
         let url = rest4.takeWhile {_ != '\''}
         if(url.size() == 0) {throw(CompileError(at, "Expected module name after \" from '\""))}
-        if(url.any{_ == '\n'}) {throw(CompileError(at, "Unclosed module name string"))}
+        if(url.any {_ == '\n'}) {throw(CompileError(at, "Unclosed module name string"))}
         let rest5 = rest4.dropFirst(url.size() + 1)
         let importName = self.add(url)
         space + "const " + name + " = " + importName + self.process(at, rest5)

@@ -240,7 +240,7 @@ extend self: Handler {
         let path = system.pathFromUrl(uri)
         let symbols = self.getDocumentSymbolsWithCache(system, path)
         let lspSymbols = symbols.map {SymbolHandler.documentSymbolToLsp(_)}
-        Result(Json.list(lspSymbols).write())
+        Result(Json.array(lspSymbols).write())
     }
 
     getDocumentSymbols(system: NodeSystem, path: Path): List[DocumentSymbol] {
@@ -287,7 +287,7 @@ extend self: Handler {
         }
         let limitedSymbols = symbols.sortBy {_.name.size()}.takeFirst(100)
         let jsSymbols = limitedSymbols.map {SymbolHandler.workspaceSymbolToLsp(self.rootPath.grab(), _)}
-        Result(Json.list(jsSymbols).write())
+        Result(Json.array(jsSymbols).write())
     }
     
     handleDidChange(system: NodeSystem, parameters: Map[String, Json]): Unit {
@@ -389,7 +389,7 @@ extend self: Handler {
             | None => Json.null()
             | Some(tokens) =>
                 let lspTokens = tokens.map {self.tokenLocationToLspLocation(system, _)}
-                Json.list(lspTokens)
+                Json.array(lspTokens)
         }
         Result(o.write())
     }
@@ -401,7 +401,7 @@ extend self: Handler {
         tokens.{
             | None => Error(-32602, "Token definition not found") // InvalidParams
             | Some([]) => Result(Json.null().write())
-            | Some([first, ..._] @ tokens) =>
+            | Some([first, ...] @ tokens) =>
                 let oldName = first.raw
                 Log.trace("Rename '" + oldName + "' to '" + newName + "'")
 

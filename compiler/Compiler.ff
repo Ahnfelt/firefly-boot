@@ -23,8 +23,8 @@ capability Compiler(
     mutable derivedModules: Map[String, Module]
     mutable inferredModules: Map[String, Module]
     mutable emittedModules: Set[String]
-    mutable phaseDurations: List[Pair[String, Duration]]
     mutable phaseDurationDelta: Duration
+    phaseDurations: Array[Pair[String, Duration]]
 )
 
 make(
@@ -50,8 +50,8 @@ make(
         derivedModules = Map.empty()
         inferredModules = Map.empty()
         emittedModules = Set.empty()
-        phaseDurations = []
         phaseDurationDelta = Duration(0.0)
+        phaseDurations = [].toArray()
     )
 }
 
@@ -100,7 +100,6 @@ coreImports: List[DImport] =
         "Set"
         "Show"
         "SourceLocation"
-        "Stack"
         "Stream"
         "String"
         "StringMap"
@@ -126,12 +125,14 @@ extend self: Compiler {
         let duration = Duration(stop.seconds - start.seconds)
         self.phaseDurationDelta = Duration(self.phaseDurationDelta.seconds + duration.seconds)
         let text = phase + " " + packagePair.groupName() + "/" + moduleName
-        self.phaseDurations = [Pair(text, duration), ...self.phaseDurations]
+        self.phaseDurations.push(Pair(text, duration))
         result
     }
 
     printMeasurements(): Unit {
-        let worst = self.phaseDurations.sortBy {(_.second.seconds + 1000000.0) + ""}.takeLast(5).reverse()
+        let worst = self.phaseDurations.toList().sortBy {
+            (_.second.seconds + 1000000.0) + ""
+        }.takeLast(5).reverse()
         worst.each {| Pair(text, duration) =>
             Log.debug(text + ":\t" + duration.show())
         }

@@ -78,8 +78,6 @@ import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
 
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
-
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
@@ -237,135 +235,120 @@ return (result_ === 1)
 }
 };
 
-export function ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T) { return {
-serializeUsing_(serialization_, value_) {
-if((ff_core_Array.Array_size(value_) < 255)) {
-ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, ff_core_Array.Array_size(value_));
-serialization_.offset_ += 1
-} else if((ff_core_Array.Array_size(value_) < 1073741824)) {
-ff_core_Serializable.Serialization_autoResize(serialization_, (1 + 4));
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 255);
-ff_core_Buffer.Buffer_setUint32(serialization_.buffer_, (1 + serialization_.offset_), ff_core_Array.Array_size(value_), true);
-serialization_.offset_ += (1 + 4)
-} else {
-ff_core_Core.panic_("Can't serialize arrays where size() >= 1073741824")
-};
-ff_core_Array.Array_each(value_, ((_w1) => {
-ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, _w1)
-}))
-},
-deserializeUsing_(serialization_) {
-const smallSize_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
-if((smallSize_ !== 255)) {
-serialization_.offset_ += 1;
-return ((() => {
-const size = smallSize_;
-const result = [];
-for(let i = 0; i < size; i++) {
-result.push(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_));
-}
-return result;
-})())
-} else {
-const size_ = ff_core_Buffer.Buffer_grabUint32(serialization_.buffer_, (serialization_.offset_ + 1), true);
-serialization_.offset_ += (1 + 4);
-return ((() => {
-const size = size_;
-const result = [];
-for(let i = 0; i < size; i++) {
-result.push(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_));
-}
-return result;
-})())
-}
-},
-async serializeUsing_$(serialization_, value_, $task) {
-if((ff_core_Array.Array_size(value_) < 255)) {
-ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, ff_core_Array.Array_size(value_));
-serialization_.offset_ += 1
-} else if((ff_core_Array.Array_size(value_) < 1073741824)) {
-ff_core_Serializable.Serialization_autoResize(serialization_, (1 + 4));
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 255);
-ff_core_Buffer.Buffer_setUint32(serialization_.buffer_, (1 + serialization_.offset_), ff_core_Array.Array_size(value_), true);
-serialization_.offset_ += (1 + 4)
-} else {
-ff_core_Core.panic_("Can't serialize arrays where size() >= 1073741824")
-};
-ff_core_Array.Array_each(value_, ((_w1) => {
-ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, _w1)
-}))
-},
-async deserializeUsing_$(serialization_, $task) {
-const smallSize_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
-if((smallSize_ !== 255)) {
-serialization_.offset_ += 1;
-return ((() => {
-const size = smallSize_;
-const result = [];
-for(let i = 0; i < size; i++) {
-result.push(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_));
-}
-return result;
-})())
-} else {
-const size_ = ff_core_Buffer.Buffer_grabUint32(serialization_.buffer_, (serialization_.offset_ + 1), true);
-serialization_.offset_ += (1 + 4);
-return ((() => {
-const size = size_;
-const result = [];
-for(let i = 0; i < size; i++) {
-result.push(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_));
-}
-return result;
-})())
-}
-}
-}}
-
 export function ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable_Serializable$T) { return {
 serializeUsing_(serialization_, value_) {
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).serializeUsing_(serialization_, ff_core_List.List_toArray(value_))
+if((ff_core_List.List_size(value_) < 255)) {
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, ff_core_List.List_size(value_));
+serialization_.offset_ += 1
+} else if((ff_core_List.List_size(value_) < 1073741824)) {
+ff_core_Serializable.Serialization_autoResize(serialization_, (1 + 4));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 255);
+ff_core_Buffer.Buffer_setUint32(serialization_.buffer_, (1 + serialization_.offset_), ff_core_List.List_size(value_), true);
+serialization_.offset_ += (1 + 4)
+} else {
+ff_core_Core.panic_("Can't serialize arrays where size() >= 1073741824")
+};
+ff_core_List.List_each(value_, ((_w1) => {
+ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, _w1)
+}))
 },
 deserializeUsing_(serialization_) {
-return ff_core_Array.Array_toList(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).deserializeUsing_(serialization_))
+const smallSize_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
+if((smallSize_ !== 255)) {
+serialization_.offset_ += 1;
+return ((() => {
+const size = smallSize_;
+const result = [];
+for(let i = 0; i < size; i++) {
+result.push(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_));
+}
+return result;
+})())
+} else {
+const size_ = ff_core_Buffer.Buffer_grabUint32(serialization_.buffer_, (serialization_.offset_ + 1), true);
+serialization_.offset_ += (1 + 4);
+return ((() => {
+const size = size_;
+const result = [];
+for(let i = 0; i < size; i++) {
+result.push(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_));
+}
+return result;
+})())
+}
 },
 async serializeUsing_$(serialization_, value_, $task) {
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).serializeUsing_(serialization_, ff_core_List.List_toArray(value_))
+if((ff_core_List.List_size(value_) < 255)) {
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, ff_core_List.List_size(value_));
+serialization_.offset_ += 1
+} else if((ff_core_List.List_size(value_) < 1073741824)) {
+ff_core_Serializable.Serialization_autoResize(serialization_, (1 + 4));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 255);
+ff_core_Buffer.Buffer_setUint32(serialization_.buffer_, (1 + serialization_.offset_), ff_core_List.List_size(value_), true);
+serialization_.offset_ += (1 + 4)
+} else {
+ff_core_Core.panic_("Can't serialize arrays where size() >= 1073741824")
+};
+ff_core_List.List_each(value_, ((_w1) => {
+ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, _w1)
+}))
 },
 async deserializeUsing_$(serialization_, $task) {
-return ff_core_Array.Array_toList(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).deserializeUsing_(serialization_))
+const smallSize_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
+if((smallSize_ !== 255)) {
+serialization_.offset_ += 1;
+return ((() => {
+const size = smallSize_;
+const result = [];
+for(let i = 0; i < size; i++) {
+result.push(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_));
+}
+return result;
+})())
+} else {
+const size_ = ff_core_Buffer.Buffer_grabUint32(serialization_.buffer_, (serialization_.offset_ + 1), true);
+serialization_.offset_ += (1 + 4);
+return ((() => {
+const size = size_;
+const result = [];
+for(let i = 0; i < size; i++) {
+result.push(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_));
+}
+return result;
+})())
+}
 }
 }}
 
 export function ff_core_Serializable_Serializable$ff_core_Set_Set(ff_core_Serializable_Serializable$T, ff_core_Ordering_Order$T) { return {
 serializeUsing_(serialization_, value_) {
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).serializeUsing_(serialization_, ff_core_Set.Set_toArray(value_, ff_core_Ordering_Order$T))
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable_Serializable$T).serializeUsing_(serialization_, ff_core_Set.Set_toList(value_, ff_core_Ordering_Order$T))
 },
 deserializeUsing_(serialization_) {
-return ff_core_Array.Array_toSet(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).deserializeUsing_(serialization_), ff_core_Ordering_Order$T)
+return ff_core_List.List_toSet(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable_Serializable$T).deserializeUsing_(serialization_), ff_core_Ordering_Order$T)
 },
 async serializeUsing_$(serialization_, value_, $task) {
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).serializeUsing_(serialization_, ff_core_Set.Set_toArray(value_, ff_core_Ordering_Order$T))
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable_Serializable$T).serializeUsing_(serialization_, ff_core_Set.Set_toList(value_, ff_core_Ordering_Order$T))
 },
 async deserializeUsing_$(serialization_, $task) {
-return ff_core_Array.Array_toSet(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).deserializeUsing_(serialization_), ff_core_Ordering_Order$T)
+return ff_core_List.List_toSet(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable_Serializable$T).deserializeUsing_(serialization_), ff_core_Ordering_Order$T)
 }
 }}
 
 export function ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable_Serializable$K, ff_core_Ordering_Order$K, ff_core_Serializable_Serializable$V) { return {
 serializeUsing_(serialization_, value_) {
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$K, ff_core_Serializable_Serializable$V)).serializeUsing_(serialization_, ff_core_Map.Map_toArray(value_, ff_core_Ordering_Order$K))
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$K, ff_core_Serializable_Serializable$V)).serializeUsing_(serialization_, ff_core_Map.Map_toList(value_, ff_core_Ordering_Order$K))
 },
 deserializeUsing_(serialization_) {
-return ff_core_Array.Array_toMap(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$K, ff_core_Serializable_Serializable$V)).deserializeUsing_(serialization_), ff_core_Ordering_Order$K)
+return ff_core_List.List_toMap(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$K, ff_core_Serializable_Serializable$V)).deserializeUsing_(serialization_), ff_core_Ordering_Order$K)
 },
 async serializeUsing_$(serialization_, value_, $task) {
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$K, ff_core_Serializable_Serializable$V)).serializeUsing_(serialization_, ff_core_Map.Map_toArray(value_, ff_core_Ordering_Order$K))
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$K, ff_core_Serializable_Serializable$V)).serializeUsing_(serialization_, ff_core_Map.Map_toList(value_, ff_core_Ordering_Order$K))
 },
 async deserializeUsing_$(serialization_, $task) {
-return ff_core_Array.Array_toMap(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$K, ff_core_Serializable_Serializable$V)).deserializeUsing_(serialization_), ff_core_Ordering_Order$K)
+return ff_core_List.List_toMap(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$K, ff_core_Serializable_Serializable$V)).deserializeUsing_(serialization_), ff_core_Ordering_Order$K)
 }
 }}
 

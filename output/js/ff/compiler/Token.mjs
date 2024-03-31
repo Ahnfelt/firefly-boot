@@ -82,8 +82,6 @@ import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
 
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
-
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
@@ -2207,7 +2205,7 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 return ff_compiler_Token.Token(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_TokenKind.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_))
 return
@@ -2248,7 +2246,7 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 return ff_compiler_Token.Token(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_TokenKind.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_))
 return
@@ -2525,175 +2523,175 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
 return ff_compiler_Token.LEnd()
 return
 }
 }
 {
-if(_1 == 1) {
+if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 return ff_compiler_Token.LString()
 return
 }
 }
 {
-if(_1 == 2) {
+if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 return ff_compiler_Token.LChar()
 return
 }
 }
 {
-if(_1 == 3) {
+if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
 return ff_compiler_Token.LInt()
 return
 }
 }
 {
-if(_1 == 4) {
+if(_1 === 4) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_Token.LFloat()
 return
 }
 }
 {
-if(_1 == 5) {
+if(_1 === 5) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
 return ff_compiler_Token.LKeyword()
 return
 }
 }
 {
-if(_1 == 6) {
+if(_1 === 6) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 return ff_compiler_Token.LNamespace()
 return
 }
 }
 {
-if(_1 == 7) {
+if(_1 === 7) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_Token.LLower()
 return
 }
 }
 {
-if(_1 == 8) {
+if(_1 === 8) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_Token.LUpper()
 return
 }
 }
 {
-if(_1 == 9) {
+if(_1 === 9) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_Token.LWildcard()
 return
 }
 }
 {
-if(_1 == 10) {
+if(_1 === 10) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_Token.LBracketLeft()
 return
 }
 }
 {
-if(_1 == 11) {
+if(_1 === 11) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 return ff_compiler_Token.LBracketRight()
 return
 }
 }
 {
-if(_1 == 12) {
+if(_1 === 12) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_Token.LOperator()
 return
 }
 }
 {
-if(_1 == 13) {
+if(_1 === 13) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_Token.LComma()
 return
 }
 }
 {
-if(_1 == 14) {
+if(_1 === 14) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 return ff_compiler_Token.LSeparator()
 return
 }
 }
 {
-if(_1 == 15) {
+if(_1 === 15) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
 return ff_compiler_Token.LDot()
 return
 }
 }
 {
-if(_1 == 16) {
+if(_1 === 16) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 return ff_compiler_Token.LSemicolon()
 return
 }
 }
 {
-if(_1 == 17) {
+if(_1 === 17) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 return ff_compiler_Token.LPipe()
 return
 }
 }
 {
-if(_1 == 18) {
+if(_1 === 18) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_Token.LColon()
 return
 }
 }
 {
-if(_1 == 19) {
+if(_1 === 19) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 return ff_compiler_Token.LDotDotDot()
 return
 }
 }
 {
-if(_1 == 20) {
+if(_1 === 20) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Token.LArrowThick()
 return
 }
 }
 {
-if(_1 == 21) {
+if(_1 === 21) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 return ff_compiler_Token.LAssign()
 return
 }
 }
 {
-if(_1 == 22) {
+if(_1 === 22) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Token.LAssignPlus()
 return
 }
 }
 {
-if(_1 == 23) {
+if(_1 === 23) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_Token.LAssignMinus()
 return
 }
 }
 {
-if(_1 == 24) {
+if(_1 === 24) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Token.LAssignLink()
 return
@@ -2967,175 +2965,175 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
 return ff_compiler_Token.LEnd()
 return
 }
 }
 {
-if(_1 == 1) {
+if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 return ff_compiler_Token.LString()
 return
 }
 }
 {
-if(_1 == 2) {
+if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 return ff_compiler_Token.LChar()
 return
 }
 }
 {
-if(_1 == 3) {
+if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
 return ff_compiler_Token.LInt()
 return
 }
 }
 {
-if(_1 == 4) {
+if(_1 === 4) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_Token.LFloat()
 return
 }
 }
 {
-if(_1 == 5) {
+if(_1 === 5) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
 return ff_compiler_Token.LKeyword()
 return
 }
 }
 {
-if(_1 == 6) {
+if(_1 === 6) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 return ff_compiler_Token.LNamespace()
 return
 }
 }
 {
-if(_1 == 7) {
+if(_1 === 7) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_Token.LLower()
 return
 }
 }
 {
-if(_1 == 8) {
+if(_1 === 8) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_Token.LUpper()
 return
 }
 }
 {
-if(_1 == 9) {
+if(_1 === 9) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_Token.LWildcard()
 return
 }
 }
 {
-if(_1 == 10) {
+if(_1 === 10) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_Token.LBracketLeft()
 return
 }
 }
 {
-if(_1 == 11) {
+if(_1 === 11) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 return ff_compiler_Token.LBracketRight()
 return
 }
 }
 {
-if(_1 == 12) {
+if(_1 === 12) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_Token.LOperator()
 return
 }
 }
 {
-if(_1 == 13) {
+if(_1 === 13) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_Token.LComma()
 return
 }
 }
 {
-if(_1 == 14) {
+if(_1 === 14) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 return ff_compiler_Token.LSeparator()
 return
 }
 }
 {
-if(_1 == 15) {
+if(_1 === 15) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
 return ff_compiler_Token.LDot()
 return
 }
 }
 {
-if(_1 == 16) {
+if(_1 === 16) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 return ff_compiler_Token.LSemicolon()
 return
 }
 }
 {
-if(_1 == 17) {
+if(_1 === 17) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 return ff_compiler_Token.LPipe()
 return
 }
 }
 {
-if(_1 == 18) {
+if(_1 === 18) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_Token.LColon()
 return
 }
 }
 {
-if(_1 == 19) {
+if(_1 === 19) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 return ff_compiler_Token.LDotDotDot()
 return
 }
 }
 {
-if(_1 == 20) {
+if(_1 === 20) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Token.LArrowThick()
 return
 }
 }
 {
-if(_1 == 21) {
+if(_1 === 21) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 return ff_compiler_Token.LAssign()
 return
 }
 }
 {
-if(_1 == 22) {
+if(_1 === 22) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Token.LAssignPlus()
 return
 }
 }
 {
-if(_1 == 23) {
+if(_1 === 23) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_Token.LAssignMinus()
 return
 }
 }
 {
-if(_1 == 24) {
+if(_1 === 24) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Token.LAssignLink()
 return

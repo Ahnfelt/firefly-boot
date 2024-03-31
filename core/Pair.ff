@@ -32,10 +32,6 @@ extend self[A, A]: Pair[A, A] {
         self.toList().toArray()
     }
 
-    toStack(): Stack[A] {
-        self.toList().toStack()
-    }
-
 }
 
 extend self[A: Order]: Pair[A, A] {

@@ -4,7 +4,7 @@ capability WebServer(
     internalPort: Int
     mutable internalJsWebSockets: JsValue
     mutable internalJsWildcard: JsValue
-    mutable internalJsHosts: Stack[JsValue]
+    mutable internalJsHosts: Array[JsValue]
     mutable internalJsApp: JsValue
 )
 
@@ -18,7 +18,7 @@ class WebRequest[T](
     internalJsResponse: JsValue
     internalResponse: T
     internalResponseHeaders: StringMap[String]
-    internalResponseChunks: Stack[JsValue]
+    internalResponseChunks: Array[JsValue]
     mutable internalResponseStatus: String
     mutable internalCloseConnection: Bool
     mutable internalResolveFlush: JsValue
@@ -37,7 +37,7 @@ make(
     host: String
     port: Int
 ): WebServer {
-    WebServer(system, host, port, system.js().null(), system.js().null(), [].toStack(), system.js().null())
+    WebServer(system, host, port, system.js().null(), system.js().null(), [].toArray(), system.js().null())
 }
 
 extend self: WebServer {
@@ -113,7 +113,7 @@ extend self: WebServer {
                     const query = req.getQuery() || '';
                     const headers = new Map();
                     req.forEach((key, value) => headers.set(key, value));
-                    const chunks = internalStack_();
+                    const chunks = internalArray_();
                     const task = ff_core_Task.Task_spawn($task, async task => {
                         try {
                             ff_core_Task.Task_throwIfAborted(task);
@@ -121,7 +121,7 @@ extend self: WebServer {
                                 self_.internalJsApp_, context, 
                                 method, path, query, headers, 
                                 res, null, 
-                                new Map(), internalStack_(), 
+                                new Map(), internalArray_(), 
                                 "200 OK", false, null, -1, false
                             );
                             await handler_(webRequest, task);
@@ -611,8 +611,8 @@ internalSend[T](self: WebSocketConnection, send: () => Bool): JsValue
         }
     """
 
-internalStack[T](): Stack[T] {
-    Stack.make()
+internalArray[T](): Array[T] {
+    Array.make()
 }
 
 internalTextChunk(data: String): JsValue
@@ -625,7 +625,7 @@ internalBufferChunk(data: Buffer): JsValue
         return data_;
     """
 
-internalChunksToChunk(chunks: Stack[JsValue]): JsValue
+internalChunksToChunk(chunks: Array[JsValue]): JsValue
     target js sync """
         const chunks = chunks_.array;
         if(chunks.length === 0) return;

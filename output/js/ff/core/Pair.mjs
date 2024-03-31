@@ -78,8 +78,6 @@ import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
 
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
-
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
@@ -167,15 +165,11 @@ return
 }
 
 export function Pair_toList(self_) {
-return ff_core_List.Link(self_.first_, ff_core_List.Link(self_.second_, ff_core_List.Empty()))
+return [self_.first_, self_.second_]
 }
 
 export function Pair_toArray(self_) {
 return ff_core_List.List_toArray(ff_core_Pair.Pair_toList(self_))
-}
-
-export function Pair_toStack(self_) {
-return ff_core_List.List_toStack(ff_core_Pair.Pair_toList(self_))
 }
 
 export async function Pair_mapBoth$(self_, body_, $task) {
@@ -190,15 +184,11 @@ return
 }
 
 export async function Pair_toList$(self_, $task) {
-return ff_core_List.Link(self_.first_, ff_core_List.Link(self_.second_, ff_core_List.Empty()))
+return [self_.first_, self_.second_]
 }
 
 export async function Pair_toArray$(self_, $task) {
 return ff_core_List.List_toArray(ff_core_Pair.Pair_toList(self_))
-}
-
-export async function Pair_toStack$(self_, $task) {
-return ff_core_List.List_toStack(ff_core_Pair.Pair_toList(self_))
 }
 
 export function Pair_toSet(self_, ff_core_Ordering_Order$A) {
@@ -210,11 +200,11 @@ return ff_core_List.List_toSet(ff_core_Pair.Pair_toList(self_), ff_core_Ordering
 }
 
 export function Pair_toMap(self_, ff_core_Ordering_Order$A) {
-return ff_core_List.List_toMap(ff_core_List.Link(self_, ff_core_List.Empty()), ff_core_Ordering_Order$A)
+return ff_core_List.List_toMap([self_], ff_core_Ordering_Order$A)
 }
 
 export async function Pair_toMap$(self_, ff_core_Ordering_Order$A, $task) {
-return ff_core_List.List_toMap(ff_core_List.Link(self_, ff_core_List.Empty()), ff_core_Ordering_Order$A)
+return ff_core_List.List_toMap([self_], ff_core_Ordering_Order$A)
 }
 
 export function ff_core_Any_HasAnyTag$ff_core_Pair_Pair(ff_core_Any_HasAnyTag$A, ff_core_Any_HasAnyTag$B) { return {
@@ -286,7 +276,7 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
 return ff_core_Pair.Pair(ff_core_Serializable_Serializable$A.deserializeUsing_(serialization_), ff_core_Serializable_Serializable$B.deserializeUsing_(serialization_))
 return
@@ -320,7 +310,7 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
 return ff_core_Pair.Pair(ff_core_Serializable_Serializable$A.deserializeUsing_(serialization_), ff_core_Serializable_Serializable$B.deserializeUsing_(serialization_))
 return

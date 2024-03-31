@@ -337,18 +337,14 @@ extend self[T]: Stream[T] {
         result
     }
 
-    toStack(): Stack[T] {
-        let stack = Stack.make()
-        self.each {stack.push(_)}
-        stack
-    }
-
     toArray(): Array[T] {
-        self.toStack().drain()
+        let array = Array.make()
+        self.each {array.push(_)}
+        array
     }
 
     toList(): List[T] {
-        self.toStack().toList()
+        self.toArray().drain()
     }
 
 }
@@ -361,20 +357,20 @@ extend self[T]: Stream[Stream[T]] {
 
 extend self[T: Order]: Stream[T] {
     toSet(): Set[T] {
-        self.toArray().toSet()
+        self.toList().toSet()
     }
 }
 
 extend self[K: Order, V]: Stream[Pair[K, V]] {
     toMap(): Map[K, V] {
-        self.toArray().toMap()
+        self.toList().toMap()
     }
 }
 
 extend self: Stream[Buffer] {
 
     toBuffer(): Buffer {
-        let builder = Stack.make()
+        let builder = Array.make()
         self.each {builder.push(_)}
         Buffer.fromBufferArray(builder.drain())
     }
@@ -383,9 +379,9 @@ extend self: Stream[Buffer] {
         self.toBuffer().toString(encoding)
     }
 
-    readBytes(bytes: Int): Pair[Array[Buffer], Stream[Buffer]] {
-        if(bytes <= 0) {Pair([].toArray(), self)} else:
-        let buffers = Stack.make()
+    readBytes(bytes: Int): Pair[List[Buffer], Stream[Buffer]] {
+        if(bytes <= 0) {Pair([], self)} else:
+        let buffers = Array.make()
         mutable buffer = self.next().grab()
         mutable taken = 0
         mutable remainder = None

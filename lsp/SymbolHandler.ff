@@ -96,7 +96,7 @@ documentSymbolToLsp(symbol: DocumentSymbol): Json {
         .with("kind", documentSymbolNumber(symbol.kind))
         .with("range", locationsToLspRange(symbol.start, symbol.end))
         .with("selectionRange", locationsToLspRange(symbol.selectionStart, symbol.selectionEnd))
-        .with("children", symbol.children.toArray().map {documentSymbolToLsp(_)})
+        .with("children", symbol.children.map {documentSymbolToLsp(_)})
 }
 
 documentSymbolNumber(kind: DocumentSymbolKind): Int {

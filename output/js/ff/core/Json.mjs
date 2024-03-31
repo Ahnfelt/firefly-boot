@@ -78,8 +78,6 @@ import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
 
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
-
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
@@ -141,10 +139,6 @@ export function array_(json_) {
 
         return json_;
     
-}
-
-export function list_(json_) {
-return ff_core_Json.array_(ff_core_List.List_toArray(json_))
 }
 
 export function object_() {
@@ -271,10 +265,6 @@ throw new Error('Function null is missing on this target in async context.');
 
 export async function array_$(json_, $task) {
 throw new Error('Function array is missing on this target in async context.');
-}
-
-export async function list_$(json_, $task) {
-return ff_core_Json.array_(ff_core_List.List_toArray(json_))
 }
 
 export async function object_$($task) {
@@ -511,19 +501,19 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.G
 }
 
 export function Json_map(self_, body_) {
-const stack_ = ff_core_Stack.make_();
+const array_ = ff_core_Array.make_();
 ff_core_Json.Json_each(self_, ((field_, value_) => {
-ff_core_Stack.Stack_push(stack_, body_(field_, value_))
+ff_core_Array.Array_push(array_, body_(field_, value_))
 }));
-return ff_core_Stack.Stack_drain(stack_)
+return ff_core_Array.Array_drain(array_)
 }
 
 export function Json_flatMap(self_, body_) {
-const stack_ = ff_core_Stack.make_();
+const array_ = ff_core_Array.make_();
 ff_core_Json.Json_each(self_, ((field_, value_) => {
-ff_core_Stack.Stack_pushArray(stack_, body_(field_, value_))
+ff_core_Array.Array_pushList(array_, body_(field_, value_))
 }));
-return ff_core_Stack.Stack_drain(stack_)
+return ff_core_Array.Array_drain(array_)
 }
 
 export function Json_each(self_, body_) {
@@ -687,19 +677,19 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.G
 }
 
 export async function Json_map$(self_, body_, $task) {
-const stack_ = ff_core_Stack.make_();
+const array_ = ff_core_Array.make_();
 (await ff_core_Json.Json_each$(self_, (async (field_, value_, $task) => {
-ff_core_Stack.Stack_push(stack_, (await body_(field_, value_, $task)))
+ff_core_Array.Array_push(array_, (await body_(field_, value_, $task)))
 }), $task));
-return ff_core_Stack.Stack_drain(stack_)
+return ff_core_Array.Array_drain(array_)
 }
 
 export async function Json_flatMap$(self_, body_, $task) {
-const stack_ = ff_core_Stack.make_();
+const array_ = ff_core_Array.make_();
 (await ff_core_Json.Json_each$(self_, (async (field_, value_, $task) => {
-ff_core_Stack.Stack_pushArray(stack_, (await body_(field_, value_, $task)))
+ff_core_Array.Array_pushList(array_, (await body_(field_, value_, $task)))
 }), $task));
-return ff_core_Stack.Stack_drain(stack_)
+return ff_core_Array.Array_drain(array_)
 }
 
 export async function Json_each$(self_, body_, $task) {
@@ -847,94 +837,71 @@ return
 }
 };
 
-export function ff_core_Json_JsonLike$ff_core_Array_Array(ff_core_Json_JsonLike$T) { return {
-toJson_(value_) {
-return ff_core_Json.array_(ff_core_Array.Array_map(value_, ((value_) => {
-return ff_core_Json_JsonLike$T.toJson_(value_)
-})))
-},
-fromJson_(json_) {
-return ff_core_Option.Option_flatMap(ff_core_Json.Json_getArray(json_), ((array_) => {
-let convertible_ = true;
-const stack_ = ff_core_Stack.make_();
-ff_core_Array.Array_eachWhile(array_, ((item_) => {
-do {
-const _1 = ff_core_Json_JsonLike$T.fromJson_(item_);
-{
-if(_1.None) {
-convertible_ = false
-break
-}
-}
-{
-if(_1.Some) {
-const value_ = _1.value_;
-ff_core_Stack.Stack_push(stack_, value_)
-break
-}
-}
-} while(false);
-return convertible_
-}));
-if(convertible_) {
-return ff_core_Option.Some(ff_core_Stack.Stack_drain(stack_))
-} else return ff_core_Option.None()
-}))
-},
-async toJson_$(value_, $task) {
-return ff_core_Json.array_(ff_core_Array.Array_map(value_, ((value_) => {
-return ff_core_Json_JsonLike$T.toJson_(value_)
-})))
-},
-async fromJson_$(json_, $task) {
-return ff_core_Option.Option_flatMap(ff_core_Json.Json_getArray(json_), ((array_) => {
-let convertible_ = true;
-const stack_ = ff_core_Stack.make_();
-ff_core_Array.Array_eachWhile(array_, ((item_) => {
-do {
-const _1 = ff_core_Json_JsonLike$T.fromJson_(item_);
-{
-if(_1.None) {
-convertible_ = false
-break
-}
-}
-{
-if(_1.Some) {
-const value_ = _1.value_;
-ff_core_Stack.Stack_push(stack_, value_)
-break
-}
-}
-} while(false);
-return convertible_
-}));
-if(convertible_) {
-return ff_core_Option.Some(ff_core_Stack.Stack_drain(stack_))
-} else return ff_core_Option.None()
-}))
-}
-}}
-
 export function ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json_JsonLike$T) { return {
 toJson_(value_) {
-return ff_core_Json.list_(ff_core_List.List_map(value_, ((value_) => {
+return ff_core_Json.array_(ff_core_List.List_map(value_, ((value_) => {
 return ff_core_Json_JsonLike$T.toJson_(value_)
 })))
 },
 fromJson_(json_) {
-return ff_core_Option.Option_map(ff_core_Json.ff_core_Json_JsonLike$ff_core_Array_Array(ff_core_Json_JsonLike$T).fromJson_(json_), ((_w1) => {
-return ff_core_Array.Array_toList(_w1)
+return ff_core_Option.Option_flatMap(ff_core_Json.Json_getArray(json_), ((array_) => {
+let convertible_ = true;
+const result_ = ff_core_Array.make_();
+ff_core_List.List_eachWhile(array_, ((item_) => {
+do {
+const _1 = ff_core_Json_JsonLike$T.fromJson_(item_);
+{
+if(_1.None) {
+convertible_ = false
+break
+}
+}
+{
+if(_1.Some) {
+const value_ = _1.value_;
+ff_core_Array.Array_push(result_, value_)
+break
+}
+}
+} while(false);
+return convertible_
+}));
+if(convertible_) {
+return ff_core_Option.Some(ff_core_Array.Array_drain(result_))
+} else return ff_core_Option.None()
 }))
 },
 async toJson_$(value_, $task) {
-return ff_core_Json.list_(ff_core_List.List_map(value_, ((value_) => {
+return ff_core_Json.array_(ff_core_List.List_map(value_, ((value_) => {
 return ff_core_Json_JsonLike$T.toJson_(value_)
 })))
 },
 async fromJson_$(json_, $task) {
-return ff_core_Option.Option_map(ff_core_Json.ff_core_Json_JsonLike$ff_core_Array_Array(ff_core_Json_JsonLike$T).fromJson_(json_), ((_w1) => {
-return ff_core_Array.Array_toList(_w1)
+return ff_core_Option.Option_flatMap(ff_core_Json.Json_getArray(json_), ((array_) => {
+let convertible_ = true;
+const result_ = ff_core_Array.make_();
+ff_core_List.List_eachWhile(array_, ((item_) => {
+do {
+const _1 = ff_core_Json_JsonLike$T.fromJson_(item_);
+{
+if(_1.None) {
+convertible_ = false
+break
+}
+}
+{
+if(_1.Some) {
+const value_ = _1.value_;
+ff_core_Array.Array_push(result_, value_)
+break
+}
+}
+} while(false);
+return convertible_
+}));
+if(convertible_) {
+return ff_core_Option.Some(ff_core_Array.Array_drain(result_))
+} else return ff_core_Option.None()
 }))
 }
 }}

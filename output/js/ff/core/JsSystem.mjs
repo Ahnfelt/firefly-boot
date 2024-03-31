@@ -78,8 +78,6 @@ import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
 
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
-
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
@@ -126,7 +124,7 @@ return {}
 }
 
 export function JsSystem_array(self_, values_) {
-return ff_core_List.List_toArray(values_)
+return values_.slice()
 }
 
 export function JsSystem_json(self_, value_) {

@@ -1,108 +1,77 @@
-data List[T] {
-    Empty
-    Link(head: T, tail: List[T])
-}
+data List[T] {}
+
+empty[T](): List[T]
+    target js sync """
+        return [];
+    """
+
+fill[T](size: Int, value: T): List[T]
+    target js sync """
+        return new Array(size_).fill(value_);
+    """
+
+fillBy[T](size: Int, body: Int => T): List[T]
+    target js sync """
+        return Array.from({length: size_}, (_, i) => body_(i));
+    """
+    target js async """
+        const array = new Array(size_);
+        for(let i = 0; i < size_; i++) {
+            array[i] = await(body_(_i));
+        }
+        return array;
+    """
 
 range(size: Int): List[Int]
     target js sync """
-        let result = ff_core_List.Empty();
-        for(let i = size_ - 1; i >= 0; i--) {
-            result = ff_core_List.Link(i, result);
-        }
-        return result;
+        return Array.from({length: size_}, (_, i) => i);
     """
-
-build[A, B](initial: A, body: A => Option[Pair[A, B]]): List[B] {
-    function go(state: A, result: List[B]): List[B] {
-        body(state).{
-            | None => result.reverse()
-            | Some(Pair(s, x)) => tailcall go(s, [x, ...result])
-        }
-    }
-    go(initial, [])
-}
 
 extend self[T]: List[T] {
 
-    addAll(list: List[T]): List[T] {
-        [self, list].flatten()
-    }
+    addAll(that: List[T]): List[T]
+        target js sync "return self_.concat(that_)"
 
-    toStack(): Stack[T]
+    isEmpty(): Bool
+        target js sync "return self_.length === 0"
+
+    size(): Int
+        target js sync "return self_.length"
+
+    get(index: Int): Option[T]
         target js sync """
-            let current = self_;
-            let result = [];
-            while(current.Link) {
-                result.push(current.head_);
-                current = current.tail_;
-            }
-            return {array: result};
+            return index_ >= 0 && index_ < self_.length
+                ? ff_core_Option.Some(self_[index_])
+                : ff_core_Option.None()
         """
 
-    toArray(): Array[T] {
-        self.toStack().drain()
-    }
-
-    grab(index: Int): T {
-        function go(list: List[T], i: Int): T {
-            list.{
-                | [] => Try.internalThrowGrabException()
-                | [head, ...] {i == 0} => head
-                | [_, ...tail] => tailcall go(tail, i - 1)
+    grab(index: Int): T
+        target js sync """
+            if(index_ < 0 || index_ >= self_.length) {
+                ff_core_Try.internalThrowGrabException_()
             }
-        }
-        go(self, index)
-    }
+            return self_[index_]
+        """
 
-    first(): Option[T] {
-        self.{
-            | [] => None
-            | [head, ...] => Some(head)
-        }
-    }
+    first(): Option[T] {self.get(0)}
 
-    last(): Option[T] {
-        self.{
-            | [] => None
-            | [head] => Some(head)
-            | [_, ...tail] => tailcall tail.last()
-        }
-    }
+    last(): Option[T] {self.get(self.size() - 1)}
 
-    grabFirst(): T {
-        self.first().else {Try.internalThrowGrabException()}
-    }
+    grabFirst(): T {self.grab(0)}
 
-    grabLast(): T {
-        self.last().else {Try.internalThrowGrabException()}
-    }
+    grabLast(): T {self.grab(self.size() - 1)}
 
-    dropFirst(count: Int = 1): List[T] {
-        self.{
-            | _ {count <= 0} => self
-            | [] => self
-            | [_, ...tail] => tailcall tail.dropFirst(count - 1)
-        }
-    }
+    takeFirst(count: Int = 1): List[T]
+        target js sync "return self_.slice(0, count_)"
 
-    dropLast(count: Int = 1): List[T] {
-        self.reverse().dropFirst(count).reverse()
-    }
+    takeLast(count: Int = 1): List[T]
+        target js sync "return self_.slice(-count_)"
 
-    takeFirst(count: Int = 1): List[T] {
-        function go(list: List[T], count: Int, result: List[T]): List[T] {
-            list.{
-                | _ {count <= 0} => result.reverse()
-                | [] => result.reverse()
-                | [head, ...tail] => tailcall go(tail, count - 1, [head, ...result])
-            }
-        }
-        go(self, count, [])
-    }
+    dropFirst(count: Int = 1): List[T]
+        target js sync "return self_.slice(count_)"
 
-    takeLast(count: Int = 1): List[T] {
-        self.reverse().takeFirst(count).reverse()
-    }
+    dropLast(count: Int = 1): List[T]
+        target js sync "return self_.slice(0, self_.length - count_)"
 
     pairs(): List[Pair[Int, T]] {
         mutable i = 0
@@ -112,244 +81,220 @@ extend self[T]: List[T] {
             r
         }
     }
-
+    
     slice(from: Int, until: Int): List[T] {
         self.dropFirst(from).takeFirst(until - from)
     }
-
-    isEmpty(): Bool {
-        self.{
-            | [] => True
-            | _ => False
+    
+    foldLeft[R](initial: R, body: (R, T) => R): R {
+        mutable result = initial
+        self.each {x =>
+            result = body(result, x)
         }
-    }
+        result
+    }    
 
-    size(): Int {
-        function go(list: List[T], result: Int): Int {
-            list.{
-                | [] => result
-                | [_, ...tail] => tailcall go(tail, result + 1)
-            }
-        }
-        go(self, 0)
-    }
-
-    each(body: T => Unit): Unit {
-        self.{
-            | [] =>
-            | [head, ...tail] =>
-                body(head)
-                tailcall tail.each(body)
-        }
+    update(index: Int, value: T): List[T] {
+        self.modify(index) {_ => value}
     }
     
-    eachWhile(body: T => Bool): Bool {
-        self.all(body)
+    modify(index: Int, body: T => T): List[T]
+        target js sync """
+            if(index_ < 0 || index_ >= self_.length) {
+                ff_core_Try.internalThrowGrabException_()
+            }
+            let result = self_.slice();
+            result[index_] = body_(result[index_]);
+            return result;
+        """
+        target js async """
+            if(index_ < 0 || index_ >= self_.length) {
+                ff_core_Try.internalThrowGrabException_()
+            }
+            let result = self_.slice();
+            result[index_] = await body_(result[index_], $task);
+            return result;
+        """
+        
+    zip[S](that: List[S]): List[Pair[T, S]] {
+        if(self.size() <= that.size()) {
+            mutable i = -1
+            self.map {x => 
+                i += 1
+                Pair(x, that.grab(i))
+            }
+        } else {
+            mutable i = -1
+            that.map {y => 
+                i += 1
+                Pair(self.grab(i), y)
+            }
+        }
     }
 
-    all(body: T => Bool): Bool {
-        self.{
-            | [] => True
-            | [head, ...] {!body(head)} => False
-            | [_, ...tail] => tailcall tail.all(body)
+    chunk(chunkSize: Int): List[List[T]] {
+        let results = Array.make()
+        let result = Array.make()
+        mutable added = 0
+        self.each {item =>
+            if(added < chunkSize) {
+                added += 1
+            } else {
+                results.push(result.drain())
+                added = 1
+            }
+            result.push(item)
         }
+        if(added != 0) {
+            results.push(result.drain())
+        }
+        results.drain()
+    }
+
+    toStream(cycle: Bool = False): Stream[T] {
+        mutable index = 0
+        Stream.make {
+            if(index < self.size()) {
+                let result = self.grab(index)
+                index += 1
+                result
+            } elseIf {cycle && index != 0} {
+                let result = self.grab(0)
+                index = 1
+                result
+            }
+        }
+    }
+
+    toArray(): Array[T]
+        target js sync "return {array: self_.slice()}"
+
+    each(body: T => Unit): Unit
+        target js sync """
+            return self_.forEach(body_);
+        """
+        target js async """
+            for(let i = 0; i < self_.length; i++) {
+                await body_(self_[i], $task)
+            }
+        """
+
+    eachWhile(body: T => Bool): Unit
+        target js sync "for(const value of self_) if(!body_(value)) break"
+        target js async "for(const value of self_) if(!await body_(value, $task)) break"
+
+    all(body: T => Bool): Bool {
+        mutable result = True
+        self.eachWhile {x =>
+            result = result && body(x)
+            result
+        }
+        result
     }
 
     any(body: T => Bool): Bool {
-        self.{
-            | [] => False
-            | [head, ...] {body(head)} => True
-            | [_, ...tail] => tailcall tail.any(body)
+        mutable result = False
+        self.eachWhile {x =>
+            result = result || body(x)
+            (!result)
         }
+        result
     }
-
+    
     find(body: T => Bool): Option[T] {
-        self.{
-            | [] => None
-            | [head, ...] {body(head)} => Some(head)
-            | [_, ...tail] => tailcall tail.find(body)
+        mutable result = None
+        self.eachWhile {x =>
+            if(body(x)) {
+                result = Some(x)
+                False
+            } else {
+                True
+            }
         }
+        result
     }
 
     filter(body: T => Bool): List[T] {
-        function go(list: List[T], result: List[T]): List[T] {
-            list.{
-                | [] =>
-                    result.reverse()
-                | [head, ...tail] {body(head)} =>
-                    tailcall go(tail, [head, ...result])
-                | [_, ...tail] =>
-                    tailcall go(tail, result)
+        let result = Array.make()
+        self.each {x =>
+            if(body(x)) {
+                result.push(x)
             }
         }
-        go(self, [])
+        result.drain()
     }
-
+    
     partition(body: T => Bool): Pair[List[T], List[T]] {
         Pair(self.filter(body), self.filter {!body(_)})
     }
 
-    map[R](body: T => R): List[R] {
-        function go(list: List[T], result: List[R]): List[R] {
-            list.{
-                | [] =>
-                    result.reverse()
-                | [head, ...tail] =>
-                    tailcall go(tail, [body(head), ...result])
+    map[S](body: T => S): List[S]
+        target js sync """
+            return self_.map(body_)
+        """
+        target js async """
+            let result = [];
+            for(let i = 0; i < self_.length; i++) {
+                result.push(await body_(self_[i], $task));
             }
+            return result;
+        """
+        
+    flatMap[S](body: T => List[S]): List[S] {
+        let results = Array.make()
+        self.each {x =>
+            results.pushList(body(x))
         }
-        go(self, [])
+        results.drain()
     }
-
-    flatMap[R](body: T => List[R]): List[R] {
-        function go(list: List[T], result: List[List[R]]): List[R] {
-            list.{
-                | [] =>
-                    result.reverse().flatten()
-                | [head, ...tail] =>
-                    tailcall go(tail, [body(head), ...result])
-            }
-        }
-        go(self, [])
-    }
-
+    
     collect[R](body: T => Option[R]): List[R] {
-        self.toStream().collect(body).toList()
+        mutable result = Array.make()
+        self.each {x =>
+            body(x).each {result.push(_)}
+        }
+        result.drain()
     }
 
     collectFirst[R](body: T => Option[R]): Option[R] {
-        self.{
-            | [] =>
-                None
-            | [head, ...tail] =>
-                body(head).{
-                    | None => tailcall tail.collectFirst(body)
-                    | Some(value) => Some(value)
-                }
-        }
-    }
-
-    foldLeft[R](initial: R, body: (R, T) => R): R {
-        function go(state: R, list: List[T]): R {
-            list.{
-                | [] =>
-                    state
-                | [head, ...tail] =>
-                    tailcall go(body(state, head), tail)
+        mutable result = None
+        self.eachWhile {x =>
+            body(x).{
+                | None =>
+                    True
+                | o =>
+                    result = o
+                    False
             }
         }
-        go(initial, self)
+        result
     }
 
-    update(index: Int, value: T): List[T] {
-        function go(list: List[T], i: Int, result: List[T]): List[T] {
-            list.{
-                | [] =>
-                    result.reverse()
-                | [head, ...tail] {i == 0} =>
-                    tailcall go(tail, i - 1, [value, ...result])
-                | [head, ...tail] =>
-                    tailcall go(tail, i - 1, [head, ...result])
-            }
-        }
-        go(self, index, [])
+    sortBy[S: Order](body: T => S): List[T] {
+        self.sortWith {Ordering.compare(body(_), body(_))}
     }
 
-    modify(index: Int, body: T => T): List[T] {
-        function go(list: List[T], i: Int, result: List[T]): List[T] {
-            list.{
-                | [] =>
-                    result.reverse()
-                | [head, ...tail] {i == 0} =>
-                    tailcall go(tail, i - 1, [body(head), ...result])
-                | [head, ...tail] =>
-                    tailcall go(tail, i - 1, [head, ...result])
-            }
-        }
-        go(self, index, [])
+    sortWith(ordering: (T, T) => Ordering): List[T] {
+        let array = self.toArray()
+        array.sortWith(ordering)
+        array.drain()
     }
-
-    zip[S](that: List[S]): List[Pair[T, S]] {
-        function go(list1: List[T], list2: List[S], result: List[Pair[T, S]]): List[Pair[T, S]] {
-            Pair(list1, list2).{
-                | Pair([x, ...xs], [y, ...ys]) =>
-                    tailcall go(xs, ys, [Pair(x, y), ...result])
-                | _ =>
-                    result.reverse()
-            }
-        }
-        go(self, that, [])
-    }
-
-    sortBy[O: Order](body: T => O): List[T] {
-        if(self.size() <= 1) {self} else:
-        let stack = self.toStack()
-        stack.sortBy(body)
-        stack.toList()
-    }
-
-    sortWith(compare: (T, T) => Ordering): List[T] {
-        if(self.size() <= 1) {self} else:
-        let stack = self.toStack()
-        stack.sortWith(compare)
-        stack.toList()
-    }
-
+    
     reverse(): List[T] {
-        function go(list: List[T], result: List[T]): List[T] {
-            list.{
-                | [] =>
-                    result
-                | [head, ...tail] =>
-                    tailcall go(tail, [head, ...result])
-            }
+        1.to(self.size()).map {i =>
+            self.grab(self.size() - i)
         }
-        go(self, [])
     }
-
-    chunk(chunkSize: Int): List[List[T]] {
-        mutable results = []
-        mutable result = []
-        mutable added = 0
-        self.each {item =>
-            if(added < chunkSize) {
-                result = [item, ...result]
-                added += 1
-            } else {
-                results = [result.reverse(), ...results]
-                result = [item]
-                added = 1
-            }
-        }
-        if(added != 0) {
-            results = [result.reverse(), ...results]
-        }
-        results.reverse()
-    }
-
-    toStream(cycle: Bool = False): Stream[T] {
-        mutable remaining = self
-        Stream(
-            next = {
-                remaining.{
-                    | [head, ...tail] =>
-                        remaining = tail
-                        Some(head)
-                    | [] {self | [head, ...tail]} {cycle} =>
-                        remaining = tail
-                        Some(head)
-                    | [] =>
-                        None
-                }
-            }
-            close = {
-                remaining = []
-            }
-        )
-    }
-
+    
     separate(separator: List[T]): List[T] {
-        self.flatMap {e => [...separator, e]}.dropFirst(separator.size())
+        let array = Array.make()
+        self.pairs().each {| Pair(i, x) =>
+            if(i != 0) {
+                array.pushList(separator)
+            }
+            array.push(x)
+        }
+        array.drain()
     }
 
 }
@@ -357,16 +302,13 @@ extend self[T]: List[T] {
 extend self[T: Order]: List[T] {
 
     sort(): List[T] {
-        if(self.size() <= 1) {self} else:
-        let stack = self.toStack()
-        stack.sort()
-        stack.toList()
-    }
-    
-    toSet(): Set[T] {
-        self.foldLeft(Set.empty[T]()) {set, value => set.add(value)}
+        self.sortWith(Ordering.compare)
     }
 
+    toSet(): Set[T] {
+        self.foldLeft(Set.empty()) {_.add(_)}
+    }
+    
     distinct(): List[T] {
         mutable seen = [].toSet()
         self.filter {
@@ -380,65 +322,92 @@ extend self[T: Order]: List[T] {
 
 }
 
-extend self[T: Show]: List[T] {
-
-    show(): String {
-        Show.show(self)
-    }
-
-}
-
 extend self[T]: List[List[T]] {
 
     flatten(): List[T] {
-        function finish(list: List[T], result: List[T]): List[T] {
-            | as, [] => as
-            | as, [x, ...xs] => tailcall finish([x, ...as], xs)
+        let result = Array.make()
+        self.each {xs =>
+            result.pushList(xs)
         }
-        function go(lists: List[List[T]], result: List[T]): List[T] {
-            lists.{
-                | [] => []
-                | [as] => finish(as, result)
-                | [[], ...aas] => tailcall go(aas, result)
-                | [[a, ...as], ...aas] => tailcall go([as, ...aas], [a, ...result])
-            }
-        }
-        go(self, [])
+        result.drain()
     }
 
 }
 
 extend self[K: Order, V]: List[Pair[K, V]] {
-
+    
     toMap(): Map[K, V] {
-        self.foldLeft(Map.empty[K, V]()) {map, pair => map.add(pair.first, pair.second)}
+        self.foldLeft(Map.empty()) {| map, Pair(key, value) => map.add(key, value)}
     }
-
+    
     group(): Map[K, List[V]] {
-        let initial: List[Pair[K, List[V]]] = []
-        self.foldLeft(initial.toMap()) {map, pair => map.addToList(pair.first, pair.second)}
+        mutable map = Map.empty[K, Array[V]]()
+        self.each {| Pair(k, v) => map = map.push(k, v)}
+        map.mapValues {_, v => v.drain()}
     }
-
+    
 }
 
 extend self[K, V]: List[Pair[K, V]] {
 
     unzip(): Pair[List[K], List[V]] {
-        function go(pairs: List[Pair[K, V]], ks: List[K], vs: List[V]): Pair[List[K], List[V]] {
-            pairs.{
-                | [] =>
-                    Pair(ks.reverse(), vs.reverse())
-                | [Pair(k, v), ...tail] =>
-                    tailcall go(tail, [k, ...ks], [v, ...vs])
-            }
+        let first = Array.make()
+        let second = Array.make()
+        self.each {| Pair(x, y) =>
+            first.push(x)
+            second.push(y)
         }
-        go(self, [], [])
+        Pair(first.drain(), second.drain())
     }
 
 }
 
 extend self: List[String] {
 
-    join(separator: String = ""): String {self.toArray().join(separator)}
+    join(separator: String = ""): String
+        target js sync "return self_.join(separator_)"
 
 }
+
+instance List[T: Show]: Show {
+    show(value: List[T]): String {
+        let array = Array.make()
+        array.push("[")
+        value.each {x =>
+            if(array.size() > 1) {array.push(", ")}
+            array.push(Show.show(x))
+        }
+        array.push("]")
+        array.join()
+    }
+}
+
+instance List[T: Equal]: Equal {
+    equals(x: List[T], y: List[T]): Bool {
+        if(internalSame(x, y)) {True} else:
+        if(x.size() != y.size()) {False} else:
+        mutable i = -1
+        x.all {l =>
+            i += 1
+            l == y.grab(i)
+        }
+    }
+}
+
+instance List[T: Order]: Order {
+    compare(x: List[T], y: List[T]): Ordering {
+        if(internalSame(x, y)) {OrderingSame} else:
+        let size = x.size().min(y.size())
+        mutable i = 0
+        mutable ordering = OrderingSame
+        while {ordering == OrderingSame && i < size} {
+            ordering = Ordering.compare(x.grab(i), y.grab(i))
+            i += 1
+        }
+        if(ordering != OrderingSame) {ordering} else:
+        Ordering.compare(x.size(), y.size())
+    }
+}
+
+internalSame[T](left: List[T], right: List[T]): Bool
+    target js sync "return left_ === right_"

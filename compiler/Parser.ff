@@ -6,7 +6,7 @@ import LspHook
 class Parser(
     packagePair: PackagePair
     file: String
-    tokens: Array[Token]
+    tokens: List[Token]
     end: Token
     targetIsNode: Bool
     lspHook: LspHook
@@ -32,7 +32,7 @@ data ParsedTargets(
 make(
     packagePair: PackagePair 
     file: String
-    tokens: Array[Token]
+    tokens: List[Token]
     targetIsNode: Bool
     lspHook: LspHook
 ): Parser {
@@ -151,12 +151,12 @@ extend self: Parser {
         /* TODO: if(self.package != None && self.current().is(LKeyword) && self.current().rawIs("dependency")) {
             self.fail(self.current().at(), "Dependencies must be defined in the same file as the package declaration")
         }*/
-        let dependencies = Stack.make[DDependency]()
+        let dependencies = Array.make[DDependency]()
         while {self.current().is(LKeyword) && self.current().rawIs("dependency")} {
             dependencies.push(self.parseDependencyDefinition(package.targets))
             if(!self.current().is(LEnd)) {self.skipSeparator(LSemicolon)}
         }
-        let includes = Stack.make[DInclude]()
+        let includes = Array.make[DInclude]()
         while {self.current().is(LKeyword) && self.current().rawIs("include")} {
             includes.push(self.parseIncludeDefinition())
             if(!self.current().is(LEnd)) {self.skipSeparator(LSemicolon)}
@@ -166,13 +166,13 @@ extend self: Parser {
     }
 
     parseModule(): Module {
-        let imports = Stack.make[DImport]()
-        let types = Stack.make[DType]()
-        let traits = Stack.make[DTrait]()
-        let instances = Stack.make[DInstance]()
-        let extends = Stack.make[DExtend]()
-        let lets = Stack.make[DLet]()
-        let functions = Stack.make[DFunction]()
+        let imports = Array.make[DImport]()
+        let types = Array.make[DType]()
+        let traits = Array.make[DTrait]()
+        let instances = Array.make[DInstance]()
+        let extends = Array.make[DExtend]()
+        let lets = Array.make[DLet]()
+        let functions = Array.make[DFunction]()
         while {!self.current().is(LEnd)} {
             if(self.current().is(LLower) && (self.ahead().is(LAssign) || self.ahead().is(LColon))) {
                 lets.push(self.parseLetDefinition())
@@ -348,7 +348,7 @@ extend self: Parser {
         self.skip(LColon)
         let type = self.parseType()
         self.rawSkip(LBracketLeft, "{")
-        let methods = Stack.make[DFunction]()
+        let methods = Array.make[DFunction]()
         while {!self.current().is(LBracketRight)} {
             methods.push(self.parseFunctionDefinition(member = True))
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LSemicolon)}
@@ -388,7 +388,7 @@ extend self: Parser {
         self.skip(LColon)
         let nameToken = self.skip(LUpper)
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
-        let constraints = Stack.make[Constraint]()
+        let constraints = Array.make[Constraint]()
         while {self.current().is(LColon)} {
             self.fail(self.current().at(), "Trait constraints is not yet implemented")
             self.skip(LColon)
@@ -398,10 +398,10 @@ extend self: Parser {
             ))
         }
         let generatorParameters = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters()}
-        let methodGenerators = Stack.make[Pair[String, Lambda]]()
-        let methodDefaults = Stack.make[Pair[String, Lambda]]()
+        let methodGenerators = Array.make[Pair[String, Lambda]]()
+        let methodDefaults = Array.make[Pair[String, Lambda]]()
         let methodSignatures = if(!self.current().rawIs("{")) {[]} else {
-            let signatures = Stack.make[Signature]()
+            let signatures = Array.make[Signature]()
             self.rawSkip(LBracketLeft, "{")
             while {!self.current().is(LBracketRight)} {
                 if(self.lspHook.trackSymbols) {self.lspHook.emit(ParseSymbolBegin)}
@@ -459,7 +459,7 @@ extend self: Parser {
         let instanceToken = self.rawSkip(LKeyword, "instance")
         let token = self.skip(LUpper)
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
-        let typeArguments = Stack.make[Type]()
+        let typeArguments = Array.make[Type]()
         typeArguments.push(TConstructor(token.at(), token.raw(), poly.generics.map {TConstructor(token.at(), _, [])}))
         self.skip(LColon)
         let nameToken = self.skip(LUpper)
@@ -473,7 +473,7 @@ extend self: Parser {
         }
         let generatorArguments = self.parseFunctionArguments(nameToken.at(), False).first
         let methods = if(!self.current().rawIs("{")) {[]} else {
-            let definitions = Stack.make[DFunction]()
+            let definitions = Array.make[DFunction]()
             self.rawSkip(LBracketLeft, "{")
             while {!self.current().is(LBracketRight)} {
                 definitions.push(self.parseFunctionDefinition(member = False))
@@ -527,7 +527,7 @@ extend self: Parser {
             [Variant(nameToken.at(), nameToken.raw(), [])]
         } else {
             self.rawSkip(LBracketLeft, "{")
-            let variantsBuilder = Stack.make[Variant]()
+            let variantsBuilder = Array.make[Variant]()
             while {!self.current().is(LBracketRight)} {
                 if(self.lspHook.trackSymbols) {self.lspHook.emit(ParseSymbolBegin)}
                 let variantNameToken = self.skip(LUpper)
@@ -582,7 +582,7 @@ extend self: Parser {
 
     parseImportDefinition(currentPackagePair: PackagePair): DImport {
         let importToken = self.rawSkip(LKeyword, "import")
-        let path = Stack.make[String]()
+        let path = Array.make[String]()
         while {self.current().is(LLower)} {
             path.push(self.parseDashedName())
             self.skip(LDot)
@@ -711,8 +711,8 @@ extend self: Parser {
 
     parseTypeParameters(): Poly {
         self.rawSkip(LBracketLeft, "[")
-        let parameters = Stack.make[String]()
-        let constraints = Stack.make[Constraint]()
+        let parameters = Array.make[String]()
+        let constraints = Array.make[Constraint]()
         while {!self.current().is(LBracketRight) && !self.current().is(LSemicolon)} {
             if(self.ahead().is(LBracketLeft)) {
                 constraints.push(self.parseConstraint())
@@ -735,7 +735,7 @@ extend self: Parser {
 
     parseTypeArguments(parenthesis: Bool = False): List[Type] {
         self.rawSkip(LBracketLeft, if(parenthesis) {"("} else {"["})
-        let types = Stack.make[Type]()
+        let types = Array.make[Type]()
         while {!self.current().is(LBracketRight)} {
             types.push(self.parseType())
             if(!self.current().is(LBracketRight)) {self.skip(LComma)}
@@ -745,7 +745,7 @@ extend self: Parser {
     }
 
     parseFunctionParameters(allowMutable: Bool = False): List[Parameter] {
-        let parameters = Stack.make[Parameter]()
+        let parameters = Array.make[Parameter]()
         self.rawSkip(LBracketLeft, "(")
         while {!self.current().is(LBracketRight)} {
             let lspTrackSymbols = self.lspHook.trackSymbols && allowMutable
@@ -783,7 +783,7 @@ extend self: Parser {
     }
 
     parseFunctionArguments(callAt: Location, trailing: Bool): Pair[List[Argument], Bool] {
-        let arguments = Stack.make[Argument]()
+        let arguments = Array.make[Argument]()
         if(self.current().rawIs("(")){
             self.rawSkip(LBracketLeft, "(")
             while {!self.current().is(LBracketRight)} {
@@ -853,13 +853,13 @@ extend self: Parser {
         let token = if(colon) {self.skip(LColon)} else {self.rawSkip(LBracketLeft, "{")}
         if(ignoreGenerateKeyword && self.current().is(LKeyword) && self.current().rawIs("generate")) {self.skip(LKeyword)}
         let result = if(self.current().is(LPipe)) {
-            let cases = Stack.make[MatchCase]()
+            let cases = Array.make[MatchCase]()
             while {self.current().is(LPipe)} {
                 cases.push(self.parseCase())
             }
             cases.toList()
         } elseIf {self.current().is2(LLower, LWildcard) && self.ahead().is2(LComma, LArrowThick)} {
-            let parameters = Stack.make[MatchPattern]()
+            let parameters = Array.make[MatchPattern]()
             while {!self.current().is(LArrowThick)} {
                 let isVariable = self.current().is(LLower)
                 let parameterToken = if(isVariable) {self.skip(LLower)} else {self.skip(LWildcard)}
@@ -887,14 +887,14 @@ extend self: Parser {
 
     parseCase(): MatchCase {
         let token = self.skip(LPipe)
-        let patterns = Stack.make[MatchPattern]()
+        let patterns = Array.make[MatchPattern]()
         while {!self.current().is3(LArrowThick, LPipe, LBracketRight) && !self.current().rawIs("{")} {
             patterns.push(self.parsePattern())
             if(!self.current().is3(LArrowThick, LPipe, LBracketRight) && !self.current().rawIs("{")) {
                 self.skip(LComma)
             }
         }
-        let guards = Stack.make[MatchGuard]()
+        let guards = Array.make[MatchGuard]()
         while {self.current().rawIs("{")} {
             guards.push(self.parseCaseGuard())
         }
@@ -943,7 +943,7 @@ extend self: Parser {
         } else {
             let token = self.skip(LUpper)
             if(self.current().rawIs("(")) {
-                let patterns = Stack.make[MatchPattern]()
+                let patterns = Array.make[MatchPattern]()
                 self.rawSkip(LBracketLeft, "(")
                 while {!self.current().is(LBracketRight)} {
                     let pattern = self.parsePattern()
@@ -1078,7 +1078,7 @@ extend self: Parser {
 
     parseFunctions(): Term {
         let at = self.current().at()
-        let functions = Stack.make[DFunction]()
+        let functions = Array.make[DFunction]()
         while {self.current().rawIs("function")} {
             if(self.lspHook.trackSymbols) {self.lspHook.emit(ParseSymbolBegin)}
             let functionAt = self.rawSkip(LKeyword, "function").at()
@@ -1254,7 +1254,7 @@ extend self: Parser {
     }
 
     parseRecord(copyAt: Option[Location]): List[Field] {
-        let fields = Stack.make[Field]()
+        let fields = Array.make[Field]()
         let startBracketAt = self.rawSkip(LBracketLeft, "(").at()
         let startAt = copyAt.else {startBracketAt}
         while {!self.current().is(LBracketRight)} {
@@ -1285,7 +1285,7 @@ extend self: Parser {
     }
 
     parseRecordType(): List[Pair[String, Type]] {
-        let fields = Stack.make[Pair[String, Type]]()
+        let fields = Array.make[Pair[String, Type]]()
         self.rawSkip(LBracketLeft, "(")
         while {!self.current().is(LBracketRight)} {
             let fieldToken = self.skip(LLower)
@@ -1298,7 +1298,7 @@ extend self: Parser {
     }
 
     parseRecordPattern(): List[Pair[String, MatchPattern]] {
-        let fields = Stack.make[Pair[String, MatchPattern]]()
+        let fields = Array.make[Pair[String, MatchPattern]]()
         self.rawSkip(LBracketLeft, "(")
         while {!self.current().is(LBracketRight)} {
             let fieldToken = self.skip(LLower)
@@ -1312,14 +1312,14 @@ extend self: Parser {
 
     parseListPattern(): MatchPattern {
         function convertListPattern(at: Location, items: List[Pair[MatchPattern, Bool]]): MatchPattern {
-            | _, [] => PVariant(at, "ff:core/List.Empty", [])
+            | _, [] => PVariant(at, "List$Empty", [])
             | _, [Pair(p, False), ...ps] =>
-                PVariant(at, "ff:core/List.Link", [p, convertListPattern(at, ps)])
+                PVariant(at, "List$Link", [p, convertListPattern(at, ps)])
             | _, [Pair(p, True)] => p
             | _, [Pair(p, True), ...] =>
                 throw(CompileError(p.at, "Invalid pattern: ... is only allowed for the last element in a list"))
         }
-        let items = Stack.make[Pair[MatchPattern, Bool]]()
+        let items = Array.make[Pair[MatchPattern, Bool]]()
         let at = self.rawSkip(LBracketLeft, "[").at()
         while {!self.current().rawIs("]")} {
             let spread = self.current().is(LDotDotDot)
@@ -1337,7 +1337,7 @@ extend self: Parser {
     }
 
     parseList(): Term {
-        let items = Stack.make[Pair[Term, Bool]]()
+        let items = Array.make[Pair[Term, Bool]]()
         let at = self.rawSkip(LBracketLeft, "[").at()
         while {!self.current().rawIs("]")} {
             let spread = self.current().is(LDotDotDot)
@@ -1359,7 +1359,7 @@ binaryOperators = [
     ["+", "-"]
     ["*", "/", "%"]
     ["^"]
-].toArray()
+]
 
 findBestTarget(targetIsNode: Bool, body: Option[Lambda], targets: ParsedTargets): Target {
     let foreignTarget = if(targetIsNode) {

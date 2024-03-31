@@ -27,7 +27,7 @@ extend self: HttpClient {
             try {
                 const options = {headers: {}, signal: $task.controller.signal}
                 options.method = method_
-                ff_core_List.List_each(headers_, pair => {options.headers[pair.first_] = pair.second_})
+                headers_.forEach(pair => {options.headers[pair.first_] = pair.second_})
                 if(body_.value_) options.body = body_.value_
                 if(redirect_.RedirectError) options.redirect = "error"
                 else if(redirect_.RedirectManual) options.redirect = "manual"

@@ -67,7 +67,7 @@ extend self: String {
     slice(from: Int, until: Int): String
         target js sync "return self_.slice(from_, until_)"
 
-    split(char: Char): Array[String]
+    split(char: Char): List[String]
         target js sync "return self_.split(String.fromCharCode(char_))"
 
     splitFirst(char: Char): Option[Pair[String, String]]
@@ -80,9 +80,9 @@ extend self: String {
 
     lines(): List[String]
         target js sync """
-            return ff_core_Array.Array_toList(self_.split(
+            return self_.split(
                 new RegExp("[" + String.fromCharCode(13) + "]?[" + String.fromCharCode(10) + "]", "g")
-            ))
+            )
         """
 
     dropFirst(count: Int = 1): String
@@ -98,10 +98,19 @@ extend self: String {
             }
             for(let i = 0; i < self_.length; i++) {
                 const c = self_.codePointAt(i)
-                if(c < 48 || c > 57) ff_core_Option.None()
+                if(c < 48 || c > 57) return ff_core_Option.None()
             }
             return ff_core_Option.Some(parseInt(self_, 10));
         """
+        
+    getFloat(): Float
+        target js sync """
+            const result = parseFloat(self_, 10);
+            if(!isFinite(result)) {
+                return ff_core_Option.None()
+            }
+            return ff_core_Option.Some(result);
+        """        
 
     grabInt(): Int
         target js sync """
@@ -114,6 +123,15 @@ extend self: String {
             }
             return parseInt(self_, 10);
         """
+        
+    grabFloat(): Float
+        target js sync """
+            const result = parseFloat(self_, 10);
+            if(!isFinite(result)) {
+                ff_core_Try.internalThrowGrabException_()
+            }
+            return result;
+        """    
 
     first(): Option[Char]
         target js sync """
@@ -129,9 +147,9 @@ extend self: String {
                 : ff_core_Option.None()
         """
 
-    grabFirst(): Char { self.first().else {Try.internalThrowGrabException()} }
+    grabFirst(): Char {self.first().else {Try.internalThrowGrabException()}}
 
-    grabLast(): Char { self.last().else {Try.internalThrowGrabException()} }
+    grabLast(): Char {self.last().else {Try.internalThrowGrabException()}}
 
     contains(substring: String): Bool
         target js sync "return self_.includes(substring_)"

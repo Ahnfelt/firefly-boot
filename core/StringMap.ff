@@ -40,38 +40,34 @@ extend self[V]: StringMap[V] {
         target js sync "for(const [k, v] of self_) if(!body_(k, v)) break"
         target js async "for(const [k, v] of self_) if(!await body_(k, v)) break"
 
-    toStack(): Stack[Pair[String, V]] {
-        let stack = Stack.make()
-        self.each {k, v => stack.push(Pair(k, v))}
-        stack
-    }
-
     toArray(): Array[Pair[String, V]] {
-        self.toStack().drain()
+        let array = Array.make()
+        self.each {k, v => array.push(Pair(k, v))}
+        array
     }
 
     toList(): List[Pair[String, V]] {
-        self.toArray().toList()
+        self.toArray().drain()
     }
 
     toStream(): Stream[Pair[String, V]] {
-        self.toArray().toStream()
+        self.toList().toStream()
     }
 
     toMap(): Map[String, V] {
-        self.toArray().toMap()
+        self.toList().toMap()
     }
 
     keys(): List[String] {
-        let stack = Stack.make()
-        self.each {k, v => stack.push(k)}
-        stack.toList()
+        let array = Array.make()
+        self.each {k, v => array.push(k)}
+        array.toList()
     }
 
     values(): List[V] {
-        let stack = Stack.make()
-        self.each {k, v => stack.push(v)}
-        stack.toList()
+        let array = Array.make()
+        self.each {k, v => array.push(v)}
+        array.toList()
     }
 
     copy(): StringMap[V]
@@ -84,12 +80,12 @@ extend self[V]: StringMap[V] {
             
 }
 
-extend self[V]: StringMap[Stack[V]] {
+extend self[V]: StringMap[Array[V]] {
 
     push(key: String, value: V) {
         self.get(key).{
-            | None => self.set(key, [value].toStack())
-            | Some(stack) => stack.push(value)
+            | None => self.set(key, [value].toArray())
+            | Some(array) => array.push(value)
         }
     }
 

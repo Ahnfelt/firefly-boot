@@ -84,8 +84,6 @@ import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
 
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
-
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
@@ -146,7 +144,7 @@ return
 }))(ff_core_List.List_grabFirst(definition_.typeArguments_));
 return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(definition_.traitName_, typeName_), ff_compiler_Unification.InstanceValue(definition_.generics_, definition_.constraints_, module_.packagePair_, moduleName_, definition_.traitName_, definition_.typeArguments_))
 }))
-})), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), attemptFixes_)
+})), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), attemptFixes_)
 }
 
 export async function fail_$(at_, message_, $task) {
@@ -175,7 +173,7 @@ return
 }))(ff_core_List.List_grabFirst(definition_.typeArguments_));
 return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(definition_.traitName_, typeName_), ff_compiler_Unification.InstanceValue(definition_.generics_, definition_.constraints_, module_.packagePair_, moduleName_, definition_.traitName_, definition_.typeArguments_))
 }))
-})), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), attemptFixes_)
+})), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), attemptFixes_)
 }
 
 export function Unification_withLocalInstances(self_, instances_, body_) {
@@ -203,7 +201,7 @@ const type_a = type_;
 if(type_a.TConstructor) {
 const at_ = type_a.at_;
 const name_ = type_a.name_;
-if(type_a.generics_.Empty) {
+if(type_a.generics_.length === 0) {
 {
 const _1 = ff_core_Map.Map_get(instantiation_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 {
@@ -294,7 +292,7 @@ const i_ = _1.index_;
 const _1 = ff_core_Map.Map_get(self_.constraints_, i_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 {
 if(_1.None) {
-self_.constraints_ = ff_core_Map.Map_add(self_.constraints_, i_, ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(constraintName_, ff_compiler_Unification.ConstraintGenerics(at_, generics_)), ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
+self_.constraints_ = ff_core_Map.Map_add(self_.constraints_, i_, ff_core_List.List_toMap([ff_core_Pair.Pair(constraintName_, ff_compiler_Unification.ConstraintGenerics(at_, generics_))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 return
 }
 }
@@ -360,7 +358,7 @@ return ff_compiler_Unification.Unification_freshUnificationVariable(self_, at_)
 }));
 const instantiation_ = ff_core_List.List_toMap(ff_core_List.List_zip(definition_.generics_, unificationVariables_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const traitType1_ = ff_compiler_Unification.Unification_instantiate(self_, instantiation_, ff_compiler_Syntax.TConstructor(at_, definition_.traitName_, definition_.typeArguments_));
-const traitType2_ = ff_compiler_Syntax.TConstructor(at_, constraintName_, ff_core_List.Link(type_, generics_));
+const traitType2_ = ff_compiler_Syntax.TConstructor(at_, constraintName_, [type_, ...generics_]);
 ff_compiler_Unification.Unification_unify(self_, at_, traitType1_, traitType2_);
 ff_core_List.List_each(definition_.constraints_, ((constraint_) => {
 {
@@ -511,7 +509,7 @@ if(((name1_ !== name2_) || (ff_core_List.List_size(generics1_) !== ff_core_List.
 if((!self_.attemptFixes_)) {
 const t3_ = ff_compiler_Unification.Unification_substitute(self_, t1_);
 const t4_ = ff_compiler_Unification.Unification_substitute(self_, t2_);
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(t3_, ff_core_List.Link(t3_, ff_core_List.Link(t4_, ff_core_List.Empty())))) + " vs. ") + ff_compiler_Syntax.Type_show(t4_, ff_core_List.Link(t3_, ff_core_List.Link(t4_, ff_core_List.Empty()))))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(t3_, [t3_, t4_])) + " vs. ") + ff_compiler_Syntax.Type_show(t4_, [t3_, t4_]))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else if((ff_core_String.String_startsWith(name1_, "Function$", 0) && ff_core_String.String_startsWith(name2_, "Function$", 0))) {
 ff_core_List.List_each(ff_core_List.List_zip(ff_core_List.List_dropLast(generics1_, 1), ff_core_List.List_dropLast(generics2_, 1)), ((_1) => {
 {
@@ -550,7 +548,7 @@ return
 export function Unification_bind(self_, at_, index_, type_) {
 if(ff_compiler_Unification.Unification_occursIn(self_, index_, type_)) {
 const t_ = ff_compiler_Unification.Unification_substitute(self_, type_);
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Infinite type: " + ff_compiler_Syntax.Type_show(ff_compiler_Syntax.TVariable(at_, index_), ff_core_List.Link(t_, ff_core_List.Empty()))) + " = ") + ff_compiler_Syntax.Type_show(t_, ff_core_List.Empty()))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Infinite type: " + ff_compiler_Syntax.Type_show(ff_compiler_Syntax.TVariable(at_, index_), [t_])) + " = ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, type_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 ff_core_Option.Option_each(ff_core_Map.Map_get(self_.constraints_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((map_) => {
@@ -582,7 +580,7 @@ const i1_ = _1.first_.index_;
 if(_1.second_.TVariable) {
 const i2_ = _1.second_.index_;
 const is_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.affects_, i1_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), (() => {
-return ff_core_List.List_toSet(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
+return ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }));
 self_.affects_ = ff_core_Map.Map_add(self_.affects_, i1_, ff_core_Set.Set_add(is_, i2_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 return
@@ -591,7 +589,7 @@ return
 }
 {
 if(_1.second_.TConstructor) {
-if(_1.second_.name_ == "Q$") {
+if(_1.second_.name_ === "Q$") {
 
 return
 }
@@ -599,7 +597,7 @@ return
 }
 {
 if(_1.first_.TConstructor) {
-if(_1.first_.name_ == "ff:core/Nothing.Nothing") {
+if(_1.first_.name_ === "ff:core/Nothing.Nothing") {
 
 return
 }
@@ -674,7 +672,7 @@ const type_a = type_;
 if(type_a.TConstructor) {
 const at_ = type_a.at_;
 const name_ = type_a.name_;
-if(type_a.generics_.Empty) {
+if(type_a.generics_.length === 0) {
 {
 const _1 = ff_core_Map.Map_get(instantiation_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 {
@@ -765,7 +763,7 @@ const i_ = _1.index_;
 const _1 = ff_core_Map.Map_get(self_.constraints_, i_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 {
 if(_1.None) {
-self_.constraints_ = ff_core_Map.Map_add(self_.constraints_, i_, ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(constraintName_, ff_compiler_Unification.ConstraintGenerics(at_, generics_)), ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
+self_.constraints_ = ff_core_Map.Map_add(self_.constraints_, i_, ff_core_List.List_toMap([ff_core_Pair.Pair(constraintName_, ff_compiler_Unification.ConstraintGenerics(at_, generics_))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 return
 }
 }
@@ -831,7 +829,7 @@ return ff_compiler_Unification.Unification_freshUnificationVariable(self_, at_)
 }));
 const instantiation_ = ff_core_List.List_toMap(ff_core_List.List_zip(definition_.generics_, unificationVariables_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const traitType1_ = ff_compiler_Unification.Unification_instantiate(self_, instantiation_, ff_compiler_Syntax.TConstructor(at_, definition_.traitName_, definition_.typeArguments_));
-const traitType2_ = ff_compiler_Syntax.TConstructor(at_, constraintName_, ff_core_List.Link(type_, generics_));
+const traitType2_ = ff_compiler_Syntax.TConstructor(at_, constraintName_, [type_, ...generics_]);
 ff_compiler_Unification.Unification_unify(self_, at_, traitType1_, traitType2_);
 ff_core_List.List_each(definition_.constraints_, ((constraint_) => {
 {
@@ -982,7 +980,7 @@ if(((name1_ !== name2_) || (ff_core_List.List_size(generics1_) !== ff_core_List.
 if((!self_.attemptFixes_)) {
 const t3_ = ff_compiler_Unification.Unification_substitute(self_, t1_);
 const t4_ = ff_compiler_Unification.Unification_substitute(self_, t2_);
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(t3_, ff_core_List.Link(t3_, ff_core_List.Link(t4_, ff_core_List.Empty())))) + " vs. ") + ff_compiler_Syntax.Type_show(t4_, ff_core_List.Link(t3_, ff_core_List.Link(t4_, ff_core_List.Empty()))))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(t3_, [t3_, t4_])) + " vs. ") + ff_compiler_Syntax.Type_show(t4_, [t3_, t4_]))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else if((ff_core_String.String_startsWith(name1_, "Function$", 0) && ff_core_String.String_startsWith(name2_, "Function$", 0))) {
 ff_core_List.List_each(ff_core_List.List_zip(ff_core_List.List_dropLast(generics1_, 1), ff_core_List.List_dropLast(generics2_, 1)), ((_1) => {
 {
@@ -1021,7 +1019,7 @@ return
 export async function Unification_bind$(self_, at_, index_, type_, $task) {
 if(ff_compiler_Unification.Unification_occursIn(self_, index_, type_)) {
 const t_ = ff_compiler_Unification.Unification_substitute(self_, type_);
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Infinite type: " + ff_compiler_Syntax.Type_show(ff_compiler_Syntax.TVariable(at_, index_), ff_core_List.Link(t_, ff_core_List.Empty()))) + " = ") + ff_compiler_Syntax.Type_show(t_, ff_core_List.Empty()))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Infinite type: " + ff_compiler_Syntax.Type_show(ff_compiler_Syntax.TVariable(at_, index_), [t_])) + " = ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, type_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 ff_core_Option.Option_each(ff_core_Map.Map_get(self_.constraints_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((map_) => {
@@ -1053,7 +1051,7 @@ const i1_ = _1.first_.index_;
 if(_1.second_.TVariable) {
 const i2_ = _1.second_.index_;
 const is_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.affects_, i1_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), (() => {
-return ff_core_List.List_toSet(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
+return ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }));
 self_.affects_ = ff_core_Map.Map_add(self_.affects_, i1_, ff_core_Set.Set_add(is_, i2_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 return
@@ -1062,7 +1060,7 @@ return
 }
 {
 if(_1.second_.TConstructor) {
-if(_1.second_.name_ == "Q$") {
+if(_1.second_.name_ === "Q$") {
 
 return
 }
@@ -1070,7 +1068,7 @@ return
 }
 {
 if(_1.first_.TConstructor) {
-if(_1.first_.name_ == "ff:core/Nothing.Nothing") {
+if(_1.first_.name_ === "ff:core/Nothing.Nothing") {
 
 return
 }
@@ -1561,7 +1559,7 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 42), 0);
 return ff_compiler_Unification.ConstraintGenerics(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).deserializeUsing_(serialization_))
 return
@@ -1595,7 +1593,7 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 42), 0);
 return ff_compiler_Unification.ConstraintGenerics(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).deserializeUsing_(serialization_))
 return
@@ -1632,7 +1630,7 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 35), 0);
 return ff_compiler_Unification.InstanceKey(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 return
@@ -1666,7 +1664,7 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 35), 0);
 return ff_compiler_Unification.InstanceKey(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 return
@@ -1707,7 +1705,7 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 37), 0);
 return ff_compiler_Unification.InstanceValue(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Constraint).deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).deserializeUsing_(serialization_))
 return
@@ -1745,7 +1743,7 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 37), 0);
 return ff_compiler_Unification.InstanceValue(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Constraint).deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).deserializeUsing_(serialization_))
 return

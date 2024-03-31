@@ -84,8 +84,6 @@ import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
 
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
-
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
@@ -214,7 +212,7 @@ function go_(pathOption_, reversed_) {
 const pathOption_a = pathOption_;
 const reversed_a = reversed_;
 {
-if(reversed_a.Empty) {
+if(reversed_a.length === 0) {
 return true
 return
 }
@@ -222,9 +220,9 @@ return
 {
 if(pathOption_a.Some) {
 const path_ = pathOption_a.value_;
-if(reversed_a.Link) {
-const p_ = reversed_a.head_;
-const ps_ = reversed_a.tail_;
+if(reversed_a.length > 0) {
+const p_ = reversed_a[0];
+const ps_ = reversed_a.slice(1);
 return ((ff_core_Path.Path_base(path_) === p_) && go_(ff_core_Path.Path_parent(path_), ps_))
 return
 }
@@ -324,11 +322,11 @@ return ff_core_Stream.Stream_toBuffer(ff_core_Path.Path_readStream(self_))
 }
 
 export function Path_writeBuffer(self_, buffer_) {
-ff_core_Path.Path_writeStream(self_, ff_core_List.List_toStream(ff_core_List.Link(buffer_, ff_core_List.Empty()), false), false)
+ff_core_Path.Path_writeStream(self_, ff_core_List.List_toStream([buffer_], false), false)
 }
 
 export function Path_appendBuffer(self_, buffer_) {
-ff_core_Path.Path_appendStream(self_, ff_core_List.List_toStream(ff_core_List.Link(buffer_, ff_core_List.Empty()), false))
+ff_core_Path.Path_appendStream(self_, ff_core_List.List_toStream([buffer_], false))
 }
 
 export function Path_readStream(self_) {
@@ -478,7 +476,7 @@ async function go_$(pathOption_, reversed_, $task) {
 const pathOption_a = pathOption_;
 const reversed_a = reversed_;
 {
-if(reversed_a.Empty) {
+if(reversed_a.length === 0) {
 return true
 return
 }
@@ -486,9 +484,9 @@ return
 {
 if(pathOption_a.Some) {
 const path_ = pathOption_a.value_;
-if(reversed_a.Link) {
-const p_ = reversed_a.head_;
-const ps_ = reversed_a.tail_;
+if(reversed_a.length > 0) {
+const p_ = reversed_a[0];
+const ps_ = reversed_a.slice(1);
 return (((await ff_core_Path.Path_base$(path_, $task)) === p_) && (await go_$((await ff_core_Path.Path_parent$(path_, $task)), ps_, $task)))
 return
 }
@@ -651,11 +649,11 @@ return (await ff_core_Stream.Stream_toBuffer$((await ff_core_Path.Path_readStrea
 }
 
 export async function Path_writeBuffer$(self_, buffer_, $task) {
-(await ff_core_Path.Path_writeStream$(self_, (await ff_core_List.List_toStream$(ff_core_List.Link(buffer_, ff_core_List.Empty()), false, $task)), false, $task))
+(await ff_core_Path.Path_writeStream$(self_, (await ff_core_List.List_toStream$([buffer_], false, $task)), false, $task))
 }
 
 export async function Path_appendBuffer$(self_, buffer_, $task) {
-(await ff_core_Path.Path_appendStream$(self_, (await ff_core_List.List_toStream$(ff_core_List.Link(buffer_, ff_core_List.Empty()), false, $task)), $task))
+(await ff_core_Path.Path_appendStream$(self_, (await ff_core_List.List_toStream$([buffer_], false, $task)), $task))
 }
 
 export async function Path_readStream$(self_, $task) {

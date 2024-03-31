@@ -1,201 +1,150 @@
-data Array[T] {}
+class Array[T] {}
 
-empty[T](): Array[T]
+make[T](): Array[T]
+    target js sync "return {array: []}"
+
+fill[T](size: Int, value: T): List[T]
     target js sync """
-        return [];
+        return {array: new Array(size_).fill(value_)};
     """
 
-fill[T](size: Int, value: T): Array[T]
+fillBy[T](size: Int, body: Int => T): List[T]
     target js sync """
-        return new Array(size_).fill(value_);
+        return {array: Array.from({length: size_}, (_, i) => body_(i))};
     """
 
-fillBy[T](size: Int, body: Int => T): Array[T]
+range(size: Int): List[Int]
     target js sync """
-        return Array.from({length: size_}, (_, i) => body_(i));
-    """
-    target js async """
-        const array = new Array(size_);
-        for(let i = 0; i < size_; i++) {
-            array[i] = await(body_(_i));
-        }
-        return array;
-    """
-
-range(size: Int): Array[Int]
-    target js sync """
-        return Array.from({length: size_}, (_, i) => i);
+        return {array: Array.from({length: size_}, (_, i) => i)};
     """
 
 extend self[T]: Array[T] {
 
-    addAll(that: Array[T]): Array[T]
-        target js sync "return self_.concat(that_)"
-
     isEmpty(): Bool
-        target js sync "return self_.length === 0"
+        target js sync "return self_.array.length === 0"
 
     size(): Int
-        target js sync "return self_.length"
+        target js sync "return self_.array.length"
 
     get(index: Int): Option[T]
         target js sync """
-            return index_ >= 0 && index_ < self_.length
-                ? ff_core_Option.Some(self_[index_])
+            return index_ >= 0 && index_ < self_.array.length
+                ? ff_core_Option.Some(self_.array[index_])
                 : ff_core_Option.None()
         """
 
     grab(index: Int): T
         target js sync """
-            if(index_ < 0 || index_ >= self_.length) {
+            if(index_ < 0 || index_ >= self_.array.length) {
                 ff_core_Try.internalThrowGrabException_()
             }
-            return self_[index_]
+            return self_.array[index_]
         """
-
-    first(): Option[T] {self.get(0)}
-
-    last(): Option[T] {self.get(self.size() - 1)}
 
     grabFirst(): T {self.grab(0)}
 
     grabLast(): T {self.grab(self.size() - 1)}
 
-    takeFirst(count: Int = 1): Array[T]
-        target js sync "return self_.slice(0, count_)"
-
-    takeLast(count: Int = 1): Array[T]
-        target js sync "return self_.slice(-count_)"
-
-    dropFirst(count: Int = 1): Array[T]
-        target js sync "return self_.slice(count_)"
-
-    dropLast(count: Int = 1): Array[T]
-        target js sync "return self_.slice(0, self_.length - count_)"
-
-    pairs(): Array[Pair[Int, T]] {
-        mutable i = 0
-        self.map {x =>
-            let r = Pair(i, x)
-            i += 1
-            r
-        }
-    }
-    
-    slice(from: Int, until: Int): Array[T] {
-        self.dropFirst(from).takeFirst(until - from)
-    }
-    
-    foldLeft[R](initial: R, body: (R, T) => R): R {
-        mutable result = initial
-        self.each {x =>
-            result = body(result, x)
-        }
-        result
-    }    
-
-    update(index: Int, value: T): Array[T] {
-        self.modify(index) {_ => value}
-    }
-    
-    modify(index: Int, body: T => T): Array[T]
+    first(): Option[T]
         target js sync """
-            if(index_ < 0 || index_ >= self_.length) {
+            return self_.array.length > 0
+                ? ff_core_Option.Some(self_.array[0])
+                : ff_core_Option.None()
+        """
+
+    last(): Option[T]
+        target js sync """
+            return self_.array.length > 0
+                ? ff_core_Option.Some(self_.array[self_.array.length - 1])
+                : ff_core_Option.None()
+        """
+
+    push(value: T): Unit
+        target js sync "self_.array.push(value_)"
+
+    pushArray(value: Array[T]): Unit
+        target js sync "self_.array.push(...value_.array)"
+
+    pushList(value: List[T]): Unit
+        target js sync "self_.array.push(...value_)"
+
+    pop(): Option[T]
+        target js sync """
+            return self_.array.length > 0
+                ? ff_core_Option.Some(self_.array.pop())
+                : ff_core_Option.None()
+        """
+
+    set(index: Int, value: T): Unit
+        target js sync """
+            if(index_ < 0 || index_ > self_.array.length) {
                 ff_core_Try.internalThrowGrabException_()
             }
-            let result = self_.slice();
-            result[index_] = body_(result[index_]);
-            return result;
+            self_.array[index_] = value_
+        """
+
+    modify(index: Int, body: T => T): Unit
+        target js sync """
+            if(index_ < 0 || index_ >= self_.array.length) {
+                ff_core_Try.internalThrowGrabException_()
+            }
+            self_.array[index_] = body_(self_.array[index_])
         """
         target js async """
-            if(index_ < 0 || index_ >= self_.length) {
+            if(index_ < 0 || index_ >= self_.array.length) {
                 ff_core_Try.internalThrowGrabException_()
             }
-            let result = self_.slice();
-            result[index_] = await body_(result[index_], $task);
-            return result;
+            self_.array[index_] = await body_(self_.array[index_], $task)
         """
-        
-    zip[S](that: Array[S]): Array[Pair[T, S]] {
-        if(self.size() <= that.size()) {
-            mutable i = -1
-            self.map {x => 
-                i += 1
-                Pair(x, that.grab(i))
-            }
-        } else {
-            mutable i = -1
-            that.map {y => 
-                i += 1
-                Pair(self.grab(i), y)
-            }
-        }
-    }
 
-    chunk(chunkSize: Int): Array[Array[T]] {
-        let results = Stack.make()
-        let result = Stack.make()
-        mutable added = 0
-        self.each {item =>
-            if(added < chunkSize) {
-                added += 1
-            } else {
-                results.push(result.drain())
-                added = 1
-            }
-            result.push(item)
-        }
-        if(added != 0) {
-            results.push(result.drain())
-        }
-        results.drain()
-    }
-
-    toList(): List[T]
+    fill(value: T, start: Int = 0, end: Int = 9007199254740991): Unit
         target js sync """
-            let result = ff_core_List.Empty();
-            for(let i = self_.length - 1; i >= 0; i--) {
-                result = ff_core_List.Link(self_[i], result);
-            }
-            return result;
+            self_.array.fill(value_, start_, end_);
         """
 
-    toStream(cycle: Bool = False): Stream[T] {
-        mutable index = 0
-        Stream.make {
-            if(index < self.size()) {
-                let result = self.grab(index)
-                index += 1
-                result
-            } elseIf {cycle && index != 0} {
-                let result = self.grab(0)
-                index = 1
-                result
-            }
-        }
-    }
+    copy(target: Int, start: Int, end: Int): Unit
+        target js sync """
+            self_.array.copyWithin(target_, start_, end_);
+        """
 
-    toStack(): Stack[T]
-        target js sync "return {array: self_.slice()}"
+    delete(start: Int, deleteCount: Int): Unit
+        target js sync """
+            self_.array.splice(start_, deleteCount_);
+        """
+
+    insert(start: Int, value: T, deleteCount: Int = 0): Unit
+        target js sync """
+            self_.array.splice(start_, deleteCount_, value_);
+        """
+
+    insertArray(start: Int, value: Array[T], deleteCount: Int = 0): Unit
+        target js sync """
+            self_.array.splice(start_, deleteCount_, ...value_.array);
+        """
+
+    insertList(start: Int, value: List[T], deleteCount: Int = 0): Unit
+        target js sync """
+            self_.array.splice(start_, deleteCount_, ...value_);
+        """
 
     each(body: T => Unit): Unit
         target js sync """
-            return self_.forEach(body_);
+            return self_.array.forEach(body_);
         """
         target js async """
-            for(let i = 0; i < self_.length; i++) {
-                await body_(self_[i], $task)
+            for(let i = 0; i < self_.array.length; i++) {
+                await body_(self_.array[i], $task)
             }
         """
 
     eachWhile(body: T => Bool): Unit
-        target js sync "for(const value of self_) if(!body_(value)) break"
-        target js async "for(const value of self_) if(!await body_(value, $task)) break"
+        target js sync "for(const value of self_.array) if(!body_(value)) break"
+        target js async "for(const value of self_.array) if(!await body_(value, $task)) break"
 
     all(body: T => Bool): Bool {
         mutable result = True
         self.eachWhile {x =>
-            result = result && body(x)
+            result = body(x)
             result
         }
         result
@@ -204,7 +153,7 @@ extend self[T]: Array[T] {
     any(body: T => Bool): Bool {
         mutable result = False
         self.eachWhile {x =>
-            result = result || body(x)
+            result = body(x)
             (!result)
         }
         result
@@ -223,150 +172,45 @@ extend self[T]: Array[T] {
         result
     }
 
-    filter(body: T => Bool): Array[T] {
-        let result = Stack.make()
-        self.each {x =>
-            if(body(x)) {
-                result.push(x)
-            }
-        }
-        result.drain()
-    }
-    
-    partition(body: T => Bool): Pair[Array[T], Array[T]] {
-        Pair(self.filter(body), self.filter {!body(_)})
-    }
-
-    map[S](body: T => S): Array[S]
-        target js sync """
-            return self_.map(body_)
-        """
-        target js async """
-            let result = [];
-            for(let i = self_.length - 1; i >= 0; i--) {
-                result.push(await body_(self_[i], $task));
-            }
-            return result;
-        """
-        
-    flatMap[S](body: T => Array[S]): Array[S] {
-        let results = Stack.make()
-        self.each {x =>
-            results.pushArray(body(x))
-        }
-        results.drain()
-    }
-    
-    collect[R](body: T => Option[R]): Array[R] {
-        mutable result = Stack.make()
-        self.each {x =>
-            body(x).each {result.push(_)}
-        }
-        result.drain()
-    }
-
-    collectFirst[R](body: T => Option[R]): Option[R] {
-        mutable result = None
+    indexWhere(body: T => Bool): Option[Int] {
+        mutable i = -1
+        mutable result = False
         self.eachWhile {x =>
-            body(x).{
-                | None =>
-                    True
-                | o =>
-                    result = o
-                    False
-            }
+            i += 1
+            result = body(x)
+            (!result)
         }
-        result
+        if(result) {i}
     }
 
-    sortBy[S: Order](body: T => S): Array[T] {
+    drain(): List[T]
+        target js sync "const result = self_.array; self_.array = []; return result"
+
+    toList(start: Int = 0, end: Int = 9007199254740991): List[T]
+        target js sync """return self_.array.slice(start_, end_)"""
+
+    toStream(start: Int = 0, end: Int = 9007199254740991): Stream[T] {
+        self.toList(start, end).toStream()
+    }
+
+    reverse(): Unit
+        target js sync "self_.array.reverse()"
+
+    sortBy[S: Order](body: T => S): Unit {
         self.sortWith {Ordering.compare(body(_), body(_))}
     }
 
-    sortWith(ordering: (T, T) => Ordering): Array[T] {
-        let stack = self.toStack()
-        stack.sortWith(ordering)
-        stack.drain()
+    sortWith(ordering: (T, T) => Ordering): Unit {
+        sortRange(self, ordering, 0, self.size())
     }
-    
-    reverse(): Array[T] {
-        1.to(self.size()).toArray().map {i =>
-            self.grab(self.size() - i)
-        }
-    }
-    
-    separate(separator: Array[T]): Array[T] {
-        let stack = Stack.make()
-        self.pairs().each {| Pair(i, x) =>
-            if(i != 0) {
-                stack.pushArray(separator)
-            }
-            stack.push(x)
-        }
-        stack.drain()
-    }
+        target js sync "self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))"
 
 }
 
 extend self[T: Order]: Array[T] {
 
-    sort(): Array[T] {
+    sort(): Unit {
         self.sortWith(Ordering.compare)
-    }
-
-    toSet(): Set[T] {
-        self.toList().toSet()
-    }
-    
-    distinct(): Array[T] {
-        mutable seen = [].toSet()
-        self.filter {
-            | item {!seen.contains(item)} =>
-                seen = seen.add(item)
-                True
-            | _ =>
-                False
-        }
-    }
-
-}
-
-extend self[T]: Array[Array[T]] {
-
-    flatten(): Array[T] {
-        let result = Stack.make()
-        self.each {xs =>
-            result.pushArray(xs)
-        }
-        result.drain()
-    }
-
-}
-
-extend self[K: Order, V]: Array[Pair[K, V]] {
-    
-    toMap(): Map[K, V] {
-        self.toList().toMap()
-    }
-    
-    group(): Map[K, Array[V]] {
-        mutable map = Map.empty[K, Stack[V]]()
-        self.each {| Pair(k, v) => map = map.push(k, v)}
-        map.mapValues {_, v => v.drain()}
-    }
-    
-}
-
-extend self[K, V]: Array[Pair[K, V]] {
-
-    unzip(): Pair[Array[K], Array[V]] {
-        let first = Stack.make()
-        let second = Stack.make()
-        self.each {| Pair(x, y) =>
-            first.push(x)
-            second.push(y)
-        }
-        Pair(first.drain(), second.drain())
     }
 
 }
@@ -374,49 +218,46 @@ extend self[K, V]: Array[Pair[K, V]] {
 extend self: Array[String] {
 
     join(separator: String = ""): String
-        target js sync "return self_.join(separator_)"
+        target js sync "return self_.array.join(separator_)"
 
 }
 
 instance Array[T: Show]: Show {
     show(value: Array[T]): String {
-        let stack = Stack.make()
-        stack.push("[")
+        let array = Array.make()
+        array.push("[")
         value.each {x =>
-            if(stack.size() > 1) {stack.push(", ")}
-            stack.push(Show.show(x))
+            if(array.size() > 1) {array.push(", ")}
+            array.push(Show.show(x))
         }
-        stack.push("].toArray()")
-        stack.join()
+        array.push("].toArray()")
+        array.join()
     }
 }
 
-instance Array[T: Equal]: Equal {
-    equals(x: Array[T], y: Array[T]): Bool {
-        if(internalSame(x, y)) {True} else:
-        if(x.size() != y.size()) {False} else:
-        mutable i = -1
-        x.all {l =>
+sortRange[T](array: Array[T], compare: (T, T) => Ordering, start: Int, end: Int): Unit {
+    if(end - start < 2) {} else:
+
+    mutable middle = start + ((end - start) / 2)
+    sortRange(array, compare, start, middle)
+    sortRange(array, compare, middle, end)
+
+    mutable i = start
+    mutable j = middle
+    while {i < middle && j < end} {
+        if(compare(array.grab(i), array.grab(j)) != OrderingAfter) {
             i += 1
-            l == y.grab(i)
-        }
-    }
-}
-
-instance Array[T: Order]: Order {
-    compare(x: Array[T], y: Array[T]): Ordering {
-        if(internalSame(x, y)) {OrderingSame} else:
-        let size = x.size().min(y.size())
-        mutable i = 0
-        mutable ordering = OrderingSame
-        while {ordering == OrderingSame && i < size} {
-            ordering = Ordering.compare(x.grab(i), y.grab(i))
+        } else {
+            let value = array.grab(j)
+            mutable k = j
+            while {k > i} {
+                array.set(k, array.grab(k - 1))
+                k -= 1
+            }
+            array.set(i, value)
             i += 1
+            middle += 1
+            j += 1
         }
-        if(ordering != OrderingSame) {ordering} else:
-        Ordering.compare(x.size(), y.size())
     }
 }
-
-internalSame[T](left: Array[T], right: Array[T]): Bool
-    target js sync "return left_ === right_"
