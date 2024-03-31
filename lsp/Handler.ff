@@ -280,7 +280,7 @@ extend self: Handler {
             let documentSymbols = self.getDocumentSymbolsWithCache(system, file)
             let workspaceSymbols = documentSymbols.flatMap {SymbolHandler.documentToWorkspaceSymbols(_, None)}
             if(query == "") {
-                workspaceSymbols.filter {_.kind == 5} // Class
+                workspaceSymbols.filter {_.kind == SType}
             } else {
                 workspaceSymbols.filter {SymbolHandler.symbolFilter(_, query)}
             }

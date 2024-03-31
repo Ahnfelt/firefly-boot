@@ -66,11 +66,23 @@ data SymbolHook(
 
 class Box[T](mutable value: T)
 
+data DocumentSymbolKind {
+    SLet(mutable: Bool)
+    SFunction(member: Bool)
+    SExtend
+    STraitFunction
+    STrait
+    SInstance
+    SVariant
+    SType
+    SParameter
+}
+
 class ResultHook {
     ParseSymbolBegin
     ParseSymbolEnd(
         name: String
-        kind: Int
+        kind: DocumentSymbolKind
         selectionStart: Location
         selectionEnd: Location
         start: Location

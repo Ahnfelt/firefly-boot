@@ -232,7 +232,7 @@ extend self: Parser {
         if(self.lspHook.trackSymbols) {
             self.lspHook.emit(ParseSymbolEnd(
                 name = nameToken.raw()
-                kind = 14
+                kind = SLet(mutable = False)
                 selectionStart = nameToken.at()
                 selectionEnd = nameToken.end()
                 start = nameToken.at()
@@ -254,10 +254,9 @@ extend self: Parser {
             bestTarget
         )
         if(self.lspHook.trackSymbols) {
-            let kind = if(member) {6} else {12}
             self.lspHook.emit(ParseSymbolEnd(
                 name = signature.name
-                kind = kind
+                kind = SFunction(member)
                 selectionStart = signature.at
                 selectionEnd = signature.at.Location(column = signature.at.column + signature.name.size())
                 start = signature.at
@@ -365,7 +364,7 @@ extend self: Parser {
             }
             self.lspHook.emit(ParseSymbolEnd(
                 name = name
-                kind = 3 // Namespace
+                kind = SExtend
                 selectionStart = nameToken.at()
                 selectionEnd = nameToken.end()
                 start = extendToken.at()
@@ -411,7 +410,7 @@ extend self: Parser {
                 if(self.lspHook.trackSymbols) {
                     self.lspHook.emit(ParseSymbolEnd(
                         name = signatureNameToken.raw() 
-                        kind = 12  // Function   
+                        kind = STraitFunction
                         selectionStart = signatureNameToken.at()
                         selectionEnd = signatureNameToken.end()
                         start = signatureNameToken.at()
@@ -436,7 +435,7 @@ extend self: Parser {
         if(self.lspHook.trackSymbols) {
             self.lspHook.emit(ParseSymbolEnd(
                 name = nameToken.raw() 
-                kind = 11 // Interface 
+                kind = STrait 
                 selectionStart = nameToken.at()
                 selectionEnd = nameToken.end()
                 start = traitToken.at()
@@ -487,7 +486,7 @@ extend self: Parser {
             let name = token.raw() + ": " + nameToken.raw()
             self.lspHook.emit(ParseSymbolEnd(
                 name = name
-                kind = 19 // Object  
+                kind = SInstance  
                 selectionStart = nameToken.at()
                 selectionEnd = nameToken.end()
                 start = instanceToken.at()
@@ -545,7 +544,7 @@ extend self: Parser {
                 if(self.lspHook.trackSymbols) {
                     self.lspHook.emit(ParseSymbolEnd(
                         name = variantNameToken.raw()
-                        kind = 10 // Enum
+                        kind = SVariant
                         selectionStart = variantNameToken.at()
                         selectionEnd = variantNameToken.end()
                         start = variantNameToken.at()
@@ -571,7 +570,7 @@ extend self: Parser {
         if(self.lspHook.trackSymbols) {
             self.lspHook.emit(ParseSymbolEnd(
                 name = nameToken.raw()
-                kind = 5
+                kind = SType
                 selectionStart = nameToken.at()
                 selectionEnd = nameToken.end()
                 start = kindToken.at()
@@ -770,7 +769,7 @@ extend self: Parser {
             if(lspTrackSymbols) {
                 self.lspHook.emit(ParseSymbolEnd(
                     name = parameterNameToken.raw()
-                    kind = 7 // Property
+                    kind = SParameter
                     selectionStart = parameterNameToken.at()
                     selectionEnd = parameterNameToken.end()
                     start = lspFirst.at()
@@ -1059,10 +1058,9 @@ extend self: Parser {
         self.skip(LAssign)
         let value = self.parseTerm()
         if(self.lspHook.trackSymbols) {
-            let kind = if(mutable) {13} else {14}
             self.lspHook.emit(ParseSymbolEnd(
                 name = nameToken.raw()
-                kind = kind
+                kind = SLet(mutable)
                 selectionStart = nameToken.at()
                 selectionEnd = nameToken.end()
                 start = mutableToken.at()
@@ -1095,7 +1093,7 @@ extend self: Parser {
             if(self.lspHook.trackSymbols) {
                 self.lspHook.emit(ParseSymbolEnd(
                     name = signature.name
-                    kind = 12
+                    kind = SFunction(member = False)
                     selectionStart = signature.at
                     selectionEnd = signature.at.Location(column = signature.at.column + signature.name.size())
                     start = functionAt

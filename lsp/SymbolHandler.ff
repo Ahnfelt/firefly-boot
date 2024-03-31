@@ -3,7 +3,7 @@ import Syntax from ff:compiler
 
 data DocumentSymbol(
     name: String
-    kind: Int
+    kind: DocumentSymbolKind
     selectionStart: Location
     selectionEnd: Location
     start: Location
@@ -13,7 +13,7 @@ data DocumentSymbol(
 
 data WorkspaceSymbol(
     name: String
-    kind: Int
+    kind: DocumentSymbolKind
     containerName: Option[String]
     selectionStart: Location
     selectionEnd: Location
@@ -93,16 +93,30 @@ showPosition(at: Location): String {
 documentSymbolToLsp(symbol: DocumentSymbol): Json {
     Json.object()
         .with("name", symbol.name)
-        .with("kind", symbol.kind)
+        .with("kind", documentSymbolNumber(symbol.kind))
         .with("range", locationsToLspRange(symbol.start, symbol.end))
         .with("selectionRange", locationsToLspRange(symbol.selectionStart, symbol.selectionEnd))
         .with("children", symbol.children.toArray().map {documentSymbolToLsp(_)})
 }
 
+documentSymbolNumber(kind: DocumentSymbolKind): Int {
+    | SExtend => 3 // Namespace
+    | SFunction(True) => 6
+    | SFunction(False) => 12
+    | SInstance => 19 // Object
+    | SLet(True) => 13
+    | SLet(False) => 14
+    | SParameter => 7 // Property
+    | STrait => 11 // Interface
+    | STraitFunction => 12 // Function
+    | SType => 5
+    | SVariant => 10 // Enum
+}
+
 workspaceSymbolToLsp(rootPath: Path, symbol: WorkspaceSymbol): Json {
     let o = Json.object()
         .with("name", symbol.name)
-        .with("kind", symbol.kind)
+        .with("kind", documentSymbolNumber(symbol.kind))
         .with("location", Json.object()
             .with("uri", rootPath.path(symbol.selectionStart.file).url())
             .with("range", locationsToLspRange(symbol.selectionStart, symbol.selectionEnd))
