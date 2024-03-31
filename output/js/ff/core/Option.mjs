@@ -2,8 +2,6 @@
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -199,14 +197,14 @@ export function Option_toList(self_) {
 const _1 = self_;
 {
 if(_1.None) {
-return ff_core_List.Empty()
+return []
 return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
-return ff_core_List.Link(v_, ff_core_List.Empty())
+return [v_]
 return
 }
 }
@@ -215,10 +213,6 @@ return
 
 export function Option_toStack(self_) {
 return ff_core_List.List_toStack(ff_core_Option.Option_toList(self_))
-}
-
-export function Option_toArray(self_) {
-return ff_core_List.List_toArray(ff_core_Option.Option_toList(self_))
 }
 
 export function Option_toStream(self_, cycle_ = false) {
@@ -460,14 +454,14 @@ export async function Option_toList$(self_, $task) {
 const _1 = self_;
 {
 if(_1.None) {
-return ff_core_List.Empty()
+return []
 return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
-return ff_core_List.Link(v_, ff_core_List.Empty())
+return [v_]
 return
 }
 }
@@ -476,10 +470,6 @@ return
 
 export async function Option_toStack$(self_, $task) {
 return ff_core_List.List_toStack(ff_core_Option.Option_toList(self_))
-}
-
-export async function Option_toArray$(self_, $task) {
-return ff_core_List.List_toArray(ff_core_Option.Option_toList(self_))
 }
 
 export async function Option_toStream$(self_, cycle_ = false, $task) {

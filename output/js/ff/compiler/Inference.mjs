@@ -14,8 +14,6 @@ import * as ff_compiler_Unification from "../../ff/compiler/Unification.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -142,7 +140,7 @@ return
 }
 }
 }))(ff_core_List.List_grabFirst(c_.generics_));
-return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue(ff_core_List.Empty(), ff_core_List.Empty(), ff_compiler_Syntax.PackagePair("", ""), "", c_.name_, c_.generics_))
+return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue([], [], ff_compiler_Syntax.PackagePair("", ""), "", c_.name_, c_.generics_))
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
 
@@ -177,7 +175,7 @@ return
 }
 }
 }))(ff_core_List.List_grabFirst(c_.generics_));
-return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue(ff_core_List.Empty(), ff_core_List.Empty(), ff_compiler_Syntax.PackagePair("", ""), "", c_.name_, c_.generics_))
+return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue([], [], ff_compiler_Syntax.PackagePair("", ""), "", c_.name_, c_.generics_))
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
 
@@ -309,7 +307,7 @@ export function Inference_inferExtendDefinition(self_, environment_, definition_
 const selfParameter_ = ff_compiler_Syntax.Parameter(definition_.at_, false, definition_.name_, definition_.type_, ff_core_Option.None());
 const functions_ = ff_core_List.List_map(definition_.methods_, ((method_) => {
 const signature_ = (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, ff_core_List.List_addAll(definition_.generics_, method_.signature_.generics_), ff_core_List.List_addAll(definition_.constraints_, method_.signature_.constraints_), ff_core_List.Link(selfParameter_, method_.signature_.parameters_), _c.returnType_, _c.effect_)
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, [...definition_.generics_, ...method_.signature_.generics_], [...definition_.constraints_, ...method_.signature_.constraints_], [selfParameter_, ...method_.signature_.parameters_], _c.returnType_, _c.effect_)
 }))(method_.signature_);
 const body_ = ff_compiler_Syntax.Target_mapFirefly(method_.body_, ((lambda_) => {
 {
@@ -321,7 +319,7 @@ return ff_compiler_Syntax.Lambda(_c.at_, _c.effect_, ff_core_List.List_map(lambd
 const _1 = case_;
 {
 const _c = _1;
-return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.Link(ff_compiler_Syntax.PVariable(method_.at_, ff_core_Option.None()), case_.patterns_), _c.guards_, _c.body_)
+return ff_compiler_Syntax.MatchCase(_c.at_, [ff_compiler_Syntax.PVariable(method_.at_, ff_core_Option.None()), ...case_.patterns_], _c.guards_, _c.body_)
 return
 }
 }
@@ -352,8 +350,8 @@ if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, definition_.at_)) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferFunctionDefinitionHook(self_.unification_, environment_, definition_, self_.missing_))
 };
 const parameters_ = ff_core_List.List_map(definition_.signature_.parameters_, ((p_) => {
-const noEffect_ = ff_compiler_Syntax.TConstructor(p_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-const scheme_ = ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(p_.at_, p_.name_, false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), p_.valueType_, noEffect_));
+const noEffect_ = ff_compiler_Syntax.TConstructor(p_.at_, "ff:core/Nothing.Nothing", []);
+const scheme_ = ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(p_.at_, p_.name_, false, [], [], [], p_.valueType_, noEffect_));
 if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, p_.at_)) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferParameterHook(self_.unification_, environment_, p_, self_.missing_))
 };
@@ -366,7 +364,7 @@ return ff_compiler_Environment.Environment(_c.modulePrefix_, ff_core_Map.Map_add
 const parameterTypes_ = ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.second_.signature_.returnType_
 }));
-const functionType_ = ff_compiler_Syntax.TConstructor(definition_.at_, ("Function$" + ff_core_List.List_size(parameterTypes_)), ff_core_List.Link(definition_.signature_.effect_, ff_core_List.List_addAll(parameterTypes_, ff_core_List.Link(definition_.signature_.returnType_, ff_core_List.Empty()))));
+const functionType_ = ff_compiler_Syntax.TConstructor(definition_.at_, ("Function$" + ff_core_List.List_size(parameterTypes_)), [definition_.signature_.effect_, ...parameterTypes_, definition_.signature_.returnType_]);
 const instances_ = ff_compiler_Inference.constraintsToInstances_(definition_.signature_.constraints_);
 return ff_compiler_Unification.Unification_withLocalInstances(self_.unification_, instances_, (() => {
 {
@@ -396,7 +394,7 @@ const _1 = ff_core_List.List_grabLast(ts_);
 {
 if(_1.TConstructor) {
 const n_ = _1.name_;
-if(_1.generics_.Empty) {
+if(_1.generics_.length === 0) {
 return (n_ === unitName_)
 return
 }
@@ -423,7 +421,7 @@ const cases_ = ((!returnsUnit_)
 const _1 = c_;
 {
 const _c = _1;
-return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.guards_, ff_compiler_Syntax.ESequential(c_.at_, c_.body_, ff_compiler_Syntax.EVariant(c_.at_, unitName_, ff_core_List.Empty(), ff_core_Option.None())))
+return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.guards_, ff_compiler_Syntax.ESequential(c_.at_, c_.body_, ff_compiler_Syntax.EVariant(c_.at_, unitName_, [], ff_core_Option.None())))
 return
 }
 }
@@ -448,7 +446,7 @@ const parameterTypes_ = ff_core_List.List_map(case_.patterns_, ((_w1) => {
 return ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, _w1.at_)
 }));
 const returnType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, case_.at_);
-const functionType_ = ff_compiler_Syntax.TConstructor(case_.at_, ("Function$" + ff_core_List.List_size(case_.patterns_)), ff_core_List.Link(environment_.effect_, ff_core_List.List_addAll(parameterTypes_, ff_core_List.Link(returnType_, ff_core_List.Empty()))));
+const functionType_ = ff_compiler_Syntax.TConstructor(case_.at_, ("Function$" + ff_core_List.List_size(case_.patterns_)), [environment_.effect_, ...parameterTypes_, returnType_]);
 ff_compiler_Unification.Unification_unify(self_.unification_, case_.at_, expected_, functionType_);
 const environment1_ = ff_core_List.List_foldLeft(ff_core_List.List_zip(parameterTypes_, case_.patterns_), environment_, ((_1, _2) => {
 {
@@ -460,8 +458,8 @@ const symbols_ = ff_core_Map.Map_mapValues(ff_compiler_Inference.Inference_infer
 const name_ = _1;
 const at_ = _2.first_;
 const type_ = _2.second_;
-const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(at_, name_, false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), type_, noEffect_))
+const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing", []);
+return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(at_, name_, false, [], [], [], type_, noEffect_))
 return
 }
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -476,7 +474,7 @@ return
 return
 }
 }));
-let guards_ = ff_core_List.Empty();
+let guards_ = [];
 const environment3_ = ff_core_List.List_foldLeft(case_.guards_, environment1_, ((environment2_, g_) => {
 const guardType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, g_.at_);
 const guardTerm_ = ff_compiler_Inference.Inference_inferTerm(self_, environment2_, guardType_, g_.term_);
@@ -485,14 +483,14 @@ const symbols_ = ff_core_Map.Map_mapValues(ff_compiler_Inference.Inference_infer
 const name_ = _1;
 const at_ = _2.first_;
 const type_ = _2.second_;
-const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(at_, name_, false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), type_, noEffect_))
+const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing", []);
+return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(at_, name_, false, [], [], [], type_, noEffect_))
 return
 }
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-guards_ = ff_core_List.Link((((_c) => {
+guards_ = [(((_c) => {
 return ff_compiler_Syntax.MatchGuard(_c.at_, guardTerm_, _c.pattern_)
-}))(g_), guards_);
+}))(g_), ...guards_];
 {
 const _1 = environment2_;
 {
@@ -539,7 +537,7 @@ ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferPatter
 }
 };
 function literal_(coreTypeName_) {
-ff_compiler_Unification.Unification_unify(self_.unification_, pattern_.at_, expected_, ff_compiler_Syntax.TConstructor(pattern_.at_, ff_compiler_Inference.core_(coreTypeName_), ff_core_List.Empty()));
+ff_compiler_Unification.Unification_unify(self_.unification_, pattern_.at_, expected_, ff_compiler_Syntax.TConstructor(pattern_.at_, ff_compiler_Inference.core_(coreTypeName_), []));
 return ff_core_Map.empty_()
 }
 {
@@ -576,7 +574,7 @@ if(_1.PVariable) {
 const at_ = _1.at_;
 if(_1.name_.Some) {
 const name_ = _1.name_.value_;
-return ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(name_, ff_core_Pair.Pair(at_, expected_)), ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+return ff_core_List.List_toMap([ff_core_Pair.Pair(name_, ff_core_Pair.Pair(at_, expected_))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
 }
@@ -596,7 +594,7 @@ const at_ = _1.at_;
 const name_ = _1.name_;
 const variableAt_ = _1.variableAt_;
 const variableOption_ = _1.variable_;
-const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, at_, name_, ff_core_List.Empty(), ff_core_Option.None()), (() => {
+const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, at_, name_, [], ff_core_Option.None()), (() => {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 if(instantiated_.scheme_.isNewtype_) {
@@ -620,9 +618,45 @@ return
 {
 if(_1.PVariant) {
 const at_ = _1.at_;
+if(_1.name_ == "List$Empty") {
+if(_1.patterns_.length === 0) {
+const itemType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_);
+const listType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("List"), [itemType_]);
+ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, listType_);
+return ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+return
+}
+}
+}
+}
+{
+if(_1.PVariant) {
+const at_ = _1.at_;
+if(_1.name_ == "List$Link") {
+if(_1.patterns_.length !== 0) {
+const head_ = _1.patterns_[0];
+if(_1.patterns_.slice(1).length !== 0) {
+const tail_ = _1.patterns_.slice(1)[0];
+if(_1.patterns_.slice(1).slice(1).length === 0) {
+const itemType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_);
+const listType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("List"), [itemType_]);
+ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, listType_);
+const headVariables_ = ff_compiler_Inference.Inference_inferPattern(self_, environment_, itemType_, head_);
+const tailVariables_ = ff_compiler_Inference.Inference_inferPattern(self_, environment_, listType_, tail_);
+return ff_core_Map.Map_addAll(headVariables_, tailVariables_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+return
+}
+}
+}
+}
+}
+}
+{
+if(_1.PVariant) {
+const at_ = _1.at_;
 const name_ = _1.name_;
 const patterns_ = _1.patterns_;
-const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, at_, name_, ff_core_List.Empty(), ff_core_Option.None()), (() => {
+const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, at_, name_, [], ff_core_Option.None()), (() => {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, instantiated_.scheme_.signature_.returnType_);
@@ -654,7 +688,7 @@ return box_
 })())
 : ff_core_Option.None());
 function literal_(coreTypeName_) {
-ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, expected_, ff_compiler_Syntax.TConstructor(term_.at_, ff_compiler_Inference.core_(coreTypeName_), ff_core_List.Empty()));
+ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, expected_, ff_compiler_Syntax.TConstructor(term_.at_, ff_compiler_Inference.core_(coreTypeName_), []));
 return term_
 }
 {
@@ -686,7 +720,7 @@ return
 {
 if(_1.EVariable) {
 const e_ = _1;
-return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, ff_core_List.Empty(), ff_core_Option.None()), ((instantiated_) => {
+return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, [], ff_core_Option.None()), ((instantiated_) => {
 if(instantiated_.scheme_.isVariable_) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
 return term_
@@ -723,7 +757,7 @@ const symbolHook_ = ff_compiler_LspHook.SymbolHook(e_.field_, e_.at_, e_.at_);
 const noEffect_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferRecordFieldHook(self_.unification_, environment_, expected_, t_, e_.field_))
 };
-const fieldNames_ = ff_core_List.List_dropFirst(ff_core_Array.Array_toList(ff_core_String.String_split(name_, 36)), 1);
+const fieldNames_ = ff_core_List.List_dropFirst(ff_core_String.String_split(name_, 36), 1);
 return ff_core_Option.Option_else(ff_core_Option.Option_elseIf(ff_core_Option.Option_map(ff_core_Option.Option_map(ff_core_List.List_find(ff_core_List.List_pairs(fieldNames_), ((_w1) => {
 return (_w1.second_ === e_.field_)
 })), ((_w1) => {
@@ -744,7 +778,7 @@ return ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)
 }), (() => {
 return term_
 })), (() => {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, ff_core_List.Empty()))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }))
 return
 }
@@ -790,7 +824,7 @@ return
 }
 {
 if(_1.None) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, ff_core_List.Empty()))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -821,7 +855,7 @@ return
 {
 if(_1.EWildcard) {
 const e_ = _1;
-return ff_core_Option.Option_grab(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, ("_w" + e_.index_), ff_core_List.Empty(), ff_core_Option.None()), ((instantiated_) => {
+return ff_core_Option.Option_grab(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, ("_w" + e_.index_), [], ff_core_Option.None()), ((instantiated_) => {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
 return term_
 })))
@@ -833,7 +867,7 @@ if(_1.EList) {
 const at_ = _1.at_;
 const t_ = _1.elementType_;
 const items_ = _1.items_;
-const listType_ = ff_compiler_Syntax.TConstructor(term_.at_, ff_compiler_Inference.core_("List"), ff_core_List.Link(t_, ff_core_List.Empty()));
+const listType_ = ff_compiler_Syntax.TConstructor(term_.at_, ff_compiler_Inference.core_("List"), [t_]);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, listType_);
 return ff_compiler_Syntax.EList(at_, t_, ff_core_List.List_map(items_, ((_1) => {
 {
@@ -869,7 +903,7 @@ const at2_ = _1.function_.at_;
 const at3_ = _1.function_.lambda_.at_;
 const effect3_ = _1.function_.lambda_.effect_;
 const cases_ = _1.function_.lambda_.cases_;
-const e_ = ff_compiler_Syntax.EVariant(at_, "ff:core/Unit.Unit", ff_core_List.Empty(), ff_core_Option.None());
+const e_ = ff_compiler_Syntax.EVariant(at_, "ff:core/Unit.Unit", [], ff_core_Option.None());
 const newCases_ = ff_core_List.List_map(cases_, ((case_) => {
 {
 const _1 = case_;
@@ -887,7 +921,7 @@ const _1 = after_;
 if(_1.EVariant) {
 const at_ = _1.at_;
 if(_1.name_ == "ff:core/Unit.Unit") {
-const unitType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), ff_core_List.Empty());
+const unitType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), []);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, unitType_);
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, newPipe_)
 return
@@ -914,8 +948,8 @@ return
 {
 if(_1.ELet) {
 const e_ = _1;
-const noEffect_ = ff_compiler_Syntax.TConstructor(e_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-const scheme_ = ff_compiler_Environment.Scheme(true, e_.mutable_, false, false, ff_compiler_Syntax.Signature(e_.at_, e_.name_, false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), e_.valueType_, noEffect_));
+const noEffect_ = ff_compiler_Syntax.TConstructor(e_.at_, "ff:core/Nothing.Nothing", []);
+const scheme_ = ff_compiler_Environment.Scheme(true, e_.mutable_, false, false, ff_compiler_Syntax.Signature(e_.at_, e_.name_, false, [], [], [], e_.valueType_, noEffect_));
 const environment2_ = (((_c) => {
 return ff_compiler_Environment.Environment(_c.modulePrefix_, ff_core_Map.Map_add(environment_.symbols_, e_.name_, scheme_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.imports_, _c.effect_, _c.selfVariable_)
 }))(environment_);
@@ -937,13 +971,13 @@ const l_ = _1.lambda_;
 do {
 const _1 = l_.cases_;
 {
-if(_1.Link) {
-if(_1.head_.patterns_.Empty) {
-if(_1.head_.guards_.Empty) {
-if(_1.head_.body_.EVariable) {
-const insideAt_ = _1.head_.body_.at_;
-if(_1.head_.body_.name_ == "") {
-if(_1.tail_.Empty) {
+if(_1.length !== 0) {
+if(_1[0].patterns_.length === 0) {
+if(_1[0].guards_.length === 0) {
+if(_1[0].body_.EVariable) {
+const insideAt_ = _1[0].body_.at_;
+if(_1[0].body_.name_ == "") {
+if(_1.slice(1).length === 0) {
 const _guard1 = ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_);
 if(_guard1) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferLambdaStartHook(self_.unification_, environment_, expected_))
@@ -957,16 +991,16 @@ break
 }
 }
 {
-if(_1.Link) {
-if(_1.head_.patterns_.Empty) {
-if(_1.head_.guards_.Empty) {
-if(_1.head_.body_.ESequential) {
-if(_1.head_.body_.before_.EVariable) {
-const insideAt_ = _1.head_.body_.before_.at_;
-if(_1.head_.body_.before_.name_ == "") {
-if(_1.head_.body_.after_.EVariant) {
-if(_1.head_.body_.after_.name_ == "ff:core/Unit.Unit") {
-if(_1.tail_.Empty) {
+if(_1.length !== 0) {
+if(_1[0].patterns_.length === 0) {
+if(_1[0].guards_.length === 0) {
+if(_1[0].body_.ESequential) {
+if(_1[0].body_.before_.EVariable) {
+const insideAt_ = _1[0].body_.before_.at_;
+if(_1[0].body_.before_.name_ == "") {
+if(_1[0].body_.after_.EVariant) {
+if(_1[0].body_.after_.name_ == "ff:core/Unit.Unit") {
+if(_1.slice(1).length === 0) {
 const _guard1 = ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_);
 if(_guard1) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferLambdaStartHook(self_.unification_, environment_, expected_))
@@ -1029,7 +1063,7 @@ return _w1.name_
 })), "$")), ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.valueType_
 })));
-const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, "Function$1", ff_core_List.Link(ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_), ff_core_List.Link(instantiated_.scheme_.signature_.returnType_, ff_core_List.Link(ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Option"), ff_core_List.Link(recordType_, ff_core_List.Empty())), ff_core_List.Empty()))));
+const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, "Function$1", [ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_), instantiated_.scheme_.signature_.returnType_, ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Option"), [recordType_])]);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, functionType_);
 {
 const _1 = e_;
@@ -1047,7 +1081,7 @@ return
 {
 if(_1.ECopy) {
 const e_ = _1;
-const scheme_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, ff_core_List.Empty(), ff_core_Option.None()), (() => {
+const scheme_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, [], ff_core_Option.None()), (() => {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 })).scheme_;
 if(scheme_.isNewtype_) {
@@ -1114,9 +1148,9 @@ return ff_compiler_Syntax.Location((e_.at_.file_ + "/<copy>"), _c.line_, _c.colu
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(name_), ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "_c"), name_))
 }))
 }));
-const body_ = ff_compiler_Syntax.EVariant(e_.at_, e_.name_, ff_core_List.Empty(), ff_core_Option.Some(arguments_));
+const body_ = ff_compiler_Syntax.EVariant(e_.at_, e_.name_, [], ff_core_Option.Some(arguments_));
 const effect_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
-const e1_ = ff_compiler_Syntax.EPipe(e_.at_, e_.record_, effect_, ff_compiler_Syntax.ELambda(e_.at_, ff_compiler_Syntax.Lambda(e_.at_, effect_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(e_.at_, ff_core_List.Link(ff_compiler_Syntax.PVariable(e_.at_, ff_core_Option.Some("_c")), ff_core_List.Empty()), ff_core_List.Empty(), body_), ff_core_List.Empty()))));
+const e1_ = ff_compiler_Syntax.EPipe(e_.at_, e_.record_, effect_, ff_compiler_Syntax.ELambda(e_.at_, ff_compiler_Syntax.Lambda(e_.at_, effect_, [ff_compiler_Syntax.MatchCase(e_.at_, [ff_compiler_Syntax.PVariable(e_.at_, ff_core_Option.Some("_c"))], [], body_)])));
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, e1_)
 return
 }
@@ -1125,7 +1159,7 @@ return
 if(_1.EPipe) {
 const e_ = _1;
 const valueType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
-const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, "Function$1", ff_core_List.Link(e_.effect_, ff_core_List.Link(valueType_, ff_core_List.Link(expected_, ff_core_List.Empty()))));
+const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, "Function$1", [e_.effect_, valueType_, expected_]);
 const value_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, valueType_, e_.value_);
 const function_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, functionType_, e_.function_);
 ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, e_.effect_, environment_.effect_);
@@ -1232,9 +1266,9 @@ const t_ = _1;
 if(_1.TConstructor) {
 const name_ = _1.name_;
 const methodName_ = ((name_ + "_") + f_.field_);
-const arguments_ = ff_core_List.Link(ff_compiler_Syntax.Argument(f_.record_.at_, ff_core_Option.None(), f_.record_), e_.arguments_);
+const arguments_ = [ff_compiler_Syntax.Argument(f_.record_.at_, ff_core_Option.None(), f_.record_), ...e_.arguments_];
 {
-const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, f_.at_, methodName_, ff_core_List.Empty(), ff_core_Option.Some(arguments_));
+const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, f_.at_, methodName_, [], ff_core_Option.Some(arguments_));
 {
 if(_1.Some) {
 const instantiated_ = _1.value_;
@@ -1254,7 +1288,7 @@ return
 }
 {
 if(_1.None) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, ff_core_List.Empty()))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -1353,7 +1387,7 @@ return
 {
 if(_1.EAssign) {
 const e_ = _1;
-return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.variable_, ff_core_List.Empty(), ff_core_Option.None()), ((instantiated_) => {
+return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.variable_, [], ff_core_Option.None()), ((instantiated_) => {
 if((instantiated_.scheme_.isMutable_ || ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_))) {
 const value_ = ff_compiler_Inference.Inference_inferAssignment(self_, environment_, expected_, e_.at_, e_.operator_, e_.value_, instantiated_.scheme_.signature_);
 {
@@ -1421,13 +1455,13 @@ return
 {
 if(_1.Some) {
 const instantiated_ = _1.value_;
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("Can't assign an immutable field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, ff_core_List.Empty()))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("Can't assign an immutable field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
 {
 if(_1.None) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, ff_core_List.Empty()))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -1461,12 +1495,12 @@ return
 export function Inference_inferAssignment(self_, environment_, expected_, at_, operator_, value_, signature_) {
 const t_ = signature_.returnType_;
 if(((operator_ === "+") || (operator_ === "-"))) {
-ff_compiler_Unification.Unification_unify(self_.unification_, at_, t_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Int"), ff_core_List.Empty()))
+ff_compiler_Unification.Unification_unify(self_.unification_, at_, t_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Int"), []))
 } else if((operator_ !== "")) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, (("Only +=, -= and = assignments are supported. Got: " + operator_) + "=")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else {};
 const newValue_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, value_);
-ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), ff_core_List.Empty()));
+ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), []));
 return newValue_
 }
 
@@ -1511,7 +1545,7 @@ const _1 = e_;
 const _c = _1;
 return ff_compiler_Syntax.ECall(_c.at_, ff_compiler_Syntax.StaticCall(name_, call_.tailCall_, false), signature_.effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
 return _w1.second_
-})), ff_core_List.Link(selfArgument_, arguments_), _c.dictionaries_)
+})), [selfArgument_, ...arguments_], _c.dictionaries_)
 return
 }
 }
@@ -1603,7 +1637,7 @@ const effect_ = ff_compiler_Unification.Unification_freshUnificationVariable(sel
 const argumentTypes_ = ff_core_List.List_map(e_.arguments_, ((_w1) => {
 return ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, _w1.at_)
 }));
-const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, ("Function$" + ff_core_List.List_size(e_.arguments_)), ff_core_List.Link(effect_, ff_core_List.List_addAll(argumentTypes_, ff_core_List.Link(expected_, ff_core_List.Empty()))));
+const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, ("Function$" + ff_core_List.List_size(e_.arguments_)), [effect_, ...argumentTypes_, expected_]);
 const function_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, functionType_, call_.function_);
 const arguments_ = ff_core_List.List_map(ff_core_List.List_zip(e_.arguments_, argumentTypes_), ((_1) => {
 {
@@ -1633,7 +1667,7 @@ const _1 = e_;
 const _c = _1;
 return ff_compiler_Syntax.ECall(_c.at_, (((_c) => {
 return ff_compiler_Syntax.DynamicCall(function_, _c.tailCall_)
-}))(call_), effect_, ff_core_List.Empty(), arguments_, _c.dictionaries_)
+}))(call_), effect_, [], arguments_, _c.dictionaries_)
 return
 }
 }
@@ -1657,21 +1691,21 @@ const target_ = ff_compiler_Syntax.StaticCall(operator_, false, false);
 {
 const _1 = e_.arguments_;
 {
-if(_1.Link) {
-const a1_ = _1.head_;
-if(_1.tail_.Empty) {
+if(_1.length !== 0) {
+const a1_ = _1[0];
+if(_1.slice(1).length === 0) {
 const _guard1 = (operator_ === "!");
 if(_guard1) {
-const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty());
+const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), []);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a1_.value_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_);
 {
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link((((_c) => {
+return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, [(((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
-}))(a1_), ff_core_List.Empty()), _c.dictionaries_)
+}))(a1_)], _c.dictionaries_)
 return
 }
 }
@@ -1681,9 +1715,9 @@ return
 }
 }
 {
-if(_1.Link) {
-const a1_ = _1.head_;
-if(_1.tail_.Empty) {
+if(_1.length !== 0) {
+const a1_ = _1[0];
+if(_1.slice(1).length === 0) {
 const _guard1 = (operator_ === "-");
 if(_guard1) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
@@ -1693,7 +1727,7 @@ const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t1
 {
 if(_1.TConstructor) {
 const name_ = _1.name_;
-if(_1.generics_.Empty) {
+if(_1.generics_.length === 0) {
 const _guard1 = (name_ === ff_compiler_Inference.core_("Float"));
 if(_guard1) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
@@ -1705,7 +1739,7 @@ break
 {
 if(_1.TConstructor) {
 const name_ = _1.name_;
-if(_1.generics_.Empty) {
+if(_1.generics_.length === 0) {
 const _guard1 = (name_ === ff_compiler_Inference.core_("Int"));
 if(_guard1) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
@@ -1730,9 +1764,9 @@ break
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link((((_c) => {
+return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, [(((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
-}))(a1_), ff_core_List.Empty()), _c.dictionaries_)
+}))(a1_)], _c.dictionaries_)
 return
 }
 }
@@ -1742,14 +1776,14 @@ return
 }
 }
 {
-if(_1.Link) {
-const a1_ = _1.head_;
-if(_1.tail_.Link) {
-const a2_ = _1.tail_.head_;
-if(_1.tail_.tail_.Empty) {
+if(_1.length !== 0) {
+const a1_ = _1[0];
+if(_1.slice(1).length !== 0) {
+const a2_ = _1.slice(1)[0];
+if(_1.slice(1).slice(1).length === 0) {
 const _guard1 = ((operator_ === "||") || (operator_ === "&&"));
 if(_guard1) {
-const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty());
+const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), []);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a1_.value_);
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a2_.value_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_);
@@ -1757,11 +1791,11 @@ ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_,
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link((((_c) => {
+return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, [(((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
-}))(a1_), ff_core_List.Link((((_c) => {
+}))(a1_), (((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
-}))(a2_), ff_core_List.Empty())), _c.dictionaries_)
+}))(a2_)], _c.dictionaries_)
 return
 }
 }
@@ -1772,26 +1806,26 @@ return
 }
 }
 {
-if(_1.Link) {
-const a1_ = _1.head_;
-if(_1.tail_.Link) {
-const a2_ = _1.tail_.head_;
-if(_1.tail_.tail_.Empty) {
+if(_1.length !== 0) {
+const a1_ = _1[0];
+if(_1.slice(1).length !== 0) {
+const a2_ = _1.slice(1)[0];
+if(_1.slice(1).slice(1).length === 0) {
 const _guard1 = ((operator_ === "===") || (operator_ === "!=="));
 if(_guard1) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_);
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a2_.value_);
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty()));
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), []));
 {
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link((((_c) => {
+return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, [(((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
-}))(a1_), ff_core_List.Link((((_c) => {
+}))(a1_), (((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
-}))(a2_), ff_core_List.Empty())), _c.dictionaries_)
+}))(a2_)], _c.dictionaries_)
 return
 }
 }
@@ -1802,11 +1836,11 @@ return
 }
 }
 {
-if(_1.Link) {
-const a1_ = _1.head_;
-if(_1.tail_.Link) {
-const a2_ = _1.tail_.head_;
-if(_1.tail_.tail_.Empty) {
+if(_1.length !== 0) {
+const a1_ = _1[0];
+if(_1.slice(1).length !== 0) {
+const a2_ = _1.slice(1)[0];
+if(_1.slice(1).slice(1).length === 0) {
 const _guard1 = ((((((operator_ === "+") || (operator_ === "-")) || (operator_ === "*")) || (operator_ === "/")) || (operator_ === "%")) || (operator_ === "^"));
 if(_guard1) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
@@ -1819,7 +1853,7 @@ const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_
 {
 if(_1.TConstructor) {
 const name_ = _1.name_;
-if(_1.generics_.Empty) {
+if(_1.generics_.length === 0) {
 const _guard1 = (name_ === ff_compiler_Inference.core_("Float"));
 if(_guard1) {
 return ff_core_Option.Some("Float")
@@ -1831,7 +1865,7 @@ return
 {
 if(_1.TConstructor) {
 const name_ = _1.name_;
-if(_1.generics_.Empty) {
+if(_1.generics_.length === 0) {
 const _guard1 = (name_ === ff_compiler_Inference.core_("Int"));
 if(_guard1) {
 return ff_core_Option.Some("Int")
@@ -1843,7 +1877,7 @@ return
 {
 if(_1.TConstructor) {
 const name_ = _1.name_;
-if(_1.generics_.Empty) {
+if(_1.generics_.length === 0) {
 const _guard1 = ((operator_ === "+") && (name_ === ff_compiler_Inference.core_("String")));
 if(_guard1) {
 return ff_core_Option.Some("String")
@@ -1966,11 +2000,11 @@ chooseType_(magic_(t1_), magic_(t2_));
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link((((_c) => {
+return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, [(((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
-}))(a1_), ff_core_List.Link((((_c) => {
+}))(a1_), (((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
-}))(a2_), ff_core_List.Empty())), _c.dictionaries_)
+}))(a2_)], _c.dictionaries_)
 return
 }
 }
@@ -2001,13 +2035,13 @@ return ff_core_Option.Option_isEmpty(_w1.default_)
 return p_.name_
 }));
 const effect1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_);
-const body_ = ff_compiler_Syntax.ECall(at_, ff_compiler_Syntax.DynamicCall(term_, false), effect1_, ff_core_List.Empty(), ff_core_List.List_map(parameters_, ((x_) => {
+const body_ = ff_compiler_Syntax.ECall(at_, ff_compiler_Syntax.DynamicCall(term_, false), effect1_, [], ff_core_List.List_map(parameters_, ((x_) => {
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(x_), ff_compiler_Syntax.EVariable(at_, x_))
-})), ff_core_List.Empty());
+})), []);
 const effect2_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_);
-const lambda_ = ff_compiler_Syntax.ELambda(at_, ff_compiler_Syntax.Lambda(at_, effect2_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.List_map(parameters_, ((_w1) => {
+const lambda_ = ff_compiler_Syntax.ELambda(at_, ff_compiler_Syntax.Lambda(at_, effect2_, [ff_compiler_Syntax.MatchCase(at_, ff_core_List.List_map(parameters_, ((_w1) => {
 return ff_compiler_Syntax.PVariable(at_, ff_core_Option.Some(_w1))
-})), ff_core_List.Empty(), body_), ff_core_List.Empty())));
+})), [], body_)]));
 return ff_compiler_Inference.Inference_inferTerm(self_, (((_c) => {
 return ff_compiler_Environment.Environment(_c.modulePrefix_, _c.symbols_, _c.traits_, _c.imports_, effect2_, _c.selfVariable_)
 }))(environment_), expected_, lambda_)
@@ -2051,17 +2085,17 @@ return ff_compiler_Syntax.Argument(callAt_, ff_core_Option.Some(p_.name_), ff_co
 {
 const _1 = remainingArguments_;
 {
-if(_1.Empty) {
+if(_1.length === 0) {
 return defaultArgument_()
 return
 }
 }
 {
-if(_1.Link) {
-const at_ = _1.head_.at_;
-if(_1.head_.name_.None) {
-const e_ = _1.head_.value_;
-const remaining_ = _1.tail_;
+if(_1.length !== 0) {
+const at_ = _1[0].at_;
+if(_1[0].name_.None) {
+const e_ = _1[0].value_;
+const remaining_ = _1.slice(1);
 remainingArguments_ = remaining_;
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, e_);
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(p_.name_), e2_)
@@ -2110,7 +2144,7 @@ return
 }));
 return newArguments_
 } else {
-return ff_core_List.List_addAll(newArguments_, ff_core_List.List_map(remainingArguments_, ((a_) => {
+return [...newArguments_, ...ff_core_List.List_map(remainingArguments_, ((a_) => {
 {
 const _1 = a_;
 {
@@ -2119,7 +2153,7 @@ return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Inference.Infer
 return
 }
 }
-})))
+}))]
 }
 }
 
@@ -2127,7 +2161,7 @@ export function Inference_lookup(self_, environment_, expected_, at_, symbol_, t
 return ff_core_Option.Option_elseIf(ff_compiler_Inference.Inference_lookupOption(self_, environment_, expected_, at_, symbol_, typeArguments_), (() => {
 return ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)
 }), (() => {
-const instantiated_ = ff_compiler_Environment.Instantiated(ff_core_List.Empty(), ff_compiler_Environment.Scheme(ff_core_Option.Option_isEmpty(arguments_), false, false, false, ff_compiler_Syntax.Signature(at_, symbol_, false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.List_map(ff_core_List.List_pairs(ff_core_List.List_flatten(ff_core_Option.Option_toList(arguments_))), ((_1) => {
+const instantiated_ = ff_compiler_Environment.Instantiated([], ff_compiler_Environment.Scheme(ff_core_Option.Option_isEmpty(arguments_), false, false, false, ff_compiler_Syntax.Signature(at_, symbol_, false, [], [], ff_core_List.List_map(ff_core_List.List_pairs(ff_core_List.List_flatten(ff_core_Option.Option_toList(arguments_))), ((_1) => {
 {
 const i_ = _1.first_;
 const a_ = _1.second_;
@@ -2161,7 +2195,7 @@ const instantiation_ = ((!ff_core_List.List_isEmpty(typeArguments_))
 const newTypeArguments_ = (((!scheme_.isVariable_) && ff_core_Option.Option_any(ff_core_List.List_first(scheme_.signature_.generics_), ((_w1) => {
 return (_w1 === "Q$")
 })))
-? ff_core_List.Link(ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_), typeArguments_)
+? [ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_), ...typeArguments_]
 : typeArguments_);
 if(((ff_core_List.List_size(scheme_.signature_.generics_) !== ff_core_List.List_size(newTypeArguments_)) && (!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)))) {
 const extra_ = (ff_core_List.List_size(newTypeArguments_) - ff_core_List.List_size(typeArguments_));
@@ -2192,7 +2226,7 @@ return ff_compiler_Unification.Unification_instantiate(self_.unification_, insta
 ff_compiler_Unification.Unification_constrain(self_.unification_, at_, ff_core_List.List_grabFirst(generics_), c_.name_, ff_core_List.List_dropFirst(generics_, 1))
 }));
 const signature_ = (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, ff_core_List.Empty(), ff_core_List.Empty(), parameters_, returnType_, effect_)
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, [], [], parameters_, returnType_, effect_)
 }))(scheme_.signature_);
 const instantiated_ = ff_compiler_Environment.Instantiated(instantiation_, (((_c) => {
 return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtype_, _c.isTraitMethod_, signature_)
@@ -2352,7 +2386,7 @@ export async function Inference_inferExtendDefinition$(self_, environment_, defi
 const selfParameter_ = ff_compiler_Syntax.Parameter(definition_.at_, false, definition_.name_, definition_.type_, ff_core_Option.None());
 const functions_ = ff_core_List.List_map(definition_.methods_, ((method_) => {
 const signature_ = (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, ff_core_List.List_addAll(definition_.generics_, method_.signature_.generics_), ff_core_List.List_addAll(definition_.constraints_, method_.signature_.constraints_), ff_core_List.Link(selfParameter_, method_.signature_.parameters_), _c.returnType_, _c.effect_)
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, [...definition_.generics_, ...method_.signature_.generics_], [...definition_.constraints_, ...method_.signature_.constraints_], [selfParameter_, ...method_.signature_.parameters_], _c.returnType_, _c.effect_)
 }))(method_.signature_);
 const body_ = ff_compiler_Syntax.Target_mapFirefly(method_.body_, ((lambda_) => {
 {
@@ -2364,7 +2398,7 @@ return ff_compiler_Syntax.Lambda(_c.at_, _c.effect_, ff_core_List.List_map(lambd
 const _1 = case_;
 {
 const _c = _1;
-return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.Link(ff_compiler_Syntax.PVariable(method_.at_, ff_core_Option.None()), case_.patterns_), _c.guards_, _c.body_)
+return ff_compiler_Syntax.MatchCase(_c.at_, [ff_compiler_Syntax.PVariable(method_.at_, ff_core_Option.None()), ...case_.patterns_], _c.guards_, _c.body_)
 return
 }
 }
@@ -2395,8 +2429,8 @@ if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, definition_.at_)) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferFunctionDefinitionHook(self_.unification_, environment_, definition_, self_.missing_))
 };
 const parameters_ = ff_core_List.List_map(definition_.signature_.parameters_, ((p_) => {
-const noEffect_ = ff_compiler_Syntax.TConstructor(p_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-const scheme_ = ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(p_.at_, p_.name_, false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), p_.valueType_, noEffect_));
+const noEffect_ = ff_compiler_Syntax.TConstructor(p_.at_, "ff:core/Nothing.Nothing", []);
+const scheme_ = ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(p_.at_, p_.name_, false, [], [], [], p_.valueType_, noEffect_));
 if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, p_.at_)) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferParameterHook(self_.unification_, environment_, p_, self_.missing_))
 };
@@ -2409,7 +2443,7 @@ return ff_compiler_Environment.Environment(_c.modulePrefix_, ff_core_Map.Map_add
 const parameterTypes_ = ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.second_.signature_.returnType_
 }));
-const functionType_ = ff_compiler_Syntax.TConstructor(definition_.at_, ("Function$" + ff_core_List.List_size(parameterTypes_)), ff_core_List.Link(definition_.signature_.effect_, ff_core_List.List_addAll(parameterTypes_, ff_core_List.Link(definition_.signature_.returnType_, ff_core_List.Empty()))));
+const functionType_ = ff_compiler_Syntax.TConstructor(definition_.at_, ("Function$" + ff_core_List.List_size(parameterTypes_)), [definition_.signature_.effect_, ...parameterTypes_, definition_.signature_.returnType_]);
 const instances_ = ff_compiler_Inference.constraintsToInstances_(definition_.signature_.constraints_);
 return ff_compiler_Unification.Unification_withLocalInstances(self_.unification_, instances_, (() => {
 {
@@ -2439,7 +2473,7 @@ const _1 = ff_core_List.List_grabLast(ts_);
 {
 if(_1.TConstructor) {
 const n_ = _1.name_;
-if(_1.generics_.Empty) {
+if(_1.generics_.length === 0) {
 return (n_ === unitName_)
 return
 }
@@ -2466,7 +2500,7 @@ const cases_ = ((!returnsUnit_)
 const _1 = c_;
 {
 const _c = _1;
-return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.guards_, ff_compiler_Syntax.ESequential(c_.at_, c_.body_, ff_compiler_Syntax.EVariant(c_.at_, unitName_, ff_core_List.Empty(), ff_core_Option.None())))
+return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.guards_, ff_compiler_Syntax.ESequential(c_.at_, c_.body_, ff_compiler_Syntax.EVariant(c_.at_, unitName_, [], ff_core_Option.None())))
 return
 }
 }
@@ -2491,7 +2525,7 @@ const parameterTypes_ = ff_core_List.List_map(case_.patterns_, ((_w1) => {
 return ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, _w1.at_)
 }));
 const returnType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, case_.at_);
-const functionType_ = ff_compiler_Syntax.TConstructor(case_.at_, ("Function$" + ff_core_List.List_size(case_.patterns_)), ff_core_List.Link(environment_.effect_, ff_core_List.List_addAll(parameterTypes_, ff_core_List.Link(returnType_, ff_core_List.Empty()))));
+const functionType_ = ff_compiler_Syntax.TConstructor(case_.at_, ("Function$" + ff_core_List.List_size(case_.patterns_)), [environment_.effect_, ...parameterTypes_, returnType_]);
 ff_compiler_Unification.Unification_unify(self_.unification_, case_.at_, expected_, functionType_);
 const environment1_ = ff_core_List.List_foldLeft(ff_core_List.List_zip(parameterTypes_, case_.patterns_), environment_, ((_1, _2) => {
 {
@@ -2503,8 +2537,8 @@ const symbols_ = ff_core_Map.Map_mapValues(ff_compiler_Inference.Inference_infer
 const name_ = _1;
 const at_ = _2.first_;
 const type_ = _2.second_;
-const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(at_, name_, false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), type_, noEffect_))
+const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing", []);
+return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(at_, name_, false, [], [], [], type_, noEffect_))
 return
 }
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -2519,7 +2553,7 @@ return
 return
 }
 }));
-let guards_ = ff_core_List.Empty();
+let guards_ = [];
 const environment3_ = ff_core_List.List_foldLeft(case_.guards_, environment1_, ((environment2_, g_) => {
 const guardType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, g_.at_);
 const guardTerm_ = ff_compiler_Inference.Inference_inferTerm(self_, environment2_, guardType_, g_.term_);
@@ -2528,14 +2562,14 @@ const symbols_ = ff_core_Map.Map_mapValues(ff_compiler_Inference.Inference_infer
 const name_ = _1;
 const at_ = _2.first_;
 const type_ = _2.second_;
-const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(at_, name_, false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), type_, noEffect_))
+const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing", []);
+return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(at_, name_, false, [], [], [], type_, noEffect_))
 return
 }
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-guards_ = ff_core_List.Link((((_c) => {
+guards_ = [(((_c) => {
 return ff_compiler_Syntax.MatchGuard(_c.at_, guardTerm_, _c.pattern_)
-}))(g_), guards_);
+}))(g_), ...guards_];
 {
 const _1 = environment2_;
 {
@@ -2582,7 +2616,7 @@ ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferPatter
 }
 };
 function literal_(coreTypeName_) {
-ff_compiler_Unification.Unification_unify(self_.unification_, pattern_.at_, expected_, ff_compiler_Syntax.TConstructor(pattern_.at_, ff_compiler_Inference.core_(coreTypeName_), ff_core_List.Empty()));
+ff_compiler_Unification.Unification_unify(self_.unification_, pattern_.at_, expected_, ff_compiler_Syntax.TConstructor(pattern_.at_, ff_compiler_Inference.core_(coreTypeName_), []));
 return ff_core_Map.empty_()
 }
 {
@@ -2619,7 +2653,7 @@ if(_1.PVariable) {
 const at_ = _1.at_;
 if(_1.name_.Some) {
 const name_ = _1.name_.value_;
-return ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(name_, ff_core_Pair.Pair(at_, expected_)), ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+return ff_core_List.List_toMap([ff_core_Pair.Pair(name_, ff_core_Pair.Pair(at_, expected_))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
 }
@@ -2639,7 +2673,7 @@ const at_ = _1.at_;
 const name_ = _1.name_;
 const variableAt_ = _1.variableAt_;
 const variableOption_ = _1.variable_;
-const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, at_, name_, ff_core_List.Empty(), ff_core_Option.None()), (() => {
+const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, at_, name_, [], ff_core_Option.None()), (() => {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 if(instantiated_.scheme_.isNewtype_) {
@@ -2663,9 +2697,45 @@ return
 {
 if(_1.PVariant) {
 const at_ = _1.at_;
+if(_1.name_ == "List$Empty") {
+if(_1.patterns_.length === 0) {
+const itemType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_);
+const listType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("List"), [itemType_]);
+ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, listType_);
+return ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+return
+}
+}
+}
+}
+{
+if(_1.PVariant) {
+const at_ = _1.at_;
+if(_1.name_ == "List$Link") {
+if(_1.patterns_.length !== 0) {
+const head_ = _1.patterns_[0];
+if(_1.patterns_.slice(1).length !== 0) {
+const tail_ = _1.patterns_.slice(1)[0];
+if(_1.patterns_.slice(1).slice(1).length === 0) {
+const itemType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_);
+const listType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("List"), [itemType_]);
+ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, listType_);
+const headVariables_ = ff_compiler_Inference.Inference_inferPattern(self_, environment_, itemType_, head_);
+const tailVariables_ = ff_compiler_Inference.Inference_inferPattern(self_, environment_, listType_, tail_);
+return ff_core_Map.Map_addAll(headVariables_, tailVariables_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+return
+}
+}
+}
+}
+}
+}
+{
+if(_1.PVariant) {
+const at_ = _1.at_;
 const name_ = _1.name_;
 const patterns_ = _1.patterns_;
-const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, at_, name_, ff_core_List.Empty(), ff_core_Option.None()), (() => {
+const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, at_, name_, [], ff_core_Option.None()), (() => {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, instantiated_.scheme_.signature_.returnType_);
@@ -2697,7 +2767,7 @@ return box_
 })()))
 : ff_core_Option.None());
 function literal_(coreTypeName_) {
-ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, expected_, ff_compiler_Syntax.TConstructor(term_.at_, ff_compiler_Inference.core_(coreTypeName_), ff_core_List.Empty()));
+ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, expected_, ff_compiler_Syntax.TConstructor(term_.at_, ff_compiler_Inference.core_(coreTypeName_), []));
 return term_
 }
 {
@@ -2729,7 +2799,7 @@ return
 {
 if(_1.EVariable) {
 const e_ = _1;
-return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, ff_core_List.Empty(), ff_core_Option.None()), ((instantiated_) => {
+return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, [], ff_core_Option.None()), ((instantiated_) => {
 if(instantiated_.scheme_.isVariable_) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
 return term_
@@ -2766,7 +2836,7 @@ const symbolHook_ = ff_compiler_LspHook.SymbolHook(e_.field_, e_.at_, e_.at_);
 const noEffect_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferRecordFieldHook(self_.unification_, environment_, expected_, t_, e_.field_))
 };
-const fieldNames_ = ff_core_List.List_dropFirst(ff_core_Array.Array_toList(ff_core_String.String_split(name_, 36)), 1);
+const fieldNames_ = ff_core_List.List_dropFirst(ff_core_String.String_split(name_, 36), 1);
 return ff_core_Option.Option_else(ff_core_Option.Option_elseIf(ff_core_Option.Option_map(ff_core_Option.Option_map(ff_core_List.List_find(ff_core_List.List_pairs(fieldNames_), ((_w1) => {
 return (_w1.second_ === e_.field_)
 })), ((_w1) => {
@@ -2787,7 +2857,7 @@ return ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)
 }), (() => {
 return term_
 })), (() => {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, ff_core_List.Empty()))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }))
 return
 }
@@ -2833,7 +2903,7 @@ return
 }
 {
 if(_1.None) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, ff_core_List.Empty()))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -2864,7 +2934,7 @@ return
 {
 if(_1.EWildcard) {
 const e_ = _1;
-return ff_core_Option.Option_grab(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, ("_w" + e_.index_), ff_core_List.Empty(), ff_core_Option.None()), ((instantiated_) => {
+return ff_core_Option.Option_grab(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, ("_w" + e_.index_), [], ff_core_Option.None()), ((instantiated_) => {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
 return term_
 })))
@@ -2876,7 +2946,7 @@ if(_1.EList) {
 const at_ = _1.at_;
 const t_ = _1.elementType_;
 const items_ = _1.items_;
-const listType_ = ff_compiler_Syntax.TConstructor(term_.at_, ff_compiler_Inference.core_("List"), ff_core_List.Link(t_, ff_core_List.Empty()));
+const listType_ = ff_compiler_Syntax.TConstructor(term_.at_, ff_compiler_Inference.core_("List"), [t_]);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, listType_);
 return ff_compiler_Syntax.EList(at_, t_, ff_core_List.List_map(items_, ((_1) => {
 {
@@ -2912,7 +2982,7 @@ const at2_ = _1.function_.at_;
 const at3_ = _1.function_.lambda_.at_;
 const effect3_ = _1.function_.lambda_.effect_;
 const cases_ = _1.function_.lambda_.cases_;
-const e_ = ff_compiler_Syntax.EVariant(at_, "ff:core/Unit.Unit", ff_core_List.Empty(), ff_core_Option.None());
+const e_ = ff_compiler_Syntax.EVariant(at_, "ff:core/Unit.Unit", [], ff_core_Option.None());
 const newCases_ = ff_core_List.List_map(cases_, ((case_) => {
 {
 const _1 = case_;
@@ -2930,7 +3000,7 @@ const _1 = after_;
 if(_1.EVariant) {
 const at_ = _1.at_;
 if(_1.name_ == "ff:core/Unit.Unit") {
-const unitType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), ff_core_List.Empty());
+const unitType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), []);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, unitType_);
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, newPipe_)
 return
@@ -2957,8 +3027,8 @@ return
 {
 if(_1.ELet) {
 const e_ = _1;
-const noEffect_ = ff_compiler_Syntax.TConstructor(e_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-const scheme_ = ff_compiler_Environment.Scheme(true, e_.mutable_, false, false, ff_compiler_Syntax.Signature(e_.at_, e_.name_, false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), e_.valueType_, noEffect_));
+const noEffect_ = ff_compiler_Syntax.TConstructor(e_.at_, "ff:core/Nothing.Nothing", []);
+const scheme_ = ff_compiler_Environment.Scheme(true, e_.mutable_, false, false, ff_compiler_Syntax.Signature(e_.at_, e_.name_, false, [], [], [], e_.valueType_, noEffect_));
 const environment2_ = (((_c) => {
 return ff_compiler_Environment.Environment(_c.modulePrefix_, ff_core_Map.Map_add(environment_.symbols_, e_.name_, scheme_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.imports_, _c.effect_, _c.selfVariable_)
 }))(environment_);
@@ -2980,13 +3050,13 @@ const l_ = _1.lambda_;
 do {
 const _1 = l_.cases_;
 {
-if(_1.Link) {
-if(_1.head_.patterns_.Empty) {
-if(_1.head_.guards_.Empty) {
-if(_1.head_.body_.EVariable) {
-const insideAt_ = _1.head_.body_.at_;
-if(_1.head_.body_.name_ == "") {
-if(_1.tail_.Empty) {
+if(_1.length !== 0) {
+if(_1[0].patterns_.length === 0) {
+if(_1[0].guards_.length === 0) {
+if(_1[0].body_.EVariable) {
+const insideAt_ = _1[0].body_.at_;
+if(_1[0].body_.name_ == "") {
+if(_1.slice(1).length === 0) {
 const _guard1 = ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_);
 if(_guard1) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferLambdaStartHook(self_.unification_, environment_, expected_))
@@ -3000,16 +3070,16 @@ break
 }
 }
 {
-if(_1.Link) {
-if(_1.head_.patterns_.Empty) {
-if(_1.head_.guards_.Empty) {
-if(_1.head_.body_.ESequential) {
-if(_1.head_.body_.before_.EVariable) {
-const insideAt_ = _1.head_.body_.before_.at_;
-if(_1.head_.body_.before_.name_ == "") {
-if(_1.head_.body_.after_.EVariant) {
-if(_1.head_.body_.after_.name_ == "ff:core/Unit.Unit") {
-if(_1.tail_.Empty) {
+if(_1.length !== 0) {
+if(_1[0].patterns_.length === 0) {
+if(_1[0].guards_.length === 0) {
+if(_1[0].body_.ESequential) {
+if(_1[0].body_.before_.EVariable) {
+const insideAt_ = _1[0].body_.before_.at_;
+if(_1[0].body_.before_.name_ == "") {
+if(_1[0].body_.after_.EVariant) {
+if(_1[0].body_.after_.name_ == "ff:core/Unit.Unit") {
+if(_1.slice(1).length === 0) {
 const _guard1 = ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_);
 if(_guard1) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferLambdaStartHook(self_.unification_, environment_, expected_))
@@ -3072,7 +3142,7 @@ return _w1.name_
 })), "$")), ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.valueType_
 })));
-const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, "Function$1", ff_core_List.Link(ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_), ff_core_List.Link(instantiated_.scheme_.signature_.returnType_, ff_core_List.Link(ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Option"), ff_core_List.Link(recordType_, ff_core_List.Empty())), ff_core_List.Empty()))));
+const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, "Function$1", [ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_), instantiated_.scheme_.signature_.returnType_, ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Option"), [recordType_])]);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, functionType_);
 {
 const _1 = e_;
@@ -3090,7 +3160,7 @@ return
 {
 if(_1.ECopy) {
 const e_ = _1;
-const scheme_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, ff_core_List.Empty(), ff_core_Option.None()), (() => {
+const scheme_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, [], ff_core_Option.None()), (() => {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 })).scheme_;
 if(scheme_.isNewtype_) {
@@ -3157,9 +3227,9 @@ return ff_compiler_Syntax.Location((e_.at_.file_ + "/<copy>"), _c.line_, _c.colu
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(name_), ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "_c"), name_))
 }))
 }));
-const body_ = ff_compiler_Syntax.EVariant(e_.at_, e_.name_, ff_core_List.Empty(), ff_core_Option.Some(arguments_));
+const body_ = ff_compiler_Syntax.EVariant(e_.at_, e_.name_, [], ff_core_Option.Some(arguments_));
 const effect_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
-const e1_ = ff_compiler_Syntax.EPipe(e_.at_, e_.record_, effect_, ff_compiler_Syntax.ELambda(e_.at_, ff_compiler_Syntax.Lambda(e_.at_, effect_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(e_.at_, ff_core_List.Link(ff_compiler_Syntax.PVariable(e_.at_, ff_core_Option.Some("_c")), ff_core_List.Empty()), ff_core_List.Empty(), body_), ff_core_List.Empty()))));
+const e1_ = ff_compiler_Syntax.EPipe(e_.at_, e_.record_, effect_, ff_compiler_Syntax.ELambda(e_.at_, ff_compiler_Syntax.Lambda(e_.at_, effect_, [ff_compiler_Syntax.MatchCase(e_.at_, [ff_compiler_Syntax.PVariable(e_.at_, ff_core_Option.Some("_c"))], [], body_)])));
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, e1_)
 return
 }
@@ -3168,7 +3238,7 @@ return
 if(_1.EPipe) {
 const e_ = _1;
 const valueType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
-const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, "Function$1", ff_core_List.Link(e_.effect_, ff_core_List.Link(valueType_, ff_core_List.Link(expected_, ff_core_List.Empty()))));
+const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, "Function$1", [e_.effect_, valueType_, expected_]);
 const value_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, valueType_, e_.value_);
 const function_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, functionType_, e_.function_);
 ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, e_.effect_, environment_.effect_);
@@ -3275,9 +3345,9 @@ const t_ = _1;
 if(_1.TConstructor) {
 const name_ = _1.name_;
 const methodName_ = ((name_ + "_") + f_.field_);
-const arguments_ = ff_core_List.Link(ff_compiler_Syntax.Argument(f_.record_.at_, ff_core_Option.None(), f_.record_), e_.arguments_);
+const arguments_ = [ff_compiler_Syntax.Argument(f_.record_.at_, ff_core_Option.None(), f_.record_), ...e_.arguments_];
 {
-const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, f_.at_, methodName_, ff_core_List.Empty(), ff_core_Option.Some(arguments_));
+const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, f_.at_, methodName_, [], ff_core_Option.Some(arguments_));
 {
 if(_1.Some) {
 const instantiated_ = _1.value_;
@@ -3297,7 +3367,7 @@ return
 }
 {
 if(_1.None) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, ff_core_List.Empty()))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -3396,7 +3466,7 @@ return
 {
 if(_1.EAssign) {
 const e_ = _1;
-return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.variable_, ff_core_List.Empty(), ff_core_Option.None()), ((instantiated_) => {
+return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.variable_, [], ff_core_Option.None()), ((instantiated_) => {
 if((instantiated_.scheme_.isMutable_ || ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_))) {
 const value_ = ff_compiler_Inference.Inference_inferAssignment(self_, environment_, expected_, e_.at_, e_.operator_, e_.value_, instantiated_.scheme_.signature_);
 {
@@ -3464,13 +3534,13 @@ return
 {
 if(_1.Some) {
 const instantiated_ = _1.value_;
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("Can't assign an immutable field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, ff_core_List.Empty()))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("Can't assign an immutable field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
 {
 if(_1.None) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, ff_core_List.Empty()))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -3504,12 +3574,12 @@ return
 export async function Inference_inferAssignment$(self_, environment_, expected_, at_, operator_, value_, signature_, $task) {
 const t_ = signature_.returnType_;
 if(((operator_ === "+") || (operator_ === "-"))) {
-ff_compiler_Unification.Unification_unify(self_.unification_, at_, t_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Int"), ff_core_List.Empty()))
+ff_compiler_Unification.Unification_unify(self_.unification_, at_, t_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Int"), []))
 } else if((operator_ !== "")) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, (("Only +=, -= and = assignments are supported. Got: " + operator_) + "=")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else {};
 const newValue_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, value_);
-ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), ff_core_List.Empty()));
+ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), []));
 return newValue_
 }
 
@@ -3554,7 +3624,7 @@ const _1 = e_;
 const _c = _1;
 return ff_compiler_Syntax.ECall(_c.at_, ff_compiler_Syntax.StaticCall(name_, call_.tailCall_, false), signature_.effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
 return _w1.second_
-})), ff_core_List.Link(selfArgument_, arguments_), _c.dictionaries_)
+})), [selfArgument_, ...arguments_], _c.dictionaries_)
 return
 }
 }
@@ -3646,7 +3716,7 @@ const effect_ = ff_compiler_Unification.Unification_freshUnificationVariable(sel
 const argumentTypes_ = ff_core_List.List_map(e_.arguments_, ((_w1) => {
 return ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, _w1.at_)
 }));
-const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, ("Function$" + ff_core_List.List_size(e_.arguments_)), ff_core_List.Link(effect_, ff_core_List.List_addAll(argumentTypes_, ff_core_List.Link(expected_, ff_core_List.Empty()))));
+const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, ("Function$" + ff_core_List.List_size(e_.arguments_)), [effect_, ...argumentTypes_, expected_]);
 const function_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, functionType_, call_.function_);
 const arguments_ = ff_core_List.List_map(ff_core_List.List_zip(e_.arguments_, argumentTypes_), ((_1) => {
 {
@@ -3676,7 +3746,7 @@ const _1 = e_;
 const _c = _1;
 return ff_compiler_Syntax.ECall(_c.at_, (((_c) => {
 return ff_compiler_Syntax.DynamicCall(function_, _c.tailCall_)
-}))(call_), effect_, ff_core_List.Empty(), arguments_, _c.dictionaries_)
+}))(call_), effect_, [], arguments_, _c.dictionaries_)
 return
 }
 }
@@ -3700,21 +3770,21 @@ const target_ = ff_compiler_Syntax.StaticCall(operator_, false, false);
 {
 const _1 = e_.arguments_;
 {
-if(_1.Link) {
-const a1_ = _1.head_;
-if(_1.tail_.Empty) {
+if(_1.length !== 0) {
+const a1_ = _1[0];
+if(_1.slice(1).length === 0) {
 const _guard1 = (operator_ === "!");
 if(_guard1) {
-const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty());
+const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), []);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a1_.value_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_);
 {
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link((((_c) => {
+return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, [(((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
-}))(a1_), ff_core_List.Empty()), _c.dictionaries_)
+}))(a1_)], _c.dictionaries_)
 return
 }
 }
@@ -3724,9 +3794,9 @@ return
 }
 }
 {
-if(_1.Link) {
-const a1_ = _1.head_;
-if(_1.tail_.Empty) {
+if(_1.length !== 0) {
+const a1_ = _1[0];
+if(_1.slice(1).length === 0) {
 const _guard1 = (operator_ === "-");
 if(_guard1) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
@@ -3736,7 +3806,7 @@ const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t1
 {
 if(_1.TConstructor) {
 const name_ = _1.name_;
-if(_1.generics_.Empty) {
+if(_1.generics_.length === 0) {
 const _guard1 = (name_ === ff_compiler_Inference.core_("Float"));
 if(_guard1) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
@@ -3748,7 +3818,7 @@ break
 {
 if(_1.TConstructor) {
 const name_ = _1.name_;
-if(_1.generics_.Empty) {
+if(_1.generics_.length === 0) {
 const _guard1 = (name_ === ff_compiler_Inference.core_("Int"));
 if(_guard1) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
@@ -3773,9 +3843,9 @@ break
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link((((_c) => {
+return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, [(((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
-}))(a1_), ff_core_List.Empty()), _c.dictionaries_)
+}))(a1_)], _c.dictionaries_)
 return
 }
 }
@@ -3785,14 +3855,14 @@ return
 }
 }
 {
-if(_1.Link) {
-const a1_ = _1.head_;
-if(_1.tail_.Link) {
-const a2_ = _1.tail_.head_;
-if(_1.tail_.tail_.Empty) {
+if(_1.length !== 0) {
+const a1_ = _1[0];
+if(_1.slice(1).length !== 0) {
+const a2_ = _1.slice(1)[0];
+if(_1.slice(1).slice(1).length === 0) {
 const _guard1 = ((operator_ === "||") || (operator_ === "&&"));
 if(_guard1) {
-const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty());
+const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), []);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a1_.value_);
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a2_.value_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_);
@@ -3800,11 +3870,11 @@ ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_,
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link((((_c) => {
+return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, [(((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
-}))(a1_), ff_core_List.Link((((_c) => {
+}))(a1_), (((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
-}))(a2_), ff_core_List.Empty())), _c.dictionaries_)
+}))(a2_)], _c.dictionaries_)
 return
 }
 }
@@ -3815,26 +3885,26 @@ return
 }
 }
 {
-if(_1.Link) {
-const a1_ = _1.head_;
-if(_1.tail_.Link) {
-const a2_ = _1.tail_.head_;
-if(_1.tail_.tail_.Empty) {
+if(_1.length !== 0) {
+const a1_ = _1[0];
+if(_1.slice(1).length !== 0) {
+const a2_ = _1.slice(1)[0];
+if(_1.slice(1).slice(1).length === 0) {
 const _guard1 = ((operator_ === "===") || (operator_ === "!=="));
 if(_guard1) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_);
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a2_.value_);
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty()));
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), []));
 {
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link((((_c) => {
+return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, [(((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
-}))(a1_), ff_core_List.Link((((_c) => {
+}))(a1_), (((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
-}))(a2_), ff_core_List.Empty())), _c.dictionaries_)
+}))(a2_)], _c.dictionaries_)
 return
 }
 }
@@ -3845,11 +3915,11 @@ return
 }
 }
 {
-if(_1.Link) {
-const a1_ = _1.head_;
-if(_1.tail_.Link) {
-const a2_ = _1.tail_.head_;
-if(_1.tail_.tail_.Empty) {
+if(_1.length !== 0) {
+const a1_ = _1[0];
+if(_1.slice(1).length !== 0) {
+const a2_ = _1.slice(1)[0];
+if(_1.slice(1).slice(1).length === 0) {
 const _guard1 = ((((((operator_ === "+") || (operator_ === "-")) || (operator_ === "*")) || (operator_ === "/")) || (operator_ === "%")) || (operator_ === "^"));
 if(_guard1) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
@@ -3862,7 +3932,7 @@ const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_
 {
 if(_1.TConstructor) {
 const name_ = _1.name_;
-if(_1.generics_.Empty) {
+if(_1.generics_.length === 0) {
 const _guard1 = (name_ === ff_compiler_Inference.core_("Float"));
 if(_guard1) {
 return ff_core_Option.Some("Float")
@@ -3874,7 +3944,7 @@ return
 {
 if(_1.TConstructor) {
 const name_ = _1.name_;
-if(_1.generics_.Empty) {
+if(_1.generics_.length === 0) {
 const _guard1 = (name_ === ff_compiler_Inference.core_("Int"));
 if(_guard1) {
 return ff_core_Option.Some("Int")
@@ -3886,7 +3956,7 @@ return
 {
 if(_1.TConstructor) {
 const name_ = _1.name_;
-if(_1.generics_.Empty) {
+if(_1.generics_.length === 0) {
 const _guard1 = ((operator_ === "+") && (name_ === ff_compiler_Inference.core_("String")));
 if(_guard1) {
 return ff_core_Option.Some("String")
@@ -4009,11 +4079,11 @@ chooseType_(magic_(t1_), magic_(t2_));
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link((((_c) => {
+return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, [(((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
-}))(a1_), ff_core_List.Link((((_c) => {
+}))(a1_), (((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
-}))(a2_), ff_core_List.Empty())), _c.dictionaries_)
+}))(a2_)], _c.dictionaries_)
 return
 }
 }
@@ -4044,13 +4114,13 @@ return ff_core_Option.Option_isEmpty(_w1.default_)
 return p_.name_
 }));
 const effect1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_);
-const body_ = ff_compiler_Syntax.ECall(at_, ff_compiler_Syntax.DynamicCall(term_, false), effect1_, ff_core_List.Empty(), ff_core_List.List_map(parameters_, ((x_) => {
+const body_ = ff_compiler_Syntax.ECall(at_, ff_compiler_Syntax.DynamicCall(term_, false), effect1_, [], ff_core_List.List_map(parameters_, ((x_) => {
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(x_), ff_compiler_Syntax.EVariable(at_, x_))
-})), ff_core_List.Empty());
+})), []);
 const effect2_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_);
-const lambda_ = ff_compiler_Syntax.ELambda(at_, ff_compiler_Syntax.Lambda(at_, effect2_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.List_map(parameters_, ((_w1) => {
+const lambda_ = ff_compiler_Syntax.ELambda(at_, ff_compiler_Syntax.Lambda(at_, effect2_, [ff_compiler_Syntax.MatchCase(at_, ff_core_List.List_map(parameters_, ((_w1) => {
 return ff_compiler_Syntax.PVariable(at_, ff_core_Option.Some(_w1))
-})), ff_core_List.Empty(), body_), ff_core_List.Empty())));
+})), [], body_)]));
 return ff_compiler_Inference.Inference_inferTerm(self_, (((_c) => {
 return ff_compiler_Environment.Environment(_c.modulePrefix_, _c.symbols_, _c.traits_, _c.imports_, effect2_, _c.selfVariable_)
 }))(environment_), expected_, lambda_)
@@ -4094,17 +4164,17 @@ return ff_compiler_Syntax.Argument(callAt_, ff_core_Option.Some(p_.name_), ff_co
 {
 const _1 = remainingArguments_;
 {
-if(_1.Empty) {
+if(_1.length === 0) {
 return defaultArgument_()
 return
 }
 }
 {
-if(_1.Link) {
-const at_ = _1.head_.at_;
-if(_1.head_.name_.None) {
-const e_ = _1.head_.value_;
-const remaining_ = _1.tail_;
+if(_1.length !== 0) {
+const at_ = _1[0].at_;
+if(_1[0].name_.None) {
+const e_ = _1[0].value_;
+const remaining_ = _1.slice(1);
 remainingArguments_ = remaining_;
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, e_);
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(p_.name_), e2_)
@@ -4153,7 +4223,7 @@ return
 }));
 return newArguments_
 } else {
-return ff_core_List.List_addAll(newArguments_, ff_core_List.List_map(remainingArguments_, ((a_) => {
+return [...newArguments_, ...ff_core_List.List_map(remainingArguments_, ((a_) => {
 {
 const _1 = a_;
 {
@@ -4162,7 +4232,7 @@ return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Inference.Infer
 return
 }
 }
-})))
+}))]
 }
 }
 
@@ -4170,7 +4240,7 @@ export async function Inference_lookup$(self_, environment_, expected_, at_, sym
 return ff_core_Option.Option_elseIf(ff_compiler_Inference.Inference_lookupOption(self_, environment_, expected_, at_, symbol_, typeArguments_), (() => {
 return ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)
 }), (() => {
-const instantiated_ = ff_compiler_Environment.Instantiated(ff_core_List.Empty(), ff_compiler_Environment.Scheme(ff_core_Option.Option_isEmpty(arguments_), false, false, false, ff_compiler_Syntax.Signature(at_, symbol_, false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.List_map(ff_core_List.List_pairs(ff_core_List.List_flatten(ff_core_Option.Option_toList(arguments_))), ((_1) => {
+const instantiated_ = ff_compiler_Environment.Instantiated([], ff_compiler_Environment.Scheme(ff_core_Option.Option_isEmpty(arguments_), false, false, false, ff_compiler_Syntax.Signature(at_, symbol_, false, [], [], ff_core_List.List_map(ff_core_List.List_pairs(ff_core_List.List_flatten(ff_core_Option.Option_toList(arguments_))), ((_1) => {
 {
 const i_ = _1.first_;
 const a_ = _1.second_;
@@ -4204,7 +4274,7 @@ const instantiation_ = ((!ff_core_List.List_isEmpty(typeArguments_))
 const newTypeArguments_ = (((!scheme_.isVariable_) && ff_core_Option.Option_any(ff_core_List.List_first(scheme_.signature_.generics_), ((_w1) => {
 return (_w1 === "Q$")
 })))
-? ff_core_List.Link(ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_), typeArguments_)
+? [ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_), ...typeArguments_]
 : typeArguments_);
 if(((ff_core_List.List_size(scheme_.signature_.generics_) !== ff_core_List.List_size(newTypeArguments_)) && (!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)))) {
 const extra_ = (ff_core_List.List_size(newTypeArguments_) - ff_core_List.List_size(typeArguments_));
@@ -4235,7 +4305,7 @@ return ff_compiler_Unification.Unification_instantiate(self_.unification_, insta
 ff_compiler_Unification.Unification_constrain(self_.unification_, at_, ff_core_List.List_grabFirst(generics_), c_.name_, ff_core_List.List_dropFirst(generics_, 1))
 }));
 const signature_ = (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, ff_core_List.Empty(), ff_core_List.Empty(), parameters_, returnType_, effect_)
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, [], [], parameters_, returnType_, effect_)
 }))(scheme_.signature_);
 const instantiated_ = ff_compiler_Environment.Instantiated(instantiation_, (((_c) => {
 return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtype_, _c.isTraitMethod_, signature_)

@@ -2,8 +2,6 @@
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -447,7 +445,7 @@ return
 {
 if(_1.Some) {
 const x_ = _1.value_;
-let list_ = ff_core_List.Link(x_, ff_core_List.Empty());
+let list_ = [x_];
 remaining_ -= 1;
 while((remaining_ > 0)) {
 remaining_ -= 1;
@@ -462,7 +460,7 @@ break
 {
 if(_1.Some) {
 const x_ = _1.value_;
-list_ = ff_core_List.Link(x_, list_)
+list_ = [x_, ...list_]
 break
 }
 }
@@ -671,12 +669,8 @@ ff_core_Stack.Stack_push(stack_, _w1)
 return stack_
 }
 
-export function Stream_toArray(self_) {
-return ff_core_Stack.Stack_drain(ff_core_Stream.Stream_toStack(self_))
-}
-
 export function Stream_toList(self_) {
-return ff_core_Stack.Stack_toList(ff_core_Stream.Stream_toStack(self_), 0, 9007199254740991)
+return ff_core_Stack.Stack_drain(ff_core_Stream.Stream_toStack(self_))
 }
 
 export async function Stream_addAll$(self_, that_, $task) {
@@ -973,7 +967,7 @@ return
 {
 if(_1.Some) {
 const x_ = _1.value_;
-let list_ = ff_core_List.Link(x_, ff_core_List.Empty());
+let list_ = [x_];
 remaining_ -= 1;
 while((remaining_ > 0)) {
 remaining_ -= 1;
@@ -988,7 +982,7 @@ break
 {
 if(_1.Some) {
 const x_ = _1.value_;
-list_ = ff_core_List.Link(x_, list_)
+list_ = [x_, ...list_]
 break
 }
 }
@@ -1197,12 +1191,8 @@ ff_core_Stack.Stack_push(stack_, _w1)
 return stack_
 }
 
-export async function Stream_toArray$(self_, $task) {
-return ff_core_Stack.Stack_drain((await ff_core_Stream.Stream_toStack$(self_, $task)))
-}
-
 export async function Stream_toList$(self_, $task) {
-return ff_core_Stack.Stack_toList((await ff_core_Stream.Stream_toStack$(self_, $task)), 0, 9007199254740991)
+return ff_core_Stack.Stack_drain((await ff_core_Stream.Stream_toStack$(self_, $task)))
 }
 
 export function Stream_flatten(self_) {
@@ -1218,19 +1208,19 @@ return _w1
 }
 
 export function Stream_toSet(self_, ff_core_Ordering_Order$T) {
-return ff_core_Array.Array_toSet(ff_core_Stream.Stream_toArray(self_), ff_core_Ordering_Order$T)
+return ff_core_List.List_toSet(ff_core_Stream.Stream_toList(self_), ff_core_Ordering_Order$T)
 }
 
 export async function Stream_toSet$(self_, ff_core_Ordering_Order$T, $task) {
-return ff_core_Array.Array_toSet((await ff_core_Stream.Stream_toArray$(self_, $task)), ff_core_Ordering_Order$T)
+return ff_core_List.List_toSet((await ff_core_Stream.Stream_toList$(self_, $task)), ff_core_Ordering_Order$T)
 }
 
 export function Stream_toMap(self_, ff_core_Ordering_Order$K) {
-return ff_core_Array.Array_toMap(ff_core_Stream.Stream_toArray(self_), ff_core_Ordering_Order$K)
+return ff_core_List.List_toMap(ff_core_Stream.Stream_toList(self_), ff_core_Ordering_Order$K)
 }
 
 export async function Stream_toMap$(self_, ff_core_Ordering_Order$K, $task) {
-return ff_core_Array.Array_toMap((await ff_core_Stream.Stream_toArray$(self_, $task)), ff_core_Ordering_Order$K)
+return ff_core_List.List_toMap((await ff_core_Stream.Stream_toList$(self_, $task)), ff_core_Ordering_Order$K)
 }
 
 export function Stream_toBuffer(self_) {
@@ -1247,7 +1237,7 @@ return ff_core_Buffer.Buffer_toString(ff_core_Stream.Stream_toBuffer(self_), enc
 
 export function Stream_readBytes(self_, bytes_) {
 if((bytes_ <= 0)) {
-return ff_core_Pair.Pair(ff_core_List.List_toArray(ff_core_List.Empty()), self_)
+return ff_core_Pair.Pair([], self_)
 } else {
 const buffers_ = ff_core_Stack.make_();
 let buffer_ = ff_core_Option.Option_grab(self_.next_());
@@ -1282,7 +1272,7 @@ return ff_core_Buffer.Buffer_toString((await ff_core_Stream.Stream_toBuffer$(sel
 
 export async function Stream_readBytes$(self_, bytes_, $task) {
 if((bytes_ <= 0)) {
-return ff_core_Pair.Pair(ff_core_List.List_toArray(ff_core_List.Empty()), self_)
+return ff_core_Pair.Pair([], self_)
 } else {
 const buffers_ = ff_core_Stack.make_();
 let buffer_ = ff_core_Option.Option_grab((await self_.next_($task)));

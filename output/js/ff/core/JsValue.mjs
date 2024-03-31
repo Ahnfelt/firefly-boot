@@ -2,8 +2,6 @@
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -238,7 +236,7 @@ for(const value of self_) if(!body_(value)) break
 }
 
 export function JsValue_call(self_, name_, arguments_) {
-return self_[name_].apply(this_, ff_core_List.List_toArray(arguments_))
+return self_[name_].apply(this_, arguments_)
 }
 
 export function JsValue_call0(self_, name_) {
@@ -282,7 +280,7 @@ return self_[name_].call(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_)
 }
 
 export function JsValue_callValue(self_, this_, arguments_) {
-return self_.apply(this_, ff_core_List.List_toArray(arguments_))
+return self_.apply(this_, arguments_)
 }
 
 export function JsValue_callValue0(self_) {
@@ -326,7 +324,7 @@ return self_.call(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_)
 }
 
 export function JsValue_new(self_, this_, arguments_) {
-return new (Function.prototype.bind.apply(self_, ff_core_List.List_toArray(arguments_)))
+return new (Function.prototype.bind.apply(self_, arguments_))
 }
 
 export function JsValue_new0(self_) {
@@ -372,12 +370,7 @@ return new self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_)
 export function JsValue_grabPairs(self_) {
 
             if(!(self_ instanceof Object)) throw new Error('Expected object, got '+ typeof self_);;
-            let result = ff_core_List.Empty();
-            Object.getOwnPropertyNames(self_).forEach((name, i) => {
-                let pair = ff_core_Pair.Pair(name, self_[name]);
-                result = ff_core_List.Link(pair, result);
-            })
-            return result;
+            return Object.getOwnPropertyNames(self_).map((name, i) => ff_core_Pair.Pair(name, self_[name]));
         
 }
 
@@ -699,7 +692,7 @@ export const ff_core_JsValue_IsJsValue$ff_core_Bool_Bool = {
 
 };
 
-export function ff_core_JsValue_IsJsValue$ff_core_Array_Array(ff_core_JsValue_IsJsValue$T) { return {
+export function ff_core_JsValue_IsJsValue$ff_core_List_List(ff_core_JsValue_IsJsValue$T) { return {
 
 }}
 

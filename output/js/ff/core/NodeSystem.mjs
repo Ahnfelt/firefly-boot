@@ -6,8 +6,6 @@ import * as import$2 from 'url';
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -130,13 +128,13 @@ export function NodeSystem_assets(self_) {
 const assetPkgSnapshotPath_ = ff_core_NodeSystem.NodeSystem_path(self_, "/snapshot/output/assets");
 if(ff_core_Path.Path_isDirectory(assetPkgSnapshotPath_)) {
 function streams_(path_) {
-return ff_core_Stream.Stream_flatMap(ff_core_Array.Array_toStream(ff_core_NodeSystem.internalListDirectoryWithoutOpendir_(self_, path_), false), ((file_) => {
+return ff_core_Stream.Stream_flatMap(ff_core_List.List_toStream(ff_core_NodeSystem.internalListDirectoryWithoutOpendir_(self_, path_), false), ((file_) => {
 if(ff_core_Path.Path_isDirectory(file_)) {
 return streams_(file_)
 } else {
-return ff_core_List.List_toStream(ff_core_List.Link(ff_core_Pair.Pair(("/" + ff_core_Path.Path_relativeTo(file_, assetPkgSnapshotPath_)), (() => {
+return ff_core_List.List_toStream([ff_core_Pair.Pair(("/" + ff_core_Path.Path_relativeTo(file_, assetPkgSnapshotPath_)), (() => {
 return ff_core_Path.Path_readStream(file_)
-})), ff_core_List.Empty()), false)
+}))], false)
 }
 }))
 }
@@ -218,13 +216,13 @@ export async function NodeSystem_assets$(self_, $task) {
 const assetPkgSnapshotPath_ = (await ff_core_NodeSystem.NodeSystem_path$(self_, "/snapshot/output/assets", $task));
 if((await ff_core_Path.Path_isDirectory$(assetPkgSnapshotPath_, $task))) {
 async function streams_$(path_, $task) {
-return (await ff_core_Stream.Stream_flatMap$((await ff_core_Array.Array_toStream$((await ff_core_NodeSystem.internalListDirectoryWithoutOpendir_$(self_, path_, $task)), false, $task)), (async (file_, $task) => {
+return (await ff_core_Stream.Stream_flatMap$((await ff_core_List.List_toStream$((await ff_core_NodeSystem.internalListDirectoryWithoutOpendir_$(self_, path_, $task)), false, $task)), (async (file_, $task) => {
 if((await ff_core_Path.Path_isDirectory$(file_, $task))) {
 return (await streams_$(file_, $task))
 } else {
-return (await ff_core_List.List_toStream$(ff_core_List.Link(ff_core_Pair.Pair(("/" + (await ff_core_Path.Path_relativeTo$(file_, assetPkgSnapshotPath_, $task))), (async ($task) => {
+return (await ff_core_List.List_toStream$([ff_core_Pair.Pair(("/" + (await ff_core_Path.Path_relativeTo$(file_, assetPkgSnapshotPath_, $task))), (async ($task) => {
 return (await ff_core_Path.Path_readStream$(file_, $task))
-})), ff_core_List.Empty()), false, $task))
+}))], false, $task))
 }
 }), $task))
 }

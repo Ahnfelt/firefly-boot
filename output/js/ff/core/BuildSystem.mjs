@@ -2,8 +2,6 @@ import * as import$0 from 'esbuild';
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -121,7 +119,7 @@ return ff_core_Stream.Stream_flatMap(ff_core_Path.Path_entries(currentPath_), ((
 if(ff_core_Path.PathEntry_isDirectory(file_)) {
 return go_(ff_core_Path.PathEntry_path(file_))
 } else {
-return ff_core_List.List_toStream(ff_core_List.Link(ff_core_Path.PathEntry_path(file_), ff_core_List.Empty()), false)
+return ff_core_List.List_toStream([ff_core_Path.PathEntry_path(file_)], false)
 }
 }))
 }
@@ -182,7 +180,7 @@ return (await ff_core_Stream.Stream_flatMap$((await ff_core_Path.Path_entries$(c
 if((await ff_core_Path.PathEntry_isDirectory$(file_, $task))) {
 return (await go_$((await ff_core_Path.PathEntry_path$(file_, $task)), $task))
 } else {
-return (await ff_core_List.List_toStream$(ff_core_List.Link((await ff_core_Path.PathEntry_path$(file_, $task)), ff_core_List.Empty()), false, $task))
+return (await ff_core_List.List_toStream$([(await ff_core_Path.PathEntry_path$(file_, $task))], false, $task))
 }
 }), $task))
 }
@@ -286,13 +284,13 @@ const mainJsFile_ = ((((((prefix_ + "/") + self_.packageGroup_) + "/") + self_.p
 const mainDirectory_ = ff_core_Option.Option_grab(ff_core_Path.Path_parent(self_.mainFile_));
 const file_ = (prefix_ + "/Main.bundle.js");
 ff_core_BuildSystem.internalCallEsBuild_(self_, mainJsFile_, file_, minify_, sourceMap_);
-const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), (() => {
+const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap([ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), (() => {
 return ff_core_Path.Path_readStream(ff_core_Path.Path_path(mainDirectory_, file_))
-})), (sourceMap_
-? ff_core_List.Link(ff_core_Pair.Pair((ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)) + ".map"), (() => {
+})), ...(sourceMap_
+? [ff_core_Pair.Pair((ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)) + ".map"), (() => {
 return ff_core_Path.Path_readStream(ff_core_Path.Path_path(mainDirectory_, (file_ + ".map")))
-})), ff_core_List.Empty())
-: ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+}))]
+: [])], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
 return ff_core_BuildSystem.BrowserBundle(assets_)
 }
 
@@ -307,13 +305,13 @@ const mainJsFile_ = ((((((prefix_ + "/") + self_.packageGroup_) + "/") + self_.p
 const mainDirectory_ = ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(self_.mainFile_, $task)));
 const file_ = (prefix_ + "/Main.bundle.js");
 (await ff_core_BuildSystem.internalCallEsBuild_$(self_, mainJsFile_, file_, minify_, sourceMap_, $task));
-const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), (async ($task) => {
+const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap([ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), (async ($task) => {
 return (await ff_core_Path.Path_readStream$((await ff_core_Path.Path_path$(mainDirectory_, file_, $task)), $task))
-})), (sourceMap_
-? ff_core_List.Link(ff_core_Pair.Pair((ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)) + ".map"), (async ($task) => {
+})), ...(sourceMap_
+? [ff_core_Pair.Pair((ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)) + ".map"), (async ($task) => {
 return (await ff_core_Path.Path_readStream$((await ff_core_Path.Path_path$(mainDirectory_, (file_ + ".map"), $task)), $task))
-})), ff_core_List.Empty())
-: ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+}))]
+: [])], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
 return ff_core_BuildSystem.BrowserBundle(assets_)
 }
 

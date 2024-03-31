@@ -6,8 +6,6 @@ import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -572,7 +570,7 @@ const i_ = type_a.index_;
 if(ff_compiler_Substitution.Substitution_has(self_, i_)) {
 return ff_compiler_Substitution.Substitution_substituteType(self_, ff_compiler_Substitution.Substitution_get(self_, i_))
 } else {
-return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Nothing"), ff_core_List.Empty())
+return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Nothing"), [])
 }
 return
 }
@@ -614,7 +612,7 @@ return
 {
 if(_1.TVariable) {
 const at_ = _1.at_;
-return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Nothing"), ff_core_List.Empty())
+return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Nothing"), [])
 return
 }
 }
@@ -1091,7 +1089,7 @@ const i_ = type_a.index_;
 if(ff_compiler_Substitution.Substitution_has(self_, i_)) {
 return ff_compiler_Substitution.Substitution_substituteType(self_, ff_compiler_Substitution.Substitution_get(self_, i_))
 } else {
-return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Nothing"), ff_core_List.Empty())
+return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Nothing"), [])
 }
 return
 }
@@ -1133,7 +1131,7 @@ return
 {
 if(_1.TVariable) {
 const at_ = _1.at_;
-return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Nothing"), ff_core_List.Empty())
+return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Nothing"), [])
 return
 }
 }

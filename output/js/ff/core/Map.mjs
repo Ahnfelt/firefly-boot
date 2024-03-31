@@ -2,8 +2,6 @@
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -142,10 +140,6 @@ export function Map_toList(self_, ff_core_Ordering_Order$K) {
 return ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_Order$K)
 }
 
-export function Map_toArray(self_, ff_core_Ordering_Order$K) {
-return ff_core_List.List_toArray(ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_Order$K))
-}
-
 export function Map_toStream(self_, cycle_ = false, ff_core_Ordering_Order$K) {
 return ff_core_RbMap.RB_toStream(self_, cycle_, ff_core_Ordering_Order$K)
 }
@@ -249,10 +243,6 @@ export async function Map_toList$(self_, ff_core_Ordering_Order$K, $task) {
 return ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_Order$K)
 }
 
-export async function Map_toArray$(self_, ff_core_Ordering_Order$K, $task) {
-return ff_core_List.List_toArray(ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_Order$K))
-}
-
 export async function Map_toStream$(self_, cycle_ = false, ff_core_Ordering_Order$K, $task) {
 return (await ff_core_RbMap.RB_toStream$(self_, cycle_, ff_core_Ordering_Order$K, $task))
 }
@@ -322,17 +312,17 @@ return (await ff_core_RbMap.RB_find$(self_, body_, ff_core_Ordering_Order$K, $ta
 
 export function Map_addToList(self_, key_, value_, ff_core_Ordering_Order$K) {
 return ff_core_Map.Map_updateOrInsert(self_, key_, ((_w1) => {
-return ff_core_List.Link(value_, _w1)
+return [value_, ..._w1]
 }), (() => {
-return ff_core_List.Link(value_, ff_core_List.Empty())
+return [value_]
 }), ff_core_Ordering_Order$K)
 }
 
 export async function Map_addToList$(self_, key_, value_, ff_core_Ordering_Order$K, $task) {
 return ff_core_Map.Map_updateOrInsert(self_, key_, ((_w1) => {
-return ff_core_List.Link(value_, _w1)
+return [value_, ..._w1]
 }), (() => {
-return ff_core_List.Link(value_, ff_core_List.Empty())
+return [value_]
 }), ff_core_Ordering_Order$K)
 }
 
@@ -341,7 +331,7 @@ export function Map_push(self_, key_, value_, ff_core_Ordering_Order$K) {
 const _1 = ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K);
 {
 if(_1.None) {
-return ff_core_Map.Map_add(self_, key_, ff_core_List.List_toStack(ff_core_List.Link(value_, ff_core_List.Empty())), ff_core_Ordering_Order$K)
+return ff_core_Map.Map_add(self_, key_, ff_core_List.List_toStack([value_]), ff_core_Ordering_Order$K)
 return
 }
 }
@@ -361,7 +351,7 @@ export async function Map_push$(self_, key_, value_, ff_core_Ordering_Order$K, $
 const _1 = ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K);
 {
 if(_1.None) {
-return ff_core_Map.Map_add(self_, key_, ff_core_List.List_toStack(ff_core_List.Link(value_, ff_core_List.Empty())), ff_core_Ordering_Order$K)
+return ff_core_Map.Map_add(self_, key_, ff_core_List.List_toStack([value_]), ff_core_Ordering_Order$K)
 return
 }
 }

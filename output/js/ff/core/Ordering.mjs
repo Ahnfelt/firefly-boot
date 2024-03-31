@@ -2,8 +2,6 @@
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -569,32 +567,32 @@ compare_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
 {
-if(x_a.Empty) {
-if(y_a.Empty) {
+if(x_a.length === 0) {
+if(y_a.length === 0) {
 return ff_core_Ordering.OrderingSame()
 return
 }
 }
 }
 {
-if(x_a.Empty) {
+if(x_a.length === 0) {
 return ff_core_Ordering.OrderingBefore()
 return
 }
 }
 {
-if(y_a.Empty) {
+if(y_a.length === 0) {
 return ff_core_Ordering.OrderingAfter()
 return
 }
 }
 {
-if(x_a.Link) {
-const a_ = x_a.head_;
-const as_ = x_a.tail_;
-if(y_a.Link) {
-const b_ = y_a.head_;
-const bs_ = y_a.tail_;
+if(x_a.length !== 0) {
+const a_ = x_a[0];
+const as_ = x_a.slice(1);
+if(y_a.length !== 0) {
+const b_ = y_a[0];
+const bs_ = y_a.slice(1);
 {
 const _1 = ff_core_Ordering_Order$T.compare_(a_, b_);
 {
@@ -620,32 +618,32 @@ async compare_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
 {
-if(x_a.Empty) {
-if(y_a.Empty) {
+if(x_a.length === 0) {
+if(y_a.length === 0) {
 return ff_core_Ordering.OrderingSame()
 return
 }
 }
 }
 {
-if(x_a.Empty) {
+if(x_a.length === 0) {
 return ff_core_Ordering.OrderingBefore()
 return
 }
 }
 {
-if(y_a.Empty) {
+if(y_a.length === 0) {
 return ff_core_Ordering.OrderingAfter()
 return
 }
 }
 {
-if(x_a.Link) {
-const a_ = x_a.head_;
-const as_ = x_a.tail_;
-if(y_a.Link) {
-const b_ = y_a.head_;
-const bs_ = y_a.tail_;
+if(x_a.length !== 0) {
+const a_ = x_a[0];
+const as_ = x_a.slice(1);
+if(y_a.length !== 0) {
+const b_ = y_a[0];
+const bs_ = y_a.slice(1);
 {
 const _1 = ff_core_Ordering_Order$T.compare_(a_, b_);
 {

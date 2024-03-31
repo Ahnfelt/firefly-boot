@@ -6,8 +6,6 @@ import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -118,14 +116,14 @@ return ff_compiler_Workspace.parseWorkspaceFile_(workspaceFile_, packageDirector
 } else if((!ff_core_Option.Option_isEmpty(ff_core_Path.Path_parent(packageDirectory_)))) {
 return ff_compiler_Workspace.loadWorkspace_(ff_core_Option.Option_grab(ff_core_Path.Path_parent(packageDirectory_)))
 } else {
-return ff_compiler_Workspace.Workspace(ff_core_List.Empty(), ff_compiler_Workspace.centralLocation_, ".")
+return ff_compiler_Workspace.Workspace([], ff_compiler_Workspace.centralLocation_, ".")
 }
 }
 
 export function parseWorkspaceFile_(path_, packageDirectory_) {
 const text_ = ff_core_Path.Path_readText(path_);
 let defaultLocation_ = ff_core_Option.None();
-const lines_ = ff_core_List.List_filter(ff_core_List.List_map(ff_core_Array.Array_toList(ff_core_String.String_split(text_, 10)), ((_w1) => {
+const lines_ = ff_core_List.List_filter(ff_core_List.List_map(ff_core_String.String_split(text_, 10), ((_w1) => {
 return ff_core_String.String_takeWhile(ff_core_String.String_replace(_w1, "\r", ""), ((_w1) => {
 return (_w1 !== 35)
 }))
@@ -133,7 +131,7 @@ return (_w1 !== 35)
 return (ff_core_String.String_size(_w1) !== 0)
 }));
 const rules_ = ff_core_List.List_collect(lines_, ((line_) => {
-const columns_ = ff_core_List.List_filter(ff_core_Array.Array_toList(ff_core_String.String_split(ff_core_String.String_replace(line_, "\t", " "), 32)), ((_w1) => {
+const columns_ = ff_core_List.List_filter(ff_core_String.String_split(ff_core_String.String_replace(line_, "\t", " "), 32), ((_w1) => {
 return (ff_core_String.String_size(_w1) !== 0)
 }));
 ff_core_Option.Option_each(defaultLocation_, ((_) => {
@@ -152,14 +150,14 @@ defaultLocation_ = ff_core_Option.Some(fixedLocation_);
 return ff_core_Option.None()
 } else {
 const packageParts_ = ff_core_String.String_split(package_, 58);
-if((ff_core_Array.Array_size(packageParts_) !== 2)) {
+if((ff_core_List.List_size(packageParts_) !== 2)) {
 ff_core_Core.panic_(("Could not parse workspace package: " + package_))
 };
-if((ff_core_Array.Array_grab(packageParts_, 0) === "*")) {
+if((ff_core_List.List_grab(packageParts_, 0) === "*")) {
 ff_core_Core.panic_(("Unexpected wildcard: " + package_))
 };
-return ff_core_Option.Some(ff_compiler_Workspace.WorkspaceRule(ff_core_Array.Array_grab(packageParts_, 0), ((ff_core_Array.Array_grab(packageParts_, 1) !== "*")
-? ff_core_Option.Some(ff_core_Array.Array_grab(packageParts_, 1))
+return ff_core_Option.Some(ff_compiler_Workspace.WorkspaceRule(ff_core_List.List_grab(packageParts_, 0), ((ff_core_List.List_grab(packageParts_, 1) !== "*")
+? ff_core_Option.Some(ff_core_List.List_grab(packageParts_, 1))
 : ff_core_Option.None()), fixedLocation_))
 }
 }));
@@ -182,14 +180,14 @@ return (await ff_compiler_Workspace.parseWorkspaceFile_$(workspaceFile_, package
 } else if((!ff_core_Option.Option_isEmpty((await ff_core_Path.Path_parent$(packageDirectory_, $task))))) {
 return (await ff_compiler_Workspace.loadWorkspace_$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(packageDirectory_, $task))), $task))
 } else {
-return ff_compiler_Workspace.Workspace(ff_core_List.Empty(), ff_compiler_Workspace.centralLocation_, ".")
+return ff_compiler_Workspace.Workspace([], ff_compiler_Workspace.centralLocation_, ".")
 }
 }
 
 export async function parseWorkspaceFile_$(path_, packageDirectory_, $task) {
 const text_ = (await ff_core_Path.Path_readText$(path_, $task));
 let defaultLocation_ = ff_core_Option.None();
-const lines_ = ff_core_List.List_filter(ff_core_List.List_map(ff_core_Array.Array_toList(ff_core_String.String_split(text_, 10)), ((_w1) => {
+const lines_ = ff_core_List.List_filter(ff_core_List.List_map(ff_core_String.String_split(text_, 10), ((_w1) => {
 return ff_core_String.String_takeWhile(ff_core_String.String_replace(_w1, "\r", ""), ((_w1) => {
 return (_w1 !== 35)
 }))
@@ -197,7 +195,7 @@ return (_w1 !== 35)
 return (ff_core_String.String_size(_w1) !== 0)
 }));
 const rules_ = ff_core_List.List_collect(lines_, ((line_) => {
-const columns_ = ff_core_List.List_filter(ff_core_Array.Array_toList(ff_core_String.String_split(ff_core_String.String_replace(line_, "\t", " "), 32)), ((_w1) => {
+const columns_ = ff_core_List.List_filter(ff_core_String.String_split(ff_core_String.String_replace(line_, "\t", " "), 32), ((_w1) => {
 return (ff_core_String.String_size(_w1) !== 0)
 }));
 ff_core_Option.Option_each(defaultLocation_, ((_) => {
@@ -216,14 +214,14 @@ defaultLocation_ = ff_core_Option.Some(fixedLocation_);
 return ff_core_Option.None()
 } else {
 const packageParts_ = ff_core_String.String_split(package_, 58);
-if((ff_core_Array.Array_size(packageParts_) !== 2)) {
+if((ff_core_List.List_size(packageParts_) !== 2)) {
 ff_core_Core.panic_(("Could not parse workspace package: " + package_))
 };
-if((ff_core_Array.Array_grab(packageParts_, 0) === "*")) {
+if((ff_core_List.List_grab(packageParts_, 0) === "*")) {
 ff_core_Core.panic_(("Unexpected wildcard: " + package_))
 };
-return ff_core_Option.Some(ff_compiler_Workspace.WorkspaceRule(ff_core_Array.Array_grab(packageParts_, 0), ((ff_core_Array.Array_grab(packageParts_, 1) !== "*")
-? ff_core_Option.Some(ff_core_Array.Array_grab(packageParts_, 1))
+return ff_core_Option.Some(ff_compiler_Workspace.WorkspaceRule(ff_core_List.List_grab(packageParts_, 0), ((ff_core_List.List_grab(packageParts_, 1) !== "*")
+? ff_core_Option.Some(ff_core_List.List_grab(packageParts_, 1))
 : ff_core_Option.None()), fixedLocation_))
 }
 }));

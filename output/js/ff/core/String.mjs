@@ -2,8 +2,6 @@
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -185,9 +183,9 @@ export function String_splitFirst(self_, char_) {
 
 export function String_lines(self_) {
 
-            return ff_core_Array.Array_toList(self_.split(
+            return self_.split(
                 new RegExp("[" + String.fromCharCode(13) + "]?[" + String.fromCharCode(10) + "]", "g")
-            ))
+            )
         
 }
 
@@ -206,9 +204,19 @@ export function String_getInt(self_) {
             }
             for(let i = 0; i < self_.length; i++) {
                 const c = self_.codePointAt(i)
-                if(c < 48 || c > 57) ff_core_Option.None()
+                if(c < 48 || c > 57) return ff_core_Option.None()
             }
             return ff_core_Option.Some(parseInt(self_, 10));
+        
+}
+
+export function String_getFloat(self_) {
+
+            const result = parseFloat(self_, 10);
+            if(!isFinite(result)) {
+                return ff_core_Option.None()
+            }
+            return ff_core_Option.Some(result);
         
 }
 
@@ -222,6 +230,16 @@ export function String_grabInt(self_) {
                 if(c < 48 || c > 57) ff_core_Try.internalThrowGrabException_()
             }
             return parseInt(self_, 10);
+        
+}
+
+export function String_grabFloat(self_) {
+
+            const result = parseFloat(self_, 10);
+            if(!isFinite(result)) {
+                ff_core_Try.internalThrowGrabException_()
+            }
+            return result;
         
 }
 
@@ -406,8 +424,16 @@ export async function String_getInt$(self_, $task) {
 throw new Error('Function String_getInt is missing on this target in async context.');
 }
 
+export async function String_getFloat$(self_, $task) {
+throw new Error('Function String_getFloat is missing on this target in async context.');
+}
+
 export async function String_grabInt$(self_, $task) {
 throw new Error('Function String_grabInt is missing on this target in async context.');
+}
+
+export async function String_grabFloat$(self_, $task) {
+throw new Error('Function String_grabFloat is missing on this target in async context.');
 }
 
 export async function String_first$(self_, $task) {

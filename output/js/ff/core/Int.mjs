@@ -2,8 +2,6 @@
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -134,20 +132,20 @@ return signed_ ? self_ >> bits_ : self_ >>> bits_;
 }
 
 export function Int_to(self_, inclusiveEnd_) {
-let result_ = ff_core_List.Empty();
+let result_ = [];
 let n_ = inclusiveEnd_;
 while((self_ <= n_)) {
-result_ = ff_core_List.Link(n_, result_);
+result_ = [n_, ...result_];
 n_ -= 1
 };
 return result_
 }
 
 export function Int_until(self_, exclusiveEnd_) {
-let result_ = ff_core_List.Empty();
+let result_ = [];
 let n_ = exclusiveEnd_;
 while((self_ < n_)) {
-result_ = ff_core_List.Link((n_ - 1), result_);
+result_ = [(n_ - 1), ...result_];
 n_ -= 1
 };
 return result_
@@ -216,20 +214,20 @@ throw new Error('Function Int_bitRight is missing on this target in async contex
 }
 
 export async function Int_to$(self_, inclusiveEnd_, $task) {
-let result_ = ff_core_List.Empty();
+let result_ = [];
 let n_ = inclusiveEnd_;
 while((self_ <= n_)) {
-result_ = ff_core_List.Link(n_, result_);
+result_ = [n_, ...result_];
 n_ -= 1
 };
 return result_
 }
 
 export async function Int_until$(self_, exclusiveEnd_, $task) {
-let result_ = ff_core_List.Empty();
+let result_ = [];
 let n_ = exclusiveEnd_;
 while((self_ < n_)) {
-result_ = ff_core_List.Link((n_ - 1), result_);
+result_ = [(n_ - 1), ...result_];
 n_ -= 1
 };
 return result_

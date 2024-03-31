@@ -6,8 +6,6 @@ import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -128,7 +126,7 @@ return _w1.traits_
 return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(ff_core_List.List_map(module_.imports_, ((i_) => {
 return ff_core_Pair.Pair(i_.alias_, i_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(module_.file_, 0, 0), "ff:core/Nothing.Nothing", ff_core_List.Empty()), ff_core_Option.None())
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(module_.file_, 0, 0), "ff:core/Nothing.Nothing", []), ff_core_Option.None())
 }
 
 export function fullName_(module_, name_) {
@@ -144,23 +142,23 @@ const functions_ = ff_core_List.List_map(module_.functions_, ((d_) => {
 return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, d_.signature_.name_), ff_compiler_Environment.Scheme(false, false, false, false, d_.signature_))
 }));
 const lets_ = ff_core_List.List_map(module_.lets_, ((d_) => {
-const noEffect_ = ff_compiler_Syntax.TConstructor(d_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, d_.name_), ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(d_.at_, d_.name_, false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), d_.variableType_, noEffect_)))
+const noEffect_ = ff_compiler_Syntax.TConstructor(d_.at_, "ff:core/Nothing.Nothing", []);
+return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, d_.name_), ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(d_.at_, d_.name_, false, [], [], [], d_.variableType_, noEffect_)))
 }));
 const traitMethods_ = ff_core_List.List_flatMap(module_.traits_, ((definition_) => {
 const generics_ = ff_core_List.List_map(definition_.generics_, ((name_) => {
-return ff_compiler_Syntax.TConstructor(definition_.at_, name_, ff_core_List.Empty())
+return ff_compiler_Syntax.TConstructor(definition_.at_, name_, [])
 }));
 const constraint_ = ff_compiler_Syntax.Constraint(definition_.at_, ff_compiler_Environment.fullName_(module_, definition_.name_), generics_);
 const outerConstraints_ = (alreadyFlat_
-? ff_core_List.Empty()
+? []
 : definition_.constraints_);
 return ff_core_List.List_map(definition_.methods_, ((methodSignature_) => {
-const generics_ = ff_core_List.List_partition(ff_core_List.List_addAll(definition_.generics_, methodSignature_.generics_), ((_w1) => {
+const generics_ = ff_core_List.List_partition([...definition_.generics_, ...methodSignature_.generics_], ((_w1) => {
 return (_w1 === "Q$")
 }));
 const signature_ = (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, ff_core_List.List_addAll(ff_core_List.List_takeFirst(generics_.first_, 1), generics_.second_), ff_core_List.Link(constraint_, ff_core_List.List_addAll(outerConstraints_, methodSignature_.constraints_)), _c.parameters_, _c.returnType_, _c.effect_)
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, [...ff_core_List.List_takeFirst(generics_.first_, 1), ...generics_.second_], [constraint_, ...outerConstraints_, ...methodSignature_.constraints_], _c.parameters_, _c.returnType_, _c.effect_)
 }))(methodSignature_);
 return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, signature_.name_), ff_compiler_Environment.Scheme(false, false, false, true, signature_))
 }))
@@ -188,13 +186,13 @@ const normalGenerics_ = ff_core_List.List_filter(method_.signature_.generics_, (
 return (_w1 !== "Q$")
 }));
 const outerGenerics_ = (alreadyFlat_
-? ff_core_List.Empty()
+? []
 : d_.generics_);
 const outerConstraints_ = (alreadyFlat_
-? ff_core_List.Empty()
+? []
 : d_.constraints_);
 return ff_core_Pair.Pair((prefix_ + method_.signature_.name_), ff_compiler_Environment.Scheme(false, false, false, false, (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, ff_core_List.List_addAll(effect_, ff_core_List.List_addAll(outerGenerics_, normalGenerics_)), ff_core_List.List_addAll(outerConstraints_, method_.signature_.constraints_), ff_core_List.Link(selfParameter_, method_.signature_.parameters_), _c.returnType_, _c.effect_)
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, [...effect_, ...outerGenerics_, ...normalGenerics_], [...outerConstraints_, ...method_.signature_.constraints_], [selfParameter_, ...method_.signature_.parameters_], _c.returnType_, _c.effect_)
 }))(method_.signature_)))
 }))
 return
@@ -205,28 +203,28 @@ return
 const fields_ = ff_core_List.List_flatMap(module_.types_, ((d_) => {
 const prefix_ = (d_.name_ + "_");
 const t_ = ff_compiler_Syntax.TConstructor(d_.at_, d_.name_, ff_core_List.List_map(d_.generics_, ((g_) => {
-return ff_compiler_Syntax.TConstructor(d_.at_, g_, ff_core_List.Empty())
+return ff_compiler_Syntax.TConstructor(d_.at_, g_, [])
 })));
 const selfParameter_ = ff_compiler_Syntax.Parameter(d_.at_, false, d_.name_, t_, ff_core_Option.None());
 return ff_core_List.List_map(d_.commonFields_, ((f_) => {
-const noEffect_ = ff_compiler_Syntax.TConstructor(d_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, (prefix_ + f_.name_)), ff_compiler_Environment.Scheme(true, f_.mutable_, d_.newtype_, false, ff_compiler_Syntax.Signature(f_.at_, f_.name_, true, d_.generics_, d_.constraints_, ff_core_List.Link(selfParameter_, ff_core_List.Empty()), f_.valueType_, noEffect_)))
+const noEffect_ = ff_compiler_Syntax.TConstructor(d_.at_, "ff:core/Nothing.Nothing", []);
+return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, (prefix_ + f_.name_)), ff_compiler_Environment.Scheme(true, f_.mutable_, d_.newtype_, false, ff_compiler_Syntax.Signature(f_.at_, f_.name_, true, d_.generics_, d_.constraints_, [selfParameter_], f_.valueType_, noEffect_)))
 }))
 }));
 const variants_ = ff_core_List.List_flatMap(module_.types_, ((d_) => {
 const returnType_ = ff_compiler_Syntax.TConstructor(d_.at_, ff_compiler_Environment.fullName_(module_, d_.name_), ff_core_List.List_map(d_.generics_, ((typeParameter_) => {
-return ff_compiler_Syntax.TConstructor(d_.at_, typeParameter_, ff_core_List.Empty())
+return ff_compiler_Syntax.TConstructor(d_.at_, typeParameter_, [])
 })));
 return ff_core_List.List_map(d_.variants_, ((variant_) => {
-const noEffect_ = ff_compiler_Syntax.TConstructor(d_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, variant_.name_), ff_compiler_Environment.Scheme(false, false, d_.newtype_, false, ff_compiler_Syntax.Signature(variant_.at_, variant_.name_, false, d_.generics_, d_.constraints_, ff_core_List.List_addAll(d_.commonFields_, variant_.fields_), returnType_, noEffect_)))
+const noEffect_ = ff_compiler_Syntax.TConstructor(d_.at_, "ff:core/Nothing.Nothing", []);
+return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, variant_.name_), ff_compiler_Environment.Scheme(false, false, d_.newtype_, false, ff_compiler_Syntax.Signature(variant_.at_, variant_.name_, false, d_.generics_, d_.constraints_, [...d_.commonFields_, ...variant_.fields_], returnType_, noEffect_)))
 }))
 }));
 const traits_ = ff_core_List.List_map(module_.traits_, ((d_) => {
 return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, d_.name_), d_)
 }));
-const effect_ = ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(module_.file_, 0, 0), "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_compiler_Environment.Environment("", ff_core_List.List_toMap(ff_core_List.List_addAll(functions_, ff_core_List.List_addAll(lets_, ff_core_List.List_addAll(fields_, ff_core_List.List_addAll(extends_, ff_core_List.List_addAll(variants_, traitMethods_))))), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(traits_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), effect_, ff_core_Option.None())
+const effect_ = ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(module_.file_, 0, 0), "ff:core/Nothing.Nothing", []);
+return ff_compiler_Environment.Environment("", ff_core_List.List_toMap([...functions_, ...lets_, ...fields_, ...extends_, ...variants_, ...traitMethods_], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(traits_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), effect_, ff_core_Option.None())
 }
 
 export async function make_$(module_, otherModules_, alreadyFlat_, $task) {
@@ -244,7 +242,7 @@ return _w1.traits_
 return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(ff_core_List.List_map(module_.imports_, ((i_) => {
 return ff_core_Pair.Pair(i_.alias_, i_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(module_.file_, 0, 0), "ff:core/Nothing.Nothing", ff_core_List.Empty()), ff_core_Option.None())
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(module_.file_, 0, 0), "ff:core/Nothing.Nothing", []), ff_core_Option.None())
 }
 
 export async function fullName_$(module_, name_, $task) {
@@ -260,23 +258,23 @@ const functions_ = ff_core_List.List_map(module_.functions_, ((d_) => {
 return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, d_.signature_.name_), ff_compiler_Environment.Scheme(false, false, false, false, d_.signature_))
 }));
 const lets_ = ff_core_List.List_map(module_.lets_, ((d_) => {
-const noEffect_ = ff_compiler_Syntax.TConstructor(d_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, d_.name_), ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(d_.at_, d_.name_, false, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), d_.variableType_, noEffect_)))
+const noEffect_ = ff_compiler_Syntax.TConstructor(d_.at_, "ff:core/Nothing.Nothing", []);
+return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, d_.name_), ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(d_.at_, d_.name_, false, [], [], [], d_.variableType_, noEffect_)))
 }));
 const traitMethods_ = ff_core_List.List_flatMap(module_.traits_, ((definition_) => {
 const generics_ = ff_core_List.List_map(definition_.generics_, ((name_) => {
-return ff_compiler_Syntax.TConstructor(definition_.at_, name_, ff_core_List.Empty())
+return ff_compiler_Syntax.TConstructor(definition_.at_, name_, [])
 }));
 const constraint_ = ff_compiler_Syntax.Constraint(definition_.at_, ff_compiler_Environment.fullName_(module_, definition_.name_), generics_);
 const outerConstraints_ = (alreadyFlat_
-? ff_core_List.Empty()
+? []
 : definition_.constraints_);
 return ff_core_List.List_map(definition_.methods_, ((methodSignature_) => {
-const generics_ = ff_core_List.List_partition(ff_core_List.List_addAll(definition_.generics_, methodSignature_.generics_), ((_w1) => {
+const generics_ = ff_core_List.List_partition([...definition_.generics_, ...methodSignature_.generics_], ((_w1) => {
 return (_w1 === "Q$")
 }));
 const signature_ = (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, ff_core_List.List_addAll(ff_core_List.List_takeFirst(generics_.first_, 1), generics_.second_), ff_core_List.Link(constraint_, ff_core_List.List_addAll(outerConstraints_, methodSignature_.constraints_)), _c.parameters_, _c.returnType_, _c.effect_)
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, [...ff_core_List.List_takeFirst(generics_.first_, 1), ...generics_.second_], [constraint_, ...outerConstraints_, ...methodSignature_.constraints_], _c.parameters_, _c.returnType_, _c.effect_)
 }))(methodSignature_);
 return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, signature_.name_), ff_compiler_Environment.Scheme(false, false, false, true, signature_))
 }))
@@ -304,13 +302,13 @@ const normalGenerics_ = ff_core_List.List_filter(method_.signature_.generics_, (
 return (_w1 !== "Q$")
 }));
 const outerGenerics_ = (alreadyFlat_
-? ff_core_List.Empty()
+? []
 : d_.generics_);
 const outerConstraints_ = (alreadyFlat_
-? ff_core_List.Empty()
+? []
 : d_.constraints_);
 return ff_core_Pair.Pair((prefix_ + method_.signature_.name_), ff_compiler_Environment.Scheme(false, false, false, false, (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, ff_core_List.List_addAll(effect_, ff_core_List.List_addAll(outerGenerics_, normalGenerics_)), ff_core_List.List_addAll(outerConstraints_, method_.signature_.constraints_), ff_core_List.Link(selfParameter_, method_.signature_.parameters_), _c.returnType_, _c.effect_)
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, [...effect_, ...outerGenerics_, ...normalGenerics_], [...outerConstraints_, ...method_.signature_.constraints_], [selfParameter_, ...method_.signature_.parameters_], _c.returnType_, _c.effect_)
 }))(method_.signature_)))
 }))
 return
@@ -321,28 +319,28 @@ return
 const fields_ = ff_core_List.List_flatMap(module_.types_, ((d_) => {
 const prefix_ = (d_.name_ + "_");
 const t_ = ff_compiler_Syntax.TConstructor(d_.at_, d_.name_, ff_core_List.List_map(d_.generics_, ((g_) => {
-return ff_compiler_Syntax.TConstructor(d_.at_, g_, ff_core_List.Empty())
+return ff_compiler_Syntax.TConstructor(d_.at_, g_, [])
 })));
 const selfParameter_ = ff_compiler_Syntax.Parameter(d_.at_, false, d_.name_, t_, ff_core_Option.None());
 return ff_core_List.List_map(d_.commonFields_, ((f_) => {
-const noEffect_ = ff_compiler_Syntax.TConstructor(d_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, (prefix_ + f_.name_)), ff_compiler_Environment.Scheme(true, f_.mutable_, d_.newtype_, false, ff_compiler_Syntax.Signature(f_.at_, f_.name_, true, d_.generics_, d_.constraints_, ff_core_List.Link(selfParameter_, ff_core_List.Empty()), f_.valueType_, noEffect_)))
+const noEffect_ = ff_compiler_Syntax.TConstructor(d_.at_, "ff:core/Nothing.Nothing", []);
+return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, (prefix_ + f_.name_)), ff_compiler_Environment.Scheme(true, f_.mutable_, d_.newtype_, false, ff_compiler_Syntax.Signature(f_.at_, f_.name_, true, d_.generics_, d_.constraints_, [selfParameter_], f_.valueType_, noEffect_)))
 }))
 }));
 const variants_ = ff_core_List.List_flatMap(module_.types_, ((d_) => {
 const returnType_ = ff_compiler_Syntax.TConstructor(d_.at_, ff_compiler_Environment.fullName_(module_, d_.name_), ff_core_List.List_map(d_.generics_, ((typeParameter_) => {
-return ff_compiler_Syntax.TConstructor(d_.at_, typeParameter_, ff_core_List.Empty())
+return ff_compiler_Syntax.TConstructor(d_.at_, typeParameter_, [])
 })));
 return ff_core_List.List_map(d_.variants_, ((variant_) => {
-const noEffect_ = ff_compiler_Syntax.TConstructor(d_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, variant_.name_), ff_compiler_Environment.Scheme(false, false, d_.newtype_, false, ff_compiler_Syntax.Signature(variant_.at_, variant_.name_, false, d_.generics_, d_.constraints_, ff_core_List.List_addAll(d_.commonFields_, variant_.fields_), returnType_, noEffect_)))
+const noEffect_ = ff_compiler_Syntax.TConstructor(d_.at_, "ff:core/Nothing.Nothing", []);
+return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, variant_.name_), ff_compiler_Environment.Scheme(false, false, d_.newtype_, false, ff_compiler_Syntax.Signature(variant_.at_, variant_.name_, false, d_.generics_, d_.constraints_, [...d_.commonFields_, ...variant_.fields_], returnType_, noEffect_)))
 }))
 }));
 const traits_ = ff_core_List.List_map(module_.traits_, ((d_) => {
 return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, d_.name_), d_)
 }));
-const effect_ = ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(module_.file_, 0, 0), "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_compiler_Environment.Environment("", ff_core_List.List_toMap(ff_core_List.List_addAll(functions_, ff_core_List.List_addAll(lets_, ff_core_List.List_addAll(fields_, ff_core_List.List_addAll(extends_, ff_core_List.List_addAll(variants_, traitMethods_))))), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(traits_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), effect_, ff_core_Option.None())
+const effect_ = ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(module_.file_, 0, 0), "ff:core/Nothing.Nothing", []);
+return ff_compiler_Environment.Environment("", ff_core_List.List_toMap([...functions_, ...lets_, ...fields_, ...extends_, ...variants_, ...traitMethods_], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(traits_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), effect_, ff_core_Option.None())
 }
 
 

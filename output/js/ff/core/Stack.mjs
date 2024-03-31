@@ -2,8 +2,6 @@
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -244,11 +242,11 @@ export function Stack_push(self_, value_) {
 self_.array.push(value_)
 }
 
-export function Stack_pushAll(self_, value_) {
+export function Stack_pushStack(self_, value_) {
 self_.array.push(...value_.array)
 }
 
-export function Stack_pushArray(self_, value_) {
+export function Stack_pushList(self_, value_) {
 self_.array.push(...value_)
 }
 
@@ -302,13 +300,13 @@ export function Stack_insert(self_, start_, value_, deleteCount_ = 0) {
         
 }
 
-export function Stack_insertAll(self_, start_, value_, deleteCount_ = 0) {
+export function Stack_insertStack(self_, start_, value_, deleteCount_ = 0) {
 
             self_.array.splice(start_, deleteCount_, ...value_.array);
         
 }
 
-export function Stack_insertArray(self_, start_, value_, deleteCount_ = 0) {
+export function Stack_insertList(self_, start_, value_, deleteCount_ = 0) {
 
             self_.array.splice(start_, deleteCount_, ...value_);
         
@@ -359,26 +357,12 @@ export function Stack_drain(self_) {
 const result = self_.array; self_.array = []; return result
 }
 
-export function Stack_toArray(self_, start_ = 0, end_ = 9007199254740991) {
+export function Stack_toList(self_, start_ = 0, end_ = 9007199254740991) {
 return self_.array.slice(start_, end_)
 }
 
-export function Stack_toList(self_, start_ = 0, end_ = 9007199254740991) {
-
-            if(start_ < 0) start_ = self_.array.length + start_
-            if(end_ < 0) end_ = self_.array.length + start_
-            start_ = Math.max(0, Math.min(start_, self_.array.length))
-            end_ = Math.max(0, Math.min(end_, self_.array.length))
-            let result = ff_core_List.Empty();
-            for(let i = end_ - 1; i >= start_; i--) {
-                result = ff_core_List.Link(self_.array[i], result);
-            }
-            return result;
-        
-}
-
 export function Stack_toStream(self_, start_ = 0, end_ = 9007199254740991) {
-return ff_core_Array.Array_toStream(ff_core_Stack.Stack_toArray(self_, start_, end_), false)
+return ff_core_List.List_toStream(ff_core_Stack.Stack_toList(self_, start_, end_), false)
 }
 
 export function Stack_reverse(self_) {
@@ -431,12 +415,12 @@ export async function Stack_push$(self_, value_, $task) {
 throw new Error('Function Stack_push is missing on this target in async context.');
 }
 
-export async function Stack_pushAll$(self_, value_, $task) {
-throw new Error('Function Stack_pushAll is missing on this target in async context.');
+export async function Stack_pushStack$(self_, value_, $task) {
+throw new Error('Function Stack_pushStack is missing on this target in async context.');
 }
 
-export async function Stack_pushArray$(self_, value_, $task) {
-throw new Error('Function Stack_pushArray is missing on this target in async context.');
+export async function Stack_pushList$(self_, value_, $task) {
+throw new Error('Function Stack_pushList is missing on this target in async context.');
 }
 
 export async function Stack_pop$(self_, $task) {
@@ -472,12 +456,12 @@ export async function Stack_insert$(self_, start_, value_, deleteCount_ = 0, $ta
 throw new Error('Function Stack_insert is missing on this target in async context.');
 }
 
-export async function Stack_insertAll$(self_, start_, value_, deleteCount_ = 0, $task) {
-throw new Error('Function Stack_insertAll is missing on this target in async context.');
+export async function Stack_insertStack$(self_, start_, value_, deleteCount_ = 0, $task) {
+throw new Error('Function Stack_insertStack is missing on this target in async context.');
 }
 
-export async function Stack_insertArray$(self_, start_, value_, deleteCount_ = 0, $task) {
-throw new Error('Function Stack_insertArray is missing on this target in async context.');
+export async function Stack_insertList$(self_, start_, value_, deleteCount_ = 0, $task) {
+throw new Error('Function Stack_insertList is missing on this target in async context.');
 }
 
 export async function Stack_each$(self_, body_, $task) {
@@ -527,16 +511,12 @@ export async function Stack_drain$(self_, $task) {
 throw new Error('Function Stack_drain is missing on this target in async context.');
 }
 
-export async function Stack_toArray$(self_, start_ = 0, end_ = 9007199254740991, $task) {
-throw new Error('Function Stack_toArray is missing on this target in async context.');
-}
-
 export async function Stack_toList$(self_, start_ = 0, end_ = 9007199254740991, $task) {
 throw new Error('Function Stack_toList is missing on this target in async context.');
 }
 
 export async function Stack_toStream$(self_, start_ = 0, end_ = 9007199254740991, $task) {
-return (await ff_core_Array.Array_toStream$(ff_core_Stack.Stack_toArray(self_, start_, end_), false, $task))
+return (await ff_core_List.List_toStream$(ff_core_Stack.Stack_toList(self_, start_, end_), false, $task))
 }
 
 export async function Stack_reverse$(self_, $task) {

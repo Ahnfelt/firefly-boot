@@ -24,8 +24,6 @@ import * as ff_compiler_Tokenizer from "../../ff/compiler/Tokenizer.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -119,12 +117,12 @@ export function Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_,
 return {emitTarget_, task_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, lspHook_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_};
 }
 
-export const coreImports_ = ff_core_List.List_map(ff_core_List.Link("Any", ff_core_List.Link("Array", ff_core_List.Link("AssetSystem", ff_core_List.Link("Atomic", ff_core_List.Link("Bool", ff_core_List.Link("Box", ff_core_List.Link("BrowserSystem", ff_core_List.Link("Buffer", ff_core_List.Link("BuildSystem", ff_core_List.Link("Channel", ff_core_List.Link("Char", ff_core_List.Link("Core", ff_core_List.Link("Duration", ff_core_List.Link("Equal", ff_core_List.Link("Error", ff_core_List.Link("FileHandle", ff_core_List.Link("Float", ff_core_List.Link("HttpClient", ff_core_List.Link("Instant", ff_core_List.Link("Int", ff_core_List.Link("IntMap", ff_core_List.Link("Json", ff_core_List.Link("JsValue", ff_core_List.Link("JsSystem", ff_core_List.Link("List", ff_core_List.Link("Lock", ff_core_List.Link("Log", ff_core_List.Link("Map", ff_core_List.Link("NodeSystem", ff_core_List.Link("Nothing", ff_core_List.Link("Option", ff_core_List.Link("Ordering", ff_core_List.Link("Pair", ff_core_List.Link("Path", ff_core_List.Link("Random", ff_core_List.Link("Serializable", ff_core_List.Link("Set", ff_core_List.Link("Show", ff_core_List.Link("SourceLocation", ff_core_List.Link("Stack", ff_core_List.Link("Stream", ff_core_List.Link("String", ff_core_List.Link("StringMap", ff_core_List.Link("Task", ff_core_List.Link("Try", ff_core_List.Link("Unit", ff_core_List.Empty())))))))))))))))))))))))))))))))))))))))))))))), ((moduleName_) => {
-return ff_compiler_Syntax.DImport(ff_compiler_Syntax.Location("<prelude>", 1, 1), moduleName_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_core_List.Empty(), moduleName_)
+export const coreImports_ = ff_core_List.List_map(["Any", "AssetSystem", "Atomic", "Bool", "Box", "BrowserSystem", "Buffer", "BuildSystem", "Channel", "Char", "Core", "Duration", "Equal", "Error", "FileHandle", "Float", "HttpClient", "Instant", "Int", "IntMap", "Json", "JsValue", "JsSystem", "List", "Lock", "Log", "Map", "NodeSystem", "Nothing", "Option", "Ordering", "Pair", "Path", "Random", "Serializable", "Set", "Show", "SourceLocation", "Stack", "Stream", "String", "StringMap", "Task", "Try", "Unit"], ((moduleName_) => {
+return ff_compiler_Syntax.DImport(ff_compiler_Syntax.Location("<prelude>", 1, 1), moduleName_, ff_compiler_Syntax.PackagePair("ff", "core"), [], moduleName_)
 }));
 
 export function make_(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_, virtualFiles_, lspHook_) {
-return ff_compiler_Compiler.Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, lspHook_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty(), 0.0)
+return ff_compiler_Compiler.Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, lspHook_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), [], 0.0)
 }
 
 export function fail_(at_, message_) {
@@ -132,7 +130,7 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 }
 
 export async function make_$(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_, virtualFiles_, lspHook_, $task) {
-return ff_compiler_Compiler.Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, lspHook_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty(), 0.0)
+return ff_compiler_Compiler.Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, lspHook_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), [], 0.0)
 }
 
 export async function fail_$(at_, message_, $task) {
@@ -146,7 +144,7 @@ const stop_ = (ff_core_Task.Task_elapsed(self_.task_) - self_.phaseDurationDelta
 const duration_ = (stop_ - start_);
 self_.phaseDurationDelta_ = (self_.phaseDurationDelta_ + duration_);
 const text_ = ((((phase_ + " ") + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")) + "/") + moduleName_);
-self_.phaseDurations_ = ff_core_List.Link(ff_core_Pair.Pair(text_, duration_), self_.phaseDurations_);
+self_.phaseDurations_ = [ff_core_Pair.Pair(text_, duration_), ...self_.phaseDurations_];
 return result_
 }
 
@@ -190,7 +188,7 @@ const module_ = (ff_core_Set.Set_contains(self_.singleFilePackages_, packagePair
 ? ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_
 : ff_compiler_Parser.Parser_parseModuleWithoutPackageInfo(parser_));
 const result_ = (((_c) => {
-return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, ff_core_List.List_addAll(ff_compiler_Compiler.coreImports_, module_.imports_), _c.types_, _c.traits_, _c.instances_, _c.extends_, _c.lets_, _c.functions_)
+return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, [...ff_compiler_Compiler.coreImports_, ...module_.imports_], _c.types_, _c.traits_, _c.instances_, _c.extends_, _c.lets_, _c.functions_)
 }))(module_);
 self_.parsedModules_ = ff_core_Map.Map_add(self_.parsedModules_, ((packageName_ + ":") + moduleName_), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return result_
@@ -245,9 +243,9 @@ const module_ = ff_compiler_Compiler.Compiler_derive(self_, packagePair_, module
 const otherModules_ = ff_core_List.List_map(ff_compiler_Compiler.Compiler_imports(self_, module_), ((i_) => {
 return ff_compiler_Compiler.Compiler_derive(self_, i_.packagePair_, ff_core_String.String_dropLast(i_.file_, ff_core_String.String_size(".ff")))
 }));
-const inference_ = ff_compiler_Inference.make_(ff_core_List.Link(module_, otherModules_), self_.lspHook_);
+const inference_ = ff_compiler_Inference.make_([module_, ...otherModules_], self_.lspHook_);
 const inferredModule_ = ff_compiler_Inference.Inference_inferModule(inference_, module_, otherModules_);
-const result_ = ff_compiler_Dictionaries.Dictionaries_processModule(ff_compiler_Dictionaries.make_(ff_core_List.Link(module_, otherModules_)), inferredModule_, otherModules_);
+const result_ = ff_compiler_Dictionaries.Dictionaries_processModule(ff_compiler_Dictionaries.make_([module_, ...otherModules_]), inferredModule_, otherModules_);
 self_.inferredModules_ = ff_core_Map.Map_add(self_.inferredModules_, ((packageName_ + ":") + moduleName_), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return result_
 }))
@@ -267,7 +265,7 @@ const newModuleName_ = ff_core_String.String_dropLast(i_.file_, ff_core_String.S
 ff_compiler_Compiler.Compiler_emit(self_, i_.packagePair_, newModuleName_, false);
 return ff_compiler_Compiler.Compiler_infer(self_, i_.packagePair_, newModuleName_)
 }));
-const allModules_ = ff_core_List.Link(module_, otherModules_);
+const allModules_ = [module_, ...otherModules_];
 const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.make_(allModules_, self_.emitTarget_, isMainModule_, self_.compilerModulePath_, packagePair_, moduleName_), packagePair_, module_);
 const jsPath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(self_.jsOutputPath_, packagePair_.group_), packagePair_.name_);
 const jsFile_ = ff_core_Path.Path_slash(jsPath_, (moduleName_ + ".mjs"));
@@ -284,7 +282,7 @@ const stop_ = ((await ff_core_Task.Task_elapsed$(self_.task_, $task)) - self_.ph
 const duration_ = (stop_ - start_);
 self_.phaseDurationDelta_ = (self_.phaseDurationDelta_ + duration_);
 const text_ = ((((phase_ + " ") + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")) + "/") + moduleName_);
-self_.phaseDurations_ = ff_core_List.Link(ff_core_Pair.Pair(text_, duration_), self_.phaseDurations_);
+self_.phaseDurations_ = [ff_core_Pair.Pair(text_, duration_), ...self_.phaseDurations_];
 return result_
 }
 
@@ -328,7 +326,7 @@ const module_ = (ff_core_Set.Set_contains(self_.singleFilePackages_, packagePair
 ? ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_
 : ff_compiler_Parser.Parser_parseModuleWithoutPackageInfo(parser_));
 const result_ = (((_c) => {
-return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, ff_core_List.List_addAll(ff_compiler_Compiler.coreImports_, module_.imports_), _c.types_, _c.traits_, _c.instances_, _c.extends_, _c.lets_, _c.functions_)
+return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, [...ff_compiler_Compiler.coreImports_, ...module_.imports_], _c.types_, _c.traits_, _c.instances_, _c.extends_, _c.lets_, _c.functions_)
 }))(module_);
 self_.parsedModules_ = ff_core_Map.Map_add(self_.parsedModules_, ((packageName_ + ":") + moduleName_), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return result_
@@ -383,9 +381,9 @@ const module_ = (await ff_compiler_Compiler.Compiler_derive$(self_, packagePair_
 const otherModules_ = (await ff_core_List.List_map$((await ff_compiler_Compiler.Compiler_imports$(self_, module_, $task)), (async (i_, $task) => {
 return (await ff_compiler_Compiler.Compiler_derive$(self_, i_.packagePair_, ff_core_String.String_dropLast(i_.file_, ff_core_String.String_size(".ff")), $task))
 }), $task));
-const inference_ = ff_compiler_Inference.make_(ff_core_List.Link(module_, otherModules_), self_.lspHook_);
+const inference_ = ff_compiler_Inference.make_([module_, ...otherModules_], self_.lspHook_);
 const inferredModule_ = ff_compiler_Inference.Inference_inferModule(inference_, module_, otherModules_);
-const result_ = ff_compiler_Dictionaries.Dictionaries_processModule(ff_compiler_Dictionaries.make_(ff_core_List.Link(module_, otherModules_)), inferredModule_, otherModules_);
+const result_ = ff_compiler_Dictionaries.Dictionaries_processModule(ff_compiler_Dictionaries.make_([module_, ...otherModules_]), inferredModule_, otherModules_);
 self_.inferredModules_ = ff_core_Map.Map_add(self_.inferredModules_, ((packageName_ + ":") + moduleName_), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return result_
 }), $task))
@@ -405,7 +403,7 @@ const newModuleName_ = ff_core_String.String_dropLast(i_.file_, ff_core_String.S
 (await ff_compiler_Compiler.Compiler_emit$(self_, i_.packagePair_, newModuleName_, false, $task));
 return (await ff_compiler_Compiler.Compiler_infer$(self_, i_.packagePair_, newModuleName_, $task))
 }), $task));
-const allModules_ = ff_core_List.Link(module_, otherModules_);
+const allModules_ = [module_, ...otherModules_];
 const js_ = (await ff_compiler_JsEmitter.JsEmitter_emitModule$((await ff_compiler_JsEmitter.make_$(allModules_, self_.emitTarget_, isMainModule_, self_.compilerModulePath_, packagePair_, moduleName_, $task)), packagePair_, module_, $task));
 const jsPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(self_.jsOutputPath_, packagePair_.group_, $task)), packagePair_.name_, $task));
 const jsFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleName_ + ".mjs"), $task));

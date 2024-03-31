@@ -14,8 +14,6 @@ import * as ff_compiler_Workspace from "../../ff/compiler/Workspace.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -118,7 +116,7 @@ return {mainPackagePair_, packages_, packagePaths_, singleFilePackages_};
 
 export function process_(fetch_, path_) {
 const workspace_ = ff_compiler_Workspace.loadWorkspace_(path_);
-const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
+const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
 const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, ff_compiler_Syntax.PackagePair("script", "script"), path_);
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
 ff_compiler_Dependencies.Dependencies_processDependencies(self_, path_, fetch_, newDependencies_);
@@ -155,7 +153,7 @@ throw new Error('Function internalExtractTarGz is missing on this target in sync
 
 export async function process_$(fetch_, path_, $task) {
 const workspace_ = (await ff_compiler_Workspace.loadWorkspace_$(path_, $task));
-const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
+const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
 const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, ff_compiler_Syntax.PackagePair("script", "script"), path_, $task));
 const newDependencies_ = (await ff_compiler_Dependencies.Dependencies_processPackageInfo$(self_, packageInfo_, $task));
 (await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, path_, fetch_, newDependencies_, $task));
@@ -226,7 +224,7 @@ const coreDependency_ = ff_compiler_Syntax.DDependency(info_.package_.at_, ff_co
 const _1 = info_;
 {
 const _c = _1;
-return ff_compiler_Syntax.PackageInfo(_c.package_, ff_core_List.Link(coreDependency_, info_.dependencies_), _c.includes_)
+return ff_compiler_Syntax.PackageInfo(_c.package_, [coreDependency_, ...info_.dependencies_], _c.includes_)
 return
 }
 }
@@ -263,7 +261,7 @@ if(ff_core_Path.Path_exists(dependencyPath_, false, false, false)) {
 ff_core_Path.Path_delete(dependencyPath_, 0, 100)
 };
 ff_core_Path.Path_createDirectory(dependencyPath_, true);
-ff_core_Path.Path_writeStream(tarGzPath_, ff_core_List.List_toStream(ff_core_List.Link(buffer_, ff_core_List.Empty()), false), false);
+ff_core_Path.Path_writeStream(tarGzPath_, ff_core_List.List_toStream([buffer_], false), false);
 ff_compiler_Dependencies.internalExtractTarGz_(tarGzPath_, dependencyPath_);
 ff_core_Path.Path_renameTo(tarGzPath_, donePath_)
 };
@@ -287,7 +285,7 @@ return packageInfo_
 const newDependencies_ = ff_core_List.List_flatMap(packageInfos_, ((_w1) => {
 return ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, _w1)
 }));
-if(ff_core_Equal.notEquals_(newDependencies_, ff_core_List.Empty(), ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DDependency))) {
+if(ff_core_Equal.notEquals_(newDependencies_, [], ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DDependency))) {
 ff_compiler_Dependencies.Dependencies_processDependencies(self_, path_, httpClient_, newDependencies_)
 }
 }
@@ -325,7 +323,7 @@ const coreDependency_ = ff_compiler_Syntax.DDependency(info_.package_.at_, ff_co
 const _1 = info_;
 {
 const _c = _1;
-return ff_compiler_Syntax.PackageInfo(_c.package_, ff_core_List.Link(coreDependency_, info_.dependencies_), _c.includes_)
+return ff_compiler_Syntax.PackageInfo(_c.package_, [coreDependency_, ...info_.dependencies_], _c.includes_)
 return
 }
 }
@@ -362,7 +360,7 @@ if((await ff_core_Path.Path_exists$(dependencyPath_, false, false, false, $task)
 (await ff_core_Path.Path_delete$(dependencyPath_, 0, 100, $task))
 };
 (await ff_core_Path.Path_createDirectory$(dependencyPath_, true, $task));
-(await ff_core_Path.Path_writeStream$(tarGzPath_, (await ff_core_List.List_toStream$(ff_core_List.Link(buffer_, ff_core_List.Empty()), false, $task)), false, $task));
+(await ff_core_Path.Path_writeStream$(tarGzPath_, (await ff_core_List.List_toStream$([buffer_], false, $task)), false, $task));
 (await ff_compiler_Dependencies.internalExtractTarGz_$(tarGzPath_, dependencyPath_, $task));
 (await ff_core_Path.Path_renameTo$(tarGzPath_, donePath_, $task))
 };
@@ -386,7 +384,7 @@ return packageInfo_
 const newDependencies_ = (await ff_core_List.List_flatMap$(packageInfos_, (async (_w1, $task) => {
 return (await ff_compiler_Dependencies.Dependencies_processPackageInfo$(self_, _w1, $task))
 }), $task));
-if(ff_core_Equal.notEquals_(newDependencies_, ff_core_List.Empty(), ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DDependency))) {
+if(ff_core_Equal.notEquals_(newDependencies_, [], ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DDependency))) {
 (await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, path_, httpClient_, newDependencies_, $task))
 }
 }

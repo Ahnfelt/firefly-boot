@@ -4,8 +4,6 @@ import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -431,7 +429,7 @@ return
 }
 }))
 }
-shortenTypes_(ff_core_List.List_addAll(shownTypes_, ff_core_List.Link(self_, ff_core_List.Empty())));
+shortenTypes_([...shownTypes_, self_]);
 function go_(type_) {
 {
 const _1 = type_;
@@ -439,10 +437,10 @@ const _1 = type_;
 if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
-if(_1.generics_.Link) {
-if(_1.generics_.tail_.Link) {
-const r_ = _1.generics_.tail_.head_;
-if(_1.generics_.tail_.tail_.Empty) {
+if(_1.generics_.length !== 0) {
+if(_1.generics_.slice(1).length !== 0) {
+const r_ = _1.generics_.slice(1)[0];
+if(_1.generics_.slice(1).slice(1).length === 0) {
 const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
 if(_guard1) {
 return ("() => " + go_(r_))
@@ -457,12 +455,12 @@ return
 if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
-if(_1.generics_.Link) {
-if(_1.generics_.tail_.Link) {
-const a_ = _1.generics_.tail_.head_;
-if(_1.generics_.tail_.tail_.Link) {
-const r_ = _1.generics_.tail_.tail_.head_;
-if(_1.generics_.tail_.tail_.tail_.Empty) {
+if(_1.generics_.length !== 0) {
+if(_1.generics_.slice(1).length !== 0) {
+const a_ = _1.generics_.slice(1)[0];
+if(_1.generics_.slice(1).slice(1).length !== 0) {
+const r_ = _1.generics_.slice(1).slice(1)[0];
+if(_1.generics_.slice(1).slice(1).slice(1).length === 0) {
 const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
 if(_guard1) {
 return ((go_(a_) + " => ") + go_(r_))
@@ -478,8 +476,8 @@ return
 if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
-if(_1.generics_.Link) {
-const generics_ = _1.generics_.tail_;
+if(_1.generics_.length !== 0) {
+const generics_ = _1.generics_.slice(1);
 const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
 if(_guard1) {
 return ((("(" + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_dropLast(generics_, 1), ((_w1) => {
@@ -497,7 +495,7 @@ const name_ = _1.name_;
 const generics_ = _1.generics_;
 const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0);
 if(_guard1) {
-const as_ = ff_core_List.List_zip(ff_core_List.List_dropFirst(ff_core_Array.Array_toList(ff_core_String.String_split(name_, 36)), 1), generics_);
+const as_ = ff_core_List.List_zip(ff_core_List.List_dropFirst(ff_core_String.String_split(name_, 36), 1), generics_);
 return (("(" + ff_core_List.List_join(ff_core_List.List_map(as_, ((_1) => {
 {
 const label_ = _1.first_;
@@ -617,7 +615,7 @@ return
 }
 }))
 }
-shortenTypes_(ff_core_List.List_addAll(shownTypes_, ff_core_List.Link(self_, ff_core_List.Empty())));
+shortenTypes_([...shownTypes_, self_]);
 function go_(type_) {
 {
 const _1 = type_;
@@ -625,10 +623,10 @@ const _1 = type_;
 if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
-if(_1.generics_.Link) {
-if(_1.generics_.tail_.Link) {
-const r_ = _1.generics_.tail_.head_;
-if(_1.generics_.tail_.tail_.Empty) {
+if(_1.generics_.length !== 0) {
+if(_1.generics_.slice(1).length !== 0) {
+const r_ = _1.generics_.slice(1)[0];
+if(_1.generics_.slice(1).slice(1).length === 0) {
 const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
 if(_guard1) {
 return ("() => " + go_(r_))
@@ -643,12 +641,12 @@ return
 if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
-if(_1.generics_.Link) {
-if(_1.generics_.tail_.Link) {
-const a_ = _1.generics_.tail_.head_;
-if(_1.generics_.tail_.tail_.Link) {
-const r_ = _1.generics_.tail_.tail_.head_;
-if(_1.generics_.tail_.tail_.tail_.Empty) {
+if(_1.generics_.length !== 0) {
+if(_1.generics_.slice(1).length !== 0) {
+const a_ = _1.generics_.slice(1)[0];
+if(_1.generics_.slice(1).slice(1).length !== 0) {
+const r_ = _1.generics_.slice(1).slice(1)[0];
+if(_1.generics_.slice(1).slice(1).slice(1).length === 0) {
 const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
 if(_guard1) {
 return ((go_(a_) + " => ") + go_(r_))
@@ -664,8 +662,8 @@ return
 if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
-if(_1.generics_.Link) {
-const generics_ = _1.generics_.tail_;
+if(_1.generics_.length !== 0) {
+const generics_ = _1.generics_.slice(1);
 const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
 if(_guard1) {
 return ((("(" + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_dropLast(generics_, 1), ((_w1) => {
@@ -683,7 +681,7 @@ const name_ = _1.name_;
 const generics_ = _1.generics_;
 const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0);
 if(_guard1) {
-const as_ = ff_core_List.List_zip(ff_core_List.List_dropFirst(ff_core_Array.Array_toList(ff_core_String.String_split(name_, 36)), 1), generics_);
+const as_ = ff_core_List.List_zip(ff_core_List.List_dropFirst(ff_core_String.String_split(name_, 36), 1), generics_);
 return (("(" + ff_core_List.List_join(ff_core_List.List_map(as_, ((_1) => {
 {
 const label_ = _1.first_;

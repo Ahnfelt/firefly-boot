@@ -2,8 +2,6 @@
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -154,26 +152,6 @@ throw new Error('Function equals is missing on this target in async context.');
 export const ff_core_Equal_Equal$ff_core_String_String = {
 equals_(x_, y_) {
 return x_ === y_
-},
-async equals_$(x_, y_, $task) {
-throw new Error('Function equals is missing on this target in async context.');
-}
-};
-
-export const ff_core_Equal_Equal$ff_core_List_List = {
-equals_(x_, y_) {
-
-            let a = x_
-            let b = y_
-            if(a === b) return true
-            while(a.Link && b.Link) {
-                if(a === b) return true
-                if(!ff_core_Equal_Equal$T.equals_(a.head_, b.head_)) return false
-                a = a.tail_
-                b = b.tail_
-            }
-            return a.Empty && b.Empty
-        
 },
 async equals_$(x_, y_, $task) {
 throw new Error('Function equals is missing on this target in async context.');

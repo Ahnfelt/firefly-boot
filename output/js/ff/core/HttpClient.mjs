@@ -2,8 +2,6 @@
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -115,7 +113,7 @@ export function RedirectManual() {
 return RedirectManual$;
 }
 
-export const emptyList_ = ff_core_List.Empty();
+export const emptyList_ = [];
 
 export function bodyText_(body_) {
 return body_
@@ -142,7 +140,7 @@ export async function HttpClient_fetch$(self_, url_, method_ = "GET", headers_ =
             try {
                 const options = {headers: {}, signal: $task.controller.signal}
                 options.method = method_
-                ff_core_List.List_each(headers_, pair => {options.headers[pair.first_] = pair.second_})
+                headers_.forEach(pair => {options.headers[pair.first_] = pair.second_})
                 if(body_.value_) options.body = body_.value_
                 if(redirect_.RedirectError) options.redirect = "error"
                 else if(redirect_.RedirectManual) options.redirect = "manual"

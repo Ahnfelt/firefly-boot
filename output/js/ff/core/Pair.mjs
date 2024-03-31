@@ -2,8 +2,6 @@
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -167,11 +165,7 @@ return
 }
 
 export function Pair_toList(self_) {
-return ff_core_List.Link(self_.first_, ff_core_List.Link(self_.second_, ff_core_List.Empty()))
-}
-
-export function Pair_toArray(self_) {
-return ff_core_List.List_toArray(ff_core_Pair.Pair_toList(self_))
+return [self_.first_, self_.second_]
 }
 
 export function Pair_toStack(self_) {
@@ -190,11 +184,7 @@ return
 }
 
 export async function Pair_toList$(self_, $task) {
-return ff_core_List.Link(self_.first_, ff_core_List.Link(self_.second_, ff_core_List.Empty()))
-}
-
-export async function Pair_toArray$(self_, $task) {
-return ff_core_List.List_toArray(ff_core_Pair.Pair_toList(self_))
+return [self_.first_, self_.second_]
 }
 
 export async function Pair_toStack$(self_, $task) {
@@ -210,11 +200,11 @@ return ff_core_List.List_toSet(ff_core_Pair.Pair_toList(self_), ff_core_Ordering
 }
 
 export function Pair_toMap(self_, ff_core_Ordering_Order$A) {
-return ff_core_List.List_toMap(ff_core_List.Link(self_, ff_core_List.Empty()), ff_core_Ordering_Order$A)
+return ff_core_List.List_toMap([self_], ff_core_Ordering_Order$A)
 }
 
 export async function Pair_toMap$(self_, ff_core_Ordering_Order$A, $task) {
-return ff_core_List.List_toMap(ff_core_List.Link(self_, ff_core_List.Empty()), ff_core_Ordering_Order$A)
+return ff_core_List.List_toMap([self_], ff_core_Ordering_Order$A)
 }
 
 export function ff_core_Any_HasAnyTag$ff_core_Pair_Pair(ff_core_Any_HasAnyTag$A, ff_core_Any_HasAnyTag$B) { return {

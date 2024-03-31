@@ -10,8 +10,6 @@ import * as ff_compiler_Unification from "../../ff/compiler/Unification.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -180,7 +178,7 @@ return ff_compiler_LspHook.LspHook(ff_core_Option.Option_else(at_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
 })), ff_core_Option.Option_else(definedAt_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
-})), insertIdentifier_, trackSymbols_, ff_core_List.List_toStack(ff_core_List.Empty()))
+})), insertIdentifier_, trackSymbols_, ff_core_List.List_toStack([]))
 }
 
 export function strictlyBetween_(afterAt_, beforeAt_, at_, extraColumns_) {
@@ -368,7 +366,7 @@ return ff_compiler_LspHook.LspHook(ff_core_Option.Option_else(at_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
 })), ff_core_Option.Option_else(definedAt_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
-})), insertIdentifier_, trackSymbols_, ff_core_List.List_toStack(ff_core_List.Empty()))
+})), insertIdentifier_, trackSymbols_, ff_core_List.List_toStack([]))
 }
 
 export async function strictlyBetween_$(afterAt_, beforeAt_, at_, extraColumns_, $task) {

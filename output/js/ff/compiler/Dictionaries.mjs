@@ -10,8 +10,6 @@ import * as ff_compiler_Unification from "../../ff/compiler/Unification.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -133,7 +131,7 @@ return
 }
 }
 }))(ff_core_List.List_grabFirst(c_.generics_));
-return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue(ff_core_List.Empty(), ff_core_List.Empty(), ff_compiler_Syntax.PackagePair("", ""), "", c_.name_, c_.generics_))
+return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue([], [], ff_compiler_Syntax.PackagePair("", ""), "", c_.name_, c_.generics_))
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
 
@@ -163,7 +161,7 @@ return
 }
 }
 }))(ff_core_List.List_grabFirst(c_.generics_));
-return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue(ff_core_List.Empty(), ff_core_List.Empty(), ff_compiler_Syntax.PackagePair("", ""), "", c_.name_, c_.generics_))
+return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue([], [], ff_compiler_Syntax.PackagePair("", ""), "", c_.name_, c_.generics_))
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
 
@@ -618,7 +616,7 @@ return
 
 export function Dictionaries_makeDictionary(self_, at_, typeParameters_, typeArguments_, constraint_) {
 const instantiationMap_ = ff_core_List.List_toMap(ff_core_List.List_zip(typeParameters_, typeArguments_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const unification_ = ff_compiler_Unification.make_(ff_core_List.Empty(), false);
+const unification_ = ff_compiler_Unification.make_([], false);
 const newGenerics_ = ff_core_List.List_map(constraint_.generics_, ((_w1) => {
 return ff_compiler_Unification.Unification_instantiate(unification_, instantiationMap_, _w1)
 }));
@@ -1098,7 +1096,7 @@ return
 
 export async function Dictionaries_makeDictionary$(self_, at_, typeParameters_, typeArguments_, constraint_, $task) {
 const instantiationMap_ = ff_core_List.List_toMap(ff_core_List.List_zip(typeParameters_, typeArguments_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const unification_ = ff_compiler_Unification.make_(ff_core_List.Empty(), false);
+const unification_ = ff_compiler_Unification.make_([], false);
 const newGenerics_ = ff_core_List.List_map(constraint_.generics_, ((_w1) => {
 return ff_compiler_Unification.Unification_instantiate(unification_, instantiationMap_, _w1)
 }));

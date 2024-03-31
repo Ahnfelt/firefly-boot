@@ -2,8 +2,6 @@
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -155,20 +153,16 @@ ff_core_Stack.Stack_push(stack_, ff_core_Pair.Pair(k_, v_))
 return stack_
 }
 
-export function IntMap_toArray(self_) {
+export function IntMap_toList(self_) {
 return ff_core_Stack.Stack_drain(ff_core_IntMap.IntMap_toStack(self_))
 }
 
-export function IntMap_toList(self_) {
-return ff_core_Array.Array_toList(ff_core_IntMap.IntMap_toArray(self_))
-}
-
 export function IntMap_toStream(self_) {
-return ff_core_Array.Array_toStream(ff_core_IntMap.IntMap_toArray(self_), false)
+return ff_core_Stack.Stack_toStream(ff_core_IntMap.IntMap_toStack(self_), 0, 9007199254740991)
 }
 
 export function IntMap_toMap(self_) {
-return ff_core_Array.Array_toMap(ff_core_IntMap.IntMap_toArray(self_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
+return ff_core_List.List_toMap(ff_core_IntMap.IntMap_toList(self_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }
 
 export function IntMap_keys(self_) {
@@ -242,20 +236,16 @@ ff_core_Stack.Stack_push(stack_, ff_core_Pair.Pair(k_, v_))
 return stack_
 }
 
-export async function IntMap_toArray$(self_, $task) {
+export async function IntMap_toList$(self_, $task) {
 return ff_core_Stack.Stack_drain(ff_core_IntMap.IntMap_toStack(self_))
 }
 
-export async function IntMap_toList$(self_, $task) {
-return ff_core_Array.Array_toList(ff_core_IntMap.IntMap_toArray(self_))
-}
-
 export async function IntMap_toStream$(self_, $task) {
-return (await ff_core_Array.Array_toStream$(ff_core_IntMap.IntMap_toArray(self_), false, $task))
+return (await ff_core_Stack.Stack_toStream$(ff_core_IntMap.IntMap_toStack(self_), 0, 9007199254740991, $task))
 }
 
 export async function IntMap_toMap$(self_, $task) {
-return ff_core_Array.Array_toMap(ff_core_IntMap.IntMap_toArray(self_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
+return ff_core_List.List_toMap(ff_core_IntMap.IntMap_toList(self_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }
 
 export async function IntMap_keys$(self_, $task) {
@@ -290,7 +280,7 @@ export function IntMap_push(self_, key_, value_) {
 const _1 = ff_core_IntMap.IntMap_get(self_, key_);
 {
 if(_1.None) {
-ff_core_IntMap.IntMap_set(self_, key_, ff_core_List.List_toStack(ff_core_List.Link(value_, ff_core_List.Empty())))
+ff_core_IntMap.IntMap_set(self_, key_, ff_core_List.List_toStack([value_]))
 return
 }
 }
@@ -309,7 +299,7 @@ export async function IntMap_push$(self_, key_, value_, $task) {
 const _1 = ff_core_IntMap.IntMap_get(self_, key_);
 {
 if(_1.None) {
-ff_core_IntMap.IntMap_set(self_, key_, ff_core_List.List_toStack(ff_core_List.Link(value_, ff_core_List.Empty())))
+ff_core_IntMap.IntMap_set(self_, key_, ff_core_List.List_toStack([value_]))
 return
 }
 }

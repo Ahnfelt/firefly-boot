@@ -22,8 +22,6 @@ import * as ff_compiler_Unification from "../../ff/compiler/Unification.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -178,16 +176,16 @@ return
 }
 {
 if(!_1) {
-const _guard1 = ff_core_Path.Path_endsWith(path_, ff_core_List.Link(".firefly", ff_core_List.Link("package.ff", ff_core_List.Empty())));
+const _guard1 = ff_core_Path.Path_endsWith(path_, [".firefly", "package.ff"]);
 if(_guard1) {
-return ff_core_List.Link(ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab(ff_core_Path.Path_parent(path_)), ff_core_Option.Some(path_), ff_core_List.Empty()), ff_core_List.Empty())
+return [ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab(ff_core_Path.Path_parent(path_)), ff_core_Option.Some(path_), [])]
 return
 }
 }
 }
 {
 if(!_1) {
-return ff_core_List.Link(ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab(ff_core_Path.Path_parent(path_)), ff_core_Option.None(), ff_core_List.Link(path_, ff_core_List.Empty())), ff_core_List.Empty())
+return [ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab(ff_core_Path.Path_parent(path_)), ff_core_Option.None(), [path_])]
 return
 }
 }
@@ -218,7 +216,7 @@ ff_compiler_Compiler.Compiler_resolve(compiler_, resolvedDependencies_.mainPacka
 export function findPackageFiles_(path_) {
 const files_ = ff_compiler_Builder.findFireflyFiles_(path_);
 const split_ = ff_core_List.List_partition(files_, ((_w1) => {
-return ff_core_Path.Path_endsWith(_w1, ff_core_List.Link(".firefly", ff_core_List.Link("package.ff", ff_core_List.Empty())))
+return ff_core_Path.Path_endsWith(_w1, [".firefly", "package.ff"])
 }));
 const packageFiles_ = split_.first_;
 let singleFiles_ = split_.second_;
@@ -232,9 +230,9 @@ return ff_compiler_Builder.PackageFiles(projectRoot_, ff_core_Option.Some(packag
 }));
 const singleFileProjects_ = ff_core_List.List_map(singleFiles_, ((file_) => {
 const projectRoot_ = ff_core_Option.Option_grab(ff_core_Path.Path_parent(file_));
-return ff_compiler_Builder.PackageFiles(projectRoot_, ff_core_Option.None(), ff_core_List.Link(file_, ff_core_List.Empty()))
+return ff_compiler_Builder.PackageFiles(projectRoot_, ff_core_Option.None(), [file_])
 }));
-return ff_core_List.List_addAll(multiFileProjects_, singleFileProjects_)
+return [...multiFileProjects_, ...singleFileProjects_]
 }
 
 export function findFireflyFiles_(path_) {
@@ -253,12 +251,12 @@ return ff_core_Path.PathEntry_path(_w1)
 })), ((_w1) => {
 return (ff_core_Path.Path_extension(_w1) === ".ff")
 }));
-return ff_core_List.List_addAll(fireflyFiles_, ff_core_List.List_flatMap(directories_, ((_w1) => {
+return [...fireflyFiles_, ...ff_core_List.List_flatMap(directories_, ((_w1) => {
 return ff_compiler_Builder.findFireflyFiles_(_w1)
-})))
+}))]
 }
 
-export function internalCreateExecutable_(self_, mainJsFile_ = ".firefly/output/executable/Main.bundle.js", outputPath_ = ".firefly/output", targets_ = ff_core_List.Link("host", ff_core_List.Empty()), assets_ = ff_core_AssetSystem.create_()) {
+export function internalCreateExecutable_(self_, mainJsFile_ = ".firefly/output/executable/Main.bundle.js", outputPath_ = ".firefly/output", targets_ = ["host"], assets_ = ff_core_AssetSystem.create_()) {
 const assetOutputPath_ = ff_core_Path.Path_slash(outputPath_, "assets");
 ff_core_List.List_each(ff_core_Map.Map_pairs(assets_.files_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
 {
@@ -357,16 +355,16 @@ return
 }
 {
 if(!_1) {
-const _guard1 = (await ff_core_Path.Path_endsWith$(path_, ff_core_List.Link(".firefly", ff_core_List.Link("package.ff", ff_core_List.Empty())), $task));
+const _guard1 = (await ff_core_Path.Path_endsWith$(path_, [".firefly", "package.ff"], $task));
 if(_guard1) {
-return ff_core_List.Link(ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(path_, $task))), ff_core_Option.Some(path_), ff_core_List.Empty()), ff_core_List.Empty())
+return [ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(path_, $task))), ff_core_Option.Some(path_), [])]
 return
 }
 }
 }
 {
 if(!_1) {
-return ff_core_List.Link(ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(path_, $task))), ff_core_Option.None(), ff_core_List.Link(path_, ff_core_List.Empty())), ff_core_List.Empty())
+return [ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(path_, $task))), ff_core_Option.None(), [path_])]
 return
 }
 }
@@ -397,7 +395,7 @@ if(infer_) {
 export async function findPackageFiles_$(path_, $task) {
 const files_ = (await ff_compiler_Builder.findFireflyFiles_$(path_, $task));
 const split_ = (await ff_core_List.List_partition$(files_, (async (_w1, $task) => {
-return (await ff_core_Path.Path_endsWith$(_w1, ff_core_List.Link(".firefly", ff_core_List.Link("package.ff", ff_core_List.Empty())), $task))
+return (await ff_core_Path.Path_endsWith$(_w1, [".firefly", "package.ff"], $task))
 }), $task));
 const packageFiles_ = split_.first_;
 let singleFiles_ = split_.second_;
@@ -411,9 +409,9 @@ return ff_compiler_Builder.PackageFiles(projectRoot_, ff_core_Option.Some(packag
 }), $task));
 const singleFileProjects_ = (await ff_core_List.List_map$(singleFiles_, (async (file_, $task) => {
 const projectRoot_ = ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(file_, $task)));
-return ff_compiler_Builder.PackageFiles(projectRoot_, ff_core_Option.None(), ff_core_List.Link(file_, ff_core_List.Empty()))
+return ff_compiler_Builder.PackageFiles(projectRoot_, ff_core_Option.None(), [file_])
 }), $task));
-return ff_core_List.List_addAll(multiFileProjects_, singleFileProjects_)
+return [...multiFileProjects_, ...singleFileProjects_]
 }
 
 export async function findFireflyFiles_$(path_, $task) {
@@ -432,12 +430,12 @@ return (await ff_core_Path.PathEntry_path$(_w1, $task))
 }), $task)), (async (_w1, $task) => {
 return ((await ff_core_Path.Path_extension$(_w1, $task)) === ".ff")
 }), $task));
-return ff_core_List.List_addAll(fireflyFiles_, (await ff_core_List.List_flatMap$(directories_, (async (_w1, $task) => {
+return [...fireflyFiles_, ...(await ff_core_List.List_flatMap$(directories_, (async (_w1, $task) => {
 return (await ff_compiler_Builder.findFireflyFiles_$(_w1, $task))
-}), $task)))
+}), $task))]
 }
 
-export async function internalCreateExecutable_$(self_, mainJsFile_ = ".firefly/output/executable/Main.bundle.js", outputPath_ = ".firefly/output", targets_ = ff_core_List.Link("host", ff_core_List.Empty()), assets_ = ff_core_AssetSystem.create_(), $task) {
+export async function internalCreateExecutable_$(self_, mainJsFile_ = ".firefly/output/executable/Main.bundle.js", outputPath_ = ".firefly/output", targets_ = ["host"], assets_ = ff_core_AssetSystem.create_(), $task) {
 const assetOutputPath_ = (await ff_core_Path.Path_slash$(outputPath_, "assets", $task));
 (await ff_core_List.List_each$(ff_core_Map.Map_pairs(assets_.files_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async (_1, $task) => {
 {
@@ -479,7 +477,7 @@ export async function internalCallPkg_$(self_, packageFile_, outputPath_, target
         return await pkg.exec([
             packageFile_,
             '--out-path', outputPath_,
-            '--target', ff_core_List.List_toArray(targets_).join(',')
+            '--target', targets_.join(',')
         ])
     
 }

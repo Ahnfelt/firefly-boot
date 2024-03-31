@@ -2,8 +2,6 @@
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -100,11 +98,11 @@ return {files_};
 
 
 export function create_() {
-return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
 export async function create_$($task) {
-return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
 export function AssetSystem_addAssets(self_, path_, assets_) {
