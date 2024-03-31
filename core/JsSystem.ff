@@ -21,7 +21,7 @@ extend self: JsSystem {
         target js sync "return {}"
 
     array(values: List[JsValue]): JsValue
-        target js sync "return ff_core_List.List_toArray(values_)"
+        target js sync "return values_.slice()"
         
     json(value: Json): JsValue
         target js sync "return value_"

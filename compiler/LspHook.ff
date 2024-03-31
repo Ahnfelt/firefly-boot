@@ -7,7 +7,7 @@ class LspHook(
     definedAt: Location
     insertIdentifier: Bool
     trackSymbols: Bool
-    stackOfResults: Stack[ResultHook]
+    arrayOfResults: Array[ResultHook]
 )
 
 disabled(): LspHook {
@@ -20,7 +20,7 @@ make(at: Option[Location], definedAt: Option[Location], insertIdentifier: Bool, 
         definedAt = definedAt.else {Location("^lsp", -7, -7)}
         insertIdentifier = insertIdentifier
         trackSymbols = trackSymbols
-        stackOfResults = [].toStack()
+        arrayOfResults = [].toArray()
     )
 }
 
@@ -41,10 +41,10 @@ extend self: LspHook {
         self.definedAt.file == at.file
     }
     emit(result: ResultHook) {
-        self.stackOfResults.push(result)
+        self.arrayOfResults.push(result)
     }
     results(): List[ResultHook] {
-        self.stackOfResults.toList()
+        self.arrayOfResults.toList()
     }
 }
 

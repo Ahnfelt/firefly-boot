@@ -8,7 +8,7 @@ capability Lux(
     mutable cssClasses: StringMap[CssClass]
     mutable renderLock: Lock
     mutable task: Task
-    mutable renderQueue: Stack[RenderQueueItem]
+    mutable renderQueue: Array[RenderQueueItem]
     mutable element: LuxElement
     mutable depth: Int
     mutable keys: Option[StringMap[JsValue]]
@@ -294,7 +294,7 @@ extend self: Lux {
             let lux = luxCopy.Lux(
                 task = task
                 renderLock = task.lock()
-                renderQueue = Stack.make()
+                renderQueue = Array.make()
                 element = luxCopy.element.LuxElement(element = fragment)
             )
             try {
@@ -475,7 +475,7 @@ render(browserSystem: BrowserSystem, element: JsValue, body: Lux => Unit) {
         keys = None
         key = ""
         attributes = None
-        renderQueue = Stack.make()
+        renderQueue = Array.make()
     )
     lux.renderLock.do(reentrant = False) {
         body(lux)

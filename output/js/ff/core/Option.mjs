@@ -78,8 +78,6 @@ import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
 
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
-
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
@@ -199,22 +197,18 @@ export function Option_toList(self_) {
 const _1 = self_;
 {
 if(_1.None) {
-return ff_core_List.Empty()
+return []
 return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
-return ff_core_List.Link(v_, ff_core_List.Empty())
+return [v_]
 return
 }
 }
 }
-}
-
-export function Option_toStack(self_) {
-return ff_core_List.List_toStack(ff_core_Option.Option_toList(self_))
 }
 
 export function Option_toArray(self_) {
@@ -460,22 +454,18 @@ export async function Option_toList$(self_, $task) {
 const _1 = self_;
 {
 if(_1.None) {
-return ff_core_List.Empty()
+return []
 return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
-return ff_core_List.Link(v_, ff_core_List.Empty())
+return [v_]
 return
 }
 }
 }
-}
-
-export async function Option_toStack$(self_, $task) {
-return ff_core_List.List_toStack(ff_core_Option.Option_toList(self_))
 }
 
 export async function Option_toArray$(self_, $task) {
@@ -947,14 +937,14 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 return ff_core_Option.None()
 return
 }
 }
 {
-if(_1 == 1) {
+if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 return ff_core_Option.Some(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_))
 return
@@ -999,14 +989,14 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 return ff_core_Option.None()
 return
 }
 }
 {
-if(_1 == 1) {
+if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 return ff_core_Option.Some(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_))
 return

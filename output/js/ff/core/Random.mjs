@@ -78,8 +78,6 @@ import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
 
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
-
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
@@ -215,43 +213,29 @@ export function Random_nextGauss(self_, mean_, standardDeviation_) {
         
 }
 
-export function Random_shuffleStack(self_, stack_) {
-ff_core_List.List_each(ff_core_Int.Int_until(0, (ff_core_Stack.Stack_size(stack_) - 1)), ((i_) => {
-const j_ = (ff_core_Random.Random_nextInt(self_, 0, (ff_core_Stack.Stack_size(stack_) - i_)) + i_);
-const value_ = ff_core_Stack.Stack_grab(stack_, i_);
-ff_core_Stack.Stack_set(stack_, i_, ff_core_Stack.Stack_grab(stack_, j_));
-ff_core_Stack.Stack_set(stack_, j_, value_)
+export function Random_shuffleArray(self_, array_) {
+ff_core_List.List_each(ff_core_Int.Int_until(0, (ff_core_Array.Array_size(array_) - 1)), ((i_) => {
+const j_ = (ff_core_Random.Random_nextInt(self_, 0, (ff_core_Array.Array_size(array_) - i_)) + i_);
+const value_ = ff_core_Array.Array_grab(array_, i_);
+ff_core_Array.Array_set(array_, i_, ff_core_Array.Array_grab(array_, j_));
+ff_core_Array.Array_set(array_, j_, value_)
 }))
 }
 
-export function Random_shuffleArray(self_, array_) {
-const stack_ = ff_core_Array.Array_toStack(array_);
-ff_core_Random.Random_shuffleStack(self_, ff_core_Array.Array_toStack(array_));
-return ff_core_Stack.Stack_drain(stack_)
-}
-
 export function Random_shuffleList(self_, list_) {
-const stack_ = ff_core_List.List_toStack(list_);
-ff_core_Random.Random_shuffleStack(self_, ff_core_List.List_toStack(list_));
-return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
+const array_ = ff_core_List.List_toArray(list_);
+ff_core_Random.Random_shuffleArray(self_, ff_core_List.List_toArray(list_));
+return ff_core_Array.Array_drain(array_)
 }
 
-export function Random_sampleStack(self_, count_, stack_, body_) {
-ff_core_Array.Array_each(ff_core_Array.Array_takeFirst(ff_core_Random.Random_shuffleArray(self_, ff_core_Stack.Stack_toArray(stack_, 0, 9007199254740991)), count_), ((_w1) => {
+export function Random_sampleArray(self_, count_, array_, body_) {
+ff_core_List.List_each(ff_core_List.List_takeFirst(ff_core_Random.Random_shuffleList(self_, ff_core_Array.Array_toList(array_, 0, 9007199254740991)), count_), ((_w1) => {
 body_(_w1)
 }))
 }
 
-export function Random_sampleArray(self_, count_, array_) {
-return ff_core_Array.Array_takeFirst(ff_core_Random.Random_shuffleArray(self_, array_), count_)
-}
-
 export function Random_sampleList(self_, count_, list_) {
 return ff_core_List.List_takeFirst(ff_core_Random.Random_shuffleList(self_, list_), count_)
-}
-
-export function Random_grabStack(self_, stack_) {
-return ff_core_Stack.Stack_grab(stack_, ff_core_Random.Random_nextInt(self_, 0, ff_core_Stack.Stack_size(stack_)))
 }
 
 export function Random_grabArray(self_, array_) {
@@ -259,7 +243,7 @@ return ff_core_Array.Array_grab(array_, ff_core_Random.Random_nextInt(self_, 0, 
 }
 
 export function Random_grabList(self_, list_) {
-return ff_core_Stack.Stack_grab(list_, ff_core_Random.Random_nextInt(self_, 0, ff_core_Stack.Stack_size(list_)))
+return ff_core_List.List_grab(list_, ff_core_Random.Random_nextInt(self_, 0, ff_core_List.List_size(list_)))
 }
 
 export async function Random_copy$(self_, $task) {
@@ -288,43 +272,29 @@ export async function Random_nextGauss$(self_, mean_, standardDeviation_, $task)
 throw new Error('Function Random_nextGauss is missing on this target in async context.');
 }
 
-export async function Random_shuffleStack$(self_, stack_, $task) {
-ff_core_List.List_each(ff_core_Int.Int_until(0, (ff_core_Stack.Stack_size(stack_) - 1)), ((i_) => {
-const j_ = (ff_core_Random.Random_nextInt(self_, 0, (ff_core_Stack.Stack_size(stack_) - i_)) + i_);
-const value_ = ff_core_Stack.Stack_grab(stack_, i_);
-ff_core_Stack.Stack_set(stack_, i_, ff_core_Stack.Stack_grab(stack_, j_));
-ff_core_Stack.Stack_set(stack_, j_, value_)
+export async function Random_shuffleArray$(self_, array_, $task) {
+ff_core_List.List_each(ff_core_Int.Int_until(0, (ff_core_Array.Array_size(array_) - 1)), ((i_) => {
+const j_ = (ff_core_Random.Random_nextInt(self_, 0, (ff_core_Array.Array_size(array_) - i_)) + i_);
+const value_ = ff_core_Array.Array_grab(array_, i_);
+ff_core_Array.Array_set(array_, i_, ff_core_Array.Array_grab(array_, j_));
+ff_core_Array.Array_set(array_, j_, value_)
 }))
 }
 
-export async function Random_shuffleArray$(self_, array_, $task) {
-const stack_ = ff_core_Array.Array_toStack(array_);
-ff_core_Random.Random_shuffleStack(self_, ff_core_Array.Array_toStack(array_));
-return ff_core_Stack.Stack_drain(stack_)
-}
-
 export async function Random_shuffleList$(self_, list_, $task) {
-const stack_ = ff_core_List.List_toStack(list_);
-ff_core_Random.Random_shuffleStack(self_, ff_core_List.List_toStack(list_));
-return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
+const array_ = ff_core_List.List_toArray(list_);
+ff_core_Random.Random_shuffleArray(self_, ff_core_List.List_toArray(list_));
+return ff_core_Array.Array_drain(array_)
 }
 
-export async function Random_sampleStack$(self_, count_, stack_, body_, $task) {
-(await ff_core_Array.Array_each$(ff_core_Array.Array_takeFirst(ff_core_Random.Random_shuffleArray(self_, ff_core_Stack.Stack_toArray(stack_, 0, 9007199254740991)), count_), (async (_w1, $task) => {
+export async function Random_sampleArray$(self_, count_, array_, body_, $task) {
+(await ff_core_List.List_each$(ff_core_List.List_takeFirst(ff_core_Random.Random_shuffleList(self_, ff_core_Array.Array_toList(array_, 0, 9007199254740991)), count_), (async (_w1, $task) => {
 (await body_(_w1, $task))
 }), $task))
 }
 
-export async function Random_sampleArray$(self_, count_, array_, $task) {
-return ff_core_Array.Array_takeFirst(ff_core_Random.Random_shuffleArray(self_, array_), count_)
-}
-
 export async function Random_sampleList$(self_, count_, list_, $task) {
 return ff_core_List.List_takeFirst(ff_core_Random.Random_shuffleList(self_, list_), count_)
-}
-
-export async function Random_grabStack$(self_, stack_, $task) {
-return ff_core_Stack.Stack_grab(stack_, ff_core_Random.Random_nextInt(self_, 0, ff_core_Stack.Stack_size(stack_)))
 }
 
 export async function Random_grabArray$(self_, array_, $task) {
@@ -332,7 +302,7 @@ return ff_core_Array.Array_grab(array_, ff_core_Random.Random_nextInt(self_, 0, 
 }
 
 export async function Random_grabList$(self_, list_, $task) {
-return ff_core_Stack.Stack_grab(list_, ff_core_Random.Random_nextInt(self_, 0, ff_core_Stack.Stack_size(list_)))
+return ff_core_List.List_grab(list_, ff_core_Random.Random_nextInt(self_, 0, ff_core_List.List_size(list_)))
 }
 
 

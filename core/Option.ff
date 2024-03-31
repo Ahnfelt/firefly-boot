@@ -44,10 +44,6 @@ extend self[T]: Option[T] {
         }
     }
 
-    toStack(): Stack[T] {
-        self.toList().toStack()
-    }
-
     toArray(): Array[T] {
         self.toList().toArray()
     }

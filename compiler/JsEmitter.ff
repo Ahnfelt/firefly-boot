@@ -77,7 +77,7 @@ extend self: JsEmitter {
             packagePair.name == "core"
         ) {["esbuild"]} else {[]}
         let jsImports = self.jsImporter.generateImports(ignoreJsImports.toSet())
-        [jsImports, ...parts].map { _.join("\n\n") }.join("\n\n") + "\n"
+        [jsImports, ...parts].map {_.join("\n\n")}.join("\n\n") + "\n"
     }
 
     withEmittingAsync[T](body: () => T): T {
@@ -90,14 +90,14 @@ extend self: JsEmitter {
     }
 
     emitRun(functions: List[DFunction], mainPackagePair: PackagePair, bootstrapping: Bool): List[String] {
-        let buildMainFunction = functions.find { _.signature.name == "buildMain" }.filter {_ =>
+        let buildMainFunction = functions.find {_.signature.name == "buildMain"}.filter {_ =>
             self.emitTarget != EmitBrowser && self.emitTarget != EmitExecutable
         }
         let willRunOnNode = self.emitTarget != EmitBrowser
-        let targetMain = if(willRunOnNode) { "nodeMain" } else { "browserMain" }
+        let targetMain = if(willRunOnNode) {"nodeMain"} else {"browserMain"}
         let mainFunction =
-            functions.find { _.signature.name == targetMain }.orElse { functions.find { _.signature.name == "main" } }
-        mainFunction.map {_.signature.name}.map { mainName => [[
+            functions.find {_.signature.name == targetMain}.orElse {functions.find {_.signature.name == "main"}}
+        mainFunction.map {_.signature.name}.map {mainName => [[
             "export async function $run$(fireflyPath_, arguments_) {"
             "Error.stackTraceLimit = 50"
             "const $task = {controller: new AbortController(), subtasks: new Set(), promise: new Promise(() => {}), started: performance.now() * 0.001}"
@@ -164,31 +164,31 @@ extend self: JsEmitter {
     }
 
     emitExtendsDefinition(definition: DExtend): String {
-        let typeName = extractTypeName(definition.type).reverse().takeWhile { _ != '.' }.reverse()
-        let methods = definition.methods.map { method =>
+        let typeName = extractTypeName(definition.type).reverse().takeWhile {_ != '.'}.reverse()
+        let methods = definition.methods.map {method =>
             method.DFunction(
                 signature = method.signature.Signature(
                     name = typeName + "_" + method.signature.name
                 )
             )
         }
-        let syncMethods = methods.map { "export " + self.emitFunctionDefinition(_, False) }
-        let asyncMethods = self.withEmittingAsync {methods.map { "export " + self.emitFunctionDefinition(_, True) }}
+        let syncMethods = methods.map {"export " + self.emitFunctionDefinition(_, False)}
+        let asyncMethods = self.withEmittingAsync {methods.map {"export " + self.emitFunctionDefinition(_, True)}}
         [...syncMethods, ...asyncMethods].join("\n\n")
     }
 
     emitInstanceDefinition(definition: DInstance): String {
         let name = makeDictionaryName(definition.traitName, firstTypeName(definition.typeArguments))
-        let methods = definition.methods.map {self.emitFunctionDefinition(_, False)}.map { _.dropFirst("function ".size()) } // TODO
+        let methods = definition.methods.map {self.emitFunctionDefinition(_, False)}.map {_.dropFirst("function ".size())} // TODO
         let asyncMethods = self.withEmittingAsync {
-            definition.methods.map {self.emitFunctionDefinition(_, True)}.map { "async " + _.dropFirst("async function ".size()) } // TODO
+            definition.methods.map {self.emitFunctionDefinition(_, True)}.map {"async " + _.dropFirst("async function ".size())} // TODO
         }
         let body = "{\n" + [...methods, ...asyncMethods].join(",\n") + "\n}"
         definition.constraints.{
             | [] =>
                 "export const " + name + " = " + body + ";"
             | constraints =>
-                let dictionaries = constraints.map { c =>
+                let dictionaries = constraints.map {c =>
                     makeDictionaryName(c.name, firstTypeName(c.generics))
                 }
                 "export function " + name + "(" + dictionaries.join(", ") + ") { return " + body + "}"
@@ -213,12 +213,12 @@ extend self: JsEmitter {
                         | _ => False
                     }
                 } =>
-                    let body = self.emitTailCall { self.emitStatements(matchCase.body, True, async) }
+                    let body = self.emitTailCall {self.emitStatements(matchCase.body, True, async)}
                     signature + " {\n" + body + "\n}"
                 | Lambda(_, effect, cases) =>
                     Patterns.convertAndCheck(self.otherModules, cases)
-                    let escapedArguments = definition.signature.parameters.map { _.name + "_a" }
-                    let shadowingWorkaround = definition.signature.parameters.map { p =>
+                    let escapedArguments = definition.signature.parameters.map {_.name + "_a"}
+                    let shadowingWorkaround = definition.signature.parameters.map {p =>
                         "const " + p.name + "_a = " + escapeKeyword(p.name) + ";"
                     }.join("\n")
                     let body = self.emitTailCall {
@@ -247,7 +247,7 @@ extend self: JsEmitter {
 
     emitSignature(signature: Signature, async: Bool, suffix: String = ""): String {
         let parameterStrings = signature.parameters.map {self.emitParameter(_, async)}
-        let dictionaryStrings = signature.constraints.map { c =>
+        let dictionaryStrings = signature.constraints.map {c =>
             makeDictionaryName(c.name, firstTypeName(c.generics))
         }
         let controller = if(async) {["$task"]} else {[]}
@@ -258,19 +258,19 @@ extend self: JsEmitter {
     }
 
     emitParameter(parameter: Parameter, async: Bool): String {
-        let defaultValue = parameter.default.map { " = " + self.emitTerm(_, async) }.else{""}
+        let defaultValue = parameter.default.map {" = " + self.emitTerm(_, async) }.else {""}
         escapeKeyword(parameter.name) + defaultValue
     }
 
     emitTypeDefinition(definition: DType): String {
-        if(definition.newtype) { "// newtype " + definition.name } else:
+        if(definition.newtype) {"// newtype " + definition.name} else:
         "// type " + definition.name + "\n" +
-        definition.variants.map { self.emitVariantDefinition(definition, _) }.join("\n")
+        definition.variants.map {self.emitVariantDefinition(definition, _)}.join("\n")
     }
 
     emitVariantDefinition(typeDefinition: DType, definition: Variant): String {
         let allFields = [...typeDefinition.commonFields, ...definition.fields]
-        let fields = allFields.map { escapeKeyword(_.name) }.join(", ")
+        let fields = allFields.map {escapeKeyword(_.name)}.join(", ")
         if(allFields.isEmpty()) {
             "const " + definition.name + "$ = {" + definition.name + ": true};\n" +
             "export function " + definition.name + "(" + fields + ") {\n" +
@@ -287,7 +287,7 @@ extend self: JsEmitter {
         }
     }
 
-    emitTerm(term: Term, async: Bool): String { term.{
+    emitTerm(term: Term, async: Bool): String {term.{
         | EString(at, value) {value.startsWith("\"\"\"")} =>
             "`" + value.dropFirst(3).dropLast(3).replace("`", "\\`") + "`" // TODO: Fix escaping
         | EString(at, value) => value
@@ -306,7 +306,7 @@ extend self: JsEmitter {
         | EVariant(at, name, _, arguments) =>
             let argumentsString = arguments.toList().flatten().map {self.emitArgument(at, _, async)}.join(", ")
             let newtype = self.processVariant(name)
-            if(newtype) { argumentsString } else:
+            if(newtype) {argumentsString} else:
             escapeResolved(name) + "(" + argumentsString + ")"
         | EVariantIs(at, "ff:core/Bool.False", _) =>
             "function(_v) { return !_v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
@@ -320,17 +320,17 @@ extend self: JsEmitter {
             "return _v." + escapeResolved(n) + " ? ff_core_Option.Some(_v) : ff_core_Option.None();" +
             "})"
         | ECopy(at, name, record, fields) =>
-            let fieldCode = fields.map { f => escapeKeyword(f.name) + " = " + self.emitTerm(f.value, async) }.join(", ")
+            let fieldCode = fields.map {f => escapeKeyword(f.name) + " = " + self.emitTerm(f.value, async)}.join(", ")
             "{..." + self.emitTerm(record, async) + ", " + fieldCode + "}"
         | EField(at, newtype, record, field) =>
-            if(newtype) { self.emitTerm(record, async) } else:
+            if(newtype) {self.emitTerm(record, async)} else:
             self.emitTerm(record, async) + "." + escapeKeyword(field)
         | ELambda(at, Lambda(_, effect, [MatchCase(_, patterns, [], body)])) {
             patterns.all {| PVariable _ => True | _ => False }
         } =>
             let newAsync = self.emittingAsync && effectTypeIsAsync(effect)
             let patternParameters = patterns.map {
-                | PVariable p => p.name.map(escapeKeyword).else{"_"}
+                | PVariable p => p.name.map(escapeKeyword).else {"_"}
                 | _ => panic("!")
             }
             let controller = if(newAsync) {["$task"]} else {[]}
@@ -341,9 +341,9 @@ extend self: JsEmitter {
             let newAsync = self.emittingAsync && effectTypeIsAsync(effect)
             let controller = if(newAsync) {["$task"]} else {[]}
             Patterns.convertAndCheck(self.otherModules, cases)
-            let arguments = cases.grab(0).patterns.pairs().map { "_" + (_.first + 1) }
+            let arguments = cases.grab(0).patterns.pairs().map {"_" + (_.first + 1)}
             let escapedArguments = arguments.map(escapeKeyword) // emitCase arguments must be preescaped
-            let caseStrings = cases.map { "{\n" + self.emitCase(escapedArguments, _, True, True, newAsync) + "\n}" }
+            let caseStrings = cases.map {"{\n" + self.emitCase(escapedArguments, _, True, True, newAsync) + "\n}"}
             let prefix = if(newAsync) {"async "} else {""}
             "(" + prefix + "(" + [...escapedArguments, ...controller].join(", ") + ") => " +
             "{\n" + caseStrings.join("\n") + "\n})"
@@ -389,7 +389,7 @@ extend self: JsEmitter {
             primitiveTypes.contains(typeName)
         } =>
             "(" + self.emitArgument(at, left, async) + " <= " + self.emitArgument(at, right, async) + ")"
-        | ECall(_, StaticCall("ff:core/Array.fillBy", _, _), effect, _, [size, Argument(_, _, ELambda(at,
+        | ECall(_, StaticCall("ff:core/List.fillBy", _, _), effect, _, [size, Argument(_, _, ELambda(at,
             Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], body)@c])@l
         ))], _) {
             !effectTypeIsAsync(effect)
@@ -411,12 +411,18 @@ extend self: JsEmitter {
             let ds = dictionaryStrings.dropFirst()
             let d = dictionaryStrings.grabFirst()
             let asyncSuffix = if(await) {"$"} else {""}
-            let n = escapeKeyword(name.reverse().takeWhile { _ != '.' }.reverse()) + asyncSuffix
+            let n = escapeKeyword(name.reverse().takeWhile {_ != '.'}.reverse()) + asyncSuffix
             let emittedArguments = arguments.map {self.emitArgument(at, _, async)}
             let controller = if(await) {["$task"]} else {[]}
             let call = d + "." + n + "(" + [...emittedArguments, ...ds, ...controller].join(", ") + ")"
             if(await) {"(await " + call + ")"} else {call}
         | ECall(at, StaticCall(name, _, _), effect, typeArguments, arguments, dictionaries) =>
+            if(name.contains("bundleForBrowser")) { // TODO: Delete this test (for branch arraysonly)
+                if(!arguments.grab(0).name.contains("system")) {
+                    Log.debug("Wrong arguments for bundleForBrowser: " + Show.show(arguments.map {_.name}))
+                    throw(GrabException())
+                }
+            }
             detectIfElse(term).{
                 | [] =>
                     let await = async && effectTypeIsAsync(effect)
@@ -447,7 +453,7 @@ extend self: JsEmitter {
             if(await) {"(await " + call + ")"} else {call}
         | ERecord(at, fields) =>
             if(fields.isEmpty()) {"{}"} else {
-                let list = fields.map { f => escapeKeyword(f.name) + ": " + self.emitTerm(f.value, async) }
+                let list = fields.map {f => escapeKeyword(f.name) + ": " + self.emitTerm(f.value, async)}
                 "{\n" + list.join(",\n") + "\n}"
             }
         | EWildcard(at, index) =>
@@ -459,10 +465,10 @@ extend self: JsEmitter {
             "(function() {\n" + self.emitStatements(term, True, async) + "\n})()"
     }}
 
-    emitDictionary(d : Dictionary): String {
+    emitDictionary(d: Dictionary): String {
         let m = if(d.moduleName != "") {
             d.packagePair.groupName("_") + "_" + d.moduleName.replace("/", "_") + "."
-        } else { "" }
+        } else {""}
         let c = m + makeDictionaryName(d.traitName, d.typeName)
         if(d.dictionaries.isEmpty()) {
             c
@@ -474,7 +480,7 @@ extend self: JsEmitter {
     emitStatements(term: Term, last: Bool, async: Bool): String {
         term.{
             | EFunctions(at, functions, body) =>
-                let functionStrings = functions.map { f =>
+                let functionStrings = functions.map {f =>
                     let newAsync = self.emittingAsync && effectTypeIsAsync(f.signature.effect)
                     self.emitFunctionDefinition(f, newAsync)
                 }
@@ -670,37 +676,37 @@ extend self: JsEmitter {
                 self.emitCase([guardName], newCase, jump, last, async)
             | Pair([], []) =>
                 self.emitStatements(matchCase.body, last, async) +
-                if(jump && last) { "\nreturn" } elseIf {jump} { "\nbreak" } else {""}
+                if(jump && last) {"\nreturn"} elseIf {jump} {"\nbreak"} else {""}
         }
     }
 
     emitPattern(
-        argument: String,
-        pattern: MatchPattern,
-        arguments: List[String],
-        matchCase: MatchCase,
-        jump: Bool,
-        last: Bool,
+        argument: String
+        pattern: MatchPattern
+        arguments: List[String]
+        matchCase: MatchCase
+        jump: Bool
+        last: Bool
         async: Bool
     ): String {
         pattern.{
             | PString(_, value) =>
-                "if(" + argument + " == " + value + ") {\n" +
+                "if(" + argument + " === " + value + ") {\n" +
                 self.emitCase(arguments, matchCase, jump, last, async) +
                 "\n}"
             | PInt(_, value) =>
-                "if(" + argument + " == " + value + ") {\n" +
+                "if(" + argument + " === " + value + ") {\n" +
                 self.emitCase(arguments, matchCase, jump, last, async) +
                 "\n}"
             | PChar(_, value) =>
-                "if(" + argument + " == " + charLiteralToNumber(value) + ") {\n" +
+                "if(" + argument + " === " + charLiteralToNumber(value) + ") {\n" +
                 self.emitCase(arguments, matchCase, jump, last, async) +
                 "\n}"
             | PVariable(_, None) =>
                 self.emitCase(arguments, matchCase, jump, last, async)
             | PVariable(_, Some(name)) =>
                 let escaped = escapeKeyword(name)
-                if(escaped != argument) { "const " + escaped + " = " + argument + ";\n" } else { "" } +
+                if(escaped != argument) {"const " + escaped + " = " + argument + ";\n"} else {""} +
                 self.emitCase(arguments, matchCase, jump, last, async)
             | PVariant(_, "ff:core/Bool.False", []) =>
                 "if(!" + argument + ") {\n" +
@@ -710,67 +716,88 @@ extend self: JsEmitter {
                 "if(" + argument + ") {\n" +
                 self.emitCase(arguments, matchCase, jump, last, async) +
                 "\n}"
+            | PVariant(_, "List$Empty", []) =>
+                mutable shortArgument = argument
+                mutable shortCount = 0
+                while {shortArgument.endsWith(".slice(1)")} {
+                    shortArgument = shortArgument.dropLast(".slice(1)".size())
+                    shortCount += 1
+                }
+                "if(" + shortArgument + ".length === " + shortCount + ") {\n" +
+                self.emitCase(arguments, matchCase, jump, last, async) +
+                "\n}"
+            | PVariant(_, "List$Link", [head, tail]) =>
+                mutable shortArgument = argument
+                mutable shortCount = 0
+                while {shortArgument.endsWith(".slice(1)")} {
+                    shortArgument = shortArgument.dropLast(".slice(1)".size())
+                    shortCount += 1
+                }
+                let newArguments = [shortArgument + "[" + shortCount + "]", argument + ".slice(1)", ...arguments]
+                let newMatchCase = matchCase.MatchCase(patterns = [head, tail, ...matchCase.patterns])
+                "if(" + shortArgument + ".length > " + shortCount + ") {\n" +
+                self.emitCase(newArguments, newMatchCase, jump, last, async) +
+                "\n}"
             | PVariant(_, name, patterns) =>
                 let processed = self.processVariantCase(name, argument)
                 let newMatchCase = matchCase.MatchCase(patterns = [...patterns, ...matchCase.patterns])
-                if(processed.loneVariant) { "" } else {
+                if(processed.loneVariant) {""} else {
                     "if(" + argument + "." + processed.variantName + ") {\n"
                 } +
                 self.emitCase([...processed.arguments, ...arguments], newMatchCase, jump, last, async) +
-                if(processed.loneVariant) { "" } else { "\n}" }
+                if(processed.loneVariant) {""} else {"\n}"}
             | PVariantAs(at, name, variableAt, variable) =>
                 let processed = self.processVariantCase(name, argument)
-                if(processed.loneVariant) { "" } else {
+                if(processed.loneVariant) {""} else {
                     "if(" + argument + "." + processed.variantName + ") {\n"
                 } +
-                variable.map(escapeKeyword).filter { _ != argument }.map {
+                variable.map(escapeKeyword).filter {_ != argument}.map {
                     "const " + _ + " = " + argument + ";\n"
                 }.else {""} +
                 self.emitCase(arguments, matchCase, jump, last, async) +
-                if(processed.loneVariant) { "" } else { "\n}" }
+                if(processed.loneVariant) {""} else {"\n}"}
             | PAlias(_, pattern, variable) =>
                 let escaped = escapeKeyword(variable)
-                if(escaped != argument) { "const " + escaped + " = " + argument + ";\n" } else { "" } +
+                if(escaped != argument) {"const " + escaped + " = " + argument + ";\n"} else {""} +
                 self.emitPattern(argument, pattern, arguments, matchCase, jump, last, async)
         }
     }
 
-    emitList(items: List[Pair[Term, Bool]], async: Bool): String {items.{
-        | [] =>
-            "ff_core_List.Empty()"
-        | [Pair(e, True)] =>
-            self.emitTerm(e, async)
-        | [Pair(e, False), ...list] =>
-            "ff_core_List.Link(" + self.emitTerm(e, async) + ", " + self.emitList(list, async) + ")"
-        | [Pair(e, True), ...list] =>
-            "ff_core_List.List_addAll(" + self.emitTerm(e, async) + ", " + self.emitList(list, async) + ")"
-    }}
+    emitList(items: List[Pair[Term, Bool]], async: Bool): String {
+        "[" + items.map {
+            | Pair(item, False) => self.emitTerm(item, async)
+            | Pair(item, True) => "..." + self.emitTerm(item, async)
+        }.join(", ") + "]"
+    }
 
     processVariantCase(name: String, argument: String): ProcessedVariantCase {
-        let variantNameUnqualified = name.reverse().takeWhile { _ != '.' }.reverse()
+        if(name == "List$Empty") {ProcessedVariantCase(name, False, False, [])} else:
+        if(name == "List$Link") {ProcessedVariantCase(name, False, False, [argument + "[0]", argument + ".slice(1)"])} else:
+        let variantNameUnqualified = name.reverse().takeWhile {_ != '.'}.reverse()
         let variantName = escapeKeyword(variantNameUnqualified)
         let moduleName = name.dropLast(variantNameUnqualified.size() + 1)
         let variantModule = self.otherModules.grab(moduleName)
         mutable newtype = False
         mutable loneVariant = False
-        let newArguments = variantModule.types.collectFirst { definition =>
-            definition.variants.find { _.name == variantName }.map { variant =>
+        let newArguments = variantModule.types.collectFirst {definition =>
+            definition.variants.find {_.name == variantName }.map {variant =>
                 newtype = definition.newtype
                 loneVariant = definition.variants.size() == 1
-                [...definition.commonFields.map { _.name}, ...variant.fields.map {_.name}]
+                [...definition.commonFields.map {_.name}, ...variant.fields.map {_.name}]
             }
-        }.grab().map { field => if(newtype) { argument } else { argument + "." + escapeKeyword(field) } }
+        }.grab().map {field => if(newtype) {argument} else {argument + "." + escapeKeyword(field)}}
         ProcessedVariantCase(variantName, newtype, loneVariant, newArguments)
     }
 
     processVariant(name: String): Bool {
-        let variantNameUnqualified = name.reverse().takeWhile { _ != '.' }.reverse()
+        if(name.startsWith("List$")) {False} else:
+        let variantNameUnqualified = name.reverse().takeWhile {_ != '.'}.reverse()
         let variantName = escapeKeyword(variantNameUnqualified)
         let moduleName = name.dropLast(variantNameUnqualified.size() + 1)
         let variantModule = self.otherModules.grab(moduleName)
         mutable newtype = False
-        let newArguments = variantModule.types.collectFirst { definition =>
-            definition.variants.find { _.name == variantName }.map { variant =>
+        let newArguments = variantModule.types.collectFirst {definition =>
+            definition.variants.find {_.name == variantName}.map {variant =>
                 newtype = definition.newtype
             }
         }.grab()
@@ -801,11 +828,11 @@ detectIfElse(term: Term): List[Pair[Term, Term]] {
         [Pair(condition.value, invokeImmediately(body.value))]
     | ECall(at, StaticCall("ff:core/Option.Option_elseIf", _, _), _, _, [option, condition, body], _) =>
         let list = detectIfElse(option.value)
-        if(list.isEmpty()) { [] } else:
+        if(list.isEmpty()) {[]} else:
         [Pair(invokeImmediately(condition.value), invokeImmediately(body.value)), ...list]
     | ECall(at, StaticCall("ff:core/Option.Option_else", _, _), _, _, [option, body], _) =>
         let list = detectIfElse(option.value)
-        if(list.isEmpty()) { [] } else:
+        if(list.isEmpty()) {[]} else:
         [Pair(EVariant(at, "ff:core/Bool.True", [], None), invokeImmediately(body.value)), ...list]
     | _ =>
         []
@@ -848,7 +875,7 @@ charLiteralToNumber(charLiteral: String): String {
 }
 
 escapeResolved(word: String): String {
-    let parts = word.replace(":", ".").replace("/", ".").split('.').toList()
+    let parts = word.replace(":", ".").replace("/", ".").split('.')
     let initialParts = parts.dropLast()
     if(initialParts.isEmpty()) {
         escapeKeyword(parts.grabLast())

@@ -67,8 +67,8 @@ instance Bool: Serializable {
     }
 }
 
-instance Array[T: Serializable]: Serializable {
-    serializeUsing(serialization: Serialization, value: Array[T]): Unit {
+instance List[T: Serializable]: Serializable {
+    serializeUsing(serialization: Serialization, value: List[T]): Unit {
         if(value.size() < 255) {
             serialization.autoResize(1)
             serialization.buffer.setUint8(serialization.offset, value.size())
@@ -83,43 +83,34 @@ instance Array[T: Serializable]: Serializable {
         }
         value.each {serializeUsing(serialization, _)}
     }
-    deserializeUsing(serialization: Serialization): Array[T] {
+    deserializeUsing(serialization: Serialization): List[T] {
         let smallSize = serialization.buffer.grabUint8(serialization.offset)
         if(smallSize != 255) {
             serialization.offset += 1
-            Array.fillBy(smallSize) {_ => deserializeUsing(serialization)}
+            List.fillBy(smallSize) {_ => deserializeUsing(serialization)}
         } else {
             let size = serialization.buffer.grabUint32(serialization.offset + 1)
             serialization.offset += 1 + 4
-            Array.fillBy(size) {_ => deserializeUsing(serialization)}
+            List.fillBy(size) {_ => deserializeUsing(serialization)}
         }
-    }
-}
-
-instance List[T: Serializable]: Serializable {
-    serializeUsing(serialization: Serialization, value: List[T]): Unit {
-        serializeUsing(serialization, value.toArray())
-    }
-    deserializeUsing(serialization: Serialization): List[T] {
-        deserializeUsing[Array[T]](serialization).toList()
     }
 }
 
 instance Set[T: Serializable: Order]: Serializable {
     serializeUsing(serialization: Serialization, value: Set[T]): Unit {
-        serializeUsing(serialization, value.toArray())
+        serializeUsing(serialization, value.toList())
     }
     deserializeUsing(serialization: Serialization): Set[T] {
-        deserializeUsing[Array[T]](serialization).toSet()
+        deserializeUsing[List[T]](serialization).toSet()
     }
 }
 
 instance Map[K: Serializable: Order, V: Serializable]: Serializable {
     serializeUsing(serialization: Serialization, value: Map[K, V]): Unit {
-        serializeUsing(serialization, value.toArray())
+        serializeUsing(serialization, value.toList())
     }
     deserializeUsing(serialization: Serialization): Map[K, V] {
-        deserializeUsing[Array[Pair[K, V]]](serialization).toMap()
+        deserializeUsing[List[Pair[K, V]]](serialization).toMap()
     }
 }
 

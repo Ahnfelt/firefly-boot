@@ -80,8 +80,6 @@ import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
 
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
-
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
@@ -1498,21 +1496,21 @@ return
 }
 
 export function RB_pairs(self_, ff_core_Ordering_Order$K) {
-let result_ = ff_core_List.Empty();
+const result_ = ff_core_List.List_toArray([]);
 ff_core_RbMap.RB_each(self_, ((k_, v_) => {
-result_ = ff_core_List.Link(ff_core_Pair.Pair(k_, v_), result_)
+ff_core_Array.Array_push(result_, ff_core_Pair.Pair(k_, v_))
 }), ff_core_Ordering_Order$K);
-return ff_core_List.List_reverse(result_)
+return ff_core_Array.Array_drain(result_)
 }
 
 export function RB_toStream(self_, cycle_, ff_core_Ordering_Order$K) {
-let stack_ = ff_core_List.Link(self_, ff_core_List.Empty());
+let array_ = [self_];
 function next_() {
 _tailcall: for(;;) {
 {
-const _1 = stack_;
+const _1 = array_;
 {
-if(_1.Empty) {
+if(_1.length === 0) {
 if((cycle_ && (((_1) => {
 {
 if(_1.E) {
@@ -1525,7 +1523,7 @@ return true
 return
 }
 }))(self_))) {
-stack_ = ff_core_List.Link(self_, ff_core_List.Empty());
+array_ = [self_];
 {
 
 
@@ -1538,10 +1536,10 @@ return
 }
 }
 {
-if(_1.Link) {
-if(_1.head_.E) {
-const tail_ = _1.tail_;
-stack_ = tail_;
+if(_1.length > 0) {
+if(_1[0].E) {
+const tail_ = _1.slice(1);
+array_ = tail_;
 {
 
 
@@ -1552,14 +1550,14 @@ return
 }
 }
 {
-if(_1.Link) {
-if(_1.head_.T) {
-if(_1.head_.left_.E) {
-const k_ = _1.head_.key_;
-const v_ = _1.head_.value_;
-if(_1.head_.right_.E) {
-const tail_ = _1.tail_;
-stack_ = tail_;
+if(_1.length > 0) {
+if(_1[0].T) {
+if(_1[0].left_.E) {
+const k_ = _1[0].key_;
+const v_ = _1[0].value_;
+if(_1[0].right_.E) {
+const tail_ = _1.slice(1);
+array_ = tail_;
 return ff_core_Option.Some(ff_core_Pair.Pair(k_, v_))
 return
 }
@@ -1568,14 +1566,14 @@ return
 }
 }
 {
-if(_1.Link) {
-if(_1.head_.T) {
-const l_ = _1.head_.left_;
-const k_ = _1.head_.key_;
-const v_ = _1.head_.value_;
-const r_ = _1.head_.right_;
-const tail_ = _1.tail_;
-stack_ = ff_core_List.Link(l_, ff_core_List.Link(ff_core_RbMap.T(ff_core_RbMap.B(), ff_core_RbMap.E(), k_, v_, ff_core_RbMap.E()), ff_core_List.Link(r_, tail_)));
+if(_1.length > 0) {
+if(_1[0].T) {
+const l_ = _1[0].left_;
+const k_ = _1[0].key_;
+const v_ = _1[0].value_;
+const r_ = _1[0].right_;
+const tail_ = _1.slice(1);
+array_ = [l_, ff_core_RbMap.T(ff_core_RbMap.B(), ff_core_RbMap.E(), k_, v_, ff_core_RbMap.E()), r_, ...tail_];
 {
 
 
@@ -1750,21 +1748,21 @@ return
 }
 
 export async function RB_pairs$(self_, ff_core_Ordering_Order$K, $task) {
-let result_ = ff_core_List.Empty();
+const result_ = ff_core_List.List_toArray([]);
 ff_core_RbMap.RB_each(self_, ((k_, v_) => {
-result_ = ff_core_List.Link(ff_core_Pair.Pair(k_, v_), result_)
+ff_core_Array.Array_push(result_, ff_core_Pair.Pair(k_, v_))
 }), ff_core_Ordering_Order$K);
-return ff_core_List.List_reverse(result_)
+return ff_core_Array.Array_drain(result_)
 }
 
 export async function RB_toStream$(self_, cycle_, ff_core_Ordering_Order$K, $task) {
-let stack_ = ff_core_List.Link(self_, ff_core_List.Empty());
+let array_ = [self_];
 function next_() {
 _tailcall: for(;;) {
 {
-const _1 = stack_;
+const _1 = array_;
 {
-if(_1.Empty) {
+if(_1.length === 0) {
 if((cycle_ && (((_1) => {
 {
 if(_1.E) {
@@ -1777,7 +1775,7 @@ return true
 return
 }
 }))(self_))) {
-stack_ = ff_core_List.Link(self_, ff_core_List.Empty());
+array_ = [self_];
 {
 
 
@@ -1790,10 +1788,10 @@ return
 }
 }
 {
-if(_1.Link) {
-if(_1.head_.E) {
-const tail_ = _1.tail_;
-stack_ = tail_;
+if(_1.length > 0) {
+if(_1[0].E) {
+const tail_ = _1.slice(1);
+array_ = tail_;
 {
 
 
@@ -1804,14 +1802,14 @@ return
 }
 }
 {
-if(_1.Link) {
-if(_1.head_.T) {
-if(_1.head_.left_.E) {
-const k_ = _1.head_.key_;
-const v_ = _1.head_.value_;
-if(_1.head_.right_.E) {
-const tail_ = _1.tail_;
-stack_ = tail_;
+if(_1.length > 0) {
+if(_1[0].T) {
+if(_1[0].left_.E) {
+const k_ = _1[0].key_;
+const v_ = _1[0].value_;
+if(_1[0].right_.E) {
+const tail_ = _1.slice(1);
+array_ = tail_;
 return ff_core_Option.Some(ff_core_Pair.Pair(k_, v_))
 return
 }
@@ -1820,14 +1818,14 @@ return
 }
 }
 {
-if(_1.Link) {
-if(_1.head_.T) {
-const l_ = _1.head_.left_;
-const k_ = _1.head_.key_;
-const v_ = _1.head_.value_;
-const r_ = _1.head_.right_;
-const tail_ = _1.tail_;
-stack_ = ff_core_List.Link(l_, ff_core_List.Link(ff_core_RbMap.T(ff_core_RbMap.B(), ff_core_RbMap.E(), k_, v_, ff_core_RbMap.E()), ff_core_List.Link(r_, tail_)));
+if(_1.length > 0) {
+if(_1[0].T) {
+const l_ = _1[0].left_;
+const k_ = _1[0].key_;
+const v_ = _1[0].value_;
+const r_ = _1[0].right_;
+const tail_ = _1.slice(1);
+array_ = [l_, ff_core_RbMap.T(ff_core_RbMap.B(), ff_core_RbMap.E(), k_, v_, ff_core_RbMap.E()), r_, ...tail_];
 {
 
 

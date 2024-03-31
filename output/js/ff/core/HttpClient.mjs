@@ -78,8 +78,6 @@ import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
 
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
-
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
@@ -115,7 +113,7 @@ export function RedirectManual() {
 return RedirectManual$;
 }
 
-export const emptyList_ = ff_core_List.Empty();
+export const emptyList_ = [];
 
 export function bodyText_(body_) {
 return body_
@@ -142,7 +140,7 @@ export async function HttpClient_fetch$(self_, url_, method_ = "GET", headers_ =
             try {
                 const options = {headers: {}, signal: $task.controller.signal}
                 options.method = method_
-                ff_core_List.List_each(headers_, pair => {options.headers[pair.first_] = pair.second_})
+                headers_.forEach(pair => {options.headers[pair.first_] = pair.second_})
                 if(body_.value_) options.body = body_.value_
                 if(redirect_.RedirectError) options.redirect = "error"
                 else if(redirect_.RedirectManual) options.redirect = "manual"

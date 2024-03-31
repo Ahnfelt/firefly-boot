@@ -78,8 +78,6 @@ import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
 
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
-
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
@@ -130,12 +128,6 @@ return ff_core_Map.Map_size(self_, ff_core_Ordering_Order$T)
 
 export function Set_toList(self_, ff_core_Ordering_Order$T) {
 return ff_core_List.List_map(ff_core_Map.Map_toList(self_, ff_core_Ordering_Order$T), ((_w1) => {
-return _w1.first_
-}))
-}
-
-export function Set_toArray(self_, ff_core_Ordering_Order$T) {
-return ff_core_Array.Array_map(ff_core_Map.Map_toArray(self_, ff_core_Ordering_Order$T), ((_w1) => {
 return _w1.first_
 }))
 }
@@ -192,12 +184,6 @@ return ff_core_Map.Map_size(self_, ff_core_Ordering_Order$T)
 
 export async function Set_toList$(self_, ff_core_Ordering_Order$T, $task) {
 return ff_core_List.List_map(ff_core_Map.Map_toList(self_, ff_core_Ordering_Order$T), ((_w1) => {
-return _w1.first_
-}))
-}
-
-export async function Set_toArray$(self_, ff_core_Ordering_Order$T, $task) {
-return ff_core_Array.Array_map(ff_core_Map.Map_toArray(self_, ff_core_Ordering_Order$T), ((_w1) => {
 return _w1.first_
 }))
 }

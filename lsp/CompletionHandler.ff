@@ -72,7 +72,7 @@ handleCompletion(lspHook: LspHook, toplevel: Bool, followedByOpenBracket: Bool):
                     completion(h.unification, h.environment, typePrefix, qualifiedByAlias, expected)
             }
         | InferRecordFieldHook h {h.unification.substitute(h.recordType) | TConstructor(_, n, ts)} =>
-            let fieldNames = n.split('$').toList().dropFirst(1)
+            let fieldNames = n.split('$').dropFirst(1)
             let fieldCompletions = fieldNames.zip(ts).map {| Pair(name, t) =>
                 let t2 = h.unification.substitute(t)
                 CompletionInfo(name, "", name, True, t2, "(\n    ...\n    " + name + ": " + t2.show([]) + "\n    ...\n)", Some(h.expected))
@@ -162,7 +162,7 @@ handleCompletion(lspHook: LspHook, toplevel: Bool, followedByOpenBracket: Bool):
 completionsToJson(completions: List[CompletionInfo]): Json {
     Json.object()
         .with("isIncomplete", False)
-        .with("items", completions.distinct().toArray().map {| CompletionInfo i =>
+        .with("items", completions.distinct().map {| CompletionInfo i =>
             let shownType = i.type.show([])
             let isAlpha = i.label.first().any {_.isAsciiLetter()}
             let isLower = i.label.first().any {_.isAsciiLower()}
@@ -228,7 +228,7 @@ completion(
 
     let member = prefix.contains("_")
 
-    let members = Stack.make()
+    let members = Array.make()
 
     let symbols = if(prefix == "") {
         environment.symbols.toList().collect {
@@ -258,7 +258,7 @@ completion(
                 None
         }.toMap()
     } else {
-        members.pushAll(exhaustiveMatchCompletion(environment, prefix, False).toStack())
+        members.pushArray(exhaustiveMatchCompletion(environment, prefix, False).toArray())
         let shorterPrefix = prefix.dropLast()
         let recordFields = shorterPrefix.split('$').dropFirst().toSet()
         environment.symbols.each {

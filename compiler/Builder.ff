@@ -213,6 +213,6 @@ internalCallPkg(
         return await pkg.exec([
             packageFile_,
             '--out-path', outputPath_,
-            '--target', ff_core_List.List_toArray(targets_).join(',')
+            '--target', targets_.join(',')
         ])
     """

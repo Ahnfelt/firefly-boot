@@ -18,7 +18,7 @@ handleGoToDefinition(system: NodeSystem, handler: Handler, lspHook: LspHook): Js
                 }
             }
         | InferRecordFieldHook h {h.unification.substitute(h.recordType) | TConstructor(_, n, ts)} => 
-            let fieldNames = n.split('$').toList().dropFirst(1)
+            let fieldNames = n.split('$').dropFirst(1)
             fieldNames.zip(ts).collectFirst {| Pair(name, t) =>
                 if(h.fieldName == name) {
                     h.unification.substitute(t).at // TODO: This points to the field type rather than the field name
@@ -55,7 +55,7 @@ handleHover(system: NodeSystem, handler: Handler, lspHook: LspHook): Json {
                 }
             }
         | InferRecordFieldHook h {h.unification.substitute(h.recordType) | TConstructor(_, n, ts)} => 
-            let fieldNames = n.split('$').toList().dropFirst(1)
+            let fieldNames = n.split('$').dropFirst(1)
             fieldNames.zip(ts).collectFirst {| Pair(name, t) =>
                 if(h.fieldName == name) {
                     let noEffect = TConstructor(t.at, "ff:core/Nothing.Nothing", [])

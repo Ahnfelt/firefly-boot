@@ -105,13 +105,13 @@ parseRequest(system: NodeSystem, input: Stream[Buffer]): Pair[Request, Stream[Bu
     let headers = headersPair.first
     let contentLength = headers
         .get("content-length").else {throw(BadRequestException("'content-length' header is missing"))}
-        .getInt().else {throw(BadRequestException("Value for 'content-length' is not an integer"))}
+        .trim().getInt().else {throw(BadRequestException("Value for 'content-length' is not an integer"))}
     let bodyPair = parseRequestBody(contentLength, headersPair.second)
     bodyPair.mapFirst {body => Request(headers, body)}
 }
 
 parseRequestHeaders(input: Stream[Buffer]): Pair[Map[String, String], Stream[Buffer]] {
-    let buffers = Stack.make()
+    let buffers = Array.make()
     mutable buffer = input.next().else {
         throw(BadRequestException("End of input while parsing request headers"))
     }

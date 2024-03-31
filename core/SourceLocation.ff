@@ -34,7 +34,7 @@ extend self: SourceLocation {
         self.location.dropWhile {_ != ':'}.dropFirst().dropWhile {_ != ':'}.dropFirst().takeWhile {_ != ','}.grabInt()
     }
     
-    breadcrumbs(): Array[String] {
+    breadcrumbs(): List[String] {
         self.location.dropWhile {_ != '>'}.dropFirst().split('>')
     }
 

@@ -86,12 +86,16 @@ instance Pair[A: Order, B: Order]: Order {
 
 instance List[T: Order]: Order {
     compare(x: List[T], y: List[T]): Ordering {
-        | [], [] => OrderingSame
-        | [], _ => OrderingBefore
-        | _, [] => OrderingAfter
-        | [a, ...as], [b, ...bs] => compare(a, b).{
-            | OrderingSame => compare(as, bs)
-            | o => o
+        mutable ordering = OrderingSame
+        mutable i = 0
+        while {i < x.size() && i < y.size() && ordering == OrderingSame} {
+            ordering = compare(x.grab(i), y.grab(i))
+            i += 1
+        }
+        if(ordering != OrderingSame) {
+            fromInt(x.size() - y.size())
+        } else {
+            ordering
         }
     }
 }

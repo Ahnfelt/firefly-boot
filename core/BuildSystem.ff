@@ -32,7 +32,7 @@ extend self: BuildSystem {
         panic("dependencyAssets not yet implemented")
     }
 
-    arguments(): Array[String]
+    arguments(): List[String]
         target node async "return self_.array_"
 
     mainTask(): Task
