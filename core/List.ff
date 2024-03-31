@@ -382,7 +382,7 @@ instance List[T: Show]: Show {
             if(stack.size() > 1) {stack.push(", ")}
             stack.push(Show.show(x))
         }
-        stack.push("].toArray()")
+        stack.push("]")
         stack.join()
     }
 }
