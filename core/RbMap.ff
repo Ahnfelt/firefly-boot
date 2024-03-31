@@ -132,11 +132,11 @@ extend self[K: Order, V]: RB[K, V] {
     }
 
     pairs(): List[Pair[K, V]] {
-        mutable result = []
+        let result = [].toArray()
         self.each {k, v =>
-            result = [Pair(k, v), ...result]
+            result.push(Pair(k, v))
         }
-        result.reverse()
+        result.drain()
     }
 
     toStream(cycle: Bool): Stream[Pair[K, V]] {

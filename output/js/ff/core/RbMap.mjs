@@ -1496,11 +1496,11 @@ return
 }
 
 export function RB_pairs(self_, ff_core_Ordering_Order$K) {
-let result_ = [];
+const result_ = ff_core_List.List_toArray([]);
 ff_core_RbMap.RB_each(self_, ((k_, v_) => {
-result_ = [ff_core_Pair.Pair(k_, v_), ...result_]
+ff_core_Array.Array_push(result_, ff_core_Pair.Pair(k_, v_))
 }), ff_core_Ordering_Order$K);
-return ff_core_List.List_reverse(result_)
+return ff_core_Array.Array_drain(result_)
 }
 
 export function RB_toStream(self_, cycle_, ff_core_Ordering_Order$K) {
@@ -1748,11 +1748,11 @@ return
 }
 
 export async function RB_pairs$(self_, ff_core_Ordering_Order$K, $task) {
-let result_ = [];
+const result_ = ff_core_List.List_toArray([]);
 ff_core_RbMap.RB_each(self_, ((k_, v_) => {
-result_ = [ff_core_Pair.Pair(k_, v_), ...result_]
+ff_core_Array.Array_push(result_, ff_core_Pair.Pair(k_, v_))
 }), ff_core_Ordering_Order$K);
-return ff_core_List.List_reverse(result_)
+return ff_core_Array.Array_drain(result_)
 }
 
 export async function RB_toStream$(self_, cycle_, ff_core_Ordering_Order$K, $task) {

@@ -563,105 +563,29 @@ return
 
 export function ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering_Order$T) { return {
 compare_(x_, y_) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-if(x_a.length === 0) {
-if(y_a.length === 0) {
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-}
-{
-if(x_a.length === 0) {
-return ff_core_Ordering.OrderingBefore()
-return
-}
-}
-{
-if(y_a.length === 0) {
-return ff_core_Ordering.OrderingAfter()
-return
-}
-}
-{
-if(x_a.length > 0) {
-const a_ = x_a[0];
-const as_ = x_a.slice(1);
-if(y_a.length > 0) {
-const b_ = y_a[0];
-const bs_ = y_a.slice(1);
-{
-const _1 = ff_core_Ordering_Order$T.compare_(a_, b_);
-{
-if(_1.OrderingSame) {
-return ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering_Order$T).compare_(as_, bs_)
-return
-}
-}
-{
-const o_ = _1;
-return o_
-return
-}
-}
-return
-}
-}
-}
+let ordering_ = ff_core_Ordering.OrderingSame();
+let i_ = 0;
+while((((i_ < ff_core_List.List_size(x_)) && (i_ < ff_core_List.List_size(y_))) && (ordering_ === ff_core_Ordering.OrderingSame()))) {
+ordering_ = ff_core_Ordering_Order$T.compare_(ff_core_List.List_grab(x_, i_), ff_core_List.List_grab(y_, i_));
+i_ += 1
+};
+if((ordering_ !== ff_core_Ordering.OrderingSame())) {
+return ff_core_Ordering.fromInt_((ff_core_List.List_size(x_) - ff_core_List.List_size(y_)))
+} else {
+return ordering_
 }
 },
 async compare_$(x_, y_, $task) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-if(x_a.length === 0) {
-if(y_a.length === 0) {
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-}
-{
-if(x_a.length === 0) {
-return ff_core_Ordering.OrderingBefore()
-return
-}
-}
-{
-if(y_a.length === 0) {
-return ff_core_Ordering.OrderingAfter()
-return
-}
-}
-{
-if(x_a.length > 0) {
-const a_ = x_a[0];
-const as_ = x_a.slice(1);
-if(y_a.length > 0) {
-const b_ = y_a[0];
-const bs_ = y_a.slice(1);
-{
-const _1 = ff_core_Ordering_Order$T.compare_(a_, b_);
-{
-if(_1.OrderingSame) {
-return ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering_Order$T).compare_(as_, bs_)
-return
-}
-}
-{
-const o_ = _1;
-return o_
-return
-}
-}
-return
-}
-}
-}
+let ordering_ = ff_core_Ordering.OrderingSame();
+let i_ = 0;
+while((((i_ < ff_core_List.List_size(x_)) && (i_ < ff_core_List.List_size(y_))) && (ordering_ === ff_core_Ordering.OrderingSame()))) {
+ordering_ = ff_core_Ordering_Order$T.compare_(ff_core_List.List_grab(x_, i_), ff_core_List.List_grab(y_, i_));
+i_ += 1
+};
+if((ordering_ !== ff_core_Ordering.OrderingSame())) {
+return ff_core_Ordering.fromInt_((ff_core_List.List_size(x_) - ff_core_List.List_size(y_)))
+} else {
+return ordering_
 }
 }
 }}
