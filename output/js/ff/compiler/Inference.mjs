@@ -618,7 +618,7 @@ return
 {
 if(_1.PVariant) {
 const at_ = _1.at_;
-if(_1.name_ == "List$Empty") {
+if(_1.name_ === "List$Empty") {
 if(_1.patterns_.length === 0) {
 const itemType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_);
 const listType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("List"), [itemType_]);
@@ -632,7 +632,7 @@ return
 {
 if(_1.PVariant) {
 const at_ = _1.at_;
-if(_1.name_ == "List$Link") {
+if(_1.name_ === "List$Link") {
 if(_1.patterns_.length > 0) {
 const head_ = _1.patterns_[0];
 if(_1.patterns_.length > 1) {
@@ -920,7 +920,7 @@ const _1 = after_;
 {
 if(_1.EVariant) {
 const at_ = _1.at_;
-if(_1.name_ == "ff:core/Unit.Unit") {
+if(_1.name_ === "ff:core/Unit.Unit") {
 const unitType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), []);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, unitType_);
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, newPipe_)
@@ -976,7 +976,7 @@ if(_1[0].patterns_.length === 0) {
 if(_1[0].guards_.length === 0) {
 if(_1[0].body_.EVariable) {
 const insideAt_ = _1[0].body_.at_;
-if(_1[0].body_.name_ == "") {
+if(_1[0].body_.name_ === "") {
 if(_1.length === 1) {
 const _guard1 = ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_);
 if(_guard1) {
@@ -997,9 +997,9 @@ if(_1[0].guards_.length === 0) {
 if(_1[0].body_.ESequential) {
 if(_1[0].body_.before_.EVariable) {
 const insideAt_ = _1[0].body_.before_.at_;
-if(_1[0].body_.before_.name_ == "") {
+if(_1[0].body_.before_.name_ === "") {
 if(_1[0].body_.after_.EVariant) {
-if(_1[0].body_.after_.name_ == "ff:core/Unit.Unit") {
+if(_1[0].body_.after_.name_ === "ff:core/Unit.Unit") {
 if(_1.length === 1) {
 const _guard1 = ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_);
 if(_guard1) {
@@ -1895,7 +1895,7 @@ return
 const chooseType_ = ((_1, _2) => {
 {
 if(_1.Some) {
-if(_1.value_ == "String") {
+if(_1.value_ === "String") {
 if(_2.Some) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
@@ -1906,7 +1906,7 @@ return
 {
 if(_1.Some) {
 if(_2.Some) {
-if(_2.value_ == "String") {
+if(_2.value_ === "String") {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }
@@ -1915,7 +1915,7 @@ return
 }
 {
 if(_1.Some) {
-if(_1.value_ == "Float") {
+if(_1.value_ === "Float") {
 if(_2.Some) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
@@ -1926,7 +1926,7 @@ return
 {
 if(_1.Some) {
 if(_2.Some) {
-if(_2.value_ == "Float") {
+if(_2.value_ === "Float") {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }
@@ -1935,7 +1935,7 @@ return
 }
 {
 if(_1.Some) {
-if(_1.value_ == "Int") {
+if(_1.value_ === "Int") {
 if(_2.Some) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
@@ -1946,7 +1946,7 @@ return
 {
 if(_1.Some) {
 if(_2.Some) {
-if(_2.value_ == "Int") {
+if(_2.value_ === "Int") {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }
@@ -2697,7 +2697,7 @@ return
 {
 if(_1.PVariant) {
 const at_ = _1.at_;
-if(_1.name_ == "List$Empty") {
+if(_1.name_ === "List$Empty") {
 if(_1.patterns_.length === 0) {
 const itemType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_);
 const listType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("List"), [itemType_]);
@@ -2711,7 +2711,7 @@ return
 {
 if(_1.PVariant) {
 const at_ = _1.at_;
-if(_1.name_ == "List$Link") {
+if(_1.name_ === "List$Link") {
 if(_1.patterns_.length > 0) {
 const head_ = _1.patterns_[0];
 if(_1.patterns_.length > 1) {
@@ -2999,7 +2999,7 @@ const _1 = after_;
 {
 if(_1.EVariant) {
 const at_ = _1.at_;
-if(_1.name_ == "ff:core/Unit.Unit") {
+if(_1.name_ === "ff:core/Unit.Unit") {
 const unitType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), []);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, unitType_);
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, newPipe_)
@@ -3055,7 +3055,7 @@ if(_1[0].patterns_.length === 0) {
 if(_1[0].guards_.length === 0) {
 if(_1[0].body_.EVariable) {
 const insideAt_ = _1[0].body_.at_;
-if(_1[0].body_.name_ == "") {
+if(_1[0].body_.name_ === "") {
 if(_1.length === 1) {
 const _guard1 = ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_);
 if(_guard1) {
@@ -3076,9 +3076,9 @@ if(_1[0].guards_.length === 0) {
 if(_1[0].body_.ESequential) {
 if(_1[0].body_.before_.EVariable) {
 const insideAt_ = _1[0].body_.before_.at_;
-if(_1[0].body_.before_.name_ == "") {
+if(_1[0].body_.before_.name_ === "") {
 if(_1[0].body_.after_.EVariant) {
-if(_1[0].body_.after_.name_ == "ff:core/Unit.Unit") {
+if(_1[0].body_.after_.name_ === "ff:core/Unit.Unit") {
 if(_1.length === 1) {
 const _guard1 = ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_);
 if(_guard1) {
@@ -3974,7 +3974,7 @@ return
 const chooseType_ = ((_1, _2) => {
 {
 if(_1.Some) {
-if(_1.value_ == "String") {
+if(_1.value_ === "String") {
 if(_2.Some) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
@@ -3985,7 +3985,7 @@ return
 {
 if(_1.Some) {
 if(_2.Some) {
-if(_2.value_ == "String") {
+if(_2.value_ === "String") {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }
@@ -3994,7 +3994,7 @@ return
 }
 {
 if(_1.Some) {
-if(_1.value_ == "Float") {
+if(_1.value_ === "Float") {
 if(_2.Some) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
@@ -4005,7 +4005,7 @@ return
 {
 if(_1.Some) {
 if(_2.Some) {
-if(_2.value_ == "Float") {
+if(_2.value_ === "Float") {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }
@@ -4014,7 +4014,7 @@ return
 }
 {
 if(_1.Some) {
-if(_1.value_ == "Int") {
+if(_1.value_ === "Int") {
 if(_2.Some) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
@@ -4025,7 +4025,7 @@ return
 {
 if(_1.Some) {
 if(_2.Some) {
-if(_2.value_ == "Int") {
+if(_2.value_ === "Int") {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }

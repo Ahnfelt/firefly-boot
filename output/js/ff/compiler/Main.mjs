@@ -281,7 +281,7 @@ return
 }
 {
 if(arguments_a.length > 0) {
-if(arguments_a[0] == "run") {
+if(arguments_a[0] === "run") {
 const runArguments_ = arguments_a.slice(1);
 {
 const _1 = runArguments_;
@@ -308,7 +308,7 @@ return
 }
 {
 if(arguments_a.length > 0) {
-if(arguments_a[0] == "browser") {
+if(arguments_a[0] === "browser") {
 const browserArguments_ = arguments_a.slice(1);
 {
 const _1 = browserArguments_;
@@ -344,7 +344,7 @@ return
 }
 {
 if(arguments_a.length > 0) {
-if(arguments_a[0] == "build") {
+if(arguments_a[0] === "build") {
 const buildArguments_ = arguments_a.slice(1);
 {
 const _1 = buildArguments_;
@@ -380,7 +380,7 @@ return
 }
 {
 if(arguments_a.length > 0) {
-if(arguments_a[0] == "check") {
+if(arguments_a[0] === "check") {
 const checkArguments_ = arguments_a.slice(1);
 {
 const _1 = checkArguments_;
@@ -415,7 +415,7 @@ return
 }
 {
 if(arguments_a.length > 0) {
-if(arguments_a[0] == "bootstrap") {
+if(arguments_a[0] === "bootstrap") {
 if(arguments_a.length > 1) {
 if(arguments_a.length === 2) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("bootstrap takes no arguments" + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
@@ -427,7 +427,7 @@ return
 }
 {
 if(arguments_a.length > 0) {
-if(arguments_a[0] == "bootstrap") {
+if(arguments_a[0] === "bootstrap") {
 if(arguments_a.length === 1) {
 return ff_compiler_Main.BootstrapCommand()
 return
@@ -618,7 +618,7 @@ return
 }
 {
 if(arguments_a.length > 0) {
-if(arguments_a[0] == "run") {
+if(arguments_a[0] === "run") {
 const runArguments_ = arguments_a.slice(1);
 {
 const _1 = runArguments_;
@@ -645,7 +645,7 @@ return
 }
 {
 if(arguments_a.length > 0) {
-if(arguments_a[0] == "browser") {
+if(arguments_a[0] === "browser") {
 const browserArguments_ = arguments_a.slice(1);
 {
 const _1 = browserArguments_;
@@ -681,7 +681,7 @@ return
 }
 {
 if(arguments_a.length > 0) {
-if(arguments_a[0] == "build") {
+if(arguments_a[0] === "build") {
 const buildArguments_ = arguments_a.slice(1);
 {
 const _1 = buildArguments_;
@@ -717,7 +717,7 @@ return
 }
 {
 if(arguments_a.length > 0) {
-if(arguments_a[0] == "check") {
+if(arguments_a[0] === "check") {
 const checkArguments_ = arguments_a.slice(1);
 {
 const _1 = checkArguments_;
@@ -752,7 +752,7 @@ return
 }
 {
 if(arguments_a.length > 0) {
-if(arguments_a[0] == "bootstrap") {
+if(arguments_a[0] === "bootstrap") {
 if(arguments_a.length > 1) {
 if(arguments_a.length === 2) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("bootstrap takes no arguments" + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
@@ -764,7 +764,7 @@ return
 }
 {
 if(arguments_a.length > 0) {
-if(arguments_a[0] == "bootstrap") {
+if(arguments_a[0] === "bootstrap") {
 if(arguments_a.length === 1) {
 return ff_compiler_Main.BootstrapCommand()
 return
@@ -1469,35 +1469,35 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 return ff_compiler_Main.BootstrapCommand()
 return
 }
 }
 {
-if(_1 == 1) {
+if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_Main.RunCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 return
 }
 }
 {
-if(_1 == 2) {
+if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 return ff_compiler_Main.BrowserCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 return
 }
 }
 {
-if(_1 == 3) {
+if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Main.BuildCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 return
 }
 }
 {
-if(_1 == 4) {
+if(_1 === 4) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Main.CheckCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 return
@@ -1576,35 +1576,35 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 return ff_compiler_Main.BootstrapCommand()
 return
 }
 }
 {
-if(_1 == 1) {
+if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_Main.RunCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 return
 }
 }
 {
-if(_1 == 2) {
+if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 return ff_compiler_Main.BrowserCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 return
 }
 }
 {
-if(_1 == 3) {
+if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Main.BuildCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 return
 }
 }
 {
-if(_1 == 4) {
+if(_1 === 4) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Main.CheckCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 return
@@ -1640,7 +1640,7 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 return ff_compiler_Main.CommandLineError(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 return
@@ -1673,7 +1673,7 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 return ff_compiler_Main.CommandLineError(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 return

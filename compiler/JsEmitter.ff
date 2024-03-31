@@ -691,15 +691,15 @@ extend self: JsEmitter {
     ): String {
         pattern.{
             | PString(_, value) =>
-                "if(" + argument + " == " + value + ") {\n" +
+                "if(" + argument + " === " + value + ") {\n" +
                 self.emitCase(arguments, matchCase, jump, last, async) +
                 "\n}"
             | PInt(_, value) =>
-                "if(" + argument + " == " + value + ") {\n" +
+                "if(" + argument + " === " + value + ") {\n" +
                 self.emitCase(arguments, matchCase, jump, last, async) +
                 "\n}"
             | PChar(_, value) =>
-                "if(" + argument + " == " + charLiteralToNumber(value) + ") {\n" +
+                "if(" + argument + " === " + charLiteralToNumber(value) + ") {\n" +
                 self.emitCase(arguments, matchCase, jump, last, async) +
                 "\n}"
             | PVariable(_, None) =>

@@ -1263,7 +1263,7 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 37), 0);
 return ff_compiler_Dictionaries.Dictionaries(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_InstanceValue).deserializeUsing_(serialization_))
 return
@@ -1296,7 +1296,7 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 37), 0);
 return ff_compiler_Dictionaries.Dictionaries(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_InstanceValue).deserializeUsing_(serialization_))
 return

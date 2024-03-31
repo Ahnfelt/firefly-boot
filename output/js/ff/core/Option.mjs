@@ -937,14 +937,14 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 return ff_core_Option.None()
 return
 }
 }
 {
-if(_1 == 1) {
+if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 return ff_core_Option.Some(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_))
 return
@@ -989,14 +989,14 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 return ff_core_Option.None()
 return
 }
 }
 {
-if(_1 == 1) {
+if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 return ff_core_Option.Some(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_))
 return

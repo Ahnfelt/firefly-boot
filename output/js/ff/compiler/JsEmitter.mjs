@@ -146,7 +146,7 @@ const term_a = term_;
 if(term_a.ECall) {
 const at_ = term_a.at_;
 if(term_a.target_.StaticCall) {
-if(term_a.target_.name_ == "ff:core/Core.if") {
+if(term_a.target_.name_ === "ff:core/Core.if") {
 if(term_a.arguments_.length > 0) {
 const condition_ = term_a.arguments_[0];
 if(term_a.arguments_.length > 1) {
@@ -165,7 +165,7 @@ return
 if(term_a.ECall) {
 const at_ = term_a.at_;
 if(term_a.target_.StaticCall) {
-if(term_a.target_.name_ == "ff:core/Option.Option_elseIf") {
+if(term_a.target_.name_ === "ff:core/Option.Option_elseIf") {
 if(term_a.arguments_.length > 0) {
 const option_ = term_a.arguments_[0];
 if(term_a.arguments_.length > 1) {
@@ -192,7 +192,7 @@ return
 if(term_a.ECall) {
 const at_ = term_a.at_;
 if(term_a.target_.StaticCall) {
-if(term_a.target_.name_ == "ff:core/Option.Option_else") {
+if(term_a.target_.name_ === "ff:core/Option.Option_else") {
 if(term_a.arguments_.length > 0) {
 const option_ = term_a.arguments_[0];
 if(term_a.arguments_.length > 1) {
@@ -294,31 +294,31 @@ export function charLiteralToNumber_(charLiteral_) {
 {
 const charLiteral_a = charLiteral_;
 {
-if(charLiteral_a == "'\\t'") {
+if(charLiteral_a === "'\\t'") {
 return "9"
 return
 }
 }
 {
-if(charLiteral_a == "'\\n'") {
+if(charLiteral_a === "'\\n'") {
 return "10"
 return
 }
 }
 {
-if(charLiteral_a == "'\\r'") {
+if(charLiteral_a === "'\\r'") {
 return "13"
 return
 }
 }
 {
-if(charLiteral_a == "'\\\"'") {
+if(charLiteral_a === "'\\\"'") {
 return "34"
 return
 }
 }
 {
-if(charLiteral_a == "'\\''") {
+if(charLiteral_a === "'\\''") {
 return "39"
 return
 }
@@ -354,7 +354,7 @@ export function effectTypeIsAsync_(effect_) {
 const effect_a = effect_;
 {
 if(effect_a.TConstructor) {
-if(effect_a.name_ == "Q$") {
+if(effect_a.name_ === "Q$") {
 return true
 return
 }
@@ -385,7 +385,7 @@ const term_a = term_;
 if(term_a.ECall) {
 const at_ = term_a.at_;
 if(term_a.target_.StaticCall) {
-if(term_a.target_.name_ == "ff:core/Core.if") {
+if(term_a.target_.name_ === "ff:core/Core.if") {
 if(term_a.arguments_.length > 0) {
 const condition_ = term_a.arguments_[0];
 if(term_a.arguments_.length > 1) {
@@ -404,7 +404,7 @@ return
 if(term_a.ECall) {
 const at_ = term_a.at_;
 if(term_a.target_.StaticCall) {
-if(term_a.target_.name_ == "ff:core/Option.Option_elseIf") {
+if(term_a.target_.name_ === "ff:core/Option.Option_elseIf") {
 if(term_a.arguments_.length > 0) {
 const option_ = term_a.arguments_[0];
 if(term_a.arguments_.length > 1) {
@@ -431,7 +431,7 @@ return
 if(term_a.ECall) {
 const at_ = term_a.at_;
 if(term_a.target_.StaticCall) {
-if(term_a.target_.name_ == "ff:core/Option.Option_else") {
+if(term_a.target_.name_ === "ff:core/Option.Option_else") {
 if(term_a.arguments_.length > 0) {
 const option_ = term_a.arguments_[0];
 if(term_a.arguments_.length > 1) {
@@ -533,31 +533,31 @@ export async function charLiteralToNumber_$(charLiteral_, $task) {
 {
 const charLiteral_a = charLiteral_;
 {
-if(charLiteral_a == "'\\t'") {
+if(charLiteral_a === "'\\t'") {
 return "9"
 return
 }
 }
 {
-if(charLiteral_a == "'\\n'") {
+if(charLiteral_a === "'\\n'") {
 return "10"
 return
 }
 }
 {
-if(charLiteral_a == "'\\r'") {
+if(charLiteral_a === "'\\r'") {
 return "13"
 return
 }
 }
 {
-if(charLiteral_a == "'\\\"'") {
+if(charLiteral_a === "'\\\"'") {
 return "34"
 return
 }
 }
 {
-if(charLiteral_a == "'\\''") {
+if(charLiteral_a === "'\\''") {
 return "39"
 return
 }
@@ -593,7 +593,7 @@ export async function effectTypeIsAsync_$(effect_, $task) {
 const effect_a = effect_;
 {
 if(effect_a.TConstructor) {
-if(effect_a.name_ == "Q$") {
+if(effect_a.name_ === "Q$") {
 return true
 return
 }
@@ -1030,7 +1030,7 @@ return
 {
 if(_1.EVariant) {
 const at_ = _1.at_;
-if(_1.name_ == "ff:core/Bool.False") {
+if(_1.name_ === "ff:core/Bool.False") {
 return "false"
 return
 }
@@ -1039,7 +1039,7 @@ return
 {
 if(_1.EVariant) {
 const at_ = _1.at_;
-if(_1.name_ == "ff:core/Bool.True") {
+if(_1.name_ === "ff:core/Bool.True") {
 return "true"
 return
 }
@@ -1048,7 +1048,7 @@ return
 {
 if(_1.EVariant) {
 const at_ = _1.at_;
-if(_1.name_ == "ff:core/Unit.Unit") {
+if(_1.name_ === "ff:core/Unit.Unit") {
 return "(void 0)"
 return
 }
@@ -1074,7 +1074,7 @@ return
 {
 if(_1.EVariantIs) {
 const at_ = _1.at_;
-if(_1.name_ == "ff:core/Bool.False") {
+if(_1.name_ === "ff:core/Bool.False") {
 return "function(_v) { return !_v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
 return
 }
@@ -1083,7 +1083,7 @@ return
 {
 if(_1.EVariantIs) {
 const at_ = _1.at_;
-if(_1.name_ == "ff:core/Bool.True") {
+if(_1.name_ === "ff:core/Bool.True") {
 return "function(_v) { return _v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
 return
 }
@@ -1092,7 +1092,7 @@ return
 {
 if(_1.EVariantIs) {
 const at_ = _1.at_;
-if(_1.name_ == "ff:core/Unit.Unit") {
+if(_1.name_ === "ff:core/Unit.Unit") {
 return "function(_v) { return ff_core_Option.Some(_v); }"
 return
 }
@@ -1283,7 +1283,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.import") {
+if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.import") {
 if(_1.arguments_.length > 0) {
 if(_1.arguments_[0].value_.EString) {
 const url_ = _1.arguments_[0].value_.value_;
@@ -1301,7 +1301,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.await") {
+if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.await") {
 if(_1.arguments_.length > 0) {
 const body_ = _1.arguments_[0].value_;
 if(_1.arguments_.length === 1) {
@@ -1322,7 +1322,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.cancelled") {
+if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.cancelled") {
 if(_1.arguments_.length === 0) {
 if(async_) {
 return "$task.controller.signal.aborted"
@@ -1339,7 +1339,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.throwIfCancelled") {
+if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.throwIfCancelled") {
 if(_1.arguments_.length === 0) {
 if(async_) {
 return "((() => ff_core_Task.Task_throwIfAborted($task))())"
@@ -1356,7 +1356,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Equal.equals") {
+if(_1.target_.name_ === "ff:core/Equal.equals") {
 if(_1.arguments_.length > 0) {
 const left_ = _1.arguments_[0];
 if(_1.arguments_.length > 1) {
@@ -1385,7 +1385,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Equal.notEquals") {
+if(_1.target_.name_ === "ff:core/Equal.notEquals") {
 if(_1.arguments_.length > 0) {
 const left_ = _1.arguments_[0];
 if(_1.arguments_.length > 1) {
@@ -1414,7 +1414,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Ordering.before") {
+if(_1.target_.name_ === "ff:core/Ordering.before") {
 if(_1.arguments_.length > 0) {
 const left_ = _1.arguments_[0];
 if(_1.arguments_.length > 1) {
@@ -1443,7 +1443,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Ordering.notBefore") {
+if(_1.target_.name_ === "ff:core/Ordering.notBefore") {
 if(_1.arguments_.length > 0) {
 const left_ = _1.arguments_[0];
 if(_1.arguments_.length > 1) {
@@ -1472,7 +1472,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Ordering.after") {
+if(_1.target_.name_ === "ff:core/Ordering.after") {
 if(_1.arguments_.length > 0) {
 const left_ = _1.arguments_[0];
 if(_1.arguments_.length > 1) {
@@ -1501,7 +1501,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Ordering.notAfter") {
+if(_1.target_.name_ === "ff:core/Ordering.notAfter") {
 if(_1.arguments_.length > 0) {
 const left_ = _1.arguments_[0];
 if(_1.arguments_.length > 1) {
@@ -1529,7 +1529,7 @@ return
 {
 if(_1.ECall) {
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/List.fillBy") {
+if(_1.target_.name_ === "ff:core/List.fillBy") {
 const effect_ = _1.effect_;
 if(_1.arguments_.length > 0) {
 const size_ = _1.arguments_[0];
@@ -1660,7 +1660,7 @@ return
 {
 if(_1.length > 0) {
 if(_1[0].first_.EVariant) {
-if(_1[0].first_.name_ == "ff:core/Bool.True") {
+if(_1[0].first_.name_ === "ff:core/Bool.True") {
 const elseBody_ = _1[0].second_;
 const list_ = _1.slice(1);
 return (("(" + ff_core_List.List_foldLeft(list_, ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, elseBody_, async_), ((_1, _2) => {
@@ -1810,7 +1810,7 @@ return
 {
 if(_1.EVariant) {
 const at_ = _1.at_;
-if(_1.name_ == "ff:core/Unit.Unit") {
+if(_1.name_ === "ff:core/Unit.Unit") {
 return ""
 return
 }
@@ -1821,7 +1821,7 @@ if(_1.ESequential) {
 const at_ = _1.at_;
 if(_1.before_.EVariant) {
 const at_ = _1.before_.at_;
-if(_1.before_.name_ == "ff:core/Unit.Unit") {
+if(_1.before_.name_ === "ff:core/Unit.Unit") {
 const after_ = _1.after_;
 return ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, after_, last_, async_)
 return
@@ -1835,7 +1835,7 @@ const at_ = _1.at_;
 const before_ = _1.before_;
 if(_1.after_.EVariant) {
 const at_ = _1.after_.at_;
-if(_1.after_.name_ == "ff:core/Unit.Unit") {
+if(_1.after_.name_ === "ff:core/Unit.Unit") {
 return ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before_, false, async_)
 return
 }
@@ -1876,7 +1876,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Core.while") {
+if(_1.target_.name_ === "ff:core/Core.while") {
 if(_1.arguments_.length > 0) {
 const condition_ = _1.arguments_[0];
 if(_1.arguments_.length > 1) {
@@ -1895,7 +1895,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Core.doWhile") {
+if(_1.target_.name_ === "ff:core/Core.doWhile") {
 if(_1.arguments_.length > 0) {
 const doWhileBody_ = _1.arguments_[0].value_;
 if(_1.arguments_.length === 1) {
@@ -1916,7 +1916,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Core.doWhile") {
+if(_1.target_.name_ === "ff:core/Core.doWhile") {
 if(_1.arguments_.length > 0) {
 const doWhileBody_ = _1.arguments_[0].value_;
 if(_1.arguments_.length === 1) {
@@ -1934,7 +1934,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Core.if") {
+if(_1.target_.name_ === "ff:core/Core.if") {
 if(_1.arguments_.length > 0) {
 const condition_ = _1.arguments_[0];
 if(_1.arguments_.length > 1) {
@@ -1955,7 +1955,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Core.throw") {
+if(_1.target_.name_ === "ff:core/Core.throw") {
 if(_1.arguments_.length > 0) {
 const argument_ = _1.arguments_[0];
 if(_1.arguments_.length === 1) {
@@ -1978,7 +1978,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Core.try") {
+if(_1.target_.name_ === "ff:core/Core.try") {
 const _guard1 = (!last_);
 if(_guard1) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a try without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -1992,7 +1992,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Try.Try_map") {
+if(_1.target_.name_ === "ff:core/Try.Try_map") {
 const _guard1 = (!last_);
 if(_guard1) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a map without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -2006,7 +2006,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Try.Try_flatMap") {
+if(_1.target_.name_ === "ff:core/Try.Try_flatMap") {
 const _guard1 = (!last_);
 if(_guard1) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a flatMap without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -2020,7 +2020,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Try.Try_flatten") {
+if(_1.target_.name_ === "ff:core/Try.Try_flatten") {
 const _guard1 = (!last_);
 if(_guard1) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a flatten without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -2034,7 +2034,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Try.Try_catch") {
+if(_1.target_.name_ === "ff:core/Try.Try_catch") {
 const _guard1 = (!last_);
 if(_guard1) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a catch without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -2048,7 +2048,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Try.Try_catchAny") {
+if(_1.target_.name_ === "ff:core/Try.Try_catchAny") {
 const _guard1 = (!last_);
 if(_guard1) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a catchAny without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -2062,7 +2062,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Try.Try_finally") {
+if(_1.target_.name_ === "ff:core/Try.Try_finally") {
 const _guard1 = (!last_);
 if(_guard1) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a finally without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -2076,7 +2076,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Try.Try_grab") {
+if(_1.target_.name_ === "ff:core/Try.Try_grab") {
 if(_1.arguments_.length > 0) {
 const argument_ = _1.arguments_[0];
 if(_1.arguments_.length === 1) {
@@ -2096,7 +2096,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.throwIfCancelled") {
+if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.throwIfCancelled") {
 if(_1.arguments_.length === 0) {
 if(async_) {
 return "ff_core_Task.Task_throwIfAborted($task)"
@@ -2167,7 +2167,7 @@ return
 {
 if(_1.length > 0) {
 if(_1[0].first_.EVariant) {
-if(_1[0].first_.name_ == "ff:core/Bool.True") {
+if(_1[0].first_.name_ === "ff:core/Bool.True") {
 const elseBody_ = _1[0].second_;
 const list_ = _1.slice(1);
 const initial_ = (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, elseBody_, last_, async_)) + "\n}");
@@ -2256,12 +2256,12 @@ const _1 = term_;
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Try.Try_finally") {
+if(_1.target_.name_ === "ff:core/Try.Try_finally") {
 if(_1.arguments_.length > 0) {
 if(_1.arguments_[0].value_.ECall) {
 const at_ = _1.arguments_[0].value_.at_;
 if(_1.arguments_[0].value_.target_.StaticCall) {
-if(_1.arguments_[0].value_.target_.name_ == "ff:core/Core.try") {
+if(_1.arguments_[0].value_.target_.name_ === "ff:core/Core.try") {
 if(_1.arguments_[0].value_.arguments_.length > 0) {
 if(_1.arguments_[0].value_.arguments_[0].value_.ELambda) {
 const tryEffect_ = _1.arguments_[0].value_.arguments_[0].value_.lambda_.effect_;
@@ -2310,12 +2310,12 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Try.Try_catch") {
+if(_1.target_.name_ === "ff:core/Try.Try_catch") {
 if(_1.arguments_.length > 0) {
 if(_1.arguments_[0].value_.ECall) {
 const at_ = _1.arguments_[0].value_.at_;
 if(_1.arguments_[0].value_.target_.StaticCall) {
-if(_1.arguments_[0].value_.target_.name_ == "ff:core/Core.try") {
+if(_1.arguments_[0].value_.target_.name_ === "ff:core/Core.try") {
 if(_1.arguments_[0].value_.arguments_.length > 0) {
 if(_1.arguments_[0].value_.arguments_[0].value_.ELambda) {
 const tryEffect_ = _1.arguments_[0].value_.arguments_[0].value_.lambda_.effect_;
@@ -2361,17 +2361,17 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Try.Try_finally") {
+if(_1.target_.name_ === "ff:core/Try.Try_finally") {
 if(_1.arguments_.length > 0) {
 if(_1.arguments_[0].value_.ECall) {
 const at_ = _1.arguments_[0].value_.at_;
 if(_1.arguments_[0].value_.target_.StaticCall) {
-if(_1.arguments_[0].value_.target_.name_ == "ff:core/Try.Try_catch") {
+if(_1.arguments_[0].value_.target_.name_ === "ff:core/Try.Try_catch") {
 if(_1.arguments_[0].value_.arguments_.length > 0) {
 if(_1.arguments_[0].value_.arguments_[0].value_.ECall) {
 const at_ = _1.arguments_[0].value_.arguments_[0].value_.at_;
 if(_1.arguments_[0].value_.arguments_[0].value_.target_.StaticCall) {
-if(_1.arguments_[0].value_.arguments_[0].value_.target_.name_ == "ff:core/Core.try") {
+if(_1.arguments_[0].value_.arguments_[0].value_.target_.name_ === "ff:core/Core.try") {
 if(_1.arguments_[0].value_.arguments_[0].value_.arguments_.length > 0) {
 if(_1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.ELambda) {
 const tryEffect_ = _1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.lambda_.effect_;
@@ -2489,21 +2489,21 @@ const _1 = pattern_;
 {
 if(_1.PString) {
 const value_ = _1.value_;
-return (((((("if(" + argument_) + " == ") + value_) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, jump_, last_, async_)) + "\n}")
+return (((((("if(" + argument_) + " === ") + value_) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, jump_, last_, async_)) + "\n}")
 return
 }
 }
 {
 if(_1.PInt) {
 const value_ = _1.value_;
-return (((((("if(" + argument_) + " == ") + value_) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, jump_, last_, async_)) + "\n}")
+return (((((("if(" + argument_) + " === ") + value_) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, jump_, last_, async_)) + "\n}")
 return
 }
 }
 {
 if(_1.PChar) {
 const value_ = _1.value_;
-return (((((("if(" + argument_) + " == ") + ff_compiler_JsEmitter.charLiteralToNumber_(value_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, jump_, last_, async_)) + "\n}")
+return (((((("if(" + argument_) + " === ") + ff_compiler_JsEmitter.charLiteralToNumber_(value_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, jump_, last_, async_)) + "\n}")
 return
 }
 }
@@ -2529,7 +2529,7 @@ return
 }
 {
 if(_1.PVariant) {
-if(_1.name_ == "ff:core/Bool.False") {
+if(_1.name_ === "ff:core/Bool.False") {
 if(_1.patterns_.length === 0) {
 return (((("if(!" + argument_) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, jump_, last_, async_)) + "\n}")
 return
@@ -2539,7 +2539,7 @@ return
 }
 {
 if(_1.PVariant) {
-if(_1.name_ == "ff:core/Bool.True") {
+if(_1.name_ === "ff:core/Bool.True") {
 if(_1.patterns_.length === 0) {
 return (((("if(" + argument_) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, jump_, last_, async_)) + "\n}")
 return
@@ -2549,7 +2549,7 @@ return
 }
 {
 if(_1.PVariant) {
-if(_1.name_ == "List$Empty") {
+if(_1.name_ === "List$Empty") {
 if(_1.patterns_.length === 0) {
 let shortArgument_ = argument_;
 let shortCount_ = 0;
@@ -2565,7 +2565,7 @@ return
 }
 {
 if(_1.PVariant) {
-if(_1.name_ == "List$Link") {
+if(_1.name_ === "List$Link") {
 if(_1.patterns_.length > 0) {
 const head_ = _1.patterns_[0];
 if(_1.patterns_.length > 1) {
@@ -2728,7 +2728,7 @@ const _1 = argument_.value_;
 {
 if(_1.ECall) {
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/SourceLocation.callSite") {
+if(_1.target_.name_ === "ff:core/SourceLocation.callSite") {
 return (((((((((("\"" + self_.moduleName_) + ":") + callAt_.line_) + ":") + callAt_.column_) + ",") + self_.packagePair_.group_) + ",") + self_.packagePair_.name_) + "\"")
 return
 }
@@ -3167,7 +3167,7 @@ return
 {
 if(_1.EVariant) {
 const at_ = _1.at_;
-if(_1.name_ == "ff:core/Bool.False") {
+if(_1.name_ === "ff:core/Bool.False") {
 return "false"
 return
 }
@@ -3176,7 +3176,7 @@ return
 {
 if(_1.EVariant) {
 const at_ = _1.at_;
-if(_1.name_ == "ff:core/Bool.True") {
+if(_1.name_ === "ff:core/Bool.True") {
 return "true"
 return
 }
@@ -3185,7 +3185,7 @@ return
 {
 if(_1.EVariant) {
 const at_ = _1.at_;
-if(_1.name_ == "ff:core/Unit.Unit") {
+if(_1.name_ === "ff:core/Unit.Unit") {
 return "(void 0)"
 return
 }
@@ -3211,7 +3211,7 @@ return
 {
 if(_1.EVariantIs) {
 const at_ = _1.at_;
-if(_1.name_ == "ff:core/Bool.False") {
+if(_1.name_ === "ff:core/Bool.False") {
 return "function(_v) { return !_v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
 return
 }
@@ -3220,7 +3220,7 @@ return
 {
 if(_1.EVariantIs) {
 const at_ = _1.at_;
-if(_1.name_ == "ff:core/Bool.True") {
+if(_1.name_ === "ff:core/Bool.True") {
 return "function(_v) { return _v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
 return
 }
@@ -3229,7 +3229,7 @@ return
 {
 if(_1.EVariantIs) {
 const at_ = _1.at_;
-if(_1.name_ == "ff:core/Unit.Unit") {
+if(_1.name_ === "ff:core/Unit.Unit") {
 return "function(_v) { return ff_core_Option.Some(_v); }"
 return
 }
@@ -3420,7 +3420,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.import") {
+if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.import") {
 if(_1.arguments_.length > 0) {
 if(_1.arguments_[0].value_.EString) {
 const url_ = _1.arguments_[0].value_.value_;
@@ -3438,7 +3438,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.await") {
+if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.await") {
 if(_1.arguments_.length > 0) {
 const body_ = _1.arguments_[0].value_;
 if(_1.arguments_.length === 1) {
@@ -3459,7 +3459,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.cancelled") {
+if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.cancelled") {
 if(_1.arguments_.length === 0) {
 if(async_) {
 return "$task.controller.signal.aborted"
@@ -3476,7 +3476,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.throwIfCancelled") {
+if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.throwIfCancelled") {
 if(_1.arguments_.length === 0) {
 if(async_) {
 return "((() => ff_core_Task.Task_throwIfAborted($task))())"
@@ -3493,7 +3493,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Equal.equals") {
+if(_1.target_.name_ === "ff:core/Equal.equals") {
 if(_1.arguments_.length > 0) {
 const left_ = _1.arguments_[0];
 if(_1.arguments_.length > 1) {
@@ -3522,7 +3522,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Equal.notEquals") {
+if(_1.target_.name_ === "ff:core/Equal.notEquals") {
 if(_1.arguments_.length > 0) {
 const left_ = _1.arguments_[0];
 if(_1.arguments_.length > 1) {
@@ -3551,7 +3551,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Ordering.before") {
+if(_1.target_.name_ === "ff:core/Ordering.before") {
 if(_1.arguments_.length > 0) {
 const left_ = _1.arguments_[0];
 if(_1.arguments_.length > 1) {
@@ -3580,7 +3580,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Ordering.notBefore") {
+if(_1.target_.name_ === "ff:core/Ordering.notBefore") {
 if(_1.arguments_.length > 0) {
 const left_ = _1.arguments_[0];
 if(_1.arguments_.length > 1) {
@@ -3609,7 +3609,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Ordering.after") {
+if(_1.target_.name_ === "ff:core/Ordering.after") {
 if(_1.arguments_.length > 0) {
 const left_ = _1.arguments_[0];
 if(_1.arguments_.length > 1) {
@@ -3638,7 +3638,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Ordering.notAfter") {
+if(_1.target_.name_ === "ff:core/Ordering.notAfter") {
 if(_1.arguments_.length > 0) {
 const left_ = _1.arguments_[0];
 if(_1.arguments_.length > 1) {
@@ -3666,7 +3666,7 @@ return
 {
 if(_1.ECall) {
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/List.fillBy") {
+if(_1.target_.name_ === "ff:core/List.fillBy") {
 const effect_ = _1.effect_;
 if(_1.arguments_.length > 0) {
 const size_ = _1.arguments_[0];
@@ -3797,7 +3797,7 @@ return
 {
 if(_1.length > 0) {
 if(_1[0].first_.EVariant) {
-if(_1[0].first_.name_ == "ff:core/Bool.True") {
+if(_1[0].first_.name_ === "ff:core/Bool.True") {
 const elseBody_ = _1[0].second_;
 const list_ = _1.slice(1);
 return (("(" + (await ff_core_List.List_foldLeft$(list_, (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, elseBody_, async_, $task)), (async (_1, _2, $task) => {
@@ -3947,7 +3947,7 @@ return
 {
 if(_1.EVariant) {
 const at_ = _1.at_;
-if(_1.name_ == "ff:core/Unit.Unit") {
+if(_1.name_ === "ff:core/Unit.Unit") {
 return ""
 return
 }
@@ -3958,7 +3958,7 @@ if(_1.ESequential) {
 const at_ = _1.at_;
 if(_1.before_.EVariant) {
 const at_ = _1.before_.at_;
-if(_1.before_.name_ == "ff:core/Unit.Unit") {
+if(_1.before_.name_ === "ff:core/Unit.Unit") {
 const after_ = _1.after_;
 return (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, after_, last_, async_, $task))
 return
@@ -3972,7 +3972,7 @@ const at_ = _1.at_;
 const before_ = _1.before_;
 if(_1.after_.EVariant) {
 const at_ = _1.after_.at_;
-if(_1.after_.name_ == "ff:core/Unit.Unit") {
+if(_1.after_.name_ === "ff:core/Unit.Unit") {
 return (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, before_, false, async_, $task))
 return
 }
@@ -4013,7 +4013,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Core.while") {
+if(_1.target_.name_ === "ff:core/Core.while") {
 if(_1.arguments_.length > 0) {
 const condition_ = _1.arguments_[0];
 if(_1.arguments_.length > 1) {
@@ -4032,7 +4032,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Core.doWhile") {
+if(_1.target_.name_ === "ff:core/Core.doWhile") {
 if(_1.arguments_.length > 0) {
 const doWhileBody_ = _1.arguments_[0].value_;
 if(_1.arguments_.length === 1) {
@@ -4053,7 +4053,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Core.doWhile") {
+if(_1.target_.name_ === "ff:core/Core.doWhile") {
 if(_1.arguments_.length > 0) {
 const doWhileBody_ = _1.arguments_[0].value_;
 if(_1.arguments_.length === 1) {
@@ -4071,7 +4071,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Core.if") {
+if(_1.target_.name_ === "ff:core/Core.if") {
 if(_1.arguments_.length > 0) {
 const condition_ = _1.arguments_[0];
 if(_1.arguments_.length > 1) {
@@ -4092,7 +4092,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Core.throw") {
+if(_1.target_.name_ === "ff:core/Core.throw") {
 if(_1.arguments_.length > 0) {
 const argument_ = _1.arguments_[0];
 if(_1.arguments_.length === 1) {
@@ -4115,7 +4115,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Core.try") {
+if(_1.target_.name_ === "ff:core/Core.try") {
 const _guard1 = (!last_);
 if(_guard1) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a try without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -4129,7 +4129,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Try.Try_map") {
+if(_1.target_.name_ === "ff:core/Try.Try_map") {
 const _guard1 = (!last_);
 if(_guard1) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a map without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -4143,7 +4143,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Try.Try_flatMap") {
+if(_1.target_.name_ === "ff:core/Try.Try_flatMap") {
 const _guard1 = (!last_);
 if(_guard1) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a flatMap without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -4157,7 +4157,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Try.Try_flatten") {
+if(_1.target_.name_ === "ff:core/Try.Try_flatten") {
 const _guard1 = (!last_);
 if(_guard1) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a flatten without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -4171,7 +4171,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Try.Try_catch") {
+if(_1.target_.name_ === "ff:core/Try.Try_catch") {
 const _guard1 = (!last_);
 if(_guard1) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a catch without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -4185,7 +4185,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Try.Try_catchAny") {
+if(_1.target_.name_ === "ff:core/Try.Try_catchAny") {
 const _guard1 = (!last_);
 if(_guard1) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a catchAny without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -4199,7 +4199,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Try.Try_finally") {
+if(_1.target_.name_ === "ff:core/Try.Try_finally") {
 const _guard1 = (!last_);
 if(_guard1) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a finally without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -4213,7 +4213,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Try.Try_grab") {
+if(_1.target_.name_ === "ff:core/Try.Try_grab") {
 if(_1.arguments_.length > 0) {
 const argument_ = _1.arguments_[0];
 if(_1.arguments_.length === 1) {
@@ -4233,7 +4233,7 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.throwIfCancelled") {
+if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.throwIfCancelled") {
 if(_1.arguments_.length === 0) {
 if(async_) {
 return "ff_core_Task.Task_throwIfAborted($task)"
@@ -4304,7 +4304,7 @@ return
 {
 if(_1.length > 0) {
 if(_1[0].first_.EVariant) {
-if(_1[0].first_.name_ == "ff:core/Bool.True") {
+if(_1[0].first_.name_ === "ff:core/Bool.True") {
 const elseBody_ = _1[0].second_;
 const list_ = _1.slice(1);
 const initial_ = (("{\n" + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, elseBody_, last_, async_, $task))) + "\n}");
@@ -4393,12 +4393,12 @@ const _1 = term_;
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Try.Try_finally") {
+if(_1.target_.name_ === "ff:core/Try.Try_finally") {
 if(_1.arguments_.length > 0) {
 if(_1.arguments_[0].value_.ECall) {
 const at_ = _1.arguments_[0].value_.at_;
 if(_1.arguments_[0].value_.target_.StaticCall) {
-if(_1.arguments_[0].value_.target_.name_ == "ff:core/Core.try") {
+if(_1.arguments_[0].value_.target_.name_ === "ff:core/Core.try") {
 if(_1.arguments_[0].value_.arguments_.length > 0) {
 if(_1.arguments_[0].value_.arguments_[0].value_.ELambda) {
 const tryEffect_ = _1.arguments_[0].value_.arguments_[0].value_.lambda_.effect_;
@@ -4447,12 +4447,12 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Try.Try_catch") {
+if(_1.target_.name_ === "ff:core/Try.Try_catch") {
 if(_1.arguments_.length > 0) {
 if(_1.arguments_[0].value_.ECall) {
 const at_ = _1.arguments_[0].value_.at_;
 if(_1.arguments_[0].value_.target_.StaticCall) {
-if(_1.arguments_[0].value_.target_.name_ == "ff:core/Core.try") {
+if(_1.arguments_[0].value_.target_.name_ === "ff:core/Core.try") {
 if(_1.arguments_[0].value_.arguments_.length > 0) {
 if(_1.arguments_[0].value_.arguments_[0].value_.ELambda) {
 const tryEffect_ = _1.arguments_[0].value_.arguments_[0].value_.lambda_.effect_;
@@ -4498,17 +4498,17 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Try.Try_finally") {
+if(_1.target_.name_ === "ff:core/Try.Try_finally") {
 if(_1.arguments_.length > 0) {
 if(_1.arguments_[0].value_.ECall) {
 const at_ = _1.arguments_[0].value_.at_;
 if(_1.arguments_[0].value_.target_.StaticCall) {
-if(_1.arguments_[0].value_.target_.name_ == "ff:core/Try.Try_catch") {
+if(_1.arguments_[0].value_.target_.name_ === "ff:core/Try.Try_catch") {
 if(_1.arguments_[0].value_.arguments_.length > 0) {
 if(_1.arguments_[0].value_.arguments_[0].value_.ECall) {
 const at_ = _1.arguments_[0].value_.arguments_[0].value_.at_;
 if(_1.arguments_[0].value_.arguments_[0].value_.target_.StaticCall) {
-if(_1.arguments_[0].value_.arguments_[0].value_.target_.name_ == "ff:core/Core.try") {
+if(_1.arguments_[0].value_.arguments_[0].value_.target_.name_ === "ff:core/Core.try") {
 if(_1.arguments_[0].value_.arguments_[0].value_.arguments_.length > 0) {
 if(_1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.ELambda) {
 const tryEffect_ = _1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.lambda_.effect_;
@@ -4626,21 +4626,21 @@ const _1 = pattern_;
 {
 if(_1.PString) {
 const value_ = _1.value_;
-return (((((("if(" + argument_) + " == ") + value_) + ") {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, jump_, last_, async_, $task))) + "\n}")
+return (((((("if(" + argument_) + " === ") + value_) + ") {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, jump_, last_, async_, $task))) + "\n}")
 return
 }
 }
 {
 if(_1.PInt) {
 const value_ = _1.value_;
-return (((((("if(" + argument_) + " == ") + value_) + ") {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, jump_, last_, async_, $task))) + "\n}")
+return (((((("if(" + argument_) + " === ") + value_) + ") {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, jump_, last_, async_, $task))) + "\n}")
 return
 }
 }
 {
 if(_1.PChar) {
 const value_ = _1.value_;
-return (((((("if(" + argument_) + " == ") + ff_compiler_JsEmitter.charLiteralToNumber_(value_)) + ") {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, jump_, last_, async_, $task))) + "\n}")
+return (((((("if(" + argument_) + " === ") + ff_compiler_JsEmitter.charLiteralToNumber_(value_)) + ") {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, jump_, last_, async_, $task))) + "\n}")
 return
 }
 }
@@ -4666,7 +4666,7 @@ return
 }
 {
 if(_1.PVariant) {
-if(_1.name_ == "ff:core/Bool.False") {
+if(_1.name_ === "ff:core/Bool.False") {
 if(_1.patterns_.length === 0) {
 return (((("if(!" + argument_) + ") {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, jump_, last_, async_, $task))) + "\n}")
 return
@@ -4676,7 +4676,7 @@ return
 }
 {
 if(_1.PVariant) {
-if(_1.name_ == "ff:core/Bool.True") {
+if(_1.name_ === "ff:core/Bool.True") {
 if(_1.patterns_.length === 0) {
 return (((("if(" + argument_) + ") {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, jump_, last_, async_, $task))) + "\n}")
 return
@@ -4686,7 +4686,7 @@ return
 }
 {
 if(_1.PVariant) {
-if(_1.name_ == "List$Empty") {
+if(_1.name_ === "List$Empty") {
 if(_1.patterns_.length === 0) {
 let shortArgument_ = argument_;
 let shortCount_ = 0;
@@ -4702,7 +4702,7 @@ return
 }
 {
 if(_1.PVariant) {
-if(_1.name_ == "List$Link") {
+if(_1.name_ === "List$Link") {
 if(_1.patterns_.length > 0) {
 const head_ = _1.patterns_[0];
 if(_1.patterns_.length > 1) {
@@ -4865,7 +4865,7 @@ const _1 = argument_.value_;
 {
 if(_1.ECall) {
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/SourceLocation.callSite") {
+if(_1.target_.name_ === "ff:core/SourceLocation.callSite") {
 return (((((((((("\"" + self_.moduleName_) + ":") + callAt_.line_) + ":") + callAt_.column_) + ",") + self_.packagePair_.group_) + ",") + self_.packagePair_.name_) + "\"")
 return
 }
@@ -5289,28 +5289,28 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_JsEmitter.EmitNode()
 return
 }
 }
 {
-if(_1 == 1) {
+if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 return ff_compiler_JsEmitter.EmitBrowser()
 return
 }
 }
 {
-if(_1 == 2) {
+if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 return ff_compiler_JsEmitter.EmitBuild()
 return
 }
 }
 {
-if(_1 == 3) {
+if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 36), 0);
 return ff_compiler_JsEmitter.EmitExecutable()
 return
@@ -5374,28 +5374,28 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_JsEmitter.EmitNode()
 return
 }
 }
 {
-if(_1 == 1) {
+if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 return ff_compiler_JsEmitter.EmitBrowser()
 return
 }
 }
 {
-if(_1 == 2) {
+if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 return ff_compiler_JsEmitter.EmitBuild()
 return
 }
 }
 {
-if(_1 == 3) {
+if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 36), 0);
 return ff_compiler_JsEmitter.EmitExecutable()
 return
@@ -5434,7 +5434,7 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 42), 0);
 return ff_compiler_JsEmitter.ProcessedVariantCase(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 return
@@ -5470,7 +5470,7 @@ serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
-if(_1 == 0) {
+if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 42), 0);
 return ff_compiler_JsEmitter.ProcessedVariantCase(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 return
