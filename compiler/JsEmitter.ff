@@ -389,7 +389,7 @@ extend self: JsEmitter {
             primitiveTypes.contains(typeName)
         } =>
             "(" + self.emitArgument(at, left, async) + " <= " + self.emitArgument(at, right, async) + ")"
-        | ECall(_, StaticCall("ff:core/Array.fillBy", _, _), effect, _, [size, Argument(_, _, ELambda(at,
+        | ECall(_, StaticCall("ff:core/List.fillBy", _, _), effect, _, [size, Argument(_, _, ELambda(at,
             Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], body)@c])@l
         ))], _) {
             !effectTypeIsAsync(effect)
