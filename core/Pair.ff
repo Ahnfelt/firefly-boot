@@ -28,8 +28,8 @@ extend self[A, A]: Pair[A, A] {
         [self.first, self.second]
     }
 
-    toStack(): Stack[A] {
-        self.toList().toStack()
+    toArray(): Array[A] {
+        self.toList().toArray()
     }
 
 }

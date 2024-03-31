@@ -2,6 +2,8 @@
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -75,8 +77,6 @@ import * as ff_core_Set from "../../ff/core/Set.mjs"
 import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
-
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
@@ -501,19 +501,19 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.G
 }
 
 export function Json_map(self_, body_) {
-const stack_ = ff_core_Stack.make_();
+const array_ = ff_core_Array.make_();
 ff_core_Json.Json_each(self_, ((field_, value_) => {
-ff_core_Stack.Stack_push(stack_, body_(field_, value_))
+ff_core_Array.Array_push(array_, body_(field_, value_))
 }));
-return ff_core_Stack.Stack_drain(stack_)
+return ff_core_Array.Array_drain(array_)
 }
 
 export function Json_flatMap(self_, body_) {
-const stack_ = ff_core_Stack.make_();
+const array_ = ff_core_Array.make_();
 ff_core_Json.Json_each(self_, ((field_, value_) => {
-ff_core_Stack.Stack_pushList(stack_, body_(field_, value_))
+ff_core_Array.Array_pushList(array_, body_(field_, value_))
 }));
-return ff_core_Stack.Stack_drain(stack_)
+return ff_core_Array.Array_drain(array_)
 }
 
 export function Json_each(self_, body_) {
@@ -677,19 +677,19 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.G
 }
 
 export async function Json_map$(self_, body_, $task) {
-const stack_ = ff_core_Stack.make_();
+const array_ = ff_core_Array.make_();
 (await ff_core_Json.Json_each$(self_, (async (field_, value_, $task) => {
-ff_core_Stack.Stack_push(stack_, (await body_(field_, value_, $task)))
+ff_core_Array.Array_push(array_, (await body_(field_, value_, $task)))
 }), $task));
-return ff_core_Stack.Stack_drain(stack_)
+return ff_core_Array.Array_drain(array_)
 }
 
 export async function Json_flatMap$(self_, body_, $task) {
-const stack_ = ff_core_Stack.make_();
+const array_ = ff_core_Array.make_();
 (await ff_core_Json.Json_each$(self_, (async (field_, value_, $task) => {
-ff_core_Stack.Stack_pushList(stack_, (await body_(field_, value_, $task)))
+ff_core_Array.Array_pushList(array_, (await body_(field_, value_, $task)))
 }), $task));
-return ff_core_Stack.Stack_drain(stack_)
+return ff_core_Array.Array_drain(array_)
 }
 
 export async function Json_each$(self_, body_, $task) {
@@ -846,7 +846,7 @@ return ff_core_Json_JsonLike$T.toJson_(value_)
 fromJson_(json_) {
 return ff_core_Option.Option_flatMap(ff_core_Json.Json_getArray(json_), ((array_) => {
 let convertible_ = true;
-const stack_ = ff_core_Stack.make_();
+const result_ = ff_core_Array.make_();
 ff_core_List.List_eachWhile(array_, ((item_) => {
 do {
 const _1 = ff_core_Json_JsonLike$T.fromJson_(item_);
@@ -859,7 +859,7 @@ break
 {
 if(_1.Some) {
 const value_ = _1.value_;
-ff_core_Stack.Stack_push(stack_, value_)
+ff_core_Array.Array_push(result_, value_)
 break
 }
 }
@@ -867,7 +867,7 @@ break
 return convertible_
 }));
 if(convertible_) {
-return ff_core_Option.Some(ff_core_Stack.Stack_drain(stack_))
+return ff_core_Option.Some(ff_core_Array.Array_drain(result_))
 } else return ff_core_Option.None()
 }))
 },
@@ -879,7 +879,7 @@ return ff_core_Json_JsonLike$T.toJson_(value_)
 async fromJson_$(json_, $task) {
 return ff_core_Option.Option_flatMap(ff_core_Json.Json_getArray(json_), ((array_) => {
 let convertible_ = true;
-const stack_ = ff_core_Stack.make_();
+const result_ = ff_core_Array.make_();
 ff_core_List.List_eachWhile(array_, ((item_) => {
 do {
 const _1 = ff_core_Json_JsonLike$T.fromJson_(item_);
@@ -892,7 +892,7 @@ break
 {
 if(_1.Some) {
 const value_ = _1.value_;
-ff_core_Stack.Stack_push(stack_, value_)
+ff_core_Array.Array_push(result_, value_)
 break
 }
 }
@@ -900,7 +900,7 @@ break
 return convertible_
 }));
 if(convertible_) {
-return ff_core_Option.Some(ff_core_Stack.Stack_drain(stack_))
+return ff_core_Option.Some(ff_core_Array.Array_drain(result_))
 } else return ff_core_Option.None()
 }))
 }

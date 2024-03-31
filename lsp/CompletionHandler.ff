@@ -228,7 +228,7 @@ completion(
 
     let member = prefix.contains("_")
 
-    let members = Stack.make()
+    let members = Array.make()
 
     let symbols = if(prefix == "") {
         environment.symbols.toList().collect {
@@ -258,7 +258,7 @@ completion(
                 None
         }.toMap()
     } else {
-        members.pushStack(exhaustiveMatchCompletion(environment, prefix, False).toStack())
+        members.pushArray(exhaustiveMatchCompletion(environment, prefix, False).toArray())
         let shorterPrefix = prefix.dropLast()
         let recordFields = shorterPrefix.split('$').dropFirst().toSet()
         environment.symbols.each {

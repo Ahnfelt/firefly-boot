@@ -10,6 +10,8 @@ import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -83,8 +85,6 @@ import * as ff_core_Set from "../../ff/core/Set.mjs"
 import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
-
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
@@ -1529,7 +1529,7 @@ return
 {
 if(_1.ECall) {
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Array.fillBy") {
+if(_1.target_.name_ == "ff:core/List.fillBy") {
 const effect_ = _1.effect_;
 if(_1.arguments_.length !== 0) {
 const size_ = _1.arguments_[0];
@@ -3654,7 +3654,7 @@ return
 {
 if(_1.ECall) {
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/Array.fillBy") {
+if(_1.target_.name_ == "ff:core/List.fillBy") {
 const effect_ = _1.effect_;
 if(_1.arguments_.length !== 0) {
 const size_ = _1.arguments_[0];

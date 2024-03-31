@@ -2,6 +2,8 @@
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -77,8 +79,6 @@ import * as ff_core_Set from "../../ff/core/Set.mjs"
 import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
-
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
@@ -331,14 +331,14 @@ export function Map_push(self_, key_, value_, ff_core_Ordering_Order$K) {
 const _1 = ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K);
 {
 if(_1.None) {
-return ff_core_Map.Map_add(self_, key_, ff_core_List.List_toStack([value_]), ff_core_Ordering_Order$K)
+return ff_core_Map.Map_add(self_, key_, ff_core_List.List_toArray([value_]), ff_core_Ordering_Order$K)
 return
 }
 }
 {
 if(_1.Some) {
-const stack_ = _1.value_;
-ff_core_Stack.Stack_push(stack_, value_);
+const array_ = _1.value_;
+ff_core_Array.Array_push(array_, value_);
 return self_
 return
 }
@@ -351,14 +351,14 @@ export async function Map_push$(self_, key_, value_, ff_core_Ordering_Order$K, $
 const _1 = ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K);
 {
 if(_1.None) {
-return ff_core_Map.Map_add(self_, key_, ff_core_List.List_toStack([value_]), ff_core_Ordering_Order$K)
+return ff_core_Map.Map_add(self_, key_, ff_core_List.List_toArray([value_]), ff_core_Ordering_Order$K)
 return
 }
 }
 {
 if(_1.Some) {
-const stack_ = _1.value_;
-ff_core_Stack.Stack_push(stack_, value_);
+const array_ = _1.value_;
+ff_core_Array.Array_push(array_, value_);
 return self_
 return
 }

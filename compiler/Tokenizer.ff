@@ -7,7 +7,7 @@ tokenize(file: String, code: String, completionAt: Option[Location], attemptFixe
     let completionLine = completionAt.filter {_.file == file}.map {_.line}.else {-1}
     let completionColumn = completionAt.filter {_.file == file}.map {_.column}.else {-1}
 
-    let tokens = Stack.make[Token]()
+    let tokens = Array.make[Token]()
     mutable line = 1
     mutable lineOffset = 0
 

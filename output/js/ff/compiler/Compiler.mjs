@@ -24,6 +24,8 @@ import * as ff_compiler_Tokenizer from "../../ff/compiler/Tokenizer.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -98,8 +100,6 @@ import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
 
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
-
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
@@ -117,7 +117,7 @@ export function Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_,
 return {emitTarget_, task_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, lspHook_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_};
 }
 
-export const coreImports_ = ff_core_List.List_map(["Any", "AssetSystem", "Atomic", "Bool", "Box", "BrowserSystem", "Buffer", "BuildSystem", "Channel", "Char", "Core", "Duration", "Equal", "Error", "FileHandle", "Float", "HttpClient", "Instant", "Int", "IntMap", "Json", "JsValue", "JsSystem", "List", "Lock", "Log", "Map", "NodeSystem", "Nothing", "Option", "Ordering", "Pair", "Path", "Random", "Serializable", "Set", "Show", "SourceLocation", "Stack", "Stream", "String", "StringMap", "Task", "Try", "Unit"], ((moduleName_) => {
+export const coreImports_ = ff_core_List.List_map(["Any", "Array", "AssetSystem", "Atomic", "Bool", "Box", "BrowserSystem", "Buffer", "BuildSystem", "Channel", "Char", "Core", "Duration", "Equal", "Error", "FileHandle", "Float", "HttpClient", "Instant", "Int", "IntMap", "Json", "JsValue", "JsSystem", "List", "Lock", "Log", "Map", "NodeSystem", "Nothing", "Option", "Ordering", "Pair", "Path", "Random", "Serializable", "Set", "Show", "SourceLocation", "Stream", "String", "StringMap", "Task", "Try", "Unit"], ((moduleName_) => {
 return ff_compiler_Syntax.DImport(ff_compiler_Syntax.Location("<prelude>", 1, 1), moduleName_, ff_compiler_Syntax.PackagePair("ff", "core"), [], moduleName_)
 }));
 

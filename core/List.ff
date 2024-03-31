@@ -133,8 +133,8 @@ extend self[T]: List[T] {
     }
 
     chunk(chunkSize: Int): List[List[T]] {
-        let results = Stack.make()
-        let result = Stack.make()
+        let results = Array.make()
+        let result = Array.make()
         mutable added = 0
         self.each {item =>
             if(added < chunkSize) {
@@ -166,7 +166,7 @@ extend self[T]: List[T] {
         }
     }
 
-    toStack(): Stack[T]
+    toArray(): Array[T]
         target js sync "return {array: self_.slice()}"
 
     each(body: T => Unit): Unit
@@ -215,7 +215,7 @@ extend self[T]: List[T] {
     }
 
     filter(body: T => Bool): List[T] {
-        let result = Stack.make()
+        let result = Array.make()
         self.each {x =>
             if(body(x)) {
                 result.push(x)
@@ -241,7 +241,7 @@ extend self[T]: List[T] {
         """
         
     flatMap[S](body: T => List[S]): List[S] {
-        let results = Stack.make()
+        let results = Array.make()
         self.each {x =>
             results.pushList(body(x))
         }
@@ -249,7 +249,7 @@ extend self[T]: List[T] {
     }
     
     collect[R](body: T => Option[R]): List[R] {
-        mutable result = Stack.make()
+        mutable result = Array.make()
         self.each {x =>
             body(x).each {result.push(_)}
         }
@@ -275,9 +275,9 @@ extend self[T]: List[T] {
     }
 
     sortWith(ordering: (T, T) => Ordering): List[T] {
-        let stack = self.toStack()
-        stack.sortWith(ordering)
-        stack.drain()
+        let array = self.toArray()
+        array.sortWith(ordering)
+        array.drain()
     }
     
     reverse(): List[T] {
@@ -287,14 +287,14 @@ extend self[T]: List[T] {
     }
     
     separate(separator: List[T]): List[T] {
-        let stack = Stack.make()
+        let array = Array.make()
         self.pairs().each {| Pair(i, x) =>
             if(i != 0) {
-                stack.pushList(separator)
+                array.pushList(separator)
             }
-            stack.push(x)
+            array.push(x)
         }
-        stack.drain()
+        array.drain()
     }
 
 }
@@ -325,7 +325,7 @@ extend self[T: Order]: List[T] {
 extend self[T]: List[List[T]] {
 
     flatten(): List[T] {
-        let result = Stack.make()
+        let result = Array.make()
         self.each {xs =>
             result.pushList(xs)
         }
@@ -341,7 +341,7 @@ extend self[K: Order, V]: List[Pair[K, V]] {
     }
     
     group(): Map[K, List[V]] {
-        mutable map = Map.empty[K, Stack[V]]()
+        mutable map = Map.empty[K, Array[V]]()
         self.each {| Pair(k, v) => map = map.push(k, v)}
         map.mapValues {_, v => v.drain()}
     }
@@ -351,8 +351,8 @@ extend self[K: Order, V]: List[Pair[K, V]] {
 extend self[K, V]: List[Pair[K, V]] {
 
     unzip(): Pair[List[K], List[V]] {
-        let first = Stack.make()
-        let second = Stack.make()
+        let first = Array.make()
+        let second = Array.make()
         self.each {| Pair(x, y) =>
             first.push(x)
             second.push(y)
@@ -371,14 +371,14 @@ extend self: List[String] {
 
 instance List[T: Show]: Show {
     show(value: List[T]): String {
-        let stack = Stack.make()
-        stack.push("[")
+        let array = Array.make()
+        array.push("[")
         value.each {x =>
-            if(stack.size() > 1) {stack.push(", ")}
-            stack.push(Show.show(x))
+            if(array.size() > 1) {array.push(", ")}
+            array.push(Show.show(x))
         }
-        stack.push("]")
-        stack.join()
+        array.push("]")
+        array.join()
     }
 }
 

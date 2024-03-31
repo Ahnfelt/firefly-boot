@@ -1,6 +1,6 @@
-class Stack[T] {}
+class Array[T] {}
 
-make[T](): Stack[T]
+make[T](): Array[T]
     target js sync "return {array: []}"
 
 fill[T](size: Int, value: T): List[T]
@@ -18,7 +18,7 @@ range(size: Int): List[Int]
         return {array: Array.from({length: size_}, (_, i) => i)};
     """
 
-extend self[T]: Stack[T] {
+extend self[T]: Array[T] {
 
     isEmpty(): Bool
         target js sync "return self_.array.length === 0"
@@ -62,7 +62,7 @@ extend self[T]: Stack[T] {
     push(value: T): Unit
         target js sync "self_.array.push(value_)"
 
-    pushStack(value: Stack[T]): Unit
+    pushArray(value: Array[T]): Unit
         target js sync "self_.array.push(...value_.array)"
 
     pushList(value: List[T]): Unit
@@ -117,7 +117,7 @@ extend self[T]: Stack[T] {
             self_.array.splice(start_, deleteCount_, value_);
         """
 
-    insertStack(start: Int, value: Stack[T], deleteCount: Int = 0): Unit
+    insertArray(start: Int, value: Array[T], deleteCount: Int = 0): Unit
         target js sync """
             self_.array.splice(start_, deleteCount_, ...value_.array);
         """
@@ -194,7 +194,7 @@ extend self[T]: Stack[T] {
 
 }
 
-extend self[T: Order]: Stack[T] {
+extend self[T: Order]: Array[T] {
 
     sort(): Unit {
         self.sortWith(Ordering.compare)
@@ -202,46 +202,46 @@ extend self[T: Order]: Stack[T] {
 
 }
 
-extend self: Stack[String] {
+extend self: Array[String] {
 
     join(separator: String = ""): String
         target js sync "return self_.array.join(separator_)"
 
 }
 
-instance Stack[T: Show]: Show {
-    show(value: Stack[T]): String {
-        let stack = Stack.make()
-        stack.push("[")
+instance Array[T: Show]: Show {
+    show(value: Array[T]): String {
+        let array = Array.make()
+        array.push("[")
         value.each {x =>
-            if(stack.size() > 1) {stack.push(", ")}
-            stack.push(Show.show(x))
+            if(array.size() > 1) {array.push(", ")}
+            array.push(Show.show(x))
         }
-        stack.push("].toStack()")
-        stack.join()
+        array.push("].toArray()")
+        array.join()
     }
 }
 
-sortRange[T](stack: Stack[T], compare: (T, T) => Ordering, start: Int, end: Int): Unit {
+sortRange[T](array: Array[T], compare: (T, T) => Ordering, start: Int, end: Int): Unit {
     if(end - start < 2) {} else:
 
     mutable middle = start + ((end - start) / 2)
-    sortRange(stack, compare, start, middle)
-    sortRange(stack, compare, middle, end)
+    sortRange(array, compare, start, middle)
+    sortRange(array, compare, middle, end)
 
     mutable i = start
     mutable j = middle
     while {i < middle && j < end} {
-        if(compare(stack.grab(i), stack.grab(j)) != OrderingAfter) {
+        if(compare(array.grab(i), array.grab(j)) != OrderingAfter) {
             i += 1
         } else {
-            let value = stack.grab(j)
+            let value = array.grab(j)
             mutable k = j
             while {k > i} {
-                stack.set(k, stack.grab(k - 1))
+                array.set(k, array.grab(k - 1))
                 k -= 1
             }
-            stack.set(i, value)
+            array.set(i, value)
             i += 1
             middle += 1
             j += 1

@@ -2,6 +2,8 @@
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -75,8 +77,6 @@ import * as ff_core_Set from "../../ff/core/Set.mjs"
 import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
-
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
@@ -257,15 +257,25 @@ deserializeUsing_(serialization_) {
 const smallSize_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 if((smallSize_ !== 255)) {
 serialization_.offset_ += 1;
-return ff_core_List.fillBy_(smallSize_, ((_) => {
-return ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_)
-}))
+return ((() => {
+const size = smallSize_;
+const result = [];
+for(let i = 0; i < size; i++) {
+result.push(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_));
+}
+return result;
+})())
 } else {
 const size_ = ff_core_Buffer.Buffer_grabUint32(serialization_.buffer_, (serialization_.offset_ + 1), true);
 serialization_.offset_ += (1 + 4);
-return ff_core_List.fillBy_(size_, ((_) => {
-return ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_)
-}))
+return ((() => {
+const size = size_;
+const result = [];
+for(let i = 0; i < size; i++) {
+result.push(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_));
+}
+return result;
+})())
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
@@ -289,15 +299,25 @@ async deserializeUsing_$(serialization_, $task) {
 const smallSize_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 if((smallSize_ !== 255)) {
 serialization_.offset_ += 1;
-return ff_core_List.fillBy_(smallSize_, ((_) => {
-return ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_)
-}))
+return ((() => {
+const size = smallSize_;
+const result = [];
+for(let i = 0; i < size; i++) {
+result.push(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_));
+}
+return result;
+})())
 } else {
 const size_ = ff_core_Buffer.Buffer_grabUint32(serialization_.buffer_, (serialization_.offset_ + 1), true);
 serialization_.offset_ += (1 + 4);
-return ff_core_List.fillBy_(size_, ((_) => {
-return ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_)
-}))
+return ((() => {
+const size = size_;
+const result = [];
+for(let i = 0; i < size; i++) {
+result.push(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_));
+}
+return result;
+})())
 }
 }
 }}

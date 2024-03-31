@@ -2,6 +2,8 @@
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -76,8 +78,6 @@ import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
 
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
-
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
@@ -145,16 +145,16 @@ export function StringMap_eachWhile(self_, body_) {
 for(const [k, v] of self_) if(!body_(k, v)) break
 }
 
-export function StringMap_toStack(self_) {
-const stack_ = ff_core_Stack.make_();
+export function StringMap_toArray(self_) {
+const array_ = ff_core_Array.make_();
 ff_core_StringMap.StringMap_each(self_, ((k_, v_) => {
-ff_core_Stack.Stack_push(stack_, ff_core_Pair.Pair(k_, v_))
+ff_core_Array.Array_push(array_, ff_core_Pair.Pair(k_, v_))
 }));
-return stack_
+return array_
 }
 
 export function StringMap_toList(self_) {
-return ff_core_Stack.Stack_drain(ff_core_StringMap.StringMap_toStack(self_))
+return ff_core_Array.Array_drain(ff_core_StringMap.StringMap_toArray(self_))
 }
 
 export function StringMap_toStream(self_) {
@@ -166,19 +166,19 @@ return ff_core_List.List_toMap(ff_core_StringMap.StringMap_toList(self_), ff_cor
 }
 
 export function StringMap_keys(self_) {
-const stack_ = ff_core_Stack.make_();
+const array_ = ff_core_Array.make_();
 ff_core_StringMap.StringMap_each(self_, ((k_, v_) => {
-ff_core_Stack.Stack_push(stack_, k_)
+ff_core_Array.Array_push(array_, k_)
 }));
-return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
+return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
 }
 
 export function StringMap_values(self_) {
-const stack_ = ff_core_Stack.make_();
+const array_ = ff_core_Array.make_();
 ff_core_StringMap.StringMap_each(self_, ((k_, v_) => {
-ff_core_Stack.Stack_push(stack_, v_)
+ff_core_Array.Array_push(array_, v_)
 }));
-return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
+return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
 }
 
 export function StringMap_copy(self_) {
@@ -228,16 +228,16 @@ export async function StringMap_eachWhile$(self_, body_, $task) {
 for(const [k, v] of self_) if(!await body_(k, v)) break
 }
 
-export async function StringMap_toStack$(self_, $task) {
-const stack_ = ff_core_Stack.make_();
+export async function StringMap_toArray$(self_, $task) {
+const array_ = ff_core_Array.make_();
 ff_core_StringMap.StringMap_each(self_, ((k_, v_) => {
-ff_core_Stack.Stack_push(stack_, ff_core_Pair.Pair(k_, v_))
+ff_core_Array.Array_push(array_, ff_core_Pair.Pair(k_, v_))
 }));
-return stack_
+return array_
 }
 
 export async function StringMap_toList$(self_, $task) {
-return ff_core_Stack.Stack_drain(ff_core_StringMap.StringMap_toStack(self_))
+return ff_core_Array.Array_drain(ff_core_StringMap.StringMap_toArray(self_))
 }
 
 export async function StringMap_toStream$(self_, $task) {
@@ -249,19 +249,19 @@ return ff_core_List.List_toMap(ff_core_StringMap.StringMap_toList(self_), ff_cor
 }
 
 export async function StringMap_keys$(self_, $task) {
-const stack_ = ff_core_Stack.make_();
+const array_ = ff_core_Array.make_();
 ff_core_StringMap.StringMap_each(self_, ((k_, v_) => {
-ff_core_Stack.Stack_push(stack_, k_)
+ff_core_Array.Array_push(array_, k_)
 }));
-return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
+return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
 }
 
 export async function StringMap_values$(self_, $task) {
-const stack_ = ff_core_Stack.make_();
+const array_ = ff_core_Array.make_();
 ff_core_StringMap.StringMap_each(self_, ((k_, v_) => {
-ff_core_Stack.Stack_push(stack_, v_)
+ff_core_Array.Array_push(array_, v_)
 }));
-return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
+return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
 }
 
 export async function StringMap_copy$(self_, $task) {
@@ -280,14 +280,14 @@ export function StringMap_push(self_, key_, value_) {
 const _1 = ff_core_StringMap.StringMap_get(self_, key_);
 {
 if(_1.None) {
-ff_core_StringMap.StringMap_set(self_, key_, ff_core_List.List_toStack([value_]))
+ff_core_StringMap.StringMap_set(self_, key_, ff_core_List.List_toArray([value_]))
 return
 }
 }
 {
 if(_1.Some) {
-const stack_ = _1.value_;
-ff_core_Stack.Stack_push(stack_, value_)
+const array_ = _1.value_;
+ff_core_Array.Array_push(array_, value_)
 return
 }
 }
@@ -299,14 +299,14 @@ export async function StringMap_push$(self_, key_, value_, $task) {
 const _1 = ff_core_StringMap.StringMap_get(self_, key_);
 {
 if(_1.None) {
-ff_core_StringMap.StringMap_set(self_, key_, ff_core_List.List_toStack([value_]))
+ff_core_StringMap.StringMap_set(self_, key_, ff_core_List.List_toArray([value_]))
 return
 }
 }
 {
 if(_1.Some) {
-const stack_ = _1.value_;
-ff_core_Stack.Stack_push(stack_, value_)
+const array_ = _1.value_;
+ff_core_Array.Array_push(array_, value_)
 return
 }
 }

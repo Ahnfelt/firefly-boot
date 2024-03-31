@@ -2,6 +2,8 @@
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -75,8 +77,6 @@ import * as ff_core_Set from "../../ff/core/Set.mjs"
 import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
-
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
@@ -211,8 +211,8 @@ return
 }
 }
 
-export function Option_toStack(self_) {
-return ff_core_List.List_toStack(ff_core_Option.Option_toList(self_))
+export function Option_toArray(self_) {
+return ff_core_List.List_toArray(ff_core_Option.Option_toList(self_))
 }
 
 export function Option_toStream(self_, cycle_ = false) {
@@ -468,8 +468,8 @@ return
 }
 }
 
-export async function Option_toStack$(self_, $task) {
-return ff_core_List.List_toStack(ff_core_Option.Option_toList(self_))
+export async function Option_toArray$(self_, $task) {
+return ff_core_List.List_toArray(ff_core_Option.Option_toList(self_))
 }
 
 export async function Option_toStream$(self_, cycle_ = false, $task) {

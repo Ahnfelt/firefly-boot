@@ -2,6 +2,8 @@
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -75,8 +77,6 @@ import * as ff_core_Set from "../../ff/core/Set.mjs"
 import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
-
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
@@ -661,16 +661,16 @@ result_ = body_(result_, _w1)
 return result_
 }
 
-export function Stream_toStack(self_) {
-const stack_ = ff_core_Stack.make_();
+export function Stream_toArray(self_) {
+const array_ = ff_core_Array.make_();
 ff_core_Stream.Stream_each(self_, ((_w1) => {
-ff_core_Stack.Stack_push(stack_, _w1)
+ff_core_Array.Array_push(array_, _w1)
 }));
-return stack_
+return array_
 }
 
 export function Stream_toList(self_) {
-return ff_core_Stack.Stack_drain(ff_core_Stream.Stream_toStack(self_))
+return ff_core_Array.Array_drain(ff_core_Stream.Stream_toArray(self_))
 }
 
 export async function Stream_addAll$(self_, that_, $task) {
@@ -1183,16 +1183,16 @@ result_ = (await body_(result_, _w1, $task))
 return result_
 }
 
-export async function Stream_toStack$(self_, $task) {
-const stack_ = ff_core_Stack.make_();
+export async function Stream_toArray$(self_, $task) {
+const array_ = ff_core_Array.make_();
 (await ff_core_Stream.Stream_each$(self_, (async (_w1, $task) => {
-ff_core_Stack.Stack_push(stack_, _w1)
+ff_core_Array.Array_push(array_, _w1)
 }), $task));
-return stack_
+return array_
 }
 
 export async function Stream_toList$(self_, $task) {
-return ff_core_Stack.Stack_drain((await ff_core_Stream.Stream_toStack$(self_, $task)))
+return ff_core_Array.Array_drain((await ff_core_Stream.Stream_toArray$(self_, $task)))
 }
 
 export function Stream_flatten(self_) {
@@ -1224,11 +1224,11 @@ return ff_core_List.List_toMap((await ff_core_Stream.Stream_toList$(self_, $task
 }
 
 export function Stream_toBuffer(self_) {
-const builder_ = ff_core_Stack.make_();
+const builder_ = ff_core_Array.make_();
 ff_core_Stream.Stream_each(self_, ((_w1) => {
-ff_core_Stack.Stack_push(builder_, _w1)
+ff_core_Array.Array_push(builder_, _w1)
 }));
-return ff_core_Buffer.fromBufferArray_(ff_core_Stack.Stack_drain(builder_))
+return ff_core_Buffer.fromBufferArray_(ff_core_Array.Array_drain(builder_))
 }
 
 export function Stream_toString(self_, encoding_ = "utf8") {
@@ -1239,31 +1239,31 @@ export function Stream_readBytes(self_, bytes_) {
 if((bytes_ <= 0)) {
 return ff_core_Pair.Pair([], self_)
 } else {
-const buffers_ = ff_core_Stack.make_();
+const buffers_ = ff_core_Array.make_();
 let buffer_ = ff_core_Option.Option_grab(self_.next_());
 let taken_ = 0;
 let remainder_ = ff_core_Option.None();
 while(ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Buffer.ff_core_Equal_Equal$ff_core_Buffer_Buffer).equals_(remainder_, ff_core_Option.None())) {
 const needed_ = (bytes_ - taken_);
 if((needed_ > ff_core_Buffer.Buffer_size(buffer_))) {
-ff_core_Stack.Stack_push(buffers_, buffer_);
+ff_core_Array.Array_push(buffers_, buffer_);
 taken_ += ff_core_Buffer.Buffer_size(buffer_);
 buffer_ = ff_core_Option.Option_grab(self_.next_())
 } else {
-ff_core_Stack.Stack_push(buffers_, ff_core_Buffer.Buffer_view(buffer_, 0, needed_));
+ff_core_Array.Array_push(buffers_, ff_core_Buffer.Buffer_view(buffer_, 0, needed_));
 remainder_ = ff_core_Option.Some(ff_core_Buffer.Buffer_view(buffer_, needed_, ff_core_Buffer.Buffer_size(buffer_)))
 }
 };
-return ff_core_Pair.Pair(ff_core_Stack.Stack_drain(buffers_), ff_core_Stream.Stream_addAll(ff_core_Option.Option_toStream(remainder_, false), self_))
+return ff_core_Pair.Pair(ff_core_Array.Array_drain(buffers_), ff_core_Stream.Stream_addAll(ff_core_Option.Option_toStream(remainder_, false), self_))
 }
 }
 
 export async function Stream_toBuffer$(self_, $task) {
-const builder_ = ff_core_Stack.make_();
+const builder_ = ff_core_Array.make_();
 (await ff_core_Stream.Stream_each$(self_, (async (_w1, $task) => {
-ff_core_Stack.Stack_push(builder_, _w1)
+ff_core_Array.Array_push(builder_, _w1)
 }), $task));
-return ff_core_Buffer.fromBufferArray_(ff_core_Stack.Stack_drain(builder_))
+return ff_core_Buffer.fromBufferArray_(ff_core_Array.Array_drain(builder_))
 }
 
 export async function Stream_toString$(self_, encoding_ = "utf8", $task) {
@@ -1274,22 +1274,22 @@ export async function Stream_readBytes$(self_, bytes_, $task) {
 if((bytes_ <= 0)) {
 return ff_core_Pair.Pair([], self_)
 } else {
-const buffers_ = ff_core_Stack.make_();
+const buffers_ = ff_core_Array.make_();
 let buffer_ = ff_core_Option.Option_grab((await self_.next_($task)));
 let taken_ = 0;
 let remainder_ = ff_core_Option.None();
 while(ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Buffer.ff_core_Equal_Equal$ff_core_Buffer_Buffer).equals_(remainder_, ff_core_Option.None())) {
 const needed_ = (bytes_ - taken_);
 if((needed_ > ff_core_Buffer.Buffer_size(buffer_))) {
-ff_core_Stack.Stack_push(buffers_, buffer_);
+ff_core_Array.Array_push(buffers_, buffer_);
 taken_ += ff_core_Buffer.Buffer_size(buffer_);
 buffer_ = ff_core_Option.Option_grab((await self_.next_($task)))
 } else {
-ff_core_Stack.Stack_push(buffers_, ff_core_Buffer.Buffer_view(buffer_, 0, needed_));
+ff_core_Array.Array_push(buffers_, ff_core_Buffer.Buffer_view(buffer_, 0, needed_));
 remainder_ = ff_core_Option.Some(ff_core_Buffer.Buffer_view(buffer_, needed_, ff_core_Buffer.Buffer_size(buffer_)))
 }
 };
-return ff_core_Pair.Pair(ff_core_Stack.Stack_drain(buffers_), (await ff_core_Stream.Stream_addAll$((await ff_core_Option.Option_toStream$(remainder_, false, $task)), self_, $task)))
+return ff_core_Pair.Pair(ff_core_Array.Array_drain(buffers_), (await ff_core_Stream.Stream_addAll$((await ff_core_Option.Option_toStream$(remainder_, false, $task)), self_, $task)))
 }
 }
 

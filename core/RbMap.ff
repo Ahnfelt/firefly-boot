@@ -140,24 +140,24 @@ extend self[K: Order, V]: RB[K, V] {
     }
 
     toStream(cycle: Bool): Stream[Pair[K, V]] {
-        mutable stack = [self]
+        mutable array = [self]
         function next(): Option[Pair[K, V]] {
-            stack.{
+            array.{
                 | [] =>
                     if(cycle && self.{| E => False | _ => True}) {
-                        stack = [self]
+                        array = [self]
                         tailcall next()
                     } else {
                         None
                     }
                 | [E, ...tail] =>
-                    stack = tail
+                    array = tail
                     tailcall next()
                 | [T(_, E, k, v, E), ...tail] =>
-                    stack = tail
+                    array = tail
                     Some(Pair(k, v))
                 | [T(_, l, k, v, r), ...tail] =>
-                    stack = [l, T(B, E, k, v, E), r, ...tail]
+                    array = [l, T(B, E, k, v, E), r, ...tail]
                     tailcall next()
             }
         }

@@ -10,6 +10,8 @@ import * as ff_compiler_Unification from "../../ff/compiler/Unification.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -84,8 +86,6 @@ import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
 
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
-
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
@@ -99,8 +99,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type LspHook
-export function LspHook(at_, definedAt_, insertIdentifier_, trackSymbols_, stackOfResults_) {
-return {at_, definedAt_, insertIdentifier_, trackSymbols_, stackOfResults_};
+export function LspHook(at_, definedAt_, insertIdentifier_, trackSymbols_, arrayOfResults_) {
+return {at_, definedAt_, insertIdentifier_, trackSymbols_, arrayOfResults_};
 }
 
 // type SymbolHook
@@ -178,7 +178,7 @@ return ff_compiler_LspHook.LspHook(ff_core_Option.Option_else(at_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
 })), ff_core_Option.Option_else(definedAt_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
-})), insertIdentifier_, trackSymbols_, ff_core_List.List_toStack([]))
+})), insertIdentifier_, trackSymbols_, ff_core_List.List_toArray([]))
 }
 
 export function strictlyBetween_(afterAt_, beforeAt_, at_, extraColumns_) {
@@ -366,7 +366,7 @@ return ff_compiler_LspHook.LspHook(ff_core_Option.Option_else(at_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
 })), ff_core_Option.Option_else(definedAt_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
-})), insertIdentifier_, trackSymbols_, ff_core_List.List_toStack([]))
+})), insertIdentifier_, trackSymbols_, ff_core_List.List_toArray([]))
 }
 
 export async function strictlyBetween_$(afterAt_, beforeAt_, at_, extraColumns_, $task) {
@@ -558,11 +558,11 @@ return (((self_.definedAt_.line_ === at_.line_) && (self_.definedAt_.column_ ===
 }
 
 export function LspHook_emit(self_, result_) {
-ff_core_Stack.Stack_push(self_.stackOfResults_, result_)
+ff_core_Array.Array_push(self_.arrayOfResults_, result_)
 }
 
 export function LspHook_results(self_) {
-return ff_core_Stack.Stack_toList(self_.stackOfResults_, 0, 9007199254740991)
+return ff_core_Array.Array_toList(self_.arrayOfResults_, 0, 9007199254740991)
 }
 
 export async function LspHook_isEnabled$(self_, $task) {
@@ -578,11 +578,11 @@ return (((self_.definedAt_.line_ === at_.line_) && (self_.definedAt_.column_ ===
 }
 
 export async function LspHook_emit$(self_, result_, $task) {
-ff_core_Stack.Stack_push(self_.stackOfResults_, result_)
+ff_core_Array.Array_push(self_.arrayOfResults_, result_)
 }
 
 export async function LspHook_results$(self_, $task) {
-return ff_core_Stack.Stack_toList(self_.stackOfResults_, 0, 9007199254740991)
+return ff_core_Array.Array_toList(self_.arrayOfResults_, 0, 9007199254740991)
 }
 
 export const ff_core_Any_HasAnyTag$ff_compiler_LspHook_SymbolHook = {

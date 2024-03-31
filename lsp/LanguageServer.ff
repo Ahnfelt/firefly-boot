@@ -111,7 +111,7 @@ parseRequest(system: NodeSystem, input: Stream[Buffer]): Pair[Request, Stream[Bu
 }
 
 parseRequestHeaders(input: Stream[Buffer]): Pair[Map[String, String], Stream[Buffer]] {
-    let buffers = Stack.make()
+    let buffers = Array.make()
     mutable buffer = input.next().else {
         throw(BadRequestException("End of input while parsing request headers"))
     }

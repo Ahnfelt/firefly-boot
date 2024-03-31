@@ -100,31 +100,31 @@ extend self: Random {
             }
         """
 
-    shuffleStack[T](stack: Stack[T]): Unit {
-        0.until(stack.size() - 1).each {i =>
-            let j = self.nextInt(0, stack.size() - i) + i
-            let value = stack.grab(i)
-            stack.set(i, stack.grab(j))
-            stack.set(j, value)
+    shuffleArray[T](array: Array[T]): Unit {
+        0.until(array.size() - 1).each {i =>
+            let j = self.nextInt(0, array.size() - i) + i
+            let value = array.grab(i)
+            array.set(i, array.grab(j))
+            array.set(j, value)
         }
     }
     
     shuffleList[T](list: List[T]): List[T] {
-        let stack = list.toStack()
-        self.shuffleStack(list.toStack())
-        stack.drain()
+        let array = list.toArray()
+        self.shuffleArray(list.toArray())
+        array.drain()
     }
 
-    sampleStack[T](count: Int, stack: Stack[T], body: T => Unit): Unit {
-        self.shuffleList(stack.toList()).takeFirst(count).each {body(_)}
+    sampleArray[T](count: Int, array: Array[T], body: T => Unit): Unit {
+        self.shuffleList(array.toList()).takeFirst(count).each {body(_)}
     }
 
     sampleList[T](count: Int, list: List[T]): List[T] {
         self.shuffleList(list).takeFirst(count)
     }
 
-    grabStack[T](stack: Stack[T]): T {
-        stack.grab(self.nextInt(0, stack.size()))
+    grabArray[T](array: Array[T]): T {
+        array.grab(self.nextInt(0, array.size()))
     }
 
     grabList[T](list: List[T]): T {

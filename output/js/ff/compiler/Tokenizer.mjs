@@ -10,6 +10,8 @@ import * as ff_compiler_Token from "../../ff/compiler/Token.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -84,8 +86,6 @@ import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
 
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
-
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
@@ -117,7 +117,7 @@ return _w1.column_
 })), (() => {
 return (-1)
 }));
-const tokens_ = ff_core_Stack.make_();
+const tokens_ = ff_core_Array.make_();
 let line_ = 1;
 let lineOffset_ = 0;
 let startLine_ = line_;
@@ -128,13 +128,13 @@ ff_core_List.List_map(ff_core_List.range_(ff_core_String.String_size(operatorCha
 operatorCharacters_ = ff_core_Set.Set_add(operatorCharacters_, ff_core_String.String_grab(operatorCharactersString_, j_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)
 }));
 function emitToken_(kind_, startOffset_, stopOffset_) {
-if((!ff_core_Stack.Stack_isEmpty(tokens_))) {
-const last_ = ff_core_Stack.Stack_grabLast(tokens_);
+if((!ff_core_Array.Array_isEmpty(tokens_))) {
+const last_ = ff_core_Array.Array_grabLast(tokens_);
 if((((last_.stopLine_ === startLine_) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(last_.kind_, ff_compiler_Token.LLower())) && ff_compiler_Token.TokenKind_afterKeyword(kind_))) {
 if((((completionLine_ === last_.startLine_) && (completionColumn_ >= ((1 + last_.startOffset_) - last_.startLineOffset_))) && (completionColumn_ <= ((1 + last_.stopOffset_) - last_.stopLineOffset_)))) {
-ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
+ff_core_Array.Array_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
 } else {
-ff_core_Stack.Stack_modify(tokens_, (ff_core_Stack.Stack_size(tokens_) - 1), ((_w1) => {
+ff_core_Array.Array_modify(tokens_, (ff_core_Array.Array_size(tokens_) - 1), ((_w1) => {
 {
 const _1 = _w1;
 {
@@ -147,10 +147,10 @@ return
 }
 };
 if((((last_.stopLine_ !== startLine_) && ff_compiler_Token.TokenKind_beforeSeparator(last_.kind_)) && ff_compiler_Token.TokenKind_afterSeparator(kind_))) {
-ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
+ff_core_Array.Array_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
 }
 };
-ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, line_, lineOffset_, stopOffset_))
+ff_core_Array.Array_push(tokens_, ff_compiler_Token.Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, line_, lineOffset_, stopOffset_))
 }
 let i_ = 0;
 function throwError_(message_) {
@@ -342,7 +342,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 ff_core_List.List_each(ff_core_List.range_(5), ((_) => {
 emitToken_(ff_compiler_Token.LEnd(), i_, i_)
 }));
-return ff_core_Stack.Stack_drain(tokens_)
+return ff_core_Array.Array_drain(tokens_)
 }
 
 export async function tokenize_$(file_, code_, completionAt_, attemptFixes_, $task) {
@@ -360,7 +360,7 @@ return _w1.column_
 })), (() => {
 return (-1)
 }));
-const tokens_ = ff_core_Stack.make_();
+const tokens_ = ff_core_Array.make_();
 let line_ = 1;
 let lineOffset_ = 0;
 let startLine_ = line_;
@@ -371,13 +371,13 @@ ff_core_List.List_map(ff_core_List.range_(ff_core_String.String_size(operatorCha
 operatorCharacters_ = ff_core_Set.Set_add(operatorCharacters_, ff_core_String.String_grab(operatorCharactersString_, j_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)
 }));
 function emitToken_(kind_, startOffset_, stopOffset_) {
-if((!ff_core_Stack.Stack_isEmpty(tokens_))) {
-const last_ = ff_core_Stack.Stack_grabLast(tokens_);
+if((!ff_core_Array.Array_isEmpty(tokens_))) {
+const last_ = ff_core_Array.Array_grabLast(tokens_);
 if((((last_.stopLine_ === startLine_) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(last_.kind_, ff_compiler_Token.LLower())) && ff_compiler_Token.TokenKind_afterKeyword(kind_))) {
 if((((completionLine_ === last_.startLine_) && (completionColumn_ >= ((1 + last_.startOffset_) - last_.startLineOffset_))) && (completionColumn_ <= ((1 + last_.stopOffset_) - last_.stopLineOffset_)))) {
-ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
+ff_core_Array.Array_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
 } else {
-ff_core_Stack.Stack_modify(tokens_, (ff_core_Stack.Stack_size(tokens_) - 1), ((_w1) => {
+ff_core_Array.Array_modify(tokens_, (ff_core_Array.Array_size(tokens_) - 1), ((_w1) => {
 {
 const _1 = _w1;
 {
@@ -390,10 +390,10 @@ return
 }
 };
 if((((last_.stopLine_ !== startLine_) && ff_compiler_Token.TokenKind_beforeSeparator(last_.kind_)) && ff_compiler_Token.TokenKind_afterSeparator(kind_))) {
-ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
+ff_core_Array.Array_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
 }
 };
-ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, line_, lineOffset_, stopOffset_))
+ff_core_Array.Array_push(tokens_, ff_compiler_Token.Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, line_, lineOffset_, stopOffset_))
 }
 let i_ = 0;
 function throwError_(message_) {
@@ -585,7 +585,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 ff_core_List.List_each(ff_core_List.range_(5), ((_) => {
 emitToken_(ff_compiler_Token.LEnd(), i_, i_)
 }));
-return ff_core_Stack.Stack_drain(tokens_)
+return ff_core_Array.Array_drain(tokens_)
 }
 
 

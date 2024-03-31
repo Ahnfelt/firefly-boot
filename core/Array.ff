@@ -1,0 +1,250 @@
+class Array[T] {}
+
+make[T](): Array[T]
+    target js sync "return {array: []}"
+
+fill[T](size: Int, value: T): List[T]
+    target js sync """
+        return {array: new Array(size_).fill(value_)};
+    """
+
+fillBy[T](size: Int, body: Int => T): List[T]
+    target js sync """
+        return {array: Array.from({length: size_}, (_, i) => body_(i))};
+    """
+
+range(size: Int): List[Int]
+    target js sync """
+        return {array: Array.from({length: size_}, (_, i) => i)};
+    """
+
+extend self[T]: Array[T] {
+
+    isEmpty(): Bool
+        target js sync "return self_.array.length === 0"
+
+    size(): Int
+        target js sync "return self_.array.length"
+
+    get(index: Int): Option[T]
+        target js sync """
+            return index_ >= 0 && index_ < self_.array.length
+                ? ff_core_Option.Some(self_.array[index_])
+                : ff_core_Option.None()
+        """
+
+    grab(index: Int): T
+        target js sync """
+            if(index_ < 0 || index_ >= self_.array.length) {
+                ff_core_Try.internalThrowGrabException_()
+            }
+            return self_.array[index_]
+        """
+
+    grabFirst(): T {self.grab(0)}
+
+    grabLast(): T {self.grab(self.size() - 1)}
+
+    first(): Option[T]
+        target js sync """
+            return self_.array.length > 0
+                ? ff_core_Option.Some(self_.array[0])
+                : ff_core_Option.None()
+        """
+
+    last(): Option[T]
+        target js sync """
+            return self_.array.length > 0
+                ? ff_core_Option.Some(self_.array[self_.array.length - 1])
+                : ff_core_Option.None()
+        """
+
+    push(value: T): Unit
+        target js sync "self_.array.push(value_)"
+
+    pushArray(value: Array[T]): Unit
+        target js sync "self_.array.push(...value_.array)"
+
+    pushList(value: List[T]): Unit
+        target js sync "self_.array.push(...value_)"
+
+    pop(): Option[T]
+        target js sync """
+            return self_.array.length > 0
+                ? ff_core_Option.Some(self_.array.pop())
+                : ff_core_Option.None()
+        """
+
+    set(index: Int, value: T): Unit
+        target js sync """
+            if(index_ < 0 || index_ > self_.array.length) {
+                ff_core_Try.internalThrowGrabException_()
+            }
+            self_.array[index_] = value_
+        """
+
+    modify(index: Int, body: T => T): Unit
+        target js sync """
+            if(index_ < 0 || index_ >= self_.array.length) {
+                ff_core_Try.internalThrowGrabException_()
+            }
+            self_.array[index_] = body_(self_.array[index_])
+        """
+        target js async """
+            if(index_ < 0 || index_ >= self_.array.length) {
+                ff_core_Try.internalThrowGrabException_()
+            }
+            self_.array[index_] = await body_(self_.array[index_], $task)
+        """
+
+    fill(value: T, start: Int = 0, end: Int = 9007199254740991): Unit
+        target js sync """
+            self_.array.fill(value_, start_, end_);
+        """
+
+    copy(target: Int, start: Int, end: Int): Unit
+        target js sync """
+            self_.array.copyWithin(target_, start_, end_);
+        """
+
+    delete(start: Int, deleteCount: Int): Unit
+        target js sync """
+            self_.array.splice(start_, deleteCount_);
+        """
+
+    insert(start: Int, value: T, deleteCount: Int = 0): Unit
+        target js sync """
+            self_.array.splice(start_, deleteCount_, value_);
+        """
+
+    insertArray(start: Int, value: Array[T], deleteCount: Int = 0): Unit
+        target js sync """
+            self_.array.splice(start_, deleteCount_, ...value_.array);
+        """
+
+    insertList(start: Int, value: List[T], deleteCount: Int = 0): Unit
+        target js sync """
+            self_.array.splice(start_, deleteCount_, ...value_);
+        """
+
+    each(body: T => Unit): Unit
+        target js sync """
+            return self_.array.forEach(body_);
+        """
+        target js async """
+            for(let i = 0; i < self_.array.length; i++) {
+                await body_(self_.array[i], $task)
+            }
+        """
+
+    eachWhile(body: T => Bool): Unit
+        target js sync "for(const value of self_.array) if(!body_(value)) break"
+        target js async "for(const value of self_.array) if(!await body_(value, $task)) break"
+
+    all(body: T => Bool): Bool {
+        mutable result = True
+        self.eachWhile {x =>
+            result = body(x)
+            result
+        }
+        result
+    }
+
+    any(body: T => Bool): Bool {
+        mutable result = False
+        self.eachWhile {x =>
+            result = body(x)
+            (!result)
+        }
+        result
+    }
+
+    indexWhere(body: T => Bool): Option[Int] {
+        mutable i = -1
+        mutable result = False
+        self.eachWhile {x =>
+            i += 1
+            result = body(x)
+            (!result)
+        }
+        if(result) {i}
+    }
+
+    drain(): List[T]
+        target js sync "const result = self_.array; self_.array = []; return result"
+
+    toList(start: Int = 0, end: Int = 9007199254740991): List[T]
+        target js sync """return self_.array.slice(start_, end_)"""
+
+    toStream(start: Int = 0, end: Int = 9007199254740991): Stream[T] {
+        self.toList(start, end).toStream()
+    }
+
+    reverse(): Unit
+        target js sync "self_.array.reverse()"
+
+    sortBy[S: Order](body: T => S): Unit {
+        self.sortWith {Ordering.compare(body(_), body(_))}
+    }
+
+    sortWith(ordering: (T, T) => Ordering): Unit {
+        sortRange(self, ordering, 0, self.size())
+    }
+        target js sync "self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))"
+
+}
+
+extend self[T: Order]: Array[T] {
+
+    sort(): Unit {
+        self.sortWith(Ordering.compare)
+    }
+
+}
+
+extend self: Array[String] {
+
+    join(separator: String = ""): String
+        target js sync "return self_.array.join(separator_)"
+
+}
+
+instance Array[T: Show]: Show {
+    show(value: Array[T]): String {
+        let array = Array.make()
+        array.push("[")
+        value.each {x =>
+            if(array.size() > 1) {array.push(", ")}
+            array.push(Show.show(x))
+        }
+        array.push("].toArray()")
+        array.join()
+    }
+}
+
+sortRange[T](array: Array[T], compare: (T, T) => Ordering, start: Int, end: Int): Unit {
+    if(end - start < 2) {} else:
+
+    mutable middle = start + ((end - start) / 2)
+    sortRange(array, compare, start, middle)
+    sortRange(array, compare, middle, end)
+
+    mutable i = start
+    mutable j = middle
+    while {i < middle && j < end} {
+        if(compare(array.grab(i), array.grab(j)) != OrderingAfter) {
+            i += 1
+        } else {
+            let value = array.grab(j)
+            mutable k = j
+            while {k > i} {
+                array.set(k, array.grab(k - 1))
+                k -= 1
+            }
+            array.set(i, value)
+            i += 1
+            middle += 1
+            j += 1
+        }
+    }
+}

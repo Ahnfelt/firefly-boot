@@ -228,15 +228,15 @@ extend self: Json {
     }
 
     map[T](body: (String, Json) => T): List[T] {
-        let stack = Stack.make()
-        self.each {field, value => stack.push(body(field, value))}
-        stack.drain()
+        let array = Array.make()
+        self.each {field, value => array.push(body(field, value))}
+        array.drain()
     }
 
     flatMap[T](body: (String, Json) => List[T]): List[T] {
-        let stack = Stack.make()
-        self.each {field, value => stack.pushList(body(field, value))}
-        stack.drain()
+        let array = Array.make()
+        self.each {field, value => array.pushList(body(field, value))}
+        array.drain()
     }
     
     each(body: (String, Json) => Unit) {
@@ -302,15 +302,15 @@ instance List[T: JsonLike]: JsonLike {
     fromJson(json: Json): Option[List[T]] {
         json.getArray().flatMap {array => 
             mutable convertible = True
-            let stack = Stack.make()
+            let result = Array.make()
             array.eachWhile {item =>
                 fromJson(item).{
                     | None => convertible = False
-                    | Some(value) => stack.push(value)
+                    | Some(value) => result.push(value)
                 }
                 convertible
             }
-            if(convertible) {stack.drain()}
+            if(convertible) {result.drain()}
         }
     }
 }

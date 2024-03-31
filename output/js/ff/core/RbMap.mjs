@@ -4,6 +4,8 @@ import * as ff_core_RbMap from "../../ff/core/RbMap.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
@@ -77,8 +79,6 @@ import * as ff_core_Set from "../../ff/core/Set.mjs"
 import * as ff_core_Show from "../../ff/core/Show.mjs"
 
 import * as ff_core_SourceLocation from "../../ff/core/SourceLocation.mjs"
-
-import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
@@ -1504,11 +1504,11 @@ return ff_core_List.List_reverse(result_)
 }
 
 export function RB_toStream(self_, cycle_, ff_core_Ordering_Order$K) {
-let stack_ = [self_];
+let array_ = [self_];
 function next_() {
 _tailcall: for(;;) {
 {
-const _1 = stack_;
+const _1 = array_;
 {
 if(_1.length === 0) {
 if((cycle_ && (((_1) => {
@@ -1523,7 +1523,7 @@ return true
 return
 }
 }))(self_))) {
-stack_ = [self_];
+array_ = [self_];
 {
 
 
@@ -1539,7 +1539,7 @@ return
 if(_1.length !== 0) {
 if(_1[0].E) {
 const tail_ = _1.slice(1);
-stack_ = tail_;
+array_ = tail_;
 {
 
 
@@ -1557,7 +1557,7 @@ const k_ = _1[0].key_;
 const v_ = _1[0].value_;
 if(_1[0].right_.E) {
 const tail_ = _1.slice(1);
-stack_ = tail_;
+array_ = tail_;
 return ff_core_Option.Some(ff_core_Pair.Pair(k_, v_))
 return
 }
@@ -1573,7 +1573,7 @@ const k_ = _1[0].key_;
 const v_ = _1[0].value_;
 const r_ = _1[0].right_;
 const tail_ = _1.slice(1);
-stack_ = [l_, ff_core_RbMap.T(ff_core_RbMap.B(), ff_core_RbMap.E(), k_, v_, ff_core_RbMap.E()), r_, ...tail_];
+array_ = [l_, ff_core_RbMap.T(ff_core_RbMap.B(), ff_core_RbMap.E(), k_, v_, ff_core_RbMap.E()), r_, ...tail_];
 {
 
 
@@ -1756,11 +1756,11 @@ return ff_core_List.List_reverse(result_)
 }
 
 export async function RB_toStream$(self_, cycle_, ff_core_Ordering_Order$K, $task) {
-let stack_ = [self_];
+let array_ = [self_];
 function next_() {
 _tailcall: for(;;) {
 {
-const _1 = stack_;
+const _1 = array_;
 {
 if(_1.length === 0) {
 if((cycle_ && (((_1) => {
@@ -1775,7 +1775,7 @@ return true
 return
 }
 }))(self_))) {
-stack_ = [self_];
+array_ = [self_];
 {
 
 
@@ -1791,7 +1791,7 @@ return
 if(_1.length !== 0) {
 if(_1[0].E) {
 const tail_ = _1.slice(1);
-stack_ = tail_;
+array_ = tail_;
 {
 
 
@@ -1809,7 +1809,7 @@ const k_ = _1[0].key_;
 const v_ = _1[0].value_;
 if(_1[0].right_.E) {
 const tail_ = _1.slice(1);
-stack_ = tail_;
+array_ = tail_;
 return ff_core_Option.Some(ff_core_Pair.Pair(k_, v_))
 return
 }
@@ -1825,7 +1825,7 @@ const k_ = _1[0].key_;
 const v_ = _1[0].value_;
 const r_ = _1[0].right_;
 const tail_ = _1.slice(1);
-stack_ = [l_, ff_core_RbMap.T(ff_core_RbMap.B(), ff_core_RbMap.E(), k_, v_, ff_core_RbMap.E()), r_, ...tail_];
+array_ = [l_, ff_core_RbMap.T(ff_core_RbMap.B(), ff_core_RbMap.E(), k_, v_, ff_core_RbMap.E()), r_, ...tail_];
 {
 
 
