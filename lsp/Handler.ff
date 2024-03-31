@@ -17,8 +17,14 @@ capability Handler(
     mutable rootPath: Option[Path]
     mutable virtualFiles: Map[String, String]
     mutable cancelledRequests: Set[MessageId]
-    mutable responseCache: Map[Pair[String, Location], ResultOrError]
+    mutable responseCache: Map[TokenRequestCacheKey, ResultOrError]
     mutable fileSymbolsCache: Map[String, List[DocumentSymbol]]
+)
+
+data TokenRequestCacheKey(
+    method: String
+    targetAt: Location
+    includeDeclaration: Bool
 )
 
 data MessageId {
@@ -77,21 +83,21 @@ extend self: Handler {
             | "textDocument/completion" => self.handleCompletion(system, parameters)
             | "textDocument/signatureHelp" => self.handleSignatureHelp(system, parameters)
             | "textDocument/hover" => 
-                self.handleTokenRequestWithCache(system, method, parameters) {targetAt => 
-                    self.handleHover(system, targetAt, goToDefinition = False)
+                self.handleTokenRequestWithCache(system, method, parameters) {key => 
+                    self.handleHover(system, key.targetAt, goToDefinition = False)
                 }
             | "textDocument/definition" => 
-                self.handleTokenRequestWithCache(system, method, parameters) {targetAt => 
-                    self.handleHover(system, targetAt, goToDefinition = True)
+                self.handleTokenRequestWithCache(system, method, parameters) {key => 
+                    self.handleHover(system, key.targetAt, goToDefinition = True)
                 }
             | "textDocument/references" => 
-                self.handleTokenRequestWithCache(system, method, parameters) {targetAt => 
-                    self.handleReferences(system, targetAt, local = False)
+                self.handleTokenRequestWithCache(system, method, parameters) {key => 
+                    self.handleReferences(system, key.targetAt, key.includeDeclaration, local = False)
                 }
             | "textDocument/rename" => self.handleRename(system, parameters)
             | "textDocument/documentHighlight" => 
-                self.handleTokenRequestWithCache(system, method, parameters) {targetAt => 
-                    self.handleReferences(system, targetAt, local = True)
+                self.handleTokenRequestWithCache(system, method, parameters) {key => 
+                    self.handleReferences(system, key.targetAt, includeDeclaration = True, local = True)
                 }
             | "workspace/symbol" => 
                 self.printTime(system.mainTask(), "handleWorkspaceSymbol") {
@@ -106,17 +112,21 @@ extend self: Handler {
         system: NodeSystem
         method: String
         parameters: Map[String, Json]
-        handle: Location => ResultOrError
+        handle: TokenRequestCacheKey => ResultOrError
     ): ResultOrError {
         let targetAt = self.findTokenFromParameters(system, parameters)
-        let cacheKey = Pair(method, targetAt)
-            self.responseCache.get(cacheKey).{
-                | Some(hit) => hit
-                | None => 
-                    let result = handle(targetAt)
-                    self.responseCache = self.responseCache.add(cacheKey, result)
-                    result
-            }
+        let includeDeclaration = parameters.get("context").{
+            | Some(context) {context.field("includeDeclaration") | includeDeclaration} {includeDeclaration.getBool() | Some(b)} => b
+            | _ => True
+        }        
+        let cacheKey = TokenRequestCacheKey(method, targetAt, includeDeclaration)
+        self.responseCache.get(cacheKey).{
+            | Some(hit) => hit
+            | None => 
+                let result = handle(cacheKey)
+                self.responseCache = self.responseCache.add(cacheKey, result)
+                result
+        }
     }
 
     handleUnsupported(): ResultOrError {
@@ -322,7 +332,7 @@ extend self: Handler {
             line = token.startLine
             column = token.startColumn
         )
-        Log.show(token.followedByLeftBracket)
+        //Log.show(token.followedByLeftBracket)
         let lspHook = LspHook.make(at = Some(completionAt), definedAt = None, insertIdentifier = True, trackSymbols = False)
         try {
             Builder.check(system, self.fireflyPath, system.path(completionAt.file), self.virtualFiles, lspHook, True)
@@ -373,8 +383,8 @@ extend self: Handler {
         Result((o.else {Json.null()}).write())
     }
 
-    handleReferences(system: NodeSystem, targetAt: Location, local: Bool): ResultOrError {
-        let tokens = self.findReferences(system, targetAt, local)
+    handleReferences(system: NodeSystem, targetAt: Location, includeDeclaration: Bool, local: Bool): ResultOrError {
+        let tokens = self.findReferences(system, targetAt, local, includeDeclaration)
         let o = tokens.{
             | None => Json.null()
             | Some(tokens) =>
@@ -387,7 +397,7 @@ extend self: Handler {
     handleRename(system: NodeSystem, parameters: Map[String, Json]): ResultOrError {
         let newName = parameters.grab("newName").grabString()
         let targetAt = self.findTokenFromParameters(system, parameters)
-        let tokens = self.findReferences(system, targetAt, False)
+        let tokens = self.findReferences(system, targetAt, local = False, includeDeclaration = True)
         tokens.{
             | None => Error(-32602, "Token definition not found") // InvalidParams
             | Some([]) => Result(Json.null().write())
@@ -415,7 +425,7 @@ extend self: Handler {
         }
     }
 
-    findReferences(system: NodeSystem, targetAt: Location, local: Bool): Option[List[TokenLocation]] {
+    findReferences(system: NodeSystem, targetAt: Location, local: Bool, includeDeclaration: Bool): Option[List[TokenLocation]] {
         let temporaryLspHook = LspHook.make(at = Some(targetAt), definedAt = None, insertIdentifier = False, trackSymbols = False)
         try {
             Builder.check(system, self.fireflyPath, system.path(targetAt.file), self.virtualFiles, temporaryLspHook, True)
@@ -440,8 +450,6 @@ extend self: Handler {
             | _ => None
         }.filter {at => !at.file.endsWith(">")}
             
-        //Log.trace("definedAtList: " + Show.show(definedAtList))
-
         definedAtList.first().{
             | Some(definedAt) =>
                 //Log.trace("handleReferences definedAt: " + Show.show(definedAt))
@@ -465,11 +473,14 @@ extend self: Handler {
                         h.parameters.find {_.name == n}.map {_ => a.at}
                     | InferLookupHook h => Some(h.symbol.value.usageAt)
                     | _ => None
-                }.filter {at => !at.file.endsWith(">")}
+                }.filter {at => 
+                    !at.file.endsWith(">") &&
+                    (includeDeclaration || at != definedAt)
+                }
 
-                //Log.trace("referencesResult: " + Show.show(referencesResult))
-
-                let clientLocations = referencesResult.addAll([definedAt]).distinct().filter {
+                let clientLocations = referencesResult.addAll(
+                    if(includeDeclaration) {[definedAt]} else {[]}
+                ).distinct().filter {
                     !local || _.file == targetAt.file
                 }.map {at =>
                     self.findToken(system, at)
