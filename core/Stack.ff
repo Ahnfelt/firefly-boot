@@ -117,12 +117,12 @@ extend self[T]: Stack[T] {
             self_.array.splice(start_, deleteCount_, value_);
         """
 
-    insertAll(start: Int, value: Stack[T], deleteCount: Int = 0): Unit
+    insertStack(start: Int, value: Stack[T], deleteCount: Int = 0): Unit
         target js sync """
             self_.array.splice(start_, deleteCount_, ...value_.array);
         """
 
-    insertArray(start: Int, value: List[T], deleteCount: Int = 0): Unit
+    insertList(start: Int, value: List[T], deleteCount: Int = 0): Unit
         target js sync """
             self_.array.splice(start_, deleteCount_, ...value_);
         """
