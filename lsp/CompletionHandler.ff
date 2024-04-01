@@ -770,7 +770,7 @@ toplevelCompletion(lspHook: LspHook): List[CompletionInfo] {
                 "            request.writeHeader(\"Content-Type\", \"text/javascript; charset=UTF-8\")"
                 "            request.writeText(system.assets().readText(request.readPath()))"
                 "        } else {"
-                "            request.writeStatus(404, Some(\"Not found\"))"
+                "            request.writeStatus(\"404 Not found\")"
                 "        }"
                 "    }"
                 "}"
