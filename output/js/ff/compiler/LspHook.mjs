@@ -113,6 +113,42 @@ export function Box(value_) {
 return {value_};
 }
 
+// type DocumentSymbolKind
+export function SLet(mutable_) {
+return {SLet: true, mutable_};
+}
+export function SFunction(member_) {
+return {SFunction: true, member_};
+}
+const SExtend$ = {SExtend: true};
+export function SExtend() {
+return SExtend$;
+}
+const STraitFunction$ = {STraitFunction: true};
+export function STraitFunction() {
+return STraitFunction$;
+}
+const STrait$ = {STrait: true};
+export function STrait() {
+return STrait$;
+}
+const SInstance$ = {SInstance: true};
+export function SInstance() {
+return SInstance$;
+}
+const SVariant$ = {SVariant: true};
+export function SVariant() {
+return SVariant$;
+}
+const SType$ = {SType: true};
+export function SType() {
+return SType$;
+}
+const SParameter$ = {SParameter: true};
+export function SParameter() {
+return SParameter$;
+}
+
 // type ResultHook
 const ParseSymbolBegin$ = {ParseSymbolBegin: true};
 export function ParseSymbolBegin() {
@@ -594,6 +630,15 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/LspHook.SymbolHook" + "[") + "
 }
 };
 
+export const ff_core_Any_HasAnyTag$ff_compiler_LspHook_DocumentSymbolKind = {
+anyTag_() {
+return ff_core_Any.internalAnyTag_((("ff:compiler/LspHook.DocumentSymbolKind" + "[") + "]"))
+},
+async anyTag_$($task) {
+return ff_core_Any.internalAnyTag_((("ff:compiler/LspHook.DocumentSymbolKind" + "[") + "]"))
+}
+};
+
 export const ff_core_Show_Show$ff_compiler_LspHook_SymbolHook = {
 show_(value_) {
 {
@@ -612,6 +657,145 @@ const value_a = value_;
 const z_ = value_a;
 return ((((((("SymbolHook" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.qualifiedName_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.usageAt_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.definedAt_)) + ")")
 return
+}
+}
+}
+};
+
+export const ff_core_Show_Show$ff_compiler_LspHook_DocumentSymbolKind = {
+show_(value_) {
+{
+const value_a = value_;
+{
+if(value_a.SLet) {
+const z_ = value_a;
+return ((("SLet" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.mutable_)) + ")")
+return
+}
+}
+{
+if(value_a.SFunction) {
+const z_ = value_a;
+return ((("SFunction" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.member_)) + ")")
+return
+}
+}
+{
+if(value_a.SExtend) {
+const z_ = value_a;
+return "SExtend"
+return
+}
+}
+{
+if(value_a.STraitFunction) {
+const z_ = value_a;
+return "STraitFunction"
+return
+}
+}
+{
+if(value_a.STrait) {
+const z_ = value_a;
+return "STrait"
+return
+}
+}
+{
+if(value_a.SInstance) {
+const z_ = value_a;
+return "SInstance"
+return
+}
+}
+{
+if(value_a.SVariant) {
+const z_ = value_a;
+return "SVariant"
+return
+}
+}
+{
+if(value_a.SType) {
+const z_ = value_a;
+return "SType"
+return
+}
+}
+{
+if(value_a.SParameter) {
+const z_ = value_a;
+return "SParameter"
+return
+}
+}
+}
+},
+async show_$(value_, $task) {
+{
+const value_a = value_;
+{
+if(value_a.SLet) {
+const z_ = value_a;
+return ((("SLet" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.mutable_)) + ")")
+return
+}
+}
+{
+if(value_a.SFunction) {
+const z_ = value_a;
+return ((("SFunction" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.member_)) + ")")
+return
+}
+}
+{
+if(value_a.SExtend) {
+const z_ = value_a;
+return "SExtend"
+return
+}
+}
+{
+if(value_a.STraitFunction) {
+const z_ = value_a;
+return "STraitFunction"
+return
+}
+}
+{
+if(value_a.STrait) {
+const z_ = value_a;
+return "STrait"
+return
+}
+}
+{
+if(value_a.SInstance) {
+const z_ = value_a;
+return "SInstance"
+return
+}
+}
+{
+if(value_a.SVariant) {
+const z_ = value_a;
+return "SVariant"
+return
+}
+}
+{
+if(value_a.SType) {
+const z_ = value_a;
+return "SType"
+return
+}
+}
+{
+if(value_a.SParameter) {
+const z_ = value_a;
+return "SParameter"
+return
+}
 }
 }
 }
@@ -648,6 +832,83 @@ return
 }
 {
 return ((x_.qualifiedName_ === y_.qualifiedName_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.usageAt_, y_.usageAt_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.definedAt_, y_.definedAt_)))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_LspHook_DocumentSymbolKind = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.SLet) {
+const x_ = x_a;
+if(y_a.SLet) {
+const y_ = y_a;
+return (x_.mutable_ === y_.mutable_)
+return
+}
+}
+}
+{
+if(x_a.SFunction) {
+const x_ = x_a;
+if(y_a.SFunction) {
+const y_ = y_a;
+return (x_.member_ === y_.member_)
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+},
+async equals_$(x_, y_, $task) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.SLet) {
+const x_ = x_a;
+if(y_a.SLet) {
+const y_ = y_a;
+return (x_.mutable_ === y_.mutable_)
+return
+}
+}
+}
+{
+if(x_a.SFunction) {
+const x_ = x_a;
+if(y_a.SFunction) {
+const y_ = y_a;
+return (x_.member_ === y_.member_)
+return
+}
+}
+}
+{
+return false
 return
 }
 }
@@ -721,6 +982,221 @@ return
 }
 };
 
+export const ff_core_Ordering_Order$ff_compiler_LspHook_DocumentSymbolKind = {
+compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
+if(x_a.SLet) {
+const x_ = x_a;
+if(y_a.SLet) {
+const y_ = y_a;
+const mutableOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.mutable_, y_.mutable_);
+if((mutableOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return mutableOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+return
+}
+}
+}
+{
+if(x_a.SFunction) {
+const x_ = x_a;
+if(y_a.SFunction) {
+const y_ = y_a;
+const memberOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.member_, y_.member_);
+if((memberOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return memberOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+return
+}
+}
+}
+{
+function number_(z_) {
+{
+const z_a = z_;
+{
+if(z_a.SLet) {
+return 0
+return
+}
+}
+{
+if(z_a.SFunction) {
+return 1
+return
+}
+}
+{
+if(z_a.SExtend) {
+return 2
+return
+}
+}
+{
+if(z_a.STraitFunction) {
+return 3
+return
+}
+}
+{
+if(z_a.STrait) {
+return 4
+return
+}
+}
+{
+if(z_a.SInstance) {
+return 5
+return
+}
+}
+{
+if(z_a.SVariant) {
+return 6
+return
+}
+}
+{
+if(z_a.SType) {
+return 7
+return
+}
+}
+{
+if(z_a.SParameter) {
+return 8
+return
+}
+}
+}
+}
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
+return
+}
+}
+},
+async compare_$(x_, y_, $task) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
+if(x_a.SLet) {
+const x_ = x_a;
+if(y_a.SLet) {
+const y_ = y_a;
+const mutableOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.mutable_, y_.mutable_);
+if((mutableOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return mutableOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+return
+}
+}
+}
+{
+if(x_a.SFunction) {
+const x_ = x_a;
+if(y_a.SFunction) {
+const y_ = y_a;
+const memberOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.member_, y_.member_);
+if((memberOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return memberOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+return
+}
+}
+}
+{
+function number_(z_) {
+{
+const z_a = z_;
+{
+if(z_a.SLet) {
+return 0
+return
+}
+}
+{
+if(z_a.SFunction) {
+return 1
+return
+}
+}
+{
+if(z_a.SExtend) {
+return 2
+return
+}
+}
+{
+if(z_a.STraitFunction) {
+return 3
+return
+}
+}
+{
+if(z_a.STrait) {
+return 4
+return
+}
+}
+{
+if(z_a.SInstance) {
+return 5
+return
+}
+}
+{
+if(z_a.SVariant) {
+return 6
+return
+}
+}
+{
+if(z_a.SType) {
+return 7
+return
+}
+}
+{
+if(z_a.SParameter) {
+return 8
+return
+}
+}
+}
+}
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
+return
+}
+}
+}
+};
+
 export const ff_core_Serializable_Serializable$ff_compiler_LspHook_SymbolHook = {
 serializeUsing_(serialization_, value_) {
 {
@@ -783,6 +1259,353 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_LspHook.SymbolHook(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_))
+return
+}
+}
+{
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
+return
+}
+}
+}
+};
+
+export const ff_core_Serializable_Serializable$ff_compiler_LspHook_DocumentSymbolKind = {
+serializeUsing_(serialization_, value_) {
+{
+const serialization_a = serialization_;
+const value_a = value_;
+{
+if(value_a.SLet) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
+serialization_.offset_ += 1;
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.mutable_)
+return
+}
+}
+{
+if(value_a.SFunction) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1);
+serialization_.offset_ += 1;
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.member_)
+return
+}
+}
+{
+if(value_a.SExtend) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2);
+serialization_.offset_ += 1
+return
+}
+}
+{
+if(value_a.STraitFunction) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 34), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 3);
+serialization_.offset_ += 1
+return
+}
+}
+{
+if(value_a.STrait) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 4);
+serialization_.offset_ += 1
+return
+}
+}
+{
+if(value_a.SInstance) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 5);
+serialization_.offset_ += 1
+return
+}
+}
+{
+if(value_a.SVariant) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 6);
+serialization_.offset_ += 1
+return
+}
+}
+{
+if(value_a.SType) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 7);
+serialization_.offset_ += 1
+return
+}
+}
+{
+if(value_a.SParameter) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 8);
+serialization_.offset_ += 1
+return
+}
+}
+}
+},
+deserializeUsing_(serialization_) {
+const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
+serialization_.offset_ += 1;
+{
+const _1 = variantIndex_;
+{
+if(_1 === 0) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
+return ff_compiler_LspHook.SLet(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
+return
+}
+}
+{
+if(_1 === 1) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
+return ff_compiler_LspHook.SFunction(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
+return
+}
+}
+{
+if(_1 === 2) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
+return ff_compiler_LspHook.SExtend()
+return
+}
+}
+{
+if(_1 === 3) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 34), 0);
+return ff_compiler_LspHook.STraitFunction()
+return
+}
+}
+{
+if(_1 === 4) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
+return ff_compiler_LspHook.STrait()
+return
+}
+}
+{
+if(_1 === 5) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
+return ff_compiler_LspHook.SInstance()
+return
+}
+}
+{
+if(_1 === 6) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
+return ff_compiler_LspHook.SVariant()
+return
+}
+}
+{
+if(_1 === 7) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
+return ff_compiler_LspHook.SType()
+return
+}
+}
+{
+if(_1 === 8) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
+return ff_compiler_LspHook.SParameter()
+return
+}
+}
+{
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
+return
+}
+}
+},
+async serializeUsing_$(serialization_, value_, $task) {
+{
+const serialization_a = serialization_;
+const value_a = value_;
+{
+if(value_a.SLet) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
+serialization_.offset_ += 1;
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.mutable_)
+return
+}
+}
+{
+if(value_a.SFunction) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1);
+serialization_.offset_ += 1;
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.member_)
+return
+}
+}
+{
+if(value_a.SExtend) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2);
+serialization_.offset_ += 1
+return
+}
+}
+{
+if(value_a.STraitFunction) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 34), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 3);
+serialization_.offset_ += 1
+return
+}
+}
+{
+if(value_a.STrait) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 4);
+serialization_.offset_ += 1
+return
+}
+}
+{
+if(value_a.SInstance) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 5);
+serialization_.offset_ += 1
+return
+}
+}
+{
+if(value_a.SVariant) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 6);
+serialization_.offset_ += 1
+return
+}
+}
+{
+if(value_a.SType) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 7);
+serialization_.offset_ += 1
+return
+}
+}
+{
+if(value_a.SParameter) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 8);
+serialization_.offset_ += 1
+return
+}
+}
+}
+},
+async deserializeUsing_$(serialization_, $task) {
+const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
+serialization_.offset_ += 1;
+{
+const _1 = variantIndex_;
+{
+if(_1 === 0) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
+return ff_compiler_LspHook.SLet(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
+return
+}
+}
+{
+if(_1 === 1) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
+return ff_compiler_LspHook.SFunction(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
+return
+}
+}
+{
+if(_1 === 2) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
+return ff_compiler_LspHook.SExtend()
+return
+}
+}
+{
+if(_1 === 3) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 34), 0);
+return ff_compiler_LspHook.STraitFunction()
+return
+}
+}
+{
+if(_1 === 4) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
+return ff_compiler_LspHook.STrait()
+return
+}
+}
+{
+if(_1 === 5) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
+return ff_compiler_LspHook.SInstance()
+return
+}
+}
+{
+if(_1 === 6) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
+return ff_compiler_LspHook.SVariant()
+return
+}
+}
+{
+if(_1 === 7) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
+return ff_compiler_LspHook.SType()
+return
+}
+}
+{
+if(_1 === 8) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
+return ff_compiler_LspHook.SParameter()
 return
 }
 }

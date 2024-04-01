@@ -210,8 +210,8 @@ export function internalCompare_(a_, b_) {
         } else if (typeof a_ === 'number' || typeof b_ === 'number') {
             if(typeof b_ !== 'number') return -1;
             if(typeof a_ !== 'number') return 1;
-            if(isNaB(a_)) return isNaB(b_) ? 0 : -1;
-            if(isNaB(b_)) return 1;
+            if(isNaN(a_)) return isNaN(b_) ? 0 : -1;
+            if(isNaN(b_)) return 1;
             return a_ < b_ ? -1 : 1;
         } else if (typeof a_ === 'string' || typeof b_ === 'string') {
             if(typeof b_ !== 'string') return -1;
