@@ -27,7 +27,7 @@ extend self: Int {
         target js sync "return signed_ ? self_ >> bits_ : self_ >>> bits_;"
 
     to(inclusiveEnd: Int): List[Int] {
-        mutable result = Array.make()
+        let result = Array.make()
         mutable n = self
         while {n <= inclusiveEnd} {
             result.push(n)
@@ -37,7 +37,7 @@ extend self: Int {
     }
 
     until(exclusiveEnd: Int): List[Int] {
-        mutable result = Array.make()
+        let result = Array.make()
         mutable n = self
         while {n < exclusiveEnd} {
             result.push(n)
