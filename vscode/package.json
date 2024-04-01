@@ -82,8 +82,24 @@
             {
                 "command": "extension.firefly-lang.getFireflyCompiler",
                 "title": "Get the Firefly compiler main"
+            },
+            {
+              "command": "extension.firefly-lang.runFireflyProgram",
+              "title": "Run Firefly Program",
+              "icon": "$(run)",
+              "when": "editorLangId == firefly"
             }
         ],
+        "menus": {
+            "editor/title/run": [
+                {
+                    "command": "extension.firefly-lang.runFireflyProgram",
+                    "group": "1_run",
+                    "icon": "$(run)",
+                    "when": "editorLangId == firefly"
+                }
+            ]
+        },
         "configuration": {
             "type": "object",
             "title": "Firefly language support configuration",

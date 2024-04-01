@@ -27,6 +27,34 @@ export function activate(context: vscode.ExtensionContext) {
         return fireflyCompiler;
     }));
     
+    let runFireflyProgramCommand = vscode.commands.registerCommand(
+		"extension.firefly-lang.runFireflyProgram",
+		async () => {
+			const editor = vscode.window.activeTextEditor;
+			if(!editor) {
+				vscode.window.showErrorMessage("No active text editor.");
+				return;
+			}
+			const filePath = editor.document.fileName;
+            const fileDirectory = require('path').dirname(filePath);
+            const fileName = require('path').basename(filePath);
+			const terminal = vscode.window.createTerminal("firefly");
+            terminal.sendText(`cd "${fileDirectory}" # npm install -g firefly-compiler`);
+            terminal.sendText(`firefly "${fileName}"`);
+			terminal.show();
+		}
+	);
+    
+    context.subscriptions.push(runFireflyProgramCommand);
+    
+    let runFireflyProgramButton = vscode.window.createStatusBarItem(
+		vscode.StatusBarAlignment.Left
+	);
+	runFireflyProgramButton.text = "$(triangle-right) Run Firefly Program";
+	runFireflyProgramButton.command = "extension.firefly-lang.runFireflyProgram";
+
+    context.subscriptions.push(runFireflyProgramButton);
+    
     const runOrDebug = {
         module: fireflyCompiler,
         args: ['LanguageServer.ff'],
@@ -55,7 +83,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     client.start();
     
-    vscode.window.onDidChangeActiveTextEditor(editor => {
+    context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(editor => {
         if(editor && editor.document.languageId === 'firefly') {
             client.sendNotification('custom/focusDocument', {
                 "textDocument": {
@@ -64,7 +92,7 @@ export function activate(context: vscode.ExtensionContext) {
                 }
             });
         }
-    });
+    }));
 }
 
 export function deactivate(): Thenable<void> | undefined {
