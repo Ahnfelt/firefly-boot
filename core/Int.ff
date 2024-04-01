@@ -27,23 +27,23 @@ extend self: Int {
         target js sync "return signed_ ? self_ >> bits_ : self_ >>> bits_;"
 
     to(inclusiveEnd: Int): List[Int] {
-        mutable result = []
-        mutable n = inclusiveEnd
-        while {self <= n} {
-            result = [n, ...result]
-            n -= 1
+        mutable result = Array.make()
+        mutable n = self
+        while {n <= inclusiveEnd} {
+            result.push(n)
+            n += 1
         }
-        result
+        result.drain()
     }
 
     until(exclusiveEnd: Int): List[Int] {
-        mutable result = []
-        mutable n = exclusiveEnd
-        while {self < n} {
-            result = [n - 1, ...result]
-            n -= 1
+        mutable result = Array.make()
+        mutable n = self
+        while {n < exclusiveEnd} {
+            result.push(n)
+            n += 1
         }
-        result
+        result.drain()
     }
 
     min(that: Int): Int {
