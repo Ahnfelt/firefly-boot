@@ -356,6 +356,9 @@ extend self: JsEmitter {
             "(" + operator + self.emitArgument(at, value, async) + ")"
         | ECall(at, StaticCall(operator, _, _), _, [], [left, right], _) {!operator.grabFirst().isAsciiLetter()} =>
             "(" + self.emitArgument(at, left, async) + " " + operator + " " + self.emitArgument(at, right, async) + ")"
+        | ECall(at, StaticCall("ff:core/List.List_grab", _, _), _, _, [Argument(_, _, EVariable(_, x1)), Argument(_, _, EVariable(_, x2))], _) =>
+            "(" + escapeResolved(x1) + "[" + escapeResolved(x2) + "] ?? " + 
+            "ff_core_List.internalGrab_(" + escapeResolved(x1) + ", " + escapeResolved(x2) + "))"
         | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.import", _, _), _, _, [Argument(_, _, EString(_, url))], _) =>
             self.jsImporter.add(url.replace("\"", ""))
         | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.await", _, _), _, _, [Argument(_, _, body)], _) =>

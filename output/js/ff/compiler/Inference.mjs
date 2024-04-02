@@ -763,7 +763,7 @@ return (_w1.second_ === e_.field_)
 })), ((_w1) => {
 return _w1.first_
 })), ((index_) => {
-const t1_ = ff_core_List.List_grab(typeArguments_, index_);
+const t1_ = (typeArguments_[index_] ?? ff_core_List.internalGrab_(typeArguments_, index_));
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_);
 {
 const _1 = e_;
@@ -2828,7 +2828,7 @@ return (_w1.second_ === e_.field_)
 })), ((_w1) => {
 return _w1.first_
 })), ((index_) => {
-const t1_ = ff_core_List.List_grab(typeArguments_, index_);
+const t1_ = (typeArguments_[index_] ?? ff_core_List.internalGrab_(typeArguments_, index_));
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_);
 {
 const _1 = e_;

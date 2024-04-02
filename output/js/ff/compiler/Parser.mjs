@@ -1542,7 +1542,7 @@ export function Parser_parseBinary(self_, level_) {
 if((level_ >= ff_core_List.List_size(ff_compiler_Parser.binaryOperators_))) {
 return ff_compiler_Parser.Parser_parseUnary(self_)
 } else {
-const operators_ = ff_core_List.List_grab(ff_compiler_Parser.binaryOperators_, level_);
+const operators_ = (ff_compiler_Parser.binaryOperators_[level_] ?? ff_core_List.internalGrab_(ff_compiler_Parser.binaryOperators_, level_));
 let result_ = ff_compiler_Parser.Parser_parseBinary(self_, (level_ + 1));
 if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LOperator())) {
 while(ff_core_List.List_any(operators_, ((value_) => {
@@ -3169,7 +3169,7 @@ export async function Parser_parseBinary$(self_, level_, $task) {
 if((level_ >= ff_core_List.List_size(ff_compiler_Parser.binaryOperators_))) {
 return ff_compiler_Parser.Parser_parseUnary(self_)
 } else {
-const operators_ = ff_core_List.List_grab(ff_compiler_Parser.binaryOperators_, level_);
+const operators_ = (ff_compiler_Parser.binaryOperators_[level_] ?? ff_core_List.internalGrab_(ff_compiler_Parser.binaryOperators_, level_));
 let result_ = ff_compiler_Parser.Parser_parseBinary(self_, (level_ + 1));
 if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LOperator())) {
 while(ff_core_List.List_any(operators_, ((value_) => {

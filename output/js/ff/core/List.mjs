@@ -123,6 +123,12 @@ export function internalSame_(left_, right_) {
 return left_ === right_
 }
 
+export function intenalGrab_(self_, index_) {
+
+        return index_ < 0 || index_ >= self_.length ? ff_core_Try.internalThrowGrabException_() : self_[index_]
+    
+}
+
 export async function empty_$($task) {
 throw new Error('Function empty is missing on this target in async context.');
 }
@@ -149,6 +155,10 @@ export async function internalSame_$(left_, right_, $task) {
 throw new Error('Function internalSame is missing on this target in async context.');
 }
 
+export async function intenalGrab_$(self_, index_, $task) {
+throw new Error('Function intenalGrab is missing on this target in async context.');
+}
+
 export function List_addAll(self_, that_) {
 return self_.concat(that_)
 }
@@ -171,10 +181,7 @@ export function List_get(self_, index_) {
 
 export function List_grab(self_, index_) {
 
-            if(index_ < 0 || index_ >= self_.length) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            return self_[index_]
+            return self_[index_] ?? internalGrab_(self_, index_);
         
 }
 
@@ -253,13 +260,13 @@ if((ff_core_List.List_size(self_) <= ff_core_List.List_size(that_))) {
 let i_ = (-1);
 return ff_core_List.List_map(self_, ((x_) => {
 i_ += 1;
-return ff_core_Pair.Pair(x_, ff_core_List.List_grab(that_, i_))
+return ff_core_Pair.Pair(x_, (that_[i_] ?? ff_core_List.internalGrab_(that_, i_)))
 }))
 } else {
 let i_ = (-1);
 return ff_core_List.List_map(that_, ((y_) => {
 i_ += 1;
-return ff_core_Pair.Pair(ff_core_List.List_grab(self_, i_), y_)
+return ff_core_Pair.Pair((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), y_)
 }))
 }
 }
@@ -288,7 +295,7 @@ let index_ = 0;
 return ff_core_Stream.make_((() => {
 if((index_ < ff_core_List.List_size(self_))) {
 return ff_core_Option.Some((function() {
-const result_ = ff_core_List.List_grab(self_, index_);
+const result_ = (self_[index_] ?? ff_core_List.internalGrab_(self_, index_));
 index_ += 1;
 return result_
 })())
@@ -540,13 +547,13 @@ if((ff_core_List.List_size(self_) <= ff_core_List.List_size(that_))) {
 let i_ = (-1);
 return ff_core_List.List_map(self_, ((x_) => {
 i_ += 1;
-return ff_core_Pair.Pair(x_, ff_core_List.List_grab(that_, i_))
+return ff_core_Pair.Pair(x_, (that_[i_] ?? ff_core_List.internalGrab_(that_, i_)))
 }))
 } else {
 let i_ = (-1);
 return ff_core_List.List_map(that_, ((y_) => {
 i_ += 1;
-return ff_core_Pair.Pair(ff_core_List.List_grab(self_, i_), y_)
+return ff_core_Pair.Pair((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), y_)
 }))
 }
 }
@@ -575,7 +582,7 @@ let index_ = 0;
 return (await ff_core_Stream.make_$((async ($task) => {
 if((index_ < ff_core_List.List_size(self_))) {
 return ff_core_Option.Some((await (async function() {
-const result_ = ff_core_List.List_grab(self_, index_);
+const result_ = (self_[index_] ?? ff_core_List.internalGrab_(self_, index_));
 index_ += 1;
 return result_
 })()))
@@ -946,7 +953,7 @@ return false
 let i_ = (-1);
 return ff_core_List.List_all(x_, ((l_) => {
 i_ += 1;
-return ff_core_Equal_Equal$T.equals_(l_, ff_core_List.List_grab(y_, i_))
+return ff_core_Equal_Equal$T.equals_(l_, (y_[i_] ?? ff_core_List.internalGrab_(y_, i_)))
 }))
 }
 }
@@ -961,7 +968,7 @@ return false
 let i_ = (-1);
 return ff_core_List.List_all(x_, ((l_) => {
 i_ += 1;
-return ff_core_Equal_Equal$T.equals_(l_, ff_core_List.List_grab(y_, i_))
+return ff_core_Equal_Equal$T.equals_(l_, (y_[i_] ?? ff_core_List.internalGrab_(y_, i_)))
 }))
 }
 }
@@ -977,7 +984,7 @@ const size_ = ff_core_Int.Int_min(ff_core_List.List_size(x_), ff_core_List.List_
 let i_ = 0;
 let ordering_ = ff_core_Ordering.OrderingSame();
 while(((ordering_ === ff_core_Ordering.OrderingSame()) && (i_ < size_))) {
-ordering_ = ff_core_Ordering_Order$T.compare_(ff_core_List.List_grab(x_, i_), ff_core_List.List_grab(y_, i_));
+ordering_ = ff_core_Ordering_Order$T.compare_((x_[i_] ?? ff_core_List.internalGrab_(x_, i_)), (y_[i_] ?? ff_core_List.internalGrab_(y_, i_)));
 i_ += 1
 };
 if((ordering_ !== ff_core_Ordering.OrderingSame())) {
@@ -995,7 +1002,7 @@ const size_ = ff_core_Int.Int_min(ff_core_List.List_size(x_), ff_core_List.List_
 let i_ = 0;
 let ordering_ = ff_core_Ordering.OrderingSame();
 while(((ordering_ === ff_core_Ordering.OrderingSame()) && (i_ < size_))) {
-ordering_ = ff_core_Ordering_Order$T.compare_(ff_core_List.List_grab(x_, i_), ff_core_List.List_grab(y_, i_));
+ordering_ = ff_core_Ordering_Order$T.compare_((x_[i_] ?? ff_core_List.internalGrab_(x_, i_)), (y_[i_] ?? ff_core_List.internalGrab_(y_, i_)));
 i_ += 1
 };
 if((ordering_ !== ff_core_Ordering.OrderingSame())) {

@@ -1283,6 +1283,29 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
+if(_1.target_.name_ === "ff:core/List.List_grab") {
+if(_1.arguments_.length > 0) {
+if(_1.arguments_[0].value_.EVariable) {
+const x1_ = _1.arguments_[0].value_.name_;
+if(_1.arguments_.length > 1) {
+if(_1.arguments_[1].value_.EVariable) {
+const x2_ = _1.arguments_[1].value_.name_;
+if(_1.arguments_.length === 2) {
+return ((((((((("(" + ff_compiler_JsEmitter.escapeResolved_(x1_)) + "[") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "] ?? ") + "ff_core_List.internalGrab_(") + ff_compiler_JsEmitter.escapeResolved_(x1_)) + ", ") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "))")
+return
+}
+}
+}
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
 if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.import") {
 if(_1.arguments_.length > 0) {
 if(_1.arguments_[0].value_.EString) {
@@ -3408,6 +3431,29 @@ const _guard1 = (!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_grabFirs
 if(_guard1) {
 return (((((("(" + (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, at_, left_, async_, $task))) + " ") + operator_) + " ") + (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, at_, right_, async_, $task))) + ")")
 return
+}
+}
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ === "ff:core/List.List_grab") {
+if(_1.arguments_.length > 0) {
+if(_1.arguments_[0].value_.EVariable) {
+const x1_ = _1.arguments_[0].value_.name_;
+if(_1.arguments_.length > 1) {
+if(_1.arguments_[1].value_.EVariable) {
+const x2_ = _1.arguments_[1].value_.name_;
+if(_1.arguments_.length === 2) {
+return ((((((((("(" + ff_compiler_JsEmitter.escapeResolved_(x1_)) + "[") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "] ?? ") + "ff_core_List.internalGrab_(") + ff_compiler_JsEmitter.escapeResolved_(x1_)) + ", ") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "))")
+return
+}
 }
 }
 }
