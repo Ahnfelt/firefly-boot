@@ -48,7 +48,7 @@ extend self[T]: List[T] {
     grab(index: Int): T
         target js sync """
             return self_[index_] ?? (
-                index_ < 0 || index_ >= self_.length ? ff_core_Try.internalThrowGrabException_() : self_[index]
+                index_ < 0 || index_ >= self_.length ? ff_core_Try.internalThrowGrabException_() : self_[index_]
             );
         """
 
