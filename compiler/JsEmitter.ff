@@ -361,7 +361,7 @@ extend self: JsEmitter {
             "ff_core_List.internalGrab_(" + escapeResolved(x1) + ", " + escapeResolved(x2) + "))"
         | ECall(at, StaticCall("ff:core/Array.Array_grab", _, _), _, _, [Argument(_, _, EVariable(_, x1)), Argument(_, _, EVariable(_, x2))], _) =>
             "(" + escapeResolved(x1) + ".array[" + escapeResolved(x2) + "] ?? " + 
-            "ff_core_List.internalGrab_(" + escapeResolved(x1) + ".array, " + escapeResolved(x2) + "))"
+            "ff_core_Array.internalGrab_(" + escapeResolved(x1) + ", " + escapeResolved(x2) + "))"
         | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.import", _, _), _, _, [Argument(_, _, EString(_, url))], _) =>
             self.jsImporter.add(url.replace("\"", ""))
         | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.await", _, _), _, _, [Argument(_, _, body)], _) =>

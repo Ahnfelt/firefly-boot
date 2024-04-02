@@ -35,10 +35,7 @@ extend self[T]: Array[T] {
 
     grab(index: Int): T
         target js sync """
-            if(index_ < 0 || index_ >= self_.array.length) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            return self_.array[index_]
+            self_.array[index_] ?? internalGrab_(self_, index_);
         """
 
     grabFirst(): T {self.grab(0)}
@@ -261,3 +258,8 @@ sortRange[T](array: Array[T], compare: (T, T) => Ordering, start: Int, end: Int)
         }
     }
 }
+
+intenalGrab[T](self: Array[T], index: Int): T
+    target js sync """
+        return index_ < 0 || index_ >= self_.array.length ? ff_core_Try.internalThrowGrabException_() : self_.array[index_];
+    """
