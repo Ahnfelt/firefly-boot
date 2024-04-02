@@ -1,0 +1,30 @@
+nodeMain(system: NodeSystem) {
+    benchmark()
+    let time = system.mainTask().time {
+        benchmark()
+    }
+    Log.trace(time.second.show())
+}
+
+benchmark() {
+    mutable num = 20000
+    let v = num
+    mutable i = 1
+    mutable j = 1
+    mutable sum = 0
+    while {i < v} {
+        j = 1
+        while {j < num - 1} {
+            if(num % j == 0) {
+                sum += j
+            }
+            j += 1
+        }
+        if(num == sum) {
+            Log.show(sum)
+        }
+        sum = 0
+        num -= 1
+        i += 1
+    }    
+}
