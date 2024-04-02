@@ -47,10 +47,9 @@ extend self[T]: List[T] {
 
     grab(index: Int): T
         target js sync """
-            if(index_ < 0 || index_ >= self_.length) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            return self_[index_]
+            return self_[index_] ?? (
+                index_ < 0 || index_ >= self_.length ? ff_core_Try.internalThrowGrabException_() : self_[index]
+            );
         """
 
     first(): Option[T] {self.get(0)}
