@@ -4,6 +4,7 @@
 **/.firefly/dependencies/
 **/node_modules/
 **/*_?_?_?.tar.gz
+**/*.class
 
 /package-lock.json
 /experimental/random/lsp-debug.txt
