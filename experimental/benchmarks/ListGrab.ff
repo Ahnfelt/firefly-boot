@@ -1,0 +1,23 @@
+nodeMain(system: NodeSystem) {
+    let list = 1.to(10000)
+    benchmark(list, 100000)
+    let time = system.mainTask().time {
+        benchmark(list, 100000)
+    }
+    Log.trace(time.second.show())
+}
+
+benchmark(list: List[Int], iterations: Int): Int {
+    mutable sum = 0
+    mutable i = 0
+    while {i < iterations} {
+        mutable j = 0
+        sum = 0
+        while {j < 10000} {
+            sum += list.grab(j)
+            j += 1
+        }
+        i += 1
+    }
+    sum
+}
