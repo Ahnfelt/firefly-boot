@@ -409,7 +409,7 @@ instance List[T: Order]: Order {
 internalSame[T](left: List[T], right: List[T]): Bool
     target js sync "return left_ === right_"
 
-intenalGrab[T](self: List[T], index: Int): T
+internalGrab[T](self: List[T], index: Int): T
     target js sync """
         return index_ < 0 || index_ >= self_.length ? ff_core_Try.internalThrowGrabException_() : self_[index_];
     """
