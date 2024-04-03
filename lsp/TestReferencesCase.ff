@@ -1,0 +1,8 @@
+foo(a: Int): Int {
+    a + a
+}
+
+nodeMain(system: NodeSystem) {
+    foo(13)
+    foo(37)
+}
