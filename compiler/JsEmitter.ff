@@ -737,7 +737,9 @@ extend self: JsEmitter {
                 let itemArguments = patterns.pairs().map {| Pair(i, _) => argument + "[" + i + "]"}
                 let restArgument = restPattern.map {_ => argument + ".slice(" + patterns.size() + ")"}
                 let newArguments = [...itemArguments, ...restArgument.toList(), ...arguments]
-                let newMatchCase = matchCase.MatchCase(patterns = [...patterns, ...restPattern.toList(), ...matchCase.patterns])
+                let newMatchCase = matchCase.MatchCase(
+                    patterns = [...patterns, ...restPattern.toList(), ...matchCase.patterns]
+                )
                 let operator = restPattern.map {_ => ">="}.else {"==="}
                 "if(" + argument + ".length " + operator + " " + patterns.size() + ") {\n" +
                 self.emitCase(newArguments, newMatchCase, jump, last, async) +
