@@ -988,12 +988,9 @@ export const ff_core_Equal_Equal$ff_compiler_Deriver_Deriver = {
 equals_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return true
 return
-}
 }
 {
 return true
@@ -1003,12 +1000,9 @@ return
 async equals_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return true
 return
-}
 }
 {
 return true
@@ -1021,12 +1015,9 @@ export const ff_core_Ordering_Order$ff_compiler_Deriver_Deriver = {
 compare_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 {
 return ff_core_Ordering.OrderingSame()
@@ -1036,12 +1027,9 @@ return
 async compare_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 {
 return ff_core_Ordering.OrderingSame()

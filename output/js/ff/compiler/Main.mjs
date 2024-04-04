@@ -835,12 +835,9 @@ export const ff_core_Equal_Equal$ff_compiler_Main_MainCommand = {
 equals_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return true
 return
-}
 }
 if(x_a.RunCommand) {
 const x_ = x_a;
@@ -882,12 +879,9 @@ return
 async equals_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return true
 return
-}
 }
 if(x_a.RunCommand) {
 const x_ = x_a;
@@ -932,12 +926,9 @@ export const ff_core_Equal_Equal$ff_compiler_Main_CommandLineError = {
 equals_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return true
 return
-}
 }
 {
 return (x_.problem_ === y_.problem_)
@@ -947,12 +938,9 @@ return
 async equals_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return true
 return
-}
 }
 {
 return (x_.problem_ === y_.problem_)
@@ -965,12 +953,9 @@ export const ff_core_Ordering_Order$ff_compiler_Main_MainCommand = {
 compare_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 if(x_a.RunCommand) {
 const x_ = x_a;
@@ -1060,12 +1045,9 @@ return
 async compare_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 if(x_a.RunCommand) {
 const x_ = x_a;
@@ -1158,12 +1140,9 @@ export const ff_core_Ordering_Order$ff_compiler_Main_CommandLineError = {
 compare_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 {
 const problemOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.problem_, y_.problem_);
@@ -1178,12 +1157,9 @@ return
 async compare_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 {
 const problemOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.problem_, y_.problem_);

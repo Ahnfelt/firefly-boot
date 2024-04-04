@@ -234,8 +234,7 @@ const _1 = self_;
 {
 if(_1.Some) {
 const v_ = _1.value_;
-const _guard1 = body_(v_);
-if(_guard1) {
+if(body_(v_)) {
 return ff_core_Option.Some(v_)
 return
 }
@@ -491,8 +490,7 @@ const _1 = self_;
 {
 if(_1.Some) {
 const v_ = _1.value_;
-const _guard1 = (await body_(v_, $task));
-if(_guard1) {
+if((await body_(v_, $task))) {
 return ff_core_Option.Some(v_)
 return
 }
@@ -737,12 +735,9 @@ export function ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal_Equal$T)
 equals_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return true
 return
-}
 }
 if(x_a.Some) {
 const x_ = x_a;
@@ -760,12 +755,9 @@ return
 async equals_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return true
 return
-}
 }
 if(x_a.Some) {
 const x_ = x_a;
@@ -786,12 +778,9 @@ export function ff_core_Ordering_Order$ff_core_Option_Option(ff_core_Ordering_Or
 compare_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 if(x_a.Some) {
 const x_ = x_a;
@@ -825,12 +814,9 @@ return
 async compare_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 if(x_a.Some) {
 const x_ = x_a;

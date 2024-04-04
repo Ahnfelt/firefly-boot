@@ -680,6 +680,10 @@ extend self: JsEmitter {
                     last
                     async
                 )
+            | Pair([], [MatchGuard(_, e, PVariant(_, "ff:core/Bool.True", _))]) =>
+                "if(" + self.emitTerm(e, async) + ") {\n" +
+                self.emitCase([], matchCase.MatchCase(patterns = [], guards = []), jump, last, async) +
+                "\n}"
             | Pair([], [guard, ...guards]) =>
                 let guardName = "_guard" + (guards.size() + 1)
                 let newCase = matchCase.MatchCase(patterns = [guard.pattern], guards = guards)

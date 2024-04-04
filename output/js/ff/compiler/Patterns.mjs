@@ -137,8 +137,7 @@ return
 }
 }
 {
-const _guard1 = (success_ && (!guard_));
-if(_guard1) {
+if((success_ && (!guard_))) {
 
 return
 }
@@ -337,8 +336,7 @@ return
 }
 }
 {
-const _guard1 = (success_ && (!guard_));
-if(_guard1) {
+if((success_ && (!guard_))) {
 
 return
 }
@@ -560,12 +558,9 @@ export const ff_core_Equal_Equal$ff_compiler_Patterns_PatternInfo = {
 equals_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return true
 return
-}
 }
 {
 return ((x_.variant_ === y_.variant_) && (ff_core_Set.ff_core_Equal_Equal$ff_core_Set_Set(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).equals_(x_.otherVariants_, y_.otherVariants_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_compiler_Patterns.ff_core_Equal_Equal$ff_compiler_Patterns_PatternInfo)).equals_(x_.fields_, y_.fields_)))
@@ -575,12 +570,9 @@ return
 async equals_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return true
 return
-}
 }
 {
 return ((x_.variant_ === y_.variant_) && (ff_core_Set.ff_core_Equal_Equal$ff_core_Set_Set(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).equals_(x_.otherVariants_, y_.otherVariants_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_compiler_Patterns.ff_core_Equal_Equal$ff_compiler_Patterns_PatternInfo)).equals_(x_.fields_, y_.fields_)))
@@ -593,12 +585,9 @@ export const ff_core_Equal_Equal$ff_compiler_Patterns_PatternCaseInfo = {
 equals_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return true
 return
-}
 }
 {
 return (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_compiler_Patterns.ff_core_Equal_Equal$ff_compiler_Patterns_PatternInfo)).equals_(x_.fields_, y_.fields_) && (x_.guard_ === y_.guard_))
@@ -608,12 +597,9 @@ return
 async equals_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return true
 return
-}
 }
 {
 return (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_compiler_Patterns.ff_core_Equal_Equal$ff_compiler_Patterns_PatternInfo)).equals_(x_.fields_, y_.fields_) && (x_.guard_ === y_.guard_))
@@ -626,12 +612,9 @@ export const ff_core_Ordering_Order$ff_compiler_Patterns_PatternInfo = {
 compare_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 {
 const variantOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.variant_, y_.variant_);
@@ -656,12 +639,9 @@ return
 async compare_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 {
 const variantOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.variant_, y_.variant_);
@@ -689,12 +669,9 @@ export const ff_core_Ordering_Order$ff_compiler_Patterns_PatternCaseInfo = {
 compare_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 {
 const fieldsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Patterns.ff_core_Ordering_Order$ff_compiler_Patterns_PatternInfo)).compare_(x_.fields_, y_.fields_);
@@ -714,12 +691,9 @@ return
 async compare_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 {
 const fieldsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Patterns.ff_core_Ordering_Order$ff_compiler_Patterns_PatternInfo)).compare_(x_.fields_, y_.fields_);

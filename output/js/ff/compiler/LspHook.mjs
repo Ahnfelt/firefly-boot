@@ -685,12 +685,9 @@ export const ff_core_Equal_Equal$ff_compiler_LspHook_SymbolHook = {
 equals_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return true
 return
-}
 }
 {
 return ((x_.qualifiedName_ === y_.qualifiedName_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.usageAt_, y_.usageAt_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.definedAt_, y_.definedAt_)))
@@ -700,12 +697,9 @@ return
 async equals_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return true
 return
-}
 }
 {
 return ((x_.qualifiedName_ === y_.qualifiedName_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.usageAt_, y_.usageAt_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.definedAt_, y_.definedAt_)))
@@ -718,12 +712,9 @@ export const ff_core_Equal_Equal$ff_compiler_LspHook_DocumentSymbolKind = {
 equals_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return true
 return
-}
 }
 if(x_a.SLet) {
 const x_ = x_a;
@@ -749,12 +740,9 @@ return
 async equals_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return true
 return
-}
 }
 if(x_a.SLet) {
 const x_ = x_a;
@@ -783,12 +771,9 @@ export const ff_core_Ordering_Order$ff_compiler_LspHook_SymbolHook = {
 compare_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 {
 const qualifiedNameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.qualifiedName_, y_.qualifiedName_);
@@ -813,12 +798,9 @@ return
 async compare_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 {
 const qualifiedNameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.qualifiedName_, y_.qualifiedName_);
@@ -846,12 +828,9 @@ export const ff_core_Ordering_Order$ff_compiler_LspHook_DocumentSymbolKind = {
 compare_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 if(x_a.SLet) {
 const x_ = x_a;
@@ -926,12 +905,9 @@ return
 async compare_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 if(x_a.SLet) {
 const x_ = x_a;

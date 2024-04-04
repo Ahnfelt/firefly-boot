@@ -762,8 +762,7 @@ let seen_ = ff_core_List.List_toSet([], ff_core_Ordering_Order$T);
 return ff_core_List.List_filter(self_, ((_1) => {
 {
 const item_ = _1;
-const _guard1 = (!ff_core_Set.Set_contains(seen_, item_, ff_core_Ordering_Order$T));
-if(_guard1) {
+if((!ff_core_Set.Set_contains(seen_, item_, ff_core_Ordering_Order$T))) {
 seen_ = ff_core_Set.Set_add(seen_, item_, ff_core_Ordering_Order$T);
 return true
 return
@@ -793,8 +792,7 @@ let seen_ = ff_core_List.List_toSet([], ff_core_Ordering_Order$T);
 return ff_core_List.List_filter(self_, ((_1) => {
 {
 const item_ = _1;
-const _guard1 = (!ff_core_Set.Set_contains(seen_, item_, ff_core_Ordering_Order$T));
-if(_guard1) {
+if((!ff_core_Set.Set_contains(seen_, item_, ff_core_Ordering_Order$T))) {
 seen_ = ff_core_Set.Set_add(seen_, item_, ff_core_Ordering_Order$T);
 return true
 return

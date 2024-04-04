@@ -387,8 +387,7 @@ const returnsUnit_ = (((_1) => {
 if(_1.TConstructor) {
 const name_ = _1.name_;
 const ts_ = _1.generics_;
-const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
-if(_guard1) {
+if(ff_core_String.String_startsWith(name_, "Function$", 0)) {
 {
 const _1 = ff_core_List.List_grabLast(ts_);
 {
@@ -746,8 +745,7 @@ const t_ = _1;
 if(_1.TConstructor) {
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
-const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0);
-if(_guard1) {
+if(ff_core_String.String_startsWith(name_, "Record$", 0)) {
 if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, e_.at_)) {
 const symbolHook_ = ff_compiler_LspHook.SymbolHook(e_.field_, e_.at_, e_.at_);
 const noEffect_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
@@ -792,8 +790,7 @@ const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, expected_
 {
 if(_1.Some) {
 const instantiated_ = _1.value_;
-const _guard1 = (!instantiated_.scheme_.isVariable_);
-if(_guard1) {
+if((!instantiated_.scheme_.isVariable_)) {
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, _c.generics_, _c.constraints_, ff_core_List.List_dropFirst(instantiated_.scheme_.signature_.parameters_, 1), _c.returnType_, _c.effect_)
 }))(instantiated_.scheme_.signature_);
@@ -830,8 +827,7 @@ return
 }
 {
 if(_1.TVariable) {
-const _guard1 = ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_);
-if(_guard1) {
+if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
 return
 }
@@ -973,8 +969,7 @@ if(_1[0].guards_.length === 0) {
 if(_1[0].body_.EVariable) {
 const insideAt_ = _1[0].body_.at_;
 if(_1[0].body_.name_ === "") {
-const _guard1 = ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_);
-if(_guard1) {
+if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_)) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferLambdaStartHook(self_.unification_, environment_, expected_))
 break
 }
@@ -994,8 +989,7 @@ const insideAt_ = _1[0].body_.before_.at_;
 if(_1[0].body_.before_.name_ === "") {
 if(_1[0].body_.after_.EVariant) {
 if(_1[0].body_.after_.name_ === "ff:core/Unit.Unit") {
-const _guard1 = ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_);
-if(_guard1) {
+if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_)) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferLambdaStartHook(self_.unification_, environment_, expected_))
 break
 }
@@ -1264,8 +1258,7 @@ const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, expected_
 {
 if(_1.Some) {
 const instantiated_ = _1.value_;
-const _guard1 = (!instantiated_.scheme_.isVariable_);
-if(_guard1) {
+if((!instantiated_.scheme_.isVariable_)) {
 return ff_compiler_Inference.Inference_inferMethodCall(self_, environment_, expected_, instantiated_.scheme_.signature_, instantiated_.typeArguments_, e2_, record_, recordType_, methodName_)
 return
 }
@@ -1290,8 +1283,7 @@ return
 }
 {
 if(_1.TVariable) {
-const _guard1 = ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_);
-if(_guard1) {
+if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, e2_)
 return
 }
@@ -1411,8 +1403,7 @@ const t_ = _1;
 if(_1.TConstructor) {
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
-const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0);
-if(_guard1) {
+if(ff_core_String.String_startsWith(name_, "Record$", 0)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Can't assign fields of anonymous records: " + e_.field_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
@@ -1429,8 +1420,7 @@ const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, expected_
 {
 if(_1.Some) {
 const instantiated_ = _1.value_;
-const _guard1 = (instantiated_.scheme_.isMutable_ || ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_));
-if(_guard1) {
+if((instantiated_.scheme_.isMutable_ || ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_))) {
 const value_ = ff_compiler_Inference.Inference_inferAssignment(self_, environment_, expected_, e_.at_, e_.operator_, e_.value_, instantiated_.scheme_.signature_);
 {
 const _1 = e_;
@@ -1463,8 +1453,7 @@ return
 }
 {
 if(_1.TVariable) {
-const _guard1 = ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_);
-if(_guard1) {
+if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
 return
 }
@@ -1605,8 +1594,7 @@ const call_ = (((_1) => {
 {
 if(_1.DynamicCall) {
 const call_ = _1;
-const _guard1 = (!call_.tailCall_);
-if(_guard1) {
+if((!call_.tailCall_)) {
 return call_
 return
 }
@@ -1685,8 +1673,7 @@ const _1 = e_.arguments_;
 {
 if(_1.length === 1) {
 const a1_ = _1[0];
-const _guard1 = (operator_ === "!");
-if(_guard1) {
+if((operator_ === "!")) {
 const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), []);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a1_.value_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_);
@@ -1707,8 +1694,7 @@ return
 {
 if(_1.length === 1) {
 const a1_ = _1[0];
-const _guard1 = (operator_ === "-");
-if(_guard1) {
+if((operator_ === "-")) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_);
 do {
@@ -1717,8 +1703,7 @@ const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t1
 if(_1.TConstructor) {
 const name_ = _1.name_;
 if(_1.generics_.length === 0) {
-const _guard1 = (name_ === ff_compiler_Inference.core_("Float"));
-if(_guard1) {
+if((name_ === ff_compiler_Inference.core_("Float"))) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 break
 }
@@ -1729,8 +1714,7 @@ break
 if(_1.TConstructor) {
 const name_ = _1.name_;
 if(_1.generics_.length === 0) {
-const _guard1 = (name_ === ff_compiler_Inference.core_("Int"));
-if(_guard1) {
+if((name_ === ff_compiler_Inference.core_("Int"))) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 break
 }
@@ -1738,8 +1722,7 @@ break
 }
 }
 {
-const _guard1 = ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_);
-if(_guard1) {
+if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 
 break
 }
@@ -1767,8 +1750,7 @@ return
 if(_1.length === 2) {
 const a1_ = _1[0];
 const a2_ = _1[1];
-const _guard1 = ((operator_ === "||") || (operator_ === "&&"));
-if(_guard1) {
+if(((operator_ === "||") || (operator_ === "&&"))) {
 const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), []);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a1_.value_);
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a2_.value_);
@@ -1793,8 +1775,7 @@ return
 if(_1.length === 2) {
 const a1_ = _1[0];
 const a2_ = _1[1];
-const _guard1 = ((operator_ === "===") || (operator_ === "!=="));
-if(_guard1) {
+if(((operator_ === "===") || (operator_ === "!=="))) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_);
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a2_.value_);
@@ -1819,8 +1800,7 @@ return
 if(_1.length === 2) {
 const a1_ = _1[0];
 const a2_ = _1[1];
-const _guard1 = ((((((operator_ === "+") || (operator_ === "-")) || (operator_ === "*")) || (operator_ === "/")) || (operator_ === "%")) || (operator_ === "^"));
-if(_guard1) {
+if(((((((operator_ === "+") || (operator_ === "-")) || (operator_ === "*")) || (operator_ === "/")) || (operator_ === "%")) || (operator_ === "^"))) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const t2_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_);
@@ -1832,8 +1812,7 @@ const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_
 if(_1.TConstructor) {
 const name_ = _1.name_;
 if(_1.generics_.length === 0) {
-const _guard1 = (name_ === ff_compiler_Inference.core_("Float"));
-if(_guard1) {
+if((name_ === ff_compiler_Inference.core_("Float"))) {
 return ff_core_Option.Some("Float")
 return
 }
@@ -1844,8 +1823,7 @@ return
 if(_1.TConstructor) {
 const name_ = _1.name_;
 if(_1.generics_.length === 0) {
-const _guard1 = (name_ === ff_compiler_Inference.core_("Int"));
-if(_guard1) {
+if((name_ === ff_compiler_Inference.core_("Int"))) {
 return ff_core_Option.Some("Int")
 return
 }
@@ -1856,8 +1834,7 @@ return
 if(_1.TConstructor) {
 const name_ = _1.name_;
 if(_1.generics_.length === 0) {
-const _guard1 = ((operator_ === "+") && (name_ === ff_compiler_Inference.core_("String")));
-if(_guard1) {
+if(((operator_ === "+") && (name_ === ff_compiler_Inference.core_("String")))) {
 return ff_core_Option.Some("String")
 return
 }
@@ -1950,8 +1927,7 @@ return
 }
 }
 {
-const _guard1 = ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_);
-if(_guard1) {
+if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 
 return
 }
@@ -1991,8 +1967,7 @@ return
 }
 }
 {
-const _guard1 = ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_);
-if(_guard1) {
+if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
 return
 }
@@ -2428,8 +2403,7 @@ const returnsUnit_ = (((_1) => {
 if(_1.TConstructor) {
 const name_ = _1.name_;
 const ts_ = _1.generics_;
-const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
-if(_guard1) {
+if(ff_core_String.String_startsWith(name_, "Function$", 0)) {
 {
 const _1 = ff_core_List.List_grabLast(ts_);
 {
@@ -2787,8 +2761,7 @@ const t_ = _1;
 if(_1.TConstructor) {
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
-const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0);
-if(_guard1) {
+if(ff_core_String.String_startsWith(name_, "Record$", 0)) {
 if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, e_.at_)) {
 const symbolHook_ = ff_compiler_LspHook.SymbolHook(e_.field_, e_.at_, e_.at_);
 const noEffect_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
@@ -2833,8 +2806,7 @@ const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, expected_
 {
 if(_1.Some) {
 const instantiated_ = _1.value_;
-const _guard1 = (!instantiated_.scheme_.isVariable_);
-if(_guard1) {
+if((!instantiated_.scheme_.isVariable_)) {
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, _c.generics_, _c.constraints_, ff_core_List.List_dropFirst(instantiated_.scheme_.signature_.parameters_, 1), _c.returnType_, _c.effect_)
 }))(instantiated_.scheme_.signature_);
@@ -2871,8 +2843,7 @@ return
 }
 {
 if(_1.TVariable) {
-const _guard1 = ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_);
-if(_guard1) {
+if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
 return
 }
@@ -3014,8 +2985,7 @@ if(_1[0].guards_.length === 0) {
 if(_1[0].body_.EVariable) {
 const insideAt_ = _1[0].body_.at_;
 if(_1[0].body_.name_ === "") {
-const _guard1 = ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_);
-if(_guard1) {
+if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_)) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferLambdaStartHook(self_.unification_, environment_, expected_))
 break
 }
@@ -3035,8 +3005,7 @@ const insideAt_ = _1[0].body_.before_.at_;
 if(_1[0].body_.before_.name_ === "") {
 if(_1[0].body_.after_.EVariant) {
 if(_1[0].body_.after_.name_ === "ff:core/Unit.Unit") {
-const _guard1 = ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_);
-if(_guard1) {
+if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_)) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferLambdaStartHook(self_.unification_, environment_, expected_))
 break
 }
@@ -3305,8 +3274,7 @@ const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, expected_
 {
 if(_1.Some) {
 const instantiated_ = _1.value_;
-const _guard1 = (!instantiated_.scheme_.isVariable_);
-if(_guard1) {
+if((!instantiated_.scheme_.isVariable_)) {
 return ff_compiler_Inference.Inference_inferMethodCall(self_, environment_, expected_, instantiated_.scheme_.signature_, instantiated_.typeArguments_, e2_, record_, recordType_, methodName_)
 return
 }
@@ -3331,8 +3299,7 @@ return
 }
 {
 if(_1.TVariable) {
-const _guard1 = ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_);
-if(_guard1) {
+if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, e2_)
 return
 }
@@ -3452,8 +3419,7 @@ const t_ = _1;
 if(_1.TConstructor) {
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
-const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0);
-if(_guard1) {
+if(ff_core_String.String_startsWith(name_, "Record$", 0)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Can't assign fields of anonymous records: " + e_.field_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
@@ -3470,8 +3436,7 @@ const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, expected_
 {
 if(_1.Some) {
 const instantiated_ = _1.value_;
-const _guard1 = (instantiated_.scheme_.isMutable_ || ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_));
-if(_guard1) {
+if((instantiated_.scheme_.isMutable_ || ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_))) {
 const value_ = ff_compiler_Inference.Inference_inferAssignment(self_, environment_, expected_, e_.at_, e_.operator_, e_.value_, instantiated_.scheme_.signature_);
 {
 const _1 = e_;
@@ -3504,8 +3469,7 @@ return
 }
 {
 if(_1.TVariable) {
-const _guard1 = ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_);
-if(_guard1) {
+if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
 return
 }
@@ -3646,8 +3610,7 @@ const call_ = (((_1) => {
 {
 if(_1.DynamicCall) {
 const call_ = _1;
-const _guard1 = (!call_.tailCall_);
-if(_guard1) {
+if((!call_.tailCall_)) {
 return call_
 return
 }
@@ -3726,8 +3689,7 @@ const _1 = e_.arguments_;
 {
 if(_1.length === 1) {
 const a1_ = _1[0];
-const _guard1 = (operator_ === "!");
-if(_guard1) {
+if((operator_ === "!")) {
 const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), []);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a1_.value_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_);
@@ -3748,8 +3710,7 @@ return
 {
 if(_1.length === 1) {
 const a1_ = _1[0];
-const _guard1 = (operator_ === "-");
-if(_guard1) {
+if((operator_ === "-")) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_);
 do {
@@ -3758,8 +3719,7 @@ const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t1
 if(_1.TConstructor) {
 const name_ = _1.name_;
 if(_1.generics_.length === 0) {
-const _guard1 = (name_ === ff_compiler_Inference.core_("Float"));
-if(_guard1) {
+if((name_ === ff_compiler_Inference.core_("Float"))) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 break
 }
@@ -3770,8 +3730,7 @@ break
 if(_1.TConstructor) {
 const name_ = _1.name_;
 if(_1.generics_.length === 0) {
-const _guard1 = (name_ === ff_compiler_Inference.core_("Int"));
-if(_guard1) {
+if((name_ === ff_compiler_Inference.core_("Int"))) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 break
 }
@@ -3779,8 +3738,7 @@ break
 }
 }
 {
-const _guard1 = ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_);
-if(_guard1) {
+if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 
 break
 }
@@ -3808,8 +3766,7 @@ return
 if(_1.length === 2) {
 const a1_ = _1[0];
 const a2_ = _1[1];
-const _guard1 = ((operator_ === "||") || (operator_ === "&&"));
-if(_guard1) {
+if(((operator_ === "||") || (operator_ === "&&"))) {
 const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), []);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a1_.value_);
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a2_.value_);
@@ -3834,8 +3791,7 @@ return
 if(_1.length === 2) {
 const a1_ = _1[0];
 const a2_ = _1[1];
-const _guard1 = ((operator_ === "===") || (operator_ === "!=="));
-if(_guard1) {
+if(((operator_ === "===") || (operator_ === "!=="))) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_);
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a2_.value_);
@@ -3860,8 +3816,7 @@ return
 if(_1.length === 2) {
 const a1_ = _1[0];
 const a2_ = _1[1];
-const _guard1 = ((((((operator_ === "+") || (operator_ === "-")) || (operator_ === "*")) || (operator_ === "/")) || (operator_ === "%")) || (operator_ === "^"));
-if(_guard1) {
+if(((((((operator_ === "+") || (operator_ === "-")) || (operator_ === "*")) || (operator_ === "/")) || (operator_ === "%")) || (operator_ === "^"))) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const t2_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_);
@@ -3873,8 +3828,7 @@ const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_
 if(_1.TConstructor) {
 const name_ = _1.name_;
 if(_1.generics_.length === 0) {
-const _guard1 = (name_ === ff_compiler_Inference.core_("Float"));
-if(_guard1) {
+if((name_ === ff_compiler_Inference.core_("Float"))) {
 return ff_core_Option.Some("Float")
 return
 }
@@ -3885,8 +3839,7 @@ return
 if(_1.TConstructor) {
 const name_ = _1.name_;
 if(_1.generics_.length === 0) {
-const _guard1 = (name_ === ff_compiler_Inference.core_("Int"));
-if(_guard1) {
+if((name_ === ff_compiler_Inference.core_("Int"))) {
 return ff_core_Option.Some("Int")
 return
 }
@@ -3897,8 +3850,7 @@ return
 if(_1.TConstructor) {
 const name_ = _1.name_;
 if(_1.generics_.length === 0) {
-const _guard1 = ((operator_ === "+") && (name_ === ff_compiler_Inference.core_("String")));
-if(_guard1) {
+if(((operator_ === "+") && (name_ === ff_compiler_Inference.core_("String")))) {
 return ff_core_Option.Some("String")
 return
 }
@@ -3991,8 +3943,7 @@ return
 }
 }
 {
-const _guard1 = ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_);
-if(_guard1) {
+if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 
 return
 }
@@ -4032,8 +3983,7 @@ return
 }
 }
 {
-const _guard1 = ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_);
-if(_guard1) {
+if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
 return
 }

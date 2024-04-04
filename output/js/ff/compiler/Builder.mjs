@@ -176,8 +176,7 @@ return
 }
 {
 if(!_1) {
-const _guard1 = ff_core_Path.Path_endsWith(path_, [".firefly", "package.ff"]);
-if(_guard1) {
+if(ff_core_Path.Path_endsWith(path_, [".firefly", "package.ff"])) {
 return [ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab(ff_core_Path.Path_parent(path_)), ff_core_Option.Some(path_), [])]
 return
 }
@@ -355,8 +354,7 @@ return
 }
 {
 if(!_1) {
-const _guard1 = (await ff_core_Path.Path_endsWith$(path_, [".firefly", "package.ff"], $task));
-if(_guard1) {
+if((await ff_core_Path.Path_endsWith$(path_, [".firefly", "package.ff"], $task))) {
 return [ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(path_, $task))), ff_core_Option.Some(path_), [])]
 return
 }

@@ -246,8 +246,7 @@ const _1 = self_.next_();
 {
 if(_1.Some) {
 const x_ = _1.value_;
-const _guard1 = body_(x_);
-if(_guard1) {
+if(body_(x_)) {
 result_ = ff_core_Option.Some(ff_core_Option.Some(x_))
 break
 }
@@ -391,8 +390,7 @@ break
 {
 if(_1.Some) {
 const x_ = _1.value_;
-const _guard1 = body_(x_);
-if(_guard1) {
+if(body_(x_)) {
 
 break
 }
@@ -768,8 +766,7 @@ const _1 = (await self_.next_($task));
 {
 if(_1.Some) {
 const x_ = _1.value_;
-const _guard1 = (await body_(x_, $task));
-if(_guard1) {
+if((await body_(x_, $task))) {
 result_ = ff_core_Option.Some(ff_core_Option.Some(x_))
 break
 }
@@ -913,8 +910,7 @@ break
 {
 if(_1.Some) {
 const x_ = _1.value_;
-const _guard1 = (await body_(x_, $task));
-if(_guard1) {
+if((await body_(x_, $task))) {
 
 break
 }

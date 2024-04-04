@@ -594,8 +594,7 @@ const _1 = ff_core_Map.Map_grab(self_.substitution_, index_, ff_core_Ordering.ff
 {
 if(_1.TVariable) {
 const i_ = _1.index_;
-const _guard1 = ff_compiler_Substitution.Substitution_has(self_, i_);
-if(_guard1) {
+if(ff_compiler_Substitution.Substitution_has(self_, i_)) {
 const t_ = ff_compiler_Substitution.Substitution_get(self_, i_);
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, t_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 return t_
@@ -1107,8 +1106,7 @@ const _1 = ff_core_Map.Map_grab(self_.substitution_, index_, ff_core_Ordering.ff
 {
 if(_1.TVariable) {
 const i_ = _1.index_;
-const _guard1 = ff_compiler_Substitution.Substitution_has(self_, i_);
-if(_guard1) {
+if(ff_compiler_Substitution.Substitution_has(self_, i_)) {
 const t_ = ff_compiler_Substitution.Substitution_get(self_, i_);
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, t_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 return t_

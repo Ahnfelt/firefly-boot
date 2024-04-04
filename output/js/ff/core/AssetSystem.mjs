@@ -122,8 +122,7 @@ const streams_ = ff_core_List.List_collect(ff_core_Map.Map_pairs(self_.files_, f
 {
 const p_ = _1.first_;
 const s_ = _1.second_;
-const _guard1 = ff_core_String.String_startsWith(p_, prefix_, 0);
-if(_guard1) {
+if(ff_core_String.String_startsWith(p_, prefix_, 0)) {
 return ff_core_Option.Some(ff_core_Pair.Pair(ff_core_String.String_dropFirst(p_, (ff_core_String.String_size(prefix_) - 1)), s_))
 return
 }
@@ -153,8 +152,7 @@ const prefix_ = (ff_core_String.String_endsWith(path_, "/")
 return ff_core_List.List_distinct(ff_core_List.List_collect(ff_core_Map.Map_pairs(self_.files_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
 {
 const p_ = _1.first_;
-const _guard1 = ff_core_String.String_startsWith(p_, prefix_, 0);
-if(_guard1) {
+if(ff_core_String.String_startsWith(p_, prefix_, 0)) {
 return ff_core_Option.Some(ff_core_String.String_takeWhile(ff_core_String.String_dropFirst(p_, ff_core_String.String_size(prefix_)), ((_w1) => {
 return (_w1 !== 47)
 })))
@@ -205,8 +203,7 @@ const streams_ = ff_core_List.List_collect(ff_core_Map.Map_pairs(self_.files_, f
 {
 const p_ = _1.first_;
 const s_ = _1.second_;
-const _guard1 = ff_core_String.String_startsWith(p_, prefix_, 0);
-if(_guard1) {
+if(ff_core_String.String_startsWith(p_, prefix_, 0)) {
 return ff_core_Option.Some(ff_core_Pair.Pair(ff_core_String.String_dropFirst(p_, (ff_core_String.String_size(prefix_) - 1)), s_))
 return
 }
@@ -236,8 +233,7 @@ const prefix_ = (ff_core_String.String_endsWith(path_, "/")
 return ff_core_List.List_distinct(ff_core_List.List_collect(ff_core_Map.Map_pairs(self_.files_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
 {
 const p_ = _1.first_;
-const _guard1 = ff_core_String.String_startsWith(p_, prefix_, 0);
-if(_guard1) {
+if(ff_core_String.String_startsWith(p_, prefix_, 0)) {
 return ff_core_Option.Some(ff_core_String.String_takeWhile(ff_core_String.String_dropFirst(p_, ff_core_String.String_size(prefix_)), ((_w1) => {
 return (_w1 !== 47)
 })))

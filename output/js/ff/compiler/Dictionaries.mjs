@@ -171,8 +171,7 @@ const functionSignatures_ = ff_core_List.List_toMap(ff_core_List.List_collect(ff
 {
 const name_ = _1.first_;
 const s_ = _1.second_;
-const _guard1 = (!s_.isVariable_);
-if(_guard1) {
+if((!s_.isVariable_)) {
 return ff_core_Option.Some(ff_core_Pair.Pair(name_, s_.signature_))
 return
 }
@@ -651,8 +650,7 @@ const functionSignatures_ = ff_core_List.List_toMap(ff_core_List.List_collect(ff
 {
 const name_ = _1.first_;
 const s_ = _1.second_;
-const _guard1 = (!s_.isVariable_);
-if(_guard1) {
+if((!s_.isVariable_)) {
 return ff_core_Option.Some(ff_core_Pair.Pair(name_, s_.signature_))
 return
 }
@@ -1153,12 +1151,9 @@ export const ff_core_Equal_Equal$ff_compiler_Dictionaries_Dictionaries = {
 equals_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return true
 return
-}
 }
 {
 return ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_InstanceValue).equals_(x_.instances_, y_.instances_)
@@ -1168,12 +1163,9 @@ return
 async equals_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return true
 return
-}
 }
 {
 return ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_InstanceValue).equals_(x_.instances_, y_.instances_)
@@ -1186,12 +1178,9 @@ export const ff_core_Ordering_Order$ff_compiler_Dictionaries_Dictionaries = {
 compare_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 {
 const instancesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceValue).compare_(x_.instances_, y_.instances_);
@@ -1206,12 +1195,9 @@ return
 async compare_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
+if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 {
 const instancesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceValue).compare_(x_.instances_, y_.instances_);

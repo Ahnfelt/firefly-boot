@@ -192,8 +192,7 @@ return ((_1, _2) => {
 {
 const x_ = _1;
 const y_ = _2;
-const _guard1 = lessThan_(x_, y_);
-if(_guard1) {
+if(lessThan_(x_, y_)) {
 return ff_core_Ordering.OrderingBefore()
 return
 }
@@ -201,8 +200,7 @@ return
 {
 const x_ = _1;
 const y_ = _2;
-const _guard1 = lessThan_(y_, x_);
-if(_guard1) {
+if(lessThan_(y_, x_)) {
 return ff_core_Ordering.OrderingAfter()
 return
 }
@@ -300,8 +298,7 @@ return (async (_1, _2, $task) => {
 {
 const x_ = _1;
 const y_ = _2;
-const _guard1 = (await lessThan_(x_, y_, $task));
-if(_guard1) {
+if((await lessThan_(x_, y_, $task))) {
 return ff_core_Ordering.OrderingBefore()
 return
 }
@@ -309,8 +306,7 @@ return
 {
 const x_ = _1;
 const y_ = _2;
-const _guard1 = (await lessThan_(y_, x_, $task));
-if(_guard1) {
+if((await lessThan_(y_, x_, $task))) {
 return ff_core_Ordering.OrderingAfter()
 return
 }
