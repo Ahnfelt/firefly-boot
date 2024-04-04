@@ -4,6 +4,7 @@ nodeMain(system: NodeSystem) {
         Json.object().with("x", 1) 
         Json.object().with("y", 1)
         Json.object().with("x", 1).with("y", 1)
+        Json.object().with("y", 2).with("x", 1)
         Json.object().with("x", 1).with("y", 2)
         Json.array([Json.int(3)])
         Json.int(3)
@@ -13,4 +14,13 @@ nodeMain(system: NodeSystem) {
         Json.bool(False)
     ]
     system.writeLine(Show.show(Json.array(jsons.sort())))
+    jsons.each {json =>
+        let equal = jsons.filter {_ == json}
+        if(equal.size() != 1) {
+            system.writeLine(
+                "None-singleton equals: " + 
+                equal.map {j => Show.show(json) + " == " + Show.show(j)}.join(" && ")
+            )
+        }
+    }
 }
