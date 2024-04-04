@@ -91,12 +91,13 @@ check(
     virtualFiles: Map[String, String]
     lspHook: LspHook
     infer: Bool
-) {
+): List[CompileError] {
     let packages = path.isDirectory().{
         | True => findPackageFiles(path)
         | False {path.endsWith([".firefly", "package.ff"])} => [PackageFiles(path.parent().grab(), Some(path), [])]
         | False => [PackageFiles(path.parent().grab(), None, [path])]
     }
+    let errors = Array.make()
 
     packages.filter {!_.files.isEmpty()}.each {package => 
         let firstFile = package.files.grabFirst()
@@ -118,13 +119,19 @@ check(
         )
         package.files.each {file =>
             let localFile = file.base()
-            if(infer) {
-                compiler.infer(resolvedDependencies.mainPackagePair, localFile.dropLast(".ff".size()))
-            } else {
-                compiler.resolve(resolvedDependencies.mainPackagePair, localFile.dropLast(".ff".size()))
-            }
+            try {
+                if(infer) {
+                    compiler.infer(resolvedDependencies.mainPackagePair, localFile.dropLast(".ff".size()))
+                } else {
+                    compiler.resolve(resolvedDependencies.mainPackagePair, localFile.dropLast(".ff".size()))
+                }
+                Unit
+            } catch {| CompileError(_, _) @ c, error =>
+                errors.push(c)
+            } grab()
         }
     }
+    errors.drain()
 
 }
 

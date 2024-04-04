@@ -82,8 +82,8 @@ main(system: NodeSystem): Unit {
             importAndRun(fireflyPath, "build", resolvedDependencies.mainPackagePair, localMainFile, [])
 
         | CheckCommand(filePath) => 
-            Builder.check(system, fireflyPath, system.path(filePath), Map.empty(), LspHook.disabled(), True)
-        
+            let errors = Builder.check(system, fireflyPath, system.path(filePath), Map.empty(), LspHook.disabled(), True)
+            errors.first().map(throw)
         | BootstrapCommand =>
             let workingDirectory = system.path(".")
             Builder.build(
@@ -170,7 +170,7 @@ parseCommandLine(arguments: List[String]): MainCommand {
                 "You must only specify a single argument to check."  + usageString
             ))
             | _ => throw(CommandLineError(
-                "You must specify a Firefly file (.ff) as the argument to build."  + usageString
+                "You must specify a Firefly file (.ff) as the argument to check."  + usageString
             ))
         }
     | ["bootstrap", _] =>
