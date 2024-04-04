@@ -217,47 +217,47 @@ extend self: PgStatement {
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withBoolArray(name: String, value: Array[Bool]): PgStatement {
+    withBoolArray(name: String, value: List[Bool]): PgStatement {
         let p = UnsafeJs.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withNullableBoolArray(name: String, value: Option[Array[Bool]]): PgStatement {
+    withNullableBoolArray(name: String, value: Option[List[Bool]]): PgStatement {
         let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withIntArray(name: String, value: Array[Int]): PgStatement {
+    withIntArray(name: String, value: List[Int]): PgStatement {
         let p = UnsafeJs.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withNullableIntArray(name: String, value: Option[Array[Int]]): PgStatement {
+    withNullableIntArray(name: String, value: Option[List[Int]]): PgStatement {
         let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withFloatArray(name: String, value: Array[Float]): PgStatement {
+    withFloatArray(name: String, value: List[Float]): PgStatement {
         let p = UnsafeJs.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withNullableFloatArray(name: String, value: Option[Array[Float]]): PgStatement {
+    withNullableFloatArray(name: String, value: Option[List[Float]]): PgStatement {
         let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withStringArray(name: String, value: Array[String]): PgStatement {
+    withStringArray(name: String, value: List[String]): PgStatement {
         let p = UnsafeJs.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withNullableStringArray(name: String, value: Option[Array[String]]): PgStatement {
+    withNullableStringArray(name: String, value: Option[List[String]]): PgStatement {
         let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withInstantArray(name: String, value: Array[Instant]): PgStatement {
+    withInstantArray(name: String, value: List[Instant]): PgStatement {
         let jsDate = UnsafeJs.jsSystem().global().get("Date")
         function toJsDate(instant: Instant): JsValue {
             jsDate.new1(instant.since1970.seconds * 1000.0)
@@ -266,7 +266,7 @@ extend self: PgStatement {
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withNullableInstantArray(name: String, value: Option[Array[Instant]]): PgStatement {
+    withNullableInstantArray(name: String, value: Option[List[Instant]]): PgStatement {
         let jsDate = UnsafeJs.jsSystem().global().get("Date")
         function toJsDate(instant: Instant): JsValue {
             jsDate.new1(instant.since1970.seconds * 1000.0)
@@ -275,12 +275,12 @@ extend self: PgStatement {
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withBufferArray(name: String, value: Array[Buffer]): PgStatement {
+    withBufferArray(name: String, value: List[Buffer]): PgStatement {
         let p = UnsafeJs.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withNullableBufferArray(name: String, value: Option[Array[Buffer]]): PgStatement {
+    withNullableBufferArray(name: String, value: Option[List[Buffer]]): PgStatement {
         let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
@@ -342,27 +342,27 @@ extend self: PgRow {
         internalGet(self, name, lower) {_.grabBuffer()}
     }
 
-    getBoolArray(name: String, lower: Bool = True): Option[Array[Bool]] {
+    getBoolArray(name: String, lower: Bool = True): Option[List[Bool]] {
         internalGet(self, name, lower) {_.grabArray().map {(_.grabBool() && True) || False}}
     }
 
-    getIntArray(name: String, lower: Bool = True): Option[Array[Int]] {
+    getIntArray(name: String, lower: Bool = True): Option[List[Int]] {
         internalGet(self, name, lower) {_.grabArray().map {_.grabInt() * 1}}
     }
 
-    getFloatArray(name: String, lower: Bool = True): Option[Array[Float]] {
+    getFloatArray(name: String, lower: Bool = True): Option[List[Float]] {
         internalGet(self, name, lower) {_.grabArray().map {_.grabFloat() * 1.0}}
     }
 
-    getStringArray(name: String, lower: Bool = True): Option[Array[String]] {
+    getStringArray(name: String, lower: Bool = True): Option[List[String]] {
         internalGet(self, name, lower) {_.grabArray().map {"" + _.grabString()}}
     }
 
-    getInstantArray(name: String, lower: Bool = True): Option[Array[Instant]] {
+    getInstantArray(name: String, lower: Bool = True): Option[List[Instant]] {
         internalGet(self, name, lower) {_.grabArray().map {Instant(Duration(_.call0("getTime").grabInt() * 0.001))}}
     }
 
-    getBufferArray(name: String, lower: Bool = True): Option[Array[Buffer]] {
+    getBufferArray(name: String, lower: Bool = True): Option[List[Buffer]] {
         internalGet(self, name, lower) {_.grabArray().map {_.grabBuffer()}}
     }
 
@@ -384,7 +384,7 @@ internalRunStatement(statement: PgStatement, body: Option[PgRow => Bool]): Int {
         | None =>
             result.get("rowCount").grabInt()
         | Some(f) =>
-            let all = result.get("rows").grabArray().toList().all {row =>
+            let all = result.get("rows").grabArray().all {row =>
                 f(PgRow(row))
             }
             if(all) {1} else {0}
@@ -426,7 +426,7 @@ internalBatchStatements(
             | None =>
                 result.get("rowCount").grabInt()
             | Some(f) =>
-                let all = result.get("rows").grabArray().toList().all {row =>
+                let all = result.get("rows").grabArray().all {row =>
                     f(PgRow(row))
                 }
                 endBody.each {_()}
@@ -436,12 +436,12 @@ internalBatchStatements(
     results
 }
 
-internalCheckParameters(parameterNames: List[String], parameters: Map[String, JsValue]): Array[JsValue] {
-    let arguments = parameterNames.map { name =>
+internalCheckParameters(parameterNames: List[String], parameters: Map[String, JsValue]): List[JsValue] {
+    let arguments = parameterNames.map {name =>
         parameters.get(name).else {
             panic("No value for parameter: " + name)
         }
-    }.toArray()
+    }
     let unusedParameters = parameters.keys().removeAll(parameterNames.toSet())
     if(unusedParameters.size() > 0) {
         panic("Unused parameters: " + unusedParameters.toList().join(", "))
