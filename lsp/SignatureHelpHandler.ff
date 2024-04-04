@@ -44,10 +44,11 @@ handleSignatureHelp(system: NodeSystem, lspHook: LspHook): Json {
 
 pickActiveParameter(help: Json, argumentIndex: Int, parameterName: Option[String]): Json {
     parameterName.flatMap {name =>
-        let parameters = help.field("signatures").index(0).field("parameters").grabArray()
-        parameters.pairs().collectFirst {| Pair(i, p) => 
-            if(name == p.field("label").grabString().takeWhile {_.isAsciiLetterOrDigit()}) {
-                help.with("activeParameter", i)
+        help.field("signatures").index(0).field("parameters").getArray().flatMap {parameters =>
+            parameters.pairs().collectFirst {| Pair(i, p) => 
+                if(name == p.field("label").grabString().takeWhile {_.isAsciiLetterOrDigit()}) {
+                    help.with("activeParameter", i)
+                }
             }
         }
     }.else {help.with("activeParameter", argumentIndex)}

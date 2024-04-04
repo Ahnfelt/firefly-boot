@@ -252,13 +252,11 @@ const sameCase_ = ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardP
 {
 const _1 = declaration_.variants_;
 {
-if(_1.length > 0) {
-const variant_ = _1[0];
 if(_1.length === 1) {
+const variant_ = _1[0];
 const fields_ = [...declaration_.commonFields_, ...variant_.fields_];
 return [sameCase_, ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardPattern_], [], ff_compiler_Deriver.Deriver_makeOrderingFields(self_, modulePrefix_, declaration_, fields_))]
 return
-}
 }
 }
 {
@@ -305,7 +303,7 @@ return
 }
 }
 {
-if(fields_a.length > 0) {
+if(fields_a.length >= 1) {
 const head_ = fields_a[0];
 const tail_ = fields_a.slice(1);
 const variableName_ = (head_.name_ + "Ordering");
@@ -357,13 +355,11 @@ const sameCase_ = ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardP
 {
 const _1 = declaration_.variants_;
 {
-if(_1.length > 0) {
-const variant_ = _1[0];
 if(_1.length === 1) {
+const variant_ = _1[0];
 const fields_ = [...declaration_.commonFields_, ...variant_.fields_];
 return [sameCase_, ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardPattern_], [], ff_compiler_Deriver.Deriver_makeEqualFields(self_, modulePrefix_, declaration_, fields_))]
 return
-}
 }
 }
 {
@@ -397,16 +393,14 @@ return
 }
 }
 {
-if(fields_a.length > 0) {
-const head_ = fields_a[0];
 if(fields_a.length === 1) {
+const head_ = fields_a[0];
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Equal.equals", [ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "x"), head_.name_), ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "y"), head_.name_)], [])
 return
 }
 }
-}
 {
-if(fields_a.length > 0) {
+if(fields_a.length >= 1) {
 const head_ = fields_a[0];
 const tail_ = fields_a.slice(1);
 const equalsTerm_ = ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Equal.equals", [ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "x"), head_.name_), ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "y"), head_.name_)], []);
@@ -693,13 +687,11 @@ const sameCase_ = ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardP
 {
 const _1 = declaration_.variants_;
 {
-if(_1.length > 0) {
-const variant_ = _1[0];
 if(_1.length === 1) {
+const variant_ = _1[0];
 const fields_ = [...declaration_.commonFields_, ...variant_.fields_];
 return [sameCase_, ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardPattern_], [], ff_compiler_Deriver.Deriver_makeOrderingFields(self_, modulePrefix_, declaration_, fields_))]
 return
-}
 }
 }
 {
@@ -746,7 +738,7 @@ return
 }
 }
 {
-if(fields_a.length > 0) {
+if(fields_a.length >= 1) {
 const head_ = fields_a[0];
 const tail_ = fields_a.slice(1);
 const variableName_ = (head_.name_ + "Ordering");
@@ -798,13 +790,11 @@ const sameCase_ = ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardP
 {
 const _1 = declaration_.variants_;
 {
-if(_1.length > 0) {
-const variant_ = _1[0];
 if(_1.length === 1) {
+const variant_ = _1[0];
 const fields_ = [...declaration_.commonFields_, ...variant_.fields_];
 return [sameCase_, ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardPattern_], [], ff_compiler_Deriver.Deriver_makeEqualFields(self_, modulePrefix_, declaration_, fields_))]
 return
-}
 }
 }
 {
@@ -838,16 +828,14 @@ return
 }
 }
 {
-if(fields_a.length > 0) {
-const head_ = fields_a[0];
 if(fields_a.length === 1) {
+const head_ = fields_a[0];
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Equal.equals", [ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "x"), head_.name_), ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "y"), head_.name_)], [])
 return
 }
 }
-}
 {
-if(fields_a.length > 0) {
+if(fields_a.length >= 1) {
 const head_ = fields_a[0];
 const tail_ = fields_a.slice(1);
 const equalsTerm_ = ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Equal.equals", [ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "x"), head_.name_), ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "y"), head_.name_)], []);

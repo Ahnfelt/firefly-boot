@@ -633,11 +633,9 @@ return
 if(_1.PVariant) {
 const at_ = _1.at_;
 if(_1.name_ === "List$Link") {
-if(_1.patterns_.length > 0) {
-const head_ = _1.patterns_[0];
-if(_1.patterns_.length > 1) {
-const tail_ = _1.patterns_[1];
 if(_1.patterns_.length === 2) {
+const head_ = _1.patterns_[0];
+const tail_ = _1.patterns_[1];
 const itemType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_);
 const listType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("List"), [itemType_]);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, listType_);
@@ -645,8 +643,6 @@ const headVariables_ = ff_compiler_Inference.Inference_inferPattern(self_, envir
 const tailVariables_ = ff_compiler_Inference.Inference_inferPattern(self_, environment_, listType_, tail_);
 return ff_core_Map.Map_addAll(headVariables_, tailVariables_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
-}
-}
 }
 }
 }
@@ -971,18 +967,16 @@ const l_ = _1.lambda_;
 do {
 const _1 = l_.cases_;
 {
-if(_1.length > 0) {
+if(_1.length === 1) {
 if(_1[0].patterns_.length === 0) {
 if(_1[0].guards_.length === 0) {
 if(_1[0].body_.EVariable) {
 const insideAt_ = _1[0].body_.at_;
 if(_1[0].body_.name_ === "") {
-if(_1.length === 1) {
 const _guard1 = ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_);
 if(_guard1) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferLambdaStartHook(self_.unification_, environment_, expected_))
 break
-}
 }
 }
 }
@@ -991,7 +985,7 @@ break
 }
 }
 {
-if(_1.length > 0) {
+if(_1.length === 1) {
 if(_1[0].patterns_.length === 0) {
 if(_1[0].guards_.length === 0) {
 if(_1[0].body_.ESequential) {
@@ -1000,12 +994,10 @@ const insideAt_ = _1[0].body_.before_.at_;
 if(_1[0].body_.before_.name_ === "") {
 if(_1[0].body_.after_.EVariant) {
 if(_1[0].body_.after_.name_ === "ff:core/Unit.Unit") {
-if(_1.length === 1) {
 const _guard1 = ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_);
 if(_guard1) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferLambdaStartHook(self_.unification_, environment_, expected_))
 break
-}
 }
 }
 }
@@ -1691,9 +1683,8 @@ const target_ = ff_compiler_Syntax.StaticCall(operator_, false, false);
 {
 const _1 = e_.arguments_;
 {
-if(_1.length > 0) {
-const a1_ = _1[0];
 if(_1.length === 1) {
+const a1_ = _1[0];
 const _guard1 = (operator_ === "!");
 if(_guard1) {
 const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), []);
@@ -1713,11 +1704,9 @@ return
 }
 }
 }
-}
 {
-if(_1.length > 0) {
-const a1_ = _1[0];
 if(_1.length === 1) {
+const a1_ = _1[0];
 const _guard1 = (operator_ === "-");
 if(_guard1) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
@@ -1774,13 +1763,10 @@ return
 }
 }
 }
-}
 {
-if(_1.length > 0) {
-const a1_ = _1[0];
-if(_1.length > 1) {
-const a2_ = _1[1];
 if(_1.length === 2) {
+const a1_ = _1[0];
+const a2_ = _1[1];
 const _guard1 = ((operator_ === "||") || (operator_ === "&&"));
 if(_guard1) {
 const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), []);
@@ -1803,14 +1789,10 @@ return
 }
 }
 }
-}
-}
 {
-if(_1.length > 0) {
-const a1_ = _1[0];
-if(_1.length > 1) {
-const a2_ = _1[1];
 if(_1.length === 2) {
+const a1_ = _1[0];
+const a2_ = _1[1];
 const _guard1 = ((operator_ === "===") || (operator_ === "!=="));
 if(_guard1) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
@@ -1833,14 +1815,10 @@ return
 }
 }
 }
-}
-}
 {
-if(_1.length > 0) {
-const a1_ = _1[0];
-if(_1.length > 1) {
-const a2_ = _1[1];
 if(_1.length === 2) {
+const a1_ = _1[0];
+const a2_ = _1[1];
 const _guard1 = ((((((operator_ === "+") || (operator_ === "-")) || (operator_ === "*")) || (operator_ === "/")) || (operator_ === "%")) || (operator_ === "^"));
 if(_guard1) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
@@ -2009,8 +1987,6 @@ return
 }
 }
 return
-}
-}
 }
 }
 }
@@ -2698,11 +2674,9 @@ return
 if(_1.PVariant) {
 const at_ = _1.at_;
 if(_1.name_ === "List$Link") {
-if(_1.patterns_.length > 0) {
-const head_ = _1.patterns_[0];
-if(_1.patterns_.length > 1) {
-const tail_ = _1.patterns_[1];
 if(_1.patterns_.length === 2) {
+const head_ = _1.patterns_[0];
+const tail_ = _1.patterns_[1];
 const itemType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_);
 const listType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("List"), [itemType_]);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, listType_);
@@ -2710,8 +2684,6 @@ const headVariables_ = ff_compiler_Inference.Inference_inferPattern(self_, envir
 const tailVariables_ = ff_compiler_Inference.Inference_inferPattern(self_, environment_, listType_, tail_);
 return ff_core_Map.Map_addAll(headVariables_, tailVariables_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
-}
-}
 }
 }
 }
@@ -3036,18 +3008,16 @@ const l_ = _1.lambda_;
 do {
 const _1 = l_.cases_;
 {
-if(_1.length > 0) {
+if(_1.length === 1) {
 if(_1[0].patterns_.length === 0) {
 if(_1[0].guards_.length === 0) {
 if(_1[0].body_.EVariable) {
 const insideAt_ = _1[0].body_.at_;
 if(_1[0].body_.name_ === "") {
-if(_1.length === 1) {
 const _guard1 = ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_);
 if(_guard1) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferLambdaStartHook(self_.unification_, environment_, expected_))
 break
-}
 }
 }
 }
@@ -3056,7 +3026,7 @@ break
 }
 }
 {
-if(_1.length > 0) {
+if(_1.length === 1) {
 if(_1[0].patterns_.length === 0) {
 if(_1[0].guards_.length === 0) {
 if(_1[0].body_.ESequential) {
@@ -3065,12 +3035,10 @@ const insideAt_ = _1[0].body_.before_.at_;
 if(_1[0].body_.before_.name_ === "") {
 if(_1[0].body_.after_.EVariant) {
 if(_1[0].body_.after_.name_ === "ff:core/Unit.Unit") {
-if(_1.length === 1) {
 const _guard1 = ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_);
 if(_guard1) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferLambdaStartHook(self_.unification_, environment_, expected_))
 break
-}
 }
 }
 }
@@ -3756,9 +3724,8 @@ const target_ = ff_compiler_Syntax.StaticCall(operator_, false, false);
 {
 const _1 = e_.arguments_;
 {
-if(_1.length > 0) {
-const a1_ = _1[0];
 if(_1.length === 1) {
+const a1_ = _1[0];
 const _guard1 = (operator_ === "!");
 if(_guard1) {
 const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), []);
@@ -3778,11 +3745,9 @@ return
 }
 }
 }
-}
 {
-if(_1.length > 0) {
-const a1_ = _1[0];
 if(_1.length === 1) {
+const a1_ = _1[0];
 const _guard1 = (operator_ === "-");
 if(_guard1) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
@@ -3839,13 +3804,10 @@ return
 }
 }
 }
-}
 {
-if(_1.length > 0) {
-const a1_ = _1[0];
-if(_1.length > 1) {
-const a2_ = _1[1];
 if(_1.length === 2) {
+const a1_ = _1[0];
+const a2_ = _1[1];
 const _guard1 = ((operator_ === "||") || (operator_ === "&&"));
 if(_guard1) {
 const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), []);
@@ -3868,14 +3830,10 @@ return
 }
 }
 }
-}
-}
 {
-if(_1.length > 0) {
-const a1_ = _1[0];
-if(_1.length > 1) {
-const a2_ = _1[1];
 if(_1.length === 2) {
+const a1_ = _1[0];
+const a2_ = _1[1];
 const _guard1 = ((operator_ === "===") || (operator_ === "!=="));
 if(_guard1) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
@@ -3898,14 +3856,10 @@ return
 }
 }
 }
-}
-}
 {
-if(_1.length > 0) {
-const a1_ = _1[0];
-if(_1.length > 1) {
-const a2_ = _1[1];
 if(_1.length === 2) {
+const a1_ = _1[0];
+const a2_ = _1[1];
 const _guard1 = ((((((operator_ === "+") || (operator_ === "-")) || (operator_ === "*")) || (operator_ === "/")) || (operator_ === "%")) || (operator_ === "^"));
 if(_guard1) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
@@ -4074,8 +4028,6 @@ return
 }
 }
 return
-}
-}
 }
 }
 }

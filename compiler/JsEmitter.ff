@@ -722,26 +722,24 @@ extend self: JsEmitter {
                 "if(" + argument + ") {\n" +
                 self.emitCase(arguments, matchCase, jump, last, async) +
                 "\n}"
-            | PVariant(_, "List$Empty", []) =>
-                mutable shortArgument = argument
-                mutable shortCount = 0
-                while {shortArgument.endsWith(".slice(1)")} {
-                    shortArgument = shortArgument.dropLast(".slice(1)".size())
-                    shortCount += 1
+            | PVariant(_, emptyOrLink, _) {emptyOrLink == "List$Empty" || emptyOrLink == "List$Link"} =>
+                mutable restPattern = None
+                function listPatterns(matchPattern: MatchPattern): List[MatchPattern] {
+                    | PVariant(_, "List$Empty", []) => 
+                        []
+                    | PVariant(_, "List$Link", [head, tail]) =>
+                        [head, ...listPatterns(tail)]
+                    | p =>
+                        restPattern = Some(p)
+                        []
                 }
-                "if(" + shortArgument + ".length === " + shortCount + ") {\n" +
-                self.emitCase(arguments, matchCase, jump, last, async) +
-                "\n}"
-            | PVariant(_, "List$Link", [head, tail]) =>
-                mutable shortArgument = argument
-                mutable shortCount = 0
-                while {shortArgument.endsWith(".slice(1)")} {
-                    shortArgument = shortArgument.dropLast(".slice(1)".size())
-                    shortCount += 1
-                }
-                let newArguments = [shortArgument + "[" + shortCount + "]", argument + ".slice(1)", ...arguments]
-                let newMatchCase = matchCase.MatchCase(patterns = [head, tail, ...matchCase.patterns])
-                "if(" + shortArgument + ".length > " + shortCount + ") {\n" +
+                let patterns = listPatterns(pattern)
+                let itemArguments = patterns.pairs().map {| Pair(i, _) => argument + "[" + i + "]"}
+                let restArgument = restPattern.map {_ => argument + ".slice(" + patterns.size() + ")"}
+                let newArguments = [...itemArguments, ...restArgument.toList(), ...arguments]
+                let newMatchCase = matchCase.MatchCase(patterns = [...patterns, ...restPattern.toList(), ...matchCase.patterns])
+                let operator = restPattern.map {_ => ">="}.else {"==="}
+                "if(" + argument + ".length " + operator + " " + patterns.size() + ") {\n" +
                 self.emitCase(newArguments, newMatchCase, jump, last, async) +
                 "\n}"
             | PVariant(_, name, patterns) =>

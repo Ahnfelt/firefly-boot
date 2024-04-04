@@ -1827,7 +1827,7 @@ return
 }
 }
 {
-if(items_a.length > 0) {
+if(items_a.length >= 1) {
 const p_ = items_a[0].first_;
 if(!items_a[0].second_) {
 const ps_ = items_a.slice(1);
@@ -1837,18 +1837,16 @@ return
 }
 }
 {
-if(items_a.length > 0) {
+if(items_a.length === 1) {
 const p_ = items_a[0].first_;
 if(items_a[0].second_) {
-if(items_a.length === 1) {
 return p_
 return
 }
 }
 }
-}
 {
-if(items_a.length > 0) {
+if(items_a.length >= 1) {
 const p_ = items_a[0].first_;
 if(items_a[0].second_) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(p_.at_, "Invalid pattern: ... is only allowed for the last element in a list"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -3454,7 +3452,7 @@ return
 }
 }
 {
-if(items_a.length > 0) {
+if(items_a.length >= 1) {
 const p_ = items_a[0].first_;
 if(!items_a[0].second_) {
 const ps_ = items_a.slice(1);
@@ -3464,18 +3462,16 @@ return
 }
 }
 {
-if(items_a.length > 0) {
+if(items_a.length === 1) {
 const p_ = items_a[0].first_;
 if(items_a[0].second_) {
-if(items_a.length === 1) {
 return p_
 return
 }
 }
 }
-}
 {
-if(items_a.length > 0) {
+if(items_a.length >= 1) {
 const p_ = items_a[0].first_;
 if(items_a[0].second_) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(p_.at_, "Invalid pattern: ... is only allowed for the last element in a list"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})

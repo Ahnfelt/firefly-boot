@@ -437,10 +437,8 @@ const _1 = type_;
 if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
-if(_1.generics_.length > 0) {
-if(_1.generics_.length > 1) {
-const r_ = _1.generics_[1];
 if(_1.generics_.length === 2) {
+const r_ = _1.generics_[1];
 const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
 if(_guard1) {
 return ("() => " + go_(r_))
@@ -449,18 +447,13 @@ return
 }
 }
 }
-}
-}
 {
 if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
-if(_1.generics_.length > 0) {
-if(_1.generics_.length > 1) {
-const a_ = _1.generics_[1];
-if(_1.generics_.length > 2) {
-const r_ = _1.generics_[2];
 if(_1.generics_.length === 3) {
+const a_ = _1.generics_[1];
+const r_ = _1.generics_[2];
 const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
 if(_guard1) {
 return ((go_(a_) + " => ") + go_(r_))
@@ -469,14 +462,11 @@ return
 }
 }
 }
-}
-}
-}
 {
 if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
-if(_1.generics_.length > 0) {
+if(_1.generics_.length >= 1) {
 const generics_ = _1.generics_.slice(1);
 const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
 if(_guard1) {
@@ -623,10 +613,8 @@ const _1 = type_;
 if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
-if(_1.generics_.length > 0) {
-if(_1.generics_.length > 1) {
-const r_ = _1.generics_[1];
 if(_1.generics_.length === 2) {
+const r_ = _1.generics_[1];
 const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
 if(_guard1) {
 return ("() => " + go_(r_))
@@ -635,18 +623,13 @@ return
 }
 }
 }
-}
-}
 {
 if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
-if(_1.generics_.length > 0) {
-if(_1.generics_.length > 1) {
-const a_ = _1.generics_[1];
-if(_1.generics_.length > 2) {
-const r_ = _1.generics_[2];
 if(_1.generics_.length === 3) {
+const a_ = _1.generics_[1];
+const r_ = _1.generics_[2];
 const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
 if(_guard1) {
 return ((go_(a_) + " => ") + go_(r_))
@@ -655,14 +638,11 @@ return
 }
 }
 }
-}
-}
-}
 {
 if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
-if(_1.generics_.length > 0) {
+if(_1.generics_.length >= 1) {
 const generics_ = _1.generics_.slice(1);
 const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
 if(_guard1) {

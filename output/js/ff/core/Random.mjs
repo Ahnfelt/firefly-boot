@@ -216,8 +216,8 @@ export function Random_nextGauss(self_, mean_, standardDeviation_) {
 export function Random_shuffleArray(self_, array_) {
 ff_core_List.List_each(ff_core_Int.Int_until(0, (ff_core_Array.Array_size(array_) - 1)), ((i_) => {
 const j_ = (ff_core_Random.Random_nextInt(self_, 0, (ff_core_Array.Array_size(array_) - i_)) + i_);
-const value_ = ff_core_Array.Array_grab(array_, i_);
-ff_core_Array.Array_set(array_, i_, ff_core_Array.Array_grab(array_, j_));
+const value_ = (array_.array[i_] ?? ff_core_Array.internalGrab_(array_, i_));
+ff_core_Array.Array_set(array_, i_, (array_.array[j_] ?? ff_core_Array.internalGrab_(array_, j_)));
 ff_core_Array.Array_set(array_, j_, value_)
 }))
 }
@@ -275,8 +275,8 @@ throw new Error('Function Random_nextGauss is missing on this target in async co
 export async function Random_shuffleArray$(self_, array_, $task) {
 ff_core_List.List_each(ff_core_Int.Int_until(0, (ff_core_Array.Array_size(array_) - 1)), ((i_) => {
 const j_ = (ff_core_Random.Random_nextInt(self_, 0, (ff_core_Array.Array_size(array_) - i_)) + i_);
-const value_ = ff_core_Array.Array_grab(array_, i_);
-ff_core_Array.Array_set(array_, i_, ff_core_Array.Array_grab(array_, j_));
+const value_ = (array_.array[i_] ?? ff_core_Array.internalGrab_(array_, i_));
+ff_core_Array.Array_set(array_, i_, (array_.array[j_] ?? ff_core_Array.internalGrab_(array_, j_)));
 ff_core_Array.Array_set(array_, j_, value_)
 }))
 }

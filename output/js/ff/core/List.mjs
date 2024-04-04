@@ -123,9 +123,9 @@ export function internalSame_(left_, right_) {
 return left_ === right_
 }
 
-export function intenalGrab_(self_, index_) {
+export function internalGrab_(self_, index_) {
 
-        return index_ < 0 || index_ >= self_.length ? ff_core_Try.internalThrowGrabException_() : self_[index_]
+        return index_ < 0 || index_ >= self_.length ? ff_core_Try.internalThrowGrabException_() : self_[index_];
     
 }
 
@@ -155,8 +155,8 @@ export async function internalSame_$(left_, right_, $task) {
 throw new Error('Function internalSame is missing on this target in async context.');
 }
 
-export async function intenalGrab_$(self_, index_, $task) {
-throw new Error('Function intenalGrab is missing on this target in async context.');
+export async function internalGrab_$(self_, index_, $task) {
+throw new Error('Function internalGrab is missing on this target in async context.');
 }
 
 export function List_addAll(self_, that_) {

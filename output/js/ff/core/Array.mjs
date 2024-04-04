@@ -127,10 +127,10 @@ ff_core_Array.sortRange_(array_, compare_, middle_, end_);
 let i_ = start_;
 let j_ = middle_;
 while(((i_ < middle_) && (j_ < end_))) {
-if((compare_(ff_core_Array.Array_grab(array_, i_), ff_core_Array.Array_grab(array_, j_)) !== ff_core_Ordering.OrderingAfter())) {
+if((compare_((array_.array[i_] ?? ff_core_Array.internalGrab_(array_, i_)), (array_.array[j_] ?? ff_core_Array.internalGrab_(array_, j_))) !== ff_core_Ordering.OrderingAfter())) {
 i_ += 1
 } else {
-const value_ = ff_core_Array.Array_grab(array_, j_);
+const value_ = (array_.array[j_] ?? ff_core_Array.internalGrab_(array_, j_));
 let k_ = j_;
 while((k_ > i_)) {
 ff_core_Array.Array_set(array_, k_, ff_core_Array.Array_grab(array_, (k_ - 1)));
@@ -143,6 +143,12 @@ j_ += 1
 }
 }
 }
+}
+
+export function internalGrab_(self_, index_) {
+
+        return index_ < 0 || index_ >= self_.array.length ? ff_core_Try.internalThrowGrabException_() : self_.array[index_];
+    
 }
 
 export async function make_$($task) {
@@ -171,10 +177,10 @@ let middle_ = (start_ + ((end_ - start_) / 2));
 let i_ = start_;
 let j_ = middle_;
 while(((i_ < middle_) && (j_ < end_))) {
-if(((await compare_(ff_core_Array.Array_grab(array_, i_), ff_core_Array.Array_grab(array_, j_), $task)) !== ff_core_Ordering.OrderingAfter())) {
+if(((await compare_((array_.array[i_] ?? ff_core_Array.internalGrab_(array_, i_)), (array_.array[j_] ?? ff_core_Array.internalGrab_(array_, j_)), $task)) !== ff_core_Ordering.OrderingAfter())) {
 i_ += 1
 } else {
-const value_ = ff_core_Array.Array_grab(array_, j_);
+const value_ = (array_.array[j_] ?? ff_core_Array.internalGrab_(array_, j_));
 let k_ = j_;
 while((k_ > i_)) {
 ff_core_Array.Array_set(array_, k_, ff_core_Array.Array_grab(array_, (k_ - 1)));
@@ -187,6 +193,10 @@ j_ += 1
 }
 }
 }
+}
+
+export async function internalGrab_$(self_, index_, $task) {
+throw new Error('Function internalGrab is missing on this target in async context.');
 }
 
 export function Array_isEmpty(self_) {
@@ -207,10 +217,7 @@ export function Array_get(self_, index_) {
 
 export function Array_grab(self_, index_) {
 
-            if(index_ < 0 || index_ >= self_.array.length) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            return self_.array[index_]
+            return self_.array[index_] ?? internalGrab_(self_, index_);
         
 }
 
