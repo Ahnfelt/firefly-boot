@@ -156,7 +156,6 @@ return module2_
 export function Resolver_checkInstanceType(self_, type_) {
 {
 const _1 = type_;
-{
 if(_1.TConstructor) {
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
@@ -167,7 +166,6 @@ ff_core_List.List_each(typeArguments_, ((_w1) => {
 ff_compiler_Resolver.Resolver_checkInstanceType(self_, _w1)
 }))
 return
-}
 }
 {
 
@@ -183,17 +181,13 @@ ff_core_List.List_each(imports_, ((import_) => {
 const _1 = ff_core_List.List_find(modules_, ((_w1) => {
 return (ff_core_String.String_dropLast(_w1.file_, 3) === import_.file_)
 }));
-{
 if(_1.Some) {
 const module_ = _1.value_;
 resolver_ = ff_compiler_Resolver.Resolver_processDefinitions(resolver_, module_, ff_core_Option.Some(import_.alias_))
 return
 }
-}
-{
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("No such module: " + import_.file_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
 }
 }
 }));
@@ -205,24 +199,18 @@ function entry_(name_, unqualified_) {
 const full_ = ((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_);
 {
 const _1 = importAlias_;
-{
 if(_1.None) {
 return [ff_core_Pair.Pair(name_, full_), ff_core_Pair.Pair(full_, full_)]
 }
-}
-{
 if(_1.Some) {
 const alias_ = _1.value_;
 if(unqualified_) {
 return [ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_core_Pair.Pair(name_, full_), ff_core_Pair.Pair(full_, full_)]
 }
 }
-}
-{
 if(_1.Some) {
 const alias_ = _1.value_;
 return [ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_core_Pair.Pair(full_, full_)]
-}
 }
 }
 }
@@ -412,11 +400,9 @@ return (_w1.name_ === name_)
 const function1_ = ff_compiler_Syntax.DFunction(signature_.at_, signature_, ff_compiler_Syntax.FireflyTarget(lambda_));
 const function2_ = ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, function1_, true, false);
 return ff_core_Pair.Pair(name_, (((_1) => {
-{
 if(_1.FireflyTarget) {
 const lambda_ = _1.lambda_;
 return lambda_
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(signature_.at_, "Internal error: Expected method default to be a lambda"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -630,9 +616,8 @@ const effect_ = term_a.effect_;
 const function_ = term_a.function_;
 return ff_compiler_Syntax.EPipe(at_, ff_compiler_Resolver.Resolver_resolveTerm(self_, value_, topLevel_), ff_compiler_Resolver.Resolver_resolveType(self_, effect_, topLevel_), ff_compiler_Resolver.Resolver_resolveTerm(self_, function_, topLevel_))
 }
-if(term_a.ECall) {
+if(term_a.ECall && term_a.target_.DynamicCall) {
 const at_ = term_a.at_;
-if(term_a.target_.DynamicCall) {
 const target_ = term_a.target_;
 const effect_ = term_a.effect_;
 const typeArguments_ = term_a.typeArguments_;
@@ -653,12 +638,8 @@ return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Resolver.Resolv
 })), dictionaries_)
 return
 }
-}
-if(term_a.ECall) {
-const at_ = term_a.at_;
-if(term_a.target_.StaticCall) {
+if(term_a.ECall && term_a.target_.StaticCall) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Internal error: Static calls not expected in the Resolver phase"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
 }
 if(term_a.ERecord) {
 const at_ = term_a.at_;
@@ -936,17 +917,13 @@ return ff_core_Map.empty_()
 if(pattern_a.PChar) {
 return ff_core_Map.empty_()
 }
-if(pattern_a.PVariable) {
+if(pattern_a.PVariable && pattern_a.name_.Some) {
 const at_ = pattern_a.at_;
-if(pattern_a.name_.Some) {
 const name_ = pattern_a.name_.value_;
 return ff_core_List.List_toMap([ff_core_Pair.Pair(name_, ff_core_Pair.Pair(at_, name_))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
-}
-if(pattern_a.PVariable) {
-if(pattern_a.name_.None) {
+if(pattern_a.PVariable && pattern_a.name_.None) {
 return ff_core_Map.empty_()
-}
 }
 if(pattern_a.PVariant) {
 const patterns_ = pattern_a.patterns_;
@@ -1116,7 +1093,6 @@ return module2_
 export async function Resolver_checkInstanceType$(self_, type_, $task) {
 {
 const _1 = type_;
-{
 if(_1.TConstructor) {
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
@@ -1127,7 +1103,6 @@ ff_core_List.List_each(typeArguments_, ((_w1) => {
 ff_compiler_Resolver.Resolver_checkInstanceType(self_, _w1)
 }))
 return
-}
 }
 {
 
@@ -1143,17 +1118,13 @@ ff_core_List.List_each(imports_, ((import_) => {
 const _1 = ff_core_List.List_find(modules_, ((_w1) => {
 return (ff_core_String.String_dropLast(_w1.file_, 3) === import_.file_)
 }));
-{
 if(_1.Some) {
 const module_ = _1.value_;
 resolver_ = ff_compiler_Resolver.Resolver_processDefinitions(resolver_, module_, ff_core_Option.Some(import_.alias_))
 return
 }
-}
-{
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("No such module: " + import_.file_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
 }
 }
 }));
@@ -1165,24 +1136,18 @@ function entry_(name_, unqualified_) {
 const full_ = ((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_);
 {
 const _1 = importAlias_;
-{
 if(_1.None) {
 return [ff_core_Pair.Pair(name_, full_), ff_core_Pair.Pair(full_, full_)]
 }
-}
-{
 if(_1.Some) {
 const alias_ = _1.value_;
 if(unqualified_) {
 return [ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_core_Pair.Pair(name_, full_), ff_core_Pair.Pair(full_, full_)]
 }
 }
-}
-{
 if(_1.Some) {
 const alias_ = _1.value_;
 return [ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_core_Pair.Pair(full_, full_)]
-}
 }
 }
 }
@@ -1372,11 +1337,9 @@ return (_w1.name_ === name_)
 const function1_ = ff_compiler_Syntax.DFunction(signature_.at_, signature_, ff_compiler_Syntax.FireflyTarget(lambda_));
 const function2_ = ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, function1_, true, false);
 return ff_core_Pair.Pair(name_, (((_1) => {
-{
 if(_1.FireflyTarget) {
 const lambda_ = _1.lambda_;
 return lambda_
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(signature_.at_, "Internal error: Expected method default to be a lambda"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -1590,9 +1553,8 @@ const effect_ = term_a.effect_;
 const function_ = term_a.function_;
 return ff_compiler_Syntax.EPipe(at_, ff_compiler_Resolver.Resolver_resolveTerm(self_, value_, topLevel_), ff_compiler_Resolver.Resolver_resolveType(self_, effect_, topLevel_), ff_compiler_Resolver.Resolver_resolveTerm(self_, function_, topLevel_))
 }
-if(term_a.ECall) {
+if(term_a.ECall && term_a.target_.DynamicCall) {
 const at_ = term_a.at_;
-if(term_a.target_.DynamicCall) {
 const target_ = term_a.target_;
 const effect_ = term_a.effect_;
 const typeArguments_ = term_a.typeArguments_;
@@ -1613,12 +1575,8 @@ return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Resolver.Resolv
 })), dictionaries_)
 return
 }
-}
-if(term_a.ECall) {
-const at_ = term_a.at_;
-if(term_a.target_.StaticCall) {
+if(term_a.ECall && term_a.target_.StaticCall) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Internal error: Static calls not expected in the Resolver phase"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
 }
 if(term_a.ERecord) {
 const at_ = term_a.at_;
@@ -1896,17 +1854,13 @@ return ff_core_Map.empty_()
 if(pattern_a.PChar) {
 return ff_core_Map.empty_()
 }
-if(pattern_a.PVariable) {
+if(pattern_a.PVariable && pattern_a.name_.Some) {
 const at_ = pattern_a.at_;
-if(pattern_a.name_.Some) {
 const name_ = pattern_a.name_.value_;
 return ff_core_List.List_toMap([ff_core_Pair.Pair(name_, ff_core_Pair.Pair(at_, name_))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
-}
-if(pattern_a.PVariable) {
-if(pattern_a.name_.None) {
+if(pattern_a.PVariable && pattern_a.name_.None) {
 return ff_core_Map.empty_()
-}
 }
 if(pattern_a.PVariant) {
 const patterns_ = pattern_a.patterns_;

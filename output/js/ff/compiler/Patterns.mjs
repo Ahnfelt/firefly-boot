@@ -109,7 +109,6 @@ return {fields_, guard_};
 export function check_(variants_, fields_, cases_, success_, guard_) {
 {
 const _1 = ff_core_Pair.Pair(fields_, cases_);
-{
 if(_1.first_.length >= 1) {
 const f_ = _1.first_[0].first_;
 const p_ = _1.first_[0].second_;
@@ -135,27 +134,18 @@ ff_compiler_Patterns.check_(variants_, [], cs_, false, guard_)
 }
 return
 }
-}
-{
 if((success_ && (!guard_))) {
 
 return
 }
-}
-{
-if(_1.first_.length === 0) {
-if(_1.second_.length >= 1) {
+if(_1.first_.length === 0 && _1.second_.length >= 1) {
 const fs_ = _1.second_[0].fields_;
 const g_ = _1.second_[0].guard_;
 const cs_ = _1.second_.slice(1);
 ff_compiler_Patterns.check_(variants_, fs_, cs_, true, g_)
 return
 }
-}
-}
-{
-if(_1.first_.length === 0) {
-if(_1.second_.length === 0) {
+if(_1.first_.length === 0 && _1.second_.length === 0) {
 const remaining_ = ff_core_List.List_map(ff_core_List.List_filter(ff_core_Map.Map_pairs(variants_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
 return (ff_core_Set.Set_size(_w1.second_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) !== 0)
 })), ((_1) => {
@@ -169,8 +159,6 @@ if((ff_core_List.List_size(remaining_) !== 0)) {
 ff_core_Core.panic_(("Unexhaustive match:\n" + ff_core_List.List_join(remaining_, "\n")))
 }
 return
-}
-}
 }
 }
 }
@@ -225,12 +213,10 @@ const p_ = pattern_a;
 const fields_ = ff_core_List.List_collect(ff_core_List.List_pairs(ff_core_List.List_map(p_.patterns_, ((pattern_) => {
 return convertPattern_(pattern_)
 }))), ((_1) => {
-{
-const i_ = _1.first_;
 if(_1.second_.Some) {
+const i_ = _1.first_;
 const p_ = _1.second_.value_;
 return ff_core_Option.Some(ff_core_Pair.Pair(("" + i_), p_))
-}
 }
 {
 return ff_core_Option.None()
@@ -254,12 +240,10 @@ const case_ = _1.second_;
 const fields_ = ff_core_List.List_collect(ff_core_List.List_pairs(ff_core_List.List_map(case_.patterns_, ((pattern_) => {
 return convertPattern_(pattern_)
 }))), ((_1) => {
-{
-const i_ = _1.first_;
 if(_1.second_.Some) {
+const i_ = _1.first_;
 const p_ = _1.second_.value_;
 return ff_core_Option.Some(ff_core_Pair.Pair(("" + i_), p_))
-}
 }
 {
 return ff_core_Option.None()
@@ -295,7 +279,6 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 export async function check_$(variants_, fields_, cases_, success_, guard_, $task) {
 {
 const _1 = ff_core_Pair.Pair(fields_, cases_);
-{
 if(_1.first_.length >= 1) {
 const f_ = _1.first_[0].first_;
 const p_ = _1.first_[0].second_;
@@ -321,27 +304,18 @@ ff_compiler_Patterns.check_(variants_, [], cs_, false, guard_)
 }
 return
 }
-}
-{
 if((success_ && (!guard_))) {
 
 return
 }
-}
-{
-if(_1.first_.length === 0) {
-if(_1.second_.length >= 1) {
+if(_1.first_.length === 0 && _1.second_.length >= 1) {
 const fs_ = _1.second_[0].fields_;
 const g_ = _1.second_[0].guard_;
 const cs_ = _1.second_.slice(1);
 ff_compiler_Patterns.check_(variants_, fs_, cs_, true, g_)
 return
 }
-}
-}
-{
-if(_1.first_.length === 0) {
-if(_1.second_.length === 0) {
+if(_1.first_.length === 0 && _1.second_.length === 0) {
 const remaining_ = ff_core_List.List_map(ff_core_List.List_filter(ff_core_Map.Map_pairs(variants_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
 return (ff_core_Set.Set_size(_w1.second_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) !== 0)
 })), ((_1) => {
@@ -355,8 +329,6 @@ if((ff_core_List.List_size(remaining_) !== 0)) {
 ff_core_Core.panic_(("Unexhaustive match:\n" + ff_core_List.List_join(remaining_, "\n")))
 }
 return
-}
-}
 }
 }
 }
@@ -411,12 +383,10 @@ const p_ = pattern_a;
 const fields_ = ff_core_List.List_collect(ff_core_List.List_pairs(ff_core_List.List_map(p_.patterns_, ((pattern_) => {
 return convertPattern_(pattern_)
 }))), ((_1) => {
-{
-const i_ = _1.first_;
 if(_1.second_.Some) {
+const i_ = _1.first_;
 const p_ = _1.second_.value_;
 return ff_core_Option.Some(ff_core_Pair.Pair(("" + i_), p_))
-}
 }
 {
 return ff_core_Option.None()
@@ -440,12 +410,10 @@ const case_ = _1.second_;
 const fields_ = ff_core_List.List_collect(ff_core_List.List_pairs(ff_core_List.List_map(case_.patterns_, ((pattern_) => {
 return convertPattern_(pattern_)
 }))), ((_1) => {
-{
-const i_ = _1.first_;
 if(_1.second_.Some) {
+const i_ = _1.first_;
 const p_ = _1.second_.value_;
 return ff_core_Option.Some(ff_core_Pair.Pair(("" + i_), p_))
-}
 }
 {
 return ff_core_Option.None()
@@ -501,26 +469,34 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Patterns.PatternCaseInfo" + "[
 export const ff_core_Show_Show$ff_compiler_Patterns_PatternInfo = {
 show_(value_) {
 const value_a = value_;
+{
 const z_ = value_a;
 return ((((((("PatternInfo" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.variant_)) + ", ") + ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).show_(z_.otherVariants_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_compiler_Patterns.ff_core_Show_Show$ff_compiler_Patterns_PatternInfo)).show_(z_.fields_)) + ")")
+}
 },
 async show_$(value_, $task) {
 const value_a = value_;
+{
 const z_ = value_a;
 return ((((((("PatternInfo" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.variant_)) + ", ") + ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).show_(z_.otherVariants_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_compiler_Patterns.ff_core_Show_Show$ff_compiler_Patterns_PatternInfo)).show_(z_.fields_)) + ")")
+}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Patterns_PatternCaseInfo = {
 show_(value_) {
 const value_a = value_;
+{
 const z_ = value_a;
 return ((((("PatternCaseInfo" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_compiler_Patterns.ff_core_Show_Show$ff_compiler_Patterns_PatternInfo)).show_(z_.fields_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.guard_)) + ")")
+}
 },
 async show_$(value_, $task) {
 const value_a = value_;
+{
 const z_ = value_a;
 return ((((("PatternCaseInfo" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_compiler_Patterns.ff_core_Show_Show$ff_compiler_Patterns_PatternInfo)).show_(z_.fields_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.guard_)) + ")")
+}
 }
 };
 
@@ -674,6 +650,7 @@ export const ff_core_Serializable_Serializable$ff_compiler_Patterns_PatternInfo 
 serializeUsing_(serialization_, value_) {
 const serialization_a = serialization_;
 const value_a = value_;
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -683,17 +660,16 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Set_Set(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).serializeUsing_(serialization_, v_.otherVariants_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Patterns.ff_core_Serializable_Serializable$ff_compiler_Patterns_PatternInfo)).serializeUsing_(serialization_, v_.fields_)
 return
+}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
 return ff_compiler_Patterns.PatternInfo(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Set_Set(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Patterns.ff_core_Serializable_Serializable$ff_compiler_Patterns_PatternInfo)).deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -703,6 +679,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serial
 async serializeUsing_$(serialization_, value_, $task) {
 const serialization_a = serialization_;
 const value_a = value_;
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -712,17 +689,16 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Set_Set(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).serializeUsing_(serialization_, v_.otherVariants_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Patterns.ff_core_Serializable_Serializable$ff_compiler_Patterns_PatternInfo)).serializeUsing_(serialization_, v_.fields_)
 return
+}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
 return ff_compiler_Patterns.PatternInfo(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Set_Set(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Patterns.ff_core_Serializable_Serializable$ff_compiler_Patterns_PatternInfo)).deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -735,6 +711,7 @@ export const ff_core_Serializable_Serializable$ff_compiler_Patterns_PatternCaseI
 serializeUsing_(serialization_, value_) {
 const serialization_a = serialization_;
 const value_a = value_;
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 36), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -743,17 +720,16 @@ serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Patterns.ff_core_Serializable_Serializable$ff_compiler_Patterns_PatternInfo)).serializeUsing_(serialization_, v_.fields_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.guard_)
 return
+}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 36), 0);
 return ff_compiler_Patterns.PatternCaseInfo(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Patterns.ff_core_Serializable_Serializable$ff_compiler_Patterns_PatternInfo)).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -763,6 +739,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serial
 async serializeUsing_$(serialization_, value_, $task) {
 const serialization_a = serialization_;
 const value_a = value_;
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 36), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -771,17 +748,16 @@ serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Patterns.ff_core_Serializable_Serializable$ff_compiler_Patterns_PatternInfo)).serializeUsing_(serialization_, v_.fields_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.guard_)
 return
+}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 36), 0);
 return ff_compiler_Patterns.PatternCaseInfo(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Patterns.ff_core_Serializable_Serializable$ff_compiler_Patterns_PatternInfo)).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})

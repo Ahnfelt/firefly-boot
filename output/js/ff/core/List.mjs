@@ -401,10 +401,8 @@ let result_ = ff_core_Option.None();
 ff_core_List.List_eachWhile(self_, ((x_) => {
 {
 const _1 = body_(x_);
-{
 if(_1.None) {
 return true
-}
 }
 {
 const o_ = _1;
@@ -692,10 +690,8 @@ let result_ = ff_core_Option.None();
 (await ff_core_List.List_eachWhile$(self_, (async (x_, $task) => {
 {
 const _1 = (await body_(x_, $task));
-{
 if(_1.None) {
 return true
-}
 }
 {
 const o_ = _1;

@@ -108,16 +108,12 @@ return {Some: true, value_};
 export function Option_else(self_, body_) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return body_()
 }
-}
-{
 if(_1.Some) {
 const value_ = _1.value_;
 return value_
-}
 }
 }
 }
@@ -125,28 +121,20 @@ return value_
 export function Option_elseIf(self_, condition_, body_) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 {
 const _1 = condition_();
-{
 if(_1) {
 return ff_core_Option.Some(body_())
 }
-}
-{
 if(!_1) {
 return ff_core_Option.None()
 }
 }
-}
 return
 }
-}
-{
 if(_1.Some) {
 return self_
-}
 }
 }
 }
@@ -154,15 +142,11 @@ return self_
 export function Option_orElse(self_, body_) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return body_()
 }
-}
-{
 if(_1.Some) {
 return self_
-}
 }
 }
 }
@@ -170,15 +154,11 @@ return self_
 export function Option_isEmpty(self_) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return true
 }
-}
-{
 if(_1.Some) {
 return false
-}
 }
 }
 }
@@ -186,16 +166,12 @@ return false
 export function Option_toList(self_) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return []
 }
-}
-{
 if(_1.Some) {
 const v_ = _1.value_;
 return [v_]
-}
 }
 }
 }
@@ -220,12 +196,10 @@ return result_
 export function Option_filter(self_, body_) {
 {
 const _1 = self_;
-{
 if(_1.Some) {
 const v_ = _1.value_;
 if(body_(v_)) {
 return ff_core_Option.Some(v_)
-}
 }
 }
 {
@@ -237,16 +211,12 @@ return ff_core_Option.None()
 export function Option_map(self_, body_) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return ff_core_Option.None()
 }
-}
-{
 if(_1.Some) {
 const v_ = _1.value_;
 return ff_core_Option.Some(body_(v_))
-}
 }
 }
 }
@@ -254,16 +224,12 @@ return ff_core_Option.Some(body_(v_))
 export function Option_flatMap(self_, body_) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return ff_core_Option.None()
 }
-}
-{
 if(_1.Some) {
 const v_ = _1.value_;
 return body_(v_)
-}
 }
 }
 }
@@ -271,13 +237,10 @@ return body_(v_)
 export function Option_each(self_, body_) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 
 return
 }
-}
-{
 if(_1.Some) {
 const v_ = _1.value_;
 body_(v_)
@@ -285,21 +248,16 @@ return
 }
 }
 }
-}
 
 export function Option_all(self_, body_) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return true
 }
-}
-{
 if(_1.Some) {
 const v_ = _1.value_;
 return body_(v_)
-}
 }
 }
 }
@@ -307,16 +265,12 @@ return body_(v_)
 export function Option_any(self_, body_) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return false
 }
-}
-{
 if(_1.Some) {
 const v_ = _1.value_;
 return body_(v_)
-}
 }
 }
 }
@@ -324,16 +278,12 @@ return body_(v_)
 export function Option_grab(self_) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return ff_core_Try.internalThrowGrabException_()
 }
-}
-{
 if(_1.Some) {
 const v_ = _1.value_;
 return v_
-}
 }
 }
 }
@@ -341,16 +291,12 @@ return v_
 export async function Option_else$(self_, body_, $task) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return (await body_($task))
 }
-}
-{
 if(_1.Some) {
 const value_ = _1.value_;
 return value_
-}
 }
 }
 }
@@ -358,28 +304,20 @@ return value_
 export async function Option_elseIf$(self_, condition_, body_, $task) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 {
 const _1 = (await condition_($task));
-{
 if(_1) {
 return ff_core_Option.Some((await body_($task)))
 }
-}
-{
 if(!_1) {
 return ff_core_Option.None()
 }
 }
-}
 return
 }
-}
-{
 if(_1.Some) {
 return self_
-}
 }
 }
 }
@@ -387,15 +325,11 @@ return self_
 export async function Option_orElse$(self_, body_, $task) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return (await body_($task))
 }
-}
-{
 if(_1.Some) {
 return self_
-}
 }
 }
 }
@@ -403,15 +337,11 @@ return self_
 export async function Option_isEmpty$(self_, $task) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return true
 }
-}
-{
 if(_1.Some) {
 return false
-}
 }
 }
 }
@@ -419,16 +349,12 @@ return false
 export async function Option_toList$(self_, $task) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return []
 }
-}
-{
 if(_1.Some) {
 const v_ = _1.value_;
 return [v_]
-}
 }
 }
 }
@@ -453,12 +379,10 @@ return result_
 export async function Option_filter$(self_, body_, $task) {
 {
 const _1 = self_;
-{
 if(_1.Some) {
 const v_ = _1.value_;
 if((await body_(v_, $task))) {
 return ff_core_Option.Some(v_)
-}
 }
 }
 {
@@ -470,16 +394,12 @@ return ff_core_Option.None()
 export async function Option_map$(self_, body_, $task) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return ff_core_Option.None()
 }
-}
-{
 if(_1.Some) {
 const v_ = _1.value_;
 return ff_core_Option.Some((await body_(v_, $task)))
-}
 }
 }
 }
@@ -487,16 +407,12 @@ return ff_core_Option.Some((await body_(v_, $task)))
 export async function Option_flatMap$(self_, body_, $task) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return ff_core_Option.None()
 }
-}
-{
 if(_1.Some) {
 const v_ = _1.value_;
 return (await body_(v_, $task))
-}
 }
 }
 }
@@ -504,13 +420,10 @@ return (await body_(v_, $task))
 export async function Option_each$(self_, body_, $task) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 
 return
 }
-}
-{
 if(_1.Some) {
 const v_ = _1.value_;
 (await body_(v_, $task))
@@ -518,21 +431,16 @@ return
 }
 }
 }
-}
 
 export async function Option_all$(self_, body_, $task) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return true
 }
-}
-{
 if(_1.Some) {
 const v_ = _1.value_;
 return (await body_(v_, $task))
-}
 }
 }
 }
@@ -540,16 +448,12 @@ return (await body_(v_, $task))
 export async function Option_any$(self_, body_, $task) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return false
 }
-}
-{
 if(_1.Some) {
 const v_ = _1.value_;
 return (await body_(v_, $task))
-}
 }
 }
 }
@@ -557,16 +461,12 @@ return (await body_(v_, $task))
 export async function Option_grab$(self_, $task) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return ff_core_Try.internalThrowGrabException_()
 }
-}
-{
 if(_1.Some) {
 const v_ = _1.value_;
 return v_
-}
 }
 }
 }
@@ -574,16 +474,12 @@ return v_
 export function Option_contains(self_, value_, ff_core_Equal_Equal$T) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return false
 }
-}
-{
 if(_1.Some) {
 const v_ = _1.value_;
 return ff_core_Equal_Equal$T.equals_(v_, value_)
-}
 }
 }
 }
@@ -591,16 +487,12 @@ return ff_core_Equal_Equal$T.equals_(v_, value_)
 export async function Option_contains$(self_, value_, ff_core_Equal_Equal$T, $task) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return false
 }
-}
-{
 if(_1.Some) {
 const v_ = _1.value_;
 return ff_core_Equal_Equal$T.equals_(v_, value_)
-}
 }
 }
 }
@@ -608,16 +500,12 @@ return ff_core_Equal_Equal$T.equals_(v_, value_)
 export function Option_flatten(self_) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return ff_core_Option.None()
 }
-}
-{
 if(_1.Some) {
 const v_ = _1.value_;
 return v_
-}
 }
 }
 }
@@ -625,16 +513,12 @@ return v_
 export async function Option_flatten$(self_, $task) {
 {
 const _1 = self_;
-{
 if(_1.None) {
 return ff_core_Option.None()
 }
-}
-{
 if(_1.Some) {
 const v_ = _1.value_;
 return v_
-}
 }
 }
 }
@@ -680,12 +564,10 @@ const y_a = y_;
 if((x_ === y_)) {
 return true
 }
-if(x_a.Some) {
+if(x_a.Some && y_a.Some) {
 const x_ = x_a;
-if(y_a.Some) {
 const y_ = y_a;
 return ff_core_Equal_Equal$T.equals_(x_.value_, y_.value_)
-}
 }
 {
 return false
@@ -697,12 +579,10 @@ const y_a = y_;
 if((x_ === y_)) {
 return true
 }
-if(x_a.Some) {
+if(x_a.Some && y_a.Some) {
 const x_ = x_a;
-if(y_a.Some) {
 const y_ = y_a;
 return ff_core_Equal_Equal$T.equals_(x_.value_, y_.value_)
-}
 }
 {
 return false
@@ -717,9 +597,8 @@ const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 }
-if(x_a.Some) {
+if(x_a.Some && y_a.Some) {
 const x_ = x_a;
-if(y_a.Some) {
 const y_ = y_a;
 const valueOrdering_ = ff_core_Ordering_Order$T.compare_(x_.value_, y_.value_);
 if((valueOrdering_ !== ff_core_Ordering.OrderingSame())) {
@@ -728,7 +607,6 @@ return valueOrdering_
 return ff_core_Ordering.OrderingSame()
 }
 return
-}
 }
 {
 function number_(z_) {
@@ -749,9 +627,8 @@ const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 }
-if(x_a.Some) {
+if(x_a.Some && y_a.Some) {
 const x_ = x_a;
-if(y_a.Some) {
 const y_ = y_a;
 const valueOrdering_ = ff_core_Ordering_Order$T.compare_(x_.value_, y_.value_);
 if((valueOrdering_ !== ff_core_Ordering.OrderingSame())) {
@@ -760,7 +637,6 @@ return valueOrdering_
 return ff_core_Ordering.OrderingSame()
 }
 return
-}
 }
 {
 function number_(z_) {
@@ -804,17 +680,13 @@ const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, se
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 return ff_core_Option.None()
 }
-}
-{
 if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 return ff_core_Option.Some(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -847,17 +719,13 @@ const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, se
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 return ff_core_Option.None()
 }
-}
-{
 if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 return ff_core_Option.Some(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})

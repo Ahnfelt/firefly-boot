@@ -101,15 +101,11 @@ return GrabException$;
 export function if_(condition_, body_) {
 {
 const _1 = condition_;
-{
 if(!_1) {
 return ff_core_Option.None()
 }
-}
-{
 if(_1) {
 return ff_core_Option.Some(body_())
-}
 }
 }
 }
@@ -117,20 +113,16 @@ return ff_core_Option.Some(body_())
 export function while_(condition_, body_) {
 {
 const _1 = condition_();
-{
 if(!_1) {
 
 return
 }
-}
-{
 if(_1) {
 body_();
 while(condition_()) {
 body_()
 }
 return
-}
 }
 }
 }
@@ -145,13 +137,10 @@ export function doUntil_(body_) {
 _tailcall: for(;;) {
 {
 const _1 = body_();
-{
 if(_1.Some) {
 const v_ = _1.value_;
 return v_
 }
-}
-{
 if(_1.None) {
 {
 const body_r_ = body_;
@@ -159,7 +148,6 @@ body_ = body_r_
 continue _tailcall
 }
 return
-}
 }
 }
 return
@@ -199,15 +187,11 @@ return x_ === y_
 export async function if_$(condition_, body_, $task) {
 {
 const _1 = condition_;
-{
 if(!_1) {
 return ff_core_Option.None()
 }
-}
-{
 if(_1) {
 return ff_core_Option.Some((await body_($task)))
-}
 }
 }
 }
@@ -215,20 +199,16 @@ return ff_core_Option.Some((await body_($task)))
 export async function while_$(condition_, body_, $task) {
 {
 const _1 = (await condition_($task));
-{
 if(!_1) {
 
 return
 }
-}
-{
 if(_1) {
 (await body_($task));
 while((await condition_($task))) {
 (await body_($task))
 }
 return
-}
 }
 }
 }
@@ -243,13 +223,10 @@ export async function doUntil_$(body_, $task) {
 _tailcall: for(;;) {
 {
 const _1 = (await body_($task));
-{
 if(_1.Some) {
 const v_ = _1.value_;
 return v_
 }
-}
-{
 if(_1.None) {
 {
 const body_r_ = body_;
@@ -257,7 +234,6 @@ body_ = body_r_
 continue _tailcall
 }
 return
-}
 }
 }
 return

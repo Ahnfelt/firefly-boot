@@ -237,6 +237,7 @@ export function ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Seri
 serializeUsing_(serialization_, value_) {
 const serialization_a = serialization_;
 const value_a = value_;
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -245,17 +246,16 @@ serialization_.offset_ += 1;
 ff_core_Serializable_Serializable$A.serializeUsing_(serialization_, v_.first_);
 ff_core_Serializable_Serializable$B.serializeUsing_(serialization_, v_.second_)
 return
+}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
 return ff_core_Pair.Pair(ff_core_Serializable_Serializable$A.deserializeUsing_(serialization_), ff_core_Serializable_Serializable$B.deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -265,6 +265,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serial
 async serializeUsing_$(serialization_, value_, $task) {
 const serialization_a = serialization_;
 const value_a = value_;
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -273,17 +274,16 @@ serialization_.offset_ += 1;
 ff_core_Serializable_Serializable$A.serializeUsing_(serialization_, v_.first_);
 ff_core_Serializable_Serializable$B.serializeUsing_(serialization_, v_.second_)
 return
+}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
 return ff_core_Pair.Pair(ff_core_Serializable_Serializable$A.deserializeUsing_(serialization_), ff_core_Serializable_Serializable$B.deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})

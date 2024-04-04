@@ -278,18 +278,14 @@ return ff_core_IntMap.IntMap_grab(self_, key_)
 export function IntMap_push(self_, key_, value_) {
 {
 const _1 = ff_core_IntMap.IntMap_get(self_, key_);
-{
 if(_1.None) {
 ff_core_IntMap.IntMap_set(self_, key_, ff_core_List.List_toArray([value_]))
 return
 }
-}
-{
 if(_1.Some) {
 const array_ = _1.value_;
 ff_core_Array.Array_push(array_, value_)
 return
-}
 }
 }
 }
@@ -297,18 +293,14 @@ return
 export async function IntMap_push$(self_, key_, value_, $task) {
 {
 const _1 = ff_core_IntMap.IntMap_get(self_, key_);
-{
 if(_1.None) {
 ff_core_IntMap.IntMap_set(self_, key_, ff_core_List.List_toArray([value_]))
 return
 }
-}
-{
 if(_1.Some) {
 const array_ = _1.value_;
 ff_core_Array.Array_push(array_, value_)
 return
-}
 }
 }
 }

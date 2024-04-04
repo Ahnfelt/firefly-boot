@@ -334,9 +334,11 @@ throwError_(("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_C
 if(!_error.ffException) throw _error
 const _exception = ff_core_Any.fromAny_(_error.ffException, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)
 if(!_exception.Some) throw _error
+{
 const e_ = _exception.value_;
 const error_ = _error;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (i_ - lineOffset_)), "Unexpected end of file"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 };
 ff_core_List.List_each(ff_core_List.range_(5), ((_) => {
 emitToken_(ff_compiler_Token.LEnd(), i_, i_)
@@ -576,9 +578,11 @@ throwError_(("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_C
 if(!_error.ffException) throw _error
 const _exception = ff_core_Any.fromAny_(_error.ffException, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)
 if(!_exception.Some) throw _error
+{
 const e_ = _exception.value_;
 const error_ = _error;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (i_ - lineOffset_)), "Unexpected end of file"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 };
 ff_core_List.List_each(ff_core_List.range_(5), ((_) => {
 emitToken_(ff_compiler_Token.LEnd(), i_, i_)

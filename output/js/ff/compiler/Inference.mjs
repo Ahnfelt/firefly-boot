@@ -124,18 +124,14 @@ return ((("ff:core/" + name_) + ".") + name_)
 export function constraintsToInstances_(constraints_) {
 return ff_core_List.List_toMap(ff_core_List.List_map(constraints_, ((c_) => {
 const typeName_ = (((_1) => {
-{
 if(_1.TConstructor) {
 const name_ = _1.name_;
 return name_
 }
-}
-{
 if(_1.TVariable) {
 const at_ = _1.at_;
 const i_ = _1.index_;
 return ff_compiler_Inference.fail_(c_.at_, ("Unexpected unification variable: $" + i_))
-}
 }
 }))(ff_core_List.List_grabFirst(c_.generics_));
 return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue([], [], ff_compiler_Syntax.PackagePair("", ""), "", c_.name_, c_.generics_))
@@ -157,18 +153,14 @@ return ((("ff:core/" + name_) + ".") + name_)
 export async function constraintsToInstances_$(constraints_, $task) {
 return ff_core_List.List_toMap(ff_core_List.List_map(constraints_, ((c_) => {
 const typeName_ = (((_1) => {
-{
 if(_1.TConstructor) {
 const name_ = _1.name_;
 return name_
 }
-}
-{
 if(_1.TVariable) {
 const at_ = _1.at_;
 const i_ = _1.index_;
 return ff_compiler_Inference.fail_(c_.at_, ("Unexpected unification variable: $" + i_))
-}
 }
 }))(ff_core_List.List_grabFirst(c_.generics_));
 return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue([], [], ff_compiler_Syntax.PackagePair("", ""), "", c_.name_, c_.generics_))
@@ -374,27 +366,21 @@ return
 export function Inference_inferLambda(self_, environment_, expected_, lambda_) {
 const unitName_ = ff_compiler_Inference.core_("Unit");
 const returnsUnit_ = (((_1) => {
-{
 if(_1.TConstructor) {
 const name_ = _1.name_;
 const ts_ = _1.generics_;
 if(ff_core_String.String_startsWith(name_, "Function$", 0)) {
 {
 const _1 = ff_core_List.List_grabLast(ts_);
-{
-if(_1.TConstructor) {
+if(_1.TConstructor && _1.generics_.length === 0) {
 const n_ = _1.name_;
-if(_1.generics_.length === 0) {
 return (n_ === unitName_)
-}
-}
 }
 {
 return false
 }
 }
 return
-}
 }
 }
 {
@@ -494,18 +480,14 @@ return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, ff_core_Array.Array_dr
 export function Inference_inferPattern(self_, environment_, expected_, pattern_) {
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 if((((_1) => {
-{
 if(_1.PVariantAs) {
 const at_ = _1.at_;
 const variableAt_ = _1.variableAt_;
 return ((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, at_) || ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, variableAt_)) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, variableAt_))
 }
-}
-{
 if(_1.PAlias) {
 const at_ = _1.at_;
 return (ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, at_))
-}
 }
 {
 return ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, pattern_.at_)
@@ -520,47 +502,30 @@ return ff_core_Map.empty_()
 }
 {
 const _1 = pattern_;
-{
 if(_1.PString) {
 return literal_("String")
 }
-}
-{
 if(_1.PInt) {
 return literal_("Int")
 }
-}
-{
 if(_1.PChar) {
 return literal_("Char")
 }
-}
-{
-if(_1.PVariable) {
+if(_1.PVariable && _1.name_.None) {
 const at_ = _1.at_;
-if(_1.name_.None) {
 return ff_core_Map.empty_()
 }
-}
-}
-{
-if(_1.PVariable) {
+if(_1.PVariable && _1.name_.Some) {
 const at_ = _1.at_;
-if(_1.name_.Some) {
 const name_ = _1.name_.value_;
 return ff_core_List.List_toMap([ff_core_Pair.Pair(name_, ff_core_Pair.Pair(at_, expected_))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
-}
-}
-{
 if(_1.PAlias) {
 const at_ = _1.at_;
 const pattern_ = _1.pattern_;
 const variable_ = _1.variable_;
 return ff_core_Map.Map_add(ff_compiler_Inference.Inference_inferPattern(self_, environment_, expected_, pattern_), variable_, ff_core_Pair.Pair(at_, expected_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
-}
-{
 if(_1.PVariantAs) {
 const at_ = _1.at_;
 const name_ = _1.name_;
@@ -586,25 +551,15 @@ return ff_core_Pair.Pair(_w1, ff_core_Pair.Pair(variableAt_, recordType_))
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
-}
-{
-if(_1.PVariant) {
+if(_1.PVariant && _1.name_ === "List$Empty" && _1.patterns_.length === 0) {
 const at_ = _1.at_;
-if(_1.name_ === "List$Empty") {
-if(_1.patterns_.length === 0) {
 const itemType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_);
 const listType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("List"), [itemType_]);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, listType_);
 return ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
-}
-}
-}
-{
-if(_1.PVariant) {
+if(_1.PVariant && _1.name_ === "List$Link" && _1.patterns_.length === 2) {
 const at_ = _1.at_;
-if(_1.name_ === "List$Link") {
-if(_1.patterns_.length === 2) {
 const head_ = _1.patterns_[0];
 const tail_ = _1.patterns_[1];
 const itemType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_);
@@ -614,10 +569,6 @@ const headVariables_ = ff_compiler_Inference.Inference_inferPattern(self_, envir
 const tailVariables_ = ff_compiler_Inference.Inference_inferPattern(self_, environment_, listType_, tail_);
 return ff_core_Map.Map_addAll(headVariables_, tailVariables_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
-}
-}
-}
-{
 if(_1.PVariant) {
 const at_ = _1.at_;
 const name_ = _1.name_;
@@ -642,7 +593,6 @@ return
 }
 }
 }
-}
 
 export function Inference_inferTerm(self_, environment_, expected_, term_) {
 const hookRecordTypeBox_ = (ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, term_.at_)
@@ -658,27 +608,18 @@ return term_
 }
 {
 const _1 = term_;
-{
 if(_1.EString) {
 return literal_("String")
 }
-}
-{
 if(_1.EChar) {
 return literal_("Char")
 }
-}
-{
 if(_1.EInt) {
 return literal_("Int")
 }
-}
-{
 if(_1.EFloat) {
 return literal_("Float")
 }
-}
-{
 if(_1.EVariable) {
 const e_ = _1;
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, [], ff_core_Option.None()), ((instantiated_) => {
@@ -693,8 +634,6 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 }))
 return
 }
-}
-{
 if(_1.EField) {
 const e_ = _1;
 const recordType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
@@ -706,9 +645,8 @@ _w1.value_ = ff_core_Option.Some(recordType_)
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, e_.record_);
 {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, recordType_);
-{
-const t_ = _1;
 if(_1.TConstructor) {
+const t_ = _1;
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 if(ff_core_String.String_startsWith(name_, "Record$", 0)) {
@@ -742,17 +680,14 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 return
 }
 }
-}
-{
-const t_ = _1;
 if(_1.TConstructor) {
+const t_ = _1;
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 const memberPrefix_ = (name_ + "_");
 const memberName_ = (memberPrefix_ + e_.field_);
 {
 const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, memberName_, typeArguments_, ff_core_Option.None());
-{
 if(_1.Some) {
 const instantiated_ = _1.value_;
 if((!instantiated_.scheme_.isVariable_)) {
@@ -763,8 +698,6 @@ ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, recordType
 return ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, signature_, term_)
 }
 }
-}
-{
 if(_1.Some) {
 const instantiated_ = _1.value_;
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
@@ -777,34 +710,22 @@ return ff_compiler_Syntax.EField(_c.at_, instantiated_.scheme_.isNewtype_, recor
 }
 return
 }
-}
-{
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
 return
 }
-}
-{
-if(_1.TVariable) {
-if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
+if(_1.TVariable && ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
 }
-}
-}
-{
 if(_1.TVariable) {
 const index_ = _1.index_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
 return
 }
-}
-{
 if(_1.EWildcard) {
 const e_ = _1;
 return ff_core_Option.Option_grab(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, ("_w" + e_.index_), [], ff_core_Option.None()), ((instantiated_) => {
@@ -813,8 +734,6 @@ return term_
 })))
 return
 }
-}
-{
 if(_1.EList) {
 const at_ = _1.at_;
 const t_ = _1.elementType_;
@@ -833,8 +752,6 @@ return
 })))
 return
 }
-}
-{
 if(_1.ESequential) {
 const at_ = _1.at_;
 const before_ = _1.before_;
@@ -845,12 +762,10 @@ ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferSequen
 const newExpected_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_);
 {
 const _1 = before_;
-{
-if(_1.EPipe) {
+if(_1.EPipe && _1.function_.ELambda) {
 const at1_ = _1.at_;
 const value_ = _1.value_;
 const effect1_ = _1.effect_;
-if(_1.function_.ELambda) {
 const at2_ = _1.function_.at_;
 const at3_ = _1.function_.lambda_.at_;
 const effect3_ = _1.function_.lambda_.effect_;
@@ -868,15 +783,11 @@ return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.guards_, ff_compile
 const newPipe_ = ff_compiler_Syntax.EPipe(at1_, value_, effect1_, ff_compiler_Syntax.ELambda(at2_, ff_compiler_Syntax.Lambda(at3_, effect3_, newCases_)));
 {
 const _1 = after_;
-{
-if(_1.EVariant) {
+if(_1.EVariant && _1.name_ === "ff:core/Unit.Unit") {
 const at_ = _1.at_;
-if(_1.name_ === "ff:core/Unit.Unit") {
 const unitType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), []);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, unitType_);
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, newPipe_)
-}
-}
 }
 {
 return ff_compiler_Syntax.ESequential(at_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, newPipe_), ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, after_))
@@ -884,16 +795,12 @@ return ff_compiler_Syntax.ESequential(at_, ff_compiler_Inference.Inference_infer
 }
 return
 }
-}
-}
 {
 return ff_compiler_Syntax.ESequential(at_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, before_), ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, after_))
 }
 }
 return
 }
-}
-{
 if(_1.ELet) {
 const e_ = _1;
 const noEffect_ = ff_compiler_Syntax.TConstructor(e_.at_, "ff:core/Nothing.Nothing", []);
@@ -910,51 +817,23 @@ return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, _c.valueType_, ff_
 }
 return
 }
-}
-{
 if(_1.ELambda) {
 const at_ = _1.at_;
 const l_ = _1.lambda_;
 do {
 const _1 = l_.cases_;
-{
-if(_1.length === 1) {
-if(_1[0].patterns_.length === 0) {
-if(_1[0].guards_.length === 0) {
-if(_1[0].body_.EVariable) {
+if(_1.length === 1 && _1[0].patterns_.length === 0 && _1[0].guards_.length === 0 && _1[0].body_.EVariable && _1[0].body_.name_ === "") {
 const insideAt_ = _1[0].body_.at_;
-if(_1[0].body_.name_ === "") {
 if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_)) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferLambdaStartHook(self_.unification_, environment_, expected_))
 break
 }
 }
-}
-}
-}
-}
-}
-{
-if(_1.length === 1) {
-if(_1[0].patterns_.length === 0) {
-if(_1[0].guards_.length === 0) {
-if(_1[0].body_.ESequential) {
-if(_1[0].body_.before_.EVariable) {
+if(_1.length === 1 && _1[0].patterns_.length === 0 && _1[0].guards_.length === 0 && _1[0].body_.ESequential && _1[0].body_.before_.EVariable && _1[0].body_.before_.name_ === "" && _1[0].body_.after_.EVariant && _1[0].body_.after_.name_ === "ff:core/Unit.Unit") {
 const insideAt_ = _1[0].body_.before_.at_;
-if(_1[0].body_.before_.name_ === "") {
-if(_1[0].body_.after_.EVariant) {
-if(_1[0].body_.after_.name_ === "ff:core/Unit.Unit") {
 if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_)) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferLambdaStartHook(self_.unification_, environment_, expected_))
 break
-}
-}
-}
-}
-}
-}
-}
-}
 }
 }
 {
@@ -965,8 +844,6 @@ break
 const lambda_ = ff_compiler_Inference.Inference_inferLambda(self_, environment_, expected_, l_);
 return ff_compiler_Syntax.ELambda(at_, lambda_)
 }
-}
-{
 if(_1.EVariant) {
 const e_ = _1;
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, e_.typeArguments_, e_.arguments_), (() => {
@@ -988,8 +865,6 @@ return
 }
 return
 }
-}
-{
 if(_1.EVariantIs) {
 const e_ = _1;
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, e_.typeArguments_, ff_core_Option.None()), (() => {
@@ -1017,8 +892,6 @@ return
 }
 return
 }
-}
-{
 if(_1.ECopy) {
 const e_ = _1;
 const scheme_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, [], ff_core_Option.None()), (() => {
@@ -1090,8 +963,6 @@ const effect_ = ff_compiler_Unification.Unification_freshUnificationVariable(sel
 const e1_ = ff_compiler_Syntax.EPipe(e_.at_, e_.record_, effect_, ff_compiler_Syntax.ELambda(e_.at_, ff_compiler_Syntax.Lambda(e_.at_, effect_, [ff_compiler_Syntax.MatchCase(e_.at_, [ff_compiler_Syntax.PVariable(e_.at_, ff_core_Option.Some("_c"))], [], body_)])));
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, e1_)
 }
-}
-{
 if(_1.EPipe) {
 const e_ = _1;
 const valueType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
@@ -1108,15 +979,11 @@ return ff_compiler_Syntax.EPipe(_c.at_, value_, _c.effect_, function_)
 }
 return
 }
-}
-{
 if(_1.ECall) {
 const e_ = _1;
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (((_1) => {
-{
 if(_1.StaticCall) {
 return true
-}
 }
 {
 return false
@@ -1125,21 +992,16 @@ return false
 return term_
 } else {
 const call_ = (((_1) => {
-{
 if(_1.DynamicCall) {
 const call_ = _1;
 return call_
 }
-}
-{
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in the Inference phase")
-}
 }
 }))(e_.target_);
 {
 const _1 = call_.function_;
-{
 if(_1.EVariable) {
 const variableAt_ = _1.at_;
 const x_ = _1.name_;
@@ -1150,7 +1012,6 @@ return ff_compiler_Inference.Inference_inferOperator(self_, environment_, expect
 } else {
 {
 const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, x_, e_.typeArguments_, ff_core_Option.Some(e_.arguments_));
-{
 if(_1.Some) {
 const instantiated_ = _1.value_;
 if(instantiated_.scheme_.isVariable_) {
@@ -1161,18 +1022,13 @@ return ff_compiler_Inference.Inference_inferFunctionCall(self_, environment_, ex
 }
 return
 }
-}
-{
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(variableAt_, ("No such function: " + x_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
 }
-}
 return
 }
-}
-{
 if(_1.EField) {
 const f_ = _1;
 const recordType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, f_.at_);
@@ -1191,53 +1047,38 @@ return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, record_, _c.field_)
 }))(e_);
 {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, recordType_);
-{
-const t_ = _1;
 if(_1.TConstructor) {
+const t_ = _1;
 const name_ = _1.name_;
 const methodName_ = ((name_ + "_") + f_.field_);
 const arguments_ = [ff_compiler_Syntax.Argument(f_.record_.at_, ff_core_Option.None(), f_.record_), ...e_.arguments_];
 {
 const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, f_.at_, methodName_, [], ff_core_Option.Some(arguments_));
-{
 if(_1.Some) {
 const instantiated_ = _1.value_;
 if((!instantiated_.scheme_.isVariable_)) {
 return ff_compiler_Inference.Inference_inferMethodCall(self_, environment_, expected_, instantiated_.scheme_.signature_, instantiated_.typeArguments_, e2_, record_, recordType_, methodName_)
 }
 }
-}
-{
 if(_1.Some) {
 const instantiated_ = _1.value_;
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, e2_)
 }
-}
-{
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
 return
 }
-}
-{
-if(_1.TVariable) {
-if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
+if(_1.TVariable && ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, e2_)
 }
-}
-}
-{
 if(_1.TVariable) {
 const index_ = _1.index_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
 return
-}
 }
 {
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, term_)
@@ -1246,8 +1087,6 @@ return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expe
 }
 return
 }
-}
-{
 if(_1.ERecord) {
 const e_ = _1;
 const fields_ = ff_core_List.List_sortBy(e_.fields_, ((_w1) => {
@@ -1283,8 +1122,6 @@ return ff_compiler_Syntax.ERecord(_c.at_, newFields_)
 }
 return
 }
-}
-{
 if(_1.EFunctions) {
 const at_ = _1.at_;
 const functions_ = _1.functions_;
@@ -1302,8 +1139,6 @@ return ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environmen
 const newBody_ = ff_compiler_Inference.Inference_inferTerm(self_, environment2_, expected_, body_);
 return ff_compiler_Syntax.EFunctions(at_, newFunctions_, newBody_)
 }
-}
-{
 if(_1.EAssign) {
 const e_ = _1;
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.variable_, [], ff_core_Option.None()), ((instantiated_) => {
@@ -1324,33 +1159,27 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 }))
 return
 }
-}
-{
 if(_1.EAssignField) {
 const e_ = _1;
 const recordType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, e_.record_);
 {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, recordType_);
-{
-const t_ = _1;
 if(_1.TConstructor) {
+const t_ = _1;
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 if(ff_core_String.String_startsWith(name_, "Record$", 0)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Can't assign fields of anonymous records: " + e_.field_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
-{
-const t_ = _1;
 if(_1.TConstructor) {
+const t_ = _1;
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 const methodName_ = ((name_ + "_") + e_.field_);
 {
 const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, methodName_, typeArguments_, ff_core_Option.None());
-{
 if(_1.Some) {
 const instantiated_ = _1.value_;
 if((instantiated_.scheme_.isMutable_ || ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_))) {
@@ -1365,38 +1194,25 @@ return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, record_, _c.field_,
 return
 }
 }
-}
-{
 if(_1.Some) {
 const instantiated_ = _1.value_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("Can't assign an immutable field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
-}
-{
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
 return
 }
-}
-{
-if(_1.TVariable) {
-if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
+if(_1.TVariable && ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
 }
-}
-}
-{
 if(_1.TVariable) {
 const index_ = _1.index_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
 return
-}
 }
 }
 }
@@ -1415,27 +1231,21 @@ return newValue_
 
 export function Inference_inferMethodCall(self_, environment_, expected_, signature_, instantiation_, term_, record_, recordType_, name_) {
 const e_ = (((_1) => {
-{
 if(_1.ECall) {
 const e_ = _1;
 return e_
-}
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 }
 }))(term_);
 const call_ = (((_1) => {
-{
 if(_1.DynamicCall) {
 const call_ = _1;
 return call_
 }
-}
-{
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferMethodCall")
-}
 }
 }))(e_.target_);
 const selfParameter_ = ff_core_List.List_grabFirst(signature_.parameters_);
@@ -1458,27 +1268,21 @@ return
 
 export function Inference_inferFunctionCall(self_, environment_, expected_, signature_, instanceCall_, instantiation_, term_, name_) {
 const e_ = (((_1) => {
-{
 if(_1.ECall) {
 const e_ = _1;
 return e_
-}
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 }
 }))(term_);
 const call_ = (((_1) => {
-{
 if(_1.DynamicCall) {
 const call_ = _1;
 return call_
 }
-}
-{
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferFunctionCall")
-}
 }
 }))(e_.target_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, signature_.returnType_);
@@ -1498,34 +1302,26 @@ return
 
 export function Inference_inferLambdaCall(self_, environment_, expected_, term_) {
 const e_ = (((_1) => {
-{
 if(_1.ECall) {
 const e_ = _1;
 return e_
-}
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 }
 }))(term_);
 const call_ = (((_1) => {
-{
 if(_1.DynamicCall) {
 const call_ = _1;
 if((!call_.tailCall_)) {
 return call_
 }
 }
-}
-{
 if(_1.DynamicCall) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Tailcalls not supported on lambda functions"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
-}
-{
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferLambdaCall")
-}
 }
 }))(e_.target_);
 const effect_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, term_.at_);
@@ -1569,11 +1365,9 @@ return
 
 export function Inference_inferOperator(self_, environment_, expected_, operator_, term_) {
 const e_ = (((_1) => {
-{
 if(_1.ECall) {
 const e_ = _1;
 return e_
-}
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
@@ -1582,7 +1376,6 @@ return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 const target_ = ff_compiler_Syntax.StaticCall(operator_, false, false);
 {
 const _1 = e_.arguments_;
-{
 if(_1.length === 1) {
 const a1_ = _1[0];
 if((operator_ === "!")) {
@@ -1602,8 +1395,6 @@ return
 return
 }
 }
-}
-{
 if(_1.length === 1) {
 const a1_ = _1[0];
 if((operator_ === "-")) {
@@ -1611,37 +1402,26 @@ const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.u
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_);
 do {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t1_);
-{
-if(_1.TConstructor) {
+if(_1.TConstructor && _1.generics_.length === 0) {
 const name_ = _1.name_;
-if(_1.generics_.length === 0) {
 if((name_ === ff_compiler_Inference.core_("Float"))) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 break
 }
 }
-}
-}
-{
-if(_1.TConstructor) {
+if(_1.TConstructor && _1.generics_.length === 0) {
 const name_ = _1.name_;
-if(_1.generics_.length === 0) {
 if((name_ === ff_compiler_Inference.core_("Int"))) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 break
 }
 }
-}
-}
-{
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 
 break
 }
-}
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on unknown types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-break
 }
 } while(false);
 {
@@ -1657,8 +1437,6 @@ return
 return
 }
 }
-}
-{
 if(_1.length === 2) {
 const a1_ = _1[0];
 const a2_ = _1[1];
@@ -1682,8 +1460,6 @@ return
 return
 }
 }
-}
-{
 if(_1.length === 2) {
 const a1_ = _1[0];
 const a2_ = _1[1];
@@ -1707,8 +1483,6 @@ return
 return
 }
 }
-}
-{
 if(_1.length === 2) {
 const a1_ = _1[0];
 const a2_ = _1[1];
@@ -1720,34 +1494,22 @@ const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t2_, 
 const magic_ = ((t_) => {
 {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_);
-{
-if(_1.TConstructor) {
+if(_1.TConstructor && _1.generics_.length === 0) {
 const name_ = _1.name_;
-if(_1.generics_.length === 0) {
 if((name_ === ff_compiler_Inference.core_("Float"))) {
 return ff_core_Option.Some("Float")
 }
 }
-}
-}
-{
-if(_1.TConstructor) {
+if(_1.TConstructor && _1.generics_.length === 0) {
 const name_ = _1.name_;
-if(_1.generics_.length === 0) {
 if((name_ === ff_compiler_Inference.core_("Int"))) {
 return ff_core_Option.Some("Int")
 }
 }
-}
-}
-{
-if(_1.TConstructor) {
+if(_1.TConstructor && _1.generics_.length === 0) {
 const name_ = _1.name_;
-if(_1.generics_.length === 0) {
 if(((operator_ === "+") && (name_ === ff_compiler_Inference.core_("String")))) {
 return ff_core_Option.Some("String")
-}
-}
 }
 }
 {
@@ -1756,103 +1518,49 @@ return ff_core_Option.None()
 }
 });
 const chooseType_ = ((_1, _2) => {
-{
-if(_1.Some) {
-if(_1.value_ === "String") {
-if(_2.Some) {
+if(_1.Some && _1.value_ === "String" && _2.Some) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }
-}
-}
-}
-{
-if(_1.Some) {
-if(_2.Some) {
-if(_2.value_ === "String") {
+if(_1.Some && _2.Some && _2.value_ === "String") {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }
-}
-}
-}
-{
-if(_1.Some) {
-if(_1.value_ === "Float") {
-if(_2.Some) {
+if(_1.Some && _1.value_ === "Float" && _2.Some) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }
-}
-}
-}
-{
-if(_1.Some) {
-if(_2.Some) {
-if(_2.value_ === "Float") {
+if(_1.Some && _2.Some && _2.value_ === "Float") {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }
-}
-}
-}
-{
-if(_1.Some) {
-if(_1.value_ === "Int") {
-if(_2.Some) {
+if(_1.Some && _1.value_ === "Int" && _2.Some) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }
-}
-}
-}
-{
-if(_1.Some) {
-if(_2.Some) {
-if(_2.value_ === "Int") {
+if(_1.Some && _2.Some && _2.value_ === "Int") {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }
-}
-}
-}
-{
-if(_1.Some) {
-if(_2.None) {
+if(_1.Some && _2.None) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t1_, t2_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }
-}
-}
-{
-if(_1.None) {
-if(_2.Some) {
+if(_1.None && _2.Some) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t2_, t1_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }
-}
-}
-{
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 
 return
 }
-}
-{
-if(_1.Some) {
-if(_2.Some) {
+if(_1.Some && _2.Some) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on these types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
-}
-}
-{
-if(_1.None) {
-if(_2.None) {
+if(_1.None && _2.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on unknown types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
-}
 }
 });
 chooseType_(magic_(t1_), magic_(t2_));
@@ -1871,11 +1579,8 @@ return
 return
 }
 }
-}
-{
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
-}
 }
 {
 return ff_compiler_Inference.fail_(e_.at_, ("Unknown operator: " + operator_))
@@ -1966,20 +1671,16 @@ return defaultArgument_()
 }));
 if((!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_))) {
 ff_core_Option.Option_each(ff_core_Array.Array_first(remainingArguments_), ((_1) => {
-{
-const callAt_ = _1.at_;
 if(_1.name_.None) {
+const callAt_ = _1.at_;
 ff_compiler_Inference.fail_(callAt_, "Too many arguments")
 return
 }
-}
-{
-const callAt_ = _1.at_;
 if(_1.name_.Some) {
+const callAt_ = _1.at_;
 const n_ = _1.name_.value_;
 ff_compiler_Inference.fail_(callAt_, ("Unknown argument: " + n_))
 return
-}
 }
 }));
 return newArguments_
@@ -2072,13 +1773,11 @@ return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtyp
 if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, scheme_.signature_.at_))) {
 const symbolHook_ = ff_compiler_LspHook.SymbolHook(symbol_, at_, scheme_.signature_.at_);
 const emittedHook_ = (((_1) => {
-{
 if(_1.InferLookupHook) {
 const h_ = _1;
 h_.symbol_.value_ = symbolHook_;
 h_.instantiated_.value_ = ff_core_Option.Some(instantiated_)
 return
-}
 }
 {
 
@@ -2295,27 +1994,21 @@ return
 export async function Inference_inferLambda$(self_, environment_, expected_, lambda_, $task) {
 const unitName_ = ff_compiler_Inference.core_("Unit");
 const returnsUnit_ = (((_1) => {
-{
 if(_1.TConstructor) {
 const name_ = _1.name_;
 const ts_ = _1.generics_;
 if(ff_core_String.String_startsWith(name_, "Function$", 0)) {
 {
 const _1 = ff_core_List.List_grabLast(ts_);
-{
-if(_1.TConstructor) {
+if(_1.TConstructor && _1.generics_.length === 0) {
 const n_ = _1.name_;
-if(_1.generics_.length === 0) {
 return (n_ === unitName_)
-}
-}
 }
 {
 return false
 }
 }
 return
-}
 }
 }
 {
@@ -2415,18 +2108,14 @@ return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, ff_core_Array.Array_dr
 export async function Inference_inferPattern$(self_, environment_, expected_, pattern_, $task) {
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 if((((_1) => {
-{
 if(_1.PVariantAs) {
 const at_ = _1.at_;
 const variableAt_ = _1.variableAt_;
 return ((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, at_) || ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, variableAt_)) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, variableAt_))
 }
-}
-{
 if(_1.PAlias) {
 const at_ = _1.at_;
 return (ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, at_))
-}
 }
 {
 return ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, pattern_.at_)
@@ -2441,47 +2130,30 @@ return ff_core_Map.empty_()
 }
 {
 const _1 = pattern_;
-{
 if(_1.PString) {
 return literal_("String")
 }
-}
-{
 if(_1.PInt) {
 return literal_("Int")
 }
-}
-{
 if(_1.PChar) {
 return literal_("Char")
 }
-}
-{
-if(_1.PVariable) {
+if(_1.PVariable && _1.name_.None) {
 const at_ = _1.at_;
-if(_1.name_.None) {
 return ff_core_Map.empty_()
 }
-}
-}
-{
-if(_1.PVariable) {
+if(_1.PVariable && _1.name_.Some) {
 const at_ = _1.at_;
-if(_1.name_.Some) {
 const name_ = _1.name_.value_;
 return ff_core_List.List_toMap([ff_core_Pair.Pair(name_, ff_core_Pair.Pair(at_, expected_))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
-}
-}
-{
 if(_1.PAlias) {
 const at_ = _1.at_;
 const pattern_ = _1.pattern_;
 const variable_ = _1.variable_;
 return ff_core_Map.Map_add(ff_compiler_Inference.Inference_inferPattern(self_, environment_, expected_, pattern_), variable_, ff_core_Pair.Pair(at_, expected_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
-}
-{
 if(_1.PVariantAs) {
 const at_ = _1.at_;
 const name_ = _1.name_;
@@ -2507,25 +2179,15 @@ return ff_core_Pair.Pair(_w1, ff_core_Pair.Pair(variableAt_, recordType_))
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
-}
-{
-if(_1.PVariant) {
+if(_1.PVariant && _1.name_ === "List$Empty" && _1.patterns_.length === 0) {
 const at_ = _1.at_;
-if(_1.name_ === "List$Empty") {
-if(_1.patterns_.length === 0) {
 const itemType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_);
 const listType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("List"), [itemType_]);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, listType_);
 return ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
-}
-}
-}
-{
-if(_1.PVariant) {
+if(_1.PVariant && _1.name_ === "List$Link" && _1.patterns_.length === 2) {
 const at_ = _1.at_;
-if(_1.name_ === "List$Link") {
-if(_1.patterns_.length === 2) {
 const head_ = _1.patterns_[0];
 const tail_ = _1.patterns_[1];
 const itemType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_);
@@ -2535,10 +2197,6 @@ const headVariables_ = ff_compiler_Inference.Inference_inferPattern(self_, envir
 const tailVariables_ = ff_compiler_Inference.Inference_inferPattern(self_, environment_, listType_, tail_);
 return ff_core_Map.Map_addAll(headVariables_, tailVariables_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
-}
-}
-}
-{
 if(_1.PVariant) {
 const at_ = _1.at_;
 const name_ = _1.name_;
@@ -2563,7 +2221,6 @@ return
 }
 }
 }
-}
 
 export async function Inference_inferTerm$(self_, environment_, expected_, term_, $task) {
 const hookRecordTypeBox_ = (ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, term_.at_)
@@ -2579,27 +2236,18 @@ return term_
 }
 {
 const _1 = term_;
-{
 if(_1.EString) {
 return literal_("String")
 }
-}
-{
 if(_1.EChar) {
 return literal_("Char")
 }
-}
-{
 if(_1.EInt) {
 return literal_("Int")
 }
-}
-{
 if(_1.EFloat) {
 return literal_("Float")
 }
-}
-{
 if(_1.EVariable) {
 const e_ = _1;
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, [], ff_core_Option.None()), ((instantiated_) => {
@@ -2614,8 +2262,6 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 }))
 return
 }
-}
-{
 if(_1.EField) {
 const e_ = _1;
 const recordType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
@@ -2627,9 +2273,8 @@ _w1.value_ = ff_core_Option.Some(recordType_)
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, e_.record_);
 {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, recordType_);
-{
-const t_ = _1;
 if(_1.TConstructor) {
+const t_ = _1;
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 if(ff_core_String.String_startsWith(name_, "Record$", 0)) {
@@ -2663,17 +2308,14 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 return
 }
 }
-}
-{
-const t_ = _1;
 if(_1.TConstructor) {
+const t_ = _1;
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 const memberPrefix_ = (name_ + "_");
 const memberName_ = (memberPrefix_ + e_.field_);
 {
 const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, memberName_, typeArguments_, ff_core_Option.None());
-{
 if(_1.Some) {
 const instantiated_ = _1.value_;
 if((!instantiated_.scheme_.isVariable_)) {
@@ -2684,8 +2326,6 @@ ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, recordType
 return ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, signature_, term_)
 }
 }
-}
-{
 if(_1.Some) {
 const instantiated_ = _1.value_;
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
@@ -2698,34 +2338,22 @@ return ff_compiler_Syntax.EField(_c.at_, instantiated_.scheme_.isNewtype_, recor
 }
 return
 }
-}
-{
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
 return
 }
-}
-{
-if(_1.TVariable) {
-if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
+if(_1.TVariable && ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
 }
-}
-}
-{
 if(_1.TVariable) {
 const index_ = _1.index_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
 return
 }
-}
-{
 if(_1.EWildcard) {
 const e_ = _1;
 return ff_core_Option.Option_grab(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, ("_w" + e_.index_), [], ff_core_Option.None()), ((instantiated_) => {
@@ -2734,8 +2362,6 @@ return term_
 })))
 return
 }
-}
-{
 if(_1.EList) {
 const at_ = _1.at_;
 const t_ = _1.elementType_;
@@ -2754,8 +2380,6 @@ return
 })))
 return
 }
-}
-{
 if(_1.ESequential) {
 const at_ = _1.at_;
 const before_ = _1.before_;
@@ -2766,12 +2390,10 @@ ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferSequen
 const newExpected_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_);
 {
 const _1 = before_;
-{
-if(_1.EPipe) {
+if(_1.EPipe && _1.function_.ELambda) {
 const at1_ = _1.at_;
 const value_ = _1.value_;
 const effect1_ = _1.effect_;
-if(_1.function_.ELambda) {
 const at2_ = _1.function_.at_;
 const at3_ = _1.function_.lambda_.at_;
 const effect3_ = _1.function_.lambda_.effect_;
@@ -2789,15 +2411,11 @@ return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.guards_, ff_compile
 const newPipe_ = ff_compiler_Syntax.EPipe(at1_, value_, effect1_, ff_compiler_Syntax.ELambda(at2_, ff_compiler_Syntax.Lambda(at3_, effect3_, newCases_)));
 {
 const _1 = after_;
-{
-if(_1.EVariant) {
+if(_1.EVariant && _1.name_ === "ff:core/Unit.Unit") {
 const at_ = _1.at_;
-if(_1.name_ === "ff:core/Unit.Unit") {
 const unitType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), []);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, unitType_);
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, newPipe_)
-}
-}
 }
 {
 return ff_compiler_Syntax.ESequential(at_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, newPipe_), ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, after_))
@@ -2805,16 +2423,12 @@ return ff_compiler_Syntax.ESequential(at_, ff_compiler_Inference.Inference_infer
 }
 return
 }
-}
-}
 {
 return ff_compiler_Syntax.ESequential(at_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, before_), ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, after_))
 }
 }
 return
 }
-}
-{
 if(_1.ELet) {
 const e_ = _1;
 const noEffect_ = ff_compiler_Syntax.TConstructor(e_.at_, "ff:core/Nothing.Nothing", []);
@@ -2831,51 +2445,23 @@ return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, _c.valueType_, ff_
 }
 return
 }
-}
-{
 if(_1.ELambda) {
 const at_ = _1.at_;
 const l_ = _1.lambda_;
 do {
 const _1 = l_.cases_;
-{
-if(_1.length === 1) {
-if(_1[0].patterns_.length === 0) {
-if(_1[0].guards_.length === 0) {
-if(_1[0].body_.EVariable) {
+if(_1.length === 1 && _1[0].patterns_.length === 0 && _1[0].guards_.length === 0 && _1[0].body_.EVariable && _1[0].body_.name_ === "") {
 const insideAt_ = _1[0].body_.at_;
-if(_1[0].body_.name_ === "") {
 if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_)) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferLambdaStartHook(self_.unification_, environment_, expected_))
 break
 }
 }
-}
-}
-}
-}
-}
-{
-if(_1.length === 1) {
-if(_1[0].patterns_.length === 0) {
-if(_1[0].guards_.length === 0) {
-if(_1[0].body_.ESequential) {
-if(_1[0].body_.before_.EVariable) {
+if(_1.length === 1 && _1[0].patterns_.length === 0 && _1[0].guards_.length === 0 && _1[0].body_.ESequential && _1[0].body_.before_.EVariable && _1[0].body_.before_.name_ === "" && _1[0].body_.after_.EVariant && _1[0].body_.after_.name_ === "ff:core/Unit.Unit") {
 const insideAt_ = _1[0].body_.before_.at_;
-if(_1[0].body_.before_.name_ === "") {
-if(_1[0].body_.after_.EVariant) {
-if(_1[0].body_.after_.name_ === "ff:core/Unit.Unit") {
 if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, insideAt_)) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferLambdaStartHook(self_.unification_, environment_, expected_))
 break
-}
-}
-}
-}
-}
-}
-}
-}
 }
 }
 {
@@ -2886,8 +2472,6 @@ break
 const lambda_ = ff_compiler_Inference.Inference_inferLambda(self_, environment_, expected_, l_);
 return ff_compiler_Syntax.ELambda(at_, lambda_)
 }
-}
-{
 if(_1.EVariant) {
 const e_ = _1;
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, e_.typeArguments_, e_.arguments_), (() => {
@@ -2909,8 +2493,6 @@ return
 }
 return
 }
-}
-{
 if(_1.EVariantIs) {
 const e_ = _1;
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, e_.typeArguments_, ff_core_Option.None()), (() => {
@@ -2938,8 +2520,6 @@ return
 }
 return
 }
-}
-{
 if(_1.ECopy) {
 const e_ = _1;
 const scheme_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, [], ff_core_Option.None()), (() => {
@@ -3011,8 +2591,6 @@ const effect_ = ff_compiler_Unification.Unification_freshUnificationVariable(sel
 const e1_ = ff_compiler_Syntax.EPipe(e_.at_, e_.record_, effect_, ff_compiler_Syntax.ELambda(e_.at_, ff_compiler_Syntax.Lambda(e_.at_, effect_, [ff_compiler_Syntax.MatchCase(e_.at_, [ff_compiler_Syntax.PVariable(e_.at_, ff_core_Option.Some("_c"))], [], body_)])));
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, e1_)
 }
-}
-{
 if(_1.EPipe) {
 const e_ = _1;
 const valueType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
@@ -3029,15 +2607,11 @@ return ff_compiler_Syntax.EPipe(_c.at_, value_, _c.effect_, function_)
 }
 return
 }
-}
-{
 if(_1.ECall) {
 const e_ = _1;
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (((_1) => {
-{
 if(_1.StaticCall) {
 return true
-}
 }
 {
 return false
@@ -3046,21 +2620,16 @@ return false
 return term_
 } else {
 const call_ = (((_1) => {
-{
 if(_1.DynamicCall) {
 const call_ = _1;
 return call_
 }
-}
-{
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in the Inference phase")
-}
 }
 }))(e_.target_);
 {
 const _1 = call_.function_;
-{
 if(_1.EVariable) {
 const variableAt_ = _1.at_;
 const x_ = _1.name_;
@@ -3071,7 +2640,6 @@ return ff_compiler_Inference.Inference_inferOperator(self_, environment_, expect
 } else {
 {
 const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, x_, e_.typeArguments_, ff_core_Option.Some(e_.arguments_));
-{
 if(_1.Some) {
 const instantiated_ = _1.value_;
 if(instantiated_.scheme_.isVariable_) {
@@ -3082,18 +2650,13 @@ return ff_compiler_Inference.Inference_inferFunctionCall(self_, environment_, ex
 }
 return
 }
-}
-{
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(variableAt_, ("No such function: " + x_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
 }
-}
 return
 }
-}
-{
 if(_1.EField) {
 const f_ = _1;
 const recordType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, f_.at_);
@@ -3112,53 +2675,38 @@ return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, record_, _c.field_)
 }))(e_);
 {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, recordType_);
-{
-const t_ = _1;
 if(_1.TConstructor) {
+const t_ = _1;
 const name_ = _1.name_;
 const methodName_ = ((name_ + "_") + f_.field_);
 const arguments_ = [ff_compiler_Syntax.Argument(f_.record_.at_, ff_core_Option.None(), f_.record_), ...e_.arguments_];
 {
 const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, f_.at_, methodName_, [], ff_core_Option.Some(arguments_));
-{
 if(_1.Some) {
 const instantiated_ = _1.value_;
 if((!instantiated_.scheme_.isVariable_)) {
 return ff_compiler_Inference.Inference_inferMethodCall(self_, environment_, expected_, instantiated_.scheme_.signature_, instantiated_.typeArguments_, e2_, record_, recordType_, methodName_)
 }
 }
-}
-{
 if(_1.Some) {
 const instantiated_ = _1.value_;
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, e2_)
 }
-}
-{
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
 return
 }
-}
-{
-if(_1.TVariable) {
-if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
+if(_1.TVariable && ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, e2_)
 }
-}
-}
-{
 if(_1.TVariable) {
 const index_ = _1.index_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
 return
-}
 }
 {
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, term_)
@@ -3167,8 +2715,6 @@ return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expe
 }
 return
 }
-}
-{
 if(_1.ERecord) {
 const e_ = _1;
 const fields_ = ff_core_List.List_sortBy(e_.fields_, ((_w1) => {
@@ -3204,8 +2750,6 @@ return ff_compiler_Syntax.ERecord(_c.at_, newFields_)
 }
 return
 }
-}
-{
 if(_1.EFunctions) {
 const at_ = _1.at_;
 const functions_ = _1.functions_;
@@ -3223,8 +2767,6 @@ return ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environmen
 const newBody_ = ff_compiler_Inference.Inference_inferTerm(self_, environment2_, expected_, body_);
 return ff_compiler_Syntax.EFunctions(at_, newFunctions_, newBody_)
 }
-}
-{
 if(_1.EAssign) {
 const e_ = _1;
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.variable_, [], ff_core_Option.None()), ((instantiated_) => {
@@ -3245,33 +2787,27 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 }))
 return
 }
-}
-{
 if(_1.EAssignField) {
 const e_ = _1;
 const recordType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, e_.record_);
 {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, recordType_);
-{
-const t_ = _1;
 if(_1.TConstructor) {
+const t_ = _1;
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 if(ff_core_String.String_startsWith(name_, "Record$", 0)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Can't assign fields of anonymous records: " + e_.field_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
-{
-const t_ = _1;
 if(_1.TConstructor) {
+const t_ = _1;
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 const methodName_ = ((name_ + "_") + e_.field_);
 {
 const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, methodName_, typeArguments_, ff_core_Option.None());
-{
 if(_1.Some) {
 const instantiated_ = _1.value_;
 if((instantiated_.scheme_.isMutable_ || ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_))) {
@@ -3286,38 +2822,25 @@ return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, record_, _c.field_,
 return
 }
 }
-}
-{
 if(_1.Some) {
 const instantiated_ = _1.value_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("Can't assign an immutable field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
-}
-{
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
 return
 }
-}
-{
-if(_1.TVariable) {
-if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
+if(_1.TVariable && ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
 }
-}
-}
-{
 if(_1.TVariable) {
 const index_ = _1.index_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
 return
-}
 }
 }
 }
@@ -3336,27 +2859,21 @@ return newValue_
 
 export async function Inference_inferMethodCall$(self_, environment_, expected_, signature_, instantiation_, term_, record_, recordType_, name_, $task) {
 const e_ = (((_1) => {
-{
 if(_1.ECall) {
 const e_ = _1;
 return e_
-}
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 }
 }))(term_);
 const call_ = (((_1) => {
-{
 if(_1.DynamicCall) {
 const call_ = _1;
 return call_
 }
-}
-{
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferMethodCall")
-}
 }
 }))(e_.target_);
 const selfParameter_ = ff_core_List.List_grabFirst(signature_.parameters_);
@@ -3379,27 +2896,21 @@ return
 
 export async function Inference_inferFunctionCall$(self_, environment_, expected_, signature_, instanceCall_, instantiation_, term_, name_, $task) {
 const e_ = (((_1) => {
-{
 if(_1.ECall) {
 const e_ = _1;
 return e_
-}
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 }
 }))(term_);
 const call_ = (((_1) => {
-{
 if(_1.DynamicCall) {
 const call_ = _1;
 return call_
 }
-}
-{
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferFunctionCall")
-}
 }
 }))(e_.target_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, signature_.returnType_);
@@ -3419,34 +2930,26 @@ return
 
 export async function Inference_inferLambdaCall$(self_, environment_, expected_, term_, $task) {
 const e_ = (((_1) => {
-{
 if(_1.ECall) {
 const e_ = _1;
 return e_
-}
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 }
 }))(term_);
 const call_ = (((_1) => {
-{
 if(_1.DynamicCall) {
 const call_ = _1;
 if((!call_.tailCall_)) {
 return call_
 }
 }
-}
-{
 if(_1.DynamicCall) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Tailcalls not supported on lambda functions"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
-}
-{
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferLambdaCall")
-}
 }
 }))(e_.target_);
 const effect_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, term_.at_);
@@ -3490,11 +2993,9 @@ return
 
 export async function Inference_inferOperator$(self_, environment_, expected_, operator_, term_, $task) {
 const e_ = (((_1) => {
-{
 if(_1.ECall) {
 const e_ = _1;
 return e_
-}
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
@@ -3503,7 +3004,6 @@ return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 const target_ = ff_compiler_Syntax.StaticCall(operator_, false, false);
 {
 const _1 = e_.arguments_;
-{
 if(_1.length === 1) {
 const a1_ = _1[0];
 if((operator_ === "!")) {
@@ -3523,8 +3023,6 @@ return
 return
 }
 }
-}
-{
 if(_1.length === 1) {
 const a1_ = _1[0];
 if((operator_ === "-")) {
@@ -3532,37 +3030,26 @@ const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.u
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_);
 do {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t1_);
-{
-if(_1.TConstructor) {
+if(_1.TConstructor && _1.generics_.length === 0) {
 const name_ = _1.name_;
-if(_1.generics_.length === 0) {
 if((name_ === ff_compiler_Inference.core_("Float"))) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 break
 }
 }
-}
-}
-{
-if(_1.TConstructor) {
+if(_1.TConstructor && _1.generics_.length === 0) {
 const name_ = _1.name_;
-if(_1.generics_.length === 0) {
 if((name_ === ff_compiler_Inference.core_("Int"))) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 break
 }
 }
-}
-}
-{
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 
 break
 }
-}
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on unknown types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-break
 }
 } while(false);
 {
@@ -3578,8 +3065,6 @@ return
 return
 }
 }
-}
-{
 if(_1.length === 2) {
 const a1_ = _1[0];
 const a2_ = _1[1];
@@ -3603,8 +3088,6 @@ return
 return
 }
 }
-}
-{
 if(_1.length === 2) {
 const a1_ = _1[0];
 const a2_ = _1[1];
@@ -3628,8 +3111,6 @@ return
 return
 }
 }
-}
-{
 if(_1.length === 2) {
 const a1_ = _1[0];
 const a2_ = _1[1];
@@ -3641,34 +3122,22 @@ const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t2_, 
 const magic_ = ((t_) => {
 {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_);
-{
-if(_1.TConstructor) {
+if(_1.TConstructor && _1.generics_.length === 0) {
 const name_ = _1.name_;
-if(_1.generics_.length === 0) {
 if((name_ === ff_compiler_Inference.core_("Float"))) {
 return ff_core_Option.Some("Float")
 }
 }
-}
-}
-{
-if(_1.TConstructor) {
+if(_1.TConstructor && _1.generics_.length === 0) {
 const name_ = _1.name_;
-if(_1.generics_.length === 0) {
 if((name_ === ff_compiler_Inference.core_("Int"))) {
 return ff_core_Option.Some("Int")
 }
 }
-}
-}
-{
-if(_1.TConstructor) {
+if(_1.TConstructor && _1.generics_.length === 0) {
 const name_ = _1.name_;
-if(_1.generics_.length === 0) {
 if(((operator_ === "+") && (name_ === ff_compiler_Inference.core_("String")))) {
 return ff_core_Option.Some("String")
-}
-}
 }
 }
 {
@@ -3677,103 +3146,49 @@ return ff_core_Option.None()
 }
 });
 const chooseType_ = ((_1, _2) => {
-{
-if(_1.Some) {
-if(_1.value_ === "String") {
-if(_2.Some) {
+if(_1.Some && _1.value_ === "String" && _2.Some) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }
-}
-}
-}
-{
-if(_1.Some) {
-if(_2.Some) {
-if(_2.value_ === "String") {
+if(_1.Some && _2.Some && _2.value_ === "String") {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }
-}
-}
-}
-{
-if(_1.Some) {
-if(_1.value_ === "Float") {
-if(_2.Some) {
+if(_1.Some && _1.value_ === "Float" && _2.Some) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }
-}
-}
-}
-{
-if(_1.Some) {
-if(_2.Some) {
-if(_2.value_ === "Float") {
+if(_1.Some && _2.Some && _2.value_ === "Float") {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }
-}
-}
-}
-{
-if(_1.Some) {
-if(_1.value_ === "Int") {
-if(_2.Some) {
+if(_1.Some && _1.value_ === "Int" && _2.Some) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }
-}
-}
-}
-{
-if(_1.Some) {
-if(_2.Some) {
-if(_2.value_ === "Int") {
+if(_1.Some && _2.Some && _2.value_ === "Int") {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }
-}
-}
-}
-{
-if(_1.Some) {
-if(_2.None) {
+if(_1.Some && _2.None) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t1_, t2_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }
-}
-}
-{
-if(_1.None) {
-if(_2.Some) {
+if(_1.None && _2.Some) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t2_, t1_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }
-}
-}
-{
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 
 return
 }
-}
-{
-if(_1.Some) {
-if(_2.Some) {
+if(_1.Some && _2.Some) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on these types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
-}
-}
-{
-if(_1.None) {
-if(_2.None) {
+if(_1.None && _2.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on unknown types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
-}
 }
 });
 chooseType_(magic_(t1_), magic_(t2_));
@@ -3792,11 +3207,8 @@ return
 return
 }
 }
-}
-{
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
-}
 }
 {
 return ff_compiler_Inference.fail_(e_.at_, ("Unknown operator: " + operator_))
@@ -3887,20 +3299,16 @@ return defaultArgument_()
 }));
 if((!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_))) {
 ff_core_Option.Option_each(ff_core_Array.Array_first(remainingArguments_), ((_1) => {
-{
-const callAt_ = _1.at_;
 if(_1.name_.None) {
+const callAt_ = _1.at_;
 ff_compiler_Inference.fail_(callAt_, "Too many arguments")
 return
 }
-}
-{
-const callAt_ = _1.at_;
 if(_1.name_.Some) {
+const callAt_ = _1.at_;
 const n_ = _1.name_.value_;
 ff_compiler_Inference.fail_(callAt_, ("Unknown argument: " + n_))
 return
-}
 }
 }));
 return newArguments_
@@ -3993,13 +3401,11 @@ return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtyp
 if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, scheme_.signature_.at_))) {
 const symbolHook_ = ff_compiler_LspHook.SymbolHook(symbol_, at_, scheme_.signature_.at_);
 const emittedHook_ = (((_1) => {
-{
 if(_1.InferLookupHook) {
 const h_ = _1;
 h_.symbol_.value_ = symbolHook_;
 h_.instantiated_.value_ = ff_core_Option.Some(instantiated_)
 return
-}
 }
 {
 

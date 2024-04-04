@@ -168,22 +168,14 @@ return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.pac
 
 export function check_(system_, fireflyPath_, path_, virtualFiles_, lspHook_, infer_) {
 const packages_ = (((_1) => {
-{
 if(_1) {
 return ff_compiler_Builder.findPackageFiles_(path_)
 }
-}
-{
-if(!_1) {
-if(ff_core_Path.Path_endsWith(path_, [".firefly", "package.ff"])) {
+if(!_1 && ff_core_Path.Path_endsWith(path_, [".firefly", "package.ff"])) {
 return [ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab(ff_core_Path.Path_parent(path_)), ff_core_Option.Some(path_), [])]
 }
-}
-}
-{
 if(!_1) {
 return [ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab(ff_core_Path.Path_parent(path_)), ff_core_Option.None(), [path_])]
-}
 }
 }))(ff_core_Path.Path_isDirectory(path_));
 ff_core_List.List_each(ff_core_List.List_filter(packages_, ((_w1) => {
@@ -343,22 +335,14 @@ return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.pac
 
 export async function check_$(system_, fireflyPath_, path_, virtualFiles_, lspHook_, infer_, $task) {
 const packages_ = (await ((async (_1, $task) => {
-{
 if(_1) {
 return (await ff_compiler_Builder.findPackageFiles_$(path_, $task))
 }
-}
-{
-if(!_1) {
-if((await ff_core_Path.Path_endsWith$(path_, [".firefly", "package.ff"], $task))) {
+if(!_1 && (await ff_core_Path.Path_endsWith$(path_, [".firefly", "package.ff"], $task))) {
 return [ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(path_, $task))), ff_core_Option.Some(path_), [])]
 }
-}
-}
-{
 if(!_1) {
 return [ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(path_, $task))), ff_core_Option.None(), [path_])]
-}
 }
 }))((await ff_core_Path.Path_isDirectory$(path_, $task)), $task));
 (await ff_core_List.List_each$(ff_core_List.List_filter(packages_, ((_w1) => {

@@ -141,23 +141,14 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 
 export function detectIfElse_(term_) {
 const term_a = term_;
-if(term_a.ECall) {
+if(term_a.ECall && term_a.target_.StaticCall && term_a.target_.name_ === "ff:core/Core.if" && term_a.arguments_.length === 2) {
 const at_ = term_a.at_;
-if(term_a.target_.StaticCall) {
-if(term_a.target_.name_ === "ff:core/Core.if") {
-if(term_a.arguments_.length === 2) {
 const condition_ = term_a.arguments_[0];
 const body_ = term_a.arguments_[1];
 return [ff_core_Pair.Pair(condition_.value_, ff_compiler_JsEmitter.invokeImmediately_(body_.value_))]
 }
-}
-}
-}
-if(term_a.ECall) {
+if(term_a.ECall && term_a.target_.StaticCall && term_a.target_.name_ === "ff:core/Option.Option_elseIf" && term_a.arguments_.length === 3) {
 const at_ = term_a.at_;
-if(term_a.target_.StaticCall) {
-if(term_a.target_.name_ === "ff:core/Option.Option_elseIf") {
-if(term_a.arguments_.length === 3) {
 const option_ = term_a.arguments_[0];
 const condition_ = term_a.arguments_[1];
 const body_ = term_a.arguments_[2];
@@ -169,14 +160,8 @@ return [ff_core_Pair.Pair(ff_compiler_JsEmitter.invokeImmediately_(condition_.va
 }
 return
 }
-}
-}
-}
-if(term_a.ECall) {
+if(term_a.ECall && term_a.target_.StaticCall && term_a.target_.name_ === "ff:core/Option.Option_else" && term_a.arguments_.length === 2) {
 const at_ = term_a.at_;
-if(term_a.target_.StaticCall) {
-if(term_a.target_.name_ === "ff:core/Option.Option_else") {
-if(term_a.arguments_.length === 2) {
 const option_ = term_a.arguments_[0];
 const body_ = term_a.arguments_[1];
 const list_ = ff_compiler_JsEmitter.detectIfElse_(option_.value_);
@@ -187,9 +172,6 @@ return [ff_core_Pair.Pair(ff_compiler_Syntax.EVariant(at_, "ff:core/Bool.True", 
 }
 return
 }
-}
-}
-}
 {
 return []
 }
@@ -197,16 +179,10 @@ return []
 
 export function invokeImmediately_(function_) {
 const function_a = function_;
-if(function_a.ELambda) {
+if(function_a.ELambda && function_a.lambda_.cases_.length === 1 && function_a.lambda_.cases_[0].patterns_.length === 0 && function_a.lambda_.cases_[0].guards_.length === 0) {
 const effect_ = function_a.lambda_.effect_;
-if(function_a.lambda_.cases_.length === 1) {
-if(function_a.lambda_.cases_[0].patterns_.length === 0) {
-if(function_a.lambda_.cases_[0].guards_.length === 0) {
 const body_ = function_a.lambda_.cases_[0].body_;
 return body_
-}
-}
-}
 }
 {
 const effect_ = ff_compiler_Syntax.TConstructor(function_.at_, "Q$", []);
@@ -229,17 +205,13 @@ return t_.name_
 
 export function firstTypeName_(types_) {
 return (((_1) => {
-{
 if(_1.TConstructor) {
 const t_ = _1;
 return t_
 }
-}
-{
 if(_1.TVariable) {
 const t_ = _1;
 return ff_compiler_JsEmitter.fail_(t_.at_, " is still a unification variable")
-}
 }
 }))(ff_core_List.List_grabFirst(types_)).name_
 }
@@ -291,10 +263,8 @@ return word_
 
 export function effectTypeIsAsync_(effect_) {
 const effect_a = effect_;
-if(effect_a.TConstructor) {
-if(effect_a.name_ === "Q$") {
+if(effect_a.TConstructor && effect_a.name_ === "Q$") {
 return true
-}
 }
 {
 return false
@@ -314,23 +284,14 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 
 export async function detectIfElse_$(term_, $task) {
 const term_a = term_;
-if(term_a.ECall) {
+if(term_a.ECall && term_a.target_.StaticCall && term_a.target_.name_ === "ff:core/Core.if" && term_a.arguments_.length === 2) {
 const at_ = term_a.at_;
-if(term_a.target_.StaticCall) {
-if(term_a.target_.name_ === "ff:core/Core.if") {
-if(term_a.arguments_.length === 2) {
 const condition_ = term_a.arguments_[0];
 const body_ = term_a.arguments_[1];
 return [ff_core_Pair.Pair(condition_.value_, ff_compiler_JsEmitter.invokeImmediately_(body_.value_))]
 }
-}
-}
-}
-if(term_a.ECall) {
+if(term_a.ECall && term_a.target_.StaticCall && term_a.target_.name_ === "ff:core/Option.Option_elseIf" && term_a.arguments_.length === 3) {
 const at_ = term_a.at_;
-if(term_a.target_.StaticCall) {
-if(term_a.target_.name_ === "ff:core/Option.Option_elseIf") {
-if(term_a.arguments_.length === 3) {
 const option_ = term_a.arguments_[0];
 const condition_ = term_a.arguments_[1];
 const body_ = term_a.arguments_[2];
@@ -342,14 +303,8 @@ return [ff_core_Pair.Pair(ff_compiler_JsEmitter.invokeImmediately_(condition_.va
 }
 return
 }
-}
-}
-}
-if(term_a.ECall) {
+if(term_a.ECall && term_a.target_.StaticCall && term_a.target_.name_ === "ff:core/Option.Option_else" && term_a.arguments_.length === 2) {
 const at_ = term_a.at_;
-if(term_a.target_.StaticCall) {
-if(term_a.target_.name_ === "ff:core/Option.Option_else") {
-if(term_a.arguments_.length === 2) {
 const option_ = term_a.arguments_[0];
 const body_ = term_a.arguments_[1];
 const list_ = ff_compiler_JsEmitter.detectIfElse_(option_.value_);
@@ -360,9 +315,6 @@ return [ff_core_Pair.Pair(ff_compiler_Syntax.EVariant(at_, "ff:core/Bool.True", 
 }
 return
 }
-}
-}
-}
 {
 return []
 }
@@ -370,16 +322,10 @@ return []
 
 export async function invokeImmediately_$(function_, $task) {
 const function_a = function_;
-if(function_a.ELambda) {
+if(function_a.ELambda && function_a.lambda_.cases_.length === 1 && function_a.lambda_.cases_[0].patterns_.length === 0 && function_a.lambda_.cases_[0].guards_.length === 0) {
 const effect_ = function_a.lambda_.effect_;
-if(function_a.lambda_.cases_.length === 1) {
-if(function_a.lambda_.cases_[0].patterns_.length === 0) {
-if(function_a.lambda_.cases_[0].guards_.length === 0) {
 const body_ = function_a.lambda_.cases_[0].body_;
 return body_
-}
-}
-}
 }
 {
 const effect_ = ff_compiler_Syntax.TConstructor(function_.at_, "Q$", []);
@@ -402,17 +348,13 @@ return t_.name_
 
 export async function firstTypeName_$(types_, $task) {
 return (((_1) => {
-{
 if(_1.TConstructor) {
 const t_ = _1;
 return t_
 }
-}
-{
 if(_1.TVariable) {
 const t_ = _1;
 return ff_compiler_JsEmitter.fail_(t_.at_, " is still a unification variable")
-}
 }
 }))(ff_core_List.List_grabFirst(types_)).name_
 }
@@ -464,10 +406,8 @@ return word_
 
 export async function effectTypeIsAsync_$(effect_, $task) {
 const effect_a = effect_;
-if(effect_a.TConstructor) {
-if(effect_a.name_ === "Q$") {
+if(effect_a.TConstructor && effect_a.name_ === "Q$") {
 return true
-}
 }
 {
 return false
@@ -557,22 +497,14 @@ return [ff_core_List.List_join(["export async function $run$(fireflyPath_, argum
 : []), "} finally {", ...(ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
 ? ["ff_core_Task.Task_abort$($task)", "clearInterval(interval)"]
 : []), "}", "}", ...(((_1) => {
-{
 if(_1.EmitBrowser) {
 return ["queueMicrotask(async () => {", "await $run$(null, [])", "})"]
 }
-}
-{
-if(_1.EmitNode) {
-if(bootstrapping_) {
+if(_1.EmitNode && bootstrapping_) {
 return ["import * as path from 'node:path'", "queueMicrotask(async () => {", "let fireflyPath_ = path.dirname(path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))))", "await $run$(fireflyPath_, process.argv.slice(2))", "})"]
 }
-}
-}
-{
 if(_1.EmitExecutable) {
 return ["queueMicrotask(async () => {", "await $run$(null, process.argv.slice(2))", "})"]
-}
 }
 {
 return []
@@ -639,10 +571,8 @@ return ("async " + ff_core_String.String_dropFirst(_w1, ff_core_String.String_si
 const body_ = (("{\n" + ff_core_List.List_join([...methods_, ...asyncMethods_], ",\n")) + "\n}");
 {
 const _1 = definition_.constraints_;
-{
 if(_1.length === 0) {
 return (((("export const " + name_) + " = ") + body_) + ";")
-}
 }
 {
 const constraints_ = _1;
@@ -658,60 +588,30 @@ export function JsEmitter_emitFunctionDefinition(self_, definition_, async_, suf
 const signature_ = ff_compiler_JsEmitter.JsEmitter_emitSignature(self_, definition_.signature_, async_, suffix_);
 {
 const _1 = ff_core_Pair.Pair(async_, definition_.body_);
-{
-if(!_1.first_) {
-if(_1.second_.ForeignTarget) {
-if(_1.second_.syncCode_.None) {
+if(!_1.first_ && _1.second_.ForeignTarget && _1.second_.syncCode_.None) {
 return (((signature_ + " {\nthrow new Error('Function ") + definition_.signature_.name_) + " is missing on this target in sync context.');\n}")
 }
-}
-}
-}
-{
-if(_1.first_) {
-if(_1.second_.ForeignTarget) {
-if(_1.second_.asyncCode_.None) {
+if(_1.first_ && _1.second_.ForeignTarget && _1.second_.asyncCode_.None) {
 return (((signature_ + " {\nthrow new Error('Function ") + definition_.signature_.name_) + " is missing on this target in async context.');\n}")
 }
-}
-}
-}
-{
-if(!_1.first_) {
-if(_1.second_.ForeignTarget) {
-if(_1.second_.syncCode_.Some) {
+if(!_1.first_ && _1.second_.ForeignTarget && _1.second_.syncCode_.Some) {
 const code_ = _1.second_.syncCode_.value_;
 return (((signature_ + " {\n") + ff_compiler_JsImporter.JsImporter_process(self_.jsImporter_, definition_.at_, code_)) + "\n}")
 }
-}
-}
-}
-{
-if(_1.first_) {
-if(_1.second_.ForeignTarget) {
-if(_1.second_.asyncCode_.Some) {
+if(_1.first_ && _1.second_.ForeignTarget && _1.second_.asyncCode_.Some) {
 const code_ = _1.second_.asyncCode_.value_;
 return (((signature_ + " {\n") + ff_compiler_JsImporter.JsImporter_process(self_.jsImporter_, definition_.at_, code_)) + "\n}")
 }
-}
-}
-}
-{
 if(_1.second_.FireflyTarget) {
 const lambda_ = _1.second_.lambda_;
 {
 const _1 = lambda_;
-{
-const effect_ = _1.effect_;
 if(_1.cases_.length === 1) {
+const effect_ = _1.effect_;
 const matchCase_ = _1.cases_[0];
 if(ff_core_List.List_all(matchCase_.patterns_, ((_1) => {
-{
-if(_1.PVariable) {
-if(_1.name_.None) {
+if(_1.PVariable && _1.name_.None) {
 return true
-}
-}
 }
 {
 return false
@@ -721,7 +621,6 @@ const body_ = ff_compiler_JsEmitter.JsEmitter_emitTailCall(self_, (() => {
 return ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, matchCase_.body_, true, async_)
 }));
 return (((signature_ + " {\n") + body_) + "\n}")
-}
 }
 }
 {
@@ -736,12 +635,7 @@ return (((("const " + p_.name_) + "_a = ") + ff_compiler_JsEmitter.escapeKeyword
 })), "\n");
 const body_ = ff_compiler_JsEmitter.JsEmitter_emitTailCall(self_, (() => {
 const casesString_ = ff_core_List.List_join(ff_core_List.List_map(cases_, ((_w1) => {
-const caseString_ = ff_compiler_JsEmitter.JsEmitter_emitCase(self_, escapedArguments_, _w1, true, true, async_);
-if(((ff_core_List.List_size(cases_) === 1) || ff_core_String.String_startsWith(caseString_, "if(", 0))) {
-return caseString_
-} else {
-return (("{\n" + caseString_) + "\n}")
-}
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, escapedArguments_, _w1, [], [], true, true, async_)
 })), "\n");
 return ((shadowingWorkaround_ + "\n") + casesString_)
 }));
@@ -749,7 +643,6 @@ return (((signature_ + " {\n") + body_) + "\n}")
 }
 }
 return
-}
 }
 }
 }
@@ -823,7 +716,6 @@ return (((((((((("export function " + definition_.name_) + "(") + fields_) + ") 
 export function JsEmitter_emitTerm(self_, term_, async_) {
 {
 const _1 = term_;
-{
 if(_1.EString) {
 const at_ = _1.at_;
 const value_ = _1.value_;
@@ -831,74 +723,48 @@ if(ff_core_String.String_startsWith(value_, "\"\"\"", 0)) {
 return (("`" + ff_core_String.String_replace(ff_core_String.String_dropLast(ff_core_String.String_dropFirst(value_, 3), 3), "`", "\\`")) + "`")
 }
 }
-}
-{
 if(_1.EString) {
 const at_ = _1.at_;
 const value_ = _1.value_;
 return value_
 }
-}
-{
 if(_1.EChar) {
 const at_ = _1.at_;
 const value_ = _1.value_;
 return ff_compiler_JsEmitter.charLiteralToNumber_(value_)
 }
-}
-{
 if(_1.EInt) {
 const at_ = _1.at_;
 const value_ = _1.value_;
 return value_
 }
-}
-{
 if(_1.EFloat) {
 const at_ = _1.at_;
 const value_ = _1.value_;
 return value_
 }
-}
-{
 if(_1.EVariable) {
 const at_ = _1.at_;
 const name_ = _1.name_;
 return ff_compiler_JsEmitter.escapeResolved_(name_)
 }
-}
-{
 if(_1.EList) {
 const at_ = _1.at_;
 const items_ = _1.items_;
 return ff_compiler_JsEmitter.JsEmitter_emitList(self_, items_, async_)
 }
-}
-{
-if(_1.EVariant) {
+if(_1.EVariant && _1.name_ === "ff:core/Bool.False") {
 const at_ = _1.at_;
-if(_1.name_ === "ff:core/Bool.False") {
 return "false"
 }
-}
-}
-{
-if(_1.EVariant) {
+if(_1.EVariant && _1.name_ === "ff:core/Bool.True") {
 const at_ = _1.at_;
-if(_1.name_ === "ff:core/Bool.True") {
 return "true"
 }
-}
-}
-{
-if(_1.EVariant) {
+if(_1.EVariant && _1.name_ === "ff:core/Unit.Unit") {
 const at_ = _1.at_;
-if(_1.name_ === "ff:core/Unit.Unit") {
 return "(void 0)"
 }
-}
-}
-{
 if(_1.EVariant) {
 const at_ = _1.at_;
 const name_ = _1.name_;
@@ -914,32 +780,18 @@ return (((ff_compiler_JsEmitter.escapeResolved_(name_) + "(") + argumentsString_
 }
 return
 }
-}
-{
-if(_1.EVariantIs) {
+if(_1.EVariantIs && _1.name_ === "ff:core/Bool.False") {
 const at_ = _1.at_;
-if(_1.name_ === "ff:core/Bool.False") {
 return "function(_v) { return !_v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
 }
-}
-}
-{
-if(_1.EVariantIs) {
+if(_1.EVariantIs && _1.name_ === "ff:core/Bool.True") {
 const at_ = _1.at_;
-if(_1.name_ === "ff:core/Bool.True") {
 return "function(_v) { return _v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
 }
-}
-}
-{
-if(_1.EVariantIs) {
+if(_1.EVariantIs && _1.name_ === "ff:core/Unit.Unit") {
 const at_ = _1.at_;
-if(_1.name_ === "ff:core/Unit.Unit") {
 return "function(_v) { return ff_core_Option.Some(_v); }"
 }
-}
-}
-{
 if(_1.EVariantIs) {
 const at_ = _1.at_;
 const name_ = _1.name_;
@@ -948,8 +800,6 @@ return (_w1 !== 46)
 })));
 return (((("(function(_v) { " + "return _v.") + ff_compiler_JsEmitter.escapeResolved_(n_)) + " ? ff_core_Option.Some(_v) : ff_core_Option.None();") + "})")
 }
-}
-{
 if(_1.ECopy) {
 const at_ = _1.at_;
 const name_ = _1.name_;
@@ -960,8 +810,6 @@ return ((ff_compiler_JsEmitter.escapeKeyword_(f_.name_) + " = ") + ff_compiler_J
 })), ", ");
 return (((("{..." + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_, async_)) + ", ") + fieldCode_) + "}")
 }
-}
-{
 if(_1.EField) {
 const at_ = _1.at_;
 const newtype_ = _1.newtype_;
@@ -974,20 +822,14 @@ return ((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_, async_) + ".")
 }
 return
 }
-}
-{
-if(_1.ELambda) {
+if(_1.ELambda && _1.lambda_.cases_.length === 1 && _1.lambda_.cases_[0].guards_.length === 0) {
 const at_ = _1.at_;
 const effect_ = _1.lambda_.effect_;
-if(_1.lambda_.cases_.length === 1) {
 const patterns_ = _1.lambda_.cases_[0].patterns_;
-if(_1.lambda_.cases_[0].guards_.length === 0) {
 const body_ = _1.lambda_.cases_[0].body_;
 if(ff_core_List.List_all(patterns_, ((_1) => {
-{
 if(_1.PVariable) {
 return true
-}
 }
 {
 return false
@@ -995,7 +837,6 @@ return false
 }))) {
 const newAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
 const patternParameters_ = ff_core_List.List_map(patterns_, ((_1) => {
-{
 if(_1.PVariable) {
 const p_ = _1;
 return ff_core_Option.Option_else(ff_core_Option.Option_map(p_.name_, ((word_) => {
@@ -1004,7 +845,6 @@ return ff_compiler_JsEmitter.escapeKeyword_(word_)
 return "_"
 }))
 return
-}
 }
 {
 return ff_core_Core.panic_("!")
@@ -1020,10 +860,6 @@ const prefix_ = (newAsync_
 return (((((("(" + prefix_) + "(") + parameters_) + ") => {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, true, newAsync_)) + "\n})")
 }
 }
-}
-}
-}
-{
 if(_1.ELambda) {
 const at_ = _1.at_;
 const effect_ = _1.lambda_.effect_;
@@ -1040,15 +876,13 @@ const escapedArguments_ = ff_core_List.List_map(arguments_, ((word_) => {
 return ff_compiler_JsEmitter.escapeKeyword_(word_)
 }));
 const caseStrings_ = ff_core_List.List_map(cases_, ((_w1) => {
-return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, escapedArguments_, _w1, true, true, newAsync_)) + "\n}")
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, escapedArguments_, _w1, [], [], true, true, newAsync_)
 }));
 const prefix_ = (newAsync_
 ? "async "
 : "");
 return ((((((("(" + prefix_) + "(") + ff_core_List.List_join([...escapedArguments_, ...controller_], ", ")) + ") => ") + "{\n") + ff_core_List.List_join(caseStrings_, "\n")) + "\n})")
 }
-}
-{
 if(_1.EPipe) {
 const at_ = _1.at_;
 const value_ = _1.value_;
@@ -1066,97 +900,42 @@ return call_
 }
 return
 }
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.typeArguments_.length === 0 && _1.arguments_.length === 1) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
 const operator_ = _1.target_.name_;
-if(_1.typeArguments_.length === 0) {
-if(_1.arguments_.length === 1) {
 const value_ = _1.arguments_[0];
 if((!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_grabFirst(operator_)))) {
 return ((("(" + operator_) + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, at_, value_, async_)) + ")")
 }
 }
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.typeArguments_.length === 0 && _1.arguments_.length === 2) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
 const operator_ = _1.target_.name_;
-if(_1.typeArguments_.length === 0) {
-if(_1.arguments_.length === 2) {
 const left_ = _1.arguments_[0];
 const right_ = _1.arguments_[1];
 if((!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_grabFirst(operator_)))) {
 return (((((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, at_, left_, async_)) + " ") + operator_) + " ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, at_, right_, async_)) + ")")
 }
 }
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_grab" && _1.arguments_.length === 2 && _1.arguments_[0].value_.EVariable && _1.arguments_[1].value_.EVariable) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/List.List_grab") {
-if(_1.arguments_.length === 2) {
-if(_1.arguments_[0].value_.EVariable) {
 const x1_ = _1.arguments_[0].value_.name_;
-if(_1.arguments_[1].value_.EVariable) {
 const x2_ = _1.arguments_[1].value_.name_;
 return ((((((((("(" + ff_compiler_JsEmitter.escapeResolved_(x1_)) + "[") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "] ?? ") + "ff_core_List.internalGrab_(") + ff_compiler_JsEmitter.escapeResolved_(x1_)) + ", ") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "))")
 }
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Array.Array_grab" && _1.arguments_.length === 2 && _1.arguments_[0].value_.EVariable && _1.arguments_[1].value_.EVariable) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Array.Array_grab") {
-if(_1.arguments_.length === 2) {
-if(_1.arguments_[0].value_.EVariable) {
 const x1_ = _1.arguments_[0].value_.name_;
-if(_1.arguments_[1].value_.EVariable) {
 const x2_ = _1.arguments_[1].value_.name_;
 return ((((((((("(" + ff_compiler_JsEmitter.escapeResolved_(x1_)) + ".array[") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "] ?? ") + "ff_core_Array.internalGrab_(") + ff_compiler_JsEmitter.escapeResolved_(x1_)) + ", ") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "))")
 }
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:unsafejs/UnsafeJs.import" && _1.arguments_.length === 1 && _1.arguments_[0].value_.EString) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.import") {
-if(_1.arguments_.length === 1) {
-if(_1.arguments_[0].value_.EString) {
 const url_ = _1.arguments_[0].value_.value_;
 return ff_compiler_JsImporter.JsImporter_add(self_.jsImporter_, ff_core_String.String_replace(url_, "\"", ""))
 }
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:unsafejs/UnsafeJs.await" && _1.arguments_.length === 1) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.await") {
-if(_1.arguments_.length === 1) {
 const body_ = _1.arguments_[0].value_;
 const emittedBody_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_);
 if(async_) {
@@ -1166,16 +945,8 @@ return (("(" + emittedBody_) + "())")
 }
 return
 }
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:unsafejs/UnsafeJs.cancelled" && _1.arguments_.length === 0) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.cancelled") {
-if(_1.arguments_.length === 0) {
 if(async_) {
 return "$task.controller.signal.aborted"
 } else {
@@ -1183,16 +954,8 @@ return "false"
 }
 return
 }
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:unsafejs/UnsafeJs.throwIfCancelled" && _1.arguments_.length === 0) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.throwIfCancelled") {
-if(_1.arguments_.length === 0) {
 if(async_) {
 return "((() => ff_core_Task.Task_throwIfAborted($task))())"
 } else {
@@ -1200,152 +963,67 @@ return ""
 }
 return
 }
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Equal.equals" && _1.arguments_.length === 2 && _1.dictionaries_.length === 1 && _1.dictionaries_[0].dictionaries_.length === 0) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Equal.equals") {
-if(_1.arguments_.length === 2) {
 const left_ = _1.arguments_[0];
 const right_ = _1.arguments_[1];
-if(_1.dictionaries_.length === 1) {
 const typeName_ = _1.dictionaries_[0].typeName_;
-if(_1.dictionaries_[0].dictionaries_.length === 0) {
 if((ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) || (typeName_ === "ff:core/Ordering.Ordering"))) {
 return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, at_, left_, async_)) + " === ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, at_, right_, async_)) + ")")
 }
 }
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Equal.notEquals" && _1.arguments_.length === 2 && _1.dictionaries_.length === 1 && _1.dictionaries_[0].dictionaries_.length === 0) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Equal.notEquals") {
-if(_1.arguments_.length === 2) {
 const left_ = _1.arguments_[0];
 const right_ = _1.arguments_[1];
-if(_1.dictionaries_.length === 1) {
 const typeName_ = _1.dictionaries_[0].typeName_;
-if(_1.dictionaries_[0].dictionaries_.length === 0) {
 if((ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) || (typeName_ === "ff:core/Ordering.Ordering"))) {
 return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, at_, left_, async_)) + " !== ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, at_, right_, async_)) + ")")
 }
 }
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Ordering.before" && _1.arguments_.length === 2 && _1.dictionaries_.length === 1 && _1.dictionaries_[0].dictionaries_.length === 0) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Ordering.before") {
-if(_1.arguments_.length === 2) {
 const left_ = _1.arguments_[0];
 const right_ = _1.arguments_[1];
-if(_1.dictionaries_.length === 1) {
 const typeName_ = _1.dictionaries_[0].typeName_;
-if(_1.dictionaries_[0].dictionaries_.length === 0) {
 if(ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
 return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, at_, left_, async_)) + " < ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, at_, right_, async_)) + ")")
 }
 }
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Ordering.notBefore" && _1.arguments_.length === 2 && _1.dictionaries_.length === 1 && _1.dictionaries_[0].dictionaries_.length === 0) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Ordering.notBefore") {
-if(_1.arguments_.length === 2) {
 const left_ = _1.arguments_[0];
 const right_ = _1.arguments_[1];
-if(_1.dictionaries_.length === 1) {
 const typeName_ = _1.dictionaries_[0].typeName_;
-if(_1.dictionaries_[0].dictionaries_.length === 0) {
 if(ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
 return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, at_, left_, async_)) + " >= ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, at_, right_, async_)) + ")")
 }
 }
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Ordering.after" && _1.arguments_.length === 2 && _1.dictionaries_.length === 1 && _1.dictionaries_[0].dictionaries_.length === 0) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Ordering.after") {
-if(_1.arguments_.length === 2) {
 const left_ = _1.arguments_[0];
 const right_ = _1.arguments_[1];
-if(_1.dictionaries_.length === 1) {
 const typeName_ = _1.dictionaries_[0].typeName_;
-if(_1.dictionaries_[0].dictionaries_.length === 0) {
 if(ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
 return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, at_, left_, async_)) + " > ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, at_, right_, async_)) + ")")
 }
 }
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Ordering.notAfter" && _1.arguments_.length === 2 && _1.dictionaries_.length === 1 && _1.dictionaries_[0].dictionaries_.length === 0) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Ordering.notAfter") {
-if(_1.arguments_.length === 2) {
 const left_ = _1.arguments_[0];
 const right_ = _1.arguments_[1];
-if(_1.dictionaries_.length === 1) {
 const typeName_ = _1.dictionaries_[0].typeName_;
-if(_1.dictionaries_[0].dictionaries_.length === 0) {
 if(ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
 return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, at_, left_, async_)) + " <= ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, at_, right_, async_)) + ")")
 }
 }
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/List.fillBy") {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.fillBy" && _1.arguments_.length === 2 && _1.arguments_[1].value_.ELambda && _1.arguments_[1].value_.lambda_.cases_.length === 1 && _1.arguments_[1].value_.lambda_.cases_[0].patterns_.length === 1 && _1.arguments_[1].value_.lambda_.cases_[0].patterns_[0].PVariable && _1.arguments_[1].value_.lambda_.cases_[0].guards_.length === 0) {
 const effect_ = _1.effect_;
-if(_1.arguments_.length === 2) {
 const size_ = _1.arguments_[0];
-if(_1.arguments_[1].value_.ELambda) {
 const at_ = _1.arguments_[1].value_.at_;
 const l_ = _1.arguments_[1].value_.lambda_;
-if(_1.arguments_[1].value_.lambda_.cases_.length === 1) {
 const c_ = _1.arguments_[1].value_.lambda_.cases_[0];
-if(_1.arguments_[1].value_.lambda_.cases_[0].patterns_.length === 1) {
-if(_1.arguments_[1].value_.lambda_.cases_[0].patterns_[0].PVariable) {
 const name_ = _1.arguments_[1].value_.lambda_.cases_[0].patterns_[0].name_;
-if(_1.arguments_[1].value_.lambda_.cases_[0].guards_.length === 0) {
 const body_ = _1.arguments_[1].value_.lambda_.cases_[0].body_;
 if((!ff_compiler_JsEmitter.effectTypeIsAsync_(effect_))) {
 const n_ = ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
@@ -1360,21 +1038,9 @@ const await_ = (newAsync_
 return ((((((((((((((((((await_ + "((() => {\n") + "const size = ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, at_, size_, async_)) + ";\n") + "const result = [];\n") + "for(let ") + n_) + " = 0; ") + n_) + " < size; ") + n_) + "++) {\n") + "result.push(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, newAsync_)) + ");\n") + "}\n") + "return result;\n") + "})())")
 }
 }
-}
-}
-}
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.instanceCall_) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
 const name_ = _1.target_.name_;
-if(_1.target_.instanceCall_) {
 const effect_ = _1.effect_;
 const typeArguments_ = _1.typeArguments_;
 const arguments_ = _1.arguments_;
@@ -1405,13 +1071,8 @@ return call_
 }
 return
 }
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
 const name_ = _1.target_.name_;
 const effect_ = _1.effect_;
 const typeArguments_ = _1.typeArguments_;
@@ -1427,7 +1088,6 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.G
 };
 {
 const _1 = ff_compiler_JsEmitter.detectIfElse_(term_);
-{
 if(_1.length === 0) {
 const await_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
 const ds_ = ff_core_List.List_map(dictionaries_, ((_w1) => {
@@ -1450,11 +1110,7 @@ return call_
 }
 return
 }
-}
-{
-if(_1.length >= 1) {
-if(_1[0].first_.EVariant) {
-if(_1[0].first_.name_ === "ff:core/Bool.True") {
+if(_1.length >= 1 && _1[0].first_.EVariant && _1[0].first_.name_ === "ff:core/Bool.True") {
 const elseBody_ = _1[0].second_;
 const list_ = _1.slice(1);
 return (("(" + ff_core_List.List_foldLeft(list_, ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, elseBody_, async_), ((_1, _2) => {
@@ -1466,9 +1122,6 @@ return ((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_) +
 }
 }))) + ")")
 return
-}
-}
-}
 }
 {
 const list_ = _1;
@@ -1485,12 +1138,8 @@ return
 }
 return
 }
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.DynamicCall) {
 const at_ = _1.at_;
-if(_1.target_.DynamicCall) {
 const function_ = _1.target_.function_;
 const effect_ = _1.effect_;
 const typeArguments_ = _1.typeArguments_;
@@ -1515,9 +1164,6 @@ return call_
 }
 return
 }
-}
-}
-{
 if(_1.ERecord) {
 const at_ = _1.at_;
 const fields_ = _1.fields_;
@@ -1531,8 +1177,6 @@ return (("{\n" + ff_core_List.List_join(list_, ",\n")) + "\n}")
 }
 return
 }
-}
-{
 if(_1.EWildcard) {
 const at_ = _1.at_;
 const index_ = _1.index_;
@@ -1541,11 +1185,8 @@ ff_compiler_JsEmitter.fail_(at_, "Unbound wildcard")
 };
 return ("_w" + index_)
 }
-}
-{
 if(async_) {
 return (("(await (async function() {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, term_, true, async_)) + "\n})())")
-}
 }
 {
 return (("(function() {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, term_, true, async_)) + "\n})()")
@@ -1570,7 +1211,6 @@ return ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, _w1)
 export function JsEmitter_emitStatements(self_, term_, last_, async_) {
 {
 const _1 = term_;
-{
 if(_1.EFunctions) {
 const at_ = _1.at_;
 const functions_ = _1.functions_;
@@ -1581,8 +1221,6 @@ return ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, f_, newAsyn
 }));
 return ((ff_core_List.List_join(functionStrings_, "\n") + "\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, async_))
 }
-}
-{
 if(_1.ELet) {
 const at_ = _1.at_;
 const mutable_ = _1.mutable_;
@@ -1592,48 +1230,24 @@ const value_ = _1.value_;
 const body_ = _1.body_;
 return ((ff_compiler_JsEmitter.JsEmitter_emitLetDefinition(self_, ff_compiler_Syntax.DLet(at_, name_, valueType_, value_), mutable_, async_) + "\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, async_))
 }
-}
-{
-if(_1.EVariant) {
+if(_1.EVariant && _1.name_ === "ff:core/Unit.Unit") {
 const at_ = _1.at_;
-if(_1.name_ === "ff:core/Unit.Unit") {
 return ""
 }
-}
-}
-{
-if(_1.ESequential) {
-const at_ = _1.at_;
-if(_1.before_.EVariant) {
-const at_ = _1.before_.at_;
-if(_1.before_.name_ === "ff:core/Unit.Unit") {
+if(_1.ESequential && _1.before_.EVariant && _1.before_.name_ === "ff:core/Unit.Unit") {
 const after_ = _1.after_;
 return ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, after_, last_, async_)
 }
-}
-}
-}
-{
-if(_1.ESequential) {
-const at_ = _1.at_;
+if(_1.ESequential && _1.after_.EVariant && _1.after_.name_ === "ff:core/Unit.Unit") {
 const before_ = _1.before_;
-if(_1.after_.EVariant) {
-const at_ = _1.after_.at_;
-if(_1.after_.name_ === "ff:core/Unit.Unit") {
 return ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before_, false, async_)
 }
-}
-}
-}
-{
 if(_1.ESequential) {
 const at_ = _1.at_;
 const before_ = _1.before_;
 const after_ = _1.after_;
 return ((ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before_, false, async_) + ";\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, after_, last_, async_))
 }
-}
-{
 if(_1.EAssign) {
 const at_ = _1.at_;
 const operator_ = _1.operator_;
@@ -1641,8 +1255,6 @@ const name_ = _1.variable_;
 const value_ = _1.value_;
 return ((((ff_compiler_JsEmitter.escapeKeyword_(name_) + " ") + operator_) + "= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_))
 }
-}
-{
 if(_1.EAssignField) {
 const at_ = _1.at_;
 const operator_ = _1.operator_;
@@ -1651,27 +1263,14 @@ const field_ = _1.field_;
 const value_ = _1.value_;
 return ((((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_, async_) + ".") + ff_compiler_JsEmitter.escapeKeyword_(field_)) + " ") + operator_) + "= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_))
 }
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Core.while" && _1.arguments_.length === 2) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Core.while") {
-if(_1.arguments_.length === 2) {
 const condition_ = _1.arguments_[0];
 const body_ = _1.arguments_[1];
 return (((("while(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(condition_.value_), async_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, ff_compiler_JsEmitter.invokeImmediately_(body_.value_), false, async_)) + "\n}")
 }
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Core.doWhile" && _1.arguments_.length === 1) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Core.doWhile") {
-if(_1.arguments_.length === 1) {
 const doWhileBody_ = _1.arguments_[0].value_;
 const _guard1 = ff_compiler_JsEmitter.invokeImmediately_(doWhileBody_);
 if(_guard1.ESequential) {
@@ -1680,31 +1279,17 @@ const condition_ = _guard1.after_;
 return ((((("while(true) {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, false, async_)) + "\nif(!") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_)) + ") break") + "\n}")
 }
 }
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Core.doWhile" && _1.arguments_.length === 1) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Core.doWhile") {
-if(_1.arguments_.length === 1) {
 const doWhileBody_ = _1.arguments_[0].value_;
 const _guard1 = ff_compiler_JsEmitter.invokeImmediately_(doWhileBody_);
+{
 const body_ = _guard1;
 return (("while(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_)) + ") {}")
 }
 }
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Core.if" && _1.arguments_.length === 2) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Core.if") {
-if(_1.arguments_.length === 2) {
 const condition_ = _1.arguments_[0];
 const body_ = _1.arguments_[1];
 return ((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_.value_, async_)) + ") {\n") + (last_
@@ -1712,118 +1297,58 @@ return ((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_.val
 : (ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, ff_compiler_JsEmitter.invokeImmediately_(body_.value_), false, async_) + "\n}")))
 return
 }
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Core.throw" && _1.arguments_.length === 1 && _1.dictionaries_.length === 1) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Core.throw") {
-if(_1.arguments_.length === 1) {
 const argument_ = _1.arguments_[0];
-if(_1.dictionaries_.length === 1) {
 const dictionary_ = _1.dictionaries_[0];
 const d_ = ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, dictionary_);
 const a_ = ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, at_, argument_, async_);
 return (((("throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(" + a_) + ", ") + d_) + ")})")
 }
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Core.try") {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Core.try") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a try without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Try.Try_map") {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Try.Try_map") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a map without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Try.Try_flatMap") {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Try.Try_flatMap") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a flatMap without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Try.Try_flatten") {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Try.Try_flatten") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a flatten without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Try.Try_catch") {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Try.Try_catch") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a catch without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Try.Try_catchAny") {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Try.Try_catchAny") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a catchAny without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Try.Try_finally") {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Try.Try_finally") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a finally without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Try.Try_grab" && _1.arguments_.length === 1) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Try.Try_grab") {
-if(_1.arguments_.length === 1) {
 const argument_ = _1.arguments_[0];
 const _guard1 = ff_compiler_JsEmitter.JsEmitter_emitTryCatchFinally(self_, argument_.value_, last_, async_);
 if(_guard1.Some) {
@@ -1831,16 +1356,8 @@ const code_ = _guard1.value_;
 return code_
 }
 }
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:unsafejs/UnsafeJs.throwIfCancelled" && _1.arguments_.length === 0) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.throwIfCancelled") {
-if(_1.arguments_.length === 0) {
 if(async_) {
 return "ff_core_Task.Task_throwIfAborted($task)"
 } else {
@@ -1848,16 +1365,9 @@ return ""
 }
 return
 }
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.tailCall_) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
 const name_ = _1.target_.name_;
-if(_1.target_.tailCall_) {
 const instanceCall_ = _1.target_.instanceCall_;
 const effect_ = _1.effect_;
 const arguments_ = _1.arguments_;
@@ -1872,31 +1382,23 @@ return _w1
 })));
 return (((("{\n" + ff_core_List.List_join(pair_.first_, "\n")) + "\n") + ff_core_List.List_join(pair_.second_, "\n")) + "\ncontinue _tailcall\n}")
 }
-}
-}
-}
-{
-if(_1.EPipe) {
+if(_1.EPipe && _1.function_.ELambda) {
 const at_ = _1.at_;
 const value_ = _1.value_;
-if(_1.function_.ELambda) {
 const cases_ = _1.function_.lambda_.cases_;
 ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
 return ((((((((!last_)
 ? "do "
 : "") + "{\nconst _1 = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)) + ";\n") + ff_core_List.List_join(ff_core_List.List_map(cases_, ((_w1) => {
-return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ["_1"], _w1, true, last_, async_)) + "\n}")
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ["_1"], _w1, [], [], true, last_, async_)
 })), "\n")) + "\n}") + ((!last_)
 ? " while(false)"
 : ""))
 return
 }
-}
-}
 {
 {
 const _1 = ff_compiler_JsEmitter.detectIfElse_(term_);
-{
 if(_1.length === 0) {
 if(last_) {
 return ("return " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, term_, async_))
@@ -1905,11 +1407,7 @@ return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, term_, async_)
 }
 return
 }
-}
-{
-if(_1.length >= 1) {
-if(_1[0].first_.EVariant) {
-if(_1[0].first_.name_ === "ff:core/Bool.True") {
+if(_1.length >= 1 && _1[0].first_.EVariant && _1[0].first_.name_ === "ff:core/Bool.True") {
 const elseBody_ = _1[0].second_;
 const list_ = _1.slice(1);
 const initial_ = (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, elseBody_, last_, async_)) + "\n}");
@@ -1922,9 +1420,6 @@ return ((((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, 
 }
 }))
 return
-}
-}
-}
 }
 {
 const list_ = _1;
@@ -1965,16 +1460,14 @@ ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
 const arguments_ = ["_exception.value_", "_error"];
 {
 const _1 = cases_;
-{
 if(_1.length === 1) {
 const case_ = _1[0];
-return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, case_, false, last_, catchAsync_)
-}
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, case_, [], [], false, last_, catchAsync_)
 }
 {
 const cs_ = _1;
 const caseStrings_ = ff_core_List.List_map(cases_, ((_w1) => {
-return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, _w1, true, last_, catchAsync_)) + "\n}")
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, _w1, [], [], true, last_, catchAsync_)
 }));
 if(last_) {
 return ff_core_List.List_join(caseStrings_, "\n")
@@ -1987,148 +1480,37 @@ return
 }
 {
 const _1 = term_;
-{
-if(_1.ECall) {
-const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Try.Try_finally") {
-if(_1.arguments_.length === 2) {
-if(_1.arguments_[0].value_.ECall) {
-const at_ = _1.arguments_[0].value_.at_;
-if(_1.arguments_[0].value_.target_.StaticCall) {
-if(_1.arguments_[0].value_.target_.name_ === "ff:core/Core.try") {
-if(_1.arguments_[0].value_.arguments_.length === 1) {
-if(_1.arguments_[0].value_.arguments_[0].value_.ELambda) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Try.Try_finally" && _1.arguments_.length === 2 && _1.arguments_[0].value_.ECall && _1.arguments_[0].value_.target_.StaticCall && _1.arguments_[0].value_.target_.name_ === "ff:core/Core.try" && _1.arguments_[0].value_.arguments_.length === 1 && _1.arguments_[0].value_.arguments_[0].value_.ELambda && _1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_.length === 1 && _1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].patterns_.length === 0 && _1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].guards_.length === 0 && _1.arguments_[1].value_.ELambda && _1.arguments_[1].value_.lambda_.cases_.length === 1 && _1.arguments_[1].value_.lambda_.cases_[0].patterns_.length === 0 && _1.arguments_[1].value_.lambda_.cases_[0].guards_.length === 0) {
 const tryEffect_ = _1.arguments_[0].value_.arguments_[0].value_.lambda_.effect_;
-if(_1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_.length === 1) {
-if(_1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].patterns_.length === 0) {
-if(_1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].guards_.length === 0) {
 const tryBody_ = _1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].body_;
-if(_1.arguments_[1].value_.ELambda) {
 const finallyEffect_ = _1.arguments_[1].value_.lambda_.effect_;
-if(_1.arguments_[1].value_.lambda_.cases_.length === 1) {
-if(_1.arguments_[1].value_.lambda_.cases_[0].patterns_.length === 0) {
-if(_1.arguments_[1].value_.lambda_.cases_[0].guards_.length === 0) {
 const finallyBody_ = _1.arguments_[1].value_.lambda_.cases_[0].body_;
 const tryAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(tryEffect_));
 const finallyAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(finallyEffect_));
 return ff_core_Option.Some((((("try {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, tryBody_, last_, tryAsync_)) + "\n} finally {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, finallyBody_, last_, finallyAsync_)) + "\n}"))
 }
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
-const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Try.Try_catch") {
-if(_1.arguments_.length === 2) {
-if(_1.arguments_[0].value_.ECall) {
-const at_ = _1.arguments_[0].value_.at_;
-if(_1.arguments_[0].value_.target_.StaticCall) {
-if(_1.arguments_[0].value_.target_.name_ === "ff:core/Core.try") {
-if(_1.arguments_[0].value_.arguments_.length === 1) {
-if(_1.arguments_[0].value_.arguments_[0].value_.ELambda) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Try.Try_catch" && _1.arguments_.length === 2 && _1.arguments_[0].value_.ECall && _1.arguments_[0].value_.target_.StaticCall && _1.arguments_[0].value_.target_.name_ === "ff:core/Core.try" && _1.arguments_[0].value_.arguments_.length === 1 && _1.arguments_[0].value_.arguments_[0].value_.ELambda && _1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_.length === 1 && _1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].patterns_.length === 0 && _1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].guards_.length === 0 && _1.arguments_[1].value_.ELambda && _1.dictionaries_.length === 1) {
 const tryEffect_ = _1.arguments_[0].value_.arguments_[0].value_.lambda_.effect_;
-if(_1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_.length === 1) {
-if(_1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].patterns_.length === 0) {
-if(_1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].guards_.length === 0) {
 const tryBody_ = _1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].body_;
-if(_1.arguments_[1].value_.ELambda) {
 const catchEffect_ = _1.arguments_[1].value_.lambda_.effect_;
 const cases_ = _1.arguments_[1].value_.lambda_.cases_;
-if(_1.dictionaries_.length === 1) {
 const dictionary_ = _1.dictionaries_[0];
 const tryAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(tryEffect_));
 const d_ = ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, dictionary_);
 return ff_core_Option.Some(((((((((("try {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, tryBody_, last_, tryAsync_)) + "\n} catch(_error) {\n") + "if(!_error.ffException) throw _error\n") + "const _exception = ff_core_Any.fromAny_(_error.ffException, ") + d_) + ")\n") + "if(!_exception.Some) throw _error\n") + emitCatch_(catchEffect_, cases_)) + "\n}"))
 }
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
-const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Try.Try_finally") {
-if(_1.arguments_.length === 2) {
-if(_1.arguments_[0].value_.ECall) {
-const at_ = _1.arguments_[0].value_.at_;
-if(_1.arguments_[0].value_.target_.StaticCall) {
-if(_1.arguments_[0].value_.target_.name_ === "ff:core/Try.Try_catch") {
-if(_1.arguments_[0].value_.arguments_.length === 2) {
-if(_1.arguments_[0].value_.arguments_[0].value_.ECall) {
-const at_ = _1.arguments_[0].value_.arguments_[0].value_.at_;
-if(_1.arguments_[0].value_.arguments_[0].value_.target_.StaticCall) {
-if(_1.arguments_[0].value_.arguments_[0].value_.target_.name_ === "ff:core/Core.try") {
-if(_1.arguments_[0].value_.arguments_[0].value_.arguments_.length === 1) {
-if(_1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.ELambda) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Try.Try_finally" && _1.arguments_.length === 2 && _1.arguments_[0].value_.ECall && _1.arguments_[0].value_.target_.StaticCall && _1.arguments_[0].value_.target_.name_ === "ff:core/Try.Try_catch" && _1.arguments_[0].value_.arguments_.length === 2 && _1.arguments_[0].value_.arguments_[0].value_.ECall && _1.arguments_[0].value_.arguments_[0].value_.target_.StaticCall && _1.arguments_[0].value_.arguments_[0].value_.target_.name_ === "ff:core/Core.try" && _1.arguments_[0].value_.arguments_[0].value_.arguments_.length === 1 && _1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.ELambda && _1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.lambda_.cases_.length === 1 && _1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].patterns_.length === 0 && _1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].guards_.length === 0 && _1.arguments_[0].value_.arguments_[1].value_.ELambda && _1.arguments_[0].value_.dictionaries_.length === 1 && _1.arguments_[1].value_.ELambda && _1.arguments_[1].value_.lambda_.cases_.length === 1 && _1.arguments_[1].value_.lambda_.cases_[0].patterns_.length === 0 && _1.arguments_[1].value_.lambda_.cases_[0].guards_.length === 0) {
 const tryEffect_ = _1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.lambda_.effect_;
-if(_1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.lambda_.cases_.length === 1) {
-if(_1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].patterns_.length === 0) {
-if(_1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].guards_.length === 0) {
 const tryBody_ = _1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].body_;
-if(_1.arguments_[0].value_.arguments_[1].value_.ELambda) {
 const catchEffect_ = _1.arguments_[0].value_.arguments_[1].value_.lambda_.effect_;
 const cases_ = _1.arguments_[0].value_.arguments_[1].value_.lambda_.cases_;
-if(_1.arguments_[0].value_.dictionaries_.length === 1) {
 const dictionary_ = _1.arguments_[0].value_.dictionaries_[0];
-if(_1.arguments_[1].value_.ELambda) {
 const finallyEffect_ = _1.arguments_[1].value_.lambda_.effect_;
-if(_1.arguments_[1].value_.lambda_.cases_.length === 1) {
-if(_1.arguments_[1].value_.lambda_.cases_[0].patterns_.length === 0) {
-if(_1.arguments_[1].value_.lambda_.cases_[0].guards_.length === 0) {
 const finallyBody_ = _1.arguments_[1].value_.lambda_.cases_[0].body_;
 const tryAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(tryEffect_));
 const finallyAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(finallyEffect_));
 const d_ = ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, dictionary_);
 return ff_core_Option.Some(((((((((((("try {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, tryBody_, last_, tryAsync_)) + "\n} catch(_error) {\n") + "if(!_error.ffException) throw _error\n") + "const _exception = ff_core_Any.fromAny_(_error.ffException, ") + d_) + ")\n") + "if(!_exception.Some) throw _error\n") + emitCatch_(catchEffect_, cases_)) + "\n} finally {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, finallyBody_, last_, finallyAsync_)) + "\n}"))
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
 }
 {
 return ff_core_Option.None()
@@ -2136,149 +1518,115 @@ return ff_core_Option.None()
 }
 }
 
-export function JsEmitter_emitCase(self_, arguments_, matchCase_, jump_, last_, async_) {
+export function JsEmitter_emitCase(self_, arguments_, matchCase_, conditions_, variables_, jump_, last_, async_) {
+function emitWrapper_(code_) {
+return ((((ff_core_List.List_isEmpty(conditions_)
+? "{\n"
+: (("if(" + ff_core_List.List_join(conditions_, " && ")) + ") {\n")) + ff_core_List.List_join(variables_, "")) + code_) + "\n}")
+}
 {
 const _1 = ff_core_Pair.Pair(matchCase_.patterns_, matchCase_.guards_);
-{
 if(_1.first_.length >= 1) {
 const p_ = _1.first_[0];
 const ps_ = _1.first_.slice(1);
 return ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, ff_core_List.List_grab(arguments_, 0), p_, ff_core_List.List_dropFirst(arguments_, 1), (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, ps_, _c.guards_, _c.body_)
-}))(matchCase_), jump_, last_, async_)
+}))(matchCase_), conditions_, variables_, jump_, last_, async_)
 return
 }
-}
-{
-if(_1.first_.length === 0) {
-if(_1.second_.length === 1) {
+if(_1.first_.length === 0 && _1.second_.length === 1 && _1.second_[0].pattern_.PVariant && _1.second_[0].pattern_.name_ === "ff:core/Bool.True") {
 const e_ = _1.second_[0].term_;
-if(_1.second_[0].pattern_.PVariant) {
-if(_1.second_[0].pattern_.name_ === "ff:core/Bool.True") {
-return (((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, [], (((_c) => {
+if(ff_core_List.List_isEmpty(variables_)) {
+const newCase_ = (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, [], [], _c.body_)
-}))(matchCase_), jump_, last_, async_)) + "\n}")
-return
+}))(matchCase_);
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, [], newCase_, [...conditions_, ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_)], [], jump_, last_, async_)
 }
 }
+if(_1.first_.length === 0 && _1.second_.length === 1 && _1.second_[0].pattern_.PVariant && _1.second_[0].pattern_.name_ === "ff:core/Bool.True") {
+const e_ = _1.second_[0].term_;
+const newCase_ = (((_c) => {
+return ff_compiler_Syntax.MatchCase(_c.at_, [], [], _c.body_)
+}))(matchCase_);
+const code_ = ff_compiler_JsEmitter.JsEmitter_emitCase(self_, [], newCase_, [ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_)], [], jump_, last_, async_);
+return emitWrapper_(code_)
 }
-}
-}
-{
-if(_1.first_.length === 0) {
-if(_1.second_.length >= 1) {
+if(_1.first_.length === 0 && _1.second_.length >= 1) {
 const guard_ = _1.second_[0];
 const guards_ = _1.second_.slice(1);
 const guardName_ = ("_guard" + (ff_core_List.List_size(guards_) + 1));
 const newCase_ = (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, [guard_.pattern_], guards_, _c.body_)
 }))(matchCase_);
-return ((((("const " + guardName_) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, guard_.term_, async_)) + ";\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, [guardName_], newCase_, jump_, last_, async_))
+const code_ = ((((("const " + guardName_) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, guard_.term_, async_)) + ";\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, [guardName_], newCase_, [], [], jump_, last_, async_));
+return emitWrapper_(code_)
 }
-}
-}
-{
-if(_1.first_.length === 0) {
-if(_1.second_.length === 0) {
+if(_1.first_.length === 0 && _1.second_.length === 0) {
 const statementsCode_ = ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, matchCase_.body_, last_, async_);
 const lastLine_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(statementsCode_), ((_w1) => {
 return (_w1 !== 10)
 })));
 const returns_ = ((((((ff_core_String.String_startsWith(lastLine_, "return ", 0) || ff_core_String.String_startsWith(lastLine_, "break ", 0)) || ff_core_String.String_startsWith(lastLine_, "continue ", 0)) || ff_core_String.String_startsWith(lastLine_, "return;", 0)) || ff_core_String.String_startsWith(lastLine_, "break;", 0)) || ff_core_String.String_startsWith(lastLine_, "continue;", 0)) || ff_core_String.String_startsWith(lastLine_, "throw ", 0));
-return (statementsCode_ + ((jump_ && last_)
+const code_ = (statementsCode_ + ((jump_ && last_)
 ? ((!returns_)
 ? "\nreturn"
 : "")
-: jump_
+: (jump_ && (!returns_))
 ? "\nbreak"
-: ""))
-return
-}
-}
+: ""));
+return emitWrapper_(code_)
 }
 }
 }
 
-export function JsEmitter_emitPattern(self_, argument_, pattern_, arguments_, matchCase_, jump_, last_, async_) {
+export function JsEmitter_emitPattern(self_, argument_, pattern_, arguments_, matchCase_, conditions_, variables_, jump_, last_, async_) {
 {
 const _1 = pattern_;
-{
 if(_1.PString) {
 const value_ = _1.value_;
-return (((((("if(" + argument_) + " === ") + value_) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, jump_, last_, async_)) + "\n}")
+const newConditions_ = [...conditions_, ((argument_ + " === ") + value_)];
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, newConditions_, variables_, jump_, last_, async_)
 }
-}
-{
 if(_1.PInt) {
 const value_ = _1.value_;
-return (((((("if(" + argument_) + " === ") + value_) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, jump_, last_, async_)) + "\n}")
+const newConditions_ = [...conditions_, ((argument_ + " === ") + value_)];
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, newConditions_, variables_, jump_, last_, async_)
 }
-}
-{
 if(_1.PChar) {
 const value_ = _1.value_;
-return (((((("if(" + argument_) + " === ") + ff_compiler_JsEmitter.charLiteralToNumber_(value_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, jump_, last_, async_)) + "\n}")
+const newConditions_ = [...conditions_, ((argument_ + " === ") + ff_compiler_JsEmitter.charLiteralToNumber_(value_))];
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, newConditions_, variables_, jump_, last_, async_)
 }
+if(_1.PVariable && _1.name_.None) {
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, conditions_, variables_, jump_, last_, async_)
 }
-{
-if(_1.PVariable) {
-if(_1.name_.None) {
-return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, jump_, last_, async_)
-}
-}
-}
-{
-if(_1.PVariable) {
-if(_1.name_.Some) {
+if(_1.PVariable && _1.name_.Some) {
 const name_ = _1.name_.value_;
 const escaped_ = ff_compiler_JsEmitter.escapeKeyword_(name_);
-return (((escaped_ !== argument_)
-? (((("const " + escaped_) + " = ") + argument_) + ";\n")
-: "") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, jump_, last_, async_))
-return
+const newVariables_ = ((escaped_ !== argument_)
+? [...variables_, (((("const " + escaped_) + " = ") + argument_) + ";\n")]
+: variables_);
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, conditions_, newVariables_, jump_, last_, async_)
 }
+if(_1.PVariant && _1.name_ === "ff:core/Bool.False" && _1.patterns_.length === 0) {
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, [...conditions_, ("!" + argument_)], variables_, jump_, last_, async_)
 }
+if(_1.PVariant && _1.name_ === "ff:core/Bool.True" && _1.patterns_.length === 0) {
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, [...conditions_, argument_], variables_, jump_, last_, async_)
 }
-{
-if(_1.PVariant) {
-if(_1.name_ === "ff:core/Bool.False") {
-if(_1.patterns_.length === 0) {
-return (((("if(!" + argument_) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, jump_, last_, async_)) + "\n}")
-}
-}
-}
-}
-{
-if(_1.PVariant) {
-if(_1.name_ === "ff:core/Bool.True") {
-if(_1.patterns_.length === 0) {
-return (((("if(" + argument_) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, jump_, last_, async_)) + "\n}")
-}
-}
-}
-}
-{
 if(_1.PVariant) {
 const emptyOrLink_ = _1.name_;
 if(((emptyOrLink_ === "List$Empty") || (emptyOrLink_ === "List$Link"))) {
 let restPattern_ = ff_core_Option.None();
 function listPatterns_(matchPattern_) {
 const matchPattern_a = matchPattern_;
-if(matchPattern_a.PVariant) {
-if(matchPattern_a.name_ === "List$Empty") {
-if(matchPattern_a.patterns_.length === 0) {
+if(matchPattern_a.PVariant && matchPattern_a.name_ === "List$Empty" && matchPattern_a.patterns_.length === 0) {
 return []
 }
-}
-}
-if(matchPattern_a.PVariant) {
-if(matchPattern_a.name_ === "List$Link") {
-if(matchPattern_a.patterns_.length === 2) {
+if(matchPattern_a.PVariant && matchPattern_a.name_ === "List$Link" && matchPattern_a.patterns_.length === 2) {
 const head_ = matchPattern_a.patterns_[0];
 const tail_ = matchPattern_a.patterns_[1];
 return [head_, ...listPatterns_(tail_)]
-}
-}
 }
 {
 const p_ = matchPattern_a;
@@ -2305,11 +1653,10 @@ return ">="
 })), (() => {
 return "==="
 }));
-return (((((((("if(" + argument_) + ".length ") + operator_) + " ") + ff_core_List.List_size(patterns_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, newArguments_, newMatchCase_, jump_, last_, async_)) + "\n}")
+const newConditions_ = [...conditions_, ((((argument_ + ".length ") + operator_) + " ") + ff_core_List.List_size(patterns_))];
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, newArguments_, newMatchCase_, newConditions_, variables_, jump_, last_, async_)
 }
 }
-}
-{
 if(_1.PVariant) {
 const name_ = _1.name_;
 const patterns_ = _1.patterns_;
@@ -2317,64 +1664,53 @@ const processed_ = ff_compiler_JsEmitter.JsEmitter_processVariantCase(self_, nam
 const newMatchCase_ = (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, [...patterns_, ...matchCase_.patterns_], _c.guards_, _c.body_)
 }))(matchCase_);
-return (((processed_.loneVariant_
-? ""
-: (((("if(" + argument_) + ".") + processed_.variantName_) + ") {\n")) + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, [...processed_.arguments_, ...arguments_], newMatchCase_, jump_, last_, async_)) + (processed_.loneVariant_
-? ""
-: "\n}"))
-return
+const newConditions_ = (processed_.loneVariant_
+? conditions_
+: [...conditions_, ((argument_ + ".") + processed_.variantName_)]);
+const newArguments_ = [...processed_.arguments_, ...arguments_];
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, newArguments_, newMatchCase_, newConditions_, variables_, jump_, last_, async_)
 }
-}
-{
 if(_1.PVariantAs) {
 const at_ = _1.at_;
 const name_ = _1.name_;
 const variableAt_ = _1.variableAt_;
 const variable_ = _1.variable_;
 const processed_ = ff_compiler_JsEmitter.JsEmitter_processVariantCase(self_, name_, argument_);
-return ((((processed_.loneVariant_
-? ""
-: (((("if(" + argument_) + ".") + processed_.variantName_) + ") {\n")) + ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_filter(ff_core_Option.Option_map(variable_, ((word_) => {
+const newConditions_ = (processed_.loneVariant_
+? conditions_
+: [...conditions_, ((argument_ + ".") + processed_.variantName_)]);
+const newVariables_ = ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_filter(ff_core_Option.Option_map(variable_, ((word_) => {
 return ff_compiler_JsEmitter.escapeKeyword_(word_)
 })), ((_w1) => {
 return (_w1 !== argument_)
 })), ((_w1) => {
-return (((("const " + _w1) + " = ") + argument_) + ";\n")
+return [...variables_, (((("const " + _w1) + " = ") + argument_) + ";\n")]
 })), (() => {
-return ""
-}))) + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, jump_, last_, async_)) + (processed_.loneVariant_
-? ""
-: "\n}"))
-return
+return []
+}));
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, newConditions_, newVariables_, jump_, last_, async_)
 }
-}
-{
 if(_1.PAlias) {
 const pattern_ = _1.pattern_;
 const variable_ = _1.variable_;
 const escaped_ = ff_compiler_JsEmitter.escapeKeyword_(variable_);
-return (((escaped_ !== argument_)
-? (((("const " + escaped_) + " = ") + argument_) + ";\n")
-: "") + ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, argument_, pattern_, arguments_, matchCase_, jump_, last_, async_))
-return
-}
+const newVariables_ = ((escaped_ !== argument_)
+? [...variables_, (((("const " + escaped_) + " = ") + argument_) + ";\n")]
+: variables_);
+return ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, argument_, pattern_, arguments_, matchCase_, conditions_, newVariables_, jump_, last_, async_)
 }
 }
 }
 
 export function JsEmitter_emitList(self_, items_, async_) {
 return (("[" + ff_core_List.List_join(ff_core_List.List_map(items_, ((_1) => {
-{
-const item_ = _1.first_;
 if(!_1.second_) {
+const item_ = _1.first_;
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, item_, async_)
 }
-}
-{
-const item_ = _1.first_;
 if(_1.second_) {
+const item_ = _1.first_;
 return ("..." + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, item_, async_))
-}
 }
 })), ", ")) + "]")
 }
@@ -2435,14 +1771,8 @@ return newtype_
 export function JsEmitter_emitArgument(self_, callAt_, argument_, async_) {
 {
 const _1 = argument_.value_;
-{
-if(_1.ECall) {
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/SourceLocation.callSite") {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/SourceLocation.callSite") {
 return (((((((((("\"" + self_.moduleName_) + ":") + callAt_.line_) + ":") + callAt_.column_) + ",") + self_.packagePair_.group_) + ",") + self_.packagePair_.name_) + "\"")
-}
-}
-}
 }
 {
 const value_ = _1;
@@ -2534,22 +1864,14 @@ return [ff_core_List.List_join(["export async function $run$(fireflyPath_, argum
 : []), "} finally {", ...(ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
 ? ["ff_core_Task.Task_abort$($task)", "clearInterval(interval)"]
 : []), "}", "}", ...(((_1) => {
-{
 if(_1.EmitBrowser) {
 return ["queueMicrotask(async () => {", "await $run$(null, [])", "})"]
 }
-}
-{
-if(_1.EmitNode) {
-if(bootstrapping_) {
+if(_1.EmitNode && bootstrapping_) {
 return ["import * as path from 'node:path'", "queueMicrotask(async () => {", "let fireflyPath_ = path.dirname(path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))))", "await $run$(fireflyPath_, process.argv.slice(2))", "})"]
 }
-}
-}
-{
 if(_1.EmitExecutable) {
 return ["queueMicrotask(async () => {", "await $run$(null, process.argv.slice(2))", "})"]
-}
 }
 {
 return []
@@ -2616,10 +1938,8 @@ return ("async " + ff_core_String.String_dropFirst(_w1, ff_core_String.String_si
 const body_ = (("{\n" + ff_core_List.List_join([...methods_, ...asyncMethods_], ",\n")) + "\n}");
 {
 const _1 = definition_.constraints_;
-{
 if(_1.length === 0) {
 return (((("export const " + name_) + " = ") + body_) + ";")
-}
 }
 {
 const constraints_ = _1;
@@ -2635,60 +1955,30 @@ export async function JsEmitter_emitFunctionDefinition$(self_, definition_, asyn
 const signature_ = (await ff_compiler_JsEmitter.JsEmitter_emitSignature$(self_, definition_.signature_, async_, suffix_, $task));
 {
 const _1 = ff_core_Pair.Pair(async_, definition_.body_);
-{
-if(!_1.first_) {
-if(_1.second_.ForeignTarget) {
-if(_1.second_.syncCode_.None) {
+if(!_1.first_ && _1.second_.ForeignTarget && _1.second_.syncCode_.None) {
 return (((signature_ + " {\nthrow new Error('Function ") + definition_.signature_.name_) + " is missing on this target in sync context.');\n}")
 }
-}
-}
-}
-{
-if(_1.first_) {
-if(_1.second_.ForeignTarget) {
-if(_1.second_.asyncCode_.None) {
+if(_1.first_ && _1.second_.ForeignTarget && _1.second_.asyncCode_.None) {
 return (((signature_ + " {\nthrow new Error('Function ") + definition_.signature_.name_) + " is missing on this target in async context.');\n}")
 }
-}
-}
-}
-{
-if(!_1.first_) {
-if(_1.second_.ForeignTarget) {
-if(_1.second_.syncCode_.Some) {
+if(!_1.first_ && _1.second_.ForeignTarget && _1.second_.syncCode_.Some) {
 const code_ = _1.second_.syncCode_.value_;
 return (((signature_ + " {\n") + ff_compiler_JsImporter.JsImporter_process(self_.jsImporter_, definition_.at_, code_)) + "\n}")
 }
-}
-}
-}
-{
-if(_1.first_) {
-if(_1.second_.ForeignTarget) {
-if(_1.second_.asyncCode_.Some) {
+if(_1.first_ && _1.second_.ForeignTarget && _1.second_.asyncCode_.Some) {
 const code_ = _1.second_.asyncCode_.value_;
 return (((signature_ + " {\n") + ff_compiler_JsImporter.JsImporter_process(self_.jsImporter_, definition_.at_, code_)) + "\n}")
 }
-}
-}
-}
-{
 if(_1.second_.FireflyTarget) {
 const lambda_ = _1.second_.lambda_;
 {
 const _1 = lambda_;
-{
-const effect_ = _1.effect_;
 if(_1.cases_.length === 1) {
+const effect_ = _1.effect_;
 const matchCase_ = _1.cases_[0];
 if(ff_core_List.List_all(matchCase_.patterns_, ((_1) => {
-{
-if(_1.PVariable) {
-if(_1.name_.None) {
+if(_1.PVariable && _1.name_.None) {
 return true
-}
-}
 }
 {
 return false
@@ -2698,7 +1988,6 @@ const body_ = (await ff_compiler_JsEmitter.JsEmitter_emitTailCall$(self_, (async
 return (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, matchCase_.body_, true, async_, $task))
 }), $task));
 return (((signature_ + " {\n") + body_) + "\n}")
-}
 }
 }
 {
@@ -2713,12 +2002,7 @@ return (((("const " + p_.name_) + "_a = ") + ff_compiler_JsEmitter.escapeKeyword
 })), "\n");
 const body_ = (await ff_compiler_JsEmitter.JsEmitter_emitTailCall$(self_, (async ($task) => {
 const casesString_ = ff_core_List.List_join((await ff_core_List.List_map$(cases_, (async (_w1, $task) => {
-const caseString_ = (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, escapedArguments_, _w1, true, true, async_, $task));
-if(((ff_core_List.List_size(cases_) === 1) || ff_core_String.String_startsWith(caseString_, "if(", 0))) {
-return caseString_
-} else {
-return (("{\n" + caseString_) + "\n}")
-}
+return (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, escapedArguments_, _w1, [], [], true, true, async_, $task))
 }), $task)), "\n");
 return ((shadowingWorkaround_ + "\n") + casesString_)
 }), $task));
@@ -2726,7 +2010,6 @@ return (((signature_ + " {\n") + body_) + "\n}")
 }
 }
 return
-}
 }
 }
 }
@@ -2800,7 +2083,6 @@ return (((((((((("export function " + definition_.name_) + "(") + fields_) + ") 
 export async function JsEmitter_emitTerm$(self_, term_, async_, $task) {
 {
 const _1 = term_;
-{
 if(_1.EString) {
 const at_ = _1.at_;
 const value_ = _1.value_;
@@ -2808,74 +2090,48 @@ if(ff_core_String.String_startsWith(value_, "\"\"\"", 0)) {
 return (("`" + ff_core_String.String_replace(ff_core_String.String_dropLast(ff_core_String.String_dropFirst(value_, 3), 3), "`", "\\`")) + "`")
 }
 }
-}
-{
 if(_1.EString) {
 const at_ = _1.at_;
 const value_ = _1.value_;
 return value_
 }
-}
-{
 if(_1.EChar) {
 const at_ = _1.at_;
 const value_ = _1.value_;
 return ff_compiler_JsEmitter.charLiteralToNumber_(value_)
 }
-}
-{
 if(_1.EInt) {
 const at_ = _1.at_;
 const value_ = _1.value_;
 return value_
 }
-}
-{
 if(_1.EFloat) {
 const at_ = _1.at_;
 const value_ = _1.value_;
 return value_
 }
-}
-{
 if(_1.EVariable) {
 const at_ = _1.at_;
 const name_ = _1.name_;
 return ff_compiler_JsEmitter.escapeResolved_(name_)
 }
-}
-{
 if(_1.EList) {
 const at_ = _1.at_;
 const items_ = _1.items_;
 return (await ff_compiler_JsEmitter.JsEmitter_emitList$(self_, items_, async_, $task))
 }
-}
-{
-if(_1.EVariant) {
+if(_1.EVariant && _1.name_ === "ff:core/Bool.False") {
 const at_ = _1.at_;
-if(_1.name_ === "ff:core/Bool.False") {
 return "false"
 }
-}
-}
-{
-if(_1.EVariant) {
+if(_1.EVariant && _1.name_ === "ff:core/Bool.True") {
 const at_ = _1.at_;
-if(_1.name_ === "ff:core/Bool.True") {
 return "true"
 }
-}
-}
-{
-if(_1.EVariant) {
+if(_1.EVariant && _1.name_ === "ff:core/Unit.Unit") {
 const at_ = _1.at_;
-if(_1.name_ === "ff:core/Unit.Unit") {
 return "(void 0)"
 }
-}
-}
-{
 if(_1.EVariant) {
 const at_ = _1.at_;
 const name_ = _1.name_;
@@ -2891,32 +2147,18 @@ return (((ff_compiler_JsEmitter.escapeResolved_(name_) + "(") + argumentsString_
 }
 return
 }
-}
-{
-if(_1.EVariantIs) {
+if(_1.EVariantIs && _1.name_ === "ff:core/Bool.False") {
 const at_ = _1.at_;
-if(_1.name_ === "ff:core/Bool.False") {
 return "function(_v) { return !_v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
 }
-}
-}
-{
-if(_1.EVariantIs) {
+if(_1.EVariantIs && _1.name_ === "ff:core/Bool.True") {
 const at_ = _1.at_;
-if(_1.name_ === "ff:core/Bool.True") {
 return "function(_v) { return _v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
 }
-}
-}
-{
-if(_1.EVariantIs) {
+if(_1.EVariantIs && _1.name_ === "ff:core/Unit.Unit") {
 const at_ = _1.at_;
-if(_1.name_ === "ff:core/Unit.Unit") {
 return "function(_v) { return ff_core_Option.Some(_v); }"
 }
-}
-}
-{
 if(_1.EVariantIs) {
 const at_ = _1.at_;
 const name_ = _1.name_;
@@ -2925,8 +2167,6 @@ return (_w1 !== 46)
 })));
 return (((("(function(_v) { " + "return _v.") + ff_compiler_JsEmitter.escapeResolved_(n_)) + " ? ff_core_Option.Some(_v) : ff_core_Option.None();") + "})")
 }
-}
-{
 if(_1.ECopy) {
 const at_ = _1.at_;
 const name_ = _1.name_;
@@ -2937,8 +2177,6 @@ return ((ff_compiler_JsEmitter.escapeKeyword_(f_.name_) + " = ") + (await ff_com
 }), $task)), ", ");
 return (((("{..." + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, record_, async_, $task))) + ", ") + fieldCode_) + "}")
 }
-}
-{
 if(_1.EField) {
 const at_ = _1.at_;
 const newtype_ = _1.newtype_;
@@ -2951,20 +2189,14 @@ return (((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, record_, async_
 }
 return
 }
-}
-{
-if(_1.ELambda) {
+if(_1.ELambda && _1.lambda_.cases_.length === 1 && _1.lambda_.cases_[0].guards_.length === 0) {
 const at_ = _1.at_;
 const effect_ = _1.lambda_.effect_;
-if(_1.lambda_.cases_.length === 1) {
 const patterns_ = _1.lambda_.cases_[0].patterns_;
-if(_1.lambda_.cases_[0].guards_.length === 0) {
 const body_ = _1.lambda_.cases_[0].body_;
 if(ff_core_List.List_all(patterns_, ((_1) => {
-{
 if(_1.PVariable) {
 return true
-}
 }
 {
 return false
@@ -2972,7 +2204,6 @@ return false
 }))) {
 const newAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
 const patternParameters_ = ff_core_List.List_map(patterns_, ((_1) => {
-{
 if(_1.PVariable) {
 const p_ = _1;
 return ff_core_Option.Option_else(ff_core_Option.Option_map(p_.name_, ((word_) => {
@@ -2981,7 +2212,6 @@ return ff_compiler_JsEmitter.escapeKeyword_(word_)
 return "_"
 }))
 return
-}
 }
 {
 return ff_core_Core.panic_("!")
@@ -2997,10 +2227,6 @@ const prefix_ = (newAsync_
 return (((((("(" + prefix_) + "(") + parameters_) + ") => {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, body_, true, newAsync_, $task))) + "\n})")
 }
 }
-}
-}
-}
-{
 if(_1.ELambda) {
 const at_ = _1.at_;
 const effect_ = _1.lambda_.effect_;
@@ -3017,15 +2243,13 @@ const escapedArguments_ = ff_core_List.List_map(arguments_, ((word_) => {
 return ff_compiler_JsEmitter.escapeKeyword_(word_)
 }));
 const caseStrings_ = (await ff_core_List.List_map$(cases_, (async (_w1, $task) => {
-return (("{\n" + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, escapedArguments_, _w1, true, true, newAsync_, $task))) + "\n}")
+return (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, escapedArguments_, _w1, [], [], true, true, newAsync_, $task))
 }), $task));
 const prefix_ = (newAsync_
 ? "async "
 : "");
 return ((((((("(" + prefix_) + "(") + ff_core_List.List_join([...escapedArguments_, ...controller_], ", ")) + ") => ") + "{\n") + ff_core_List.List_join(caseStrings_, "\n")) + "\n})")
 }
-}
-{
 if(_1.EPipe) {
 const at_ = _1.at_;
 const value_ = _1.value_;
@@ -3043,97 +2267,42 @@ return call_
 }
 return
 }
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.typeArguments_.length === 0 && _1.arguments_.length === 1) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
 const operator_ = _1.target_.name_;
-if(_1.typeArguments_.length === 0) {
-if(_1.arguments_.length === 1) {
 const value_ = _1.arguments_[0];
 if((!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_grabFirst(operator_)))) {
 return ((("(" + operator_) + (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, at_, value_, async_, $task))) + ")")
 }
 }
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.typeArguments_.length === 0 && _1.arguments_.length === 2) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
 const operator_ = _1.target_.name_;
-if(_1.typeArguments_.length === 0) {
-if(_1.arguments_.length === 2) {
 const left_ = _1.arguments_[0];
 const right_ = _1.arguments_[1];
 if((!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_grabFirst(operator_)))) {
 return (((((("(" + (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, at_, left_, async_, $task))) + " ") + operator_) + " ") + (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, at_, right_, async_, $task))) + ")")
 }
 }
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_grab" && _1.arguments_.length === 2 && _1.arguments_[0].value_.EVariable && _1.arguments_[1].value_.EVariable) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/List.List_grab") {
-if(_1.arguments_.length === 2) {
-if(_1.arguments_[0].value_.EVariable) {
 const x1_ = _1.arguments_[0].value_.name_;
-if(_1.arguments_[1].value_.EVariable) {
 const x2_ = _1.arguments_[1].value_.name_;
 return ((((((((("(" + ff_compiler_JsEmitter.escapeResolved_(x1_)) + "[") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "] ?? ") + "ff_core_List.internalGrab_(") + ff_compiler_JsEmitter.escapeResolved_(x1_)) + ", ") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "))")
 }
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Array.Array_grab" && _1.arguments_.length === 2 && _1.arguments_[0].value_.EVariable && _1.arguments_[1].value_.EVariable) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Array.Array_grab") {
-if(_1.arguments_.length === 2) {
-if(_1.arguments_[0].value_.EVariable) {
 const x1_ = _1.arguments_[0].value_.name_;
-if(_1.arguments_[1].value_.EVariable) {
 const x2_ = _1.arguments_[1].value_.name_;
 return ((((((((("(" + ff_compiler_JsEmitter.escapeResolved_(x1_)) + ".array[") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "] ?? ") + "ff_core_Array.internalGrab_(") + ff_compiler_JsEmitter.escapeResolved_(x1_)) + ", ") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "))")
 }
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:unsafejs/UnsafeJs.import" && _1.arguments_.length === 1 && _1.arguments_[0].value_.EString) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.import") {
-if(_1.arguments_.length === 1) {
-if(_1.arguments_[0].value_.EString) {
 const url_ = _1.arguments_[0].value_.value_;
 return ff_compiler_JsImporter.JsImporter_add(self_.jsImporter_, ff_core_String.String_replace(url_, "\"", ""))
 }
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:unsafejs/UnsafeJs.await" && _1.arguments_.length === 1) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.await") {
-if(_1.arguments_.length === 1) {
 const body_ = _1.arguments_[0].value_;
 const emittedBody_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, body_, async_, $task));
 if(async_) {
@@ -3143,16 +2312,8 @@ return (("(" + emittedBody_) + "())")
 }
 return
 }
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:unsafejs/UnsafeJs.cancelled" && _1.arguments_.length === 0) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.cancelled") {
-if(_1.arguments_.length === 0) {
 if(async_) {
 return "$task.controller.signal.aborted"
 } else {
@@ -3160,16 +2321,8 @@ return "false"
 }
 return
 }
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:unsafejs/UnsafeJs.throwIfCancelled" && _1.arguments_.length === 0) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.throwIfCancelled") {
-if(_1.arguments_.length === 0) {
 if(async_) {
 return "((() => ff_core_Task.Task_throwIfAborted($task))())"
 } else {
@@ -3177,152 +2330,67 @@ return ""
 }
 return
 }
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Equal.equals" && _1.arguments_.length === 2 && _1.dictionaries_.length === 1 && _1.dictionaries_[0].dictionaries_.length === 0) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Equal.equals") {
-if(_1.arguments_.length === 2) {
 const left_ = _1.arguments_[0];
 const right_ = _1.arguments_[1];
-if(_1.dictionaries_.length === 1) {
 const typeName_ = _1.dictionaries_[0].typeName_;
-if(_1.dictionaries_[0].dictionaries_.length === 0) {
 if((ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) || (typeName_ === "ff:core/Ordering.Ordering"))) {
 return (((("(" + (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, at_, left_, async_, $task))) + " === ") + (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, at_, right_, async_, $task))) + ")")
 }
 }
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Equal.notEquals" && _1.arguments_.length === 2 && _1.dictionaries_.length === 1 && _1.dictionaries_[0].dictionaries_.length === 0) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Equal.notEquals") {
-if(_1.arguments_.length === 2) {
 const left_ = _1.arguments_[0];
 const right_ = _1.arguments_[1];
-if(_1.dictionaries_.length === 1) {
 const typeName_ = _1.dictionaries_[0].typeName_;
-if(_1.dictionaries_[0].dictionaries_.length === 0) {
 if((ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) || (typeName_ === "ff:core/Ordering.Ordering"))) {
 return (((("(" + (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, at_, left_, async_, $task))) + " !== ") + (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, at_, right_, async_, $task))) + ")")
 }
 }
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Ordering.before" && _1.arguments_.length === 2 && _1.dictionaries_.length === 1 && _1.dictionaries_[0].dictionaries_.length === 0) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Ordering.before") {
-if(_1.arguments_.length === 2) {
 const left_ = _1.arguments_[0];
 const right_ = _1.arguments_[1];
-if(_1.dictionaries_.length === 1) {
 const typeName_ = _1.dictionaries_[0].typeName_;
-if(_1.dictionaries_[0].dictionaries_.length === 0) {
 if(ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
 return (((("(" + (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, at_, left_, async_, $task))) + " < ") + (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, at_, right_, async_, $task))) + ")")
 }
 }
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Ordering.notBefore" && _1.arguments_.length === 2 && _1.dictionaries_.length === 1 && _1.dictionaries_[0].dictionaries_.length === 0) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Ordering.notBefore") {
-if(_1.arguments_.length === 2) {
 const left_ = _1.arguments_[0];
 const right_ = _1.arguments_[1];
-if(_1.dictionaries_.length === 1) {
 const typeName_ = _1.dictionaries_[0].typeName_;
-if(_1.dictionaries_[0].dictionaries_.length === 0) {
 if(ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
 return (((("(" + (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, at_, left_, async_, $task))) + " >= ") + (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, at_, right_, async_, $task))) + ")")
 }
 }
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Ordering.after" && _1.arguments_.length === 2 && _1.dictionaries_.length === 1 && _1.dictionaries_[0].dictionaries_.length === 0) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Ordering.after") {
-if(_1.arguments_.length === 2) {
 const left_ = _1.arguments_[0];
 const right_ = _1.arguments_[1];
-if(_1.dictionaries_.length === 1) {
 const typeName_ = _1.dictionaries_[0].typeName_;
-if(_1.dictionaries_[0].dictionaries_.length === 0) {
 if(ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
 return (((("(" + (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, at_, left_, async_, $task))) + " > ") + (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, at_, right_, async_, $task))) + ")")
 }
 }
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Ordering.notAfter" && _1.arguments_.length === 2 && _1.dictionaries_.length === 1 && _1.dictionaries_[0].dictionaries_.length === 0) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Ordering.notAfter") {
-if(_1.arguments_.length === 2) {
 const left_ = _1.arguments_[0];
 const right_ = _1.arguments_[1];
-if(_1.dictionaries_.length === 1) {
 const typeName_ = _1.dictionaries_[0].typeName_;
-if(_1.dictionaries_[0].dictionaries_.length === 0) {
 if(ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
 return (((("(" + (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, at_, left_, async_, $task))) + " <= ") + (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, at_, right_, async_, $task))) + ")")
 }
 }
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/List.fillBy") {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.fillBy" && _1.arguments_.length === 2 && _1.arguments_[1].value_.ELambda && _1.arguments_[1].value_.lambda_.cases_.length === 1 && _1.arguments_[1].value_.lambda_.cases_[0].patterns_.length === 1 && _1.arguments_[1].value_.lambda_.cases_[0].patterns_[0].PVariable && _1.arguments_[1].value_.lambda_.cases_[0].guards_.length === 0) {
 const effect_ = _1.effect_;
-if(_1.arguments_.length === 2) {
 const size_ = _1.arguments_[0];
-if(_1.arguments_[1].value_.ELambda) {
 const at_ = _1.arguments_[1].value_.at_;
 const l_ = _1.arguments_[1].value_.lambda_;
-if(_1.arguments_[1].value_.lambda_.cases_.length === 1) {
 const c_ = _1.arguments_[1].value_.lambda_.cases_[0];
-if(_1.arguments_[1].value_.lambda_.cases_[0].patterns_.length === 1) {
-if(_1.arguments_[1].value_.lambda_.cases_[0].patterns_[0].PVariable) {
 const name_ = _1.arguments_[1].value_.lambda_.cases_[0].patterns_[0].name_;
-if(_1.arguments_[1].value_.lambda_.cases_[0].guards_.length === 0) {
 const body_ = _1.arguments_[1].value_.lambda_.cases_[0].body_;
 if((!ff_compiler_JsEmitter.effectTypeIsAsync_(effect_))) {
 const n_ = ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
@@ -3337,21 +2405,9 @@ const await_ = (newAsync_
 return ((((((((((((((((((await_ + "((() => {\n") + "const size = ") + (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, at_, size_, async_, $task))) + ";\n") + "const result = [];\n") + "for(let ") + n_) + " = 0; ") + n_) + " < size; ") + n_) + "++) {\n") + "result.push(") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, body_, newAsync_, $task))) + ");\n") + "}\n") + "return result;\n") + "})())")
 }
 }
-}
-}
-}
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.instanceCall_) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
 const name_ = _1.target_.name_;
-if(_1.target_.instanceCall_) {
 const effect_ = _1.effect_;
 const typeArguments_ = _1.typeArguments_;
 const arguments_ = _1.arguments_;
@@ -3382,13 +2438,8 @@ return call_
 }
 return
 }
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
 const name_ = _1.target_.name_;
 const effect_ = _1.effect_;
 const typeArguments_ = _1.typeArguments_;
@@ -3404,7 +2455,6 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.G
 };
 {
 const _1 = ff_compiler_JsEmitter.detectIfElse_(term_);
-{
 if(_1.length === 0) {
 const await_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
 const ds_ = (await ff_core_List.List_map$(dictionaries_, (async (_w1, $task) => {
@@ -3427,11 +2477,7 @@ return call_
 }
 return
 }
-}
-{
-if(_1.length >= 1) {
-if(_1[0].first_.EVariant) {
-if(_1[0].first_.name_ === "ff:core/Bool.True") {
+if(_1.length >= 1 && _1[0].first_.EVariant && _1[0].first_.name_ === "ff:core/Bool.True") {
 const elseBody_ = _1[0].second_;
 const list_ = _1.slice(1);
 return (("(" + (await ff_core_List.List_foldLeft$(list_, (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, elseBody_, async_, $task)), (async (_1, _2, $task) => {
@@ -3443,9 +2489,6 @@ return (((((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, condition_, a
 }
 }), $task))) + ")")
 return
-}
-}
-}
 }
 {
 const list_ = _1;
@@ -3462,12 +2505,8 @@ return
 }
 return
 }
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.DynamicCall) {
 const at_ = _1.at_;
-if(_1.target_.DynamicCall) {
 const function_ = _1.target_.function_;
 const effect_ = _1.effect_;
 const typeArguments_ = _1.typeArguments_;
@@ -3492,9 +2531,6 @@ return call_
 }
 return
 }
-}
-}
-{
 if(_1.ERecord) {
 const at_ = _1.at_;
 const fields_ = _1.fields_;
@@ -3508,8 +2544,6 @@ return (("{\n" + ff_core_List.List_join(list_, ",\n")) + "\n}")
 }
 return
 }
-}
-{
 if(_1.EWildcard) {
 const at_ = _1.at_;
 const index_ = _1.index_;
@@ -3518,11 +2552,8 @@ ff_compiler_JsEmitter.fail_(at_, "Unbound wildcard")
 };
 return ("_w" + index_)
 }
-}
-{
 if(async_) {
 return (("(await (async function() {\n" + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, term_, true, async_, $task))) + "\n})())")
-}
 }
 {
 return (("(function() {\n" + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, term_, true, async_, $task))) + "\n})()")
@@ -3547,7 +2578,6 @@ return (await ff_compiler_JsEmitter.JsEmitter_emitDictionary$(self_, _w1, $task)
 export async function JsEmitter_emitStatements$(self_, term_, last_, async_, $task) {
 {
 const _1 = term_;
-{
 if(_1.EFunctions) {
 const at_ = _1.at_;
 const functions_ = _1.functions_;
@@ -3558,8 +2588,6 @@ return (await ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition$(self_, f_,
 }), $task));
 return ((ff_core_List.List_join(functionStrings_, "\n") + "\n") + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, body_, last_, async_, $task)))
 }
-}
-{
 if(_1.ELet) {
 const at_ = _1.at_;
 const mutable_ = _1.mutable_;
@@ -3569,48 +2597,24 @@ const value_ = _1.value_;
 const body_ = _1.body_;
 return (((await ff_compiler_JsEmitter.JsEmitter_emitLetDefinition$(self_, ff_compiler_Syntax.DLet(at_, name_, valueType_, value_), mutable_, async_, $task)) + "\n") + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, body_, last_, async_, $task)))
 }
-}
-{
-if(_1.EVariant) {
+if(_1.EVariant && _1.name_ === "ff:core/Unit.Unit") {
 const at_ = _1.at_;
-if(_1.name_ === "ff:core/Unit.Unit") {
 return ""
 }
-}
-}
-{
-if(_1.ESequential) {
-const at_ = _1.at_;
-if(_1.before_.EVariant) {
-const at_ = _1.before_.at_;
-if(_1.before_.name_ === "ff:core/Unit.Unit") {
+if(_1.ESequential && _1.before_.EVariant && _1.before_.name_ === "ff:core/Unit.Unit") {
 const after_ = _1.after_;
 return (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, after_, last_, async_, $task))
 }
-}
-}
-}
-{
-if(_1.ESequential) {
-const at_ = _1.at_;
+if(_1.ESequential && _1.after_.EVariant && _1.after_.name_ === "ff:core/Unit.Unit") {
 const before_ = _1.before_;
-if(_1.after_.EVariant) {
-const at_ = _1.after_.at_;
-if(_1.after_.name_ === "ff:core/Unit.Unit") {
 return (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, before_, false, async_, $task))
 }
-}
-}
-}
-{
 if(_1.ESequential) {
 const at_ = _1.at_;
 const before_ = _1.before_;
 const after_ = _1.after_;
 return (((await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, before_, false, async_, $task)) + ";\n") + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, after_, last_, async_, $task)))
 }
-}
-{
 if(_1.EAssign) {
 const at_ = _1.at_;
 const operator_ = _1.operator_;
@@ -3618,8 +2622,6 @@ const name_ = _1.variable_;
 const value_ = _1.value_;
 return ((((ff_compiler_JsEmitter.escapeKeyword_(name_) + " ") + operator_) + "= ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, value_, async_, $task)))
 }
-}
-{
 if(_1.EAssignField) {
 const at_ = _1.at_;
 const operator_ = _1.operator_;
@@ -3628,27 +2630,14 @@ const field_ = _1.field_;
 const value_ = _1.value_;
 return (((((((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, record_, async_, $task)) + ".") + ff_compiler_JsEmitter.escapeKeyword_(field_)) + " ") + operator_) + "= ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, value_, async_, $task)))
 }
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Core.while" && _1.arguments_.length === 2) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Core.while") {
-if(_1.arguments_.length === 2) {
 const condition_ = _1.arguments_[0];
 const body_ = _1.arguments_[1];
 return (((("while(" + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, ff_compiler_JsEmitter.invokeImmediately_(condition_.value_), async_, $task))) + ") {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, ff_compiler_JsEmitter.invokeImmediately_(body_.value_), false, async_, $task))) + "\n}")
 }
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Core.doWhile" && _1.arguments_.length === 1) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Core.doWhile") {
-if(_1.arguments_.length === 1) {
 const doWhileBody_ = _1.arguments_[0].value_;
 const _guard1 = ff_compiler_JsEmitter.invokeImmediately_(doWhileBody_);
 if(_guard1.ESequential) {
@@ -3657,31 +2646,17 @@ const condition_ = _guard1.after_;
 return ((((("while(true) {\n" + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, body_, false, async_, $task))) + "\nif(!") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, condition_, async_, $task))) + ") break") + "\n}")
 }
 }
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Core.doWhile" && _1.arguments_.length === 1) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Core.doWhile") {
-if(_1.arguments_.length === 1) {
 const doWhileBody_ = _1.arguments_[0].value_;
 const _guard1 = ff_compiler_JsEmitter.invokeImmediately_(doWhileBody_);
+{
 const body_ = _guard1;
 return (("while(" + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, body_, async_, $task))) + ") {}")
 }
 }
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Core.if" && _1.arguments_.length === 2) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Core.if") {
-if(_1.arguments_.length === 2) {
 const condition_ = _1.arguments_[0];
 const body_ = _1.arguments_[1];
 return ((("if(" + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, condition_.value_, async_, $task))) + ") {\n") + (last_
@@ -3689,118 +2664,58 @@ return ((("if(" + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, condit
 : ((await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, ff_compiler_JsEmitter.invokeImmediately_(body_.value_), false, async_, $task)) + "\n}")))
 return
 }
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Core.throw" && _1.arguments_.length === 1 && _1.dictionaries_.length === 1) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Core.throw") {
-if(_1.arguments_.length === 1) {
 const argument_ = _1.arguments_[0];
-if(_1.dictionaries_.length === 1) {
 const dictionary_ = _1.dictionaries_[0];
 const d_ = (await ff_compiler_JsEmitter.JsEmitter_emitDictionary$(self_, dictionary_, $task));
 const a_ = (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, at_, argument_, async_, $task));
 return (((("throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(" + a_) + ", ") + d_) + ")})")
 }
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Core.try") {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Core.try") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a try without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Try.Try_map") {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Try.Try_map") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a map without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Try.Try_flatMap") {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Try.Try_flatMap") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a flatMap without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Try.Try_flatten") {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Try.Try_flatten") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a flatten without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Try.Try_catch") {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Try.Try_catch") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a catch without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Try.Try_catchAny") {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Try.Try_catchAny") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a catchAny without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Try.Try_finally") {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Try.Try_finally") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a finally without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Try.Try_grab" && _1.arguments_.length === 1) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Try.Try_grab") {
-if(_1.arguments_.length === 1) {
 const argument_ = _1.arguments_[0];
 const _guard1 = (await ff_compiler_JsEmitter.JsEmitter_emitTryCatchFinally$(self_, argument_.value_, last_, async_, $task));
 if(_guard1.Some) {
@@ -3808,16 +2723,8 @@ const code_ = _guard1.value_;
 return code_
 }
 }
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:unsafejs/UnsafeJs.throwIfCancelled" && _1.arguments_.length === 0) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:unsafejs/UnsafeJs.throwIfCancelled") {
-if(_1.arguments_.length === 0) {
 if(async_) {
 return "ff_core_Task.Task_throwIfAborted($task)"
 } else {
@@ -3825,16 +2732,9 @@ return ""
 }
 return
 }
-}
-}
-}
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.tailCall_) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
 const name_ = _1.target_.name_;
-if(_1.target_.tailCall_) {
 const instanceCall_ = _1.target_.instanceCall_;
 const effect_ = _1.effect_;
 const arguments_ = _1.arguments_;
@@ -3849,31 +2749,23 @@ return _w1
 })));
 return (((("{\n" + ff_core_List.List_join(pair_.first_, "\n")) + "\n") + ff_core_List.List_join(pair_.second_, "\n")) + "\ncontinue _tailcall\n}")
 }
-}
-}
-}
-{
-if(_1.EPipe) {
+if(_1.EPipe && _1.function_.ELambda) {
 const at_ = _1.at_;
 const value_ = _1.value_;
-if(_1.function_.ELambda) {
 const cases_ = _1.function_.lambda_.cases_;
 ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
 return ((((((((!last_)
 ? "do "
 : "") + "{\nconst _1 = ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, value_, async_, $task))) + ";\n") + ff_core_List.List_join((await ff_core_List.List_map$(cases_, (async (_w1, $task) => {
-return (("{\n" + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, ["_1"], _w1, true, last_, async_, $task))) + "\n}")
+return (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, ["_1"], _w1, [], [], true, last_, async_, $task))
 }), $task)), "\n")) + "\n}") + ((!last_)
 ? " while(false)"
 : ""))
 return
 }
-}
-}
 {
 {
 const _1 = ff_compiler_JsEmitter.detectIfElse_(term_);
-{
 if(_1.length === 0) {
 if(last_) {
 return ("return " + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, term_, async_, $task)))
@@ -3882,11 +2774,7 @@ return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, term_, async_, $t
 }
 return
 }
-}
-{
-if(_1.length >= 1) {
-if(_1[0].first_.EVariant) {
-if(_1[0].first_.name_ === "ff:core/Bool.True") {
+if(_1.length >= 1 && _1[0].first_.EVariant && _1[0].first_.name_ === "ff:core/Bool.True") {
 const elseBody_ = _1[0].second_;
 const list_ = _1.slice(1);
 const initial_ = (("{\n" + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, elseBody_, last_, async_, $task))) + "\n}");
@@ -3899,9 +2787,6 @@ return ((((("if(" + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, cond
 }
 }), $task))
 return
-}
-}
-}
 }
 {
 const list_ = _1;
@@ -3942,16 +2827,14 @@ ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
 const arguments_ = ["_exception.value_", "_error"];
 {
 const _1 = cases_;
-{
 if(_1.length === 1) {
 const case_ = _1[0];
-return (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, case_, false, last_, catchAsync_, $task))
-}
+return (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, case_, [], [], false, last_, catchAsync_, $task))
 }
 {
 const cs_ = _1;
 const caseStrings_ = (await ff_core_List.List_map$(cases_, (async (_w1, $task) => {
-return (("{\n" + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, _w1, true, last_, catchAsync_, $task))) + "\n}")
+return (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, _w1, [], [], true, last_, catchAsync_, $task))
 }), $task));
 if(last_) {
 return ff_core_List.List_join(caseStrings_, "\n")
@@ -3964,148 +2847,37 @@ return
 }
 {
 const _1 = term_;
-{
-if(_1.ECall) {
-const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Try.Try_finally") {
-if(_1.arguments_.length === 2) {
-if(_1.arguments_[0].value_.ECall) {
-const at_ = _1.arguments_[0].value_.at_;
-if(_1.arguments_[0].value_.target_.StaticCall) {
-if(_1.arguments_[0].value_.target_.name_ === "ff:core/Core.try") {
-if(_1.arguments_[0].value_.arguments_.length === 1) {
-if(_1.arguments_[0].value_.arguments_[0].value_.ELambda) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Try.Try_finally" && _1.arguments_.length === 2 && _1.arguments_[0].value_.ECall && _1.arguments_[0].value_.target_.StaticCall && _1.arguments_[0].value_.target_.name_ === "ff:core/Core.try" && _1.arguments_[0].value_.arguments_.length === 1 && _1.arguments_[0].value_.arguments_[0].value_.ELambda && _1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_.length === 1 && _1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].patterns_.length === 0 && _1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].guards_.length === 0 && _1.arguments_[1].value_.ELambda && _1.arguments_[1].value_.lambda_.cases_.length === 1 && _1.arguments_[1].value_.lambda_.cases_[0].patterns_.length === 0 && _1.arguments_[1].value_.lambda_.cases_[0].guards_.length === 0) {
 const tryEffect_ = _1.arguments_[0].value_.arguments_[0].value_.lambda_.effect_;
-if(_1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_.length === 1) {
-if(_1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].patterns_.length === 0) {
-if(_1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].guards_.length === 0) {
 const tryBody_ = _1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].body_;
-if(_1.arguments_[1].value_.ELambda) {
 const finallyEffect_ = _1.arguments_[1].value_.lambda_.effect_;
-if(_1.arguments_[1].value_.lambda_.cases_.length === 1) {
-if(_1.arguments_[1].value_.lambda_.cases_[0].patterns_.length === 0) {
-if(_1.arguments_[1].value_.lambda_.cases_[0].guards_.length === 0) {
 const finallyBody_ = _1.arguments_[1].value_.lambda_.cases_[0].body_;
 const tryAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(tryEffect_));
 const finallyAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(finallyEffect_));
 return ff_core_Option.Some((((("try {\n" + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, tryBody_, last_, tryAsync_, $task))) + "\n} finally {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, finallyBody_, last_, finallyAsync_, $task))) + "\n}"))
 }
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
-const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Try.Try_catch") {
-if(_1.arguments_.length === 2) {
-if(_1.arguments_[0].value_.ECall) {
-const at_ = _1.arguments_[0].value_.at_;
-if(_1.arguments_[0].value_.target_.StaticCall) {
-if(_1.arguments_[0].value_.target_.name_ === "ff:core/Core.try") {
-if(_1.arguments_[0].value_.arguments_.length === 1) {
-if(_1.arguments_[0].value_.arguments_[0].value_.ELambda) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Try.Try_catch" && _1.arguments_.length === 2 && _1.arguments_[0].value_.ECall && _1.arguments_[0].value_.target_.StaticCall && _1.arguments_[0].value_.target_.name_ === "ff:core/Core.try" && _1.arguments_[0].value_.arguments_.length === 1 && _1.arguments_[0].value_.arguments_[0].value_.ELambda && _1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_.length === 1 && _1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].patterns_.length === 0 && _1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].guards_.length === 0 && _1.arguments_[1].value_.ELambda && _1.dictionaries_.length === 1) {
 const tryEffect_ = _1.arguments_[0].value_.arguments_[0].value_.lambda_.effect_;
-if(_1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_.length === 1) {
-if(_1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].patterns_.length === 0) {
-if(_1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].guards_.length === 0) {
 const tryBody_ = _1.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].body_;
-if(_1.arguments_[1].value_.ELambda) {
 const catchEffect_ = _1.arguments_[1].value_.lambda_.effect_;
 const cases_ = _1.arguments_[1].value_.lambda_.cases_;
-if(_1.dictionaries_.length === 1) {
 const dictionary_ = _1.dictionaries_[0];
 const tryAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(tryEffect_));
 const d_ = (await ff_compiler_JsEmitter.JsEmitter_emitDictionary$(self_, dictionary_, $task));
 return ff_core_Option.Some(((((((((("try {\n" + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, tryBody_, last_, tryAsync_, $task))) + "\n} catch(_error) {\n") + "if(!_error.ffException) throw _error\n") + "const _exception = ff_core_Any.fromAny_(_error.ffException, ") + d_) + ")\n") + "if(!_exception.Some) throw _error\n") + (await emitCatch_$(catchEffect_, cases_, $task))) + "\n}"))
 }
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
-const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/Try.Try_finally") {
-if(_1.arguments_.length === 2) {
-if(_1.arguments_[0].value_.ECall) {
-const at_ = _1.arguments_[0].value_.at_;
-if(_1.arguments_[0].value_.target_.StaticCall) {
-if(_1.arguments_[0].value_.target_.name_ === "ff:core/Try.Try_catch") {
-if(_1.arguments_[0].value_.arguments_.length === 2) {
-if(_1.arguments_[0].value_.arguments_[0].value_.ECall) {
-const at_ = _1.arguments_[0].value_.arguments_[0].value_.at_;
-if(_1.arguments_[0].value_.arguments_[0].value_.target_.StaticCall) {
-if(_1.arguments_[0].value_.arguments_[0].value_.target_.name_ === "ff:core/Core.try") {
-if(_1.arguments_[0].value_.arguments_[0].value_.arguments_.length === 1) {
-if(_1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.ELambda) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Try.Try_finally" && _1.arguments_.length === 2 && _1.arguments_[0].value_.ECall && _1.arguments_[0].value_.target_.StaticCall && _1.arguments_[0].value_.target_.name_ === "ff:core/Try.Try_catch" && _1.arguments_[0].value_.arguments_.length === 2 && _1.arguments_[0].value_.arguments_[0].value_.ECall && _1.arguments_[0].value_.arguments_[0].value_.target_.StaticCall && _1.arguments_[0].value_.arguments_[0].value_.target_.name_ === "ff:core/Core.try" && _1.arguments_[0].value_.arguments_[0].value_.arguments_.length === 1 && _1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.ELambda && _1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.lambda_.cases_.length === 1 && _1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].patterns_.length === 0 && _1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].guards_.length === 0 && _1.arguments_[0].value_.arguments_[1].value_.ELambda && _1.arguments_[0].value_.dictionaries_.length === 1 && _1.arguments_[1].value_.ELambda && _1.arguments_[1].value_.lambda_.cases_.length === 1 && _1.arguments_[1].value_.lambda_.cases_[0].patterns_.length === 0 && _1.arguments_[1].value_.lambda_.cases_[0].guards_.length === 0) {
 const tryEffect_ = _1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.lambda_.effect_;
-if(_1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.lambda_.cases_.length === 1) {
-if(_1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].patterns_.length === 0) {
-if(_1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].guards_.length === 0) {
 const tryBody_ = _1.arguments_[0].value_.arguments_[0].value_.arguments_[0].value_.lambda_.cases_[0].body_;
-if(_1.arguments_[0].value_.arguments_[1].value_.ELambda) {
 const catchEffect_ = _1.arguments_[0].value_.arguments_[1].value_.lambda_.effect_;
 const cases_ = _1.arguments_[0].value_.arguments_[1].value_.lambda_.cases_;
-if(_1.arguments_[0].value_.dictionaries_.length === 1) {
 const dictionary_ = _1.arguments_[0].value_.dictionaries_[0];
-if(_1.arguments_[1].value_.ELambda) {
 const finallyEffect_ = _1.arguments_[1].value_.lambda_.effect_;
-if(_1.arguments_[1].value_.lambda_.cases_.length === 1) {
-if(_1.arguments_[1].value_.lambda_.cases_[0].patterns_.length === 0) {
-if(_1.arguments_[1].value_.lambda_.cases_[0].guards_.length === 0) {
 const finallyBody_ = _1.arguments_[1].value_.lambda_.cases_[0].body_;
 const tryAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(tryEffect_));
 const finallyAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(finallyEffect_));
 const d_ = (await ff_compiler_JsEmitter.JsEmitter_emitDictionary$(self_, dictionary_, $task));
 return ff_core_Option.Some(((((((((((("try {\n" + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, tryBody_, last_, tryAsync_, $task))) + "\n} catch(_error) {\n") + "if(!_error.ffException) throw _error\n") + "const _exception = ff_core_Any.fromAny_(_error.ffException, ") + d_) + ")\n") + "if(!_exception.Some) throw _error\n") + (await emitCatch_$(catchEffect_, cases_, $task))) + "\n} finally {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, finallyBody_, last_, finallyAsync_, $task))) + "\n}"))
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
 }
 {
 return ff_core_Option.None()
@@ -4113,149 +2885,115 @@ return ff_core_Option.None()
 }
 }
 
-export async function JsEmitter_emitCase$(self_, arguments_, matchCase_, jump_, last_, async_, $task) {
+export async function JsEmitter_emitCase$(self_, arguments_, matchCase_, conditions_, variables_, jump_, last_, async_, $task) {
+function emitWrapper_(code_) {
+return ((((ff_core_List.List_isEmpty(conditions_)
+? "{\n"
+: (("if(" + ff_core_List.List_join(conditions_, " && ")) + ") {\n")) + ff_core_List.List_join(variables_, "")) + code_) + "\n}")
+}
 {
 const _1 = ff_core_Pair.Pair(matchCase_.patterns_, matchCase_.guards_);
-{
 if(_1.first_.length >= 1) {
 const p_ = _1.first_[0];
 const ps_ = _1.first_.slice(1);
 return (await ff_compiler_JsEmitter.JsEmitter_emitPattern$(self_, ff_core_List.List_grab(arguments_, 0), p_, ff_core_List.List_dropFirst(arguments_, 1), (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, ps_, _c.guards_, _c.body_)
-}))(matchCase_), jump_, last_, async_, $task))
+}))(matchCase_), conditions_, variables_, jump_, last_, async_, $task))
 return
 }
-}
-{
-if(_1.first_.length === 0) {
-if(_1.second_.length === 1) {
+if(_1.first_.length === 0 && _1.second_.length === 1 && _1.second_[0].pattern_.PVariant && _1.second_[0].pattern_.name_ === "ff:core/Bool.True") {
 const e_ = _1.second_[0].term_;
-if(_1.second_[0].pattern_.PVariant) {
-if(_1.second_[0].pattern_.name_ === "ff:core/Bool.True") {
-return (((("if(" + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e_, async_, $task))) + ") {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, [], (((_c) => {
+if(ff_core_List.List_isEmpty(variables_)) {
+const newCase_ = (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, [], [], _c.body_)
-}))(matchCase_), jump_, last_, async_, $task))) + "\n}")
-return
+}))(matchCase_);
+return (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, [], newCase_, [...conditions_, (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e_, async_, $task))], [], jump_, last_, async_, $task))
 }
 }
+if(_1.first_.length === 0 && _1.second_.length === 1 && _1.second_[0].pattern_.PVariant && _1.second_[0].pattern_.name_ === "ff:core/Bool.True") {
+const e_ = _1.second_[0].term_;
+const newCase_ = (((_c) => {
+return ff_compiler_Syntax.MatchCase(_c.at_, [], [], _c.body_)
+}))(matchCase_);
+const code_ = (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, [], newCase_, [(await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e_, async_, $task))], [], jump_, last_, async_, $task));
+return emitWrapper_(code_)
 }
-}
-}
-{
-if(_1.first_.length === 0) {
-if(_1.second_.length >= 1) {
+if(_1.first_.length === 0 && _1.second_.length >= 1) {
 const guard_ = _1.second_[0];
 const guards_ = _1.second_.slice(1);
 const guardName_ = ("_guard" + (ff_core_List.List_size(guards_) + 1));
 const newCase_ = (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, [guard_.pattern_], guards_, _c.body_)
 }))(matchCase_);
-return ((((("const " + guardName_) + " = ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, guard_.term_, async_, $task))) + ";\n") + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, [guardName_], newCase_, jump_, last_, async_, $task)))
+const code_ = ((((("const " + guardName_) + " = ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, guard_.term_, async_, $task))) + ";\n") + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, [guardName_], newCase_, [], [], jump_, last_, async_, $task)));
+return emitWrapper_(code_)
 }
-}
-}
-{
-if(_1.first_.length === 0) {
-if(_1.second_.length === 0) {
+if(_1.first_.length === 0 && _1.second_.length === 0) {
 const statementsCode_ = (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, matchCase_.body_, last_, async_, $task));
 const lastLine_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(statementsCode_), ((_w1) => {
 return (_w1 !== 10)
 })));
 const returns_ = ((((((ff_core_String.String_startsWith(lastLine_, "return ", 0) || ff_core_String.String_startsWith(lastLine_, "break ", 0)) || ff_core_String.String_startsWith(lastLine_, "continue ", 0)) || ff_core_String.String_startsWith(lastLine_, "return;", 0)) || ff_core_String.String_startsWith(lastLine_, "break;", 0)) || ff_core_String.String_startsWith(lastLine_, "continue;", 0)) || ff_core_String.String_startsWith(lastLine_, "throw ", 0));
-return (statementsCode_ + ((jump_ && last_)
+const code_ = (statementsCode_ + ((jump_ && last_)
 ? ((!returns_)
 ? "\nreturn"
 : "")
-: jump_
+: (jump_ && (!returns_))
 ? "\nbreak"
-: ""))
-return
-}
-}
+: ""));
+return emitWrapper_(code_)
 }
 }
 }
 
-export async function JsEmitter_emitPattern$(self_, argument_, pattern_, arguments_, matchCase_, jump_, last_, async_, $task) {
+export async function JsEmitter_emitPattern$(self_, argument_, pattern_, arguments_, matchCase_, conditions_, variables_, jump_, last_, async_, $task) {
 {
 const _1 = pattern_;
-{
 if(_1.PString) {
 const value_ = _1.value_;
-return (((((("if(" + argument_) + " === ") + value_) + ") {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, jump_, last_, async_, $task))) + "\n}")
+const newConditions_ = [...conditions_, ((argument_ + " === ") + value_)];
+return (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, newConditions_, variables_, jump_, last_, async_, $task))
 }
-}
-{
 if(_1.PInt) {
 const value_ = _1.value_;
-return (((((("if(" + argument_) + " === ") + value_) + ") {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, jump_, last_, async_, $task))) + "\n}")
+const newConditions_ = [...conditions_, ((argument_ + " === ") + value_)];
+return (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, newConditions_, variables_, jump_, last_, async_, $task))
 }
-}
-{
 if(_1.PChar) {
 const value_ = _1.value_;
-return (((((("if(" + argument_) + " === ") + ff_compiler_JsEmitter.charLiteralToNumber_(value_)) + ") {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, jump_, last_, async_, $task))) + "\n}")
+const newConditions_ = [...conditions_, ((argument_ + " === ") + ff_compiler_JsEmitter.charLiteralToNumber_(value_))];
+return (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, newConditions_, variables_, jump_, last_, async_, $task))
 }
+if(_1.PVariable && _1.name_.None) {
+return (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, conditions_, variables_, jump_, last_, async_, $task))
 }
-{
-if(_1.PVariable) {
-if(_1.name_.None) {
-return (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, jump_, last_, async_, $task))
-}
-}
-}
-{
-if(_1.PVariable) {
-if(_1.name_.Some) {
+if(_1.PVariable && _1.name_.Some) {
 const name_ = _1.name_.value_;
 const escaped_ = ff_compiler_JsEmitter.escapeKeyword_(name_);
-return (((escaped_ !== argument_)
-? (((("const " + escaped_) + " = ") + argument_) + ";\n")
-: "") + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, jump_, last_, async_, $task)))
-return
+const newVariables_ = ((escaped_ !== argument_)
+? [...variables_, (((("const " + escaped_) + " = ") + argument_) + ";\n")]
+: variables_);
+return (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, conditions_, newVariables_, jump_, last_, async_, $task))
 }
+if(_1.PVariant && _1.name_ === "ff:core/Bool.False" && _1.patterns_.length === 0) {
+return (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, [...conditions_, ("!" + argument_)], variables_, jump_, last_, async_, $task))
 }
+if(_1.PVariant && _1.name_ === "ff:core/Bool.True" && _1.patterns_.length === 0) {
+return (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, [...conditions_, argument_], variables_, jump_, last_, async_, $task))
 }
-{
-if(_1.PVariant) {
-if(_1.name_ === "ff:core/Bool.False") {
-if(_1.patterns_.length === 0) {
-return (((("if(!" + argument_) + ") {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, jump_, last_, async_, $task))) + "\n}")
-}
-}
-}
-}
-{
-if(_1.PVariant) {
-if(_1.name_ === "ff:core/Bool.True") {
-if(_1.patterns_.length === 0) {
-return (((("if(" + argument_) + ") {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, jump_, last_, async_, $task))) + "\n}")
-}
-}
-}
-}
-{
 if(_1.PVariant) {
 const emptyOrLink_ = _1.name_;
 if(((emptyOrLink_ === "List$Empty") || (emptyOrLink_ === "List$Link"))) {
 let restPattern_ = ff_core_Option.None();
 function listPatterns_(matchPattern_) {
 const matchPattern_a = matchPattern_;
-if(matchPattern_a.PVariant) {
-if(matchPattern_a.name_ === "List$Empty") {
-if(matchPattern_a.patterns_.length === 0) {
+if(matchPattern_a.PVariant && matchPattern_a.name_ === "List$Empty" && matchPattern_a.patterns_.length === 0) {
 return []
 }
-}
-}
-if(matchPattern_a.PVariant) {
-if(matchPattern_a.name_ === "List$Link") {
-if(matchPattern_a.patterns_.length === 2) {
+if(matchPattern_a.PVariant && matchPattern_a.name_ === "List$Link" && matchPattern_a.patterns_.length === 2) {
 const head_ = matchPattern_a.patterns_[0];
 const tail_ = matchPattern_a.patterns_[1];
 return [head_, ...listPatterns_(tail_)]
-}
-}
 }
 {
 const p_ = matchPattern_a;
@@ -4282,11 +3020,10 @@ return ">="
 })), (() => {
 return "==="
 }));
-return (((((((("if(" + argument_) + ".length ") + operator_) + " ") + ff_core_List.List_size(patterns_)) + ") {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, newArguments_, newMatchCase_, jump_, last_, async_, $task))) + "\n}")
+const newConditions_ = [...conditions_, ((((argument_ + ".length ") + operator_) + " ") + ff_core_List.List_size(patterns_))];
+return (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, newArguments_, newMatchCase_, newConditions_, variables_, jump_, last_, async_, $task))
 }
 }
-}
-{
 if(_1.PVariant) {
 const name_ = _1.name_;
 const patterns_ = _1.patterns_;
@@ -4294,64 +3031,53 @@ const processed_ = (await ff_compiler_JsEmitter.JsEmitter_processVariantCase$(se
 const newMatchCase_ = (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, [...patterns_, ...matchCase_.patterns_], _c.guards_, _c.body_)
 }))(matchCase_);
-return (((processed_.loneVariant_
-? ""
-: (((("if(" + argument_) + ".") + processed_.variantName_) + ") {\n")) + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, [...processed_.arguments_, ...arguments_], newMatchCase_, jump_, last_, async_, $task))) + (processed_.loneVariant_
-? ""
-: "\n}"))
-return
+const newConditions_ = (processed_.loneVariant_
+? conditions_
+: [...conditions_, ((argument_ + ".") + processed_.variantName_)]);
+const newArguments_ = [...processed_.arguments_, ...arguments_];
+return (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, newArguments_, newMatchCase_, newConditions_, variables_, jump_, last_, async_, $task))
 }
-}
-{
 if(_1.PVariantAs) {
 const at_ = _1.at_;
 const name_ = _1.name_;
 const variableAt_ = _1.variableAt_;
 const variable_ = _1.variable_;
 const processed_ = (await ff_compiler_JsEmitter.JsEmitter_processVariantCase$(self_, name_, argument_, $task));
-return ((((processed_.loneVariant_
-? ""
-: (((("if(" + argument_) + ".") + processed_.variantName_) + ") {\n")) + ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_filter(ff_core_Option.Option_map(variable_, ((word_) => {
+const newConditions_ = (processed_.loneVariant_
+? conditions_
+: [...conditions_, ((argument_ + ".") + processed_.variantName_)]);
+const newVariables_ = ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_filter(ff_core_Option.Option_map(variable_, ((word_) => {
 return ff_compiler_JsEmitter.escapeKeyword_(word_)
 })), ((_w1) => {
 return (_w1 !== argument_)
 })), ((_w1) => {
-return (((("const " + _w1) + " = ") + argument_) + ";\n")
+return [...variables_, (((("const " + _w1) + " = ") + argument_) + ";\n")]
 })), (() => {
-return ""
-}))) + (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, jump_, last_, async_, $task))) + (processed_.loneVariant_
-? ""
-: "\n}"))
-return
+return []
+}));
+return (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, arguments_, matchCase_, newConditions_, newVariables_, jump_, last_, async_, $task))
 }
-}
-{
 if(_1.PAlias) {
 const pattern_ = _1.pattern_;
 const variable_ = _1.variable_;
 const escaped_ = ff_compiler_JsEmitter.escapeKeyword_(variable_);
-return (((escaped_ !== argument_)
-? (((("const " + escaped_) + " = ") + argument_) + ";\n")
-: "") + (await ff_compiler_JsEmitter.JsEmitter_emitPattern$(self_, argument_, pattern_, arguments_, matchCase_, jump_, last_, async_, $task)))
-return
-}
+const newVariables_ = ((escaped_ !== argument_)
+? [...variables_, (((("const " + escaped_) + " = ") + argument_) + ";\n")]
+: variables_);
+return (await ff_compiler_JsEmitter.JsEmitter_emitPattern$(self_, argument_, pattern_, arguments_, matchCase_, conditions_, newVariables_, jump_, last_, async_, $task))
 }
 }
 }
 
 export async function JsEmitter_emitList$(self_, items_, async_, $task) {
 return (("[" + ff_core_List.List_join((await ff_core_List.List_map$(items_, (async (_1, $task) => {
-{
-const item_ = _1.first_;
 if(!_1.second_) {
+const item_ = _1.first_;
 return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, item_, async_, $task))
 }
-}
-{
-const item_ = _1.first_;
 if(_1.second_) {
+const item_ = _1.first_;
 return ("..." + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, item_, async_, $task)))
-}
 }
 }), $task)), ", ")) + "]")
 }
@@ -4412,14 +3138,8 @@ return newtype_
 export async function JsEmitter_emitArgument$(self_, callAt_, argument_, async_, $task) {
 {
 const _1 = argument_.value_;
-{
-if(_1.ECall) {
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ === "ff:core/SourceLocation.callSite") {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/SourceLocation.callSite") {
 return (((((((((("\"" + self_.moduleName_) + ":") + callAt_.line_) + ":") + callAt_.column_) + ",") + self_.packagePair_.group_) + ",") + self_.packagePair_.name_) + "\"")
-}
-}
-}
 }
 {
 const value_ = _1;
@@ -4490,13 +3210,17 @@ return "EmitExecutable"
 export const ff_core_Show_Show$ff_compiler_JsEmitter_ProcessedVariantCase = {
 show_(value_) {
 const value_a = value_;
+{
 const z_ = value_a;
 return ((((((((("ProcessedVariantCase" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.variantName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.newtype_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.loneVariant_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.arguments_)) + ")")
+}
 },
 async show_$(value_, $task) {
 const value_a = value_;
+{
 const z_ = value_a;
 return ((((((((("ProcessedVariantCase" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.variantName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.newtype_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.loneVariant_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.arguments_)) + ")")
+}
 }
 };
 
@@ -4706,29 +3430,21 @@ const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, se
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_JsEmitter.EmitNode()
 }
-}
-{
 if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 return ff_compiler_JsEmitter.EmitBrowser()
 }
-}
-{
 if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 return ff_compiler_JsEmitter.EmitBuild()
 }
-}
-{
 if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 36), 0);
 return ff_compiler_JsEmitter.EmitExecutable()
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -4776,29 +3492,21 @@ const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, se
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_JsEmitter.EmitNode()
 }
-}
-{
 if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 return ff_compiler_JsEmitter.EmitBrowser()
 }
-}
-{
 if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 return ff_compiler_JsEmitter.EmitBuild()
 }
-}
-{
 if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 36), 0);
 return ff_compiler_JsEmitter.EmitExecutable()
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -4811,6 +3519,7 @@ export const ff_core_Serializable_Serializable$ff_compiler_JsEmitter_ProcessedVa
 serializeUsing_(serialization_, value_) {
 const serialization_a = serialization_;
 const value_a = value_;
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 42), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -4821,17 +3530,16 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.seriali
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.loneVariant_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.arguments_)
 return
+}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 42), 0);
 return ff_compiler_JsEmitter.ProcessedVariantCase(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -4841,6 +3549,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serial
 async serializeUsing_$(serialization_, value_, $task) {
 const serialization_a = serialization_;
 const value_a = value_;
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 42), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -4851,17 +3560,16 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.seriali
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.loneVariant_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.arguments_)
 return
+}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 42), 0);
 return ff_compiler_JsEmitter.ProcessedVariantCase(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})

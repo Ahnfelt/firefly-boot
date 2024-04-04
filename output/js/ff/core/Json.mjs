@@ -727,16 +727,20 @@ return ff_core_Json.string_(value_)
 },
 fromJson_(json_) {
 const json_a = json_;
+{
 const _w1 = json_a;
 return ff_core_Json.Json_getString(_w1)
+}
 },
 async toJson_$(value_, $task) {
 return ff_core_Json.string_(value_)
 },
 async fromJson_$(json_, $task) {
 const json_a = json_;
+{
 const _w1 = json_a;
 return ff_core_Json.Json_getString(_w1)
+}
 }
 };
 
@@ -746,16 +750,20 @@ return ff_core_Json.int_(value_)
 },
 fromJson_(json_) {
 const json_a = json_;
+{
 const _w1 = json_a;
 return ff_core_Json.Json_getInt(_w1)
+}
 },
 async toJson_$(value_, $task) {
 return ff_core_Json.int_(value_)
 },
 async fromJson_$(json_, $task) {
 const json_a = json_;
+{
 const _w1 = json_a;
 return ff_core_Json.Json_getInt(_w1)
+}
 }
 };
 
@@ -765,16 +773,20 @@ return ff_core_Json.float_(value_)
 },
 fromJson_(json_) {
 const json_a = json_;
+{
 const _w1 = json_a;
 return ff_core_Json.Json_getFloat(_w1)
+}
 },
 async toJson_$(value_, $task) {
 return ff_core_Json.float_(value_)
 },
 async fromJson_$(json_, $task) {
 const json_a = json_;
+{
 const _w1 = json_a;
 return ff_core_Json.Json_getFloat(_w1)
+}
 }
 };
 
@@ -784,16 +796,20 @@ return ff_core_Json.bool_(value_)
 },
 fromJson_(json_) {
 const json_a = json_;
+{
 const _w1 = json_a;
 return ff_core_Json.Json_getBool(_w1)
+}
 },
 async toJson_$(value_, $task) {
 return ff_core_Json.bool_(value_)
 },
 async fromJson_$(json_, $task) {
 const json_a = json_;
+{
 const _w1 = json_a;
 return ff_core_Json.Json_getBool(_w1)
+}
 }
 };
 
@@ -810,18 +826,14 @@ const result_ = ff_core_Array.make_();
 ff_core_List.List_eachWhile(array_, ((item_) => {
 do {
 const _1 = ff_core_Json_JsonLike$T.fromJson_(item_);
-{
 if(_1.None) {
 convertible_ = false
 break
 }
-}
-{
 if(_1.Some) {
 const value_ = _1.value_;
 ff_core_Array.Array_push(result_, value_)
 break
-}
 }
 } while(false);
 return convertible_
@@ -843,18 +855,14 @@ const result_ = ff_core_Array.make_();
 ff_core_List.List_eachWhile(array_, ((item_) => {
 do {
 const _1 = ff_core_Json_JsonLike$T.fromJson_(item_);
-{
 if(_1.None) {
 convertible_ = false
 break
 }
-}
-{
 if(_1.Some) {
 const value_ = _1.value_;
 ff_core_Array.Array_push(result_, value_)
 break
-}
 }
 } while(false);
 return convertible_
@@ -882,18 +890,14 @@ let convertible_ = true;
 ff_core_Json.Json_eachWhile(json_, ((key_, value_) => {
 do {
 const _1 = ff_core_Json_JsonLike$T.fromJson_(value_);
-{
 if(_1.None) {
 convertible_ = false
 break
 }
-}
-{
 if(_1.Some) {
 const v_ = _1.value_;
 ff_core_StringMap.StringMap_set(map_, key_, v_)
 break
-}
 }
 } while(false);
 return convertible_
@@ -919,18 +923,14 @@ let convertible_ = true;
 ff_core_Json.Json_eachWhile(json_, ((key_, value_) => {
 do {
 const _1 = ff_core_Json_JsonLike$T.fromJson_(value_);
-{
 if(_1.None) {
 convertible_ = false
 break
 }
-}
-{
 if(_1.Some) {
 const v_ = _1.value_;
 ff_core_StringMap.StringMap_set(map_, key_, v_)
 break
-}
 }
 } while(false);
 return convertible_

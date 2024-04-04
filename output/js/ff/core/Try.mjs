@@ -111,7 +111,6 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.G
 export function Try_map(self_, body_) {
 {
 const _1 = self_;
-{
 if(_1.Success) {
 const value_ = _1.value_;
 return ff_core_Core.try_((() => {
@@ -119,12 +118,9 @@ return body_(value_)
 }))
 return
 }
-}
-{
 if(_1.Failure) {
 const error_ = _1.error_;
 return ff_core_Try.Failure(error_)
-}
 }
 }
 }
@@ -136,7 +132,6 @@ return ff_core_Try.Try_flatten(ff_core_Try.Try_map(self_, body_))
 export function Try_catch(self_, body_, ff_core_Any_HasAnyTag$E) {
 {
 const _1 = self_;
-{
 if(_1.Failure) {
 const error_ = _1.error_;
 const _guard1 = ff_core_Option.Option_flatMap(ff_core_Error.Error_exception(error_), ((any_) => {
@@ -150,7 +145,6 @@ return body_(e_, error_)
 return
 }
 }
-}
 {
 return self_
 }
@@ -160,14 +154,12 @@ return self_
 export function Try_catchAny(self_, body_) {
 {
 const _1 = self_;
-{
 if(_1.Failure) {
 const error_ = _1.error_;
 return ff_core_Core.try_((() => {
 return body_(error_)
 }))
 return
-}
 }
 {
 return self_
@@ -178,7 +170,6 @@ return self_
 export function Try_finally(self_, body_) {
 {
 const _1 = self_;
-{
 if(_1.Success) {
 const value_ = _1.value_;
 return ff_core_Core.try_((() => {
@@ -187,27 +178,20 @@ return value_
 }))
 return
 }
-}
-{
 if(_1.Failure) {
 {
 const _1 = ff_core_Core.try_((() => {
 return body_()
 }));
-{
 if(_1.Success) {
 return self_
 }
-}
-{
 if(_1.Failure) {
 const error_ = _1.error_;
 return ff_core_Try.Failure(error_)
 }
 }
-}
 return
-}
 }
 }
 }
@@ -215,16 +199,12 @@ return
 export function Try_else(self_, body_) {
 {
 const _1 = self_;
-{
 if(_1.Success) {
 const value_ = _1.value_;
 return value_
 }
-}
-{
 if(_1.Failure) {
 return body_()
-}
 }
 }
 }
@@ -232,17 +212,13 @@ return body_()
 export function Try_grab(self_) {
 {
 const _1 = self_;
-{
 if(_1.Success) {
 const value_ = _1.value_;
 return value_
 }
-}
-{
 if(_1.Failure) {
 const error_ = _1.error_;
 return ff_core_Error.Error_rethrow(error_)
-}
 }
 }
 }
@@ -250,16 +226,12 @@ return ff_core_Error.Error_rethrow(error_)
 export function Try_toOption(self_) {
 {
 const _1 = self_;
-{
 if(_1.Success) {
 const value_ = _1.value_;
 return ff_core_Option.Some(value_)
 }
-}
-{
 if(_1.Failure) {
 return ff_core_Option.None()
-}
 }
 }
 }
@@ -267,7 +239,6 @@ return ff_core_Option.None()
 export async function Try_map$(self_, body_, $task) {
 {
 const _1 = self_;
-{
 if(_1.Success) {
 const value_ = _1.value_;
 return (await ff_core_Core.try_$((async ($task) => {
@@ -275,12 +246,9 @@ return (await body_(value_, $task))
 }), $task))
 return
 }
-}
-{
 if(_1.Failure) {
 const error_ = _1.error_;
 return ff_core_Try.Failure(error_)
-}
 }
 }
 }
@@ -292,7 +260,6 @@ return ff_core_Try.Try_flatten((await ff_core_Try.Try_map$(self_, body_, $task))
 export async function Try_catch$(self_, body_, ff_core_Any_HasAnyTag$E, $task) {
 {
 const _1 = self_;
-{
 if(_1.Failure) {
 const error_ = _1.error_;
 const _guard1 = ff_core_Option.Option_flatMap(ff_core_Error.Error_exception(error_), ((any_) => {
@@ -306,7 +273,6 @@ return (await body_(e_, error_, $task))
 return
 }
 }
-}
 {
 return self_
 }
@@ -316,14 +282,12 @@ return self_
 export async function Try_catchAny$(self_, body_, $task) {
 {
 const _1 = self_;
-{
 if(_1.Failure) {
 const error_ = _1.error_;
 return (await ff_core_Core.try_$((async ($task) => {
 return (await body_(error_, $task))
 }), $task))
 return
-}
 }
 {
 return self_
@@ -334,7 +298,6 @@ return self_
 export async function Try_finally$(self_, body_, $task) {
 {
 const _1 = self_;
-{
 if(_1.Success) {
 const value_ = _1.value_;
 return (await ff_core_Core.try_$((async ($task) => {
@@ -343,27 +306,20 @@ return value_
 }), $task))
 return
 }
-}
-{
 if(_1.Failure) {
 {
 const _1 = (await ff_core_Core.try_$((async ($task) => {
 return (await body_($task))
 }), $task));
-{
 if(_1.Success) {
 return self_
 }
-}
-{
 if(_1.Failure) {
 const error_ = _1.error_;
 return ff_core_Try.Failure(error_)
 }
 }
-}
 return
-}
 }
 }
 }
@@ -371,16 +327,12 @@ return
 export async function Try_else$(self_, body_, $task) {
 {
 const _1 = self_;
-{
 if(_1.Success) {
 const value_ = _1.value_;
 return value_
 }
-}
-{
 if(_1.Failure) {
 return (await body_($task))
-}
 }
 }
 }
@@ -388,17 +340,13 @@ return (await body_($task))
 export async function Try_grab$(self_, $task) {
 {
 const _1 = self_;
-{
 if(_1.Success) {
 const value_ = _1.value_;
 return value_
 }
-}
-{
 if(_1.Failure) {
 const error_ = _1.error_;
 return ff_core_Error.Error_rethrow(error_)
-}
 }
 }
 }
@@ -406,16 +354,12 @@ return ff_core_Error.Error_rethrow(error_)
 export async function Try_toOption$(self_, $task) {
 {
 const _1 = self_;
-{
 if(_1.Success) {
 const value_ = _1.value_;
 return ff_core_Option.Some(value_)
 }
-}
-{
 if(_1.Failure) {
 return ff_core_Option.None()
-}
 }
 }
 }
@@ -423,27 +367,17 @@ return ff_core_Option.None()
 export function Try_flatten(self_) {
 {
 const _1 = self_;
-{
-if(_1.Success) {
+if(_1.Success && _1.value_.Success) {
 const t_ = _1.value_;
-if(_1.value_.Success) {
 return t_
 }
-}
-}
-{
-if(_1.Success) {
+if(_1.Success && _1.value_.Failure) {
 const t_ = _1.value_;
-if(_1.value_.Failure) {
 return t_
 }
-}
-}
-{
 if(_1.Failure) {
 const error_ = _1.error_;
 return ff_core_Try.Failure(error_)
-}
 }
 }
 }
@@ -451,27 +385,17 @@ return ff_core_Try.Failure(error_)
 export async function Try_flatten$(self_, $task) {
 {
 const _1 = self_;
-{
-if(_1.Success) {
+if(_1.Success && _1.value_.Success) {
 const t_ = _1.value_;
-if(_1.value_.Success) {
 return t_
 }
-}
-}
-{
-if(_1.Success) {
+if(_1.Success && _1.value_.Failure) {
 const t_ = _1.value_;
-if(_1.value_.Failure) {
 return t_
 }
-}
-}
-{
 if(_1.Failure) {
 const error_ = _1.error_;
 return ff_core_Try.Failure(error_)
-}
 }
 }
 }

@@ -196,13 +196,10 @@ export function LockCondition_sleepUntil(self_, body_) {
 _tailcall: for(;;) {
 {
 const _1 = body_();
-{
 if(_1.Some) {
 const value_ = _1.value_;
 return value_
 }
-}
-{
 if(_1.None) {
 ff_core_Lock.LockCondition_sleep(self_);
 {
@@ -213,7 +210,6 @@ body_ = body_r_
 continue _tailcall
 }
 return
-}
 }
 }
 return
@@ -267,13 +263,10 @@ export async function LockCondition_sleepUntil$(self_, body_, $task) {
 _tailcall: for(;;) {
 {
 const _1 = (await body_($task));
-{
 if(_1.Some) {
 const value_ = _1.value_;
 return value_
 }
-}
-{
 if(_1.None) {
 (await ff_core_Lock.LockCondition_sleep$(self_, $task));
 {
@@ -284,7 +277,6 @@ body_ = body_r_
 continue _tailcall
 }
 return
-}
 }
 }
 return

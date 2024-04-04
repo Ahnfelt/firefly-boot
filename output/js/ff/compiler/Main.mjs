@@ -158,25 +158,17 @@ const compilerModulePath_ = ((ff_core_Equal.notEquals_(emitTarget_, ff_compiler_
 ? ff_core_Option.Some(ff_core_Path.Path_slash(ff_core_Path.Path_slash(ff_core_Path.Path_slash(ff_core_Path.Path_slash(fireflyPath_, "output"), "js"), "ff"), "compiler/Builder.mjs"))
 : ff_core_Option.None());
 const targetName_ = (((_1) => {
-{
 if(_1.EmitBuild) {
 return "build"
 }
-}
-{
 if(_1.EmitNode) {
 return "node"
 }
-}
-{
 if(_1.EmitBrowser) {
 return "browser"
 }
-}
-{
 if(_1.EmitExecutable) {
 return "executable"
-}
 }
 }))(emitTarget_);
 ff_compiler_Builder.build_(system_, emitTarget_, mainPackagePair_, mainFile_, (((_c) => {
@@ -259,12 +251,10 @@ const mainName_ = _guard1.value_;
 return ff_compiler_Main.RunCommand(mainName_, mainArguments_)
 }
 }
-if(arguments_a.length >= 1) {
-if(arguments_a[0] === "run") {
+if(arguments_a.length >= 1 && arguments_a[0] === "run") {
 const runArguments_ = arguments_a.slice(1);
 {
 const _1 = runArguments_;
-{
 if(_1.length >= 1) {
 const mainFile_ = _1[0];
 const mainArguments_ = _1.slice(1);
@@ -274,20 +264,16 @@ const mainName_ = _guard1.value_;
 return ff_compiler_Main.RunCommand(mainName_, mainArguments_)
 }
 }
-}
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as first argument to run." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 }
 }
 return
 }
-}
-if(arguments_a.length >= 1) {
-if(arguments_a[0] === "browser") {
+if(arguments_a.length >= 1 && arguments_a[0] === "browser") {
 const browserArguments_ = arguments_a.slice(1);
 {
 const _1 = browserArguments_;
-{
 if(_1.length === 1) {
 const mainFile_ = _1[0];
 const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
@@ -296,11 +282,8 @@ const mainName_ = _guard1.value_;
 return ff_compiler_Main.BrowserCommand(mainName_)
 }
 }
-}
-{
 if(_1.length >= 2) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to browser." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as the argument to browser." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
@@ -308,13 +291,10 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Ma
 }
 return
 }
-}
-if(arguments_a.length >= 1) {
-if(arguments_a[0] === "build") {
+if(arguments_a.length >= 1 && arguments_a[0] === "build") {
 const buildArguments_ = arguments_a.slice(1);
 {
 const _1 = buildArguments_;
-{
 if(_1.length === 1) {
 const mainFile_ = _1[0];
 const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
@@ -323,11 +303,8 @@ const mainName_ = _guard1.value_;
 return ff_compiler_Main.BuildCommand(mainName_)
 }
 }
-}
-{
 if(_1.length >= 2) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to build." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as the argument to build." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
@@ -335,13 +312,10 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Ma
 }
 return
 }
-}
-if(arguments_a.length >= 1) {
-if(arguments_a[0] === "check") {
+if(arguments_a.length >= 1 && arguments_a[0] === "check") {
 const checkArguments_ = arguments_a.slice(1);
 {
 const _1 = checkArguments_;
-{
 if(_1.length === 1) {
 const fileName_ = _1[0];
 const _guard1 = ff_core_String.String_removeLast(fileName_, ".ff");
@@ -349,11 +323,8 @@ if(_guard1.Some) {
 return ff_compiler_Main.CheckCommand(fileName_)
 }
 }
-}
-{
 if(_1.length >= 2) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to check." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as the argument to build." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
@@ -361,16 +332,11 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Ma
 }
 return
 }
-}
-if(arguments_a.length === 2) {
-if(arguments_a[0] === "bootstrap") {
+if(arguments_a.length === 2 && arguments_a[0] === "bootstrap") {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("bootstrap takes no arguments" + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 }
-}
-if(arguments_a.length === 1) {
-if(arguments_a[0] === "bootstrap") {
+if(arguments_a.length === 1 && arguments_a[0] === "bootstrap") {
 return ff_compiler_Main.BootstrapCommand()
-}
 }
 if(arguments_a.length === 0) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a command or a main file to run." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
@@ -425,25 +391,17 @@ const compilerModulePath_ = ((ff_core_Equal.notEquals_(emitTarget_, ff_compiler_
 ? ff_core_Option.Some((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(fireflyPath_, "output", $task)), "js", $task)), "ff", $task)), "compiler/Builder.mjs", $task)))
 : ff_core_Option.None());
 const targetName_ = (((_1) => {
-{
 if(_1.EmitBuild) {
 return "build"
 }
-}
-{
 if(_1.EmitNode) {
 return "node"
 }
-}
-{
 if(_1.EmitBrowser) {
 return "browser"
 }
-}
-{
 if(_1.EmitExecutable) {
 return "executable"
-}
 }
 }))(emitTarget_);
 (await ff_compiler_Builder.build_$(system_, emitTarget_, mainPackagePair_, mainFile_, (((_c) => {
@@ -526,12 +484,10 @@ const mainName_ = _guard1.value_;
 return ff_compiler_Main.RunCommand(mainName_, mainArguments_)
 }
 }
-if(arguments_a.length >= 1) {
-if(arguments_a[0] === "run") {
+if(arguments_a.length >= 1 && arguments_a[0] === "run") {
 const runArguments_ = arguments_a.slice(1);
 {
 const _1 = runArguments_;
-{
 if(_1.length >= 1) {
 const mainFile_ = _1[0];
 const mainArguments_ = _1.slice(1);
@@ -541,20 +497,16 @@ const mainName_ = _guard1.value_;
 return ff_compiler_Main.RunCommand(mainName_, mainArguments_)
 }
 }
-}
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as first argument to run." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 }
 }
 return
 }
-}
-if(arguments_a.length >= 1) {
-if(arguments_a[0] === "browser") {
+if(arguments_a.length >= 1 && arguments_a[0] === "browser") {
 const browserArguments_ = arguments_a.slice(1);
 {
 const _1 = browserArguments_;
-{
 if(_1.length === 1) {
 const mainFile_ = _1[0];
 const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
@@ -563,11 +515,8 @@ const mainName_ = _guard1.value_;
 return ff_compiler_Main.BrowserCommand(mainName_)
 }
 }
-}
-{
 if(_1.length >= 2) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to browser." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as the argument to browser." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
@@ -575,13 +524,10 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Ma
 }
 return
 }
-}
-if(arguments_a.length >= 1) {
-if(arguments_a[0] === "build") {
+if(arguments_a.length >= 1 && arguments_a[0] === "build") {
 const buildArguments_ = arguments_a.slice(1);
 {
 const _1 = buildArguments_;
-{
 if(_1.length === 1) {
 const mainFile_ = _1[0];
 const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
@@ -590,11 +536,8 @@ const mainName_ = _guard1.value_;
 return ff_compiler_Main.BuildCommand(mainName_)
 }
 }
-}
-{
 if(_1.length >= 2) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to build." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as the argument to build." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
@@ -602,13 +545,10 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Ma
 }
 return
 }
-}
-if(arguments_a.length >= 1) {
-if(arguments_a[0] === "check") {
+if(arguments_a.length >= 1 && arguments_a[0] === "check") {
 const checkArguments_ = arguments_a.slice(1);
 {
 const _1 = checkArguments_;
-{
 if(_1.length === 1) {
 const fileName_ = _1[0];
 const _guard1 = ff_core_String.String_removeLast(fileName_, ".ff");
@@ -616,11 +556,8 @@ if(_guard1.Some) {
 return ff_compiler_Main.CheckCommand(fileName_)
 }
 }
-}
-{
 if(_1.length >= 2) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to check." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as the argument to build." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
@@ -628,16 +565,11 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Ma
 }
 return
 }
-}
-if(arguments_a.length === 2) {
-if(arguments_a[0] === "bootstrap") {
+if(arguments_a.length === 2 && arguments_a[0] === "bootstrap") {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("bootstrap takes no arguments" + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 }
-}
-if(arguments_a.length === 1) {
-if(arguments_a[0] === "bootstrap") {
+if(arguments_a.length === 1 && arguments_a[0] === "bootstrap") {
 return ff_compiler_Main.BootstrapCommand()
-}
 }
 if(arguments_a.length === 0) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a command or a main file to run." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
@@ -769,13 +701,17 @@ return ((("CheckCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_
 export const ff_core_Show_Show$ff_compiler_Main_CommandLineError = {
 show_(value_) {
 const value_a = value_;
+{
 const z_ = value_a;
 return ((("CommandLineError" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.problem_)) + ")")
+}
 },
 async show_$(value_, $task) {
 const value_a = value_;
+{
 const z_ = value_a;
 return ((("CommandLineError" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.problem_)) + ")")
+}
 }
 };
 
@@ -786,33 +722,25 @@ const y_a = y_;
 if((x_ === y_)) {
 return true
 }
-if(x_a.RunCommand) {
+if(x_a.RunCommand && y_a.RunCommand) {
 const x_ = x_a;
-if(y_a.RunCommand) {
 const y_ = y_a;
 return ((x_.mainPath_ === y_.mainPath_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.argument_, y_.argument_))
 }
-}
-if(x_a.BrowserCommand) {
+if(x_a.BrowserCommand && y_a.BrowserCommand) {
 const x_ = x_a;
-if(y_a.BrowserCommand) {
 const y_ = y_a;
 return (x_.mainPath_ === y_.mainPath_)
 }
-}
-if(x_a.BuildCommand) {
+if(x_a.BuildCommand && y_a.BuildCommand) {
 const x_ = x_a;
-if(y_a.BuildCommand) {
 const y_ = y_a;
 return (x_.mainPath_ === y_.mainPath_)
 }
-}
-if(x_a.CheckCommand) {
+if(x_a.CheckCommand && y_a.CheckCommand) {
 const x_ = x_a;
-if(y_a.CheckCommand) {
 const y_ = y_a;
 return (x_.filePath_ === y_.filePath_)
-}
 }
 {
 return false
@@ -824,33 +752,25 @@ const y_a = y_;
 if((x_ === y_)) {
 return true
 }
-if(x_a.RunCommand) {
+if(x_a.RunCommand && y_a.RunCommand) {
 const x_ = x_a;
-if(y_a.RunCommand) {
 const y_ = y_a;
 return ((x_.mainPath_ === y_.mainPath_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.argument_, y_.argument_))
 }
-}
-if(x_a.BrowserCommand) {
+if(x_a.BrowserCommand && y_a.BrowserCommand) {
 const x_ = x_a;
-if(y_a.BrowserCommand) {
 const y_ = y_a;
 return (x_.mainPath_ === y_.mainPath_)
 }
-}
-if(x_a.BuildCommand) {
+if(x_a.BuildCommand && y_a.BuildCommand) {
 const x_ = x_a;
-if(y_a.BuildCommand) {
 const y_ = y_a;
 return (x_.mainPath_ === y_.mainPath_)
 }
-}
-if(x_a.CheckCommand) {
+if(x_a.CheckCommand && y_a.CheckCommand) {
 const x_ = x_a;
-if(y_a.CheckCommand) {
 const y_ = y_a;
 return (x_.filePath_ === y_.filePath_)
-}
 }
 {
 return false
@@ -888,9 +808,8 @@ const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 }
-if(x_a.RunCommand) {
+if(x_a.RunCommand && y_a.RunCommand) {
 const x_ = x_a;
-if(y_a.RunCommand) {
 const y_ = y_a;
 const mainPathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.mainPath_, y_.mainPath_);
 if((mainPathOrdering_ !== ff_core_Ordering.OrderingSame())) {
@@ -905,10 +824,8 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-}
-if(x_a.BrowserCommand) {
+if(x_a.BrowserCommand && y_a.BrowserCommand) {
 const x_ = x_a;
-if(y_a.BrowserCommand) {
 const y_ = y_a;
 const mainPathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.mainPath_, y_.mainPath_);
 if((mainPathOrdering_ !== ff_core_Ordering.OrderingSame())) {
@@ -918,10 +835,8 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-}
-if(x_a.BuildCommand) {
+if(x_a.BuildCommand && y_a.BuildCommand) {
 const x_ = x_a;
-if(y_a.BuildCommand) {
 const y_ = y_a;
 const mainPathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.mainPath_, y_.mainPath_);
 if((mainPathOrdering_ !== ff_core_Ordering.OrderingSame())) {
@@ -931,10 +846,8 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-}
-if(x_a.CheckCommand) {
+if(x_a.CheckCommand && y_a.CheckCommand) {
 const x_ = x_a;
-if(y_a.CheckCommand) {
 const y_ = y_a;
 const filePathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.filePath_, y_.filePath_);
 if((filePathOrdering_ !== ff_core_Ordering.OrderingSame())) {
@@ -943,7 +856,6 @@ return filePathOrdering_
 return ff_core_Ordering.OrderingSame()
 }
 return
-}
 }
 {
 function number_(z_) {
@@ -973,9 +885,8 @@ const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 }
-if(x_a.RunCommand) {
+if(x_a.RunCommand && y_a.RunCommand) {
 const x_ = x_a;
-if(y_a.RunCommand) {
 const y_ = y_a;
 const mainPathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.mainPath_, y_.mainPath_);
 if((mainPathOrdering_ !== ff_core_Ordering.OrderingSame())) {
@@ -990,10 +901,8 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-}
-if(x_a.BrowserCommand) {
+if(x_a.BrowserCommand && y_a.BrowserCommand) {
 const x_ = x_a;
-if(y_a.BrowserCommand) {
 const y_ = y_a;
 const mainPathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.mainPath_, y_.mainPath_);
 if((mainPathOrdering_ !== ff_core_Ordering.OrderingSame())) {
@@ -1003,10 +912,8 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-}
-if(x_a.BuildCommand) {
+if(x_a.BuildCommand && y_a.BuildCommand) {
 const x_ = x_a;
-if(y_a.BuildCommand) {
 const y_ = y_a;
 const mainPathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.mainPath_, y_.mainPath_);
 if((mainPathOrdering_ !== ff_core_Ordering.OrderingSame())) {
@@ -1016,10 +923,8 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-}
-if(x_a.CheckCommand) {
+if(x_a.CheckCommand && y_a.CheckCommand) {
 const x_ = x_a;
-if(y_a.CheckCommand) {
 const y_ = y_a;
 const filePathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.filePath_, y_.filePath_);
 if((filePathOrdering_ !== ff_core_Ordering.OrderingSame())) {
@@ -1028,7 +933,6 @@ return filePathOrdering_
 return ff_core_Ordering.OrderingSame()
 }
 return
-}
 }
 {
 function number_(z_) {
@@ -1144,35 +1048,25 @@ const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, se
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 return ff_compiler_Main.BootstrapCommand()
 }
-}
-{
 if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_Main.RunCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 }
-}
-{
 if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 return ff_compiler_Main.BrowserCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 }
-}
-{
 if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Main.BuildCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 }
-}
-{
 if(_1 === 4) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Main.CheckCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -1233,35 +1127,25 @@ const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, se
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 return ff_compiler_Main.BootstrapCommand()
 }
-}
-{
 if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_Main.RunCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 }
-}
-{
 if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 return ff_compiler_Main.BrowserCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 }
-}
-{
 if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Main.BuildCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 }
-}
-{
 if(_1 === 4) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Main.CheckCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -1274,6 +1158,7 @@ export const ff_core_Serializable_Serializable$ff_compiler_Main_CommandLineError
 serializeUsing_(serialization_, value_) {
 const serialization_a = serialization_;
 const value_a = value_;
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -1281,17 +1166,16 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.problem_)
 return
+}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 return ff_compiler_Main.CommandLineError(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -1301,6 +1185,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serial
 async serializeUsing_$(serialization_, value_, $task) {
 const serialization_a = serialization_;
 const value_a = value_;
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -1308,17 +1193,16 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.problem_)
 return
+}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 return ff_compiler_Main.CommandLineError(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})

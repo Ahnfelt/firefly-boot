@@ -190,34 +190,26 @@ let result_ = ff_core_Option.None();
 while(ff_core_Option.Option_isEmpty(result_)) {
 do {
 const _1 = inner_.next_();
-{
-const i_ = _1;
 if(_1.Some) {
+const i_ = _1;
 result_ = ff_core_Option.Some(i_)
 break
 }
-}
-{
 if(_1.None) {
 do {
 const _1 = self_.next_();
-{
 if(_1.None) {
 result_ = ff_core_Option.Some(ff_core_Option.None())
 break
 }
-}
-{
 if(_1.Some) {
 const o_ = _1.value_;
 inner_.close_();
 inner_ = body_(o_)
 break
 }
-}
 } while(false)
 break
-}
 }
 } while(false)
 };
@@ -243,7 +235,6 @@ let result_ = ff_core_Option.None();
 while(ff_core_Option.Option_isEmpty(result_)) {
 do {
 const _1 = self_.next_();
-{
 if(_1.Some) {
 const x_ = _1.value_;
 if(body_(x_)) {
@@ -251,18 +242,13 @@ result_ = ff_core_Option.Some(ff_core_Option.Some(x_))
 break
 }
 }
-}
-{
 if(_1.Some) {
 
 break
 }
-}
-{
 if(_1.None) {
 result_ = ff_core_Option.Some(ff_core_Option.None())
 break
-}
 }
 } while(false)
 };
@@ -276,14 +262,10 @@ export function Stream_zip(self_, that_) {
 return ff_core_Stream.Stream((() => {
 {
 const _1 = ff_core_Pair.Pair(self_.next_(), that_.next_());
-{
-if(_1.first_.Some) {
+if(_1.first_.Some && _1.second_.Some) {
 const x_ = _1.first_.value_;
-if(_1.second_.Some) {
 const y_ = _1.second_.value_;
 return ff_core_Option.Some(ff_core_Pair.Pair(x_, y_))
-}
-}
 }
 {
 return ff_core_Option.None()
@@ -316,17 +298,13 @@ return ff_core_Stream.Stream((() => {
 while((remaining_ >= 1)) {
 do {
 const _1 = self_.next_();
-{
 if(_1.None) {
 remaining_ = 0
 break
 }
-}
-{
 if(_1.Some) {
 remaining_ -= 1
 break
-}
 }
 } while(false)
 };
@@ -344,15 +322,12 @@ return ff_core_Option.None()
 } else {
 {
 const _1 = self_.next_();
-{
 if(_1.None) {
 done_ = true;
 return ff_core_Option.None()
 }
-}
-{
-const o_ = _1;
 if(_1.Some) {
+const o_ = _1;
 const x_ = _1.value_;
 done_ = (!body_(x_));
 if(done_) {
@@ -361,7 +336,6 @@ return ff_core_Option.None()
 return o_
 }
 return
-}
 }
 }
 }
@@ -378,13 +352,10 @@ let result_ = ff_core_Option.None();
 while((!done_)) {
 do {
 const _1 = self_.next_();
-{
 if(_1.None) {
 done_ = true
 break
 }
-}
-{
 if(_1.Some) {
 const x_ = _1.value_;
 if(body_(x_)) {
@@ -392,15 +363,12 @@ if(body_(x_)) {
 break
 }
 }
-}
-{
-const o_ = _1;
 if(_1.Some) {
+const o_ = _1;
 const x_ = _1.value_;
 result_ = o_;
 done_ = true
 break
-}
 }
 } while(false)
 };
@@ -430,13 +398,10 @@ return ff_core_Option.None()
 } else {
 {
 const _1 = self_.next_();
-{
 if(_1.None) {
 remaining_ = (-1);
 return ff_core_Option.None()
 }
-}
-{
 if(_1.Some) {
 const x_ = _1.value_;
 let list_ = [x_];
@@ -445,18 +410,14 @@ while((remaining_ > 0)) {
 remaining_ -= 1;
 do {
 const _1 = self_.next_();
-{
 if(_1.None) {
 remaining_ = (-1)
 break
 }
-}
-{
 if(_1.Some) {
 const x_ = _1.value_;
 list_ = [x_, ...list_]
 break
-}
 }
 } while(false)
 };
@@ -464,7 +425,6 @@ if((remaining_ !== (-1))) {
 remaining_ = size_
 };
 return ff_core_Option.Some(ff_core_List.List_reverse(list_))
-}
 }
 }
 }
@@ -487,18 +447,14 @@ let done_ = false;
 while((!done_)) {
 do {
 const _1 = self_.next_();
-{
 if(_1.None) {
 done_ = true
 break
 }
-}
-{
 if(_1.Some) {
 const x_ = _1.value_;
 body_(x_)
 break
-}
 }
 } while(false)
 }
@@ -513,18 +469,14 @@ let done_ = false;
 while((!done_)) {
 do {
 const _1 = self_.next_();
-{
 if(_1.None) {
 done_ = true
 break
 }
-}
-{
 if(_1.Some) {
 const x_ = _1.value_;
 done_ = (!body_(x_))
 break
-}
 }
 } while(false)
 }
@@ -566,19 +518,15 @@ let result_ = ff_core_Option.None();
 while((!done_)) {
 do {
 const _1 = self_.next_();
-{
 if(_1.None) {
 done_ = true
 break
 }
-}
-{
-const o_ = _1;
 if(_1.Some) {
+const o_ = _1;
 const x_ = _1.value_;
 result_ = o_
 break
-}
 }
 } while(false)
 };
@@ -607,22 +555,17 @@ let result_ = ff_core_Option.None();
 while((!done_)) {
 do {
 const _1 = self_.next_();
-{
 if(_1.None) {
 done_ = true
 break
 }
-}
-{
 if(_1.Some) {
 const x_ = _1.value_;
 do {
 const _1 = body_(x_);
-{
 if(_1.None) {
 
 break
-}
 }
 {
 const o_ = _1;
@@ -632,7 +575,6 @@ break
 }
 } while(false)
 break
-}
 }
 } while(false)
 };
@@ -705,34 +647,26 @@ let result_ = ff_core_Option.None();
 while(ff_core_Option.Option_isEmpty(result_)) {
 do {
 const _1 = (await inner_.next_($task));
-{
-const i_ = _1;
 if(_1.Some) {
+const i_ = _1;
 result_ = ff_core_Option.Some(i_)
 break
 }
-}
-{
 if(_1.None) {
 do {
 const _1 = (await self_.next_($task));
-{
 if(_1.None) {
 result_ = ff_core_Option.Some(ff_core_Option.None())
 break
 }
-}
-{
 if(_1.Some) {
 const o_ = _1.value_;
 (await inner_.close_($task));
 inner_ = (await body_(o_, $task))
 break
 }
-}
 } while(false)
 break
-}
 }
 } while(false)
 };
@@ -758,7 +692,6 @@ let result_ = ff_core_Option.None();
 while(ff_core_Option.Option_isEmpty(result_)) {
 do {
 const _1 = (await self_.next_($task));
-{
 if(_1.Some) {
 const x_ = _1.value_;
 if((await body_(x_, $task))) {
@@ -766,18 +699,13 @@ result_ = ff_core_Option.Some(ff_core_Option.Some(x_))
 break
 }
 }
-}
-{
 if(_1.Some) {
 
 break
 }
-}
-{
 if(_1.None) {
 result_ = ff_core_Option.Some(ff_core_Option.None())
 break
-}
 }
 } while(false)
 };
@@ -791,14 +719,10 @@ export async function Stream_zip$(self_, that_, $task) {
 return ff_core_Stream.Stream((async ($task) => {
 {
 const _1 = ff_core_Pair.Pair((await self_.next_($task)), (await that_.next_($task)));
-{
-if(_1.first_.Some) {
+if(_1.first_.Some && _1.second_.Some) {
 const x_ = _1.first_.value_;
-if(_1.second_.Some) {
 const y_ = _1.second_.value_;
 return ff_core_Option.Some(ff_core_Pair.Pair(x_, y_))
-}
-}
 }
 {
 return ff_core_Option.None()
@@ -831,17 +755,13 @@ return ff_core_Stream.Stream((async ($task) => {
 while((remaining_ >= 1)) {
 do {
 const _1 = (await self_.next_($task));
-{
 if(_1.None) {
 remaining_ = 0
 break
 }
-}
-{
 if(_1.Some) {
 remaining_ -= 1
 break
-}
 }
 } while(false)
 };
@@ -859,15 +779,12 @@ return ff_core_Option.None()
 } else {
 {
 const _1 = (await self_.next_($task));
-{
 if(_1.None) {
 done_ = true;
 return ff_core_Option.None()
 }
-}
-{
-const o_ = _1;
 if(_1.Some) {
+const o_ = _1;
 const x_ = _1.value_;
 done_ = (!(await body_(x_, $task)));
 if(done_) {
@@ -876,7 +793,6 @@ return ff_core_Option.None()
 return o_
 }
 return
-}
 }
 }
 }
@@ -893,13 +809,10 @@ let result_ = ff_core_Option.None();
 while((!done_)) {
 do {
 const _1 = (await self_.next_($task));
-{
 if(_1.None) {
 done_ = true
 break
 }
-}
-{
 if(_1.Some) {
 const x_ = _1.value_;
 if((await body_(x_, $task))) {
@@ -907,15 +820,12 @@ if((await body_(x_, $task))) {
 break
 }
 }
-}
-{
-const o_ = _1;
 if(_1.Some) {
+const o_ = _1;
 const x_ = _1.value_;
 result_ = o_;
 done_ = true
 break
-}
 }
 } while(false)
 };
@@ -945,13 +855,10 @@ return ff_core_Option.None()
 } else {
 {
 const _1 = (await self_.next_($task));
-{
 if(_1.None) {
 remaining_ = (-1);
 return ff_core_Option.None()
 }
-}
-{
 if(_1.Some) {
 const x_ = _1.value_;
 let list_ = [x_];
@@ -960,18 +867,14 @@ while((remaining_ > 0)) {
 remaining_ -= 1;
 do {
 const _1 = (await self_.next_($task));
-{
 if(_1.None) {
 remaining_ = (-1)
 break
 }
-}
-{
 if(_1.Some) {
 const x_ = _1.value_;
 list_ = [x_, ...list_]
 break
-}
 }
 } while(false)
 };
@@ -979,7 +882,6 @@ if((remaining_ !== (-1))) {
 remaining_ = size_
 };
 return ff_core_Option.Some(ff_core_List.List_reverse(list_))
-}
 }
 }
 }
@@ -1002,18 +904,14 @@ let done_ = false;
 while((!done_)) {
 do {
 const _1 = (await self_.next_($task));
-{
 if(_1.None) {
 done_ = true
 break
 }
-}
-{
 if(_1.Some) {
 const x_ = _1.value_;
 (await body_(x_, $task))
 break
-}
 }
 } while(false)
 }
@@ -1028,18 +926,14 @@ let done_ = false;
 while((!done_)) {
 do {
 const _1 = (await self_.next_($task));
-{
 if(_1.None) {
 done_ = true
 break
 }
-}
-{
 if(_1.Some) {
 const x_ = _1.value_;
 done_ = (!(await body_(x_, $task)))
 break
-}
 }
 } while(false)
 }
@@ -1081,19 +975,15 @@ let result_ = ff_core_Option.None();
 while((!done_)) {
 do {
 const _1 = (await self_.next_($task));
-{
 if(_1.None) {
 done_ = true
 break
 }
-}
-{
-const o_ = _1;
 if(_1.Some) {
+const o_ = _1;
 const x_ = _1.value_;
 result_ = o_
 break
-}
 }
 } while(false)
 };
@@ -1122,22 +1012,17 @@ let result_ = ff_core_Option.None();
 while((!done_)) {
 do {
 const _1 = (await self_.next_($task));
-{
 if(_1.None) {
 done_ = true
 break
 }
-}
-{
 if(_1.Some) {
 const x_ = _1.value_;
 do {
 const _1 = (await body_(x_, $task));
-{
 if(_1.None) {
 
 break
-}
 }
 {
 const o_ = _1;
@@ -1147,7 +1032,6 @@ break
 }
 } while(false)
 break
-}
 }
 } while(false)
 };

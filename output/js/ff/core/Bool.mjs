@@ -109,15 +109,11 @@ return True$;
 export function Bool_toInt(self_) {
 {
 const _1 = self_;
-{
 if(!_1) {
 return 0
 }
-}
-{
 if(_1) {
 return 1
-}
 }
 }
 }
@@ -125,15 +121,11 @@ return 1
 export async function Bool_toInt$(self_, $task) {
 {
 const _1 = self_;
-{
 if(!_1) {
 return 0
 }
-}
-{
 if(_1) {
 return 1
-}
 }
 }
 }

@@ -143,11 +143,7 @@ return ff_compiler_Syntax.ForeignTarget(sync_, async_)
 })());
 {
 const _1 = foreignTarget_;
-{
-if(_1.ForeignTarget) {
-if(_1.syncCode_.None) {
-if(_1.asyncCode_.None) {
-if(targetIsNode_) {
+if(_1.ForeignTarget && _1.syncCode_.None && _1.asyncCode_.None && targetIsNode_) {
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_orElse(targets_.node_, (() => {
 return ff_core_Option.Option_orElse(targets_.js_, (() => {
 return body_
@@ -159,15 +155,7 @@ return foreignTarget_
 }))
 return
 }
-}
-}
-}
-}
-{
-if(_1.ForeignTarget) {
-if(_1.syncCode_.None) {
-if(_1.asyncCode_.None) {
-if((!targetIsNode_)) {
+if(_1.ForeignTarget && _1.syncCode_.None && _1.asyncCode_.None && (!targetIsNode_)) {
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_orElse(targets_.browser_, (() => {
 return ff_core_Option.Option_orElse(targets_.js_, (() => {
 return body_
@@ -178,10 +166,6 @@ return ff_compiler_Syntax.FireflyTarget(_w1)
 return foreignTarget_
 }))
 return
-}
-}
-}
-}
 }
 {
 return foreignTarget_
@@ -215,11 +199,7 @@ return ff_compiler_Syntax.ForeignTarget(sync_, async_)
 })()));
 {
 const _1 = foreignTarget_;
-{
-if(_1.ForeignTarget) {
-if(_1.syncCode_.None) {
-if(_1.asyncCode_.None) {
-if(targetIsNode_) {
+if(_1.ForeignTarget && _1.syncCode_.None && _1.asyncCode_.None && targetIsNode_) {
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_orElse(targets_.node_, (() => {
 return ff_core_Option.Option_orElse(targets_.js_, (() => {
 return body_
@@ -231,15 +211,7 @@ return foreignTarget_
 }))
 return
 }
-}
-}
-}
-}
-{
-if(_1.ForeignTarget) {
-if(_1.syncCode_.None) {
-if(_1.asyncCode_.None) {
-if((!targetIsNode_)) {
+if(_1.ForeignTarget && _1.syncCode_.None && _1.asyncCode_.None && (!targetIsNode_)) {
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_orElse(targets_.browser_, (() => {
 return ff_core_Option.Option_orElse(targets_.js_, (() => {
 return body_
@@ -250,10 +222,6 @@ return ff_compiler_Syntax.FireflyTarget(_w1)
 return foreignTarget_
 }))
 return
-}
-}
-}
-}
 }
 {
 return foreignTarget_
@@ -495,7 +463,6 @@ if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{"))
 const lambda_ = ff_compiler_Parser.Parser_parseLambda(self_, parameterCount_, false, false);
 do {
 const _1 = target_;
-{
 if(_1 === "js") {
 if(ff_core_Equal.notEquals_(targets_.jsSync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -505,8 +472,6 @@ return ff_compiler_Parser.ParsedTargets(ff_core_Option.Some(lambda_), _c.jsSync_
 }))(targets_)
 break
 }
-}
-{
 if(_1 === "browser") {
 if(ff_core_Equal.notEquals_(targets_.browserSync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -516,8 +481,6 @@ return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, ff_core
 }))(targets_)
 break
 }
-}
-{
 if(_1 === "node") {
 if(ff_core_Equal.notEquals_(targets_.nodeAsync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -527,10 +490,8 @@ return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, _c.brow
 }))(targets_)
 break
 }
-}
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Unknown target"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-break
 }
 } while(false)
 } else {
@@ -538,9 +499,7 @@ const mode_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, 
 const code_ = processCode_(ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LString())));
 do {
 const _1 = ff_core_Pair.Pair(target_, mode_);
-{
-if(_1.first_ === "js") {
-if(_1.second_ === "sync") {
+if(_1.first_ === "js" && _1.second_ === "sync") {
 if(ff_core_Equal.notEquals_(targets_.jsSync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
@@ -549,11 +508,7 @@ return ff_compiler_Parser.ParsedTargets(_c.js_, ff_core_Option.Some(code_), _c.j
 }))(targets_)
 break
 }
-}
-}
-{
-if(_1.first_ === "js") {
-if(_1.second_ === "async") {
+if(_1.first_ === "js" && _1.second_ === "async") {
 if(ff_core_Equal.notEquals_(targets_.jsAsync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
@@ -562,11 +517,7 @@ return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, ff_core_Option.Some(
 }))(targets_)
 break
 }
-}
-}
-{
-if(_1.first_ === "browser") {
-if(_1.second_ === "sync") {
+if(_1.first_ === "browser" && _1.second_ === "sync") {
 if(ff_core_Equal.notEquals_(targets_.browserSync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
@@ -575,11 +526,7 @@ return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, _c.brow
 }))(targets_)
 break
 }
-}
-}
-{
-if(_1.first_ === "browser") {
-if(_1.second_ === "async") {
+if(_1.first_ === "browser" && _1.second_ === "async") {
 if(ff_core_Equal.notEquals_(targets_.browserAsync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
@@ -588,11 +535,7 @@ return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, _c.brow
 }))(targets_)
 break
 }
-}
-}
-{
-if(_1.first_ === "node") {
-if(_1.second_ === "sync") {
+if(_1.first_ === "node" && _1.second_ === "sync") {
 if(ff_core_Equal.notEquals_(targets_.nodeSync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
@@ -601,11 +544,7 @@ return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, _c.brow
 }))(targets_)
 break
 }
-}
-}
-{
-if(_1.first_ === "node") {
-if(_1.second_ === "async") {
+if(_1.first_ === "node" && _1.second_ === "async") {
 if(ff_core_Equal.notEquals_(targets_.nodeAsync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
@@ -614,11 +553,8 @@ return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, _c.brow
 }))(targets_)
 break
 }
-}
-}
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Unknown target or mode"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-break
 }
 } while(false)
 }
@@ -934,42 +870,27 @@ const token_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(sel
 : ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword()));
 do {
 const _1 = ff_compiler_Token.Token_raw(token_);
-{
-if(_1 === "node") {
-if(targets_.node_) {
+if(_1 === "node" && targets_.node_) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Duplicate target name"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-break
 }
-}
-}
-{
 if(_1 === "node") {
 targets_ = (((_c) => {
 return ff_compiler_Syntax.TargetNames(true, _c.browser_)
 }))(targets_)
 break
 }
-}
-{
-if(_1 === "browser") {
-if(targets_.browser_) {
+if(_1 === "browser" && targets_.browser_) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Duplicate target name"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-break
 }
-}
-}
-{
 if(_1 === "browser") {
 targets_ = (((_c) => {
 return ff_compiler_Syntax.TargetNames(_c.node_, true)
 }))(targets_)
 break
 }
-}
 {
 const t_ = _1;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), ("Unexpected target: " + t_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-break
 }
 } while(false)
 };
@@ -1435,18 +1356,14 @@ const operator_ = ff_core_String.String_dropLast(ff_compiler_Token.Token_raw(tok
 const value_ = ff_compiler_Parser.Parser_parseTerm(self_);
 {
 const _1 = term_;
-{
 if(_1.EVariable) {
 const at_ = _1.at_;
 const name_ = _1.name_;
 return ff_compiler_Syntax.EAssign(at_, operator_, name_, value_)
 }
-}
-{
 if(_1.EField) {
 const e_ = _1;
 return ff_compiler_Syntax.EAssignField(e_.at_, operator_, e_.record_, e_.field_, value_)
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Only variables and fields are assignable"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -1542,35 +1459,23 @@ const right_ = ff_compiler_Parser.Parser_parseBinary(self_, (level_ + 1));
 const arguments_ = [ff_compiler_Syntax.Argument(result_.at_, ff_core_Option.None(), result_), ff_compiler_Syntax.Argument(right_.at_, ff_core_Option.None(), right_)];
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, ff_compiler_Token.Token_at(token_));
 const target_ = (((_1) => {
-{
 if(_1 === "==") {
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Equal.equals"), false)
 }
-}
-{
 if(_1 === "!=") {
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Equal.notEquals"), false)
 }
-}
-{
 if(_1 === "<") {
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Ordering.before"), false)
 }
-}
-{
 if(_1 === "<=") {
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Ordering.notAfter"), false)
 }
-}
-{
 if(_1 === ">") {
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Ordering.after"), false)
 }
-}
-{
 if(_1 === ">=") {
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Ordering.notBefore"), false)
-}
 }
 {
 const o_ = _1;
@@ -1804,24 +1709,18 @@ const items_a = items_;
 if(items_a.length === 0) {
 return ff_compiler_Syntax.PVariant(at_, "List$Empty", [])
 }
-if(items_a.length >= 1) {
+if(items_a.length >= 1 && !items_a[0].second_) {
 const p_ = items_a[0].first_;
-if(!items_a[0].second_) {
 const ps_ = items_a.slice(1);
 return ff_compiler_Syntax.PVariant(at_, "List$Link", [p_, convertListPattern_(at_, ps_)])
 }
-}
-if(items_a.length === 1) {
+if(items_a.length === 1 && items_a[0].second_) {
 const p_ = items_a[0].first_;
-if(items_a[0].second_) {
 return p_
 }
-}
-if(items_a.length >= 1) {
+if(items_a.length >= 1 && items_a[0].second_) {
 const p_ = items_a[0].first_;
-if(items_a[0].second_) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(p_.at_, "Invalid pattern: ... is only allowed for the last element in a list"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
 }
 }
 const items_ = ff_core_Array.make_();
@@ -2094,7 +1993,6 @@ if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{"))
 const lambda_ = ff_compiler_Parser.Parser_parseLambda(self_, parameterCount_, false, false);
 do {
 const _1 = target_;
-{
 if(_1 === "js") {
 if(ff_core_Equal.notEquals_(targets_.jsSync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -2104,8 +2002,6 @@ return ff_compiler_Parser.ParsedTargets(ff_core_Option.Some(lambda_), _c.jsSync_
 }))(targets_)
 break
 }
-}
-{
 if(_1 === "browser") {
 if(ff_core_Equal.notEquals_(targets_.browserSync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -2115,8 +2011,6 @@ return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, ff_core
 }))(targets_)
 break
 }
-}
-{
 if(_1 === "node") {
 if(ff_core_Equal.notEquals_(targets_.nodeAsync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -2126,10 +2020,8 @@ return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, _c.brow
 }))(targets_)
 break
 }
-}
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Unknown target"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-break
 }
 } while(false)
 } else {
@@ -2137,9 +2029,7 @@ const mode_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, 
 const code_ = processCode_(ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LString())));
 do {
 const _1 = ff_core_Pair.Pair(target_, mode_);
-{
-if(_1.first_ === "js") {
-if(_1.second_ === "sync") {
+if(_1.first_ === "js" && _1.second_ === "sync") {
 if(ff_core_Equal.notEquals_(targets_.jsSync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
@@ -2148,11 +2038,7 @@ return ff_compiler_Parser.ParsedTargets(_c.js_, ff_core_Option.Some(code_), _c.j
 }))(targets_)
 break
 }
-}
-}
-{
-if(_1.first_ === "js") {
-if(_1.second_ === "async") {
+if(_1.first_ === "js" && _1.second_ === "async") {
 if(ff_core_Equal.notEquals_(targets_.jsAsync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
@@ -2161,11 +2047,7 @@ return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, ff_core_Option.Some(
 }))(targets_)
 break
 }
-}
-}
-{
-if(_1.first_ === "browser") {
-if(_1.second_ === "sync") {
+if(_1.first_ === "browser" && _1.second_ === "sync") {
 if(ff_core_Equal.notEquals_(targets_.browserSync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
@@ -2174,11 +2056,7 @@ return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, _c.brow
 }))(targets_)
 break
 }
-}
-}
-{
-if(_1.first_ === "browser") {
-if(_1.second_ === "async") {
+if(_1.first_ === "browser" && _1.second_ === "async") {
 if(ff_core_Equal.notEquals_(targets_.browserAsync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
@@ -2187,11 +2065,7 @@ return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, _c.brow
 }))(targets_)
 break
 }
-}
-}
-{
-if(_1.first_ === "node") {
-if(_1.second_ === "sync") {
+if(_1.first_ === "node" && _1.second_ === "sync") {
 if(ff_core_Equal.notEquals_(targets_.nodeSync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
@@ -2200,11 +2074,7 @@ return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, _c.brow
 }))(targets_)
 break
 }
-}
-}
-{
-if(_1.first_ === "node") {
-if(_1.second_ === "async") {
+if(_1.first_ === "node" && _1.second_ === "async") {
 if(ff_core_Equal.notEquals_(targets_.nodeAsync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
@@ -2213,11 +2083,8 @@ return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, _c.brow
 }))(targets_)
 break
 }
-}
-}
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Unknown target or mode"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-break
 }
 } while(false)
 }
@@ -2533,42 +2400,27 @@ const token_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(sel
 : ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword()));
 do {
 const _1 = ff_compiler_Token.Token_raw(token_);
-{
-if(_1 === "node") {
-if(targets_.node_) {
+if(_1 === "node" && targets_.node_) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Duplicate target name"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-break
 }
-}
-}
-{
 if(_1 === "node") {
 targets_ = (((_c) => {
 return ff_compiler_Syntax.TargetNames(true, _c.browser_)
 }))(targets_)
 break
 }
-}
-{
-if(_1 === "browser") {
-if(targets_.browser_) {
+if(_1 === "browser" && targets_.browser_) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Duplicate target name"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-break
 }
-}
-}
-{
 if(_1 === "browser") {
 targets_ = (((_c) => {
 return ff_compiler_Syntax.TargetNames(_c.node_, true)
 }))(targets_)
 break
 }
-}
 {
 const t_ = _1;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), ("Unexpected target: " + t_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-break
 }
 } while(false)
 };
@@ -3034,18 +2886,14 @@ const operator_ = ff_core_String.String_dropLast(ff_compiler_Token.Token_raw(tok
 const value_ = ff_compiler_Parser.Parser_parseTerm(self_);
 {
 const _1 = term_;
-{
 if(_1.EVariable) {
 const at_ = _1.at_;
 const name_ = _1.name_;
 return ff_compiler_Syntax.EAssign(at_, operator_, name_, value_)
 }
-}
-{
 if(_1.EField) {
 const e_ = _1;
 return ff_compiler_Syntax.EAssignField(e_.at_, operator_, e_.record_, e_.field_, value_)
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Only variables and fields are assignable"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -3141,35 +2989,23 @@ const right_ = ff_compiler_Parser.Parser_parseBinary(self_, (level_ + 1));
 const arguments_ = [ff_compiler_Syntax.Argument(result_.at_, ff_core_Option.None(), result_), ff_compiler_Syntax.Argument(right_.at_, ff_core_Option.None(), right_)];
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, ff_compiler_Token.Token_at(token_));
 const target_ = (((_1) => {
-{
 if(_1 === "==") {
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Equal.equals"), false)
 }
-}
-{
 if(_1 === "!=") {
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Equal.notEquals"), false)
 }
-}
-{
 if(_1 === "<") {
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Ordering.before"), false)
 }
-}
-{
 if(_1 === "<=") {
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Ordering.notAfter"), false)
 }
-}
-{
 if(_1 === ">") {
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Ordering.after"), false)
 }
-}
-{
 if(_1 === ">=") {
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Ordering.notBefore"), false)
-}
 }
 {
 const o_ = _1;
@@ -3403,24 +3239,18 @@ const items_a = items_;
 if(items_a.length === 0) {
 return ff_compiler_Syntax.PVariant(at_, "List$Empty", [])
 }
-if(items_a.length >= 1) {
+if(items_a.length >= 1 && !items_a[0].second_) {
 const p_ = items_a[0].first_;
-if(!items_a[0].second_) {
 const ps_ = items_a.slice(1);
 return ff_compiler_Syntax.PVariant(at_, "List$Link", [p_, convertListPattern_(at_, ps_)])
 }
-}
-if(items_a.length === 1) {
+if(items_a.length === 1 && items_a[0].second_) {
 const p_ = items_a[0].first_;
-if(items_a[0].second_) {
 return p_
 }
-}
-if(items_a.length >= 1) {
+if(items_a.length >= 1 && items_a[0].second_) {
 const p_ = items_a[0].first_;
-if(items_a[0].second_) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(p_.at_, "Invalid pattern: ... is only allowed for the last element in a list"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
 }
 }
 const items_ = ff_core_Array.make_();
@@ -3480,26 +3310,34 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Parser.ParsedTargets" + "[") +
 export const ff_core_Show_Show$ff_compiler_Parser_Poly = {
 show_(value_) {
 const value_a = value_;
+{
 const z_ = value_a;
 return ((((("Poly" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.generics_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Constraint).show_(z_.constraints_)) + ")")
+}
 },
 async show_$(value_, $task) {
 const value_a = value_;
+{
 const z_ = value_a;
 return ((((("Poly" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.generics_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Constraint).show_(z_.constraints_)) + ")")
+}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Parser_ParsedTargets = {
 show_(value_) {
 const value_a = value_;
+{
 const z_ = value_a;
 return ((((((((((((((((((("ParsedTargets" + "(") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Lambda).show_(z_.js_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.jsSync_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.jsAsync_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Lambda).show_(z_.browser_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.browserSync_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.browserAsync_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Lambda).show_(z_.node_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.nodeSync_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.nodeAsync_)) + ")")
+}
 },
 async show_$(value_, $task) {
 const value_a = value_;
+{
 const z_ = value_a;
 return ((((((((((((((((((("ParsedTargets" + "(") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Lambda).show_(z_.js_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.jsSync_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.jsAsync_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Lambda).show_(z_.browser_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.browserSync_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.browserAsync_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Lambda).show_(z_.node_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.nodeSync_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.nodeAsync_)) + ")")
+}
 }
 };
 
@@ -3713,6 +3551,7 @@ export const ff_core_Serializable_Serializable$ff_compiler_Parser_Poly = {
 serializeUsing_(serialization_, value_) {
 const serialization_a = serialization_;
 const value_a = value_;
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -3721,17 +3560,16 @@ serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.generics_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Constraint).serializeUsing_(serialization_, v_.constraints_)
 return
+}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 return ff_compiler_Parser.Poly(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Constraint).deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -3741,6 +3579,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serial
 async serializeUsing_$(serialization_, value_, $task) {
 const serialization_a = serialization_;
 const value_a = value_;
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -3749,17 +3588,16 @@ serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.generics_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Constraint).serializeUsing_(serialization_, v_.constraints_)
 return
+}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 return ff_compiler_Parser.Poly(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Constraint).deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -3772,6 +3610,7 @@ export const ff_core_Serializable_Serializable$ff_compiler_Parser_ParsedTargets 
 serializeUsing_(serialization_, value_) {
 const serialization_a = serialization_;
 const value_a = value_;
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -3787,17 +3626,16 @@ ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compil
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.nodeSync_);
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.nodeAsync_)
 return
+}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
 return ff_compiler_Parser.ParsedTargets(ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -3807,6 +3645,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serial
 async serializeUsing_$(serialization_, value_, $task) {
 const serialization_a = serialization_;
 const value_a = value_;
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -3822,17 +3661,16 @@ ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compil
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.nodeSync_);
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.nodeAsync_)
 return
+}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
 return ff_compiler_Parser.ParsedTargets(ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})

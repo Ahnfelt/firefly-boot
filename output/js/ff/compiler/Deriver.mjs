@@ -250,12 +250,10 @@ const wildcardPattern_ = ff_compiler_Syntax.PVariable(at_, ff_core_Option.None()
 const sameCase_ = ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardPattern_], [ff_compiler_Syntax.MatchGuard(at_, ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "===", [ff_compiler_Syntax.EVariable(at_, "x"), ff_compiler_Syntax.EVariable(at_, "y")], []), ff_compiler_Syntax.PVariant(at_, "ff:core/Bool.True", []))], ff_compiler_Syntax.EVariant(at_, "ff:core/Ordering.OrderingSame", [], ff_core_Option.None()));
 {
 const _1 = declaration_.variants_;
-{
 if(_1.length === 1) {
 const variant_ = _1[0];
 const fields_ = [...declaration_.commonFields_, ...variant_.fields_];
 return [sameCase_, ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardPattern_], [], ff_compiler_Deriver.Deriver_makeOrderingFields(self_, modulePrefix_, declaration_, fields_))]
-}
 }
 {
 const variants_ = _1;
@@ -342,12 +340,10 @@ const wildcardPattern_ = ff_compiler_Syntax.PVariable(at_, ff_core_Option.None()
 const sameCase_ = ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardPattern_], [ff_compiler_Syntax.MatchGuard(at_, ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "===", [ff_compiler_Syntax.EVariable(at_, "x"), ff_compiler_Syntax.EVariable(at_, "y")], []), ff_compiler_Syntax.PVariant(at_, "ff:core/Bool.True", []))], ff_compiler_Syntax.EVariant(at_, "ff:core/Bool.True", [], ff_core_Option.None()));
 {
 const _1 = declaration_.variants_;
-{
 if(_1.length === 1) {
 const variant_ = _1[0];
 const fields_ = [...declaration_.commonFields_, ...variant_.fields_];
 return [sameCase_, ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardPattern_], [], ff_compiler_Deriver.Deriver_makeEqualFields(self_, modulePrefix_, declaration_, fields_))]
-}
 }
 {
 const variants_ = _1;
@@ -482,14 +478,12 @@ const typesWithInstance_ = ff_core_List.List_toSet(ff_core_List.List_collect(mod
 {
 const instance_ = _1;
 const _guard1 = ff_core_List.List_first(instance_.typeArguments_);
-if(_guard1.Some) {
-if(_guard1.value_.TConstructor) {
+if(_guard1.Some && _guard1.value_.TConstructor) {
 const name_ = _guard1.value_.name_;
 if((instance_.traitName_ === traitName_)) {
 return ff_core_Option.Some(name_)
 } else return ff_core_Option.None()
 return
-}
 }
 }
 {
@@ -658,12 +652,10 @@ const wildcardPattern_ = ff_compiler_Syntax.PVariable(at_, ff_core_Option.None()
 const sameCase_ = ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardPattern_], [ff_compiler_Syntax.MatchGuard(at_, ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "===", [ff_compiler_Syntax.EVariable(at_, "x"), ff_compiler_Syntax.EVariable(at_, "y")], []), ff_compiler_Syntax.PVariant(at_, "ff:core/Bool.True", []))], ff_compiler_Syntax.EVariant(at_, "ff:core/Ordering.OrderingSame", [], ff_core_Option.None()));
 {
 const _1 = declaration_.variants_;
-{
 if(_1.length === 1) {
 const variant_ = _1[0];
 const fields_ = [...declaration_.commonFields_, ...variant_.fields_];
 return [sameCase_, ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardPattern_], [], ff_compiler_Deriver.Deriver_makeOrderingFields(self_, modulePrefix_, declaration_, fields_))]
-}
 }
 {
 const variants_ = _1;
@@ -750,12 +742,10 @@ const wildcardPattern_ = ff_compiler_Syntax.PVariable(at_, ff_core_Option.None()
 const sameCase_ = ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardPattern_], [ff_compiler_Syntax.MatchGuard(at_, ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "===", [ff_compiler_Syntax.EVariable(at_, "x"), ff_compiler_Syntax.EVariable(at_, "y")], []), ff_compiler_Syntax.PVariant(at_, "ff:core/Bool.True", []))], ff_compiler_Syntax.EVariant(at_, "ff:core/Bool.True", [], ff_core_Option.None()));
 {
 const _1 = declaration_.variants_;
-{
 if(_1.length === 1) {
 const variant_ = _1[0];
 const fields_ = [...declaration_.commonFields_, ...variant_.fields_];
 return [sameCase_, ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardPattern_], [], ff_compiler_Deriver.Deriver_makeEqualFields(self_, modulePrefix_, declaration_, fields_))]
-}
 }
 {
 const variants_ = _1;
@@ -890,14 +880,12 @@ const typesWithInstance_ = ff_core_List.List_toSet(ff_core_List.List_collect(mod
 {
 const instance_ = _1;
 const _guard1 = ff_core_List.List_first(instance_.typeArguments_);
-if(_guard1.Some) {
-if(_guard1.value_.TConstructor) {
+if(_guard1.Some && _guard1.value_.TConstructor) {
 const name_ = _guard1.value_.name_;
 if((instance_.traitName_ === traitName_)) {
 return ff_core_Option.Some(name_)
 } else return ff_core_Option.None()
 return
-}
 }
 }
 {
@@ -946,13 +934,17 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Deriver.Deriver" + "[") + "]")
 export const ff_core_Show_Show$ff_compiler_Deriver_Deriver = {
 show_(value_) {
 const value_a = value_;
+{
 const z_ = value_a;
 return "Deriver"
+}
 },
 async show_$(value_, $task) {
 const value_a = value_;
+{
 const z_ = value_a;
 return "Deriver"
+}
 }
 };
 
@@ -1006,23 +998,23 @@ export const ff_core_Serializable_Serializable$ff_compiler_Deriver_Deriver = {
 serializeUsing_(serialization_, value_) {
 const serialization_a = serialization_;
 const value_a = value_;
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1
 return
+}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_Deriver.Deriver()
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -1032,23 +1024,23 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serial
 async serializeUsing_$(serialization_, value_, $task) {
 const serialization_a = serialization_;
 const value_a = value_;
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1
 return
+}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_Deriver.Deriver()
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})

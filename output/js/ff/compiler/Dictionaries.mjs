@@ -116,17 +116,13 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 export function constraintsToInstances_(constraints_) {
 return ff_core_List.List_toMap(ff_core_List.List_map(constraints_, ((c_) => {
 const typeName_ = (((_1) => {
-{
 if(_1.TConstructor) {
 const name_ = _1.name_;
 return name_
 }
-}
-{
 if(_1.TVariable) {
 const i_ = _1.index_;
 return ff_compiler_Dictionaries.fail_(c_.at_, ("Unexpected unification variable: $" + i_))
-}
 }
 }))(ff_core_List.List_grabFirst(c_.generics_));
 return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue([], [], ff_compiler_Syntax.PackagePair("", ""), "", c_.name_, c_.generics_))
@@ -144,17 +140,13 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 export async function constraintsToInstances_$(constraints_, $task) {
 return ff_core_List.List_toMap(ff_core_List.List_map(constraints_, ((c_) => {
 const typeName_ = (((_1) => {
-{
 if(_1.TConstructor) {
 const name_ = _1.name_;
 return name_
 }
-}
-{
 if(_1.TVariable) {
 const i_ = _1.index_;
 return ff_compiler_Dictionaries.fail_(c_.at_, ("Unexpected unification variable: $" + i_))
-}
 }
 }))(ff_core_List.List_grabFirst(c_.generics_));
 return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue([], [], ff_compiler_Syntax.PackagePair("", ""), "", c_.name_, c_.generics_))
@@ -284,32 +276,21 @@ return
 export function Dictionaries_processTerm(self_, functions_, term_) {
 {
 const _1 = term_;
-{
 if(_1.EString) {
 return term_
 }
-}
-{
 if(_1.EChar) {
 return term_
 }
-}
-{
 if(_1.EInt) {
 return term_
 }
-}
-{
 if(_1.EFloat) {
 return term_
 }
-}
-{
 if(_1.EVariable) {
 return term_
 }
-}
-{
 if(_1.EField) {
 const e_ = _1;
 {
@@ -321,14 +302,10 @@ return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, ff_compiler_Dictionaries.D
 }
 return
 }
-}
-{
 if(_1.EWildcard) {
 const e_ = _1;
 return term_
 }
-}
-{
 if(_1.EList) {
 const e_ = _1;
 {
@@ -347,8 +324,6 @@ return
 }
 return
 }
-}
-{
 if(_1.ESequential) {
 const e_ = _1;
 {
@@ -360,8 +335,6 @@ return ff_compiler_Syntax.ESequential(_c.at_, ff_compiler_Dictionaries.Dictionar
 }
 return
 }
-}
-{
 if(_1.ELet) {
 const e_ = _1;
 const newFunctions_ = ff_core_Map.Map_remove(functions_, e_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -374,8 +347,6 @@ return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, _c.valueType_, ff_
 }
 return
 }
-}
-{
 if(_1.ELambda) {
 const e_ = _1;
 {
@@ -387,8 +358,6 @@ return ff_compiler_Syntax.ELambda(_c.at_, ff_compiler_Dictionaries.Dictionaries_
 }
 return
 }
-}
-{
 if(_1.EVariant) {
 const e_ = _1;
 {
@@ -405,14 +374,10 @@ return
 }
 return
 }
-}
-{
 if(_1.EVariantIs) {
 const e_ = _1;
 return term_
 }
-}
-{
 if(_1.ECopy) {
 const e_ = _1;
 {
@@ -427,8 +392,6 @@ return
 }
 return
 }
-}
-{
 if(_1.EPipe) {
 const e_ = _1;
 {
@@ -440,11 +403,8 @@ return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Dictionaries.Dictionaries_pr
 }
 return
 }
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
 const target_ = _1.target_;
 const effect_ = _1.effect_;
 const typeArguments_ = _1.typeArguments_;
@@ -463,13 +423,9 @@ return ff_compiler_Dictionaries.Dictionaries_processArgument(self_, functions_, 
 return
 }
 }
-}
-}
-{
 if(_1.ECall) {
 const e_ = _1;
 const target_ = (((_1) => {
-{
 if(_1.DynamicCall) {
 const call_ = _1;
 {
@@ -481,11 +437,8 @@ return ff_compiler_Syntax.DynamicCall(ff_compiler_Dictionaries.Dictionaries_proc
 }
 return
 }
-}
-{
 if(_1.StaticCall) {
 return e_.target_
-}
 }
 }))(e_.target_);
 {
@@ -500,8 +453,6 @@ return
 }
 return
 }
-}
-{
 if(_1.ERecord) {
 const e_ = _1;
 {
@@ -516,8 +467,6 @@ return
 }
 return
 }
-}
-{
 if(_1.EFunctions) {
 const e_ = _1;
 const newFunctions_ = ff_core_Map.Map_addAll(functions_, ff_core_List.List_toMap(ff_core_List.List_map(e_.functions_, ((f_) => {
@@ -535,8 +484,6 @@ return
 }
 return
 }
-}
-{
 if(_1.EAssign) {
 const e_ = _1;
 {
@@ -548,8 +495,6 @@ return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, ff_compile
 }
 return
 }
-}
-{
 if(_1.EAssignField) {
 const e_ = _1;
 {
@@ -560,7 +505,6 @@ return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, ff_compiler_Diction
 }
 }
 return
-}
 }
 }
 }
@@ -592,17 +536,13 @@ const newGenerics_ = ff_core_List.List_map(constraint_.generics_, ((_w1) => {
 return ff_compiler_Unification.Unification_instantiate(unification_, instantiationMap_, _w1)
 }));
 const firstType_ = (((_1) => {
-{
 if(_1.TConstructor) {
 const t_ = _1;
 return t_
 }
-}
-{
 if(_1.TVariable) {
 const t_ = _1;
 return ff_compiler_Dictionaries.fail_(t_.at_, " is still a unification variable")
-}
 }
 }))(ff_core_List.List_grabFirst(newGenerics_));
 const instance_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.instances_, ff_compiler_Unification.InstanceKey(constraint_.name_, firstType_.name_), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey), (() => {
@@ -737,32 +677,21 @@ return
 export async function Dictionaries_processTerm$(self_, functions_, term_, $task) {
 {
 const _1 = term_;
-{
 if(_1.EString) {
 return term_
 }
-}
-{
 if(_1.EChar) {
 return term_
 }
-}
-{
 if(_1.EInt) {
 return term_
 }
-}
-{
 if(_1.EFloat) {
 return term_
 }
-}
-{
 if(_1.EVariable) {
 return term_
 }
-}
-{
 if(_1.EField) {
 const e_ = _1;
 {
@@ -774,14 +703,10 @@ return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, ff_compiler_Dictionaries.D
 }
 return
 }
-}
-{
 if(_1.EWildcard) {
 const e_ = _1;
 return term_
 }
-}
-{
 if(_1.EList) {
 const e_ = _1;
 {
@@ -800,8 +725,6 @@ return
 }
 return
 }
-}
-{
 if(_1.ESequential) {
 const e_ = _1;
 {
@@ -813,8 +736,6 @@ return ff_compiler_Syntax.ESequential(_c.at_, ff_compiler_Dictionaries.Dictionar
 }
 return
 }
-}
-{
 if(_1.ELet) {
 const e_ = _1;
 const newFunctions_ = ff_core_Map.Map_remove(functions_, e_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -827,8 +748,6 @@ return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, _c.valueType_, ff_
 }
 return
 }
-}
-{
 if(_1.ELambda) {
 const e_ = _1;
 {
@@ -840,8 +759,6 @@ return ff_compiler_Syntax.ELambda(_c.at_, ff_compiler_Dictionaries.Dictionaries_
 }
 return
 }
-}
-{
 if(_1.EVariant) {
 const e_ = _1;
 {
@@ -858,14 +775,10 @@ return
 }
 return
 }
-}
-{
 if(_1.EVariantIs) {
 const e_ = _1;
 return term_
 }
-}
-{
 if(_1.ECopy) {
 const e_ = _1;
 {
@@ -880,8 +793,6 @@ return
 }
 return
 }
-}
-{
 if(_1.EPipe) {
 const e_ = _1;
 {
@@ -893,11 +804,8 @@ return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Dictionaries.Dictionaries_pr
 }
 return
 }
-}
-{
-if(_1.ECall) {
+if(_1.ECall && _1.target_.StaticCall) {
 const at_ = _1.at_;
-if(_1.target_.StaticCall) {
 const target_ = _1.target_;
 const effect_ = _1.effect_;
 const typeArguments_ = _1.typeArguments_;
@@ -916,13 +824,9 @@ return ff_compiler_Dictionaries.Dictionaries_processArgument(self_, functions_, 
 return
 }
 }
-}
-}
-{
 if(_1.ECall) {
 const e_ = _1;
 const target_ = (((_1) => {
-{
 if(_1.DynamicCall) {
 const call_ = _1;
 {
@@ -934,11 +838,8 @@ return ff_compiler_Syntax.DynamicCall(ff_compiler_Dictionaries.Dictionaries_proc
 }
 return
 }
-}
-{
 if(_1.StaticCall) {
 return e_.target_
-}
 }
 }))(e_.target_);
 {
@@ -953,8 +854,6 @@ return
 }
 return
 }
-}
-{
 if(_1.ERecord) {
 const e_ = _1;
 {
@@ -969,8 +868,6 @@ return
 }
 return
 }
-}
-{
 if(_1.EFunctions) {
 const e_ = _1;
 const newFunctions_ = ff_core_Map.Map_addAll(functions_, ff_core_List.List_toMap(ff_core_List.List_map(e_.functions_, ((f_) => {
@@ -988,8 +885,6 @@ return
 }
 return
 }
-}
-{
 if(_1.EAssign) {
 const e_ = _1;
 {
@@ -1001,8 +896,6 @@ return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, ff_compile
 }
 return
 }
-}
-{
 if(_1.EAssignField) {
 const e_ = _1;
 {
@@ -1013,7 +906,6 @@ return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, ff_compiler_Diction
 }
 }
 return
-}
 }
 }
 }
@@ -1045,17 +937,13 @@ const newGenerics_ = ff_core_List.List_map(constraint_.generics_, ((_w1) => {
 return ff_compiler_Unification.Unification_instantiate(unification_, instantiationMap_, _w1)
 }));
 const firstType_ = (((_1) => {
-{
 if(_1.TConstructor) {
 const t_ = _1;
 return t_
 }
-}
-{
 if(_1.TVariable) {
 const t_ = _1;
 return ff_compiler_Dictionaries.fail_(t_.at_, " is still a unification variable")
-}
 }
 }))(ff_core_List.List_grabFirst(newGenerics_));
 const instance_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.instances_, ff_compiler_Unification.InstanceKey(constraint_.name_, firstType_.name_), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey), (() => {
@@ -1079,13 +967,17 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Dictionaries.Dictionaries" + "
 export const ff_core_Show_Show$ff_compiler_Dictionaries_Dictionaries = {
 show_(value_) {
 const value_a = value_;
+{
 const z_ = value_a;
 return ((("Dictionaries" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_InstanceValue).show_(z_.instances_)) + ")")
+}
 },
 async show_$(value_, $task) {
 const value_a = value_;
+{
 const z_ = value_a;
 return ((("Dictionaries" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_InstanceValue).show_(z_.instances_)) + ")")
+}
 }
 };
 
@@ -1151,6 +1043,7 @@ export const ff_core_Serializable_Serializable$ff_compiler_Dictionaries_Dictiona
 serializeUsing_(serialization_, value_) {
 const serialization_a = serialization_;
 const value_a = value_;
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 37), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -1158,17 +1051,16 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_InstanceValue).serializeUsing_(serialization_, v_.instances_)
 return
+}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 37), 0);
 return ff_compiler_Dictionaries.Dictionaries(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_InstanceValue).deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -1178,6 +1070,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serial
 async serializeUsing_$(serialization_, value_, $task) {
 const serialization_a = serialization_;
 const value_a = value_;
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 37), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -1185,17 +1078,16 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_InstanceValue).serializeUsing_(serialization_, v_.instances_)
 return
+}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 37), 0);
 return ff_compiler_Dictionaries.Dictionaries(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_InstanceValue).deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})

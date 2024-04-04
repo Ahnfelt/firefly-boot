@@ -182,7 +182,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.ECall(_c.at_, (((_1) => {
-{
 if(_1.DynamicCall) {
 const call_ = _1;
 {
@@ -193,7 +192,6 @@ return ff_compiler_Syntax.DynamicCall(ff_compiler_Wildcards.Wildcards_fixWildcar
 }
 }
 return
-}
 }
 {
 return ff_compiler_Wildcards.fail_(e_.at_, "Internal error: Static calls not expected in the Wildcards phase")
@@ -385,7 +383,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.ECall(_c.at_, (((_1) => {
-{
 if(_1.DynamicCall) {
 const call_ = _1;
 {
@@ -396,7 +393,6 @@ return ff_compiler_Syntax.DynamicCall(ff_compiler_Wildcards.Wildcards_fixWildcar
 }
 }
 return
-}
 }
 {
 return ff_compiler_Wildcards.fail_(e_.at_, "Internal error: Static calls not expected in the Wildcards phase")

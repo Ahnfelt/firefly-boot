@@ -126,20 +126,14 @@ export function reverse_(compare_) {
 return ((x_, y_) => {
 {
 const _1 = compare_(x_, y_);
-{
 if(_1.OrderingBefore) {
 return ff_core_Ordering.OrderingAfter()
 }
-}
-{
 if(_1.OrderingSame) {
 return ff_core_Ordering.OrderingSame()
 }
-}
-{
 if(_1.OrderingAfter) {
 return ff_core_Ordering.OrderingBefore()
-}
 }
 }
 })
@@ -149,10 +143,8 @@ export function pair_(compareFirst_, compareSecond_) {
 return ((x_, y_) => {
 {
 const _1 = compareFirst_(x_.first_, y_.first_);
-{
 if(_1.OrderingSame) {
 return compareSecond_(x_.second_, y_.second_)
-}
 }
 {
 const ordering_ = _1;
@@ -224,20 +216,14 @@ export async function reverse_$(compare_, $task) {
 return (async (x_, y_, $task) => {
 {
 const _1 = (await compare_(x_, y_, $task));
-{
 if(_1.OrderingBefore) {
 return ff_core_Ordering.OrderingAfter()
 }
-}
-{
 if(_1.OrderingSame) {
 return ff_core_Ordering.OrderingSame()
 }
-}
-{
 if(_1.OrderingAfter) {
 return ff_core_Ordering.OrderingBefore()
-}
 }
 }
 })
@@ -247,10 +233,8 @@ export async function pair_$(compareFirst_, compareSecond_, $task) {
 return (async (x_, y_, $task) => {
 {
 const _1 = (await compareFirst_(x_.first_, y_.first_, $task));
-{
 if(_1.OrderingSame) {
 return (await compareSecond_(x_.second_, y_.second_, $task))
-}
 }
 {
 const ordering_ = _1;
@@ -305,20 +289,14 @@ return ff_core_Ordering.OrderingSame()
 export function Ordering_toInt(self_) {
 {
 const _1 = self_;
-{
 if(_1.OrderingBefore) {
 return (-1)
 }
-}
-{
 if(_1.OrderingSame) {
 return 0
 }
-}
-{
 if(_1.OrderingAfter) {
 return 1
-}
 }
 }
 }
@@ -326,20 +304,14 @@ return 1
 export function Ordering_reverse(self_) {
 {
 const _1 = self_;
-{
 if(_1.OrderingBefore) {
 return ff_core_Ordering.OrderingAfter()
 }
-}
-{
 if(_1.OrderingSame) {
 return ff_core_Ordering.OrderingSame()
 }
-}
-{
 if(_1.OrderingAfter) {
 return ff_core_Ordering.OrderingBefore()
-}
 }
 }
 }
@@ -347,20 +319,14 @@ return ff_core_Ordering.OrderingBefore()
 export async function Ordering_toInt$(self_, $task) {
 {
 const _1 = self_;
-{
 if(_1.OrderingBefore) {
 return (-1)
 }
-}
-{
 if(_1.OrderingSame) {
 return 0
 }
-}
-{
 if(_1.OrderingAfter) {
 return 1
-}
 }
 }
 }
@@ -368,20 +334,14 @@ return 1
 export async function Ordering_reverse$(self_, $task) {
 {
 const _1 = self_;
-{
 if(_1.OrderingBefore) {
 return ff_core_Ordering.OrderingAfter()
 }
-}
-{
 if(_1.OrderingSame) {
 return ff_core_Ordering.OrderingSame()
 }
-}
-{
 if(_1.OrderingAfter) {
 return ff_core_Ordering.OrderingBefore()
-}
 }
 }
 }
@@ -399,15 +359,11 @@ export const ff_core_Ordering_Order$ff_core_Bool_Bool = {
 compare_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
-if(!x_a) {
-if(y_a) {
+if(!x_a && y_a) {
 return ff_core_Ordering.OrderingBefore()
 }
-}
-if(x_a) {
-if(!y_a) {
+if(x_a && !y_a) {
 return ff_core_Ordering.OrderingAfter()
-}
 }
 {
 return ff_core_Ordering.OrderingSame()
@@ -416,15 +372,11 @@ return ff_core_Ordering.OrderingSame()
 async compare_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
-if(!x_a) {
-if(y_a) {
+if(!x_a && y_a) {
 return ff_core_Ordering.OrderingBefore()
 }
-}
-if(x_a) {
-if(!y_a) {
+if(x_a && !y_a) {
 return ff_core_Ordering.OrderingAfter()
-}
 }
 {
 return ff_core_Ordering.OrderingSame()
@@ -480,10 +432,8 @@ export function ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering_Order$
 compare_(x_, y_) {
 {
 const _1 = ff_core_Ordering_Order$A.compare_(x_.first_, y_.first_);
-{
 if(_1.OrderingSame) {
 return ff_core_Ordering_Order$B.compare_(x_.second_, y_.second_)
-}
 }
 {
 const o_ = _1;
@@ -494,10 +444,8 @@ return o_
 async compare_$(x_, y_, $task) {
 {
 const _1 = ff_core_Ordering_Order$A.compare_(x_.first_, y_.first_);
-{
 if(_1.OrderingSame) {
 return ff_core_Ordering_Order$B.compare_(x_.second_, y_.second_)
-}
 }
 {
 const o_ = _1;
@@ -540,20 +488,14 @@ export const ff_core_Equal_Equal$ff_core_Ordering_Ordering = {
 equals_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
-if(x_a.OrderingBefore) {
-if(y_a.OrderingBefore) {
+if(x_a.OrderingBefore && y_a.OrderingBefore) {
 return true
 }
-}
-if(x_a.OrderingSame) {
-if(y_a.OrderingSame) {
+if(x_a.OrderingSame && y_a.OrderingSame) {
 return true
 }
-}
-if(x_a.OrderingAfter) {
-if(y_a.OrderingAfter) {
+if(x_a.OrderingAfter && y_a.OrderingAfter) {
 return true
-}
 }
 {
 return false
@@ -562,20 +504,14 @@ return false
 async equals_$(x_, y_, $task) {
 const x_a = x_;
 const y_a = y_;
-if(x_a.OrderingBefore) {
-if(y_a.OrderingBefore) {
+if(x_a.OrderingBefore && y_a.OrderingBefore) {
 return true
 }
-}
-if(x_a.OrderingSame) {
-if(y_a.OrderingSame) {
+if(x_a.OrderingSame && y_a.OrderingSame) {
 return true
 }
-}
-if(x_a.OrderingAfter) {
-if(y_a.OrderingAfter) {
+if(x_a.OrderingAfter && y_a.OrderingAfter) {
 return true
-}
 }
 {
 return false

@@ -536,13 +536,17 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/LspHook.DocumentSymbolKind" + 
 export const ff_core_Show_Show$ff_compiler_LspHook_SymbolHook = {
 show_(value_) {
 const value_a = value_;
+{
 const z_ = value_a;
 return ((((((("SymbolHook" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.qualifiedName_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.usageAt_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.definedAt_)) + ")")
+}
 },
 async show_$(value_, $task) {
 const value_a = value_;
+{
 const z_ = value_a;
 return ((((((("SymbolHook" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.qualifiedName_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.usageAt_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.definedAt_)) + ")")
+}
 }
 };
 
@@ -657,19 +661,15 @@ const y_a = y_;
 if((x_ === y_)) {
 return true
 }
-if(x_a.SLet) {
+if(x_a.SLet && y_a.SLet) {
 const x_ = x_a;
-if(y_a.SLet) {
 const y_ = y_a;
 return (x_.mutable_ === y_.mutable_)
 }
-}
-if(x_a.SFunction) {
+if(x_a.SFunction && y_a.SFunction) {
 const x_ = x_a;
-if(y_a.SFunction) {
 const y_ = y_a;
 return (x_.member_ === y_.member_)
-}
 }
 {
 return false
@@ -681,19 +681,15 @@ const y_a = y_;
 if((x_ === y_)) {
 return true
 }
-if(x_a.SLet) {
+if(x_a.SLet && y_a.SLet) {
 const x_ = x_a;
-if(y_a.SLet) {
 const y_ = y_a;
 return (x_.mutable_ === y_.mutable_)
 }
-}
-if(x_a.SFunction) {
+if(x_a.SFunction && y_a.SFunction) {
 const x_ = x_a;
-if(y_a.SFunction) {
 const y_ = y_a;
 return (x_.member_ === y_.member_)
-}
 }
 {
 return false
@@ -763,9 +759,8 @@ const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 }
-if(x_a.SLet) {
+if(x_a.SLet && y_a.SLet) {
 const x_ = x_a;
-if(y_a.SLet) {
 const y_ = y_a;
 const mutableOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.mutable_, y_.mutable_);
 if((mutableOrdering_ !== ff_core_Ordering.OrderingSame())) {
@@ -775,10 +770,8 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-}
-if(x_a.SFunction) {
+if(x_a.SFunction && y_a.SFunction) {
 const x_ = x_a;
-if(y_a.SFunction) {
 const y_ = y_a;
 const memberOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.member_, y_.member_);
 if((memberOrdering_ !== ff_core_Ordering.OrderingSame())) {
@@ -787,7 +780,6 @@ return memberOrdering_
 return ff_core_Ordering.OrderingSame()
 }
 return
-}
 }
 {
 function number_(z_) {
@@ -829,9 +821,8 @@ const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 }
-if(x_a.SLet) {
+if(x_a.SLet && y_a.SLet) {
 const x_ = x_a;
-if(y_a.SLet) {
 const y_ = y_a;
 const mutableOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.mutable_, y_.mutable_);
 if((mutableOrdering_ !== ff_core_Ordering.OrderingSame())) {
@@ -841,10 +832,8 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-}
-if(x_a.SFunction) {
+if(x_a.SFunction && y_a.SFunction) {
 const x_ = x_a;
-if(y_a.SFunction) {
 const y_ = y_a;
 const memberOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.member_, y_.member_);
 if((memberOrdering_ !== ff_core_Ordering.OrderingSame())) {
@@ -853,7 +842,6 @@ return memberOrdering_
 return ff_core_Ordering.OrderingSame()
 }
 return
-}
 }
 {
 function number_(z_) {
@@ -895,6 +883,7 @@ export const ff_core_Serializable_Serializable$ff_compiler_LspHook_SymbolHook = 
 serializeUsing_(serialization_, value_) {
 const serialization_a = serialization_;
 const value_a = value_;
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -904,17 +893,16 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, v_.usageAt_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, v_.definedAt_)
 return
+}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_LspHook.SymbolHook(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -924,6 +912,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serial
 async serializeUsing_$(serialization_, value_, $task) {
 const serialization_a = serialization_;
 const value_a = value_;
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -933,17 +922,16 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, v_.usageAt_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, v_.definedAt_)
 return
+}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_LspHook.SymbolHook(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_))
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -1036,59 +1024,41 @@ const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, se
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_LspHook.SLet(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
 }
-}
-{
 if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_LspHook.SFunction(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
 }
-}
-{
 if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_LspHook.SExtend()
 }
-}
-{
 if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 34), 0);
 return ff_compiler_LspHook.STraitFunction()
 }
-}
-{
 if(_1 === 4) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
 return ff_compiler_LspHook.STrait()
 }
-}
-{
 if(_1 === 5) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_LspHook.SInstance()
 }
-}
-{
 if(_1 === 6) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 return ff_compiler_LspHook.SVariant()
 }
-}
-{
 if(_1 === 7) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 return ff_compiler_LspHook.SType()
 }
-}
-{
 if(_1 === 8) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_LspHook.SParameter()
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -1178,59 +1148,41 @@ const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, se
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
-{
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_LspHook.SLet(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
 }
-}
-{
 if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_LspHook.SFunction(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
 }
-}
-{
 if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_LspHook.SExtend()
 }
-}
-{
 if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 34), 0);
 return ff_compiler_LspHook.STraitFunction()
 }
-}
-{
 if(_1 === 4) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
 return ff_compiler_LspHook.STrait()
 }
-}
-{
 if(_1 === 5) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_LspHook.SInstance()
 }
-}
-{
 if(_1 === 6) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 return ff_compiler_LspHook.SVariant()
 }
-}
-{
 if(_1 === 7) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 return ff_compiler_LspHook.SType()
 }
-}
-{
 if(_1 === 8) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_LspHook.SParameter()
-}
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})

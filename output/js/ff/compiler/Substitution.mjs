@@ -252,32 +252,21 @@ return
 export function Substitution_substituteTerm(self_, term_) {
 {
 const _1 = term_;
-{
 if(_1.EString) {
 return term_
 }
-}
-{
 if(_1.EChar) {
 return term_
 }
-}
-{
 if(_1.EInt) {
 return term_
 }
-}
-{
 if(_1.EFloat) {
 return term_
 }
-}
-{
 if(_1.EVariable) {
 return term_
 }
-}
-{
 if(_1.EField) {
 const e_ = _1;
 {
@@ -289,14 +278,10 @@ return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, ff_compiler_Substitution.S
 }
 return
 }
-}
-{
 if(_1.EWildcard) {
 const e_ = _1;
 return term_
 }
-}
-{
 if(_1.EList) {
 const e_ = _1;
 {
@@ -315,8 +300,6 @@ return
 }
 return
 }
-}
-{
 if(_1.ESequential) {
 const e_ = _1;
 {
@@ -328,8 +311,6 @@ return ff_compiler_Syntax.ESequential(_c.at_, ff_compiler_Substitution.Substitut
 }
 return
 }
-}
-{
 if(_1.ELet) {
 const e_ = _1;
 {
@@ -341,8 +322,6 @@ return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, ff_compiler_Substi
 }
 return
 }
-}
-{
 if(_1.ELambda) {
 const e_ = _1;
 {
@@ -354,8 +333,6 @@ return ff_compiler_Syntax.ELambda(_c.at_, ff_compiler_Substitution.Substitution_
 }
 return
 }
-}
-{
 if(_1.EVariant) {
 const e_ = _1;
 {
@@ -374,8 +351,6 @@ return
 }
 return
 }
-}
-{
 if(_1.EVariantIs) {
 const e_ = _1;
 {
@@ -390,8 +365,6 @@ return
 }
 return
 }
-}
-{
 if(_1.ECopy) {
 const e_ = _1;
 {
@@ -406,8 +379,6 @@ return
 }
 return
 }
-}
-{
 if(_1.EPipe) {
 const e_ = _1;
 {
@@ -419,8 +390,6 @@ return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Substitution.Substitution_su
 }
 return
 }
-}
-{
 if(_1.ECall) {
 const e_ = _1;
 {
@@ -428,7 +397,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.ECall(_c.at_, (((_1) => {
-{
 if(_1.DynamicCall) {
 const call_ = _1;
 {
@@ -440,11 +408,8 @@ return ff_compiler_Syntax.DynamicCall(ff_compiler_Substitution.Substitution_subs
 }
 return
 }
-}
-{
 if(_1.StaticCall) {
 return e_.target_
-}
 }
 }))(e_.target_), ff_compiler_Substitution.Substitution_substituteType(self_, e_.effect_), ff_core_List.List_map(e_.typeArguments_, ((_w1) => {
 return ff_compiler_Substitution.Substitution_substituteType(self_, _w1)
@@ -456,8 +421,6 @@ return
 }
 return
 }
-}
-{
 if(_1.ERecord) {
 const e_ = _1;
 {
@@ -472,8 +435,6 @@ return
 }
 return
 }
-}
-{
 if(_1.EFunctions) {
 const e_ = _1;
 {
@@ -488,8 +449,6 @@ return
 }
 return
 }
-}
-{
 if(_1.EAssign) {
 const e_ = _1;
 {
@@ -501,8 +460,6 @@ return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, ff_compile
 }
 return
 }
-}
-{
 if(_1.EAssignField) {
 const e_ = _1;
 {
@@ -513,7 +470,6 @@ return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, ff_compiler_Substit
 }
 }
 return
-}
 }
 }
 }
@@ -570,7 +526,6 @@ return
 export function Substitution_get(self_, index_) {
 {
 const _1 = ff_core_Map.Map_grab(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
-{
 if(_1.TVariable) {
 const i_ = _1.index_;
 if(ff_compiler_Substitution.Substitution_has(self_, i_)) {
@@ -579,12 +534,9 @@ self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, t_, ff_co
 return t_
 }
 }
-}
-{
 if(_1.TVariable) {
 const at_ = _1.at_;
 return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Nothing"), [])
-}
 }
 {
 const t_ = _1;
@@ -740,32 +692,21 @@ return
 export async function Substitution_substituteTerm$(self_, term_, $task) {
 {
 const _1 = term_;
-{
 if(_1.EString) {
 return term_
 }
-}
-{
 if(_1.EChar) {
 return term_
 }
-}
-{
 if(_1.EInt) {
 return term_
 }
-}
-{
 if(_1.EFloat) {
 return term_
 }
-}
-{
 if(_1.EVariable) {
 return term_
 }
-}
-{
 if(_1.EField) {
 const e_ = _1;
 {
@@ -777,14 +718,10 @@ return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, ff_compiler_Substitution.S
 }
 return
 }
-}
-{
 if(_1.EWildcard) {
 const e_ = _1;
 return term_
 }
-}
-{
 if(_1.EList) {
 const e_ = _1;
 {
@@ -803,8 +740,6 @@ return
 }
 return
 }
-}
-{
 if(_1.ESequential) {
 const e_ = _1;
 {
@@ -816,8 +751,6 @@ return ff_compiler_Syntax.ESequential(_c.at_, ff_compiler_Substitution.Substitut
 }
 return
 }
-}
-{
 if(_1.ELet) {
 const e_ = _1;
 {
@@ -829,8 +762,6 @@ return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, ff_compiler_Substi
 }
 return
 }
-}
-{
 if(_1.ELambda) {
 const e_ = _1;
 {
@@ -842,8 +773,6 @@ return ff_compiler_Syntax.ELambda(_c.at_, ff_compiler_Substitution.Substitution_
 }
 return
 }
-}
-{
 if(_1.EVariant) {
 const e_ = _1;
 {
@@ -862,8 +791,6 @@ return
 }
 return
 }
-}
-{
 if(_1.EVariantIs) {
 const e_ = _1;
 {
@@ -878,8 +805,6 @@ return
 }
 return
 }
-}
-{
 if(_1.ECopy) {
 const e_ = _1;
 {
@@ -894,8 +819,6 @@ return
 }
 return
 }
-}
-{
 if(_1.EPipe) {
 const e_ = _1;
 {
@@ -907,8 +830,6 @@ return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Substitution.Substitution_su
 }
 return
 }
-}
-{
 if(_1.ECall) {
 const e_ = _1;
 {
@@ -916,7 +837,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.ECall(_c.at_, (((_1) => {
-{
 if(_1.DynamicCall) {
 const call_ = _1;
 {
@@ -928,11 +848,8 @@ return ff_compiler_Syntax.DynamicCall(ff_compiler_Substitution.Substitution_subs
 }
 return
 }
-}
-{
 if(_1.StaticCall) {
 return e_.target_
-}
 }
 }))(e_.target_), ff_compiler_Substitution.Substitution_substituteType(self_, e_.effect_), ff_core_List.List_map(e_.typeArguments_, ((_w1) => {
 return ff_compiler_Substitution.Substitution_substituteType(self_, _w1)
@@ -944,8 +861,6 @@ return
 }
 return
 }
-}
-{
 if(_1.ERecord) {
 const e_ = _1;
 {
@@ -960,8 +875,6 @@ return
 }
 return
 }
-}
-{
 if(_1.EFunctions) {
 const e_ = _1;
 {
@@ -976,8 +889,6 @@ return
 }
 return
 }
-}
-{
 if(_1.EAssign) {
 const e_ = _1;
 {
@@ -989,8 +900,6 @@ return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, ff_compile
 }
 return
 }
-}
-{
 if(_1.EAssignField) {
 const e_ = _1;
 {
@@ -1001,7 +910,6 @@ return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, ff_compiler_Substit
 }
 }
 return
-}
 }
 }
 }
@@ -1058,7 +966,6 @@ return
 export async function Substitution_get$(self_, index_, $task) {
 {
 const _1 = ff_core_Map.Map_grab(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
-{
 if(_1.TVariable) {
 const i_ = _1.index_;
 if(ff_compiler_Substitution.Substitution_has(self_, i_)) {
@@ -1067,12 +974,9 @@ self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, t_, ff_co
 return t_
 }
 }
-}
-{
 if(_1.TVariable) {
 const at_ = _1.at_;
 return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Nothing"), [])
-}
 }
 {
 const t_ = _1;
