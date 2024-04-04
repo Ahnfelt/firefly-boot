@@ -96,6 +96,7 @@ class ResultHook {
     ResolveSymbolHook(
         symbol: SymbolHook
         annotation: Option[Type]
+        topLevel: Bool
     )
     ResolveTypeHook(
         types: Map[String, String]
@@ -110,6 +111,7 @@ class ResultHook {
     ResolveSignatureHook(
         signature: Signature
         isInstanceMethod: Bool
+        topLevel: Bool
     )
     ResolveVariantFieldHook(
         symbol: SymbolHook
@@ -193,8 +195,8 @@ showHook(hook: ResultHook): String {
     | ParseSymbolBegin => "ParseSymbolBegin(...)"
     | ParseSymbolEnd(name, kind, selectionStart, selectionEnd, start, end) => "ParseSymbolEnd(...)"
     | ResolveConstraintHook(symbol, constrant) => "ResolveConstraintHook(...)"
-    | ResolveSignatureHook(signature, _) => "ResolveSignatureHook(...)"
-    | ResolveSymbolHook(symbol, annotation) => "ResolveSymbolHook(...)"
+    | ResolveSignatureHook(signature, _, _) => "ResolveSignatureHook(...)"
+    | ResolveSymbolHook(symbol, annotation, _) => "ResolveSymbolHook(...)"
     | ResolveTypeHook(types, typeGenerics, symbol, explicitType) => "ResolveTypeHook(...)"
     | ResolveVariantFieldHook(symbol, type, commonField) => "ResolveVariantFieldHook(...)"
 }

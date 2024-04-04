@@ -49,16 +49,16 @@ extend self: Resolver {
 
     resolveModule(module: Module, otherModules: List[Module]): Module {
         let moduleNamespace =
-            module.file.replace("\\", "/").reverse().takeWhile { _ != '/' }.reverse().takeWhile { _ != '.' }
+            module.file.replace("\\", "/").reverse().takeWhile {_ != '/'}.reverse().takeWhile {_ != '.'}
         let self2 = self.processImports(module.imports, otherModules)
         let self3 = self2.processDefinitions(module, None)
         let module2 = module.Module(
-            types = module.types.map { self3.resolveTypeDefinition(_) }
-            traits = module.traits.map { self3.resolveTraitDefinition(_) }
-            instances = module.instances.map { self3.resolveInstanceDefinition(_) }
-            extends = module.extends.map { self3.resolveExtendDefinition(_) }
-            lets = module.lets.map { self3.resolveLetDefinition(_, True) }
-            functions = module.functions.map { self3.resolveFunctionDefinition(_, True, False) }
+            types = module.types.map {self3.resolveTypeDefinition(_)}
+            traits = module.traits.map {self3.resolveTraitDefinition(_)}
+            instances = module.instances.map {self3.resolveInstanceDefinition(_)}
+            extends = module.extends.map {self3.resolveExtendDefinition(_)}
+            lets = module.lets.map {self3.resolveLetDefinition(_, True)}
+            functions = module.functions.map {self3.resolveFunctionDefinition(_, True, False)}
         )
         module2.instances.each {_.typeArguments.each {self3.checkInstanceType(_)}}
         module2
@@ -135,7 +135,7 @@ extend self: Resolver {
     resolveTypeDefinition(definition: DType): DType {
         if(self.lspHook.isAt(definition.at)) {
             self.lspHook.emit(
-                ResolveSymbolHook(SymbolHook(definition.name, definition.at, definition.at), None)
+                ResolveSymbolHook(SymbolHook(definition.name, definition.at, definition.at), None, topLevel = True)
             )
         }
         let generics = definition.generics.map {g => Pair(g, g)}.toMap()
@@ -168,7 +168,7 @@ extend self: Resolver {
             variants = definition.variants.map {v =>
                 if(self.lspHook.isAt(v.at)) {
                     self.lspHook.emit(
-                        ResolveSymbolHook(SymbolHook(v.name, v.at, v.at), None)
+                        ResolveSymbolHook(SymbolHook(v.name, v.at, v.at), None, topLevel = True)
                     )
                 }
                 v.Variant(fields = v.fields.map {f =>
@@ -191,7 +191,7 @@ extend self: Resolver {
         if(self.lspHook.isAt(definition.at) || self.lspHook.isDefinedAt(definition.at)) {
             self.lspHook.emit(
                 ResolveSymbolHook(
-                    SymbolHook(definition.name, definition.at, definition.at), None
+                    SymbolHook(definition.name, definition.at, definition.at), None, topLevel = True
                 )
             )
         }        
@@ -221,7 +221,7 @@ extend self: Resolver {
         if(self.lspHook.isAt(definition.at) || self.lspHook.isDefinedAt(traitDefinedAt)) {
             self.lspHook.emit(
                 ResolveSymbolHook(
-                    SymbolHook(definition.traitName, definition.at, traitDefinedAt), None
+                    SymbolHook(definition.traitName, definition.at, traitDefinedAt), None, topLevel = True
                 )
             )
         }
@@ -266,7 +266,7 @@ extend self: Resolver {
         if(self.lspHook.isAt(definition.at) || self.lspHook.isDefinedAt(definition.at)) {
             self.lspHook.emit(
                 ResolveSymbolHook(
-                    SymbolHook(definition.name, definition.at, definition.at), None
+                    SymbolHook(definition.name, definition.at, definition.at), None, topLevel = topLevel
                 )
             )
         }
@@ -287,7 +287,7 @@ extend self: Resolver {
                 if(self.lspHook.isAt(e.at) || self.lspHook.isDefinedAt(at)) {
                     self.lspHook.emit(
                         ResolveSymbolHook(
-                            SymbolHook(e.name, e.at, at), None
+                            SymbolHook(e.name, e.at, at), None, topLevel = True
                         )
                     )
                 }
@@ -369,7 +369,7 @@ extend self: Resolver {
                 if(self.lspHook.isAt(e.at) || self.lspHook.isDefinedAt(e.at)) {
                     self.lspHook.emit(
                         ResolveSymbolHook(
-                            SymbolHook(e.name, e.at, e.at), None
+                            SymbolHook(e.name, e.at, e.at), None, topLevel = False
                         )
                     )
                 }
@@ -492,7 +492,7 @@ extend self: Resolver {
     resolveSignature(signature: Signature, topLevel: Bool, isInstanceMethod: Bool): Signature {
         if(self.lspHook.isAt(signature.at) || self.lspHook.isDefinedAt(signature.at)) {
             self.lspHook.emit(
-                ResolveSignatureHook(signature, isInstanceMethod)
+                ResolveSignatureHook(signature, isInstanceMethod, topLevel = topLevel)
             )
         }
         let newSignature = if(topLevel) {
