@@ -2576,12 +2576,6 @@ return
 }
 
 export function JsEmitter_processVariantCase(self_, name_, argument_) {
-if((name_ === "List$Empty")) {
-return ff_compiler_JsEmitter.ProcessedVariantCase(name_, false, false, [])
-} else {
-if((name_ === "List$Link")) {
-return ff_compiler_JsEmitter.ProcessedVariantCase(name_, false, false, [(argument_ + "[0]"), (argument_ + ".slice(1)")])
-} else {
 const variantNameUnqualified_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
 return (_w1 !== 46)
 })));
@@ -2610,8 +2604,6 @@ return ((argument_ + ".") + ff_compiler_JsEmitter.escapeKeyword_(field_))
 }
 }));
 return ff_compiler_JsEmitter.ProcessedVariantCase(variantName_, newtype_, loneVariant_, newArguments_)
-}
-}
 }
 
 export function JsEmitter_processVariant(self_, name_) {
@@ -4659,12 +4651,6 @@ return
 }
 
 export async function JsEmitter_processVariantCase$(self_, name_, argument_, $task) {
-if((name_ === "List$Empty")) {
-return ff_compiler_JsEmitter.ProcessedVariantCase(name_, false, false, [])
-} else {
-if((name_ === "List$Link")) {
-return ff_compiler_JsEmitter.ProcessedVariantCase(name_, false, false, [(argument_ + "[0]"), (argument_ + ".slice(1)")])
-} else {
 const variantNameUnqualified_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
 return (_w1 !== 46)
 })));
@@ -4693,8 +4679,6 @@ return ((argument_ + ".") + ff_compiler_JsEmitter.escapeKeyword_(field_))
 }
 }));
 return ff_compiler_JsEmitter.ProcessedVariantCase(variantName_, newtype_, loneVariant_, newArguments_)
-}
-}
 }
 
 export async function JsEmitter_processVariant$(self_, name_, $task) {

@@ -775,8 +775,6 @@ extend self: JsEmitter {
     }
 
     processVariantCase(name: String, argument: String): ProcessedVariantCase {
-        if(name == "List$Empty") {ProcessedVariantCase(name, False, False, [])} else:
-        if(name == "List$Link") {ProcessedVariantCase(name, False, False, [argument + "[0]", argument + ".slice(1)"])} else:
         let variantNameUnqualified = name.reverse().takeWhile {_ != '.'}.reverse()
         let variantName = escapeKeyword(variantNameUnqualified)
         let moduleName = name.dropLast(variantNameUnqualified.size() + 1)
