@@ -1075,1233 +1075,840 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Syntax.Version" + "[") + "]"))
 
 export const ff_core_Show_Show$ff_compiler_Syntax_Location = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((("Location" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.line_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.column_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((("Location" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.line_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.column_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_CompileError = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((("CompileError" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.message_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((("CompileError" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.message_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_ModuleWithPackageInfo = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((("ModuleWithPackageInfo" + "(") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackageInfo).show_(z_.packageInfo_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Module.show_(z_.module_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((("ModuleWithPackageInfo" + "(") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackageInfo).show_(z_.packageInfo_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Module.show_(z_.module_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_PackageInfo = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((("PackageInfo" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DPackage.show_(z_.package_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DDependency).show_(z_.dependencies_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DInclude).show_(z_.includes_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((("PackageInfo" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DPackage.show_(z_.package_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DDependency).show_(z_.dependencies_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DInclude).show_(z_.includes_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_Module = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((((((((((("Module" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.packagePair_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DImport).show_(z_.imports_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DType).show_(z_.types_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DTrait).show_(z_.traits_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DInstance).show_(z_.instances_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DExtend).show_(z_.extends_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DLet).show_(z_.lets_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DFunction).show_(z_.functions_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((((((((((("Module" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.packagePair_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DImport).show_(z_.imports_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DType).show_(z_.types_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DTrait).show_(z_.traits_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DInstance).show_(z_.instances_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DExtend).show_(z_.extends_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DLet).show_(z_.lets_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DFunction).show_(z_.functions_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_PackagePair = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((("PackagePair" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.group_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((("PackagePair" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.group_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_DPackage = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((("DPackage" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.packagePair_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Version.show_(z_.version_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_TargetNames.show_(z_.targets_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((("DPackage" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.packagePair_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Version.show_(z_.version_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_TargetNames.show_(z_.targets_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_DDependency = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((("DDependency" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.packagePair_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Version.show_(z_.version_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Safety.show_(z_.safety_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_TargetNames.show_(z_.targets_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((("DDependency" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.packagePair_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Version.show_(z_.version_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Safety.show_(z_.safety_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_TargetNames.show_(z_.targets_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_DInclude = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((("DInclude" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.path_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((("DInclude" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.path_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_TargetNames = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((("TargetNames" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.node_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.browser_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((("TargetNames" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.node_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.browser_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_DImport = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((("DImport" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.alias_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.package_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.directory_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((("DImport" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.alias_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.package_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.directory_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_DFunction = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((("DFunction" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Signature.show_(z_.signature_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Target.show_(z_.body_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((("DFunction" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Signature.show_(z_.signature_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Target.show_(z_.body_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_DLet = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((("DLet" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.variableType_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.value_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((("DLet" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.variableType_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.value_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_DExtend = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((((("DExtend" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.generics_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Constraint).show_(z_.constraints_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.type_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DFunction).show_(z_.methods_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((((("DExtend" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.generics_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Constraint).show_(z_.constraints_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.type_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DFunction).show_(z_.methods_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_DType = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((((((((("DType" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.newtype_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.data_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.generics_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Constraint).show_(z_.constraints_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Parameter).show_(z_.commonFields_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Variant).show_(z_.variants_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((((((((("DType" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.newtype_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.data_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.generics_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Constraint).show_(z_.constraints_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Parameter).show_(z_.commonFields_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Variant).show_(z_.variants_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_DTrait = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((((((((("DTrait" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.generics_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Constraint).show_(z_.constraints_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Parameter).show_(z_.generatorParameters_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Signature).show_(z_.methods_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Lambda)).show_(z_.methodDefaults_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Lambda)).show_(z_.methodGenerators_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((((((((("DTrait" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.generics_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Constraint).show_(z_.constraints_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Parameter).show_(z_.generatorParameters_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Signature).show_(z_.methods_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Lambda)).show_(z_.methodDefaults_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Lambda)).show_(z_.methodGenerators_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_DInstance = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((((((((("DInstance" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.generics_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Constraint).show_(z_.constraints_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.traitName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.typeArguments_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Argument).show_(z_.generatorArguments_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DFunction).show_(z_.methods_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.derived_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((((((((("DInstance" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.generics_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Constraint).show_(z_.constraints_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.traitName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.typeArguments_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Argument).show_(z_.generatorArguments_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DFunction).show_(z_.methods_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.derived_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_Term = {
 show_(value_) {
-{
 const value_a = value_;
-{
 if(value_a.EString) {
 const z_ = value_a;
 return ((((("EString" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.value_)) + ")")
 return
 }
-}
-{
 if(value_a.EChar) {
 const z_ = value_a;
 return ((((("EChar" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.value_)) + ")")
 return
 }
-}
-{
 if(value_a.EInt) {
 const z_ = value_a;
 return ((((("EInt" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.value_)) + ")")
 return
 }
-}
-{
 if(value_a.EFloat) {
 const z_ = value_a;
 return ((((("EFloat" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.value_)) + ")")
 return
 }
-}
-{
 if(value_a.EVariable) {
 const z_ = value_a;
 return ((((("EVariable" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ")")
 return
 }
-}
-{
 if(value_a.ELambda) {
 const z_ = value_a;
 return ((((("ELambda" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Lambda.show_(z_.lambda_)) + ")")
 return
 }
-}
-{
 if(value_a.EFunctions) {
 const z_ = value_a;
 return ((((((("EFunctions" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DFunction).show_(z_.functions_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.body_)) + ")")
 return
 }
-}
-{
 if(value_a.ELet) {
 const z_ = value_a;
 return ((((((((((((("ELet" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.mutable_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.valueType_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.value_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.body_)) + ")")
 return
 }
-}
-{
 if(value_a.ESequential) {
 const z_ = value_a;
 return ((((((("ESequential" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.before_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.after_)) + ")")
 return
 }
-}
-{
 if(value_a.EAssign) {
 const z_ = value_a;
 return ((((((((("EAssign" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.operator_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.variable_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.value_)) + ")")
 return
 }
-}
-{
 if(value_a.EAssignField) {
 const z_ = value_a;
 return ((((((((((("EAssignField" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.operator_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.record_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.field_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.value_)) + ")")
 return
 }
-}
-{
 if(value_a.EPipe) {
 const z_ = value_a;
 return ((((((((("EPipe" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.value_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.effect_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.function_)) + ")")
 return
 }
-}
-{
 if(value_a.ECall) {
 const z_ = value_a;
 return ((((((((((((("ECall" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CallTarget.show_(z_.target_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.effect_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.typeArguments_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Argument).show_(z_.arguments_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Dictionary).show_(z_.dictionaries_)) + ")")
 return
 }
-}
-{
 if(value_a.EList) {
 const z_ = value_a;
 return ((((((("EList" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.elementType_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term, ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool)).show_(z_.items_)) + ")")
 return
 }
-}
-{
 if(value_a.ECopy) {
 const z_ = value_a;
 return ((((((((("ECopy" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.record_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Field).show_(z_.arguments_)) + ")")
 return
 }
-}
-{
 if(value_a.EVariant) {
 const z_ = value_a;
 return ((((((((("EVariant" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.typeArguments_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Argument)).show_(z_.arguments_)) + ")")
 return
 }
-}
-{
 if(value_a.EVariantIs) {
 const z_ = value_a;
 return ((((((("EVariantIs" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.typeArguments_)) + ")")
 return
 }
-}
-{
 if(value_a.ERecord) {
 const z_ = value_a;
 return ((((("ERecord" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Field).show_(z_.fields_)) + ")")
 return
 }
-}
-{
 if(value_a.EField) {
 const z_ = value_a;
 return ((((((((("EField" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.newtype_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.record_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.field_)) + ")")
 return
 }
-}
-{
 if(value_a.EWildcard) {
 const z_ = value_a;
 return ((((("EWildcard" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.index_)) + ")")
 return
-}
-}
 }
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 if(value_a.EString) {
 const z_ = value_a;
 return ((((("EString" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.value_)) + ")")
 return
 }
-}
-{
 if(value_a.EChar) {
 const z_ = value_a;
 return ((((("EChar" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.value_)) + ")")
 return
 }
-}
-{
 if(value_a.EInt) {
 const z_ = value_a;
 return ((((("EInt" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.value_)) + ")")
 return
 }
-}
-{
 if(value_a.EFloat) {
 const z_ = value_a;
 return ((((("EFloat" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.value_)) + ")")
 return
 }
-}
-{
 if(value_a.EVariable) {
 const z_ = value_a;
 return ((((("EVariable" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ")")
 return
 }
-}
-{
 if(value_a.ELambda) {
 const z_ = value_a;
 return ((((("ELambda" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Lambda.show_(z_.lambda_)) + ")")
 return
 }
-}
-{
 if(value_a.EFunctions) {
 const z_ = value_a;
 return ((((((("EFunctions" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DFunction).show_(z_.functions_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.body_)) + ")")
 return
 }
-}
-{
 if(value_a.ELet) {
 const z_ = value_a;
 return ((((((((((((("ELet" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.mutable_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.valueType_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.value_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.body_)) + ")")
 return
 }
-}
-{
 if(value_a.ESequential) {
 const z_ = value_a;
 return ((((((("ESequential" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.before_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.after_)) + ")")
 return
 }
-}
-{
 if(value_a.EAssign) {
 const z_ = value_a;
 return ((((((((("EAssign" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.operator_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.variable_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.value_)) + ")")
 return
 }
-}
-{
 if(value_a.EAssignField) {
 const z_ = value_a;
 return ((((((((((("EAssignField" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.operator_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.record_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.field_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.value_)) + ")")
 return
 }
-}
-{
 if(value_a.EPipe) {
 const z_ = value_a;
 return ((((((((("EPipe" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.value_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.effect_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.function_)) + ")")
 return
 }
-}
-{
 if(value_a.ECall) {
 const z_ = value_a;
 return ((((((((((((("ECall" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CallTarget.show_(z_.target_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.effect_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.typeArguments_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Argument).show_(z_.arguments_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Dictionary).show_(z_.dictionaries_)) + ")")
 return
 }
-}
-{
 if(value_a.EList) {
 const z_ = value_a;
 return ((((((("EList" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.elementType_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term, ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool)).show_(z_.items_)) + ")")
 return
 }
-}
-{
 if(value_a.ECopy) {
 const z_ = value_a;
 return ((((((((("ECopy" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.record_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Field).show_(z_.arguments_)) + ")")
 return
 }
-}
-{
 if(value_a.EVariant) {
 const z_ = value_a;
 return ((((((((("EVariant" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.typeArguments_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Argument)).show_(z_.arguments_)) + ")")
 return
 }
-}
-{
 if(value_a.EVariantIs) {
 const z_ = value_a;
 return ((((((("EVariantIs" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.typeArguments_)) + ")")
 return
 }
-}
-{
 if(value_a.ERecord) {
 const z_ = value_a;
 return ((((("ERecord" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Field).show_(z_.fields_)) + ")")
 return
 }
-}
-{
 if(value_a.EField) {
 const z_ = value_a;
 return ((((((((("EField" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.newtype_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.record_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.field_)) + ")")
 return
 }
-}
-{
 if(value_a.EWildcard) {
 const z_ = value_a;
 return ((((("EWildcard" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.index_)) + ")")
 return
-}
-}
 }
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_CallTarget = {
 show_(value_) {
-{
 const value_a = value_;
-{
 if(value_a.DynamicCall) {
 const z_ = value_a;
 return ((((("DynamicCall" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.function_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.tailCall_)) + ")")
 return
 }
-}
-{
 if(value_a.StaticCall) {
 const z_ = value_a;
 return ((((((("StaticCall" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.tailCall_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.instanceCall_)) + ")")
 return
-}
-}
 }
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 if(value_a.DynamicCall) {
 const z_ = value_a;
 return ((((("DynamicCall" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.function_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.tailCall_)) + ")")
 return
 }
-}
-{
 if(value_a.StaticCall) {
 const z_ = value_a;
 return ((((((("StaticCall" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.tailCall_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.instanceCall_)) + ")")
 return
-}
-}
 }
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_MatchCase = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((("MatchCase" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_MatchPattern).show_(z_.patterns_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_MatchGuard).show_(z_.guards_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.body_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((("MatchCase" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_MatchPattern).show_(z_.patterns_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_MatchGuard).show_(z_.guards_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.body_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_MatchPattern = {
 show_(value_) {
-{
 const value_a = value_;
-{
 if(value_a.PString) {
 const z_ = value_a;
 return ((((("PString" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.value_)) + ")")
 return
 }
-}
-{
 if(value_a.PInt) {
 const z_ = value_a;
 return ((((("PInt" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.value_)) + ")")
 return
 }
-}
-{
 if(value_a.PChar) {
 const z_ = value_a;
 return ((((("PChar" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.value_)) + ")")
 return
 }
-}
-{
 if(value_a.PVariable) {
 const z_ = value_a;
 return ((((("PVariable" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.name_)) + ")")
 return
 }
-}
-{
 if(value_a.PVariant) {
 const z_ = value_a;
 return ((((((("PVariant" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_MatchPattern).show_(z_.patterns_)) + ")")
 return
 }
-}
-{
 if(value_a.PVariantAs) {
 const z_ = value_a;
 return ((((((((("PVariantAs" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.variableAt_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.variable_)) + ")")
 return
 }
-}
-{
 if(value_a.PAlias) {
 const z_ = value_a;
 return ((((((("PAlias" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_MatchPattern.show_(z_.pattern_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.variable_)) + ")")
 return
-}
-}
 }
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 if(value_a.PString) {
 const z_ = value_a;
 return ((((("PString" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.value_)) + ")")
 return
 }
-}
-{
 if(value_a.PInt) {
 const z_ = value_a;
 return ((((("PInt" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.value_)) + ")")
 return
 }
-}
-{
 if(value_a.PChar) {
 const z_ = value_a;
 return ((((("PChar" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.value_)) + ")")
 return
 }
-}
-{
 if(value_a.PVariable) {
 const z_ = value_a;
 return ((((("PVariable" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.name_)) + ")")
 return
 }
-}
-{
 if(value_a.PVariant) {
 const z_ = value_a;
 return ((((((("PVariant" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_MatchPattern).show_(z_.patterns_)) + ")")
 return
 }
-}
-{
 if(value_a.PVariantAs) {
 const z_ = value_a;
 return ((((((((("PVariantAs" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.variableAt_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.variable_)) + ")")
 return
 }
-}
-{
 if(value_a.PAlias) {
 const z_ = value_a;
 return ((((((("PAlias" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_MatchPattern.show_(z_.pattern_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.variable_)) + ")")
 return
-}
-}
 }
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_MatchGuard = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((("MatchGuard" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.term_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_MatchPattern.show_(z_.pattern_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((("MatchGuard" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.term_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_MatchPattern.show_(z_.pattern_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_Dictionary = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((("Dictionary" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.packagePair_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.moduleName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.traitName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.typeName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Dictionary).show_(z_.dictionaries_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((("Dictionary" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.packagePair_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.moduleName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.traitName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.typeName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Dictionary).show_(z_.dictionaries_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_Signature = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((((((((("Signature" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.member_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.generics_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Constraint).show_(z_.constraints_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Parameter).show_(z_.parameters_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.returnType_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.effect_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((((((((("Signature" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.member_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.generics_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Constraint).show_(z_.constraints_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Parameter).show_(z_.parameters_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.returnType_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.effect_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_Lambda = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((("Lambda" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.effect_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_MatchCase).show_(z_.cases_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((("Lambda" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.effect_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_MatchCase).show_(z_.cases_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_Variant = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((("Variant" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Parameter).show_(z_.fields_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((("Variant" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Parameter).show_(z_.fields_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_Parameter = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((("Parameter" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.mutable_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.valueType_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term).show_(z_.default_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((("Parameter" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.mutable_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.valueType_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term).show_(z_.default_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_Argument = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((("Argument" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.name_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.value_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((("Argument" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.name_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.value_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_Field = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((("Field" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.value_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((("Field" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.value_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_Constraint = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((("Constraint" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.generics_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((("Constraint" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.generics_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_Target = {
 show_(value_) {
-{
 const value_a = value_;
-{
 if(value_a.FireflyTarget) {
 const z_ = value_a;
 return ((("FireflyTarget" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Lambda.show_(z_.lambda_)) + ")")
 return
 }
-}
-{
 if(value_a.ForeignTarget) {
 const z_ = value_a;
 return ((((("ForeignTarget" + "(") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.syncCode_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.asyncCode_)) + ")")
 return
-}
-}
 }
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 if(value_a.FireflyTarget) {
 const z_ = value_a;
 return ((("FireflyTarget" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Lambda.show_(z_.lambda_)) + ")")
 return
 }
-}
-{
 if(value_a.ForeignTarget) {
 const z_ = value_a;
 return ((((("ForeignTarget" + "(") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.syncCode_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.asyncCode_)) + ")")
 return
-}
-}
 }
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_Type = {
 show_(value_) {
-{
 const value_a = value_;
-{
 if(value_a.TConstructor) {
 const z_ = value_a;
 return ((((((("TConstructor" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.generics_)) + ")")
 return
 }
-}
-{
 if(value_a.TVariable) {
 const z_ = value_a;
 return ((((("TVariable" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.index_)) + ")")
 return
-}
-}
 }
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 if(value_a.TConstructor) {
 const z_ = value_a;
 return ((((((("TConstructor" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.generics_)) + ")")
 return
 }
-}
-{
 if(value_a.TVariable) {
 const z_ = value_a;
 return ((((("TVariable" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.index_)) + ")")
 return
-}
-}
 }
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_Safety = {
 show_(value_) {
-{
 const value_a = value_;
-{
 if(value_a.Safe) {
 const z_ = value_a;
 return "Safe"
 return
 }
-}
-{
 if(value_a.Unsafe) {
 const z_ = value_a;
 return "Unsafe"
 return
 }
-}
-{
 if(value_a.Trusted) {
 const z_ = value_a;
 return "Trusted"
 return
-}
-}
 }
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 if(value_a.Safe) {
 const z_ = value_a;
 return "Safe"
 return
 }
-}
-{
 if(value_a.Unsafe) {
 const z_ = value_a;
 return "Unsafe"
 return
 }
-}
-{
 if(value_a.Trusted) {
 const z_ = value_a;
 return "Trusted"
 return
-}
-}
 }
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Syntax_Version = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((("Version" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.major_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.minor_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.patch_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((("Version" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.major_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.minor_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.patch_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_Location = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2314,11 +1921,9 @@ return
 {
 return ((x_.file_ === y_.file_) && ((x_.line_ === y_.line_) && (x_.column_ === y_.column_)))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2331,14 +1936,12 @@ return
 {
 return ((x_.file_ === y_.file_) && ((x_.line_ === y_.line_) && (x_.column_ === y_.column_)))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_CompileError = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2351,11 +1954,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (x_.message_ === y_.message_))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2368,14 +1969,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (x_.message_ === y_.message_))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_ModuleWithPackageInfo = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2388,11 +1987,9 @@ return
 {
 return (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackageInfo).equals_(x_.packageInfo_, y_.packageInfo_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Module.equals_(x_.module_, y_.module_))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2405,14 +2002,12 @@ return
 {
 return (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackageInfo).equals_(x_.packageInfo_, y_.packageInfo_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Module.equals_(x_.module_, y_.module_))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_PackageInfo = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2425,11 +2020,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DPackage.equals_(x_.package_, y_.package_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DDependency).equals_(x_.dependencies_, y_.dependencies_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DInclude).equals_(x_.includes_, y_.includes_)))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2442,14 +2035,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DPackage.equals_(x_.package_, y_.package_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DDependency).equals_(x_.dependencies_, y_.dependencies_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DInclude).equals_(x_.includes_, y_.includes_)))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_Module = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2462,11 +2053,9 @@ return
 {
 return ((x_.file_ === y_.file_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DImport).equals_(x_.imports_, y_.imports_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DType).equals_(x_.types_, y_.types_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DTrait).equals_(x_.traits_, y_.traits_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DInstance).equals_(x_.instances_, y_.instances_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DExtend).equals_(x_.extends_, y_.extends_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DLet).equals_(x_.lets_, y_.lets_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DFunction).equals_(x_.functions_, y_.functions_)))))))))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2479,14 +2068,12 @@ return
 {
 return ((x_.file_ === y_.file_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DImport).equals_(x_.imports_, y_.imports_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DType).equals_(x_.types_, y_.types_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DTrait).equals_(x_.traits_, y_.traits_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DInstance).equals_(x_.instances_, y_.instances_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DExtend).equals_(x_.extends_, y_.extends_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DLet).equals_(x_.lets_, y_.lets_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DFunction).equals_(x_.functions_, y_.functions_)))))))))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2499,11 +2086,9 @@ return
 {
 return ((x_.group_ === y_.group_) && (x_.name_ === y_.name_))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2516,14 +2101,12 @@ return
 {
 return ((x_.group_ === y_.group_) && (x_.name_ === y_.name_))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_DPackage = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2536,11 +2119,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Version.equals_(x_.version_, y_.version_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_TargetNames.equals_(x_.targets_, y_.targets_))))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2553,14 +2134,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Version.equals_(x_.version_, y_.version_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_TargetNames.equals_(x_.targets_, y_.targets_))))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_DDependency = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2573,11 +2152,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Version.equals_(x_.version_, y_.version_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Safety.equals_(x_.safety_, y_.safety_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_TargetNames.equals_(x_.targets_, y_.targets_)))))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2590,14 +2167,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Version.equals_(x_.version_, y_.version_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Safety.equals_(x_.safety_, y_.safety_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_TargetNames.equals_(x_.targets_, y_.targets_)))))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_DInclude = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2610,11 +2185,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (x_.path_ === y_.path_))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2627,14 +2200,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (x_.path_ === y_.path_))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_TargetNames = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2647,11 +2218,9 @@ return
 {
 return ((x_.node_ === y_.node_) && (x_.browser_ === y_.browser_))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2664,14 +2233,12 @@ return
 {
 return ((x_.node_ === y_.node_) && (x_.browser_ === y_.browser_))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_DImport = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2684,11 +2251,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.alias_ === y_.alias_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.package_, y_.package_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.directory_, y_.directory_) && (x_.file_ === y_.file_)))))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2701,14 +2266,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.alias_ === y_.alias_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.package_, y_.package_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.directory_, y_.directory_) && (x_.file_ === y_.file_)))))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_DFunction = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2721,11 +2284,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Signature.equals_(x_.signature_, y_.signature_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Target.equals_(x_.body_, y_.body_)))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2738,14 +2299,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Signature.equals_(x_.signature_, y_.signature_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Target.equals_(x_.body_, y_.body_)))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_DLet = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2758,11 +2317,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.name_ === y_.name_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.variableType_, y_.variableType_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.value_, y_.value_))))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2775,14 +2332,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.name_ === y_.name_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.variableType_, y_.variableType_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.value_, y_.value_))))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_DExtend = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2795,11 +2350,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.name_ === y_.name_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.type_, y_.type_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DFunction).equals_(x_.methods_, y_.methods_))))))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2812,14 +2365,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.name_ === y_.name_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.type_, y_.type_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DFunction).equals_(x_.methods_, y_.methods_))))))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_DType = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2832,11 +2383,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.newtype_ === y_.newtype_) && ((x_.data_ === y_.data_) && ((x_.name_ === y_.name_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Parameter).equals_(x_.commonFields_, y_.commonFields_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Variant).equals_(x_.variants_, y_.variants_))))))))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2849,14 +2398,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.newtype_ === y_.newtype_) && ((x_.data_ === y_.data_) && ((x_.name_ === y_.name_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Parameter).equals_(x_.commonFields_, y_.commonFields_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Variant).equals_(x_.variants_, y_.variants_))))))))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_DTrait = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2869,11 +2416,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.name_ === y_.name_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Parameter).equals_(x_.generatorParameters_, y_.generatorParameters_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Signature).equals_(x_.methods_, y_.methods_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Lambda)).equals_(x_.methodDefaults_, y_.methodDefaults_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Lambda)).equals_(x_.methodGenerators_, y_.methodGenerators_))))))))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2886,14 +2431,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.name_ === y_.name_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Parameter).equals_(x_.generatorParameters_, y_.generatorParameters_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Signature).equals_(x_.methods_, y_.methods_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Lambda)).equals_(x_.methodDefaults_, y_.methodDefaults_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Lambda)).equals_(x_.methodGenerators_, y_.methodGenerators_))))))))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_DInstance = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2906,11 +2449,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && ((x_.traitName_ === y_.traitName_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.typeArguments_, y_.typeArguments_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Argument).equals_(x_.generatorArguments_, y_.generatorArguments_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DFunction).equals_(x_.methods_, y_.methods_) && (x_.derived_ === y_.derived_))))))))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2923,14 +2464,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && ((x_.traitName_ === y_.traitName_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.typeArguments_, y_.typeArguments_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Argument).equals_(x_.generatorArguments_, y_.generatorArguments_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DFunction).equals_(x_.methods_, y_.methods_) && (x_.derived_ === y_.derived_))))))))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_Term = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2940,7 +2479,6 @@ return true
 return
 }
 }
-{
 if(x_a.EString) {
 const x_ = x_a;
 if(y_a.EString) {
@@ -2949,8 +2487,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EChar) {
 const x_ = x_a;
 if(y_a.EChar) {
@@ -2959,8 +2495,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EInt) {
 const x_ = x_a;
 if(y_a.EInt) {
@@ -2969,8 +2503,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EFloat) {
 const x_ = x_a;
 if(y_a.EFloat) {
@@ -2979,8 +2511,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EVariable) {
 const x_ = x_a;
 if(y_a.EVariable) {
@@ -2989,8 +2519,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.ELambda) {
 const x_ = x_a;
 if(y_a.ELambda) {
@@ -2999,8 +2527,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EFunctions) {
 const x_ = x_a;
 if(y_a.EFunctions) {
@@ -3009,8 +2535,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.ELet) {
 const x_ = x_a;
 if(y_a.ELet) {
@@ -3019,8 +2543,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.ESequential) {
 const x_ = x_a;
 if(y_a.ESequential) {
@@ -3029,8 +2551,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EAssign) {
 const x_ = x_a;
 if(y_a.EAssign) {
@@ -3039,8 +2559,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EAssignField) {
 const x_ = x_a;
 if(y_a.EAssignField) {
@@ -3049,8 +2567,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EPipe) {
 const x_ = x_a;
 if(y_a.EPipe) {
@@ -3059,8 +2575,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.ECall) {
 const x_ = x_a;
 if(y_a.ECall) {
@@ -3069,8 +2583,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EList) {
 const x_ = x_a;
 if(y_a.EList) {
@@ -3079,8 +2591,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.ECopy) {
 const x_ = x_a;
 if(y_a.ECopy) {
@@ -3089,8 +2599,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EVariant) {
 const x_ = x_a;
 if(y_a.EVariant) {
@@ -3099,8 +2607,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EVariantIs) {
 const x_ = x_a;
 if(y_a.EVariantIs) {
@@ -3109,8 +2615,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.ERecord) {
 const x_ = x_a;
 if(y_a.ERecord) {
@@ -3119,8 +2623,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EField) {
 const x_ = x_a;
 if(y_a.EField) {
@@ -3129,8 +2631,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EWildcard) {
 const x_ = x_a;
 if(y_a.EWildcard) {
@@ -3139,15 +2639,12 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
 {
 return false
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3157,7 +2654,6 @@ return true
 return
 }
 }
-{
 if(x_a.EString) {
 const x_ = x_a;
 if(y_a.EString) {
@@ -3166,8 +2662,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EChar) {
 const x_ = x_a;
 if(y_a.EChar) {
@@ -3176,8 +2670,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EInt) {
 const x_ = x_a;
 if(y_a.EInt) {
@@ -3186,8 +2678,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EFloat) {
 const x_ = x_a;
 if(y_a.EFloat) {
@@ -3196,8 +2686,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EVariable) {
 const x_ = x_a;
 if(y_a.EVariable) {
@@ -3206,8 +2694,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.ELambda) {
 const x_ = x_a;
 if(y_a.ELambda) {
@@ -3216,8 +2702,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EFunctions) {
 const x_ = x_a;
 if(y_a.EFunctions) {
@@ -3226,8 +2710,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.ELet) {
 const x_ = x_a;
 if(y_a.ELet) {
@@ -3236,8 +2718,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.ESequential) {
 const x_ = x_a;
 if(y_a.ESequential) {
@@ -3246,8 +2726,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EAssign) {
 const x_ = x_a;
 if(y_a.EAssign) {
@@ -3256,8 +2734,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EAssignField) {
 const x_ = x_a;
 if(y_a.EAssignField) {
@@ -3266,8 +2742,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EPipe) {
 const x_ = x_a;
 if(y_a.EPipe) {
@@ -3276,8 +2750,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.ECall) {
 const x_ = x_a;
 if(y_a.ECall) {
@@ -3286,8 +2758,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EList) {
 const x_ = x_a;
 if(y_a.EList) {
@@ -3296,8 +2766,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.ECopy) {
 const x_ = x_a;
 if(y_a.ECopy) {
@@ -3306,8 +2774,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EVariant) {
 const x_ = x_a;
 if(y_a.EVariant) {
@@ -3316,8 +2782,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EVariantIs) {
 const x_ = x_a;
 if(y_a.EVariantIs) {
@@ -3326,8 +2790,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.ERecord) {
 const x_ = x_a;
 if(y_a.ERecord) {
@@ -3336,8 +2798,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EField) {
 const x_ = x_a;
 if(y_a.EField) {
@@ -3346,8 +2806,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.EWildcard) {
 const x_ = x_a;
 if(y_a.EWildcard) {
@@ -3356,18 +2814,15 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
 {
 return false
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_CallTarget = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3377,7 +2832,6 @@ return true
 return
 }
 }
-{
 if(x_a.DynamicCall) {
 const x_ = x_a;
 if(y_a.DynamicCall) {
@@ -3386,8 +2840,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x
 return
 }
 }
-}
-{
 if(x_a.StaticCall) {
 const x_ = x_a;
 if(y_a.StaticCall) {
@@ -3396,15 +2848,12 @@ return ((x_.name_ === y_.name_) && ((x_.tailCall_ === y_.tailCall_) && (x_.insta
 return
 }
 }
-}
 {
 return false
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3414,7 +2863,6 @@ return true
 return
 }
 }
-{
 if(x_a.DynamicCall) {
 const x_ = x_a;
 if(y_a.DynamicCall) {
@@ -3423,8 +2871,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x
 return
 }
 }
-}
-{
 if(x_a.StaticCall) {
 const x_ = x_a;
 if(y_a.StaticCall) {
@@ -3433,18 +2879,15 @@ return ((x_.name_ === y_.name_) && ((x_.tailCall_ === y_.tailCall_) && (x_.insta
 return
 }
 }
-}
 {
 return false
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_MatchCase = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3457,11 +2900,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_MatchPattern).equals_(x_.patterns_, y_.patterns_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_MatchGuard).equals_(x_.guards_, y_.guards_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.body_, y_.body_))))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3474,14 +2915,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_MatchPattern).equals_(x_.patterns_, y_.patterns_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_MatchGuard).equals_(x_.guards_, y_.guards_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.body_, y_.body_))))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_MatchPattern = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3491,7 +2930,6 @@ return true
 return
 }
 }
-{
 if(x_a.PString) {
 const x_ = x_a;
 if(y_a.PString) {
@@ -3500,8 +2938,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.PInt) {
 const x_ = x_a;
 if(y_a.PInt) {
@@ -3510,8 +2946,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.PChar) {
 const x_ = x_a;
 if(y_a.PChar) {
@@ -3520,8 +2954,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.PVariable) {
 const x_ = x_a;
 if(y_a.PVariable) {
@@ -3530,8 +2962,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.PVariant) {
 const x_ = x_a;
 if(y_a.PVariant) {
@@ -3540,8 +2970,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.PVariantAs) {
 const x_ = x_a;
 if(y_a.PVariantAs) {
@@ -3550,8 +2978,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.PAlias) {
 const x_ = x_a;
 if(y_a.PAlias) {
@@ -3560,15 +2986,12 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
 {
 return false
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3578,7 +3001,6 @@ return true
 return
 }
 }
-{
 if(x_a.PString) {
 const x_ = x_a;
 if(y_a.PString) {
@@ -3587,8 +3009,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.PInt) {
 const x_ = x_a;
 if(y_a.PInt) {
@@ -3597,8 +3017,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.PChar) {
 const x_ = x_a;
 if(y_a.PChar) {
@@ -3607,8 +3025,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.PVariable) {
 const x_ = x_a;
 if(y_a.PVariable) {
@@ -3617,8 +3033,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.PVariant) {
 const x_ = x_a;
 if(y_a.PVariant) {
@@ -3627,8 +3041,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.PVariantAs) {
 const x_ = x_a;
 if(y_a.PVariantAs) {
@@ -3637,8 +3049,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.PAlias) {
 const x_ = x_a;
 if(y_a.PAlias) {
@@ -3647,18 +3057,15 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
 {
 return false
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_MatchGuard = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3671,11 +3078,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.term_, y_.term_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_MatchPattern.equals_(x_.pattern_, y_.pattern_)))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3688,14 +3093,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.term_, y_.term_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_MatchPattern.equals_(x_.pattern_, y_.pattern_)))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_Dictionary = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3708,11 +3111,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && ((x_.moduleName_ === y_.moduleName_) && ((x_.traitName_ === y_.traitName_) && ((x_.typeName_ === y_.typeName_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Dictionary).equals_(x_.dictionaries_, y_.dictionaries_)))))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3725,14 +3126,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && ((x_.moduleName_ === y_.moduleName_) && ((x_.traitName_ === y_.traitName_) && ((x_.typeName_ === y_.typeName_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Dictionary).equals_(x_.dictionaries_, y_.dictionaries_)))))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_Signature = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3745,11 +3144,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.name_ === y_.name_) && ((x_.member_ === y_.member_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Parameter).equals_(x_.parameters_, y_.parameters_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.returnType_, y_.returnType_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.effect_, y_.effect_))))))))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3762,14 +3159,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.name_ === y_.name_) && ((x_.member_ === y_.member_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Parameter).equals_(x_.parameters_, y_.parameters_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.returnType_, y_.returnType_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.effect_, y_.effect_))))))))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_Lambda = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3782,11 +3177,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.effect_, y_.effect_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_MatchCase).equals_(x_.cases_, y_.cases_)))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3799,14 +3192,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.effect_, y_.effect_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_MatchCase).equals_(x_.cases_, y_.cases_)))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_Variant = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3819,11 +3210,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.name_ === y_.name_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Parameter).equals_(x_.fields_, y_.fields_)))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3836,14 +3225,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.name_ === y_.name_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Parameter).equals_(x_.fields_, y_.fields_)))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_Parameter = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3856,11 +3243,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.mutable_ === y_.mutable_) && ((x_.name_ === y_.name_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.valueType_, y_.valueType_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term).equals_(x_.default_, y_.default_)))))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3873,14 +3258,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.mutable_ === y_.mutable_) && ((x_.name_ === y_.name_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.valueType_, y_.valueType_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term).equals_(x_.default_, y_.default_)))))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_Argument = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3893,11 +3276,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.name_, y_.name_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.value_, y_.value_)))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3910,14 +3291,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.name_, y_.name_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.value_, y_.value_)))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_Field = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3930,11 +3309,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.name_ === y_.name_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.value_, y_.value_)))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3947,14 +3324,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.name_ === y_.name_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.value_, y_.value_)))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_Constraint = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3967,11 +3342,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.name_ === y_.name_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.generics_, y_.generics_)))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -3984,14 +3357,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.name_ === y_.name_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.generics_, y_.generics_)))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_Target = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4001,7 +3372,6 @@ return true
 return
 }
 }
-{
 if(x_a.FireflyTarget) {
 const x_ = x_a;
 if(y_a.FireflyTarget) {
@@ -4010,8 +3380,6 @@ return ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Lambda.equals_(
 return
 }
 }
-}
-{
 if(x_a.ForeignTarget) {
 const x_ = x_a;
 if(y_a.ForeignTarget) {
@@ -4020,15 +3388,12 @@ return (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.f
 return
 }
 }
-}
 {
 return false
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4038,7 +3403,6 @@ return true
 return
 }
 }
-{
 if(x_a.FireflyTarget) {
 const x_ = x_a;
 if(y_a.FireflyTarget) {
@@ -4047,8 +3411,6 @@ return ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Lambda.equals_(
 return
 }
 }
-}
-{
 if(x_a.ForeignTarget) {
 const x_ = x_a;
 if(y_a.ForeignTarget) {
@@ -4057,18 +3419,15 @@ return (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.f
 return
 }
 }
-}
 {
 return false
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_Type = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4078,7 +3437,6 @@ return true
 return
 }
 }
-{
 if(x_a.TConstructor) {
 const x_ = x_a;
 if(y_a.TConstructor) {
@@ -4087,8 +3445,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.TVariable) {
 const x_ = x_a;
 if(y_a.TVariable) {
@@ -4097,15 +3453,12 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
 {
 return false
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4115,7 +3468,6 @@ return true
 return
 }
 }
-{
 if(x_a.TConstructor) {
 const x_ = x_a;
 if(y_a.TConstructor) {
@@ -4124,8 +3476,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
-{
 if(x_a.TVariable) {
 const x_ = x_a;
 if(y_a.TVariable) {
@@ -4134,18 +3484,15 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equal
 return
 }
 }
-}
 {
 return false
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_Safety = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4158,11 +3505,9 @@ return
 {
 return false
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4175,14 +3520,12 @@ return
 {
 return false
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Syntax_Version = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4195,11 +3538,9 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.major_ === y_.major_) && ((x_.minor_ === y_.minor_) && (x_.patch_ === y_.patch_))))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4212,14 +3553,12 @@ return
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.major_ === y_.major_) && ((x_.minor_ === y_.minor_) && (x_.patch_ === y_.patch_))))
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_Location = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4247,11 +3586,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4279,14 +3616,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_CompileError = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4309,11 +3644,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4336,14 +3669,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_ModuleWithPackageInfo = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4366,11 +3697,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4393,14 +3722,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_PackageInfo = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4428,11 +3755,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4460,14 +3785,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_Module = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4525,11 +3848,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4587,14 +3908,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4617,11 +3936,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4644,14 +3961,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_DPackage = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4684,11 +3999,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4721,14 +4034,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_DDependency = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4766,11 +4077,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4808,14 +4117,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_DInclude = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4838,11 +4145,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4865,14 +4170,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_TargetNames = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4895,11 +4198,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4922,14 +4223,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_DImport = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -4967,11 +4266,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -5009,14 +4306,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_DFunction = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -5044,11 +4339,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -5076,14 +4369,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_DLet = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -5116,11 +4407,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -5153,14 +4442,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_DExtend = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -5203,11 +4490,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -5250,14 +4535,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_DType = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -5310,11 +4593,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -5367,14 +4648,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_DTrait = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -5427,11 +4706,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -5484,14 +4761,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_DInstance = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -5544,11 +4819,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -5601,14 +4874,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_Term = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -5618,7 +4889,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-{
 if(x_a.EString) {
 const x_ = x_a;
 if(y_a.EString) {
@@ -5637,8 +4907,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EChar) {
 const x_ = x_a;
 if(y_a.EChar) {
@@ -5657,8 +4925,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EInt) {
 const x_ = x_a;
 if(y_a.EInt) {
@@ -5677,8 +4943,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EFloat) {
 const x_ = x_a;
 if(y_a.EFloat) {
@@ -5697,8 +4961,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EVariable) {
 const x_ = x_a;
 if(y_a.EVariable) {
@@ -5717,8 +4979,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.ELambda) {
 const x_ = x_a;
 if(y_a.ELambda) {
@@ -5737,8 +4997,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EFunctions) {
 const x_ = x_a;
 if(y_a.EFunctions) {
@@ -5762,8 +5020,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.ELet) {
 const x_ = x_a;
 if(y_a.ELet) {
@@ -5802,8 +5058,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.ESequential) {
 const x_ = x_a;
 if(y_a.ESequential) {
@@ -5827,8 +5081,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EAssign) {
 const x_ = x_a;
 if(y_a.EAssign) {
@@ -5857,8 +5109,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EAssignField) {
 const x_ = x_a;
 if(y_a.EAssignField) {
@@ -5892,8 +5142,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EPipe) {
 const x_ = x_a;
 if(y_a.EPipe) {
@@ -5922,8 +5170,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.ECall) {
 const x_ = x_a;
 if(y_a.ECall) {
@@ -5962,8 +5208,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EList) {
 const x_ = x_a;
 if(y_a.EList) {
@@ -5987,8 +5231,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.ECopy) {
 const x_ = x_a;
 if(y_a.ECopy) {
@@ -6017,8 +5259,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EVariant) {
 const x_ = x_a;
 if(y_a.EVariant) {
@@ -6047,8 +5287,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EVariantIs) {
 const x_ = x_a;
 if(y_a.EVariantIs) {
@@ -6072,8 +5310,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.ERecord) {
 const x_ = x_a;
 if(y_a.ERecord) {
@@ -6092,8 +5328,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EField) {
 const x_ = x_a;
 if(y_a.EField) {
@@ -6122,8 +5356,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EWildcard) {
 const x_ = x_a;
 if(y_a.EWildcard) {
@@ -6142,140 +5374,95 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
 {
 function number_(z_) {
-{
 const z_a = z_;
-{
 if(z_a.EString) {
 return 0
 return
 }
-}
-{
 if(z_a.EChar) {
 return 1
 return
 }
-}
-{
 if(z_a.EInt) {
 return 2
 return
 }
-}
-{
 if(z_a.EFloat) {
 return 3
 return
 }
-}
-{
 if(z_a.EVariable) {
 return 4
 return
 }
-}
-{
 if(z_a.ELambda) {
 return 5
 return
 }
-}
-{
 if(z_a.EFunctions) {
 return 6
 return
 }
-}
-{
 if(z_a.ELet) {
 return 7
 return
 }
-}
-{
 if(z_a.ESequential) {
 return 8
 return
 }
-}
-{
 if(z_a.EAssign) {
 return 9
 return
 }
-}
-{
 if(z_a.EAssignField) {
 return 10
 return
 }
-}
-{
 if(z_a.EPipe) {
 return 11
 return
 }
-}
-{
 if(z_a.ECall) {
 return 12
 return
 }
-}
-{
 if(z_a.EList) {
 return 13
 return
 }
-}
-{
 if(z_a.ECopy) {
 return 14
 return
 }
-}
-{
 if(z_a.EVariant) {
 return 15
 return
 }
-}
-{
 if(z_a.EVariantIs) {
 return 16
 return
 }
-}
-{
 if(z_a.ERecord) {
 return 17
 return
 }
-}
-{
 if(z_a.EField) {
 return 18
 return
 }
-}
-{
 if(z_a.EWildcard) {
 return 19
 return
 }
 }
-}
-}
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -6285,7 +5472,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-{
 if(x_a.EString) {
 const x_ = x_a;
 if(y_a.EString) {
@@ -6304,8 +5490,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EChar) {
 const x_ = x_a;
 if(y_a.EChar) {
@@ -6324,8 +5508,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EInt) {
 const x_ = x_a;
 if(y_a.EInt) {
@@ -6344,8 +5526,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EFloat) {
 const x_ = x_a;
 if(y_a.EFloat) {
@@ -6364,8 +5544,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EVariable) {
 const x_ = x_a;
 if(y_a.EVariable) {
@@ -6384,8 +5562,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.ELambda) {
 const x_ = x_a;
 if(y_a.ELambda) {
@@ -6404,8 +5580,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EFunctions) {
 const x_ = x_a;
 if(y_a.EFunctions) {
@@ -6429,8 +5603,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.ELet) {
 const x_ = x_a;
 if(y_a.ELet) {
@@ -6469,8 +5641,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.ESequential) {
 const x_ = x_a;
 if(y_a.ESequential) {
@@ -6494,8 +5664,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EAssign) {
 const x_ = x_a;
 if(y_a.EAssign) {
@@ -6524,8 +5692,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EAssignField) {
 const x_ = x_a;
 if(y_a.EAssignField) {
@@ -6559,8 +5725,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EPipe) {
 const x_ = x_a;
 if(y_a.EPipe) {
@@ -6589,8 +5753,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.ECall) {
 const x_ = x_a;
 if(y_a.ECall) {
@@ -6629,8 +5791,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EList) {
 const x_ = x_a;
 if(y_a.EList) {
@@ -6654,8 +5814,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.ECopy) {
 const x_ = x_a;
 if(y_a.ECopy) {
@@ -6684,8 +5842,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EVariant) {
 const x_ = x_a;
 if(y_a.EVariant) {
@@ -6714,8 +5870,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EVariantIs) {
 const x_ = x_a;
 if(y_a.EVariantIs) {
@@ -6739,8 +5893,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.ERecord) {
 const x_ = x_a;
 if(y_a.ERecord) {
@@ -6759,8 +5911,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EField) {
 const x_ = x_a;
 if(y_a.EField) {
@@ -6789,8 +5939,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.EWildcard) {
 const x_ = x_a;
 if(y_a.EWildcard) {
@@ -6809,143 +5957,98 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
 {
 function number_(z_) {
-{
 const z_a = z_;
-{
 if(z_a.EString) {
 return 0
 return
 }
-}
-{
 if(z_a.EChar) {
 return 1
 return
 }
-}
-{
 if(z_a.EInt) {
 return 2
 return
 }
-}
-{
 if(z_a.EFloat) {
 return 3
 return
 }
-}
-{
 if(z_a.EVariable) {
 return 4
 return
 }
-}
-{
 if(z_a.ELambda) {
 return 5
 return
 }
-}
-{
 if(z_a.EFunctions) {
 return 6
 return
 }
-}
-{
 if(z_a.ELet) {
 return 7
 return
 }
-}
-{
 if(z_a.ESequential) {
 return 8
 return
 }
-}
-{
 if(z_a.EAssign) {
 return 9
 return
 }
-}
-{
 if(z_a.EAssignField) {
 return 10
 return
 }
-}
-{
 if(z_a.EPipe) {
 return 11
 return
 }
-}
-{
 if(z_a.ECall) {
 return 12
 return
 }
-}
-{
 if(z_a.EList) {
 return 13
 return
 }
-}
-{
 if(z_a.ECopy) {
 return 14
 return
 }
-}
-{
 if(z_a.EVariant) {
 return 15
 return
 }
-}
-{
 if(z_a.EVariantIs) {
 return 16
 return
 }
-}
-{
 if(z_a.ERecord) {
 return 17
 return
 }
-}
-{
 if(z_a.EField) {
 return 18
 return
 }
-}
-{
 if(z_a.EWildcard) {
 return 19
 return
 }
 }
-}
-}
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_CallTarget = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -6955,7 +6058,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-{
 if(x_a.DynamicCall) {
 const x_ = x_a;
 if(y_a.DynamicCall) {
@@ -6974,8 +6076,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.StaticCall) {
 const x_ = x_a;
 if(y_a.StaticCall) {
@@ -6999,32 +6099,23 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
 {
 function number_(z_) {
-{
 const z_a = z_;
-{
 if(z_a.DynamicCall) {
 return 0
 return
 }
-}
-{
 if(z_a.StaticCall) {
 return 1
 return
 }
 }
-}
-}
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -7034,7 +6125,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-{
 if(x_a.DynamicCall) {
 const x_ = x_a;
 if(y_a.DynamicCall) {
@@ -7053,8 +6143,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.StaticCall) {
 const x_ = x_a;
 if(y_a.StaticCall) {
@@ -7078,35 +6166,26 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
 {
 function number_(z_) {
-{
 const z_a = z_;
-{
 if(z_a.DynamicCall) {
 return 0
 return
 }
-}
-{
 if(z_a.StaticCall) {
 return 1
 return
 }
 }
-}
-}
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_MatchCase = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -7139,11 +6218,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -7176,14 +6253,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_MatchPattern = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -7193,7 +6268,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-{
 if(x_a.PString) {
 const x_ = x_a;
 if(y_a.PString) {
@@ -7212,8 +6286,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.PInt) {
 const x_ = x_a;
 if(y_a.PInt) {
@@ -7232,8 +6304,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.PChar) {
 const x_ = x_a;
 if(y_a.PChar) {
@@ -7252,8 +6322,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.PVariable) {
 const x_ = x_a;
 if(y_a.PVariable) {
@@ -7272,8 +6340,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.PVariant) {
 const x_ = x_a;
 if(y_a.PVariant) {
@@ -7297,8 +6363,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.PVariantAs) {
 const x_ = x_a;
 if(y_a.PVariantAs) {
@@ -7327,8 +6391,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.PAlias) {
 const x_ = x_a;
 if(y_a.PAlias) {
@@ -7352,62 +6414,43 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
 {
 function number_(z_) {
-{
 const z_a = z_;
-{
 if(z_a.PString) {
 return 0
 return
 }
-}
-{
 if(z_a.PInt) {
 return 1
 return
 }
-}
-{
 if(z_a.PChar) {
 return 2
 return
 }
-}
-{
 if(z_a.PVariable) {
 return 3
 return
 }
-}
-{
 if(z_a.PVariant) {
 return 4
 return
 }
-}
-{
 if(z_a.PVariantAs) {
 return 5
 return
 }
-}
-{
 if(z_a.PAlias) {
 return 6
 return
 }
 }
-}
-}
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -7417,7 +6460,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-{
 if(x_a.PString) {
 const x_ = x_a;
 if(y_a.PString) {
@@ -7436,8 +6478,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.PInt) {
 const x_ = x_a;
 if(y_a.PInt) {
@@ -7456,8 +6496,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.PChar) {
 const x_ = x_a;
 if(y_a.PChar) {
@@ -7476,8 +6514,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.PVariable) {
 const x_ = x_a;
 if(y_a.PVariable) {
@@ -7496,8 +6532,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.PVariant) {
 const x_ = x_a;
 if(y_a.PVariant) {
@@ -7521,8 +6555,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.PVariantAs) {
 const x_ = x_a;
 if(y_a.PVariantAs) {
@@ -7551,8 +6583,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.PAlias) {
 const x_ = x_a;
 if(y_a.PAlias) {
@@ -7576,65 +6606,46 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
 {
 function number_(z_) {
-{
 const z_a = z_;
-{
 if(z_a.PString) {
 return 0
 return
 }
-}
-{
 if(z_a.PInt) {
 return 1
 return
 }
-}
-{
 if(z_a.PChar) {
 return 2
 return
 }
-}
-{
 if(z_a.PVariable) {
 return 3
 return
 }
-}
-{
 if(z_a.PVariant) {
 return 4
 return
 }
-}
-{
 if(z_a.PVariantAs) {
 return 5
 return
 }
-}
-{
 if(z_a.PAlias) {
 return 6
 return
 }
 }
-}
-}
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_MatchGuard = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -7662,11 +6673,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -7694,14 +6703,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_Dictionary = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -7739,11 +6746,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -7781,14 +6786,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_Signature = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -7841,11 +6844,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -7898,14 +6899,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_Lambda = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -7933,11 +6932,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -7965,14 +6962,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_Variant = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -8000,11 +6995,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -8032,14 +7025,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_Parameter = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -8077,11 +7068,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -8119,14 +7108,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_Argument = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -8154,11 +7141,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -8186,14 +7171,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_Field = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -8221,11 +7204,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -8253,14 +7234,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_Constraint = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -8288,11 +7267,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -8320,14 +7297,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_Target = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -8337,7 +7312,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-{
 if(x_a.FireflyTarget) {
 const x_ = x_a;
 if(y_a.FireflyTarget) {
@@ -8351,8 +7325,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.ForeignTarget) {
 const x_ = x_a;
 if(y_a.ForeignTarget) {
@@ -8371,32 +7343,23 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
 {
 function number_(z_) {
-{
 const z_a = z_;
-{
 if(z_a.FireflyTarget) {
 return 0
 return
 }
-}
-{
 if(z_a.ForeignTarget) {
 return 1
 return
 }
 }
-}
-}
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -8406,7 +7369,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-{
 if(x_a.FireflyTarget) {
 const x_ = x_a;
 if(y_a.FireflyTarget) {
@@ -8420,8 +7382,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.ForeignTarget) {
 const x_ = x_a;
 if(y_a.ForeignTarget) {
@@ -8440,35 +7400,26 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
 {
 function number_(z_) {
-{
 const z_a = z_;
-{
 if(z_a.FireflyTarget) {
 return 0
 return
 }
-}
-{
 if(z_a.ForeignTarget) {
 return 1
 return
 }
 }
-}
-}
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_Type = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -8478,7 +7429,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-{
 if(x_a.TConstructor) {
 const x_ = x_a;
 if(y_a.TConstructor) {
@@ -8502,8 +7452,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.TVariable) {
 const x_ = x_a;
 if(y_a.TVariable) {
@@ -8522,32 +7470,23 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
 {
 function number_(z_) {
-{
 const z_a = z_;
-{
 if(z_a.TConstructor) {
 return 0
 return
 }
-}
-{
 if(z_a.TVariable) {
 return 1
 return
 }
 }
-}
-}
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -8557,7 +7496,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-{
 if(x_a.TConstructor) {
 const x_ = x_a;
 if(y_a.TConstructor) {
@@ -8581,8 +7519,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.TVariable) {
 const x_ = x_a;
 if(y_a.TVariable) {
@@ -8601,35 +7537,26 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
 {
 function number_(z_) {
-{
 const z_a = z_;
-{
 if(z_a.TConstructor) {
 return 0
 return
 }
-}
-{
 if(z_a.TVariable) {
 return 1
 return
 }
 }
-}
-}
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_Safety = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -8641,35 +7568,25 @@ return
 }
 {
 function number_(z_) {
-{
 const z_a = z_;
-{
 if(z_a.Safe) {
 return 0
 return
 }
-}
-{
 if(z_a.Unsafe) {
 return 1
 return
 }
-}
-{
 if(z_a.Trusted) {
 return 2
 return
 }
 }
-}
-}
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -8681,38 +7598,28 @@ return
 }
 {
 function number_(z_) {
-{
 const z_a = z_;
-{
 if(z_a.Safe) {
 return 0
 return
 }
-}
-{
 if(z_a.Unsafe) {
 return 1
 return
 }
-}
-{
 if(z_a.Trusted) {
 return 2
 return
 }
 }
-}
-}
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Syntax_Version = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -8745,11 +7652,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -8782,17 +7687,14 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_Location = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -8802,8 +7704,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.line_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.column_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -8824,10 +7724,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -8837,8 +7735,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.line_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.column_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -8862,10 +7758,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_CompileError = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -8874,8 +7768,6 @@ serialization_.offset_ += 1;
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, v_.at_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.message_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -8896,10 +7788,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -8908,8 +7798,6 @@ serialization_.offset_ += 1;
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, v_.at_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.message_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -8933,10 +7821,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_ModuleWithPackageInfo = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 40), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -8945,8 +7831,6 @@ serialization_.offset_ += 1;
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackageInfo).serializeUsing_(serialization_, v_.packageInfo_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Module.serializeUsing_(serialization_, v_.module_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -8967,10 +7851,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 40), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -8979,8 +7861,6 @@ serialization_.offset_ += 1;
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackageInfo).serializeUsing_(serialization_, v_.packageInfo_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Module.serializeUsing_(serialization_, v_.module_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9004,10 +7884,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_PackageInfo = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9017,8 +7895,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DPackage
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DDependency).serializeUsing_(serialization_, v_.dependencies_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DInclude).serializeUsing_(serialization_, v_.includes_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9039,10 +7915,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9052,8 +7926,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DPackage
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DDependency).serializeUsing_(serialization_, v_.dependencies_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DInclude).serializeUsing_(serialization_, v_.includes_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9077,10 +7949,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_Module = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9096,8 +7966,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_comp
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DLet).serializeUsing_(serialization_, v_.lets_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DFunction).serializeUsing_(serialization_, v_.functions_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9118,10 +7986,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9137,8 +8003,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_comp
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DLet).serializeUsing_(serialization_, v_.lets_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DFunction).serializeUsing_(serialization_, v_.functions_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9162,10 +8026,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9174,8 +8036,6 @@ serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.group_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.name_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9196,10 +8056,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9208,8 +8066,6 @@ serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.group_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.name_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9233,10 +8089,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_DPackage = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9247,8 +8101,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackageP
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Version.serializeUsing_(serialization_, v_.version_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_TargetNames.serializeUsing_(serialization_, v_.targets_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9269,10 +8121,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9283,8 +8133,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackageP
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Version.serializeUsing_(serialization_, v_.version_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_TargetNames.serializeUsing_(serialization_, v_.targets_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9308,10 +8156,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_DDependency = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9323,8 +8169,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Version.
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Safety.serializeUsing_(serialization_, v_.safety_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_TargetNames.serializeUsing_(serialization_, v_.targets_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9345,10 +8189,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9360,8 +8202,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Version.
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Safety.serializeUsing_(serialization_, v_.safety_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_TargetNames.serializeUsing_(serialization_, v_.targets_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9385,10 +8225,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_DInclude = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9397,8 +8235,6 @@ serialization_.offset_ += 1;
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, v_.at_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.path_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9419,10 +8255,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9431,8 +8265,6 @@ serialization_.offset_ += 1;
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, v_.at_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.path_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9456,10 +8288,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_TargetNames = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9468,8 +8298,6 @@ serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.node_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.browser_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9490,10 +8318,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9502,8 +8328,6 @@ serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.node_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.browser_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9527,10 +8351,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_DImport = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9542,8 +8364,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackageP
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.directory_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.file_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9564,10 +8384,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9579,8 +8397,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackageP
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.directory_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.file_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9604,10 +8420,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_DFunction = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9617,8 +8431,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Signature.serializeUsing_(serialization_, v_.signature_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Target.serializeUsing_(serialization_, v_.body_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9639,10 +8451,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9652,8 +8462,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Signature.serializeUsing_(serialization_, v_.signature_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Target.serializeUsing_(serialization_, v_.body_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9677,10 +8485,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_DLet = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9691,8 +8497,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.serializeUsing_(serialization_, v_.variableType_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.value_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9713,10 +8517,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9727,8 +8529,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.serializeUsing_(serialization_, v_.variableType_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.value_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9752,10 +8552,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_DExtend = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9768,8 +8566,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_comp
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.serializeUsing_(serialization_, v_.type_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DFunction).serializeUsing_(serialization_, v_.methods_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9790,10 +8586,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9806,8 +8600,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_comp
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.serializeUsing_(serialization_, v_.type_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DFunction).serializeUsing_(serialization_, v_.methods_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9831,10 +8623,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_DType = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9849,8 +8639,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_comp
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Parameter).serializeUsing_(serialization_, v_.commonFields_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Variant).serializeUsing_(serialization_, v_.variants_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9871,10 +8659,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9889,8 +8675,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_comp
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Parameter).serializeUsing_(serialization_, v_.commonFields_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Variant).serializeUsing_(serialization_, v_.variants_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9914,10 +8698,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_DTrait = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9932,8 +8714,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_comp
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda)).serializeUsing_(serialization_, v_.methodDefaults_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda)).serializeUsing_(serialization_, v_.methodGenerators_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9954,10 +8734,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9972,8 +8750,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_comp
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda)).serializeUsing_(serialization_, v_.methodDefaults_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda)).serializeUsing_(serialization_, v_.methodGenerators_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -9997,10 +8773,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_DInstance = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -10015,8 +8789,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_comp
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DFunction).serializeUsing_(serialization_, v_.methods_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.derived_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -10037,10 +8809,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -10055,8 +8825,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_comp
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DFunction).serializeUsing_(serialization_, v_.methods_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.derived_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -10080,10 +8848,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_Term = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 if(value_a.EString) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
@@ -10094,8 +8860,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.value_)
 return
 }
-}
-{
 if(value_a.EChar) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -10106,8 +8870,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.value_)
 return
 }
-}
-{
 if(value_a.EInt) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
@@ -10118,8 +8880,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.value_)
 return
 }
-}
-{
 if(value_a.EFloat) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
@@ -10130,8 +8890,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.value_)
 return
 }
-}
-{
 if(value_a.EVariable) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
@@ -10142,8 +8900,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.name_)
 return
 }
-}
-{
 if(value_a.ELambda) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
@@ -10154,8 +8910,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda.serializeUsing_(serialization_, v_.lambda_)
 return
 }
-}
-{
 if(value_a.EFunctions) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
@@ -10167,8 +8921,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_comp
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.body_)
 return
 }
-}
-{
 if(value_a.ELet) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
@@ -10183,8 +8935,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.ser
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.body_)
 return
 }
-}
-{
 if(value_a.ESequential) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
@@ -10196,8 +8946,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.ser
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.after_)
 return
 }
-}
-{
 if(value_a.EAssign) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
@@ -10210,8 +8958,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.value_)
 return
 }
-}
-{
 if(value_a.EAssignField) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
@@ -10225,8 +8971,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.value_)
 return
 }
-}
-{
 if(value_a.EPipe) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -10239,8 +8983,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.ser
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.function_)
 return
 }
-}
-{
 if(value_a.ECall) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -10255,8 +8997,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_comp
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Dictionary).serializeUsing_(serialization_, v_.dictionaries_)
 return
 }
-}
-{
 if(value_a.EList) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -10268,8 +9008,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term, ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool)).serializeUsing_(serialization_, v_.items_)
 return
 }
-}
-{
 if(value_a.ECopy) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -10282,8 +9020,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Field).serializeUsing_(serialization_, v_.arguments_)
 return
 }
-}
-{
 if(value_a.EVariant) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
@@ -10296,8 +9032,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_comp
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Argument)).serializeUsing_(serialization_, v_.arguments_)
 return
 }
-}
-{
 if(value_a.EVariantIs) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
@@ -10309,8 +9043,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).serializeUsing_(serialization_, v_.typeArguments_)
 return
 }
-}
-{
 if(value_a.ERecord) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
@@ -10321,8 +9053,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Field).serializeUsing_(serialization_, v_.fields_)
 return
 }
-}
-{
 if(value_a.EField) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
@@ -10335,8 +9065,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.field_)
 return
 }
-}
-{
 if(value_a.EWildcard) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
@@ -10346,8 +9074,6 @@ serialization_.offset_ += 1;
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, v_.at_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.index_)
 return
-}
-}
 }
 },
 deserializeUsing_(serialization_) {
@@ -10502,10 +9228,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 if(value_a.EString) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
@@ -10516,8 +9240,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.value_)
 return
 }
-}
-{
 if(value_a.EChar) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -10528,8 +9250,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.value_)
 return
 }
-}
-{
 if(value_a.EInt) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
@@ -10540,8 +9260,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.value_)
 return
 }
-}
-{
 if(value_a.EFloat) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
@@ -10552,8 +9270,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.value_)
 return
 }
-}
-{
 if(value_a.EVariable) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
@@ -10564,8 +9280,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.name_)
 return
 }
-}
-{
 if(value_a.ELambda) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
@@ -10576,8 +9290,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda.serializeUsing_(serialization_, v_.lambda_)
 return
 }
-}
-{
 if(value_a.EFunctions) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
@@ -10589,8 +9301,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_comp
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.body_)
 return
 }
-}
-{
 if(value_a.ELet) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
@@ -10605,8 +9315,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.ser
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.body_)
 return
 }
-}
-{
 if(value_a.ESequential) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
@@ -10618,8 +9326,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.ser
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.after_)
 return
 }
-}
-{
 if(value_a.EAssign) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
@@ -10632,8 +9338,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.value_)
 return
 }
-}
-{
 if(value_a.EAssignField) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
@@ -10647,8 +9351,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.value_)
 return
 }
-}
-{
 if(value_a.EPipe) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -10661,8 +9363,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.ser
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.function_)
 return
 }
-}
-{
 if(value_a.ECall) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -10677,8 +9377,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_comp
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Dictionary).serializeUsing_(serialization_, v_.dictionaries_)
 return
 }
-}
-{
 if(value_a.EList) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -10690,8 +9388,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term, ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool)).serializeUsing_(serialization_, v_.items_)
 return
 }
-}
-{
 if(value_a.ECopy) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -10704,8 +9400,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Field).serializeUsing_(serialization_, v_.arguments_)
 return
 }
-}
-{
 if(value_a.EVariant) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
@@ -10718,8 +9412,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_comp
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Argument)).serializeUsing_(serialization_, v_.arguments_)
 return
 }
-}
-{
 if(value_a.EVariantIs) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
@@ -10731,8 +9423,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).serializeUsing_(serialization_, v_.typeArguments_)
 return
 }
-}
-{
 if(value_a.ERecord) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
@@ -10743,8 +9433,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Field).serializeUsing_(serialization_, v_.fields_)
 return
 }
-}
-{
 if(value_a.EField) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
@@ -10757,8 +9445,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.field_)
 return
 }
-}
-{
 if(value_a.EWildcard) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
@@ -10768,8 +9454,6 @@ serialization_.offset_ += 1;
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, v_.at_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.index_)
 return
-}
-}
 }
 },
 async deserializeUsing_$(serialization_, $task) {
@@ -10927,10 +9611,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_CallTarget = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 if(value_a.DynamicCall) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
@@ -10941,8 +9623,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.tailCall_)
 return
 }
-}
-{
 if(value_a.StaticCall) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
@@ -10953,8 +9633,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.tailCall_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.instanceCall_)
 return
-}
-}
 }
 },
 deserializeUsing_(serialization_) {
@@ -10983,10 +9661,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 if(value_a.DynamicCall) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
@@ -10997,8 +9673,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.tailCall_)
 return
 }
-}
-{
 if(value_a.StaticCall) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
@@ -11009,8 +9683,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.tailCall_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.instanceCall_)
 return
-}
-}
 }
 },
 async deserializeUsing_$(serialization_, $task) {
@@ -11042,10 +9714,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_MatchCase = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -11056,8 +9726,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_comp
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_MatchGuard).serializeUsing_(serialization_, v_.guards_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.body_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -11078,10 +9746,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -11092,8 +9758,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_comp
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_MatchGuard).serializeUsing_(serialization_, v_.guards_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.body_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -11117,10 +9781,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_MatchPattern = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 if(value_a.PString) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
@@ -11131,8 +9793,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.value_)
 return
 }
-}
-{
 if(value_a.PInt) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
@@ -11143,8 +9803,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.value_)
 return
 }
-}
-{
 if(value_a.PChar) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -11155,8 +9813,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.value_)
 return
 }
-}
-{
 if(value_a.PVariable) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
@@ -11167,8 +9823,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.name_)
 return
 }
-}
-{
 if(value_a.PVariant) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
@@ -11180,8 +9834,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_MatchPattern).serializeUsing_(serialization_, v_.patterns_)
 return
 }
-}
-{
 if(value_a.PVariantAs) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
@@ -11194,8 +9846,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.variable_)
 return
 }
-}
-{
 if(value_a.PAlias) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
@@ -11206,8 +9856,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_MatchPattern.serializeUsing_(serialization_, v_.pattern_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.variable_)
 return
-}
-}
 }
 },
 deserializeUsing_(serialization_) {
@@ -11271,10 +9919,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 if(value_a.PString) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
@@ -11285,8 +9931,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.value_)
 return
 }
-}
-{
 if(value_a.PInt) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
@@ -11297,8 +9941,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.value_)
 return
 }
-}
-{
 if(value_a.PChar) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -11309,8 +9951,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.value_)
 return
 }
-}
-{
 if(value_a.PVariable) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
@@ -11321,8 +9961,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.name_)
 return
 }
-}
-{
 if(value_a.PVariant) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
@@ -11334,8 +9972,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_MatchPattern).serializeUsing_(serialization_, v_.patterns_)
 return
 }
-}
-{
 if(value_a.PVariantAs) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
@@ -11348,8 +9984,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.variable_)
 return
 }
-}
-{
 if(value_a.PAlias) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
@@ -11360,8 +9994,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_MatchPattern.serializeUsing_(serialization_, v_.pattern_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.variable_)
 return
-}
-}
 }
 },
 async deserializeUsing_$(serialization_, $task) {
@@ -11428,10 +10060,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_MatchGuard = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -11441,8 +10071,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.term_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_MatchPattern.serializeUsing_(serialization_, v_.pattern_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -11463,10 +10091,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -11476,8 +10102,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.term_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_MatchPattern.serializeUsing_(serialization_, v_.pattern_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -11501,10 +10125,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_Dictionary = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -11516,8 +10138,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.typeName_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Dictionary).serializeUsing_(serialization_, v_.dictionaries_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -11538,10 +10158,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -11553,8 +10171,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.typeName_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Dictionary).serializeUsing_(serialization_, v_.dictionaries_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -11578,10 +10194,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_Signature = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -11596,8 +10210,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_comp
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.serializeUsing_(serialization_, v_.returnType_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.serializeUsing_(serialization_, v_.effect_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -11618,10 +10230,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -11636,8 +10246,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_comp
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.serializeUsing_(serialization_, v_.returnType_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.serializeUsing_(serialization_, v_.effect_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -11661,10 +10269,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -11674,8 +10280,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.serializeUsing_(serialization_, v_.effect_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_MatchCase).serializeUsing_(serialization_, v_.cases_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -11696,10 +10300,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -11709,8 +10311,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.serializeUsing_(serialization_, v_.effect_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_MatchCase).serializeUsing_(serialization_, v_.cases_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -11734,10 +10334,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_Variant = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -11747,8 +10345,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.name_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Parameter).serializeUsing_(serialization_, v_.fields_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -11769,10 +10365,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -11782,8 +10376,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.name_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Parameter).serializeUsing_(serialization_, v_.fields_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -11807,10 +10399,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_Parameter = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -11822,8 +10412,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.serializeUsing_(serialization_, v_.valueType_);
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term).serializeUsing_(serialization_, v_.default_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -11844,10 +10432,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -11859,8 +10445,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.serializeUsing_(serialization_, v_.valueType_);
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term).serializeUsing_(serialization_, v_.default_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -11884,10 +10468,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_Argument = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -11897,8 +10479,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.name_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.value_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -11919,10 +10499,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -11932,8 +10510,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.name_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.value_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -11957,10 +10533,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_Field = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -11970,8 +10544,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.name_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.value_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -11992,10 +10564,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -12005,8 +10575,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.name_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.serializeUsing_(serialization_, v_.value_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -12030,10 +10598,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_Constraint = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -12043,8 +10609,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.name_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).serializeUsing_(serialization_, v_.generics_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -12065,10 +10629,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -12078,8 +10640,6 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.name_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).serializeUsing_(serialization_, v_.generics_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -12103,10 +10663,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_Target = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 if(value_a.FireflyTarget) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
@@ -12116,8 +10674,6 @@ serialization_.offset_ += 1;
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda.serializeUsing_(serialization_, v_.lambda_)
 return
 }
-}
-{
 if(value_a.ForeignTarget) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
@@ -12127,8 +10683,6 @@ serialization_.offset_ += 1;
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.syncCode_);
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.asyncCode_)
 return
-}
-}
 }
 },
 deserializeUsing_(serialization_) {
@@ -12157,10 +10711,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 if(value_a.FireflyTarget) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
@@ -12170,8 +10722,6 @@ serialization_.offset_ += 1;
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda.serializeUsing_(serialization_, v_.lambda_)
 return
 }
-}
-{
 if(value_a.ForeignTarget) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
@@ -12181,8 +10731,6 @@ serialization_.offset_ += 1;
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.syncCode_);
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.asyncCode_)
 return
-}
-}
 }
 },
 async deserializeUsing_$(serialization_, $task) {
@@ -12214,10 +10762,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_Type = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 if(value_a.TConstructor) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
@@ -12229,8 +10775,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).serializeUsing_(serialization_, v_.generics_)
 return
 }
-}
-{
 if(value_a.TVariable) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
@@ -12240,8 +10784,6 @@ serialization_.offset_ += 1;
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, v_.at_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.index_)
 return
-}
-}
 }
 },
 deserializeUsing_(serialization_) {
@@ -12270,10 +10812,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 if(value_a.TConstructor) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
@@ -12285,8 +10825,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).serializeUsing_(serialization_, v_.generics_)
 return
 }
-}
-{
 if(value_a.TVariable) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
@@ -12296,8 +10834,6 @@ serialization_.offset_ += 1;
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, v_.at_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.index_)
 return
-}
-}
 }
 },
 async deserializeUsing_$(serialization_, $task) {
@@ -12329,10 +10865,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_Safety = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 if(value_a.Safe) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
@@ -12341,8 +10875,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.Unsafe) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
@@ -12351,8 +10883,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.Trusted) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
@@ -12360,8 +10890,6 @@ ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2);
 serialization_.offset_ += 1
 return
-}
-}
 }
 },
 deserializeUsing_(serialization_) {
@@ -12397,10 +10925,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 if(value_a.Safe) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
@@ -12409,8 +10935,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.Unsafe) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
@@ -12419,8 +10943,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.Trusted) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
@@ -12428,8 +10950,6 @@ ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2);
 serialization_.offset_ += 1
 return
-}
-}
 }
 },
 async deserializeUsing_$(serialization_, $task) {
@@ -12468,10 +10988,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_Version = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -12482,8 +11000,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serialize
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.minor_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.patch_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -12504,10 +11020,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -12518,8 +11032,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serialize
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.minor_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.patch_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);

@@ -218,7 +218,6 @@ return ff_core_Any.internalAnyTag_(((((("ff:core/Pair.Pair" + "[") + ff_core_Any
 
 export function ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal_Equal$A, ff_core_Equal_Equal$B) { return {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -231,11 +230,9 @@ return
 {
 return (ff_core_Equal_Equal$A.equals_(x_.first_, y_.first_) && ff_core_Equal_Equal$B.equals_(x_.second_, y_.second_))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -248,17 +245,14 @@ return
 {
 return (ff_core_Equal_Equal$A.equals_(x_.first_, y_.first_) && ff_core_Equal_Equal$B.equals_(x_.second_, y_.second_))
 return
-}
 }
 }
 }}
 
 export function ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$A, ff_core_Serializable_Serializable$B) { return {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -267,8 +261,6 @@ serialization_.offset_ += 1;
 ff_core_Serializable_Serializable$A.serializeUsing_(serialization_, v_.first_);
 ff_core_Serializable_Serializable$B.serializeUsing_(serialization_, v_.second_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -289,10 +281,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -301,8 +291,6 @@ serialization_.offset_ += 1;
 ff_core_Serializable_Serializable$A.serializeUsing_(serialization_, v_.first_);
 ff_core_Serializable_Serializable$B.serializeUsing_(serialization_, v_.second_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);

@@ -223,9 +223,14 @@ extend self: JsEmitter {
                     }.join("\n")
                     let body = self.emitTailCall {
                         let casesString = cases.map {
-                            "{\n" + self.emitCase(escapedArguments, _, True, True, async) + "\n}"
+                            let caseString = self.emitCase(escapedArguments, _, True, True, async)
+                            if(cases.size() == 1 || caseString.startsWith("if(")) {
+                                caseString
+                            } else {
+                                "{\n" + caseString + "\n}"
+                            }
                         }.join("\n")
-                        "{\n" + shadowingWorkaround + "\n" + casesString + "\n}"
+                        shadowingWorkaround + "\n" + casesString
                     }
                     signature + " {\n" + body + "\n}"
             }

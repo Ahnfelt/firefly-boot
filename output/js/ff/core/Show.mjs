@@ -102,37 +102,25 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 export const ff_core_Show_Show$ff_core_Bool_Bool = {
 show_(value_) {
-{
 const value_a = value_;
-{
 if(!value_a) {
 return "False"
 return
 }
-}
-{
 if(value_a) {
 return "True"
 return
-}
-}
 }
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 if(!value_a) {
 return "False"
 return
 }
-}
-{
 if(value_a) {
 return "True"
 return
-}
-}
 }
 }
 };

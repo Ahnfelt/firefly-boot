@@ -115,7 +115,6 @@ return ff_core_Any.internalAnyTag_((("ff:core/Unit.Unit" + "[") + "]"))
 
 export const ff_core_Equal_Equal$ff_core_Unit_Unit = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -128,11 +127,9 @@ return
 {
 return true
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -145,7 +142,6 @@ return
 {
 return true
 return
-}
 }
 }
 };

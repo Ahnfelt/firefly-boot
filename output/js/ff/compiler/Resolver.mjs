@@ -509,35 +509,25 @@ return
 }
 
 export function Resolver_resolveTerm(self_, term_, topLevel_) {
-{
 const self_a = self_;
 const term_a = term_;
 const topLevel_a = topLevel_;
-{
 if(term_a.EString) {
 return term_
 return
 }
-}
-{
 if(term_a.EChar) {
 return term_
 return
 }
-}
-{
 if(term_a.EInt) {
 return term_
 return
 }
-}
-{
 if(term_a.EFloat) {
 return term_
 return
 }
-}
-{
 if(term_a.EVariable) {
 const e_ = term_a;
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
@@ -562,8 +552,6 @@ return term_
 }))
 return
 }
-}
-{
 if(term_a.EList) {
 const at_ = term_a.at_;
 const t_ = term_a.elementType_;
@@ -578,8 +566,6 @@ return
 })))
 return
 }
-}
-{
 if(term_a.EVariant) {
 const at_ = term_a.at_;
 const name_ = term_a.name_;
@@ -603,8 +589,6 @@ return
 })))
 return
 }
-}
-{
 if(term_a.EVariantIs) {
 const at_ = term_a.at_;
 const name_ = term_a.name_;
@@ -616,8 +600,6 @@ return ff_compiler_Resolver.Resolver_resolveType(self_, _w1, topLevel_)
 })))
 return
 }
-}
-{
 if(term_a.ECopy) {
 const at_ = term_a.at_;
 const name_ = term_a.name_;
@@ -637,8 +619,6 @@ return
 })))
 return
 }
-}
-{
 if(term_a.EField) {
 const e_ = term_a;
 {
@@ -651,8 +631,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.ELambda) {
 const at_ = term_a.at_;
 const lambdaAt_ = term_a.lambda_.at_;
@@ -663,8 +641,6 @@ return ff_compiler_Resolver.Resolver_resolveCase(self_, _w1, topLevel_)
 }))))
 return
 }
-}
-{
 if(term_a.EPipe) {
 const at_ = term_a.at_;
 const value_ = term_a.value_;
@@ -673,8 +649,6 @@ const function_ = term_a.function_;
 return ff_compiler_Syntax.EPipe(at_, ff_compiler_Resolver.Resolver_resolveTerm(self_, value_, topLevel_), ff_compiler_Resolver.Resolver_resolveType(self_, effect_, topLevel_), ff_compiler_Resolver.Resolver_resolveTerm(self_, function_, topLevel_))
 return
 }
-}
-{
 if(term_a.ECall) {
 const at_ = term_a.at_;
 if(term_a.target_.DynamicCall) {
@@ -700,8 +674,6 @@ return
 return
 }
 }
-}
-{
 if(term_a.ECall) {
 const at_ = term_a.at_;
 if(term_a.target_.StaticCall) {
@@ -709,8 +681,6 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 return
 }
 }
-}
-{
 if(term_a.ERecord) {
 const at_ = term_a.at_;
 const fields_ = term_a.fields_;
@@ -726,8 +696,6 @@ return
 })))
 return
 }
-}
-{
 if(term_a.EWildcard) {
 const e_ = term_a;
 if((e_.index_ === 0)) {
@@ -743,8 +711,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.EFunctions) {
 const at_ = term_a.at_;
 const functions_ = term_a.functions_;
@@ -767,8 +733,6 @@ return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, _w1, topL
 })), ff_compiler_Resolver.Resolver_resolveTerm(self2_, body_, topLevel_))
 return
 }
-}
-{
 if(term_a.ELet) {
 const e_ = term_a;
 const self2_ = (((_c) => {
@@ -789,8 +753,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.ESequential) {
 const at_ = term_a.at_;
 const before_ = term_a.before_;
@@ -798,8 +760,6 @@ const after_ = term_a.after_;
 return ff_compiler_Syntax.ESequential(at_, ff_compiler_Resolver.Resolver_resolveTerm(self_, before_, topLevel_), ff_compiler_Resolver.Resolver_resolveTerm(self_, after_, topLevel_))
 return
 }
-}
-{
 if(term_a.EAssign) {
 const at_ = term_a.at_;
 const operator_ = term_a.operator_;
@@ -810,8 +770,6 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 })), ff_compiler_Resolver.Resolver_resolveTerm(self_, value_, topLevel_))
 return
 }
-}
-{
 if(term_a.EAssignField) {
 const at_ = term_a.at_;
 const operator_ = term_a.operator_;
@@ -822,21 +780,15 @@ return ff_compiler_Syntax.EAssignField(at_, operator_, ff_compiler_Resolver.Reso
 return
 }
 }
-}
-}
 
 export function Resolver_resolveType(self_, type_, topLevel_) {
-{
 const self_a = self_;
 const type_a = type_;
 const topLevel_a = topLevel_;
-{
 if(type_a.TVariable) {
 return type_
 return
 }
-}
-{
 if(type_a.TConstructor) {
 const constructor_ = type_a;
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
@@ -885,8 +837,6 @@ return
 }
 }
 return
-}
-}
 }
 }
 
@@ -1006,27 +956,19 @@ return
 
 export function Resolver_resolveCase(self_, case_, topLevel_) {
 function findVariables_(pattern_) {
-{
 const pattern_a = pattern_;
-{
 if(pattern_a.PString) {
 return ff_core_Map.empty_()
 return
 }
-}
-{
 if(pattern_a.PInt) {
 return ff_core_Map.empty_()
 return
 }
-}
-{
 if(pattern_a.PChar) {
 return ff_core_Map.empty_()
 return
 }
-}
-{
 if(pattern_a.PVariable) {
 const at_ = pattern_a.at_;
 if(pattern_a.name_.Some) {
@@ -1035,16 +977,12 @@ return ff_core_List.List_toMap([ff_core_Pair.Pair(name_, ff_core_Pair.Pair(at_, 
 return
 }
 }
-}
-{
 if(pattern_a.PVariable) {
 if(pattern_a.name_.None) {
 return ff_core_Map.empty_()
 return
 }
 }
-}
-{
 if(pattern_a.PVariant) {
 const patterns_ = pattern_a.patterns_;
 return ff_core_List.List_foldLeft(ff_core_List.List_map(patterns_, ((pattern_) => {
@@ -1054,8 +992,6 @@ return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$
 }))
 return
 }
-}
-{
 if(pattern_a.PVariantAs) {
 const at_ = pattern_a.at_;
 const variableAt_ = pattern_a.variableAt_;
@@ -1065,16 +1001,12 @@ return ff_core_Pair.Pair(x_, ff_core_Pair.Pair(variableAt_, x_))
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
-}
-{
 if(pattern_a.PAlias) {
 const at_ = pattern_a.at_;
 const pattern_ = pattern_a.pattern_;
 const variable_ = pattern_a.variable_;
 return ff_core_Map.Map_addAll(ff_core_List.List_toMap([ff_core_Pair.Pair(variable_, ff_core_Pair.Pair(at_, variable_))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), findVariables_(pattern_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
-}
-}
 }
 }
 const variableMap_ = ff_core_List.List_foldLeft(ff_core_List.List_map(case_.patterns_, ((pattern_) => {
@@ -1110,34 +1042,24 @@ return ff_compiler_Resolver.Resolver_resolvePattern(self_, _w1)
 }
 
 export function Resolver_resolvePattern(self_, pattern_) {
-{
 const self_a = self_;
 const pattern_a = pattern_;
-{
 if(pattern_a.PString) {
 return pattern_
 return
 }
-}
-{
 if(pattern_a.PInt) {
 return pattern_
 return
 }
-}
-{
 if(pattern_a.PChar) {
 return pattern_
 return
 }
-}
-{
 if(pattern_a.PVariable) {
 return pattern_
 return
 }
-}
-{
 if(pattern_a.PVariant) {
 const at_ = pattern_a.at_;
 const name_ = pattern_a.name_;
@@ -1151,8 +1073,6 @@ return ff_compiler_Resolver.Resolver_resolvePattern(self_, _w1)
 return ff_compiler_Syntax.PVariant(at_, newName_, newPatterns_)
 return
 }
-}
-{
 if(pattern_a.PVariantAs) {
 const at_ = pattern_a.at_;
 const name_ = pattern_a.name_;
@@ -1164,8 +1084,6 @@ return name_
 return ff_compiler_Syntax.PVariantAs(at_, newName_, variableAt_, variable_)
 return
 }
-}
-{
 if(pattern_a.PAlias) {
 const at_ = pattern_a.at_;
 const pattern_ = pattern_a.pattern_;
@@ -1175,20 +1093,14 @@ return ff_compiler_Syntax.PAlias(at_, newPattern_, variable_)
 return
 }
 }
-}
-}
 
 export function Resolver_containsAsyncType(self_, type_) {
-{
 const self_a = self_;
 const type_a = type_;
-{
 if(type_a.TVariable) {
 return false
 return
 }
-}
-{
 if(type_a.TConstructor) {
 const constructor_ = type_a;
 const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
@@ -1205,8 +1117,6 @@ return ((isFunctionType_ || ff_core_Set.Set_contains(self_.asyncTypes_, construc
 return ff_compiler_Resolver.Resolver_containsAsyncType(self_, _w1)
 })))
 return
-}
-}
 }
 }
 
@@ -1603,35 +1513,25 @@ return
 }
 
 export async function Resolver_resolveTerm$(self_, term_, topLevel_, $task) {
-{
 const self_a = self_;
 const term_a = term_;
 const topLevel_a = topLevel_;
-{
 if(term_a.EString) {
 return term_
 return
 }
-}
-{
 if(term_a.EChar) {
 return term_
 return
 }
-}
-{
 if(term_a.EInt) {
 return term_
 return
 }
-}
-{
 if(term_a.EFloat) {
 return term_
 return
 }
-}
-{
 if(term_a.EVariable) {
 const e_ = term_a;
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
@@ -1656,8 +1556,6 @@ return term_
 }))
 return
 }
-}
-{
 if(term_a.EList) {
 const at_ = term_a.at_;
 const t_ = term_a.elementType_;
@@ -1672,8 +1570,6 @@ return
 })))
 return
 }
-}
-{
 if(term_a.EVariant) {
 const at_ = term_a.at_;
 const name_ = term_a.name_;
@@ -1697,8 +1593,6 @@ return
 })))
 return
 }
-}
-{
 if(term_a.EVariantIs) {
 const at_ = term_a.at_;
 const name_ = term_a.name_;
@@ -1710,8 +1604,6 @@ return ff_compiler_Resolver.Resolver_resolveType(self_, _w1, topLevel_)
 })))
 return
 }
-}
-{
 if(term_a.ECopy) {
 const at_ = term_a.at_;
 const name_ = term_a.name_;
@@ -1731,8 +1623,6 @@ return
 })))
 return
 }
-}
-{
 if(term_a.EField) {
 const e_ = term_a;
 {
@@ -1745,8 +1635,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.ELambda) {
 const at_ = term_a.at_;
 const lambdaAt_ = term_a.lambda_.at_;
@@ -1757,8 +1645,6 @@ return ff_compiler_Resolver.Resolver_resolveCase(self_, _w1, topLevel_)
 }))))
 return
 }
-}
-{
 if(term_a.EPipe) {
 const at_ = term_a.at_;
 const value_ = term_a.value_;
@@ -1767,8 +1653,6 @@ const function_ = term_a.function_;
 return ff_compiler_Syntax.EPipe(at_, ff_compiler_Resolver.Resolver_resolveTerm(self_, value_, topLevel_), ff_compiler_Resolver.Resolver_resolveType(self_, effect_, topLevel_), ff_compiler_Resolver.Resolver_resolveTerm(self_, function_, topLevel_))
 return
 }
-}
-{
 if(term_a.ECall) {
 const at_ = term_a.at_;
 if(term_a.target_.DynamicCall) {
@@ -1794,8 +1678,6 @@ return
 return
 }
 }
-}
-{
 if(term_a.ECall) {
 const at_ = term_a.at_;
 if(term_a.target_.StaticCall) {
@@ -1803,8 +1685,6 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 return
 }
 }
-}
-{
 if(term_a.ERecord) {
 const at_ = term_a.at_;
 const fields_ = term_a.fields_;
@@ -1820,8 +1700,6 @@ return
 })))
 return
 }
-}
-{
 if(term_a.EWildcard) {
 const e_ = term_a;
 if((e_.index_ === 0)) {
@@ -1837,8 +1715,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.EFunctions) {
 const at_ = term_a.at_;
 const functions_ = term_a.functions_;
@@ -1861,8 +1737,6 @@ return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, _w1, topL
 })), ff_compiler_Resolver.Resolver_resolveTerm(self2_, body_, topLevel_))
 return
 }
-}
-{
 if(term_a.ELet) {
 const e_ = term_a;
 const self2_ = (((_c) => {
@@ -1883,8 +1757,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.ESequential) {
 const at_ = term_a.at_;
 const before_ = term_a.before_;
@@ -1892,8 +1764,6 @@ const after_ = term_a.after_;
 return ff_compiler_Syntax.ESequential(at_, ff_compiler_Resolver.Resolver_resolveTerm(self_, before_, topLevel_), ff_compiler_Resolver.Resolver_resolveTerm(self_, after_, topLevel_))
 return
 }
-}
-{
 if(term_a.EAssign) {
 const at_ = term_a.at_;
 const operator_ = term_a.operator_;
@@ -1904,8 +1774,6 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 })), ff_compiler_Resolver.Resolver_resolveTerm(self_, value_, topLevel_))
 return
 }
-}
-{
 if(term_a.EAssignField) {
 const at_ = term_a.at_;
 const operator_ = term_a.operator_;
@@ -1916,21 +1784,15 @@ return ff_compiler_Syntax.EAssignField(at_, operator_, ff_compiler_Resolver.Reso
 return
 }
 }
-}
-}
 
 export async function Resolver_resolveType$(self_, type_, topLevel_, $task) {
-{
 const self_a = self_;
 const type_a = type_;
 const topLevel_a = topLevel_;
-{
 if(type_a.TVariable) {
 return type_
 return
 }
-}
-{
 if(type_a.TConstructor) {
 const constructor_ = type_a;
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
@@ -1979,8 +1841,6 @@ return
 }
 }
 return
-}
-}
 }
 }
 
@@ -2100,27 +1960,19 @@ return
 
 export async function Resolver_resolveCase$(self_, case_, topLevel_, $task) {
 function findVariables_(pattern_) {
-{
 const pattern_a = pattern_;
-{
 if(pattern_a.PString) {
 return ff_core_Map.empty_()
 return
 }
-}
-{
 if(pattern_a.PInt) {
 return ff_core_Map.empty_()
 return
 }
-}
-{
 if(pattern_a.PChar) {
 return ff_core_Map.empty_()
 return
 }
-}
-{
 if(pattern_a.PVariable) {
 const at_ = pattern_a.at_;
 if(pattern_a.name_.Some) {
@@ -2129,16 +1981,12 @@ return ff_core_List.List_toMap([ff_core_Pair.Pair(name_, ff_core_Pair.Pair(at_, 
 return
 }
 }
-}
-{
 if(pattern_a.PVariable) {
 if(pattern_a.name_.None) {
 return ff_core_Map.empty_()
 return
 }
 }
-}
-{
 if(pattern_a.PVariant) {
 const patterns_ = pattern_a.patterns_;
 return ff_core_List.List_foldLeft(ff_core_List.List_map(patterns_, ((pattern_) => {
@@ -2148,8 +1996,6 @@ return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$
 }))
 return
 }
-}
-{
 if(pattern_a.PVariantAs) {
 const at_ = pattern_a.at_;
 const variableAt_ = pattern_a.variableAt_;
@@ -2159,16 +2005,12 @@ return ff_core_Pair.Pair(x_, ff_core_Pair.Pair(variableAt_, x_))
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
-}
-{
 if(pattern_a.PAlias) {
 const at_ = pattern_a.at_;
 const pattern_ = pattern_a.pattern_;
 const variable_ = pattern_a.variable_;
 return ff_core_Map.Map_addAll(ff_core_List.List_toMap([ff_core_Pair.Pair(variable_, ff_core_Pair.Pair(at_, variable_))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), findVariables_(pattern_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
-}
-}
 }
 }
 const variableMap_ = ff_core_List.List_foldLeft(ff_core_List.List_map(case_.patterns_, ((pattern_) => {
@@ -2204,34 +2046,24 @@ return ff_compiler_Resolver.Resolver_resolvePattern(self_, _w1)
 }
 
 export async function Resolver_resolvePattern$(self_, pattern_, $task) {
-{
 const self_a = self_;
 const pattern_a = pattern_;
-{
 if(pattern_a.PString) {
 return pattern_
 return
 }
-}
-{
 if(pattern_a.PInt) {
 return pattern_
 return
 }
-}
-{
 if(pattern_a.PChar) {
 return pattern_
 return
 }
-}
-{
 if(pattern_a.PVariable) {
 return pattern_
 return
 }
-}
-{
 if(pattern_a.PVariant) {
 const at_ = pattern_a.at_;
 const name_ = pattern_a.name_;
@@ -2245,8 +2077,6 @@ return ff_compiler_Resolver.Resolver_resolvePattern(self_, _w1)
 return ff_compiler_Syntax.PVariant(at_, newName_, newPatterns_)
 return
 }
-}
-{
 if(pattern_a.PVariantAs) {
 const at_ = pattern_a.at_;
 const name_ = pattern_a.name_;
@@ -2258,8 +2088,6 @@ return name_
 return ff_compiler_Syntax.PVariantAs(at_, newName_, variableAt_, variable_)
 return
 }
-}
-{
 if(pattern_a.PAlias) {
 const at_ = pattern_a.at_;
 const pattern_ = pattern_a.pattern_;
@@ -2269,20 +2097,14 @@ return ff_compiler_Syntax.PAlias(at_, newPattern_, variable_)
 return
 }
 }
-}
-}
 
 export async function Resolver_containsAsyncType$(self_, type_, $task) {
-{
 const self_a = self_;
 const type_a = type_;
-{
 if(type_a.TVariable) {
 return false
 return
 }
-}
-{
 if(type_a.TConstructor) {
 const constructor_ = type_a;
 const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
@@ -2299,8 +2121,6 @@ return ((isFunctionType_ || ff_core_Set.Set_contains(self_.asyncTypes_, construc
 return ff_compiler_Resolver.Resolver_containsAsyncType(self_, _w1)
 })))
 return
-}
-}
 }
 }
 

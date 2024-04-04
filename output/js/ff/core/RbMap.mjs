@@ -115,15 +115,11 @@ return {T: true, color_, left_, key_, value_, right_};
 
 export function insert_(x_, xv_, s_, ff_core_Ordering_Order$K) {
 function ins_(s_) {
-{
 const s_a = s_;
-{
 if(s_a.E) {
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.E(), x_, xv_, ff_core_RbMap.E())
 return
 }
-}
-{
 if(s_a.T) {
 if(s_a.color_.B) {
 const a_ = s_a.left_;
@@ -154,8 +150,6 @@ return
 return
 }
 }
-}
-{
 if(s_a.T) {
 if(s_a.color_.R) {
 const a_ = s_a.left_;
@@ -184,8 +178,6 @@ return
 }
 }
 return
-}
-}
 }
 }
 }
@@ -211,7 +203,6 @@ return
 }
 
 export function member_(key_, tree_, ff_core_Ordering_Order$K) {
-{
 const key_a = key_;
 const tree_a = tree_;
 {
@@ -252,15 +243,12 @@ return
 }
 }
 }
-}
 
 export function balance_(tree1_, key_, value_, tree2_, ff_core_Ordering_Order$K) {
-{
 const tree1_a = tree1_;
 const key_a = key_;
 const value_a = value_;
 const tree2_a = tree2_;
-{
 if(tree1_a.T) {
 if(tree1_a.color_.R) {
 const a_ = tree1_a.left_;
@@ -281,8 +269,6 @@ return
 }
 }
 }
-}
-{
 if(tree1_a.T) {
 if(tree1_a.color_.R) {
 if(tree1_a.left_.T) {
@@ -303,8 +289,6 @@ return
 }
 }
 }
-}
-{
 if(tree1_a.T) {
 if(tree1_a.color_.R) {
 const a_ = tree1_a.left_;
@@ -321,7 +305,6 @@ const zv_ = value_a;
 const d_ = tree2_a;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
 return
-}
 }
 }
 }
@@ -379,19 +362,14 @@ return ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_)
 return
 }
 }
-}
 
 export function delete_(x_, t_, ff_core_Ordering_Order$K) {
 function del_(ss_) {
-{
 const ss_a = ss_;
-{
 if(ss_a.E) {
 return ff_core_RbMap.E()
 return
 }
-}
-{
 if(ss_a.T) {
 const a_ = ss_a.left_;
 const y_ = ss_a.key_;
@@ -421,15 +399,11 @@ return
 return
 }
 }
-}
-}
 function delformLeft_(left_, key_, value_, right_) {
-{
 const left_a = left_;
 const key_a = key_;
 const value_a = value_;
 const right_a = right_;
-{
 if(left_a.T) {
 if(left_a.color_.B) {
 const y_ = key_a;
@@ -437,7 +411,6 @@ const yv_ = value_a;
 const b_ = right_a;
 return ff_core_RbMap.balleft_(del_(left_), y_, yv_, b_, ff_core_Ordering_Order$K)
 return
-}
 }
 }
 {
@@ -449,9 +422,7 @@ return ff_core_RbMap.T(ff_core_RbMap.R(), del_(a_), y_, yv_, b_)
 return
 }
 }
-}
 function delformRight_(left_, key_, value_, right_) {
-{
 const left_a = left_;
 const key_a = key_;
 const value_a = value_;
@@ -476,7 +447,6 @@ return ff_core_RbMap.T(ff_core_RbMap.R(), a_, y_, yv_, del_(b_))
 return
 }
 }
-}
 {
 const _1 = del_(t_);
 {
@@ -497,12 +467,10 @@ return
 }
 
 export function balleft_(tree1_, key_, value_, tree2_, ff_core_Ordering_Order$K) {
-{
 const tree1_a = tree1_;
 const key_a = key_;
 const value_a = value_;
 const tree2_a = tree2_;
-{
 if(tree1_a.T) {
 if(tree1_a.color_.R) {
 const a_ = tree1_a.left_;
@@ -514,7 +482,6 @@ const yv_ = value_a;
 const c_ = tree2_a;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, c_)
 return
-}
 }
 }
 {
@@ -559,10 +526,8 @@ return ff_core_Core.panic_("Unexhaustive match in balleft")
 return
 }
 }
-}
 
 export function balright_(tree1_, key_, value_, tree2_, ff_core_Ordering_Order$K) {
-{
 const tree1_a = tree1_;
 const key_a = key_;
 const value_a = value_;
@@ -582,7 +547,6 @@ return
 }
 }
 }
-{
 if(tree1_a.T) {
 if(tree1_a.color_.B) {
 const a_ = tree1_a.left_;
@@ -596,8 +560,6 @@ return ff_core_RbMap.balance_(ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b_
 return
 }
 }
-}
-{
 if(tree1_a.T) {
 if(tree1_a.color_.R) {
 const a_ = tree1_a.left_;
@@ -618,18 +580,14 @@ return
 }
 }
 }
-}
 {
 return ff_core_Core.panic_("Unexhaustive match in balright")
 return
 }
 }
-}
 
 export function sub1_(tree_, ff_core_Ordering_Order$K) {
-{
 const tree_a = tree_;
-{
 if(tree_a.T) {
 if(tree_a.color_.B) {
 const a_ = tree_a.left_;
@@ -640,24 +598,19 @@ return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b_)
 return
 }
 }
-}
 {
 return ff_core_Core.panic_("invariance violation")
 return
 }
 }
-}
 
 export function app_(tree1_, tree2_, ff_core_Ordering_Order$K) {
-{
 const tree1_a = tree1_;
 const tree2_a = tree2_;
-{
 if(tree1_a.E) {
 const b_ = tree2_a;
 return b_
 return
-}
 }
 {
 const a_ = tree1_a;
@@ -666,7 +619,6 @@ return a_
 return
 }
 }
-{
 if(tree1_a.T) {
 if(tree1_a.color_.R) {
 const a_ = tree1_a.left_;
@@ -704,8 +656,6 @@ return
 }
 }
 }
-}
-{
 if(tree1_a.T) {
 if(tree1_a.color_.B) {
 const a_ = tree1_a.left_;
@@ -743,7 +693,6 @@ return
 }
 }
 }
-}
 {
 const a_ = tree1_a;
 if(tree2_a.T) {
@@ -757,7 +706,6 @@ return
 }
 }
 }
-{
 if(tree1_a.T) {
 if(tree1_a.color_.R) {
 const a_ = tree1_a.left_;
@@ -770,20 +718,14 @@ return
 }
 }
 }
-}
-}
 
 export async function insert_$(x_, xv_, s_, ff_core_Ordering_Order$K, $task) {
 function ins_(s_) {
-{
 const s_a = s_;
-{
 if(s_a.E) {
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.E(), x_, xv_, ff_core_RbMap.E())
 return
 }
-}
-{
 if(s_a.T) {
 if(s_a.color_.B) {
 const a_ = s_a.left_;
@@ -814,8 +756,6 @@ return
 return
 }
 }
-}
-{
 if(s_a.T) {
 if(s_a.color_.R) {
 const a_ = s_a.left_;
@@ -847,8 +787,6 @@ return
 }
 }
 }
-}
-}
 {
 const _1 = ins_(s_);
 {
@@ -871,7 +809,6 @@ return
 }
 
 export async function member_$(key_, tree_, ff_core_Ordering_Order$K, $task) {
-{
 const key_a = key_;
 const tree_a = tree_;
 {
@@ -912,15 +849,12 @@ return
 }
 }
 }
-}
 
 export async function balance_$(tree1_, key_, value_, tree2_, ff_core_Ordering_Order$K, $task) {
-{
 const tree1_a = tree1_;
 const key_a = key_;
 const value_a = value_;
 const tree2_a = tree2_;
-{
 if(tree1_a.T) {
 if(tree1_a.color_.R) {
 const a_ = tree1_a.left_;
@@ -941,8 +875,6 @@ return
 }
 }
 }
-}
-{
 if(tree1_a.T) {
 if(tree1_a.color_.R) {
 if(tree1_a.left_.T) {
@@ -963,8 +895,6 @@ return
 }
 }
 }
-}
-{
 if(tree1_a.T) {
 if(tree1_a.color_.R) {
 const a_ = tree1_a.left_;
@@ -981,7 +911,6 @@ const zv_ = value_a;
 const d_ = tree2_a;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
 return
-}
 }
 }
 }
@@ -1039,19 +968,14 @@ return ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_)
 return
 }
 }
-}
 
 export async function delete_$(x_, t_, ff_core_Ordering_Order$K, $task) {
 function del_(ss_) {
-{
 const ss_a = ss_;
-{
 if(ss_a.E) {
 return ff_core_RbMap.E()
 return
 }
-}
-{
 if(ss_a.T) {
 const a_ = ss_a.left_;
 const y_ = ss_a.key_;
@@ -1081,15 +1005,11 @@ return
 return
 }
 }
-}
-}
 function delformLeft_(left_, key_, value_, right_) {
-{
 const left_a = left_;
 const key_a = key_;
 const value_a = value_;
 const right_a = right_;
-{
 if(left_a.T) {
 if(left_a.color_.B) {
 const y_ = key_a;
@@ -1097,7 +1017,6 @@ const yv_ = value_a;
 const b_ = right_a;
 return ff_core_RbMap.balleft_(del_(left_), y_, yv_, b_, ff_core_Ordering_Order$K)
 return
-}
 }
 }
 {
@@ -1109,9 +1028,7 @@ return ff_core_RbMap.T(ff_core_RbMap.R(), del_(a_), y_, yv_, b_)
 return
 }
 }
-}
 function delformRight_(left_, key_, value_, right_) {
-{
 const left_a = left_;
 const key_a = key_;
 const value_a = value_;
@@ -1136,7 +1053,6 @@ return ff_core_RbMap.T(ff_core_RbMap.R(), a_, y_, yv_, del_(b_))
 return
 }
 }
-}
 {
 const _1 = del_(t_);
 {
@@ -1157,12 +1073,10 @@ return
 }
 
 export async function balleft_$(tree1_, key_, value_, tree2_, ff_core_Ordering_Order$K, $task) {
-{
 const tree1_a = tree1_;
 const key_a = key_;
 const value_a = value_;
 const tree2_a = tree2_;
-{
 if(tree1_a.T) {
 if(tree1_a.color_.R) {
 const a_ = tree1_a.left_;
@@ -1174,7 +1088,6 @@ const yv_ = value_a;
 const c_ = tree2_a;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, c_)
 return
-}
 }
 }
 {
@@ -1219,10 +1132,8 @@ return ff_core_Core.panic_("Unexhaustive match in balleft")
 return
 }
 }
-}
 
 export async function balright_$(tree1_, key_, value_, tree2_, ff_core_Ordering_Order$K, $task) {
-{
 const tree1_a = tree1_;
 const key_a = key_;
 const value_a = value_;
@@ -1242,7 +1153,6 @@ return
 }
 }
 }
-{
 if(tree1_a.T) {
 if(tree1_a.color_.B) {
 const a_ = tree1_a.left_;
@@ -1256,8 +1166,6 @@ return ff_core_RbMap.balance_(ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b_
 return
 }
 }
-}
-{
 if(tree1_a.T) {
 if(tree1_a.color_.R) {
 const a_ = tree1_a.left_;
@@ -1278,18 +1186,14 @@ return
 }
 }
 }
-}
 {
 return ff_core_Core.panic_("Unexhaustive match in balright")
 return
 }
 }
-}
 
 export async function sub1_$(tree_, ff_core_Ordering_Order$K, $task) {
-{
 const tree_a = tree_;
-{
 if(tree_a.T) {
 if(tree_a.color_.B) {
 const a_ = tree_a.left_;
@@ -1300,24 +1204,19 @@ return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b_)
 return
 }
 }
-}
 {
 return ff_core_Core.panic_("invariance violation")
 return
 }
 }
-}
 
 export async function app_$(tree1_, tree2_, ff_core_Ordering_Order$K, $task) {
-{
 const tree1_a = tree1_;
 const tree2_a = tree2_;
-{
 if(tree1_a.E) {
 const b_ = tree2_a;
 return b_
 return
-}
 }
 {
 const a_ = tree1_a;
@@ -1326,7 +1225,6 @@ return a_
 return
 }
 }
-{
 if(tree1_a.T) {
 if(tree1_a.color_.R) {
 const a_ = tree1_a.left_;
@@ -1364,8 +1262,6 @@ return
 }
 }
 }
-}
-{
 if(tree1_a.T) {
 if(tree1_a.color_.B) {
 const a_ = tree1_a.left_;
@@ -1403,7 +1299,6 @@ return
 }
 }
 }
-}
 {
 const a_ = tree1_a;
 if(tree2_a.T) {
@@ -1417,7 +1312,6 @@ return
 }
 }
 }
-{
 if(tree1_a.T) {
 if(tree1_a.color_.R) {
 const a_ = tree1_a.left_;
@@ -1427,8 +1321,6 @@ const b_ = tree1_a.right_;
 const c_ = tree2_a;
 return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, ff_core_RbMap.app_(b_, c_, ff_core_Ordering_Order$K))
 return
-}
-}
 }
 }
 }

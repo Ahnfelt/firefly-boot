@@ -294,15 +294,11 @@ return ff_compiler_Syntax.Location((declaration_.at_.file_ + "/<derived>"), _c.l
 const orderingType_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Ordering.Ordering", []);
 const orderingSame_ = ff_compiler_Syntax.EVariant(at_, "ff:core/Ordering.OrderingSame", [], ff_core_Option.None());
 function go_(fields_) {
-{
 const fields_a = fields_;
-{
 if(fields_a.length === 0) {
 return orderingSame_
 return
 }
-}
-{
 if(fields_a.length >= 1) {
 const head_ = fields_a[0];
 const tail_ = fields_a.slice(1);
@@ -312,8 +308,6 @@ const notEqualTerm_ = ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "!=
 const ifTerm_ = ff_compiler_Deriver.Deriver_makeIf(self_, at_, notEqualTerm_, ff_compiler_Syntax.EVariable(at_, variableName_), go_(tail_));
 return ff_compiler_Syntax.ELet(at_, false, variableName_, orderingType_, compareTerm_, ifTerm_)
 return
-}
-}
 }
 }
 return go_(fields_)
@@ -384,30 +378,22 @@ const at_ = (((_c) => {
 return ff_compiler_Syntax.Location((declaration_.at_.file_ + "/<derived>"), _c.line_, _c.column_)
 }))(declaration_.at_);
 function go_(fields_) {
-{
 const fields_a = fields_;
-{
 if(fields_a.length === 0) {
 return ff_compiler_Syntax.EVariant(at_, "ff:core/Bool.True", [], ff_core_Option.None())
 return
 }
-}
-{
 if(fields_a.length === 1) {
 const head_ = fields_a[0];
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Equal.equals", [ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "x"), head_.name_), ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "y"), head_.name_)], [])
 return
 }
-}
-{
 if(fields_a.length >= 1) {
 const head_ = fields_a[0];
 const tail_ = fields_a.slice(1);
 const equalsTerm_ = ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Equal.equals", [ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "x"), head_.name_), ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "y"), head_.name_)], []);
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "&&", [equalsTerm_, go_(tail_)], [])
 return
-}
-}
 }
 }
 return go_(fields_)
@@ -729,15 +715,11 @@ return ff_compiler_Syntax.Location((declaration_.at_.file_ + "/<derived>"), _c.l
 const orderingType_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Ordering.Ordering", []);
 const orderingSame_ = ff_compiler_Syntax.EVariant(at_, "ff:core/Ordering.OrderingSame", [], ff_core_Option.None());
 function go_(fields_) {
-{
 const fields_a = fields_;
-{
 if(fields_a.length === 0) {
 return orderingSame_
 return
 }
-}
-{
 if(fields_a.length >= 1) {
 const head_ = fields_a[0];
 const tail_ = fields_a.slice(1);
@@ -747,8 +729,6 @@ const notEqualTerm_ = ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "!=
 const ifTerm_ = ff_compiler_Deriver.Deriver_makeIf(self_, at_, notEqualTerm_, ff_compiler_Syntax.EVariable(at_, variableName_), go_(tail_));
 return ff_compiler_Syntax.ELet(at_, false, variableName_, orderingType_, compareTerm_, ifTerm_)
 return
-}
-}
 }
 }
 return go_(fields_)
@@ -819,30 +799,22 @@ const at_ = (((_c) => {
 return ff_compiler_Syntax.Location((declaration_.at_.file_ + "/<derived>"), _c.line_, _c.column_)
 }))(declaration_.at_);
 function go_(fields_) {
-{
 const fields_a = fields_;
-{
 if(fields_a.length === 0) {
 return ff_compiler_Syntax.EVariant(at_, "ff:core/Bool.True", [], ff_core_Option.None())
 return
 }
-}
-{
 if(fields_a.length === 1) {
 const head_ = fields_a[0];
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Equal.equals", [ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "x"), head_.name_), ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "y"), head_.name_)], [])
 return
 }
-}
-{
 if(fields_a.length >= 1) {
 const head_ = fields_a[0];
 const tail_ = fields_a.slice(1);
 const equalsTerm_ = ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Equal.equals", [ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "x"), head_.name_), ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "y"), head_.name_)], []);
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "&&", [equalsTerm_, go_(tail_)], [])
 return
-}
-}
 }
 }
 return go_(fields_)
@@ -999,30 +971,21 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Deriver.Deriver" + "[") + "]")
 
 export const ff_core_Show_Show$ff_compiler_Deriver_Deriver = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return "Deriver"
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return "Deriver"
 return
-}
-}
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Deriver_Deriver = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -1035,11 +998,9 @@ return
 {
 return true
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -1052,14 +1013,12 @@ return
 {
 return true
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Deriver_Deriver = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -1072,11 +1031,9 @@ return
 {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -1089,25 +1046,20 @@ return
 {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 }
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Deriver_Deriver = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -1128,18 +1080,14 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);

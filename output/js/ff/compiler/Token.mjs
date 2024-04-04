@@ -1243,393 +1243,280 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Token.TokenKind" + "[") + "]")
 
 export const ff_core_Show_Show$ff_compiler_Token_Token = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((((((((((("Token" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.code_)) + ", ") + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(z_.kind_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startLine_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startLineOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopLine_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopLineOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopOffset_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((((((((((((((((((("Token" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.code_)) + ", ") + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(z_.kind_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startLine_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startLineOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopLine_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopLineOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopOffset_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Token_TokenKind = {
 show_(value_) {
-{
 const value_a = value_;
-{
 if(value_a.LEnd) {
 const z_ = value_a;
 return "LEnd"
 return
 }
-}
-{
 if(value_a.LString) {
 const z_ = value_a;
 return "LString"
 return
 }
-}
-{
 if(value_a.LChar) {
 const z_ = value_a;
 return "LChar"
 return
 }
-}
-{
 if(value_a.LInt) {
 const z_ = value_a;
 return "LInt"
 return
 }
-}
-{
 if(value_a.LFloat) {
 const z_ = value_a;
 return "LFloat"
 return
 }
-}
-{
 if(value_a.LKeyword) {
 const z_ = value_a;
 return "LKeyword"
 return
 }
-}
-{
 if(value_a.LNamespace) {
 const z_ = value_a;
 return "LNamespace"
 return
 }
-}
-{
 if(value_a.LLower) {
 const z_ = value_a;
 return "LLower"
 return
 }
-}
-{
 if(value_a.LUpper) {
 const z_ = value_a;
 return "LUpper"
 return
 }
-}
-{
 if(value_a.LWildcard) {
 const z_ = value_a;
 return "LWildcard"
 return
 }
-}
-{
 if(value_a.LBracketLeft) {
 const z_ = value_a;
 return "LBracketLeft"
 return
 }
-}
-{
 if(value_a.LBracketRight) {
 const z_ = value_a;
 return "LBracketRight"
 return
 }
-}
-{
 if(value_a.LOperator) {
 const z_ = value_a;
 return "LOperator"
 return
 }
-}
-{
 if(value_a.LComma) {
 const z_ = value_a;
 return "LComma"
 return
 }
-}
-{
 if(value_a.LSeparator) {
 const z_ = value_a;
 return "LSeparator"
 return
 }
-}
-{
 if(value_a.LDot) {
 const z_ = value_a;
 return "LDot"
 return
 }
-}
-{
 if(value_a.LSemicolon) {
 const z_ = value_a;
 return "LSemicolon"
 return
 }
-}
-{
 if(value_a.LPipe) {
 const z_ = value_a;
 return "LPipe"
 return
 }
-}
-{
 if(value_a.LColon) {
 const z_ = value_a;
 return "LColon"
 return
 }
-}
-{
 if(value_a.LDotDotDot) {
 const z_ = value_a;
 return "LDotDotDot"
 return
 }
-}
-{
 if(value_a.LArrowThick) {
 const z_ = value_a;
 return "LArrowThick"
 return
 }
-}
-{
 if(value_a.LAssign) {
 const z_ = value_a;
 return "LAssign"
 return
 }
-}
-{
 if(value_a.LAssignPlus) {
 const z_ = value_a;
 return "LAssignPlus"
 return
 }
-}
-{
 if(value_a.LAssignMinus) {
 const z_ = value_a;
 return "LAssignMinus"
 return
 }
-}
-{
 if(value_a.LAssignLink) {
 const z_ = value_a;
 return "LAssignLink"
 return
-}
-}
 }
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 if(value_a.LEnd) {
 const z_ = value_a;
 return "LEnd"
 return
 }
-}
-{
 if(value_a.LString) {
 const z_ = value_a;
 return "LString"
 return
 }
-}
-{
 if(value_a.LChar) {
 const z_ = value_a;
 return "LChar"
 return
 }
-}
-{
 if(value_a.LInt) {
 const z_ = value_a;
 return "LInt"
 return
 }
-}
-{
 if(value_a.LFloat) {
 const z_ = value_a;
 return "LFloat"
 return
 }
-}
-{
 if(value_a.LKeyword) {
 const z_ = value_a;
 return "LKeyword"
 return
 }
-}
-{
 if(value_a.LNamespace) {
 const z_ = value_a;
 return "LNamespace"
 return
 }
-}
-{
 if(value_a.LLower) {
 const z_ = value_a;
 return "LLower"
 return
 }
-}
-{
 if(value_a.LUpper) {
 const z_ = value_a;
 return "LUpper"
 return
 }
-}
-{
 if(value_a.LWildcard) {
 const z_ = value_a;
 return "LWildcard"
 return
 }
-}
-{
 if(value_a.LBracketLeft) {
 const z_ = value_a;
 return "LBracketLeft"
 return
 }
-}
-{
 if(value_a.LBracketRight) {
 const z_ = value_a;
 return "LBracketRight"
 return
 }
-}
-{
 if(value_a.LOperator) {
 const z_ = value_a;
 return "LOperator"
 return
 }
-}
-{
 if(value_a.LComma) {
 const z_ = value_a;
 return "LComma"
 return
 }
-}
-{
 if(value_a.LSeparator) {
 const z_ = value_a;
 return "LSeparator"
 return
 }
-}
-{
 if(value_a.LDot) {
 const z_ = value_a;
 return "LDot"
 return
 }
-}
-{
 if(value_a.LSemicolon) {
 const z_ = value_a;
 return "LSemicolon"
 return
 }
-}
-{
 if(value_a.LPipe) {
 const z_ = value_a;
 return "LPipe"
 return
 }
-}
-{
 if(value_a.LColon) {
 const z_ = value_a;
 return "LColon"
 return
 }
-}
-{
 if(value_a.LDotDotDot) {
 const z_ = value_a;
 return "LDotDotDot"
 return
 }
-}
-{
 if(value_a.LArrowThick) {
 const z_ = value_a;
 return "LArrowThick"
 return
 }
-}
-{
 if(value_a.LAssign) {
 const z_ = value_a;
 return "LAssign"
 return
 }
-}
-{
 if(value_a.LAssignPlus) {
 const z_ = value_a;
 return "LAssignPlus"
 return
 }
-}
-{
 if(value_a.LAssignMinus) {
 const z_ = value_a;
 return "LAssignMinus"
 return
 }
-}
-{
 if(value_a.LAssignLink) {
 const z_ = value_a;
 return "LAssignLink"
 return
-}
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Token_Token = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -1642,11 +1529,9 @@ return
 {
 return ((x_.file_ === y_.file_) && ((x_.code_ === y_.code_) && (ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(x_.kind_, y_.kind_) && ((x_.startLine_ === y_.startLine_) && ((x_.startLineOffset_ === y_.startLineOffset_) && ((x_.startOffset_ === y_.startOffset_) && ((x_.stopLine_ === y_.stopLine_) && ((x_.stopLineOffset_ === y_.stopLineOffset_) && (x_.stopOffset_ === y_.stopOffset_)))))))))
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -1659,14 +1544,12 @@ return
 {
 return ((x_.file_ === y_.file_) && ((x_.code_ === y_.code_) && (ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(x_.kind_, y_.kind_) && ((x_.startLine_ === y_.startLine_) && ((x_.startLineOffset_ === y_.startLineOffset_) && ((x_.startOffset_ === y_.startOffset_) && ((x_.stopLine_ === y_.stopLine_) && ((x_.stopLineOffset_ === y_.stopLineOffset_) && (x_.stopOffset_ === y_.stopOffset_)))))))))
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Token_TokenKind = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -1679,11 +1562,9 @@ return
 {
 return false
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -1696,14 +1577,12 @@ return
 {
 return false
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Token_Token = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -1761,11 +1640,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -1823,14 +1700,12 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Token_TokenKind = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -1842,167 +1717,113 @@ return
 }
 {
 function number_(z_) {
-{
 const z_a = z_;
-{
 if(z_a.LEnd) {
 return 0
 return
 }
-}
-{
 if(z_a.LString) {
 return 1
 return
 }
-}
-{
 if(z_a.LChar) {
 return 2
 return
 }
-}
-{
 if(z_a.LInt) {
 return 3
 return
 }
-}
-{
 if(z_a.LFloat) {
 return 4
 return
 }
-}
-{
 if(z_a.LKeyword) {
 return 5
 return
 }
-}
-{
 if(z_a.LNamespace) {
 return 6
 return
 }
-}
-{
 if(z_a.LLower) {
 return 7
 return
 }
-}
-{
 if(z_a.LUpper) {
 return 8
 return
 }
-}
-{
 if(z_a.LWildcard) {
 return 9
 return
 }
-}
-{
 if(z_a.LBracketLeft) {
 return 10
 return
 }
-}
-{
 if(z_a.LBracketRight) {
 return 11
 return
 }
-}
-{
 if(z_a.LOperator) {
 return 12
 return
 }
-}
-{
 if(z_a.LComma) {
 return 13
 return
 }
-}
-{
 if(z_a.LSeparator) {
 return 14
 return
 }
-}
-{
 if(z_a.LDot) {
 return 15
 return
 }
-}
-{
 if(z_a.LSemicolon) {
 return 16
 return
 }
-}
-{
 if(z_a.LPipe) {
 return 17
 return
 }
-}
-{
 if(z_a.LColon) {
 return 18
 return
 }
-}
-{
 if(z_a.LDotDotDot) {
 return 19
 return
 }
-}
-{
 if(z_a.LArrowThick) {
 return 20
 return
 }
-}
-{
 if(z_a.LAssign) {
 return 21
 return
 }
-}
-{
 if(z_a.LAssignPlus) {
 return 22
 return
 }
-}
-{
 if(z_a.LAssignMinus) {
 return 23
 return
 }
-}
-{
 if(z_a.LAssignLink) {
 return 24
 return
 }
 }
-}
-}
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -2014,173 +1835,118 @@ return
 }
 {
 function number_(z_) {
-{
 const z_a = z_;
-{
 if(z_a.LEnd) {
 return 0
 return
 }
-}
-{
 if(z_a.LString) {
 return 1
 return
 }
-}
-{
 if(z_a.LChar) {
 return 2
 return
 }
-}
-{
 if(z_a.LInt) {
 return 3
 return
 }
-}
-{
 if(z_a.LFloat) {
 return 4
 return
 }
-}
-{
 if(z_a.LKeyword) {
 return 5
 return
 }
-}
-{
 if(z_a.LNamespace) {
 return 6
 return
 }
-}
-{
 if(z_a.LLower) {
 return 7
 return
 }
-}
-{
 if(z_a.LUpper) {
 return 8
 return
 }
-}
-{
 if(z_a.LWildcard) {
 return 9
 return
 }
-}
-{
 if(z_a.LBracketLeft) {
 return 10
 return
 }
-}
-{
 if(z_a.LBracketRight) {
 return 11
 return
 }
-}
-{
 if(z_a.LOperator) {
 return 12
 return
 }
-}
-{
 if(z_a.LComma) {
 return 13
 return
 }
-}
-{
 if(z_a.LSeparator) {
 return 14
 return
 }
-}
-{
 if(z_a.LDot) {
 return 15
 return
 }
-}
-{
 if(z_a.LSemicolon) {
 return 16
 return
 }
-}
-{
 if(z_a.LPipe) {
 return 17
 return
 }
-}
-{
 if(z_a.LColon) {
 return 18
 return
 }
-}
-{
 if(z_a.LDotDotDot) {
 return 19
 return
 }
-}
-{
 if(z_a.LArrowThick) {
 return 20
 return
 }
-}
-{
 if(z_a.LAssign) {
 return 21
 return
 }
-}
-{
 if(z_a.LAssignPlus) {
 return 22
 return
 }
-}
-{
 if(z_a.LAssignMinus) {
 return 23
 return
 }
-}
-{
 if(z_a.LAssignLink) {
 return 24
 return
 }
 }
-}
-}
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 return
-}
 }
 }
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Token_Token = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -2196,8 +1962,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serialize
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.stopLineOffset_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.stopOffset_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -2218,10 +1982,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -2237,8 +1999,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serialize
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.stopLineOffset_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.stopOffset_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -2262,10 +2022,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Token_TokenKind = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 if(value_a.LEnd) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
@@ -2274,8 +2032,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LString) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
@@ -2284,8 +2040,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LChar) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
@@ -2294,8 +2048,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LInt) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
@@ -2304,8 +2056,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 3
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LFloat) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -2314,8 +2064,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 4
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LKeyword) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
@@ -2324,8 +2072,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 5
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LNamespace) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
@@ -2334,8 +2080,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 6
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LLower) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -2344,8 +2088,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 7
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LUpper) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -2354,8 +2096,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 8
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LWildcard) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
@@ -2364,8 +2104,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 9
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LBracketLeft) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
@@ -2374,8 +2112,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LBracketRight) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
@@ -2384,8 +2120,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LOperator) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
@@ -2394,8 +2128,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LComma) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -2404,8 +2136,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LSeparator) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
@@ -2414,8 +2144,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LDot) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
@@ -2424,8 +2152,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LSemicolon) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
@@ -2434,8 +2160,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LPipe) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
@@ -2444,8 +2168,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LColon) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -2454,8 +2176,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LDotDotDot) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
@@ -2464,8 +2184,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LArrowThick) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
@@ -2474,8 +2192,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LAssign) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
@@ -2484,8 +2200,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LAssignPlus) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
@@ -2494,8 +2208,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LAssignMinus) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
@@ -2504,8 +2216,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LAssignLink) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
@@ -2513,8 +2223,6 @@ ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 24);
 serialization_.offset_ += 1
 return
-}
-}
 }
 },
 deserializeUsing_(serialization_) {
@@ -2704,10 +2412,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 if(value_a.LEnd) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
@@ -2716,8 +2422,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LString) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
@@ -2726,8 +2430,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LChar) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
@@ -2736,8 +2438,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LInt) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
@@ -2746,8 +2446,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 3
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LFloat) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -2756,8 +2454,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 4
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LKeyword) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
@@ -2766,8 +2462,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 5
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LNamespace) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
@@ -2776,8 +2470,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 6
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LLower) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -2786,8 +2478,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 7
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LUpper) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -2796,8 +2486,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 8
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LWildcard) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
@@ -2806,8 +2494,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 9
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LBracketLeft) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
@@ -2816,8 +2502,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LBracketRight) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
@@ -2826,8 +2510,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LOperator) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
@@ -2836,8 +2518,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LComma) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -2846,8 +2526,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LSeparator) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
@@ -2856,8 +2534,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LDot) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
@@ -2866,8 +2542,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LSemicolon) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
@@ -2876,8 +2550,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LPipe) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
@@ -2886,8 +2558,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LColon) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
@@ -2896,8 +2566,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LDotDotDot) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
@@ -2906,8 +2574,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LArrowThick) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
@@ -2916,8 +2582,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LAssign) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
@@ -2926,8 +2590,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LAssignPlus) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
@@ -2936,8 +2598,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LAssignMinus) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
@@ -2946,8 +2606,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.LAssignLink) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
@@ -2955,8 +2613,6 @@ ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 24);
 serialization_.offset_ += 1
 return
-}
-}
 }
 },
 async deserializeUsing_$(serialization_, $task) {

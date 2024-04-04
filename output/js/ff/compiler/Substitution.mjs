@@ -560,10 +560,8 @@ return
 }
 
 export function Substitution_substituteType(self_, type_) {
-{
 const self_a = self_;
 const type_a = type_;
-{
 if(type_a.TVariable) {
 const at_ = type_a.at_;
 const i_ = type_a.index_;
@@ -574,8 +572,6 @@ return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Noth
 }
 return
 }
-}
-{
 if(type_a.TConstructor) {
 const t_ = type_a;
 {
@@ -589,8 +585,6 @@ return
 }
 }
 return
-}
-}
 }
 }
 
@@ -1079,10 +1073,8 @@ return
 }
 
 export async function Substitution_substituteType$(self_, type_, $task) {
-{
 const self_a = self_;
 const type_a = type_;
-{
 if(type_a.TVariable) {
 const at_ = type_a.at_;
 const i_ = type_a.index_;
@@ -1093,8 +1085,6 @@ return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Noth
 }
 return
 }
-}
-{
 if(type_a.TConstructor) {
 const t_ = type_a;
 {
@@ -1108,8 +1098,6 @@ return
 }
 }
 return
-}
-}
 }
 }
 

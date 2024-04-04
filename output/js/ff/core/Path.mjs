@@ -208,16 +208,12 @@ throw new Error('Function Path_relativeTo is missing on this target in sync cont
 
 export function Path_endsWith(self_, parts_) {
 function go_(pathOption_, reversed_) {
-{
 const pathOption_a = pathOption_;
 const reversed_a = reversed_;
-{
 if(reversed_a.length === 0) {
 return true
 return
 }
-}
-{
 if(pathOption_a.Some) {
 const path_ = pathOption_a.value_;
 if(reversed_a.length >= 1) {
@@ -227,13 +223,9 @@ return ((ff_core_Path.Path_base(path_) === p_) && go_(ff_core_Path.Path_parent(p
 return
 }
 }
-}
-{
 if(pathOption_a.None) {
 return false
 return
-}
-}
 }
 }
 return go_(ff_core_Option.Some(self_), ff_core_List.List_reverse(parts_))
@@ -472,16 +464,12 @@ export async function Path_relativeTo$(self_, path_, $task) {
 
 export async function Path_endsWith$(self_, parts_, $task) {
 async function go_$(pathOption_, reversed_, $task) {
-{
 const pathOption_a = pathOption_;
 const reversed_a = reversed_;
-{
 if(reversed_a.length === 0) {
 return true
 return
 }
-}
-{
 if(pathOption_a.Some) {
 const path_ = pathOption_a.value_;
 if(reversed_a.length >= 1) {
@@ -491,13 +479,9 @@ return (((await ff_core_Path.Path_base$(path_, $task)) === p_) && (await go_$((a
 return
 }
 }
-}
-{
 if(pathOption_a.None) {
 return false
 return
-}
-}
 }
 }
 return (await go_$(ff_core_Option.Some(self_), ff_core_List.List_reverse(parts_), $task))

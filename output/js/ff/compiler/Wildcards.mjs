@@ -118,10 +118,8 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 }
 
 export function Wildcards_fixWildcards(self_, term_) {
-{
 const self_a = self_;
 const term_a = term_;
-{
 if(term_a.ELet) {
 const e_ = term_a;
 {
@@ -134,8 +132,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.ESequential) {
 const e_ = term_a;
 {
@@ -148,8 +144,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.EAssign) {
 const e_ = term_a;
 {
@@ -162,8 +156,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.EAssignField) {
 const e_ = term_a;
 {
@@ -176,8 +168,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.EPipe) {
 const e_ = term_a;
 {
@@ -190,8 +180,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.ECall) {
 const e_ = term_a;
 {
@@ -232,8 +220,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.EList) {
 const e_ = term_a;
 {
@@ -253,8 +239,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.ECopy) {
 const e_ = term_a;
 {
@@ -276,8 +260,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.EVariant) {
 const e_ = term_a;
 {
@@ -301,8 +283,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.ERecord) {
 const e_ = term_a;
 {
@@ -324,8 +304,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.EField) {
 const e_ = term_a;
 {
@@ -338,8 +316,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.EWildcard) {
 const e_ = term_a;
 self_.seenWildcards_ += 1;
@@ -353,19 +329,15 @@ return
 }
 return
 }
-}
 {
 return term_
 return
-}
 }
 }
 
 export async function Wildcards_fixWildcards$(self_, term_, $task) {
-{
 const self_a = self_;
 const term_a = term_;
-{
 if(term_a.ELet) {
 const e_ = term_a;
 {
@@ -378,8 +350,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.ESequential) {
 const e_ = term_a;
 {
@@ -392,8 +362,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.EAssign) {
 const e_ = term_a;
 {
@@ -406,8 +374,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.EAssignField) {
 const e_ = term_a;
 {
@@ -420,8 +386,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.EPipe) {
 const e_ = term_a;
 {
@@ -434,8 +398,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.ECall) {
 const e_ = term_a;
 {
@@ -476,8 +438,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.EList) {
 const e_ = term_a;
 {
@@ -497,8 +457,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.ECopy) {
 const e_ = term_a;
 {
@@ -520,8 +478,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.EVariant) {
 const e_ = term_a;
 {
@@ -545,8 +501,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.ERecord) {
 const e_ = term_a;
 {
@@ -568,8 +522,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.EField) {
 const e_ = term_a;
 {
@@ -582,8 +534,6 @@ return
 }
 return
 }
-}
-{
 if(term_a.EWildcard) {
 const e_ = term_a;
 self_.seenWildcards_ += 1;
@@ -597,11 +547,9 @@ return
 }
 return
 }
-}
 {
 return term_
 return
-}
 }
 }
 

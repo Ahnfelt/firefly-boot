@@ -706,48 +706,35 @@ return ff_core_Any.internalAnyTag_(((("ff:core/Option.Option" + "[") + ff_core_A
 
 export function ff_core_Show_Show$ff_core_Option_Option(ff_core_Show_Show$T) { return {
 show_(value_) {
-{
 const value_a = value_;
-{
 if(value_a.None) {
 const z_ = value_a;
 return "None"
 return
 }
-}
-{
 if(value_a.Some) {
 const z_ = value_a;
 return ((("Some" + "(") + ff_core_Show_Show$T.show_(z_.value_)) + ")")
 return
-}
-}
 }
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 if(value_a.None) {
 const z_ = value_a;
 return "None"
 return
 }
-}
-{
 if(value_a.Some) {
 const z_ = value_a;
 return ((("Some" + "(") + ff_core_Show_Show$T.show_(z_.value_)) + ")")
 return
-}
-}
 }
 }
 }}
 
 export function ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal_Equal$T) { return {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -757,7 +744,6 @@ return true
 return
 }
 }
-{
 if(x_a.Some) {
 const x_ = x_a;
 if(y_a.Some) {
@@ -766,15 +752,12 @@ return ff_core_Equal_Equal$T.equals_(x_.value_, y_.value_)
 return
 }
 }
-}
 {
 return false
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -784,7 +767,6 @@ return true
 return
 }
 }
-{
 if(x_a.Some) {
 const x_ = x_a;
 if(y_a.Some) {
@@ -793,18 +775,15 @@ return ff_core_Equal_Equal$T.equals_(x_.value_, y_.value_)
 return
 }
 }
-}
 {
 return false
 return
-}
 }
 }
 }}
 
 export function ff_core_Ordering_Order$ff_core_Option_Option(ff_core_Ordering_Order$T) { return {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -814,7 +793,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-{
 if(x_a.Some) {
 const x_ = x_a;
 if(y_a.Some) {
@@ -828,32 +806,23 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
 {
 function number_(z_) {
-{
 const z_a = z_;
-{
 if(z_a.None) {
 return 0
 return
 }
-}
-{
 if(z_a.Some) {
 return 1
 return
 }
 }
-}
-}
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -863,7 +832,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-{
 if(x_a.Some) {
 const x_ = x_a;
 if(y_a.Some) {
@@ -877,38 +845,28 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
 {
 function number_(z_) {
-{
 const z_a = z_;
-{
 if(z_a.None) {
 return 0
 return
 }
-}
-{
 if(z_a.Some) {
 return 1
 return
 }
 }
-}
-}
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 return
-}
 }
 }
 }}
 
 export function ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable_Serializable$T) { return {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 if(value_a.None) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
@@ -917,8 +875,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.Some) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
@@ -927,8 +883,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1;
 ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, v_.value_)
 return
-}
-}
 }
 },
 deserializeUsing_(serialization_) {
@@ -957,10 +911,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 if(value_a.None) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
@@ -969,8 +921,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.Some) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
@@ -979,8 +929,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1;
 ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, v_.value_)
 return
-}
-}
 }
 },
 async deserializeUsing_$(serialization_, $task) {

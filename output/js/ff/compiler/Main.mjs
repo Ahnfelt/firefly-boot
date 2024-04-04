@@ -188,9 +188,7 @@ return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.pac
 }))(resolvedDependencies_), compilerModulePath_, ff_core_Path.Path_slash(ff_core_NodeSystem.NodeSystem_path(system_, ".firefly"), "temporary"), ff_core_Path.Path_path(ff_core_Path.Path_path(ff_core_NodeSystem.NodeSystem_path(system_, ".firefly"), "output"), targetName_), false)
 }
 function runCommand_(command_) {
-{
 const command_a = command_;
-{
 if(command_a.RunCommand) {
 const mainFile_ = command_a.mainPath_;
 const arguments_ = command_a.argument_;
@@ -201,8 +199,6 @@ buildScript_(localMainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler
 ff_compiler_Main.importAndRun_(fireflyPath_, "node", resolvedDependencies_.mainPackagePair_, localMainFile_, arguments_)
 return
 }
-}
-{
 if(command_a.BrowserCommand) {
 const mainFile_ = command_a.mainPath_;
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), ff_core_NodeSystem.NodeSystem_path(system_, (mainFile_ + ".ff")));
@@ -212,8 +208,6 @@ buildScript_(mainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEm
 ff_compiler_Main.bundleForBrowser_(system_, resolvedDependencies_.mainPackagePair_, localMainFile_)
 return
 }
-}
-{
 if(command_a.BuildCommand) {
 const mainFile_ = command_a.mainPath_;
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), ff_core_NodeSystem.NodeSystem_path(system_, (mainFile_ + ".ff")));
@@ -225,21 +219,15 @@ ff_compiler_Main.bundleForPkg_(system_, resolvedDependencies_.mainPackagePair_, 
 ff_compiler_Main.importAndRun_(fireflyPath_, "build", resolvedDependencies_.mainPackagePair_, localMainFile_, [])
 return
 }
-}
-{
 if(command_a.CheckCommand) {
 const filePath_ = command_a.filePath_;
 ff_compiler_Builder.check_(system_, fireflyPath_, ff_core_NodeSystem.NodeSystem_path(system_, filePath_), ff_core_Map.empty_(), ff_compiler_LspHook.disabled_(), true)
 return
 }
-}
-{
 if(command_a.BootstrapCommand) {
 const workingDirectory_ = ff_core_NodeSystem.NodeSystem_path(system_, ".");
 ff_compiler_Builder.build_(system_, ff_compiler_JsEmitter.EmitNode(), ff_compiler_Syntax.PackagePair("ff", "compiler"), "Main", ff_compiler_Dependencies.ResolvedDependencies(ff_compiler_Syntax.PackagePair("ff", "compiler"), ff_core_List.List_toMap([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap([ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "compiler"), ff_core_Path.Path_slash(workingDirectory_, "compiler")), ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), ff_core_Path.Path_slash(workingDirectory_, "core"))], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)), ff_core_Option.None(), ff_core_Path.Path_slash(ff_core_Path.Path_slash(workingDirectory_, "output"), "temporary"), ff_core_Path.Path_slash(ff_core_Path.Path_slash(workingDirectory_, "output"), "js"), true)
 return
-}
-}
 }
 }
 ff_core_Try.Try_grab(ff_core_Try.Try_catch(ff_core_Try.Try_catch(ff_core_Core.try_((() => {
@@ -265,9 +253,7 @@ return
 }
 
 export function parseCommandLine_(arguments_) {
-{
 const arguments_a = arguments_;
-{
 if(arguments_a.length >= 1) {
 const mainFile_ = arguments_a[0];
 const mainArguments_ = arguments_a.slice(1);
@@ -278,8 +264,6 @@ return ff_compiler_Main.RunCommand(mainName_, mainArguments_)
 return
 }
 }
-}
-{
 if(arguments_a.length >= 1) {
 if(arguments_a[0] === "run") {
 const runArguments_ = arguments_a.slice(1);
@@ -305,8 +289,6 @@ return
 return
 }
 }
-}
-{
 if(arguments_a.length >= 1) {
 if(arguments_a[0] === "browser") {
 const browserArguments_ = arguments_a.slice(1);
@@ -337,8 +319,6 @@ return
 return
 }
 }
-}
-{
 if(arguments_a.length >= 1) {
 if(arguments_a[0] === "build") {
 const buildArguments_ = arguments_a.slice(1);
@@ -369,8 +349,6 @@ return
 return
 }
 }
-}
-{
 if(arguments_a.length >= 1) {
 if(arguments_a[0] === "check") {
 const checkArguments_ = arguments_a.slice(1);
@@ -400,36 +378,26 @@ return
 return
 }
 }
-}
-{
 if(arguments_a.length === 2) {
 if(arguments_a[0] === "bootstrap") {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("bootstrap takes no arguments" + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 return
 }
 }
-}
-{
 if(arguments_a.length === 1) {
 if(arguments_a[0] === "bootstrap") {
 return ff_compiler_Main.BootstrapCommand()
 return
 }
 }
-}
-{
 if(arguments_a.length === 0) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a command or a main file to run." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 return
 }
-}
-{
 if(arguments_a.length >= 1) {
 const s_ = arguments_a[0];
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(((("Unknown command '" + s_) + "'") + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 return
-}
-}
 }
 }
 
@@ -507,9 +475,7 @@ return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.pac
 }))(resolvedDependencies_), compilerModulePath_, (await ff_core_Path.Path_slash$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".firefly", $task)), "temporary", $task)), (await ff_core_Path.Path_path$((await ff_core_Path.Path_path$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".firefly", $task)), "output", $task)), targetName_, $task)), false, $task))
 }
 async function runCommand_$(command_, $task) {
-{
 const command_a = command_;
-{
 if(command_a.RunCommand) {
 const mainFile_ = command_a.mainPath_;
 const arguments_ = command_a.argument_;
@@ -520,8 +486,6 @@ const localMainFile_ = (await ff_core_Path.Path_base$((await ff_core_NodeSystem.
 (await ff_compiler_Main.importAndRun_$(fireflyPath_, "node", resolvedDependencies_.mainPackagePair_, localMainFile_, arguments_, $task))
 return
 }
-}
-{
 if(command_a.BrowserCommand) {
 const mainFile_ = command_a.mainPath_;
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (await ff_core_NodeSystem.NodeSystem_path$(system_, (mainFile_ + ".ff"), $task)), $task));
@@ -531,8 +495,6 @@ const localMainFile_ = (await ff_core_Path.Path_base$((await ff_core_NodeSystem.
 (await ff_compiler_Main.bundleForBrowser_$(system_, resolvedDependencies_.mainPackagePair_, localMainFile_, $task))
 return
 }
-}
-{
 if(command_a.BuildCommand) {
 const mainFile_ = command_a.mainPath_;
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (await ff_core_NodeSystem.NodeSystem_path$(system_, (mainFile_ + ".ff"), $task)), $task));
@@ -544,21 +506,15 @@ const localMainFile_ = (await ff_core_Path.Path_base$((await ff_core_NodeSystem.
 (await ff_compiler_Main.importAndRun_$(fireflyPath_, "build", resolvedDependencies_.mainPackagePair_, localMainFile_, [], $task))
 return
 }
-}
-{
 if(command_a.CheckCommand) {
 const filePath_ = command_a.filePath_;
 (await ff_compiler_Builder.check_$(system_, fireflyPath_, (await ff_core_NodeSystem.NodeSystem_path$(system_, filePath_, $task)), ff_core_Map.empty_(), ff_compiler_LspHook.disabled_(), true, $task))
 return
 }
-}
-{
 if(command_a.BootstrapCommand) {
 const workingDirectory_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task));
 (await ff_compiler_Builder.build_$(system_, ff_compiler_JsEmitter.EmitNode(), ff_compiler_Syntax.PackagePair("ff", "compiler"), "Main", ff_compiler_Dependencies.ResolvedDependencies(ff_compiler_Syntax.PackagePair("ff", "compiler"), ff_core_List.List_toMap([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap([ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "compiler"), (await ff_core_Path.Path_slash$(workingDirectory_, "compiler", $task))), ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), (await ff_core_Path.Path_slash$(workingDirectory_, "core", $task)))], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)), ff_core_Option.None(), (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(workingDirectory_, "output", $task)), "temporary", $task)), (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(workingDirectory_, "output", $task)), "js", $task)), true, $task))
 return
-}
-}
 }
 }
 ff_core_Try.Try_grab(ff_core_Try.Try_catch(ff_core_Try.Try_catch((await ff_core_Core.try_$((async ($task) => {
@@ -584,9 +540,7 @@ return
 }
 
 export async function parseCommandLine_$(arguments_, $task) {
-{
 const arguments_a = arguments_;
-{
 if(arguments_a.length >= 1) {
 const mainFile_ = arguments_a[0];
 const mainArguments_ = arguments_a.slice(1);
@@ -597,8 +551,6 @@ return ff_compiler_Main.RunCommand(mainName_, mainArguments_)
 return
 }
 }
-}
-{
 if(arguments_a.length >= 1) {
 if(arguments_a[0] === "run") {
 const runArguments_ = arguments_a.slice(1);
@@ -624,8 +576,6 @@ return
 return
 }
 }
-}
-{
 if(arguments_a.length >= 1) {
 if(arguments_a[0] === "browser") {
 const browserArguments_ = arguments_a.slice(1);
@@ -656,8 +606,6 @@ return
 return
 }
 }
-}
-{
 if(arguments_a.length >= 1) {
 if(arguments_a[0] === "build") {
 const buildArguments_ = arguments_a.slice(1);
@@ -688,8 +636,6 @@ return
 return
 }
 }
-}
-{
 if(arguments_a.length >= 1) {
 if(arguments_a[0] === "check") {
 const checkArguments_ = arguments_a.slice(1);
@@ -719,36 +665,26 @@ return
 return
 }
 }
-}
-{
 if(arguments_a.length === 2) {
 if(arguments_a[0] === "bootstrap") {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("bootstrap takes no arguments" + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 return
 }
 }
-}
-{
 if(arguments_a.length === 1) {
 if(arguments_a[0] === "bootstrap") {
 return ff_compiler_Main.BootstrapCommand()
 return
 }
 }
-}
-{
 if(arguments_a.length === 0) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a command or a main file to run." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 return
 }
-}
-{
 if(arguments_a.length >= 1) {
 const s_ = arguments_a[0];
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(((("Unknown command '" + s_) + "'") + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 return
-}
-}
 }
 }
 
@@ -823,113 +759,80 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Main.CommandLineError" + "[") 
 
 export const ff_core_Show_Show$ff_compiler_Main_MainCommand = {
 show_(value_) {
-{
 const value_a = value_;
-{
 if(value_a.BootstrapCommand) {
 const z_ = value_a;
 return "BootstrapCommand"
 return
 }
-}
-{
 if(value_a.RunCommand) {
 const z_ = value_a;
 return ((((("RunCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.argument_)) + ")")
 return
 }
-}
-{
 if(value_a.BrowserCommand) {
 const z_ = value_a;
 return ((("BrowserCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ")")
 return
 }
-}
-{
 if(value_a.BuildCommand) {
 const z_ = value_a;
 return ((("BuildCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ")")
 return
 }
-}
-{
 if(value_a.CheckCommand) {
 const z_ = value_a;
 return ((("CheckCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.filePath_)) + ")")
 return
-}
-}
 }
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 if(value_a.BootstrapCommand) {
 const z_ = value_a;
 return "BootstrapCommand"
 return
 }
-}
-{
 if(value_a.RunCommand) {
 const z_ = value_a;
 return ((((("RunCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.argument_)) + ")")
 return
 }
-}
-{
 if(value_a.BrowserCommand) {
 const z_ = value_a;
 return ((("BrowserCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ")")
 return
 }
-}
-{
 if(value_a.BuildCommand) {
 const z_ = value_a;
 return ((("BuildCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ")")
 return
 }
-}
-{
 if(value_a.CheckCommand) {
 const z_ = value_a;
 return ((("CheckCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.filePath_)) + ")")
 return
-}
-}
 }
 }
 };
 
 export const ff_core_Show_Show$ff_compiler_Main_CommandLineError = {
 show_(value_) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((("CommandLineError" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.problem_)) + ")")
 return
-}
-}
 },
 async show_$(value_, $task) {
-{
 const value_a = value_;
-{
 const z_ = value_a;
 return ((("CommandLineError" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.problem_)) + ")")
 return
-}
-}
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Main_MainCommand = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -939,7 +842,6 @@ return true
 return
 }
 }
-{
 if(x_a.RunCommand) {
 const x_ = x_a;
 if(y_a.RunCommand) {
@@ -948,8 +850,6 @@ return ((x_.mainPath_ === y_.mainPath_) && ff_core_List.ff_core_Equal_Equal$ff_c
 return
 }
 }
-}
-{
 if(x_a.BrowserCommand) {
 const x_ = x_a;
 if(y_a.BrowserCommand) {
@@ -958,8 +858,6 @@ return (x_.mainPath_ === y_.mainPath_)
 return
 }
 }
-}
-{
 if(x_a.BuildCommand) {
 const x_ = x_a;
 if(y_a.BuildCommand) {
@@ -968,8 +866,6 @@ return (x_.mainPath_ === y_.mainPath_)
 return
 }
 }
-}
-{
 if(x_a.CheckCommand) {
 const x_ = x_a;
 if(y_a.CheckCommand) {
@@ -978,15 +874,12 @@ return (x_.filePath_ === y_.filePath_)
 return
 }
 }
-}
 {
 return false
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -996,7 +889,6 @@ return true
 return
 }
 }
-{
 if(x_a.RunCommand) {
 const x_ = x_a;
 if(y_a.RunCommand) {
@@ -1005,8 +897,6 @@ return ((x_.mainPath_ === y_.mainPath_) && ff_core_List.ff_core_Equal_Equal$ff_c
 return
 }
 }
-}
-{
 if(x_a.BrowserCommand) {
 const x_ = x_a;
 if(y_a.BrowserCommand) {
@@ -1015,8 +905,6 @@ return (x_.mainPath_ === y_.mainPath_)
 return
 }
 }
-}
-{
 if(x_a.BuildCommand) {
 const x_ = x_a;
 if(y_a.BuildCommand) {
@@ -1025,8 +913,6 @@ return (x_.mainPath_ === y_.mainPath_)
 return
 }
 }
-}
-{
 if(x_a.CheckCommand) {
 const x_ = x_a;
 if(y_a.CheckCommand) {
@@ -1035,18 +921,15 @@ return (x_.filePath_ === y_.filePath_)
 return
 }
 }
-}
 {
 return false
 return
-}
 }
 }
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Main_CommandLineError = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -1059,11 +942,9 @@ return
 {
 return (x_.problem_ === y_.problem_)
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -1076,14 +957,12 @@ return
 {
 return (x_.problem_ === y_.problem_)
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Main_MainCommand = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -1093,7 +972,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-{
 if(x_a.RunCommand) {
 const x_ = x_a;
 if(y_a.RunCommand) {
@@ -1112,8 +990,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.BrowserCommand) {
 const x_ = x_a;
 if(y_a.BrowserCommand) {
@@ -1127,8 +1003,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.BuildCommand) {
 const x_ = x_a;
 if(y_a.BuildCommand) {
@@ -1142,8 +1016,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.CheckCommand) {
 const x_ = x_a;
 if(y_a.CheckCommand) {
@@ -1157,50 +1029,35 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
 {
 function number_(z_) {
-{
 const z_a = z_;
-{
 if(z_a.BootstrapCommand) {
 return 0
 return
 }
-}
-{
 if(z_a.RunCommand) {
 return 1
 return
 }
-}
-{
 if(z_a.BrowserCommand) {
 return 2
 return
 }
-}
-{
 if(z_a.BuildCommand) {
 return 3
 return
 }
-}
-{
 if(z_a.CheckCommand) {
 return 4
 return
 }
 }
-}
-}
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -1210,7 +1067,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-{
 if(x_a.RunCommand) {
 const x_ = x_a;
 if(y_a.RunCommand) {
@@ -1229,8 +1085,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.BrowserCommand) {
 const x_ = x_a;
 if(y_a.BrowserCommand) {
@@ -1244,8 +1098,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.BuildCommand) {
 const x_ = x_a;
 if(y_a.BuildCommand) {
@@ -1259,8 +1111,6 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
-{
 if(x_a.CheckCommand) {
 const x_ = x_a;
 if(y_a.CheckCommand) {
@@ -1274,53 +1124,38 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 }
-}
 {
 function number_(z_) {
-{
 const z_a = z_;
-{
 if(z_a.BootstrapCommand) {
 return 0
 return
 }
-}
-{
 if(z_a.RunCommand) {
 return 1
 return
 }
-}
-{
 if(z_a.BrowserCommand) {
 return 2
 return
 }
-}
-{
 if(z_a.BuildCommand) {
 return 3
 return
 }
-}
-{
 if(z_a.CheckCommand) {
 return 4
 return
 }
 }
-}
-}
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 return
-}
 }
 }
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Main_CommandLineError = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -1338,11 +1173,9 @@ return problemOrdering_
 return ff_core_Ordering.OrderingSame()
 }
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
 {
@@ -1360,17 +1193,14 @@ return problemOrdering_
 return ff_core_Ordering.OrderingSame()
 }
 return
-}
 }
 }
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Main_MainCommand = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 if(value_a.BootstrapCommand) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
@@ -1379,8 +1209,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.RunCommand) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
@@ -1391,8 +1219,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.argument_)
 return
 }
-}
-{
 if(value_a.BrowserCommand) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
@@ -1402,8 +1228,6 @@ serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_)
 return
 }
-}
-{
 if(value_a.BuildCommand) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
@@ -1413,8 +1237,6 @@ serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_)
 return
 }
-}
-{
 if(value_a.CheckCommand) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
@@ -1423,8 +1245,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 4
 serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.filePath_)
 return
-}
-}
 }
 },
 deserializeUsing_(serialization_) {
@@ -1474,10 +1294,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 if(value_a.BootstrapCommand) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
@@ -1486,8 +1304,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1
 return
 }
-}
-{
 if(value_a.RunCommand) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
@@ -1498,8 +1314,6 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.argument_)
 return
 }
-}
-{
 if(value_a.BrowserCommand) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
@@ -1509,8 +1323,6 @@ serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_)
 return
 }
-}
-{
 if(value_a.BuildCommand) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
@@ -1520,8 +1332,6 @@ serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_)
 return
 }
-}
-{
 if(value_a.CheckCommand) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
@@ -1530,8 +1340,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 4
 serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.filePath_)
 return
-}
-}
 }
 },
 async deserializeUsing_$(serialization_, $task) {
@@ -1584,10 +1392,8 @@ return
 
 export const ff_core_Serializable_Serializable$ff_compiler_Main_CommandLineError = {
 serializeUsing_(serialization_, value_) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -1595,8 +1401,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.problem_)
 return
-}
-}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -1617,10 +1421,8 @@ return
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-{
 const serialization_a = serialization_;
 const value_a = value_;
-{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -1628,8 +1430,6 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.problem_)
 return
-}
-}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);

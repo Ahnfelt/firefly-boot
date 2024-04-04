@@ -429,55 +429,43 @@ return ff_core_Ordering.OrderingSame()
 
 export const ff_core_Ordering_Order$ff_core_Bool_Bool = {
 compare_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
-{
 if(!x_a) {
 if(y_a) {
 return ff_core_Ordering.OrderingBefore()
 return
 }
 }
-}
-{
 if(x_a) {
 if(!y_a) {
 return ff_core_Ordering.OrderingAfter()
 return
 }
 }
-}
 {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 },
 async compare_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
-{
 if(!x_a) {
 if(y_a) {
 return ff_core_Ordering.OrderingBefore()
 return
 }
 }
-}
-{
 if(x_a) {
 if(!y_a) {
 return ff_core_Ordering.OrderingAfter()
 return
 }
 }
-}
 {
 return ff_core_Ordering.OrderingSame()
 return
-}
 }
 }
 };
@@ -592,71 +580,55 @@ return ordering_
 
 export const ff_core_Equal_Equal$ff_core_Ordering_Ordering = {
 equals_(x_, y_) {
-{
 const x_a = x_;
 const y_a = y_;
-{
 if(x_a.OrderingBefore) {
 if(y_a.OrderingBefore) {
 return true
 return
 }
 }
-}
-{
 if(x_a.OrderingSame) {
 if(y_a.OrderingSame) {
 return true
 return
 }
 }
-}
-{
 if(x_a.OrderingAfter) {
 if(y_a.OrderingAfter) {
 return true
 return
 }
 }
-}
 {
 return false
 return
-}
 }
 },
 async equals_$(x_, y_, $task) {
-{
 const x_a = x_;
 const y_a = y_;
-{
 if(x_a.OrderingBefore) {
 if(y_a.OrderingBefore) {
 return true
 return
 }
 }
-}
-{
 if(x_a.OrderingSame) {
 if(y_a.OrderingSame) {
 return true
 return
 }
 }
-}
-{
 if(x_a.OrderingAfter) {
 if(y_a.OrderingAfter) {
 return true
 return
 }
 }
-}
 {
 return false
 return
-}
 }
 }
 };
