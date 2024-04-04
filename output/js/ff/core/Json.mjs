@@ -729,7 +729,6 @@ fromJson_(json_) {
 const json_a = json_;
 const _w1 = json_a;
 return ff_core_Json.Json_getString(_w1)
-return
 },
 async toJson_$(value_, $task) {
 return ff_core_Json.string_(value_)
@@ -738,7 +737,6 @@ async fromJson_$(json_, $task) {
 const json_a = json_;
 const _w1 = json_a;
 return ff_core_Json.Json_getString(_w1)
-return
 }
 };
 
@@ -750,7 +748,6 @@ fromJson_(json_) {
 const json_a = json_;
 const _w1 = json_a;
 return ff_core_Json.Json_getInt(_w1)
-return
 },
 async toJson_$(value_, $task) {
 return ff_core_Json.int_(value_)
@@ -759,7 +756,6 @@ async fromJson_$(json_, $task) {
 const json_a = json_;
 const _w1 = json_a;
 return ff_core_Json.Json_getInt(_w1)
-return
 }
 };
 
@@ -771,7 +767,6 @@ fromJson_(json_) {
 const json_a = json_;
 const _w1 = json_a;
 return ff_core_Json.Json_getFloat(_w1)
-return
 },
 async toJson_$(value_, $task) {
 return ff_core_Json.float_(value_)
@@ -780,7 +775,6 @@ async fromJson_$(json_, $task) {
 const json_a = json_;
 const _w1 = json_a;
 return ff_core_Json.Json_getFloat(_w1)
-return
 }
 };
 
@@ -792,7 +786,6 @@ fromJson_(json_) {
 const json_a = json_;
 const _w1 = json_a;
 return ff_core_Json.Json_getBool(_w1)
-return
 },
 async toJson_$(value_, $task) {
 return ff_core_Json.bool_(value_)
@@ -801,7 +794,6 @@ async fromJson_$(json_, $task) {
 const json_a = json_;
 const _w1 = json_a;
 return ff_core_Json.Json_getBool(_w1)
-return
 }
 };
 

@@ -118,7 +118,6 @@ function ins_(s_) {
 const s_a = s_;
 if(s_a.E) {
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.E(), x_, xv_, ff_core_RbMap.E())
-return
 }
 if(s_a.T) {
 if(s_a.color_.B) {
@@ -131,19 +130,16 @@ const _1 = ff_core_Ordering_Order$K.compare_(x_, y_);
 {
 if(_1.OrderingBefore) {
 return ff_core_RbMap.balance_(ins_(a_), y_, yv_, b_, ff_core_Ordering_Order$K)
-return
 }
 }
 {
 if(_1.OrderingAfter) {
 return ff_core_RbMap.balance_(a_, y_, yv_, ins_(b_), ff_core_Ordering_Order$K)
-return
 }
 }
 {
 if(_1.OrderingSame) {
 return ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_)
-return
 }
 }
 }
@@ -161,19 +157,16 @@ const _1 = ff_core_Ordering_Order$K.compare_(x_, y_);
 {
 if(_1.OrderingBefore) {
 return ff_core_RbMap.T(ff_core_RbMap.R(), ins_(a_), y_, yv_, b_)
-return
 }
 }
 {
 if(_1.OrderingAfter) {
 return ff_core_RbMap.T(ff_core_RbMap.R(), a_, y_, yv_, ins_(b_))
-return
 }
 }
 {
 if(_1.OrderingSame) {
 return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b_)
-return
 }
 }
 }
@@ -186,7 +179,6 @@ const _1 = ins_(s_);
 {
 if(_1.E) {
 return ff_core_Core.panic_("Unexpected empty tree")
-return
 }
 }
 {
@@ -196,7 +188,6 @@ const z_ = _1.key_;
 const zv_ = _1.value_;
 const b_ = _1.right_;
 return ff_core_RbMap.T(ff_core_RbMap.B(), a_, z_, zv_, b_)
-return
 }
 }
 }
@@ -209,7 +200,6 @@ const tree_a = tree_;
 const x_ = key_a;
 if(tree_a.E) {
 return false
-return
 }
 }
 {
@@ -223,19 +213,16 @@ const _1 = ff_core_Ordering_Order$K.compare_(x_, y_);
 {
 if(_1.OrderingBefore) {
 return ff_core_RbMap.member_(x_, a_, ff_core_Ordering_Order$K)
-return
 }
 }
 {
 if(_1.OrderingAfter) {
 return ff_core_RbMap.member_(x_, b_, ff_core_Ordering_Order$K)
-return
 }
 }
 {
 if(_1.OrderingSame) {
 return true
-return
 }
 }
 }
@@ -264,7 +251,6 @@ const z_ = tree2_a.key_;
 const zv_ = tree2_a.value_;
 const d_ = tree2_a.right_;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
-return
 }
 }
 }
@@ -284,7 +270,6 @@ const z_ = key_a;
 const zv_ = value_a;
 const d_ = tree2_a;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
-return
 }
 }
 }
@@ -304,7 +289,6 @@ const z_ = key_a;
 const zv_ = value_a;
 const d_ = tree2_a;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
-return
 }
 }
 }
@@ -325,7 +309,6 @@ const z_ = tree2_a.right_.key_;
 const zv_ = tree2_a.right_.value_;
 const d_ = tree2_a.right_.right_;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
-return
 }
 }
 }
@@ -347,7 +330,6 @@ const z_ = tree2_a.key_;
 const zv_ = tree2_a.value_;
 const d_ = tree2_a.right_;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
-return
 }
 }
 }
@@ -359,7 +341,6 @@ const x_ = key_a;
 const xv_ = value_a;
 const b_ = tree2_a;
 return ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_)
-return
 }
 }
 
@@ -368,7 +349,6 @@ function del_(ss_) {
 const ss_a = ss_;
 if(ss_a.E) {
 return ff_core_RbMap.E()
-return
 }
 if(ss_a.T) {
 const a_ = ss_a.left_;
@@ -380,19 +360,16 @@ const _1 = ff_core_Ordering_Order$K.compare_(x_, y_);
 {
 if(_1.OrderingBefore) {
 return delformLeft_(a_, y_, yv_, b_)
-return
 }
 }
 {
 if(_1.OrderingAfter) {
 return delformRight_(a_, y_, yv_, b_)
-return
 }
 }
 {
 if(_1.OrderingSame) {
 return ff_core_RbMap.app_(a_, b_, ff_core_Ordering_Order$K)
-return
 }
 }
 }
@@ -410,7 +387,6 @@ const y_ = key_a;
 const yv_ = value_a;
 const b_ = right_a;
 return ff_core_RbMap.balleft_(del_(left_), y_, yv_, b_, ff_core_Ordering_Order$K)
-return
 }
 }
 {
@@ -419,7 +395,6 @@ const y_ = key_a;
 const yv_ = value_a;
 const b_ = right_a;
 return ff_core_RbMap.T(ff_core_RbMap.R(), del_(a_), y_, yv_, b_)
-return
 }
 }
 function delformRight_(left_, key_, value_, right_) {
@@ -434,7 +409,6 @@ const yv_ = value_a;
 if(right_a.T) {
 if(right_a.color_.B) {
 return ff_core_RbMap.balright_(a_, y_, yv_, del_(right_), ff_core_Ordering_Order$K)
-return
 }
 }
 }
@@ -444,7 +418,6 @@ const y_ = key_a;
 const yv_ = value_a;
 const b_ = right_a;
 return ff_core_RbMap.T(ff_core_RbMap.R(), a_, y_, yv_, del_(b_))
-return
 }
 }
 {
@@ -456,12 +429,10 @@ const y_ = _1.key_;
 const yv_ = _1.value_;
 const b_ = _1.right_;
 return ff_core_RbMap.T(ff_core_RbMap.B(), a_, y_, yv_, b_)
-return
 }
 }
 {
 return ff_core_RbMap.E()
-return
 }
 }
 }
@@ -481,7 +452,6 @@ const y_ = key_a;
 const yv_ = value_a;
 const c_ = tree2_a;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, c_)
-return
 }
 }
 {
@@ -495,7 +465,6 @@ const y_ = tree2_a.key_;
 const yv_ = tree2_a.value_;
 const b_ = tree2_a.right_;
 return ff_core_RbMap.balance_(bl_, x_, xv_, ff_core_RbMap.T(ff_core_RbMap.R(), a_, y_, yv_, b_), ff_core_Ordering_Order$K)
-return
 }
 }
 }
@@ -515,7 +484,6 @@ const z_ = tree2_a.key_;
 const zv_ = tree2_a.value_;
 const c_ = tree2_a.right_;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), bl_, x_, xv_, a_), y_, yv_, ff_core_RbMap.balance_(b_, z_, zv_, ff_core_RbMap.sub1_(c_, ff_core_Ordering_Order$K), ff_core_Ordering_Order$K))
-return
 }
 }
 }
@@ -523,7 +491,6 @@ return
 }
 {
 return ff_core_Core.panic_("Unexhaustive match in balleft")
-return
 }
 }
 
@@ -543,7 +510,6 @@ const y_ = tree2_a.key_;
 const yv_ = tree2_a.value_;
 const c_ = tree2_a.right_;
 return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, ff_core_RbMap.T(ff_core_RbMap.B(), b_, y_, yv_, c_))
-return
 }
 }
 }
@@ -557,7 +523,6 @@ const y_ = key_a;
 const yv_ = value_a;
 const bl_ = tree2_a;
 return ff_core_RbMap.balance_(ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b_), y_, yv_, bl_, ff_core_Ordering_Order$K)
-return
 }
 }
 if(tree1_a.T) {
@@ -575,14 +540,12 @@ const z_ = key_a;
 const zv_ = value_a;
 const bl_ = tree2_a;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.balance_(ff_core_RbMap.sub1_(a_, ff_core_Ordering_Order$K), x_, xv_, b_, ff_core_Ordering_Order$K), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, bl_))
-return
 }
 }
 }
 }
 {
 return ff_core_Core.panic_("Unexhaustive match in balright")
-return
 }
 }
 
@@ -595,12 +558,10 @@ const x_ = tree_a.key_;
 const xv_ = tree_a.value_;
 const b_ = tree_a.right_;
 return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b_)
-return
 }
 }
 {
 return ff_core_Core.panic_("invariance violation")
-return
 }
 }
 
@@ -610,13 +571,11 @@ const tree2_a = tree2_;
 if(tree1_a.E) {
 const b_ = tree2_a;
 return b_
-return
 }
 {
 const a_ = tree1_a;
 if(tree2_a.E) {
 return a_
-return
 }
 }
 if(tree1_a.T) {
@@ -641,14 +600,12 @@ const z_ = _1.key_;
 const zv_ = _1.value_;
 const c2_ = _1.right_;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b2_), z_, zv_, ff_core_RbMap.T(ff_core_RbMap.R(), c2_, y_, yv_, d_))
-return
 }
 }
 }
 {
 const bc_ = _1;
 return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, ff_core_RbMap.T(ff_core_RbMap.R(), bc_, y_, yv_, d_))
-return
 }
 }
 return
@@ -678,14 +635,12 @@ const z_ = _1.key_;
 const zv_ = _1.value_;
 const c2_ = _1.right_;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b2_), z_, zv_, ff_core_RbMap.T(ff_core_RbMap.B(), c2_, y_, yv_, d_))
-return
 }
 }
 }
 {
 const bc_ = _1;
 return ff_core_RbMap.balleft_(a_, x_, xv_, ff_core_RbMap.T(ff_core_RbMap.B(), bc_, y_, yv_, d_), ff_core_Ordering_Order$K)
-return
 }
 }
 return
@@ -702,7 +657,6 @@ const x_ = tree2_a.key_;
 const xv_ = tree2_a.value_;
 const c_ = tree2_a.right_;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.app_(a_, b_, ff_core_Ordering_Order$K), x_, xv_, c_)
-return
 }
 }
 }
@@ -714,7 +668,6 @@ const xv_ = tree1_a.value_;
 const b_ = tree1_a.right_;
 const c_ = tree2_a;
 return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, ff_core_RbMap.app_(b_, c_, ff_core_Ordering_Order$K))
-return
 }
 }
 }
@@ -724,7 +677,6 @@ function ins_(s_) {
 const s_a = s_;
 if(s_a.E) {
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.E(), x_, xv_, ff_core_RbMap.E())
-return
 }
 if(s_a.T) {
 if(s_a.color_.B) {
@@ -737,19 +689,16 @@ const _1 = ff_core_Ordering_Order$K.compare_(x_, y_);
 {
 if(_1.OrderingBefore) {
 return ff_core_RbMap.balance_(ins_(a_), y_, yv_, b_, ff_core_Ordering_Order$K)
-return
 }
 }
 {
 if(_1.OrderingAfter) {
 return ff_core_RbMap.balance_(a_, y_, yv_, ins_(b_), ff_core_Ordering_Order$K)
-return
 }
 }
 {
 if(_1.OrderingSame) {
 return ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_)
-return
 }
 }
 }
@@ -767,19 +716,16 @@ const _1 = ff_core_Ordering_Order$K.compare_(x_, y_);
 {
 if(_1.OrderingBefore) {
 return ff_core_RbMap.T(ff_core_RbMap.R(), ins_(a_), y_, yv_, b_)
-return
 }
 }
 {
 if(_1.OrderingAfter) {
 return ff_core_RbMap.T(ff_core_RbMap.R(), a_, y_, yv_, ins_(b_))
-return
 }
 }
 {
 if(_1.OrderingSame) {
 return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b_)
-return
 }
 }
 }
@@ -792,7 +738,6 @@ const _1 = ins_(s_);
 {
 if(_1.E) {
 return ff_core_Core.panic_("Unexpected empty tree")
-return
 }
 }
 {
@@ -802,7 +747,6 @@ const z_ = _1.key_;
 const zv_ = _1.value_;
 const b_ = _1.right_;
 return ff_core_RbMap.T(ff_core_RbMap.B(), a_, z_, zv_, b_)
-return
 }
 }
 }
@@ -815,7 +759,6 @@ const tree_a = tree_;
 const x_ = key_a;
 if(tree_a.E) {
 return false
-return
 }
 }
 {
@@ -829,19 +772,16 @@ const _1 = ff_core_Ordering_Order$K.compare_(x_, y_);
 {
 if(_1.OrderingBefore) {
 return ff_core_RbMap.member_(x_, a_, ff_core_Ordering_Order$K)
-return
 }
 }
 {
 if(_1.OrderingAfter) {
 return ff_core_RbMap.member_(x_, b_, ff_core_Ordering_Order$K)
-return
 }
 }
 {
 if(_1.OrderingSame) {
 return true
-return
 }
 }
 }
@@ -870,7 +810,6 @@ const z_ = tree2_a.key_;
 const zv_ = tree2_a.value_;
 const d_ = tree2_a.right_;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
-return
 }
 }
 }
@@ -890,7 +829,6 @@ const z_ = key_a;
 const zv_ = value_a;
 const d_ = tree2_a;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
-return
 }
 }
 }
@@ -910,7 +848,6 @@ const z_ = key_a;
 const zv_ = value_a;
 const d_ = tree2_a;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
-return
 }
 }
 }
@@ -931,7 +868,6 @@ const z_ = tree2_a.right_.key_;
 const zv_ = tree2_a.right_.value_;
 const d_ = tree2_a.right_.right_;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
-return
 }
 }
 }
@@ -953,7 +889,6 @@ const z_ = tree2_a.key_;
 const zv_ = tree2_a.value_;
 const d_ = tree2_a.right_;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
-return
 }
 }
 }
@@ -965,7 +900,6 @@ const x_ = key_a;
 const xv_ = value_a;
 const b_ = tree2_a;
 return ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_)
-return
 }
 }
 
@@ -974,7 +908,6 @@ function del_(ss_) {
 const ss_a = ss_;
 if(ss_a.E) {
 return ff_core_RbMap.E()
-return
 }
 if(ss_a.T) {
 const a_ = ss_a.left_;
@@ -986,19 +919,16 @@ const _1 = ff_core_Ordering_Order$K.compare_(x_, y_);
 {
 if(_1.OrderingBefore) {
 return delformLeft_(a_, y_, yv_, b_)
-return
 }
 }
 {
 if(_1.OrderingAfter) {
 return delformRight_(a_, y_, yv_, b_)
-return
 }
 }
 {
 if(_1.OrderingSame) {
 return ff_core_RbMap.app_(a_, b_, ff_core_Ordering_Order$K)
-return
 }
 }
 }
@@ -1016,7 +946,6 @@ const y_ = key_a;
 const yv_ = value_a;
 const b_ = right_a;
 return ff_core_RbMap.balleft_(del_(left_), y_, yv_, b_, ff_core_Ordering_Order$K)
-return
 }
 }
 {
@@ -1025,7 +954,6 @@ const y_ = key_a;
 const yv_ = value_a;
 const b_ = right_a;
 return ff_core_RbMap.T(ff_core_RbMap.R(), del_(a_), y_, yv_, b_)
-return
 }
 }
 function delformRight_(left_, key_, value_, right_) {
@@ -1040,7 +968,6 @@ const yv_ = value_a;
 if(right_a.T) {
 if(right_a.color_.B) {
 return ff_core_RbMap.balright_(a_, y_, yv_, del_(right_), ff_core_Ordering_Order$K)
-return
 }
 }
 }
@@ -1050,7 +977,6 @@ const y_ = key_a;
 const yv_ = value_a;
 const b_ = right_a;
 return ff_core_RbMap.T(ff_core_RbMap.R(), a_, y_, yv_, del_(b_))
-return
 }
 }
 {
@@ -1062,12 +988,10 @@ const y_ = _1.key_;
 const yv_ = _1.value_;
 const b_ = _1.right_;
 return ff_core_RbMap.T(ff_core_RbMap.B(), a_, y_, yv_, b_)
-return
 }
 }
 {
 return ff_core_RbMap.E()
-return
 }
 }
 }
@@ -1087,7 +1011,6 @@ const y_ = key_a;
 const yv_ = value_a;
 const c_ = tree2_a;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, c_)
-return
 }
 }
 {
@@ -1101,7 +1024,6 @@ const y_ = tree2_a.key_;
 const yv_ = tree2_a.value_;
 const b_ = tree2_a.right_;
 return ff_core_RbMap.balance_(bl_, x_, xv_, ff_core_RbMap.T(ff_core_RbMap.R(), a_, y_, yv_, b_), ff_core_Ordering_Order$K)
-return
 }
 }
 }
@@ -1121,7 +1043,6 @@ const z_ = tree2_a.key_;
 const zv_ = tree2_a.value_;
 const c_ = tree2_a.right_;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), bl_, x_, xv_, a_), y_, yv_, ff_core_RbMap.balance_(b_, z_, zv_, ff_core_RbMap.sub1_(c_, ff_core_Ordering_Order$K), ff_core_Ordering_Order$K))
-return
 }
 }
 }
@@ -1129,7 +1050,6 @@ return
 }
 {
 return ff_core_Core.panic_("Unexhaustive match in balleft")
-return
 }
 }
 
@@ -1149,7 +1069,6 @@ const y_ = tree2_a.key_;
 const yv_ = tree2_a.value_;
 const c_ = tree2_a.right_;
 return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, ff_core_RbMap.T(ff_core_RbMap.B(), b_, y_, yv_, c_))
-return
 }
 }
 }
@@ -1163,7 +1082,6 @@ const y_ = key_a;
 const yv_ = value_a;
 const bl_ = tree2_a;
 return ff_core_RbMap.balance_(ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b_), y_, yv_, bl_, ff_core_Ordering_Order$K)
-return
 }
 }
 if(tree1_a.T) {
@@ -1181,14 +1099,12 @@ const z_ = key_a;
 const zv_ = value_a;
 const bl_ = tree2_a;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.balance_(ff_core_RbMap.sub1_(a_, ff_core_Ordering_Order$K), x_, xv_, b_, ff_core_Ordering_Order$K), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, bl_))
-return
 }
 }
 }
 }
 {
 return ff_core_Core.panic_("Unexhaustive match in balright")
-return
 }
 }
 
@@ -1201,12 +1117,10 @@ const x_ = tree_a.key_;
 const xv_ = tree_a.value_;
 const b_ = tree_a.right_;
 return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b_)
-return
 }
 }
 {
 return ff_core_Core.panic_("invariance violation")
-return
 }
 }
 
@@ -1216,13 +1130,11 @@ const tree2_a = tree2_;
 if(tree1_a.E) {
 const b_ = tree2_a;
 return b_
-return
 }
 {
 const a_ = tree1_a;
 if(tree2_a.E) {
 return a_
-return
 }
 }
 if(tree1_a.T) {
@@ -1247,14 +1159,12 @@ const z_ = _1.key_;
 const zv_ = _1.value_;
 const c2_ = _1.right_;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b2_), z_, zv_, ff_core_RbMap.T(ff_core_RbMap.R(), c2_, y_, yv_, d_))
-return
 }
 }
 }
 {
 const bc_ = _1;
 return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, ff_core_RbMap.T(ff_core_RbMap.R(), bc_, y_, yv_, d_))
-return
 }
 }
 return
@@ -1284,14 +1194,12 @@ const z_ = _1.key_;
 const zv_ = _1.value_;
 const c2_ = _1.right_;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b2_), z_, zv_, ff_core_RbMap.T(ff_core_RbMap.B(), c2_, y_, yv_, d_))
-return
 }
 }
 }
 {
 const bc_ = _1;
 return ff_core_RbMap.balleft_(a_, x_, xv_, ff_core_RbMap.T(ff_core_RbMap.B(), bc_, y_, yv_, d_), ff_core_Ordering_Order$K)
-return
 }
 }
 return
@@ -1308,7 +1216,6 @@ const x_ = tree2_a.key_;
 const xv_ = tree2_a.value_;
 const c_ = tree2_a.right_;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.app_(a_, b_, ff_core_Ordering_Order$K), x_, xv_, c_)
-return
 }
 }
 }
@@ -1320,7 +1227,6 @@ const xv_ = tree1_a.value_;
 const b_ = tree1_a.right_;
 const c_ = tree2_a;
 return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, ff_core_RbMap.app_(b_, c_, ff_core_Ordering_Order$K))
-return
 }
 }
 }
@@ -1331,7 +1237,6 @@ const _1 = self_;
 {
 if(_1.E) {
 return ff_core_Option.None()
-return
 }
 }
 {
@@ -1345,19 +1250,16 @@ const _1 = ff_core_Ordering_Order$K.compare_(key_, y_);
 {
 if(_1.OrderingBefore) {
 return ff_core_RbMap.RB_get(a_, key_, ff_core_Ordering_Order$K)
-return
 }
 }
 {
 if(_1.OrderingAfter) {
 return ff_core_RbMap.RB_get(b_, key_, ff_core_Ordering_Order$K)
-return
 }
 }
 {
 if(_1.OrderingSame) {
 return ff_core_Option.Some(yv_)
-return
 }
 }
 }
@@ -1373,7 +1275,6 @@ const _1 = self_;
 {
 if(_1.E) {
 return 0
-return
 }
 }
 {
@@ -1381,7 +1282,6 @@ if(_1.T) {
 const l_ = _1.left_;
 const r_ = _1.right_;
 return ((ff_core_RbMap.RB_size(l_, ff_core_Ordering_Order$K) + 1) + ff_core_RbMap.RB_size(r_, ff_core_Ordering_Order$K))
-return
 }
 }
 }
@@ -1407,12 +1307,10 @@ if((cycle_ && (((_1) => {
 {
 if(_1.E) {
 return false
-return
 }
 }
 {
 return true
-return
 }
 }))(self_))) {
 array_ = [self_];
@@ -1451,7 +1349,6 @@ if(_1[0].right_.E) {
 const tail_ = _1.slice(1);
 array_ = tail_;
 return ff_core_Option.Some(ff_core_Pair.Pair(k_, v_))
-return
 }
 }
 }
@@ -1516,7 +1413,6 @@ const _1 = self_;
 {
 if(_1.E) {
 return true
-return
 }
 }
 {
@@ -1526,7 +1422,6 @@ const k_ = _1.key_;
 const v_ = _1.value_;
 const r_ = _1.right_;
 return ((ff_core_RbMap.RB_eachWhile(l_, body_, ff_core_Ordering_Order$K) && body_(k_, v_)) && ff_core_RbMap.RB_eachWhile(r_, body_, ff_core_Ordering_Order$K))
-return
 }
 }
 }
@@ -1547,7 +1442,6 @@ const _1 = self_;
 {
 if(_1.E) {
 return ff_core_RbMap.E()
-return
 }
 }
 {
@@ -1558,7 +1452,6 @@ const k_ = _1.key_;
 const v_ = _1.value_;
 const r_ = _1.right_;
 return ff_core_RbMap.T(c_, ff_core_RbMap.RB_mapValues(l_, body_, ff_core_Ordering_Order$K), k_, body_(k_, v_), ff_core_RbMap.RB_mapValues(r_, body_, ff_core_Ordering_Order$K))
-return
 }
 }
 }
@@ -1583,7 +1476,6 @@ const _1 = self_;
 {
 if(_1.E) {
 return ff_core_Option.None()
-return
 }
 }
 {
@@ -1597,19 +1489,16 @@ const _1 = ff_core_Ordering_Order$K.compare_(key_, y_);
 {
 if(_1.OrderingBefore) {
 return ff_core_RbMap.RB_get(a_, key_, ff_core_Ordering_Order$K)
-return
 }
 }
 {
 if(_1.OrderingAfter) {
 return ff_core_RbMap.RB_get(b_, key_, ff_core_Ordering_Order$K)
-return
 }
 }
 {
 if(_1.OrderingSame) {
 return ff_core_Option.Some(yv_)
-return
 }
 }
 }
@@ -1625,7 +1514,6 @@ const _1 = self_;
 {
 if(_1.E) {
 return 0
-return
 }
 }
 {
@@ -1633,7 +1521,6 @@ if(_1.T) {
 const l_ = _1.left_;
 const r_ = _1.right_;
 return ((ff_core_RbMap.RB_size(l_, ff_core_Ordering_Order$K) + 1) + ff_core_RbMap.RB_size(r_, ff_core_Ordering_Order$K))
-return
 }
 }
 }
@@ -1659,12 +1546,10 @@ if((cycle_ && (((_1) => {
 {
 if(_1.E) {
 return false
-return
 }
 }
 {
 return true
-return
 }
 }))(self_))) {
 array_ = [self_];
@@ -1703,7 +1588,6 @@ if(_1[0].right_.E) {
 const tail_ = _1.slice(1);
 array_ = tail_;
 return ff_core_Option.Some(ff_core_Pair.Pair(k_, v_))
-return
 }
 }
 }
@@ -1768,7 +1652,6 @@ const _1 = self_;
 {
 if(_1.E) {
 return true
-return
 }
 }
 {
@@ -1778,7 +1661,6 @@ const k_ = _1.key_;
 const v_ = _1.value_;
 const r_ = _1.right_;
 return (((await ff_core_RbMap.RB_eachWhile$(l_, body_, ff_core_Ordering_Order$K, $task)) && (await body_(k_, v_, $task))) && (await ff_core_RbMap.RB_eachWhile$(r_, body_, ff_core_Ordering_Order$K, $task)))
-return
 }
 }
 }
@@ -1799,7 +1681,6 @@ const _1 = self_;
 {
 if(_1.E) {
 return ff_core_RbMap.E()
-return
 }
 }
 {
@@ -1810,7 +1691,6 @@ const k_ = _1.key_;
 const v_ = _1.value_;
 const r_ = _1.right_;
 return ff_core_RbMap.T(c_, (await ff_core_RbMap.RB_mapValues$(l_, body_, ff_core_Ordering_Order$K, $task)), k_, (await body_(k_, v_, $task)), (await ff_core_RbMap.RB_mapValues$(r_, body_, ff_core_Ordering_Order$K, $task)))
-return
 }
 }
 }

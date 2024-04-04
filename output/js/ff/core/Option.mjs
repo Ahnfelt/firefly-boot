@@ -111,14 +111,12 @@ const _1 = self_;
 {
 if(_1.None) {
 return body_()
-return
 }
 }
 {
 if(_1.Some) {
 const value_ = _1.value_;
 return value_
-return
 }
 }
 }
@@ -134,13 +132,11 @@ const _1 = condition_();
 {
 if(_1) {
 return ff_core_Option.Some(body_())
-return
 }
 }
 {
 if(!_1) {
 return ff_core_Option.None()
-return
 }
 }
 }
@@ -150,7 +146,6 @@ return
 {
 if(_1.Some) {
 return self_
-return
 }
 }
 }
@@ -162,13 +157,11 @@ const _1 = self_;
 {
 if(_1.None) {
 return body_()
-return
 }
 }
 {
 if(_1.Some) {
 return self_
-return
 }
 }
 }
@@ -180,13 +173,11 @@ const _1 = self_;
 {
 if(_1.None) {
 return true
-return
 }
 }
 {
 if(_1.Some) {
 return false
-return
 }
 }
 }
@@ -198,14 +189,12 @@ const _1 = self_;
 {
 if(_1.None) {
 return []
-return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
 return [v_]
-return
 }
 }
 }
@@ -236,13 +225,11 @@ if(_1.Some) {
 const v_ = _1.value_;
 if(body_(v_)) {
 return ff_core_Option.Some(v_)
-return
 }
 }
 }
 {
 return ff_core_Option.None()
-return
 }
 }
 }
@@ -253,14 +240,12 @@ const _1 = self_;
 {
 if(_1.None) {
 return ff_core_Option.None()
-return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
 return ff_core_Option.Some(body_(v_))
-return
 }
 }
 }
@@ -272,14 +257,12 @@ const _1 = self_;
 {
 if(_1.None) {
 return ff_core_Option.None()
-return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
 return body_(v_)
-return
 }
 }
 }
@@ -310,14 +293,12 @@ const _1 = self_;
 {
 if(_1.None) {
 return true
-return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
 return body_(v_)
-return
 }
 }
 }
@@ -329,14 +310,12 @@ const _1 = self_;
 {
 if(_1.None) {
 return false
-return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
 return body_(v_)
-return
 }
 }
 }
@@ -348,14 +327,12 @@ const _1 = self_;
 {
 if(_1.None) {
 return ff_core_Try.internalThrowGrabException_()
-return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
 return v_
-return
 }
 }
 }
@@ -367,14 +344,12 @@ const _1 = self_;
 {
 if(_1.None) {
 return (await body_($task))
-return
 }
 }
 {
 if(_1.Some) {
 const value_ = _1.value_;
 return value_
-return
 }
 }
 }
@@ -390,13 +365,11 @@ const _1 = (await condition_($task));
 {
 if(_1) {
 return ff_core_Option.Some((await body_($task)))
-return
 }
 }
 {
 if(!_1) {
 return ff_core_Option.None()
-return
 }
 }
 }
@@ -406,7 +379,6 @@ return
 {
 if(_1.Some) {
 return self_
-return
 }
 }
 }
@@ -418,13 +390,11 @@ const _1 = self_;
 {
 if(_1.None) {
 return (await body_($task))
-return
 }
 }
 {
 if(_1.Some) {
 return self_
-return
 }
 }
 }
@@ -436,13 +406,11 @@ const _1 = self_;
 {
 if(_1.None) {
 return true
-return
 }
 }
 {
 if(_1.Some) {
 return false
-return
 }
 }
 }
@@ -454,14 +422,12 @@ const _1 = self_;
 {
 if(_1.None) {
 return []
-return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
 return [v_]
-return
 }
 }
 }
@@ -492,13 +458,11 @@ if(_1.Some) {
 const v_ = _1.value_;
 if((await body_(v_, $task))) {
 return ff_core_Option.Some(v_)
-return
 }
 }
 }
 {
 return ff_core_Option.None()
-return
 }
 }
 }
@@ -509,14 +473,12 @@ const _1 = self_;
 {
 if(_1.None) {
 return ff_core_Option.None()
-return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
 return ff_core_Option.Some((await body_(v_, $task)))
-return
 }
 }
 }
@@ -528,14 +490,12 @@ const _1 = self_;
 {
 if(_1.None) {
 return ff_core_Option.None()
-return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
 return (await body_(v_, $task))
-return
 }
 }
 }
@@ -566,14 +526,12 @@ const _1 = self_;
 {
 if(_1.None) {
 return true
-return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
 return (await body_(v_, $task))
-return
 }
 }
 }
@@ -585,14 +543,12 @@ const _1 = self_;
 {
 if(_1.None) {
 return false
-return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
 return (await body_(v_, $task))
-return
 }
 }
 }
@@ -604,14 +560,12 @@ const _1 = self_;
 {
 if(_1.None) {
 return ff_core_Try.internalThrowGrabException_()
-return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
 return v_
-return
 }
 }
 }
@@ -623,14 +577,12 @@ const _1 = self_;
 {
 if(_1.None) {
 return false
-return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
 return ff_core_Equal_Equal$T.equals_(v_, value_)
-return
 }
 }
 }
@@ -642,14 +594,12 @@ const _1 = self_;
 {
 if(_1.None) {
 return false
-return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
 return ff_core_Equal_Equal$T.equals_(v_, value_)
-return
 }
 }
 }
@@ -661,14 +611,12 @@ const _1 = self_;
 {
 if(_1.None) {
 return ff_core_Option.None()
-return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
 return v_
-return
 }
 }
 }
@@ -680,14 +628,12 @@ const _1 = self_;
 {
 if(_1.None) {
 return ff_core_Option.None()
-return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
 return v_
-return
 }
 }
 }
@@ -708,12 +654,10 @@ const value_a = value_;
 if(value_a.None) {
 const z_ = value_a;
 return "None"
-return
 }
 if(value_a.Some) {
 const z_ = value_a;
 return ((("Some" + "(") + ff_core_Show_Show$T.show_(z_.value_)) + ")")
-return
 }
 },
 async show_$(value_, $task) {
@@ -721,12 +665,10 @@ const value_a = value_;
 if(value_a.None) {
 const z_ = value_a;
 return "None"
-return
 }
 if(value_a.Some) {
 const z_ = value_a;
 return ((("Some" + "(") + ff_core_Show_Show$T.show_(z_.value_)) + ")")
-return
 }
 }
 }}
@@ -737,19 +679,16 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 if(x_a.Some) {
 const x_ = x_a;
 if(y_a.Some) {
 const y_ = y_a;
 return ff_core_Equal_Equal$T.equals_(x_.value_, y_.value_)
-return
 }
 }
 {
 return false
-return
 }
 },
 async equals_$(x_, y_, $task) {
@@ -757,19 +696,16 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 if(x_a.Some) {
 const x_ = x_a;
 if(y_a.Some) {
 const y_ = y_a;
 return ff_core_Equal_Equal$T.equals_(x_.value_, y_.value_)
-return
 }
 }
 {
 return false
-return
 }
 }
 }}
@@ -780,7 +716,6 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 if(x_a.Some) {
 const x_ = x_a;
@@ -800,15 +735,12 @@ function number_(z_) {
 const z_a = z_;
 if(z_a.None) {
 return 0
-return
 }
 if(z_a.Some) {
 return 1
-return
 }
 }
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
-return
 }
 },
 async compare_$(x_, y_, $task) {
@@ -816,7 +748,6 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 if(x_a.Some) {
 const x_ = x_a;
@@ -836,15 +767,12 @@ function number_(z_) {
 const z_a = z_;
 if(z_a.None) {
 return 0
-return
 }
 if(z_a.Some) {
 return 1
-return
 }
 }
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
-return
 }
 }
 }}
@@ -880,14 +808,12 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 return ff_core_Option.None()
-return
 }
 }
 {
 if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 return ff_core_Option.Some(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_))
-return
 }
 }
 {
@@ -926,14 +852,12 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 return ff_core_Option.None()
-return
 }
 }
 {
 if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 return ff_core_Option.Some(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_))
-return
 }
 }
 {

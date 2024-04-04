@@ -125,7 +125,6 @@ const _1 = module_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, _c.traits_, [...module_.instances_, ...ff_compiler_Deriver.Deriver_makeHasAnyTagInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeShowInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeEqualInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeOrderingInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeSerializableInstances(self_, modulePrefix_, module_)], _c.extends_, _c.lets_, _c.functions_)
-return
 }
 }
 }
@@ -256,7 +255,6 @@ if(_1.length === 1) {
 const variant_ = _1[0];
 const fields_ = [...declaration_.commonFields_, ...variant_.fields_];
 return [sameCase_, ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardPattern_], [], ff_compiler_Deriver.Deriver_makeOrderingFields(self_, modulePrefix_, declaration_, fields_))]
-return
 }
 }
 {
@@ -277,12 +275,10 @@ const index_ = _1.first_;
 const variant_ = _1.second_;
 const variantName_ = ((modulePrefix_ + ".") + variant_.name_);
 return ff_compiler_Syntax.MatchCase(at_, [ff_compiler_Syntax.PVariantAs(at_, variantName_, at_, ff_core_Option.None())], [], ff_compiler_Syntax.EInt(at_, ("" + index_)))
-return
 }
 }));
 const differentVariant_ = ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardPattern_], [], ff_compiler_Syntax.EFunctions(at_, [ff_compiler_Syntax.DFunction(at_, numberSignature_, ff_compiler_Syntax.FireflyTarget(ff_compiler_Syntax.Lambda(at_, noEffect_, numberCases_)))], ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Ordering.compare", [ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "number", [ff_compiler_Syntax.EVariable(at_, "x")], []), ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "number", [ff_compiler_Syntax.EVariable(at_, "y")], [])], [])));
 return [sameCase_, ...sameVariantCases_, differentVariant_]
-return
 }
 }
 }
@@ -297,7 +293,6 @@ function go_(fields_) {
 const fields_a = fields_;
 if(fields_a.length === 0) {
 return orderingSame_
-return
 }
 if(fields_a.length >= 1) {
 const head_ = fields_a[0];
@@ -307,7 +302,6 @@ const compareTerm_ = ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:
 const notEqualTerm_ = ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "!==", [ff_compiler_Syntax.EVariable(at_, variableName_), orderingSame_], []);
 const ifTerm_ = ff_compiler_Deriver.Deriver_makeIf(self_, at_, notEqualTerm_, ff_compiler_Syntax.EVariable(at_, variableName_), go_(tail_));
 return ff_compiler_Syntax.ELet(at_, false, variableName_, orderingType_, compareTerm_, ifTerm_)
-return
 }
 }
 return go_(fields_)
@@ -353,7 +347,6 @@ if(_1.length === 1) {
 const variant_ = _1[0];
 const fields_ = [...declaration_.commonFields_, ...variant_.fields_];
 return [sameCase_, ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardPattern_], [], ff_compiler_Deriver.Deriver_makeEqualFields(self_, modulePrefix_, declaration_, fields_))]
-return
 }
 }
 {
@@ -368,7 +361,6 @@ return ff_compiler_Syntax.MatchCase(at_, [ff_compiler_Syntax.PVariantAs(at_, var
 }));
 const differentVariant_ = ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardPattern_], [], ff_compiler_Syntax.EVariant(at_, "ff:core/Bool.False", [], ff_core_Option.None()));
 return [sameCase_, ...sameVariantCases_, differentVariant_]
-return
 }
 }
 }
@@ -381,19 +373,16 @@ function go_(fields_) {
 const fields_a = fields_;
 if(fields_a.length === 0) {
 return ff_compiler_Syntax.EVariant(at_, "ff:core/Bool.True", [], ff_core_Option.None())
-return
 }
 if(fields_a.length === 1) {
 const head_ = fields_a[0];
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Equal.equals", [ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "x"), head_.name_), ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "y"), head_.name_)], [])
-return
 }
 if(fields_a.length >= 1) {
 const head_ = fields_a[0];
 const tail_ = fields_a.slice(1);
 const equalsTerm_ = ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Equal.equals", [ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "x"), head_.name_), ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "y"), head_.name_)], []);
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "&&", [equalsTerm_, go_(tail_)], [])
-return
 }
 }
 return go_(fields_)
@@ -474,7 +463,6 @@ return ff_compiler_Syntax.Argument(at_, ff_core_Option.None(), ff_compiler_Deriv
 const updateChecksum_ = ff_compiler_Deriver.Deriver_makeUpdateChecksum(self_, at_, variantName_, declaration_, variant_);
 const makeVariant_ = ff_compiler_Syntax.EVariant(at_, variantName_, [], ff_core_Option.Some(fieldValues_));
 return ff_compiler_Syntax.MatchCase(at_, [ff_compiler_Syntax.PInt(at_, ("" + index_))], [], ff_compiler_Syntax.ESequential(at_, updateChecksum_, makeVariant_))
-return
 }
 }));
 const otherwiseCase_ = ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_], [], ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Core.throw", [ff_compiler_Syntax.EVariant(at_, "ff:core/Serializable.DeserializationChecksumException", [], ff_core_Option.None())], []));
@@ -506,7 +494,6 @@ return
 }
 {
 return ff_core_Option.None()
-return
 }
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return ff_core_List.List_filter(module_.types_, ((t_) => {
@@ -546,7 +533,6 @@ const _1 = module_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, _c.traits_, [...module_.instances_, ...ff_compiler_Deriver.Deriver_makeHasAnyTagInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeShowInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeEqualInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeOrderingInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeSerializableInstances(self_, modulePrefix_, module_)], _c.extends_, _c.lets_, _c.functions_)
-return
 }
 }
 }
@@ -677,7 +663,6 @@ if(_1.length === 1) {
 const variant_ = _1[0];
 const fields_ = [...declaration_.commonFields_, ...variant_.fields_];
 return [sameCase_, ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardPattern_], [], ff_compiler_Deriver.Deriver_makeOrderingFields(self_, modulePrefix_, declaration_, fields_))]
-return
 }
 }
 {
@@ -698,12 +683,10 @@ const index_ = _1.first_;
 const variant_ = _1.second_;
 const variantName_ = ((modulePrefix_ + ".") + variant_.name_);
 return ff_compiler_Syntax.MatchCase(at_, [ff_compiler_Syntax.PVariantAs(at_, variantName_, at_, ff_core_Option.None())], [], ff_compiler_Syntax.EInt(at_, ("" + index_)))
-return
 }
 }));
 const differentVariant_ = ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardPattern_], [], ff_compiler_Syntax.EFunctions(at_, [ff_compiler_Syntax.DFunction(at_, numberSignature_, ff_compiler_Syntax.FireflyTarget(ff_compiler_Syntax.Lambda(at_, noEffect_, numberCases_)))], ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Ordering.compare", [ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "number", [ff_compiler_Syntax.EVariable(at_, "x")], []), ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "number", [ff_compiler_Syntax.EVariable(at_, "y")], [])], [])));
 return [sameCase_, ...sameVariantCases_, differentVariant_]
-return
 }
 }
 }
@@ -718,7 +701,6 @@ function go_(fields_) {
 const fields_a = fields_;
 if(fields_a.length === 0) {
 return orderingSame_
-return
 }
 if(fields_a.length >= 1) {
 const head_ = fields_a[0];
@@ -728,7 +710,6 @@ const compareTerm_ = ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:
 const notEqualTerm_ = ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "!==", [ff_compiler_Syntax.EVariable(at_, variableName_), orderingSame_], []);
 const ifTerm_ = ff_compiler_Deriver.Deriver_makeIf(self_, at_, notEqualTerm_, ff_compiler_Syntax.EVariable(at_, variableName_), go_(tail_));
 return ff_compiler_Syntax.ELet(at_, false, variableName_, orderingType_, compareTerm_, ifTerm_)
-return
 }
 }
 return go_(fields_)
@@ -774,7 +755,6 @@ if(_1.length === 1) {
 const variant_ = _1[0];
 const fields_ = [...declaration_.commonFields_, ...variant_.fields_];
 return [sameCase_, ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardPattern_], [], ff_compiler_Deriver.Deriver_makeEqualFields(self_, modulePrefix_, declaration_, fields_))]
-return
 }
 }
 {
@@ -789,7 +769,6 @@ return ff_compiler_Syntax.MatchCase(at_, [ff_compiler_Syntax.PVariantAs(at_, var
 }));
 const differentVariant_ = ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_, wildcardPattern_], [], ff_compiler_Syntax.EVariant(at_, "ff:core/Bool.False", [], ff_core_Option.None()));
 return [sameCase_, ...sameVariantCases_, differentVariant_]
-return
 }
 }
 }
@@ -802,19 +781,16 @@ function go_(fields_) {
 const fields_a = fields_;
 if(fields_a.length === 0) {
 return ff_compiler_Syntax.EVariant(at_, "ff:core/Bool.True", [], ff_core_Option.None())
-return
 }
 if(fields_a.length === 1) {
 const head_ = fields_a[0];
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Equal.equals", [ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "x"), head_.name_), ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "y"), head_.name_)], [])
-return
 }
 if(fields_a.length >= 1) {
 const head_ = fields_a[0];
 const tail_ = fields_a.slice(1);
 const equalsTerm_ = ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Equal.equals", [ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "x"), head_.name_), ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "y"), head_.name_)], []);
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "&&", [equalsTerm_, go_(tail_)], [])
-return
 }
 }
 return go_(fields_)
@@ -895,7 +871,6 @@ return ff_compiler_Syntax.Argument(at_, ff_core_Option.None(), ff_compiler_Deriv
 const updateChecksum_ = ff_compiler_Deriver.Deriver_makeUpdateChecksum(self_, at_, variantName_, declaration_, variant_);
 const makeVariant_ = ff_compiler_Syntax.EVariant(at_, variantName_, [], ff_core_Option.Some(fieldValues_));
 return ff_compiler_Syntax.MatchCase(at_, [ff_compiler_Syntax.PInt(at_, ("" + index_))], [], ff_compiler_Syntax.ESequential(at_, updateChecksum_, makeVariant_))
-return
 }
 }));
 const otherwiseCase_ = ff_compiler_Syntax.MatchCase(at_, [wildcardPattern_], [], ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Core.throw", [ff_compiler_Syntax.EVariant(at_, "ff:core/Serializable.DeserializationChecksumException", [], ff_core_Option.None())], []));
@@ -927,7 +902,6 @@ return
 }
 {
 return ff_core_Option.None()
-return
 }
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return ff_core_List.List_filter(module_.types_, ((t_) => {
@@ -974,13 +948,11 @@ show_(value_) {
 const value_a = value_;
 const z_ = value_a;
 return "Deriver"
-return
 },
 async show_$(value_, $task) {
 const value_a = value_;
 const z_ = value_a;
 return "Deriver"
-return
 }
 };
 
@@ -990,11 +962,9 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 {
 return true
-return
 }
 },
 async equals_$(x_, y_, $task) {
@@ -1002,11 +972,9 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 {
 return true
-return
 }
 }
 };
@@ -1017,11 +985,9 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 {
 return ff_core_Ordering.OrderingSame()
-return
 }
 },
 async compare_$(x_, y_, $task) {
@@ -1029,11 +995,9 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 {
 return ff_core_Ordering.OrderingSame()
-return
 }
 }
 };
@@ -1058,7 +1022,6 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_Deriver.Deriver()
-return
 }
 }
 {
@@ -1086,7 +1049,6 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_Deriver.Deriver()
-return
 }
 }
 {

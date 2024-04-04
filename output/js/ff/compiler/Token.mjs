@@ -293,151 +293,126 @@ const _1 = self_;
 {
 if(_1.LEnd) {
 return false
-return
 }
 }
 {
 if(_1.LString) {
 return true
-return
 }
 }
 {
 if(_1.LChar) {
 return true
-return
 }
 }
 {
 if(_1.LInt) {
 return true
-return
 }
 }
 {
 if(_1.LFloat) {
 return true
-return
 }
 }
 {
 if(_1.LKeyword) {
 return true
-return
 }
 }
 {
 if(_1.LNamespace) {
 return false
-return
 }
 }
 {
 if(_1.LLower) {
 return true
-return
 }
 }
 {
 if(_1.LUpper) {
 return true
-return
 }
 }
 {
 if(_1.LWildcard) {
 return true
-return
 }
 }
 {
 if(_1.LBracketLeft) {
 return false
-return
 }
 }
 {
 if(_1.LBracketRight) {
 return true
-return
 }
 }
 {
 if(_1.LOperator) {
 return false
-return
 }
 }
 {
 if(_1.LComma) {
 return false
-return
 }
 }
 {
 if(_1.LSeparator) {
 return false
-return
 }
 }
 {
 if(_1.LDot) {
 return false
-return
 }
 }
 {
 if(_1.LSemicolon) {
 return false
-return
 }
 }
 {
 if(_1.LPipe) {
 return false
-return
 }
 }
 {
 if(_1.LColon) {
 return false
-return
 }
 }
 {
 if(_1.LDotDotDot) {
 return false
-return
 }
 }
 {
 if(_1.LArrowThick) {
 return false
-return
 }
 }
 {
 if(_1.LAssign) {
 return false
-return
 }
 }
 {
 if(_1.LAssignPlus) {
 return false
-return
 }
 }
 {
 if(_1.LAssignMinus) {
 return false
-return
 }
 }
 {
 if(_1.LAssignLink) {
 return false
-return
 }
 }
 }
@@ -449,151 +424,126 @@ const _1 = self_;
 {
 if(_1.LEnd) {
 return false
-return
 }
 }
 {
 if(_1.LString) {
 return true
-return
 }
 }
 {
 if(_1.LChar) {
 return true
-return
 }
 }
 {
 if(_1.LInt) {
 return true
-return
 }
 }
 {
 if(_1.LFloat) {
 return true
-return
 }
 }
 {
 if(_1.LKeyword) {
 return true
-return
 }
 }
 {
 if(_1.LNamespace) {
 return true
-return
 }
 }
 {
 if(_1.LLower) {
 return true
-return
 }
 }
 {
 if(_1.LUpper) {
 return true
-return
 }
 }
 {
 if(_1.LWildcard) {
 return true
-return
 }
 }
 {
 if(_1.LBracketLeft) {
 return true
-return
 }
 }
 {
 if(_1.LBracketRight) {
 return false
-return
 }
 }
 {
 if(_1.LOperator) {
 return false
-return
 }
 }
 {
 if(_1.LComma) {
 return false
-return
 }
 }
 {
 if(_1.LSeparator) {
 return false
-return
 }
 }
 {
 if(_1.LDot) {
 return false
-return
 }
 }
 {
 if(_1.LSemicolon) {
 return false
-return
 }
 }
 {
 if(_1.LPipe) {
 return false
-return
 }
 }
 {
 if(_1.LColon) {
 return false
-return
 }
 }
 {
 if(_1.LDotDotDot) {
 return true
-return
 }
 }
 {
 if(_1.LArrowThick) {
 return false
-return
 }
 }
 {
 if(_1.LAssign) {
 return false
-return
 }
 }
 {
 if(_1.LAssignPlus) {
 return false
-return
 }
 }
 {
 if(_1.LAssignMinus) {
 return false
-return
 }
 }
 {
 if(_1.LAssignLink) {
 return false
-return
 }
 }
 }
@@ -605,151 +555,126 @@ const _1 = self_;
 {
 if(_1.LEnd) {
 return false
-return
 }
 }
 {
 if(_1.LString) {
 return true
-return
 }
 }
 {
 if(_1.LChar) {
 return true
-return
 }
 }
 {
 if(_1.LInt) {
 return true
-return
 }
 }
 {
 if(_1.LFloat) {
 return true
-return
 }
 }
 {
 if(_1.LKeyword) {
 return true
-return
 }
 }
 {
 if(_1.LNamespace) {
 return true
-return
 }
 }
 {
 if(_1.LLower) {
 return true
-return
 }
 }
 {
 if(_1.LUpper) {
 return true
-return
 }
 }
 {
 if(_1.LWildcard) {
 return true
-return
 }
 }
 {
 if(_1.LBracketLeft) {
 return false
-return
 }
 }
 {
 if(_1.LBracketRight) {
 return false
-return
 }
 }
 {
 if(_1.LOperator) {
 return false
-return
 }
 }
 {
 if(_1.LComma) {
 return false
-return
 }
 }
 {
 if(_1.LSeparator) {
 return false
-return
 }
 }
 {
 if(_1.LDot) {
 return false
-return
 }
 }
 {
 if(_1.LSemicolon) {
 return false
-return
 }
 }
 {
 if(_1.LPipe) {
 return false
-return
 }
 }
 {
 if(_1.LColon) {
 return false
-return
 }
 }
 {
 if(_1.LDotDotDot) {
 return false
-return
 }
 }
 {
 if(_1.LArrowThick) {
 return false
-return
 }
 }
 {
 if(_1.LAssign) {
 return false
-return
 }
 }
 {
 if(_1.LAssignPlus) {
 return false
-return
 }
 }
 {
 if(_1.LAssignMinus) {
 return false
-return
 }
 }
 {
 if(_1.LAssignLink) {
 return false
-return
 }
 }
 }
@@ -761,151 +686,126 @@ const _1 = self_;
 {
 if(_1.LEnd) {
 return false
-return
 }
 }
 {
 if(_1.LString) {
 return true
-return
 }
 }
 {
 if(_1.LChar) {
 return true
-return
 }
 }
 {
 if(_1.LInt) {
 return true
-return
 }
 }
 {
 if(_1.LFloat) {
 return true
-return
 }
 }
 {
 if(_1.LKeyword) {
 return true
-return
 }
 }
 {
 if(_1.LNamespace) {
 return false
-return
 }
 }
 {
 if(_1.LLower) {
 return true
-return
 }
 }
 {
 if(_1.LUpper) {
 return true
-return
 }
 }
 {
 if(_1.LWildcard) {
 return true
-return
 }
 }
 {
 if(_1.LBracketLeft) {
 return false
-return
 }
 }
 {
 if(_1.LBracketRight) {
 return true
-return
 }
 }
 {
 if(_1.LOperator) {
 return false
-return
 }
 }
 {
 if(_1.LComma) {
 return false
-return
 }
 }
 {
 if(_1.LSeparator) {
 return false
-return
 }
 }
 {
 if(_1.LDot) {
 return false
-return
 }
 }
 {
 if(_1.LSemicolon) {
 return false
-return
 }
 }
 {
 if(_1.LPipe) {
 return false
-return
 }
 }
 {
 if(_1.LColon) {
 return false
-return
 }
 }
 {
 if(_1.LDotDotDot) {
 return false
-return
 }
 }
 {
 if(_1.LArrowThick) {
 return false
-return
 }
 }
 {
 if(_1.LAssign) {
 return false
-return
 }
 }
 {
 if(_1.LAssignPlus) {
 return false
-return
 }
 }
 {
 if(_1.LAssignMinus) {
 return false
-return
 }
 }
 {
 if(_1.LAssignLink) {
 return false
-return
 }
 }
 }
@@ -917,151 +817,126 @@ const _1 = self_;
 {
 if(_1.LEnd) {
 return false
-return
 }
 }
 {
 if(_1.LString) {
 return true
-return
 }
 }
 {
 if(_1.LChar) {
 return true
-return
 }
 }
 {
 if(_1.LInt) {
 return true
-return
 }
 }
 {
 if(_1.LFloat) {
 return true
-return
 }
 }
 {
 if(_1.LKeyword) {
 return true
-return
 }
 }
 {
 if(_1.LNamespace) {
 return true
-return
 }
 }
 {
 if(_1.LLower) {
 return true
-return
 }
 }
 {
 if(_1.LUpper) {
 return true
-return
 }
 }
 {
 if(_1.LWildcard) {
 return true
-return
 }
 }
 {
 if(_1.LBracketLeft) {
 return true
-return
 }
 }
 {
 if(_1.LBracketRight) {
 return false
-return
 }
 }
 {
 if(_1.LOperator) {
 return false
-return
 }
 }
 {
 if(_1.LComma) {
 return false
-return
 }
 }
 {
 if(_1.LSeparator) {
 return false
-return
 }
 }
 {
 if(_1.LDot) {
 return false
-return
 }
 }
 {
 if(_1.LSemicolon) {
 return false
-return
 }
 }
 {
 if(_1.LPipe) {
 return false
-return
 }
 }
 {
 if(_1.LColon) {
 return false
-return
 }
 }
 {
 if(_1.LDotDotDot) {
 return true
-return
 }
 }
 {
 if(_1.LArrowThick) {
 return false
-return
 }
 }
 {
 if(_1.LAssign) {
 return false
-return
 }
 }
 {
 if(_1.LAssignPlus) {
 return false
-return
 }
 }
 {
 if(_1.LAssignMinus) {
 return false
-return
 }
 }
 {
 if(_1.LAssignLink) {
 return false
-return
 }
 }
 }
@@ -1073,151 +948,126 @@ const _1 = self_;
 {
 if(_1.LEnd) {
 return false
-return
 }
 }
 {
 if(_1.LString) {
 return true
-return
 }
 }
 {
 if(_1.LChar) {
 return true
-return
 }
 }
 {
 if(_1.LInt) {
 return true
-return
 }
 }
 {
 if(_1.LFloat) {
 return true
-return
 }
 }
 {
 if(_1.LKeyword) {
 return true
-return
 }
 }
 {
 if(_1.LNamespace) {
 return true
-return
 }
 }
 {
 if(_1.LLower) {
 return true
-return
 }
 }
 {
 if(_1.LUpper) {
 return true
-return
 }
 }
 {
 if(_1.LWildcard) {
 return true
-return
 }
 }
 {
 if(_1.LBracketLeft) {
 return false
-return
 }
 }
 {
 if(_1.LBracketRight) {
 return false
-return
 }
 }
 {
 if(_1.LOperator) {
 return false
-return
 }
 }
 {
 if(_1.LComma) {
 return false
-return
 }
 }
 {
 if(_1.LSeparator) {
 return false
-return
 }
 }
 {
 if(_1.LDot) {
 return false
-return
 }
 }
 {
 if(_1.LSemicolon) {
 return false
-return
 }
 }
 {
 if(_1.LPipe) {
 return false
-return
 }
 }
 {
 if(_1.LColon) {
 return false
-return
 }
 }
 {
 if(_1.LDotDotDot) {
 return false
-return
 }
 }
 {
 if(_1.LArrowThick) {
 return false
-return
 }
 }
 {
 if(_1.LAssign) {
 return false
-return
 }
 }
 {
 if(_1.LAssignPlus) {
 return false
-return
 }
 }
 {
 if(_1.LAssignMinus) {
 return false
-return
 }
 }
 {
 if(_1.LAssignLink) {
 return false
-return
 }
 }
 }
@@ -1246,13 +1096,11 @@ show_(value_) {
 const value_a = value_;
 const z_ = value_a;
 return ((((((((((((((((((("Token" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.code_)) + ", ") + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(z_.kind_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startLine_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startLineOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopLine_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopLineOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopOffset_)) + ")")
-return
 },
 async show_$(value_, $task) {
 const value_a = value_;
 const z_ = value_a;
 return ((((((((((((((((((("Token" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.code_)) + ", ") + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(z_.kind_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startLine_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startLineOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopLine_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopLineOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopOffset_)) + ")")
-return
 }
 };
 
@@ -1262,127 +1110,102 @@ const value_a = value_;
 if(value_a.LEnd) {
 const z_ = value_a;
 return "LEnd"
-return
 }
 if(value_a.LString) {
 const z_ = value_a;
 return "LString"
-return
 }
 if(value_a.LChar) {
 const z_ = value_a;
 return "LChar"
-return
 }
 if(value_a.LInt) {
 const z_ = value_a;
 return "LInt"
-return
 }
 if(value_a.LFloat) {
 const z_ = value_a;
 return "LFloat"
-return
 }
 if(value_a.LKeyword) {
 const z_ = value_a;
 return "LKeyword"
-return
 }
 if(value_a.LNamespace) {
 const z_ = value_a;
 return "LNamespace"
-return
 }
 if(value_a.LLower) {
 const z_ = value_a;
 return "LLower"
-return
 }
 if(value_a.LUpper) {
 const z_ = value_a;
 return "LUpper"
-return
 }
 if(value_a.LWildcard) {
 const z_ = value_a;
 return "LWildcard"
-return
 }
 if(value_a.LBracketLeft) {
 const z_ = value_a;
 return "LBracketLeft"
-return
 }
 if(value_a.LBracketRight) {
 const z_ = value_a;
 return "LBracketRight"
-return
 }
 if(value_a.LOperator) {
 const z_ = value_a;
 return "LOperator"
-return
 }
 if(value_a.LComma) {
 const z_ = value_a;
 return "LComma"
-return
 }
 if(value_a.LSeparator) {
 const z_ = value_a;
 return "LSeparator"
-return
 }
 if(value_a.LDot) {
 const z_ = value_a;
 return "LDot"
-return
 }
 if(value_a.LSemicolon) {
 const z_ = value_a;
 return "LSemicolon"
-return
 }
 if(value_a.LPipe) {
 const z_ = value_a;
 return "LPipe"
-return
 }
 if(value_a.LColon) {
 const z_ = value_a;
 return "LColon"
-return
 }
 if(value_a.LDotDotDot) {
 const z_ = value_a;
 return "LDotDotDot"
-return
 }
 if(value_a.LArrowThick) {
 const z_ = value_a;
 return "LArrowThick"
-return
 }
 if(value_a.LAssign) {
 const z_ = value_a;
 return "LAssign"
-return
 }
 if(value_a.LAssignPlus) {
 const z_ = value_a;
 return "LAssignPlus"
-return
 }
 if(value_a.LAssignMinus) {
 const z_ = value_a;
 return "LAssignMinus"
-return
 }
 if(value_a.LAssignLink) {
 const z_ = value_a;
 return "LAssignLink"
-return
 }
 },
 async show_$(value_, $task) {
@@ -1390,127 +1213,102 @@ const value_a = value_;
 if(value_a.LEnd) {
 const z_ = value_a;
 return "LEnd"
-return
 }
 if(value_a.LString) {
 const z_ = value_a;
 return "LString"
-return
 }
 if(value_a.LChar) {
 const z_ = value_a;
 return "LChar"
-return
 }
 if(value_a.LInt) {
 const z_ = value_a;
 return "LInt"
-return
 }
 if(value_a.LFloat) {
 const z_ = value_a;
 return "LFloat"
-return
 }
 if(value_a.LKeyword) {
 const z_ = value_a;
 return "LKeyword"
-return
 }
 if(value_a.LNamespace) {
 const z_ = value_a;
 return "LNamespace"
-return
 }
 if(value_a.LLower) {
 const z_ = value_a;
 return "LLower"
-return
 }
 if(value_a.LUpper) {
 const z_ = value_a;
 return "LUpper"
-return
 }
 if(value_a.LWildcard) {
 const z_ = value_a;
 return "LWildcard"
-return
 }
 if(value_a.LBracketLeft) {
 const z_ = value_a;
 return "LBracketLeft"
-return
 }
 if(value_a.LBracketRight) {
 const z_ = value_a;
 return "LBracketRight"
-return
 }
 if(value_a.LOperator) {
 const z_ = value_a;
 return "LOperator"
-return
 }
 if(value_a.LComma) {
 const z_ = value_a;
 return "LComma"
-return
 }
 if(value_a.LSeparator) {
 const z_ = value_a;
 return "LSeparator"
-return
 }
 if(value_a.LDot) {
 const z_ = value_a;
 return "LDot"
-return
 }
 if(value_a.LSemicolon) {
 const z_ = value_a;
 return "LSemicolon"
-return
 }
 if(value_a.LPipe) {
 const z_ = value_a;
 return "LPipe"
-return
 }
 if(value_a.LColon) {
 const z_ = value_a;
 return "LColon"
-return
 }
 if(value_a.LDotDotDot) {
 const z_ = value_a;
 return "LDotDotDot"
-return
 }
 if(value_a.LArrowThick) {
 const z_ = value_a;
 return "LArrowThick"
-return
 }
 if(value_a.LAssign) {
 const z_ = value_a;
 return "LAssign"
-return
 }
 if(value_a.LAssignPlus) {
 const z_ = value_a;
 return "LAssignPlus"
-return
 }
 if(value_a.LAssignMinus) {
 const z_ = value_a;
 return "LAssignMinus"
-return
 }
 if(value_a.LAssignLink) {
 const z_ = value_a;
 return "LAssignLink"
-return
 }
 }
 };
@@ -1521,11 +1319,9 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 {
 return ((x_.file_ === y_.file_) && ((x_.code_ === y_.code_) && (ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(x_.kind_, y_.kind_) && ((x_.startLine_ === y_.startLine_) && ((x_.startLineOffset_ === y_.startLineOffset_) && ((x_.startOffset_ === y_.startOffset_) && ((x_.stopLine_ === y_.stopLine_) && ((x_.stopLineOffset_ === y_.stopLineOffset_) && (x_.stopOffset_ === y_.stopOffset_)))))))))
-return
 }
 },
 async equals_$(x_, y_, $task) {
@@ -1533,11 +1329,9 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 {
 return ((x_.file_ === y_.file_) && ((x_.code_ === y_.code_) && (ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(x_.kind_, y_.kind_) && ((x_.startLine_ === y_.startLine_) && ((x_.startLineOffset_ === y_.startLineOffset_) && ((x_.startOffset_ === y_.startOffset_) && ((x_.stopLine_ === y_.stopLine_) && ((x_.stopLineOffset_ === y_.stopLineOffset_) && (x_.stopOffset_ === y_.stopOffset_)))))))))
-return
 }
 }
 };
@@ -1548,11 +1342,9 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 {
 return false
-return
 }
 },
 async equals_$(x_, y_, $task) {
@@ -1560,11 +1352,9 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 {
 return false
-return
 }
 }
 };
@@ -1575,7 +1365,6 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 {
 const fileOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.file_, y_.file_);
@@ -1632,7 +1421,6 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 {
 const fileOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.file_, y_.file_);
@@ -1692,114 +1480,87 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 {
 function number_(z_) {
 const z_a = z_;
 if(z_a.LEnd) {
 return 0
-return
 }
 if(z_a.LString) {
 return 1
-return
 }
 if(z_a.LChar) {
 return 2
-return
 }
 if(z_a.LInt) {
 return 3
-return
 }
 if(z_a.LFloat) {
 return 4
-return
 }
 if(z_a.LKeyword) {
 return 5
-return
 }
 if(z_a.LNamespace) {
 return 6
-return
 }
 if(z_a.LLower) {
 return 7
-return
 }
 if(z_a.LUpper) {
 return 8
-return
 }
 if(z_a.LWildcard) {
 return 9
-return
 }
 if(z_a.LBracketLeft) {
 return 10
-return
 }
 if(z_a.LBracketRight) {
 return 11
-return
 }
 if(z_a.LOperator) {
 return 12
-return
 }
 if(z_a.LComma) {
 return 13
-return
 }
 if(z_a.LSeparator) {
 return 14
-return
 }
 if(z_a.LDot) {
 return 15
-return
 }
 if(z_a.LSemicolon) {
 return 16
-return
 }
 if(z_a.LPipe) {
 return 17
-return
 }
 if(z_a.LColon) {
 return 18
-return
 }
 if(z_a.LDotDotDot) {
 return 19
-return
 }
 if(z_a.LArrowThick) {
 return 20
-return
 }
 if(z_a.LAssign) {
 return 21
-return
 }
 if(z_a.LAssignPlus) {
 return 22
-return
 }
 if(z_a.LAssignMinus) {
 return 23
-return
 }
 if(z_a.LAssignLink) {
 return 24
-return
 }
 }
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
-return
 }
 },
 async compare_$(x_, y_, $task) {
@@ -1807,114 +1568,87 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 {
 function number_(z_) {
 const z_a = z_;
 if(z_a.LEnd) {
 return 0
-return
 }
 if(z_a.LString) {
 return 1
-return
 }
 if(z_a.LChar) {
 return 2
-return
 }
 if(z_a.LInt) {
 return 3
-return
 }
 if(z_a.LFloat) {
 return 4
-return
 }
 if(z_a.LKeyword) {
 return 5
-return
 }
 if(z_a.LNamespace) {
 return 6
-return
 }
 if(z_a.LLower) {
 return 7
-return
 }
 if(z_a.LUpper) {
 return 8
-return
 }
 if(z_a.LWildcard) {
 return 9
-return
 }
 if(z_a.LBracketLeft) {
 return 10
-return
 }
 if(z_a.LBracketRight) {
 return 11
-return
 }
 if(z_a.LOperator) {
 return 12
-return
 }
 if(z_a.LComma) {
 return 13
-return
 }
 if(z_a.LSeparator) {
 return 14
-return
 }
 if(z_a.LDot) {
 return 15
-return
 }
 if(z_a.LSemicolon) {
 return 16
-return
 }
 if(z_a.LPipe) {
 return 17
-return
 }
 if(z_a.LColon) {
 return 18
-return
 }
 if(z_a.LDotDotDot) {
 return 19
-return
 }
 if(z_a.LArrowThick) {
 return 20
-return
 }
 if(z_a.LAssign) {
 return 21
-return
 }
 if(z_a.LAssignPlus) {
 return 22
-return
 }
 if(z_a.LAssignMinus) {
 return 23
-return
 }
 if(z_a.LAssignLink) {
 return 24
-return
 }
 }
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
-return
 }
 }
 };
@@ -1948,7 +1682,6 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 return ff_compiler_Token.Token(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_TokenKind.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_))
-return
 }
 }
 {
@@ -1985,7 +1718,6 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 return ff_compiler_Token.Token(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_TokenKind.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_))
-return
 }
 }
 {
@@ -2210,175 +1942,150 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
 return ff_compiler_Token.LEnd()
-return
 }
 }
 {
 if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 return ff_compiler_Token.LString()
-return
 }
 }
 {
 if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 return ff_compiler_Token.LChar()
-return
 }
 }
 {
 if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
 return ff_compiler_Token.LInt()
-return
 }
 }
 {
 if(_1 === 4) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_Token.LFloat()
-return
 }
 }
 {
 if(_1 === 5) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
 return ff_compiler_Token.LKeyword()
-return
 }
 }
 {
 if(_1 === 6) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 return ff_compiler_Token.LNamespace()
-return
 }
 }
 {
 if(_1 === 7) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_Token.LLower()
-return
 }
 }
 {
 if(_1 === 8) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_Token.LUpper()
-return
 }
 }
 {
 if(_1 === 9) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_Token.LWildcard()
-return
 }
 }
 {
 if(_1 === 10) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_Token.LBracketLeft()
-return
 }
 }
 {
 if(_1 === 11) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 return ff_compiler_Token.LBracketRight()
-return
 }
 }
 {
 if(_1 === 12) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_Token.LOperator()
-return
 }
 }
 {
 if(_1 === 13) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_Token.LComma()
-return
 }
 }
 {
 if(_1 === 14) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 return ff_compiler_Token.LSeparator()
-return
 }
 }
 {
 if(_1 === 15) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
 return ff_compiler_Token.LDot()
-return
 }
 }
 {
 if(_1 === 16) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 return ff_compiler_Token.LSemicolon()
-return
 }
 }
 {
 if(_1 === 17) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 return ff_compiler_Token.LPipe()
-return
 }
 }
 {
 if(_1 === 18) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_Token.LColon()
-return
 }
 }
 {
 if(_1 === 19) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 return ff_compiler_Token.LDotDotDot()
-return
 }
 }
 {
 if(_1 === 20) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Token.LArrowThick()
-return
 }
 }
 {
 if(_1 === 21) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 return ff_compiler_Token.LAssign()
-return
 }
 }
 {
 if(_1 === 22) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Token.LAssignPlus()
-return
 }
 }
 {
 if(_1 === 23) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_Token.LAssignMinus()
-return
 }
 }
 {
 if(_1 === 24) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Token.LAssignLink()
-return
 }
 }
 {
@@ -2600,175 +2307,150 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
 return ff_compiler_Token.LEnd()
-return
 }
 }
 {
 if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 return ff_compiler_Token.LString()
-return
 }
 }
 {
 if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 return ff_compiler_Token.LChar()
-return
 }
 }
 {
 if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
 return ff_compiler_Token.LInt()
-return
 }
 }
 {
 if(_1 === 4) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_Token.LFloat()
-return
 }
 }
 {
 if(_1 === 5) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
 return ff_compiler_Token.LKeyword()
-return
 }
 }
 {
 if(_1 === 6) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 return ff_compiler_Token.LNamespace()
-return
 }
 }
 {
 if(_1 === 7) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_Token.LLower()
-return
 }
 }
 {
 if(_1 === 8) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_Token.LUpper()
-return
 }
 }
 {
 if(_1 === 9) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_Token.LWildcard()
-return
 }
 }
 {
 if(_1 === 10) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_Token.LBracketLeft()
-return
 }
 }
 {
 if(_1 === 11) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 return ff_compiler_Token.LBracketRight()
-return
 }
 }
 {
 if(_1 === 12) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_Token.LOperator()
-return
 }
 }
 {
 if(_1 === 13) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_Token.LComma()
-return
 }
 }
 {
 if(_1 === 14) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 return ff_compiler_Token.LSeparator()
-return
 }
 }
 {
 if(_1 === 15) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
 return ff_compiler_Token.LDot()
-return
 }
 }
 {
 if(_1 === 16) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 return ff_compiler_Token.LSemicolon()
-return
 }
 }
 {
 if(_1 === 17) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 return ff_compiler_Token.LPipe()
-return
 }
 }
 {
 if(_1 === 18) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_Token.LColon()
-return
 }
 }
 {
 if(_1 === 19) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 return ff_compiler_Token.LDotDotDot()
-return
 }
 }
 {
 if(_1 === 20) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Token.LArrowThick()
-return
 }
 }
 {
 if(_1 === 21) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 return ff_compiler_Token.LAssign()
-return
 }
 }
 {
 if(_1 === 22) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Token.LAssignPlus()
-return
 }
 }
 {
 if(_1 === 23) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_Token.LAssignMinus()
-return
 }
 }
 {
 if(_1 === 24) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Token.LAssignLink()
-return
 }
 }
 {

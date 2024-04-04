@@ -163,7 +163,6 @@ return (ff_core_Set.Set_size(_w1.second_, ff_core_Ordering.ff_core_Ordering_Orde
 const f_ = _1.first_;
 const vs_ = _1.second_;
 return ((f_ + " could be ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(ff_core_Set.Set_toList(vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
-return
 }
 }));
 if((ff_core_List.List_size(remaining_) !== 0)) {
@@ -210,20 +209,16 @@ function convertPattern_(pattern_) {
 const pattern_a = pattern_;
 if(pattern_a.PString) {
 return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo("String literal", ff_core_List.List_toSet(["Any other String literal"], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), []))
-return
 }
 if(pattern_a.PInt) {
 return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo("Int literal", ff_core_List.List_toSet(["Any other Int literal"], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), []))
-return
 }
 if(pattern_a.PChar) {
 return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo("Char literal", ff_core_List.List_toSet(["Any other Char literal"], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), []))
-return
 }
 if(pattern_a.PVariable) {
 const p_ = pattern_a;
 return ff_core_Option.None()
-return
 }
 if(pattern_a.PVariant) {
 const p_ = pattern_a;
@@ -235,26 +230,21 @@ const i_ = _1.first_;
 if(_1.second_.Some) {
 const p_ = _1.second_.value_;
 return ff_core_Option.Some(ff_core_Pair.Pair(("" + i_), p_))
-return
 }
 }
 {
 return ff_core_Option.None()
-return
 }
 }));
 return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo(unqualifiedName_(p_.name_), otherVariants_(p_.name_), fields_))
-return
 }
 if(pattern_a.PVariantAs) {
 const p_ = pattern_a;
 return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo(unqualifiedName_(p_.name_), otherVariants_(p_.name_), []))
-return
 }
 if(pattern_a.PAlias) {
 const p_ = pattern_a;
 return convertPattern_(p_.pattern_)
-return
 }
 }
 return ff_core_List.List_map(ff_core_List.List_pairs(cases_), ((_1) => {
@@ -269,12 +259,10 @@ const i_ = _1.first_;
 if(_1.second_.Some) {
 const p_ = _1.second_.value_;
 return ff_core_Option.Some(ff_core_Pair.Pair(("" + i_), p_))
-return
 }
 }
 {
 return ff_core_Option.None()
-return
 }
 }));
 const exhaustiveGuards_ = ff_core_List.List_all(case_.guards_, ((g_) => {
@@ -287,7 +275,6 @@ return false
 }))
 }));
 return ff_compiler_Patterns.PatternCaseInfo(fields_, (!exhaustiveGuards_))
-return
 }
 }))
 }
@@ -362,7 +349,6 @@ return (ff_core_Set.Set_size(_w1.second_, ff_core_Ordering.ff_core_Ordering_Orde
 const f_ = _1.first_;
 const vs_ = _1.second_;
 return ((f_ + " could be ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(ff_core_Set.Set_toList(vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
-return
 }
 }));
 if((ff_core_List.List_size(remaining_) !== 0)) {
@@ -409,20 +395,16 @@ function convertPattern_(pattern_) {
 const pattern_a = pattern_;
 if(pattern_a.PString) {
 return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo("String literal", ff_core_List.List_toSet(["Any other String literal"], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), []))
-return
 }
 if(pattern_a.PInt) {
 return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo("Int literal", ff_core_List.List_toSet(["Any other Int literal"], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), []))
-return
 }
 if(pattern_a.PChar) {
 return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo("Char literal", ff_core_List.List_toSet(["Any other Char literal"], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), []))
-return
 }
 if(pattern_a.PVariable) {
 const p_ = pattern_a;
 return ff_core_Option.None()
-return
 }
 if(pattern_a.PVariant) {
 const p_ = pattern_a;
@@ -434,26 +416,21 @@ const i_ = _1.first_;
 if(_1.second_.Some) {
 const p_ = _1.second_.value_;
 return ff_core_Option.Some(ff_core_Pair.Pair(("" + i_), p_))
-return
 }
 }
 {
 return ff_core_Option.None()
-return
 }
 }));
 return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo(unqualifiedName_(p_.name_), otherVariants_(p_.name_), fields_))
-return
 }
 if(pattern_a.PVariantAs) {
 const p_ = pattern_a;
 return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo(unqualifiedName_(p_.name_), otherVariants_(p_.name_), []))
-return
 }
 if(pattern_a.PAlias) {
 const p_ = pattern_a;
 return convertPattern_(p_.pattern_)
-return
 }
 }
 return ff_core_List.List_map(ff_core_List.List_pairs(cases_), ((_1) => {
@@ -468,12 +445,10 @@ const i_ = _1.first_;
 if(_1.second_.Some) {
 const p_ = _1.second_.value_;
 return ff_core_Option.Some(ff_core_Pair.Pair(("" + i_), p_))
-return
 }
 }
 {
 return ff_core_Option.None()
-return
 }
 }));
 const exhaustiveGuards_ = ff_core_List.List_all(case_.guards_, ((g_) => {
@@ -486,7 +461,6 @@ return false
 }))
 }));
 return ff_compiler_Patterns.PatternCaseInfo(fields_, (!exhaustiveGuards_))
-return
 }
 }))
 }
@@ -529,13 +503,11 @@ show_(value_) {
 const value_a = value_;
 const z_ = value_a;
 return ((((((("PatternInfo" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.variant_)) + ", ") + ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).show_(z_.otherVariants_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_compiler_Patterns.ff_core_Show_Show$ff_compiler_Patterns_PatternInfo)).show_(z_.fields_)) + ")")
-return
 },
 async show_$(value_, $task) {
 const value_a = value_;
 const z_ = value_a;
 return ((((((("PatternInfo" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.variant_)) + ", ") + ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).show_(z_.otherVariants_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_compiler_Patterns.ff_core_Show_Show$ff_compiler_Patterns_PatternInfo)).show_(z_.fields_)) + ")")
-return
 }
 };
 
@@ -544,13 +516,11 @@ show_(value_) {
 const value_a = value_;
 const z_ = value_a;
 return ((((("PatternCaseInfo" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_compiler_Patterns.ff_core_Show_Show$ff_compiler_Patterns_PatternInfo)).show_(z_.fields_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.guard_)) + ")")
-return
 },
 async show_$(value_, $task) {
 const value_a = value_;
 const z_ = value_a;
 return ((((("PatternCaseInfo" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_compiler_Patterns.ff_core_Show_Show$ff_compiler_Patterns_PatternInfo)).show_(z_.fields_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.guard_)) + ")")
-return
 }
 };
 
@@ -560,11 +530,9 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 {
 return ((x_.variant_ === y_.variant_) && (ff_core_Set.ff_core_Equal_Equal$ff_core_Set_Set(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).equals_(x_.otherVariants_, y_.otherVariants_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_compiler_Patterns.ff_core_Equal_Equal$ff_compiler_Patterns_PatternInfo)).equals_(x_.fields_, y_.fields_)))
-return
 }
 },
 async equals_$(x_, y_, $task) {
@@ -572,11 +540,9 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 {
 return ((x_.variant_ === y_.variant_) && (ff_core_Set.ff_core_Equal_Equal$ff_core_Set_Set(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).equals_(x_.otherVariants_, y_.otherVariants_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_compiler_Patterns.ff_core_Equal_Equal$ff_compiler_Patterns_PatternInfo)).equals_(x_.fields_, y_.fields_)))
-return
 }
 }
 };
@@ -587,11 +553,9 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 {
 return (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_compiler_Patterns.ff_core_Equal_Equal$ff_compiler_Patterns_PatternInfo)).equals_(x_.fields_, y_.fields_) && (x_.guard_ === y_.guard_))
-return
 }
 },
 async equals_$(x_, y_, $task) {
@@ -599,11 +563,9 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 {
 return (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_compiler_Patterns.ff_core_Equal_Equal$ff_compiler_Patterns_PatternInfo)).equals_(x_.fields_, y_.fields_) && (x_.guard_ === y_.guard_))
-return
 }
 }
 };
@@ -614,7 +576,6 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 {
 const variantOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.variant_, y_.variant_);
@@ -641,7 +602,6 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 {
 const variantOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.variant_, y_.variant_);
@@ -671,7 +631,6 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 {
 const fieldsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Patterns.ff_core_Ordering_Order$ff_compiler_Patterns_PatternInfo)).compare_(x_.fields_, y_.fields_);
@@ -693,7 +652,6 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 {
 const fieldsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Patterns.ff_core_Ordering_Order$ff_compiler_Patterns_PatternInfo)).compare_(x_.fields_, y_.fields_);
@@ -735,7 +693,6 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
 return ff_compiler_Patterns.PatternInfo(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Set_Set(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Patterns.ff_core_Serializable_Serializable$ff_compiler_Patterns_PatternInfo)).deserializeUsing_(serialization_))
-return
 }
 }
 {
@@ -766,7 +723,6 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
 return ff_compiler_Patterns.PatternInfo(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Set_Set(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Patterns.ff_core_Serializable_Serializable$ff_compiler_Patterns_PatternInfo)).deserializeUsing_(serialization_))
-return
 }
 }
 {
@@ -799,7 +755,6 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 36), 0);
 return ff_compiler_Patterns.PatternCaseInfo(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Patterns.ff_core_Serializable_Serializable$ff_compiler_Patterns_PatternInfo)).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
-return
 }
 }
 {
@@ -829,7 +784,6 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 36), 0);
 return ff_compiler_Patterns.PatternCaseInfo(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Patterns.ff_core_Serializable_Serializable$ff_compiler_Patterns_PatternInfo)).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
-return
 }
 }
 {

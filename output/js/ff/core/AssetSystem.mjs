@@ -124,12 +124,10 @@ const p_ = _1.first_;
 const s_ = _1.second_;
 if(ff_core_String.String_startsWith(p_, prefix_, 0)) {
 return ff_core_Option.Some(ff_core_Pair.Pair(ff_core_String.String_dropFirst(p_, (ff_core_String.String_size(prefix_) - 1)), s_))
-return
 }
 }
 {
 return ff_core_Option.None()
-return
 }
 }));
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
@@ -161,7 +159,6 @@ return
 }
 {
 return ff_core_Option.None()
-return
 }
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
@@ -205,12 +202,10 @@ const p_ = _1.first_;
 const s_ = _1.second_;
 if(ff_core_String.String_startsWith(p_, prefix_, 0)) {
 return ff_core_Option.Some(ff_core_Pair.Pair(ff_core_String.String_dropFirst(p_, (ff_core_String.String_size(prefix_) - 1)), s_))
-return
 }
 }
 {
 return ff_core_Option.None()
-return
 }
 }));
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
@@ -242,7 +237,6 @@ return
 }
 {
 return ff_core_Option.None()
-return
 }
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }

@@ -233,7 +233,6 @@ const parameters_ = hook_a.parameters_;
 const arguments_ = hook_a.arguments_;
 const argumentIndex_ = hook_a.argumentIndex_;
 return "InferArgumentHook(...)"
-return
 }
 if(hook_a.InferFunctionDefinitionHook) {
 const unification_ = hook_a.unification_;
@@ -241,14 +240,12 @@ const environment_ = hook_a.environment_;
 const definition_ = hook_a.definition_;
 const missing_ = hook_a.missing_;
 return "InferFunctionDefinitionHook(...)"
-return
 }
 if(hook_a.InferLambdaStartHook) {
 const unification_ = hook_a.unification_;
 const environment_ = hook_a.environment_;
 const lambdaType_ = hook_a.lambdaType_;
 return "InferLambdaStartHook(...)"
-return
 }
 if(hook_a.InferLookupHook) {
 const unification_ = hook_a.unification_;
@@ -258,7 +255,6 @@ const selfVariable_ = hook_a.selfVariable_;
 const symbol_ = hook_a.symbol_;
 const instantiated_ = hook_a.instantiated_;
 return "InferLookupHook(...)"
-return
 }
 if(hook_a.InferParameterHook) {
 const unification_ = hook_a.unification_;
@@ -266,7 +262,6 @@ const environment_ = hook_a.environment_;
 const parameter_ = hook_a.parameter_;
 const missing_ = hook_a.missing_;
 return "InferParameterHook(...)"
-return
 }
 if(hook_a.InferPatternHook) {
 const unification_ = hook_a.unification_;
@@ -274,7 +269,6 @@ const environment_ = hook_a.environment_;
 const expected_ = hook_a.expected_;
 const pattern_ = hook_a.pattern_;
 return "InferPatternHook(...)"
-return
 }
 if(hook_a.InferRecordFieldHook) {
 const unification_ = hook_a.unification_;
@@ -283,14 +277,12 @@ const expected_ = hook_a.expected_;
 const recordType_ = hook_a.recordType_;
 const fieldName_ = hook_a.fieldName_;
 return "InferRecordFieldHook(...)"
-return
 }
 if(hook_a.InferSequentialStartHook) {
 const unification_ = hook_a.unification_;
 const term_ = hook_a.term_;
 const missing_ = hook_a.missing_;
 return "InferSequentialStartHook(...)"
-return
 }
 if(hook_a.InferTermHook) {
 const unification_ = hook_a.unification_;
@@ -300,18 +292,15 @@ const term_ = hook_a.term_;
 const recordType_ = hook_a.recordType_;
 const missing_ = hook_a.missing_;
 return "InferTermHook(...)"
-return
 }
 if(hook_a.ParseArgumentHook) {
 const callAt_ = hook_a.callAt_;
 const argumentIndex_ = hook_a.argumentIndex_;
 const parameterName_ = hook_a.parameterName_;
 return "ParseArgumentHook(...)"
-return
 }
 if(hook_a.ParseSymbolBegin) {
 return "ParseSymbolBegin(...)"
-return
 }
 if(hook_a.ParseSymbolEnd) {
 const name_ = hook_a.name_;
@@ -321,24 +310,20 @@ const selectionEnd_ = hook_a.selectionEnd_;
 const start_ = hook_a.start_;
 const end_ = hook_a.end_;
 return "ParseSymbolEnd(...)"
-return
 }
 if(hook_a.ResolveConstraintHook) {
 const symbol_ = hook_a.symbol_;
 const constrant_ = hook_a.constrant_;
 return "ResolveConstraintHook(...)"
-return
 }
 if(hook_a.ResolveSignatureHook) {
 const signature_ = hook_a.signature_;
 return "ResolveSignatureHook(...)"
-return
 }
 if(hook_a.ResolveSymbolHook) {
 const symbol_ = hook_a.symbol_;
 const annotation_ = hook_a.annotation_;
 return "ResolveSymbolHook(...)"
-return
 }
 if(hook_a.ResolveTypeHook) {
 const types_ = hook_a.types_;
@@ -346,14 +331,12 @@ const typeGenerics_ = hook_a.typeGenerics_;
 const symbol_ = hook_a.symbol_;
 const explicitType_ = hook_a.explicitType_;
 return "ResolveTypeHook(...)"
-return
 }
 if(hook_a.ResolveVariantFieldHook) {
 const symbol_ = hook_a.symbol_;
 const type_ = hook_a.type_;
 const commonField_ = hook_a.commonField_;
 return "ResolveVariantFieldHook(...)"
-return
 }
 }
 
@@ -385,7 +368,6 @@ const parameters_ = hook_a.parameters_;
 const arguments_ = hook_a.arguments_;
 const argumentIndex_ = hook_a.argumentIndex_;
 return "InferArgumentHook(...)"
-return
 }
 if(hook_a.InferFunctionDefinitionHook) {
 const unification_ = hook_a.unification_;
@@ -393,14 +375,12 @@ const environment_ = hook_a.environment_;
 const definition_ = hook_a.definition_;
 const missing_ = hook_a.missing_;
 return "InferFunctionDefinitionHook(...)"
-return
 }
 if(hook_a.InferLambdaStartHook) {
 const unification_ = hook_a.unification_;
 const environment_ = hook_a.environment_;
 const lambdaType_ = hook_a.lambdaType_;
 return "InferLambdaStartHook(...)"
-return
 }
 if(hook_a.InferLookupHook) {
 const unification_ = hook_a.unification_;
@@ -410,7 +390,6 @@ const selfVariable_ = hook_a.selfVariable_;
 const symbol_ = hook_a.symbol_;
 const instantiated_ = hook_a.instantiated_;
 return "InferLookupHook(...)"
-return
 }
 if(hook_a.InferParameterHook) {
 const unification_ = hook_a.unification_;
@@ -418,7 +397,6 @@ const environment_ = hook_a.environment_;
 const parameter_ = hook_a.parameter_;
 const missing_ = hook_a.missing_;
 return "InferParameterHook(...)"
-return
 }
 if(hook_a.InferPatternHook) {
 const unification_ = hook_a.unification_;
@@ -426,7 +404,6 @@ const environment_ = hook_a.environment_;
 const expected_ = hook_a.expected_;
 const pattern_ = hook_a.pattern_;
 return "InferPatternHook(...)"
-return
 }
 if(hook_a.InferRecordFieldHook) {
 const unification_ = hook_a.unification_;
@@ -435,14 +412,12 @@ const expected_ = hook_a.expected_;
 const recordType_ = hook_a.recordType_;
 const fieldName_ = hook_a.fieldName_;
 return "InferRecordFieldHook(...)"
-return
 }
 if(hook_a.InferSequentialStartHook) {
 const unification_ = hook_a.unification_;
 const term_ = hook_a.term_;
 const missing_ = hook_a.missing_;
 return "InferSequentialStartHook(...)"
-return
 }
 if(hook_a.InferTermHook) {
 const unification_ = hook_a.unification_;
@@ -452,18 +427,15 @@ const term_ = hook_a.term_;
 const recordType_ = hook_a.recordType_;
 const missing_ = hook_a.missing_;
 return "InferTermHook(...)"
-return
 }
 if(hook_a.ParseArgumentHook) {
 const callAt_ = hook_a.callAt_;
 const argumentIndex_ = hook_a.argumentIndex_;
 const parameterName_ = hook_a.parameterName_;
 return "ParseArgumentHook(...)"
-return
 }
 if(hook_a.ParseSymbolBegin) {
 return "ParseSymbolBegin(...)"
-return
 }
 if(hook_a.ParseSymbolEnd) {
 const name_ = hook_a.name_;
@@ -473,24 +445,20 @@ const selectionEnd_ = hook_a.selectionEnd_;
 const start_ = hook_a.start_;
 const end_ = hook_a.end_;
 return "ParseSymbolEnd(...)"
-return
 }
 if(hook_a.ResolveConstraintHook) {
 const symbol_ = hook_a.symbol_;
 const constrant_ = hook_a.constrant_;
 return "ResolveConstraintHook(...)"
-return
 }
 if(hook_a.ResolveSignatureHook) {
 const signature_ = hook_a.signature_;
 return "ResolveSignatureHook(...)"
-return
 }
 if(hook_a.ResolveSymbolHook) {
 const symbol_ = hook_a.symbol_;
 const annotation_ = hook_a.annotation_;
 return "ResolveSymbolHook(...)"
-return
 }
 if(hook_a.ResolveTypeHook) {
 const types_ = hook_a.types_;
@@ -498,14 +466,12 @@ const typeGenerics_ = hook_a.typeGenerics_;
 const symbol_ = hook_a.symbol_;
 const explicitType_ = hook_a.explicitType_;
 return "ResolveTypeHook(...)"
-return
 }
 if(hook_a.ResolveVariantFieldHook) {
 const symbol_ = hook_a.symbol_;
 const type_ = hook_a.type_;
 const commonField_ = hook_a.commonField_;
 return "ResolveVariantFieldHook(...)"
-return
 }
 }
 
@@ -572,13 +538,11 @@ show_(value_) {
 const value_a = value_;
 const z_ = value_a;
 return ((((((("SymbolHook" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.qualifiedName_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.usageAt_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.definedAt_)) + ")")
-return
 },
 async show_$(value_, $task) {
 const value_a = value_;
 const z_ = value_a;
 return ((((((("SymbolHook" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.qualifiedName_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.usageAt_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.definedAt_)) + ")")
-return
 }
 };
 
@@ -588,47 +552,38 @@ const value_a = value_;
 if(value_a.SLet) {
 const z_ = value_a;
 return ((("SLet" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.mutable_)) + ")")
-return
 }
 if(value_a.SFunction) {
 const z_ = value_a;
 return ((("SFunction" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.member_)) + ")")
-return
 }
 if(value_a.SExtend) {
 const z_ = value_a;
 return "SExtend"
-return
 }
 if(value_a.STraitFunction) {
 const z_ = value_a;
 return "STraitFunction"
-return
 }
 if(value_a.STrait) {
 const z_ = value_a;
 return "STrait"
-return
 }
 if(value_a.SInstance) {
 const z_ = value_a;
 return "SInstance"
-return
 }
 if(value_a.SVariant) {
 const z_ = value_a;
 return "SVariant"
-return
 }
 if(value_a.SType) {
 const z_ = value_a;
 return "SType"
-return
 }
 if(value_a.SParameter) {
 const z_ = value_a;
 return "SParameter"
-return
 }
 },
 async show_$(value_, $task) {
@@ -636,47 +591,38 @@ const value_a = value_;
 if(value_a.SLet) {
 const z_ = value_a;
 return ((("SLet" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.mutable_)) + ")")
-return
 }
 if(value_a.SFunction) {
 const z_ = value_a;
 return ((("SFunction" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.member_)) + ")")
-return
 }
 if(value_a.SExtend) {
 const z_ = value_a;
 return "SExtend"
-return
 }
 if(value_a.STraitFunction) {
 const z_ = value_a;
 return "STraitFunction"
-return
 }
 if(value_a.STrait) {
 const z_ = value_a;
 return "STrait"
-return
 }
 if(value_a.SInstance) {
 const z_ = value_a;
 return "SInstance"
-return
 }
 if(value_a.SVariant) {
 const z_ = value_a;
 return "SVariant"
-return
 }
 if(value_a.SType) {
 const z_ = value_a;
 return "SType"
-return
 }
 if(value_a.SParameter) {
 const z_ = value_a;
 return "SParameter"
-return
 }
 }
 };
@@ -687,11 +633,9 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 {
 return ((x_.qualifiedName_ === y_.qualifiedName_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.usageAt_, y_.usageAt_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.definedAt_, y_.definedAt_)))
-return
 }
 },
 async equals_$(x_, y_, $task) {
@@ -699,11 +643,9 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 {
 return ((x_.qualifiedName_ === y_.qualifiedName_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.usageAt_, y_.usageAt_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.definedAt_, y_.definedAt_)))
-return
 }
 }
 };
@@ -714,14 +656,12 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 if(x_a.SLet) {
 const x_ = x_a;
 if(y_a.SLet) {
 const y_ = y_a;
 return (x_.mutable_ === y_.mutable_)
-return
 }
 }
 if(x_a.SFunction) {
@@ -729,12 +669,10 @@ const x_ = x_a;
 if(y_a.SFunction) {
 const y_ = y_a;
 return (x_.member_ === y_.member_)
-return
 }
 }
 {
 return false
-return
 }
 },
 async equals_$(x_, y_, $task) {
@@ -742,14 +680,12 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 if(x_a.SLet) {
 const x_ = x_a;
 if(y_a.SLet) {
 const y_ = y_a;
 return (x_.mutable_ === y_.mutable_)
-return
 }
 }
 if(x_a.SFunction) {
@@ -757,12 +693,10 @@ const x_ = x_a;
 if(y_a.SFunction) {
 const y_ = y_a;
 return (x_.member_ === y_.member_)
-return
 }
 }
 {
 return false
-return
 }
 }
 };
@@ -773,7 +707,6 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 {
 const qualifiedNameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.qualifiedName_, y_.qualifiedName_);
@@ -800,7 +733,6 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 {
 const qualifiedNameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.qualifiedName_, y_.qualifiedName_);
@@ -830,7 +762,6 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 if(x_a.SLet) {
 const x_ = x_a;
@@ -863,43 +794,33 @@ function number_(z_) {
 const z_a = z_;
 if(z_a.SLet) {
 return 0
-return
 }
 if(z_a.SFunction) {
 return 1
-return
 }
 if(z_a.SExtend) {
 return 2
-return
 }
 if(z_a.STraitFunction) {
 return 3
-return
 }
 if(z_a.STrait) {
 return 4
-return
 }
 if(z_a.SInstance) {
 return 5
-return
 }
 if(z_a.SVariant) {
 return 6
-return
 }
 if(z_a.SType) {
 return 7
-return
 }
 if(z_a.SParameter) {
 return 8
-return
 }
 }
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
-return
 }
 },
 async compare_$(x_, y_, $task) {
@@ -907,7 +828,6 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 if(x_a.SLet) {
 const x_ = x_a;
@@ -940,43 +860,33 @@ function number_(z_) {
 const z_a = z_;
 if(z_a.SLet) {
 return 0
-return
 }
 if(z_a.SFunction) {
 return 1
-return
 }
 if(z_a.SExtend) {
 return 2
-return
 }
 if(z_a.STraitFunction) {
 return 3
-return
 }
 if(z_a.STrait) {
 return 4
-return
 }
 if(z_a.SInstance) {
 return 5
-return
 }
 if(z_a.SVariant) {
 return 6
-return
 }
 if(z_a.SType) {
 return 7
-return
 }
 if(z_a.SParameter) {
 return 8
-return
 }
 }
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
-return
 }
 }
 };
@@ -1004,7 +914,6 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_LspHook.SymbolHook(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_))
-return
 }
 }
 {
@@ -1035,7 +944,6 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_LspHook.SymbolHook(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_))
-return
 }
 }
 {
@@ -1134,63 +1042,54 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_LspHook.SLet(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
-return
 }
 }
 {
 if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_LspHook.SFunction(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
-return
 }
 }
 {
 if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_LspHook.SExtend()
-return
 }
 }
 {
 if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 34), 0);
 return ff_compiler_LspHook.STraitFunction()
-return
 }
 }
 {
 if(_1 === 4) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
 return ff_compiler_LspHook.STrait()
-return
 }
 }
 {
 if(_1 === 5) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_LspHook.SInstance()
-return
 }
 }
 {
 if(_1 === 6) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 return ff_compiler_LspHook.SVariant()
-return
 }
 }
 {
 if(_1 === 7) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 return ff_compiler_LspHook.SType()
-return
 }
 }
 {
 if(_1 === 8) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_LspHook.SParameter()
-return
 }
 }
 {
@@ -1286,63 +1185,54 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
 return ff_compiler_LspHook.SLet(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
-return
 }
 }
 {
 if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_LspHook.SFunction(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
-return
 }
 }
 {
 if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_LspHook.SExtend()
-return
 }
 }
 {
 if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 34), 0);
 return ff_compiler_LspHook.STraitFunction()
-return
 }
 }
 {
 if(_1 === 4) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
 return ff_compiler_LspHook.STrait()
-return
 }
 }
 {
 if(_1 === 5) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_LspHook.SInstance()
-return
 }
 }
 {
 if(_1 === 6) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 return ff_compiler_LspHook.SVariant()
-return
 }
 }
 {
 if(_1 === 7) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 return ff_compiler_LspHook.SType()
-return
 }
 }
 {
 if(_1 === 8) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_LspHook.SParameter()
-return
 }
 }
 {

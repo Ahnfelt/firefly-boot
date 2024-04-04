@@ -282,13 +282,11 @@ const x_ = _1.first_.value_;
 if(_1.second_.Some) {
 const y_ = _1.second_.value_;
 return ff_core_Option.Some(ff_core_Pair.Pair(x_, y_))
-return
 }
 }
 }
 {
 return ff_core_Option.None()
-return
 }
 }
 }), (() => {
@@ -350,7 +348,6 @@ const _1 = self_.next_();
 if(_1.None) {
 done_ = true;
 return ff_core_Option.None()
-return
 }
 }
 {
@@ -437,7 +434,6 @@ const _1 = self_.next_();
 if(_1.None) {
 remaining_ = (-1);
 return ff_core_Option.None()
-return
 }
 }
 {
@@ -468,7 +464,6 @@ if((remaining_ !== (-1))) {
 remaining_ = size_
 };
 return ff_core_Option.Some(ff_core_List.List_reverse(list_))
-return
 }
 }
 }
@@ -802,13 +797,11 @@ const x_ = _1.first_.value_;
 if(_1.second_.Some) {
 const y_ = _1.second_.value_;
 return ff_core_Option.Some(ff_core_Pair.Pair(x_, y_))
-return
 }
 }
 }
 {
 return ff_core_Option.None()
-return
 }
 }
 }), (async ($task) => {
@@ -870,7 +863,6 @@ const _1 = (await self_.next_($task));
 if(_1.None) {
 done_ = true;
 return ff_core_Option.None()
-return
 }
 }
 {
@@ -957,7 +949,6 @@ const _1 = (await self_.next_($task));
 if(_1.None) {
 remaining_ = (-1);
 return ff_core_Option.None()
-return
 }
 }
 {
@@ -988,7 +979,6 @@ if((remaining_ !== (-1))) {
 remaining_ = size_
 };
 return ff_core_Option.Some(ff_core_List.List_reverse(list_))
-return
 }
 }
 }

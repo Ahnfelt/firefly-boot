@@ -104,13 +104,11 @@ const _1 = condition_;
 {
 if(!_1) {
 return ff_core_Option.None()
-return
 }
 }
 {
 if(_1) {
 return ff_core_Option.Some(body_())
-return
 }
 }
 }
@@ -151,7 +149,6 @@ const _1 = body_();
 if(_1.Some) {
 const v_ = _1.value_;
 return v_
-return
 }
 }
 {
@@ -205,13 +202,11 @@ const _1 = condition_;
 {
 if(!_1) {
 return ff_core_Option.None()
-return
 }
 }
 {
 if(_1) {
 return ff_core_Option.Some((await body_($task)))
-return
 }
 }
 }
@@ -252,7 +247,6 @@ const _1 = (await body_($task));
 if(_1.Some) {
 const v_ = _1.value_;
 return v_
-return
 }
 }
 {

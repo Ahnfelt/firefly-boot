@@ -124,7 +124,6 @@ return
 if(_1.Failure) {
 const error_ = _1.error_;
 return ff_core_Try.Failure(error_)
-return
 }
 }
 }
@@ -154,7 +153,6 @@ return
 }
 {
 return self_
-return
 }
 }
 }
@@ -173,7 +171,6 @@ return
 }
 {
 return self_
-return
 }
 }
 }
@@ -200,14 +197,12 @@ return body_()
 {
 if(_1.Success) {
 return self_
-return
 }
 }
 {
 if(_1.Failure) {
 const error_ = _1.error_;
 return ff_core_Try.Failure(error_)
-return
 }
 }
 }
@@ -224,13 +219,11 @@ const _1 = self_;
 if(_1.Success) {
 const value_ = _1.value_;
 return value_
-return
 }
 }
 {
 if(_1.Failure) {
 return body_()
-return
 }
 }
 }
@@ -243,14 +236,12 @@ const _1 = self_;
 if(_1.Success) {
 const value_ = _1.value_;
 return value_
-return
 }
 }
 {
 if(_1.Failure) {
 const error_ = _1.error_;
 return ff_core_Error.Error_rethrow(error_)
-return
 }
 }
 }
@@ -263,13 +254,11 @@ const _1 = self_;
 if(_1.Success) {
 const value_ = _1.value_;
 return ff_core_Option.Some(value_)
-return
 }
 }
 {
 if(_1.Failure) {
 return ff_core_Option.None()
-return
 }
 }
 }
@@ -291,7 +280,6 @@ return
 if(_1.Failure) {
 const error_ = _1.error_;
 return ff_core_Try.Failure(error_)
-return
 }
 }
 }
@@ -321,7 +309,6 @@ return
 }
 {
 return self_
-return
 }
 }
 }
@@ -340,7 +327,6 @@ return
 }
 {
 return self_
-return
 }
 }
 }
@@ -367,14 +353,12 @@ return (await body_($task))
 {
 if(_1.Success) {
 return self_
-return
 }
 }
 {
 if(_1.Failure) {
 const error_ = _1.error_;
 return ff_core_Try.Failure(error_)
-return
 }
 }
 }
@@ -391,13 +375,11 @@ const _1 = self_;
 if(_1.Success) {
 const value_ = _1.value_;
 return value_
-return
 }
 }
 {
 if(_1.Failure) {
 return (await body_($task))
-return
 }
 }
 }
@@ -410,14 +392,12 @@ const _1 = self_;
 if(_1.Success) {
 const value_ = _1.value_;
 return value_
-return
 }
 }
 {
 if(_1.Failure) {
 const error_ = _1.error_;
 return ff_core_Error.Error_rethrow(error_)
-return
 }
 }
 }
@@ -430,13 +410,11 @@ const _1 = self_;
 if(_1.Success) {
 const value_ = _1.value_;
 return ff_core_Option.Some(value_)
-return
 }
 }
 {
 if(_1.Failure) {
 return ff_core_Option.None()
-return
 }
 }
 }
@@ -450,7 +428,6 @@ if(_1.Success) {
 const t_ = _1.value_;
 if(_1.value_.Success) {
 return t_
-return
 }
 }
 }
@@ -459,7 +436,6 @@ if(_1.Success) {
 const t_ = _1.value_;
 if(_1.value_.Failure) {
 return t_
-return
 }
 }
 }
@@ -467,7 +443,6 @@ return
 if(_1.Failure) {
 const error_ = _1.error_;
 return ff_core_Try.Failure(error_)
-return
 }
 }
 }
@@ -481,7 +456,6 @@ if(_1.Success) {
 const t_ = _1.value_;
 if(_1.value_.Success) {
 return t_
-return
 }
 }
 }
@@ -490,7 +464,6 @@ if(_1.Success) {
 const t_ = _1.value_;
 if(_1.value_.Failure) {
 return t_
-return
 }
 }
 }
@@ -498,7 +471,6 @@ return
 if(_1.Failure) {
 const error_ = _1.error_;
 return ff_core_Try.Failure(error_)
-return
 }
 }
 }

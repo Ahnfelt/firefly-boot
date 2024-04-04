@@ -129,19 +129,16 @@ const _1 = compare_(x_, y_);
 {
 if(_1.OrderingBefore) {
 return ff_core_Ordering.OrderingAfter()
-return
 }
 }
 {
 if(_1.OrderingSame) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 }
 {
 if(_1.OrderingAfter) {
 return ff_core_Ordering.OrderingBefore()
-return
 }
 }
 }
@@ -155,13 +152,11 @@ const _1 = compareFirst_(x_.first_, y_.first_);
 {
 if(_1.OrderingSame) {
 return compareSecond_(x_.second_, y_.second_)
-return
 }
 }
 {
 const ordering_ = _1;
 return ordering_
-return
 }
 }
 })
@@ -194,7 +189,6 @@ const x_ = _1;
 const y_ = _2;
 if(lessThan_(x_, y_)) {
 return ff_core_Ordering.OrderingBefore()
-return
 }
 }
 {
@@ -202,12 +196,10 @@ const x_ = _1;
 const y_ = _2;
 if(lessThan_(y_, x_)) {
 return ff_core_Ordering.OrderingAfter()
-return
 }
 }
 {
 return ff_core_Ordering.OrderingSame()
-return
 }
 })
 }
@@ -235,19 +227,16 @@ const _1 = (await compare_(x_, y_, $task));
 {
 if(_1.OrderingBefore) {
 return ff_core_Ordering.OrderingAfter()
-return
 }
 }
 {
 if(_1.OrderingSame) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 }
 {
 if(_1.OrderingAfter) {
 return ff_core_Ordering.OrderingBefore()
-return
 }
 }
 }
@@ -261,13 +250,11 @@ const _1 = (await compareFirst_(x_.first_, y_.first_, $task));
 {
 if(_1.OrderingSame) {
 return (await compareSecond_(x_.second_, y_.second_, $task))
-return
 }
 }
 {
 const ordering_ = _1;
 return ordering_
-return
 }
 }
 })
@@ -300,7 +287,6 @@ const x_ = _1;
 const y_ = _2;
 if((await lessThan_(x_, y_, $task))) {
 return ff_core_Ordering.OrderingBefore()
-return
 }
 }
 {
@@ -308,12 +294,10 @@ const x_ = _1;
 const y_ = _2;
 if((await lessThan_(y_, x_, $task))) {
 return ff_core_Ordering.OrderingAfter()
-return
 }
 }
 {
 return ff_core_Ordering.OrderingSame()
-return
 }
 })
 }
@@ -324,19 +308,16 @@ const _1 = self_;
 {
 if(_1.OrderingBefore) {
 return (-1)
-return
 }
 }
 {
 if(_1.OrderingSame) {
 return 0
-return
 }
 }
 {
 if(_1.OrderingAfter) {
 return 1
-return
 }
 }
 }
@@ -348,19 +329,16 @@ const _1 = self_;
 {
 if(_1.OrderingBefore) {
 return ff_core_Ordering.OrderingAfter()
-return
 }
 }
 {
 if(_1.OrderingSame) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 }
 {
 if(_1.OrderingAfter) {
 return ff_core_Ordering.OrderingBefore()
-return
 }
 }
 }
@@ -372,19 +350,16 @@ const _1 = self_;
 {
 if(_1.OrderingBefore) {
 return (-1)
-return
 }
 }
 {
 if(_1.OrderingSame) {
 return 0
-return
 }
 }
 {
 if(_1.OrderingAfter) {
 return 1
-return
 }
 }
 }
@@ -396,19 +371,16 @@ const _1 = self_;
 {
 if(_1.OrderingBefore) {
 return ff_core_Ordering.OrderingAfter()
-return
 }
 }
 {
 if(_1.OrderingSame) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 }
 {
 if(_1.OrderingAfter) {
 return ff_core_Ordering.OrderingBefore()
-return
 }
 }
 }
@@ -430,18 +402,15 @@ const y_a = y_;
 if(!x_a) {
 if(y_a) {
 return ff_core_Ordering.OrderingBefore()
-return
 }
 }
 if(x_a) {
 if(!y_a) {
 return ff_core_Ordering.OrderingAfter()
-return
 }
 }
 {
 return ff_core_Ordering.OrderingSame()
-return
 }
 },
 async compare_$(x_, y_, $task) {
@@ -450,18 +419,15 @@ const y_a = y_;
 if(!x_a) {
 if(y_a) {
 return ff_core_Ordering.OrderingBefore()
-return
 }
 }
 if(x_a) {
 if(!y_a) {
 return ff_core_Ordering.OrderingAfter()
-return
 }
 }
 {
 return ff_core_Ordering.OrderingSame()
-return
 }
 }
 };
@@ -517,13 +483,11 @@ const _1 = ff_core_Ordering_Order$A.compare_(x_.first_, y_.first_);
 {
 if(_1.OrderingSame) {
 return ff_core_Ordering_Order$B.compare_(x_.second_, y_.second_)
-return
 }
 }
 {
 const o_ = _1;
 return o_
-return
 }
 }
 },
@@ -533,13 +497,11 @@ const _1 = ff_core_Ordering_Order$A.compare_(x_.first_, y_.first_);
 {
 if(_1.OrderingSame) {
 return ff_core_Ordering_Order$B.compare_(x_.second_, y_.second_)
-return
 }
 }
 {
 const o_ = _1;
 return o_
-return
 }
 }
 }
@@ -581,24 +543,20 @@ const y_a = y_;
 if(x_a.OrderingBefore) {
 if(y_a.OrderingBefore) {
 return true
-return
 }
 }
 if(x_a.OrderingSame) {
 if(y_a.OrderingSame) {
 return true
-return
 }
 }
 if(x_a.OrderingAfter) {
 if(y_a.OrderingAfter) {
 return true
-return
 }
 }
 {
 return false
-return
 }
 },
 async equals_$(x_, y_, $task) {
@@ -607,24 +565,20 @@ const y_a = y_;
 if(x_a.OrderingBefore) {
 if(y_a.OrderingBefore) {
 return true
-return
 }
 }
 if(x_a.OrderingSame) {
 if(y_a.OrderingSame) {
 return true
-return
 }
 }
 if(x_a.OrderingAfter) {
 if(y_a.OrderingAfter) {
 return true
-return
 }
 }
 {
 return false
-return
 }
 }
 };

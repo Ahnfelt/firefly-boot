@@ -140,7 +140,6 @@ const _1 = _w1;
 {
 const _c = _1;
 return ff_compiler_Token.Token(_c.file_, _c.code_, ff_compiler_Token.LKeyword(), _c.startLine_, _c.startLineOffset_, _c.startOffset_, _c.stopLine_, _c.stopLineOffset_, _c.stopOffset_)
-return
 }
 }
 }))
@@ -383,7 +382,6 @@ const _1 = _w1;
 {
 const _c = _1;
 return ff_compiler_Token.Token(_c.file_, _c.code_, ff_compiler_Token.LKeyword(), _c.startLine_, _c.startLineOffset_, _c.startOffset_, _c.stopLine_, _c.stopLineOffset_, _c.stopOffset_)
-return
 }
 }
 }))

@@ -404,14 +404,12 @@ const _1 = body_(x_);
 {
 if(_1.None) {
 return true
-return
 }
 }
 {
 const o_ = _1;
 result_ = o_;
 return false
-return
 }
 }
 }));
@@ -697,14 +695,12 @@ const _1 = (await body_(x_, $task));
 {
 if(_1.None) {
 return true
-return
 }
 }
 {
 const o_ = _1;
 result_ = o_;
 return false
-return
 }
 }
 }), $task));
@@ -765,12 +761,10 @@ const item_ = _1;
 if((!ff_core_Set.Set_contains(seen_, item_, ff_core_Ordering_Order$T))) {
 seen_ = ff_core_Set.Set_add(seen_, item_, ff_core_Ordering_Order$T);
 return true
-return
 }
 }
 {
 return false
-return
 }
 }))
 }
@@ -795,12 +789,10 @@ const item_ = _1;
 if((!ff_core_Set.Set_contains(seen_, item_, ff_core_Ordering_Order$T))) {
 seen_ = ff_core_Set.Set_add(seen_, item_, ff_core_Ordering_Order$T);
 return true
-return
 }
 }
 {
 return false
-return
 }
 }))
 }
@@ -828,7 +820,6 @@ const map_ = _1;
 const key_ = _2.first_;
 const value_ = _2.second_;
 return ff_core_Map.Map_add(map_, key_, value_, ff_core_Ordering_Order$K)
-return
 }
 }))
 }
@@ -855,7 +846,6 @@ const map_ = _1;
 const key_ = _2.first_;
 const value_ = _2.second_;
 return ff_core_Map.Map_add(map_, key_, value_, ff_core_Ordering_Order$K)
-return
 }
 }))
 }

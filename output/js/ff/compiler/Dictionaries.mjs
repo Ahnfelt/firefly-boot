@@ -120,14 +120,12 @@ const typeName_ = (((_1) => {
 if(_1.TConstructor) {
 const name_ = _1.name_;
 return name_
-return
 }
 }
 {
 if(_1.TVariable) {
 const i_ = _1.index_;
 return ff_compiler_Dictionaries.fail_(c_.at_, ("Unexpected unification variable: $" + i_))
-return
 }
 }
 }))(ff_core_List.List_grabFirst(c_.generics_));
@@ -150,14 +148,12 @@ const typeName_ = (((_1) => {
 if(_1.TConstructor) {
 const name_ = _1.name_;
 return name_
-return
 }
 }
 {
 if(_1.TVariable) {
 const i_ = _1.index_;
 return ff_compiler_Dictionaries.fail_(c_.at_, ("Unexpected unification variable: $" + i_))
-return
 }
 }
 }))(ff_core_List.List_grabFirst(c_.generics_));
@@ -173,12 +169,10 @@ const name_ = _1.first_;
 const s_ = _1.second_;
 if((!s_.isVariable_)) {
 return ff_core_Option.Some(ff_core_Pair.Pair(name_, s_.signature_))
-return
 }
 }
 {
 return ff_core_Option.None()
-return
 }
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const lets_ = ff_core_List.List_map(module_.lets_, ((_w1) => {
@@ -198,7 +192,6 @@ const _1 = module_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, _c.traits_, instances_, extends_, lets_, functions_)
-return
 }
 }
 }
@@ -209,7 +202,6 @@ const _1 = definition_;
 {
 const _c = _1;
 return ff_compiler_Syntax.DLet(_c.at_, _c.name_, _c.variableType_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, definition_.value_))
-return
 }
 }
 }
@@ -277,7 +269,6 @@ const _1 = g_;
 {
 const _c = _1;
 return ff_compiler_Syntax.MatchGuard(_c.at_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, g_.term_), _c.pattern_)
-return
 }
 }
 })), ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, case_.body_))
@@ -296,31 +287,26 @@ const _1 = term_;
 {
 if(_1.EString) {
 return term_
-return
 }
 }
 {
 if(_1.EChar) {
 return term_
-return
 }
 }
 {
 if(_1.EInt) {
 return term_
-return
 }
 }
 {
 if(_1.EFloat) {
 return term_
-return
 }
 }
 {
 if(_1.EVariable) {
 return term_
-return
 }
 }
 {
@@ -331,7 +317,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.record_), _c.field_)
-return
 }
 }
 return
@@ -341,7 +326,6 @@ return
 if(_1.EWildcard) {
 const e_ = _1;
 return term_
-return
 }
 }
 {
@@ -356,7 +340,6 @@ return ff_compiler_Syntax.EList(_c.at_, _c.elementType_, ff_core_List.List_map(e
 const item_ = _1.first_;
 const b_ = _1.second_;
 return ff_core_Pair.Pair(ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, item_), b_)
-return
 }
 })))
 return
@@ -373,7 +356,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.ESequential(_c.at_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.before_), ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.after_))
-return
 }
 }
 return
@@ -388,7 +370,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, _c.valueType_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.value_), ff_compiler_Dictionaries.Dictionaries_processTerm(self_, newFunctions_, e_.body_))
-return
 }
 }
 return
@@ -402,7 +383,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.ELambda(_c.at_, ff_compiler_Dictionaries.Dictionaries_processLambda(self_, functions_, e_.lambda_))
-return
 }
 }
 return
@@ -430,7 +410,6 @@ return
 if(_1.EVariantIs) {
 const e_ = _1;
 return term_
-return
 }
 }
 {
@@ -457,7 +436,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.value_), _c.effect_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.function_))
-return
 }
 }
 return
@@ -499,7 +477,6 @@ const _1 = call_;
 {
 const _c = _1;
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, call_.function_), _c.tailCall_)
-return
 }
 }
 return
@@ -508,7 +485,6 @@ return
 {
 if(_1.StaticCall) {
 return e_.target_
-return
 }
 }
 }))(e_.target_);
@@ -568,7 +544,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.value_))
-return
 }
 }
 return
@@ -582,7 +557,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.record_), _c.field_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.value_))
-return
 }
 }
 return
@@ -597,7 +571,6 @@ const _1 = argument_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, argument_.value_))
-return
 }
 }
 }
@@ -608,7 +581,6 @@ const _1 = field_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, field_.value_))
-return
 }
 }
 }
@@ -624,14 +596,12 @@ const firstType_ = (((_1) => {
 if(_1.TConstructor) {
 const t_ = _1;
 return t_
-return
 }
 }
 {
 if(_1.TVariable) {
 const t_ = _1;
 return ff_compiler_Dictionaries.fail_(t_.at_, " is still a unification variable")
-return
 }
 }
 }))(ff_core_List.List_grabFirst(newGenerics_));
@@ -652,12 +622,10 @@ const name_ = _1.first_;
 const s_ = _1.second_;
 if((!s_.isVariable_)) {
 return ff_core_Option.Some(ff_core_Pair.Pair(name_, s_.signature_))
-return
 }
 }
 {
 return ff_core_Option.None()
-return
 }
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const lets_ = ff_core_List.List_map(module_.lets_, ((_w1) => {
@@ -677,7 +645,6 @@ const _1 = module_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, _c.traits_, instances_, extends_, lets_, functions_)
-return
 }
 }
 }
@@ -688,7 +655,6 @@ const _1 = definition_;
 {
 const _c = _1;
 return ff_compiler_Syntax.DLet(_c.at_, _c.name_, _c.variableType_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, definition_.value_))
-return
 }
 }
 }
@@ -756,7 +722,6 @@ const _1 = g_;
 {
 const _c = _1;
 return ff_compiler_Syntax.MatchGuard(_c.at_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, g_.term_), _c.pattern_)
-return
 }
 }
 })), ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, case_.body_))
@@ -775,31 +740,26 @@ const _1 = term_;
 {
 if(_1.EString) {
 return term_
-return
 }
 }
 {
 if(_1.EChar) {
 return term_
-return
 }
 }
 {
 if(_1.EInt) {
 return term_
-return
 }
 }
 {
 if(_1.EFloat) {
 return term_
-return
 }
 }
 {
 if(_1.EVariable) {
 return term_
-return
 }
 }
 {
@@ -810,7 +770,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.record_), _c.field_)
-return
 }
 }
 return
@@ -820,7 +779,6 @@ return
 if(_1.EWildcard) {
 const e_ = _1;
 return term_
-return
 }
 }
 {
@@ -835,7 +793,6 @@ return ff_compiler_Syntax.EList(_c.at_, _c.elementType_, ff_core_List.List_map(e
 const item_ = _1.first_;
 const b_ = _1.second_;
 return ff_core_Pair.Pair(ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, item_), b_)
-return
 }
 })))
 return
@@ -852,7 +809,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.ESequential(_c.at_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.before_), ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.after_))
-return
 }
 }
 return
@@ -867,7 +823,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, _c.valueType_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.value_), ff_compiler_Dictionaries.Dictionaries_processTerm(self_, newFunctions_, e_.body_))
-return
 }
 }
 return
@@ -881,7 +836,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.ELambda(_c.at_, ff_compiler_Dictionaries.Dictionaries_processLambda(self_, functions_, e_.lambda_))
-return
 }
 }
 return
@@ -909,7 +863,6 @@ return
 if(_1.EVariantIs) {
 const e_ = _1;
 return term_
-return
 }
 }
 {
@@ -936,7 +889,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.value_), _c.effect_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.function_))
-return
 }
 }
 return
@@ -978,7 +930,6 @@ const _1 = call_;
 {
 const _c = _1;
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, call_.function_), _c.tailCall_)
-return
 }
 }
 return
@@ -987,7 +938,6 @@ return
 {
 if(_1.StaticCall) {
 return e_.target_
-return
 }
 }
 }))(e_.target_);
@@ -1047,7 +997,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.value_))
-return
 }
 }
 return
@@ -1061,7 +1010,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.record_), _c.field_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.value_))
-return
 }
 }
 return
@@ -1076,7 +1024,6 @@ const _1 = argument_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, argument_.value_))
-return
 }
 }
 }
@@ -1087,7 +1034,6 @@ const _1 = field_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, field_.value_))
-return
 }
 }
 }
@@ -1103,14 +1049,12 @@ const firstType_ = (((_1) => {
 if(_1.TConstructor) {
 const t_ = _1;
 return t_
-return
 }
 }
 {
 if(_1.TVariable) {
 const t_ = _1;
 return ff_compiler_Dictionaries.fail_(t_.at_, " is still a unification variable")
-return
 }
 }
 }))(ff_core_List.List_grabFirst(newGenerics_));
@@ -1137,13 +1081,11 @@ show_(value_) {
 const value_a = value_;
 const z_ = value_a;
 return ((("Dictionaries" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_InstanceValue).show_(z_.instances_)) + ")")
-return
 },
 async show_$(value_, $task) {
 const value_a = value_;
 const z_ = value_a;
 return ((("Dictionaries" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_InstanceValue).show_(z_.instances_)) + ")")
-return
 }
 };
 
@@ -1153,11 +1095,9 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 {
 return ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_InstanceValue).equals_(x_.instances_, y_.instances_)
-return
 }
 },
 async equals_$(x_, y_, $task) {
@@ -1165,11 +1105,9 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 {
 return ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_InstanceValue).equals_(x_.instances_, y_.instances_)
-return
 }
 }
 };
@@ -1180,7 +1118,6 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 {
 const instancesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceValue).compare_(x_.instances_, y_.instances_);
@@ -1197,7 +1134,6 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 {
 const instancesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceValue).compare_(x_.instances_, y_.instances_);
@@ -1232,7 +1168,6 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 37), 0);
 return ff_compiler_Dictionaries.Dictionaries(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_InstanceValue).deserializeUsing_(serialization_))
-return
 }
 }
 {
@@ -1261,7 +1196,6 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 37), 0);
 return ff_compiler_Dictionaries.Dictionaries(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_InstanceValue).deserializeUsing_(serialization_))
-return
 }
 }
 {

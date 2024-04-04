@@ -127,7 +127,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, _c.valueType_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_), ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.body_))
-return
 }
 }
 return
@@ -139,7 +138,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.ESequential(_c.at_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.before_), ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.after_))
-return
 }
 }
 return
@@ -151,7 +149,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_))
-return
 }
 }
 return
@@ -163,7 +160,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.record_), _c.field_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_))
-return
 }
 }
 return
@@ -175,7 +171,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_), _c.effect_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.function_))
-return
 }
 }
 return
@@ -195,7 +190,6 @@ const _1 = call_;
 {
 const _c = _1;
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Wildcards.Wildcards_fixWildcards(self_, call_.function_), _c.tailCall_)
-return
 }
 }
 return
@@ -203,7 +197,6 @@ return
 }
 {
 return ff_compiler_Wildcards.fail_(e_.at_, "Internal error: Static calls not expected in the Wildcards phase")
-return
 }
 }))(e_.target_), _c.effect_, _c.typeArguments_, ff_core_List.List_map(e_.arguments_, ((a_) => {
 {
@@ -211,7 +204,6 @@ const _1 = a_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, a_.value_))
-return
 }
 }
 })), _c.dictionaries_)
@@ -231,7 +223,6 @@ return ff_compiler_Syntax.EList(_c.at_, _c.elementType_, ff_core_List.List_map(e
 const item_ = _1.first_;
 const spread_ = _1.second_;
 return ff_core_Pair.Pair(ff_compiler_Wildcards.Wildcards_fixWildcards(self_, item_), spread_)
-return
 }
 })))
 return
@@ -251,7 +242,6 @@ const _1 = a_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, a_.value_))
-return
 }
 }
 })))
@@ -273,7 +263,6 @@ const _1 = a_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, a_.value_))
-return
 }
 }
 }))
@@ -295,7 +284,6 @@ const _1 = a_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, a_.value_))
-return
 }
 }
 })))
@@ -311,7 +299,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.record_), _c.field_)
-return
 }
 }
 return
@@ -324,14 +311,12 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EWildcard(_c.at_, self_.seenWildcards_)
-return
 }
 }
 return
 }
 {
 return term_
-return
 }
 }
 
@@ -345,7 +330,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, _c.valueType_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_), ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.body_))
-return
 }
 }
 return
@@ -357,7 +341,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.ESequential(_c.at_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.before_), ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.after_))
-return
 }
 }
 return
@@ -369,7 +352,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_))
-return
 }
 }
 return
@@ -381,7 +363,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.record_), _c.field_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_))
-return
 }
 }
 return
@@ -393,7 +374,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_), _c.effect_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.function_))
-return
 }
 }
 return
@@ -413,7 +393,6 @@ const _1 = call_;
 {
 const _c = _1;
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Wildcards.Wildcards_fixWildcards(self_, call_.function_), _c.tailCall_)
-return
 }
 }
 return
@@ -421,7 +400,6 @@ return
 }
 {
 return ff_compiler_Wildcards.fail_(e_.at_, "Internal error: Static calls not expected in the Wildcards phase")
-return
 }
 }))(e_.target_), _c.effect_, _c.typeArguments_, ff_core_List.List_map(e_.arguments_, ((a_) => {
 {
@@ -429,7 +407,6 @@ const _1 = a_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, a_.value_))
-return
 }
 }
 })), _c.dictionaries_)
@@ -449,7 +426,6 @@ return ff_compiler_Syntax.EList(_c.at_, _c.elementType_, ff_core_List.List_map(e
 const item_ = _1.first_;
 const spread_ = _1.second_;
 return ff_core_Pair.Pair(ff_compiler_Wildcards.Wildcards_fixWildcards(self_, item_), spread_)
-return
 }
 })))
 return
@@ -469,7 +445,6 @@ const _1 = a_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, a_.value_))
-return
 }
 }
 })))
@@ -491,7 +466,6 @@ const _1 = a_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, a_.value_))
-return
 }
 }
 }))
@@ -513,7 +487,6 @@ const _1 = a_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, a_.value_))
-return
 }
 }
 })))
@@ -529,7 +502,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.record_), _c.field_)
-return
 }
 }
 return
@@ -542,14 +514,12 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EWildcard(_c.at_, self_.seenWildcards_)
-return
 }
 }
 return
 }
 {
 return term_
-return
 }
 }
 

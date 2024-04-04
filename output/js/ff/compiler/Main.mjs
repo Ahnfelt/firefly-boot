@@ -161,25 +161,21 @@ const targetName_ = (((_1) => {
 {
 if(_1.EmitBuild) {
 return "build"
-return
 }
 }
 {
 if(_1.EmitNode) {
 return "node"
-return
 }
 }
 {
 if(_1.EmitBrowser) {
 return "browser"
-return
 }
 }
 {
 if(_1.EmitExecutable) {
 return "executable"
-return
 }
 }
 }))(emitTarget_);
@@ -261,7 +257,6 @@ const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
 if(_guard1.Some) {
 const mainName_ = _guard1.value_;
 return ff_compiler_Main.RunCommand(mainName_, mainArguments_)
-return
 }
 }
 if(arguments_a.length >= 1) {
@@ -277,7 +272,6 @@ const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
 if(_guard1.Some) {
 const mainName_ = _guard1.value_;
 return ff_compiler_Main.RunCommand(mainName_, mainArguments_)
-return
 }
 }
 }
@@ -301,7 +295,6 @@ const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
 if(_guard1.Some) {
 const mainName_ = _guard1.value_;
 return ff_compiler_Main.BrowserCommand(mainName_)
-return
 }
 }
 }
@@ -331,7 +324,6 @@ const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
 if(_guard1.Some) {
 const mainName_ = _guard1.value_;
 return ff_compiler_Main.BuildCommand(mainName_)
-return
 }
 }
 }
@@ -360,7 +352,6 @@ const fileName_ = _1[0];
 const _guard1 = ff_core_String.String_removeLast(fileName_, ".ff");
 if(_guard1.Some) {
 return ff_compiler_Main.CheckCommand(fileName_)
-return
 }
 }
 }
@@ -387,7 +378,6 @@ return
 if(arguments_a.length === 1) {
 if(arguments_a[0] === "bootstrap") {
 return ff_compiler_Main.BootstrapCommand()
-return
 }
 }
 if(arguments_a.length === 0) {
@@ -448,25 +438,21 @@ const targetName_ = (((_1) => {
 {
 if(_1.EmitBuild) {
 return "build"
-return
 }
 }
 {
 if(_1.EmitNode) {
 return "node"
-return
 }
 }
 {
 if(_1.EmitBrowser) {
 return "browser"
-return
 }
 }
 {
 if(_1.EmitExecutable) {
 return "executable"
-return
 }
 }
 }))(emitTarget_);
@@ -548,7 +534,6 @@ const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
 if(_guard1.Some) {
 const mainName_ = _guard1.value_;
 return ff_compiler_Main.RunCommand(mainName_, mainArguments_)
-return
 }
 }
 if(arguments_a.length >= 1) {
@@ -564,7 +549,6 @@ const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
 if(_guard1.Some) {
 const mainName_ = _guard1.value_;
 return ff_compiler_Main.RunCommand(mainName_, mainArguments_)
-return
 }
 }
 }
@@ -588,7 +572,6 @@ const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
 if(_guard1.Some) {
 const mainName_ = _guard1.value_;
 return ff_compiler_Main.BrowserCommand(mainName_)
-return
 }
 }
 }
@@ -618,7 +601,6 @@ const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
 if(_guard1.Some) {
 const mainName_ = _guard1.value_;
 return ff_compiler_Main.BuildCommand(mainName_)
-return
 }
 }
 }
@@ -647,7 +629,6 @@ const fileName_ = _1[0];
 const _guard1 = ff_core_String.String_removeLast(fileName_, ".ff");
 if(_guard1.Some) {
 return ff_compiler_Main.CheckCommand(fileName_)
-return
 }
 }
 }
@@ -674,7 +655,6 @@ return
 if(arguments_a.length === 1) {
 if(arguments_a[0] === "bootstrap") {
 return ff_compiler_Main.BootstrapCommand()
-return
 }
 }
 if(arguments_a.length === 0) {
@@ -763,27 +743,22 @@ const value_a = value_;
 if(value_a.BootstrapCommand) {
 const z_ = value_a;
 return "BootstrapCommand"
-return
 }
 if(value_a.RunCommand) {
 const z_ = value_a;
 return ((((("RunCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.argument_)) + ")")
-return
 }
 if(value_a.BrowserCommand) {
 const z_ = value_a;
 return ((("BrowserCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ")")
-return
 }
 if(value_a.BuildCommand) {
 const z_ = value_a;
 return ((("BuildCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ")")
-return
 }
 if(value_a.CheckCommand) {
 const z_ = value_a;
 return ((("CheckCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.filePath_)) + ")")
-return
 }
 },
 async show_$(value_, $task) {
@@ -791,27 +766,22 @@ const value_a = value_;
 if(value_a.BootstrapCommand) {
 const z_ = value_a;
 return "BootstrapCommand"
-return
 }
 if(value_a.RunCommand) {
 const z_ = value_a;
 return ((((("RunCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.argument_)) + ")")
-return
 }
 if(value_a.BrowserCommand) {
 const z_ = value_a;
 return ((("BrowserCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ")")
-return
 }
 if(value_a.BuildCommand) {
 const z_ = value_a;
 return ((("BuildCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ")")
-return
 }
 if(value_a.CheckCommand) {
 const z_ = value_a;
 return ((("CheckCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.filePath_)) + ")")
-return
 }
 }
 };
@@ -821,13 +791,11 @@ show_(value_) {
 const value_a = value_;
 const z_ = value_a;
 return ((("CommandLineError" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.problem_)) + ")")
-return
 },
 async show_$(value_, $task) {
 const value_a = value_;
 const z_ = value_a;
 return ((("CommandLineError" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.problem_)) + ")")
-return
 }
 };
 
@@ -837,14 +805,12 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 if(x_a.RunCommand) {
 const x_ = x_a;
 if(y_a.RunCommand) {
 const y_ = y_a;
 return ((x_.mainPath_ === y_.mainPath_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.argument_, y_.argument_))
-return
 }
 }
 if(x_a.BrowserCommand) {
@@ -852,7 +818,6 @@ const x_ = x_a;
 if(y_a.BrowserCommand) {
 const y_ = y_a;
 return (x_.mainPath_ === y_.mainPath_)
-return
 }
 }
 if(x_a.BuildCommand) {
@@ -860,7 +825,6 @@ const x_ = x_a;
 if(y_a.BuildCommand) {
 const y_ = y_a;
 return (x_.mainPath_ === y_.mainPath_)
-return
 }
 }
 if(x_a.CheckCommand) {
@@ -868,12 +832,10 @@ const x_ = x_a;
 if(y_a.CheckCommand) {
 const y_ = y_a;
 return (x_.filePath_ === y_.filePath_)
-return
 }
 }
 {
 return false
-return
 }
 },
 async equals_$(x_, y_, $task) {
@@ -881,14 +843,12 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 if(x_a.RunCommand) {
 const x_ = x_a;
 if(y_a.RunCommand) {
 const y_ = y_a;
 return ((x_.mainPath_ === y_.mainPath_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.argument_, y_.argument_))
-return
 }
 }
 if(x_a.BrowserCommand) {
@@ -896,7 +856,6 @@ const x_ = x_a;
 if(y_a.BrowserCommand) {
 const y_ = y_a;
 return (x_.mainPath_ === y_.mainPath_)
-return
 }
 }
 if(x_a.BuildCommand) {
@@ -904,7 +863,6 @@ const x_ = x_a;
 if(y_a.BuildCommand) {
 const y_ = y_a;
 return (x_.mainPath_ === y_.mainPath_)
-return
 }
 }
 if(x_a.CheckCommand) {
@@ -912,12 +870,10 @@ const x_ = x_a;
 if(y_a.CheckCommand) {
 const y_ = y_a;
 return (x_.filePath_ === y_.filePath_)
-return
 }
 }
 {
 return false
-return
 }
 }
 };
@@ -928,11 +884,9 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 {
 return (x_.problem_ === y_.problem_)
-return
 }
 },
 async equals_$(x_, y_, $task) {
@@ -940,11 +894,9 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 {
 return (x_.problem_ === y_.problem_)
-return
 }
 }
 };
@@ -955,7 +907,6 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 if(x_a.RunCommand) {
 const x_ = x_a;
@@ -1019,27 +970,21 @@ function number_(z_) {
 const z_a = z_;
 if(z_a.BootstrapCommand) {
 return 0
-return
 }
 if(z_a.RunCommand) {
 return 1
-return
 }
 if(z_a.BrowserCommand) {
 return 2
-return
 }
 if(z_a.BuildCommand) {
 return 3
-return
 }
 if(z_a.CheckCommand) {
 return 4
-return
 }
 }
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
-return
 }
 },
 async compare_$(x_, y_, $task) {
@@ -1047,7 +992,6 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 if(x_a.RunCommand) {
 const x_ = x_a;
@@ -1111,27 +1055,21 @@ function number_(z_) {
 const z_a = z_;
 if(z_a.BootstrapCommand) {
 return 0
-return
 }
 if(z_a.RunCommand) {
 return 1
-return
 }
 if(z_a.BrowserCommand) {
 return 2
-return
 }
 if(z_a.BuildCommand) {
 return 3
-return
 }
 if(z_a.CheckCommand) {
 return 4
-return
 }
 }
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
-return
 }
 }
 };
@@ -1142,7 +1080,6 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 {
 const problemOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.problem_, y_.problem_);
@@ -1159,7 +1096,6 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
-return
 }
 {
 const problemOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.problem_, y_.problem_);
@@ -1232,35 +1168,30 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 return ff_compiler_Main.BootstrapCommand()
-return
 }
 }
 {
 if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_Main.RunCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
-return
 }
 }
 {
 if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 return ff_compiler_Main.BrowserCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
-return
 }
 }
 {
 if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Main.BuildCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
-return
 }
 }
 {
 if(_1 === 4) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Main.CheckCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
-return
 }
 }
 {
@@ -1327,35 +1258,30 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 return ff_compiler_Main.BootstrapCommand()
-return
 }
 }
 {
 if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
 return ff_compiler_Main.RunCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
-return
 }
 }
 {
 if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 return ff_compiler_Main.BrowserCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
-return
 }
 }
 {
 if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Main.BuildCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
-return
 }
 }
 {
 if(_1 === 4) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Main.CheckCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
-return
 }
 }
 {
@@ -1387,7 +1313,6 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 return ff_compiler_Main.CommandLineError(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
-return
 }
 }
 {
@@ -1416,7 +1341,6 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
 return ff_compiler_Main.CommandLineError(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
-return
 }
 }
 {

@@ -128,7 +128,6 @@ const typeName_ = (((_1) => {
 if(_1.TConstructor) {
 const name_ = _1.name_;
 return name_
-return
 }
 }
 {
@@ -136,7 +135,6 @@ if(_1.TVariable) {
 const at_ = _1.at_;
 const i_ = _1.index_;
 return ff_compiler_Inference.fail_(c_.at_, ("Unexpected unification variable: $" + i_))
-return
 }
 }
 }))(ff_core_List.List_grabFirst(c_.generics_));
@@ -163,7 +161,6 @@ const typeName_ = (((_1) => {
 if(_1.TConstructor) {
 const name_ = _1.name_;
 return name_
-return
 }
 }
 {
@@ -171,7 +168,6 @@ if(_1.TVariable) {
 const at_ = _1.at_;
 const i_ = _1.index_;
 return ff_compiler_Inference.fail_(c_.at_, ("Unexpected unification variable: $" + i_))
-return
 }
 }
 }))(ff_core_List.List_grabFirst(c_.generics_));
@@ -209,7 +205,6 @@ const _1 = definition_;
 {
 const _c = _1;
 return ff_compiler_Syntax.DTrait(_c.at_, _c.name_, _c.generics_, _c.constraints_, _c.generatorParameters_, _c.methods_, _c.methodDefaults_, _c.methodGenerators_)
-return
 }
 }
 }
@@ -257,7 +252,6 @@ const _1 = p_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, p_.valueType_), _c.default_)
-return
 }
 }
 }));
@@ -298,7 +292,6 @@ const _1 = definition_;
 {
 const _c = _1;
 return ff_compiler_Syntax.DLet(_c.at_, _c.name_, _c.variableType_, value_)
-return
 }
 }
 }
@@ -320,7 +313,6 @@ const _1 = case_;
 {
 const _c = _1;
 return ff_compiler_Syntax.MatchCase(_c.at_, [ff_compiler_Syntax.PVariable(method_.at_, ff_core_Option.None()), ...case_.patterns_], _c.guards_, _c.body_)
-return
 }
 }
 })))
@@ -340,7 +332,6 @@ const _1 = definition_;
 {
 const _c = _1;
 return ff_compiler_Syntax.DExtend(_c.at_, _c.name_, _c.generics_, _c.constraints_, _c.type_, functions_)
-return
 }
 }
 }
@@ -395,22 +386,19 @@ if(_1.TConstructor) {
 const n_ = _1.name_;
 if(_1.generics_.length === 0) {
 return (n_ === unitName_)
+}
+}
+}
+{
+return false
+}
+}
 return
 }
 }
 }
 {
 return false
-return
-}
-}
-return
-}
-}
-}
-{
-return false
-return
 }
 }))(ff_compiler_Unification.Unification_substitute(self_.unification_, expected_));
 const cases_ = ((!returnsUnit_)
@@ -421,7 +409,6 @@ const _1 = c_;
 {
 const _c = _1;
 return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.guards_, ff_compiler_Syntax.ESequential(c_.at_, c_.body_, ff_compiler_Syntax.EVariant(c_.at_, unitName_, [], ff_core_Option.None())))
-return
 }
 }
 })));
@@ -459,7 +446,6 @@ const at_ = _2.first_;
 const type_ = _2.second_;
 const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing", []);
 return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(at_, name_, false, [], [], [], type_, noEffect_))
-return
 }
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 {
@@ -467,7 +453,6 @@ const _1 = environment_;
 {
 const _c = _1;
 return ff_compiler_Environment.Environment(_c.modulePrefix_, ff_core_Map.Map_addAll(environment1_.symbols_, symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.imports_, _c.effect_, _c.selfVariable_)
-return
 }
 }
 return
@@ -484,7 +469,6 @@ const at_ = _2.first_;
 const type_ = _2.second_;
 const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing", []);
 return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(at_, name_, false, [], [], [], type_, noEffect_))
-return
 }
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 ff_core_Array.Array_push(guards_, (((_c) => {
@@ -495,7 +479,6 @@ const _1 = environment2_;
 {
 const _c = _1;
 return ff_compiler_Environment.Environment(_c.modulePrefix_, ff_core_Map.Map_addAll(environment2_.symbols_, symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.imports_, _c.effect_, _c.selfVariable_)
-return
 }
 }
 }));
@@ -504,7 +487,6 @@ const _1 = case_;
 {
 const _c = _1;
 return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, ff_core_Array.Array_drain(guards_), ff_compiler_Inference.Inference_inferTerm(self_, environment3_, returnType_, case_.body_))
-return
 }
 }
 }
@@ -517,19 +499,16 @@ if(_1.PVariantAs) {
 const at_ = _1.at_;
 const variableAt_ = _1.variableAt_;
 return ((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, at_) || ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, variableAt_)) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, variableAt_))
-return
 }
 }
 {
 if(_1.PAlias) {
 const at_ = _1.at_;
 return (ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, at_))
-return
 }
 }
 {
 return ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, pattern_.at_)
-return
 }
 }))(pattern_)) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferPatternHook(self_.unification_, environment_, expected_, pattern_))
@@ -544,19 +523,16 @@ const _1 = pattern_;
 {
 if(_1.PString) {
 return literal_("String")
-return
 }
 }
 {
 if(_1.PInt) {
 return literal_("Int")
-return
 }
 }
 {
 if(_1.PChar) {
 return literal_("Char")
-return
 }
 }
 {
@@ -564,7 +540,6 @@ if(_1.PVariable) {
 const at_ = _1.at_;
 if(_1.name_.None) {
 return ff_core_Map.empty_()
-return
 }
 }
 }
@@ -574,7 +549,6 @@ const at_ = _1.at_;
 if(_1.name_.Some) {
 const name_ = _1.name_.value_;
 return ff_core_List.List_toMap([ff_core_Pair.Pair(name_, ff_core_Pair.Pair(at_, expected_))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
-return
 }
 }
 }
@@ -584,7 +558,6 @@ const at_ = _1.at_;
 const pattern_ = _1.pattern_;
 const variable_ = _1.variable_;
 return ff_core_Map.Map_add(ff_compiler_Inference.Inference_inferPattern(self_, environment_, expected_, pattern_), variable_, ff_core_Pair.Pair(at_, expected_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
-return
 }
 }
 {
@@ -623,7 +596,6 @@ const itemType_ = ff_compiler_Unification.Unification_freshUnificationVariable(s
 const listType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("List"), [itemType_]);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, listType_);
 return ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
-return
 }
 }
 }
@@ -641,7 +613,6 @@ ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, li
 const headVariables_ = ff_compiler_Inference.Inference_inferPattern(self_, environment_, itemType_, head_);
 const tailVariables_ = ff_compiler_Inference.Inference_inferPattern(self_, environment_, listType_, tail_);
 return ff_core_Map.Map_addAll(headVariables_, tailVariables_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
-return
 }
 }
 }
@@ -663,7 +634,6 @@ return ff_core_List.List_foldLeft(ff_core_List.List_map(ff_core_List.List_zip(pa
 const pattern_ = _1.first_;
 const parameter_ = _1.second_;
 return ff_compiler_Inference.Inference_inferPattern(self_, environment_, parameter_.valueType_, pattern_)
-return
 }
 })), ff_core_Map.empty_(), ((_w1, _w2) => {
 return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
@@ -691,25 +661,21 @@ const _1 = term_;
 {
 if(_1.EString) {
 return literal_("String")
-return
 }
 }
 {
 if(_1.EChar) {
 return literal_("Char")
-return
 }
 }
 {
 if(_1.EInt) {
 return literal_("Int")
-return
 }
 }
 {
 if(_1.EFloat) {
 return literal_("Float")
-return
 }
 }
 {
@@ -764,7 +730,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, record_, _c.field_)
-return
 }
 }
 })), (() => {
@@ -796,7 +761,6 @@ return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, _c.generics_, 
 }))(instantiated_.scheme_.signature_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, recordType_, ff_core_List.List_grab(instantiated_.scheme_.signature_.parameters_, 0).valueType_);
 return ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, signature_, term_)
-return
 }
 }
 }
@@ -809,7 +773,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EField(_c.at_, instantiated_.scheme_.isNewtype_, record_, _c.field_)
-return
 }
 }
 return
@@ -829,7 +792,6 @@ return
 if(_1.TVariable) {
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
-return
 }
 }
 }
@@ -902,7 +864,6 @@ const _1 = case_;
 {
 const _c = _1;
 return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.guards_, ff_compiler_Syntax.ESequential(case_.at_, case_.body_, e_))
-return
 }
 }
 }));
@@ -916,13 +877,11 @@ if(_1.name_ === "ff:core/Unit.Unit") {
 const unitType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), []);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, unitType_);
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, newPipe_)
-return
 }
 }
 }
 {
 return ff_compiler_Syntax.ESequential(at_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, newPipe_), ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, after_))
-return
 }
 }
 return
@@ -931,7 +890,6 @@ return
 }
 {
 return ff_compiler_Syntax.ESequential(at_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, before_), ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, after_))
-return
 }
 }
 return
@@ -950,7 +908,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, _c.valueType_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, e_.valueType_, e_.value_), ff_compiler_Inference.Inference_inferTerm(self_, environment2_, expected_, e_.body_))
-return
 }
 }
 return
@@ -1009,7 +966,6 @@ break
 } while(false);
 const lambda_ = ff_compiler_Inference.Inference_inferLambda(self_, environment_, expected_, l_);
 return ff_compiler_Syntax.ELambda(at_, lambda_)
-return
 }
 }
 {
@@ -1091,7 +1047,6 @@ const _1 = f_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Argument(_c.at_, ff_core_Option.Some(f_.name_), _c.value_)
-return
 }
 }
 }));
@@ -1125,7 +1080,6 @@ return (_w1.name_ === name_)
 const at_ = _1.at_;
 const value_ = _1.value_;
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(name_), value_)
-return
 }
 })), (() => {
 const at_ = (((_c) => {
@@ -1138,7 +1092,6 @@ const body_ = ff_compiler_Syntax.EVariant(e_.at_, e_.name_, [], ff_core_Option.S
 const effect_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const e1_ = ff_compiler_Syntax.EPipe(e_.at_, e_.record_, effect_, ff_compiler_Syntax.ELambda(e_.at_, ff_compiler_Syntax.Lambda(e_.at_, effect_, [ff_compiler_Syntax.MatchCase(e_.at_, [ff_compiler_Syntax.PVariable(e_.at_, ff_core_Option.Some("_c"))], [], body_)])));
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, e1_)
-return
 }
 }
 {
@@ -1154,7 +1107,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EPipe(_c.at_, value_, _c.effect_, function_)
-return
 }
 }
 return
@@ -1167,12 +1119,10 @@ if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (((_1) => {
 {
 if(_1.StaticCall) {
 return true
-return
 }
 }
 {
 return false
-return
 }
 }))(e_.target_))) {
 return term_
@@ -1182,13 +1132,11 @@ const call_ = (((_1) => {
 if(_1.DynamicCall) {
 const call_ = _1;
 return call_
-return
 }
 }
 {
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in the Inference phase")
-return
 }
 }
 }))(e_.target_);
@@ -1260,7 +1208,6 @@ if(_1.Some) {
 const instantiated_ = _1.value_;
 if((!instantiated_.scheme_.isVariable_)) {
 return ff_compiler_Inference.Inference_inferMethodCall(self_, environment_, expected_, instantiated_.scheme_.signature_, instantiated_.typeArguments_, e2_, record_, recordType_, methodName_)
-return
 }
 }
 }
@@ -1268,7 +1215,6 @@ return
 if(_1.Some) {
 const instantiated_ = _1.value_;
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, e2_)
-return
 }
 }
 {
@@ -1285,7 +1231,6 @@ return
 if(_1.TVariable) {
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, e2_)
-return
 }
 }
 }
@@ -1302,7 +1247,6 @@ return
 }
 {
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, term_)
-return
 }
 }
 }
@@ -1331,7 +1275,6 @@ const _1 = field_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, field_.value_))
-return
 }
 }
 return
@@ -1342,7 +1285,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.ERecord(_c.at_, newFields_)
-return
 }
 }
 return
@@ -1365,7 +1307,6 @@ return ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environmen
 }));
 const newBody_ = ff_compiler_Inference.Inference_inferTerm(self_, environment2_, expected_, body_);
 return ff_compiler_Syntax.EFunctions(at_, newFunctions_, newBody_)
-return
 }
 }
 {
@@ -1379,7 +1320,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, value_)
-return
 }
 }
 } else {
@@ -1427,7 +1367,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, record_, _c.field_, value_)
-return
 }
 }
 return
@@ -1455,7 +1394,6 @@ return
 if(_1.TVariable) {
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
-return
 }
 }
 }
@@ -1491,12 +1429,10 @@ const e_ = (((_1) => {
 if(_1.ECall) {
 const e_ = _1;
 return e_
-return
 }
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
-return
 }
 }))(term_);
 const call_ = (((_1) => {
@@ -1504,13 +1440,11 @@ const call_ = (((_1) => {
 if(_1.DynamicCall) {
 const call_ = _1;
 return call_
-return
 }
 }
 {
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferMethodCall")
-return
 }
 }
 }))(e_.target_);
@@ -1538,12 +1472,10 @@ const e_ = (((_1) => {
 if(_1.ECall) {
 const e_ = _1;
 return e_
-return
 }
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
-return
 }
 }))(term_);
 const call_ = (((_1) => {
@@ -1551,13 +1483,11 @@ const call_ = (((_1) => {
 if(_1.DynamicCall) {
 const call_ = _1;
 return call_
-return
 }
 }
 {
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferFunctionCall")
-return
 }
 }
 }))(e_.target_);
@@ -1582,12 +1512,10 @@ const e_ = (((_1) => {
 if(_1.ECall) {
 const e_ = _1;
 return e_
-return
 }
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
-return
 }
 }))(term_);
 const call_ = (((_1) => {
@@ -1596,7 +1524,6 @@ if(_1.DynamicCall) {
 const call_ = _1;
 if((!call_.tailCall_)) {
 return call_
-return
 }
 }
 }
@@ -1609,7 +1536,6 @@ return
 {
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferLambdaCall")
-return
 }
 }
 }))(e_.target_);
@@ -1631,7 +1557,6 @@ const _1 = argument_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, argument_.value_))
-return
 }
 }
 return
@@ -1659,12 +1584,10 @@ const e_ = (((_1) => {
 if(_1.ECall) {
 const e_ = _1;
 return e_
-return
 }
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
-return
 }
 }))(term_);
 const target_ = ff_compiler_Syntax.StaticCall(operator_, false, false);
@@ -1814,7 +1737,6 @@ const name_ = _1.name_;
 if(_1.generics_.length === 0) {
 if((name_ === ff_compiler_Inference.core_("Float"))) {
 return ff_core_Option.Some("Float")
-return
 }
 }
 }
@@ -1825,7 +1747,6 @@ const name_ = _1.name_;
 if(_1.generics_.length === 0) {
 if((name_ === ff_compiler_Inference.core_("Int"))) {
 return ff_core_Option.Some("Int")
-return
 }
 }
 }
@@ -1836,14 +1757,12 @@ const name_ = _1.name_;
 if(_1.generics_.length === 0) {
 if(((operator_ === "+") && (name_ === ff_compiler_Inference.core_("String")))) {
 return ff_core_Option.Some("String")
-return
 }
 }
 }
 }
 {
 return ff_core_Option.None()
-return
 }
 }
 });
@@ -1969,12 +1888,10 @@ return
 {
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
-return
 }
 }
 {
 return ff_compiler_Inference.fail_(e_.at_, ("Unknown operator: " + operator_))
-return
 }
 }
 }
@@ -2054,7 +1971,6 @@ ff_core_Array.Array_delete(remainingArguments_, _w1, 1)
 }));
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, e_);
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(p_.name_), e2_)
-return
 }
 })), (() => {
 return defaultArgument_()
@@ -2087,7 +2003,6 @@ const _1 = a_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, a_.at_), a_.value_))
-return
 }
 }
 }))]
@@ -2150,7 +2065,6 @@ const _1 = p_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, p_.valueType_), _c.default_)
-return
 }
 }
 }));
@@ -2225,7 +2139,6 @@ const _1 = definition_;
 {
 const _c = _1;
 return ff_compiler_Syntax.DTrait(_c.at_, _c.name_, _c.generics_, _c.constraints_, _c.generatorParameters_, _c.methods_, _c.methodDefaults_, _c.methodGenerators_)
-return
 }
 }
 }
@@ -2273,7 +2186,6 @@ const _1 = p_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, p_.valueType_), _c.default_)
-return
 }
 }
 }));
@@ -2314,7 +2226,6 @@ const _1 = definition_;
 {
 const _c = _1;
 return ff_compiler_Syntax.DLet(_c.at_, _c.name_, _c.variableType_, value_)
-return
 }
 }
 }
@@ -2336,7 +2247,6 @@ const _1 = case_;
 {
 const _c = _1;
 return ff_compiler_Syntax.MatchCase(_c.at_, [ff_compiler_Syntax.PVariable(method_.at_, ff_core_Option.None()), ...case_.patterns_], _c.guards_, _c.body_)
-return
 }
 }
 })))
@@ -2356,7 +2266,6 @@ const _1 = definition_;
 {
 const _c = _1;
 return ff_compiler_Syntax.DExtend(_c.at_, _c.name_, _c.generics_, _c.constraints_, _c.type_, functions_)
-return
 }
 }
 }
@@ -2411,22 +2320,19 @@ if(_1.TConstructor) {
 const n_ = _1.name_;
 if(_1.generics_.length === 0) {
 return (n_ === unitName_)
+}
+}
+}
+{
+return false
+}
+}
 return
 }
 }
 }
 {
 return false
-return
-}
-}
-return
-}
-}
-}
-{
-return false
-return
 }
 }))(ff_compiler_Unification.Unification_substitute(self_.unification_, expected_));
 const cases_ = ((!returnsUnit_)
@@ -2437,7 +2343,6 @@ const _1 = c_;
 {
 const _c = _1;
 return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.guards_, ff_compiler_Syntax.ESequential(c_.at_, c_.body_, ff_compiler_Syntax.EVariant(c_.at_, unitName_, [], ff_core_Option.None())))
-return
 }
 }
 })));
@@ -2475,7 +2380,6 @@ const at_ = _2.first_;
 const type_ = _2.second_;
 const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing", []);
 return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(at_, name_, false, [], [], [], type_, noEffect_))
-return
 }
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 {
@@ -2483,7 +2387,6 @@ const _1 = environment_;
 {
 const _c = _1;
 return ff_compiler_Environment.Environment(_c.modulePrefix_, ff_core_Map.Map_addAll(environment1_.symbols_, symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.imports_, _c.effect_, _c.selfVariable_)
-return
 }
 }
 return
@@ -2500,7 +2403,6 @@ const at_ = _2.first_;
 const type_ = _2.second_;
 const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing", []);
 return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(at_, name_, false, [], [], [], type_, noEffect_))
-return
 }
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 ff_core_Array.Array_push(guards_, (((_c) => {
@@ -2511,7 +2413,6 @@ const _1 = environment2_;
 {
 const _c = _1;
 return ff_compiler_Environment.Environment(_c.modulePrefix_, ff_core_Map.Map_addAll(environment2_.symbols_, symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.imports_, _c.effect_, _c.selfVariable_)
-return
 }
 }
 }));
@@ -2520,7 +2421,6 @@ const _1 = case_;
 {
 const _c = _1;
 return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, ff_core_Array.Array_drain(guards_), ff_compiler_Inference.Inference_inferTerm(self_, environment3_, returnType_, case_.body_))
-return
 }
 }
 }
@@ -2533,19 +2433,16 @@ if(_1.PVariantAs) {
 const at_ = _1.at_;
 const variableAt_ = _1.variableAt_;
 return ((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, at_) || ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, variableAt_)) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, variableAt_))
-return
 }
 }
 {
 if(_1.PAlias) {
 const at_ = _1.at_;
 return (ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, at_))
-return
 }
 }
 {
 return ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, pattern_.at_)
-return
 }
 }))(pattern_)) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferPatternHook(self_.unification_, environment_, expected_, pattern_))
@@ -2560,19 +2457,16 @@ const _1 = pattern_;
 {
 if(_1.PString) {
 return literal_("String")
-return
 }
 }
 {
 if(_1.PInt) {
 return literal_("Int")
-return
 }
 }
 {
 if(_1.PChar) {
 return literal_("Char")
-return
 }
 }
 {
@@ -2580,7 +2474,6 @@ if(_1.PVariable) {
 const at_ = _1.at_;
 if(_1.name_.None) {
 return ff_core_Map.empty_()
-return
 }
 }
 }
@@ -2590,7 +2483,6 @@ const at_ = _1.at_;
 if(_1.name_.Some) {
 const name_ = _1.name_.value_;
 return ff_core_List.List_toMap([ff_core_Pair.Pair(name_, ff_core_Pair.Pair(at_, expected_))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
-return
 }
 }
 }
@@ -2600,7 +2492,6 @@ const at_ = _1.at_;
 const pattern_ = _1.pattern_;
 const variable_ = _1.variable_;
 return ff_core_Map.Map_add(ff_compiler_Inference.Inference_inferPattern(self_, environment_, expected_, pattern_), variable_, ff_core_Pair.Pair(at_, expected_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
-return
 }
 }
 {
@@ -2639,7 +2530,6 @@ const itemType_ = ff_compiler_Unification.Unification_freshUnificationVariable(s
 const listType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("List"), [itemType_]);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, listType_);
 return ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
-return
 }
 }
 }
@@ -2657,7 +2547,6 @@ ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, li
 const headVariables_ = ff_compiler_Inference.Inference_inferPattern(self_, environment_, itemType_, head_);
 const tailVariables_ = ff_compiler_Inference.Inference_inferPattern(self_, environment_, listType_, tail_);
 return ff_core_Map.Map_addAll(headVariables_, tailVariables_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
-return
 }
 }
 }
@@ -2679,7 +2568,6 @@ return ff_core_List.List_foldLeft(ff_core_List.List_map(ff_core_List.List_zip(pa
 const pattern_ = _1.first_;
 const parameter_ = _1.second_;
 return ff_compiler_Inference.Inference_inferPattern(self_, environment_, parameter_.valueType_, pattern_)
-return
 }
 })), ff_core_Map.empty_(), ((_w1, _w2) => {
 return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
@@ -2707,25 +2595,21 @@ const _1 = term_;
 {
 if(_1.EString) {
 return literal_("String")
-return
 }
 }
 {
 if(_1.EChar) {
 return literal_("Char")
-return
 }
 }
 {
 if(_1.EInt) {
 return literal_("Int")
-return
 }
 }
 {
 if(_1.EFloat) {
 return literal_("Float")
-return
 }
 }
 {
@@ -2780,7 +2664,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, record_, _c.field_)
-return
 }
 }
 })), (() => {
@@ -2812,7 +2695,6 @@ return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, _c.generics_, 
 }))(instantiated_.scheme_.signature_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, recordType_, ff_core_List.List_grab(instantiated_.scheme_.signature_.parameters_, 0).valueType_);
 return ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, signature_, term_)
-return
 }
 }
 }
@@ -2825,7 +2707,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EField(_c.at_, instantiated_.scheme_.isNewtype_, record_, _c.field_)
-return
 }
 }
 return
@@ -2845,7 +2726,6 @@ return
 if(_1.TVariable) {
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
-return
 }
 }
 }
@@ -2918,7 +2798,6 @@ const _1 = case_;
 {
 const _c = _1;
 return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.guards_, ff_compiler_Syntax.ESequential(case_.at_, case_.body_, e_))
-return
 }
 }
 }));
@@ -2932,13 +2811,11 @@ if(_1.name_ === "ff:core/Unit.Unit") {
 const unitType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), []);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, unitType_);
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, newPipe_)
-return
 }
 }
 }
 {
 return ff_compiler_Syntax.ESequential(at_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, newPipe_), ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, after_))
-return
 }
 }
 return
@@ -2947,7 +2824,6 @@ return
 }
 {
 return ff_compiler_Syntax.ESequential(at_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, before_), ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, after_))
-return
 }
 }
 return
@@ -2966,7 +2842,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, _c.valueType_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, e_.valueType_, e_.value_), ff_compiler_Inference.Inference_inferTerm(self_, environment2_, expected_, e_.body_))
-return
 }
 }
 return
@@ -3025,7 +2900,6 @@ break
 } while(false);
 const lambda_ = ff_compiler_Inference.Inference_inferLambda(self_, environment_, expected_, l_);
 return ff_compiler_Syntax.ELambda(at_, lambda_)
-return
 }
 }
 {
@@ -3107,7 +2981,6 @@ const _1 = f_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Argument(_c.at_, ff_core_Option.Some(f_.name_), _c.value_)
-return
 }
 }
 }));
@@ -3141,7 +3014,6 @@ return (_w1.name_ === name_)
 const at_ = _1.at_;
 const value_ = _1.value_;
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(name_), value_)
-return
 }
 })), (() => {
 const at_ = (((_c) => {
@@ -3154,7 +3026,6 @@ const body_ = ff_compiler_Syntax.EVariant(e_.at_, e_.name_, [], ff_core_Option.S
 const effect_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const e1_ = ff_compiler_Syntax.EPipe(e_.at_, e_.record_, effect_, ff_compiler_Syntax.ELambda(e_.at_, ff_compiler_Syntax.Lambda(e_.at_, effect_, [ff_compiler_Syntax.MatchCase(e_.at_, [ff_compiler_Syntax.PVariable(e_.at_, ff_core_Option.Some("_c"))], [], body_)])));
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, e1_)
-return
 }
 }
 {
@@ -3170,7 +3041,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EPipe(_c.at_, value_, _c.effect_, function_)
-return
 }
 }
 return
@@ -3183,12 +3053,10 @@ if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (((_1) => {
 {
 if(_1.StaticCall) {
 return true
-return
 }
 }
 {
 return false
-return
 }
 }))(e_.target_))) {
 return term_
@@ -3198,13 +3066,11 @@ const call_ = (((_1) => {
 if(_1.DynamicCall) {
 const call_ = _1;
 return call_
-return
 }
 }
 {
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in the Inference phase")
-return
 }
 }
 }))(e_.target_);
@@ -3276,7 +3142,6 @@ if(_1.Some) {
 const instantiated_ = _1.value_;
 if((!instantiated_.scheme_.isVariable_)) {
 return ff_compiler_Inference.Inference_inferMethodCall(self_, environment_, expected_, instantiated_.scheme_.signature_, instantiated_.typeArguments_, e2_, record_, recordType_, methodName_)
-return
 }
 }
 }
@@ -3284,7 +3149,6 @@ return
 if(_1.Some) {
 const instantiated_ = _1.value_;
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, e2_)
-return
 }
 }
 {
@@ -3301,7 +3165,6 @@ return
 if(_1.TVariable) {
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, e2_)
-return
 }
 }
 }
@@ -3318,7 +3181,6 @@ return
 }
 {
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, term_)
-return
 }
 }
 }
@@ -3347,7 +3209,6 @@ const _1 = field_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, field_.value_))
-return
 }
 }
 return
@@ -3358,7 +3219,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.ERecord(_c.at_, newFields_)
-return
 }
 }
 return
@@ -3381,7 +3241,6 @@ return ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environmen
 }));
 const newBody_ = ff_compiler_Inference.Inference_inferTerm(self_, environment2_, expected_, body_);
 return ff_compiler_Syntax.EFunctions(at_, newFunctions_, newBody_)
-return
 }
 }
 {
@@ -3395,7 +3254,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, value_)
-return
 }
 }
 } else {
@@ -3443,7 +3301,6 @@ const _1 = e_;
 {
 const _c = _1;
 return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, record_, _c.field_, value_)
-return
 }
 }
 return
@@ -3471,7 +3328,6 @@ return
 if(_1.TVariable) {
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
-return
 }
 }
 }
@@ -3507,12 +3363,10 @@ const e_ = (((_1) => {
 if(_1.ECall) {
 const e_ = _1;
 return e_
-return
 }
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
-return
 }
 }))(term_);
 const call_ = (((_1) => {
@@ -3520,13 +3374,11 @@ const call_ = (((_1) => {
 if(_1.DynamicCall) {
 const call_ = _1;
 return call_
-return
 }
 }
 {
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferMethodCall")
-return
 }
 }
 }))(e_.target_);
@@ -3554,12 +3406,10 @@ const e_ = (((_1) => {
 if(_1.ECall) {
 const e_ = _1;
 return e_
-return
 }
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
-return
 }
 }))(term_);
 const call_ = (((_1) => {
@@ -3567,13 +3417,11 @@ const call_ = (((_1) => {
 if(_1.DynamicCall) {
 const call_ = _1;
 return call_
-return
 }
 }
 {
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferFunctionCall")
-return
 }
 }
 }))(e_.target_);
@@ -3598,12 +3446,10 @@ const e_ = (((_1) => {
 if(_1.ECall) {
 const e_ = _1;
 return e_
-return
 }
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
-return
 }
 }))(term_);
 const call_ = (((_1) => {
@@ -3612,7 +3458,6 @@ if(_1.DynamicCall) {
 const call_ = _1;
 if((!call_.tailCall_)) {
 return call_
-return
 }
 }
 }
@@ -3625,7 +3470,6 @@ return
 {
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferLambdaCall")
-return
 }
 }
 }))(e_.target_);
@@ -3647,7 +3491,6 @@ const _1 = argument_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, argument_.value_))
-return
 }
 }
 return
@@ -3675,12 +3518,10 @@ const e_ = (((_1) => {
 if(_1.ECall) {
 const e_ = _1;
 return e_
-return
 }
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
-return
 }
 }))(term_);
 const target_ = ff_compiler_Syntax.StaticCall(operator_, false, false);
@@ -3830,7 +3671,6 @@ const name_ = _1.name_;
 if(_1.generics_.length === 0) {
 if((name_ === ff_compiler_Inference.core_("Float"))) {
 return ff_core_Option.Some("Float")
-return
 }
 }
 }
@@ -3841,7 +3681,6 @@ const name_ = _1.name_;
 if(_1.generics_.length === 0) {
 if((name_ === ff_compiler_Inference.core_("Int"))) {
 return ff_core_Option.Some("Int")
-return
 }
 }
 }
@@ -3852,14 +3691,12 @@ const name_ = _1.name_;
 if(_1.generics_.length === 0) {
 if(((operator_ === "+") && (name_ === ff_compiler_Inference.core_("String")))) {
 return ff_core_Option.Some("String")
-return
 }
 }
 }
 }
 {
 return ff_core_Option.None()
-return
 }
 }
 });
@@ -3985,12 +3822,10 @@ return
 {
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
-return
 }
 }
 {
 return ff_compiler_Inference.fail_(e_.at_, ("Unknown operator: " + operator_))
-return
 }
 }
 }
@@ -4070,7 +3905,6 @@ ff_core_Array.Array_delete(remainingArguments_, _w1, 1)
 }));
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, e_);
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(p_.name_), e2_)
-return
 }
 })), (() => {
 return defaultArgument_()
@@ -4103,7 +3937,6 @@ const _1 = a_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, a_.at_), a_.value_))
-return
 }
 }
 }))]
@@ -4166,7 +3999,6 @@ const _1 = p_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, p_.valueType_), _c.default_)
-return
 }
 }
 }));

@@ -200,7 +200,6 @@ const _1 = body_();
 if(_1.Some) {
 const value_ = _1.value_;
 return value_
-return
 }
 }
 {
@@ -272,7 +271,6 @@ const _1 = (await body_($task));
 if(_1.Some) {
 const value_ = _1.value_;
 return value_
-return
 }
 }
 {

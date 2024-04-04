@@ -182,14 +182,12 @@ const _1 = ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K);
 {
 if(_1.None) {
 return ff_core_Map.Map_add(self_, key_, default_(), ff_core_Ordering_Order$K)
-return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
 return ff_core_Map.Map_add(self_, key_, update_(v_), ff_core_Ordering_Order$K)
-return
 }
 }
 }
@@ -285,14 +283,12 @@ const _1 = ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K);
 {
 if(_1.None) {
 return ff_core_Map.Map_add(self_, key_, (await default_($task)), ff_core_Ordering_Order$K)
-return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
 return ff_core_Map.Map_add(self_, key_, (await update_(v_, $task)), ff_core_Ordering_Order$K)
-return
 }
 }
 }
@@ -332,7 +328,6 @@ const _1 = ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K);
 {
 if(_1.None) {
 return ff_core_Map.Map_add(self_, key_, ff_core_List.List_toArray([value_]), ff_core_Ordering_Order$K)
-return
 }
 }
 {
@@ -340,7 +335,6 @@ if(_1.Some) {
 const array_ = _1.value_;
 ff_core_Array.Array_push(array_, value_);
 return self_
-return
 }
 }
 }
@@ -352,7 +346,6 @@ const _1 = ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K);
 {
 if(_1.None) {
 return ff_core_Map.Map_add(self_, key_, ff_core_List.List_toArray([value_]), ff_core_Ordering_Order$K)
-return
 }
 }
 {
@@ -360,7 +353,6 @@ if(_1.Some) {
 const array_ = _1.value_;
 ff_core_Array.Array_push(array_, value_);
 return self_
-return
 }
 }
 }

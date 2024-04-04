@@ -112,13 +112,11 @@ const _1 = self_;
 {
 if(!_1) {
 return 0
-return
 }
 }
 {
 if(_1) {
 return 1
-return
 }
 }
 }
@@ -130,13 +128,11 @@ const _1 = self_;
 {
 if(!_1) {
 return 0
-return
 }
 }
 {
 if(_1) {
 return 1
-return
 }
 }
 }

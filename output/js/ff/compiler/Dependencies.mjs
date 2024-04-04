@@ -225,7 +225,6 @@ const _1 = info_;
 {
 const _c = _1;
 return ff_compiler_Syntax.PackageInfo(_c.package_, [coreDependency_, ...info_.dependencies_], _c.includes_)
-return
 }
 }
 }
@@ -324,7 +323,6 @@ const _1 = info_;
 {
 const _c = _1;
 return ff_compiler_Syntax.PackageInfo(_c.package_, [coreDependency_, ...info_.dependencies_], _c.includes_)
-return
 }
 }
 }

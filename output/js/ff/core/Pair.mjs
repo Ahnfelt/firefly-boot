@@ -107,7 +107,6 @@ const _1 = self_;
 {
 const _c = _1;
 return ff_core_Pair.Pair(body_(self_.first_), _c.second_)
-return
 }
 }
 }
@@ -118,7 +117,6 @@ const _1 = self_;
 {
 const _c = _1;
 return ff_core_Pair.Pair(_c.first_, body_(self_.second_))
-return
 }
 }
 }
@@ -133,7 +131,6 @@ const _1 = self_;
 {
 const _c = _1;
 return ff_core_Pair.Pair((await body_(self_.first_, $task)), _c.second_)
-return
 }
 }
 }
@@ -144,7 +141,6 @@ const _1 = self_;
 {
 const _c = _1;
 return ff_core_Pair.Pair(_c.first_, (await body_(self_.second_, $task)))
-return
 }
 }
 }
@@ -159,7 +155,6 @@ const _1 = self_;
 {
 const _c = _1;
 return ff_core_Pair.Pair(body_(self_.first_), body_(self_.second_))
-return
 }
 }
 }
@@ -178,7 +173,6 @@ const _1 = self_;
 {
 const _c = _1;
 return ff_core_Pair.Pair((await body_(self_.first_, $task)), (await body_(self_.second_, $task)))
-return
 }
 }
 }
@@ -222,11 +216,9 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 {
 return (ff_core_Equal_Equal$A.equals_(x_.first_, y_.first_) && ff_core_Equal_Equal$B.equals_(x_.second_, y_.second_))
-return
 }
 },
 async equals_$(x_, y_, $task) {
@@ -234,11 +226,9 @@ const x_a = x_;
 const y_a = y_;
 if((x_ === y_)) {
 return true
-return
 }
 {
 return (ff_core_Equal_Equal$A.equals_(x_.first_, y_.first_) && ff_core_Equal_Equal$B.equals_(x_.second_, y_.second_))
-return
 }
 }
 }}
@@ -265,7 +255,6 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
 return ff_core_Pair.Pair(ff_core_Serializable_Serializable$A.deserializeUsing_(serialization_), ff_core_Serializable_Serializable$B.deserializeUsing_(serialization_))
-return
 }
 }
 {
@@ -295,7 +284,6 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
 return ff_core_Pair.Pair(ff_core_Serializable_Serializable$A.deserializeUsing_(serialization_), ff_core_Serializable_Serializable$B.deserializeUsing_(serialization_))
-return
 }
 }
 {
