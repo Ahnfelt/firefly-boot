@@ -9,6 +9,7 @@ extend self: Location {
 }
 
 data CompileError(at: Location, message: String)
+data CompileErrors(errors: List[CompileError])
 
 data ModuleWithPackageInfo(
     packageInfo: Option[PackageInfo]

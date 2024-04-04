@@ -209,7 +209,10 @@ return
 }
 if(command_a.CheckCommand) {
 const filePath_ = command_a.filePath_;
-ff_compiler_Builder.check_(system_, fireflyPath_, ff_core_NodeSystem.NodeSystem_path(system_, filePath_), ff_core_Map.empty_(), ff_compiler_LspHook.disabled_(), true)
+const errors_ = ff_compiler_Builder.check_(system_, fireflyPath_, ff_core_NodeSystem.NodeSystem_path(system_, filePath_), ff_core_Map.empty_(), ff_compiler_LspHook.disabled_(), true);
+if((!ff_core_List.List_isEmpty(errors_))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileErrors(errors_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)})
+}
 return
 }
 if(command_a.BootstrapCommand) {
@@ -218,13 +221,12 @@ ff_compiler_Builder.build_(system_, ff_compiler_JsEmitter.EmitNode(), ff_compile
 return
 }
 }
-ff_core_Try.Try_grab(ff_core_Try.Try_catch(ff_core_Try.Try_catch(ff_core_Core.try_((() => {
+ff_core_Try.Try_grab(ff_core_Try.Try_catch(ff_core_Try.Try_catch(ff_core_Try.Try_catch(ff_core_Core.try_((() => {
 const command_ = ff_compiler_Main.parseCommandLine_(ff_core_NodeSystem.NodeSystem_arguments(system_));
 return runCommand_(command_)
 })), ((_1, _2) => {
 {
 const message_ = _1.problem_;
-const error_ = _2;
 ff_core_Log.debug_(message_)
 return
 }
@@ -232,12 +234,24 @@ return
 {
 const at_ = _1.at_;
 const message_ = _1.message_;
-const error_ = _2;
 ff_core_Log.debug_(message_);
 ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_))
 return
 }
-}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError))
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
+{
+const errors_ = _1.errors_;
+ff_core_List.List_map(errors_, ((_1) => {
+{
+const at_ = _1.at_;
+const message_ = _1.message_;
+ff_core_Log.debug_(message_);
+return ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_))
+}
+}))
+return
+}
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors))
 }
 
 export function parseCommandLine_(arguments_) {
@@ -318,16 +332,13 @@ const checkArguments_ = arguments_a.slice(1);
 const _1 = checkArguments_;
 if(_1.length === 1) {
 const fileName_ = _1[0];
-const _guard1 = ff_core_String.String_removeLast(fileName_, ".ff");
-if(_guard1.Some) {
 return ff_compiler_Main.CheckCommand(fileName_)
-}
 }
 if(_1.length >= 2) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to check." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 }
-{
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as the argument to build." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
+if(_1.length === 0) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) or directory as the argument to check." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 }
 }
 return
@@ -442,7 +453,10 @@ return
 }
 if(command_a.CheckCommand) {
 const filePath_ = command_a.filePath_;
-(await ff_compiler_Builder.check_$(system_, fireflyPath_, (await ff_core_NodeSystem.NodeSystem_path$(system_, filePath_, $task)), ff_core_Map.empty_(), ff_compiler_LspHook.disabled_(), true, $task))
+const errors_ = (await ff_compiler_Builder.check_$(system_, fireflyPath_, (await ff_core_NodeSystem.NodeSystem_path$(system_, filePath_, $task)), ff_core_Map.empty_(), ff_compiler_LspHook.disabled_(), true, $task));
+if((!ff_core_List.List_isEmpty(errors_))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileErrors(errors_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)})
+}
 return
 }
 if(command_a.BootstrapCommand) {
@@ -451,13 +465,12 @@ const workingDirectory_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, ".
 return
 }
 }
-ff_core_Try.Try_grab(ff_core_Try.Try_catch(ff_core_Try.Try_catch((await ff_core_Core.try_$((async ($task) => {
+ff_core_Try.Try_grab(ff_core_Try.Try_catch(ff_core_Try.Try_catch(ff_core_Try.Try_catch((await ff_core_Core.try_$((async ($task) => {
 const command_ = ff_compiler_Main.parseCommandLine_((await ff_core_NodeSystem.NodeSystem_arguments$(system_, $task)));
 return (await runCommand_$(command_, $task))
 }), $task)), ((_1, _2) => {
 {
 const message_ = _1.problem_;
-const error_ = _2;
 ff_core_Log.debug_(message_)
 return
 }
@@ -465,12 +478,24 @@ return
 {
 const at_ = _1.at_;
 const message_ = _1.message_;
-const error_ = _2;
 ff_core_Log.debug_(message_);
 ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_))
 return
 }
-}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError))
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
+{
+const errors_ = _1.errors_;
+ff_core_List.List_map(errors_, ((_1) => {
+{
+const at_ = _1.at_;
+const message_ = _1.message_;
+ff_core_Log.debug_(message_);
+return ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_))
+}
+}))
+return
+}
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors))
 }
 
 export async function parseCommandLine_$(arguments_, $task) {
@@ -551,16 +576,13 @@ const checkArguments_ = arguments_a.slice(1);
 const _1 = checkArguments_;
 if(_1.length === 1) {
 const fileName_ = _1[0];
-const _guard1 = ff_core_String.String_removeLast(fileName_, ".ff");
-if(_guard1.Some) {
 return ff_compiler_Main.CheckCommand(fileName_)
-}
 }
 if(_1.length >= 2) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to check." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 }
-{
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as the argument to build." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
+if(_1.length === 0) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) or directory as the argument to check." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 }
 }
 return

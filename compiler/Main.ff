@@ -83,7 +83,8 @@ main(system: NodeSystem): Unit {
 
         | CheckCommand(filePath) => 
             let errors = Builder.check(system, fireflyPath, system.path(filePath), Map.empty(), LspHook.disabled(), True)
-            errors.first().map(throw)
+            if(!errors.isEmpty()) {throw(CompileErrors(errors))}
+
         | BootstrapCommand =>
             let workingDirectory = system.path(".")
             Builder.build(
@@ -110,11 +111,16 @@ main(system: NodeSystem): Unit {
     try {
         let command = parseCommandLine(system.arguments())
         runCommand(command)
-    } catch {| CommandLineError(message), error =>
+    } catch {| CommandLineError(message), _ =>
         Log.debug(message)
-    } catch {| CompileError(at, message), error =>
+    } catch {| CompileError(at, message), _ =>
         Log.debug(message)
         Log.debug(" at " + at.file.replace("./", "") + ":" + at.line + ":" + at.column)
+    } catch {| CompileErrors(errors), _ =>
+        errors.map {| CompileError(at, message) => 
+            Log.debug(message)
+            Log.debug(" at " + at.file.replace("./", "") + ":" + at.line + ":" + at.column)
+        }
     } grab()
 }
 
@@ -164,13 +170,13 @@ parseCommandLine(arguments: List[String]): MainCommand {
         }
     | ["check", ...checkArguments] =>
         checkArguments.{
-            | [fileName] {fileName.removeLast(".ff") | Some(_)} =>
+            | [fileName] =>
                 CheckCommand(fileName)
             | [_, _, ...] => throw(CommandLineError(
                 "You must only specify a single argument to check."  + usageString
             ))
-            | _ => throw(CommandLineError(
-                "You must specify a Firefly file (.ff) as the argument to check."  + usageString
+            | [] => throw(CommandLineError(
+                "You must specify a Firefly file (.ff) or directory as the argument to check."  + usageString
             ))
         }
     | ["bootstrap", _] =>

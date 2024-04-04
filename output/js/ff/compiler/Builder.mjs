@@ -178,6 +178,7 @@ if(!_1) {
 return [ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab(ff_core_Path.Path_parent(path_)), ff_core_Option.None(), [path_])]
 }
 }))(ff_core_Path.Path_isDirectory(path_));
+const errors_ = ff_core_Array.make_();
 ff_core_List.List_each(ff_core_List.List_filter(packages_, ((_w1) => {
 return (!ff_core_List.List_isEmpty(_w1.files_))
 })), ((package_) => {
@@ -192,13 +193,25 @@ return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.pac
 const compiler_ = ff_compiler_Compiler.make_(ff_compiler_JsEmitter.EmitBuild(), ff_core_NodeSystem.NodeSystem_mainTask(system_), ff_core_Option.None(), ff_core_Path.Path_slash(ff_core_Path.Path_slash(package_.root_, ".firefly"), "temporary"), fixedResolvedDependencies_, virtualFiles_, lspHook_);
 ff_core_List.List_each(package_.files_, ((file_) => {
 const localFile_ = ff_core_Path.Path_base(file_);
+try {
 if(infer_) {
 ff_compiler_Compiler.Compiler_infer(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localFile_, ff_core_String.String_size(".ff")))
 } else {
 ff_compiler_Compiler.Compiler_resolve(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localFile_, ff_core_String.String_size(".ff")))
 }
+} catch(_error) {
+if(!_error.ffException) throw _error
+const _exception = ff_core_Any.fromAny_(_error.ffException, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)
+if(!_exception.Some) throw _error
+{
+const c_ = _exception.value_;
+const error_ = _error;
+ff_core_Array.Array_push(errors_, c_)
+}
+}
 }))
-}))
+}));
+return ff_core_Array.Array_drain(errors_)
 }
 
 export function findPackageFiles_(path_) {
@@ -345,6 +358,7 @@ if(!_1) {
 return [ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(path_, $task))), ff_core_Option.None(), [path_])]
 }
 }))((await ff_core_Path.Path_isDirectory$(path_, $task)), $task));
+const errors_ = ff_core_Array.make_();
 (await ff_core_List.List_each$(ff_core_List.List_filter(packages_, ((_w1) => {
 return (!ff_core_List.List_isEmpty(_w1.files_))
 })), (async (package_, $task) => {
@@ -359,13 +373,25 @@ return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.pac
 const compiler_ = (await ff_compiler_Compiler.make_$(ff_compiler_JsEmitter.EmitBuild(), (await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), ff_core_Option.None(), (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(package_.root_, ".firefly", $task)), "temporary", $task)), fixedResolvedDependencies_, virtualFiles_, lspHook_, $task));
 (await ff_core_List.List_each$(package_.files_, (async (file_, $task) => {
 const localFile_ = (await ff_core_Path.Path_base$(file_, $task));
+try {
 if(infer_) {
 (await ff_compiler_Compiler.Compiler_infer$(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localFile_, ff_core_String.String_size(".ff")), $task))
 } else {
 (await ff_compiler_Compiler.Compiler_resolve$(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localFile_, ff_core_String.String_size(".ff")), $task))
 }
+} catch(_error) {
+if(!_error.ffException) throw _error
+const _exception = ff_core_Any.fromAny_(_error.ffException, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)
+if(!_exception.Some) throw _error
+{
+const c_ = _exception.value_;
+const error_ = _error;
+ff_core_Array.Array_push(errors_, c_)
+}
+}
 }), $task))
-}), $task))
+}), $task));
+return ff_core_Array.Array_drain(errors_)
 }
 
 export async function findPackageFiles_$(path_, $task) {
