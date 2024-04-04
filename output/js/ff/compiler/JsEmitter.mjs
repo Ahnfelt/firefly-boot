@@ -1741,7 +1741,6 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ === "ff:core/Core.try") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a try without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -1754,7 +1753,6 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ === "ff:core/Try.Try_map") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a map without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -1767,7 +1765,6 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ === "ff:core/Try.Try_flatMap") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a flatMap without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -1780,7 +1777,6 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ === "ff:core/Try.Try_flatten") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a flatten without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -1793,7 +1789,6 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ === "ff:core/Try.Try_catch") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a catch without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -1806,7 +1801,6 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ === "ff:core/Try.Try_catchAny") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a catchAny without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -1819,7 +1813,6 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ === "ff:core/Try.Try_finally") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a finally without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -2188,9 +2181,10 @@ return ((((("const " + guardName_) + " = ") + ff_compiler_JsEmitter.JsEmitter_em
 if(_1.first_.length === 0) {
 if(_1.second_.length === 0) {
 const statementsCode_ = ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, matchCase_.body_, last_, async_);
-const returns_ = ff_core_String.String_startsWith(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(statementsCode_), ((_w1) => {
+const lastLine_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(statementsCode_), ((_w1) => {
 return (_w1 !== 10)
-}))), "return ", 0);
+})));
+const returns_ = ((((((ff_core_String.String_startsWith(lastLine_, "return ", 0) || ff_core_String.String_startsWith(lastLine_, "break ", 0)) || ff_core_String.String_startsWith(lastLine_, "continue ", 0)) || ff_core_String.String_startsWith(lastLine_, "return;", 0)) || ff_core_String.String_startsWith(lastLine_, "break;", 0)) || ff_core_String.String_startsWith(lastLine_, "continue;", 0)) || ff_core_String.String_startsWith(lastLine_, "throw ", 0));
 return (statementsCode_ + ((jump_ && last_)
 ? ((!returns_)
 ? "\nreturn"
@@ -3724,7 +3718,6 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ === "ff:core/Core.try") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a try without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -3737,7 +3730,6 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ === "ff:core/Try.Try_map") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a map without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -3750,7 +3742,6 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ === "ff:core/Try.Try_flatMap") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a flatMap without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -3763,7 +3754,6 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ === "ff:core/Try.Try_flatten") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a flatten without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -3776,7 +3766,6 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ === "ff:core/Try.Try_catch") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a catch without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -3789,7 +3778,6 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ === "ff:core/Try.Try_catchAny") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a catchAny without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -3802,7 +3790,6 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ === "ff:core/Try.Try_finally") {
 if((!last_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a finally without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -4171,9 +4158,10 @@ return ((((("const " + guardName_) + " = ") + (await ff_compiler_JsEmitter.JsEmi
 if(_1.first_.length === 0) {
 if(_1.second_.length === 0) {
 const statementsCode_ = (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, matchCase_.body_, last_, async_, $task));
-const returns_ = ff_core_String.String_startsWith(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(statementsCode_), ((_w1) => {
+const lastLine_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(statementsCode_), ((_w1) => {
 return (_w1 !== 10)
-}))), "return ", 0);
+})));
+const returns_ = ((((((ff_core_String.String_startsWith(lastLine_, "return ", 0) || ff_core_String.String_startsWith(lastLine_, "break ", 0)) || ff_core_String.String_startsWith(lastLine_, "continue ", 0)) || ff_core_String.String_startsWith(lastLine_, "return;", 0)) || ff_core_String.String_startsWith(lastLine_, "break;", 0)) || ff_core_String.String_startsWith(lastLine_, "continue;", 0)) || ff_core_String.String_startsWith(lastLine_, "throw ", 0));
 return (statementsCode_ + ((jump_ && last_)
 ? ((!returns_)
 ? "\nreturn"
@@ -4744,7 +4732,6 @@ return ff_compiler_JsEmitter.EmitExecutable()
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
 }
 }
 },
@@ -4815,7 +4802,6 @@ return ff_compiler_JsEmitter.EmitExecutable()
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
 }
 }
 }
@@ -4849,7 +4835,6 @@ return ff_compiler_JsEmitter.ProcessedVariantCase(ff_core_Serializable.ff_core_S
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
 }
 }
 },
@@ -4880,7 +4865,6 @@ return ff_compiler_JsEmitter.ProcessedVariantCase(ff_core_Serializable.ff_core_S
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
 }
 }
 }

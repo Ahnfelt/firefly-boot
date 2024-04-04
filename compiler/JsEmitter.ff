@@ -691,7 +691,15 @@ extend self: JsEmitter {
                 self.emitCase([guardName], newCase, jump, last, async)
             | Pair([], []) =>
                 let statementsCode = self.emitStatements(matchCase.body, last, async)
-                let returns = statementsCode.reverse().takeWhile {_ != '\n'}.reverse().startsWith("return ")
+                let lastLine = statementsCode.reverse().takeWhile {_ != '\n'}.reverse()
+                let returns = 
+                    lastLine.startsWith("return ") || 
+                    lastLine.startsWith("break ") ||
+                    lastLine.startsWith("continue ") ||
+                    lastLine.startsWith("return;") || 
+                    lastLine.startsWith("break;") ||
+                    lastLine.startsWith("continue;") ||
+                    lastLine.startsWith("throw ")
                 statementsCode +
                 if(jump && last) {if(!returns) {"\nreturn"} else {""}} elseIf {jump} {"\nbreak"} else {""}
         }

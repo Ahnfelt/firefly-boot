@@ -193,7 +193,6 @@ return
 {
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("No such module: " + import_.file_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -421,7 +420,6 @@ return lambda_
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(signature_.at_, "Internal error: Expected method default to be a lambda"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }))(function2_.body_))
 return
@@ -660,7 +658,6 @@ if(term_a.ECall) {
 const at_ = term_a.at_;
 if(term_a.target_.StaticCall) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Internal error: Static calls not expected in the Resolver phase"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 if(term_a.ERecord) {
@@ -1156,7 +1153,6 @@ return
 {
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("No such module: " + import_.file_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -1384,7 +1380,6 @@ return lambda_
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(signature_.at_, "Internal error: Expected method default to be a lambda"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }))(function2_.body_))
 return
@@ -1623,7 +1618,6 @@ if(term_a.ECall) {
 const at_ = term_a.at_;
 if(term_a.target_.StaticCall) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Internal error: Static calls not expected in the Resolver phase"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 if(term_a.ERecord) {

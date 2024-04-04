@@ -1450,7 +1450,6 @@ return ff_compiler_Syntax.EAssignField(e_.at_, operator_, e_.record_, e_.field_,
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Only variables and fields are assignable"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -1822,7 +1821,6 @@ if(items_a.length >= 1) {
 const p_ = items_a[0].first_;
 if(items_a[0].second_) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(p_.at_, "Invalid pattern: ... is only allowed for the last element in a list"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -3051,7 +3049,6 @@ return ff_compiler_Syntax.EAssignField(e_.at_, operator_, e_.record_, e_.field_,
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Only variables and fields are assignable"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -3423,7 +3420,6 @@ if(items_a.length >= 1) {
 const p_ = items_a[0].first_;
 if(items_a[0].second_) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(p_.at_, "Invalid pattern: ... is only allowed for the last element in a list"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -3739,7 +3735,6 @@ return ff_compiler_Parser.Poly(ff_core_Serializable.ff_core_Serializable_Seriali
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
 }
 }
 },
@@ -3768,7 +3763,6 @@ return ff_compiler_Parser.Poly(ff_core_Serializable.ff_core_Serializable_Seriali
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
 }
 }
 }
@@ -3807,7 +3801,6 @@ return ff_compiler_Parser.ParsedTargets(ff_core_Option.ff_core_Serializable_Seri
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
 }
 }
 },
@@ -3843,7 +3836,6 @@ return ff_compiler_Parser.ParsedTargets(ff_core_Option.ff_core_Serializable_Seri
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
 }
 }
 }

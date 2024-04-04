@@ -918,7 +918,6 @@ return ff_compiler_LspHook.SymbolHook(ff_core_Serializable.ff_core_Serializable_
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
 }
 }
 },
@@ -948,7 +947,6 @@ return ff_compiler_LspHook.SymbolHook(ff_core_Serializable.ff_core_Serializable_
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
 }
 }
 }
@@ -1094,7 +1092,6 @@ return ff_compiler_LspHook.SParameter()
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
 }
 }
 },
@@ -1237,7 +1234,6 @@ return ff_compiler_LspHook.SParameter()
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
 }
 }
 }

@@ -781,7 +781,6 @@ return
 {
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -799,7 +798,6 @@ return term_
 if(_1.TVariable) {
 const index_ = _1.index_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -1069,7 +1067,6 @@ const at_ = _1.at_;
 const name_ = _1.name_;
 const value_ = _1.value_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("Unknown parameter: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }));
 const arguments_ = ff_core_List.List_map(parameterNames_, ((name_) => {
@@ -1168,7 +1165,6 @@ return
 {
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(variableAt_, ("No such function: " + x_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -1220,7 +1216,6 @@ return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expe
 {
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -1238,7 +1233,6 @@ return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expe
 if(_1.TVariable) {
 const index_ = _1.index_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -1345,7 +1339,6 @@ const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 if(ff_core_String.String_startsWith(name_, "Record$", 0)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Can't assign fields of anonymous records: " + e_.field_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -1377,13 +1370,11 @@ return
 if(_1.Some) {
 const instantiated_ = _1.value_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("Can't assign an immutable field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 {
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -1401,7 +1392,6 @@ return term_
 if(_1.TVariable) {
 const index_ = _1.index_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -1530,7 +1520,6 @@ return call_
 {
 if(_1.DynamicCall) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Tailcalls not supported on lambda functions"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 {
@@ -1855,7 +1844,6 @@ return
 if(_1.Some) {
 if(_2.Some) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on these types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -1863,7 +1851,6 @@ return
 if(_1.None) {
 if(_2.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on unknown types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -2715,7 +2702,6 @@ return
 {
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -2733,7 +2719,6 @@ return term_
 if(_1.TVariable) {
 const index_ = _1.index_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -3003,7 +2988,6 @@ const at_ = _1.at_;
 const name_ = _1.name_;
 const value_ = _1.value_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("Unknown parameter: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }));
 const arguments_ = ff_core_List.List_map(parameterNames_, ((name_) => {
@@ -3102,7 +3086,6 @@ return
 {
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(variableAt_, ("No such function: " + x_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -3154,7 +3137,6 @@ return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expe
 {
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -3172,7 +3154,6 @@ return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expe
 if(_1.TVariable) {
 const index_ = _1.index_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -3279,7 +3260,6 @@ const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 if(ff_core_String.String_startsWith(name_, "Record$", 0)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Can't assign fields of anonymous records: " + e_.field_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -3311,13 +3291,11 @@ return
 if(_1.Some) {
 const instantiated_ = _1.value_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("Can't assign an immutable field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 {
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -3335,7 +3313,6 @@ return term_
 if(_1.TVariable) {
 const index_ = _1.index_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -3464,7 +3441,6 @@ return call_
 {
 if(_1.DynamicCall) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Tailcalls not supported on lambda functions"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 {
@@ -3789,7 +3765,6 @@ return
 if(_1.Some) {
 if(_2.Some) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on these types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
@@ -3797,7 +3772,6 @@ return
 if(_1.None) {
 if(_2.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on unknown types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-return
 }
 }
 }
