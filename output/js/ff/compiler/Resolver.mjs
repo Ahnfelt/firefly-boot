@@ -299,7 +299,7 @@ return ff_compiler_Resolver.Resolver(ff_core_Map.Map_addAll(ff_core_Map.Map_addA
 
 export function Resolver_resolveTypeDefinition(self_, definition_) {
 if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, definition_.at_)) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.name_, definition_.at_, definition_.at_), ff_core_Option.None()))
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.name_, definition_.at_, definition_.at_), ff_core_Option.None(), true))
 };
 const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.generics_, ((g_) => {
 return ff_core_Pair.Pair(g_, g_)
@@ -341,7 +341,7 @@ return
 }
 })), ff_core_List.List_map(definition_.variants_, ((v_) => {
 if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, v_.at_)) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(v_.name_, v_.at_, v_.at_), ff_core_Option.None()))
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(v_.name_, v_.at_, v_.at_), ff_core_Option.None(), true))
 };
 {
 const _1 = v_;
@@ -374,7 +374,7 @@ return
 
 export function Resolver_resolveTraitDefinition(self_, definition_) {
 if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, definition_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, definition_.at_))) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.name_, definition_.at_, definition_.at_), ff_core_Option.None()))
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.name_, definition_.at_, definition_.at_), ff_core_Option.None(), true))
 };
 const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.generics_, ((g_) => {
 return ff_core_Pair.Pair(g_, g_)
@@ -421,7 +421,7 @@ const traitDefinedAt_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.tra
 return definition_.at_
 }));
 if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, definition_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, traitDefinedAt_))) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.traitName_, definition_.at_, traitDefinedAt_), ff_core_Option.None()))
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.traitName_, definition_.at_, traitDefinedAt_), ff_core_Option.None(), true))
 };
 const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.generics_, ((g_) => {
 return ff_core_Pair.Pair(g_, g_)
@@ -474,7 +474,7 @@ return
 
 export function Resolver_resolveLetDefinition(self_, definition_, topLevel_) {
 if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, definition_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, definition_.at_))) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.name_, definition_.at_, definition_.at_), ff_core_Option.None()))
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.name_, definition_.at_, definition_.at_), ff_core_Option.None(), topLevel_))
 };
 {
 const _1 = definition_;
@@ -508,7 +508,7 @@ const at_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variableLocatio
 return e_.at_
 }));
 if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, e_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, at_))) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(e_.name_, e_.at_, at_), ff_core_Option.None()))
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(e_.name_, e_.at_, at_), ff_core_Option.None(), true))
 }
 };
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Map.Map_get(self_.variables_, e_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
@@ -698,7 +698,7 @@ return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, e_.na
 }))(self_);
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, e_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, e_.at_))) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(e_.name_, e_.at_, e_.at_), ff_core_Option.None()))
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(e_.name_, e_.at_, e_.at_), ff_core_Option.None(), false))
 }
 };
 {
@@ -846,7 +846,7 @@ return ff_compiler_Syntax.DFunction(definition_.at_, signature_, body_)
 
 export function Resolver_resolveSignature(self_, signature_, topLevel_, isInstanceMethod_) {
 if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, signature_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, signature_.at_))) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSignatureHook(signature_, isInstanceMethod_))
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSignatureHook(signature_, isInstanceMethod_, topLevel_))
 };
 const newSignature_ = (topLevel_
 ? (((_c) => {
@@ -1236,7 +1236,7 @@ return ff_compiler_Resolver.Resolver(ff_core_Map.Map_addAll(ff_core_Map.Map_addA
 
 export async function Resolver_resolveTypeDefinition$(self_, definition_, $task) {
 if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, definition_.at_)) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.name_, definition_.at_, definition_.at_), ff_core_Option.None()))
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.name_, definition_.at_, definition_.at_), ff_core_Option.None(), true))
 };
 const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.generics_, ((g_) => {
 return ff_core_Pair.Pair(g_, g_)
@@ -1278,7 +1278,7 @@ return
 }
 })), ff_core_List.List_map(definition_.variants_, ((v_) => {
 if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, v_.at_)) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(v_.name_, v_.at_, v_.at_), ff_core_Option.None()))
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(v_.name_, v_.at_, v_.at_), ff_core_Option.None(), true))
 };
 {
 const _1 = v_;
@@ -1311,7 +1311,7 @@ return
 
 export async function Resolver_resolveTraitDefinition$(self_, definition_, $task) {
 if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, definition_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, definition_.at_))) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.name_, definition_.at_, definition_.at_), ff_core_Option.None()))
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.name_, definition_.at_, definition_.at_), ff_core_Option.None(), true))
 };
 const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.generics_, ((g_) => {
 return ff_core_Pair.Pair(g_, g_)
@@ -1358,7 +1358,7 @@ const traitDefinedAt_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.tra
 return definition_.at_
 }));
 if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, definition_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, traitDefinedAt_))) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.traitName_, definition_.at_, traitDefinedAt_), ff_core_Option.None()))
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.traitName_, definition_.at_, traitDefinedAt_), ff_core_Option.None(), true))
 };
 const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.generics_, ((g_) => {
 return ff_core_Pair.Pair(g_, g_)
@@ -1411,7 +1411,7 @@ return
 
 export async function Resolver_resolveLetDefinition$(self_, definition_, topLevel_, $task) {
 if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, definition_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, definition_.at_))) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.name_, definition_.at_, definition_.at_), ff_core_Option.None()))
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(definition_.name_, definition_.at_, definition_.at_), ff_core_Option.None(), topLevel_))
 };
 {
 const _1 = definition_;
@@ -1445,7 +1445,7 @@ const at_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variableLocatio
 return e_.at_
 }));
 if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, e_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, at_))) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(e_.name_, e_.at_, at_), ff_core_Option.None()))
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(e_.name_, e_.at_, at_), ff_core_Option.None(), true))
 }
 };
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Map.Map_get(self_.variables_, e_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
@@ -1635,7 +1635,7 @@ return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, e_.na
 }))(self_);
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, e_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, e_.at_))) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(e_.name_, e_.at_, e_.at_), ff_core_Option.None()))
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(e_.name_, e_.at_, e_.at_), ff_core_Option.None(), false))
 }
 };
 {
@@ -1783,7 +1783,7 @@ return ff_compiler_Syntax.DFunction(definition_.at_, signature_, body_)
 
 export async function Resolver_resolveSignature$(self_, signature_, topLevel_, isInstanceMethod_, $task) {
 if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, signature_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, signature_.at_))) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSignatureHook(signature_, isInstanceMethod_))
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSignatureHook(signature_, isInstanceMethod_, topLevel_))
 };
 const newSignature_ = (topLevel_
 ? (((_c) => {

@@ -160,8 +160,8 @@ return {ParseSymbolEnd: true, name_, kind_, selectionStart_, selectionEnd_, star
 export function ParseArgumentHook(callAt_, argumentIndex_, parameterName_) {
 return {ParseArgumentHook: true, callAt_, argumentIndex_, parameterName_};
 }
-export function ResolveSymbolHook(symbol_, annotation_) {
-return {ResolveSymbolHook: true, symbol_, annotation_};
+export function ResolveSymbolHook(symbol_, annotation_, topLevel_) {
+return {ResolveSymbolHook: true, symbol_, annotation_, topLevel_};
 }
 export function ResolveTypeHook(types_, typeGenerics_, symbol_, explicitType_) {
 return {ResolveTypeHook: true, types_, typeGenerics_, symbol_, explicitType_};
@@ -169,8 +169,8 @@ return {ResolveTypeHook: true, types_, typeGenerics_, symbol_, explicitType_};
 export function ResolveConstraintHook(symbol_, constrant_) {
 return {ResolveConstraintHook: true, symbol_, constrant_};
 }
-export function ResolveSignatureHook(signature_, isInstanceMethod_) {
-return {ResolveSignatureHook: true, signature_, isInstanceMethod_};
+export function ResolveSignatureHook(signature_, isInstanceMethod_, topLevel_) {
+return {ResolveSignatureHook: true, signature_, isInstanceMethod_, topLevel_};
 }
 export function ResolveVariantFieldHook(symbol_, type_, commonField_) {
 return {ResolveVariantFieldHook: true, symbol_, type_, commonField_};
