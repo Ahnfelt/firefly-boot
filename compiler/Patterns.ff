@@ -72,7 +72,7 @@ convert(modules: Map[String, Module], cases: List[MatchCase]): List[PatternCaseI
             None
         | PVariant p =>
             let fields = p.patterns.map(convertPattern).pairs().collect {
-                | Pair(i, Some(p)) => Some(Pair("" + i, p))
+                | Pair(i, Some(info)) => Some(Pair("" + i, info))
                 | _ => None
             }
             Some(PatternInfo(unqualifiedName(p.name), otherVariants(p.name), fields))

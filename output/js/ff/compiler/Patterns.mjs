@@ -215,8 +215,8 @@ return convertPattern_(pattern_)
 }))), ((_1) => {
 if(_1.second_.Some) {
 const i_ = _1.first_;
-const p_ = _1.second_.value_;
-return ff_core_Option.Some(ff_core_Pair.Pair(("" + i_), p_))
+const info_ = _1.second_.value_;
+return ff_core_Option.Some(ff_core_Pair.Pair(("" + i_), info_))
 }
 {
 return ff_core_Option.None()
@@ -385,8 +385,8 @@ return convertPattern_(pattern_)
 }))), ((_1) => {
 if(_1.second_.Some) {
 const i_ = _1.first_;
-const p_ = _1.second_.value_;
-return ff_core_Option.Some(ff_core_Pair.Pair(("" + i_), p_))
+const info_ = _1.second_.value_;
+return ff_core_Option.Some(ff_core_Pair.Pair(("" + i_), info_))
 }
 {
 return ff_core_Option.None()

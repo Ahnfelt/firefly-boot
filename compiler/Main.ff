@@ -83,7 +83,7 @@ main(system: NodeSystem): Unit {
 
         | CheckCommand(filePath) => 
             let errors = Builder.check(system, fireflyPath, system.path(filePath), None, Map.empty(), LspHook.disabled(), True)
-            if(!errors.isEmpty()) {throw(CompileErrors(errors))}
+            if(!errors.isEmpty()) {throw(CompileErrors(errors.distinct()))}
 
         | BootstrapCommand =>
             let workingDirectory = system.path(".")

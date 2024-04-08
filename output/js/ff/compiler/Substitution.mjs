@@ -513,8 +513,8 @@ const t_ = type_a;
 const _1 = t_;
 {
 const _c = _1;
-return ff_compiler_Syntax.TConstructor(_c.at_, _c.name_, ff_core_List.List_map(t_.generics_, ((t_) => {
-return ff_compiler_Substitution.Substitution_substituteType(self_, t_)
+return ff_compiler_Syntax.TConstructor(_c.at_, _c.name_, ff_core_List.List_map(t_.generics_, ((g_) => {
+return ff_compiler_Substitution.Substitution_substituteType(self_, g_)
 })))
 return
 }
@@ -953,8 +953,8 @@ const t_ = type_a;
 const _1 = t_;
 {
 const _c = _1;
-return ff_compiler_Syntax.TConstructor(_c.at_, _c.name_, ff_core_List.List_map(t_.generics_, ((t_) => {
-return ff_compiler_Substitution.Substitution_substituteType(self_, t_)
+return ff_compiler_Syntax.TConstructor(_c.at_, _c.name_, ff_core_List.List_map(t_.generics_, ((g_) => {
+return ff_compiler_Substitution.Substitution_substituteType(self_, g_)
 })))
 return
 }

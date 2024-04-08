@@ -204,16 +204,17 @@ return t_.name_
 }
 
 export function firstTypeName_(types_) {
-return (((_1) => {
+{
+const _1 = ff_core_List.List_grabFirst(types_);
 if(_1.TConstructor) {
 const t_ = _1;
-return t_
+return t_.name_
 }
 if(_1.TVariable) {
 const t_ = _1;
 return ff_compiler_JsEmitter.fail_(t_.at_, " is still a unification variable")
 }
-}))(ff_core_List.List_grabFirst(types_)).name_
+}
 }
 
 export function makeDictionaryName_(traitName_, typeName_) {
@@ -347,16 +348,17 @@ return t_.name_
 }
 
 export async function firstTypeName_$(types_, $task) {
-return (((_1) => {
+{
+const _1 = ff_core_List.List_grabFirst(types_);
 if(_1.TConstructor) {
 const t_ = _1;
-return t_
+return t_.name_
 }
 if(_1.TVariable) {
 const t_ = _1;
 return ff_compiler_JsEmitter.fail_(t_.at_, " is still a unification variable")
 }
-}))(ff_core_List.List_grabFirst(types_)).name_
+}
 }
 
 export async function makeDictionaryName_$(traitName_, typeName_, $task) {

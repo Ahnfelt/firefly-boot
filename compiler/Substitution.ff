@@ -154,9 +154,9 @@ extend self: Substitution {
 
     substituteType(type: Type): Type {
         | TVariable(at, i) =>
-            if(self.has(i)) { self.substituteType(self.get(i)) } else { TConstructor(at, core("Nothing"), []) }
+            if(self.has(i)) {self.substituteType(self.get(i))} else {TConstructor(at, core("Nothing"), [])}
         | TConstructor t =>
-            t.TConstructor(generics = t.generics.map { t => self.substituteType(t) })
+            t.TConstructor(generics = t.generics.map {g => self.substituteType(g)})
     }
 
     get(index: Int): Type {

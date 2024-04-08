@@ -994,7 +994,11 @@ return term_
 const call_ = (((_1) => {
 if(_1.DynamicCall) {
 const call_ = _1;
-return call_
+return {
+function_: call_.function_,
+tailCall_: call_.tailCall_
+}
+return
 }
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in the Inference phase")
@@ -1230,19 +1234,14 @@ return newValue_
 }
 
 export function Inference_inferMethodCall(self_, environment_, expected_, signature_, instantiation_, term_, record_, recordType_, name_) {
-const e_ = (((_1) => {
+{
+const _1 = term_;
 if(_1.ECall) {
 const e_ = _1;
-return e_
-}
-{
-return ff_compiler_Inference.fail_(term_.at_, "Call expected")
-}
-}))(term_);
-const call_ = (((_1) => {
+const tailCall_ = (((_1) => {
 if(_1.DynamicCall) {
 const call_ = _1;
-return call_
+return call_.tailCall_
 }
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferMethodCall")
@@ -1258,28 +1257,29 @@ ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, signat
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, ff_compiler_Syntax.StaticCall(name_, call_.tailCall_, false), signature_.effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
+return ff_compiler_Syntax.ECall(_c.at_, ff_compiler_Syntax.StaticCall(name_, tailCall_, false), signature_.effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
 return _w1.second_
 })), [selfArgument_, ...arguments_], _c.dictionaries_)
 return
 }
 }
-}
-
-export function Inference_inferFunctionCall(self_, environment_, expected_, signature_, instanceCall_, instantiation_, term_, name_) {
-const e_ = (((_1) => {
-if(_1.ECall) {
-const e_ = _1;
-return e_
+return
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 }
-}))(term_);
-const call_ = (((_1) => {
+}
+}
+
+export function Inference_inferFunctionCall(self_, environment_, expected_, signature_, instanceCall_, instantiation_, term_, name_) {
+{
+const _1 = term_;
+if(_1.ECall) {
+const e_ = _1;
+const tailCall_ = (((_1) => {
 if(_1.DynamicCall) {
 const call_ = _1;
-return call_
+return call_.tailCall_
 }
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferFunctionCall")
@@ -1292,29 +1292,34 @@ ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, signat
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, ff_compiler_Syntax.StaticCall(name_, call_.tailCall_, instanceCall_), signature_.effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
+return ff_compiler_Syntax.ECall(_c.at_, ff_compiler_Syntax.StaticCall(name_, tailCall_, instanceCall_), signature_.effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
 return _w1.second_
 })), arguments_, _c.dictionaries_)
 return
 }
 }
-}
-
-export function Inference_inferLambdaCall(self_, environment_, expected_, term_) {
-const e_ = (((_1) => {
-if(_1.ECall) {
-const e_ = _1;
-return e_
+return
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 }
-}))(term_);
+}
+}
+
+export function Inference_inferLambdaCall(self_, environment_, expected_, term_) {
+{
+const _1 = term_;
+if(_1.ECall) {
+const e_ = _1;
 const call_ = (((_1) => {
 if(_1.DynamicCall) {
 const call_ = _1;
 if((!call_.tailCall_)) {
-return call_
+return {
+function_: call_.function_,
+tailCall_: call_.tailCall_
+}
+return
 }
 }
 if(_1.DynamicCall) {
@@ -1361,18 +1366,19 @@ return ff_compiler_Syntax.DynamicCall(function_, _c.tailCall_)
 return
 }
 }
-}
-
-export function Inference_inferOperator(self_, environment_, expected_, operator_, term_) {
-const e_ = (((_1) => {
-if(_1.ECall) {
-const e_ = _1;
-return e_
+return
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 }
-}))(term_);
+}
+}
+
+export function Inference_inferOperator(self_, environment_, expected_, operator_, term_) {
+{
+const _1 = term_;
+if(_1.ECall) {
+const e_ = _1;
 const target_ = ff_compiler_Syntax.StaticCall(operator_, false, false);
 {
 const _1 = e_.arguments_;
@@ -1584,6 +1590,12 @@ return term_
 }
 {
 return ff_compiler_Inference.fail_(e_.at_, ("Unknown operator: " + operator_))
+}
+}
+return
+}
+{
+return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 }
 }
 }
@@ -2622,7 +2634,11 @@ return term_
 const call_ = (((_1) => {
 if(_1.DynamicCall) {
 const call_ = _1;
-return call_
+return {
+function_: call_.function_,
+tailCall_: call_.tailCall_
+}
+return
 }
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in the Inference phase")
@@ -2858,19 +2874,14 @@ return newValue_
 }
 
 export async function Inference_inferMethodCall$(self_, environment_, expected_, signature_, instantiation_, term_, record_, recordType_, name_, $task) {
-const e_ = (((_1) => {
+{
+const _1 = term_;
 if(_1.ECall) {
 const e_ = _1;
-return e_
-}
-{
-return ff_compiler_Inference.fail_(term_.at_, "Call expected")
-}
-}))(term_);
-const call_ = (((_1) => {
+const tailCall_ = (((_1) => {
 if(_1.DynamicCall) {
 const call_ = _1;
-return call_
+return call_.tailCall_
 }
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferMethodCall")
@@ -2886,28 +2897,29 @@ ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, signat
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, ff_compiler_Syntax.StaticCall(name_, call_.tailCall_, false), signature_.effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
+return ff_compiler_Syntax.ECall(_c.at_, ff_compiler_Syntax.StaticCall(name_, tailCall_, false), signature_.effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
 return _w1.second_
 })), [selfArgument_, ...arguments_], _c.dictionaries_)
 return
 }
 }
-}
-
-export async function Inference_inferFunctionCall$(self_, environment_, expected_, signature_, instanceCall_, instantiation_, term_, name_, $task) {
-const e_ = (((_1) => {
-if(_1.ECall) {
-const e_ = _1;
-return e_
+return
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 }
-}))(term_);
-const call_ = (((_1) => {
+}
+}
+
+export async function Inference_inferFunctionCall$(self_, environment_, expected_, signature_, instanceCall_, instantiation_, term_, name_, $task) {
+{
+const _1 = term_;
+if(_1.ECall) {
+const e_ = _1;
+const tailCall_ = (((_1) => {
 if(_1.DynamicCall) {
 const call_ = _1;
-return call_
+return call_.tailCall_
 }
 if(_1.StaticCall) {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferFunctionCall")
@@ -2920,29 +2932,34 @@ ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, signat
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, ff_compiler_Syntax.StaticCall(name_, call_.tailCall_, instanceCall_), signature_.effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
+return ff_compiler_Syntax.ECall(_c.at_, ff_compiler_Syntax.StaticCall(name_, tailCall_, instanceCall_), signature_.effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
 return _w1.second_
 })), arguments_, _c.dictionaries_)
 return
 }
 }
-}
-
-export async function Inference_inferLambdaCall$(self_, environment_, expected_, term_, $task) {
-const e_ = (((_1) => {
-if(_1.ECall) {
-const e_ = _1;
-return e_
+return
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 }
-}))(term_);
+}
+}
+
+export async function Inference_inferLambdaCall$(self_, environment_, expected_, term_, $task) {
+{
+const _1 = term_;
+if(_1.ECall) {
+const e_ = _1;
 const call_ = (((_1) => {
 if(_1.DynamicCall) {
 const call_ = _1;
 if((!call_.tailCall_)) {
-return call_
+return {
+function_: call_.function_,
+tailCall_: call_.tailCall_
+}
+return
 }
 }
 if(_1.DynamicCall) {
@@ -2989,18 +3006,19 @@ return ff_compiler_Syntax.DynamicCall(function_, _c.tailCall_)
 return
 }
 }
-}
-
-export async function Inference_inferOperator$(self_, environment_, expected_, operator_, term_, $task) {
-const e_ = (((_1) => {
-if(_1.ECall) {
-const e_ = _1;
-return e_
+return
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 }
-}))(term_);
+}
+}
+
+export async function Inference_inferOperator$(self_, environment_, expected_, operator_, term_, $task) {
+{
+const _1 = term_;
+if(_1.ECall) {
+const e_ = _1;
 const target_ = ff_compiler_Syntax.StaticCall(operator_, false, false);
 {
 const _1 = e_.arguments_;
@@ -3212,6 +3230,12 @@ return term_
 }
 {
 return ff_compiler_Inference.fail_(e_.at_, ("Unknown operator: " + operator_))
+}
+}
+return
+}
+{
+return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 }
 }
 }

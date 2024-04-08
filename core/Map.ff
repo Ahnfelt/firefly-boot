@@ -18,6 +18,14 @@ extend self[K: Order, V]: Map[K, V] {
         Map(result)
     }
 
+    addList(that: List[Pair[K, V]]): Map[K, V] {
+        mutable result = self.redBlack
+        that.each {| Pair(k, v) =>
+            result = RbMap.insert(k, v, result)
+        }
+        Map(result)
+    }
+
     get(key: K): Option[V] {
         self.redBlack.get(key)
     }

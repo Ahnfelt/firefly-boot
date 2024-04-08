@@ -110,6 +110,14 @@ export function Set_addAll(self_, that_, ff_core_Ordering_Order$T) {
 return ff_core_Map.Map_addAll(self_, that_, ff_core_Ordering_Order$T)
 }
 
+export function Set_addList(self_, that_, ff_core_Ordering_Order$T) {
+let result_ = self_;
+ff_core_List.List_each(that_, ((k_) => {
+result_ = ff_core_Map.Map_add(result_, k_, (void 0), ff_core_Ordering_Order$T)
+}));
+return result_
+}
+
 export function Set_remove(self_, value_, ff_core_Ordering_Order$T) {
 return ff_core_Map.Map_remove(self_, value_, ff_core_Ordering_Order$T)
 }
@@ -164,6 +172,14 @@ return ff_core_Map.Map_add(self_, value_, (void 0), ff_core_Ordering_Order$T)
 
 export async function Set_addAll$(self_, that_, ff_core_Ordering_Order$T, $task) {
 return ff_core_Map.Map_addAll(self_, that_, ff_core_Ordering_Order$T)
+}
+
+export async function Set_addList$(self_, that_, ff_core_Ordering_Order$T, $task) {
+let result_ = self_;
+ff_core_List.List_each(that_, ((k_) => {
+result_ = ff_core_Map.Map_add(result_, k_, (void 0), ff_core_Ordering_Order$T)
+}));
+return result_
 }
 
 export async function Set_remove$(self_, value_, ff_core_Ordering_Order$T, $task) {

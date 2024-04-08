@@ -4,6 +4,7 @@ import LspHook
 class Resolver(
     variables: Map[String, String]
     variableLocations: Map[String, Location]
+    asVariables: Set[String]
     variants: Map[String, String]
     types: Map[String, String]
     typeGenerics: Map[String, List[String]]
@@ -20,10 +21,17 @@ class ResolverState(
     mutable nextUnificationVariableIndex: Int
 )
 
+data CaseVariable(
+    at: Location
+    name: String
+    asBound: Bool
+)
+
 make(packagePair: PackagePair, moduleName: String, lspHook: LspHook): Resolver {
     Resolver(
         variables = [].toMap()
         variableLocations = [].toMap()
+        asVariables = [].toSet()
         variants = [].toMap()
         types = [].toMap()
         typeGenerics = [].toMap()
@@ -77,8 +85,8 @@ extend self: Resolver {
 
     processImports(imports: List[DImport], modules: List[Module]): Resolver {
         mutable resolver = self
-        imports.each { import =>
-            modules.find { _.file.dropLast(3) == import.file }.{
+        imports.each {import =>
+            modules.find {_.file.dropLast(3) == import.file}.{
                 | Some(module) =>
                     resolver = resolver.processDefinitions(module, Some(import.alias))
                 | None =>
@@ -95,7 +103,7 @@ extend self: Resolver {
                 module.file.dropLast(3) + "." + name
             importAlias.{
                 | None => [Pair(name, full), Pair(full, full)]
-                | Some(alias) { unqualified } => [Pair(alias + "." + name, full), Pair(name, full), Pair(full, full)]
+                | Some(alias) {unqualified} => [Pair(alias + "." + name, full), Pair(name, full), Pair(full, full)]
                 | Some(alias) => [Pair(alias + "." + name, full), Pair(full, full)]
             }
         }
@@ -103,20 +111,20 @@ extend self: Resolver {
             module.packagePair.group == "ff" &&
             module.packagePair.name == "core" &&
             module.file == "Core.ff"
-        let lets = module.lets.flatMap { entry(_.name, isCore) }.toMap()
-        let letLocations = module.lets.flatMap {d => entry(d.name, True).map {_.mapSecond {_ => d.at}} }.toMap()
-        let functions = module.functions.flatMap { entry(_.signature.name, isCore) }.toMap()
+        let lets = module.lets.flatMap {entry(_.name, isCore)}.toMap()
+        let letLocations = module.lets.flatMap {d => entry(d.name, True).map {_.mapSecond {_ => d.at}}}.toMap()
+        let functions = module.functions.flatMap {entry(_.signature.name, isCore)}.toMap()
         let functionLocations = module.functions.flatMap {d => entry(d.signature.name, True).map {_.mapSecond {_ => d.at}} }.toMap()
-        let traitMethods = module.traits.flatMap { _.methods }.flatMap { entry(_.name, False) }.toMap()
-        let traitMethodLocations = module.traits.flatMap {_.methods}.flatMap {d => entry(d.name, True).map {_.mapSecond {_ => d.at}} }.toMap()
-        let traits = module.traits.flatMap { entry(_.name, True) }.toMap()
-        let traitLocations = module.traits.flatMap {d => entry(d.name, True).map {_.mapSecond {_ => d.at}} }.toMap()
-        let types = module.types.flatMap { entry(_.name, True) }.toMap()
+        let traitMethods = module.traits.flatMap {_.methods }.flatMap {entry(_.name, False)}.toMap()
+        let traitMethodLocations = module.traits.flatMap {_.methods}.flatMap {d => entry(d.name, True).map {_.mapSecond {_ => d.at}}}.toMap()
+        let traits = module.traits.flatMap {entry(_.name, True) }.toMap()
+        let traitLocations = module.traits.flatMap {d => entry(d.name, True).map {_.mapSecond {_ => d.at}}}.toMap()
+        let types = module.types.flatMap {entry(_.name, True) }.toMap()
         let typeGenerics = module.types.flatMap {d => entry(d.name, True).map {p => Pair(p.first, d.generics)}}.toMap()
-        let typeLocations = module.types.flatMap {d => entry(d.name, True).map {_.mapSecond {_ => d.at}} }.toMap()
-        let asyncTypes = module.types.filter { _.generics.first().any {_ == "Q$"} }
-            .flatMap { entry(_.name, True).map {_.first} }.toSet()
-        let variants = module.types.flatMap { _.variants }.flatMap { entry(_.name, True) }.toMap()
+        let typeLocations = module.types.flatMap {d => entry(d.name, True).map {_.mapSecond {_ => d.at}}}.toMap()
+        let asyncTypes = module.types.filter {_.generics.first().any {_ == "Q$"}}
+            .flatMap {entry(_.name, True).map {_.first}}.toSet()
+        let variants = module.types.flatMap {_.variants }.flatMap {entry(_.name, True)}.toMap()
         self.Resolver(
             variables = self.variables.addAll(lets).addAll(functions).addAll(traitMethods)
             variableLocations = self.variableLocations.addAll(letLocations).addAll(functionLocations).addAll(traitMethodLocations)
@@ -276,132 +284,137 @@ extend self: Resolver {
         )
     }
 
-    resolveTerm(term: Term, topLevel: Bool): Term {
-        | EString _, _ => term
-        | EChar _, _ => term
-        | EInt _, _ => term
-        | EFloat _, _ => term
-        | EVariable e, _ =>
-            if(self.lspHook.isEnabled()) {
-                let at = self.variableLocations.get(e.name).else {e.at}
-                if(self.lspHook.isAt(e.at) || self.lspHook.isDefinedAt(at)) {
-                    self.lspHook.emit(
-                        ResolveSymbolHook(
-                            SymbolHook(e.name, e.at, at), None, topLevel = True
+    resolveTerm(term: Term, topLevel: Bool, inField: Bool = False): Term {
+        term.{
+            | EString _ => term
+            | EChar _ => term
+            | EInt _ => term
+            | EFloat _ => term
+            | EVariable e =>
+                if(self.lspHook.isEnabled()) {
+                    let at = self.variableLocations.get(e.name).else {e.at}
+                    if(self.lspHook.isAt(e.at) || self.lspHook.isDefinedAt(at)) {
+                        self.lspHook.emit(
+                            ResolveSymbolHook(
+                                SymbolHook(e.name, e.at, at), None, topLevel = True
+                            )
                         )
-                    )
+                    }
                 }
-            }
-            self.variables.get(e.name).map {e.EVariable(name = _)}.else {term}
-        | EList(at, t, items), _ =>
-            EList(at, self.resolveType(t, topLevel), items.map {| Pair(item, spread) =>
-                Pair(self.resolveTerm(item, topLevel), spread)
-            })
-        | EVariant(at, name, typeArguments, arguments), _ =>
-            EVariant(
-                at = at
-                name = self.variants.get(name).else {name}
-                typeArguments = typeArguments.map {self.resolveType(_, topLevel)}
-                arguments = arguments.map {_.map {a => a.Argument(value = self.resolveTerm(a.value, topLevel))}}
-            )
-        | EVariantIs(at, name, typeArguments), _ =>
-            EVariantIs(
-                at = at
-                name = self.variants.get(name).else { throw(CompileError(at, "No such variant: " + name)) }
-                typeArguments = typeArguments.map { self.resolveType(_, topLevel) }
-            )
-        | ECopy(at, name, record, arguments), _ =>
-            ECopy(
-                at = at
-                name = self.variants.get(name).else {name}
-                record = self.resolveTerm(record, topLevel)
-                arguments = arguments.map {f => f.Field(value = self.resolveTerm(f.value, topLevel))}
-            )
-        | EField e, _ =>
-            e.EField(record = self.resolveTerm(e.record, topLevel))
-        | ELambda(at, Lambda(lambdaAt, _, cases)), _ =>
-            let effect = self.makeEffectArgument(lambdaAt, topLevel)
-            ELambda(at, Lambda(lambdaAt, effect, cases.map {self.resolveCase(_, topLevel)}))
-        | EPipe(at, value, effect, function), _ =>
-            EPipe(
-                at = at
-                value = self.resolveTerm(value, topLevel)
-                effect = self.resolveType(effect, topLevel)
-                function = self.resolveTerm(function, topLevel)
-            )
-        | ECall(at, DynamicCall target, effect, typeArguments, arguments, dictionaries), _ =>
-            ECall(
-                at = at
-                target = target.DynamicCall(function = self.resolveTerm(target.function, topLevel))
-                effect = self.resolveType(effect, topLevel)
-                typeArguments = typeArguments.map {self.resolveType(_, topLevel)}
-                arguments = arguments.map {a => a.Argument(value = self.resolveTerm(a.value, topLevel))}
-                dictionaries = dictionaries
-            )
-        | ECall(at, StaticCall _, _, _, _, _), _ =>
-            throw(CompileError(at, "Internal error: Static calls not expected in the Resolver phase"))
-        | ERecord(at, fields), _ =>
-            ERecord(
-                at = at
-                fields = fields.map {f => f.Field(value = self.resolveTerm(f.value, topLevel))}
-            )
-        | EWildcard e, _ =>
-            if(e.index == 0) {throw(CompileError(e.at, "Unbound wildcard"))}
-            e.EWildcard()
-        | EFunctions(at, functions, body), _ =>
-            let functionMap = functions.map {_.signature.name}.map {name => Pair(name, name)}.toMap()
-            let locationMap = functions.map {_.signature}.map {s => Pair(s.name, s.at)}.toMap()
-            let self2 = self.Resolver(
-                variables = self.variables.addAll(functionMap)
-                variableLocations = self.variableLocations.addAll(locationMap)
-            )
-            EFunctions(
-                at = at
-                functions = functions.map {self2.resolveFunctionDefinition(_, topLevel, False)}
-                body = self2.resolveTerm(body, topLevel)
-            )
-        | ELet e, _ =>
-            let self2 = self.Resolver(
-                variables = self.variables.add(e.name, e.name)
-                variableLocations = self.variableLocations.add(e.name, e.at)
-            )
-            if(self.lspHook.isEnabled()) {
-                if(self.lspHook.isAt(e.at) || self.lspHook.isDefinedAt(e.at)) {
-                    self.lspHook.emit(
-                        ResolveSymbolHook(
-                            SymbolHook(e.name, e.at, e.at), None, topLevel = False
+                if(!inField && self.asVariables.contains(e.name)) {
+                    throw(CompileError(e.at, "Only copy and field access are allowed on pattern as-bound variables"))
+                }
+                self.variables.get(e.name).map {e.EVariable(name = _)}.else {term}
+            | EList(at, t, items) =>
+                EList(at, self.resolveType(t, topLevel), items.map {| Pair(item, spread) =>
+                    Pair(self.resolveTerm(item, topLevel), spread)
+                })
+            | EVariant(at, name, typeArguments, arguments) =>
+                EVariant(
+                    at = at
+                    name = self.variants.get(name).else {name}
+                    typeArguments = typeArguments.map {self.resolveType(_, topLevel)}
+                    arguments = arguments.map {_.map {a => a.Argument(value = self.resolveTerm(a.value, topLevel))}}
+                )
+            | EVariantIs(at, name, typeArguments) =>
+                EVariantIs(
+                    at = at
+                    name = self.variants.get(name).else {throw(CompileError(at, "No such variant: " + name))}
+                    typeArguments = typeArguments.map {self.resolveType(_, topLevel)}
+                )
+            | ECopy(at, name, record, arguments) =>
+                ECopy(
+                    at = at
+                    name = self.variants.get(name).else {name}
+                    record = self.resolveTerm(record, topLevel, inField = True)
+                    arguments = arguments.map {f => f.Field(value = self.resolveTerm(f.value, topLevel))}
+                )
+            | EField e =>
+                e.EField(record = self.resolveTerm(e.record, topLevel, inField = True))
+            | ELambda(at, Lambda(lambdaAt, _, cases)) =>
+                let effect = self.makeEffectArgument(lambdaAt, topLevel)
+                ELambda(at, Lambda(lambdaAt, effect, cases.map {self.resolveCase(_, topLevel)}))
+            | EPipe(at, value, effect, function) =>
+                EPipe(
+                    at = at
+                    value = self.resolveTerm(value, topLevel)
+                    effect = self.resolveType(effect, topLevel)
+                    function = self.resolveTerm(function, topLevel)
+                )
+            | ECall(at, DynamicCall target, effect, typeArguments, arguments, dictionaries) =>
+                ECall(
+                    at = at
+                    target = target.DynamicCall(function = self.resolveTerm(target.function, topLevel))
+                    effect = self.resolveType(effect, topLevel)
+                    typeArguments = typeArguments.map {self.resolveType(_, topLevel)}
+                    arguments = arguments.map {a => a.Argument(value = self.resolveTerm(a.value, topLevel))}
+                    dictionaries = dictionaries
+                )
+            | ECall(at, StaticCall _, _, _, _, _) =>
+                throw(CompileError(at, "Internal error: Static calls not expected in the Resolver phase"))
+            | ERecord(at, fields) =>
+                ERecord(
+                    at = at
+                    fields = fields.map {f => f.Field(value = self.resolveTerm(f.value, topLevel))}
+                )
+            | EWildcard e =>
+                if(e.index == 0) {throw(CompileError(e.at, "Unbound wildcard"))}
+                e.EWildcard()
+            | EFunctions(at, functions, body) =>
+                let functionMap = functions.map {_.signature.name}.map {name => Pair(name, name)}.toMap()
+                let locationMap = functions.map {_.signature}.map {s => Pair(s.name, s.at)}.toMap()
+                let self2 = self.Resolver(
+                    variables = self.variables.addAll(functionMap)
+                    variableLocations = self.variableLocations.addAll(locationMap)
+                )
+                EFunctions(
+                    at = at
+                    functions = functions.map {self2.resolveFunctionDefinition(_, topLevel, False)}
+                    body = self2.resolveTerm(body, topLevel)
+                )
+            | ELet e =>
+                let self2 = self.Resolver(
+                    variables = self.variables.add(e.name, e.name)
+                    variableLocations = self.variableLocations.add(e.name, e.at)
+                )
+                if(self.lspHook.isEnabled()) {
+                    if(self.lspHook.isAt(e.at) || self.lspHook.isDefinedAt(e.at)) {
+                        self.lspHook.emit(
+                            ResolveSymbolHook(
+                                SymbolHook(e.name, e.at, e.at), None, topLevel = False
+                            )
                         )
-                    )
+                    }
                 }
-            }
-            e.ELet(
-                valueType = self.resolveType(e.valueType, topLevel)
-                value = self.resolveTerm(e.value, topLevel)
-                body = self2.resolveTerm(e.body, topLevel)
-            )
-        | ESequential(at, before, after), _ =>
-            ESequential(
-                at = at
-                before = self.resolveTerm(before, topLevel)
-                after = self.resolveTerm(after, topLevel)
-            )
-        | EAssign(at, operator, variable, value), _ =>
-            EAssign(
-                at = at
-                operator = operator
-                variable = self.variables.get(variable).else {
-                    throw(CompileError(at, "No such variable: " + variable))
-                }
-                value = self.resolveTerm(value, topLevel)
-            )
-        | EAssignField(at, operator, record, field, value), _ =>
-            EAssignField(
-                at = at
-                operator = operator
-                record = self.resolveTerm(record, topLevel)
-                field = field
-                value = self.resolveTerm(value, topLevel)
-            )
+                e.ELet(
+                    valueType = self.resolveType(e.valueType, topLevel)
+                    value = self.resolveTerm(e.value, topLevel)
+                    body = self2.resolveTerm(e.body, topLevel)
+                )
+            | ESequential(at, before, after) =>
+                ESequential(
+                    at = at
+                    before = self.resolveTerm(before, topLevel)
+                    after = self.resolveTerm(after, topLevel)
+                )
+            | EAssign(at, operator, variable, value) =>
+                EAssign(
+                    at = at
+                    operator = operator
+                    variable = self.variables.get(variable).else {
+                        throw(CompileError(at, "No such variable: " + variable))
+                    }
+                    value = self.resolveTerm(value, topLevel)
+                )
+            | EAssignField(at, operator, record, field, value) =>
+                EAssignField(
+                    at = at
+                    operator = operator
+                    record = self.resolveTerm(record, topLevel)
+                    field = field
+                    value = self.resolveTerm(value, topLevel)
+                )
+        }
     }
 
     resolveType(type: Type, topLevel: Bool): Type {
@@ -535,7 +548,7 @@ extend self: Resolver {
     }
 
     resolveCase(case: MatchCase, topLevel: Bool): MatchCase {
-        function findVariables(pattern: MatchPattern): Map[String, Pair[Location, String]] {
+        function findVariables(pattern: MatchPattern): Map[String, CaseVariable] {
             | PString _ =>
                 Map.empty()
             | PInt _ =>
@@ -543,22 +556,23 @@ extend self: Resolver {
             | PChar _ =>
                 Map.empty()
             | PVariable(at, Some(name)) =>
-                [Pair(name, Pair(at, name))].toMap()
+                [Pair(name, CaseVariable(at, name, False))].toMap()
             | PVariable(_, None) =>
                 Map.empty()
             | PVariant(_, _, patterns) =>
                 patterns.map(findVariables).foldLeft(Map.empty()) {_.addAll(_)}
             | PVariantAs(at, _, variableAt, variable) =>
-                variable.toList().map {x => Pair(x, Pair(variableAt, x))}.toMap()
+                variable.toList().map {x => Pair(x, CaseVariable(variableAt, x, True))}.toMap()
             | PAlias(at, pattern, variable) =>
-                [Pair(variable, Pair(at, variable))].toMap().addAll(findVariables(pattern))
+                [Pair(variable, CaseVariable(at, variable, False))].toMap().addAll(findVariables(pattern))
         }
         let variableMap = case.patterns.map(findVariables).foldLeft(Map.empty()) {_.addAll(_)}
         mutable guards = []
         let variableMap2 = case.guards.foldLeft(variableMap) {variableMap1, g =>
             let self2 = self.Resolver(
-                variables = self.variables.addAll(variableMap1.mapValues {_, p => p.second})
-                variableLocations = self.variableLocations.addAll(variableMap1.mapValues {_, p => p.first})
+                variables = self.variables.addAll(variableMap1.mapValues {_, p => p.name})
+                variableLocations = self.variableLocations.addAll(variableMap1.mapValues {_, p => p.at})
+                asVariables = self.asVariables.addList(variableMap1.values().filter {_.asBound}.map {p => p.name})
             )
             let guard = g.MatchGuard(
                 term = self2.resolveTerm(g.term, topLevel)
@@ -568,8 +582,9 @@ extend self: Resolver {
             variableMap1.addAll(findVariables(guard.pattern))
         }
         let self3 = self.Resolver(
-            variables = self.variables.addAll(variableMap2.mapValues {_, p => p.second})
-            variableLocations = self.variableLocations.addAll(variableMap2.mapValues {_, p => p.first})
+            variables = self.variables.addAll(variableMap2.mapValues {_, p => p.name})
+            variableLocations = self.variableLocations.addAll(variableMap2.mapValues {_, p => p.at})
+            asVariables = self.asVariables.addList(variableMap2.values().filter {_.asBound}.map {p => p.name})
         )
         MatchCase(
             at = case.at

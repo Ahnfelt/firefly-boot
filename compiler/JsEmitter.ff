@@ -899,9 +899,9 @@ extractTypeName(type: Type): String {
 
 firstTypeName(types: List[Type]): String {
     types.grabFirst().{
-        | TConstructor t => t
+        | TConstructor t => t.name
         | TVariable t => fail(t.at, " is still a unification variable")
-    }.name
+    }
 }
 
 makeDictionaryName(traitName: String, typeName: String): String {

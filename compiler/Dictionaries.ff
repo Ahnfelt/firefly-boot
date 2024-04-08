@@ -168,18 +168,18 @@ extend self: Dictionaries {
     ): Dictionary {
         let instantiationMap = typeParameters.zip(typeArguments).toMap()
         let unification = Unification.make([], False)
-        let newGenerics = constraint.generics.map { unification.instantiate(instantiationMap, _) }
-        let firstType = newGenerics.grabFirst().{
-            | TConstructor t => t
+        let newGenerics = constraint.generics.map {unification.instantiate(instantiationMap, _)}
+        newGenerics.grabFirst().{
+            | TConstructor firstType =>
+                let instance = self.instances.get(InstanceKey(constraint.name, firstType.name)).else {
+                    throw(CompileError(at, "Missing instance " + firstType.name + ": " + constraint.name))
+                }
+                let dictionaries = instance.constraints.map {c =>
+                    self.makeDictionary(at, instance.generics, firstType.generics, c)
+                }
+                Dictionary(instance.packagePair, instance.moduleName, constraint.name, firstType.name, dictionaries)
             | TVariable t => fail(t.at, " is still a unification variable")
         }
-        let instance = self.instances.get(InstanceKey(constraint.name, firstType.name)).else {
-            throw(CompileError(at, "Missing instance " + firstType.name + ": " + constraint.name))
-        }
-        let dictionaries = instance.constraints.map { c =>
-            self.makeDictionary(at, instance.generics, firstType.generics, c)
-        }
-        Dictionary(instance.packagePair, instance.moduleName, constraint.name, firstType.name, dictionaries)
     }
 
 }

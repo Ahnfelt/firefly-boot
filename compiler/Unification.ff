@@ -152,7 +152,7 @@ extend self: Unification {
     substitute(type: Type): Type {
         | TVariable(_, i) {self.get(i) | Some(t)} => self.substitute(t)
         | TVariable(_, _) => type
-        | TConstructor t => t.TConstructor(generics = t.generics.map {t => self.substitute(t)})
+        | TConstructor t => t.TConstructor(generics = t.generics.map {g => self.substitute(g)})
     }
 
     unify(at: Location, t1: Type, t2: Type): Unit {

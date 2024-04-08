@@ -116,6 +116,19 @@ result_ = ff_core_RbMap.insert_(k_, v_, result_, ff_core_Ordering_Order$K)
 return result_
 }
 
+export function Map_addList(self_, that_, ff_core_Ordering_Order$K) {
+let result_ = self_;
+ff_core_List.List_each(that_, ((_1) => {
+{
+const k_ = _1.first_;
+const v_ = _1.second_;
+result_ = ff_core_RbMap.insert_(k_, v_, result_, ff_core_Ordering_Order$K)
+return
+}
+}));
+return result_
+}
+
 export function Map_get(self_, key_, ff_core_Ordering_Order$K) {
 return ff_core_RbMap.RB_get(self_, key_, ff_core_Ordering_Order$K)
 }
@@ -210,6 +223,19 @@ let result_ = self_;
 ff_core_RbMap.RB_each(that_, ((k_, v_) => {
 result_ = ff_core_RbMap.insert_(k_, v_, result_, ff_core_Ordering_Order$K)
 }), ff_core_Ordering_Order$K);
+return result_
+}
+
+export async function Map_addList$(self_, that_, ff_core_Ordering_Order$K, $task) {
+let result_ = self_;
+ff_core_List.List_each(that_, ((_1) => {
+{
+const k_ = _1.first_;
+const v_ = _1.second_;
+result_ = ff_core_RbMap.insert_(k_, v_, result_, ff_core_Ordering_Order$K)
+return
+}
+}));
 return result_
 }
 
