@@ -114,11 +114,11 @@ return {at_, name_, asBound_};
 
 
 export function make_(packagePair_, moduleName_, lspHook_) {
-return ff_compiler_Resolver.Resolver(ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Resolver.ResolverState(2), lspHook_)
+return ff_compiler_Resolver.Resolver(ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Resolver.ResolverState(2), lspHook_)
 }
 
 export async function make_$(packagePair_, moduleName_, lspHook_, $task) {
-return ff_compiler_Resolver.Resolver(ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Resolver.ResolverState(2), lspHook_)
+return ff_compiler_Resolver.Resolver(ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Resolver.ResolverState(2), lspHook_)
 }
 
 export function Resolver_freshUnificationVariable(self_, at_) {
@@ -515,8 +515,10 @@ if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, e_.at_) || ff_compiler_LspH
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(e_.name_, e_.at_, at_), ff_core_Option.None(), true))
 }
 };
-if(((!inField_) && ff_core_Set.Set_contains(self_.asVariables_, e_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Only copy and field access are allowed on pattern as-bound variables"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+if(((!inField_) && ff_core_Option.Option_any(ff_core_Map.Map_get(self_.asVariables_, e_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
+return (!ff_core_Option.Option_isEmpty(_w1))
+})))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Only field access is allowed on as-bound variables"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Map.Map_get(self_.variables_, e_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
 {
@@ -928,7 +930,7 @@ return ff_core_Map.empty_()
 if(pattern_a.PVariable && pattern_a.name_.Some) {
 const at_ = pattern_a.at_;
 const name_ = pattern_a.name_.value_;
-return ff_core_List.List_toMap([ff_core_Pair.Pair(name_, ff_compiler_Resolver.CaseVariable(at_, name_, false))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+return ff_core_List.List_toMap([ff_core_Pair.Pair(name_, ff_compiler_Resolver.CaseVariable(at_, name_, ff_core_Option.None()))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 if(pattern_a.PVariable && pattern_a.name_.None) {
 return ff_core_Map.empty_()
@@ -944,10 +946,11 @@ return
 }
 if(pattern_a.PVariantAs) {
 const at_ = pattern_a.at_;
+const variant_ = pattern_a.name_;
 const variableAt_ = pattern_a.variableAt_;
 const variable_ = pattern_a.variable_;
 return ff_core_List.List_toMap(ff_core_List.List_map(ff_core_Option.Option_toList(variable_), ((x_) => {
-return ff_core_Pair.Pair(x_, ff_compiler_Resolver.CaseVariable(variableAt_, x_, true))
+return ff_core_Pair.Pair(x_, ff_compiler_Resolver.CaseVariable(variableAt_, x_, ff_core_Option.Some(variant_)))
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
@@ -955,7 +958,7 @@ if(pattern_a.PAlias) {
 const at_ = pattern_a.at_;
 const pattern_ = pattern_a.pattern_;
 const variable_ = pattern_a.variable_;
-return ff_core_Map.Map_addAll(ff_core_List.List_toMap([ff_core_Pair.Pair(variable_, ff_compiler_Resolver.CaseVariable(at_, variable_, false))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), findVariables_(pattern_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+return ff_core_Map.Map_addAll(ff_core_List.List_toMap([ff_core_Pair.Pair(variable_, ff_compiler_Resolver.CaseVariable(at_, variable_, ff_core_Option.None()))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), findVariables_(pattern_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 }
 const variableMap_ = ff_core_List.List_foldLeft(ff_core_List.List_map(case_.patterns_, ((pattern_) => {
@@ -970,11 +973,9 @@ return ff_compiler_Resolver.Resolver(ff_core_Map.Map_addAll(self_.variables_, ff
 return p_.name_
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_addAll(self_.variableLocations_, ff_core_Map.Map_mapValues(variableMap1_, ((_, p_) => {
 return p_.at_
-}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addList(self_.asVariables_, ff_core_List.List_map(ff_core_List.List_filter(ff_core_Map.Map_values(variableMap1_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
-return _w1.asBound_
-})), ((p_) => {
-return p_.name_
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.typeGenerics_, _c.typeLocations_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.traitLocations_, _c.state_, _c.lspHook_)
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_addAll(self_.asVariables_, ff_core_Map.Map_mapValues(variableMap1_, ((_, p_) => {
+return p_.asBound_
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.typeGenerics_, _c.typeLocations_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.traitLocations_, _c.state_, _c.lspHook_)
 }))(self_);
 const guard_ = (((_c) => {
 return ff_compiler_Syntax.MatchGuard(_c.at_, ff_compiler_Resolver.Resolver_resolveTerm(self2_, g_.term_, topLevel_, false), ff_compiler_Resolver.Resolver_resolvePattern(self2_, g_.pattern_))
@@ -987,11 +988,9 @@ return ff_compiler_Resolver.Resolver(ff_core_Map.Map_addAll(self_.variables_, ff
 return p_.name_
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_addAll(self_.variableLocations_, ff_core_Map.Map_mapValues(variableMap2_, ((_, p_) => {
 return p_.at_
-}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addList(self_.asVariables_, ff_core_List.List_map(ff_core_List.List_filter(ff_core_Map.Map_values(variableMap2_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
-return _w1.asBound_
-})), ((p_) => {
-return p_.name_
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.typeGenerics_, _c.typeLocations_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.traitLocations_, _c.state_, _c.lspHook_)
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_addAll(self_.asVariables_, ff_core_Map.Map_mapValues(variableMap2_, ((_, p_) => {
+return p_.asBound_
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.typeGenerics_, _c.typeLocations_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.traitLocations_, _c.state_, _c.lspHook_)
 }))(self_);
 return ff_compiler_Syntax.MatchCase(case_.at_, ff_core_List.List_map(case_.patterns_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolvePattern(self_, _w1)
@@ -1463,8 +1462,10 @@ if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, e_.at_) || ff_compiler_LspH
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(e_.name_, e_.at_, at_), ff_core_Option.None(), true))
 }
 };
-if(((!inField_) && ff_core_Set.Set_contains(self_.asVariables_, e_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Only copy and field access are allowed on pattern as-bound variables"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+if(((!inField_) && ff_core_Option.Option_any(ff_core_Map.Map_get(self_.asVariables_, e_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
+return (!ff_core_Option.Option_isEmpty(_w1))
+})))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Only field access is allowed on as-bound variables"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Map.Map_get(self_.variables_, e_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
 {
@@ -1876,7 +1877,7 @@ return ff_core_Map.empty_()
 if(pattern_a.PVariable && pattern_a.name_.Some) {
 const at_ = pattern_a.at_;
 const name_ = pattern_a.name_.value_;
-return ff_core_List.List_toMap([ff_core_Pair.Pair(name_, ff_compiler_Resolver.CaseVariable(at_, name_, false))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+return ff_core_List.List_toMap([ff_core_Pair.Pair(name_, ff_compiler_Resolver.CaseVariable(at_, name_, ff_core_Option.None()))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 if(pattern_a.PVariable && pattern_a.name_.None) {
 return ff_core_Map.empty_()
@@ -1892,10 +1893,11 @@ return
 }
 if(pattern_a.PVariantAs) {
 const at_ = pattern_a.at_;
+const variant_ = pattern_a.name_;
 const variableAt_ = pattern_a.variableAt_;
 const variable_ = pattern_a.variable_;
 return ff_core_List.List_toMap(ff_core_List.List_map(ff_core_Option.Option_toList(variable_), ((x_) => {
-return ff_core_Pair.Pair(x_, ff_compiler_Resolver.CaseVariable(variableAt_, x_, true))
+return ff_core_Pair.Pair(x_, ff_compiler_Resolver.CaseVariable(variableAt_, x_, ff_core_Option.Some(variant_)))
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
@@ -1903,7 +1905,7 @@ if(pattern_a.PAlias) {
 const at_ = pattern_a.at_;
 const pattern_ = pattern_a.pattern_;
 const variable_ = pattern_a.variable_;
-return ff_core_Map.Map_addAll(ff_core_List.List_toMap([ff_core_Pair.Pair(variable_, ff_compiler_Resolver.CaseVariable(at_, variable_, false))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), findVariables_(pattern_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+return ff_core_Map.Map_addAll(ff_core_List.List_toMap([ff_core_Pair.Pair(variable_, ff_compiler_Resolver.CaseVariable(at_, variable_, ff_core_Option.None()))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), findVariables_(pattern_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 }
 const variableMap_ = ff_core_List.List_foldLeft(ff_core_List.List_map(case_.patterns_, ((pattern_) => {
@@ -1918,11 +1920,9 @@ return ff_compiler_Resolver.Resolver(ff_core_Map.Map_addAll(self_.variables_, ff
 return p_.name_
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_addAll(self_.variableLocations_, ff_core_Map.Map_mapValues(variableMap1_, ((_, p_) => {
 return p_.at_
-}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addList(self_.asVariables_, ff_core_List.List_map(ff_core_List.List_filter(ff_core_Map.Map_values(variableMap1_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
-return _w1.asBound_
-})), ((p_) => {
-return p_.name_
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.typeGenerics_, _c.typeLocations_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.traitLocations_, _c.state_, _c.lspHook_)
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_addAll(self_.asVariables_, ff_core_Map.Map_mapValues(variableMap1_, ((_, p_) => {
+return p_.asBound_
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.typeGenerics_, _c.typeLocations_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.traitLocations_, _c.state_, _c.lspHook_)
 }))(self_);
 const guard_ = (((_c) => {
 return ff_compiler_Syntax.MatchGuard(_c.at_, ff_compiler_Resolver.Resolver_resolveTerm(self2_, g_.term_, topLevel_, false), ff_compiler_Resolver.Resolver_resolvePattern(self2_, g_.pattern_))
@@ -1935,11 +1935,9 @@ return ff_compiler_Resolver.Resolver(ff_core_Map.Map_addAll(self_.variables_, ff
 return p_.name_
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_addAll(self_.variableLocations_, ff_core_Map.Map_mapValues(variableMap2_, ((_, p_) => {
 return p_.at_
-}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addList(self_.asVariables_, ff_core_List.List_map(ff_core_List.List_filter(ff_core_Map.Map_values(variableMap2_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
-return _w1.asBound_
-})), ((p_) => {
-return p_.name_
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.typeGenerics_, _c.typeLocations_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.traitLocations_, _c.state_, _c.lspHook_)
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_addAll(self_.asVariables_, ff_core_Map.Map_mapValues(variableMap2_, ((_, p_) => {
+return p_.asBound_
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.typeGenerics_, _c.typeLocations_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.traitLocations_, _c.state_, _c.lspHook_)
 }))(self_);
 return ff_compiler_Syntax.MatchCase(case_.at_, ff_core_List.List_map(case_.patterns_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolvePattern(self_, _w1)
@@ -2031,14 +2029,14 @@ show_(value_) {
 const value_a = value_;
 {
 const z_ = value_a;
-return ((((((("CaseVariable" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.asBound_)) + ")")
+return ((((((("CaseVariable" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.asBound_)) + ")")
 }
 },
 async show_$(value_, $task) {
 const value_a = value_;
 {
 const z_ = value_a;
-return ((((((("CaseVariable" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.asBound_)) + ")")
+return ((((((("CaseVariable" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.asBound_)) + ")")
 }
 }
 };
@@ -2051,7 +2049,7 @@ if((x_ === y_)) {
 return true
 }
 {
-return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.name_ === y_.name_) && (x_.asBound_ === y_.asBound_)))
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.name_ === y_.name_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.asBound_, y_.asBound_)))
 }
 },
 async equals_$(x_, y_, $task) {
@@ -2061,7 +2059,7 @@ if((x_ === y_)) {
 return true
 }
 {
-return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.name_ === y_.name_) && (x_.asBound_ === y_.asBound_)))
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.name_ === y_.name_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.asBound_, y_.asBound_)))
 }
 }
 };
@@ -2082,7 +2080,7 @@ const nameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_Str
 if((nameOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return nameOrdering_
 } else {
-const asBoundOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.asBound_, y_.asBound_);
+const asBoundOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.asBound_, y_.asBound_);
 if((asBoundOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return asBoundOrdering_
 } else {
@@ -2108,7 +2106,7 @@ const nameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_Str
 if((nameOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return nameOrdering_
 } else {
-const asBoundOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.asBound_, y_.asBound_);
+const asBoundOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.asBound_, y_.asBound_);
 if((asBoundOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return asBoundOrdering_
 } else {
@@ -2133,7 +2131,7 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1;
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, v_.at_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.name_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.asBound_)
+ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.asBound_)
 return
 }
 },
@@ -2144,7 +2142,7 @@ serialization_.offset_ += 1;
 const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
-return ff_compiler_Resolver.CaseVariable(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
+return ff_compiler_Resolver.CaseVariable(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -2162,7 +2160,7 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1;
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, v_.at_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.name_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.asBound_)
+ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.asBound_)
 return
 }
 },
@@ -2173,7 +2171,7 @@ serialization_.offset_ += 1;
 const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
-return ff_compiler_Resolver.CaseVariable(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
+return ff_compiler_Resolver.CaseVariable(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
