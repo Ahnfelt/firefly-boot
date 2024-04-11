@@ -184,7 +184,10 @@ const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSyst
 ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_path(system_, "."));
 const localMainFile_ = ff_core_Path.Path_base(ff_core_NodeSystem.NodeSystem_path(system_, mainFile_));
 buildScript_(localMainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_);
-ff_compiler_Main.importAndRun_(fireflyPath_, "node", resolvedDependencies_.mainPackagePair_, localMainFile_, arguments_)
+if((!ff_compiler_Main.importAndRun_(fireflyPath_, "node", resolvedDependencies_.mainPackagePair_, localMainFile_, arguments_))) {
+const at_ = ff_compiler_Syntax.Location(ff_core_Path.Path_absolute(ff_core_NodeSystem.NodeSystem_path(system_, (mainFile_ + ".ff"))), 1, 1);
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "This module does not contain a 'nodeMain' function"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 return
 }
 if(command_a.BrowserCommand) {
@@ -428,7 +431,10 @@ const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await f
 (await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
 const localMainFile_ = (await ff_core_Path.Path_base$((await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task));
 (await buildScript_$(localMainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, $task));
-(await ff_compiler_Main.importAndRun_$(fireflyPath_, "node", resolvedDependencies_.mainPackagePair_, localMainFile_, arguments_, $task))
+if((!(await ff_compiler_Main.importAndRun_$(fireflyPath_, "node", resolvedDependencies_.mainPackagePair_, localMainFile_, arguments_, $task)))) {
+const at_ = ff_compiler_Syntax.Location((await ff_core_Path.Path_absolute$((await ff_core_NodeSystem.NodeSystem_path$(system_, (mainFile_ + ".ff"), $task)), $task)), 1, 1);
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "This module does not contain a 'nodeMain' function"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 return
 }
 if(command_a.BrowserCommand) {
@@ -626,7 +632,12 @@ export async function importAndRun_$(fireflyPath_, target_, packagePair_, mainFi
         const workingDirectory = cwd.indexOf(':') == 1 ? 'file:///' + cwd : cwd;
         const packagePath = packagePair_.group_ + "/" + packagePair_.name_
         const main = await import(workingDirectory + "/.firefly/output/" + target_ + "/" + packagePath + "/" + mainFile_ + ".mjs");
-        await main.$run$(fireflyPath_, arguments_)
+        if(typeof main.$run$ !== 'undefined') {
+            await main.$run$(fireflyPath_, arguments_);
+            return true;
+        } else {
+            return false;
+        }
     
 }
 

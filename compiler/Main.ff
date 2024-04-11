@@ -63,7 +63,10 @@ main(system: NodeSystem): Unit {
             prepareFireflyDirectory(system.path("."))
             let localMainFile = system.path(mainFile).base()
             buildScript(localMainFile, resolvedDependencies.mainPackagePair, EmitNode, resolvedDependencies)
-            importAndRun(fireflyPath, "node", resolvedDependencies.mainPackagePair, localMainFile, arguments)
+            if(!importAndRun(fireflyPath, "node", resolvedDependencies.mainPackagePair, localMainFile, arguments)) {
+                let at = Location(system.path(mainFile + ".ff").absolute(), 1, 1)
+                throw(CompileError(at, "This module does not contain a 'nodeMain' function"))
+            }
 
         | BrowserCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(system.httpClient(), system.path(mainFile + ".ff"))
@@ -212,14 +215,19 @@ importAndRun(
     packagePair: PackagePair
     mainFile: String
     arguments: List[String]
-): Unit
+): Bool
     target node async """
         const process = await import('process');
         const cwd = process.cwd();
         const workingDirectory = cwd.indexOf(':') == 1 ? 'file:///' + cwd : cwd;
         const packagePath = packagePair_.group_ + "/" + packagePair_.name_
         const main = await import(workingDirectory + "/.firefly/output/" + target_ + "/" + packagePath + "/" + mainFile_ + ".mjs");
-        await main.$run$(fireflyPath_, arguments_)
+        if(typeof main.$run$ !== 'undefined') {
+            await main.$run$(fireflyPath_, arguments_);
+            return true;
+        } else {
+            return false;
+        }
     """
 
 prepareFireflyDirectory(path: Path) {
