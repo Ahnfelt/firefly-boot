@@ -541,11 +541,36 @@ ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, in
 const parameters_ = ff_core_List.List_sortBy(instantiated_.scheme_.signature_.parameters_, ((_w1) => {
 return _w1.name_
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const paramtersWithFieldAt_ = ff_core_List.List_map(parameters_, ((p_) => {
+{
+const _1 = p_.valueType_;
+if(_1.TConstructor) {
+const t_ = _1;
+{
+const _1 = t_;
+{
+const _c = _1;
+return ff_compiler_Syntax.TConstructor(p_.at_, _c.name_, _c.generics_)
+}
+}
+return
+}
+if(_1.TVariable) {
+const t_ = _1;
+{
+const _1 = t_;
+{
+const _c = _1;
+return ff_compiler_Syntax.TVariable(p_.at_, _c.index_)
+}
+}
+return
+}
+}
+}));
 const recordType_ = ff_compiler_Syntax.TConstructor(at_, ("Record$" + ff_core_List.List_join(ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.name_
-})), "$")), ff_core_List.List_map(parameters_, ((_w1) => {
-return _w1.valueType_
-})));
+})), "$")), paramtersWithFieldAt_);
 return ff_core_List.List_toMap(ff_core_List.List_map(ff_core_Option.Option_toList(variableOption_), ((_w1) => {
 return ff_core_Pair.Pair(_w1, ff_core_Pair.Pair(variableAt_, recordType_))
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
@@ -650,12 +675,22 @@ const t_ = _1;
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 if(ff_core_String.String_startsWith(name_, "Record$", 0)) {
-if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, e_.at_)) {
-const symbolHook_ = ff_compiler_LspHook.SymbolHook(e_.field_, e_.at_, e_.at_);
-const noEffect_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferRecordFieldHook(self_.unification_, environment_, expected_, t_, e_.field_))
-};
 const fieldNames_ = ff_core_List.List_dropFirst(ff_core_String.String_split(name_, 36), 1);
+if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
+ff_core_List.List_each(ff_core_List.List_zip(fieldNames_, typeArguments_), ((_1) => {
+{
+const fieldName_ = _1.first_;
+const fieldType_ = _1.second_;
+if((e_.field_ === fieldName_)) {
+const definedAt_ = ff_compiler_Unification.Unification_substitute(self_.unification_, fieldType_).at_;
+if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, e_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, definedAt_))) {
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferRecordFieldHook(e_.at_, self_.unification_, environment_, expected_, t_, e_.field_))
+}
+}
+return
+}
+}))
+};
 return ff_core_Option.Option_else(ff_core_Option.Option_elseIf(ff_core_Option.Option_map(ff_core_Option.Option_map(ff_core_List.List_find(ff_core_List.List_pairs(fieldNames_), ((_w1) => {
 return (_w1.second_ === e_.field_)
 })), ((_w1) => {
@@ -2181,11 +2216,36 @@ ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, in
 const parameters_ = ff_core_List.List_sortBy(instantiated_.scheme_.signature_.parameters_, ((_w1) => {
 return _w1.name_
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const paramtersWithFieldAt_ = ff_core_List.List_map(parameters_, ((p_) => {
+{
+const _1 = p_.valueType_;
+if(_1.TConstructor) {
+const t_ = _1;
+{
+const _1 = t_;
+{
+const _c = _1;
+return ff_compiler_Syntax.TConstructor(p_.at_, _c.name_, _c.generics_)
+}
+}
+return
+}
+if(_1.TVariable) {
+const t_ = _1;
+{
+const _1 = t_;
+{
+const _c = _1;
+return ff_compiler_Syntax.TVariable(p_.at_, _c.index_)
+}
+}
+return
+}
+}
+}));
 const recordType_ = ff_compiler_Syntax.TConstructor(at_, ("Record$" + ff_core_List.List_join(ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.name_
-})), "$")), ff_core_List.List_map(parameters_, ((_w1) => {
-return _w1.valueType_
-})));
+})), "$")), paramtersWithFieldAt_);
 return ff_core_List.List_toMap(ff_core_List.List_map(ff_core_Option.Option_toList(variableOption_), ((_w1) => {
 return ff_core_Pair.Pair(_w1, ff_core_Pair.Pair(variableAt_, recordType_))
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
@@ -2290,12 +2350,22 @@ const t_ = _1;
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 if(ff_core_String.String_startsWith(name_, "Record$", 0)) {
-if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, e_.at_)) {
-const symbolHook_ = ff_compiler_LspHook.SymbolHook(e_.field_, e_.at_, e_.at_);
-const noEffect_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferRecordFieldHook(self_.unification_, environment_, expected_, t_, e_.field_))
-};
 const fieldNames_ = ff_core_List.List_dropFirst(ff_core_String.String_split(name_, 36), 1);
+if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
+ff_core_List.List_each(ff_core_List.List_zip(fieldNames_, typeArguments_), ((_1) => {
+{
+const fieldName_ = _1.first_;
+const fieldType_ = _1.second_;
+if((e_.field_ === fieldName_)) {
+const definedAt_ = ff_compiler_Unification.Unification_substitute(self_.unification_, fieldType_).at_;
+if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, e_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, definedAt_))) {
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferRecordFieldHook(e_.at_, self_.unification_, environment_, expected_, t_, e_.field_))
+}
+}
+return
+}
+}))
+};
 return ff_core_Option.Option_else(ff_core_Option.Option_elseIf(ff_core_Option.Option_map(ff_core_Option.Option_map(ff_core_List.List_find(ff_core_List.List_pairs(fieldNames_), ((_w1) => {
 return (_w1.second_ === e_.field_)
 })), ((_w1) => {

@@ -199,8 +199,8 @@ return {InferArgumentHook: true, unification_, environment_, isCopy_, callAt_, c
 export function InferLookupHook(unification_, environment_, expected_, selfVariable_, symbol_, instantiated_) {
 return {InferLookupHook: true, unification_, environment_, expected_, selfVariable_, symbol_, instantiated_};
 }
-export function InferRecordFieldHook(unification_, environment_, expected_, recordType_, fieldName_) {
-return {InferRecordFieldHook: true, unification_, environment_, expected_, recordType_, fieldName_};
+export function InferRecordFieldHook(usageAt_, unification_, environment_, expected_, recordType_, fieldName_) {
+return {InferRecordFieldHook: true, usageAt_, unification_, environment_, expected_, recordType_, fieldName_};
 }
 
 
@@ -271,6 +271,7 @@ const pattern_ = hook_a.pattern_;
 return "InferPatternHook(...)"
 }
 if(hook_a.InferRecordFieldHook) {
+const usageAt_ = hook_a.usageAt_;
 const unification_ = hook_a.unification_;
 const environment_ = hook_a.environment_;
 const expected_ = hook_a.expected_;
@@ -406,6 +407,7 @@ const pattern_ = hook_a.pattern_;
 return "InferPatternHook(...)"
 }
 if(hook_a.InferRecordFieldHook) {
+const usageAt_ = hook_a.usageAt_;
 const unification_ = hook_a.unification_;
 const environment_ = hook_a.environment_;
 const expected_ = hook_a.expected_;
