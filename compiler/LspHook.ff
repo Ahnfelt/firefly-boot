@@ -173,6 +173,7 @@ class ResultHook {
         instantiated: Box[Option[Instantiated]]
     )
     InferRecordFieldHook(
+        usageAt: Location
         unification: Unification
         environment: Environment
         expected: Type
@@ -188,7 +189,7 @@ showHook(hook: ResultHook): String {
     | InferLookupHook(unification, environment, expected, selfVariable, symbol, instantiated) => "InferLookupHook(...)"
     | InferParameterHook(unification, environment, parameter, missing) => "InferParameterHook(...)"
     | InferPatternHook(unification, environment, expected, pattern) => "InferPatternHook(...)"
-    | InferRecordFieldHook(unification, environment, expected, recordType, fieldName) => "InferRecordFieldHook(...)"
+    | InferRecordFieldHook(usageAt, unification, environment, expected, recordType, fieldName) => "InferRecordFieldHook(...)"
     | InferSequentialStartHook(unification, term, missing) => "InferSequentialStartHook(...)"
     | InferTermHook(unification, environment, expected, term, recordType, missing) => "InferTermHook(...)"
     | ParseArgumentHook(callAt, argumentIndex, parameterName) => "ParseArgumentHook(...)"

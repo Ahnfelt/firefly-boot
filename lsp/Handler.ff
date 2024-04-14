@@ -436,7 +436,13 @@ extend self: Handler {
             | InferPatternHook h {h.pattern | PVariantAs p} => Some(Definition(p.variableAt, p.name, False))
             | InferPatternHook h {h.pattern | PVariable p} => p.name.map {Definition(p.at, _, False)}
             | InferPatternHook h {h.pattern | PAlias p} => Some(Definition(p.at, p.variable, False))
-            | _ => None
+            | InferRecordFieldHook h {h.unification.substitute(h.recordType) | TConstructor(_, n, ts)} =>
+                let fieldNames = n.split('$').dropFirst(1)
+                let fieldDefinedAt = fieldNames.zip(ts).collectFirst {| Pair(name, t) =>
+                    if(name == h.fieldName) {t.at}
+                }
+                fieldDefinedAt.map {Definition(_, h.fieldName, False)}
+            | h => None
         }.filter {pair => !pair.at.file.endsWith(">")}
             
         function unqualify(qualifiedName: String): String {
@@ -445,7 +451,6 @@ extend self: Handler {
 
         definedAtList.first().{
             | Some(definition) =>
-                //Log.trace("handleReferences definedAt: " + Show.show(definedAt))
                 let lspHook = LspHook.make(at = None, definedAt = Some(definition.at), insertIdentifier = False, trackSymbols = False)
                 let localCheck = local || definition.local
                 let path = if(localCheck) {system.path(targetAt.file)} else {self.rootPath.grab()}
@@ -456,7 +461,7 @@ extend self: Handler {
                 let errors = Builder.check(system, self.fireflyPath, path, mustContain, self.virtualFiles, lspHook, True)
                 errors.each {| CompileError(at, message) => 
                     Log.trace("findReferences second check error: " + message + " in " + at.file + ":" + at.line + ":" + at.column)
-                }  
+                }
 
                 let referencesResult = lspHook.results().collect {
                     | ResolveSymbolHook h => Some(h.symbol.usageAt)
@@ -468,11 +473,14 @@ extend self: Handler {
                     | InferArgumentHook h {h.arguments.dropFirst(h.argumentIndex).first() | Some(a)} {a.name | Some(n)} => 
                         h.parameters.find {_.name == n}.map {_ => a.at}
                     | InferLookupHook h => Some(h.symbol.value.usageAt)
+                    | InferRecordFieldHook h => Some(h.usageAt)
                     | _ => None
                 }.filter {at => 
                     !at.file.endsWith(">") &&
                     (includeDeclaration || at != definition.at)
                 }
+                
+                //referencesResult.each {Log.trace(Show.show(_))}
 
                 let clientLocations = referencesResult.addAll(
                     if(includeDeclaration) {[definition.at]} else {[]}

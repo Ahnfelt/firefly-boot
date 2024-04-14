@@ -298,8 +298,11 @@ extend self: Inference {
                 }
                 self.unification.unify(at, expected, instantiated.scheme.signature.returnType)
                 let parameters = instantiated.scheme.signature.parameters.sortBy {_.name}
-                let recordType =
-                    TConstructor(at, "Record$" + parameters.map {_.name}.join("$"), parameters.map {_.valueType})
+                let paramtersWithFieldAt = parameters.map {p => p.valueType.{
+                    | TConstructor t => t.TConstructor(at = p.at)
+                    | TVariable t => t.TVariable(at = p.at)
+                }}
+                let recordType = TConstructor(at, "Record$" + parameters.map {_.name}.join("$"), paramtersWithFieldAt)
                 variableOption.toList().map {Pair(_, Pair(variableAt, recordType))}.toMap()
             | PVariant(at, "List$Empty", []) =>
                 let itemType = self.unification.freshUnificationVariable(at)
@@ -371,14 +374,18 @@ extend self: Inference {
                 let record = self.inferTerm(environment, recordType, e.record)
                 self.unification.substitute(recordType).{
                     | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
-                        if(self.lspHook.isAt(e.at)) {
-                            let symbolHook = SymbolHook(e.field, e.at, e.at)
-                            let noEffect = self.unification.freshUnificationVariable(e.at)
-                            self.lspHook.emit(
-                                InferRecordFieldHook(self.unification, environment, expected, t, e.field)
-                            )
-                        }
                         let fieldNames = name.split('$').dropFirst(1)
+                        if(self.lspHook.isEnabled()) {
+                            fieldNames.zip(typeArguments).each {| Pair(fieldName, fieldType) =>
+                                if(e.field == fieldName):
+                                let definedAt = self.unification.substitute(fieldType).at
+                                if(self.lspHook.isAt(e.at) || self.lspHook.isDefinedAt(definedAt)) {
+                                    self.lspHook.emit(
+                                        InferRecordFieldHook(e.at, self.unification, environment, expected, t, e.field)
+                                    )
+                                }
+                            }
+                        }
                         fieldNames.pairs().find {_.second == e.field}.map {_.first}.map {index =>
                             let t1 = typeArguments.grab(index)
                             self.unification.unify(e.at, expected, t1)

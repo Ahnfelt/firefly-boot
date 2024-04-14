@@ -4,7 +4,6 @@ import LspHook
 class Resolver(
     variables: Map[String, String]
     variableLocations: Map[String, Location]
-    asVariables: Map[String, Option[String]]
     variants: Map[String, String]
     types: Map[String, String]
     typeGenerics: Map[String, List[String]]
@@ -31,7 +30,6 @@ make(packagePair: PackagePair, moduleName: String, lspHook: LspHook): Resolver {
     Resolver(
         variables = [].toMap()
         variableLocations = [].toMap()
-        asVariables = [].toMap()
         variants = [].toMap()
         types = [].toMap()
         typeGenerics = [].toMap()
@@ -301,9 +299,6 @@ extend self: Resolver {
                         )
                     }
                 }
-                if(!inField && self.asVariables.get(e.name).any {!_.isEmpty()}) {
-                    throw(CompileError(e.at, "Only field access is allowed on as-bound variables"))
-                }
                 self.variables.get(e.name).map {e.EVariable(name = _)}.else {term}
             | EList(at, t, items) =>
                 EList(at, self.resolveType(t, topLevel), items.map {| Pair(item, spread) =>
@@ -572,7 +567,6 @@ extend self: Resolver {
             let self2 = self.Resolver(
                 variables = self.variables.addAll(variableMap1.mapValues {_, p => p.name})
                 variableLocations = self.variableLocations.addAll(variableMap1.mapValues {_, p => p.at})
-                asVariables = self.asVariables.addAll(variableMap1.mapValues {_, p => p.asBound})
             )
             let guard = g.MatchGuard(
                 term = self2.resolveTerm(g.term, topLevel)
@@ -584,7 +578,6 @@ extend self: Resolver {
         let self3 = self.Resolver(
             variables = self.variables.addAll(variableMap2.mapValues {_, p => p.name})
             variableLocations = self.variableLocations.addAll(variableMap2.mapValues {_, p => p.at})
-            asVariables = self.asVariables.addAll(variableMap2.mapValues {_, p => p.asBound})
         )
         MatchCase(
             at = case.at
