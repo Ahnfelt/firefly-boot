@@ -10,5 +10,7 @@ This extension adds support for the Firefly programming language (`.ff` files). 
 - Document and workspace symbols
 - Show type on hover
 - Diagnostics
+- Run in terminal
 
-You can run `.ff` main files via the usual *Run and Debug* side panel - just choose *create a launch.json file*. After that you can also press *F5* to run the currently open file.
+To install the Firefly compiler, run the following in the terminal:  
+```npm install -g firefly-compiler```
