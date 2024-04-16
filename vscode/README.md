@@ -12,5 +12,5 @@ This extension adds support for the Firefly programming language (`.ff` files). 
 - Diagnostics
 - Run in terminal
 
-To install the Firefly compiler, run the following in the terminal:  
+To install the Firefly compiler, run the following command in the terminal:  
 ```npm install -g firefly-compiler```
