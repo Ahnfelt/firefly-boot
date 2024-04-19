@@ -145,8 +145,6 @@ makeDependencyCache(
         }
     }
     
-    Log.trace("caches: " + Show.show(caches))
-    
     let emptyCache = CompilerCache(Map.empty(), Map.empty(), Map.empty(), Map.empty())
     caches.foldLeft(emptyCache) {c1, c2 => 
         CompilerCache(
@@ -225,7 +223,9 @@ findPackageFiles(path: Path, mustContain: Option[String]): List[PackageFiles] {
     let split = files.partition {_.endsWith([".firefly", "package.ff"])}
     let packageFiles = split.first
     mutable singleFiles = split.second
-    let multiFileProjects = packageFiles.map {packageFile => 
+    let packageFilesDependenciesFirst = 
+        packageFiles.map {p => Pair(-p.absolute().size(), p)}.sortBy {_.first}.map {_.second}
+    let multiFileProjects = packageFilesDependenciesFirst.map {packageFile => 
         let projectRoot = packageFile.parent().grab().parent().grab()
         let files = singleFiles.partition {_.isInsideOf(projectRoot)}
         singleFiles = files.second

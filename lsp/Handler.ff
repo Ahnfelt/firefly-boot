@@ -599,7 +599,7 @@ extend self: Handler {
     ): List[CompileError] {
         let cache = self.compilerCache.else {
             let newCache = Builder.makeDependencyCache(system, fireflyPath, self.rootPath.grab())
-            Log.trace(Show.show(newCache))
+            //Log.trace(Show.show(newCache))
             self.compilerCache = Some(newCache)
             newCache
         }
