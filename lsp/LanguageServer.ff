@@ -1,9 +1,5 @@
 import Handler
 
-class LanguageServer(
-    mutable openFiles: Map[String, String]
-)
-
 data BadRequestException(reason: String)
 
 data Request(
@@ -28,7 +24,7 @@ main(system: NodeSystem) {
     }
     
     let fireflyPath = system.path(".")
-    let handler = Handler(fireflyPath, None, Map.empty(), [].toSet(), Map.empty(), Map.empty())
+    let handler = Handler(fireflyPath, None, Map.empty(), [].toSet(), Map.empty(), Map.empty(), None)
     try {
         mutable input = system.readStream()
         let responseChannel: Channel[Pair[Json, String]] = system.mainTask().channel()

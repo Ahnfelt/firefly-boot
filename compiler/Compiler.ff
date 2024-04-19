@@ -27,6 +27,15 @@ capability Compiler(
     phaseDurations: Array[Pair[String, Duration]]
 )
 
+data CompilerCache(
+    parsedModules: Map[String, Module]
+    resolvedModules: Map[String, Module]
+    derivedModules: Map[String, Module]
+    inferredModules: Map[String, Module]
+)
+
+emptyCompilerCache: CompilerCache = CompilerCache(Map.empty(), Map.empty(), Map.empty(), Map.empty())
+
 make(
     emitTarget: EmitTarget
     task: Task
@@ -35,6 +44,7 @@ make(
     resolvedDependencies: ResolvedDependencies
     virtualFiles: Map[String, String]
     lspHook: LspHook
+    cache: CompilerCache = emptyCompilerCache
 ): Compiler {
     Compiler(
         emitTarget = emitTarget
@@ -45,10 +55,10 @@ make(
         singleFilePackages = resolvedDependencies.singleFilePackages
         virtualFiles = virtualFiles
         lspHook = lspHook
-        parsedModules = Map.empty()
-        resolvedModules = Map.empty()
-        derivedModules = Map.empty()
-        inferredModules = Map.empty()
+        parsedModules = cache.parsedModules
+        resolvedModules = cache.resolvedModules
+        derivedModules = cache.derivedModules
+        inferredModules = cache.inferredModules
         emittedModules = Set.empty()
         phaseDurationDelta = Duration(0.0)
         phaseDurations = [].toArray()
@@ -117,6 +127,15 @@ coreImports: List[DImport] =
     }
 
 extend self: Compiler {
+    
+    getCache(): CompilerCache {
+        CompilerCache(
+            parsedModules = self.parsedModules
+            resolvedModules = self.resolvedModules
+            derivedModules = self.derivedModules
+            inferredModules = self.inferredModules
+        )
+    }
 
     measure[T](phase: String, packagePair: PackagePair, moduleName: String, body: () => T): T {
         let start = Duration(self.task.elapsed().seconds - self.phaseDurationDelta.seconds)

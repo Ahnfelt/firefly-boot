@@ -84,6 +84,81 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: Path, mainFile: String, tar
     )
 }
 
+makeDependencyCache(
+    system: NodeSystem
+    fireflyPath: Path
+    path: Path
+): CompilerCache {
+    Log.trace("findPackageFiles: " + path.absolute())
+    let packages = findPackageFiles(path, None).filter {p => p.root.absolute().contains(".firefly")}
+    Log.trace("packages:")
+    packages.each {p => 
+        Log.trace("  " + p.root.absolute() + " (" + p.files.size() + ")")
+        p.files.each {f => 
+            Log.trace(f.absolute())
+        }
+    }
+    
+    /*
+    let dependencies = [
+        Pair(PackagePair("ff", "core"), ".firefly/dependencies/ff/core")
+        Pair(PackagePair("ff", "lux"), ".firefly/dependencies/ff/lux")
+        Pair(PackagePair("ff", "webserver"), ".firefly/dependencies/ff/webserver")
+        Pair(PackagePair("ff", "websocket"), ".firefly/dependencies/ff/websocket")
+    ]
+    */
+
+    let caches = packages.filter {!_.files.isEmpty()}.collect {package => 
+        Log.trace("Caching " + package.root.absolute())
+        let firstFile = package.files.grabFirst()
+        let resolvedDependencies = Dependencies.process(system.httpClient(), firstFile)
+        let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
+            resolvedDependencies.packagePaths
+        } else {
+            resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath.slash("core"))
+        }
+        let fixedResolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
+        let compiler = Compiler.make(
+            EmitBuild
+            system.mainTask() 
+            None
+            package.root.slash(".firefly").slash("temporary")
+            fixedResolvedDependencies
+            Map.empty()
+            LspHook.disabled()
+        )
+        mutable failed = False
+        package.files.each {file =>
+            let localFile = file.base()
+            try {
+                Log.trace("Infer " + file.absolute())
+                compiler.infer(resolvedDependencies.mainPackagePair, localFile.dropLast(".ff".size()))
+                Unit
+            } catch {| CompileError(_, _) @ c, error =>
+                Log.trace("Error in makeDependencyCache")
+                failed = True
+            } grab()
+        }
+        failed.{
+            | False => Some(compiler.getCache())
+            | True => None
+        }
+    }
+    
+    Log.trace("caches: " + Show.show(caches))
+    
+    let emptyCache = CompilerCache(Map.empty(), Map.empty(), Map.empty(), Map.empty())
+    caches.foldLeft(emptyCache) {c1, c2 => 
+        CompilerCache(
+            parsedModules = c1.parsedModules.addAll(c2.parsedModules)
+            resolvedModules = c1.resolvedModules.addAll(c2.resolvedModules)
+            derivedModules = c1.derivedModules.addAll(c2.derivedModules)
+            inferredModules = c1.inferredModules.addAll(c2.inferredModules)
+        )
+    }
+
+}
+
 check(
     system: NodeSystem
     fireflyPath: Path
@@ -92,6 +167,7 @@ check(
     virtualFiles: Map[String, String]
     lspHook: LspHook
     infer: Bool
+    compilerCache: CompilerCache
 ): List[CompileError] {
     let packages = path.isDirectory().{
         | True => findPackageFiles(path, mustContain)
@@ -117,6 +193,7 @@ check(
             fixedResolvedDependencies
             virtualFiles
             lspHook
+            compilerCache
         )
         package.files.each {file =>
             let localFile = file.base()
