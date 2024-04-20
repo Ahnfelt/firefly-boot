@@ -54,26 +54,32 @@ data Definition(at: Location, name: String, local: Bool)
 
 extend self: Handler {
 
-    handleNotification(system: NodeSystem, method: String, parameters: Map[String, Json]): Option[Pair[String, Json]] {
+    handleNotification(system: NodeSystem, method: String, parameters: Map[String, Json]): List[Pair[String, Json]] {
         method.{
             | "initialized" =>
-                None
+                []
             | "textDocument/didChange" => 
                 self.handleDidChange(system, parameters)
                 let diagnostics = self.handleFocusDiagnostic(system, parameters)
-                Some(Pair("textDocument/publishDiagnostics", diagnostics))
+                [Pair("textDocument/publishDiagnostics", diagnostics)]
             | "textDocument/didClose" => 
                 self.handleDidClose(system, parameters)
                 let diagnostics = self.handleFocusDiagnostic(system, parameters)
-                Some(Pair("textDocument/publishDiagnostics", diagnostics))
+                [Pair("textDocument/publishDiagnostics", diagnostics)]
             | "custom/focusDocument" => 
                 let diagnostics = self.handleFocusDiagnostic(system, parameters)
-                Some(Pair("textDocument/publishDiagnostics", diagnostics))
+                [Pair("textDocument/publishDiagnostics", diagnostics)]
+            | "workspace/didRenameFiles" =>
+                let diagnostics = self.handleClearDiagnostic(system, parameters)
+                diagnostics.map {Pair("textDocument/publishDiagnostics", _)}
+            | "workspace/didDeleteFiles" =>
+                let diagnostics = self.handleClearDiagnostic(system, parameters)
+                diagnostics.map {Pair("textDocument/publishDiagnostics", _)}
             | "exit" => 
                 system.exit(0)
-                None
+                []
             | _ =>
-                None
+                []
         }
     }
 
@@ -171,7 +177,13 @@ extend self: Handler {
                 )
                 .with("referencesProvider", True)
                 .with("workspaceSymbolProvider", True)
-                /*.with("workspace", js.object()
+                .with("workspace", Json.object()
+                    .with("fileOperations", Json.object()
+                        .with("didRename", anyFireflyFile)
+                        .with("didDelete", anyFireflyFile)
+                    )
+                )
+                /*
                     .with("workspaceFolders", js.object()
                          .with("supported", True)
                          .with("changeNotifications", True)
@@ -227,6 +239,17 @@ extend self: Handler {
             .with("uri", uri)
             .with("version", parameters.grab("textDocument").field("version"))
             .with("diagnostics", diagnostics)
+    }
+    
+    handleClearDiagnostic(system: NodeSystem, parameters: Map[String, Json]): List[Json] {
+        let js = system.js()
+        let files = parameters.grab("files").grabArray()
+        files.map {file =>
+            let uri = file.getField("uri").else {file.grabField("oldUri")}
+            Json.object()
+                .with("uri", uri)
+                .with("diagnostics", Json.array([]))
+        }
     }
     
     handleDocumentSymbol(system: NodeSystem, parameters: Map[String, Json]): ResultOrError {

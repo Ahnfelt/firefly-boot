@@ -194,23 +194,23 @@ parseMessageId(id: Json): MessageId {
     }
 }
 
-handleRequestMessage(system: NodeSystem, handler: Handler, message: RequestMessage): Option[Json] {
+handleRequestMessage(system: NodeSystem, handler: Handler, message: RequestMessage): List[Json] {
     try {
         message.id.{
             | None {message.method == "$/cancelRequest"} => // TODO: Needs to read ahead to cancel anything
                 handler.cancelledRequests = handler.cancelledRequests.add(
                     parseMessageId(message.parameters.grab("id"))
                 )
-                None
+                []
             | None => 
                 let notification = handler.handleNotification(system, message.method, message.parameters)
                 notification.map {| Pair(method, params) => makeNotificationMessage(method, params)}
             | Some(id) {handler.cancelledRequests.contains(id)} =>
                 handler.cancelledRequests = handler.cancelledRequests.remove(id)
-                Some(makeResponseMessage(id, Error(-32800, "Request cancelled")))
+                [makeResponseMessage(id, Error(-32800, "Request cancelled"))]
             | Some(id) =>
                 let result = handler.handleRequest(system, message.method, message.parameters)
-                Some(makeResponseMessage(id, result))
+                [makeResponseMessage(id, result)]
         }
     } catchAny {error =>
         //system.files().writeText("lsp-failure.txt", error.name() + ": " + error.message())
