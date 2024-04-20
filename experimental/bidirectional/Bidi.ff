@@ -23,8 +23,6 @@ check(c0: Context, t0: Type, e0: Expression): Unit {
                 | _ =>
                     throw(TypeError("Function type not expected here"))
             }
-        | EAnnotate(t1, e1) =>
-            check(c0, t1, e1)
         | _ => 
             let t1 = infer(c0, e0)
             checkSame(t0, t1)
