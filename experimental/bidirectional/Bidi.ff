@@ -7,9 +7,7 @@ data Expression {
 
 data Type(name: String, typeArguments: List[Type])
 
-data Context(
-    variables: Map[String, Type]
-)
+data Context(variables: Map[String, Type])
 
 data TypeError(message: String)
 
