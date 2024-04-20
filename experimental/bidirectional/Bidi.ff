@@ -14,12 +14,6 @@ data TypeError(message: String)
 
 check(c0: Context, t0: Type, e0: Expression): Unit {
     e0.{
-        | EVariable _ => 
-            let t1 = infer(c0, e0)
-            checkSame(t0, t1)
-        | EApply _ => 
-            let t1 = infer(c0, e0)
-            checkSame(t0, t1)
         | ELambda(x1, e1) => 
             t0.{
                 | Type("Function", [t2, t3]) =>
@@ -27,10 +21,13 @@ check(c0: Context, t0: Type, e0: Expression): Unit {
                     check(c2, t3, e1)
                     t3
                 | _ =>
-                    throw(TypeError("Can't call non-functions"))
+                    throw(TypeError("Function type not expected here"))
             }
         | EAnnotate(t1, e1) =>
             check(c0, t1, e1)
+        | _ => 
+            let t1 = infer(c0, e0)
+            checkSame(t0, t1)
     }
 }
 
