@@ -74,6 +74,6 @@ checkSame(t1: Type, t2: Type): Unit {
         ))
     }
     t1.typeArguments.zip(t2.typeArguments).each {| Pair(t3, t4) =>
-        checkSame(t1, t2)
+        checkSame(t3, t4)
     }
 }
