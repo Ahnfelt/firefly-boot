@@ -51,6 +51,7 @@ infer(c0: Context, e0: Expression): Type {
         | ELambda _ => 
             throw(TypeError("Lambda functions must be explicitly typed"))
         | EAnnotate(t1, e1) =>
+            checkType(t1)
             check(c0, t1, e1)
             t1
     }
@@ -58,15 +59,29 @@ infer(c0: Context, e0: Expression): Type {
 
 
 checkSame(t1: Type, t2: Type): Unit {
-    if(t1.name != t2.name) {throw(TypeError("Type mismatch: " + t1.name + " vs. " + t2.name))}
+    if(t1.name != t2.name) {throw(TypeError("Type mismatch: " + t1.name + " vs. " + t2.name + ""))}
     if(t1.typeArguments.size() != t2.typeArguments.size()) {
         throw(TypeError(
             "Type mismatch: " + t1.name + " with " + 
             t1.typeArguments.size() + " vs. " + t2.typeArguments.size() +
-            " type arguments."
+            " type arguments"
         ))
     }
     t1.typeArguments.zip(t2.typeArguments).each {| Pair(t3, t4) =>
         checkSame(t3, t4)
+    }
+}
+
+checkType(t0: Type): Unit {
+    t0.{
+        | Type("Function", [t1, t2]) =>
+            checkType(t1)
+            checkType(t2)
+        | Type("Bool", []) =>
+        | Type("Int", []) =>
+        | Type("List", [t1]) =>
+            checkType(t1)
+        | _ =>
+            throw(TypeError("Type is not well formed"))
     }
 }
