@@ -22,11 +22,11 @@ check(c0: Context, t0: Type, e0: Expression): Unit {
         | EApply _ => 
             let t1 = infer(c0, e0)
             checkSame(t0, t1)
-        | ELambda(variable, body) => 
+        | ELambda(x1, e1) => 
             t0.{
                 | Type("Function", [t2, t3]) =>
-                    let c2 = c0.Context(variables = c0.variables.add(variable, t2))
-                    check(c2, t3, body)
+                    let c2 = c0.Context(variables = c0.variables.add(x1, t2))
+                    check(c2, t3, e1)
                     t3
                 | _ =>
                     throw(TypeError("Can't call non-functions"))
@@ -39,33 +39,33 @@ check(c0: Context, t0: Type, e0: Expression): Unit {
 
 infer(c0: Context, e0: Expression): Type {
     e0.{
-        | EVariable(name) => 
-            c0.variables.get(name).{
+        | EVariable(x1) => 
+            c0.variables.get(x1).{
                 | None => 
-                    throw(TypeError("Variable not in scope: " + name))
+                    throw(TypeError("Variable not in scope: " + x1))
                 | Some(t1) => 
                     t1
             }
-        | EApply(function, argument) => 
-            let t1 = infer(c0, function)
+        | EApply(e1, e2) => 
+            let t1 = infer(c0, e1)
             t1.{
                 | Type("Function", [t2, t3]) =>
-                    check(c0, t2, argument)
+                    check(c0, t2, e2)
                     t3
                 | _ =>
                     throw(TypeError("Can't call non-functions"))
             }
-        | ELambda(variable, body) => 
+        | ELambda _ => 
             throw(TypeError("Lambda functions must be explicitly typed"))
-        | EAnnotate(t1, expression) =>
-            check(c0, t1, expression)
+        | EAnnotate(t1, e1) =>
+            check(c0, t1, e1)
             t1
     }
 }
 
 
 checkSame(t1: Type, t2: Type): Unit {
-    if(t1.name != t2.name) {throw(TypeError("Type mismatch: " + t1 + " vs. " + t2))}
+    if(t1.name != t2.name) {throw(TypeError("Type mismatch: " + t1.name + " vs. " + t2.name))}
     if(t1.typeArguments.size() != t2.typeArguments.size()) {
         throw(TypeError(
             "Type mismatch: " + t1.name + " with " + 
