@@ -77,7 +77,6 @@ extend self: Handler {
                 diagnostics.map {Pair("textDocument/publishDiagnostics", _)}
             | "exit" => 
                 system.exit(0)
-                []
             | _ =>
                 []
         }
