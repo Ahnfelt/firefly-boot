@@ -26,11 +26,7 @@ extend self: ModuleCache {
         moduleName: String
         body: Path => Module
     ): Module {
-        let packagePath = packagePaths.get(packagePair).else {
-            panic("Internal error - package path missing: " + packagePair.groupName())
-        }
-        let file = moduleName + ".ff"
-        let path = packagePath.slash(file)
+        let path = internalModulePath(packagePaths, packagePair, moduleName)
         self.parsedModules.get(path.absolute()).else:
         let result = body(path)
         self.parsedModules = self.parsedModules.add(path.absolute(), result)
@@ -43,11 +39,7 @@ extend self: ModuleCache {
         moduleName: String
         body: Path => Module
     ): Module {
-        let packagePath = packagePaths.get(packagePair).else {
-            panic("Internal error - package path missing: " + packagePair.groupName())
-        }
-        let file = moduleName + ".ff"
-        let path = packagePath.slash(file)
+        let path = internalModulePath(packagePaths, packagePair, moduleName)
         self.resolvedModules.get(path.absolute()).else:
         let result = body(path)
         self.resolvedModules = self.resolvedModules.add(path.absolute(), result)
@@ -60,11 +52,7 @@ extend self: ModuleCache {
         moduleName: String
         body: Path => Module
     ): Module {
-        let packagePath = packagePaths.get(packagePair).else {
-            panic("Internal error - package path missing: " + packagePair.groupName())
-        }
-        let file = moduleName + ".ff"
-        let path = packagePath.slash(file)
+        let path = internalModulePath(packagePaths, packagePair, moduleName)
         self.derivedModules.get(path.absolute()).else:
         let result = body(path)
         self.derivedModules = self.derivedModules.add(path.absolute(), result)
@@ -77,11 +65,7 @@ extend self: ModuleCache {
         moduleName: String
         body: Path => Module
     ): Module {
-        let packagePath = packagePaths.get(packagePair).else {
-            panic("Internal error - package path missing: " + packagePair.groupName())
-        }
-        let file = moduleName + ".ff"
-        let path = packagePath.slash(file)
+        let path = internalModulePath(packagePaths, packagePair, moduleName)
         self.inferredModules.get(path.absolute()).else:
         let result = body(path)
         self.inferredModules = self.inferredModules.add(path.absolute(), result)
@@ -94,11 +78,7 @@ extend self: ModuleCache {
         moduleName: String
         body: Path => Unit
     ): Unit {
-        let packagePath = packagePaths.get(packagePair).else {
-            panic("Internal error - package path missing: " + packagePair.groupName())
-        }
-        let file = moduleName + ".ff"
-        let path = packagePath.slash(file)
+        let path = internalModulePath(packagePaths, packagePair, moduleName)
         if(!self.emittedModules.contains(path.absolute())):
         self.emittedModules = self.emittedModules.add(path.absolute())
         try {
@@ -109,4 +89,16 @@ extend self: ModuleCache {
         } grab()
     }
     
+}
+
+internalModulePath(
+    packagePaths: Map[PackagePair, Path]
+    packagePair: PackagePair
+    moduleName: String
+): Path {
+    let packagePath = packagePaths.get(packagePair).else {
+        panic("Internal error - package path missing: " + packagePair.groupName())
+    }
+    let file = moduleName + ".ff"
+    packagePath.slash(file)
 }
