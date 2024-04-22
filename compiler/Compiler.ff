@@ -1,5 +1,6 @@
 import Syntax
 import Tokenizer
+import ModuleCache
 import Parser
 import Resolver
 import Deriver
@@ -24,6 +25,7 @@ capability Compiler(
     mutable inferredModules: Map[String, Module]
     mutable emittedModules: Set[String]
     mutable phaseDurationDelta: Duration
+    cache: ModuleCache
     phaseDurations: Array[Pair[String, Duration]]
 )
 
@@ -52,6 +54,7 @@ make(
         emittedModules = Set.empty()
         phaseDurationDelta = Duration(0.0)
         phaseDurations = [].toArray()
+        cache = ModuleCache.empty()
     )
 }
 
@@ -138,14 +141,9 @@ extend self: Compiler {
     }
 
     parse(packagePair: PackagePair, moduleName: String, importedAt: Option[Location]): Module {
+        self.cache.cacheParsedModule(self.packagePaths, packagePair, moduleName): path => 
         let packageName = packagePair.groupName()
-        self.parsedModules.get(packageName + ":" + moduleName).else:
         self.measure("Parse", packagePair, moduleName):
-        let packagePath = self.packagePaths.get(packagePair).else {
-            panic("Internal error - package path missing: " + packagePair.groupName())
-        }
-        let file = moduleName + ".ff"
-        let path = packagePath.slash(file)
         let code = self.virtualFiles.get(path.absolute()).else {
             importedAt.each {at => if(!path.exists()) {
                 throw(CompileError(at, "Imported module not found: " + packageName + "/" + moduleName))
@@ -154,7 +152,7 @@ extend self: Compiler {
         }
         let completionAt = if(self.lspHook.isEnabled() && self.lspHook.insertIdentifier) {self.lspHook.at}
         let tokens = Tokenizer.tokenize(path.absolute(), code, completionAt, self.lspHook.isEnabled())
-        let parser = Parser.make(packagePair, file, tokens, self.emitTarget != EmitBrowser, self.lspHook)
+        let parser = Parser.make(packagePair, path.base(), tokens, self.emitTarget != EmitBrowser, self.lspHook)
         let module = if(self.singleFilePackages.contains(packagePair)) {
             parser.parseModuleWithPackageInfo().module
         } else {
@@ -163,7 +161,6 @@ extend self: Compiler {
         let result = module.Module(
             imports = [...coreImports, ...module.imports]
         )
-        self.parsedModules = self.parsedModules.add(packageName + ":" + moduleName, result)
         result
     }
 

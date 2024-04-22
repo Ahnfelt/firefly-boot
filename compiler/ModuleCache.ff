@@ -1,0 +1,42 @@
+import Syntax
+
+class ModuleCache(
+    mutable parsedModules: Map[String, Module]
+    mutable resolvedModules: Map[String, Module]
+    mutable derivedModules: Map[String, Module]
+    mutable inferredModules: Map[String, Module]
+    mutable emittedModules: Set[String]
+)
+
+empty(): ModuleCache {
+    ModuleCache(
+        parsedModules = Map.empty()
+        resolvedModules = Map.empty()
+        derivedModules = Map.empty()
+        inferredModules = Map.empty()
+        emittedModules = Set.empty()
+    )
+}
+
+extend self: ModuleCache {
+    
+    cacheParsedModule(
+        packagePaths: Map[PackagePair, Path]
+        packagePair: PackagePair
+        moduleName: String
+        body: Path => Module
+    ): Module {
+        let packagePath = packagePaths.get(packagePair).else {
+            panic("Internal error - package path missing: " + packagePair.groupName())
+        }
+        let file = moduleName + ".ff"
+        let path = packagePath.slash(file)
+        self.parsedModules.get(path.absolute()).else:
+        let result = body(path)
+        self.parsedModules = self.parsedModules.add(path.absolute(), result)
+        result
+    }
+    
+    
+    
+}

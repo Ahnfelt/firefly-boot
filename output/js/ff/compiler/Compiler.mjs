@@ -14,6 +14,8 @@ import * as ff_compiler_JsEmitter from "../../ff/compiler/JsEmitter.mjs"
 
 import * as ff_compiler_LspHook from "../../ff/compiler/LspHook.mjs"
 
+import * as ff_compiler_ModuleCache from "../../ff/compiler/ModuleCache.mjs"
+
 import * as ff_compiler_Parser from "../../ff/compiler/Parser.mjs"
 
 import * as ff_compiler_Resolver from "../../ff/compiler/Resolver.mjs"
@@ -111,8 +113,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Compiler
-export function Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, lspHook_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_, phaseDurationDelta_, phaseDurations_) {
-return {emitTarget_, task_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, lspHook_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_, phaseDurationDelta_, phaseDurations_};
+export function Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, lspHook_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_, phaseDurationDelta_, cache_, phaseDurations_) {
+return {emitTarget_, task_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, lspHook_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_, phaseDurationDelta_, cache_, phaseDurations_};
 }
 
 export const coreImports_ = ff_core_List.List_map(["Any", "Array", "AssetSystem", "Atomic", "Bool", "BrowserSystem", "Buffer", "BuildSystem", "Channel", "Char", "Core", "Duration", "Equal", "Error", "FileHandle", "Float", "HttpClient", "Instant", "Int", "IntMap", "Json", "JsValue", "JsSystem", "List", "Lock", "Log", "Map", "NodeSystem", "Nothing", "Option", "Ordering", "Pair", "Path", "Random", "Serializable", "Set", "Show", "SourceLocation", "Stream", "String", "StringMap", "Task", "Try", "Unit"], ((moduleName_) => {
@@ -120,7 +122,7 @@ return ff_compiler_Syntax.DImport(ff_compiler_Syntax.Location("<prelude>", 1, 1)
 }));
 
 export function make_(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_, virtualFiles_, lspHook_) {
-return ff_compiler_Compiler.Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, lspHook_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), 0.0, ff_core_List.List_toArray([]))
+return ff_compiler_Compiler.Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, lspHook_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), 0.0, ff_compiler_ModuleCache.empty_(), ff_core_List.List_toArray([]))
 }
 
 export function fail_(at_, message_) {
@@ -128,7 +130,7 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 }
 
 export async function make_$(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_, virtualFiles_, lspHook_, $task) {
-return ff_compiler_Compiler.Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, lspHook_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), 0.0, ff_core_List.List_toArray([]))
+return ff_compiler_Compiler.Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, lspHook_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), 0.0, ff_compiler_ModuleCache.empty_(), ff_core_List.List_toArray([]))
 }
 
 export async function fail_$(at_, message_, $task) {
@@ -161,14 +163,9 @@ return
 }
 
 export function Compiler_parse(self_, packagePair_, moduleName_, importedAt_) {
+return ff_compiler_ModuleCache.ModuleCache_cacheParsedModule(self_.cache_, self_.packagePaths_, packagePair_, moduleName_, ((path_) => {
 const packageName_ = ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":");
-return ff_core_Option.Option_else(ff_core_Map.Map_get(self_.parsedModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 return ff_compiler_Compiler.Compiler_measure(self_, "Parse", packagePair_, moduleName_, (() => {
-const packagePath_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.packagePaths_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), (() => {
-return ff_core_Core.panic_(("Internal error - package path missing: " + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
-}));
-const file_ = (moduleName_ + ".ff");
-const path_ = ff_core_Path.Path_slash(packagePath_, file_);
 const code_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.virtualFiles_, ff_core_Path.Path_absolute(path_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 ff_core_Option.Option_each(importedAt_, ((at_) => {
 if((!ff_core_Path.Path_exists(path_, false, false, false))) {
@@ -181,14 +178,13 @@ const completionAt_ = ((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) &&
 ? ff_core_Option.Some(self_.lspHook_.at_)
 : ff_core_Option.None());
 const tokens_ = ff_compiler_Tokenizer.tokenize_(ff_core_Path.Path_absolute(path_), code_, completionAt_, ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_));
-const parser_ = ff_compiler_Parser.make_(packagePair_, file_, tokens_, ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget), self_.lspHook_);
+const parser_ = ff_compiler_Parser.make_(packagePair_, ff_core_Path.Path_base(path_), tokens_, ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget), self_.lspHook_);
 const module_ = (ff_core_Set.Set_contains(self_.singleFilePackages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_
 : ff_compiler_Parser.Parser_parseModuleWithoutPackageInfo(parser_));
 const result_ = (((_c) => {
 return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, [...ff_compiler_Compiler.coreImports_, ...module_.imports_], _c.types_, _c.traits_, _c.instances_, _c.extends_, _c.lets_, _c.functions_)
 }))(module_);
-self_.parsedModules_ = ff_core_Map.Map_add(self_.parsedModules_, ((packageName_ + ":") + moduleName_), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return result_
 }))
 }))
@@ -299,14 +295,9 @@ return
 }
 
 export async function Compiler_parse$(self_, packagePair_, moduleName_, importedAt_, $task) {
+return (await ff_compiler_ModuleCache.ModuleCache_cacheParsedModule$(self_.cache_, self_.packagePaths_, packagePair_, moduleName_, (async (path_, $task) => {
 const packageName_ = ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":");
-return (await ff_core_Option.Option_else$(ff_core_Map.Map_get(self_.parsedModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async ($task) => {
 return (await ff_compiler_Compiler.Compiler_measure$(self_, "Parse", packagePair_, moduleName_, (async ($task) => {
-const packagePath_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.packagePaths_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), (() => {
-return ff_core_Core.panic_(("Internal error - package path missing: " + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
-}));
-const file_ = (moduleName_ + ".ff");
-const path_ = (await ff_core_Path.Path_slash$(packagePath_, file_, $task));
 const code_ = (await ff_core_Option.Option_else$(ff_core_Map.Map_get(self_.virtualFiles_, (await ff_core_Path.Path_absolute$(path_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async ($task) => {
 (await ff_core_Option.Option_each$(importedAt_, (async (at_, $task) => {
 if((!(await ff_core_Path.Path_exists$(path_, false, false, false, $task)))) {
@@ -319,14 +310,13 @@ const completionAt_ = ((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) &&
 ? ff_core_Option.Some(self_.lspHook_.at_)
 : ff_core_Option.None());
 const tokens_ = ff_compiler_Tokenizer.tokenize_((await ff_core_Path.Path_absolute$(path_, $task)), code_, completionAt_, ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_));
-const parser_ = ff_compiler_Parser.make_(packagePair_, file_, tokens_, ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget), self_.lspHook_);
+const parser_ = ff_compiler_Parser.make_(packagePair_, (await ff_core_Path.Path_base$(path_, $task)), tokens_, ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget), self_.lspHook_);
 const module_ = (ff_core_Set.Set_contains(self_.singleFilePackages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_
 : ff_compiler_Parser.Parser_parseModuleWithoutPackageInfo(parser_));
 const result_ = (((_c) => {
 return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, [...ff_compiler_Compiler.coreImports_, ...module_.imports_], _c.types_, _c.traits_, _c.instances_, _c.extends_, _c.lets_, _c.functions_)
 }))(module_);
-self_.parsedModules_ = ff_core_Map.Map_add(self_.parsedModules_, ((packageName_ + ":") + moduleName_), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return result_
 }), $task))
 }), $task))
