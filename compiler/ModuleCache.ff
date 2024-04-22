@@ -37,6 +37,76 @@ extend self: ModuleCache {
         result
     }
     
-    
+    cacheResolvedModule(
+        packagePaths: Map[PackagePair, Path]
+        packagePair: PackagePair
+        moduleName: String
+        body: Path => Module
+    ): Module {
+        let packagePath = packagePaths.get(packagePair).else {
+            panic("Internal error - package path missing: " + packagePair.groupName())
+        }
+        let file = moduleName + ".ff"
+        let path = packagePath.slash(file)
+        self.resolvedModules.get(path.absolute()).else:
+        let result = body(path)
+        self.resolvedModules = self.resolvedModules.add(path.absolute(), result)
+        result
+    }
+        
+    cacheDerivedModule(
+        packagePaths: Map[PackagePair, Path]
+        packagePair: PackagePair
+        moduleName: String
+        body: Path => Module
+    ): Module {
+        let packagePath = packagePaths.get(packagePair).else {
+            panic("Internal error - package path missing: " + packagePair.groupName())
+        }
+        let file = moduleName + ".ff"
+        let path = packagePath.slash(file)
+        self.derivedModules.get(path.absolute()).else:
+        let result = body(path)
+        self.derivedModules = self.derivedModules.add(path.absolute(), result)
+        result
+    }
+        
+    cacheInferredModule(
+        packagePaths: Map[PackagePair, Path]
+        packagePair: PackagePair
+        moduleName: String
+        body: Path => Module
+    ): Module {
+        let packagePath = packagePaths.get(packagePair).else {
+            panic("Internal error - package path missing: " + packagePair.groupName())
+        }
+        let file = moduleName + ".ff"
+        let path = packagePath.slash(file)
+        self.inferredModules.get(path.absolute()).else:
+        let result = body(path)
+        self.inferredModules = self.inferredModules.add(path.absolute(), result)
+        result
+    }
+ 
+    cacheEmittedModule(
+        packagePaths: Map[PackagePair, Path]
+        packagePair: PackagePair
+        moduleName: String
+        body: Path => Unit
+    ): Unit {
+        let packagePath = packagePaths.get(packagePair).else {
+            panic("Internal error - package path missing: " + packagePair.groupName())
+        }
+        let file = moduleName + ".ff"
+        let path = packagePath.slash(file)
+        if(!self.emittedModules.contains(path.absolute())):
+        self.emittedModules = self.emittedModules.add(path.absolute())
+        try {
+            body(path)
+        } catchAny {error =>
+            self.emittedModules = self.emittedModules.remove(path.absolute())
+            error.rethrow()
+        } grab()
+    }
     
 }

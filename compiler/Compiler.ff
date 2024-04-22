@@ -19,11 +19,6 @@ capability Compiler(
     singleFilePackages: Set[PackagePair]
     virtualFiles: Map[String, String]
     lspHook: LspHook
-    mutable parsedModules: Map[String, Module]
-    mutable resolvedModules: Map[String, Module]
-    mutable derivedModules: Map[String, Module]
-    mutable inferredModules: Map[String, Module]
-    mutable emittedModules: Set[String]
     mutable phaseDurationDelta: Duration
     cache: ModuleCache
     phaseDurations: Array[Pair[String, Duration]]
@@ -47,11 +42,6 @@ make(
         singleFilePackages = resolvedDependencies.singleFilePackages
         virtualFiles = virtualFiles
         lspHook = lspHook
-        parsedModules = Map.empty()
-        resolvedModules = Map.empty()
-        derivedModules = Map.empty()
-        inferredModules = Map.empty()
-        emittedModules = Set.empty()
         phaseDurationDelta = Duration(0.0)
         phaseDurations = [].toArray()
         cache = ModuleCache.empty()
@@ -176,34 +166,25 @@ extend self: Compiler {
     }
 
     resolve(packagePair: PackagePair, moduleName: String): Module {
-        let packageName = packagePair.groupName()
-        self.resolvedModules.get(packageName + ":" + moduleName).else:
+        self.cache.cacheResolvedModule(self.packagePaths, packagePair, moduleName): path => 
         self.measure("Resolve", packagePair, moduleName):
 
         let module = self.parse(packagePair, moduleName, None)
         let otherModules = self.imports(module)
         let resolver = Resolver.make(packagePair, moduleName, self.lspHook)
-        let result = resolver.resolveModule(module, otherModules)
-
-        self.resolvedModules = self.resolvedModules.add(packageName + ":" + moduleName, result)
-        result
+        resolver.resolveModule(module, otherModules)
     }
 
     derive(packagePair: PackagePair, moduleName: String): Module {
-        let packageName = packagePair.groupName()
-        self.derivedModules.get(packageName + ":" + moduleName).else:
+        self.cache.cacheDerivedModule(self.packagePaths, packagePair, moduleName): path => 
         self.measure("Derive", packagePair, moduleName):
 
         let module = self.resolve(packagePair, moduleName)
-        let result = Deriver.make().deriveModule(module)
-
-        self.derivedModules = self.derivedModules.add(packageName + ":" + moduleName, result)
-        result
+        Deriver.make().deriveModule(module)
     }
 
     infer(packagePair: PackagePair, moduleName: String): Module {
-        let packageName = packagePair.groupName()
-        self.inferredModules.get(packageName + ":" + moduleName).else:
+        self.cache.cacheInferredModule(self.packagePaths, packagePair, moduleName): path => 
         self.measure("Infer", packagePair, moduleName):
 
         let module = self.derive(packagePair, moduleName)
@@ -212,17 +193,12 @@ extend self: Compiler {
         }
         let inference = Inference.make([module, ...otherModules], self.lspHook)
         let inferredModule = inference.inferModule(module, otherModules)
-        let result = Dictionaries.make([module, ...otherModules]).processModule(inferredModule, otherModules)
-
-        self.inferredModules = self.inferredModules.add(packageName + ":" + moduleName, result)
-        result
+        Dictionaries.make([module, ...otherModules]).processModule(inferredModule, otherModules)
     }
 
     emit(packagePair: PackagePair, moduleName: String, isMainModule: Bool): Unit {
-        let packageName = packagePair.groupName()
-        if(self.emittedModules.contains(packageName + ":" + moduleName)) {} else:
+        self.cache.cacheEmittedModule(self.packagePaths, packagePair, moduleName): path => 
         self.measure("Emit", packagePair, moduleName):
-        self.emittedModules = self.emittedModules.add(packageName + ":" + moduleName)
 
         let module = self.infer(packagePair, moduleName)
         let otherModules = self.imports(module).map {i =>

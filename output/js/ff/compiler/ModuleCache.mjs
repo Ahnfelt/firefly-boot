@@ -120,6 +120,62 @@ return result_
 }))
 }
 
+export function ModuleCache_cacheResolvedModule(self_, packagePaths_, packagePair_, moduleName_, body_) {
+const packagePath_ = ff_core_Option.Option_else(ff_core_Map.Map_get(packagePaths_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), (() => {
+return ff_core_Core.panic_(("Internal error - package path missing: " + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
+}));
+const file_ = (moduleName_ + ".ff");
+const path_ = ff_core_Path.Path_slash(packagePath_, file_);
+return ff_core_Option.Option_else(ff_core_Map.Map_get(self_.resolvedModules_, ff_core_Path.Path_absolute(path_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
+const result_ = body_(path_);
+self_.resolvedModules_ = ff_core_Map.Map_add(self_.resolvedModules_, ff_core_Path.Path_absolute(path_), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+return result_
+}))
+}
+
+export function ModuleCache_cacheDerivedModule(self_, packagePaths_, packagePair_, moduleName_, body_) {
+const packagePath_ = ff_core_Option.Option_else(ff_core_Map.Map_get(packagePaths_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), (() => {
+return ff_core_Core.panic_(("Internal error - package path missing: " + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
+}));
+const file_ = (moduleName_ + ".ff");
+const path_ = ff_core_Path.Path_slash(packagePath_, file_);
+return ff_core_Option.Option_else(ff_core_Map.Map_get(self_.derivedModules_, ff_core_Path.Path_absolute(path_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
+const result_ = body_(path_);
+self_.derivedModules_ = ff_core_Map.Map_add(self_.derivedModules_, ff_core_Path.Path_absolute(path_), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+return result_
+}))
+}
+
+export function ModuleCache_cacheInferredModule(self_, packagePaths_, packagePair_, moduleName_, body_) {
+const packagePath_ = ff_core_Option.Option_else(ff_core_Map.Map_get(packagePaths_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), (() => {
+return ff_core_Core.panic_(("Internal error - package path missing: " + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
+}));
+const file_ = (moduleName_ + ".ff");
+const path_ = ff_core_Path.Path_slash(packagePath_, file_);
+return ff_core_Option.Option_else(ff_core_Map.Map_get(self_.inferredModules_, ff_core_Path.Path_absolute(path_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
+const result_ = body_(path_);
+self_.inferredModules_ = ff_core_Map.Map_add(self_.inferredModules_, ff_core_Path.Path_absolute(path_), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+return result_
+}))
+}
+
+export function ModuleCache_cacheEmittedModule(self_, packagePaths_, packagePair_, moduleName_, body_) {
+const packagePath_ = ff_core_Option.Option_else(ff_core_Map.Map_get(packagePaths_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), (() => {
+return ff_core_Core.panic_(("Internal error - package path missing: " + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
+}));
+const file_ = (moduleName_ + ".ff");
+const path_ = ff_core_Path.Path_slash(packagePath_, file_);
+if((!ff_core_Set.Set_contains(self_.emittedModules_, ff_core_Path.Path_absolute(path_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
+self_.emittedModules_ = ff_core_Set.Set_add(self_.emittedModules_, ff_core_Path.Path_absolute(path_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+ff_core_Try.Try_grab(ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+return body_(path_)
+})), ((error_) => {
+self_.emittedModules_ = ff_core_Set.Set_remove(self_.emittedModules_, ff_core_Path.Path_absolute(path_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+ff_core_Error.Error_rethrow(error_)
+})))
+}
+}
+
 export async function ModuleCache_cacheParsedModule$(self_, packagePaths_, packagePair_, moduleName_, body_, $task) {
 const packagePath_ = ff_core_Option.Option_else(ff_core_Map.Map_get(packagePaths_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), (() => {
 return ff_core_Core.panic_(("Internal error - package path missing: " + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
@@ -131,6 +187,62 @@ const result_ = (await body_(path_, $task));
 self_.parsedModules_ = ff_core_Map.Map_add(self_.parsedModules_, (await ff_core_Path.Path_absolute$(path_, $task)), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return result_
 }), $task))
+}
+
+export async function ModuleCache_cacheResolvedModule$(self_, packagePaths_, packagePair_, moduleName_, body_, $task) {
+const packagePath_ = ff_core_Option.Option_else(ff_core_Map.Map_get(packagePaths_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), (() => {
+return ff_core_Core.panic_(("Internal error - package path missing: " + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
+}));
+const file_ = (moduleName_ + ".ff");
+const path_ = (await ff_core_Path.Path_slash$(packagePath_, file_, $task));
+return (await ff_core_Option.Option_else$(ff_core_Map.Map_get(self_.resolvedModules_, (await ff_core_Path.Path_absolute$(path_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async ($task) => {
+const result_ = (await body_(path_, $task));
+self_.resolvedModules_ = ff_core_Map.Map_add(self_.resolvedModules_, (await ff_core_Path.Path_absolute$(path_, $task)), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+return result_
+}), $task))
+}
+
+export async function ModuleCache_cacheDerivedModule$(self_, packagePaths_, packagePair_, moduleName_, body_, $task) {
+const packagePath_ = ff_core_Option.Option_else(ff_core_Map.Map_get(packagePaths_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), (() => {
+return ff_core_Core.panic_(("Internal error - package path missing: " + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
+}));
+const file_ = (moduleName_ + ".ff");
+const path_ = (await ff_core_Path.Path_slash$(packagePath_, file_, $task));
+return (await ff_core_Option.Option_else$(ff_core_Map.Map_get(self_.derivedModules_, (await ff_core_Path.Path_absolute$(path_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async ($task) => {
+const result_ = (await body_(path_, $task));
+self_.derivedModules_ = ff_core_Map.Map_add(self_.derivedModules_, (await ff_core_Path.Path_absolute$(path_, $task)), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+return result_
+}), $task))
+}
+
+export async function ModuleCache_cacheInferredModule$(self_, packagePaths_, packagePair_, moduleName_, body_, $task) {
+const packagePath_ = ff_core_Option.Option_else(ff_core_Map.Map_get(packagePaths_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), (() => {
+return ff_core_Core.panic_(("Internal error - package path missing: " + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
+}));
+const file_ = (moduleName_ + ".ff");
+const path_ = (await ff_core_Path.Path_slash$(packagePath_, file_, $task));
+return (await ff_core_Option.Option_else$(ff_core_Map.Map_get(self_.inferredModules_, (await ff_core_Path.Path_absolute$(path_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async ($task) => {
+const result_ = (await body_(path_, $task));
+self_.inferredModules_ = ff_core_Map.Map_add(self_.inferredModules_, (await ff_core_Path.Path_absolute$(path_, $task)), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+return result_
+}), $task))
+}
+
+export async function ModuleCache_cacheEmittedModule$(self_, packagePaths_, packagePair_, moduleName_, body_, $task) {
+const packagePath_ = ff_core_Option.Option_else(ff_core_Map.Map_get(packagePaths_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), (() => {
+return ff_core_Core.panic_(("Internal error - package path missing: " + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
+}));
+const file_ = (moduleName_ + ".ff");
+const path_ = (await ff_core_Path.Path_slash$(packagePath_, file_, $task));
+if((!ff_core_Set.Set_contains(self_.emittedModules_, (await ff_core_Path.Path_absolute$(path_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
+self_.emittedModules_ = ff_core_Set.Set_add(self_.emittedModules_, (await ff_core_Path.Path_absolute$(path_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+ff_core_Try.Try_grab((await ff_core_Try.Try_catchAny$((await ff_core_Core.try_$((async ($task) => {
+return (await body_(path_, $task))
+}), $task)), (async (error_, $task) => {
+self_.emittedModules_ = ff_core_Set.Set_remove(self_.emittedModules_, (await ff_core_Path.Path_absolute$(path_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+ff_core_Error.Error_rethrow(error_)
+}), $task)))
+}
 }
 
 
