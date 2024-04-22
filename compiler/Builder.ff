@@ -112,16 +112,18 @@ check(
             resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath.slash("core"))
         }
         let fixedResolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
-        let compiler = Compiler.make(
-            EmitBuild
-            system.mainTask() 
-            None
-            package.root.slash(".firefly").slash("temporary")
-            fixedResolvedDependencies
-            virtualFiles
-            cache
-            lspHook
-        )
+        let compiler = cache.without(path, when = lspHook.isEnabled()) {newCache => 
+            Compiler.make(
+                EmitBuild
+                system.mainTask() 
+                None
+                package.root.slash(".firefly").slash("temporary")
+                fixedResolvedDependencies
+                virtualFiles
+                newCache
+                lspHook
+            )
+        }
         package.files.each {file =>
             let localFile = file.base()
             try {

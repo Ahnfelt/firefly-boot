@@ -20,6 +20,22 @@ empty(): ModuleCache {
 
 extend self: ModuleCache {
     
+    without[R](path: Path, when: Bool, body: ModuleCache => R): R {
+        if(when && path.isFile()) {
+            let key = path.absolute()
+            let newCache = self.ModuleCache(
+                parsedModules = self.parsedModules.remove(key)
+                resolvedModules = self.resolvedModules.remove(key)
+                derivedModules = self.derivedModules.remove(key)
+                inferredModules = self.inferredModules.remove(key)
+                emittedModules = self.emittedModules.remove(key)
+            )
+            body(newCache)
+        } else {
+            body(self)
+        }
+    }
+    
     cacheParsedModule(
         packagePaths: Map[PackagePair, Path]
         packagePair: PackagePair
