@@ -21,15 +21,26 @@ empty(): ModuleCache {
 extend self: ModuleCache {
     
     without[R](path: Path, when: Bool, body: ModuleCache => R): R {
-        if(when && path.isFile()) {
+        if(when) {
             let key = path.absolute()
-            let newCache = self.ModuleCache(
-                parsedModules = self.parsedModules.remove(key)
-                resolvedModules = self.resolvedModules.remove(key)
-                derivedModules = self.derivedModules.remove(key)
-                inferredModules = self.inferredModules.remove(key)
-                emittedModules = self.emittedModules.remove(key)
-            )
+            let newCache = if(path.isFile()) {
+                self.ModuleCache(
+                    parsedModules = self.parsedModules.remove(key)
+                    resolvedModules = self.resolvedModules.remove(key)
+                    derivedModules = self.derivedModules.remove(key)
+                    inferredModules = self.inferredModules.remove(key)
+                    emittedModules = self.emittedModules.remove(key)
+                )
+            } else {
+                self.ModuleCache(
+                    // TODO add fitter to Map and Set
+                    parsedModules = self.parsedModules.toList().filter {| Pair(p, _) => !p.startsWith(key) || p.contains(".firefly/dependencies")}.toMap()
+                    resolvedModules = self.resolvedModules.toList().filter {| Pair(p, _) => !p.startsWith(key) || p.contains(".firefly/dependencies")}.toMap()
+                    derivedModules = self.derivedModules.toList().filter {| Pair(p, _) => !p.startsWith(key) || p.contains(".firefly/dependencies")}.toMap()
+                    inferredModules = self.inferredModules.toList().filter {| Pair(p, _) => !p.startsWith(key) || p.contains(".firefly/dependencies")}.toMap()
+                    emittedModules = self.emittedModules.toList().filter {p => !p.startsWith(key) || p.contains(".firefly/dependencies")}.toSet()
+                )
+            }
             body(newCache)
         } else {
             body(self)
