@@ -19,8 +19,8 @@ capability Compiler(
     singleFilePackages: Set[PackagePair]
     virtualFiles: Map[String, String]
     lspHook: LspHook
-    mutable phaseDurationDelta: Duration
     cache: ModuleCache
+    mutable phaseDurationDelta: Duration
     phaseDurations: Array[Pair[String, Duration]]
 )
 
@@ -42,9 +42,9 @@ make(
         singleFilePackages = resolvedDependencies.singleFilePackages
         virtualFiles = virtualFiles
         lspHook = lspHook
+        cache = ModuleCache.empty()
         phaseDurationDelta = Duration(0.0)
         phaseDurations = [].toArray()
-        cache = ModuleCache.empty()
     )
 }
 
