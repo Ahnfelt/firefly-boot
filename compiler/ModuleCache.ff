@@ -26,7 +26,7 @@ extend self: ModuleCache {
         moduleName: String
         body: Path => Module
     ): Module {
-        let path = internalModulePath(packagePaths, packagePair, moduleName)
+        let path = modulePath(packagePaths, packagePair, moduleName)
         self.parsedModules.get(path.absolute()).else:
         let result = body(path)
         self.parsedModules = self.parsedModules.add(path.absolute(), result)
@@ -39,7 +39,7 @@ extend self: ModuleCache {
         moduleName: String
         body: Path => Module
     ): Module {
-        let path = internalModulePath(packagePaths, packagePair, moduleName)
+        let path = modulePath(packagePaths, packagePair, moduleName)
         self.resolvedModules.get(path.absolute()).else:
         let result = body(path)
         self.resolvedModules = self.resolvedModules.add(path.absolute(), result)
@@ -52,7 +52,7 @@ extend self: ModuleCache {
         moduleName: String
         body: Path => Module
     ): Module {
-        let path = internalModulePath(packagePaths, packagePair, moduleName)
+        let path = modulePath(packagePaths, packagePair, moduleName)
         self.derivedModules.get(path.absolute()).else:
         let result = body(path)
         self.derivedModules = self.derivedModules.add(path.absolute(), result)
@@ -65,7 +65,7 @@ extend self: ModuleCache {
         moduleName: String
         body: Path => Module
     ): Module {
-        let path = internalModulePath(packagePaths, packagePair, moduleName)
+        let path = modulePath(packagePaths, packagePair, moduleName)
         self.inferredModules.get(path.absolute()).else:
         let result = body(path)
         self.inferredModules = self.inferredModules.add(path.absolute(), result)
@@ -78,7 +78,7 @@ extend self: ModuleCache {
         moduleName: String
         body: Path => Unit
     ): Unit {
-        let path = internalModulePath(packagePaths, packagePair, moduleName)
+        let path = modulePath(packagePaths, packagePair, moduleName)
         if(!self.emittedModules.contains(path.absolute())):
         self.emittedModules = self.emittedModules.add(path.absolute())
         try {
