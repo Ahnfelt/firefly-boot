@@ -91,7 +91,7 @@ extend self: ModuleCache {
     
 }
 
-internalModulePath(
+modulePath(
     packagePaths: Map[PackagePair, Path]
     packagePair: PackagePair
     moduleName: String
