@@ -8,6 +8,7 @@ import Builder
 import Dependencies
 import JsEmitter
 import Inference
+import ModuleCache
 import LspHook
 
 data MainCommand {
@@ -85,7 +86,16 @@ main(system: NodeSystem): Unit {
             importAndRun(fireflyPath, "build", resolvedDependencies.mainPackagePair, localMainFile, [])
 
         | CheckCommand(filePath) => 
-            let errors = Builder.check(system, fireflyPath, system.path(filePath), None, Map.empty(), LspHook.disabled(), True)
+            let errors = Builder.check(
+                system = system
+                fireflyPath = fireflyPath
+                path = system.path(filePath)
+                mustContain = None
+                virtualFiles = Map.empty()
+                cache = ModuleCache.empty()
+                lspHook = LspHook.disabled() 
+                infer = True
+            )
             if(!errors.isEmpty()) {throw(CompileErrors(errors.distinct()))}
 
         | BootstrapCommand =>

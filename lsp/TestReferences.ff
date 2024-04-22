@@ -1,11 +1,13 @@
 import Handler
 import Syntax from ff:compiler
+import ModuleCache from ff:compiler
 
 nodeMain(system: NodeSystem) {
     Log.debug("Hello")
     let fireflyPath = system.path(".")
     Log.debug(fireflyPath.absolute())
-    let handler = Handler(fireflyPath, None, Map.empty(), [].toSet(), Map.empty(), Map.empty())
+    let cache = ModuleCache.empty()
+    let handler = Handler(fireflyPath, None, Map.empty(), [].toSet(), Map.empty(), Map.empty(), cache)
     let targetAt = Location("/home/werk/projects/firefly-boot/lsp/TestReferencesCase.ff", 7, 5)
     let references = handler.findReferences(system, targetAt, local = False, includeDeclaration = True)
     Log.show(references)

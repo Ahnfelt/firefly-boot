@@ -6,6 +6,7 @@ import Compiler
 import Unification
 import Dependencies
 import JsEmitter
+import ModuleCache
 import LspHook
 
 build(
@@ -34,6 +35,7 @@ build(
             jsPathFile
             resolvedDependencies
             Map.empty()
+            ModuleCache.empty()
             lspHook = LspHook.disabled()
         )
         compiler.emit(mainPackage, mainModule, isMainModule = True)
@@ -90,6 +92,7 @@ check(
     path: Path
     mustContain: Option[String]
     virtualFiles: Map[String, String]
+    cache: ModuleCache
     lspHook: LspHook
     infer: Bool
 ): List[CompileError] {
@@ -116,6 +119,7 @@ check(
             package.root.slash(".firefly").slash("temporary")
             fixedResolvedDependencies
             virtualFiles
+            cache
             lspHook
         )
         package.files.each {file =>
