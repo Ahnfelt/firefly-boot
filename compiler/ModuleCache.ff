@@ -20,9 +20,9 @@ empty(): ModuleCache {
 
 extend self: ModuleCache {
     
-    without[R](path: Path, body: ModuleCache => R): R {
+    without(path: Path): ModuleCache {
         let key = path.absolute()
-        let newCache = if(path.isFile()) {
+        if(path.isFile()) {
             self.ModuleCache(
                 parsedModules = self.parsedModules.remove(key)
                 resolvedModules = self.resolvedModules.remove(key)
@@ -42,7 +42,6 @@ extend self: ModuleCache {
                 emittedModules = self.emittedModules.toList().filter {p => !invalidated(p)}.toSet()
             )
         }
-        body(newCache)
     }
     
     addAll(cache: ModuleCache): Unit {
