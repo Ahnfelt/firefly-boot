@@ -20,33 +20,37 @@ empty(): ModuleCache {
 
 extend self: ModuleCache {
     
-    without[R](path: Path, when: Bool, body: ModuleCache => R): R {
-        if(when) {
-            let key = path.absolute()
-            let newCache = if(path.isFile()) {
-                self.ModuleCache(
-                    parsedModules = self.parsedModules.remove(key)
-                    resolvedModules = self.resolvedModules.remove(key)
-                    derivedModules = self.derivedModules.remove(key)
-                    inferredModules = self.inferredModules.remove(key)
-                    emittedModules = self.emittedModules.remove(key)
-                )
-            } else {
-                function invalidated(p: String): Bool {
-                    p.startsWith(key) && !p.contains(".firefly/dependencies") && !p.contains(".firefly\\dependencies")
-                }
-                self.ModuleCache(
-                    parsedModules = self.parsedModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
-                    resolvedModules = self.resolvedModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
-                    derivedModules = self.derivedModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
-                    inferredModules = self.inferredModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
-                    emittedModules = self.emittedModules.toList().filter {p => !invalidated(p)}.toSet()
-                )
-            }
-            body(newCache)
+    without[R](path: Path, body: ModuleCache => R): R {
+        let key = path.absolute()
+        let newCache = if(path.isFile()) {
+            self.ModuleCache(
+                parsedModules = self.parsedModules.remove(key)
+                resolvedModules = self.resolvedModules.remove(key)
+                derivedModules = self.derivedModules.remove(key)
+                inferredModules = self.inferredModules.remove(key)
+                emittedModules = self.emittedModules.remove(key)
+            )
         } else {
-            body(self)
+            function invalidated(p: String): Bool {
+                p.startsWith(key) && !p.contains(".firefly/dependencies") && !p.contains(".firefly\\dependencies")
+            }
+            self.ModuleCache(
+                parsedModules = self.parsedModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
+                resolvedModules = self.resolvedModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
+                derivedModules = self.derivedModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
+                inferredModules = self.inferredModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
+                emittedModules = self.emittedModules.toList().filter {p => !invalidated(p)}.toSet()
+            )
         }
+        body(newCache)
+    }
+    
+    addAll(cache: ModuleCache): Unit {
+        self.parsedModules = self.parsedModules.addAll(cache.parsedModules)
+        self.resolvedModules = self.resolvedModules.addAll(cache.resolvedModules)
+        self.derivedModules = self.derivedModules.addAll(cache.derivedModules)
+        self.inferredModules = self.inferredModules.addAll(cache.inferredModules)
+        self.emittedModules = self.emittedModules.addAll(cache.emittedModules)
     }
     
     cacheParsedModule(

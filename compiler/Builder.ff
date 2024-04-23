@@ -112,7 +112,7 @@ check(
             resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath.slash("core"))
         }
         let fixedResolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
-        let compiler = cache.without(path, when = lspHook.isEnabled()) {newCache => 
+        let compiler = cache.without(path) {newCache => 
             Compiler.make(
                 EmitBuild
                 system.mainTask() 
@@ -137,6 +137,7 @@ check(
                 errors.push(c)
             } grab()
         }
+        cache.addAll(compiler.cache)
     }
     errors.drain()
 
