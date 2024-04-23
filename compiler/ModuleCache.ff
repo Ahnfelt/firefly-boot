@@ -32,13 +32,15 @@ extend self: ModuleCache {
                     emittedModules = self.emittedModules.remove(key)
                 )
             } else {
+                function invalidated(p: String): Bool {
+                    p.startsWith(key) && !p.contains(".firefly/dependencies") && !p.contains(".firefly\\dependencies")
+                }
                 self.ModuleCache(
-                    // TODO add fitter to Map and Set
-                    parsedModules = self.parsedModules.toList().filter {| Pair(p, _) => !p.startsWith(key) || p.contains(".firefly/dependencies")}.toMap()
-                    resolvedModules = self.resolvedModules.toList().filter {| Pair(p, _) => !p.startsWith(key) || p.contains(".firefly/dependencies")}.toMap()
-                    derivedModules = self.derivedModules.toList().filter {| Pair(p, _) => !p.startsWith(key) || p.contains(".firefly/dependencies")}.toMap()
-                    inferredModules = self.inferredModules.toList().filter {| Pair(p, _) => !p.startsWith(key) || p.contains(".firefly/dependencies")}.toMap()
-                    emittedModules = self.emittedModules.toList().filter {p => !p.startsWith(key) || p.contains(".firefly/dependencies")}.toSet()
+                    parsedModules = self.parsedModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
+                    resolvedModules = self.resolvedModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
+                    derivedModules = self.derivedModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
+                    inferredModules = self.inferredModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
+                    emittedModules = self.emittedModules.toList().filter {p => !invalidated(p)}.toSet()
                 )
             }
             body(newCache)

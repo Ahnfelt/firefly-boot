@@ -119,6 +119,10 @@ extend self: Path {
         go(Some(self), parts.reverse())
     }
 
+    contains(parts: List[String]): Bool {
+        self.endsWith(parts) || self.parent().any {_.endsWith(parts)}
+    }
+
     base(): String
         target node async """
             import * as path from 'path'
