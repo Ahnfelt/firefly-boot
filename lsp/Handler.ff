@@ -470,7 +470,7 @@ extend self: Handler {
         }.filter {pair => !pair.at.file.endsWith(">")}
             
         function unqualify(qualifiedName: String): String {
-            qualifiedName.split('.').grabLast()
+            qualifiedName.split('.').grabLast().split('_').grabLast()
         }
 
         definedAtList.first().{
