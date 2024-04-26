@@ -492,7 +492,7 @@ extend self: Handler {
                 Log.trace("findReferences definition: " + Show.show(definition))
                 mustContain.each {Log.trace("mustContain: " + _)}
                 
-                let errors = self.check(system, self.fireflyPath, path, mustContain, self.virtualFiles, version, lspHook, True)
+                let errors = self.check(system, self.fireflyPath, path, mustContain, self.virtualFiles, version, lspHook, True, False)
                 errors.each {| CompileError(at, message) => 
                     Log.trace("findReferences second check error: " + message + " in " + at.file + ":" + at.line + ":" + at.column)
                 }
@@ -637,6 +637,7 @@ extend self: Handler {
         newModuleCacheVersion: Int
         lspHook: LspHook
         infer: Bool
+        checkDependencies: Bool = True
     ): List[CompileError] {
         Builder.check(
             system
@@ -648,6 +649,7 @@ extend self: Handler {
             newModuleCacheVersion
             lspHook
             infer
+            checkDependencies
         )
     }
 

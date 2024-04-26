@@ -120,7 +120,7 @@ extend self: Path {
     }
 
     contains(parts: List[String]): Bool {
-        self.endsWith(parts) || self.parent().any {_.endsWith(parts)}
+        self.endsWith(parts) || self.parent().any {_.contains(parts)}
     }
 
     base(): String

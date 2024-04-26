@@ -98,6 +98,7 @@ check(
     newVersion: Int
     lspHook: LspHook
     infer: Bool
+    checkDependencies: Bool
 ): List[CompileError] {
     let packages = path.isDirectory().{
         | True => findPackageFiles(path, mustContain)
@@ -126,7 +127,10 @@ check(
             newCache
             lspHook
         )
-        package.files.each {file =>
+        let files = if(checkDependencies) {package.files} else {
+            package.files.filter {!_.contains([".firefly", "dependencies"])}
+        }
+        files.each {file =>
             let localFile = file.base()
             try {
                 if(infer) {
