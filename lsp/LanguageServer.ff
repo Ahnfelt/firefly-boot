@@ -30,7 +30,7 @@ main(system: NodeSystem) {
     
     let fireflyPath = system.path(".")
     let cache = ModuleCache.empty(0)
-    let handler = Handler(fireflyPath, None, Map.empty(), [].toSet(), Map.empty(), Map.empty(), 1, cache)
+    let handler = Handler(fireflyPath, None, Map.empty(), [].toSet(), Map.empty(), Map.empty(), cache)
     try {
         mutable input = system.readStream()
         let responseChannel: Channel[Pair[Json, String]] = system.mainTask().channel()
@@ -44,7 +44,9 @@ main(system: NodeSystem) {
             }
         }
         taskGroup(system.mainTask()) {spawn, abort =>
+            mutable version = 1
             while {True} {
+                version += 1
                 let requestPair = parseRequest(system, input)
                 input = requestPair.second
                 let request = requestPair.first
@@ -55,7 +57,7 @@ main(system: NodeSystem) {
                         abort(Some(parseMessageId(message.parameters.grab("id"))))
                     }
                     try {
-                        handleRequestMessage(system, handler, message).each {body =>
+                        handleRequestMessage(system, handler, message, version).each {body =>
                             responseChannel.write(Pair(body, message.method))
                         }
                     } catchAny {error =>
@@ -196,7 +198,7 @@ parseMessageId(id: Json): MessageId {
     }
 }
 
-handleRequestMessage(system: NodeSystem, handler: Handler, message: RequestMessage): List[Json] {
+handleRequestMessage(system: NodeSystem, handler: Handler, message: RequestMessage, version: Int): List[Json] {
     try {
         message.id.{
             | None {message.method == "$/cancelRequest"} => // TODO: Needs to read ahead to cancel anything
@@ -205,13 +207,13 @@ handleRequestMessage(system: NodeSystem, handler: Handler, message: RequestMessa
                 )
                 []
             | None => 
-                let notification = handler.handleNotification(system, message.method, message.parameters)
+                let notification = handler.handleNotification(system, message.method, message.parameters, version)
                 notification.map {| Pair(method, params) => makeNotificationMessage(method, params)}
             | Some(id) {handler.cancelledRequests.contains(id)} =>
                 handler.cancelledRequests = handler.cancelledRequests.remove(id)
                 [makeResponseMessage(id, Error(-32800, "Request cancelled"))]
             | Some(id) =>
-                let result = handler.handleRequest(system, message.method, message.parameters)
+                let result = handler.handleRequest(system, message.method, message.parameters, version)
                 [makeResponseMessage(id, result)]
         }
     } catchAny {error =>

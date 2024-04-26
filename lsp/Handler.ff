@@ -20,7 +20,6 @@ capability Handler(
     mutable cancelledRequests: Set[MessageId]
     mutable responseCache: Map[TokenRequestCacheKey, ResultOrError]
     mutable fileSymbolsCache: Map[String, List[DocumentSymbol]]
-    mutable nextModuleCacheVersion: Int
     moduleCache: ModuleCache
 )
 
@@ -57,9 +56,7 @@ data Definition(at: Location, name: String, local: Bool)
 
 extend self: Handler {
 
-    handleNotification(system: NodeSystem, method: String, parameters: Map[String, Json]): List[Pair[String, Json]] {
-        self.nextModuleCacheVersion += 1
-        let version = self.nextModuleCacheVersion
+    handleNotification(system: NodeSystem, method: String, parameters: Map[String, Json], version: Int): List[Pair[String, Json]] {
         method.{
             | "initialized" =>
                 []
@@ -87,9 +84,7 @@ extend self: Handler {
         }
     }
 
-    handleRequest(system: NodeSystem, method: String, parameters: Map[String, Json]): ResultOrError {
-        self.nextModuleCacheVersion += 1
-        let version = self.nextModuleCacheVersion
+    handleRequest(system: NodeSystem, method: String, parameters: Map[String, Json], version: Int): ResultOrError {
         method.{
             | "initialize" => self.handleInitialize(system, parameters)
             //| "textDocument/diagnostic" => self.handleDiagnostic(system, parameters)
