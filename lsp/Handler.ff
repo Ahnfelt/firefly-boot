@@ -77,6 +77,10 @@ extend self: Handler {
             | "workspace/didDeleteFiles" =>
                 let diagnostics = self.handleClearDiagnostic(system, parameters)
                 diagnostics.map {Pair("textDocument/publishDiagnostics", _)}
+            | "workspace/didChangeWatchedFiles" =>
+                // Note that this happens on autosave for owned documents as well,
+                // so if you clear diagnostics, skip those in virtualFiles.
+                []
             | "exit" => 
                 system.exit(0)
             | _ =>

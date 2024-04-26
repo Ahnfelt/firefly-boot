@@ -69,9 +69,10 @@ export function activate(context: vscode.ExtensionContext) {
 
     const clientOptions: LanguageClientOptions = {
         documentSelector: [{ scheme: 'file', language: 'firefly' }],
-        //synchronize: {
-        //    fileEvents: vscode.workspace.createFileSystemWatcher('**/.clientrc')
-        //}
+        synchronize: {
+             // It would be more portable to send a client/registerCapability from the server for this
+            fileEvents: vscode.workspace.createFileSystemWatcher('**/*.ff')
+        }
     };
 
     client = new LanguageClient(
