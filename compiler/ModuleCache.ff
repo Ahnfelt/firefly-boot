@@ -1,7 +1,7 @@
 import Syntax
 
 class ModuleCache(
-    mutable version: Int
+    version: Int
     mutable parsedModules: Map[String, Pair[Module, Int]]
     mutable resolvedModules: Map[String, Pair[Module, Int]]
     mutable derivedModules: Map[String, Pair[Module, Int]]
