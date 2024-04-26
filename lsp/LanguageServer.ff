@@ -29,8 +29,8 @@ main(system: NodeSystem) {
     }
     
     let fireflyPath = system.path(".")
-    let cache = ModuleCache.empty()
-    let handler = Handler(fireflyPath, None, Map.empty(), [].toSet(), Map.empty(), Map.empty(), cache)
+    let cache = ModuleCache.empty(0)
+    let handler = Handler(fireflyPath, None, Map.empty(), [].toSet(), Map.empty(), Map.empty(), 1, cache)
     try {
         mutable input = system.readStream()
         let responseChannel: Channel[Pair[Json, String]] = system.mainTask().channel()

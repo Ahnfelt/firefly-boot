@@ -19,6 +19,7 @@ build(
     tempPath: Path
     jsOutputPath: Path
     printMeasurements: Bool
+    moduleCache: ModuleCache
 ): Unit {
 
     if(tempPath.exists()) {tempPath.delete()}
@@ -35,7 +36,7 @@ build(
             jsPathFile
             resolvedDependencies
             Map.empty()
-            ModuleCache.empty()
+            moduleCache
             lspHook = LspHook.disabled()
         )
         compiler.emit(mainPackage, mainModule, isMainModule = True)
@@ -83,6 +84,7 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: Path, mainFile: String, tar
         tempPath = system.path(".firefly/temporary")
         jsOutputPath = system.path(".firefly/output").slash(target)
         printMeasurements = False
+        moduleCache = ModuleCache.empty(0)
     )
 }
 
@@ -93,6 +95,7 @@ check(
     mustContain: Option[String]
     virtualFiles: Map[String, String]
     cache: ModuleCache
+    newVersion: Int
     lspHook: LspHook
     infer: Bool
 ): List[CompileError] {
@@ -112,7 +115,7 @@ check(
             resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath.slash("core"))
         }
         let fixedResolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
-        let newCache = cache.without(path)
+        let newCache = cache.without(newVersion, path)
         let compiler = Compiler.make(
             EmitBuild
             system.mainTask() 
@@ -136,7 +139,7 @@ check(
                 errors.push(c)
             } grab()
         }
-        cache.addAll(compiler.cache)
+        cache.mergeVersions(compiler.cache)
     }
     errors.drain()
 

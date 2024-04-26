@@ -55,6 +55,7 @@ main(system: NodeSystem): Unit {
             tempPath = system.path(".firefly").slash("temporary")
             jsOutputPath = system.path(".firefly").path("output").path(targetName)
             printMeasurements = False
+            moduleCache = ModuleCache.empty(0)
         )
     }
 
@@ -92,7 +93,8 @@ main(system: NodeSystem): Unit {
                 path = system.path(filePath)
                 mustContain = None
                 virtualFiles = Map.empty()
-                cache = ModuleCache.empty()
+                cache = ModuleCache.empty(1)
+                newVersion = 0
                 lspHook = LspHook.disabled() 
                 infer = True
             )
@@ -118,6 +120,7 @@ main(system: NodeSystem): Unit {
                 tempPath = workingDirectory.slash("output").slash("temporary")
                 jsOutputPath = workingDirectory.slash("output").slash("js")
                 printMeasurements = True
+                moduleCache = ModuleCache.empty(0)
             )
     }
 

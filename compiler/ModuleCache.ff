@@ -1,29 +1,32 @@
 import Syntax
 
 class ModuleCache(
-    mutable parsedModules: Map[String, Module]
-    mutable resolvedModules: Map[String, Module]
-    mutable derivedModules: Map[String, Module]
-    mutable inferredModules: Map[String, Module]
-    mutable emittedModules: Set[String]
+    mutable version: Int
+    mutable parsedModules: Map[String, Pair[Module, Int]]
+    mutable resolvedModules: Map[String, Pair[Module, Int]]
+    mutable derivedModules: Map[String, Pair[Module, Int]]
+    mutable inferredModules: Map[String, Pair[Module, Int]]
+    mutable emittedModules: Map[String, Int]
 )
 
-empty(): ModuleCache {
+empty(version: Int): ModuleCache {
     ModuleCache(
+        version = version
         parsedModules = Map.empty()
         resolvedModules = Map.empty()
         derivedModules = Map.empty()
         inferredModules = Map.empty()
-        emittedModules = Set.empty()
+        emittedModules = Map.empty()
     )
 }
 
 extend self: ModuleCache {
     
-    without(path: Path): ModuleCache {
+    without(newVersion: Int, path: Path): ModuleCache {
         let key = path.absolute()
         if(path.isFile()) {
             self.ModuleCache(
+                version = newVersion
                 parsedModules = self.parsedModules.remove(key)
                 resolvedModules = self.resolvedModules.remove(key)
                 derivedModules = self.derivedModules.remove(key)
@@ -35,21 +38,22 @@ extend self: ModuleCache {
                 p.startsWith(key) && !p.contains(".firefly/dependencies") && !p.contains(".firefly\\dependencies")
             }
             self.ModuleCache(
+                version = newVersion
                 parsedModules = self.parsedModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
                 resolvedModules = self.resolvedModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
                 derivedModules = self.derivedModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
                 inferredModules = self.inferredModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
-                emittedModules = self.emittedModules.toList().filter {p => !invalidated(p)}.toSet()
+                emittedModules = self.emittedModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
             )
         }
     }
     
-    addAll(cache: ModuleCache): Unit {
-        self.parsedModules = self.parsedModules.addAll(cache.parsedModules)
-        self.resolvedModules = self.resolvedModules.addAll(cache.resolvedModules)
-        self.derivedModules = self.derivedModules.addAll(cache.derivedModules)
-        self.inferredModules = self.inferredModules.addAll(cache.inferredModules)
-        self.emittedModules = self.emittedModules.addAll(cache.emittedModules)
+    mergeVersions(cache: ModuleCache): Unit {
+        self.parsedModules = mergeVersionedMap(self.parsedModules, cache.parsedModules) {_.second}
+        self.resolvedModules = mergeVersionedMap(self.resolvedModules, cache.resolvedModules) {_.second}
+        self.derivedModules = mergeVersionedMap(self.derivedModules, cache.derivedModules) {_.second}
+        self.inferredModules = mergeVersionedMap(self.inferredModules, cache.inferredModules) {_.second}
+        self.emittedModules = mergeVersionedMap(self.emittedModules, cache.emittedModules) {_}
     }
     
     cacheParsedModule(
@@ -59,9 +63,9 @@ extend self: ModuleCache {
         body: Path => Module
     ): Module {
         let path = modulePath(packagePaths, packagePair, moduleName)
-        self.parsedModules.get(path.absolute()).else:
+        self.parsedModules.get(path.absolute()).map {_.first}.else:
         let result = body(path)
-        self.parsedModules = self.parsedModules.add(path.absolute(), result)
+        self.parsedModules = self.parsedModules.add(path.absolute(), Pair(result, self.version))
         result
     }
     
@@ -72,12 +76,12 @@ extend self: ModuleCache {
         body: Path => Module
     ): Module {
         let path = modulePath(packagePaths, packagePair, moduleName)
-        self.resolvedModules.get(path.absolute()).else:
+        self.resolvedModules.get(path.absolute()).map {_.first}.else:
         let result = body(path)
-        self.resolvedModules = self.resolvedModules.add(path.absolute(), result)
+        self.resolvedModules = self.resolvedModules.add(path.absolute(), Pair(result, self.version))
         result
     }
-        
+
     cacheDerivedModule(
         packagePaths: Map[PackagePair, Path]
         packagePair: PackagePair
@@ -85,9 +89,9 @@ extend self: ModuleCache {
         body: Path => Module
     ): Module {
         let path = modulePath(packagePaths, packagePair, moduleName)
-        self.derivedModules.get(path.absolute()).else:
+        self.derivedModules.get(path.absolute()).map {_.first}.else:
         let result = body(path)
-        self.derivedModules = self.derivedModules.add(path.absolute(), result)
+        self.derivedModules = self.derivedModules.add(path.absolute(), Pair(result, self.version))
         result
     }
         
@@ -98,9 +102,9 @@ extend self: ModuleCache {
         body: Path => Module
     ): Module {
         let path = modulePath(packagePaths, packagePair, moduleName)
-        self.inferredModules.get(path.absolute()).else:
+        self.inferredModules.get(path.absolute()).map {_.first}.else:
         let result = body(path)
-        self.inferredModules = self.inferredModules.add(path.absolute(), result)
+        self.inferredModules = self.inferredModules.add(path.absolute(), Pair(result, self.version))
         result
     }
  
@@ -112,7 +116,7 @@ extend self: ModuleCache {
     ): Unit {
         let path = modulePath(packagePaths, packagePair, moduleName)
         if(!self.emittedModules.contains(path.absolute())):
-        self.emittedModules = self.emittedModules.add(path.absolute())
+        self.emittedModules = self.emittedModules.add(path.absolute(), self.version)
         try {
             body(path)
         } catchAny {error =>
@@ -121,6 +125,16 @@ extend self: ModuleCache {
         } grab()
     }
     
+}
+
+mergeVersionedMap[T](oldMap: Map[String, T], newMap: Map[String, T], getVersion: T => Int): Map[String, T] {
+    mutable result = newMap
+    oldMap.each {k, v =>
+        if(!newMap.get(k).any {getVersion(_) >= getVersion(v)}) {
+            result = result.add(k, v)
+        }
+    }
+    result
 }
 
 modulePath(

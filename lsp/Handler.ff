@@ -20,6 +20,7 @@ capability Handler(
     mutable cancelledRequests: Set[MessageId]
     mutable responseCache: Map[TokenRequestCacheKey, ResultOrError]
     mutable fileSymbolsCache: Map[String, List[DocumentSymbol]]
+    mutable nextModuleCacheVersion: Int
     moduleCache: ModuleCache
 )
 
@@ -627,7 +628,18 @@ extend self: Handler {
         lspHook: LspHook
         infer: Bool
     ): List[CompileError] {
-        Builder.check(system, fireflyPath, path, mustContain, virtualFiles, self.moduleCache, lspHook, infer)
+        self.nextModuleCacheVersion += 1
+        Builder.check(
+            system
+            fireflyPath
+            path
+            mustContain
+            virtualFiles
+            self.moduleCache
+            self.nextModuleCacheVersion
+            lspHook
+            infer
+        )
     }
 
 }
