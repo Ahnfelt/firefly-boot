@@ -22,6 +22,15 @@ empty(version: Int): ModuleCache {
 
 extend self: ModuleCache {
     
+    remove(paths: List[Path]) {
+        let keys = paths.map {_.absolute()}
+        self.parsedModules = self.parsedModules.removeList(keys)
+        self.resolvedModules = self.resolvedModules.removeList(keys)
+        self.derivedModules = self.derivedModules.removeList(keys)
+        self.inferredModules = self.inferredModules.removeList(keys)
+        self.emittedModules = self.emittedModules.removeList(keys)
+    }
+    
     without(newVersion: Int, path: Path): ModuleCache {
         let key = path.absolute()
         if(path.isFile()) {

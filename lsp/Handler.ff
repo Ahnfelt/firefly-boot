@@ -78,9 +78,7 @@ extend self: Handler {
                 let diagnostics = self.handleClearDiagnostic(system, parameters)
                 diagnostics.map {Pair("textDocument/publishDiagnostics", _)}
             | "workspace/didChangeWatchedFiles" =>
-                // Note that this happens on autosave for owned documents as well,
-                // so if you clear diagnostics, skip those in virtualFiles.
-                []
+                self.handleDidChangeWatched(system, parameters)
             | "exit" => 
                 system.exit(0)
             | _ =>
@@ -310,6 +308,17 @@ extend self: Handler {
         let limitedSymbols = symbols.sortBy {_.name.size()}.takeFirst(100)
         let jsSymbols = limitedSymbols.map {SymbolHandler.workspaceSymbolToLsp(self.rootPath.grab(), _)}
         Result(Json.array(jsSymbols).write())
+    }
+    
+    handleDidChangeWatched(system: NodeSystem, parameters: Map[String, Json]): List[Pair[String, Json]] {
+        let creates = parameters.grab("changes").grabArray().filter {_.field("type").grabInt() == 1}
+        let changes = parameters.grab("changes").grabArray().filter {_.field("type").grabInt() == 2}
+        let deletes = parameters.grab("changes").grabArray().filter {_.field("type").grabInt() == 4}
+        self.moduleCache.remove(creates.map {_.field("uri").grabString()}.map {system.pathFromUrl(_)})
+        self.moduleCache.remove(changes.map {_.field("uri").grabString()}.map {system.pathFromUrl(_)})
+        self.moduleCache.remove(deletes.map {_.field("uri").grabString()}.map {system.pathFromUrl(_)})
+        let diagnostics = self.handleClearDiagnostic(system, [Pair("files", Json.array(deletes))].toMap())
+        diagnostics.map {Pair("textDocument/publishDiagnostics", _)}
     }
     
     handleDidChange(system: NodeSystem, parameters: Map[String, Json]): Unit {

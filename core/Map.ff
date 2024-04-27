@@ -41,6 +41,14 @@ extend self[K: Order, V]: Map[K, V] {
         }
         Map(result)
     }
+    
+    removeList(keys: List[K]): Map[K, V] {
+        mutable result = self.redBlack
+        keys.each {k =>
+            result = RbMap.delete(k, result)
+        }
+        Map(result)
+    }
 
     pairs(): List[Pair[K, V]] { // TODO: Remove this method (use toList)
         self.toList()
