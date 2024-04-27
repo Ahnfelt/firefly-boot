@@ -23,6 +23,7 @@ empty(version: Int): ModuleCache {
 extend self: ModuleCache {
     
     remove(paths: List[Path]) {
+        if(!paths.isEmpty()):
         let keys = paths.map {_.absolute()}
         self.parsedModules = self.parsedModules.removeList(keys)
         self.resolvedModules = self.resolvedModules.removeList(keys)
