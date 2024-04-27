@@ -313,7 +313,7 @@ extend self: Handler {
     handleDidChangeWatched(system: NodeSystem, parameters: Map[String, Json]): List[Pair[String, Json]] {
         let creates = parameters.grab("changes").grabArray().filter {_.field("type").grabInt() == 1}
         let changes = parameters.grab("changes").grabArray().filter {_.field("type").grabInt() == 2}
-        let deletes = parameters.grab("changes").grabArray().filter {_.field("type").grabInt() == 4}
+        let deletes = parameters.grab("changes").grabArray().filter {_.field("type").grabInt() == 3}
         self.moduleCache.remove(creates.map {_.field("uri").grabString()}.map {system.pathFromUrl(_)})
         self.moduleCache.remove(changes.map {_.field("uri").grabString()}.map {system.pathFromUrl(_)})
         self.moduleCache.remove(deletes.map {_.field("uri").grabString()}.map {system.pathFromUrl(_)})
