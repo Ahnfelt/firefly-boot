@@ -35,5 +35,14 @@
     "indentationRules": {
         "increaseIndentPattern": "^((?!\\/\\/).)*(\\{[^}\"'`]*|\\([^)\"'`]*|\\[[^\\]\"'`]*|=>.*)$",
         "decreaseIndentPattern": "^((?!.*?\\/\\*).*\\*/)?\\s*[\\)\\}\\]|].*$"
-    }
+    }, 
+    "onEnterRules": [
+        {
+            "beforeText": "({|=>)\\s*$",
+            "afterText": "^\\s*}",
+            "action": {
+                "indent": "indentOutdent"
+            }
+        }
+    ]
 }
