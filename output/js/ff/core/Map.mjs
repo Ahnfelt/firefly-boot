@@ -143,6 +143,14 @@ result_ = ff_core_RbMap.delete_(k_, result_, ff_core_Ordering_Order$K)
 return result_
 }
 
+export function Map_removeList(self_, keys_, ff_core_Ordering_Order$K) {
+let result_ = self_;
+ff_core_List.List_each(keys_, ((k_) => {
+result_ = ff_core_RbMap.delete_(k_, result_, ff_core_Ordering_Order$K)
+}));
+return result_
+}
+
 export function Map_pairs(self_, ff_core_Ordering_Order$K) {
 return ff_core_Map.Map_toList(self_, ff_core_Ordering_Order$K)
 }
@@ -250,6 +258,14 @@ let result_ = self_;
 ff_core_RbMap.RB_each(that_, ((k_, _) => {
 result_ = ff_core_RbMap.delete_(k_, result_, ff_core_Ordering_Order$K)
 }), ff_core_Ordering_Order$K);
+return result_
+}
+
+export async function Map_removeList$(self_, keys_, ff_core_Ordering_Order$K, $task) {
+let result_ = self_;
+ff_core_List.List_each(keys_, ((k_) => {
+result_ = ff_core_RbMap.delete_(k_, result_, ff_core_Ordering_Order$K)
+}));
 return result_
 }
 

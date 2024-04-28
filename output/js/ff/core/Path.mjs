@@ -224,6 +224,12 @@ return false
 return go_(ff_core_Option.Some(self_), ff_core_List.List_reverse(parts_))
 }
 
+export function Path_contains(self_, parts_) {
+return (ff_core_Path.Path_endsWith(self_, parts_) || ff_core_Option.Option_any(ff_core_Path.Path_parent(self_), ((_w1) => {
+return ff_core_Path.Path_contains(_w1, parts_)
+})))
+}
+
 export function Path_base(self_) {
 throw new Error('Function Path_base is missing on this target in sync context.');
 }
@@ -473,6 +479,12 @@ return false
 }
 }
 return (await go_$(ff_core_Option.Some(self_), ff_core_List.List_reverse(parts_), $task))
+}
+
+export async function Path_contains$(self_, parts_, $task) {
+return ((await ff_core_Path.Path_endsWith$(self_, parts_, $task)) || (await ff_core_Option.Option_any$((await ff_core_Path.Path_parent$(self_, $task)), (async (_w1, $task) => {
+return (await ff_core_Path.Path_contains$(_w1, parts_, $task))
+}), $task)))
 }
 
 export async function Path_base$(self_, $task) {
