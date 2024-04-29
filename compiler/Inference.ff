@@ -376,14 +376,14 @@ extend self: Inference {
                     | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
                         let fieldNames = name.split('$').dropFirst(1)
                         if(self.lspHook.isEnabled()) {
-                            fieldNames.zip(typeArguments).each {| Pair(fieldName, fieldType) =>
+                            let definedAt = fieldNames.zip(typeArguments).collectFirst {| Pair(fieldName, fieldType) => 
                                 if(e.field == fieldName):
-                                let definedAt = self.unification.substitute(fieldType).at
-                                if(self.lspHook.isAt(e.at) || self.lspHook.isDefinedAt(definedAt)) {
-                                    self.lspHook.emit(
-                                        InferRecordFieldHook(e.at, self.unification, environment, expected, t, e.field)
-                                    )
-                                }
+                                self.unification.substitute(fieldType).at
+                            }
+                            if(self.lspHook.isAt(e.at) || definedAt.any {self.lspHook.isDefinedAt(_)}) {
+                                self.lspHook.emit(
+                                    InferRecordFieldHook(e.at, self.unification, environment, expected, t, e.field)
+                                )
                             }
                         }
                         fieldNames.pairs().find {_.second == e.field}.map {_.first}.map {index =>
