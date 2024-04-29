@@ -675,19 +675,21 @@ const typeArguments_ = _1.generics_;
 if(ff_core_String.String_startsWith(name_, "Record$", 0)) {
 const fieldNames_ = ff_core_List.List_dropFirst(ff_core_String.String_split(name_, 36), 1);
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
-ff_core_List.List_each(ff_core_List.List_zip(fieldNames_, typeArguments_), ((_1) => {
+const definedAt_ = ff_core_List.List_collectFirst(ff_core_List.List_zip(fieldNames_, typeArguments_), ((_1) => {
 {
 const fieldName_ = _1.first_;
 const fieldType_ = _1.second_;
 if((e_.field_ === fieldName_)) {
-const definedAt_ = ff_compiler_Unification.Unification_substitute(self_.unification_, fieldType_).at_;
-if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, e_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, definedAt_))) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferRecordFieldHook(e_.at_, self_.unification_, environment_, expected_, t_, e_.field_))
-}
-}
+return ff_core_Option.Some(ff_compiler_Unification.Unification_substitute(self_.unification_, fieldType_).at_)
+} else return ff_core_Option.None()
 return
 }
-}))
+}));
+if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, e_.at_) || ff_core_Option.Option_any(definedAt_, ((_w1) => {
+return ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, _w1)
+})))) {
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferRecordFieldHook(e_.at_, self_.unification_, environment_, expected_, t_, e_.field_))
+}
 };
 return ff_core_Option.Option_else(ff_core_Option.Option_elseIf(ff_core_Option.Option_map(ff_core_Option.Option_map(ff_core_List.List_find(ff_core_List.List_pairs(fieldNames_), ((_w1) => {
 return (_w1.second_ === e_.field_)
@@ -2350,19 +2352,21 @@ const typeArguments_ = _1.generics_;
 if(ff_core_String.String_startsWith(name_, "Record$", 0)) {
 const fieldNames_ = ff_core_List.List_dropFirst(ff_core_String.String_split(name_, 36), 1);
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
-ff_core_List.List_each(ff_core_List.List_zip(fieldNames_, typeArguments_), ((_1) => {
+const definedAt_ = ff_core_List.List_collectFirst(ff_core_List.List_zip(fieldNames_, typeArguments_), ((_1) => {
 {
 const fieldName_ = _1.first_;
 const fieldType_ = _1.second_;
 if((e_.field_ === fieldName_)) {
-const definedAt_ = ff_compiler_Unification.Unification_substitute(self_.unification_, fieldType_).at_;
-if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, e_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, definedAt_))) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferRecordFieldHook(e_.at_, self_.unification_, environment_, expected_, t_, e_.field_))
-}
-}
+return ff_core_Option.Some(ff_compiler_Unification.Unification_substitute(self_.unification_, fieldType_).at_)
+} else return ff_core_Option.None()
 return
 }
-}))
+}));
+if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, e_.at_) || ff_core_Option.Option_any(definedAt_, ((_w1) => {
+return ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, _w1)
+})))) {
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferRecordFieldHook(e_.at_, self_.unification_, environment_, expected_, t_, e_.field_))
+}
 };
 return ff_core_Option.Option_else(ff_core_Option.Option_elseIf(ff_core_Option.Option_map(ff_core_Option.Option_map(ff_core_List.List_find(ff_core_List.List_pairs(fieldNames_), ((_w1) => {
 return (_w1.second_ === e_.field_)
