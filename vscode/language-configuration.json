@@ -38,6 +38,20 @@
     }, 
     "onEnterRules": [
         {
+            "beforeText": "\\.{\\s*$",
+            "action": {
+                "appendText": "| ",
+                "indent": "indent"
+            }
+        },
+        {
+            "beforeText": "^\\s*",
+            "afterText": "\\s*\\|",
+            "action": {
+                "indent": "none"
+            }
+        },
+        {
             "beforeText": "({|=>)\\s*$",
             "afterText": "^\\s*}",
             "action": {
