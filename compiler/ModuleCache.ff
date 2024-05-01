@@ -44,6 +44,12 @@ extend self: ModuleCache {
         }
     }
     
+    filesNotImporting(packagePair: PackagePair, moduleName: String): List[String] {
+        self.parsedModules.toList().collect {| Pair(k, Pair(m, _)) =>
+            if(!m.imports.any {i => i.package == packagePair && i.file == moduleName}): k
+        }
+    }
+    
     without(newVersion: Int, path: Path): ModuleCache {
         let key = path.absolute()
         if(path.isFile()) {

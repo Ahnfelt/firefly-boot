@@ -93,6 +93,7 @@ check(
     fireflyPath: Path
     path: Path
     mustContain: Option[String]
+    skipFiles: Set[String]
     virtualFiles: Map[String, String]
     cache: ModuleCache
     newVersion: Int
@@ -101,7 +102,7 @@ check(
     checkDependencies: Bool
 ): List[CompileError] {
     let packages = path.isDirectory().{
-        | True => findPackageFiles(path, mustContain)
+        | True => findPackageFiles(path, mustContain, skipFiles)
         | False {path.endsWith([".firefly", "package.ff"])} => [PackageFiles(path.parent().grab(), Some(path), [])]
         | False => [PackageFiles(path.parent().grab(), None, [path])]
     }
@@ -156,8 +157,12 @@ capability PackageFiles(
 )
 
 
-findPackageFiles(path: Path, mustContain: Option[String]): List[PackageFiles] {
-    let files = findFireflyFiles(path, mustContain)
+findPackageFiles(
+    path: Path
+    mustContain: Option[String]
+    skipFiles: Set[String]
+): List[PackageFiles] {
+    let files = findFireflyFiles(path, mustContain, skipFiles)
     let split = files.partition {_.endsWith([".firefly", "package.ff"])}
     let packageFiles = split.first
     mutable singleFiles = split.second
@@ -174,17 +179,21 @@ findPackageFiles(path: Path, mustContain: Option[String]): List[PackageFiles] {
     [...multiFileProjects, ...singleFileProjects]
 }
 
-findFireflyFiles(path: Path, mustContain: Option[String]): List[Path] {
+findFireflyFiles(
+    path: Path
+    mustContain: Option[String]
+    skipFiles: Set[String]
+): List[Path] {
     let split = path.entries().toList().partition {_.isDirectory()}
     let directories = split.first.map {_.path()}.filter {_.base().all {c => 
         c == '.' || c.isAsciiLower() || c.isAsciiDigit()
     }}
     let fireflyFiles = split.second.map {_.path()}.filter {file => 
-        file.extension() == ".ff" && mustContain.all {s => 
+        file.extension() == ".ff" && !skipFiles.contains(file.absolute()) && mustContain.all {s => 
             file.readText().contains(s)
         }
     }
-    [...fireflyFiles, ...directories.flatMap {findFireflyFiles(_, mustContain)}]
+    [...fireflyFiles, ...directories.flatMap {findFireflyFiles(_, mustContain, skipFiles)}]
 }
 
 internalCreateExecutable(
