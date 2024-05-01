@@ -311,25 +311,12 @@ extend self: Handler {
     }
     
     handleDidChangeWatched(system: NodeSystem, parameters: Map[String, Json]): List[Pair[String, Json]] {
-        function invalidate(uri: String) {
-            //Log.trace("Invalidate: " + uri)
-            let path = system.pathFromUrl(uri)
-            self.moduleCache.parsedModules.get(path.absolute()).each: | Pair(module, _) =>
-            let moduleName = module.file.dropLast(3)
-            self.moduleCache.remove([path])
-            self.moduleCache.parsedModules.each {| fileName, Pair(m, _) =>
-                if(m.imports.any {i => i.package == module.packagePair && i.file == moduleName}) {
-                    //Log.trace("Invalidating due to import of invalidated module: " + m.packagePair.groupName() + "/" + m.file)
-                    self.moduleCache.remove([system.path(fileName)])
-                }
-            }
-        }
         let creates = parameters.grab("changes").grabArray().filter {_.field("type").grabInt() == 1}
         let changes = parameters.grab("changes").grabArray().filter {_.field("type").grabInt() == 2}
         let deletes = parameters.grab("changes").grabArray().filter {_.field("type").grabInt() == 3}
-        creates.map {_.field("uri").grabString()}.each {invalidate(_)}
-        changes.map {_.field("uri").grabString()}.each {invalidate(_)}
-        deletes.map {_.field("uri").grabString()}.each {invalidate(_)}
+        creates.map {_.field("uri").grabString()}.each {self.moduleCache.invalidate(system.pathFromUrl(_).absolute())}
+        changes.map {_.field("uri").grabString()}.each {self.moduleCache.invalidate(system.pathFromUrl(_).absolute())}
+        deletes.map {_.field("uri").grabString()}.each {self.moduleCache.invalidate(system.pathFromUrl(_).absolute())}
         let diagnostics = self.handleClearDiagnostic(system, [Pair("files", Json.array(deletes))].toMap())
         diagnostics.map {Pair("textDocument/publishDiagnostics", _)}
     }
@@ -339,6 +326,7 @@ extend self: Handler {
         let path = system.pathFromUrl(uri)
         self.responseCache = Map.empty()
         self.fileSymbolsCache = self.fileSymbolsCache.remove(path.absolute())
+        self.moduleCache.invalidate(path.absolute())
         let contentChanges = parameters.grab("contentChanges").grabArray()
         if(contentChanges.size() != 1) {throw(LanguageServerException("Expected a single element in contentChanges"))} else:
         let contentChange = contentChanges.grab(0)

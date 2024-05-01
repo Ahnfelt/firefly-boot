@@ -22,14 +22,26 @@ empty(version: Int): ModuleCache {
 
 extend self: ModuleCache {
     
-    remove(paths: List[Path]) {
-        if(!paths.isEmpty()):
-        let keys = paths.map {_.absolute()}
+    remove(keys: List[String]) {
+        if(!keys.isEmpty()):
         self.parsedModules = self.parsedModules.removeList(keys)
         self.resolvedModules = self.resolvedModules.removeList(keys)
         self.derivedModules = self.derivedModules.removeList(keys)
         self.inferredModules = self.inferredModules.removeList(keys)
         self.emittedModules = self.emittedModules.removeList(keys)
+    }
+    
+    invalidate(key: String) {
+        //Log.trace("Invalidate: " + uri)
+        self.parsedModules.get(key).each: | Pair(module, _) =>
+        let moduleName = module.file.dropLast(3)
+        self.remove([key])
+        self.parsedModules.each {| k, Pair(m, _) =>
+            if(m.imports.any {i => i.package == module.packagePair && i.file == moduleName}) {
+                //Log.trace("Invalidating due to import of invalidated module: " + m.packagePair.groupName() + "/" + m.file)
+                self.remove([k])
+            }
+        }
     }
     
     without(newVersion: Int, path: Path): ModuleCache {
