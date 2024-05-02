@@ -147,17 +147,52 @@ const file_ = (moduleName_ + ".ff");
 return (await ff_core_Path.Path_slash$(packagePath_, file_, $task))
 }
 
-export function ModuleCache_remove(self_, paths_) {
-if((!ff_core_List.List_isEmpty(paths_))) {
-const keys_ = ff_core_List.List_map(paths_, ((_w1) => {
-return ff_core_Path.Path_absolute(_w1)
-}));
+export function ModuleCache_remove(self_, keys_) {
+if((!ff_core_List.List_isEmpty(keys_))) {
 self_.parsedModules_ = ff_core_Map.Map_removeList(self_.parsedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 self_.resolvedModules_ = ff_core_Map.Map_removeList(self_.resolvedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 self_.derivedModules_ = ff_core_Map.Map_removeList(self_.derivedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 self_.inferredModules_ = ff_core_Map.Map_removeList(self_.inferredModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 self_.emittedModules_ = ff_core_Map.Map_removeList(self_.emittedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
+}
+
+export function ModuleCache_invalidate(self_, key_) {
+ff_core_Option.Option_each(ff_core_Map.Map_get(self_.parsedModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
+{
+const module_ = _1.first_;
+const moduleName_ = ff_core_String.String_dropLast(module_.file_, 3);
+ff_compiler_ModuleCache.ModuleCache_remove(self_, [key_]);
+ff_core_Map.Map_each(self_.parsedModules_, ((_1, _2) => {
+{
+const k_ = _1;
+const m_ = _2.first_;
+if(ff_core_List.List_any(m_.imports_, ((i_) => {
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(i_.package_, module_.packagePair_) && (i_.file_ === moduleName_))
+}))) {
+ff_compiler_ModuleCache.ModuleCache_remove(self_, [k_])
+}
+return
+}
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+return
+}
+}))
+}
+
+export function ModuleCache_filesNotImporting(self_, packagePair_, moduleName_) {
+return ff_core_List.List_collect(ff_core_Map.Map_toList(self_.parsedModules_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
+{
+const k_ = _1.first_;
+const m_ = _1.second_.first_;
+if((!ff_core_List.List_any(m_.imports_, ((i_) => {
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(i_.package_, packagePair_) && (i_.file_ === moduleName_))
+})))) {
+return ff_core_Option.Some(k_)
+} else return ff_core_Option.None()
+return
+}
+}))
 }
 
 export function ModuleCache_without(self_, newVersion_, path_) {
@@ -285,17 +320,52 @@ ff_core_Error.Error_rethrow(error_)
 }
 }
 
-export async function ModuleCache_remove$(self_, paths_, $task) {
-if((!ff_core_List.List_isEmpty(paths_))) {
-const keys_ = (await ff_core_List.List_map$(paths_, (async (_w1, $task) => {
-return (await ff_core_Path.Path_absolute$(_w1, $task))
-}), $task));
+export async function ModuleCache_remove$(self_, keys_, $task) {
+if((!ff_core_List.List_isEmpty(keys_))) {
 self_.parsedModules_ = ff_core_Map.Map_removeList(self_.parsedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 self_.resolvedModules_ = ff_core_Map.Map_removeList(self_.resolvedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 self_.derivedModules_ = ff_core_Map.Map_removeList(self_.derivedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 self_.inferredModules_ = ff_core_Map.Map_removeList(self_.inferredModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 self_.emittedModules_ = ff_core_Map.Map_removeList(self_.emittedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
+}
+
+export async function ModuleCache_invalidate$(self_, key_, $task) {
+ff_core_Option.Option_each(ff_core_Map.Map_get(self_.parsedModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
+{
+const module_ = _1.first_;
+const moduleName_ = ff_core_String.String_dropLast(module_.file_, 3);
+ff_compiler_ModuleCache.ModuleCache_remove(self_, [key_]);
+ff_core_Map.Map_each(self_.parsedModules_, ((_1, _2) => {
+{
+const k_ = _1;
+const m_ = _2.first_;
+if(ff_core_List.List_any(m_.imports_, ((i_) => {
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(i_.package_, module_.packagePair_) && (i_.file_ === moduleName_))
+}))) {
+ff_compiler_ModuleCache.ModuleCache_remove(self_, [k_])
+}
+return
+}
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+return
+}
+}))
+}
+
+export async function ModuleCache_filesNotImporting$(self_, packagePair_, moduleName_, $task) {
+return ff_core_List.List_collect(ff_core_Map.Map_toList(self_.parsedModules_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
+{
+const k_ = _1.first_;
+const m_ = _1.second_.first_;
+if((!ff_core_List.List_any(m_.imports_, ((i_) => {
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(i_.package_, packagePair_) && (i_.file_ === moduleName_))
+})))) {
+return ff_core_Option.Some(k_)
+} else return ff_core_Option.None()
+return
+}
+}))
 }
 
 export async function ModuleCache_without$(self_, newVersion_, path_, $task) {

@@ -92,6 +92,7 @@ main(system: NodeSystem): Unit {
                 fireflyPath = fireflyPath
                 path = system.path(filePath)
                 mustContain = None
+                skipFiles = Set.empty()
                 virtualFiles = Map.empty()
                 cache = ModuleCache.empty(1)
                 newVersion = 0

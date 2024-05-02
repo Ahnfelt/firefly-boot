@@ -212,7 +212,7 @@ return
 }
 if(command_a.CheckCommand) {
 const filePath_ = command_a.filePath_;
-const errors_ = ff_compiler_Builder.check_(system_, fireflyPath_, ff_core_NodeSystem.NodeSystem_path(system_, filePath_), ff_core_Option.None(), ff_core_Map.empty_(), ff_compiler_ModuleCache.empty_(1), 0, ff_compiler_LspHook.disabled_(), true, false);
+const errors_ = ff_compiler_Builder.check_(system_, fireflyPath_, ff_core_NodeSystem.NodeSystem_path(system_, filePath_), ff_core_Option.None(), ff_core_Set.empty_(), ff_core_Map.empty_(), ff_compiler_ModuleCache.empty_(1), 0, ff_compiler_LspHook.disabled_(), true, false);
 if((!ff_core_List.List_isEmpty(errors_))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileErrors(ff_core_List.List_distinct(errors_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_CompileError)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)})
 }
@@ -459,7 +459,7 @@ return
 }
 if(command_a.CheckCommand) {
 const filePath_ = command_a.filePath_;
-const errors_ = (await ff_compiler_Builder.check_$(system_, fireflyPath_, (await ff_core_NodeSystem.NodeSystem_path$(system_, filePath_, $task)), ff_core_Option.None(), ff_core_Map.empty_(), ff_compiler_ModuleCache.empty_(1), 0, ff_compiler_LspHook.disabled_(), true, false, $task));
+const errors_ = (await ff_compiler_Builder.check_$(system_, fireflyPath_, (await ff_core_NodeSystem.NodeSystem_path$(system_, filePath_, $task)), ff_core_Option.None(), ff_core_Set.empty_(), ff_core_Map.empty_(), ff_compiler_ModuleCache.empty_(1), 0, ff_compiler_LspHook.disabled_(), true, false, $task));
 if((!ff_core_List.List_isEmpty(errors_))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileErrors(ff_core_List.List_distinct(errors_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_CompileError)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)})
 }
