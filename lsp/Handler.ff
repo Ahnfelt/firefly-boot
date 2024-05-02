@@ -518,11 +518,9 @@ extend self: Handler {
                 
                 let skipFiles = if(definition.name.contains(":")) {
                     let list = self.moduleCache.filesNotImporting(extractPackagePair(definition.name), extractModuleName(definition.name))
-                    Log.trace("skipList:")
-                    Log.show(list)
                     list.toSet()
                 } else {
-                    Log.trace("No skip list due to unqualified definition.name: " + definition.name)
+                    Log.trace("No skip list due to unqualified definition.name: " + definition.name) // TODO
                     Set.empty()
                 }
                 let errors = self.check(system, self.fireflyPath, path, mustContain, skipFiles, self.virtualFiles, version, lspHook, True, False)
