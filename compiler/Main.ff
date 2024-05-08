@@ -104,6 +104,7 @@ main(system: NodeSystem): Unit {
 
         | BootstrapCommand =>
             let workingDirectory = system.path(".")
+            let fakeLocation = Location("<core>", 0, 0)
             Builder.build(
                 system = system
                 emitTarget = EmitNode
@@ -111,7 +112,11 @@ main(system: NodeSystem): Unit {
                 mainModule = "Main"
                 resolvedDependencies = ResolvedDependencies(
                     mainPackagePair = PackagePair("ff", "compiler")
-                    packages = [].toMap() // Only used for includes currently
+                    packages = [Pair(
+                        PackagePair("ff", "core"), PackageInfo(DPackage(
+                            fakeLocation, PackagePair("ff", "core"), Version(fakeLocation, 0, 0, 0), TargetNames(True, False)
+                        ), [], [DInclude(fakeLocation, "node_modules")])
+                    )].toMap() // Only used for includes currently
                     packagePaths = [
                         Pair(PackagePair("ff", "compiler"), workingDirectory.slash("compiler"))
                         Pair(PackagePair("ff", "core"), workingDirectory.slash("core"))

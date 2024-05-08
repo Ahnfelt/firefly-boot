@@ -6,20 +6,19 @@
   "license": "MIT",
   "version": "0.4.28",
   "repository": {
-      "type": "git",
-      "url": "https://github.com/Ahnfelt/firefly-boot"
+    "type": "git",
+    "url": "https://github.com/Ahnfelt/firefly-boot"
   },
   "publisher": "firefly-team",
   "categories": [
-      "Programming Languages"
+    "Programming Languages"
   ],
   "engines": {
-      "node": ">=18.0.0"
+    "node": ">=18.0.0"
   },
   "main": "./vscode/client/out/extension",
   "icon": "./vscode/icons/firefly-logo.png",
   "dependencies": {
-    "esbuild": "^0.14.54",
     "pkg": "^5.8.0",
     "tar": "^6.1.11"
   },
