@@ -1,0 +1,33 @@
+
+nodeMain(system: NodeSystem) {
+    if(True) {
+        1
+    } else {
+        "foo"
+    }
+    
+    /*
+    if(True) {
+        1
+    } elseIf {False} {
+        'x'
+    } else {
+        "foo"
+    }
+    if(True) {
+        if(True) {
+            1
+        } else {
+            "foo"
+        }
+    } else {
+        "foo"
+    }
+    try {
+        1
+    } catchAny {_ =>
+        "foo"
+    }
+    */
+}
+
