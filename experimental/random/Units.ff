@@ -7,6 +7,12 @@ nodeMain(system: NodeSystem) {
     }
     
     /*
+    let u: Unit = 
+        if(True) {
+            1
+        } else {
+            "foo"
+        }
     if(True) {
         1
     } elseIf {False} {
