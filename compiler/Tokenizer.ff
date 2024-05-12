@@ -83,7 +83,6 @@ tokenize(file: String, code: String, completionAt: Option[Location], attemptFixe
                         if(i + 1 < code.size() && code.grab(i) == '_') {i += 1}
                     }
                 }
-                Unit // Think about how to avoid requiring this
             } else {
                 while {i < code.size() && (code.grab(i) == ' ' || code.grab(i) == '\t' || code.grab(i) == '\r')} {i += 1}
             }

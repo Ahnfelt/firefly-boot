@@ -382,7 +382,6 @@ extend self: Handler {
             let tokens = Tokenizer.tokenize(cursorAt.file, code, None, True)
             let parser = Parser.make(PackagePair("script", "script"), cursorAt.file, tokens, False, lspHook)
             parser.parseModuleWithPackageInfo()
-            Unit // Think of a way to avoid writing this
         } catch {| CompileError(at, message), error =>
             Log.trace("handleSignatureHelp check error: " + message)
         } grab()

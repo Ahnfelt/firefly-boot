@@ -9,7 +9,7 @@ nodeMain(system: NodeSystem) {
     let cache = ModuleCache.empty(0)
     let handler = Handler(fireflyPath, None, Map.empty(), [].toSet(), Map.empty(), Map.empty(), cache)
     let targetAt = Location("/home/werk/projects/firefly-boot/lsp/TestReferencesCase.ff", 7, 5)
-    let references = handler.findReferences(system, targetAt, local = False, includeDeclaration = True)
+    let references = handler.findReferences(system, targetAt, local = False, includeDeclaration = True, version = 0)
     Log.show(references)
     references.each {_.each {r => 
         Log.show(r)

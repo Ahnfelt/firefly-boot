@@ -831,7 +831,128 @@ return ff_compiler_Syntax.ESequential(at_, ff_compiler_Inference.Inference_infer
 return
 }
 {
-return ff_compiler_Syntax.ESequential(at_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, before_), ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, after_))
+const unitName_ = ff_compiler_Inference.core_("Unit");
+function semicolonUnit_(body_) {
+const body_a = body_;
+if(body_a.ECall) {
+const e_ = body_a;
+const _guard3 = e_.target_;
+if(_guard3.DynamicCall) {
+const c_ = _guard3;
+const _guard2 = c_.function_;
+if(_guard2.EVariable) {
+const x_ = _guard2;
+if(((x_.name_ === "ff:core/Core.if") || (x_.name_ === "ff:core/Core.try"))) {
+{
+const _1 = e_;
+{
+const _c = _1;
+return ff_compiler_Syntax.ECall(_c.at_, _c.target_, _c.effect_, _c.typeArguments_, ff_core_List.List_map(e_.arguments_, ((_1) => {
+{
+const a_ = _1;
+const _guard1 = a_.value_;
+if(_guard1.ELambda) {
+const l_ = _guard1;
+{
+const _1 = a_;
+{
+const _c = _1;
+return ff_compiler_Syntax.Argument(_c.at_, _c.name_, (((_c) => {
+return ff_compiler_Syntax.ELambda(_c.at_, (((_c) => {
+return ff_compiler_Syntax.Lambda(_c.at_, _c.effect_, ff_core_List.List_map(l_.lambda_.cases_, ((c_) => {
+{
+const _1 = c_;
+{
+const _c = _1;
+return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.guards_, ff_compiler_Syntax.ESequential(c_.at_, c_.body_, ff_compiler_Syntax.EVariant(c_.at_, unitName_, [], ff_core_Option.None())))
+}
+}
+})))
+}))(l_.lambda_))
+}))(l_))
+return
+}
+}
+return
+}
+}
+{
+const a_ = _1;
+return a_
+}
+})), _c.dictionaries_)
+return
+}
+}
+return
+}
+}
+}
+}
+if(body_a.ECall) {
+const e_ = body_a;
+const _guard3 = e_.target_;
+if(_guard3.DynamicCall) {
+const c_ = _guard3;
+const _guard2 = c_.function_;
+if(_guard2.EField) {
+const f_ = _guard2;
+if(((((((f_.field_ === "else") || (f_.field_ === "elseIf")) || (f_.field_ === "grab")) || (f_.field_ === "catch")) || (f_.field_ === "catchAny")) || (f_.field_ === "finally"))) {
+{
+const _1 = e_;
+{
+const _c = _1;
+return ff_compiler_Syntax.ECall(_c.at_, (((_c) => {
+return ff_compiler_Syntax.DynamicCall((((_c) => {
+return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, semicolonUnit_(f_.record_), _c.field_)
+}))(f_), _c.tailCall_)
+}))(c_), _c.effect_, _c.typeArguments_, _c.arguments_, _c.dictionaries_)
+return
+}
+}
+return
+}
+}
+}
+}
+if(body_a.ESequential) {
+const e_ = body_a;
+{
+const _1 = e_;
+{
+const _c = _1;
+return ff_compiler_Syntax.ESequential(_c.at_, _c.before_, semicolonUnit_(e_.after_))
+}
+}
+return
+}
+if(body_a.ELet) {
+const e_ = body_a;
+{
+const _1 = e_;
+{
+const _c = _1;
+return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, _c.valueType_, _c.value_, semicolonUnit_(e_.body_))
+}
+}
+return
+}
+if(body_a.EFunctions) {
+const e_ = body_a;
+{
+const _1 = e_;
+{
+const _c = _1;
+return ff_compiler_Syntax.EFunctions(_c.at_, _c.functions_, semicolonUnit_(e_.body_))
+}
+}
+return
+}
+{
+return body_
+}
+}
+return ff_compiler_Syntax.ESequential(at_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, semicolonUnit_(before_)), ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, after_))
 }
 }
 return
@@ -2508,7 +2629,128 @@ return ff_compiler_Syntax.ESequential(at_, ff_compiler_Inference.Inference_infer
 return
 }
 {
-return ff_compiler_Syntax.ESequential(at_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, before_), ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, after_))
+const unitName_ = ff_compiler_Inference.core_("Unit");
+function semicolonUnit_(body_) {
+const body_a = body_;
+if(body_a.ECall) {
+const e_ = body_a;
+const _guard3 = e_.target_;
+if(_guard3.DynamicCall) {
+const c_ = _guard3;
+const _guard2 = c_.function_;
+if(_guard2.EVariable) {
+const x_ = _guard2;
+if(((x_.name_ === "ff:core/Core.if") || (x_.name_ === "ff:core/Core.try"))) {
+{
+const _1 = e_;
+{
+const _c = _1;
+return ff_compiler_Syntax.ECall(_c.at_, _c.target_, _c.effect_, _c.typeArguments_, ff_core_List.List_map(e_.arguments_, ((_1) => {
+{
+const a_ = _1;
+const _guard1 = a_.value_;
+if(_guard1.ELambda) {
+const l_ = _guard1;
+{
+const _1 = a_;
+{
+const _c = _1;
+return ff_compiler_Syntax.Argument(_c.at_, _c.name_, (((_c) => {
+return ff_compiler_Syntax.ELambda(_c.at_, (((_c) => {
+return ff_compiler_Syntax.Lambda(_c.at_, _c.effect_, ff_core_List.List_map(l_.lambda_.cases_, ((c_) => {
+{
+const _1 = c_;
+{
+const _c = _1;
+return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.guards_, ff_compiler_Syntax.ESequential(c_.at_, c_.body_, ff_compiler_Syntax.EVariant(c_.at_, unitName_, [], ff_core_Option.None())))
+}
+}
+})))
+}))(l_.lambda_))
+}))(l_))
+return
+}
+}
+return
+}
+}
+{
+const a_ = _1;
+return a_
+}
+})), _c.dictionaries_)
+return
+}
+}
+return
+}
+}
+}
+}
+if(body_a.ECall) {
+const e_ = body_a;
+const _guard3 = e_.target_;
+if(_guard3.DynamicCall) {
+const c_ = _guard3;
+const _guard2 = c_.function_;
+if(_guard2.EField) {
+const f_ = _guard2;
+if(((((((f_.field_ === "else") || (f_.field_ === "elseIf")) || (f_.field_ === "grab")) || (f_.field_ === "catch")) || (f_.field_ === "catchAny")) || (f_.field_ === "finally"))) {
+{
+const _1 = e_;
+{
+const _c = _1;
+return ff_compiler_Syntax.ECall(_c.at_, (((_c) => {
+return ff_compiler_Syntax.DynamicCall((((_c) => {
+return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, semicolonUnit_(f_.record_), _c.field_)
+}))(f_), _c.tailCall_)
+}))(c_), _c.effect_, _c.typeArguments_, _c.arguments_, _c.dictionaries_)
+return
+}
+}
+return
+}
+}
+}
+}
+if(body_a.ESequential) {
+const e_ = body_a;
+{
+const _1 = e_;
+{
+const _c = _1;
+return ff_compiler_Syntax.ESequential(_c.at_, _c.before_, semicolonUnit_(e_.after_))
+}
+}
+return
+}
+if(body_a.ELet) {
+const e_ = body_a;
+{
+const _1 = e_;
+{
+const _c = _1;
+return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, _c.valueType_, _c.value_, semicolonUnit_(e_.body_))
+}
+}
+return
+}
+if(body_a.EFunctions) {
+const e_ = body_a;
+{
+const _1 = e_;
+{
+const _c = _1;
+return ff_compiler_Syntax.EFunctions(_c.at_, _c.functions_, semicolonUnit_(e_.body_))
+}
+}
+return
+}
+{
+return body_
+}
+}
+return ff_compiler_Syntax.ESequential(at_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, semicolonUnit_(before_)), ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, after_))
 }
 }
 return

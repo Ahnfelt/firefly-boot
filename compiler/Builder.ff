@@ -139,7 +139,6 @@ check(
                 } else {
                     compiler.resolve(resolvedDependencies.mainPackagePair, localFile.dropLast(".ff".size()))
                 }
-                Unit
             } catch {| CompileError(_, _) @ c, error =>
                 errors.push(c)
             } grab()

@@ -306,7 +306,6 @@ extend self: Lux {
                     lux.element.removeAt(lux.element.child)
                     lux.element.insertBefore(fragment, lux.jsSystem.null())
                 }
-                Unit
             } catchAny {error =>
                 if(error.name() != "AbortError") {
                     error.rethrow()

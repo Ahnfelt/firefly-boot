@@ -264,7 +264,7 @@ return ff_compiler_Patterns.PatternCaseInfo(fields_, (!exhaustiveGuards_))
 export function convertAndCheck_(modules_, cases_) {
 const converted_ = ff_compiler_Patterns.convert_(modules_, cases_);
 ff_core_Try.Try_else(ff_core_Core.try_((() => {
-return ff_compiler_Patterns.check_(ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), [], converted_, false, false)
+ff_compiler_Patterns.check_(ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), [], converted_, false, false)
 })), (() => {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_core_List.List_grab(cases_, 0).at_, "Unexhaustive match"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }))
@@ -434,7 +434,7 @@ return ff_compiler_Patterns.PatternCaseInfo(fields_, (!exhaustiveGuards_))
 export async function convertAndCheck_$(modules_, cases_, $task) {
 const converted_ = ff_compiler_Patterns.convert_(modules_, cases_);
 ff_core_Try.Try_else(ff_core_Core.try_((() => {
-return ff_compiler_Patterns.check_(ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), [], converted_, false, false)
+ff_compiler_Patterns.check_(ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), [], converted_, false, false)
 })), (() => {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_core_List.List_grab(cases_, 0).at_, "Unexhaustive match"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }))

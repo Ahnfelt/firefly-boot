@@ -1,18 +1,10 @@
 
 nodeMain(system: NodeSystem) {
     if(True) {
-        1
+        1 + 1
     } else {
         "foo"
     }
-    
-    /*
-    let u: Unit = 
-        if(True) {
-            1
-        } else {
-            "foo"
-        }
     if(True) {
         1
     } elseIf {False} {
@@ -33,7 +25,12 @@ nodeMain(system: NodeSystem) {
         1
     } catchAny {_ =>
         "foo"
+    } grab()
+    [1, 2, 3].each {_ =>
+        try {
+            if(False) {1} else {2}
+        } catchAny {_ =>
+            "foo"
+        } grab()
     }
-    */
 }
-

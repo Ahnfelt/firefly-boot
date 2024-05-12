@@ -462,9 +462,39 @@ extend self: Inference {
                                 )
                         }
                     | _ =>
+                        let unitName = core("Unit")
+                        function semicolonUnit(body: Term): Term {
+                            | ECall e {e.target | DynamicCall c} {c.function | EVariable x} {
+                                x.name == "ff:core/Core.if" || x.name == "ff:core/Core.try"
+                            } =>
+                                e.ECall(arguments = e.arguments.map {
+                                    | Argument a {a.value | ELambda l} =>
+                                        a.Argument(value = l.ELambda(lambda = 
+                                            l.lambda.Lambda(cases = l.lambda.cases.map {c =>
+                                                c.MatchCase(body = 
+                                                    ESequential(c.at, c.body, EVariant(c.at, unitName, [], None))
+                                                )
+                                            })
+                                        ))
+                                    | a => a
+                                })
+                            | ECall e {e.target | DynamicCall c} {c.function | EField f} {
+                                f.field == "else" || f.field == "elseIf" || f.field == "grab" ||
+                                f.field == "catch" || f.field == "catchAny" || f.field == "finally"
+                            } =>
+                                e.ECall(target = c.DynamicCall(function = f.EField(record = semicolonUnit(f.record))))
+                            | ESequential e =>
+                                e.ESequential(after = semicolonUnit(e.after))
+                            | ELet e =>
+                                e.ELet(body = semicolonUnit(e.body))
+                            | EFunctions e =>
+                                e.EFunctions(body = semicolonUnit(e.body))
+                            | _ => 
+                                body
+                        }
                         ESequential(
                             at = at
-                            before = self.inferTerm(environment, newExpected, before)
+                            before = self.inferTerm(environment, newExpected, semicolonUnit(before))
                             after = self.inferTerm(environment, expected, after)
                         )
                 }

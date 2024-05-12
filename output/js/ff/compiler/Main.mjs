@@ -227,7 +227,7 @@ return
 }
 ff_core_Try.Try_grab(ff_core_Try.Try_catch(ff_core_Try.Try_catch(ff_core_Try.Try_catch(ff_core_Core.try_((() => {
 const command_ = ff_compiler_Main.parseCommandLine_(ff_core_NodeSystem.NodeSystem_arguments(system_));
-return runCommand_(command_)
+runCommand_(command_)
 })), ((_1, _2) => {
 {
 const message_ = _1.problem_;
@@ -475,7 +475,7 @@ return
 }
 ff_core_Try.Try_grab(ff_core_Try.Try_catch(ff_core_Try.Try_catch(ff_core_Try.Try_catch((await ff_core_Core.try_$((async ($task) => {
 const command_ = ff_compiler_Main.parseCommandLine_((await ff_core_NodeSystem.NodeSystem_arguments$(system_, $task)));
-return (await runCommand_$(command_, $task))
+(await runCommand_$(command_, $task))
 }), $task)), ((_1, _2) => {
 {
 const message_ = _1.problem_;

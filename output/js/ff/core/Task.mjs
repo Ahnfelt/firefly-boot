@@ -231,7 +231,7 @@ return _w1.first_
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((_w1) => {
 return _w1.second_
 }));
-return ff_core_Channel.Channel_write(successChannel_, result_)
+ff_core_Channel.Channel_write(successChannel_, result_)
 })), ((error_) => {
 ff_core_Channel.Channel_write(failureChannel_, error_);
 ff_core_Task.Task_abort(t_)
@@ -251,7 +251,7 @@ let live_ = ff_core_List.List_size(tasks_);
 const started_ = ff_core_List.List_map(tasks_, ((task_) => {
 return ff_core_Task.Task_spawn(self_, ((_) => {
 ff_core_Try.Try_grab(ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
-return ff_core_Channel.Channel_write(successChannel_, task_())
+ff_core_Channel.Channel_write(successChannel_, task_())
 })), ((e_) => {
 live_ -= 1;
 if((live_ === 0)) {
@@ -304,7 +304,7 @@ return _w1.first_
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((_w1) => {
 return _w1.second_
 }));
-return (await ff_core_Channel.Channel_write$(successChannel_, result_, $task))
+(await ff_core_Channel.Channel_write$(successChannel_, result_, $task))
 }), $task)), (async (error_, $task) => {
 (await ff_core_Channel.Channel_write$(failureChannel_, error_, $task));
 (await ff_core_Task.Task_abort$(t_, $task))
@@ -324,7 +324,7 @@ let live_ = ff_core_List.List_size(tasks_);
 const started_ = (await ff_core_List.List_map$(tasks_, (async (task_, $task) => {
 return (await ff_core_Task.Task_spawn$(self_, (async (_, $task) => {
 ff_core_Try.Try_grab((await ff_core_Try.Try_catchAny$((await ff_core_Core.try_$((async ($task) => {
-return (await ff_core_Channel.Channel_write$(successChannel_, (await task_($task)), $task))
+(await ff_core_Channel.Channel_write$(successChannel_, (await task_($task)), $task))
 }), $task)), (async (e_, $task) => {
 live_ -= 1;
 if((live_ === 0)) {
