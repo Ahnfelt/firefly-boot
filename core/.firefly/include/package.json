@@ -1,5 +1,5 @@
 {
     "dependencies": {
-        "esbuild": "^0.21.1"
+        "esbuild": "^0.21.2"
     }
 }

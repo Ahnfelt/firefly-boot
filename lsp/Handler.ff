@@ -60,6 +60,9 @@ extend self: Handler {
         method.{
             | "initialized" =>
                 []
+            | "textDocument/didOpen" => 
+                self.handleDidOpen(system, parameters)
+                []
             | "textDocument/didChange" => 
                 self.handleDidChange(system, parameters)
                 let diagnostics = self.handleFocusDiagnostic(system, parameters, version)
@@ -145,7 +148,7 @@ extend self: Handler {
     }
 
     handleInitialize(system: NodeSystem, parameters: Map[String, Json]): ResultOrError {
-        self.rootPath = Some(system.pathFromUrl(parameters.grab("rootUri").grabString()))
+        self.rootPath = parameters.grab("rootUri").getString().map {system.pathFromUrl(_)}
 
         let anyFireflyFile = Json.object()
             .with("filters", [
@@ -294,20 +297,30 @@ extend self: Handler {
     }
 
     handleWorkspaceSymbol(system: NodeSystem, parameters: Map[String, Json]): ResultOrError {
-        let query = parameters.grab("query").grabString()
-        let files = self.printTime(system.mainTask(), "findFireflyFiles") {Builder.findFireflyFiles(self.rootPath.grab(), None, Set.empty())}
-        let symbols = files.flatMap {file => 
-            let documentSymbols = self.getDocumentSymbolsWithCache(system, file)
-            let workspaceSymbols = documentSymbols.flatMap {SymbolHandler.documentToWorkspaceSymbols(_, None)}
-            if(query == "") {
-                workspaceSymbols.filter {_.kind == SType}
-            } else {
-                workspaceSymbols.filter {SymbolHandler.symbolFilter(_, query)}
+        self.rootPath.{
+            | None => 
+                Error(-32803 /*Request Failed*/, "Open a folder to enable workspace symbols")
+            | Some(rootPath) => 
+                let files = if(rootPath.isFile()) {
+                    [rootPath]
+                } else {
+                    self.printTime(system.mainTask(), "findFireflyFiles") {Builder.findFireflyFiles(rootPath, None, Set.empty())}
+                }
+                let root = if(rootPath.isFile()) {rootPath.parent().grab()} else {rootPath}
+                let query = parameters.grab("query").grabString()
+                let symbols = files.flatMap {file => 
+                    let documentSymbols = self.getDocumentSymbolsWithCache(system, file)
+                    let workspaceSymbols = documentSymbols.flatMap {SymbolHandler.documentToWorkspaceSymbols(_, None)}
+                    if(query == "") {
+                        workspaceSymbols.filter {_.kind == SType}
+                    } else {
+                        workspaceSymbols.filter {SymbolHandler.symbolFilter(_, query)}
+                    }
+                }
+                let limitedSymbols = symbols.sortBy {_.name.size()}.takeFirst(100)
+                let jsSymbols = limitedSymbols.map {SymbolHandler.workspaceSymbolToLsp(root, _)}
+                Result(Json.array(jsSymbols).write())
             }
-        }
-        let limitedSymbols = symbols.sortBy {_.name.size()}.takeFirst(100)
-        let jsSymbols = limitedSymbols.map {SymbolHandler.workspaceSymbolToLsp(self.rootPath.grab(), _)}
-        Result(Json.array(jsSymbols).write())
     }
     
     handleDidChangeWatched(system: NodeSystem, parameters: Map[String, Json]): List[Pair[String, Json]] {
@@ -321,6 +334,15 @@ extend self: Handler {
         diagnostics.map {Pair("textDocument/publishDiagnostics", _)}
     }
     
+    handleDidOpen(system: NodeSystem, parameters: Map[String, Json]): Unit {
+        let uri = parameters.grab("textDocument").field("uri").grabString()
+        let path = system.pathFromUrl(uri)
+        if(self.rootPath.isEmpty()) {
+            Log.trace("Using file as rootPath: " + path.absolute())
+            self.rootPath = Some(path)
+        }
+    }
+
     handleDidChange(system: NodeSystem, parameters: Map[String, Json]): Unit {
         let uri = parameters.grab("textDocument").field("uri").grabString()
         let path = system.pathFromUrl(uri)
@@ -510,7 +532,7 @@ extend self: Handler {
             | Some(definition) =>
                 let lspHook = LspHook.make(at = None, definedAt = Some(definition.at), insertIdentifier = False, trackSymbols = False)
                 let localCheck = local || definition.local
-                let path = if(localCheck) {system.path(targetAt.file)} else {self.rootPath.grab()}
+                let path = if(localCheck) {system.path(targetAt.file)} else {self.rootPath.else {system.path(targetAt.file)}}
                 let mustContain = Some(definition.name).filter {_ => !localCheck}.map(unqualify)
                 Log.trace("findReferences definition: " + Show.show(definition))
                 mustContain.each {Log.trace("mustContain: " + _)}
