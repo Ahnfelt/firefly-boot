@@ -1,0 +1,53 @@
+data Index[K, R]()
+
+extend self[K, R]: Index[K, R] {
+    
+    get(key: K): Option[R] {
+        panic("Oops")
+    }
+
+    getUnique(key: K): Option[R] {
+        panic("Oops")
+    }
+    
+    getOnly(): Option[R] {
+        panic("Oops")
+    }
+
+    grab(key: K): R {
+        panic("Oops")
+    }
+
+    grabUnique(key: K): R {
+        panic("Oops")
+    }
+
+    grabOnly(key: K): R {
+        panic("Oops")
+    }
+
+    getAll(key: K): List[R] {
+        panic("Oops")
+    }
+
+    range(from: K, until: K): Index[K, R] {
+        panic("Oops")
+    }
+    
+    join[R1](that: Index[K, R1]): Index[K, Pair[R, R1]] {
+        panic("Oops")
+    }
+    
+    keep(only: Set[K]): Index[K, R] {
+        panic("Oops")
+    }
+    
+    filter(body: (K, R) => Bool): Index[K, R] {
+        panic("Oops")
+    }
+    
+    withKeys[K1](body: (K, R) => K1): Index[K1, R] {
+        panic("Oops")
+    }
+    
+}
