@@ -1,0 +1,17 @@
+capability DependencyLock(
+    doneLocks: StringMap[Lock]
+    task: Task
+)
+
+make(task: Task): DependencyLock {
+    DependencyLock(StringMap.make(), task)
+}
+
+extend self: DependencyLock {
+    do[T](doneFile: String, body: () => T): T {
+        let lock = self.doneLocks.getOrSet(doneFile) {self.task.lock()}
+        lock.do(reentrant = False) {
+            body()
+        }
+    }
+}

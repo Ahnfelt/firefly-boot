@@ -8,6 +8,7 @@ import Dependencies
 import JsEmitter
 import ModuleCache
 import LspHook
+import DependencyLock
 
 build(
     system: NodeSystem
@@ -65,7 +66,11 @@ processIncludes(jsPathFile: Path, packagePath: Path, info: PackageInfo): Unit {
 }
 
 buildViaBuildSystem(system: NodeSystem, fireflyPath: Path, mainFile: String, target: String) {
-    let resolvedDependencies = Dependencies.process(system.httpClient(), system.path(mainFile))
+    let resolvedDependencies = Dependencies.process(
+        system.httpClient()
+        DependencyLock.make(system.mainTask())
+        system.path(mainFile)
+    )
     let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
         resolvedDependencies.packagePaths
     } else {
@@ -96,6 +101,7 @@ check(
     skipFiles: Set[String]
     virtualFiles: Map[String, String]
     cache: ModuleCache
+    dependencyLock: DependencyLock
     newVersion: Int
     lspHook: LspHook
     infer: Bool
@@ -110,7 +116,7 @@ check(
 
     packages.filter {!_.files.isEmpty()}.each {package => 
         let firstFile = package.files.grabFirst()
-        let resolvedDependencies = Dependencies.process(system.httpClient(), firstFile)
+        let resolvedDependencies = Dependencies.process(system.httpClient(), dependencyLock, firstFile)
         let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
             resolvedDependencies.packagePaths
         } else {

@@ -3,6 +3,7 @@ import Syntax
 import Tokenizer
 import Workspace
 import LspHook
+import DependencyLock
 
 capability Dependencies(
     workspace: Workspace
@@ -74,6 +75,7 @@ extend self: Dependencies {
     fetchDependency(
         path: Path
         httpClient: HttpClient
+        dependencyLock: DependencyLock
         dependency: DDependency
     ): Path {
         let location = self.workspace.findPackageLocation(dependency.packagePair, dependency.version)
@@ -85,20 +87,22 @@ extend self: Dependencies {
                 let dependencyPath = dependenciesPath.slash(packagePair.group).slash(packagePair.name)
                 let tarGzPath = dependenciesPath.slash(Workspace.tarGzName(packagePair, dependency.version))
                 let donePath = dependenciesPath.slash(Workspace.tarGzName(packagePair, dependency.version) + ".done")
-                if(!donePath.exists()) {
-                    Log.trace("Fetching " + location)
-                    let response = httpClient.fetch(location, throw = False)
-                    if(!response.ok()) {
-                        panic("Could not download dependency: " + location)
+                dependencyLock.do(donePath.absolute()) {
+                    if(!donePath.exists()) {
+                        Log.trace("Fetching " + location)
+                        let response = httpClient.fetch(location, throw = False)
+                        if(!response.ok()) {
+                            panic("Could not download dependency: " + location)
+                        }
+                        let buffer = response.readBuffer()
+                        if(dependencyPath.exists()) {
+                            dependencyPath.delete()
+                        }
+                        dependencyPath.createDirectory(createParentDirectories = True)
+                        tarGzPath.writeStream([buffer].toStream())
+                        internalExtractTarGz(tarGzPath, dependencyPath)
+                        tarGzPath.renameTo(donePath)
                     }
-                    let buffer = response.readBuffer()
-                    if(dependencyPath.exists()) {
-                        dependencyPath.delete()
-                    }
-                    dependencyPath.createDirectory(createParentDirectories = True)
-                    tarGzPath.writeStream([buffer].toStream())
-                    internalExtractTarGz(tarGzPath, dependencyPath)
-                    tarGzPath.renameTo(donePath)
                 }
                 dependencyPath
             } else {
@@ -112,11 +116,12 @@ extend self: Dependencies {
     processDependencies(
         path: Path
         httpClient: HttpClient
+        dependencyLock: DependencyLock
         dependencies: List[DDependency]
     ): Unit {
         // Remember to check for cycles
         let packageInfos = dependencies.map {dependency =>
-            let dependencyPath = self.fetchDependency(path, httpClient, dependency)
+            let dependencyPath = self.fetchDependency(path, httpClient, dependencyLock, dependency)
             self.packagePaths = self.packagePaths.add(dependency.packagePair, dependencyPath)
             let packageInfo = self.loadPackageInfo(dependency.packagePair, dependencyPath)
             checkPackagePairs(dependency.packagePair, packageInfo.package.packagePair)
@@ -124,18 +129,18 @@ extend self: Dependencies {
         }
         let newDependencies = packageInfos.flatMap {self.processPackageInfo(_)}
         if(newDependencies != []) {
-            self.processDependencies(path, httpClient, newDependencies)
+            self.processDependencies(path, httpClient, dependencyLock, newDependencies)
         }
     }
 
 }
 
-process(fetch: HttpClient, path: Path): ResolvedDependencies {
+process(fetch: HttpClient, dependencyLock: DependencyLock, path: Path): ResolvedDependencies {
     let workspace = Workspace.loadWorkspace(path)
     let self = Dependencies(workspace, [].toMap(), [].toMap(), [].toSet())
     let packageInfo = self.loadPackageInfo(PackagePair("script", "script"), path)
     let newDependencies = self.processPackageInfo(packageInfo)
-    self.processDependencies(path, fetch, newDependencies)
+    self.processDependencies(path, fetch, dependencyLock, newDependencies)
     let packagePaths = self.packagePaths.add(packageInfo.package.packagePair, findScriptPackageLocation(path))
     ResolvedDependencies(
         mainPackagePair = packageInfo.package.packagePair

@@ -10,6 +10,7 @@ import JsEmitter
 import Inference
 import ModuleCache
 import LspHook
+import DependencyLock
 
 data MainCommand {
     BootstrapCommand
@@ -61,7 +62,11 @@ main(system: NodeSystem): Unit {
 
     function runCommand(command: MainCommand) {
         | RunCommand(mainFile, arguments) =>
-            let resolvedDependencies = Dependencies.process(system.httpClient(), system.path(mainFile + ".ff"))
+            let resolvedDependencies = Dependencies.process(
+                system.httpClient()
+                DependencyLock.make(system.mainTask())
+                system.path(mainFile + ".ff")
+            )
             prepareFireflyDirectory(system.path("."))
             let localMainFile = system.path(mainFile).base()
             buildScript(localMainFile, resolvedDependencies.mainPackagePair, EmitNode, resolvedDependencies)
@@ -71,14 +76,22 @@ main(system: NodeSystem): Unit {
             }
 
         | BrowserCommand(mainFile) =>
-            let resolvedDependencies = Dependencies.process(system.httpClient(), system.path(mainFile + ".ff"))
+            let resolvedDependencies = Dependencies.process(
+                system.httpClient()
+                DependencyLock.make(system.mainTask())
+                system.path(mainFile + ".ff")
+            )
             prepareFireflyDirectory(system.path("."))
             let localMainFile = system.path(mainFile).base()
             buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitBrowser, resolvedDependencies)
             bundleForBrowser(system, resolvedDependencies.mainPackagePair, localMainFile)
 
         | BuildCommand(mainFile) =>
-            let resolvedDependencies = Dependencies.process(system.httpClient(), system.path(mainFile + ".ff"))
+            let resolvedDependencies = Dependencies.process(
+                system.httpClient()
+                DependencyLock.make(system.mainTask())
+                system.path(mainFile + ".ff")
+            )
             prepareFireflyDirectory(system.path("."))
             let localMainFile = system.path(mainFile).base()
             buildScript(localMainFile, resolvedDependencies.mainPackagePair, EmitBuild, resolvedDependencies)
@@ -95,6 +108,7 @@ main(system: NodeSystem): Unit {
                 skipFiles = Set.empty()
                 virtualFiles = Map.empty()
                 cache = ModuleCache.empty(1)
+                dependencyLock = DependencyLock.make(system.mainTask())
                 newVersion = 0
                 lspHook = LspHook.disabled() 
                 infer = True

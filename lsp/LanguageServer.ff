@@ -1,4 +1,5 @@
 import ModuleCache from ff:compiler
+import DependencyLock from ff:compiler
 import Handler
 
 class LanguageServer(
@@ -30,7 +31,16 @@ main(system: NodeSystem) {
     
     let fireflyPath = system.path(".")
     let cache = ModuleCache.empty(0)
-    let handler = Handler(fireflyPath, None, Map.empty(), [].toSet(), Map.empty(), Map.empty(), cache)
+    let handler = Handler(
+        fireflyPath = fireflyPath
+        rootPath = None
+        virtualFiles = Map.empty()
+        cancelledRequests = [].toSet()
+        responseCache = Map.empty()
+        fileSymbolsCache = Map.empty()
+        moduleCache = cache
+        dependencyLock = DependencyLock.make(system.mainTask())
+    )
     try {
         mutable input = system.readStream()
         let responseChannel: Channel[Pair[Json, String]] = system.mainTask().channel()

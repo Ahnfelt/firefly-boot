@@ -8,6 +8,7 @@ import Environment from ff:compiler
 import Unification from ff:compiler
 import LspHook from ff:compiler
 import ModuleCache from ff:compiler
+import DependencyLock from ff:compiler
 import HoverHandler
 import CompletionHandler
 import SignatureHelpHandler
@@ -21,6 +22,7 @@ capability Handler(
     mutable responseCache: Map[TokenRequestCacheKey, ResultOrError]
     mutable fileSymbolsCache: Map[String, List[DocumentSymbol]]
     moduleCache: ModuleCache
+    dependencyLock: DependencyLock
 )
 
 data TokenRequestCacheKey(
@@ -705,6 +707,7 @@ extend self: Handler {
             skipFiles
             virtualFiles
             self.moduleCache
+            self.dependencyLock
             newModuleCacheVersion
             lspHook
             infer
