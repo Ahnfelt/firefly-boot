@@ -4,7 +4,7 @@ data Option[T] {
 }
 
 extend self[T]: Option[T] {
-
+    
     else(body: () => T): T {
         self.{
             | None => body()
@@ -30,6 +30,13 @@ extend self[T]: Option[T] {
         }
     }
 
+    or[R](noneBody: () => R, someBody: T => R): R {
+        self.{
+            | None => noneBody()
+            | Some(value) => someBody(value)
+        }
+    }
+    
     isEmpty(): Bool {
         self.{
             | None => True
@@ -63,7 +70,7 @@ extend self[T]: Option[T] {
             | _ => None
         }
     }
-
+    
     map[R](body: T => R): Option[R] {
         self.{
             | None => None

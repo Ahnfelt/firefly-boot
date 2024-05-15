@@ -299,30 +299,26 @@ extend self: Handler {
     }
 
     handleWorkspaceSymbol(system: NodeSystem, parameters: Map[String, Json]): ResultOrError {
-        self.rootPath.{
-            | None => 
-                Error(-32803 /*Request Failed*/, "Open a folder to enable workspace symbols")
-            | Some(rootPath) => 
-                let files = if(rootPath.isFile()) {
-                    [rootPath]
-                } else {
-                    self.printTime(system.mainTask(), "findFireflyFiles") {Builder.findFireflyFiles(rootPath, None, Set.empty())}
-                }
-                let root = if(rootPath.isFile()) {rootPath.parent().grab()} else {rootPath}
-                let query = parameters.grab("query").grabString()
-                let symbols = files.flatMap {file => 
-                    let documentSymbols = self.getDocumentSymbolsWithCache(system, file)
-                    let workspaceSymbols = documentSymbols.flatMap {SymbolHandler.documentToWorkspaceSymbols(_, None)}
-                    if(query == "") {
-                        workspaceSymbols.filter {_.kind == SType}
-                    } else {
-                        workspaceSymbols.filter {SymbolHandler.symbolFilter(_, query)}
-                    }
-                }
-                let limitedSymbols = symbols.sortBy {_.name.size()}.takeFirst(100)
-                let jsSymbols = limitedSymbols.map {SymbolHandler.workspaceSymbolToLsp(root, _)}
-                Result(Json.array(jsSymbols).write())
+        self.rootPath.or {Error(-32803 /*Request Failed*/, "Open a folder to enable workspace symbols")}: rootPath =>
+        let files = if(rootPath.isFile()) {
+            [rootPath]
+        } else {
+            self.printTime(system.mainTask(), "findFireflyFiles") {Builder.findFireflyFiles(rootPath, None, Set.empty())}
+        }
+        let root = if(rootPath.isFile()) {rootPath.parent().grab()} else {rootPath}
+        let query = parameters.grab("query").grabString()
+        let symbols = files.flatMap {file => 
+            let documentSymbols = self.getDocumentSymbolsWithCache(system, file)
+            let workspaceSymbols = documentSymbols.flatMap {SymbolHandler.documentToWorkspaceSymbols(_, None)}
+            if(query == "") {
+                workspaceSymbols.filter {_.kind == SType}
+            } else {
+                workspaceSymbols.filter {SymbolHandler.symbolFilter(_, query)}
             }
+        }
+        let limitedSymbols = symbols.sortBy {_.name.size()}.takeFirst(100)
+        let jsSymbols = limitedSymbols.map {SymbolHandler.workspaceSymbolToLsp(root, _)}
+        Result(Json.array(jsSymbols).write())
     }
     
     handleDidChangeWatched(system: NodeSystem, parameters: Map[String, Json]): List[Pair[String, Json]] {
