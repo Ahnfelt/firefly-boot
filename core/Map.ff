@@ -2,7 +2,7 @@ import RbMap
 
 newtype Map[K, V](redBlack: RB[K, V])
 
-empty[K, V](): Map[K, V] {Map(E)}
+new[K, V](): Map[K, V] {Map(E)}
 
 extend self[K: Order, V]: Map[K, V] {
 

@@ -11,10 +11,10 @@ class LspHook(
 )
 
 disabled(): LspHook {
-    make(None, None, False, False)
+    new(None, None, False, False)
 }
 
-make(at: Option[Location], definedAt: Option[Location], insertIdentifier: Bool, trackSymbols: Bool): LspHook {
+new(at: Option[Location], definedAt: Option[Location], insertIdentifier: Bool, trackSymbols: Bool): LspHook {
     LspHook( // Default dummy values instead of Option[Location] to speed up location hit check
         at = at.else {Location("^lsp", -7, -7)}
         definedAt = definedAt.else {Location("^lsp", -7, -7)}

@@ -22,13 +22,13 @@ data Instantiated(
     scheme: Scheme
 )
 
-make(module: Module, otherModules: List[Module], alreadyFlat: Bool): Environment {
+new(module: Module, otherModules: List[Module], alreadyFlat: Bool): Environment {
     let processed = processModule(module, True, alreadyFlat)
     let otherProcessed = otherModules.map {processModule(_, False, False)}
     Environment(
         modulePrefix = fullName(module, "")
-        symbols = processed.symbols.addAll(otherProcessed.map {_.symbols}.foldLeft(Map.empty()) {_.addAll(_)})
-        traits = processed.traits.addAll(otherProcessed.map {_.traits}.foldLeft(Map.empty()) {_.addAll(_)})
+        symbols = processed.symbols.addAll(otherProcessed.map {_.symbols}.foldLeft(Map.new()) {_.addAll(_)})
+        traits = processed.traits.addAll(otherProcessed.map {_.traits}.foldLeft(Map.new()) {_.addAll(_)})
         imports = module.imports.map {i => Pair(i.alias, i)}.toMap()
         effect = TConstructor(Location(module.file, 0, 0), "ff:core/Nothing.Nothing", [])
         selfVariable = None

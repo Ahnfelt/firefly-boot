@@ -110,7 +110,7 @@ extend self: Json {
         """
         
     grabMap(): Map[String, Json] {
-        mutable map = Map.empty()
+        mutable map = Map.new()
         self.each {key, value => 
             map = map.add(key, value)
         }
@@ -228,13 +228,13 @@ extend self: Json {
     }
 
     map[T](body: (String, Json) => T): List[T] {
-        let array = Array.make()
+        let array = Array.new()
         self.each {field, value => array.push(body(field, value))}
         array.drain()
     }
 
     flatMap[T](body: (String, Json) => List[T]): List[T] {
-        let array = Array.make()
+        let array = Array.new()
         self.each {field, value => array.pushList(body(field, value))}
         array.drain()
     }
@@ -302,7 +302,7 @@ instance List[T: JsonLike]: JsonLike {
     fromJson(json: Json): Option[List[T]] {
         json.getArray().flatMap {array => 
             mutable convertible = True
-            let result = Array.make()
+            let result = Array.new()
             array.eachWhile {item =>
                 fromJson(item).{
                     | None => convertible = False
@@ -323,7 +323,7 @@ instance StringMap[T: JsonLike]: JsonLike {
     }
     fromJson(json: Json): Option[StringMap[T]] {
         if(json.isObject()) {
-            let map = StringMap.make()
+            let map = StringMap.new()
             mutable convertible = True
             json.eachWhile {key, value => 
                 fromJson(value).{

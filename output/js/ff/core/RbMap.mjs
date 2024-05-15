@@ -1072,7 +1072,7 @@ return
 return
 }
 }
-return ff_core_Stream.make_((() => {
+return ff_core_Stream.new_((() => {
 return next_()
 }), (() => {
 
@@ -1265,7 +1265,7 @@ return
 return
 }
 }
-return (await ff_core_Stream.make_$((async ($task) => {
+return (await ff_core_Stream.new_$((async ($task) => {
 return next_()
 }), (async ($task) => {
 

@@ -149,6 +149,19 @@ return self_
 }
 }
 
+export function Option_or(self_, noneBody_, someBody_) {
+{
+const _1 = self_;
+if(_1.None) {
+return noneBody_()
+}
+if(_1.Some) {
+const value_ = _1.value_;
+return someBody_(value_)
+}
+}
+}
+
 export function Option_isEmpty(self_) {
 {
 const _1 = self_;
@@ -180,7 +193,7 @@ return ff_core_List.List_toArray(ff_core_Option.Option_toList(self_))
 
 export function Option_toStream(self_, cycle_ = false) {
 let next_ = self_;
-return ff_core_Stream.make_((() => {
+return ff_core_Stream.new_((() => {
 const result_ = next_;
 if((!cycle_)) {
 next_ = ff_core_Option.None()
@@ -332,6 +345,19 @@ return self_
 }
 }
 
+export async function Option_or$(self_, noneBody_, someBody_, $task) {
+{
+const _1 = self_;
+if(_1.None) {
+return (await noneBody_($task))
+}
+if(_1.Some) {
+const value_ = _1.value_;
+return (await someBody_(value_, $task))
+}
+}
+}
+
 export async function Option_isEmpty$(self_, $task) {
 {
 const _1 = self_;
@@ -363,7 +389,7 @@ return ff_core_List.List_toArray(ff_core_Option.Option_toList(self_))
 
 export async function Option_toStream$(self_, cycle_ = false, $task) {
 let next_ = self_;
-return (await ff_core_Stream.make_$((async ($task) => {
+return (await ff_core_Stream.new_$((async ($task) => {
 const result_ = next_;
 if((!cycle_)) {
 next_ = ff_core_Option.None()

@@ -98,7 +98,7 @@ return ff_core_Random.seedFloat_(ff_core_Int.Int_toFloat(seed_))
 }
 
 export function seedFloat_(seed_) {
-const buffer_ = ff_core_Buffer.make_(8, false);
+const buffer_ = ff_core_Buffer.new_(8, false);
 ff_core_Buffer.Buffer_setFloat64(buffer_, 0, seed_, true);
 return ff_core_Random.seedBuffer_(buffer_)
 }
@@ -146,7 +146,7 @@ return ff_core_Random.seedFloat_(ff_core_Int.Int_toFloat(seed_))
 }
 
 export async function seedFloat_$(seed_, $task) {
-const buffer_ = ff_core_Buffer.make_(8, false);
+const buffer_ = ff_core_Buffer.new_(8, false);
 ff_core_Buffer.Buffer_setFloat64(buffer_, 0, seed_, true);
 return ff_core_Random.seedBuffer_(buffer_)
 }

@@ -356,7 +356,7 @@ export function Json_grabArray(self_) {
 }
 
 export function Json_grabMap(self_) {
-let map_ = ff_core_Map.empty_();
+let map_ = ff_core_Map.new_();
 ff_core_Json.Json_each(self_, ((key_, value_) => {
 map_ = ff_core_Map.Map_add(map_, key_, value_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }));
@@ -499,7 +499,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.G
 }
 
 export function Json_map(self_, body_) {
-const array_ = ff_core_Array.make_();
+const array_ = ff_core_Array.new_();
 ff_core_Json.Json_each(self_, ((field_, value_) => {
 ff_core_Array.Array_push(array_, body_(field_, value_))
 }));
@@ -507,7 +507,7 @@ return ff_core_Array.Array_drain(array_)
 }
 
 export function Json_flatMap(self_, body_) {
-const array_ = ff_core_Array.make_();
+const array_ = ff_core_Array.new_();
 ff_core_Json.Json_each(self_, ((field_, value_) => {
 ff_core_Array.Array_pushList(array_, body_(field_, value_))
 }));
@@ -561,7 +561,7 @@ throw new Error('Function Json_grabArray is missing on this target in async cont
 }
 
 export async function Json_grabMap$(self_, $task) {
-let map_ = ff_core_Map.empty_();
+let map_ = ff_core_Map.new_();
 ff_core_Json.Json_each(self_, ((key_, value_) => {
 map_ = ff_core_Map.Map_add(map_, key_, value_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }));
@@ -675,7 +675,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.G
 }
 
 export async function Json_map$(self_, body_, $task) {
-const array_ = ff_core_Array.make_();
+const array_ = ff_core_Array.new_();
 (await ff_core_Json.Json_each$(self_, (async (field_, value_, $task) => {
 ff_core_Array.Array_push(array_, (await body_(field_, value_, $task)))
 }), $task));
@@ -683,7 +683,7 @@ return ff_core_Array.Array_drain(array_)
 }
 
 export async function Json_flatMap$(self_, body_, $task) {
-const array_ = ff_core_Array.make_();
+const array_ = ff_core_Array.new_();
 (await ff_core_Json.Json_each$(self_, (async (field_, value_, $task) => {
 ff_core_Array.Array_pushList(array_, (await body_(field_, value_, $task)))
 }), $task));
@@ -820,7 +820,7 @@ return ff_core_Json_JsonLike$T.toJson_(value_)
 fromJson_(json_) {
 return ff_core_Option.Option_flatMap(ff_core_Json.Json_getArray(json_), ((array_) => {
 let convertible_ = true;
-const result_ = ff_core_Array.make_();
+const result_ = ff_core_Array.new_();
 ff_core_List.List_eachWhile(array_, ((item_) => {
 do {
 const _1 = ff_core_Json_JsonLike$T.fromJson_(item_);
@@ -849,7 +849,7 @@ return ff_core_Json_JsonLike$T.toJson_(value_)
 async fromJson_$(json_, $task) {
 return ff_core_Option.Option_flatMap(ff_core_Json.Json_getArray(json_), ((array_) => {
 let convertible_ = true;
-const result_ = ff_core_Array.make_();
+const result_ = ff_core_Array.new_();
 ff_core_List.List_eachWhile(array_, ((item_) => {
 do {
 const _1 = ff_core_Json_JsonLike$T.fromJson_(item_);
@@ -883,7 +883,7 @@ setField_(key_, ff_core_Json_JsonLike$T.toJson_(value_))
 fromJson_(json_) {
 return ff_core_Option.Option_flatten((ff_core_Json.Json_isObject(json_)
 ? ff_core_Option.Some((function() {
-const map_ = ff_core_StringMap.make_();
+const map_ = ff_core_StringMap.new_();
 let convertible_ = true;
 ff_core_Json.Json_eachWhile(json_, ((key_, value_) => {
 do {
@@ -916,7 +916,7 @@ setField_(key_, ff_core_Json_JsonLike$T.toJson_(value_))
 async fromJson_$(json_, $task) {
 return ff_core_Option.Option_flatten((ff_core_Json.Json_isObject(json_)
 ? ff_core_Option.Some((await (async function() {
-const map_ = ff_core_StringMap.make_();
+const map_ = ff_core_StringMap.new_();
 let convertible_ = true;
 ff_core_Json.Json_eachWhile(json_, ((key_, value_) => {
 do {

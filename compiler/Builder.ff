@@ -30,13 +30,13 @@ build(
     jsPathFile.createDirectory(createParentDirectories = True)
 
     let success = do {
-        let compiler = Compiler.make(
+        let compiler = Compiler.new(
             emitTarget
             system.mainTask()
             compilerModulePath
             jsPathFile
             resolvedDependencies
-            Map.empty()
+            Map.new()
             moduleCache
             lspHook = LspHook.disabled()
         )
@@ -89,7 +89,7 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: Path, mainFile: String, tar
         tempPath = system.path(".firefly/temporary")
         jsOutputPath = system.path(".firefly/output").slash(target)
         printMeasurements = False
-        moduleCache = ModuleCache.empty(0)
+        moduleCache = ModuleCache.new(0)
     )
 }
 
@@ -112,7 +112,7 @@ check(
         | False {path.endsWith([".firefly", "package.ff"])} => [PackageFiles(path.parent().grab(), Some(path), [])]
         | False => [PackageFiles(path.parent().grab(), None, [path])]
     }
-    let errors = Array.make()
+    let errors = Array.new()
 
     packages.filter {!_.files.isEmpty()}.each {package => 
         let firstFile = package.files.grabFirst()
@@ -124,7 +124,7 @@ check(
         }
         let fixedResolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
         let newCache = cache.without(newVersion, path)
-        let compiler = Compiler.make(
+        let compiler = Compiler.new(
             EmitBuild
             system.mainTask() 
             None

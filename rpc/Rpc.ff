@@ -4,8 +4,8 @@ capability RpcServer[I, O, C](
     handlers: StringMap[(C, I) => O]
 )
 
-makeServer[I, O, C](): RpcServer[I, O, C] {
-    RpcServer(StringMap.make())
+newServer[I, O, C](): RpcServer[I, O, C] {
+    RpcServer(StringMap.new())
 }
 
 extend self[I, O, C]: RpcServer[I, O, C] {
@@ -53,7 +53,7 @@ extend self: RpcClient {
     }
 }
 
-makeClient(
+newClient(
     httpClient: HttpClient
     prefix: String
     method: String = "POST"

@@ -6,8 +6,8 @@ data Dictionaries(
     instances: Map[InstanceKey, InstanceValue]
 )
 
-make(modules: List[Module]): Dictionaries {
-    Dictionaries(Unification.make(modules, False).instances)
+new(modules: List[Module]): Dictionaries {
+    Dictionaries(Unification.new(modules, False).instances)
 }
 
 fail[T](at: Location, message: String): T {
@@ -17,7 +17,7 @@ fail[T](at: Location, message: String): T {
 extend self: Dictionaries {
 
     processModule(module: Module, otherModules: List[Module]): Module {
-        let environment = Environment.make(module, otherModules, alreadyFlat = True)
+        let environment = Environment.new(module, otherModules, alreadyFlat = True)
         let functionSignatures = environment.symbols.pairs().collect {
             | Pair(name, s) {!s.isVariable} => Some(Pair(name, s.signature))
             | _ => None
@@ -167,7 +167,7 @@ extend self: Dictionaries {
         constraint: Constraint
     ): Dictionary {
         let instantiationMap = typeParameters.zip(typeArguments).toMap()
-        let unification = Unification.make([], False)
+        let unification = Unification.new([], False)
         let newGenerics = constraint.generics.map {unification.instantiate(instantiationMap, _)}
         newGenerics.grabFirst().{
             | TConstructor firstType =>

@@ -231,7 +231,7 @@ data Version(at: Location, major: Int, minor: Int, patch: Int)
 
 extend self: Type {
     show(shownTypes: List[Type]): String {
-        mutable seenTypes = Map.empty()
+        mutable seenTypes = Map.new()
         let typeNames = 'a'.codeUnit.to('z'.codeUnit).map {Char(_).toString()}.toStream()
         function shortenType(qualified: String): String {
             qualified.reverse().takeWhile {_ != '.'}.reverse()

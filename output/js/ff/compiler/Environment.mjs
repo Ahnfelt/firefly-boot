@@ -109,18 +109,18 @@ return {typeArguments_, scheme_};
 
 
 
-export function make_(module_, otherModules_, alreadyFlat_) {
+export function new_(module_, otherModules_, alreadyFlat_) {
 const processed_ = ff_compiler_Environment.processModule_(module_, true, alreadyFlat_);
 const otherProcessed_ = ff_core_List.List_map(otherModules_, ((_w1) => {
 return ff_compiler_Environment.processModule_(_w1, false, false)
 }));
 return ff_compiler_Environment.Environment(ff_compiler_Environment.fullName_(module_, ""), ff_core_Map.Map_addAll(processed_.symbols_, ff_core_List.List_foldLeft(ff_core_List.List_map(otherProcessed_, ((_w1) => {
 return _w1.symbols_
-})), ff_core_Map.empty_(), ((_w1, _w2) => {
+})), ff_core_Map.new_(), ((_w1, _w2) => {
 return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_addAll(processed_.traits_, ff_core_List.List_foldLeft(ff_core_List.List_map(otherProcessed_, ((_w1) => {
 return _w1.traits_
-})), ff_core_Map.empty_(), ((_w1, _w2) => {
+})), ff_core_Map.new_(), ((_w1, _w2) => {
 return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(ff_core_List.List_map(module_.imports_, ((i_) => {
 return ff_core_Pair.Pair(i_.alias_, i_)
@@ -220,18 +220,18 @@ const effect_ = ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(modu
 return ff_compiler_Environment.Environment("", ff_core_List.List_toMap([...functions_, ...lets_, ...fields_, ...extends_, ...variants_, ...traitMethods_], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(traits_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), effect_, ff_core_Option.None())
 }
 
-export async function make_$(module_, otherModules_, alreadyFlat_, $task) {
+export async function new_$(module_, otherModules_, alreadyFlat_, $task) {
 const processed_ = ff_compiler_Environment.processModule_(module_, true, alreadyFlat_);
 const otherProcessed_ = ff_core_List.List_map(otherModules_, ((_w1) => {
 return ff_compiler_Environment.processModule_(_w1, false, false)
 }));
 return ff_compiler_Environment.Environment(ff_compiler_Environment.fullName_(module_, ""), ff_core_Map.Map_addAll(processed_.symbols_, ff_core_List.List_foldLeft(ff_core_List.List_map(otherProcessed_, ((_w1) => {
 return _w1.symbols_
-})), ff_core_Map.empty_(), ((_w1, _w2) => {
+})), ff_core_Map.new_(), ((_w1, _w2) => {
 return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_addAll(processed_.traits_, ff_core_List.List_foldLeft(ff_core_List.List_map(otherProcessed_, ((_w1) => {
 return _w1.traits_
-})), ff_core_Map.empty_(), ((_w1, _w2) => {
+})), ff_core_Map.new_(), ((_w1, _w2) => {
 return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(ff_core_List.List_map(module_.imports_, ((i_) => {
 return ff_core_Pair.Pair(i_.alias_, i_)

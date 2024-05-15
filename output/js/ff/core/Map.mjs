@@ -94,11 +94,11 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function empty_() {
+export function new_() {
 return ff_core_RbMap.E()
 }
 
-export async function empty_$($task) {
+export async function new_$($task) {
 return ff_core_RbMap.E()
 }
 

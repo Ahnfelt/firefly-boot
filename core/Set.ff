@@ -1,7 +1,7 @@
 newtype Set[T](map: Map[T, Unit])
 
-empty[T](): Set[T] {
-    Set(Map.empty())
+new[T](): Set[T] {
+    Set(Map.new())
 }
 
 extend self[T: Order]: Set[T] {

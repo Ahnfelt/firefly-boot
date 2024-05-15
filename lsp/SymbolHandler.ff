@@ -145,9 +145,9 @@ symbolFilter(symbol: WorkspaceSymbol, query: String): Bool {
 }
 
 matchSymbol(symbolWords: List[String], query: String): Bool {
-    let memo = IntMap.make()
+    let memo = IntMap.new()
     function go(wordIndex: Int, queryOffset: Int): Bool {
-        memo.getOrSet(wordIndex) {IntMap.make()}.getOrSet(queryOffset):
+        memo.getOrSet(wordIndex) {IntMap.new()}.getOrSet(queryOffset):
         if(queryOffset >= query.size()) {True} else:
         if(wordIndex >= symbolWords.size()) {False} else:
         prefixes(query.dropFirst(queryOffset)).any {prefix => 

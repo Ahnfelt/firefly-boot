@@ -93,7 +93,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function make_() {
+export function new_() {
 return {array: []}
 }
 
@@ -149,8 +149,8 @@ export function internalGrab_(self_, index_) {
     
 }
 
-export async function make_$($task) {
-throw new Error('Function make is missing on this target in async context.');
+export async function new_$($task) {
+throw new Error('Function new is missing on this target in async context.');
 }
 
 export async function fill_$(size_, value_, $task) {
@@ -586,7 +586,7 @@ throw new Error('Function Array_join is missing on this target in async context.
 
 export function ff_core_Show_Show$ff_core_Array_Array(ff_core_Show_Show$T) { return {
 show_(value_) {
-const array_ = ff_core_Array.make_();
+const array_ = ff_core_Array.new_();
 ff_core_Array.Array_push(array_, "[");
 ff_core_Array.Array_each(value_, ((x_) => {
 if((ff_core_Array.Array_size(array_) > 1)) {
@@ -598,7 +598,7 @@ ff_core_Array.Array_push(array_, "].toArray()");
 return ff_core_Array.Array_join(array_, "")
 },
 async show_$(value_, $task) {
-const array_ = ff_core_Array.make_();
+const array_ = ff_core_Array.new_();
 ff_core_Array.Array_push(array_, "[");
 ff_core_Array.Array_each(value_, ((x_) => {
 if((ff_core_Array.Array_size(array_) > 1)) {

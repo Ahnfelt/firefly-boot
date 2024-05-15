@@ -1,7 +1,7 @@
 data DeserializationChecksumException()
 
 serialize[T: Serializable](value: T, initialBufferSize: Int = 1024): Buffer {
-    let serialization = Serialization(Buffer.make(initialBufferSize), 0, 0)
+    let serialization = Serialization(Buffer.new(initialBufferSize), 0, 0)
     serializeUsing(serialization, value)
     serialization.autoResize(4)
     serialization.buffer.setInt32(serialization.offset, serialization.checksum)
@@ -34,7 +34,7 @@ extend self: Serialization {
     autoResize(minSpareCapacity: Int) {
         if(self.offset + minSpareCapacity > self.buffer.size()) {
             let minSize = self.buffer.size() + minSpareCapacity
-            let newBuffer = Buffer.make((self.buffer.size() * 2).max(minSize))
+            let newBuffer = Buffer.new((self.buffer.size() * 2).max(minSize))
             newBuffer.setAll(0, self.buffer)
             self.buffer = newBuffer
         }

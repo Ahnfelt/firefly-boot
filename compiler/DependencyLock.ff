@@ -4,7 +4,7 @@ capability DependencyLock(
 )
 
 new(task: Task): DependencyLock {
-    DependencyLock(StringMap.make(), task)
+    DependencyLock(StringMap.new(), task)
 }
 
 extend self: DependencyLock {

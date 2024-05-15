@@ -21,7 +21,7 @@ data EmitTarget {
     EmitExecutable
 }
 
-make(
+new(
     otherModules: List[Module]
     emitTarget: EmitTarget
     isMainModule: Bool
@@ -34,7 +34,7 @@ make(
             let moduleName = m.packagePair.groupName() + "/" + m.file.dropLast(3)
             Pair(moduleName, m)
         }.toMap()
-        jsImporter = JsImporter.make()
+        jsImporter = JsImporter.new()
         emitTarget = emitTarget
         isMainModule = isMainModule
         compilerModulePath = compilerModulePath

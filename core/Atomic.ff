@@ -1,6 +1,6 @@
 class Atomic[T] {}
 
-make[T](value: T): Atomic[T]
+new[T](value: T): Atomic[T]
     target js sync """
         return {value: value_}
     """

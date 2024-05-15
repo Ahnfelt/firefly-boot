@@ -92,12 +92,12 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function empty_() {
-return ff_core_Map.empty_()
+export function new_() {
+return ff_core_Map.new_()
 }
 
-export async function empty_$($task) {
-return ff_core_Map.empty_()
+export async function new_$($task) {
+return ff_core_Map.new_()
 }
 
 export function Set_add(self_, value_, ff_core_Ordering_Order$T) {

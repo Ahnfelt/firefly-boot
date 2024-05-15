@@ -99,16 +99,16 @@ return {imports_};
 
 
 
-export function make_() {
-return ff_compiler_JsImporter.JsImporter(ff_core_Map.empty_())
+export function new_() {
+return ff_compiler_JsImporter.JsImporter(ff_core_Map.new_())
 }
 
 export function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function make_$($task) {
-return ff_compiler_JsImporter.JsImporter(ff_core_Map.empty_())
+export async function new_$($task) {
+return ff_compiler_JsImporter.JsImporter(ff_core_Map.new_())
 }
 
 export async function fail_$(at_, message_, $task) {

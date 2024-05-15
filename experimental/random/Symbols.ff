@@ -33,9 +33,9 @@ test(symbols: List[String], query: String) {
 }
 
 matchSymbol(symbolWords: List[String], query: String, lower: Bool): Bool {
-    let memo: IntMap[IntMap[Bool]] = IntMap.make()
+    let memo: IntMap[IntMap[Bool]] = IntMap.new()
     function go(wordIndex: Int, queryOffset: Int): Bool {
-        memo.getOrSet(wordIndex) {IntMap.make()}.getOrSet(queryOffset):
+        memo.getOrSet(wordIndex) {IntMap.new()}.getOrSet(queryOffset):
         if(queryOffset >= query.size()) {True} else:
         if(wordIndex >= symbolWords.size()) {False} else:
         prefixes(query.dropFirst(queryOffset)).any {prefix => 

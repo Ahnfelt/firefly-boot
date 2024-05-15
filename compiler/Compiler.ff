@@ -24,7 +24,7 @@ capability Compiler(
     phaseDurations: Array[Pair[String, Duration]]
 )
 
-make(
+new(
     emitTarget: EmitTarget
     task: Task
     compilerModulePath: Option[Path]
@@ -143,7 +143,7 @@ extend self: Compiler {
         }
         let completionAt = if(self.lspHook.isEnabled() && self.lspHook.insertIdentifier) {self.lspHook.at}
         let tokens = Tokenizer.tokenize(path.absolute(), code, completionAt, self.lspHook.isEnabled())
-        let parser = Parser.make(packagePair, path.base(), tokens, self.emitTarget != EmitBrowser, self.lspHook)
+        let parser = Parser.new(packagePair, path.base(), tokens, self.emitTarget != EmitBrowser, self.lspHook)
         let module = if(self.singleFilePackages.contains(packagePair)) {
             parser.parseModuleWithPackageInfo().module
         } else {
@@ -172,7 +172,7 @@ extend self: Compiler {
 
         let module = self.parse(packagePair, moduleName, None)
         let otherModules = self.imports(module)
-        let resolver = Resolver.make(packagePair, moduleName, self.lspHook)
+        let resolver = Resolver.new(packagePair, moduleName, self.lspHook)
         resolver.resolveModule(module, otherModules)
     }
 
@@ -181,7 +181,7 @@ extend self: Compiler {
         self.measure("Derive", packagePair, moduleName):
 
         let module = self.resolve(packagePair, moduleName)
-        Deriver.make().deriveModule(module)
+        Deriver.new().deriveModule(module)
     }
 
     infer(packagePair: PackagePair, moduleName: String): Module {
@@ -192,9 +192,9 @@ extend self: Compiler {
         let otherModules = self.imports(module).map {i =>
             self.derive(i.packagePair, i.file.dropLast(".ff".size()))
         }
-        let inference = Inference.make([module, ...otherModules], self.lspHook)
+        let inference = Inference.new([module, ...otherModules], self.lspHook)
         let inferredModule = inference.inferModule(module, otherModules)
-        Dictionaries.make([module, ...otherModules]).processModule(inferredModule, otherModules)
+        Dictionaries.new([module, ...otherModules]).processModule(inferredModule, otherModules)
     }
 
     emit(packagePair: PackagePair, moduleName: String, isMainModule: Bool): Unit {
@@ -210,7 +210,7 @@ extend self: Compiler {
 
         let allModules = [module, ...otherModules]
         let js = 
-            JsEmitter.make(allModules, self.emitTarget, isMainModule, self.compilerModulePath, packagePair, moduleName)
+            JsEmitter.new(allModules, self.emitTarget, isMainModule, self.compilerModulePath, packagePair, moduleName)
             .emitModule(packagePair, module)
         let jsPath = self.jsOutputPath.slash(packagePair.group).slash(packagePair.name)
         let jsFile = jsPath.slash(moduleName + ".mjs")

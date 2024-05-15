@@ -99,8 +99,8 @@ return {version_, parsedModules_, resolvedModules_, derivedModules_, inferredMod
 
 
 
-export function empty_(version_) {
-return ff_compiler_ModuleCache.ModuleCache(version_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_())
+export function new_(version_) {
+return ff_compiler_ModuleCache.ModuleCache(version_, ff_core_Map.new_(), ff_core_Map.new_(), ff_core_Map.new_(), ff_core_Map.new_(), ff_core_Map.new_())
 }
 
 export function mergeVersionedMap_(oldMap_, newMap_, getVersion_) {
@@ -123,8 +123,8 @@ const file_ = (moduleName_ + ".ff");
 return ff_core_Path.Path_slash(packagePath_, file_)
 }
 
-export async function empty_$(version_, $task) {
-return ff_compiler_ModuleCache.ModuleCache(version_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_())
+export async function new_$(version_, $task) {
+return ff_compiler_ModuleCache.ModuleCache(version_, ff_core_Map.new_(), ff_core_Map.new_(), ff_core_Map.new_(), ff_core_Map.new_(), ff_core_Map.new_())
 }
 
 export async function mergeVersionedMap_$(oldMap_, newMap_, getVersion_, $task) {

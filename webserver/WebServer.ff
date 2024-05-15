@@ -32,7 +32,7 @@ data MultipartField {}
 
 capability WebSocketConnection {}
 
-make(
+new(
     system: NodeSystem
     host: String
     port: Int
@@ -612,7 +612,7 @@ internalSend[T](self: WebSocketConnection, send: () => Bool): JsValue
     """
 
 internalArray[T](): Array[T] {
-    Array.make()
+    Array.new()
 }
 
 internalTextChunk(data: String): JsValue

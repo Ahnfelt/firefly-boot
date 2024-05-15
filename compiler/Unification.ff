@@ -27,11 +27,11 @@ fail[T](at: Location, message: String): T {
     throw(CompileError(at, message))
 }
 
-make(modules: List[Module], attemptFixes: Bool): Unification {
+new(modules: List[Module], attemptFixes: Bool): Unification {
 
     Unification(
-        Map.empty()
-        Map.empty()
+        Map.new()
+        Map.new()
         3 // To avoid collision with the parser and resolver
         modules.flatMap {module =>
             let moduleName = module.file.dropLast(".ff".size())

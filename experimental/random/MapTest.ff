@@ -8,7 +8,7 @@ main(system: NodeSystem): Unit {
 
 testStringMap(system: NodeSystem) {
     let measurement = system.time().measure {
-        let map = StringMap.make()
+        let map = StringMap.new()
         mutable i = 0
         while {i < 1000000} {
             map.set("" + i, i)
@@ -20,7 +20,7 @@ testStringMap(system: NodeSystem) {
 
 testIntMap(system: NodeSystem) {
     let measurement = system.time().measure {
-        let map = IntMap.make()
+        let map = IntMap.new()
         mutable i = 0
         while {i < 1000000} {
             map.set(i, i)

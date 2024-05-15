@@ -3,7 +3,7 @@ capability Stream[T](
     close: () => Unit
 )
 
-make[T](next: () => Option[T], close: () => Unit = {}): Stream[T] {
+new[T](next: () => Option[T], close: () => Unit = {}): Stream[T] {
     Stream(next, close)
 }
 
@@ -338,7 +338,7 @@ extend self[T]: Stream[T] {
     }
 
     toArray(): Array[T] {
-        let array = Array.make()
+        let array = Array.new()
         self.each {array.push(_)}
         array
     }
@@ -370,7 +370,7 @@ extend self[K: Order, V]: Stream[Pair[K, V]] {
 extend self: Stream[Buffer] {
 
     toBuffer(): Buffer {
-        let builder = Array.make()
+        let builder = Array.new()
         self.each {builder.push(_)}
         Buffer.fromBufferArray(builder.drain())
     }
@@ -381,7 +381,7 @@ extend self: Stream[Buffer] {
 
     readBytes(bytes: Int): Pair[List[Buffer], Stream[Buffer]] {
         if(bytes <= 0) {Pair([], self)} else:
-        let buffers = Array.make()
+        let buffers = Array.new()
         mutable buffer = self.next().grab()
         mutable taken = 0
         mutable remainder = None

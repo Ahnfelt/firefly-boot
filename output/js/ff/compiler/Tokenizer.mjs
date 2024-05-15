@@ -115,13 +115,13 @@ return _w1.column_
 })), (() => {
 return (-1)
 }));
-const tokens_ = ff_core_Array.make_();
+const tokens_ = ff_core_Array.new_();
 let line_ = 1;
 let lineOffset_ = 0;
 let startLine_ = line_;
 let startLineOffset_ = lineOffset_;
 const operatorCharactersString_ = "!@#$%&/=?+|^~*<>.:-;";
-let operatorCharacters_ = ff_core_Set.empty_();
+let operatorCharacters_ = ff_core_Set.new_();
 ff_core_List.List_map(ff_core_List.range_(ff_core_String.String_size(operatorCharactersString_)), ((j_) => {
 operatorCharacters_ = ff_core_Set.Set_add(operatorCharacters_, ff_core_String.String_grab(operatorCharactersString_, j_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)
 }));
@@ -359,13 +359,13 @@ return _w1.column_
 })), (() => {
 return (-1)
 }));
-const tokens_ = ff_core_Array.make_();
+const tokens_ = ff_core_Array.new_();
 let line_ = 1;
 let lineOffset_ = 0;
 let startLine_ = line_;
 let startLineOffset_ = lineOffset_;
 const operatorCharactersString_ = "!@#$%&/=?+|^~*<>.:-;";
-let operatorCharacters_ = ff_core_Set.empty_();
+let operatorCharacters_ = ff_core_Set.new_();
 ff_core_List.List_map(ff_core_List.range_(ff_core_String.String_size(operatorCharactersString_)), ((j_) => {
 operatorCharacters_ = ff_core_Set.Set_add(operatorCharacters_, ff_core_String.String_grab(operatorCharactersString_, j_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)
 }));

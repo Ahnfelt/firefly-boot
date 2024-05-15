@@ -126,11 +126,11 @@ return {variantName_, newtype_, loneVariant_, arguments_};
 
 export const primitiveTypes_ = ff_core_List.List_toSet(["ff:core/Bool.Bool", "ff:core/Char.Char", "ff:core/Int.Int", "ff:core/Float.Float", "ff:core/String.String"], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 
-export function make_(otherModules_, emitTarget_, isMainModule_, compilerModulePath_, packagePair_, moduleName_) {
+export function new_(otherModules_, emitTarget_, isMainModule_, compilerModulePath_, packagePair_, moduleName_) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 const moduleName_ = ((ff_compiler_Syntax.PackagePair_groupName(m_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(m_.file_, 3));
 return ff_core_Pair.Pair(moduleName_, m_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), emitTarget_, isMainModule_, compilerModulePath_, packagePair_, moduleName_, false, false)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.new_(), emitTarget_, isMainModule_, compilerModulePath_, packagePair_, moduleName_, false, false)
 }
 
 export function fail_(at_, message_) {
@@ -270,11 +270,11 @@ return false
 }
 }
 
-export async function make_$(otherModules_, emitTarget_, isMainModule_, compilerModulePath_, packagePair_, moduleName_, $task) {
+export async function new_$(otherModules_, emitTarget_, isMainModule_, compilerModulePath_, packagePair_, moduleName_, $task) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 const moduleName_ = ((ff_compiler_Syntax.PackagePair_groupName(m_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(m_.file_, 3));
 return ff_core_Pair.Pair(moduleName_, m_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), emitTarget_, isMainModule_, compilerModulePath_, packagePair_, moduleName_, false, false)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.new_(), emitTarget_, isMainModule_, compilerModulePath_, packagePair_, moduleName_, false, false)
 }
 
 export async function fail_$(at_, message_, $task) {

@@ -30,14 +30,14 @@ main(system: NodeSystem) {
     }
     
     let fireflyPath = system.path(".")
-    let cache = ModuleCache.empty(0)
+    let cache = ModuleCache.new(0)
     let handler = Handler(
         fireflyPath = fireflyPath
         rootPath = None
-        virtualFiles = Map.empty()
+        virtualFiles = Map.new()
         cancelledRequests = [].toSet()
-        responseCache = Map.empty()
-        fileSymbolsCache = Map.empty()
+        responseCache = Map.new()
+        fileSymbolsCache = Map.new()
         moduleCache = cache
         dependencyLock = DependencyLock.new(system.mainTask())
     )
@@ -125,7 +125,7 @@ parseRequest(system: NodeSystem, input: Stream[Buffer]): Pair[Request, Stream[Bu
 }
 
 parseRequestHeaders(input: Stream[Buffer]): Pair[Map[String, String], Stream[Buffer]] {
-    let buffers = Array.make()
+    let buffers = Array.new()
     mutable buffer = input.next().else {
         throw(BadRequestException("End of input while parsing request headers"))
     }

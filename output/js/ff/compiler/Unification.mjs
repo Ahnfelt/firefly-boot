@@ -120,8 +120,8 @@ export function fail_(at_, message_) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 
-export function make_(modules_, attemptFixes_) {
-return ff_compiler_Unification.Unification(ff_core_Map.empty_(), ff_core_Map.empty_(), 3, ff_core_List.List_toMap(ff_core_List.List_flatMap(modules_, ((module_) => {
+export function new_(modules_, attemptFixes_) {
+return ff_compiler_Unification.Unification(ff_core_Map.new_(), ff_core_Map.new_(), 3, ff_core_List.List_toMap(ff_core_List.List_flatMap(modules_, ((module_) => {
 const moduleName_ = ff_core_String.String_dropLast(module_.file_, ff_core_String.String_size(".ff"));
 return ff_core_List.List_map(module_.instances_, ((definition_) => {
 const typeName_ = (((_1) => {
@@ -143,8 +143,8 @@ export async function fail_$(at_, message_, $task) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 
-export async function make_$(modules_, attemptFixes_, $task) {
-return ff_compiler_Unification.Unification(ff_core_Map.empty_(), ff_core_Map.empty_(), 3, ff_core_List.List_toMap(ff_core_List.List_flatMap(modules_, ((module_) => {
+export async function new_$(modules_, attemptFixes_, $task) {
+return ff_compiler_Unification.Unification(ff_core_Map.new_(), ff_core_Map.new_(), 3, ff_core_List.List_toMap(ff_core_List.List_flatMap(modules_, ((module_) => {
 const moduleName_ = ff_core_String.String_dropLast(module_.file_, ff_core_String.String_size(".ff"));
 return ff_core_List.List_map(module_.instances_, ((definition_) => {
 const typeName_ = (((_1) => {

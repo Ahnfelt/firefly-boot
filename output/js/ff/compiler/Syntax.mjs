@@ -381,7 +381,7 @@ return ((self_.group_ + delimiter_) + self_.name_)
 }
 
 export function Type_show(self_, shownTypes_) {
-let seenTypes_ = ff_core_Map.empty_();
+let seenTypes_ = ff_core_Map.new_();
 const typeNames_ = ff_core_List.List_toStream(ff_core_List.List_map(ff_core_Int.Int_to(97, 122), ((_w1) => {
 return ff_core_Char.Char_toString(_w1)
 })), false);
@@ -513,7 +513,7 @@ return go_(self_)
 }
 
 export async function Type_show$(self_, shownTypes_, $task) {
-let seenTypes_ = ff_core_Map.empty_();
+let seenTypes_ = ff_core_Map.new_();
 const typeNames_ = ff_core_List.List_toStream(ff_core_List.List_map(ff_core_Int.Int_to(97, 122), ((_w1) => {
 return ff_core_Char.Char_toString(_w1)
 })), false);

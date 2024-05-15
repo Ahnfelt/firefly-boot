@@ -103,8 +103,8 @@ return {instances_};
 
 
 
-export function make_(modules_) {
-return ff_compiler_Dictionaries.Dictionaries(ff_compiler_Unification.make_(modules_, false).instances_)
+export function new_(modules_) {
+return ff_compiler_Dictionaries.Dictionaries(ff_compiler_Unification.new_(modules_, false).instances_)
 }
 
 export function fail_(at_, message_) {
@@ -127,8 +127,8 @@ return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
 
-export async function make_$(modules_, $task) {
-return ff_compiler_Dictionaries.Dictionaries(ff_compiler_Unification.make_(modules_, false).instances_)
+export async function new_$(modules_, $task) {
+return ff_compiler_Dictionaries.Dictionaries(ff_compiler_Unification.new_(modules_, false).instances_)
 }
 
 export async function fail_$(at_, message_, $task) {
@@ -152,7 +152,7 @@ return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_
 }
 
 export function Dictionaries_processModule(self_, module_, otherModules_) {
-const environment_ = ff_compiler_Environment.make_(module_, otherModules_, true);
+const environment_ = ff_compiler_Environment.new_(module_, otherModules_, true);
 const functionSignatures_ = ff_core_List.List_toMap(ff_core_List.List_collect(ff_core_Map.Map_pairs(environment_.symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
 {
 const name_ = _1.first_;
@@ -529,7 +529,7 @@ return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Dictionaries.Dicti
 
 export function Dictionaries_makeDictionary(self_, at_, typeParameters_, typeArguments_, constraint_) {
 const instantiationMap_ = ff_core_List.List_toMap(ff_core_List.List_zip(typeParameters_, typeArguments_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const unification_ = ff_compiler_Unification.make_([], false);
+const unification_ = ff_compiler_Unification.new_([], false);
 const newGenerics_ = ff_core_List.List_map(constraint_.generics_, ((_w1) => {
 return ff_compiler_Unification.Unification_instantiate(unification_, instantiationMap_, _w1)
 }));
@@ -553,7 +553,7 @@ return ff_compiler_Dictionaries.fail_(t_.at_, " is still a unification variable"
 }
 
 export async function Dictionaries_processModule$(self_, module_, otherModules_, $task) {
-const environment_ = ff_compiler_Environment.make_(module_, otherModules_, true);
+const environment_ = ff_compiler_Environment.new_(module_, otherModules_, true);
 const functionSignatures_ = ff_core_List.List_toMap(ff_core_List.List_collect(ff_core_Map.Map_pairs(environment_.symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
 {
 const name_ = _1.first_;
@@ -930,7 +930,7 @@ return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Dictionaries.Dicti
 
 export async function Dictionaries_makeDictionary$(self_, at_, typeParameters_, typeArguments_, constraint_, $task) {
 const instantiationMap_ = ff_core_List.List_toMap(ff_core_List.List_zip(typeParameters_, typeArguments_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const unification_ = ff_compiler_Unification.make_([], false);
+const unification_ = ff_compiler_Unification.new_([], false);
 const newGenerics_ = ff_core_List.List_map(constraint_.generics_, ((_w1) => {
 return ff_compiler_Unification.Unification_instantiate(unification_, instantiationMap_, _w1)
 }));

@@ -26,7 +26,7 @@ data CaseVariable(
     asBound: Option[String]
 )
 
-make(packagePair: PackagePair, moduleName: String, lspHook: LspHook): Resolver {
+new(packagePair: PackagePair, moduleName: String, lspHook: LspHook): Resolver {
     Resolver(
         variables = [].toMap()
         variableLocations = [].toMap()
@@ -545,23 +545,23 @@ extend self: Resolver {
     resolveCase(case: MatchCase, topLevel: Bool): MatchCase {
         function findVariables(pattern: MatchPattern): Map[String, CaseVariable] {
             | PString _ =>
-                Map.empty()
+                Map.new()
             | PInt _ =>
-                Map.empty()
+                Map.new()
             | PChar _ =>
-                Map.empty()
+                Map.new()
             | PVariable(at, Some(name)) =>
                 [Pair(name, CaseVariable(at, name, None))].toMap()
             | PVariable(_, None) =>
-                Map.empty()
+                Map.new()
             | PVariant(_, _, patterns) =>
-                patterns.map(findVariables).foldLeft(Map.empty()) {_.addAll(_)}
+                patterns.map(findVariables).foldLeft(Map.new()) {_.addAll(_)}
             | PVariantAs(at, variant, variableAt, variable) =>
                 variable.toList().map {x => Pair(x, CaseVariable(variableAt, x, Some(variant)))}.toMap()
             | PAlias(at, pattern, variable) =>
                 [Pair(variable, CaseVariable(at, variable, None))].toMap().addAll(findVariables(pattern))
         }
-        let variableMap = case.patterns.map(findVariables).foldLeft(Map.empty()) {_.addAll(_)}
+        let variableMap = case.patterns.map(findVariables).foldLeft(Map.new()) {_.addAll(_)}
         mutable guards = []
         let variableMap2 = case.guards.foldLeft(variableMap) {variableMap1, g =>
             let self2 = self.Resolver(

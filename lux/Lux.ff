@@ -138,7 +138,7 @@ extend self: Lux {
 
     set(attribute: String, value: String) {
         let attributes = self.attributes.else {
-            let map = StringMap.make()
+            let map = StringMap.new()
             self.attributes = Some(map)
             map
         }
@@ -153,7 +153,7 @@ extend self: Lux {
     
     css(style: Css) {
         let attributes = self.attributes.else {
-            let map = StringMap.make()
+            let map = StringMap.new()
             self.attributes = Some(map)
             map
         }
@@ -294,7 +294,7 @@ extend self: Lux {
             let lux = luxCopy.Lux(
                 task = task
                 renderLock = task.lock()
-                renderQueue = Array.make()
+                renderQueue = Array.new()
                 element = luxCopy.element.LuxElement(element = fragment)
             )
             try {
@@ -403,7 +403,7 @@ patchElement(self: Lux, tagName: String): JsValue {
     } else {
         let newNode = if(newKey == "") {self.document.createElement(tagName)} else {
             let keys = self.keys.else {
-                let map = StringMap.make()
+                let map = StringMap.new()
                 mutable i = self.element.child
                 mutable c = self.element.childAt(i)
                 while {!c.isNullOrUndefined()} {
@@ -466,7 +466,7 @@ render(browserSystem: BrowserSystem, element: JsValue, body: Lux => Unit) {
     let lux = Lux(
         jsSystem = browserSystem.js()
         renderLock = browserSystem.mainTask().lock()
-        cssClasses = StringMap.make()
+        cssClasses = StringMap.new()
         task = browserSystem.mainTask()
         depth = 0
         document = LuxDocument(document)
@@ -474,7 +474,7 @@ render(browserSystem: BrowserSystem, element: JsValue, body: Lux => Unit) {
         keys = None
         key = ""
         attributes = None
-        renderQueue = Array.make()
+        renderQueue = Array.new()
     )
     lux.renderLock.do(reentrant = False) {
         body(lux)

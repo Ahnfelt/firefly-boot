@@ -107,8 +107,8 @@ return {unification_, missing_, lspHook_};
 
 
 
-export function make_(modules_, lspHook_) {
-return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_, ff_compiler_LspHook.LspHook_isEnabled(lspHook_)), ff_core_StringMap.make_(), lspHook_)
+export function new_(modules_, lspHook_) {
+return ff_compiler_Inference.Inference(ff_compiler_Unification.new_(modules_, ff_compiler_LspHook.LspHook_isEnabled(lspHook_)), ff_core_StringMap.new_(), lspHook_)
 }
 
 export function fail_(at_, message_) {
@@ -136,8 +136,8 @@ return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
 
-export async function make_$(modules_, lspHook_, $task) {
-return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_, ff_compiler_LspHook.LspHook_isEnabled(lspHook_)), ff_core_StringMap.make_(), lspHook_)
+export async function new_$(modules_, lspHook_, $task) {
+return ff_compiler_Inference.Inference(ff_compiler_Unification.new_(modules_, ff_compiler_LspHook.LspHook_isEnabled(lspHook_)), ff_core_StringMap.new_(), lspHook_)
 }
 
 export async function fail_$(at_, message_, $task) {
@@ -166,7 +166,7 @@ return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_
 }
 
 export function Inference_inferModule(self_, module_, otherModules_) {
-const environment_ = ff_compiler_Environment.make_(module_, otherModules_, false);
+const environment_ = ff_compiler_Environment.new_(module_, otherModules_, false);
 const traits_ = ff_core_List.List_map(module_.traits_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferTraitDefinition(self_, environment_, _w1)
 }));
@@ -496,7 +496,7 @@ ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferPatter
 };
 function literal_(coreTypeName_) {
 ff_compiler_Unification.Unification_unify(self_.unification_, pattern_.at_, expected_, ff_compiler_Syntax.TConstructor(pattern_.at_, ff_compiler_Inference.core_(coreTypeName_), []));
-return ff_core_Map.empty_()
+return ff_core_Map.new_()
 }
 {
 const _1 = pattern_;
@@ -511,7 +511,7 @@ return literal_("Char")
 }
 if(_1.PVariable && _1.name_.None) {
 const at_ = _1.at_;
-return ff_core_Map.empty_()
+return ff_core_Map.new_()
 }
 if(_1.PVariable && _1.name_.Some) {
 const at_ = _1.at_;
@@ -609,7 +609,7 @@ const pattern_ = _1.first_;
 const parameter_ = _1.second_;
 return ff_compiler_Inference.Inference_inferPattern(self_, environment_, parameter_.valueType_, pattern_)
 }
-})), ff_core_Map.empty_(), ((_w1, _w2) => {
+})), ff_core_Map.new_(), ((_w1, _w2) => {
 return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }))
 return
@@ -1964,7 +1964,7 @@ return instantiated_
 }
 
 export async function Inference_inferModule$(self_, module_, otherModules_, $task) {
-const environment_ = ff_compiler_Environment.make_(module_, otherModules_, false);
+const environment_ = ff_compiler_Environment.new_(module_, otherModules_, false);
 const traits_ = ff_core_List.List_map(module_.traits_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferTraitDefinition(self_, environment_, _w1)
 }));
@@ -2294,7 +2294,7 @@ ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferPatter
 };
 function literal_(coreTypeName_) {
 ff_compiler_Unification.Unification_unify(self_.unification_, pattern_.at_, expected_, ff_compiler_Syntax.TConstructor(pattern_.at_, ff_compiler_Inference.core_(coreTypeName_), []));
-return ff_core_Map.empty_()
+return ff_core_Map.new_()
 }
 {
 const _1 = pattern_;
@@ -2309,7 +2309,7 @@ return literal_("Char")
 }
 if(_1.PVariable && _1.name_.None) {
 const at_ = _1.at_;
-return ff_core_Map.empty_()
+return ff_core_Map.new_()
 }
 if(_1.PVariable && _1.name_.Some) {
 const at_ = _1.at_;
@@ -2407,7 +2407,7 @@ const pattern_ = _1.first_;
 const parameter_ = _1.second_;
 return ff_compiler_Inference.Inference_inferPattern(self_, environment_, parameter_.valueType_, pattern_)
 }
-})), ff_core_Map.empty_(), ((_w1, _w2) => {
+})), ff_core_Map.new_(), ((_w1, _w2) => {
 return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }))
 return

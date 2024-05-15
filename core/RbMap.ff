@@ -161,7 +161,7 @@ extend self[K: Order, V]: RB[K, V] {
                     tailcall next()
             }
         }
-        Stream.make(next)
+        Stream.new(next)
     }
 
     each(body: (K, V) => Unit): Unit {

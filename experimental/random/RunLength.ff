@@ -18,13 +18,13 @@ printRunLength(outStream: Stream[Buffer]) {
 }
 
 toRunLength(stream: Stream[Buffer], bufferSize: Int = 65536): Stream[Buffer] {
-    mutable outBuffer = Buffer.make(bufferSize)
+    mutable outBuffer = Buffer.new(bufferSize)
     mutable outOffset = 0
     let outBuffers = Stack.make()
     function writeByte(byte: Int): Unit {
         if(outOffset >= outBuffer.size()) {
             outBuffers.push(outBuffer)
-            outBuffer = Buffer.make(bufferSize)
+            outBuffer = Buffer.new(bufferSize)
             outOffset = 0
         }
         outBuffer.setUint8(outOffset, byte)

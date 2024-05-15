@@ -10,7 +10,7 @@ data PgLevel {
     PgSerializable
 }
 
-makePool(
+newPool(
     system: NodeSystem
     user: String
     host: String
@@ -38,7 +38,7 @@ makePool(
     ))
 }
 
-makePoolFromConnectionString(
+newPoolFromConnectionString(
     system: NodeSystem
     connectionString: String
     connectionTimeout: Duration = Duration(10.0)

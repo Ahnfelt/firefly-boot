@@ -10,10 +10,10 @@ class Inference(
     lspHook: LspHook
 )
 
-make(modules: List[Module], lspHook: LspHook): Inference {
+new(modules: List[Module], lspHook: LspHook): Inference {
     Inference(
-        unification = Unification.make(modules, attemptFixes = lspHook.isEnabled())
-        missing = StringMap.make()
+        unification = Unification.new(modules, attemptFixes = lspHook.isEnabled())
+        missing = StringMap.new()
         lspHook = lspHook
     )
 }
@@ -29,7 +29,7 @@ core(name: String): String {
 extend self: Inference {
 
     inferModule(module: Module, otherModules: List[Module]): Module {
-        let environment = Environment.make(module, otherModules, alreadyFlat = False)
+        let environment = Environment.new(module, otherModules, alreadyFlat = False)
 
         let traits = module.traits.map {self.inferTraitDefinition(environment, _)}
         let instances = module.instances.map {self.inferInstanceDefinition(environment, _)}
@@ -274,7 +274,7 @@ extend self: Inference {
         }
         function literal(coreTypeName: String): Map[String, Pair[Location, Type]] {
             self.unification.unify(pattern.at, expected, TConstructor(pattern.at, core(coreTypeName), []))
-            Map.empty()
+            Map.new()
         }
         pattern.{
             | PString _ =>
@@ -284,7 +284,7 @@ extend self: Inference {
             | PChar _ =>
                 literal("Char")
             | PVariable(at, None) =>
-                Map.empty()
+                Map.new()
             | PVariable(at, Some(name)) =>
                 [Pair(name, Pair(at, expected))].toMap()
             | PAlias(at, pattern, variable) =>
@@ -328,7 +328,7 @@ extend self: Inference {
                 }
                 patterns.zip(instantiated.scheme.signature.parameters).map {| Pair(pattern, parameter) =>
                     self.inferPattern(environment, parameter.valueType, pattern)
-                }.foldLeft(Map.empty[String, Pair[Location, Type]]()) {_.addAll(_)}
+                }.foldLeft(Map.new[String, Pair[Location, Type]]()) {_.addAll(_)}
         }
     }
 

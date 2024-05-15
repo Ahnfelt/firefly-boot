@@ -228,7 +228,7 @@ completion(
 
     let member = prefix.contains("_")
 
-    let members = Array.make()
+    let members = Array.new()
 
     let symbols = if(prefix == "") {
         environment.symbols.toList().collect {

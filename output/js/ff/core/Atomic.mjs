@@ -93,14 +93,14 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function make_(value_) {
+export function new_(value_) {
 
         return {value: value_}
     
 }
 
-export async function make_$(value_, $task) {
-throw new Error('Function make is missing on this target in async context.');
+export async function new_$(value_, $task) {
+throw new Error('Function new is missing on this target in async context.');
 }
 
 export function Atomic_modify(self_, body_) {

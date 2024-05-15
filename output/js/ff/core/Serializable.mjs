@@ -102,7 +102,7 @@ return {buffer_, offset_, checksum_};
 
 
 export function serialize_(value_, initialBufferSize_ = 1024, ff_core_Serializable_Serializable$T) {
-const serialization_ = ff_core_Serializable.Serialization(ff_core_Buffer.make_(initialBufferSize_, false), 0, 0);
+const serialization_ = ff_core_Serializable.Serialization(ff_core_Buffer.new_(initialBufferSize_, false), 0, 0);
 ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, value_);
 ff_core_Serializable.Serialization_autoResize(serialization_, 4);
 ff_core_Buffer.Buffer_setInt32(serialization_.buffer_, serialization_.offset_, serialization_.checksum_, true);
@@ -139,7 +139,7 @@ export function internalGrabLatin1_(self_, byteOffset_, size_) {
 }
 
 export async function serialize_$(value_, initialBufferSize_ = 1024, ff_core_Serializable_Serializable$T, $task) {
-const serialization_ = ff_core_Serializable.Serialization(ff_core_Buffer.make_(initialBufferSize_, false), 0, 0);
+const serialization_ = ff_core_Serializable.Serialization(ff_core_Buffer.new_(initialBufferSize_, false), 0, 0);
 ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, value_);
 ff_core_Serializable.Serialization_autoResize(serialization_, 4);
 ff_core_Buffer.Buffer_setInt32(serialization_.buffer_, serialization_.offset_, serialization_.checksum_, true);
@@ -168,7 +168,7 @@ throw new Error('Function internalGrabLatin1 is missing on this target in async 
 export function Serialization_autoResize(self_, minSpareCapacity_) {
 if(((self_.offset_ + minSpareCapacity_) > ff_core_Buffer.Buffer_size(self_.buffer_))) {
 const minSize_ = (ff_core_Buffer.Buffer_size(self_.buffer_) + minSpareCapacity_);
-const newBuffer_ = ff_core_Buffer.make_(ff_core_Int.Int_max((ff_core_Buffer.Buffer_size(self_.buffer_) * 2), minSize_), false);
+const newBuffer_ = ff_core_Buffer.new_(ff_core_Int.Int_max((ff_core_Buffer.Buffer_size(self_.buffer_) * 2), minSize_), false);
 ff_core_Buffer.Buffer_setAll(newBuffer_, 0, self_.buffer_);
 self_.buffer_ = newBuffer_
 }
@@ -177,7 +177,7 @@ self_.buffer_ = newBuffer_
 export async function Serialization_autoResize$(self_, minSpareCapacity_, $task) {
 if(((self_.offset_ + minSpareCapacity_) > ff_core_Buffer.Buffer_size(self_.buffer_))) {
 const minSize_ = (ff_core_Buffer.Buffer_size(self_.buffer_) + minSpareCapacity_);
-const newBuffer_ = ff_core_Buffer.make_(ff_core_Int.Int_max((ff_core_Buffer.Buffer_size(self_.buffer_) * 2), minSize_), false);
+const newBuffer_ = ff_core_Buffer.new_(ff_core_Int.Int_max((ff_core_Buffer.Buffer_size(self_.buffer_) * 2), minSize_), false);
 ff_core_Buffer.Buffer_setAll(newBuffer_, 0, self_.buffer_);
 self_.buffer_ = newBuffer_
 }

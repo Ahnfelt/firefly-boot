@@ -8,7 +8,7 @@ seedInt(seed: Int): Random {
 }
 
 seedFloat(seed: Float): Random {
-    let buffer = Buffer.make(8)
+    let buffer = Buffer.new(8)
     buffer.setFloat64(0, seed)
     seedBuffer(buffer)
 }

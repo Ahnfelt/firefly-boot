@@ -2,7 +2,7 @@ import Syntax
 
 data Deriver()
 
-make(): Deriver {
+new(): Deriver {
     Deriver()
 }
 

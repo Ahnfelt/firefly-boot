@@ -93,12 +93,12 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function make_() {
+export function new_() {
 return new Map()
 }
 
-export async function make_$($task) {
-throw new Error('Function make is missing on this target in async context.');
+export async function new_$($task) {
+throw new Error('Function new is missing on this target in async context.');
 }
 
 export function IntMap_get(self_, key_) {
@@ -144,7 +144,7 @@ for(const [k, v] of self_) if(!body_(k, v)) break
 }
 
 export function IntMap_toArray(self_) {
-const array_ = ff_core_Array.make_();
+const array_ = ff_core_Array.new_();
 ff_core_IntMap.IntMap_each(self_, ((k_, v_) => {
 ff_core_Array.Array_push(array_, ff_core_Pair.Pair(k_, v_))
 }));
@@ -164,7 +164,7 @@ return ff_core_List.List_toMap(ff_core_IntMap.IntMap_toList(self_), ff_core_Orde
 }
 
 export function IntMap_keys(self_) {
-const array_ = ff_core_Array.make_();
+const array_ = ff_core_Array.new_();
 ff_core_IntMap.IntMap_each(self_, ((k_, v_) => {
 ff_core_Array.Array_push(array_, k_)
 }));
@@ -172,7 +172,7 @@ return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
 }
 
 export function IntMap_values(self_) {
-const array_ = ff_core_Array.make_();
+const array_ = ff_core_Array.new_();
 ff_core_IntMap.IntMap_each(self_, ((k_, v_) => {
 ff_core_Array.Array_push(array_, v_)
 }));
@@ -227,7 +227,7 @@ for(const [k, v] of self_) if(!await body_(k, v)) break
 }
 
 export async function IntMap_toArray$(self_, $task) {
-const array_ = ff_core_Array.make_();
+const array_ = ff_core_Array.new_();
 ff_core_IntMap.IntMap_each(self_, ((k_, v_) => {
 ff_core_Array.Array_push(array_, ff_core_Pair.Pair(k_, v_))
 }));
@@ -247,7 +247,7 @@ return ff_core_List.List_toMap(ff_core_IntMap.IntMap_toList(self_), ff_core_Orde
 }
 
 export async function IntMap_keys$(self_, $task) {
-const array_ = ff_core_Array.make_();
+const array_ = ff_core_Array.new_();
 ff_core_IntMap.IntMap_each(self_, ((k_, v_) => {
 ff_core_Array.Array_push(array_, k_)
 }));
@@ -255,7 +255,7 @@ return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
 }
 
 export async function IntMap_values$(self_, $task) {
-const array_ = ff_core_Array.make_();
+const array_ = ff_core_Array.new_();
 ff_core_IntMap.IntMap_each(self_, ((k_, v_) => {
 ff_core_Array.Array_push(array_, v_)
 }));

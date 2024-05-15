@@ -204,10 +204,10 @@ return {InferRecordFieldHook: true, usageAt_, unification_, environment_, expect
 
 
 export function disabled_() {
-return ff_compiler_LspHook.make_(ff_core_Option.None(), ff_core_Option.None(), false, false)
+return ff_compiler_LspHook.new_(ff_core_Option.None(), ff_core_Option.None(), false, false)
 }
 
-export function make_(at_, definedAt_, insertIdentifier_, trackSymbols_) {
+export function new_(at_, definedAt_, insertIdentifier_, trackSymbols_) {
 return ff_compiler_LspHook.LspHook(ff_core_Option.Option_else(at_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
 })), ff_core_Option.Option_else(definedAt_, (() => {
@@ -340,10 +340,10 @@ return "ResolveVariantFieldHook(...)"
 }
 
 export async function disabled_$($task) {
-return ff_compiler_LspHook.make_(ff_core_Option.None(), ff_core_Option.None(), false, false)
+return ff_compiler_LspHook.new_(ff_core_Option.None(), ff_core_Option.None(), false, false)
 }
 
-export async function make_$(at_, definedAt_, insertIdentifier_, trackSymbols_, $task) {
+export async function new_$(at_, definedAt_, insertIdentifier_, trackSymbols_, $task) {
 return ff_compiler_LspHook.LspHook(ff_core_Option.Option_else(at_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
 })), ff_core_Option.Option_else(definedAt_, (() => {

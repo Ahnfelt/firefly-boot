@@ -93,7 +93,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function make_(size_, shared_ = false) {
+export function new_(size_, shared_ = false) {
 return new DataView(shared_ ? new SharedArrayBuffer(size_) : new ArrayBuffer(size_))
 }
 
@@ -133,8 +133,8 @@ export function fromBase64_(base64_) {
     
 }
 
-export async function make_$(size_, shared_ = false, $task) {
-throw new Error('Function make is missing on this target in async context.');
+export async function new_$(size_, shared_ = false, $task) {
+throw new Error('Function new is missing on this target in async context.');
 }
 
 export async function fromByteArray_$(array_, $task) {

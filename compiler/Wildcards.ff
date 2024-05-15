@@ -2,7 +2,7 @@ import Syntax
 
 class Wildcards(mutable seenWildcards : Int)
 
-make(): Wildcards {
+new(): Wildcards {
     Wildcards(0)
 }
 

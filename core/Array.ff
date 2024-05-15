@@ -1,6 +1,6 @@
 class Array[T] {}
 
-make[T](): Array[T]
+new[T](): Array[T]
     target js sync "return {array: []}"
 
 fill[T](size: Int, value: T): List[T]
@@ -221,7 +221,7 @@ extend self: Array[String] {
 
 instance Array[T: Show]: Show {
     show(value: Array[T]): String {
-        let array = Array.make()
+        let array = Array.new()
         array.push("[")
         value.each {x =>
             if(array.size() > 1) {array.push(", ")}

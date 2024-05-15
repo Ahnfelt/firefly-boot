@@ -100,7 +100,7 @@ return Deriver$;
 
 
 
-export function make_() {
+export function new_() {
 return ff_compiler_Deriver.Deriver()
 }
 
@@ -108,7 +108,7 @@ export function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function make_$($task) {
+export async function new_$($task) {
 return ff_compiler_Deriver.Deriver()
 }
 

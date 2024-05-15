@@ -4,8 +4,8 @@ class JsImporter(
     mutable imports: Map[String, String]
 )
 
-make(): JsImporter {
-    JsImporter(Map.empty())
+new(): JsImporter {
+    JsImporter(Map.new())
 }
 
 fail[T](at: Location, message: String): T {

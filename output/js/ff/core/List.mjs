@@ -93,7 +93,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function empty_() {
+export function new_() {
 
         return [];
     
@@ -127,8 +127,8 @@ export function internalGrab_(self_, index_) {
     
 }
 
-export async function empty_$($task) {
-throw new Error('Function empty is missing on this target in async context.');
+export async function new_$($task) {
+throw new Error('Function new is missing on this target in async context.');
 }
 
 export async function fill_$(size_, value_, $task) {
@@ -270,8 +270,8 @@ return ff_core_Pair.Pair((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), y
 }
 
 export function List_chunk(self_, chunkSize_) {
-const results_ = ff_core_Array.make_();
-const result_ = ff_core_Array.make_();
+const results_ = ff_core_Array.new_();
+const result_ = ff_core_Array.new_();
 let added_ = 0;
 ff_core_List.List_each(self_, ((item_) => {
 if((added_ < chunkSize_)) {
@@ -290,7 +290,7 @@ return ff_core_Array.Array_drain(results_)
 
 export function List_toStream(self_, cycle_ = false) {
 let index_ = 0;
-return ff_core_Stream.make_((() => {
+return ff_core_Stream.new_((() => {
 if((index_ < ff_core_List.List_size(self_))) {
 return ff_core_Option.Some((function() {
 const result_ = (self_[index_] ?? ff_core_List.internalGrab_(self_, index_));
@@ -355,7 +355,7 @@ return result_
 }
 
 export function List_filter(self_, body_) {
-const result_ = ff_core_Array.make_();
+const result_ = ff_core_Array.new_();
 ff_core_List.List_each(self_, ((x_) => {
 if(body_(x_)) {
 ff_core_Array.Array_push(result_, x_)
@@ -377,7 +377,7 @@ export function List_map(self_, body_) {
 }
 
 export function List_flatMap(self_, body_) {
-const results_ = ff_core_Array.make_();
+const results_ = ff_core_Array.new_();
 ff_core_List.List_each(self_, ((x_) => {
 ff_core_Array.Array_pushList(results_, body_(x_))
 }));
@@ -385,7 +385,7 @@ return ff_core_Array.Array_drain(results_)
 }
 
 export function List_collect(self_, body_) {
-let result_ = ff_core_Array.make_();
+let result_ = ff_core_Array.new_();
 ff_core_List.List_each(self_, ((x_) => {
 ff_core_Option.Option_each(body_(x_), ((_w1) => {
 ff_core_Array.Array_push(result_, _w1)
@@ -431,7 +431,7 @@ return ff_core_List.List_grab(self_, (ff_core_List.List_size(self_) - i_))
 }
 
 export function List_separate(self_, separator_) {
-const array_ = ff_core_Array.make_();
+const array_ = ff_core_Array.new_();
 ff_core_List.List_each(ff_core_List.List_pairs(self_), ((_1) => {
 {
 const i_ = _1.first_;
@@ -553,8 +553,8 @@ return ff_core_Pair.Pair((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), y
 }
 
 export async function List_chunk$(self_, chunkSize_, $task) {
-const results_ = ff_core_Array.make_();
-const result_ = ff_core_Array.make_();
+const results_ = ff_core_Array.new_();
+const result_ = ff_core_Array.new_();
 let added_ = 0;
 ff_core_List.List_each(self_, ((item_) => {
 if((added_ < chunkSize_)) {
@@ -573,7 +573,7 @@ return ff_core_Array.Array_drain(results_)
 
 export async function List_toStream$(self_, cycle_ = false, $task) {
 let index_ = 0;
-return (await ff_core_Stream.make_$((async ($task) => {
+return (await ff_core_Stream.new_$((async ($task) => {
 if((index_ < ff_core_List.List_size(self_))) {
 return ff_core_Option.Some((await (async function() {
 const result_ = (self_[index_] ?? ff_core_List.internalGrab_(self_, index_));
@@ -640,7 +640,7 @@ return result_
 }
 
 export async function List_filter$(self_, body_, $task) {
-const result_ = ff_core_Array.make_();
+const result_ = ff_core_Array.new_();
 (await ff_core_List.List_each$(self_, (async (x_, $task) => {
 if((await body_(x_, $task))) {
 ff_core_Array.Array_push(result_, x_)
@@ -666,7 +666,7 @@ export async function List_map$(self_, body_, $task) {
 }
 
 export async function List_flatMap$(self_, body_, $task) {
-const results_ = ff_core_Array.make_();
+const results_ = ff_core_Array.new_();
 (await ff_core_List.List_each$(self_, (async (x_, $task) => {
 ff_core_Array.Array_pushList(results_, (await body_(x_, $task)))
 }), $task));
@@ -674,7 +674,7 @@ return ff_core_Array.Array_drain(results_)
 }
 
 export async function List_collect$(self_, body_, $task) {
-let result_ = ff_core_Array.make_();
+let result_ = ff_core_Array.new_();
 (await ff_core_List.List_each$(self_, (async (x_, $task) => {
 ff_core_Option.Option_each((await body_(x_, $task)), ((_w1) => {
 ff_core_Array.Array_push(result_, _w1)
@@ -720,7 +720,7 @@ return ff_core_List.List_grab(self_, (ff_core_List.List_size(self_) - i_))
 }
 
 export async function List_separate$(self_, separator_, $task) {
-const array_ = ff_core_Array.make_();
+const array_ = ff_core_Array.new_();
 ff_core_List.List_each(ff_core_List.List_pairs(self_), ((_1) => {
 {
 const i_ = _1.first_;
@@ -742,7 +742,7 @@ return ff_core_Ordering_Order$T.compare_(x_, y_)
 }
 
 export function List_toSet(self_, ff_core_Ordering_Order$T) {
-return ff_core_List.List_foldLeft(self_, ff_core_Set.empty_(), ((_w1, _w2) => {
+return ff_core_List.List_foldLeft(self_, ff_core_Set.new_(), ((_w1, _w2) => {
 return ff_core_Set.Set_add(_w1, _w2, ff_core_Ordering_Order$T)
 }))
 }
@@ -770,7 +770,7 @@ return ff_core_Ordering_Order$T.compare_(x_, y_)
 }
 
 export async function List_toSet$(self_, ff_core_Ordering_Order$T, $task) {
-return ff_core_List.List_foldLeft(self_, ff_core_Set.empty_(), ((_w1, _w2) => {
+return ff_core_List.List_foldLeft(self_, ff_core_Set.new_(), ((_w1, _w2) => {
 return ff_core_Set.Set_add(_w1, _w2, ff_core_Ordering_Order$T)
 }))
 }
@@ -792,7 +792,7 @@ return false
 }
 
 export function List_flatten(self_) {
-const result_ = ff_core_Array.make_();
+const result_ = ff_core_Array.new_();
 ff_core_List.List_each(self_, ((xs_) => {
 ff_core_Array.Array_pushList(result_, xs_)
 }));
@@ -800,7 +800,7 @@ return ff_core_Array.Array_drain(result_)
 }
 
 export async function List_flatten$(self_, $task) {
-const result_ = ff_core_Array.make_();
+const result_ = ff_core_Array.new_();
 ff_core_List.List_each(self_, ((xs_) => {
 ff_core_Array.Array_pushList(result_, xs_)
 }));
@@ -808,7 +808,7 @@ return ff_core_Array.Array_drain(result_)
 }
 
 export function List_toMap(self_, ff_core_Ordering_Order$K) {
-return ff_core_List.List_foldLeft(self_, ff_core_Map.empty_(), ((_1, _2) => {
+return ff_core_List.List_foldLeft(self_, ff_core_Map.new_(), ((_1, _2) => {
 {
 const map_ = _1;
 const key_ = _2.first_;
@@ -819,7 +819,7 @@ return ff_core_Map.Map_add(map_, key_, value_, ff_core_Ordering_Order$K)
 }
 
 export function List_group(self_, ff_core_Ordering_Order$K) {
-let map_ = ff_core_Map.empty_();
+let map_ = ff_core_Map.new_();
 ff_core_List.List_each(self_, ((_1) => {
 {
 const k_ = _1.first_;
@@ -834,7 +834,7 @@ return ff_core_Array.Array_drain(v_)
 }
 
 export async function List_toMap$(self_, ff_core_Ordering_Order$K, $task) {
-return ff_core_List.List_foldLeft(self_, ff_core_Map.empty_(), ((_1, _2) => {
+return ff_core_List.List_foldLeft(self_, ff_core_Map.new_(), ((_1, _2) => {
 {
 const map_ = _1;
 const key_ = _2.first_;
@@ -845,7 +845,7 @@ return ff_core_Map.Map_add(map_, key_, value_, ff_core_Ordering_Order$K)
 }
 
 export async function List_group$(self_, ff_core_Ordering_Order$K, $task) {
-let map_ = ff_core_Map.empty_();
+let map_ = ff_core_Map.new_();
 ff_core_List.List_each(self_, ((_1) => {
 {
 const k_ = _1.first_;
@@ -860,8 +860,8 @@ return ff_core_Array.Array_drain(v_)
 }
 
 export function List_unzip(self_) {
-const first_ = ff_core_Array.make_();
-const second_ = ff_core_Array.make_();
+const first_ = ff_core_Array.new_();
+const second_ = ff_core_Array.new_();
 ff_core_List.List_each(self_, ((_1) => {
 {
 const x_ = _1.first_;
@@ -875,8 +875,8 @@ return ff_core_Pair.Pair(ff_core_Array.Array_drain(first_), ff_core_Array.Array_
 }
 
 export async function List_unzip$(self_, $task) {
-const first_ = ff_core_Array.make_();
-const second_ = ff_core_Array.make_();
+const first_ = ff_core_Array.new_();
+const second_ = ff_core_Array.new_();
 ff_core_List.List_each(self_, ((_1) => {
 {
 const x_ = _1.first_;
@@ -899,7 +899,7 @@ throw new Error('Function List_join is missing on this target in async context.'
 
 export function ff_core_Show_Show$ff_core_List_List(ff_core_Show_Show$T) { return {
 show_(value_) {
-const array_ = ff_core_Array.make_();
+const array_ = ff_core_Array.new_();
 ff_core_Array.Array_push(array_, "[");
 ff_core_List.List_each(value_, ((x_) => {
 if((ff_core_Array.Array_size(array_) > 1)) {
@@ -911,7 +911,7 @@ ff_core_Array.Array_push(array_, "]");
 return ff_core_Array.Array_join(array_, "")
 },
 async show_$(value_, $task) {
-const array_ = ff_core_Array.make_();
+const array_ = ff_core_Array.new_();
 ff_core_Array.Array_push(array_, "[");
 ff_core_List.List_each(value_, ((x_) => {
 if((ff_core_Array.Array_size(array_) > 1)) {

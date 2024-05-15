@@ -9,14 +9,14 @@ class ModuleCache(
     mutable emittedModules: Map[String, Int]
 )
 
-empty(version: Int): ModuleCache {
+new(version: Int): ModuleCache {
     ModuleCache(
         version = version
-        parsedModules = Map.empty()
-        resolvedModules = Map.empty()
-        derivedModules = Map.empty()
-        inferredModules = Map.empty()
-        emittedModules = Map.empty()
+        parsedModules = Map.new()
+        resolvedModules = Map.new()
+        derivedModules = Map.new()
+        inferredModules = Map.new()
+        emittedModules = Map.new()
     )
 }
 

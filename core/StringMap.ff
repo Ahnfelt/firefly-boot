@@ -1,6 +1,6 @@
 class StringMap[V] {}
 
-make[V](): StringMap[V]
+new[V](): StringMap[V]
     target js sync "return new Map()"
 
 extend self[V]: StringMap[V] {
@@ -41,7 +41,7 @@ extend self[V]: StringMap[V] {
         target js async "for(const [k, v] of self_) if(!await body_(k, v)) break"
 
     toArray(): Array[Pair[String, V]] {
-        let array = Array.make()
+        let array = Array.new()
         self.each {k, v => array.push(Pair(k, v))}
         array
     }
@@ -59,13 +59,13 @@ extend self[V]: StringMap[V] {
     }
 
     keys(): List[String] {
-        let array = Array.make()
+        let array = Array.new()
         self.each {k, v => array.push(k)}
         array.toList()
     }
 
     values(): List[V] {
-        let array = Array.make()
+        let array = Array.new()
         self.each {k, v => array.push(v)}
         array.toList()
     }
