@@ -68,7 +68,7 @@ processIncludes(jsPathFile: Path, packagePath: Path, info: PackageInfo): Unit {
 buildViaBuildSystem(system: NodeSystem, fireflyPath: Path, mainFile: String, target: String) {
     let resolvedDependencies = Dependencies.process(
         system.httpClient()
-        DependencyLock.make(system.mainTask())
+        DependencyLock.new(system.mainTask())
         system.path(mainFile)
     )
     let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {

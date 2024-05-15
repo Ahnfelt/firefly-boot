@@ -3,7 +3,7 @@ capability DependencyLock(
     task: Task
 )
 
-make(task: Task): DependencyLock {
+new(task: Task): DependencyLock {
     DependencyLock(StringMap.make(), task)
 }
 

@@ -64,7 +64,7 @@ main(system: NodeSystem): Unit {
         | RunCommand(mainFile, arguments) =>
             let resolvedDependencies = Dependencies.process(
                 system.httpClient()
-                DependencyLock.make(system.mainTask())
+                DependencyLock.new(system.mainTask())
                 system.path(mainFile + ".ff")
             )
             prepareFireflyDirectory(system.path("."))
@@ -78,7 +78,7 @@ main(system: NodeSystem): Unit {
         | BrowserCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(
                 system.httpClient()
-                DependencyLock.make(system.mainTask())
+                DependencyLock.new(system.mainTask())
                 system.path(mainFile + ".ff")
             )
             prepareFireflyDirectory(system.path("."))
@@ -89,7 +89,7 @@ main(system: NodeSystem): Unit {
         | BuildCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(
                 system.httpClient()
-                DependencyLock.make(system.mainTask())
+                DependencyLock.new(system.mainTask())
                 system.path(mainFile + ".ff")
             )
             prepareFireflyDirectory(system.path("."))
@@ -108,7 +108,7 @@ main(system: NodeSystem): Unit {
                 skipFiles = Set.empty()
                 virtualFiles = Map.empty()
                 cache = ModuleCache.empty(1)
-                dependencyLock = DependencyLock.make(system.mainTask())
+                dependencyLock = DependencyLock.new(system.mainTask())
                 newVersion = 0
                 lspHook = LspHook.disabled() 
                 infer = True

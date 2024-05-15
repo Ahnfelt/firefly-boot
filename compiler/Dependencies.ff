@@ -87,21 +87,23 @@ extend self: Dependencies {
                 let dependencyPath = dependenciesPath.slash(packagePair.group).slash(packagePair.name)
                 let tarGzPath = dependenciesPath.slash(Workspace.tarGzName(packagePair, dependency.version))
                 let donePath = dependenciesPath.slash(Workspace.tarGzName(packagePair, dependency.version) + ".done")
-                dependencyLock.do(donePath.absolute()) {
-                    if(!donePath.exists()) {
-                        Log.trace("Fetching " + location)
-                        let response = httpClient.fetch(location, throw = False)
-                        if(!response.ok()) {
-                            panic("Could not download dependency: " + location)
+                if(!donePath.exists()) {
+                    dependencyLock.do(donePath.absolute()) {
+                        if(!donePath.exists()) {
+                            Log.trace("Fetching " + location)
+                            let response = httpClient.fetch(location, throw = False)
+                            if(!response.ok()) {
+                                panic("Could not download dependency: " + location)
+                            }
+                            let buffer = response.readBuffer()
+                            if(dependencyPath.exists()) {
+                                dependencyPath.delete()
+                            }
+                            dependencyPath.createDirectory(createParentDirectories = True)
+                            tarGzPath.writeStream([buffer].toStream())
+                            internalExtractTarGz(tarGzPath, dependencyPath)
+                            tarGzPath.renameTo(donePath)
                         }
-                        let buffer = response.readBuffer()
-                        if(dependencyPath.exists()) {
-                            dependencyPath.delete()
-                        }
-                        dependencyPath.createDirectory(createParentDirectories = True)
-                        tarGzPath.writeStream([buffer].toStream())
-                        internalExtractTarGz(tarGzPath, dependencyPath)
-                        tarGzPath.renameTo(donePath)
                     }
                 }
                 dependencyPath

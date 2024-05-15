@@ -39,7 +39,7 @@ main(system: NodeSystem) {
         responseCache = Map.empty()
         fileSymbolsCache = Map.empty()
         moduleCache = cache
-        dependencyLock = DependencyLock.make(system.mainTask())
+        dependencyLock = DependencyLock.new(system.mainTask())
     )
     try {
         mutable input = system.readStream()

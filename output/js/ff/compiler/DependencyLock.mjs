@@ -97,11 +97,11 @@ return {doneLocks_, task_};
 
 
 
-export function make_(task_) {
+export function new_(task_) {
 return ff_compiler_DependencyLock.DependencyLock(ff_core_StringMap.make_(), task_)
 }
 
-export async function make_$(task_, $task) {
+export async function new_$(task_, $task) {
 return ff_compiler_DependencyLock.DependencyLock(ff_core_StringMap.make_(), task_)
 }
 

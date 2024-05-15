@@ -249,6 +249,7 @@ const dependenciesPath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(direct
 const dependencyPath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(dependenciesPath_, packagePair_.group_), packagePair_.name_);
 const tarGzPath_ = ff_core_Path.Path_slash(dependenciesPath_, ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_));
 const donePath_ = ff_core_Path.Path_slash(dependenciesPath_, (ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_) + ".done"));
+if((!ff_core_Path.Path_exists(donePath_, false, false, false))) {
 ff_compiler_DependencyLock.DependencyLock_do(dependencyLock_, ff_core_Path.Path_absolute(donePath_), (() => {
 if((!ff_core_Path.Path_exists(donePath_, false, false, false))) {
 return ff_core_Option.Some((function() {
@@ -267,7 +268,8 @@ ff_compiler_Dependencies.internalExtractTarGz_(tarGzPath_, dependencyPath_);
 return ff_core_Path.Path_renameTo(tarGzPath_, donePath_)
 })())
 } else return ff_core_Option.None()
-}));
+}))
+};
 return dependencyPath_
 } else {
 return ff_core_Core.panic_(("Loading packages by this protocol is not supported: " + location_))
@@ -351,6 +353,7 @@ const dependenciesPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Pa
 const dependencyPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(dependenciesPath_, packagePair_.group_, $task)), packagePair_.name_, $task));
 const tarGzPath_ = (await ff_core_Path.Path_slash$(dependenciesPath_, ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_), $task));
 const donePath_ = (await ff_core_Path.Path_slash$(dependenciesPath_, (ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_) + ".done"), $task));
+if((!(await ff_core_Path.Path_exists$(donePath_, false, false, false, $task)))) {
 (await ff_compiler_DependencyLock.DependencyLock_do$(dependencyLock_, (await ff_core_Path.Path_absolute$(donePath_, $task)), (async ($task) => {
 if((!(await ff_core_Path.Path_exists$(donePath_, false, false, false, $task)))) {
 return ff_core_Option.Some((await (async function() {
@@ -369,7 +372,8 @@ if((await ff_core_Path.Path_exists$(dependencyPath_, false, false, false, $task)
 return (await ff_core_Path.Path_renameTo$(tarGzPath_, donePath_, $task))
 })()))
 } else return ff_core_Option.None()
-}), $task));
+}), $task))
+};
 return dependencyPath_
 } else {
 return ff_core_Core.panic_(("Loading packages by this protocol is not supported: " + location_))
