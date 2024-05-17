@@ -162,7 +162,12 @@ extend self: Compiler {
             if(!self.packagePaths.contains(newPackagePair)) {
                 throw(CompileError(import.at, "Missing dependency declaration for: " + newPackagePair.groupName()))
             }
-            self.parse(newPackagePair, newModuleName, Some(import.at))
+            try {
+                self.parse(newPackagePair, newModuleName, Some(import.at))
+            } catch {| CompileError(_, _) @ e, error =>
+                let newError = CompileError(import.at, "Parse error in imported module: " + import.package.groupName() + "/" + newModuleName)
+                throw(CompileErrors([e, newError]))
+            } grab()
         }
     }
 

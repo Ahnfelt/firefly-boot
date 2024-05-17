@@ -211,7 +211,7 @@ extend self: Handler {
         Result(o.write())
     }
 
-    handleDiagnostic(system: NodeSystem, parameters: Map[String, Json], version: Int): ResultOrError {
+    /*handleDiagnostic(system: NodeSystem, parameters: Map[String, Json], version: Int): ResultOrError {
         let js = system.js()
         let uri = parameters.grab("textDocument").field("uri").grabString()
         let path = system.pathFromUrl(uri)
@@ -228,7 +228,7 @@ extend self: Handler {
             .with("kind", "full")
             .with("items", diagnostics)
         Result(o.write())
-    }
+    }*/
 
     handleFocusDiagnostic(system: NodeSystem, parameters: Map[String, Json], version: Int): Json {
         let js = system.js()
@@ -236,7 +236,7 @@ extend self: Handler {
         let path = system.pathFromUrl(uri)
         let fireflyPath = system.path(".")
         let errors = self.check(system, fireflyPath, path, None, Set.new(), self.virtualFiles, version, LspHook.disabled(), True)
-        let diagnostics = errors.map {| CompileError(at, message) => 
+        let diagnostics = errors.filter {_.at.file == path.absolute()}.map {| CompileError(at, message) => 
             let tokenLocation = self.findToken(system, at)
             Json.object()
                 .with("range", self.tokenLocationToLspRange(tokenLocation))

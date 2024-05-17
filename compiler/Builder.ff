@@ -147,6 +147,8 @@ check(
                 }
             } catch {| CompileError(_, _) @ c, error =>
                 errors.push(c)
+            } catch {| CompileErrors(compileErrors), error =>
+                errors.pushList(compileErrors)
             } grab()
         }
         cache.mergeVersions(compiler.cache)
