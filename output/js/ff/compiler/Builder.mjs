@@ -201,22 +201,27 @@ return (!ff_core_Path.Path_contains(_w1, [".firefly", "dependencies"]))
 })));
 ff_core_List.List_each(files_, ((file_) => {
 const localFile_ = ff_core_Path.Path_base(file_);
-try {
+ff_core_Try.Try_grab(ff_core_Try.Try_catch(ff_core_Try.Try_catch(ff_core_Core.try_((() => {
 if(infer_) {
 ff_compiler_Compiler.Compiler_infer(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localFile_, ff_core_String.String_size(".ff")))
 } else {
 ff_compiler_Compiler.Compiler_resolve(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localFile_, ff_core_String.String_size(".ff")))
 }
-} catch(_error) {
-if(!_error.ffException) throw _error
-const _exception = ff_core_Any.fromAny_(_error.ffException, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)
-if(!_exception.Some) throw _error
+})), ((_1, _2) => {
 {
-const c_ = _exception.value_;
-const error_ = _error;
+const c_ = _1;
+const error_ = _2;
 ff_core_Array.Array_push(errors_, c_)
+return
 }
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
+{
+const compileErrors_ = _1.errors_;
+const error_ = _2;
+ff_core_Array.Array_pushList(errors_, compileErrors_)
+return
 }
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors))
 }));
 ff_compiler_ModuleCache.ModuleCache_mergeVersions(cache_, compiler_.cache_)
 }));
@@ -390,22 +395,27 @@ return (!(await ff_core_Path.Path_contains$(_w1, [".firefly", "dependencies"], $
 }), $task)));
 (await ff_core_List.List_each$(files_, (async (file_, $task) => {
 const localFile_ = (await ff_core_Path.Path_base$(file_, $task));
-try {
+ff_core_Try.Try_grab(ff_core_Try.Try_catch(ff_core_Try.Try_catch((await ff_core_Core.try_$((async ($task) => {
 if(infer_) {
 (await ff_compiler_Compiler.Compiler_infer$(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localFile_, ff_core_String.String_size(".ff")), $task))
 } else {
 (await ff_compiler_Compiler.Compiler_resolve$(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localFile_, ff_core_String.String_size(".ff")), $task))
 }
-} catch(_error) {
-if(!_error.ffException) throw _error
-const _exception = ff_core_Any.fromAny_(_error.ffException, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)
-if(!_exception.Some) throw _error
+}), $task)), ((_1, _2) => {
 {
-const c_ = _exception.value_;
-const error_ = _error;
+const c_ = _1;
+const error_ = _2;
 ff_core_Array.Array_push(errors_, c_)
+return
 }
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
+{
+const compileErrors_ = _1.errors_;
+const error_ = _2;
+ff_core_Array.Array_pushList(errors_, compileErrors_)
+return
 }
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors))
 }), $task));
 ff_compiler_ModuleCache.ModuleCache_mergeVersions(cache_, compiler_.cache_)
 }), $task));

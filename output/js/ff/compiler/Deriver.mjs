@@ -128,7 +128,7 @@ return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.type
 }
 
 export function Deriver_makeHasAnyTagInstances(self_, modulePrefix_, module_) {
-const coreWhitelist_ = ff_core_List.List_toSet(["ff:core/Serializable.DeserializationChecksumException", "ff:core/Core.GrabException", "ff:core/Unit.Unit", "ff:core/Pair.Pair", "ff:core/Option.Option", "ff:core/Int.Int", "ff:core/Float.Float", "ff:core/String.String", "ff:core/Char.Char", "ff:core/Bool.Bool", "ff:core/List.List"], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const coreWhitelist_ = ff_core_List.List_toSet(["ff:core/Serializable.DeserializationChecksumException", "ff:core/Core.GrabException", "ff:core/NodeSystem.ProcessException", "ff:core/Unit.Unit", "ff:core/Pair.Pair", "ff:core/Option.Option", "ff:core/Int.Int", "ff:core/Float.Float", "ff:core/String.String", "ff:core/Char.Char", "ff:core/Bool.Bool", "ff:core/List.List"], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Any.HasAnyTag", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
 return ff_compiler_Deriver.Deriver_makeHasAnyTagInstance(self_, modulePrefix_, _w1)
@@ -530,7 +530,7 @@ return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.type
 }
 
 export async function Deriver_makeHasAnyTagInstances$(self_, modulePrefix_, module_, $task) {
-const coreWhitelist_ = ff_core_List.List_toSet(["ff:core/Serializable.DeserializationChecksumException", "ff:core/Core.GrabException", "ff:core/Unit.Unit", "ff:core/Pair.Pair", "ff:core/Option.Option", "ff:core/Int.Int", "ff:core/Float.Float", "ff:core/String.String", "ff:core/Char.Char", "ff:core/Bool.Bool", "ff:core/List.List"], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const coreWhitelist_ = ff_core_List.List_toSet(["ff:core/Serializable.DeserializationChecksumException", "ff:core/Core.GrabException", "ff:core/NodeSystem.ProcessException", "ff:core/Unit.Unit", "ff:core/Pair.Pair", "ff:core/Option.Option", "ff:core/Int.Int", "ff:core/Float.Float", "ff:core/String.String", "ff:core/Char.Char", "ff:core/Bool.Bool", "ff:core/List.List"], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Any.HasAnyTag", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
 return ff_compiler_Deriver.Deriver_makeHasAnyTagInstance(self_, modulePrefix_, _w1)

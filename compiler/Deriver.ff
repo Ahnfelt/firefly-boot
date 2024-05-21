@@ -33,6 +33,7 @@ extend self: Deriver {
         let coreWhitelist = [
             "ff:core/Serializable.DeserializationChecksumException"
             "ff:core/Core.GrabException"
+            "ff:core/NodeSystem.ProcessException"
             "ff:core/Unit.Unit"
             "ff:core/Pair.Pair"
             "ff:core/Option.Option"

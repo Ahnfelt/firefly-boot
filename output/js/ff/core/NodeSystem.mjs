@@ -1,5 +1,7 @@
 import * as import$0 from 'fs/promises';
 
+import * as import$3 from 'node:child_process';
+
 import * as import$1 from 'path';
 
 import * as import$2 from 'url';
@@ -95,6 +97,16 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 // type NodeSystem
 
 
+// type ProcessResult
+export function ProcessResult(exitCode_, standardOut_, standardError_) {
+return {exitCode_, standardOut_, standardError_};
+}
+
+// type ProcessException
+export function ProcessException(problem_) {
+return {problem_};
+}
+
 
 
 export function internalAssets_(system_) {
@@ -103,6 +115,14 @@ throw new Error('Function internalAssets is missing on this target in sync conte
 
 export function internalListDirectoryWithoutOpendir_(system_, path_) {
 throw new Error('Function internalListDirectoryWithoutOpendir is missing on this target in sync context.');
+}
+
+export function internalProcessError_(problem_) {
+return ff_core_Try.Try_grab(ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_NodeSystem.ProcessException(problem_), ff_core_NodeSystem.ff_core_Any_HasAnyTag$ff_core_NodeSystem_ProcessException)})
+})), ((error_) => {
+return error_
+})))
 }
 
 export async function internalAssets_$(system_, $task) {
@@ -116,6 +136,14 @@ export async function internalListDirectoryWithoutOpendir_$(system_, path_, $tas
         let files = await fsPromises.readdir(path_)
         return files.map(file => path.join(path_, file))
     
+}
+
+export async function internalProcessError_$(problem_, $task) {
+return ff_core_Try.Try_grab(ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_NodeSystem.ProcessException(problem_), ff_core_NodeSystem.ff_core_Any_HasAnyTag$ff_core_NodeSystem_ProcessException)})
+})), ((error_) => {
+return error_
+})))
 }
 
 export function NodeSystem_arguments(self_) {
@@ -204,6 +232,18 @@ ff_core_NodeSystem.NodeSystem_writeErrorBuffer(self_, ff_core_String.String_toBu
 
 export function NodeSystem_writeErrorLine(self_, text_) {
 ff_core_NodeSystem.NodeSystem_writeErrorText(self_, (text_ + "\n"))
+}
+
+export function NodeSystem_environment(self_) {
+throw new Error('Function NodeSystem_environment is missing on this target in sync context.');
+}
+
+export function NodeSystem_execute(self_, command_, arguments_, standardIn_ = ff_core_Stream.Stream((() => {
+return ff_core_Option.None()
+}), (() => {
+
+})), workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9) {
+throw new Error('Function NodeSystem_execute is missing on this target in sync context.');
 }
 
 export async function NodeSystem_arguments$(self_, $task) {
@@ -302,6 +342,85 @@ export async function NodeSystem_writeErrorLine$(self_, text_, $task) {
 (await ff_core_NodeSystem.NodeSystem_writeErrorText$(self_, (text_ + "\n"), $task))
 }
 
+export async function NodeSystem_environment$(self_, $task) {
 
+            const result = [];
+            for(const key in process.env) {
+                result.push(ff_core_Pair.Pair(key, process.env[key]));
+            }
+            return ff_core_List.List_toMap(result, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+        
+}
+
+export async function NodeSystem_execute$(self_, command_, arguments_, standardIn_ = ff_core_Stream.Stream((async ($task) => {
+return ff_core_Option.None()
+}), (async ($task) => {
+
+})), workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, $task) {
+
+            const childProcess = import$3;
+            const environment = environment_.value_ !== void 0 ? {} : process.env;
+            if(environment_.value_ !== void 0) {
+                ff_core_Map.Map_each(
+                    environment_.value_, 
+                    (k, v) => environment[k] = v, 
+                    ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String
+                );
+            }
+            const newProcess = childProcess.spawn(command_, arguments_, {
+                cwd: workingDirectory_.value_,
+                windowsHide: true,
+                signal: $task.controller.signal,
+                killSignal: killSignal_,
+                env: environment,
+            });
+            
+            let size = 0;
+            const out = [];
+            const err = [];
+            
+            newProcess.stdout.on('data', (data) => {
+                if(size > maxBuffer_) return;
+                size += data.byteLength;
+                if(size > maxBuffer_) newProcess.kill(killSignal_);
+                else out.push(data);
+            });
+
+            newProcess.stderr.on('data', (data) => {
+                if(size > maxBuffer_) return;
+                size += data.byteLength;
+                if(size > maxBuffer_) newProcess.kill(killSignal_);
+                else err.push(data);
+            });
+
+            return await new Promise((resolve, reject) => {
+                newProcess.on('error', error => {
+                    if(size > maxBuffer_) {
+                        reject(internalProcessError_("maxBuffer exceeded"));
+                    } else {
+                        reject(internalProcessError_(error.message));
+                    }
+                });
+                newProcess.on('close', code => {
+                    const o = Buffer.concat(out);
+                    const e = Buffer.concat(err);
+                    resolve(ProcessResult(
+                        size > maxBuffer_ ? -1 : code,
+                        new DataView(o.buffer, o.byteOffset, o.byteLength),
+                        new DataView(e.buffer, e.byteOffset, e.byteLength),
+                    ));
+                }); 
+            });
+        
+}
+
+export const ff_core_Any_HasAnyTag$ff_core_NodeSystem_ProcessException = {
+anyTag_() {
+return ff_core_Any.internalAnyTag_((("ff:core/NodeSystem.ProcessException" + "[") + "]"))
+},
+async anyTag_$($task) {
+return ff_core_Any.internalAnyTag_((("ff:core/NodeSystem.ProcessException" + "[") + "]"))
+}
+};
 
 

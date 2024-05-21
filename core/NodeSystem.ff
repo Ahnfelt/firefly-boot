@@ -1,5 +1,8 @@
 capability NodeSystem {}
 
+class ProcessResult(exitCode: Int, standardOut: Buffer, standardError: Buffer)
+data ProcessException(problem: String)
+
 extend self: NodeSystem {
 
     arguments(): List[String]
@@ -82,6 +85,80 @@ extend self: NodeSystem {
     writeErrorLine(text: String): Unit {
         self.writeErrorText(text + "\n")
     }
+    
+    environment(): Map[String, String]
+        target node async """
+            const result = [];
+            for(const key in process.env) {
+                result.push(ff_core_Pair.Pair(key, process.env[key]));
+            }
+            return ff_core_List.List_toMap(result, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+        """
+    
+    execute(
+        command: String
+        arguments: List[String]
+        standardIn: Stream[Buffer] = Stream({None}, {})
+        workingDirectory: Option[Path] = None
+        environment: Option[Map[String, String]] = None
+        maxBuffer: Int = 16777216
+        killSignal: Int = 9
+    ): ProcessResult
+        target node async """
+            import * as childProcess from 'node:child_process';
+            const environment = environment_.value_ !== void 0 ? {} : process.env;
+            if(environment_.value_ !== void 0) {
+                ff_core_Map.Map_each(
+                    environment_.value_, 
+                    (k, v) => environment[k] = v, 
+                    ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String
+                );
+            }
+            const newProcess = childProcess.spawn(command_, arguments_, {
+                cwd: workingDirectory_.value_,
+                windowsHide: true,
+                signal: $task.controller.signal,
+                killSignal: killSignal_,
+                env: environment,
+            });
+            
+            let size = 0;
+            const out = [];
+            const err = [];
+            
+            newProcess.stdout.on('data', (data) => {
+                if(size > maxBuffer_) return;
+                size += data.byteLength;
+                if(size > maxBuffer_) newProcess.kill(killSignal_);
+                else out.push(data);
+            });
+
+            newProcess.stderr.on('data', (data) => {
+                if(size > maxBuffer_) return;
+                size += data.byteLength;
+                if(size > maxBuffer_) newProcess.kill(killSignal_);
+                else err.push(data);
+            });
+
+            return await new Promise((resolve, reject) => {
+                newProcess.on('error', error => {
+                    if(size > maxBuffer_) {
+                        reject(internalProcessError_("maxBuffer exceeded"));
+                    } else {
+                        reject(internalProcessError_(error.message));
+                    }
+                });
+                newProcess.on('close', code => {
+                    const o = Buffer.concat(out);
+                    const e = Buffer.concat(err);
+                    resolve(ProcessResult(
+                        size > maxBuffer_ ? -1 : code,
+                        new DataView(o.buffer, o.byteOffset, o.byteLength),
+                        new DataView(e.buffer, e.byteOffset, e.byteLength),
+                    ));
+                }); 
+            });
+        """
 
 }
 
@@ -95,3 +172,11 @@ internalListDirectoryWithoutOpendir(system: NodeSystem, path: Path): List[Path]
         let files = await fsPromises.readdir(path_)
         return files.map(file => path.join(path_, file))
     """
+
+internalProcessError(problem: String): Error {
+    try {
+        throw(ProcessException(problem))
+    } catchAny {error =>
+        error
+    } grab()
+}

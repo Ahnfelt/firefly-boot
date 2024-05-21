@@ -199,7 +199,19 @@ return (_w1 + "/")
 if((!ff_core_Map.Map_contains(self_.packagePaths_, newPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("Missing dependency declaration for: " + ff_compiler_Syntax.PackagePair_groupName(newPackagePair_, ":"))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
+try {
 return ff_compiler_Compiler.Compiler_parse(self_, newPackagePair_, newModuleName_, ff_core_Option.Some(import_.at_))
+} catch(_error) {
+if(!_error.ffException) throw _error
+const _exception = ff_core_Any.fromAny_(_error.ffException, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)
+if(!_exception.Some) throw _error
+{
+const e_ = _exception.value_;
+const error_ = _error;
+const newError_ = ff_compiler_Syntax.CompileError(import_.at_, ((("Parse error in imported module: " + ff_compiler_Syntax.PackagePair_groupName(import_.package_, ":")) + "/") + newModuleName_));
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileErrors([e_, newError_]), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)})
+}
+}
 }))
 }
 
@@ -318,7 +330,19 @@ return (_w1 + "/")
 if((!ff_core_Map.Map_contains(self_.packagePaths_, newPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("Missing dependency declaration for: " + ff_compiler_Syntax.PackagePair_groupName(newPackagePair_, ":"))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
+try {
 return (await ff_compiler_Compiler.Compiler_parse$(self_, newPackagePair_, newModuleName_, ff_core_Option.Some(import_.at_), $task))
+} catch(_error) {
+if(!_error.ffException) throw _error
+const _exception = ff_core_Any.fromAny_(_error.ffException, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)
+if(!_exception.Some) throw _error
+{
+const e_ = _exception.value_;
+const error_ = _error;
+const newError_ = ff_compiler_Syntax.CompileError(import_.at_, ((("Parse error in imported module: " + ff_compiler_Syntax.PackagePair_groupName(import_.package_, ":")) + "/") + newModuleName_));
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileErrors([e_, newError_]), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)})
+}
+}
 }), $task))
 }
 
