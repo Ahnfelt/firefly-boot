@@ -49,3 +49,12 @@ extend self[A: Order, B]: Pair[A, B] {
     }
 
 }
+
+
+extend self: Pair[String, String] {
+
+    join(separator: String = ""): String {
+        self.first + separator + self.second
+    }
+
+}

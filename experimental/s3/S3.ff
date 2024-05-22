@@ -12,7 +12,7 @@ nodeMain(system: NodeSystem) {
         region = "us-east-1"
         bucket = "examplebucket"
         objectKey = "test%24file.text" // TODO URI encoded "test$file.text"
-        objectContent = "Welcome to Amazon S3.".toBuffer()
+        body = "Welcome to Amazon S3.".toBuffer()
     )
     system.writeLine("")
     system.writeLine("actual  : " + actualHeader)
@@ -27,48 +27,48 @@ makeS3AuthorizationHeader(
     region: String
     bucket: String
     objectKey: String
-    objectContent: Buffer
+    body: Buffer
 ): String {
-    let host = bucket + ".s3.amazonaws.com"
-
-    // Create a date string for headers and signing
     let amzDate = "20130524T000000Z" // TODO
-    let dateStamp = amzDate.slice(0, 8)
+    let headerDate = "Fri, 24 May 2013 00:00:00 GMT" // TODO
+    let scopeDate = amzDate.slice(0, 8) // YYYYMMDD
 
-    // Step 1: Create a canonical request
+    // CanonicalRequest
     let canonicalQuerystring = "";
-    let contentHash = sha256(objectContent).toHex()
-    let signedHeaders = "date;host;x-amz-content-sha256;x-amz-date;x-amz-storage-class" // TODO storage-class
-    let canonicalRequest = "PUT\n" + 
-        "/" + objectKey + "\n" + 
-        canonicalQuerystring + "\n" + 
-        "date:Fri, 24 May 2013 00:00:00 GMT\n" + // TODO
-        "host:" + host + "\n" + 
-        "x-amz-content-sha256:" + contentHash + "\n" + 
-        "x-amz-date:" + amzDate + "\n" + 
-        "x-amz-storage-class:REDUCED_REDUNDANCY\n" + 
-        "\n" +
-        signedHeaders + "\n" + 
+    let contentHash = sha256(body).toHex()
+    let headers = [
+        Pair("date", headerDate) 
+        Pair("host", bucket + ".s3.amazonaws.com")
+        Pair("x-amz-date", amzDate)
+        Pair("x-amz-content-sha256", contentHash)
+        Pair("x-amz-storage-class", "REDUCED_REDUNDANCY")
+    ].map {_.mapFirst {_.lower()}.mapSecond {_.trim()}}.sort()
+    let signedHeaders = headers.map {_.first}.join(";")
+    let canonicalRequest = [
+        "PUT"
+        "/" + objectKey
+        canonicalQuerystring
+        ...headers.map {p => p.first + ":" + p.second}
+        ""
+        signedHeaders
         contentHash
+    ].join("\n")
     
-    // Step 2: Create the string to sign
-    let credentialScope = dateStamp + "/" + region + "/s3/aws4_request"
+    // StringToSign
+    let credentialScope = [scopeDate, region, "s3", "aws4_request"].join("/")
     let algorithm = "AWS4-HMAC-SHA256"
-    let stringToSign = algorithm + "\n" + 
-        amzDate + "\n" + 
-        credentialScope + "\n" + 
+    let stringToSign = [
+        algorithm
+        amzDate
+        credentialScope
         sha256(canonicalRequest.toBuffer()).toHex()
+    ].join("\n")
 
-    // Step 3: Calculate the signature
-    let kDate = hmacSha256(("AWS4" + secretAccessKey).toBuffer(), dateStamp);
-    let kRegion = hmacSha256(kDate, region)
-    let kService = hmacSha256(kRegion, "s3")
-    let kSigning = hmacSha256(kService, "aws4_request")
-    let signature = hmacSha256(kSigning, stringToSign).toHex()
+    // Signature
+    let signingKey = hmacSha256(hmacSha256(hmacSha256(hmacSha256(("AWS4" + secretAccessKey).toBuffer(), scopeDate), region), "s3"), "aws4_request")
+    let signature = hmacSha256(signingKey, stringToSign).toHex()
 
-    // Step 4: Add signing information to the request
     algorithm + " Credential=" + accessKeyId + "/" + credentialScope + ",SignedHeaders=" + signedHeaders + ",Signature=" + signature
-
 }
 
 sha256(message: Buffer): Buffer
