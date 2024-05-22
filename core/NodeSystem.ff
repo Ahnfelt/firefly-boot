@@ -156,7 +156,7 @@ extend self: NodeSystem {
                     const o = Buffer.concat(out);
                     const e = Buffer.concat(err);
                     resolve(ProcessResult(
-                        size > maxBuffer_ ? -1 : code,
+                        code,
                         new DataView(o.buffer, o.byteOffset, o.byteLength),
                         new DataView(e.buffer, e.byteOffset, e.byteLength),
                     ));
