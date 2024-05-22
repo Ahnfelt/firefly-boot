@@ -1,0 +1,120 @@
+capability Process {}
+
+data ProcessException(exitCode: Int)
+
+extend self: Process {
+    
+    readStream(): Stream[Buffer] {
+        
+    }
+    
+    readErrorStream(): Stream[Buffer] {
+        
+    }
+    
+    readBothStreams(): Stream[Pair[Bool, Buffer]] {
+        
+    }
+    
+    readBuffer(): Buffer {
+        
+    }
+    
+    readErrorBuffer(): Buffer {
+        
+    }
+    
+    readBothBuffers(): Pair[Buffer, Buffer] {
+        
+    }
+    
+    readText(): String {
+        
+    }
+    
+    readErrorText(): String {
+        
+    }
+    
+    readBothTexts(): Pair[String, String] {
+        
+    }
+    
+    writeStream(stream: Stream[Buffer]) {
+        
+    }
+    
+    writeBuffer(buffer: Buffer) {
+        
+    }
+    
+    writeText(text: String) {
+        
+    }
+    
+    writeLine(text: String) {
+        
+    }
+    
+    closeStandardIn() {
+        
+    }
+    
+    running(): Bool {
+        
+    }
+    
+    exitCode(): Int {
+        
+    }
+    
+    setEnvironment(environment: Map[String, String]) {
+        
+    }
+    
+    setEnvironmentVariable(name: String, value: String) {
+        
+    }
+    
+    setWorkingDirectory(path: Path) {
+        
+    }
+    
+    setArgumentZero(commandName: String) {
+        
+    }
+    
+    setRedirection(in: Bool = False, out: Bool = False, error: Bool = False) {
+        
+    }
+    
+    setCloseAfterWrite(close: Bool) {
+        
+    }
+    
+}
+
+internalExecute[T](system: NodeSystem, command: String, arguments: List[String], body: Process => T): T {
+    throw(GrabException) // TODO
+}
+
+main(system: NodeSystem) {
+    let initialize = ""
+    let hoverRequest = ""
+    function parseInitializeResponse(stream: Stream[Buffer]) {
+        
+    }
+    function parseHoverResponse(stream: Stream[Buffer]) {
+        
+    }
+    
+    system.execute("my-lsp", []) {process =>
+        process.setCloseAfterWrite(False)
+        let stream = process.readStream()
+        process.writeText(initialize)
+        let config = parseInitializeResponse(stream)
+        process.writeText(hoverRequest)
+        let hover = parseHoverResponse(stream)
+        // ...
+    }
+}

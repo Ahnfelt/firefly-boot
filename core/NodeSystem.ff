@@ -98,7 +98,7 @@ extend self: NodeSystem {
     execute(
         command: String
         arguments: List[String]
-        standardIn: Stream[Buffer] = Stream({None}, {})
+        standardIn: Buffer = Buffer.new(0)
         workingDirectory: Option[Path] = None
         environment: Option[Map[String, String]] = None
         maxBuffer: Int = 16777216
@@ -141,6 +141,10 @@ extend self: NodeSystem {
             });
 
             return await new Promise((resolve, reject) => {
+                if(standardIn_.byteLength !== 0) {
+                    newProcess.stdin.write(standardIn_);
+                }
+                newProcess.stdin.end();
                 newProcess.on('error', error => {
                     if(size > maxBuffer_) {
                         reject(internalProcessError_("maxBuffer exceeded"));

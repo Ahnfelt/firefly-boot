@@ -1,0 +1,6 @@
+nodeMain(system: NodeSystem) {
+    let result = system.execute("npm", ["-v"])
+    Log.trace("exitCode: " + result.exitCode)
+    Log.trace("out: " + result.standardOut.toString())
+    Log.trace("err: " + result.standardError.toString())
+}

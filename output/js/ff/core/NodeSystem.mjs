@@ -238,11 +238,7 @@ export function NodeSystem_environment(self_) {
 throw new Error('Function NodeSystem_environment is missing on this target in sync context.');
 }
 
-export function NodeSystem_execute(self_, command_, arguments_, standardIn_ = ff_core_Stream.Stream((() => {
-return ff_core_Option.None()
-}), (() => {
-
-})), workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9) {
+export function NodeSystem_execute(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9) {
 throw new Error('Function NodeSystem_execute is missing on this target in sync context.');
 }
 
@@ -352,11 +348,7 @@ export async function NodeSystem_environment$(self_, $task) {
         
 }
 
-export async function NodeSystem_execute$(self_, command_, arguments_, standardIn_ = ff_core_Stream.Stream((async ($task) => {
-return ff_core_Option.None()
-}), (async ($task) => {
-
-})), workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, $task) {
+export async function NodeSystem_execute$(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, $task) {
 
             const childProcess = import$3;
             const environment = environment_.value_ !== void 0 ? {} : process.env;
@@ -394,6 +386,10 @@ return ff_core_Option.None()
             });
 
             return await new Promise((resolve, reject) => {
+                if(standardIn_.byteLength !== 0) {
+                    newProcess.stdin.write(standardIn_);
+                }
+                newProcess.stdin.end();
                 newProcess.on('error', error => {
                     if(size > maxBuffer_) {
                         reject(internalProcessError_("maxBuffer exceeded"));
