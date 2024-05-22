@@ -1,6 +1,49 @@
 nodeMain(system: NodeSystem) {
-    let result = system.execute("npm", ["-v"])
-    Log.trace("exitCode: " + result.exitCode)
-    Log.trace("out: " + result.standardOut.toString())
-    Log.trace("err: " + result.standardError.toString())
+    run(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
+    run(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
+    run(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
+    bumpMinorVersion(system, system.path("../package.json"))
+    bumpMinorVersion(system, system.path("../vscode/package.json"))
+    run(system, "npm", ["publish"], system.path(".."))
+    run(system, "vsce", ["publish"], system.path("../vscode"))
+    // tar gz core etc. and upload to s3
+}
+
+run(system: NodeSystem, command: String, arguments: List[String], workingDirectory: Path) {
+    system.writeLine("")
+    system.writeLine(command + " " + arguments.join(" "))
+    let out = system.execute(command, arguments, workingDirectory = Some(workingDirectory))
+    system.writeBuffer(out.standardOut)
+    system.writeErrorBuffer(out.standardError)
+    if(out.exitCode != 0) {
+        system.writeErrorLine("Exit code: " + out.exitCode)
+        system.exit(1)
+    }
+}
+
+bumpMinorVersion(system: NodeSystem, packageJsonPath: Path) {
+    let prefix = "    \"version\": \""
+    mutable bumps = 0
+    system.writeLine("")
+    system.writeLine("Bumping version in " + packageJsonPath.absolute())
+    let newContent = packageJsonPath.readText().lines().map {
+        | line {
+            line.removeFirst(prefix).flatMap {_.removeLast("\",")} | Some(v)
+        } {
+            v.split('.') | [major, minor, patch]
+        } {
+            patch.getInt() | Some(p)
+        } => 
+            bumps += 1
+            let newVersion = major + "." + minor + "." + (p + 1)
+            system.writeLine("Will bump version: " + v + " to " + newVersion)
+            prefix + newVersion + "\","
+        | line => 
+            line
+    }.join("\n")
+    if(bumps != 1) {
+        system.writeErrorLine("Failed to bump version.")
+        system.exit(1)
+    }
+    packageJsonPath.writeText(newContent)
 }

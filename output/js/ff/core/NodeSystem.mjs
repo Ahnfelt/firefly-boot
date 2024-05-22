@@ -401,7 +401,7 @@ export async function NodeSystem_execute$(self_, command_, arguments_, standardI
                     const o = Buffer.concat(out);
                     const e = Buffer.concat(err);
                     resolve(ProcessResult(
-                        size > maxBuffer_ ? -1 : code,
+                        code,
                         new DataView(o.buffer, o.byteOffset, o.byteLength),
                         new DataView(e.buffer, e.byteOffset, e.byteLength),
                     ));
