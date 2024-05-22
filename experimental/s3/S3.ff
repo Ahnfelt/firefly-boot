@@ -2,6 +2,8 @@ nodeMain(system: NodeSystem) {
     system.writeLine(sha256("".toBuffer()).toHex())
     system.writeLine(hmacSha256("key".toBuffer(), "The quick brown fox jumps over the lazy dog").toHex())
     
+    // Trying to reproduce the result from an example here 
+    // https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html
     let expectedHeader = "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request,SignedHeaders=date;host;x-amz-content-sha256;x-amz-date;x-amz-storage-class,Signature=98ad721746da40c64f1a55b78f14c238d841ea1380cd77a1b5971af0ece108bd"
     let actualHeader = makeS3AuthorizationHeader(
         system = system
