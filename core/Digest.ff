@@ -1,0 +1,51 @@
+class Digest {}
+
+hmacSha256(key: Buffer, buffer: Buffer = Buffer.new(0)): Digest {
+    new("sha256", Some(key), buffer)
+}
+
+sha256(buffer: Buffer = Buffer.new(0)): Digest {
+    new("sha256", None, buffer)
+}
+
+new(algorithm: String, hmacKey: Option[Buffer] = None, buffer: Buffer = Buffer.new(0)): Digest
+    target node sync """
+        import * as crypto from 'node:crypto'
+        const digest = typeof hmacKey_.value_ !== 'undefined'
+            ? crypto.createHmac(algorithm_, hmacKey_.value_)
+            : crypto.createHash(algorithm_);
+        if(buffer_.byteLength > 0) digest.update(buffer_);
+        return digest;
+    """
+
+extend self: Digest {
+    
+    writeText(text: String, encoding: String = "utf8"): Unit
+        target node sync """
+            self_.update(text_, encoding_);
+        """
+
+    writeBuffer(buffer: Buffer): Unit
+        target node sync """
+            self_.update(buffer_);
+        """
+    
+    writeStream(stream: Stream[Buffer]): Unit {
+        stream.each {self.writeBuffer(_)}
+    }
+    
+    toBuffer(): Buffer
+        target node sync """
+            const b = self_.digest();
+            return new DataView(b.buffer, b.byteOffset, b.length);
+        """
+        
+    toHex(): String {
+        self.toBuffer().toHex()
+    }
+
+    toBase64(): String {
+        self.toBuffer().toBase64()
+    }
+
+}
