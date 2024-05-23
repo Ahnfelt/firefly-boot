@@ -1,5 +1,3 @@
-import Digest from ff:core
-
 nodeMain(system: NodeSystem) {
     system.writeLine(Digest.sha256("".toBuffer()).toHex())
     system.writeLine(Digest.hmacSha256("key".toBuffer(), "The quick brown fox jumps over the lazy dog".toBuffer()).toHex())
