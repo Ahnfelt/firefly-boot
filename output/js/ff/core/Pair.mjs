@@ -22,6 +22,8 @@ import * as ff_core_Char from "../../ff/core/Char.mjs"
 
 import * as ff_core_Core from "../../ff/core/Core.mjs"
 
+import * as ff_core_Digest from "../../ff/core/Digest.mjs"
+
 import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
 import * as ff_core_Equal from "../../ff/core/Equal.mjs"
@@ -197,6 +199,14 @@ return ff_core_List.List_toMap([self_], ff_core_Ordering_Order$A)
 
 export async function Pair_toMap$(self_, ff_core_Ordering_Order$A, $task) {
 return ff_core_List.List_toMap([self_], ff_core_Ordering_Order$A)
+}
+
+export function Pair_join(self_, separator_ = "") {
+return ((self_.first_ + separator_) + self_.second_)
+}
+
+export async function Pair_join$(self_, separator_ = "", $task) {
+return ((self_.first_ + separator_) + self_.second_)
 }
 
 export function ff_core_Any_HasAnyTag$ff_core_Pair_Pair(ff_core_Any_HasAnyTag$A, ff_core_Any_HasAnyTag$B) { return {

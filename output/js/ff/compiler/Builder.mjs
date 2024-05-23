@@ -46,6 +46,8 @@ import * as ff_core_Char from "../../ff/core/Char.mjs"
 
 import * as ff_core_Core from "../../ff/core/Core.mjs"
 
+import * as ff_core_Digest from "../../ff/core/Digest.mjs"
+
 import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
 import * as ff_core_Equal from "../../ff/core/Equal.mjs"

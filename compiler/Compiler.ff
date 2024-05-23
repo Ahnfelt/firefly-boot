@@ -66,6 +66,7 @@ coreImports: List[DImport] =
         "Channel"
         "Char"
         "Core"
+        "Digest"
         "Duration"
         "Equal"
         "Error"
