@@ -15,7 +15,7 @@ nodeMain(system: NodeSystem) {
         secretAccessKey = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
         region = "us-east-1"
         bucket = bucket
-        objectKey = "test%24file.text" // TODO URI encoded "test$file.text"
+        encodedKey = encode("test$file.text")
         body = body
         canonicalHeaders = [
             Pair("date", headerDate) 
@@ -33,14 +33,14 @@ nodeMain(system: NodeSystem) {
     
     
 
-    /*put(system, 
+    put(system, 
         accessKeyId = ""
         secretAccessKey = ""
         region = "eu-central-1"
         bucket = "firefly-site"
-        objectKey = "tmp/test2"
-        "Hello S3".toBuffer()
-    )*/
+        objectKey = "tmp/test4"
+        "Hello S3 3".toBuffer()
+    )
 }
 
 put(
@@ -52,22 +52,22 @@ put(
     objectKey: String
     body: Buffer
 ): Unit {
-    let amzDate = "20240523T122636Z" // TODO
-    let headerDate = "Thu May 23 2024 12:20:09 GMT" // TODO
+    let now = system.mainTask().now()
+    let amzDate = toIsoString(now)
     let contentHash = Digest.sha256(body).toHex()
     let host = bucket + ".s3.amazonaws.com"
+    let encodedKey = encode(objectKey)
     let canonicalHeaders = [
-        Pair("date", headerDate) 
         Pair("host", host)
         Pair("x-amz-date", amzDate)
         Pair("x-amz-content-sha256", contentHash)
         Pair("x-amz-storage-class", "REDUCED_REDUNDANCY")
         Pair("Content-Type", "text/plain")
     ]
-    let authenticationHeader = makeS3AuthorizationHeader(system, accessKeyId, secretAccessKey, region, bucket, objectKey, body, canonicalHeaders, amzDate)
+    let authenticationHeader = makeS3AuthorizationHeader(system, accessKeyId, secretAccessKey, region, bucket, encodedKey, body, canonicalHeaders, amzDate)
     let headers = [...canonicalHeaders, Pair("Authorization", authenticationHeader)]
     
-    let url = "https://" + host + "/" + objectKey
+    let url = "https://" + host + "/" + encodedKey
     let response = system.httpClient().fetch(url, method = "PUT", headers = headers, body = Some(HttpClient.bodyBuffer(body)), throw = False)
     system.writeLine("" + response.status())
     system.writeLine(response.statusText())
@@ -80,13 +80,11 @@ makeS3AuthorizationHeader(
     secretAccessKey: String
     region: String
     bucket: String
-    objectKey: String
+    encodedKey: String
     body: Buffer
     canonicalHeaders: List[Pair[String, String]]
     amzDate: String
 ): String {
-    let scopeDate = amzDate.slice(0, 8) // YYYYMMDD
-
     // CanonicalRequest
     let canonicalQuerystring = "";
     let contentHash = Digest.sha256(body).toHex()
@@ -94,7 +92,7 @@ makeS3AuthorizationHeader(
     let signedHeaders = headers.map {_.first}.join(";")
     let canonicalRequest = [
         "PUT"
-        "/" + objectKey
+        "/" + encodedKey
         canonicalQuerystring
         ...headers.map {p => p.first + ":" + p.second}
         ""
@@ -103,6 +101,7 @@ makeS3AuthorizationHeader(
     ].join("\n")
     
     // StringToSign
+    let scopeDate = amzDate.slice(0, 8) // YYYYMMDD
     let credentialScope = [scopeDate, region, "s3", "aws4_request"].join("/")
     let algorithm = "AWS4-HMAC-SHA256"
     let stringToSign = [
@@ -121,4 +120,19 @@ makeS3AuthorizationHeader(
 
 hmacSha256(key: Buffer, message: String): Buffer {
     Digest.hmacSha256(key, message.toBuffer()).toBuffer()
+}
+
+toIsoString(instant: Instant): String
+    target js sync """
+        const d = new Date(instant_ * 1000);
+        return d.toISOString().replaceAll(/[-:]|[.].../g, "");
+    """
+
+encodeURIComponent(text: String): String 
+    target js sync """
+        return encodeURIComponent(text_);
+    """
+    
+encode(text: String): String {
+    text.split('/').map {encodeURIComponent(_)}.join("/")
 }
