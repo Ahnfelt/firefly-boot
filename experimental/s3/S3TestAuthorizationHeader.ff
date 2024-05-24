@@ -1,0 +1,39 @@
+import S3
+
+nodeMain(system: NodeSystem) {
+    // Trying to reproduce the result from an example here 
+    // https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html
+    let expectedHeader = "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request,SignedHeaders=date;host;x-amz-content-sha256;x-amz-date;x-amz-storage-class,Signature=98ad721746da40c64f1a55b78f14c238d841ea1380cd77a1b5971af0ece108bd"
+    let amzDate = "20130524T000000Z" // TODO
+    let headerDate = "Fri, 24 May 2013 00:00:00 GMT" // TODO
+    let bucket = "examplebucket"
+    let body = "Welcome to Amazon S3.".toBuffer()
+    let actualHeader = S3.makeS3AuthorizationHeader(
+        system = system
+        accessKeyId = "AKIAIOSFODNN7EXAMPLE"
+        secretAccessKey = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+        region = "us-east-1"
+        bucket = bucket
+        encodedKey = S3.encode("test$file.text")
+        body = body
+        canonicalHeaders = [
+            Pair("date", headerDate) 
+            Pair("host", bucket + ".s3.amazonaws.com")
+            Pair("x-amz-date", amzDate)
+            Pair("x-amz-content-sha256", Digest.sha256(body).toHex())
+            Pair("x-amz-storage-class", "REDUCED_REDUNDANCY")
+        ]        
+        amzDate = amzDate
+    )
+    system.writeLine("")
+    system.writeLine("actual  : " + actualHeader)
+    system.writeLine("")
+    system.writeLine("expected: " + expectedHeader)
+    
+    system.writeLine("")
+    if(actualHeader == expectedHeader) {
+        system.writeLine("Test passed")
+    } else {
+        system.writeLine("Test failed")
+    }
+}

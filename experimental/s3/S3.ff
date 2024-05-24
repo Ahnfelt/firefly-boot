@@ -1,48 +1,3 @@
-nodeMain(system: NodeSystem) {
-    system.writeLine(Digest.sha256("".toBuffer()).toHex())
-    system.writeLine(Digest.hmacSha256("key".toBuffer(), "The quick brown fox jumps over the lazy dog".toBuffer()).toHex())
-    
-    // Trying to reproduce the result from an example here 
-    // https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html
-    let expectedHeader = "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request,SignedHeaders=date;host;x-amz-content-sha256;x-amz-date;x-amz-storage-class,Signature=98ad721746da40c64f1a55b78f14c238d841ea1380cd77a1b5971af0ece108bd"
-    let amzDate = "20130524T000000Z" // TODO
-    let headerDate = "Fri, 24 May 2013 00:00:00 GMT" // TODO
-    let bucket = "examplebucket"
-    let body = "Welcome to Amazon S3.".toBuffer()
-    let actualHeader = makeS3AuthorizationHeader(
-        system = system
-        accessKeyId = "AKIAIOSFODNN7EXAMPLE"
-        secretAccessKey = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-        region = "us-east-1"
-        bucket = bucket
-        encodedKey = encode("test$file.text")
-        body = body
-        canonicalHeaders = [
-            Pair("date", headerDate) 
-            Pair("host", bucket + ".s3.amazonaws.com")
-            Pair("x-amz-date", amzDate)
-            Pair("x-amz-content-sha256", Digest.sha256(body).toHex())
-            Pair("x-amz-storage-class", "REDUCED_REDUNDANCY")
-        ]        
-        amzDate = amzDate
-    )
-    system.writeLine("")
-    system.writeLine("actual  : " + actualHeader)
-    system.writeLine("")
-    system.writeLine("expected: " + expectedHeader)
-    
-    
-
-    put(system, 
-        accessKeyId = ""
-        secretAccessKey = ""
-        region = "eu-central-1"
-        bucket = "firefly-site"
-        objectKey = "tmp/test4"
-        "Hello S3 3".toBuffer()
-    )
-}
-
 put(
     system: NodeSystem
     accessKeyId: String
@@ -51,6 +6,7 @@ put(
     bucket: String
     objectKey: String
     body: Buffer
+    headers: List[Pair[String, String]]
 ): Unit {
     let now = system.mainTask().now()
     let amzDate = toIsoString(now)
@@ -61,14 +17,13 @@ put(
         Pair("host", host)
         Pair("x-amz-date", amzDate)
         Pair("x-amz-content-sha256", contentHash)
-        Pair("x-amz-storage-class", "REDUCED_REDUNDANCY")
-        Pair("Content-Type", "text/plain")
+        ...headers
     ]
     let authenticationHeader = makeS3AuthorizationHeader(system, accessKeyId, secretAccessKey, region, bucket, encodedKey, body, canonicalHeaders, amzDate)
-    let headers = [...canonicalHeaders, Pair("Authorization", authenticationHeader)]
+    let allHeaders = [...canonicalHeaders, Pair("Authorization", authenticationHeader)]
     
     let url = "https://" + host + "/" + encodedKey
-    let response = system.httpClient().fetch(url, method = "PUT", headers = headers, body = Some(HttpClient.bodyBuffer(body)), throw = False)
+    let response = system.httpClient().fetch(url, method = "PUT", headers = allHeaders, body = Some(HttpClient.bodyBuffer(body)), throw = False)
     system.writeLine("" + response.status())
     system.writeLine(response.statusText())
     system.writeLine(response.readText())

@@ -1,0 +1,16 @@
+import S3
+
+nodeMain(system: NodeSystem) {
+    S3.put(system, 
+        accessKeyId = ""
+        secretAccessKey = ""
+        region = "eu-central-1"
+        bucket = "firefly-site"
+        objectKey = "tmp/test4"
+        "Hello S3 3".toBuffer()
+        headers = [
+            //Pair("x-amz-storage-class", "REDUCED_REDUNDANCY")
+            Pair("Content-Type", "text/plain")            
+        ]
+    )
+}
