@@ -8,6 +8,9 @@ extend self: BrowserSystem {
     mainTask(): Task
         target js async "return self_.task_"
 
+    crypto(): Crypto
+        target js async "return (typeof globalThis !== 'undefined' ? globalThis : window).crypto"
+        
     js(): JsSystem
         target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
         
