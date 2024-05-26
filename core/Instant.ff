@@ -15,7 +15,7 @@ extend self: Instant {
     
     toIso(): String
         target js sync """
-            return new Date(self_).toISOString();
+            return new Date(self_ * 1000).toISOString();
         """
 
 }
