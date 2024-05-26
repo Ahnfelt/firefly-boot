@@ -20,7 +20,7 @@ nodeMain(system: NodeSystem) {
             Pair("date", headerDate) 
             Pair("host", bucket + ".s3.amazonaws.com")
             Pair("x-amz-date", amzDate)
-            Pair("x-amz-content-sha256", Digest.sha256(body).toHex())
+            Pair("x-amz-content-sha256", system.crypto().sha256(body).toHex())
             Pair("x-amz-storage-class", "REDUCED_REDUNDANCY")
         ]        
         amzDate = amzDate

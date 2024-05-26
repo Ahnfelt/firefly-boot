@@ -45,6 +45,9 @@ extend self: NodeSystem {
     mainTask(): Task
         target js async "return self_.task_"
 
+    crypto()
+        target js async "return (typeof globalThis !== 'undefined' ? globalThis : window).crypto"
+
     js(): JsSystem
         target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
 

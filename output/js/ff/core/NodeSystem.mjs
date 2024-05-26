@@ -28,7 +28,7 @@ import * as ff_core_Char from "../../ff/core/Char.mjs"
 
 import * as ff_core_Core from "../../ff/core/Core.mjs"
 
-import * as ff_core_Digest from "../../ff/core/Digest.mjs"
+import * as ff_core_Crypto from "../../ff/core/Crypto.mjs"
 
 import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
@@ -188,6 +188,10 @@ export function NodeSystem_mainTask(self_) {
 throw new Error('Function NodeSystem_mainTask is missing on this target in sync context.');
 }
 
+export function NodeSystem_crypto(self_) {
+throw new Error('Function NodeSystem_crypto is missing on this target in sync context.');
+}
+
 export function NodeSystem_js(self_) {
 throw new Error('Function NodeSystem_js is missing on this target in sync context.');
 }
@@ -288,6 +292,10 @@ return null
 
 export async function NodeSystem_mainTask$(self_, $task) {
 return self_.task_
+}
+
+export async function NodeSystem_crypto$(self_, $task) {
+return (typeof globalThis !== 'undefined' ? globalThis : window).crypto
 }
 
 export async function NodeSystem_js$(self_, $task) {

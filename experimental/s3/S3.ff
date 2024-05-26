@@ -42,7 +42,7 @@ makeS3AuthorizationHeader(
 ): String {
     // CanonicalRequest
     let canonicalQuerystring = "";
-    let contentHash = Digest.sha256(body).toHex()
+    let contentHash = system.crypto().sha256(body).toHex()
     let headers = canonicalHeaders.map {_.mapFirst {_.lower()}.mapSecond {_.trim()}}.sort()
     let signedHeaders = headers.map {_.first}.join(";")
     let canonicalRequest = [
@@ -63,18 +63,18 @@ makeS3AuthorizationHeader(
         algorithm
         amzDate
         credentialScope
-        Digest.sha256(canonicalRequest.toBuffer()).toHex()
+        system.crypto().sha256(canonicalRequest.toBuffer()).toHex()
     ].join("\n")
 
+    function hmacSha256(key: Buffer, message: String): Buffer {
+        system.crypto().hmacSha256(key, message.toBuffer())
+    }
+    
     // Signature
     let signingKey = hmacSha256(hmacSha256(hmacSha256(hmacSha256(("AWS4" + secretAccessKey).toBuffer(), scopeDate), region), "s3"), "aws4_request")
     let signature = hmacSha256(signingKey, stringToSign).toHex()
 
     algorithm + " Credential=" + accessKeyId + "/" + credentialScope + ",SignedHeaders=" + signedHeaders + ",Signature=" + signature
-}
-
-hmacSha256(key: Buffer, message: String): Buffer {
-    Digest.hmacSha256(key, message.toBuffer()).toBuffer()
 }
 
 toIsoString(instant: Instant): String

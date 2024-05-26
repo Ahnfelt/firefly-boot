@@ -1,0 +1,149 @@
+import Crypto from ff:core
+
+capability SubtleCrypto(crypto: Crypto)
+
+data CryptoKey {}
+
+data CryptoKeyUsages(
+    encrypt: Bool = False
+    decrypt: Bool = False
+    sign: Bool = False
+    verify: Bool = False
+    deriveKey: Bool = False
+    deriveBits: Bool = False
+    wrapKey: Bool = False
+    unwrapKey: Bool = False
+)
+
+class CryptoCipher {
+    RsaOaep(label: Option[String] = None)
+    AesCtr(counter: Buffer, length: Int)
+    AesCbc(initializationVector: Buffer)
+    AesGcm(initializationVector: Buffer, additionalData: Option[Buffer] = None, tagLength: Int = 128)
+}
+
+class CryptoDeriver {
+    Ecdh(public: CryptoKey)
+    Hkdf(hash: CryptoDigest, salt: Buffer, info: Buffer)
+    Pbkdf2(hash: CryptoDigest, salt: Buffer, iterations: Int)
+}
+
+class CryptoGenerator {
+    HmacGenerator(hash: CryptoDigest, length: Option[Int])
+    AesCtrGenerator(length: Int)
+    AesCbcGenerator(length: Int)
+    AesGcmGenerator(length: Int)
+    AesKwGenerator(length: Int)
+    HkdfGenerator(hash: CryptoDigest, salt: Buffer, info: Buffer)
+    Pbkdf2Generator(hash: CryptoDigest, salt: Buffer, iterations: Int)
+}
+
+class CryptoSigner {
+    RsassaPkcs1V15
+    RsaPss(saltLength: Int)
+    Ecdsa(hash: CryptoDigest)
+    Hmac
+}
+
+data CryptoDigest {
+    Sha512
+    Sha384
+    Sha256
+    Sha1
+}
+
+extend self: SubtleCrypto {
+
+    encrypt(algorithm: CryptoCipher, key: CryptoKey, data: Buffer): Buffer
+        target js async """
+            const a = internalAlgorithm_(algorithm_);
+            return new DataView(await self_.encrypt(a, key_, data_));
+        """
+
+    decrypt(algorithm: CryptoCipher, key: CryptoKey, data: Buffer): Buffer
+        target js async """
+            const a = internalAlgorithm_(algorithm_);
+            return new DataView(await self_.decrypt(a, key_, data_));
+        """
+
+    sign(algorithm: CryptoSigner, key: CryptoKey, data: Buffer): Buffer
+        target js async """
+            const a = internalAlgorithm_(algorithm_);
+            return new DataView(await self_.sign(a, key_, data_));
+        """
+
+    verify(algorithm: CryptoSigner, key: CryptoKey, data: Buffer): Bool
+        target js async """
+            const a = internalAlgorithm_(algorithm_);
+            return await self_.verify(a, key_, data_);
+        """
+
+    digest(algorithm: CryptoDigest, data: Buffer): Buffer
+        target js async """
+            const a = internalAlgorithm_(algorithm_);
+            return new DataView(await self_.digest(a, data_));
+        """
+        
+    deriveBits(algorithm: CryptoDeriver, key: CryptoKey, bits: Int): Buffer
+        target js async """
+            const a = internalAlgorithm_(algorithm_);
+            return new DataView(await self_.deriveBits(a, key_, bits_));
+        """
+        
+    deriveKey(
+        algorithm: CryptoDeriver
+        baseKey: CryptoKey
+        derivedKeyAlgorithm: CryptoGenerator
+        extractable: Bool
+        keyUsages: CryptoKeyUsages
+    ): CryptoKey
+        target js async """
+            const a = internalAlgorithm_(algorithm_);
+            const d = internalAlgorithm_(derivedKeyAlgorithm_);
+            const u = internalKeyUsages_(keyUsages_);
+            return await self_.deriveKey(a, baseKey_, d, extractable_, u);
+        """    
+
+}
+
+internalAlgorithm(algorithm: JsValue): JsValue
+    target js sync """
+        if(algorithm_.Sha512) return 'SHA-512';
+        if(algorithm_.Sha384) return 'SHA-384';
+        if(algorithm_.Sha256) return 'SHA-256';
+        if(algorithm_.Sha1) return 'SHA-1';
+        if(algorithm_.RsassaPkcs1V15) return 'RSASSA-PKCS1-v1_5';
+        if(algorithm_.RsaPss) return {name: 'RSA-PSS', saltLength: algorithm_.saltLength_};
+        if(algorithm_.Ecdsa) return {name: 'ECDSA', hash: internalAlgorithm_(algorithm_.hash_)};
+        if(algorithm_.Hmac) return 'HMAC';
+        if(algorithm_.Ecdh) return {name: 'ECDH', public: algorithm_.public_};
+        if(algorithm_.Hkdf) return {name: 'HKDF', hash: internalAlgorithm_(algorithm_.hash_), salt: algorithm_.salt_, info: algorithm_.info_};
+        if(algorithm_.Pbkdf2) return {name: 'PBKDF2', hash: internalAlgorithm_(algorithm_.hash_), salt: algorithm_.salt_, iterations: algorithm_.iterations_};
+        if(algorithm_.RsaOaep) return {name: "RSA-OAEP", label: algorithm_.label_.value_};
+        if(algorithm_.AesCtr) return {name: "AES-CTR", counter: algorithm_.counter_, length: algorithm_.length_};
+        if(algorithm_.AesCbc) return {name: "AES-CBC", iv: algorithm_.initializationVector_};
+        if(algorithm_.AesGcm) return {name: "AES-GCM", iv: algorithm_.initializationVector_, additionalData: algorithm_.value_, tagLength: algorithm_.tagLength_};
+        // Turns out, generateKey has different parameters - think about naming
+        if(algorithm_.HmacGenerator) return {name: 'HMAC', hash: internalAlgorithm_(algorithm_.hash_), length: algorithm_.length_.value_};
+        if(algorithm_.AesCtrGenerator) return {name: 'AES-CTR', length: algorithm_.length_};
+        if(algorithm_.AesCbcGenerator) return {name: 'AES-CBC', length: algorithm_.length_};
+        if(algorithm_.AesGcmGenerator) return {name: 'AES-GCM', length: algorithm_.length_};
+        if(algorithm_.AesKwGenerator) return {name: 'AES-KW', length: algorithm_.length_};
+        if(algorithm_.HkdfGenerator) return {name: 'HKDF', hash: internalAlgorithm_(algorithm_.hash_), salt: algorithm_.salt_, info: algorithm_.info_};
+        if(algorithm_.Pbkdf2Generator) return {name: 'PBKDF2', hash: internalAlgorithm_(algorithm_.hash_), salt: algorithm_.salt_, iterations: algorithm_.iterations_};
+        throw new Error('No such algorithm');
+    """
+
+internalKeyUsages(keyUsages: JsValue): JsValue
+    target js sync """
+        const u = [];
+        if(keyUsages_.encrypt_) u.push('encrypt');
+        if(keyUsages_.decrypt_) u.push('decrypt');
+        if(keyUsages_.sign_) u.push('sign');
+        if(keyUsages_.verify_) u.push('verify');
+        if(keyUsages_.deriveKey_) u.push('deriveKey');
+        if(keyUsages_.deriveBits_) u.push('deriveBits');
+        if(keyUsages_.wrapKey_) u.push('wrapKey');
+        if(keyUsages_.unwrapKey_) u.push('unwrapKey');
+        return u;
+    """

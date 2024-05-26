@@ -1,0 +1,95 @@
+capability Crypto {}
+
+extend self: Crypto {
+    
+    randomUuid(): String
+        target js async """
+            return self_.randomUUID();
+        """
+    
+    randomBuffer(size: Int): Buffer {
+        let buffer = Buffer.new(size)
+        self.randomizeBuffer(buffer)
+        buffer
+    }
+
+    randomizeBuffer(buffer: Buffer): Unit
+        target js async """
+            self_.getRandomValues(new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength));
+        """
+
+    hmacSha256(key: Buffer, buffer: Buffer): Buffer
+        target js async """
+            const cryptoKey = await self_.subtle.importKey(
+                'raw',
+                key_,
+                {name: 'HMAC', hash: {name: 'SHA-256'}},
+                false, 
+                ['sign']
+            );
+            const signature = await self_.subtle.sign(
+                'HMAC', 
+                cryptoKey, 
+                buffer_
+            );
+            return new DataView(signature);
+        """
+        
+    sha256(buffer: Buffer): Buffer 
+        target js async """
+            let hash = await self_.subtle.digest('SHA-256', buffer_);
+            return new DataView(hash);
+        """
+
+    makePasswordHash(password: String, iterations: Int = 100000): String {
+        let salt = self.randomBuffer(16)
+        let hash = internalMakePasswordHash(salt, password.toBuffer(), iterations)
+        "PSG_" + iterations + "_" + salt.toHex() + "_" + hash.toHex()
+    }
+    
+    checkPasswordHash(password: String, passwordHash: String): Bool {
+        passwordHash.split('_').{
+            | ["PSG", iterationsText, saltText, hashText] {iterationsText.getInt() | Some(iterations)} =>
+                let computedHash = internalMakePasswordHash(Buffer.fromHex(saltText), password.toBuffer(), iterations)
+                let hash = Buffer.fromHex(hashText)
+                self.constantTimeEquals(computedHash, hash)
+            | _ => False
+        }
+    }
+    
+    constantTimeEquals(buffer1: Buffer, buffer2: Buffer): Bool {
+        if(buffer1.size() != buffer2.size()) {False} else: 
+        mutable v = 0
+        mutable i = 0
+        while {i < buffer1.size()} {
+            v = v.bitOr(buffer1.grabUint8(i).bitXor(buffer2.grabUint8(i))) 
+        }
+        v == 0
+    }
+
+}
+
+internalMakePasswordHash(salt: Buffer, password: Buffer, iterations: Int): Buffer
+    target js async """
+        const keyMaterial = await crypto.subtle.importKey(
+            'raw',
+            password_,
+            {name: 'PBKDF2'},
+            false,
+            ['deriveKey']
+        );
+        const derivedKey = await crypto.subtle.deriveKey(
+            {
+                name: 'PBKDF2',
+                salt: salt_,
+                iterations: iterations_,
+                hash: 'SHA-256'
+            },
+            keyMaterial,
+            {name: 'AES-GCM', length: 256},
+            true,
+            ['encrypt', 'decrypt']
+        );
+        const hashBuffer = await crypto.subtle.exportKey('raw', derivedKey);
+        return new DataView(hashBuffer);
+    """
