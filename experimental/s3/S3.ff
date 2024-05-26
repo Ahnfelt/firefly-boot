@@ -10,7 +10,7 @@ put(
 ): Unit {
     let now = system.mainTask().now()
     let amzDate = toIsoString(now)
-    let contentHash = Digest.sha256(body).toHex()
+    let contentHash = system.crypto().sha256(body).toHex()
     let host = bucket + ".s3.amazonaws.com"
     let encodedKey = encode(objectKey)
     let canonicalHeaders = [
