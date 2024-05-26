@@ -62,7 +62,8 @@ extend self: Crypto {
         mutable v = 0
         mutable i = 0
         while {i < buffer1.size()} {
-            v = v.bitOr(buffer1.grabUint8(i).bitXor(buffer2.grabUint8(i))) 
+            v = v.bitOr(buffer1.grabUint8(i).bitXor(buffer2.grabUint8(i)))
+            i += 1
         }
         v == 0
     }
