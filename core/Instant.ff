@@ -1,9 +1,26 @@
 newtype Instant(since1970: Duration)
 
+fromIso(date: String): Option[Instant] {
+    let zone = date.endsWith("Z") || date.contains("+") || date.dropWhile {_ != 'T'}.contains("-")
+    if(zone && date.takeWhile {_ != 'T'}.contains("-") && date.contains("T") && date.contains(":")) {
+        internalParseDate(date)
+    }
+}
+
 extend self: Instant {
 
     add(duration: Duration): Instant {
         Instant(Duration(self.since1970.seconds + duration.seconds))
     }
+    
+    toIso(): String
+        target js sync """
+            return new Date(self_).toISOString();
+        """
 
 }
+
+internalParseDate(date: String): Instant
+    target js sync """
+        return Date.parse(date_) * 0.001;
+    """
