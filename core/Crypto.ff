@@ -41,13 +41,13 @@ extend self: Crypto {
             return new DataView(hash);
         """
 
-    makePasswordHash(password: String, iterations: Int = 100000): String {
+    hashPassword(password: String, iterations: Int = 100000): String {
         let salt = self.randomBuffer(16)
         let hash = internalMakePasswordHash(salt, password.toBuffer(), iterations)
         "psg_" + iterations + "_" + salt.toHex() + "_" + hash.toHex()
     }
     
-    checkPasswordHash(password: String, passwordHash: String): Bool {
+    checkPassword(password: String, passwordHash: String): Bool {
         passwordHash.split('_').{
             | ["psg", iterationsText, saltText, hashText] {iterationsText.getInt() | Some(iterations)} =>
                 let computedHash = internalMakePasswordHash(Buffer.fromHex(saltText), password.toBuffer(), iterations)
