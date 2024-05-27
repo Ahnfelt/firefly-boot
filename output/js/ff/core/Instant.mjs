@@ -94,16 +94,54 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
+export function fromIso_(date_) {
+const zone_ = ((ff_core_String.String_endsWith(date_, "Z") || ff_core_String.String_contains(date_, "+")) || ff_core_String.String_contains(ff_core_String.String_dropWhile(date_, ((_w1) => {
+return (_w1 !== 84)
+})), "-"));
+if((((zone_ && ff_core_String.String_contains(ff_core_String.String_takeWhile(date_, ((_w1) => {
+return (_w1 !== 84)
+})), "-")) && ff_core_String.String_contains(date_, "T")) && ff_core_String.String_contains(date_, ":"))) {
+return ff_core_Option.Some(ff_core_Instant.internalParseDate_(date_))
+} else return ff_core_Option.None()
+}
 
+export function internalParseDate_(date_) {
 
+        return Date.parse(date_) * 0.001;
+    
+}
 
+export async function fromIso_$(date_, $task) {
+const zone_ = ((ff_core_String.String_endsWith(date_, "Z") || ff_core_String.String_contains(date_, "+")) || ff_core_String.String_contains(ff_core_String.String_dropWhile(date_, ((_w1) => {
+return (_w1 !== 84)
+})), "-"));
+if((((zone_ && ff_core_String.String_contains(ff_core_String.String_takeWhile(date_, ((_w1) => {
+return (_w1 !== 84)
+})), "-")) && ff_core_String.String_contains(date_, "T")) && ff_core_String.String_contains(date_, ":"))) {
+return ff_core_Option.Some(ff_core_Instant.internalParseDate_(date_))
+} else return ff_core_Option.None()
+}
+
+export async function internalParseDate_$(date_, $task) {
+throw new Error('Function internalParseDate is missing on this target in async context.');
+}
 
 export function Instant_add(self_, duration_) {
 return (self_ + duration_)
 }
 
+export function Instant_toIso(self_) {
+
+            return new Date(self_ * 1000).toISOString();
+        
+}
+
 export async function Instant_add$(self_, duration_, $task) {
 return (self_ + duration_)
+}
+
+export async function Instant_toIso$(self_, $task) {
+throw new Error('Function Instant_toIso is missing on this target in async context.');
 }
 
 

@@ -1,12 +1,28 @@
+dependency ff:s3:0.0.0
+import S3 from ff:s3
+
 nodeMain(system: NodeSystem) {
-    run(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
-    run(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
-    run(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
-    bumpMinorVersion(system, system.path("../package.json"))
-    bumpMinorVersion(system, system.path("../vscode/package.json"))
-    run(system, "npm", ["publish"], system.path(".."))
-    run(system, "vsce", ["publish"], system.path("../vscode"))
-    // tar gz core etc. and upload to s3
+    system.arguments().{
+        | [] => 
+        | [awsUser, awsKey] =>
+            run(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
+            run(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
+            run(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
+            bumpMinorVersion(system, system.path("../package.json"))
+            bumpMinorVersion(system, system.path("../vscode/package.json"))
+            //run(system, "npm", ["publish"], system.path(".."))
+            //run(system, "vsce", ["publish"], system.path("../vscode"))
+            let coreTemporary = system.path("../core/.firefly/temporary")
+            if(!coreTemporary.exists()) {coreTemporary.createDirectory()}
+            let coreTarGz = coreTemporary.slash("ff_core_0_0_0.tar.gz")
+            if(coreTarGz.exists()) {
+                coreTarGz.delete()
+                system.writeLine("Deleted " + coreTarGz.absolute())    
+            }
+            internalMakeTarGz(coreTarGz, system.path("../core"))
+            system.writeLine("Created " + coreTarGz.absolute())
+            //S3.put(system, awsUser, awsKey, )
+    }
 }
 
 run(system: NodeSystem, command: String, arguments: List[String], workingDirectory: Path) {
@@ -47,3 +63,9 @@ bumpMinorVersion(system: NodeSystem, packageJsonPath: Path) {
     }
     packageJsonPath.writeText(newContent)
 }
+
+internalMakeTarGz(tarGzPath: Path, path: Path): Unit
+    target node async """
+        import * as tar from 'tar'
+        await tar.create({gzip: true, file: tarGzPath_}, [path_]);
+    """

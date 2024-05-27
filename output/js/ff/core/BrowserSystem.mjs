@@ -107,6 +107,10 @@ export function BrowserSystem_mainTask(self_) {
 throw new Error('Function BrowserSystem_mainTask is missing on this target in sync context.');
 }
 
+export function BrowserSystem_crypto(self_) {
+throw new Error('Function BrowserSystem_crypto is missing on this target in sync context.');
+}
+
 export function BrowserSystem_js(self_) {
 throw new Error('Function BrowserSystem_js is missing on this target in sync context.');
 }
@@ -133,6 +137,10 @@ return null
 
 export async function BrowserSystem_mainTask$(self_, $task) {
 return self_.task_
+}
+
+export async function BrowserSystem_crypto$(self_, $task) {
+return (typeof globalThis !== 'undefined' ? globalThis : window).crypto
 }
 
 export async function BrowserSystem_js$(self_, $task) {

@@ -150,13 +150,13 @@ throw new Error('Function Crypto_sha256 is missing on this target in sync contex
 export function Crypto_makePasswordHash(self_, password_, iterations_ = 100000) {
 const salt_ = ff_core_Crypto.Crypto_randomBuffer(self_, 16);
 const hash_ = ff_core_Crypto.internalMakePasswordHash_(salt_, ff_core_String.String_toBuffer(password_), iterations_);
-return ((((("PSG_" + iterations_) + "_") + ff_core_Buffer.Buffer_toHex(salt_)) + "_") + ff_core_Buffer.Buffer_toHex(hash_))
+return ((((("psg_" + iterations_) + "_") + ff_core_Buffer.Buffer_toHex(salt_)) + "_") + ff_core_Buffer.Buffer_toHex(hash_))
 }
 
 export function Crypto_checkPasswordHash(self_, password_, passwordHash_) {
 {
 const _1 = ff_core_String.String_split(passwordHash_, 95);
-if(_1.length === 4 && _1[0] === "PSG") {
+if(_1.length === 4 && _1[0] === "psg") {
 const iterationsText_ = _1[1];
 const saltText_ = _1[2];
 const hashText_ = _1[3];
@@ -181,7 +181,8 @@ return false
 let v_ = 0;
 let i_ = 0;
 while((i_ < ff_core_Buffer.Buffer_size(buffer1_))) {
-v_ = ff_core_Int.Int_bitOr(v_, ff_core_Int.Int_bitXor(ff_core_Buffer.Buffer_grabUint8(buffer1_, i_), ff_core_Buffer.Buffer_grabUint8(buffer2_, i_)))
+v_ = ff_core_Int.Int_bitOr(v_, ff_core_Int.Int_bitXor(ff_core_Buffer.Buffer_grabUint8(buffer1_, i_), ff_core_Buffer.Buffer_grabUint8(buffer2_, i_)));
+i_ += 1
 };
 return (v_ === 0)
 }
@@ -233,13 +234,13 @@ export async function Crypto_sha256$(self_, buffer_, $task) {
 export async function Crypto_makePasswordHash$(self_, password_, iterations_ = 100000, $task) {
 const salt_ = (await ff_core_Crypto.Crypto_randomBuffer$(self_, 16, $task));
 const hash_ = ff_core_Crypto.internalMakePasswordHash_(salt_, ff_core_String.String_toBuffer(password_), iterations_);
-return ((((("PSG_" + iterations_) + "_") + ff_core_Buffer.Buffer_toHex(salt_)) + "_") + ff_core_Buffer.Buffer_toHex(hash_))
+return ((((("psg_" + iterations_) + "_") + ff_core_Buffer.Buffer_toHex(salt_)) + "_") + ff_core_Buffer.Buffer_toHex(hash_))
 }
 
 export async function Crypto_checkPasswordHash$(self_, password_, passwordHash_, $task) {
 {
 const _1 = ff_core_String.String_split(passwordHash_, 95);
-if(_1.length === 4 && _1[0] === "PSG") {
+if(_1.length === 4 && _1[0] === "psg") {
 const iterationsText_ = _1[1];
 const saltText_ = _1[2];
 const hashText_ = _1[3];
@@ -264,7 +265,8 @@ return false
 let v_ = 0;
 let i_ = 0;
 while((i_ < ff_core_Buffer.Buffer_size(buffer1_))) {
-v_ = ff_core_Int.Int_bitOr(v_, ff_core_Int.Int_bitXor(ff_core_Buffer.Buffer_grabUint8(buffer1_, i_), ff_core_Buffer.Buffer_grabUint8(buffer2_, i_)))
+v_ = ff_core_Int.Int_bitOr(v_, ff_core_Int.Int_bitXor(ff_core_Buffer.Buffer_grabUint8(buffer1_, i_), ff_core_Buffer.Buffer_grabUint8(buffer2_, i_)));
+i_ += 1
 };
 return (v_ === 0)
 }

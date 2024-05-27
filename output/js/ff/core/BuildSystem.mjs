@@ -241,6 +241,10 @@ export function BuildSystem_mainTask(self_) {
 throw new Error('Function BuildSystem_mainTask is missing on this target in sync context.');
 }
 
+export function BuildSystem_crypto(self_) {
+throw new Error('Function BuildSystem_crypto is missing on this target in sync context.');
+}
+
 export async function BuildSystem_compileForBrowser$(self_, mainFile_, $task) {
 (await ff_core_BuildSystem.internalCompile_$(self_, (await ff_core_BuildSystem.internalPath_$(self_, mainFile_, $task)), "browser", $task));
 const streams_ = (await ff_core_BuildSystem.internalListDirectory_$((await ff_core_BuildSystem.internalPath_$(self_, ".firefly/output/browser", $task)), $task));
@@ -271,6 +275,10 @@ return self_.array_
 
 export async function BuildSystem_mainTask$(self_, $task) {
 return self_.task_
+}
+
+export async function BuildSystem_crypto$(self_, $task) {
+return (typeof globalThis !== 'undefined' ? globalThis : window).crypto
 }
 
 export function BrowserCode_assets(self_) {
