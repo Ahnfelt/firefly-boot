@@ -162,7 +162,7 @@ fromBufferArray(array: List[Buffer]): Buffer
 
 fromHex(hex: String): Buffer
     target js sync """
-        const hexValues = hexString.match(/.{1,2}/g) || []
+        const hexValues = hex_.match(/.{1,2}/g) || []
         const numbers = hexValues.map(value => parseInt(value, 16))
         return new DataView(new Uint8Array(numbers).buffer)
     """

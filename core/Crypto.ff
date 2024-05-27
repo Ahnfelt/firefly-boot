@@ -43,14 +43,15 @@ extend self: Crypto {
 
     hashPassword(password: String, iterations: Int = 100000): String {
         let salt = self.randomBuffer(16)
-        let hash = internalMakePasswordHash(salt, password.toBuffer(), iterations)
+        let hash = internalMakePasswordHash(self, salt, password.toBuffer(), iterations)
         "psg_" + iterations + "_" + salt.toHex() + "_" + hash.toHex()
     }
     
     checkPassword(password: String, passwordHash: String): Bool {
         passwordHash.split('_').{
             | ["psg", iterationsText, saltText, hashText] {iterationsText.getInt() | Some(iterations)} =>
-                let computedHash = internalMakePasswordHash(Buffer.fromHex(saltText), password.toBuffer(), iterations)
+                let computedHash = 
+                    internalMakePasswordHash(self, Buffer.fromHex(saltText), password.toBuffer(), iterations)
                 let hash = Buffer.fromHex(hashText)
                 self.constantTimeEquals(computedHash, hash)
             | _ => False
@@ -70,7 +71,7 @@ extend self: Crypto {
 
 }
 
-internalMakePasswordHash(salt: Buffer, password: Buffer, iterations: Int): Buffer
+internalMakePasswordHash(system: Crypto, salt: Buffer, password: Buffer, iterations: Int): Buffer
     target js async """
         const keyMaterial = await crypto.subtle.importKey(
             'raw',
