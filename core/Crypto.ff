@@ -47,17 +47,10 @@ extend self: Crypto {
         "$pbkdf2-sha256-hex$" + iterations + "$" + salt.toHex() + "$" + hash.toHex()
     }
     
-    checkPassword(
-        password: String, 
-        passwordHash: String, 
-        minIterations: Int = 100000, 
-        maxIterations: Int = 2000000
-    ): Bool {
+    checkPassword(password: String, passwordHash: String): Bool {
         passwordHash.split('$').{
             | ["", "pbkdf2-sha256-hex", iterationsText, saltText, hashText] {
                 iterationsText.getInt() | Some(iterations)
-            } {
-                iterations >= minIterations && iterations <= maxIterations
             } =>
                 let computedHash = 
                     internalHashPassword(self, Buffer.fromHex(saltText), password.toBuffer(), iterations)
