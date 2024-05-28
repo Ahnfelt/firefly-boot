@@ -144,27 +144,25 @@ export function Crypto_sha256(self_, buffer_) {
 throw new Error('Function Crypto_sha256 is missing on this target in sync context.');
 }
 
-export function Crypto_hashPassword(self_, password_, iterations_ = 600000, pepper_ = "") {
+export function Crypto_hashPassword(self_, password_, iterations_ = 600000) {
 const salt_ = ff_core_Crypto.Crypto_randomBuffer(self_, 16);
-const hash_ = ff_core_Crypto.internalHashPassword_(self_, salt_, ff_core_String.String_toBuffer((password_ + pepper_)), iterations_);
-return ((((("$pbkdf2-sha256$" + iterations_) + "$") + ff_core_Buffer.Buffer_toHex(salt_)) + "$") + ff_core_Buffer.Buffer_toHex(hash_))
+const hash_ = ff_core_Crypto.internalHashPassword_(self_, salt_, ff_core_String.String_toBuffer(password_), iterations_);
+return ((((("$pbkdf2-sha256-hex$" + iterations_) + "$") + ff_core_Buffer.Buffer_toHex(salt_)) + "$") + ff_core_Buffer.Buffer_toHex(hash_))
 }
 
-export function Crypto_checkPassword(self_, password_, passwordHash_, pepper_ = "", minIterations_ = 100000, maxIterations_ = 2000000) {
+export function Crypto_checkPassword(self_, password_, passwordHash_) {
 {
 const _1 = ff_core_String.String_split(passwordHash_, 36);
-if(_1.length === 5 && _1[0] === "" && _1[1] === "pbkdf2-sha256") {
+if(_1.length === 5 && _1[0] === "" && _1[1] === "pbkdf2-sha256-hex") {
 const iterationsText_ = _1[2];
 const saltText_ = _1[3];
 const hashText_ = _1[4];
-const _guard2 = ff_core_String.String_getInt(iterationsText_);
-if(_guard2.Some) {
-const iterations_ = _guard2.value_;
-if(((iterations_ >= minIterations_) && (iterations_ <= maxIterations_))) {
-const computedHash_ = ff_core_Crypto.internalHashPassword_(self_, ff_core_Buffer.fromHex_(saltText_), ff_core_String.String_toBuffer((password_ + pepper_)), iterations_);
+const _guard1 = ff_core_String.String_getInt(iterationsText_);
+if(_guard1.Some) {
+const iterations_ = _guard1.value_;
+const computedHash_ = ff_core_Crypto.internalHashPassword_(self_, ff_core_Buffer.fromHex_(saltText_), ff_core_String.String_toBuffer(password_), iterations_);
 const hash_ = ff_core_Buffer.fromHex_(hashText_);
 return ff_core_Crypto.Crypto_constantTimeEquals(self_, computedHash_, hash_)
-}
 }
 }
 {
@@ -230,27 +228,25 @@ export async function Crypto_sha256$(self_, buffer_, $task) {
         
 }
 
-export async function Crypto_hashPassword$(self_, password_, iterations_ = 600000, pepper_ = "", $task) {
+export async function Crypto_hashPassword$(self_, password_, iterations_ = 600000, $task) {
 const salt_ = (await ff_core_Crypto.Crypto_randomBuffer$(self_, 16, $task));
-const hash_ = (await ff_core_Crypto.internalHashPassword_$(self_, salt_, ff_core_String.String_toBuffer((password_ + pepper_)), iterations_, $task));
-return ((((("$pbkdf2-sha256$" + iterations_) + "$") + ff_core_Buffer.Buffer_toHex(salt_)) + "$") + ff_core_Buffer.Buffer_toHex(hash_))
+const hash_ = (await ff_core_Crypto.internalHashPassword_$(self_, salt_, ff_core_String.String_toBuffer(password_), iterations_, $task));
+return ((((("$pbkdf2-sha256-hex$" + iterations_) + "$") + ff_core_Buffer.Buffer_toHex(salt_)) + "$") + ff_core_Buffer.Buffer_toHex(hash_))
 }
 
-export async function Crypto_checkPassword$(self_, password_, passwordHash_, pepper_ = "", minIterations_ = 100000, maxIterations_ = 2000000, $task) {
+export async function Crypto_checkPassword$(self_, password_, passwordHash_, $task) {
 {
 const _1 = ff_core_String.String_split(passwordHash_, 36);
-if(_1.length === 5 && _1[0] === "" && _1[1] === "pbkdf2-sha256") {
+if(_1.length === 5 && _1[0] === "" && _1[1] === "pbkdf2-sha256-hex") {
 const iterationsText_ = _1[2];
 const saltText_ = _1[3];
 const hashText_ = _1[4];
-const _guard2 = ff_core_String.String_getInt(iterationsText_);
-if(_guard2.Some) {
-const iterations_ = _guard2.value_;
-if(((iterations_ >= minIterations_) && (iterations_ <= maxIterations_))) {
-const computedHash_ = (await ff_core_Crypto.internalHashPassword_$(self_, ff_core_Buffer.fromHex_(saltText_), ff_core_String.String_toBuffer((password_ + pepper_)), iterations_, $task));
+const _guard1 = ff_core_String.String_getInt(iterationsText_);
+if(_guard1.Some) {
+const iterations_ = _guard1.value_;
+const computedHash_ = (await ff_core_Crypto.internalHashPassword_$(self_, ff_core_Buffer.fromHex_(saltText_), ff_core_String.String_toBuffer(password_), iterations_, $task));
 const hash_ = ff_core_Buffer.fromHex_(hashText_);
 return (await ff_core_Crypto.Crypto_constantTimeEquals$(self_, computedHash_, hash_, $task))
-}
 }
 }
 {

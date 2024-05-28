@@ -3,26 +3,47 @@ import S3 from ff:s3
 
 nodeMain(system: NodeSystem) {
     system.arguments().{
-        | [] => 
-        | [awsUser, awsKey] =>
-            run(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
-            run(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
-            run(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
-            bumpMinorVersion(system, system.path("../package.json"))
-            bumpMinorVersion(system, system.path("../vscode/package.json"))
-            //run(system, "npm", ["publish"], system.path(".."))
-            //run(system, "vsce", ["publish"], system.path("../vscode"))
-            let coreTemporary = system.path("../core/.firefly/temporary")
-            if(!coreTemporary.exists()) {coreTemporary.createDirectory()}
-            let coreTarGz = coreTemporary.slash("ff_core_0_0_0.tar.gz")
-            if(coreTarGz.exists()) {
-                coreTarGz.delete()
-                system.writeLine("Deleted " + coreTarGz.absolute())    
-            }
-            internalMakeTarGz(coreTarGz, system.path("../core"))
-            system.writeLine("Created " + coreTarGz.absolute())
-            //S3.put(system, awsUser, awsKey, )
+        | [accessKeyId, secretAccessKey] => 
+            release(system, accessKeyId, secretAccessKey)
+        | _ => 
+            system.writeErrorLine("Usage: aws-access-key-id aws-secret-access-key")
+            system.exit(1)            
     }
+}
+
+release(
+    system: NodeSystem
+    accessKeyId: String
+    secretAccessKey: String
+): Unit {
+    run(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
+    run(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
+    run(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
+    bumpMinorVersion(system, system.path("../package.json"))
+    bumpMinorVersion(system, system.path("../vscode/package.json"))
+    //run(system, "npm", ["publish"], system.path(".."))
+    //run(system, "vsce", ["publish"], system.path("../vscode"))
+    let coreTemporary = system.path("../core/.firefly/temporary")
+    if(!coreTemporary.exists()) {coreTemporary.createDirectory()}
+    let coreTarGz = coreTemporary.slash("ff_core_0_0_0.tar.gz")
+    if(coreTarGz.exists()) {
+        coreTarGz.delete()
+        system.writeLine("Deleted " + coreTarGz.absolute())    
+    }
+    internalMakeTarGz(coreTarGz, system.path("../core"))
+    system.writeLine("Created " + coreTarGz.absolute())
+    S3.put(
+        system
+        accessKeyId
+        secretAccessKey
+        "eu-central-1" 
+        "firefly-site"
+        "site/packages/ff/core/" + coreTarGz.base() + ".tmp"
+        coreTarGz.readBuffer()
+        headers = [
+            Pair("Content-Type", "application/x-gzip")
+        ]
+    )
 }
 
 run(system: NodeSystem, command: String, arguments: List[String], workingDirectory: Path) {
@@ -67,5 +88,12 @@ bumpMinorVersion(system: NodeSystem, packageJsonPath: Path) {
 internalMakeTarGz(tarGzPath: Path, path: Path): Unit
     target node async """
         import * as tar from 'tar'
-        await tar.create({gzip: true, file: tarGzPath_}, [path_]);
+        await tar.create({
+            gzip: true, 
+            file: tarGzPath_,
+            gzipOptions: { level: 9 },
+            filter: (path, stat) => 
+                !path.includes(".firefly/output") &&
+                !path.includes(".firefly/temporary")
+        }, [path_]);
     """
