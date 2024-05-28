@@ -99,11 +99,11 @@ export function new_(size_, shared_ = false) {
 return new DataView(shared_ ? new SharedArrayBuffer(size_) : new ArrayBuffer(size_))
 }
 
-export function fromByteArray_(array_) {
+export function fromByteList_(array_) {
 return new DataView(new Uint8Array(array_).buffer)
 }
 
-export function fromBufferArray_(array_) {
+export function fromBufferList_(array_) {
 
         let length = 0
         for(let b of array_) length += b.byteLength
@@ -120,7 +120,7 @@ export function fromBufferArray_(array_) {
 
 export function fromHex_(hex_) {
 
-        const hexValues = hexString.match(/.{1,2}/g) || []
+        const hexValues = hex_.match(/.{1,2}/g) || []
         const numbers = hexValues.map(value => parseInt(value, 16))
         return new DataView(new Uint8Array(numbers).buffer)
     
@@ -139,12 +139,12 @@ export async function new_$(size_, shared_ = false, $task) {
 throw new Error('Function new is missing on this target in async context.');
 }
 
-export async function fromByteArray_$(array_, $task) {
-throw new Error('Function fromByteArray is missing on this target in async context.');
+export async function fromByteList_$(array_, $task) {
+throw new Error('Function fromByteList is missing on this target in async context.');
 }
 
-export async function fromBufferArray_$(array_, $task) {
-throw new Error('Function fromBufferArray is missing on this target in async context.');
+export async function fromBufferList_$(array_, $task) {
+throw new Error('Function fromBufferList is missing on this target in async context.');
 }
 
 export async function fromHex_$(hex_, $task) {

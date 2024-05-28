@@ -100,14 +100,3 @@ internalHashPassword(system: Crypto, salt: Buffer, password: Buffer, iterations:
         );
         return new DataView(hashBuffer);
     """
-
-nodeMain(system: NodeSystem) {
-    let password = "Hello!"
-    let hash = system.crypto().hashPassword(password)
-    Log.trace(hash)
-    let result = system.crypto().checkPassword(password, hash)
-    Log.trace(result.{
-        | True => "Password checks out"
-        | False => "Password doesn't check out"
-    })
-}
