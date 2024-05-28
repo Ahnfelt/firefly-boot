@@ -158,7 +158,7 @@ parseRequestHeaders(input: Stream[Buffer]): Pair[Map[String, String], Stream[Buf
         offset += 1
     }
     buffers.push(buffer.view(0, offset))
-    let headers = Buffer.fromBufferArray(buffers.drain()).toString()
+    let headers = Buffer.fromBufferList(buffers.drain()).toString()
     let map = headers.lines().pairs().filter {_.second.size() != 0}.map {| Pair(i, line) =>
         line.splitFirst(':').else {
             throw(BadRequestException("Invalid header at line " + i + " '" + line + "'"))
@@ -173,7 +173,7 @@ parseRequestBody(contentLength: Int, input: Stream[Buffer]): Pair[Json, Stream[B
     } catchAny {error =>
         throw(BadRequestException("End of input while parsing request body"))
     } grab()
-    let body = Buffer.fromBufferArray(bodyPair.first).toString()
+    let body = Buffer.fromBufferList(bodyPair.first).toString()
     let json = Json.read(body).else {
         throw(BadRequestException("Invalid JSON in request body: " + body))
     }

@@ -1,12 +1,12 @@
 main(system: NodeSystem) {
-    let inBuffers = 1.to(100).map {_ => Buffer.fromByteArray([5, 5, 3, 1, 2].toArray())}
+    let inBuffers = 1.to(100).map {_ => Buffer.fromByteList([5, 5, 3, 1, 2].toArray())}
     let inStream = inBuffers.toStream()
     let outStream = toRunLength(inStream, 3)
     printRunLength(outStream)
 }
 
 printRunLength(outStream: Stream[Buffer]) {
-    let buffer = Buffer.fromBufferArray(outStream.toArray())
+    let buffer = Buffer.fromBufferList(outStream.toArray())
     Log.debug(buffer.toHex())
     let stack = Stack.make()
     mutable i = 0
@@ -14,7 +14,7 @@ printRunLength(outStream: Stream[Buffer]) {
         1.to(buffer.grabUint8(i)).each {_ => stack.push(buffer.grabUint8(i + 1))}
         i += 2
     }
-    Log.debug(Buffer.fromByteArray(stack.drain()).toHex())
+    Log.debug(Buffer.fromByteList(stack.drain()).toHex())
 }
 
 toRunLength(stream: Stream[Buffer], bufferSize: Int = 65536): Stream[Buffer] {

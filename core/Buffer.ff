@@ -143,10 +143,10 @@ extend self: Buffer {
 
 }
 
-fromByteArray(array: List[Int]): Buffer
+fromByteList(array: List[Int]): Buffer
     target js sync "return new DataView(new Uint8Array(array_).buffer)"
 
-fromBufferArray(array: List[Buffer]): Buffer
+fromBufferList(array: List[Buffer]): Buffer
     target js sync """
         let length = 0
         for(let b of array_) length += b.byteLength

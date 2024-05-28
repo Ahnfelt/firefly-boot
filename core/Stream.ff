@@ -372,7 +372,7 @@ extend self: Stream[Buffer] {
     toBuffer(): Buffer {
         let builder = Array.new()
         self.each {builder.push(_)}
-        Buffer.fromBufferArray(builder.drain())
+        Buffer.fromBufferList(builder.drain())
     }
 
     toString(encoding: String = "utf8"): String {
