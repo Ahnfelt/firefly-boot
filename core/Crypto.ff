@@ -44,7 +44,7 @@ extend self: Crypto {
     hashPassword(password: String, iterations: Int = 600000): String {
         let salt = self.randomBuffer(16)
         let hash = internalHashPassword(self, salt, password.toBuffer(), iterations)
-        "$pbkdf2-sha256$" + iterations + "$" + salt.toHex() + "$" + hash.toHex()
+        "$pbkdf2-sha256-hex$" + iterations + "$" + salt.toHex() + "$" + hash.toHex()
     }
     
     checkPassword(
@@ -54,7 +54,9 @@ extend self: Crypto {
         maxIterations: Int = 2000000
     ): Bool {
         passwordHash.split('$').{
-            | ["", "pbkdf2-sha256", iterationsText, saltText, hashText] {iterationsText.getInt() | Some(iterations)} {
+            | ["", "pbkdf2-sha256-hex", iterationsText, saltText, hashText] {
+                iterationsText.getInt() | Some(iterations)
+            } {
                 iterations >= minIterations && iterations <= maxIterations
             } =>
                 let computedHash = 
