@@ -41,16 +41,15 @@ extend self: Crypto {
             return new DataView(hash);
         """
 
-    hashPassword(password: String, iterations: Int = 600000, pepper: String = ""): String {
+    hashPassword(password: String, iterations: Int = 600000): String {
         let salt = self.randomBuffer(16)
-        let hash = internalHashPassword(self, salt, (password + pepper).toBuffer(), iterations)
+        let hash = internalHashPassword(self, salt, password.toBuffer(), iterations)
         "$pbkdf2-sha256$" + iterations + "$" + salt.toHex() + "$" + hash.toHex()
     }
     
     checkPassword(
         password: String, 
         passwordHash: String, 
-        pepper: String = "", 
         minIterations: Int = 100000, 
         maxIterations: Int = 2000000
     ): Bool {
@@ -59,7 +58,7 @@ extend self: Crypto {
                 iterations >= minIterations && iterations <= maxIterations
             } =>
                 let computedHash = 
-                    internalHashPassword(self, Buffer.fromHex(saltText), (password + pepper).toBuffer(), iterations)
+                    internalHashPassword(self, Buffer.fromHex(saltText), password.toBuffer(), iterations)
                 let hash = Buffer.fromHex(hashText)
                 self.constantTimeEquals(computedHash, hash)
             | _ => False
