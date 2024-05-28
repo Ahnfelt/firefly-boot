@@ -47,17 +47,25 @@ extend self: Crypto {
         "$pbkdf2-sha256$" + iterations + "$" + salt.toHex() + "$" + hash.toHex()
     }
     
-    checkPassword(password: String, passwordHash: String, pepper: String = ""): Bool {
+    checkPassword(
+        password: String, 
+        passwordHash: String, 
+        pepper: String = "", 
+        minIterations: Int = 100000, 
+        maxIterations: Int = 2000000
+    ): Bool {
         passwordHash.split('$').{
-            | ["", "pbkdf2-sha256", iterationsText, saltText, hashText] {iterationsText.getInt() | Some(iterations)} =>
+            | ["", "pbkdf2-sha256", iterationsText, saltText, hashText] {iterationsText.getInt() | Some(iterations)} {
+                iterations >= minIterations && iterations <= maxIterations
+            } =>
                 let computedHash = 
-                internalHashPassword(self, Buffer.fromHex(saltText), (password + pepper).toBuffer(), iterations)
+                    internalHashPassword(self, Buffer.fromHex(saltText), (password + pepper).toBuffer(), iterations)
                 let hash = Buffer.fromHex(hashText)
                 self.constantTimeEquals(computedHash, hash)
             | _ => False
         }
     }
-        
+
     constantTimeEquals(buffer1: Buffer, buffer2: Buffer): Bool {
         if(buffer1.size() != buffer2.size()) {False} else: 
         mutable v = 0
