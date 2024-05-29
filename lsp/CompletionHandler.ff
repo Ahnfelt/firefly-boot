@@ -372,17 +372,14 @@ makeCompletion(
             let methodGenerics = memberScheme.signature.generics.filter {_ != "Q$"}
             if(methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
         }
-        let selfIndent = selfType.map {_ => "    "}.else {""}
         let parameters = if(realParameters.isEmpty()) {""} else {
             "\n" + realParameters.map {p =>
-                showCompletionParameter(selfIndent + "    ", p)
-            }.join("\n") + "\n" + selfIndent
+                showCompletionParameter("    ", p)
+            }.join("\n") + "\n"
         }
-        selfType.map {_.show([])}.map {"extend " + _ + " {\n"}.else {""} +
-        selfIndent + unqualifiedName +
+        selfType.map {_.show([]) + "."}.else {""} + unqualifiedName +
         generics + "(" + parameters + "): " +
-        returnType.show([]) +
-        selfType.map {_ => "\n}"}.else {""}
+        returnType.show([])
     }
     CompletionInfo(
         label = shortName
