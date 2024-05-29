@@ -21,8 +21,8 @@ release(
     run(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
     bumpMinorVersion(system, system.path("../package.json"))
     bumpMinorVersion(system, system.path("../vscode/package.json"))
-    //run(system, "npm", ["publish"], system.path(".."))
-    //run(system, "vsce", ["publish"], system.path("../vscode"))
+    run(system, "npm", ["publish"], system.path(".."))
+    run(system, "vsce", ["publish"], system.path("../vscode"))
     let coreTemporary = system.path("../core/.firefly/temporary")
     if(!coreTemporary.exists()) {coreTemporary.createDirectory()}
     let coreTarGz = coreTemporary.slash("ff_core_0_0_0.tar.gz")
@@ -38,7 +38,7 @@ release(
         secretAccessKey
         "eu-central-1" 
         "firefly-site"
-        "site/packages/ff/core/" + coreTarGz.base() + ".tmp"
+        "site/packages/ff/core/" + coreTarGz.base()
         coreTarGz.readBuffer()
         headers = [
             Pair("Content-Type", "application/x-gzip")
@@ -89,11 +89,11 @@ internalMakeTarGz(tarGzPath: Path, path: Path): Unit
     target node async """
         import * as tar from 'tar'
         await tar.create({
-            gzip: true, 
             file: tarGzPath_,
-            gzipOptions: { level: 9 },
+            gzip: {level: 9},
+            cwd: path_,
             filter: (path, stat) => 
                 !path.includes(".firefly/output") &&
                 !path.includes(".firefly/temporary")
-        }, [path_]);
+        }, ["."]);
     """
