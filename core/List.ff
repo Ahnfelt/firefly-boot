@@ -79,7 +79,7 @@ extend self[T]: List[T] {
         }
         result
     }
-            
+
     countWhile(body: T => Bool): Int {
         mutable i = 0
         while {i < self.size() && body(self.grab(i))} {
@@ -87,7 +87,7 @@ extend self[T]: List[T] {
         }
         i
     }
-        
+
     takeWhile(body: T => Bool): List[T] {
         let result = Array.new()
         mutable i = 0
@@ -97,7 +97,7 @@ extend self[T]: List[T] {
         }
         result.drain()
     }
-        
+
     dropWhile(body: T => Bool): List[T] {
         let result = Array.new()
         mutable i = 0
