@@ -50,6 +50,9 @@ release(
             Pair("Content-Type", "application/x-gzip")
         ]
     )
+    
+    // git commit
+    // git push
 }
 
 requireNpmLoggedIn(system: NodeSystem, workingDirectory: Path) {
