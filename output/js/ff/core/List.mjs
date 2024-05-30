@@ -217,6 +217,64 @@ export function List_dropLast(self_, count_ = 1) {
 return self_.slice(0, self_.length - count_)
 }
 
+export function List_count(self_, body_) {
+let result_ = 0;
+let i_ = 0;
+while((i_ < ff_core_List.List_size(self_))) {
+if(body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)))) {
+result_ += 1
+};
+i_ += 1
+};
+return result_
+}
+
+export function List_countWhile(self_, body_) {
+let i_ = 0;
+while(((i_ < ff_core_List.List_size(self_)) && body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_))))) {
+i_ += 1
+};
+return i_
+}
+
+export function List_takeWhile(self_, body_) {
+const result_ = ff_core_Array.new_();
+let i_ = 0;
+while(((i_ < ff_core_List.List_size(self_)) && body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_))))) {
+ff_core_Array.Array_push(result_, (self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
+i_ += 1
+};
+return ff_core_Array.Array_drain(result_)
+}
+
+export function List_dropWhile(self_, body_) {
+const result_ = ff_core_Array.new_();
+let i_ = 0;
+while(((i_ < ff_core_List.List_size(self_)) && body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_))))) {
+i_ += 1
+};
+while((i_ < ff_core_List.List_size(self_))) {
+ff_core_Array.Array_push(result_, (self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
+i_ += 1
+};
+return ff_core_Array.Array_drain(result_)
+}
+
+export function List_partitionWhile(self_, body_) {
+const first_ = ff_core_Array.new_();
+const second_ = ff_core_Array.new_();
+let i_ = 0;
+while(((i_ < ff_core_List.List_size(self_)) && body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_))))) {
+ff_core_Array.Array_push(first_, (self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
+i_ += 1
+};
+while((i_ < ff_core_List.List_size(self_))) {
+ff_core_Array.Array_push(second_, (self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
+i_ += 1
+};
+return ff_core_Pair.Pair(ff_core_Array.Array_drain(first_), ff_core_Array.Array_drain(second_))
+}
+
 export function List_pairs(self_) {
 let i_ = 0;
 return ff_core_List.List_map(self_, ((x_) => {
@@ -339,6 +397,21 @@ let result_ = false;
 ff_core_List.List_eachWhile(self_, ((x_) => {
 result_ = (result_ || body_(x_));
 return (!result_)
+}));
+return result_
+}
+
+export function List_indexWhere(self_, body_) {
+let result_ = ff_core_Option.None();
+let i_ = 0;
+ff_core_List.List_eachWhile(self_, ((x_) => {
+if(body_(x_)) {
+result_ = ff_core_Option.Some(i_);
+return false
+} else {
+i_ += 1;
+return true
+}
 }));
 return result_
 }
@@ -500,6 +573,64 @@ export async function List_dropLast$(self_, count_ = 1, $task) {
 throw new Error('Function List_dropLast is missing on this target in async context.');
 }
 
+export async function List_count$(self_, body_, $task) {
+let result_ = 0;
+let i_ = 0;
+while((i_ < ff_core_List.List_size(self_))) {
+if((await body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), $task))) {
+result_ += 1
+};
+i_ += 1
+};
+return result_
+}
+
+export async function List_countWhile$(self_, body_, $task) {
+let i_ = 0;
+while(((i_ < ff_core_List.List_size(self_)) && (await body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), $task)))) {
+i_ += 1
+};
+return i_
+}
+
+export async function List_takeWhile$(self_, body_, $task) {
+const result_ = ff_core_Array.new_();
+let i_ = 0;
+while(((i_ < ff_core_List.List_size(self_)) && (await body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), $task)))) {
+ff_core_Array.Array_push(result_, (self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
+i_ += 1
+};
+return ff_core_Array.Array_drain(result_)
+}
+
+export async function List_dropWhile$(self_, body_, $task) {
+const result_ = ff_core_Array.new_();
+let i_ = 0;
+while(((i_ < ff_core_List.List_size(self_)) && (await body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), $task)))) {
+i_ += 1
+};
+while((i_ < ff_core_List.List_size(self_))) {
+ff_core_Array.Array_push(result_, (self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
+i_ += 1
+};
+return ff_core_Array.Array_drain(result_)
+}
+
+export async function List_partitionWhile$(self_, body_, $task) {
+const first_ = ff_core_Array.new_();
+const second_ = ff_core_Array.new_();
+let i_ = 0;
+while(((i_ < ff_core_List.List_size(self_)) && (await body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), $task)))) {
+ff_core_Array.Array_push(first_, (self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
+i_ += 1
+};
+while((i_ < ff_core_List.List_size(self_))) {
+ff_core_Array.Array_push(second_, (self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
+i_ += 1
+};
+return ff_core_Pair.Pair(ff_core_Array.Array_drain(first_), ff_core_Array.Array_drain(second_))
+}
+
 export async function List_pairs$(self_, $task) {
 let i_ = 0;
 return ff_core_List.List_map(self_, ((x_) => {
@@ -624,6 +755,21 @@ let result_ = false;
 (await ff_core_List.List_eachWhile$(self_, (async (x_, $task) => {
 result_ = (result_ || (await body_(x_, $task)));
 return (!result_)
+}), $task));
+return result_
+}
+
+export async function List_indexWhere$(self_, body_, $task) {
+let result_ = ff_core_Option.None();
+let i_ = 0;
+(await ff_core_List.List_eachWhile$(self_, (async (x_, $task) => {
+if((await body_(x_, $task))) {
+result_ = ff_core_Option.Some(i_);
+return false
+} else {
+i_ += 1;
+return true
+}
 }), $task));
 return result_
 }

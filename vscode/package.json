@@ -4,7 +4,7 @@
     "description": "Firefly language support",
     "author": "Firefly team",
     "license": "MIT",
-    "version": "0.4.46",
+    "version": "0.4.47",
     "repository": {
         "type": "git",
         "url": "https://github.com/Ahnfelt/firefly-boot"
