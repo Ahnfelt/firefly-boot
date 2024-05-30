@@ -69,7 +69,53 @@ extend self[T]: List[T] {
 
     dropLast(count: Int = 1): List[T]
         target js sync "return self_.slice(0, self_.length - count_)"
-
+        
+    countWhile(body: T => Bool): Int {
+        mutable i = 0
+        while {i < self.size() && body(self.grab(i))} {
+            i += 1
+        }
+        i
+    }
+        
+    takeWhile(body: T => Bool): List[T] {
+        let result = Array.new()
+        mutable i = 0
+        while {i < self.size() && body(self.grab(i))} {
+            result.push(self.grab(i))
+            i += 1
+        }
+        result.drain()
+    }
+        
+    dropWhile(body: T => Bool): List[T] {
+        let result = Array.new()
+        mutable i = 0
+        while {i < self.size() && body(self.grab(i))} {
+            i += 1
+        }
+        while {i < self.size()} {
+            result.push(self.grab(i))
+            i += 1
+        }
+        result.drain()
+    }
+    
+    partitionWhile(body: T => Bool): Pair[List[T], List[T]] {
+        let first = Array.new()
+        let second = Array.new()
+        mutable i = 0
+        while {i < self.size() && body(self.grab(i))} {
+            first.push(self.grab(i))
+            i += 1
+        }
+        while {i < self.size()} {
+            second.push(self.grab(i))
+            i += 1
+        }
+        Pair(first.drain(), second.drain())
+    }
+    
     pairs(): List[Pair[Int, T]] {
         mutable i = 0
         self.map {x =>

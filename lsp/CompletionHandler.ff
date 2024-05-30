@@ -327,7 +327,7 @@ makeCompletion(
             }
         }.toStream().takeWhile {_ != None}.collect {_}.toList().reverse()
         let allRequired = realParameters.filter {_.default.isEmpty()}
-        let required =  allRequired.dropLast(trailing.size()).map {_.name}
+        let required = allRequired.dropLast(trailing.size()).map {_.name}
         let optional = if(allRequired.size() != realParameters.size()) {"..."}
         Pair(
             if(trailing.isEmpty() || !required.isEmpty()) {
