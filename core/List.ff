@@ -70,6 +70,16 @@ extend self[T]: List[T] {
     dropLast(count: Int = 1): List[T]
         target js sync "return self_.slice(0, self_.length - count_)"
         
+    count(body: T => Bool): Int {
+        mutable result = 0
+        mutable i = 0
+        while {i < self.size()} {
+            if(body(self.grab(i))) {result += 1}
+            i += 1
+        }
+        result
+    }
+            
     countWhile(body: T => Bool): Int {
         mutable i = 0
         while {i < self.size() && body(self.grab(i))} {
