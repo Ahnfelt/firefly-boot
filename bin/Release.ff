@@ -22,13 +22,13 @@ release(
     }
     requireNpmLoggedIn(system, system.path(".."))
     requireVsceLoggedIn(system, system.path("../vscode"))
-    runSuccessful(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
-    runSuccessful(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
-    runSuccessful(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
+    runSuccessful(system, "node", ".exe", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
+    runSuccessful(system, "node", ".exe", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
+    runSuccessful(system, "node", ".exe", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
     let version = bumpMinorVersion(system, system.path("../package.json"))
     bumpMinorVersion(system, system.path("../vscode/package.json"))
-    runSuccessful(system, "npm", ["publish"], system.path(".."))
-    runSuccessful(system, "vsce", ["publish"], system.path("../vscode"))
+    runSuccessful(system, "npm", ".cmd", ["publish"], system.path(".."))
+    runSuccessful(system, "vsce", ".cmd", ["publish"], system.path("../vscode"))
     releaseFireflyPackage(system, accessKeyId, secretAccessKey, "compiler")
     releaseFireflyPackage(system, accessKeyId, secretAccessKey, "core")
     releaseFireflyPackage(system, accessKeyId, secretAccessKey, "lux")
@@ -37,8 +37,8 @@ release(
     releaseFireflyPackage(system, accessKeyId, secretAccessKey, "s3")
     releaseFireflyPackage(system, accessKeyId, secretAccessKey, "unsafejs")
     releaseFireflyPackage(system, accessKeyId, secretAccessKey, "webserver")
-    runSuccessful(system, "git", ["commit", "-a", "-m", "Autorelease " + version], system.path(".."))
-    runSuccessful(system, "git", ["push"], system.path(".."))
+    runSuccessful(system, "git", ".exe", ["commit", "-a", "-m", "Autorelease " + version], system.path(".."))
+    runSuccessful(system, "git", ".exe", ["push"], system.path(".."))
 }
 
 releaseFireflyPackage(
@@ -71,7 +71,7 @@ releaseFireflyPackage(
 }
 
 requireNpmLoggedIn(system: NodeSystem, workingDirectory: Path) {
-    let out = run(system, "npm", ["whoami"], workingDirectory)
+    let out = run(system, "npm", ".cmd", ["whoami"], workingDirectory)
     if(out.exitCode != 0) {
         system.writeErrorLine("")
         system.writeErrorLine("You are not logged into npm")
@@ -81,7 +81,7 @@ requireNpmLoggedIn(system: NodeSystem, workingDirectory: Path) {
 }
 
 requireVsceLoggedIn(system: NodeSystem, workingDirectory: Path) {
-    let out = runSuccessful(system, "vsce", ["ls-publishers"], workingDirectory)
+    let out = runSuccessful(system, "vsce", ".cmd", ["ls-publishers"], workingDirectory)
     if(!out.toString().lines().any {_ == "firefly-team"}) {
         system.writeErrorLine("")
         system.writeErrorLine("You are not logged into vsce")
@@ -92,14 +92,14 @@ requireVsceLoggedIn(system: NodeSystem, workingDirectory: Path) {
     }
 }
 
-run(system: NodeSystem, command: String, arguments: List[String], workingDirectory: Path): ProcessResult {
+run(system: NodeSystem, command: String, windowsExtension: String, arguments: List[String], workingDirectory: Path): ProcessResult {
     system.writeLine("")
     system.writeLine(command + " " + arguments.join(" "))
-    system.execute(command, arguments, workingDirectory = Some(workingDirectory))
+    system.execute(command, arguments, workingDirectory = Some(workingDirectory), windowsExtension = windowsExtension)
 }
 
-runSuccessful(system: NodeSystem, command: String, arguments: List[String], workingDirectory: Path): Buffer {
-    let out = run(system, command, arguments, workingDirectory)
+runSuccessful(system: NodeSystem, command: String, windowsExtension: String, arguments: List[String], workingDirectory: Path): Buffer {
+    let out = run(system, command, windowsExtension, arguments, workingDirectory)
     if(out.exitCode != 0) {
         system.writeBuffer(out.standardOut)
         system.writeErrorBuffer(out.standardError)

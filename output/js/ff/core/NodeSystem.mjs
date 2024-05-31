@@ -127,6 +127,15 @@ return error_
 })))
 }
 
+export function internalFindCommand_(out_) {
+return ff_core_Option.Option_else(ff_core_List.List_find(ff_core_String.String_lines(out_), ((line_) => {
+const l_ = ff_core_String.String_lower(line_);
+return (((ff_core_String.String_endsWith(l_, ".exe") || ff_core_String.String_endsWith(l_, ".cmd")) || ff_core_String.String_endsWith(l_, ".bat")) || ff_core_String.String_endsWith(l_, ".com"))
+})), (() => {
+return ""
+}))
+}
+
 export async function internalAssets_$(system_, $task) {
 return system_.assets_
 }
@@ -146,6 +155,15 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_NodeSy
 })), ((error_) => {
 return error_
 })))
+}
+
+export async function internalFindCommand_$(out_, $task) {
+return ff_core_Option.Option_else(ff_core_List.List_find(ff_core_String.String_lines(out_), ((line_) => {
+const l_ = ff_core_String.String_lower(line_);
+return (((ff_core_String.String_endsWith(l_, ".exe") || ff_core_String.String_endsWith(l_, ".cmd")) || ff_core_String.String_endsWith(l_, ".bat")) || ff_core_String.String_endsWith(l_, ".com"))
+})), (() => {
+return ""
+}))
 }
 
 export function NodeSystem_arguments(self_) {
@@ -244,7 +262,7 @@ export function NodeSystem_environment(self_) {
 throw new Error('Function NodeSystem_environment is missing on this target in sync context.');
 }
 
-export function NodeSystem_execute(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, windowsShell_ = true) {
+export function NodeSystem_execute(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, windowsExtension_ = "") {
 throw new Error('Function NodeSystem_execute is missing on this target in sync context.');
 }
 
@@ -358,7 +376,7 @@ export async function NodeSystem_environment$(self_, $task) {
         
 }
 
-export async function NodeSystem_execute$(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, windowsShell_ = true, $task) {
+export async function NodeSystem_execute$(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, windowsExtension_ = "", $task) {
 
             const childProcess = import$3;
             const environment = environment_.value_ !== void 0 ? {} : process.env;
@@ -369,12 +387,7 @@ export async function NodeSystem_execute$(self_, command_, arguments_, standardI
                     ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String
                 );
             }
-            if(windowsShell_ && process.platform === 'win32') {
-                arguments_ = ['/C', ...[command_, ...arguments_].map(argument => 
-                    argument.replaceAll(/([^A-Za-z0-9/_-])/g, "^$1")
-                )];
-                command_ = process.env.ComSpec || 'cmd.exe';
-            }
+            if(process.platform === 'win32') command_ += windowsExtension_;
             const newProcess = childProcess.spawn(command_, arguments_, {
                 cwd: workingDirectory_.value_,
                 windowsHide: true,
