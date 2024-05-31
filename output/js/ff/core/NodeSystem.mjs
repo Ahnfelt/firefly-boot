@@ -373,7 +373,7 @@ export async function NodeSystem_execute$(self_, command_, arguments_, standardI
                 arguments_ = ['/C', ...[command_, ...arguments_].map(argument => 
                     argument.replaceAll(/([^A-Za-z0-9/_-])/g, "^$1")
                 )];
-                command_ = 'cmd.exe';
+                command_ = process.env.ComSpec || 'cmd.exe';
             }
             const newProcess = childProcess.spawn(command_, arguments_, {
                 cwd: workingDirectory_.value_,
