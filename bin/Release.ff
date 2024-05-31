@@ -25,34 +25,49 @@ release(
     runSuccessful(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
     runSuccessful(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
     runSuccessful(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
-    bumpMinorVersion(system, system.path("../package.json"))
+    let version = bumpMinorVersion(system, system.path("../package.json"))
     bumpMinorVersion(system, system.path("../vscode/package.json"))
     runSuccessful(system, "npm", ["publish"], system.path(".."))
     runSuccessful(system, "vsce", ["publish"], system.path("../vscode"))
-    let coreTemporary = system.path("../core/.firefly/temporary")
-    if(!coreTemporary.exists()) {coreTemporary.createDirectory()}
-    let coreTarGz = coreTemporary.slash("ff_core_0_0_0.tar.gz")
-    if(coreTarGz.exists()) {
-        coreTarGz.delete()
-        system.writeLine("Deleted " + coreTarGz.absolute())    
+    releaseFireflyPackage(system, accessKeyId, secretAccessKey, "compiler")
+    releaseFireflyPackage(system, accessKeyId, secretAccessKey, "core")
+    releaseFireflyPackage(system, accessKeyId, secretAccessKey, "lux")
+    releaseFireflyPackage(system, accessKeyId, secretAccessKey, "postgresql")
+    releaseFireflyPackage(system, accessKeyId, secretAccessKey, "rpc")
+    releaseFireflyPackage(system, accessKeyId, secretAccessKey, "s3")
+    releaseFireflyPackage(system, accessKeyId, secretAccessKey, "unsafejs")
+    releaseFireflyPackage(system, accessKeyId, secretAccessKey, "webserver")
+    runSuccessful(system, "git", ["commit", "-a", "-m", "Autorelease " + version], system.path(".."))
+    runSuccessful(system, "git", ["push"], system.path(".."))
+}
+
+releaseFireflyPackage(
+    system: NodeSystem
+    accessKeyId: String
+    secretAccessKey: String
+    packageName: String
+): Unit {
+    let temporary = system.path("../" + packageName + "/.firefly/temporary")
+    if(!temporary.exists()) {temporary.createDirectory()}
+    let tarGz = temporary.slash("ff_" + packageName + "_0_0_0.tar.gz")
+    if(tarGz.exists()) {
+        tarGz.delete()
+        system.writeLine("Deleted " + tarGz.absolute())    
     }
-    internalMakeTarGz(coreTarGz, system.path("../core"))
-    system.writeLine("Created " + coreTarGz.absolute())
+    internalMakeTarGz(tarGz, system.path("../" + packageName))
+    system.writeLine("Created " + tarGz.absolute())
     S3.put(
         system
         accessKeyId
         secretAccessKey
         "eu-central-1" 
         "firefly-site"
-        "site/packages/ff/core/" + coreTarGz.base()
-        coreTarGz.readBuffer()
+        "site/packages/ff/" + packageName + "/" + tarGz.base()
+        tarGz.readBuffer()
         headers = [
             Pair("Content-Type", "application/x-gzip")
         ]
     )
-    
-    // git commit
-    // git push
 }
 
 requireNpmLoggedIn(system: NodeSystem, workingDirectory: Path) {
@@ -95,9 +110,9 @@ runSuccessful(system: NodeSystem, command: String, arguments: List[String], work
     out.standardOut
 }
 
-bumpMinorVersion(system: NodeSystem, packageJsonPath: Path) {
+bumpMinorVersion(system: NodeSystem, packageJsonPath: Path): String {
     let prefix = "    \"version\": \""
-    mutable bumps = 0
+    mutable newVersions = []
     system.writeLine("")
     system.writeLine("Bumping version in " + packageJsonPath.absolute())
     let newContent = packageJsonPath.readText().lines().map {
@@ -108,18 +123,21 @@ bumpMinorVersion(system: NodeSystem, packageJsonPath: Path) {
         } {
             patch.getInt() | Some(p)
         } => 
-            bumps += 1
             let newVersion = major + "." + minor + "." + (p + 1)
+            newVersions = [...newVersions, newVersion]
             system.writeLine("Will bump version: " + v + " to " + newVersion)
             prefix + newVersion + "\","
         | line => 
             line
     }.join("\n")
-    if(bumps != 1) {
-        system.writeErrorLine("Failed to bump version.")
-        system.exit(1)
+    newVersions.{
+        | [newVersion] => 
+            packageJsonPath.writeText(newContent)
+            newVersion
+        | _ =>
+            system.writeErrorLine("Failed to bump version.")
+            system.exit(1)
     }
-    packageJsonPath.writeText(newContent)
 }
 
 internalMakeTarGz(tarGzPath: Path, path: Path): Unit
