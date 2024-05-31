@@ -54,10 +54,8 @@ releaseFireflyPackage(
     let tarGz = temporary.slash("ff_" + packageName + "_0_0_0.tar.gz")
     if(tarGz.exists()) {
         tarGz.delete()
-        system.writeLine("Deleted " + tarGz.absolute())    
     }
     internalMakeTarGz(tarGz, system.path("../" + packageName))
-    system.writeLine("Created " + tarGz.absolute())
     S3.put(
         system
         accessKeyId
