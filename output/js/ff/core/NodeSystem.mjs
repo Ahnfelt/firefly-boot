@@ -369,6 +369,12 @@ export async function NodeSystem_execute$(self_, command_, arguments_, standardI
                     ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String
                 );
             }
+            if(process.platform === 'win32') {
+                arguments_ = ['/C', ...[command_, ...arguments_].map(argument => 
+                    argument.replaceAll(/([^A-Za-z0-9/_-])/g, "^$1")
+                )];
+                command_ = 'cmd.exe';
+            }
             const newProcess = childProcess.spawn(command_, arguments_, {
                 cwd: workingDirectory_.value_,
                 windowsHide: true,
