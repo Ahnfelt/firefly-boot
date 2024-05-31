@@ -244,7 +244,7 @@ export function NodeSystem_environment(self_) {
 throw new Error('Function NodeSystem_environment is missing on this target in sync context.');
 }
 
-export function NodeSystem_execute(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9) {
+export function NodeSystem_execute(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, windowsShell_ = true) {
 throw new Error('Function NodeSystem_execute is missing on this target in sync context.');
 }
 
@@ -358,7 +358,7 @@ export async function NodeSystem_environment$(self_, $task) {
         
 }
 
-export async function NodeSystem_execute$(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, $task) {
+export async function NodeSystem_execute$(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, windowsShell_ = true, $task) {
 
             const childProcess = import$3;
             const environment = environment_.value_ !== void 0 ? {} : process.env;
@@ -369,7 +369,7 @@ export async function NodeSystem_execute$(self_, command_, arguments_, standardI
                     ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String
                 );
             }
-            if(process.platform === 'win32') {
+            if(windowsShell_ && process.platform === 'win32') {
                 arguments_ = ['/C', ...[command_, ...arguments_].map(argument => 
                     argument.replaceAll(/([^A-Za-z0-9/_-])/g, "^$1")
                 )];
