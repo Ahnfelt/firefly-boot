@@ -353,8 +353,8 @@ makeCompletion(
         let beforeAfter = memberScheme.signature.parameters.first().map {
             Pair(unification.substitute(_.valueType).show([]) + ".", "")
         }.else {Pair("", "")}
-        beforeAfter.first +
         if(memberScheme.isMutable) {"mutable "} else {""} +
+        beforeAfter.first +
         unqualifiedName + generics +
         ": " + returnType.show([]) +
         beforeAfter.second
