@@ -102,7 +102,7 @@ extend self: NodeSystem {
         command: String
         arguments: List[String]
         standardIn: Buffer = Buffer.new(0)
-        workingDirectory: Option[Path] = None
+        directory: Option[Path] = None
         environment: Option[Map[String, String]] = None
         maxBuffer: Int = 16777216
         killSignal: Int = 9
@@ -121,11 +121,11 @@ extend self: NodeSystem {
             if(windowsWhere_ && process.platform === 'win32') {
                 const cmd = process.env.ComSpec || "cmd.exe";
                 command_ = (
-                    await internalWindowsWhere_$(self_, cmd, command_, workingDirectory_, environment_, $task)
+                    await internalWindowsWhere_$(self_, cmd, command_, directory_, environment_, $task)
                 ).value_ || command_;
             }
             const newProcess = childProcess.spawn(command_, arguments_, {
-                cwd: workingDirectory_.value_,
+                cwd: directory_.value_,
                 windowsHide: true,
                 signal: $task.controller.signal,
                 killSignal: killSignal_,
@@ -206,14 +206,14 @@ internalWindowsWhere(
     system: NodeSystem
     cmd: String
     command: String
-    workingDirectory: Option[Path] = None
+    directory: Option[Path] = None
     environment: Option[Map[String, String]] = None
 ): Option[String] {
     if(!command.all {c => c.isAsciiLetterOrDigit() || c == '_' || c == '-'}) {None} else:
     let out = system.execute(
         cmd, 
         ["/c", "where", command], 
-        workingDirectory = workingDirectory
+        directory = directory
         environment = environment
         windowsWhere = False
     )
