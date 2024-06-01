@@ -136,6 +136,12 @@ return ""
 }))
 }
 
+export function internalIsWindows_() {
+
+        return process.platform === 'win32';
+    
+}
+
 export async function internalAssets_$(system_, $task) {
 return system_.assets_
 }
@@ -164,6 +170,10 @@ return (((ff_core_String.String_endsWith(l_, ".exe") || ff_core_String.String_en
 })), (() => {
 return ""
 }))
+}
+
+export async function internalIsWindows_$($task) {
+throw new Error('Function internalIsWindows is missing on this target in async context.');
 }
 
 export function NodeSystem_arguments(self_) {
@@ -262,7 +272,18 @@ export function NodeSystem_environment(self_) {
 throw new Error('Function NodeSystem_environment is missing on this target in sync context.');
 }
 
-export function NodeSystem_execute(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, windowsExtension_ = "") {
+export function NodeSystem_which(self_, command_, workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None()) {
+const out_ = (ff_core_NodeSystem.internalIsWindows_()
+? ff_core_NodeSystem.NodeSystem_execute(self_, "cmd.exe", ["/c", "where", command_], ff_core_Buffer.new_(0, false), workingDirectory_, environment_, 16777216, 9, false)
+: ff_core_NodeSystem.NodeSystem_execute(self_, "which", [command_], ff_core_Buffer.new_(0, false), workingDirectory_, environment_, 16777216, 9, false));
+return ff_core_List.List_first(ff_core_List.List_filter(ff_core_String.String_lines(ff_core_Buffer.Buffer_toString(out_.standardOut_, "utf8")), ((line_) => {
+return ((out_.exitCode_ === 0) && ((!ff_core_NodeSystem.internalIsWindows_()) || ff_core_Option.Option_any(ff_core_List.List_last(ff_core_String.String_split(line_, 92)), ((_w1) => {
+return ff_core_String.String_contains(_w1, ".")
+}))))
+})))
+}
+
+export function NodeSystem_execute(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, windowsWhich_ = true) {
 throw new Error('Function NodeSystem_execute is missing on this target in sync context.');
 }
 
@@ -376,7 +397,18 @@ export async function NodeSystem_environment$(self_, $task) {
         
 }
 
-export async function NodeSystem_execute$(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, windowsExtension_ = "", $task) {
+export async function NodeSystem_which$(self_, command_, workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), $task) {
+const out_ = (ff_core_NodeSystem.internalIsWindows_()
+? (await ff_core_NodeSystem.NodeSystem_execute$(self_, "cmd.exe", ["/c", "where", command_], ff_core_Buffer.new_(0, false), workingDirectory_, environment_, 16777216, 9, false, $task))
+: (await ff_core_NodeSystem.NodeSystem_execute$(self_, "which", [command_], ff_core_Buffer.new_(0, false), workingDirectory_, environment_, 16777216, 9, false, $task)));
+return ff_core_List.List_first(ff_core_List.List_filter(ff_core_String.String_lines(ff_core_Buffer.Buffer_toString(out_.standardOut_, "utf8")), ((line_) => {
+return ((out_.exitCode_ === 0) && ((!ff_core_NodeSystem.internalIsWindows_()) || ff_core_Option.Option_any(ff_core_List.List_last(ff_core_String.String_split(line_, 92)), ((_w1) => {
+return ff_core_String.String_contains(_w1, ".")
+}))))
+})))
+}
+
+export async function NodeSystem_execute$(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, windowsWhich_ = true, $task) {
 
             const childProcess = import$3;
             const environment = environment_.value_ !== void 0 ? {} : process.env;
@@ -387,7 +419,11 @@ export async function NodeSystem_execute$(self_, command_, arguments_, standardI
                     ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String
                 );
             }
-            if(process.platform === 'win32') command_ += windowsExtension_;
+            if(windowsWhich_ && process.platform === 'win32') {
+                command_ = 
+                    (await NodeSystem_which$(self_, command_, workingDirectory_, environment_, $task)).value_ || 
+                    command_;
+            }
             const newProcess = childProcess.spawn(command_, arguments_, {
                 cwd: workingDirectory_.value_,
                 windowsHide: true,
