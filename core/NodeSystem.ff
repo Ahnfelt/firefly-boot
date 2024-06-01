@@ -119,9 +119,10 @@ extend self: NodeSystem {
                 );
             }
             if(windowsWhere_ && process.platform === 'win32') {
-                command_ = 
-                    (await internalWindowsWhere_$(self_, command_, workingDirectory_, environment_, $task)).value_ || 
-                    command_;
+                const cmd = process.env.ComSpec || "cmd.exe";
+                command_ = (
+                    await internalWindowsWhere_$(self_, cmd, command_, workingDirectory_, environment_, $task)
+                ).value_ || command_;
             }
             const newProcess = childProcess.spawn(command_, arguments_, {
                 cwd: workingDirectory_.value_,
@@ -203,13 +204,14 @@ internalFindCommand(out: String): String {
 
 internalWindowsWhere(
     system: NodeSystem
+    cmd: String
     command: String
     workingDirectory: Option[Path] = None
     environment: Option[Map[String, String]] = None
 ): Option[String] {
     if(!command.all {c => c.isAsciiLetterOrDigit() || c == '_' || c == '-'}) {None} else:
     let out = system.execute(
-        "cmd.exe", 
+        cmd, 
         ["/c", "where", command], 
         workingDirectory = workingDirectory
         environment = environment

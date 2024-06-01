@@ -136,13 +136,13 @@ return ""
 }))
 }
 
-export function internalWindowsWhere_(system_, command_, workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None()) {
+export function internalWindowsWhere_(system_, cmd_, command_, workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None()) {
 if((!ff_core_String.String_all(command_, ((c_) => {
 return ((ff_core_Char.Char_isAsciiLetterOrDigit(c_) || (c_ === 95)) || (c_ === 45))
 })))) {
 return ff_core_Option.None()
 } else {
-const out_ = ff_core_NodeSystem.NodeSystem_execute(system_, "cmd.exe", ["/c", "where", command_], ff_core_Buffer.new_(0, false), workingDirectory_, environment_, 16777216, 9, false);
+const out_ = ff_core_NodeSystem.NodeSystem_execute(system_, cmd_, ["/c", "where", command_], ff_core_Buffer.new_(0, false), workingDirectory_, environment_, 16777216, 9, false);
 return ff_core_List.List_first(ff_core_List.List_filter(ff_core_String.String_lines(ff_core_Buffer.Buffer_toString(out_.standardOut_, "utf8")), ((line_) => {
 return ((out_.exitCode_ === 0) && ff_core_Option.Option_any(ff_core_List.List_last(ff_core_String.String_split(line_, 92)), ((_w1) => {
 return ff_core_String.String_contains(_w1, ".")
@@ -181,13 +181,13 @@ return ""
 }))
 }
 
-export async function internalWindowsWhere_$(system_, command_, workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), $task) {
+export async function internalWindowsWhere_$(system_, cmd_, command_, workingDirectory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), $task) {
 if((!ff_core_String.String_all(command_, ((c_) => {
 return ((ff_core_Char.Char_isAsciiLetterOrDigit(c_) || (c_ === 95)) || (c_ === 45))
 })))) {
 return ff_core_Option.None()
 } else {
-const out_ = (await ff_core_NodeSystem.NodeSystem_execute$(system_, "cmd.exe", ["/c", "where", command_], ff_core_Buffer.new_(0, false), workingDirectory_, environment_, 16777216, 9, false, $task));
+const out_ = (await ff_core_NodeSystem.NodeSystem_execute$(system_, cmd_, ["/c", "where", command_], ff_core_Buffer.new_(0, false), workingDirectory_, environment_, 16777216, 9, false, $task));
 return ff_core_List.List_first(ff_core_List.List_filter(ff_core_String.String_lines(ff_core_Buffer.Buffer_toString(out_.standardOut_, "utf8")), ((line_) => {
 return ((out_.exitCode_ === 0) && ff_core_Option.Option_any(ff_core_List.List_last(ff_core_String.String_split(line_, 92)), ((_w1) => {
 return ff_core_String.String_contains(_w1, ".")
@@ -418,9 +418,10 @@ export async function NodeSystem_execute$(self_, command_, arguments_, standardI
                 );
             }
             if(windowsWhere_ && process.platform === 'win32') {
-                command_ = 
-                    (await internalWindowsWhere_$(self_, command_, workingDirectory_, environment_, $task)).value_ || 
-                    command_;
+                const cmd = process.env.ComSpec || "cmd.exe";
+                command_ = (
+                    await internalWindowsWhere_$(self_, cmd, command_, workingDirectory_, environment_, $task)
+                ).value_ || command_;
             }
             const newProcess = childProcess.spawn(command_, arguments_, {
                 cwd: workingDirectory_.value_,
