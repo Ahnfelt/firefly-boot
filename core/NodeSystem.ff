@@ -97,34 +97,6 @@ extend self: NodeSystem {
             }
             return ff_core_List.List_toMap(result, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
         """
-        
-    which(
-        command: String
-        workingDirectory: Option[Path] = None
-        environment: Option[Map[String, String]] = None
-    ): Option[String] {
-        let out = if(internalIsWindows()) {
-            self.execute(
-                "cmd.exe", 
-                ["/c", "where", command], 
-                workingDirectory = workingDirectory
-                environment = environment
-                windowsWhich = False
-            )
-        } else {
-            self.execute(
-                "which", 
-                [command], 
-                workingDirectory = workingDirectory
-                environment = environment
-                windowsWhich = False
-            )
-        }
-        out.standardOut.toString().lines().filter {line => 
-            out.exitCode == 0 &&
-            (!internalIsWindows() || line.split('\\').last().any {_.contains(".")})
-        }.first()
-    }
     
     execute(
         command: String
@@ -148,7 +120,7 @@ extend self: NodeSystem {
             }
             if(windowsWhich_ && process.platform === 'win32') {
                 command_ = 
-                    (await NodeSystem_which$(self_, command_, workingDirectory_, environment_, $task)).value_ || 
+                    (await internalWhich_$(self_, command_, workingDirectory_, environment_, $task)).value_ || 
                     command_;
             }
             const newProcess = childProcess.spawn(command_, arguments_, {
@@ -233,3 +205,32 @@ internalIsWindows(): Bool
     target node sync """
         return process.platform === 'win32';
     """
+        
+internalWhich(
+    system: NodeSystem
+    command: String
+    workingDirectory: Option[Path] = None
+    environment: Option[Map[String, String]] = None
+): Option[String] {
+    let out = if(internalIsWindows()) {
+        system.execute(
+            "cmd.exe", 
+            ["/c", "where", command], 
+            workingDirectory = workingDirectory
+            environment = environment
+            windowsWhich = False
+        )
+    } else {
+        system.execute(
+            "which", 
+            [command], 
+            workingDirectory = workingDirectory
+            environment = environment
+            windowsWhich = False
+        )
+    }
+    out.standardOut.toString().lines().filter {line => 
+        out.exitCode == 0 &&
+        (!internalIsWindows() || line.split('\\').last().any {_.contains(".")})
+    }.first()
+}
