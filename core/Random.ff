@@ -3,21 +3,21 @@ class Random {}
 // Using Alea PRNG by Johannes Baagøe <baagoe@baagoe.com>, 2010
 // Typical use: Random.seedInstant(system.task().now())
 
-seedInt(seed: Int): Random {
-    seedFloat(seed.toFloat())
+newFromInt(seed: Int): Random {
+    newFromFloat(seed.toFloat())
 }
 
-seedFloat(seed: Float): Random {
+newFromFloat(seed: Float): Random {
     let buffer = Buffer.new(8)
     buffer.setFloat64(0, seed)
-    seedBuffer(buffer)
+    newFromBuffer(buffer)
 }
 
-seedInstant(seed: Instant): Random {
-    seedFloat(seed.since1970.seconds)
+newFromInstant(seed: Instant): Random {
+    newFromFloat(seed.since1970.seconds)
 }
 
-seedBuffer(buffer: Buffer): Random
+newFromBuffer(buffer: Buffer): Random
     target js sync """
         var n = 0xefc8249d;
         function mash(data) {

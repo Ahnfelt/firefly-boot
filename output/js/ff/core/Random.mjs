@@ -95,21 +95,21 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function seedInt_(seed_) {
-return ff_core_Random.seedFloat_(ff_core_Int.Int_toFloat(seed_))
+export function newFromInt_(seed_) {
+return ff_core_Random.newFromFloat_(ff_core_Int.Int_toFloat(seed_))
 }
 
-export function seedFloat_(seed_) {
+export function newFromFloat_(seed_) {
 const buffer_ = ff_core_Buffer.new_(8, false);
 ff_core_Buffer.Buffer_setFloat64(buffer_, 0, seed_, true);
-return ff_core_Random.seedBuffer_(buffer_)
+return ff_core_Random.newFromBuffer_(buffer_)
 }
 
-export function seedInstant_(seed_) {
-return ff_core_Random.seedFloat_(seed_)
+export function newFromInstant_(seed_) {
+return ff_core_Random.newFromFloat_(seed_)
 }
 
-export function seedBuffer_(buffer_) {
+export function newFromBuffer_(buffer_) {
 
         var n = 0xefc8249d;
         function mash(data) {
@@ -143,22 +143,22 @@ export function seedBuffer_(buffer_) {
     
 }
 
-export async function seedInt_$(seed_, $task) {
-return ff_core_Random.seedFloat_(ff_core_Int.Int_toFloat(seed_))
+export async function newFromInt_$(seed_, $task) {
+return ff_core_Random.newFromFloat_(ff_core_Int.Int_toFloat(seed_))
 }
 
-export async function seedFloat_$(seed_, $task) {
+export async function newFromFloat_$(seed_, $task) {
 const buffer_ = ff_core_Buffer.new_(8, false);
 ff_core_Buffer.Buffer_setFloat64(buffer_, 0, seed_, true);
-return ff_core_Random.seedBuffer_(buffer_)
+return ff_core_Random.newFromBuffer_(buffer_)
 }
 
-export async function seedInstant_$(seed_, $task) {
-return ff_core_Random.seedFloat_(seed_)
+export async function newFromInstant_$(seed_, $task) {
+return ff_core_Random.newFromFloat_(seed_)
 }
 
-export async function seedBuffer_$(buffer_, $task) {
-throw new Error('Function seedBuffer is missing on this target in async context.');
+export async function newFromBuffer_$(buffer_, $task) {
+throw new Error('Function newFromBuffer is missing on this target in async context.');
 }
 
 export function Random_copy(self_) {

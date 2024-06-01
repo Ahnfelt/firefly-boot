@@ -127,15 +127,6 @@ return error_
 })))
 }
 
-export function internalFindCommand_(out_) {
-return ff_core_Option.Option_else(ff_core_List.List_find(ff_core_String.String_lines(out_), ((line_) => {
-const l_ = ff_core_String.String_lower(line_);
-return (((ff_core_String.String_endsWith(l_, ".exe") || ff_core_String.String_endsWith(l_, ".cmd")) || ff_core_String.String_endsWith(l_, ".bat")) || ff_core_String.String_endsWith(l_, ".com"))
-})), (() => {
-return ""
-}))
-}
-
 export function internalWindowsWhere_(system_, cmd_, command_, directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None()) {
 if((!ff_core_String.String_all(command_, ((c_) => {
 return ((ff_core_Char.Char_isAsciiLetterOrDigit(c_) || (c_ === 95)) || (c_ === 45))
@@ -170,15 +161,6 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_NodeSy
 })), ((error_) => {
 return error_
 })))
-}
-
-export async function internalFindCommand_$(out_, $task) {
-return ff_core_Option.Option_else(ff_core_List.List_find(ff_core_String.String_lines(out_), ((line_) => {
-const l_ = ff_core_String.String_lower(line_);
-return (((ff_core_String.String_endsWith(l_, ".exe") || ff_core_String.String_endsWith(l_, ".cmd")) || ff_core_String.String_endsWith(l_, ".bat")) || ff_core_String.String_endsWith(l_, ".com"))
-})), (() => {
-return ""
-}))
 }
 
 export async function internalWindowsWhere_$(system_, cmd_, command_, directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), $task) {
