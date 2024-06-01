@@ -195,13 +195,6 @@ internalProcessError(problem: String): Error {
     } grab()
 }
 
-internalFindCommand(out: String): String {
-    out.lines().find {line => 
-        let l = line.lower()
-        l.endsWith(".exe") || l.endsWith(".cmd") || l.endsWith(".bat") || l.endsWith(".com")
-    }.else {""}
-}
-
 internalWindowsWhere(
     system: NodeSystem
     cmd: String
