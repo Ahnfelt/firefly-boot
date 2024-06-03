@@ -40,6 +40,11 @@ extend self: Float {
         self + factor * (that - self)
     }
     
+    smoothstep(that: Float, factor: Float): Float {
+        let t = ((factor - self) / (that - self)).clamp(0.0, 1.0)
+        t * t * (3.0 - 2.0 * t)
+    }
+    
     expDecay(that: Float, decay: Float, delta: Duration): Float {
         that + (self - that) * (-decay * delta.seconds).exp()
     }
