@@ -45,8 +45,8 @@ extend self: Float {
         t * t * (3.0 - 2.0 * t)
     }
     
-    expDecay(that: Float, decay: Float, delta: Duration): Float {
-        that + (self - that) * (-decay * delta.seconds).exp()
+    expDecay(that: Float, decay: Float, factor: Float): Float {
+        that + (self - that) * (-decay * factor).exp()
     }
     
     acos(): Float
