@@ -914,9 +914,25 @@ extend self: Inference {
                         self.unification.unify(e.at, expected, TConstructor(e.at, core("Bool"), []))
                         e.ECall(target = target, arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
                     | [a1, a2] {
-                        operator == "+" || operator == "-" ||
-                        operator == "*" || operator == "/" || operator == "%" ||
-                        operator == "^"
+                        operator == "/" || operator == "%"
+                    } =>
+                        let t1 = self.unification.freshUnificationVariable(e.at)
+                        let t2 = self.unification.freshUnificationVariable(e.at)
+                        let e1 = self.inferTerm(environment, t1, a1.value)
+                        let e2 = self.inferTerm(environment, t2, a2.value)
+                        let magic: Type => Unit = {t =>
+                            self.unification.substitute(t).{
+                                | TConstructor(_, name, []) {name == core("Float")} =>
+                                | TConstructor(_, name, []) {name == core("Int")} =>
+                                | _ => self.unification.unify(e.at, t, TConstructor(e.at, core("Float"), []))
+                            }
+                        }
+                        magic(t1)
+                        magic(t2)
+                        self.unification.unify(e.at, expected, TConstructor(e.at, core("Float"), []))
+                        e.ECall(target = target, arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
+                    | [a1, a2] {
+                        operator == "+" || operator == "-" || operator == "*" || operator == "^"
                     } =>
                         let t1 = self.unification.freshUnificationVariable(e.at)
                         let t2 = self.unification.freshUnificationVariable(e.at)

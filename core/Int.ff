@@ -61,5 +61,13 @@ extend self: Int {
     pad(padding: String): String {
         ("" + self).padStart(padding.size(), padding)
     }
+    
+    div(divisor: Int): Int {
+        (self / divisor).toInt()
+    }
+
+    rem(divisor: Int): Int {
+        (self % divisor).toInt()
+    }
 
 }

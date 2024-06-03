@@ -3,7 +3,7 @@ data Float {}
 extend self: Float {
 
     toInt(): Int
-        target js sync "return Math.trunc(Math.abs(self_))"
+        target js sync "return Math.trunc(self_) || 0"
 
     round(): Float
         target js sync "return Math.round(self_)"
@@ -26,16 +26,169 @@ extend self: Float {
     toFixed(digits: Int): String
         target js sync "return self_.toFixed(digits_)"
 
-    min(that: Float): Float {
-        if(self < that) {self} else {that}
-    }
+    min(that: Float): Float 
+        target js sync "return Math.min(self, that)"
 
-    max(that: Float): Float {
-        if(self > that) {self} else {that}
-    }
+    max(that: Float): Float
+        target js sync "return Math.max(self, that)"
 
     clamp(from: Float, to: Float): Float {
         if(self <= from) {from} elseIf {self >= to} {to} else {self}
     }
-
+    
+    acos()
+        target js sync """
+            return Math.acos(self);
+        """
+        
+    acosh()
+        target js sync """
+            return Math.acosh(self);
+        """
+        
+    asin()
+        target js sync """
+            return Math.asin(self);
+        """
+        
+    asinh()
+        target js sync """
+            return Math.asinh(self);
+        """
+        
+    atan()
+        target js sync """
+            return Math.atan(self);
+        """
+        
+    atan2(that: Float)
+        target js sync """
+            return Math.atan2(self, that);
+        """
+        
+    atanh()
+        target js sync """
+            return Math.atanh(self);
+        """
+        
+    cbrt()
+        target js sync """
+            return Math.cbrt(self);
+        """
+        
+    cos()
+        target js sync """
+            return Math.cos(self);
+        """
+        
+    cosh()
+        target js sync """
+            return Math.cosh(self);
+        """
+        
+    exp()
+        target js sync """
+            return Math.exp(self);
+        """
+        
+    expm1()
+        target js sync """
+            return Math.expm1(self);
+        """
+        
+    log(that: Float)
+        target js sync """
+            return Math.log2(self) / Math.log2(that);
+        """
+        
+    log10()
+        target js sync """
+            return Math.log10(self);
+        """
+        
+    log2()
+        target js sync """
+            return Math.log2(self);
+        """
+        
+    ln()
+        target js sync """
+            return Math.log(self);
+        """
+        
+    ln1p()
+        target js sync """
+            return Math.log1p(self);
+        """
+        
+    sin()
+        target js sync """
+            return Math.sin(self);
+        """
+        
+    sinh()
+        target js sync """
+            return Math.sinh(self);
+        """
+        
+    sqrt()
+        target js sync """
+            return Math.sqrt(self);
+        """
+        
+    tan()
+        target js sync """
+            return Math.tan(self);
+        """
+        
+    tanh()
+        target js sync """
+            return Math.tanh(self);
+        """
+        
 }
+
+hypot(values: List[Float]): Float
+    target js sync """
+        return Math.hypot(...values);
+    """
+
+e(): Float
+    target js sync """
+        return Math.E;
+    """
+
+ln10(): Float
+    target js sync """
+        return Math.LN10;
+    """
+
+ln2(): Float
+    target js sync """
+        return Math.LN2;
+    """
+
+log10e(): Float
+    target js sync """
+        return Math.LOG10E;
+    """
+
+log2e(): Float
+    target js sync """
+        return Math.LOG2E;
+    """
+
+pi(): Float
+    target js sync """
+        return Math.PI;
+    """
+
+sqrtHalf(): Float
+    target js sync """
+        return Math.SQRT1_2;
+    """
+
+sqrt2(): Float
+    target js sync """
+        return Math.SQRT2;
+    """

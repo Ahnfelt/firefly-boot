@@ -95,12 +95,98 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
+export function hypot_(values_) {
 
+        return Math.hypot(...values);
+    
+}
 
+export function e_() {
 
+        return Math.E;
+    
+}
+
+export function ln10_() {
+
+        return Math.LN10;
+    
+}
+
+export function ln2_() {
+
+        return Math.LN2;
+    
+}
+
+export function log10e_() {
+
+        return Math.LOG10E;
+    
+}
+
+export function log2e_() {
+
+        return Math.LOG2E;
+    
+}
+
+export function pi_() {
+
+        return Math.PI;
+    
+}
+
+export function sqrtHalf_() {
+
+        return Math.SQRT1_2;
+    
+}
+
+export function sqrt2_() {
+
+        return Math.SQRT2;
+    
+}
+
+export async function hypot_$(values_, $task) {
+throw new Error('Function hypot is missing on this target in async context.');
+}
+
+export async function e_$($task) {
+throw new Error('Function e is missing on this target in async context.');
+}
+
+export async function ln10_$($task) {
+throw new Error('Function ln10 is missing on this target in async context.');
+}
+
+export async function ln2_$($task) {
+throw new Error('Function ln2 is missing on this target in async context.');
+}
+
+export async function log10e_$($task) {
+throw new Error('Function log10e is missing on this target in async context.');
+}
+
+export async function log2e_$($task) {
+throw new Error('Function log2e is missing on this target in async context.');
+}
+
+export async function pi_$($task) {
+throw new Error('Function pi is missing on this target in async context.');
+}
+
+export async function sqrtHalf_$($task) {
+throw new Error('Function sqrtHalf is missing on this target in async context.');
+}
+
+export async function sqrt2_$($task) {
+throw new Error('Function sqrt2 is missing on this target in async context.');
+}
 
 export function Float_toInt(self_) {
-return Math.trunc(Math.abs(self_))
+return Math.trunc(self_) || 0
 }
 
 export function Float_round(self_) {
@@ -132,19 +218,11 @@ return self_.toFixed(digits_)
 }
 
 export function Float_min(self_, that_) {
-if((self_ < that_)) {
-return self_
-} else {
-return that_
-}
+return Math.min(self, that)
 }
 
 export function Float_max(self_, that_) {
-if((self_ > that_)) {
-return self_
-} else {
-return that_
-}
+return Math.max(self, that)
 }
 
 export function Float_clamp(self_, from_, to_) {
@@ -155,6 +233,138 @@ return to_
 } else {
 return self_
 }
+}
+
+export function Float_acos(self_) {
+
+            return Math.acos(self);
+        
+}
+
+export function Float_acosh(self_) {
+
+            return Math.acosh(self);
+        
+}
+
+export function Float_asin(self_) {
+
+            return Math.asin(self);
+        
+}
+
+export function Float_asinh(self_) {
+
+            return Math.asinh(self);
+        
+}
+
+export function Float_atan(self_) {
+
+            return Math.atan(self);
+        
+}
+
+export function Float_atan2(self_, that_) {
+
+            return Math.atan2(self, that);
+        
+}
+
+export function Float_atanh(self_) {
+
+            return Math.atanh(self);
+        
+}
+
+export function Float_cbrt(self_) {
+
+            return Math.cbrt(self);
+        
+}
+
+export function Float_cos(self_) {
+
+            return Math.cos(self);
+        
+}
+
+export function Float_cosh(self_) {
+
+            return Math.cosh(self);
+        
+}
+
+export function Float_exp(self_) {
+
+            return Math.exp(self);
+        
+}
+
+export function Float_expm1(self_) {
+
+            return Math.expm1(self);
+        
+}
+
+export function Float_log(self_, that_) {
+
+            return Math.log2(self) / Math.log2(that);
+        
+}
+
+export function Float_log10(self_) {
+
+            return Math.log10(self);
+        
+}
+
+export function Float_log2(self_) {
+
+            return Math.log2(self);
+        
+}
+
+export function Float_ln(self_) {
+
+            return Math.log(self);
+        
+}
+
+export function Float_ln1p(self_) {
+
+            return Math.log1p(self);
+        
+}
+
+export function Float_sin(self_) {
+
+            return Math.sin(self);
+        
+}
+
+export function Float_sinh(self_) {
+
+            return Math.sinh(self);
+        
+}
+
+export function Float_sqrt(self_) {
+
+            return Math.sqrt(self);
+        
+}
+
+export function Float_tan(self_) {
+
+            return Math.tan(self);
+        
+}
+
+export function Float_tanh(self_) {
+
+            return Math.tanh(self);
+        
 }
 
 export async function Float_toInt$(self_, $task) {
@@ -190,19 +400,11 @@ throw new Error('Function Float_toFixed is missing on this target in async conte
 }
 
 export async function Float_min$(self_, that_, $task) {
-if((self_ < that_)) {
-return self_
-} else {
-return that_
-}
+throw new Error('Function Float_min is missing on this target in async context.');
 }
 
 export async function Float_max$(self_, that_, $task) {
-if((self_ > that_)) {
-return self_
-} else {
-return that_
-}
+throw new Error('Function Float_max is missing on this target in async context.');
 }
 
 export async function Float_clamp$(self_, from_, to_, $task) {
@@ -213,6 +415,94 @@ return to_
 } else {
 return self_
 }
+}
+
+export async function Float_acos$(self_, $task) {
+throw new Error('Function Float_acos is missing on this target in async context.');
+}
+
+export async function Float_acosh$(self_, $task) {
+throw new Error('Function Float_acosh is missing on this target in async context.');
+}
+
+export async function Float_asin$(self_, $task) {
+throw new Error('Function Float_asin is missing on this target in async context.');
+}
+
+export async function Float_asinh$(self_, $task) {
+throw new Error('Function Float_asinh is missing on this target in async context.');
+}
+
+export async function Float_atan$(self_, $task) {
+throw new Error('Function Float_atan is missing on this target in async context.');
+}
+
+export async function Float_atan2$(self_, that_, $task) {
+throw new Error('Function Float_atan2 is missing on this target in async context.');
+}
+
+export async function Float_atanh$(self_, $task) {
+throw new Error('Function Float_atanh is missing on this target in async context.');
+}
+
+export async function Float_cbrt$(self_, $task) {
+throw new Error('Function Float_cbrt is missing on this target in async context.');
+}
+
+export async function Float_cos$(self_, $task) {
+throw new Error('Function Float_cos is missing on this target in async context.');
+}
+
+export async function Float_cosh$(self_, $task) {
+throw new Error('Function Float_cosh is missing on this target in async context.');
+}
+
+export async function Float_exp$(self_, $task) {
+throw new Error('Function Float_exp is missing on this target in async context.');
+}
+
+export async function Float_expm1$(self_, $task) {
+throw new Error('Function Float_expm1 is missing on this target in async context.');
+}
+
+export async function Float_log$(self_, that_, $task) {
+throw new Error('Function Float_log is missing on this target in async context.');
+}
+
+export async function Float_log10$(self_, $task) {
+throw new Error('Function Float_log10 is missing on this target in async context.');
+}
+
+export async function Float_log2$(self_, $task) {
+throw new Error('Function Float_log2 is missing on this target in async context.');
+}
+
+export async function Float_ln$(self_, $task) {
+throw new Error('Function Float_ln is missing on this target in async context.');
+}
+
+export async function Float_ln1p$(self_, $task) {
+throw new Error('Function Float_ln1p is missing on this target in async context.');
+}
+
+export async function Float_sin$(self_, $task) {
+throw new Error('Function Float_sin is missing on this target in async context.');
+}
+
+export async function Float_sinh$(self_, $task) {
+throw new Error('Function Float_sinh is missing on this target in async context.');
+}
+
+export async function Float_sqrt$(self_, $task) {
+throw new Error('Function Float_sqrt is missing on this target in async context.');
+}
+
+export async function Float_tan$(self_, $task) {
+throw new Error('Function Float_tan is missing on this target in async context.');
+}
+
+export async function Float_tanh$(self_, $task) {
+throw new Error('Function Float_tanh is missing on this target in async context.');
 }
 
 export const ff_core_Any_HasAnyTag$ff_core_Float_Float = {

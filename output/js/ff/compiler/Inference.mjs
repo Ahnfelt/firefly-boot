@@ -1650,7 +1650,56 @@ return
 if(_1.length === 2) {
 const a1_ = _1[0];
 const a2_ = _1[1];
-if(((((((operator_ === "+") || (operator_ === "-")) || (operator_ === "*")) || (operator_ === "/")) || (operator_ === "%")) || (operator_ === "^"))) {
+if(((operator_ === "/") || (operator_ === "%"))) {
+const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
+const t2_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
+const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_);
+const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t2_, a2_.value_);
+const magic_ = ((t_) => {
+{
+const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_);
+if(_1.TConstructor && _1.generics_.length === 0) {
+const name_ = _1.name_;
+if((name_ === ff_compiler_Inference.core_("Float"))) {
+
+return
+}
+}
+if(_1.TConstructor && _1.generics_.length === 0) {
+const name_ = _1.name_;
+if((name_ === ff_compiler_Inference.core_("Int"))) {
+
+return
+}
+}
+{
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t_, ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Float"), []))
+return
+}
+}
+});
+magic_(t1_);
+magic_(t2_);
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Float"), []));
+{
+const _1 = e_;
+{
+const _c = _1;
+return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, [(((_c) => {
+return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
+}))(a1_), (((_c) => {
+return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
+}))(a2_)], _c.dictionaries_)
+return
+}
+}
+return
+}
+}
+if(_1.length === 2) {
+const a1_ = _1[0];
+const a2_ = _1[1];
+if(((((operator_ === "+") || (operator_ === "-")) || (operator_ === "*")) || (operator_ === "^"))) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const t2_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_);
@@ -3448,7 +3497,56 @@ return
 if(_1.length === 2) {
 const a1_ = _1[0];
 const a2_ = _1[1];
-if(((((((operator_ === "+") || (operator_ === "-")) || (operator_ === "*")) || (operator_ === "/")) || (operator_ === "%")) || (operator_ === "^"))) {
+if(((operator_ === "/") || (operator_ === "%"))) {
+const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
+const t2_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
+const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_);
+const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t2_, a2_.value_);
+const magic_ = ((t_) => {
+{
+const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_);
+if(_1.TConstructor && _1.generics_.length === 0) {
+const name_ = _1.name_;
+if((name_ === ff_compiler_Inference.core_("Float"))) {
+
+return
+}
+}
+if(_1.TConstructor && _1.generics_.length === 0) {
+const name_ = _1.name_;
+if((name_ === ff_compiler_Inference.core_("Int"))) {
+
+return
+}
+}
+{
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t_, ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Float"), []))
+return
+}
+}
+});
+magic_(t1_);
+magic_(t2_);
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Float"), []));
+{
+const _1 = e_;
+{
+const _c = _1;
+return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, [(((_c) => {
+return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
+}))(a1_), (((_c) => {
+return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
+}))(a2_)], _c.dictionaries_)
+return
+}
+}
+return
+}
+}
+if(_1.length === 2) {
+const a1_ = _1[0];
+const a2_ = _1[1];
+if(((((operator_ === "+") || (operator_ === "-")) || (operator_ === "*")) || (operator_ === "^"))) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const t2_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_);

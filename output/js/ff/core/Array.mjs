@@ -121,7 +121,7 @@ export function sortRange_(array_, compare_, start_, end_) {
 if(((end_ - start_) < 2)) {
 
 } else {
-let middle_ = (start_ + ((end_ - start_) / 2));
+let middle_ = (start_ + ff_core_Int.Int_div((end_ - start_), 2));
 ff_core_Array.sortRange_(array_, compare_, start_, middle_);
 ff_core_Array.sortRange_(array_, compare_, middle_, end_);
 let i_ = start_;
@@ -171,7 +171,7 @@ export async function sortRange_$(array_, compare_, start_, end_, $task) {
 if(((end_ - start_) < 2)) {
 
 } else {
-let middle_ = (start_ + ((end_ - start_) / 2));
+let middle_ = (start_ + ff_core_Int.Int_div((end_ - start_), 2));
 (await ff_core_Array.sortRange_$(array_, compare_, start_, middle_, $task));
 (await ff_core_Array.sortRange_$(array_, compare_, middle_, end_, $task));
 let i_ = start_;
