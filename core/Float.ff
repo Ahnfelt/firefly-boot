@@ -36,6 +36,10 @@ extend self: Float {
         if(self <= from) {from} elseIf {self >= to} {to} else {self}
     }
     
+    lerp(that: Float, factor: Float): Float {
+        self + factor * (that - self)
+    }
+    
     expDecay(that: Float, decay: Float, delta: Duration): Float {
         that + (self - that) * (-decay * delta.seconds).exp()
     }
