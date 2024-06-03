@@ -26,6 +26,9 @@ extend self: Int {
     bitRight(bits: Int, signed: Bool = True): Int
         target js sync "return signed_ ? self_ >> bits_ : self_ >>> bits_;"
 
+    bitLeadingZeros(): Int
+        target js sync "return Math.clz32(self_);"
+
     to(inclusiveEnd: Int): List[Int] {
         let result = Array.new()
         mutable n = self
@@ -46,17 +49,14 @@ extend self: Int {
         result.drain()
     }
 
-    min(that: Int): Int {
-        if(self < that) {self} else {that}
-    }
+    min(that: Int): Int 
+        target js sync "return Math.min(self_, that_)"
 
-    max(that: Int): Int {
-        if(self > that) {self} else {that}
-    }
+    max(that: Int): Int
+        target js sync "return Math.max(self_, that_)"
 
-    clamp(from: Int, to: Int): Int {
-        if(self <= from) {from} elseIf {self >= to} {to} else {self}
-    }
+    clamp(from: Int, to: Int): Int
+        target js sync "return Math.min(Math.max(self_, from_), to_)"
     
     pad(padding: String): String {
         ("" + self).padStart(padding.size(), padding)

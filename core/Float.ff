@@ -27,14 +27,13 @@ extend self: Float {
         target js sync "return self_.toFixed(digits_)"
 
     min(that: Float): Float 
-        target js sync "return Math.min(self, that)"
+        target js sync "return Math.min(self_, that_)"
 
     max(that: Float): Float
-        target js sync "return Math.max(self, that)"
+        target js sync "return Math.max(self_, that_)"
 
-    clamp(from: Float, to: Float): Float {
-        if(self <= from) {from} elseIf {self >= to} {to} else {self}
-    }
+    clamp(from: Float, to: Float): Float
+        target js sync "return Math.min(Math.max(self_, from_), to_)"
     
     lerp(that: Float, factor: Float): Float {
         self + factor * (that - self)
@@ -51,119 +50,119 @@ extend self: Float {
     
     acos(): Float
         target js sync """
-            return Math.acos(self);
+            return Math.acos(self_);
         """
         
     acosh(): Float
         target js sync """
-            return Math.acosh(self);
+            return Math.acosh(self_);
         """
         
     asin(): Float
         target js sync """
-            return Math.asin(self);
+            return Math.asin(self_);
         """
         
     asinh(): Float
         target js sync """
-            return Math.asinh(self);
+            return Math.asinh(self_);
         """
         
     atan(): Float
         target js sync """
-            return Math.atan(self);
+            return Math.atan(self_);
         """
         
     atan2(that: Float): Float
         target js sync """
-            return Math.atan2(self, that);
+            return Math.atan2(self_, that_);
         """
         
     atanh(): Float
         target js sync """
-            return Math.atanh(self);
+            return Math.atanh(self_);
         """
         
     cbrt(): Float
         target js sync """
-            return Math.cbrt(self);
+            return Math.cbrt(self_);
         """
         
     cos(): Float
         target js sync """
-            return Math.cos(self);
+            return Math.cos(self_);
         """
         
     cosh(): Float
         target js sync """
-            return Math.cosh(self);
+            return Math.cosh(self_);
         """
         
     exp(): Float
         target js sync """
-            return Math.exp(self);
+            return Math.exp(self_);
         """
         
     expm1(): Float
         target js sync """
-            return Math.expm1(self);
+            return Math.expm1(self_);
         """
         
     log(that: Float): Float
         target js sync """
-            return Math.log2(self) / Math.log2(that);
+            return Math.log2(self_) / Math.log2(that_);
         """
         
     log10(): Float
         target js sync """
-            return Math.log10(self);
+            return Math.log10(self_);
         """
         
     log2(): Float
         target js sync """
-            return Math.log2(self);
+            return Math.log2(self_);
         """
         
     ln(): Float
         target js sync """
-            return Math.log(self);
+            return Math.log(self_);
         """
         
     ln1p(): Float
         target js sync """
-            return Math.log1p(self);
+            return Math.log1p(self_);
         """
         
     sin(): Float
         target js sync """
-            return Math.sin(self);
+            return Math.sin(self_);
         """
         
     sinh(): Float
         target js sync """
-            return Math.sinh(self);
+            return Math.sinh(self_);
         """
         
     sqrt(): Float
         target js sync """
-            return Math.sqrt(self);
+            return Math.sqrt(self_);
         """
         
     tan(): Float
         target js sync """
-            return Math.tan(self);
+            return Math.tan(self_);
         """
         
     tanh(): Float
         target js sync """
-            return Math.tanh(self);
+            return Math.tanh(self_);
         """
         
 }
 
 hypot(values: List[Float]): Float
     target js sync """
-        return Math.hypot(...values);
+        return Math.hypot(...values_);
     """
 
 e(): Float
