@@ -488,7 +488,7 @@ internalParseParameters(statementSql: String): Pair[String, List[String]] {
 
 main(system: NodeSystem): Unit {
 
-    let pool = makePool(
+    let pool = newPool(
         system = system
         host = system.arguments().grab(0)
         database = system.arguments().grab(1)
