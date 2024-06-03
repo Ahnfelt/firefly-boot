@@ -36,7 +36,7 @@ extend self: Float {
         if(self <= from) {from} elseIf {self >= to} {to} else {self}
     }
     
-    expDecay(that: Float, decay: Float, delta: Duration) {
+    expDecay(that: Float, decay: Float, delta: Duration): Float {
         that + (self - that) * (-decay * delta.seconds).exp()
     }
     

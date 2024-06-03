@@ -235,6 +235,10 @@ return self_
 }
 }
 
+export function Float_expDecay(self_, that_, decay_, delta_) {
+return (that_ + ((self_ - that_) * ff_core_Float.Float_exp(((-decay_) * delta_))))
+}
+
 export function Float_acos(self_) {
 
             return Math.acos(self);
@@ -415,6 +419,10 @@ return to_
 } else {
 return self_
 }
+}
+
+export async function Float_expDecay$(self_, that_, decay_, delta_, $task) {
+return (that_ + ((self_ - that_) * ff_core_Float.Float_exp(((-decay_) * delta_))))
 }
 
 export async function Float_acos$(self_, $task) {
