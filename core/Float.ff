@@ -36,112 +36,116 @@ extend self: Float {
         if(self <= from) {from} elseIf {self >= to} {to} else {self}
     }
     
-    acos()
+    expDecay(that: Float, decay: Float, delta: Duration) {
+        that + (self - that) * (-decay * delta.seconds).exp()
+    }
+    
+    acos(): Float
         target js sync """
             return Math.acos(self);
         """
         
-    acosh()
+    acosh(): Float
         target js sync """
             return Math.acosh(self);
         """
         
-    asin()
+    asin(): Float
         target js sync """
             return Math.asin(self);
         """
         
-    asinh()
+    asinh(): Float
         target js sync """
             return Math.asinh(self);
         """
         
-    atan()
+    atan(): Float
         target js sync """
             return Math.atan(self);
         """
         
-    atan2(that: Float)
+    atan2(that: Float): Float
         target js sync """
             return Math.atan2(self, that);
         """
         
-    atanh()
+    atanh(): Float
         target js sync """
             return Math.atanh(self);
         """
         
-    cbrt()
+    cbrt(): Float
         target js sync """
             return Math.cbrt(self);
         """
         
-    cos()
+    cos(): Float
         target js sync """
             return Math.cos(self);
         """
         
-    cosh()
+    cosh(): Float
         target js sync """
             return Math.cosh(self);
         """
         
-    exp()
+    exp(): Float
         target js sync """
             return Math.exp(self);
         """
         
-    expm1()
+    expm1(): Float
         target js sync """
             return Math.expm1(self);
         """
         
-    log(that: Float)
+    log(that: Float): Float
         target js sync """
             return Math.log2(self) / Math.log2(that);
         """
         
-    log10()
+    log10(): Float
         target js sync """
             return Math.log10(self);
         """
         
-    log2()
+    log2(): Float
         target js sync """
             return Math.log2(self);
         """
         
-    ln()
+    ln(): Float
         target js sync """
             return Math.log(self);
         """
         
-    ln1p()
+    ln1p(): Float
         target js sync """
             return Math.log1p(self);
         """
         
-    sin()
+    sin(): Float
         target js sync """
             return Math.sin(self);
         """
         
-    sinh()
+    sinh(): Float
         target js sync """
             return Math.sinh(self);
         """
         
-    sqrt()
+    sqrt(): Float
         target js sync """
             return Math.sqrt(self);
         """
         
-    tan()
+    tan(): Float
         target js sync """
             return Math.tan(self);
         """
         
-    tanh()
+    tanh(): Float
         target js sync """
             return Math.tanh(self);
         """
