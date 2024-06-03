@@ -97,7 +97,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 export function hypot_(values_) {
 
-        return Math.hypot(...values);
+        return Math.hypot(...values_);
     
 }
 
@@ -218,156 +218,159 @@ return self_.toFixed(digits_)
 }
 
 export function Float_min(self_, that_) {
-return Math.min(self, that)
+return Math.min(self_, that_)
 }
 
 export function Float_max(self_, that_) {
-return Math.max(self, that)
+return Math.max(self_, that_)
 }
 
 export function Float_clamp(self_, from_, to_) {
-if((self_ <= from_)) {
-return from_
-} else if((self_ >= to_)) {
-return to_
-} else {
-return self_
-}
+return Math.min(Math.max(self_, from_), to_)
 }
 
-export function Float_expDecay(self_, that_, decay_, delta_) {
-return (that_ + ((self_ - that_) * ff_core_Float.Float_exp(((-decay_) * delta_))))
+export function Float_lerp(self_, that_, factor_) {
+return (self_ + (factor_ * (that_ - self_)))
+}
+
+export function Float_smoothstep(self_, that_, factor_) {
+const t_ = ff_core_Float.Float_clamp(((factor_ - self_) / (that_ - self_)), 0.0, 1.0);
+return ((t_ * t_) * (3.0 - (2.0 * t_)))
+}
+
+export function Float_expDecay(self_, that_, decay_, factor_) {
+return (that_ + ((self_ - that_) * ff_core_Float.Float_exp(((-decay_) * factor_))))
 }
 
 export function Float_acos(self_) {
 
-            return Math.acos(self);
+            return Math.acos(self_);
         
 }
 
 export function Float_acosh(self_) {
 
-            return Math.acosh(self);
+            return Math.acosh(self_);
         
 }
 
 export function Float_asin(self_) {
 
-            return Math.asin(self);
+            return Math.asin(self_);
         
 }
 
 export function Float_asinh(self_) {
 
-            return Math.asinh(self);
+            return Math.asinh(self_);
         
 }
 
 export function Float_atan(self_) {
 
-            return Math.atan(self);
+            return Math.atan(self_);
         
 }
 
 export function Float_atan2(self_, that_) {
 
-            return Math.atan2(self, that);
+            return Math.atan2(self_, that_);
         
 }
 
 export function Float_atanh(self_) {
 
-            return Math.atanh(self);
+            return Math.atanh(self_);
         
 }
 
 export function Float_cbrt(self_) {
 
-            return Math.cbrt(self);
+            return Math.cbrt(self_);
         
 }
 
 export function Float_cos(self_) {
 
-            return Math.cos(self);
+            return Math.cos(self_);
         
 }
 
 export function Float_cosh(self_) {
 
-            return Math.cosh(self);
+            return Math.cosh(self_);
         
 }
 
 export function Float_exp(self_) {
 
-            return Math.exp(self);
+            return Math.exp(self_);
         
 }
 
 export function Float_expm1(self_) {
 
-            return Math.expm1(self);
+            return Math.expm1(self_);
         
 }
 
 export function Float_log(self_, that_) {
 
-            return Math.log2(self) / Math.log2(that);
+            return Math.log2(self_) / Math.log2(that_);
         
 }
 
 export function Float_log10(self_) {
 
-            return Math.log10(self);
+            return Math.log10(self_);
         
 }
 
 export function Float_log2(self_) {
 
-            return Math.log2(self);
+            return Math.log2(self_);
         
 }
 
 export function Float_ln(self_) {
 
-            return Math.log(self);
+            return Math.log(self_);
         
 }
 
 export function Float_ln1p(self_) {
 
-            return Math.log1p(self);
+            return Math.log1p(self_);
         
 }
 
 export function Float_sin(self_) {
 
-            return Math.sin(self);
+            return Math.sin(self_);
         
 }
 
 export function Float_sinh(self_) {
 
-            return Math.sinh(self);
+            return Math.sinh(self_);
         
 }
 
 export function Float_sqrt(self_) {
 
-            return Math.sqrt(self);
+            return Math.sqrt(self_);
         
 }
 
 export function Float_tan(self_) {
 
-            return Math.tan(self);
+            return Math.tan(self_);
         
 }
 
 export function Float_tanh(self_) {
 
-            return Math.tanh(self);
+            return Math.tanh(self_);
         
 }
 
@@ -412,17 +415,20 @@ throw new Error('Function Float_max is missing on this target in async context.'
 }
 
 export async function Float_clamp$(self_, from_, to_, $task) {
-if((self_ <= from_)) {
-return from_
-} else if((self_ >= to_)) {
-return to_
-} else {
-return self_
-}
+throw new Error('Function Float_clamp is missing on this target in async context.');
 }
 
-export async function Float_expDecay$(self_, that_, decay_, delta_, $task) {
-return (that_ + ((self_ - that_) * ff_core_Float.Float_exp(((-decay_) * delta_))))
+export async function Float_lerp$(self_, that_, factor_, $task) {
+return (self_ + (factor_ * (that_ - self_)))
+}
+
+export async function Float_smoothstep$(self_, that_, factor_, $task) {
+const t_ = ff_core_Float.Float_clamp(((factor_ - self_) / (that_ - self_)), 0.0, 1.0);
+return ((t_ * t_) * (3.0 - (2.0 * t_)))
+}
+
+export async function Float_expDecay$(self_, that_, decay_, factor_, $task) {
+return (that_ + ((self_ - that_) * ff_core_Float.Float_exp(((-decay_) * factor_))))
 }
 
 export async function Float_acos$(self_, $task) {

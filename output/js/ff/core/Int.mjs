@@ -131,6 +131,10 @@ export function Int_bitRight(self_, bits_, signed_ = true) {
 return signed_ ? self_ >> bits_ : self_ >>> bits_;
 }
 
+export function Int_bitLeadingZeros(self_) {
+return Math.clz32(self_);
+}
+
 export function Int_to(self_, inclusiveEnd_) {
 const result_ = ff_core_Array.new_();
 let n_ = self_;
@@ -152,29 +156,15 @@ return ff_core_Array.Array_drain(result_)
 }
 
 export function Int_min(self_, that_) {
-if((self_ < that_)) {
-return self_
-} else {
-return that_
-}
+return Math.min(self_, that_)
 }
 
 export function Int_max(self_, that_) {
-if((self_ > that_)) {
-return self_
-} else {
-return that_
-}
+return Math.max(self_, that_)
 }
 
 export function Int_clamp(self_, from_, to_) {
-if((self_ <= from_)) {
-return from_
-} else if((self_ >= to_)) {
-return to_
-} else {
-return self_
-}
+return Math.min(Math.max(self_, from_), to_)
 }
 
 export function Int_pad(self_, padding_) {
@@ -221,6 +211,10 @@ export async function Int_bitRight$(self_, bits_, signed_ = true, $task) {
 throw new Error('Function Int_bitRight is missing on this target in async context.');
 }
 
+export async function Int_bitLeadingZeros$(self_, $task) {
+throw new Error('Function Int_bitLeadingZeros is missing on this target in async context.');
+}
+
 export async function Int_to$(self_, inclusiveEnd_, $task) {
 const result_ = ff_core_Array.new_();
 let n_ = self_;
@@ -242,29 +236,15 @@ return ff_core_Array.Array_drain(result_)
 }
 
 export async function Int_min$(self_, that_, $task) {
-if((self_ < that_)) {
-return self_
-} else {
-return that_
-}
+throw new Error('Function Int_min is missing on this target in async context.');
 }
 
 export async function Int_max$(self_, that_, $task) {
-if((self_ > that_)) {
-return self_
-} else {
-return that_
-}
+throw new Error('Function Int_max is missing on this target in async context.');
 }
 
 export async function Int_clamp$(self_, from_, to_, $task) {
-if((self_ <= from_)) {
-return from_
-} else if((self_ >= to_)) {
-return to_
-} else {
-return self_
-}
+throw new Error('Function Int_clamp is missing on this target in async context.');
 }
 
 export async function Int_pad$(self_, padding_, $task) {
