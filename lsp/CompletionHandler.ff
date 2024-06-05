@@ -7,6 +7,7 @@ import Handler
 data CompletionInfo(
     label: String
     extra: String
+    more: String
     snippet: String
     member: Bool
     type: Type
@@ -75,7 +76,7 @@ handleCompletion(lspHook: LspHook, toplevel: Bool, followedByOpenBracket: Bool):
             let fieldNames = n.split('$').dropFirst(1)
             let fieldCompletions = fieldNames.zip(ts).map {| Pair(name, t) =>
                 let t2 = h.unification.substitute(t)
-                CompletionInfo(name, "", name, True, t2, "(...)." + name + ": " + t2.show([]), Some(h.expected))
+                CompletionInfo(name, "", "", name, True, t2, "(...)." + name + ": " + t2.show([]), Some(h.expected))
             }
             [...fieldCompletions, ...completion(h.unification, h.environment, n, None, h.expected)]
         | InferArgumentHook h {
@@ -194,6 +195,7 @@ completionsToJson(completions: List[CompletionInfo]): Json {
                 .with("label", i.label)
                 .with("labelDetails", Json.object()
                     .with("detail", i.extra + if(shownType == "") {""} else {": " + shownType})
+                    .with("description", i.more)
                 )
                 .with("insertText", i.snippet)
                 .with("insertTextFormat", 2 /* Snippet */)
@@ -213,7 +215,7 @@ typeCompletion(types: Map[String, String], typeGenerics: Map[String, List[String
         let label = typeName 
         let extra = if(realGenerics.isEmpty()) {""} else {"[" + realGenerics.join(", ") + "]"}
         let snippet = typeName + if(realGenerics.isEmpty()) {""} else {"[$0]"}
-        CompletionInfo(label, extra, snippet, False, TConstructor(Location("", 0, 0), "type", []), full, None)
+        CompletionInfo(label, extra, "", snippet, False, TConstructor(Location("", 0, 0), "type", []), full, None)
     }
     completions
 }
@@ -384,6 +386,7 @@ makeCompletion(
     CompletionInfo(
         label = shortName
         extra = pair.first
+        more = if(memberScheme.isMutable) {"mutable"} else {""}
         snippet = shortName + pair.second
         member = member && !copy
         type = returnType
@@ -398,6 +401,7 @@ exhaustiveMatchCompletion(environment: Environment, prefix: String, inside: Bool
         [CompletionInfo(
             label = curly.first + "| "
             extra = "[] => ... | [first, ...rest] => ..." + curly.second
+            more = ""
             snippet = curly.first + "\n    | [] => $0\n    | [first, ...rest] =>\n" + curly.second
             member = True
             type = TConstructor(Location("", 0, 0), "exhaustive match", [])
@@ -439,6 +443,7 @@ exhaustiveMatchCompletion(environment: Environment, prefix: String, inside: Bool
     [CompletionInfo(
         label = label.slice(0, 2)
         extra = label.dropFirst(2)
+        more = ""
         snippet = snippet
         member = True
         type = TConstructor(Location("", 0, 0), "exhaustive match", [])
@@ -454,16 +459,16 @@ patternCompletion(unification: Unification, environment: Environment, expected: 
     }
     if(typeName == "") {[]} else:
     if(typeName == "ff:core/List.List") {
-        [CompletionInfo("[...]", "", "[$0]", False, expected, "// List pattern", Some(expected))]
+        [CompletionInfo("[...]", "", "", "[$0]", False, expected, "// List pattern", Some(expected))]
     } else:
     if(typeName == "ff:core/String.String") {
-        [CompletionInfo("\"...\"", "", "\"$0\"", False, expected, "// String pattern", Some(expected))]
+        [CompletionInfo("\"...\"", "", "", "\"$0\"", False, expected, "// String pattern", Some(expected))]
     } else:
     if(typeName == "ff:core/Char.Char") {
-        [CompletionInfo("'...'", "", "'$0'", False, expected, "// Char pattern", Some(expected))]
+        [CompletionInfo("'...'", "", "", "'$0'", False, expected, "// Char pattern", Some(expected))]
     } else:
     if(typeName == "ff:core/Int.Int") {
-        [CompletionInfo("0", "", "0", False, expected, "// Int pattern", Some(expected))]
+        [CompletionInfo("0", "", "", "0", False, expected, "// Int pattern", Some(expected))]
     } else:
     let variants = do {
         environment.symbols.toList().filter {s =>
@@ -492,6 +497,7 @@ patternCompletion(unification: Unification, environment: Environment, expected: 
         CompletionInfo(
             label = shortName
             extra = extra
+            more = ""
             snippet = shortName + if(scheme.signature.parameters.isEmpty()) {""} else {"($0)"}
             member = False
             type = expected
@@ -544,7 +550,7 @@ missingCompletion(
                 | TVariable _ => name + ": "
             }
             let documentation = "// Add missing parameter\n" + name + ": " + t.show([])
-            [CompletionInfo(name, "", snippet, False, t, documentation, Some(t))]
+            [CompletionInfo(name, "", "", snippet, False, t, documentation, Some(t))]
         | Some(as) {isParameter} =>
             let noEffect = TConstructor(instantiated.scheme.signature.at, "ff:core/Nothing.Nothing", [])
             let t = unification.substitute(TConstructor(
@@ -557,12 +563,12 @@ missingCompletion(
                 ]
             ))
             let documentation = "// Add missing parameter\n" + name + ": " + t.show([])
-            [CompletionInfo(name, "", name + ": " + t.show([]), False, t, documentation, Some(t))]
+            [CompletionInfo(name, "", "", name + ": " + t.show([]), False, t, documentation, Some(t))]
         | None =>
             let t = unification.substitute(instantiated.scheme.signature.returnType)
             let snippet = name + " = "
             let documentation = "// Define missing variable\n" + name + ": " + t.show([])
-            [CompletionInfo(snippet, "...", snippet, False, t, documentation, Some(t))]
+            [CompletionInfo(snippet, "...", "", snippet, False, t, documentation, Some(t))]
         | Some(as) =>
             mutable remainingParameters = instantiated.scheme.signature.parameters
             mutable usedNames = [].toSet()
@@ -603,7 +609,7 @@ missingCompletion(
             let snippet = if(shortSnippet.size() <= 100) {shortSnippet} else {longSnippet}
             let documentation = "// Define missing function\n" + 
                 if(shortSnippet.size() < 30) {shortSnippet} else {longSnippet}
-            [CompletionInfo(name, extra, snippet + " {\n    $0\n}", False, returnType, documentation, None)]
+            [CompletionInfo(name, extra, "", snippet + " {\n    $0\n}", False, returnType, documentation, None)]
     }
     if(keyword && arguments.isEmpty()) {
         ["let ", "mutable "].flatMap {k => completions.map {c =>
@@ -622,6 +628,7 @@ namedParameterCompletion(parameter: Parameter, index: Int, preselect: Bool): Com
     CompletionInfo(
         label = parameter.name + " = "
         extra = "..."
+        more = ""
         snippet = parameter.name + " = "
         member = False
         type = parameter.valueType
@@ -636,6 +643,7 @@ toplevelCompletion(lspHook: LspHook): List[CompletionInfo] {
         CompletionInfo(
             label = "package", 
             extra = " some:package:0.0.0", 
+            more = ""
             snippet = "package ", 
             member = False, 
             type = TConstructor(lspHook.at, "", []), 
@@ -645,6 +653,7 @@ toplevelCompletion(lspHook: LspHook): List[CompletionInfo] {
         CompletionInfo(
             label = "dependency", 
             extra = " some:package:0.0.0", 
+            more = ""
             snippet = "dependency ", 
             member = False, 
             type = TConstructor(lspHook.at, "", []), 
@@ -654,6 +663,7 @@ toplevelCompletion(lspHook: LspHook): List[CompletionInfo] {
         CompletionInfo(
             label = "import", 
             extra = " Module from some:package", 
+            more = ""
             snippet = "import ", 
             member = False, 
             type = TConstructor(lspHook.at, "", []), 
@@ -663,6 +673,7 @@ toplevelCompletion(lspHook: LspHook): List[CompletionInfo] {
         CompletionInfo(
             label = "extend", 
             extra = " self[T]: SomeType[T] {...}", 
+            more = ""
             snippet = "extend ", 
             member = False, 
             type = TConstructor(lspHook.at, "", []), 
@@ -672,6 +683,7 @@ toplevelCompletion(lspHook: LspHook): List[CompletionInfo] {
         CompletionInfo(
             label = "data", 
             extra = " SomeType[T](...) {...}", 
+            more = ""
             snippet = "data ", 
             member = False, 
             type = TConstructor(lspHook.at, "", []), 
@@ -681,6 +693,7 @@ toplevelCompletion(lspHook: LspHook): List[CompletionInfo] {
         CompletionInfo(
             label = "class", 
             extra = " SomeType[T](...) {...}", 
+            more = ""
             snippet = "class ", 
             member = False, 
             type = TConstructor(lspHook.at, "", []), 
@@ -690,6 +703,7 @@ toplevelCompletion(lspHook: LspHook): List[CompletionInfo] {
         CompletionInfo(
             label = "capability", 
             extra = " SomeType[T](...) {...}", 
+            more = ""
             snippet = "capability ", 
             member = False, 
             type = TConstructor(lspHook.at, "", []), 
@@ -699,6 +713,7 @@ toplevelCompletion(lspHook: LspHook): List[CompletionInfo] {
         CompletionInfo(
             label = "trait", 
             extra = " T: SomeTrait {...}", 
+            more = ""
             snippet = "trait ", 
             member = False, 
             type = TConstructor(lspHook.at, "", []), 
@@ -708,6 +723,7 @@ toplevelCompletion(lspHook: LspHook): List[CompletionInfo] {
         CompletionInfo(
             label = "instance", 
             extra = " SomeType: SomeTrait {...}", 
+            more = ""
             snippet = "instance ", 
             member = False, 
             type = TConstructor(lspHook.at, "", []), 
@@ -717,6 +733,7 @@ toplevelCompletion(lspHook: LspHook): List[CompletionInfo] {
         CompletionInfo(
             label = "nodeMain", 
             extra = "(system: NodeSystem) {...}", 
+            more = ""
             snippet = "nodeMain(system: NodeSystem) {\n    $0\n}", 
             member = False, 
             type = TConstructor(lspHook.at, "", []), 
@@ -726,6 +743,7 @@ toplevelCompletion(lspHook: LspHook): List[CompletionInfo] {
         CompletionInfo(
             label = "browserMain", 
             extra = "(system: BrowserSystem) {...}", 
+            more = ""
             snippet = "browserMain(system: BrowserSystem) {\n    $0\n}", 
             member = False, 
             type = TConstructor(lspHook.at, "", []), 
@@ -735,6 +753,7 @@ toplevelCompletion(lspHook: LspHook): List[CompletionInfo] {
         CompletionInfo(
             label = "buildMain", 
             extra = "(system: BuildSystem) {...}", 
+            more = ""
             snippet = "buildMain(system: NodeSystem) {\n    $0\n}", 
             member = False, 
             type = TConstructor(lspHook.at, "", []), 
@@ -744,6 +763,7 @@ toplevelCompletion(lspHook: LspHook): List[CompletionInfo] {
         CompletionInfo(
             label = "webapp", 
             extra = " with frontend and backend", 
+            more = ""
             snippet = [
                 "dependency ff:webserver:0.0.0"
                 "import WebServer from ff:webserver"
