@@ -386,7 +386,7 @@ makeCompletion(
     CompletionInfo(
         label = shortName
         extra = pair.first
-        more = if(memberScheme.isMutable) {"mutable"} else {""}
+        more = ""
         snippet = shortName + pair.second
         member = member && !copy
         type = returnType
