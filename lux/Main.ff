@@ -39,11 +39,7 @@ questionComponent(lux: Lux, http: HttpClient, question: String) {
         lux.div {lux.text("User: " + question)}
         lux.useLazy1(question): _ =>
         lux.useSuspense {lux.div {lux.text("Assistant typing...")}}: lux =>
-        let answer = http.fetch(
-            url = "/chat"
-            method = "POST"
-            body = Some(HttpClient.bodyText(question))
-        ).readText()
+        let answer = http.post("/chat", [], question.toBuffer()) {_.readText()}
         lux.div {lux.text("Assistant: " + answer)}
     }
 }
@@ -82,15 +78,14 @@ nodeMain(system: NodeSystem) {
 }
 
 fetchAnswer(httpClient: HttpClient, key: String, question: Json): String {
-    let json = httpClient.fetch(
+    let json = httpClient.post(
         url = "https://api.openai.com/v1/chat/completions"
-        method = "POST"
         headers = [
             Pair("Authorization", "Bearer " + key)
             Pair("Content-Type", "application/json")
         ]
-        body = Some(HttpClient.bodyText(question.write()))
-    ).readJson()
+        body = question.write().toBuffer()
+    ) {_.readJson()}
     json.field("choices").index(0).field("message").field("content").grabString()
 }
 

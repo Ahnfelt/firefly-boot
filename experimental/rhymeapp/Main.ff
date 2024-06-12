@@ -11,12 +11,8 @@ browserMain(system: BrowserSystem): Unit {
     let handler = system.js().function1 {event =>
         let text = input.get("value").grabString()
         let serialized = Serializable.serialize(text)
-        let result = system.httpClient().fetch(
-            url = "http://localhost:8080/rhyme"
-            method = "POST"
-            body = Some(HttpClient.bodyBuffer(serialized))
-        )
-        output.set("innerText", result.readText())
+        let innerText = system.httpClient().post("http://localhost:8080/rhyme", [], serialized) {_.readText()}
+        output.set("innerText", innerText)
     }
 
     button.call2("addEventListener", "click", handler)
@@ -41,9 +37,8 @@ nodeMain(system: NodeSystem): Unit {
 
             let buffer = request.readBuffer()
             let deserialized = Serializable.deserialize(buffer)
-            let result = system.httpClient().fetch("https://api.datamuse.com/words?rel_rhy=" + deserialized)
-            let json = system.js().parseJson(result.readText())
-            let rhyme = json.get(0).get("word").grabString()
+            let json = system.httpClient().get("https://api.datamuse.com/words?rel_rhy=" + deserialized, []) {_.readJson()}
+            let rhyme = json.index(0).field("word").grabString()
             response.setHeader("Access-Control-Allow-Origin", ["*"])
             response.writeText(rhyme)
 

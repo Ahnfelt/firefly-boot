@@ -23,7 +23,7 @@ put(
     let allHeaders = [...canonicalHeaders, Pair("Authorization", authenticationHeader)]
     
     let url = "https://" + host + "/" + encodedKey
-    system.httpClient().fetch(url, method = "PUT", headers = allHeaders, body = Some(HttpClient.bodyBuffer(body)), throw = True)
+    system.httpClient().put(url, allHeaders, body) {_ => }
 }
 
 makeS3AuthorizationHeader(

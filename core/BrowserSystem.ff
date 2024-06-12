@@ -3,7 +3,7 @@ capability BrowserSystem {}
 extend self: BrowserSystem {
 
     httpClient(): HttpClient
-        target js async "return null"
+        target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
     
     mainTask(): Task
         target js async "return self_.task_"

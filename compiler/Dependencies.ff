@@ -91,11 +91,12 @@ extend self: Dependencies {
                     dependencyLock.do(donePath.absolute()) {
                         if(!donePath.exists()) {
                             Log.trace("Fetching " + location)
-                            let response = httpClient.fetch(location, throw = False)
-                            if(!response.ok()) {
-                                panic("Could not download dependency: " + location)
+                            let buffer = httpClient.get(location, []) {response =>
+                                if(!response.ok()) {
+                                    panic("Could not download dependency: " + location)
+                                }
+                                response.readBuffer()
                             }
-                            let buffer = response.readBuffer()
                             if(dependencyPath.exists()) {
                                 dependencyPath.delete()
                             }

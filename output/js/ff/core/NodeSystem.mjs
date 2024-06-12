@@ -317,7 +317,7 @@ export async function NodeSystem_pathFromUrl$(self_, url_, $task) {
 }
 
 export async function NodeSystem_httpClient$(self_, $task) {
-return null
+return typeof globalThis !== 'undefined' ? globalThis : window
 }
 
 export async function NodeSystem_mainTask$(self_, $task) {

@@ -132,7 +132,7 @@ throw new Error('Function BrowserSystem_urlFragment is missing on this target in
 }
 
 export async function BrowserSystem_httpClient$(self_, $task) {
-return null
+return typeof globalThis !== 'undefined' ? globalThis : window
 }
 
 export async function BrowserSystem_mainTask$(self_, $task) {

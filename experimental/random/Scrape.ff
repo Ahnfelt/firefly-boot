@@ -11,7 +11,7 @@ nodeMain(system: NodeSystem) {
     1.to(1000).each {_ => 
         system.mainTask().spawn {task =>
             let url = urlChannel.read()
-            let html = system.httpClient().fetch(url).readText()
+            let html = system.httpClient().get(url, []) {_.readText()}
             htmlChannel.write(html)
         }
     }

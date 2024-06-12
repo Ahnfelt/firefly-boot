@@ -256,11 +256,12 @@ ff_compiler_DependencyLock.DependencyLock_do(dependencyLock_, ff_core_Path.Path_
 if((!ff_core_Path.Path_exists(donePath_, false, false, false))) {
 return ff_core_Option.Some((function() {
 ff_core_Log.trace_(("Fetching " + location_));
-const response_ = ff_core_HttpClient.HttpClient_fetch(httpClient_, location_, "GET", ff_core_HttpClient.emptyList_, ff_core_Option.None(), ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), false);
+const buffer_ = ff_core_HttpClient.HttpClient_get(httpClient_, location_, [], ((response_) => {
 if((!ff_core_HttpClient.FetchResponse_ok(response_))) {
 ff_core_Core.panic_(("Could not download dependency: " + location_))
 };
-const buffer_ = ff_core_HttpClient.FetchResponse_readBuffer(response_);
+return ff_core_HttpClient.FetchResponse_readBuffer(response_)
+}));
 if(ff_core_Path.Path_exists(dependencyPath_, false, false, false)) {
 ff_core_Path.Path_delete(dependencyPath_, 0, 100)
 };
@@ -360,11 +361,12 @@ if((!(await ff_core_Path.Path_exists$(donePath_, false, false, false, $task)))) 
 if((!(await ff_core_Path.Path_exists$(donePath_, false, false, false, $task)))) {
 return ff_core_Option.Some((await (async function() {
 ff_core_Log.trace_(("Fetching " + location_));
-const response_ = (await ff_core_HttpClient.HttpClient_fetch$(httpClient_, location_, "GET", ff_core_HttpClient.emptyList_, ff_core_Option.None(), ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), false, $task));
+const buffer_ = (await ff_core_HttpClient.HttpClient_get$(httpClient_, location_, [], (async (response_, $task) => {
 if((!(await ff_core_HttpClient.FetchResponse_ok$(response_, $task)))) {
 ff_core_Core.panic_(("Could not download dependency: " + location_))
 };
-const buffer_ = (await ff_core_HttpClient.FetchResponse_readBuffer$(response_, $task));
+return (await ff_core_HttpClient.FetchResponse_readBuffer$(response_, $task))
+}), $task));
 if((await ff_core_Path.Path_exists$(dependencyPath_, false, false, false, $task))) {
 (await ff_core_Path.Path_delete$(dependencyPath_, 0, 100, $task))
 };

@@ -59,11 +59,12 @@ newClient(
     method: String = "POST"
 ): RpcClient {
     RpcClient {name, buffer =>
-        let response = httpClient.fetch(
-            url = prefix + name, 
-            method = method, 
-            body = Some(HttpClient.bodyBuffer(buffer))
-        )
-        response.readBuffer()
+        httpClient.fetch(
+            method = method
+            url = prefix + name
+            headers = Map.new()
+            payload = Some(buffer)
+            options = FetchOptions()
+        ) {_.readBuffer()}
     }
 }
