@@ -92,9 +92,8 @@ rhymeComponent(lux: Lux, system: BrowserSystem) {
 
 
 rhyme(system: BrowserSystem, text: String): String {
-    let result = system.httpClient().get("https://api.datamuse.com/words?rel_rhy=" + text, [])
-    let json = system.js().parseJson(result.readText())
-    if(json.get(0).isNullOrUndefined()) {"?"} else {json.get(0).get("word").grabString()}
+    let json = system.httpClient().get("https://api.datamuse.com/words?rel_rhy=" + text, []) {_.readJson()}
+    json.index(0).field("word").getString().else {"?"}
 }
 
 browserMain(system: BrowserSystem): Unit {
