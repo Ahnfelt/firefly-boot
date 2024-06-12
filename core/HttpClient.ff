@@ -65,7 +65,7 @@ extend self: HttpClient {
                 const options = {headers: {}, signal: $task.controller.signal};
                 options.method = method_;
                 headers_.forEach(pair => {options.headers[pair.first_] = pair.second_});
-                if(body_.value_) options.body = body_.value_;
+                if(payload_.value_) options.body = payload_.value_;
                 if(options_.redirect_.RedirectError) options.redirect = "error";
                 else if(options_.redirect_.RedirectManual) options.redirect = "manual";
                 if(options_.referrer_.value_) options.referrer = options_.referrer_.value_;

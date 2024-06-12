@@ -178,7 +178,7 @@ export async function HttpClient_fetch$(self_, method_, url_, headers_ = [], pay
                 const options = {headers: {}, signal: $task.controller.signal};
                 options.method = method_;
                 headers_.forEach(pair => {options.headers[pair.first_] = pair.second_});
-                if(body_.value_) options.body = body_.value_;
+                if(payload_.value_) options.body = payload_.value_;
                 if(options_.redirect_.RedirectError) options.redirect = "error";
                 else if(options_.redirect_.RedirectManual) options.redirect = "manual";
                 if(options_.referrer_.value_) options.referrer = options_.referrer_.value_;
@@ -188,9 +188,7 @@ export async function HttpClient_fetch$(self_, method_, url_, headers_ = [], pay
                 if(options_.cache_.value_) options.cache = options_.cache_.value_;
                 fetchResponse.response = await self_.fetch(url_, options);
                 const result = await body_(fetchResponse, $task);
-                if(!fetchResponse.statusChecked && !fetchResponse.response.ok) {
-                    throw new Error("Unexpected HTTP status code: " + fetchResponse.response.status);
-                }
+                internalCheck_(fetchResponse);
                 return result;
             } finally {
                 fetchResponse.response = null;
