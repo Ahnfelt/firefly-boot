@@ -136,42 +136,42 @@ throw new Error('Function internalCheck is missing on this target in async conte
 }
 
 export function HttpClient_get(self_, url_, headers_, body_) {
-return ff_core_HttpClient.HttpClient_fetch(self_, "GET", url_, ff_core_List.List_toMap(headers_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Option.None(), ff_core_HttpClient.FetchOptions(ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), body_)
+return ff_core_HttpClient.HttpClient_fetch(self_, "GET", url_, headers_, ff_core_Option.None(), ff_core_HttpClient.FetchOptions(ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), body_)
 }
 
 export function HttpClient_post(self_, url_, headers_, payload_, body_) {
-return ff_core_HttpClient.HttpClient_fetch(self_, "POST", url_, ff_core_List.List_toMap(headers_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Option.Some(payload_), ff_core_HttpClient.FetchOptions(ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), body_)
+return ff_core_HttpClient.HttpClient_fetch(self_, "POST", url_, headers_, ff_core_Option.Some(payload_), ff_core_HttpClient.FetchOptions(ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), body_)
 }
 
 export function HttpClient_put(self_, url_, headers_, payload_, body_) {
-return ff_core_HttpClient.HttpClient_fetch(self_, "PUT", url_, ff_core_List.List_toMap(headers_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Option.Some(payload_), ff_core_HttpClient.FetchOptions(ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), body_)
+return ff_core_HttpClient.HttpClient_fetch(self_, "PUT", url_, headers_, ff_core_Option.Some(payload_), ff_core_HttpClient.FetchOptions(ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), body_)
 }
 
 export function HttpClient_delete(self_, url_, headers_, body_) {
-return ff_core_HttpClient.HttpClient_fetch(self_, "DELETE", url_, ff_core_List.List_toMap(headers_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Option.None(), ff_core_HttpClient.FetchOptions(ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), body_)
+return ff_core_HttpClient.HttpClient_fetch(self_, "DELETE", url_, headers_, ff_core_Option.None(), ff_core_HttpClient.FetchOptions(ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), body_)
 }
 
-export function HttpClient_fetch(self_, method_, url_, headers_ = ff_core_Map.new_(), payload_ = ff_core_Option.None(), options_ = ff_core_HttpClient.FetchOptions(), body_) {
+export function HttpClient_fetch(self_, method_, url_, headers_ = [], payload_ = ff_core_Option.None(), options_ = ff_core_HttpClient.FetchOptions(), body_) {
 throw new Error('Function HttpClient_fetch is missing on this target in sync context.');
 }
 
 export async function HttpClient_get$(self_, url_, headers_, body_, $task) {
-return (await ff_core_HttpClient.HttpClient_fetch$(self_, "GET", url_, ff_core_List.List_toMap(headers_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Option.None(), ff_core_HttpClient.FetchOptions(ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), body_, $task))
+return (await ff_core_HttpClient.HttpClient_fetch$(self_, "GET", url_, headers_, ff_core_Option.None(), ff_core_HttpClient.FetchOptions(ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), body_, $task))
 }
 
 export async function HttpClient_post$(self_, url_, headers_, payload_, body_, $task) {
-return (await ff_core_HttpClient.HttpClient_fetch$(self_, "POST", url_, ff_core_List.List_toMap(headers_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Option.Some(payload_), ff_core_HttpClient.FetchOptions(ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), body_, $task))
+return (await ff_core_HttpClient.HttpClient_fetch$(self_, "POST", url_, headers_, ff_core_Option.Some(payload_), ff_core_HttpClient.FetchOptions(ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), body_, $task))
 }
 
 export async function HttpClient_put$(self_, url_, headers_, payload_, body_, $task) {
-return (await ff_core_HttpClient.HttpClient_fetch$(self_, "PUT", url_, ff_core_List.List_toMap(headers_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Option.Some(payload_), ff_core_HttpClient.FetchOptions(ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), body_, $task))
+return (await ff_core_HttpClient.HttpClient_fetch$(self_, "PUT", url_, headers_, ff_core_Option.Some(payload_), ff_core_HttpClient.FetchOptions(ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), body_, $task))
 }
 
 export async function HttpClient_delete$(self_, url_, headers_, body_, $task) {
-return (await ff_core_HttpClient.HttpClient_fetch$(self_, "DELETE", url_, ff_core_List.List_toMap(headers_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Option.None(), ff_core_HttpClient.FetchOptions(ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), body_, $task))
+return (await ff_core_HttpClient.HttpClient_fetch$(self_, "DELETE", url_, headers_, ff_core_Option.None(), ff_core_HttpClient.FetchOptions(ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), body_, $task))
 }
 
-export async function HttpClient_fetch$(self_, method_, url_, headers_ = ff_core_Map.new_(), payload_ = ff_core_Option.None(), options_ = ff_core_HttpClient.FetchOptions(), body_, $task) {
+export async function HttpClient_fetch$(self_, method_, url_, headers_ = [], payload_ = ff_core_Option.None(), options_ = ff_core_HttpClient.FetchOptions(), body_, $task) {
 
             const fetchResponse = {response: null, statusChecked: false};
             try {
@@ -179,16 +179,16 @@ export async function HttpClient_fetch$(self_, method_, url_, headers_ = ff_core
                 options.method = method_;
                 headers_.forEach(pair => {options.headers[pair.first_] = pair.second_});
                 if(body_.value_) options.body = body_.value_;
-                if(redirect_.RedirectError) options.redirect = "error";
-                else if(redirect_.RedirectManual) options.redirect = "manual";
-                if(referrer_.value_) options.referrer = referrer_.value_;
-                if(integrity_.value_) options.integrity = integrity_.value_;
-                if(mode_.value_) options.mode = mode_.value_;
-                if(credentials_.value_) options.credentials = credentials_.value_;
-                if(cache_.value_) options.cache = cache_.value_;
+                if(options_.redirect_.RedirectError) options.redirect = "error";
+                else if(options_.redirect_.RedirectManual) options.redirect = "manual";
+                if(options_.referrer_.value_) options.referrer = options_.referrer_.value_;
+                if(options_.integrity_.value_) options.integrity = options_.integrity_.value_;
+                if(options_.mode_.value_) options.mode = options_.mode_.value_;
+                if(options_.credentials_.value_) options.credentials = options_.credentials_.value_;
+                if(options_.cache_.value_) options.cache = options_.cache_.value_;
                 fetchResponse.response = await self_.fetch(url_, options);
                 const result = await body_(fetchResponse, $task);
-                if(!statusChecked && !fetchResponse.response.ok) {
+                if(!fetchResponse.statusChecked && !fetchResponse.response.ok) {
                     throw new Error("Unexpected HTTP status code: " + fetchResponse.response.status);
                 }
                 return result;

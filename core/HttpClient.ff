@@ -22,7 +22,7 @@ extend self: HttpClient {
         headers: List[Pair[String, String]]
         body: FetchResponse => T
     ): T {
-        self.fetch("GET", url, headers.toMap(), None, FetchOptions(), body)
+        self.fetch("GET", url, headers, None, FetchOptions(), body)
     }
     
     post[T](
@@ -31,7 +31,7 @@ extend self: HttpClient {
         payload: Buffer
         body: FetchResponse => T
     ): T {
-        self.fetch("POST", url, headers.toMap(), Some(payload), FetchOptions(), body)
+        self.fetch("POST", url, headers, Some(payload), FetchOptions(), body)
     }
     
     put[T](
@@ -40,7 +40,7 @@ extend self: HttpClient {
         payload: Buffer
         body: FetchResponse => T
     ): T {
-        self.fetch("PUT", url, headers.toMap(), Some(payload), FetchOptions(), body)
+        self.fetch("PUT", url, headers, Some(payload), FetchOptions(), body)
     }
     
     delete[T](
@@ -48,13 +48,13 @@ extend self: HttpClient {
         headers: List[Pair[String, String]]
         body: FetchResponse => T
     ): T {
-        self.fetch("DELETE", url, headers.toMap(), None, FetchOptions(), body)
+        self.fetch("DELETE", url, headers, None, FetchOptions(), body)
     }
 
     fetch[T](
         method: String
         url: String
-        headers: Map[String, String] = Map.new()
+        headers: List[Pair[String, String]] = []
         payload: Option[Buffer] = None
         options: FetchOptions = FetchOptions()
         body: FetchResponse => T
@@ -66,18 +66,16 @@ extend self: HttpClient {
                 options.method = method_;
                 headers_.forEach(pair => {options.headers[pair.first_] = pair.second_});
                 if(body_.value_) options.body = body_.value_;
-                if(redirect_.RedirectError) options.redirect = "error";
-                else if(redirect_.RedirectManual) options.redirect = "manual";
-                if(referrer_.value_) options.referrer = referrer_.value_;
-                if(integrity_.value_) options.integrity = integrity_.value_;
-                if(mode_.value_) options.mode = mode_.value_;
-                if(credentials_.value_) options.credentials = credentials_.value_;
-                if(cache_.value_) options.cache = cache_.value_;
+                if(options_.redirect_.RedirectError) options.redirect = "error";
+                else if(options_.redirect_.RedirectManual) options.redirect = "manual";
+                if(options_.referrer_.value_) options.referrer = options_.referrer_.value_;
+                if(options_.integrity_.value_) options.integrity = options_.integrity_.value_;
+                if(options_.mode_.value_) options.mode = options_.mode_.value_;
+                if(options_.credentials_.value_) options.credentials = options_.credentials_.value_;
+                if(options_.cache_.value_) options.cache = options_.cache_.value_;
                 fetchResponse.response = await self_.fetch(url_, options);
                 const result = await body_(fetchResponse, $task);
-                if(!statusChecked && !fetchResponse.response.ok) {
-                    throw new Error("Unexpected HTTP status code: " + fetchResponse.response.status);
-                }
+                internalCheck_(fetchResponse);
                 return result;
             } finally {
                 fetchResponse.response = null;

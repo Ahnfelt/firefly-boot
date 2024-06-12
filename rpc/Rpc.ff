@@ -62,7 +62,7 @@ newClient(
         httpClient.fetch(
             method = method
             url = prefix + name
-            headers = Map.new()
+            headers = []
             payload = Some(buffer)
             options = FetchOptions()
         ) {_.readBuffer()}
