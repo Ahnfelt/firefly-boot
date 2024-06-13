@@ -2,6 +2,7 @@ import WebServer from ff:webserver
 import Lux from ff:lux
 import Guide
 import GuideIntroduction
+import Styles
 
 browserMain(system: BrowserSystem): Unit {
     Lux.renderById(system, "main") {lux => 
@@ -39,7 +40,7 @@ buildMain(system: BuildSystem) {
 serveGuideHtml(request: WebRequest[WebResponse]): Unit {
     request.writeHeader("Content-Type", "text/html; charset=UTF-8")
     request.writeText("<!doctype html>")
-    request.writeText("<html style='width: 100%; height: 100%;'>")
+    request.writeText("<html style='background-color: #1f1f1f; color: #cdcdcd; width: 100%; height: 100%;'>")
     request.writeText("<head>")
     request.writeText("<title>Firefly Guide</title>")
     request.writeText("</head>")

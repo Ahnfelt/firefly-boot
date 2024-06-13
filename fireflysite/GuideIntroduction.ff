@@ -4,7 +4,7 @@ new(): Document {
     Document([
         Section("Introduction", [
             Paragraph([
-                Bold("Firefly code runs in the browser and on the server.")
+                Text("Firefly is a programming language that compiles to JavaScript, and thus runs in the browser and on the server.")
                 Text("It's specifically designed for creating websites, web apps and web services, and you can easily share code and types between all three.")
             ])
             Paragraph([

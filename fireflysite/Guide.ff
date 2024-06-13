@@ -1,5 +1,6 @@
 import Lux from ff:lux
 import Css from ff:lux
+import Styles
 
 data Guide(
     documents: List[Document]
@@ -36,8 +37,10 @@ render(lux: Lux, kebab: String, guide: Guide) {
         _.sections.first().any {kebabCase(_.heading) == kebab}
     }.else {guide.documents.grabFirst()}
     lux.add("div") {
+        lux.cssClass(Styles.guideCss)
         renderSidebar(lux, guide)
         lux.add("main") {
+            lux.cssClass(Styles.guideMainCss)
             renderDocument(lux, document)
         }
     }
@@ -45,11 +48,13 @@ render(lux: Lux, kebab: String, guide: Guide) {
 
 renderSidebar(lux: Lux, guide: Guide) {
     lux.add("nav") {
+        lux.cssClass(Styles.guideSidebarCss)
         lux.add("ul") {
             guide.documents.each {document =>
                 lux.add("li") {
                     lux.add("a") {
                         let heading = document.sections.grabFirst().heading
+                        lux.cssClass(Styles.guideLinkCss)
                         lux.set("href", "/guide/" + kebabCase(heading))
                         lux.text(heading)
                     }
@@ -61,12 +66,18 @@ renderSidebar(lux: Lux, guide: Guide) {
 
 renderDocument(lux: Lux, document: Document) {
     lux.add("article") {
-        document.sections.each {renderSection(lux, _)}
+        lux.cssClass(Styles.guideDocumentCss)
+        document.sections.pairs().each {| Pair(index, section) => 
+            renderSection(lux, index == 0, section)
+        }
     }
 }
 
-renderSection(lux: Lux, section: Section) {
-    lux.add("h1") {lux.text(section.heading)}
+renderSection(lux: Lux, first: Bool, section: Section) {
+    lux.add(if(first) {"h1"} else {"h2"}) {
+        lux.cssClass(if(first) {Styles.guideH1Css} else {Styles.guideH2Css})
+        lux.text(section.heading)
+    }
     section.blocks.each {renderBlock(lux, _)}
 }
 
@@ -90,6 +101,7 @@ renderCodeBlock(lux: Lux, code: String) {
     let lines = code.lines().dropWhile {_.all {_ == ' '}}.reverse().dropWhile {_.all {_ == ' '}}.reverse()
     let indentation = lines.first().map {_.takeWhile {_ == ' '}.size()}.else {0}
     lux.add("code") {
+        lux.cssClass(Styles.guideCodeCss)
         lux.add("pre") {
             lux.text(lines.map {_.dropFirst(indentation)}.join("\n"))
         }
@@ -129,6 +141,7 @@ renderInline(lux: Lux, inline: Inline) {
         | Anchor(heading, title) => 
             lux.add("a") {
                 let url = title.map {"/guide/" + kebabCase(_)}.else {""} + "#" + kebabCase(heading)
+                lux.cssClass(Styles.guideLinkCss)
                 lux.set("href", url)
                 lux.text(title.map {_ + ": "}.else {""} + heading)
             }
@@ -138,6 +151,7 @@ renderInline(lux: Lux, inline: Inline) {
             }
         | Code(code) => 
             lux.add("code") {
+                lux.cssClass(Styles.guideCodeCss)
                 lux.text(code)
             }
         | Italic(text) => 
@@ -146,6 +160,7 @@ renderInline(lux: Lux, inline: Inline) {
             }
         | Link(text, url) => 
             lux.add("a") {
+                lux.cssClass(Styles.guideLinkCss)
                 lux.set("href", url)
                 lux.text(text)
             }
