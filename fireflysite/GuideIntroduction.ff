@@ -53,6 +53,9 @@ new(): Document {
                 Text("And run it:")
             ])
             CodeBlock("firefly Hello.ff")
+            Paragraph([
+                Text("You now know how to run Firefly code!")
+            ])
         ])
     ])
 }
