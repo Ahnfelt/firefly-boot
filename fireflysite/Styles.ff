@@ -13,8 +13,10 @@ guideCss: CssClass = CssClass(
 guideSidebarCss: CssClass = CssClass(
     [
         Css.width("300px")
+        Css.height("100vh")
         Css.overflowY("auto")
         Css.paddingTop("50px")
+        Css.backgroundColor("#2b2d30")
     ]
     []
     []
@@ -70,7 +72,6 @@ guideH1Css: CssClass = CssClass(
     [
         Css.fontSize("32px")
         Css.marginTop("0px")
-        Css.color("#4ec9b0")
     ]
     []
     []
@@ -80,7 +81,6 @@ guideH2Css: CssClass = CssClass(
     [
         Css.fontSize("28px")
         Css.marginTop("40px")
-        Css.color("#4ec9b0")
     ]
     []
     []
@@ -91,7 +91,7 @@ guideCodeCss: CssClass = CssClass(
         Css.fontFamily("Consolas, 'Liberation Mono', Menlo, Courier, monospace")
         Css.fontSize("17px")
         Css.lineHeight("1.5")
-        Css.color("#dcdcaa")
+        Css.color("#4ec9b0")
     ]
     []
     []
