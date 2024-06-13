@@ -48,6 +48,8 @@ guideMainCss: CssClass = CssClass(
         Css.justifyContent("center")
         Css.padding("20px")
         Css.paddingTop("70px")
+        Css.position("relative")
+        Css.boxSizing("content-box")
     ]
     []
     []
@@ -56,6 +58,7 @@ guideMainCss: CssClass = CssClass(
 guideDocumentCss: CssClass = CssClass(
     [
         Css.maxWidth("800px")
+        Css.width("100%")
         Css.fontSize("17px")
         Css.lineHeight("1.7")
     ]

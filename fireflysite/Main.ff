@@ -25,8 +25,9 @@ nodeMain(system: NodeSystem): Unit {
 }
 
 browserMain(system: BrowserSystem): Unit {
+    let kebab = if(system.urlPath().startsWith("/guide/")) {system.urlPath().dropFirst("/guide/".size())}
     Lux.renderById(system, "main") {lux => 
-        Guide.render(lux, "", Guide(GuideIntroduction.mock()))
+        Guide.render(lux, kebab.else {""}, Guide(GuideIntroduction.mock()))
     }
 }
 
