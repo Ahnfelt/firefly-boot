@@ -1,0 +1,41 @@
+import Guide
+
+new(): Document {
+    Document([
+        Section("Introduction", [
+            Paragraph([
+                Bold("Firefly code runs in the browser and on the server.")
+                Text("It's specifically designed for creating websites, web apps and web services, and you can easily share code and types between all three.")
+            ])
+            Paragraph([
+                Text("This guide introduces the language and its associated tooling.")
+            ])
+        ])
+        Section("Getting started", [
+            Paragraph([
+                Text("Firefly comes with a compiler, a build system and a package manager.")
+                Text("There is comprehensive IDE support through the VSCode extension.")
+            ])
+            Paragraph([
+                Text("Install the")
+                Link("VSCode extension", "https://marketplace.visualstudio.com/items?itemName=firefly-team.firefly-lang")
+                Text("and then install Firefly:")
+            ])
+            CodeBlock("npm install -g firefly-compiler")
+            Paragraph([
+                Text("Save this code as")
+                Code("Hello.ff")
+                Text(":")
+            ])
+            CodeBlock("""
+                nodeMain(system: NodeSystem) {
+                    system.writeLine("Hello, World!")
+                }
+            """)
+            Paragraph([
+                Text("And run it:")
+            ])
+            CodeBlock("firefly Hello.ff")
+        ])
+    ])
+}
