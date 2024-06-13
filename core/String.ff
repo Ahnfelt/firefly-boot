@@ -212,14 +212,14 @@ extend self: String {
             for(let i = 0; i < self_.length; i++) {
                 if(body_(self_.charCodeAt(i))) result.push(self_.charAt(i));
             }
-            return result.join();
+            return result.join("");
         """
         target js async """
             const result = [];
             for(let i = 0; i < self_.length; i++) {
                 if(await body_(self_.charCodeAt(i))) result.push(self_.charAt(i));
             }
-            return result.join();
+            return result.join("");
         """
 
     toBuffer(): Buffer
