@@ -1,0 +1,30 @@
+data Guide(
+    documents: List[Document]
+)
+
+data Document(
+    title: String
+    sections: List[Section]
+)
+
+data Section(
+    heading: String
+    blocks: List[Block]
+)
+
+data Block {
+    Paragraph(inlines: List[Inline])
+    Bullets(items: List[List[Inline]])
+    CodeBlock(code: String)
+    Image(url: String)
+    Video(url: String)
+}
+
+data Inline {
+    Text(text: String)
+    Bold(text: String)
+    Italic(text: String)
+    Code(code: String)
+    Link(text: String, url: String)
+    Anchor(heading: String, title: Option[String] = None)
+}
