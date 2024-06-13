@@ -31,9 +31,9 @@ data Inline {
     Anchor(heading: String, title: Option[String] = None)
 }
 
-render(lux: Lux, title: String, guide: Guide) {
+render(lux: Lux, kebab: String, guide: Guide) {
     let document = guide.documents.find {
-        _.sections.first().any {_.heading == title}
+        _.sections.first().any {kebabCase(_.heading) == kebab}
     }.else {guide.documents.grabFirst()}
     lux.add("div") {
         renderSidebar(lux, guide)
@@ -128,7 +128,8 @@ renderInline(lux: Lux, inline: Inline) {
     inline.{
         | Anchor(heading, title) => 
             lux.add("a") {
-                lux.set("href", title.map {"/guide/" + kebabCase(_)}.else {""} + "#" + kebabCase(heading))
+                let url = title.map {"/guide/" + kebabCase(_)}.else {""} + "#" + kebabCase(heading)
+                lux.set("href", url)
                 lux.text(title.map {_ + ": "}.else {""} + heading)
             }
         | Bold(text) => 

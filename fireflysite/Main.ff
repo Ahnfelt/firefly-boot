@@ -1,14 +1,19 @@
 import WebServer from ff:webserver
+import Guide
 
 nodeMain(system: NodeSystem): Unit {
     let host = system.arguments().grab(0)
     let port = system.arguments().grab(1).grabInt()
     WebServer.new(system, host, port).listen {request =>
-        let parameters = if(request.readRawQueryString().size() == 0) {""} else {
-            "?" + request.readRawQueryString()
+        if(request.readPath().startsWith("/guide/")) {
+            
+        } else {
+            let parameters = if(request.readRawQueryString().size() == 0) {""} else {
+                "?" + request.readRawQueryString()
+            }
+            request.writeHeader("Location", "https://www.firefly-lang.org" + request.readPath() + parameters)
+            request.writeStatus("302 Found")
         }
-        request.writeHeader("Location", "https://www.firefly-lang.org" + request.readPath() + parameters)
-        request.writeStatus("302 Found")
     }
 }
 
