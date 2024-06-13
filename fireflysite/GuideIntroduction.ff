@@ -21,11 +21,10 @@ new(): Document {
     Document([
         Section("Introduction", [
             Paragraph([
-                Text("Firefly is a programming language that compiles to JavaScript, and thus runs in the browser and on the server.")
-                Text("It's specifically designed for creating websites, web apps and web services, and you can easily share code and types between all three.")
-            ])
-            Paragraph([
-                Text("This guide introduces the language and its associated tooling.")
+                Text("In this guide you will learn to use the Firefly.")
+                Text("Firefly is a programming language that compiles to JavaScript.")
+                Text("It runs in the browser and on the server, and is generally simpler and safer than most other full stack languages.")
+                Text("You can use it to create interactive websites or just simple command line utilities.")
             ])
         ])
         Section("Getting started", [
