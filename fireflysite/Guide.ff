@@ -3,7 +3,6 @@ data Guide(
 )
 
 data Document(
-    title: String
     sections: List[Section]
 )
 
