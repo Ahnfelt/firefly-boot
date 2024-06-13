@@ -206,6 +206,22 @@ extend self: String {
             return true;
         """
 
+    filter(body: Char => Bool): String
+        target js sync """
+            const result = [];
+            for(let i = 0; i < self_.length; i++) {
+                if(body_(self_.charCodeAt(i))) result.push(self_.charAt(i));
+            }
+            return result.join();
+        """
+        target js async """
+            const result = [];
+            for(let i = 0; i < self_.length; i++) {
+                if(await body_(self_.charCodeAt(i))) result.push(self_.charAt(i));
+            }
+            return result.join();
+        """
+
     toBuffer(): Buffer
         target js sync """
             const encoded = new TextEncoder().encode(self_)

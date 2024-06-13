@@ -1,3 +1,6 @@
+import Lux from ff:lux
+import Css from ff:lux
+
 data Guide(
     documents: List[Document]
 )
@@ -26,4 +29,115 @@ data Inline {
     Code(code: String)
     Link(text: String, url: String)
     Anchor(heading: String, title: Option[String] = None)
+}
+
+render(lux: Lux, title: String, guide: Guide) {
+    let document = guide.documents.find {
+        _.sections.first().any {_.heading == title}
+    }.else {guide.documents.grabFirst()}
+    renderDocument(lux, document)
+}
+
+renderDocument(lux: Lux, document: Document) {
+    lux.add("article") {
+        document.sections.each {renderSection(lux, _)}
+    }
+}
+
+renderSection(lux: Lux, section: Section) {
+    lux.add("h1") {lux.text(section.heading)}
+    section.blocks.each {renderBlock(lux, _)}
+}
+
+renderBlock(lux: Lux, block: Block) {
+    block.{
+        | Paragraph(inlines) => renderParagraph(lux, inlines)
+        | CodeBlock(code) => renderCodeBlock(lux, code)
+        | Bullets(items) => renderBullets(lux, items)
+        | Image(url) => renderImage(lux, url)
+        | Video(url) => renderVideo(lux, url)
+    }
+}
+
+renderParagraph(lux: Lux, inlines: List[Inline]) {
+    lux.add("p") {
+        renderInlines(lux, inlines)
+    }
+}
+
+renderCodeBlock(lux: Lux, code: String) {
+    let lines = code.lines().dropWhile {_.all {_ == ' '}}.reverse().dropWhile {_.all {_ == ' '}}.reverse()
+    let indentation = lines.first().map {_.takeWhile {_ == ' '}.size()}.else {0}
+    lux.add("code") {
+        lux.add("pre") {
+            lux.text(lines.map {_.dropFirst(indentation)}.join("\n"))
+        }
+    }
+}
+
+renderBullets(lux: Lux, items: List[List[Inline]]) {
+    lux.add("ul") {
+        items.each {inlines =>
+            lux.add("li") {
+                renderInlines(lux, inlines)
+            }
+        }
+    }
+}
+
+renderImage(lux: Lux, url: String) {
+    lux.add("img") {
+        lux.set("src", url)
+        lux.css(Css.maxWidth("100%"))
+    }
+}
+
+renderVideo(lux: Lux, url: String) {
+    lux.add("video") {
+        lux.set("src", url)
+        lux.css(Css.maxWidth("100%"))
+    }
+}
+
+renderInlines(lux: Lux, inlines: List[Inline]) {
+    inlines.separate([Text(" ")]).each {renderInline(lux, _)}
+}
+
+renderInline(lux: Lux, inline: Inline) {
+    inline.{
+        | Anchor(heading, title) => 
+            lux.add("a") {
+                lux.set("href", title.map {"/guide/" + kebabCase(_)}.else {""} + "#" + kebabCase(heading))
+                lux.text(title.map {_ + ": "}.else {""} + heading)
+            }
+        | Bold(text) => 
+            lux.add("b") {
+                lux.text(text)
+            }
+        | Code(code) => 
+            lux.add("code") {
+                lux.text(code)
+            }
+        | Italic(text) => 
+            lux.add("i") {
+                lux.text(text)
+            }
+        | Link(text, url) => 
+            lux.add("a") {
+                lux.set("href", url)
+                lux.text(text)
+            }
+        | Text(text) => 
+            lux.text(text)
+    }
+}
+
+kebabCase(text: String): String {
+    mutable result = text.trim().lower().filter {c => c.isAsciiLetterOrDigit() || c == ' '}
+    doWhile {
+        let before = result
+        result = result.replace("  ", "")
+        result != before
+    }
+    result.replace(" ", "-")
 }
