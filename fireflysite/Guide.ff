@@ -35,7 +35,28 @@ render(lux: Lux, title: String, guide: Guide) {
     let document = guide.documents.find {
         _.sections.first().any {_.heading == title}
     }.else {guide.documents.grabFirst()}
-    renderDocument(lux, document)
+    lux.add("div") {
+        renderSidebar(lux, guide)
+        lux.add("main") {
+            renderDocument(lux, document)
+        }
+    }
+}
+
+renderSidebar(lux: Lux, guide: Guide) {
+    lux.add("nav") {
+        lux.add("ul") {
+            guide.documents.each {document =>
+                lux.add("li") {
+                    lux.add("a") {
+                        let heading = document.sections.grabFirst().heading
+                        lux.set("href", "/guide/" + kebabCase(heading))
+                        lux.text(heading)
+                    }
+                }
+            }
+        }
+    }
 }
 
 renderDocument(lux: Lux, document: Document) {
