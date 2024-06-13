@@ -1,5 +1,22 @@
 import Guide
 
+mock(): List[Document] {
+    [
+        new()
+        Document([Section("Control flow", [])])
+        Document([Section("Collections", [])])
+        Document([Section("Base types", [])])
+        Document([Section("Custom types", [])])
+        Document([Section("Async I/O", [])])
+        Document([Section("Structured concurrency", [])])
+        Document([Section("Applications", [])])
+        Document([Section("Packages and modules", [])])
+        Document([Section("Functions and methods", [])])
+        Document([Section("Traits and instances", [])])
+        Document([Section("JavaScript interop", [])])
+    ]
+}
+
 new(): Document {
     Document([
         Section("Introduction", [

@@ -14,6 +14,26 @@ guideSidebarCss: CssClass = CssClass(
     [
         Css.width("300px")
         Css.overflowY("auto")
+        Css.paddingTop("50px")
+    ]
+    []
+    []
+)
+
+guideSidebarUlCss: CssClass = CssClass(
+    [
+        Css.display("flex")
+        Css.flexDirection("column")
+        Css.gap("25px")
+        Css.listStyle("none")
+    ]
+    []
+    []
+)
+
+guideSidebarLiCss: CssClass = CssClass(
+    [
+        Css.listStyle("none")
     ]
     []
     []
@@ -25,6 +45,7 @@ guideMainCss: CssClass = CssClass(
         Css.display("flex")
         Css.justifyContent("center")
         Css.padding("20px")
+        Css.paddingTop("70px")
     ]
     []
     []
@@ -43,7 +64,8 @@ guideDocumentCss: CssClass = CssClass(
 guideH1Css: CssClass = CssClass(
     [
         Css.fontSize("32px")
-        Css.marginTop("50px")
+        Css.marginTop("0px")
+        Css.color("#4ec9b0")
     ]
     []
     []
@@ -53,6 +75,7 @@ guideH2Css: CssClass = CssClass(
     [
         Css.fontSize("28px")
         Css.marginTop("40px")
+        Css.color("#4ec9b0")
     ]
     []
     []

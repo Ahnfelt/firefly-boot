@@ -4,12 +4,6 @@ import Guide
 import GuideIntroduction
 import Styles
 
-browserMain(system: BrowserSystem): Unit {
-    Lux.renderById(system, "main") {lux => 
-        Guide.render(lux, "", Guide([GuideIntroduction.new()]))
-    }
-}
-
 nodeMain(system: NodeSystem): Unit {
     let host = system.arguments().grab(0)
     let port = system.arguments().grab(1).grabInt()
@@ -27,6 +21,12 @@ nodeMain(system: NodeSystem): Unit {
             request.writeHeader("Location", "https://www.firefly-lang.org" + path + parameters)
             request.writeStatus("302 Found")
         }
+    }
+}
+
+browserMain(system: BrowserSystem): Unit {
+    Lux.renderById(system, "main") {lux => 
+        Guide.render(lux, "", Guide(GuideIntroduction.mock()))
     }
 }
 

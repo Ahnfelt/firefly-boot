@@ -50,8 +50,10 @@ renderSidebar(lux: Lux, guide: Guide) {
     lux.add("nav") {
         lux.cssClass(Styles.guideSidebarCss)
         lux.add("ul") {
+            lux.cssClass(Styles.guideSidebarUlCss)
             guide.documents.each {document =>
                 lux.add("li") {
+                    lux.cssClass(Styles.guideSidebarLiCss)
                     lux.add("a") {
                         let heading = document.sections.grabFirst().heading
                         lux.cssClass(Styles.guideLinkCss)
