@@ -1,0 +1,81 @@
+import Css from ff:lux
+
+guideCss: CssClass = CssClass(
+    [
+        Css.display("flex")
+        Css.fontFamily("'Helvetica Neue', Helvetica, Arial, sans-serif")
+        Css.textRendering("optimizeLegibility")
+    ]
+    []
+    []
+)
+
+guideSidebarCss: CssClass = CssClass(
+    [
+        Css.width("300px")
+        Css.overflowY("auto")
+    ]
+    []
+    []
+)
+
+guideMainCss: CssClass = CssClass(
+    [
+        Css.flex("1")
+        Css.display("flex")
+        Css.justifyContent("center")
+        Css.padding("20px")
+    ]
+    []
+    []
+)
+
+guideDocumentCss: CssClass = CssClass(
+    [
+        Css.maxWidth("800px")
+        Css.fontSize("17px")
+        Css.lineHeight("1.7")
+    ]
+    []
+    []
+)
+
+guideH1Css: CssClass = CssClass(
+    [
+        Css.fontSize("32px")
+        Css.marginTop("50px")
+    ]
+    []
+    []
+)
+
+guideH2Css: CssClass = CssClass(
+    [
+        Css.fontSize("28px")
+        Css.marginTop("40px")
+    ]
+    []
+    []
+)
+
+guideCodeCss: CssClass = CssClass(
+    [
+        Css.fontFamily("Consolas, 'Liberation Mono', Menlo, Courier, monospace")
+        Css.fontSize("17px")
+        Css.lineHeight("1.5")
+        Css.color("#dcdcaa")
+    ]
+    []
+    []
+)
+
+guideLinkCss: CssClass = CssClass(
+    [
+        Css.color("#4fc1ff")
+        Css.textDecoration("none")
+    ]
+    [
+        CssNest("&:hover", [Css.textDecoration("underline")], [])
+    ]
+    []
+)
