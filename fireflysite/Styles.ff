@@ -26,6 +26,8 @@ guideSidebarUlCss: CssClass = CssClass(
         Css.flexDirection("column")
         Css.gap("25px")
         Css.listStyle("none")
+        Css.margin("0px")
+        Css.padding("20px")
     ]
     []
     []
