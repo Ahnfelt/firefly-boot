@@ -30,6 +30,17 @@ whiteLinkCss: CssClass = CssClass(
     []
 )
 
+greenLinkCss: CssClass = CssClass(
+    [
+        Css.color("#4ec9b0")
+        Css.textDecoration("none")
+    ]
+    [
+        CssNest("&:hover", [Css.textDecoration("underline")], [])
+    ]
+    []
+)
+
 topbarCss: CssClass = CssClass(
     [
         Css.display("flex")
@@ -58,7 +69,6 @@ topbarCss: CssClass = CssClass(
 topbarFireflyCss: CssClass = CssClass(
     [
         Css.marginRight("auto")
-        Css.color("#4ec9b0")
     ]
     []
     []
