@@ -37,11 +37,47 @@ render(lux: Lux, kebab: String, guide: Guide) {
         _.sections.first().any {kebabCase(_.heading) == kebab}
     }.else {guide.documents.grabFirst()}
     lux.add("div") {
-        lux.cssClass(Styles.guideCss)
-        renderSidebar(lux, guide)
-        lux.add("main") {
-            lux.cssClass(Styles.guideMainCss)
-            renderDocument(lux, document)
+        lux.cssClass(Styles.pageCss)
+        renderTopbar(lux)
+        lux.add("div") {
+            lux.cssClass(Styles.guideCss)
+            renderSidebar(lux, guide)
+            lux.add("main") {
+                lux.cssClass(Styles.guideMainCss)
+                renderDocument(lux, document)
+            }
+        }
+    }
+}
+
+renderTopbar(lux: Lux) {
+    lux.add("nav") {
+        lux.cssClass(Styles.topbarCss)
+        lux.add("a") {
+            lux.cssClass(Styles.guideLinkCss)
+            lux.set("href", "/")
+            lux.text("Firefly")
+            lux.css(Css.marginRight("auto"))
+        }
+        lux.add("a") {
+            lux.cssClass(Styles.guideLinkCss)
+            lux.set("href", "/guide/")
+            lux.text("Guide")
+        }
+        lux.add("a") {
+            lux.cssClass(Styles.guideLinkCss)
+            lux.set("href", "/examples/")
+            lux.text("Examples")
+        }
+        lux.add("a") {
+            lux.cssClass(Styles.guideLinkCss)
+            lux.set("href", "/packages/")
+            lux.text("Packages")
+        }
+        lux.add("a") {
+            lux.cssClass(Styles.guideLinkCss)
+            lux.set("href", "/community/")
+            lux.text("Community")
         }
     }
 }

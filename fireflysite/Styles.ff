@@ -1,12 +1,49 @@
 import Css from ff:lux
 
-guideCss: CssClass = CssClass(
+mobileMediaQuery = "@media only screen and (max-width: 600px)"
+
+pageCss: CssClass = CssClass(
     [
         Css.display("flex")
+        Css.flexDirection("column")
+        Css.minHeight("100vh")
         Css.fontFamily("'Helvetica Neue', Helvetica, Arial, sans-serif")
         Css.textRendering("optimizeLegibility")
     ]
     []
+    []
+)
+
+topbarCss: CssClass = CssClass(
+    [
+        Css.display("flex")
+        Css.gap("20px")
+        Css.paddingLeft("20px")
+        Css.paddingRight("20px")
+        Css.lineHeight("50px")
+        Css.fontSize("17px")
+        Css.backgroundColor("#3a3c44")
+    ]
+    [
+        CssNest(mobileMediaQuery, [
+            Css.gap("10px")
+            Css.fontSize("15px")
+            Css.overflowX("auto")
+            Css.justifyContent("space-between")
+        ], [])
+    ]
+    []
+)
+
+guideCss: CssClass = CssClass(
+    [
+        Css.display("flex")
+    ]
+    [
+        CssNest(mobileMediaQuery, [
+            Css.flexDirection("column")
+        ], [])
+    ]
     []
 )
 
@@ -18,7 +55,15 @@ guideSidebarCss: CssClass = CssClass(
         Css.paddingTop("50px")
         Css.backgroundColor("#2b2d30")
     ]
-    []
+    [
+        CssNest(mobileMediaQuery, [
+            Css.order("2")
+            Css.width("100%")
+            Css.height("auto")
+            Css.paddingTop("20px")
+            Css.paddingBottom("20px")
+        ], [])
+    ]
     []
 )
 
@@ -53,7 +98,11 @@ guideMainCss: CssClass = CssClass(
         Css.position("relative")
         Css.boxSizing("content-box")
     ]
-    []
+    [
+        CssNest(mobileMediaQuery, [
+            Css.paddingTop("30px")
+        ], [])
+    ]
     []
 )
 
@@ -64,7 +113,12 @@ guideDocumentCss: CssClass = CssClass(
         Css.fontSize("17px")
         Css.lineHeight("1.7")
     ]
-    []
+    [
+        CssNest(mobileMediaQuery, [
+            Css.fontSize("16px")
+            Css.lineHeight("1.6")
+        ], [])
+    ]
     []
 )
 
@@ -73,7 +127,11 @@ guideH1Css: CssClass = CssClass(
         Css.fontSize("32px")
         Css.marginTop("0px")
     ]
-    []
+    [
+        CssNest(mobileMediaQuery, [
+            Css.fontSize("30px")
+        ], [])
+    ]
     []
 )
 
@@ -82,7 +140,11 @@ guideH2Css: CssClass = CssClass(
         Css.fontSize("28px")
         Css.marginTop("40px")
     ]
-    []
+    [
+        CssNest(mobileMediaQuery, [
+            Css.fontSize("25px")
+        ], [])
+    ]
     []
 )
 
@@ -93,7 +155,11 @@ guideCodeCss: CssClass = CssClass(
         Css.lineHeight("1.5")
         Css.color("#4ec9b0")
     ]
-    []
+    [
+        CssNest(mobileMediaQuery, [
+            Css.fontSize("16px")
+        ], [])
+    ]
     []
 )
 
