@@ -34,7 +34,7 @@ new(): Document {
             ])
             Paragraph([
                 Text("You can find the source code")
-                Link("here", "https://github.com/Ahnfelt/firefly-boot")
+                Link("here", "https://github.com/Ahnfelt/firefly-boot/tree/master/compiler")
                 Text(".")
             ])
         ])
