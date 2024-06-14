@@ -1,5 +1,5 @@
 import Guide
-import CounterButtonDemo
+import CountingButtonDemo
 
 mock(): List[Document] {
     [
@@ -15,7 +15,7 @@ mock(): List[Document] {
         Document([Section("Functions and methods", [])])
         Document([Section("Traits and instances", [])])
         Document([Section("JavaScript interop", [])])
-        CounterButtonDemo.newDocument()
+        CountingButtonDemo.newDocument()
     ]
 }
 
