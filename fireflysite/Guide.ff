@@ -145,6 +145,7 @@ renderCodeBlock(lux: Lux, code: String) {
     lux.add("code") {
         lux.cssClass(Styles.guideCodeCss)
         lux.add("pre") {
+            lux.cssClass(Styles.guideCodeBlockCss)
             lux.text(lines.map {_.dropFirst(indentation)}.join("\n"))
         }
     }

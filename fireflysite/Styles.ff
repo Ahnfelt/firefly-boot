@@ -221,6 +221,21 @@ guideCodeCss: CssClass = CssClass(
     []
 )
 
+guideCodeBlockCss: CssClass = CssClass(
+    [
+        Css.backgroundColor("#2b2d30")
+        Css.padding("12px 18px")
+        Css.paddingBottom("14px")
+        Css.border("1px solid #232323")
+        Css.borderRadius("5px")
+        Css.maxWidth("100%")
+        Css.boxSizing("borderBox")
+        Css.overflowX("auto")
+    ]
+    []
+    []
+)
+
 guideLinkCss: CssClass = CssClass(
     [
         Css.color("#4fc1ff")
