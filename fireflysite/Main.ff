@@ -2,6 +2,7 @@ import WebServer from ff:webserver
 import Lux from ff:lux
 import Guide
 import GuideIntroduction
+import ExamplesOverview
 import Styles
 import CountingButtonDemo
 
@@ -10,7 +11,7 @@ nodeMain(system: NodeSystem): Unit {
     let port = system.arguments().grab(1).grabInt()
     WebServer.new(system, host, port).listen {request =>
         let path = request.readPath()
-        if(path.startsWith("/guide/")) {
+        if(path.startsWith("/guide/") || path.startsWith("/examples/")) {
             serveGuideHtml(request)
         } elseIf {path.startsWith("/js/") && !path.contains("..")} {
             request.writeHeader("Content-Type", "text/javascript; charset=UTF-8")
@@ -26,10 +27,17 @@ nodeMain(system: NodeSystem): Unit {
 }
 
 browserMain(system: BrowserSystem): Unit {
-    let kebab = if(system.urlPath().startsWith("/guide/")) {system.urlPath().dropFirst("/guide/".size())}
-    let demos = [CountingButtonDemo.new()]
-    Lux.renderById(system, "main") {lux => 
-        Guide.render(lux, kebab.else {""}, Guide(GuideIntroduction.mock()), demos)
+    if(system.urlPath().startsWith("/guide/")) {
+        let kebab = system.urlPath().dropFirst("/guide/".size())
+        Lux.renderById(system, "main") {lux => 
+            Guide.render(lux, "/guide/", kebab, Guide(GuideIntroduction.mock()), [])
+        }
+    } else {
+        let kebab = system.urlPath().dropFirst("/examples/".size())
+        let demos = [CountingButtonDemo.new()]
+        Lux.renderById(system, "main") {lux => 
+            Guide.render(lux, "/examples/", kebab, Guide(ExamplesOverview.mock()), demos)
+        }
     }
 }
 

@@ -38,16 +38,16 @@ capability Demo(
     render: Lux => Unit
 )
 
-render(lux: Lux, kebab: String, guide: Guide, demos: List[Demo]) {
+render(lux: Lux, prefix: String, kebab: String, guide: Guide, demos: List[Demo]) {
     let document = guide.documents.find {
         _.sections.first().any {kebabCase(_.heading) == kebab}
     }.else {guide.documents.grabFirst()}
     lux.add("div") {
         lux.cssClass(Styles.pageCss)
-        renderTopbar(lux, "/guide/" + kebab)
+        renderTopbar(lux, prefix)
         lux.add("div") {
             lux.cssClass(Styles.guideCss)
-            renderSidebar(lux, guide, document.sections.first().map {_.heading}.else {""})
+            renderSidebar(lux, prefix, guide, document.sections.first().map {_.heading}.else {""})
             lux.add("main") {
                 lux.cssClass(Styles.guideMainCss)
                 renderDocument(lux, document, demos)
@@ -56,44 +56,44 @@ render(lux: Lux, kebab: String, guide: Guide, demos: List[Demo]) {
     }
 }
 
-renderTopbar(lux: Lux, path: String) {
+renderTopbar(lux: Lux, prefix: String) {
     lux.add("nav") {
         lux.cssClass(Styles.topbarCss)
         lux.add("a") {
             lux.cssClass(Styles.whiteLinkCss)
             lux.cssClass(Styles.topbarFireflyCss)
-            if(path == "/") {lux.cssClass(Styles.greenLinkCss)}
+            if(prefix == "/") {lux.cssClass(Styles.greenLinkCss)}
             lux.set("href", "/")
             lux.text("Firefly")
         }
         lux.add("a") {
             lux.cssClass(Styles.whiteLinkCss)
-            if(path.startsWith("/guide/")) {lux.cssClass(Styles.greenLinkCss)}
+            if(prefix == "/guide/") {lux.cssClass(Styles.greenLinkCss)}
             lux.set("href", "/guide/")
             lux.text("Guide")
         }
         lux.add("a") {
             lux.cssClass(Styles.whiteLinkCss)
-            if(path.startsWith("/examples/")) {lux.cssClass(Styles.greenLinkCss)}
+            if(prefix == "/examples/") {lux.cssClass(Styles.greenLinkCss)}
             lux.set("href", "/examples/")
             lux.text("Examples")
         }
         lux.add("a") {
             lux.cssClass(Styles.whiteLinkCss)
-            if(path.startsWith("/packages/")) {lux.cssClass(Styles.greenLinkCss)}
+            if(prefix == "/packages/") {lux.cssClass(Styles.greenLinkCss)}
             lux.set("href", "/packages/")
             lux.text("Packages")
         }
         lux.add("a") {
             lux.cssClass(Styles.whiteLinkCss)
-            if(path.startsWith("/community/")) {lux.cssClass(Styles.greenLinkCss)}
+            if(prefix == "/community/") {lux.cssClass(Styles.greenLinkCss)}
             lux.set("href", "/community/")
             lux.text("Community")
         }
     }
 }
 
-renderSidebar(lux: Lux, guide: Guide, selectedHeading: String) {
+renderSidebar(lux: Lux, prefix: String, guide: Guide, selectedHeading: String) {
     lux.add("nav") {
         lux.cssClass(Styles.guideSidebarCss)
         lux.add("input") {
@@ -109,7 +109,7 @@ renderSidebar(lux: Lux, guide: Guide, selectedHeading: String) {
                         let heading = document.sections.grabFirst().heading
                         lux.cssClass(Styles.whiteLinkCss)
                         if(heading == selectedHeading) {lux.cssClass(Styles.greenLinkCss)}
-                        lux.set("href", "/guide/" + kebabCase(heading))
+                        lux.set("href", prefix + kebabCase(heading))
                         lux.text(heading)
                     }
                 }
