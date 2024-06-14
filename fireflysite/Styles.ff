@@ -69,8 +69,13 @@ topbarCss: CssClass = CssClass(
 topbarFireflyCss: CssClass = CssClass(
     [
         Css.marginRight("auto")
+        Css.fontSize("19px")
     ]
-    []
+    [
+        CssNest(mobileMediaQuery, [
+            Css.fontSize("15px")
+        ], [])
+    ]
     []
 )
 
