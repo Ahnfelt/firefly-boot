@@ -35,6 +35,15 @@ topbarCss: CssClass = CssClass(
     []
 )
 
+topbarFireflyCss: CssClass = CssClass(
+    [
+        Css.marginRight("auto")
+        Css.color("#4ec9b0")
+    ]
+    []
+    []
+)
+
 guideCss: CssClass = CssClass(
     [
         Css.display("flex")
@@ -50,10 +59,10 @@ guideCss: CssClass = CssClass(
 guideSidebarCss: CssClass = CssClass(
     [
         Css.width("300px")
-        Css.height("100vh")
-        Css.overflowY("auto")
+        Css.minHeight("calc(100vh - 50px)")
         Css.paddingTop("50px")
         Css.backgroundColor("#2b2d30")
+        Css.boxSizing("border-box")
     ]
     [
         CssNest(mobileMediaQuery, [

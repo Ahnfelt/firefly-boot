@@ -55,9 +55,9 @@ renderTopbar(lux: Lux) {
         lux.cssClass(Styles.topbarCss)
         lux.add("a") {
             lux.cssClass(Styles.guideLinkCss)
+            lux.cssClass(Styles.topbarFireflyCss)
             lux.set("href", "/")
             lux.text("Firefly")
-            lux.css(Css.marginRight("auto"))
         }
         lux.add("a") {
             lux.cssClass(Styles.guideLinkCss)
