@@ -228,11 +228,21 @@ guideCodeBlockCss: CssClass = CssClass(
         Css.paddingBottom("14px")
         Css.border("1px solid #232323")
         Css.borderRadius("5px")
-        Css.maxWidth("100%")
-        Css.boxSizing("borderBox")
+        Css.boxSizing("border-box")
         Css.overflowX("auto")
+        Css.maxWidth("100%")
     ]
-    []
+    [
+        CssNest(mobileMediaQuery, [
+            Css.maxWidth("calc(100% + 40px)")
+            Css.marginLeft("-20px")
+            Css.marginRight("-20px")
+            Css.borderRadius("0")
+            Css.borderLeft("none")
+            Css.borderRight("none")
+            Css.padding("12px 20px")
+        ], [])
+    ]
     []
 )
 
