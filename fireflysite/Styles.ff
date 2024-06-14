@@ -17,12 +17,14 @@ pageCss: CssClass = CssClass(
 topbarCss: CssClass = CssClass(
     [
         Css.display("flex")
-        Css.gap("20px")
+        Css.gap("30px")
         Css.paddingLeft("20px")
         Css.paddingRight("20px")
-        Css.lineHeight("50px")
+        Css.lineHeight("49px")
         Css.fontSize("17px")
-        Css.backgroundColor("#3a3c44")
+        Css.backgroundColor("#34373d")
+        Css.borderBottom("1px solid #2b2d30")
+        Css.boxSizing("border-box")
     ]
     [
         CssNest(mobileMediaQuery, [
