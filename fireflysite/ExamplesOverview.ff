@@ -28,7 +28,7 @@ new(): Document {
                 Text(".")
             ])
         ])
-        Section("The Firefly compiler is written in Firefly", [
+        Section("The compiler is written in Firefly", [
             Paragraph([
                 Text("The Firefly compiler and toolchain is written in Firefly.")
             ])
