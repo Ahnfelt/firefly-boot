@@ -21,7 +21,7 @@ new(): Document {
     Document([
         Section("Introduction", [
             Paragraph([
-                Text("In this guide you will learn to use the Firefly.")
+                Text("In this guide you will learn to use Firefly.")
                 Text("Firefly is a programming language that compiles to JavaScript.")
                 Text("It runs in the browser and on the server, and is generally simpler and safer than most other full stack languages.")
                 Text("You can use it to create interactive websites or just simple command line utilities.")
