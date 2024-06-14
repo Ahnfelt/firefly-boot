@@ -16,8 +16,8 @@ render(lux: Lux): Unit {
         lux.useState(0): count, setCount => 
         lux.button {
             lux.text("Clicked " + count + " times")
-            lux.onClick {e =>
-                e.preventDefault()
+            lux.onClick {event =>
+                event.preventDefault()
                 setCount(count + 1)
             }
         }
@@ -45,8 +45,8 @@ newDocument(): Document {
                         lux.useState(0): count, setCount => 
                         lux.button {
                             lux.text("Clicked " + count + " times")
-                            lux.onClick {e =>
-                                e.preventDefault()
+                            lux.onClick {event =>
+                                event.preventDefault()
                                 setCount(count + 1)
                             }
                         }
