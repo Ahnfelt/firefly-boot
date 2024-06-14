@@ -13,28 +13,10 @@ new(): Document {
         Section("Overview", [
             Paragraph([
                 Text("Here you'll find some examples that demonstrate what you can do with Firefly.")
-                Text("In fact, you're looking at an example right now - this site is written in Firefly, and so is the Firefly compiler.")
-            ])
-        ])
-        Section("This site is written in Firefly", [
-            Paragraph([
-                Text("All of")
-                Code("firefly-lang.org")
-                Text("is written in Firefly.")
-            ])
-            Paragraph([
-                Text("You can find the source code for this site")
-                Link("here", "https://github.com/Ahnfelt/firefly-boot/tree/master/fireflysite")
-                Text(".")
-            ])
-        ])
-        Section("The compiler is written in Firefly", [
-            Paragraph([
-                Text("The Firefly compiler and toolchain is written in Firefly.")
-            ])
-            Paragraph([
-                Text("You can find the source code")
-                Link("here", "https://github.com/Ahnfelt/firefly-boot/tree/master/compiler")
+                Text("In fact, you're looking at an example right now - this site is") 
+                Link("written in Firefly", "https://github.com/Ahnfelt/firefly-boot/tree/master/fireflysite")
+                Text("and so is the ")
+                Link("Firefly compiler", "https://github.com/Ahnfelt/firefly-boot/tree/master/compiler")
                 Text(".")
             ])
         ])
