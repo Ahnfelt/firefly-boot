@@ -13,7 +13,7 @@ new(): Demo {
 
 render(lux: Lux): Unit {
     lux.div {
-        lux.useState(1): count, setCount => 
+        lux.useState(0): count, setCount => 
         lux.button {
             lux.text("Clicked " + count + " times")
             lux.onClick {e =>
@@ -33,6 +33,12 @@ newDocument(): Document {
             LuxDemo(name)
         ])
         Section("Code", [
+            Paragraph([
+                Text("This example uses the Lux frontend framework.")
+                Text("In Lux, state lives in the DOM, and the")
+                Code("useState")
+                Text("method lets you maintain state in the parent node.")
+            ])
             CodeBlock("""
                 render(lux: Lux): Unit {
                     lux.div {
