@@ -23,7 +23,7 @@ new(): Document {
             Paragraph([
                 Text("In this guide you will learn to use Firefly.")
                 Text("Firefly is a programming language that compiles to JavaScript.")
-                Text("It runs in the browser and on the server, and is generally less hassle than comparable full stack languages.")
+                Text("It runs in the browser and on the server, and is often less hassle than comparable full stack languages.")
             ])
         ])
         Section("Getting started", [
