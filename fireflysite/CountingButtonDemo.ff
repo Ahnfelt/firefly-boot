@@ -40,7 +40,7 @@ newDocument(): Document {
                 Text("method lets you maintain state in the parent node.")
             ])
             CodeBlock("""
-                render(lux: Lux): Unit {
+                render(lux: Lux) {
                     lux.div {
                         lux.useState(1): count, setCount => 
                         lux.button {
