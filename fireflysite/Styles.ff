@@ -10,7 +10,12 @@ pageCss: CssClass = CssClass(
         Css.fontFamily("'Helvetica Neue', Helvetica, Arial, sans-serif")
         Css.textRendering("optimizeLegibility")
     ]
-    []
+    [
+        CssNest("*:focus-visible", [
+            Css.outline("2px solid #4fc1ff")
+            Css.outlineOffset("2px")
+        ], [])
+    ]
     []
 )
 
@@ -48,6 +53,35 @@ topbarFireflyCss: CssClass = CssClass(
     []
 )
 
+searchInputCss: CssClass = CssClass(
+    [
+        Css.appearance("none")
+        Css.boxSizing("border-box")
+        Css.marginLeft("15px")
+        Css.marginRight("25px")
+        Css.width("calc(100% - 15px - 25px)")
+        Css.display("flex")
+        Css.border("none")
+        Css.backgroundColor("#34373d")
+        Css.color("#dadada")
+        Css.height("34px")
+        Css.fontSize("15px")
+        Css.borderRadius("17px")
+        Css.paddingLeft("15px")
+        Css.paddingRight("15px")
+        Css.paddingTop("0")
+        Css.paddingBottom("0")
+        Css.marginBottom("20px")
+    ]
+    [
+        CssNest("&::placeholder", [
+            Css.color("#dadada")
+            Css.opacity("0.7")
+        ], [])
+    ]
+    []
+)
+
 guideCss: CssClass = CssClass(
     [
         Css.display("flex")
@@ -64,7 +98,7 @@ guideSidebarCss: CssClass = CssClass(
     [
         Css.width("300px")
         Css.minHeight("calc(100vh - 50px)")
-        Css.paddingTop("50px")
+        Css.paddingTop("20px")
         Css.backgroundColor("#2b2d30")
         Css.boxSizing("border-box")
     ]

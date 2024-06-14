@@ -85,6 +85,10 @@ renderTopbar(lux: Lux) {
 renderSidebar(lux: Lux, guide: Guide) {
     lux.add("nav") {
         lux.cssClass(Styles.guideSidebarCss)
+        lux.add("input") {
+            lux.cssClass(Styles.searchInputCss)
+            lux.set("placeholder", "Search...")
+        }
         lux.add("ul") {
             lux.cssClass(Styles.guideSidebarUlCss)
             guide.documents.each {document =>
