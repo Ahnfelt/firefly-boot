@@ -54,28 +54,28 @@ renderTopbar(lux: Lux) {
     lux.add("nav") {
         lux.cssClass(Styles.topbarCss)
         lux.add("a") {
-            lux.cssClass(Styles.guideLinkCss)
+            lux.cssClass(Styles.whiteLinkCss)
             lux.cssClass(Styles.topbarFireflyCss)
             lux.set("href", "/")
             lux.text("Firefly")
         }
         lux.add("a") {
-            lux.cssClass(Styles.guideLinkCss)
+            lux.cssClass(Styles.whiteLinkCss)
             lux.set("href", "/guide/")
             lux.text("Guide")
         }
         lux.add("a") {
-            lux.cssClass(Styles.guideLinkCss)
+            lux.cssClass(Styles.whiteLinkCss)
             lux.set("href", "/examples/")
             lux.text("Examples")
         }
         lux.add("a") {
-            lux.cssClass(Styles.guideLinkCss)
+            lux.cssClass(Styles.whiteLinkCss)
             lux.set("href", "/packages/")
             lux.text("Packages")
         }
         lux.add("a") {
-            lux.cssClass(Styles.guideLinkCss)
+            lux.cssClass(Styles.whiteLinkCss)
             lux.set("href", "/community/")
             lux.text("Community")
         }
@@ -96,7 +96,7 @@ renderSidebar(lux: Lux, guide: Guide) {
                     lux.cssClass(Styles.guideSidebarLiCss)
                     lux.add("a") {
                         let heading = document.sections.grabFirst().heading
-                        lux.cssClass(Styles.guideLinkCss)
+                        lux.cssClass(Styles.whiteLinkCss)
                         lux.set("href", "/guide/" + kebabCase(heading))
                         lux.text(heading)
                     }

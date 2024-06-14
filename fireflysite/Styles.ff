@@ -19,6 +19,17 @@ pageCss: CssClass = CssClass(
     []
 )
 
+whiteLinkCss: CssClass = CssClass(
+    [
+        Css.color("#dadada")
+        Css.textDecoration("none")
+    ]
+    [
+        CssNest("&:hover", [Css.textDecoration("underline")], [])
+    ]
+    []
+)
+
 topbarCss: CssClass = CssClass(
     [
         Css.display("flex")
