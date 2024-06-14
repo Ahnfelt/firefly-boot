@@ -1,0 +1,52 @@
+import Guide
+import Lux from ff:lux
+import LuxEvent from ff:lux
+
+name = "Counting button"
+
+new(): Demo {
+    Demo(
+        name
+        {render(_)}
+    )
+}
+
+render(lux: Lux): Unit {
+    lux.div {
+        lux.useState(1): count, setCount => 
+        lux.button {
+            lux.text("Clicked " + count + " times")
+            lux.onClick {e =>
+                e.preventDefault()
+                setCount(count + 1)
+            }
+        }
+    }
+}
+
+newDocument(): Document {
+    Document([
+        Section(name, [
+            Paragraph([Text("A button that counts how many times it's been clicked.")])
+        ])
+        Section("Demo", [
+            LuxDemo(name)
+        ])
+        Section("Code", [
+            CodeBlock("""
+                render(lux: Lux): Unit {
+                    lux.div {
+                        lux.useState(1): count, setCount => 
+                        lux.button {
+                            lux.text("Clicked " + count + " times")
+                            lux.onClick {e =>
+                                e.preventDefault()
+                                setCount(count + 1)
+                            }
+                        }
+                    }
+                }
+            """)
+        ])
+    ])
+}

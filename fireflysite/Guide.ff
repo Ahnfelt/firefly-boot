@@ -21,6 +21,7 @@ data Block {
     CodeBlock(code: String)
     Image(url: String)
     Video(url: String)
+    LuxDemo(demo: String)
 }
 
 data Inline {
@@ -32,7 +33,12 @@ data Inline {
     Anchor(heading: String, title: Option[String] = None)
 }
 
-render(lux: Lux, kebab: String, guide: Guide) {
+capability Demo(
+    name: String
+    render: Lux => Unit
+)
+
+render(lux: Lux, kebab: String, guide: Guide, demos: List[Demo]) {
     let document = guide.documents.find {
         _.sections.first().any {kebabCase(_.heading) == kebab}
     }.else {guide.documents.grabFirst()}
@@ -44,7 +50,7 @@ render(lux: Lux, kebab: String, guide: Guide) {
             renderSidebar(lux, guide, document.sections.first().map {_.heading}.else {""})
             lux.add("main") {
                 lux.cssClass(Styles.guideMainCss)
-                renderDocument(lux, document)
+                renderDocument(lux, document, demos)
             }
         }
     }
@@ -112,30 +118,31 @@ renderSidebar(lux: Lux, guide: Guide, selectedHeading: String) {
     }
 }
 
-renderDocument(lux: Lux, document: Document) {
+renderDocument(lux: Lux, document: Document, demos: List[Demo]) {
     lux.add("article") {
         lux.cssClass(Styles.guideDocumentCss)
         document.sections.pairs().each {| Pair(index, section) => 
-            renderSection(lux, index == 0, section)
+            renderSection(lux, index == 0, section, demos)
         }
     }
 }
 
-renderSection(lux: Lux, first: Bool, section: Section) {
+renderSection(lux: Lux, first: Bool, section: Section, demos: List[Demo]) {
     lux.add(if(first) {"h1"} else {"h2"}) {
         lux.cssClass(if(first) {Styles.guideH1Css} else {Styles.guideH2Css})
         lux.text(section.heading)
     }
-    section.blocks.each {renderBlock(lux, _)}
+    section.blocks.each {renderBlock(lux, _, demos)}
 }
 
-renderBlock(lux: Lux, block: Block) {
+renderBlock(lux: Lux, block: Block, demos: List[Demo]) {
     block.{
         | Paragraph(inlines) => renderParagraph(lux, inlines)
         | CodeBlock(code) => renderCodeBlock(lux, code)
         | Bullets(items) => renderBullets(lux, items)
         | Image(url) => renderImage(lux, url)
         | Video(url) => renderVideo(lux, url)
+        | LuxDemo(name) => renderLuxDemo(lux, name, demos)
     }
 }
 
@@ -179,6 +186,10 @@ renderVideo(lux: Lux, url: String) {
         lux.set("src", url)
         lux.css(Css.maxWidth("100%"))
     }
+}
+
+renderLuxDemo(lux: Lux, name: String, demos: List[Demo]) {
+    demos.find {_.name == name}.map {_.render(lux)}.else {lux.text("Demo not found")}
 }
 
 renderInlines(lux: Lux, inlines: List[Inline]) {
