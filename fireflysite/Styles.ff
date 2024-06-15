@@ -1,6 +1,7 @@
 import Css from ff:lux
 
 mobileMediaQuery = "@media only screen and (max-width: 600px)"
+desktopMediaQuery = "@media only screen and (min-width: 1500px)"
 
 pageCss: CssClass = CssClass(
     [
@@ -175,6 +176,9 @@ guideMainCss: CssClass = CssClass(
     [
         CssNest(mobileMediaQuery, [
             Css.paddingTop("30px")
+        ], [])
+        CssNest(desktopMediaQuery, [
+            Css.paddingRight("200px")
         ], [])
     ]
     []
