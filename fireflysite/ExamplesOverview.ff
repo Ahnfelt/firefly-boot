@@ -22,7 +22,7 @@ new(): Document {
                 Text(".")
             ])
             Paragraph([
-                Text("Check the list here for smaller examples and demos.")
+                Text("Check the list here for examples and demos.")
             ])
         ])
     ])
