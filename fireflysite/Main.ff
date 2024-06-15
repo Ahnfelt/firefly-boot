@@ -17,11 +17,12 @@ nodeMain(system: NodeSystem): Unit {
             serveGuideHtml("Firefly Examples", request)
         } elseIf {path.startsWith("/js/") && !path.contains("..")} {
             request.writeHeader("Content-Type", "text/javascript; charset=UTF-8")
-            if(path == "/js/script/script/Main.mjs" && system.assets().exists("/js/Main.bundle.js")) {
-                request.writeText(system.assets().readText("/js/Main.bundle.js"))
+            let asset = if(path == "/js/script/script/Main.mjs" && system.assets().exists("/js/Main.bundle.js")) {
+                "/js/Main.bundle.js"
             } else {
-                request.writeText(system.assets().readText(path))
+                path
             }
+            request.writeText(system.assets().readText(asset))
         } else {
             let parameters = if(request.readRawQueryString().size() == 0) {""} else {
                 "?" + request.readRawQueryString()
@@ -50,7 +51,7 @@ browserMain(system: BrowserSystem): Unit {
 buildMain(system: BuildSystem) {
     let browser = system.compileForBrowser("Main.ff")
     let assets = AssetSystem.create()
-        .addAssets("/js/", browser.assets()) // Use browser.bundle.assets() for minify
+        .addAssets("/js/", browser.assets())
     system.setAssets(assets)
 }
 
