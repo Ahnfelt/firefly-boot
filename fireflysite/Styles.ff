@@ -26,6 +26,7 @@ whiteLinkCss: CssClass = CssClass(
     ]
     [
         CssNest("&:hover", [Css.textDecoration("underline")], [])
+        CssNest("&[aria-current='page']", [Css.color("#4ec9b0")], [])
     ]
     []
 )

@@ -57,38 +57,40 @@ render(lux: Lux, prefix: String, kebab: String, guide: Guide, demos: List[Demo])
 }
 
 renderTopbar(lux: Lux, prefix: String) {
-    lux.add("nav") {
-        lux.cssClass(Styles.topbarCss)
-        lux.add("a") {
-            lux.cssClass(Styles.whiteLinkCss)
-            lux.cssClass(Styles.topbarFireflyCss)
-            if(prefix == "/") {lux.cssClass(Styles.greenLinkCss)}
-            lux.set("href", "/")
-            lux.text("Firefly")
-        }
-        lux.add("a") {
-            lux.cssClass(Styles.whiteLinkCss)
-            if(prefix == "/guide/") {lux.cssClass(Styles.greenLinkCss)}
-            lux.set("href", "/guide/")
-            lux.text("Guide")
-        }
-        lux.add("a") {
-            lux.cssClass(Styles.whiteLinkCss)
-            if(prefix == "/examples/") {lux.cssClass(Styles.greenLinkCss)}
-            lux.set("href", "/examples/")
-            lux.text("Examples")
-        }
-        lux.add("a") {
-            lux.cssClass(Styles.whiteLinkCss)
-            if(prefix == "/packages/") {lux.cssClass(Styles.greenLinkCss)}
-            lux.set("href", "/packages/")
-            lux.text("Packages")
-        }
-        lux.add("a") {
-            lux.cssClass(Styles.whiteLinkCss)
-            if(prefix == "/community/") {lux.cssClass(Styles.greenLinkCss)}
-            lux.set("href", "/community/")
-            lux.text("Community")
+    lux.add("header") {
+        lux.add("nav") {
+            lux.cssClass(Styles.topbarCss)
+            lux.add("a") {
+                lux.cssClass(Styles.whiteLinkCss)
+                lux.cssClass(Styles.topbarFireflyCss)
+                if(prefix == "/") {lux.set("aria-current", "page")}
+                lux.set("href", "/")
+                lux.text("Firefly")
+            }
+            lux.add("a") {
+                lux.cssClass(Styles.whiteLinkCss)
+                if(prefix == "/guide/") {lux.set("aria-current", "page")}
+                lux.set("href", "/guide/")
+                lux.text("Guide")
+            }
+            lux.add("a") {
+                lux.cssClass(Styles.whiteLinkCss)
+                if(prefix == "/examples/") {lux.set("aria-current", "page")}
+                lux.set("href", "/examples/")
+                lux.text("Examples")
+            }
+            lux.add("a") {
+                lux.cssClass(Styles.whiteLinkCss)
+                if(prefix == "/packages/") {lux.set("aria-current", "page")}
+                lux.set("href", "/packages/")
+                lux.text("Packages")
+            }
+            lux.add("a") {
+                lux.cssClass(Styles.whiteLinkCss)
+                if(prefix == "/community/") {lux.set("aria-current", "page")}
+                lux.set("href", "/community/")
+                lux.text("Community")
+            }
         }
     }
 }
@@ -108,7 +110,7 @@ renderSidebar(lux: Lux, prefix: String, guide: Guide, selectedHeading: String) {
                     lux.add("a") {
                         let heading = document.sections.grabFirst().heading
                         lux.cssClass(Styles.whiteLinkCss)
-                        if(heading == selectedHeading) {lux.cssClass(Styles.greenLinkCss)}
+                        if(heading == selectedHeading) {lux.set("aria-current", "page")}
                         lux.set("href", prefix + kebabCase(heading))
                         lux.text(heading)
                     }
