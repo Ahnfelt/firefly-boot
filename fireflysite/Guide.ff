@@ -98,9 +98,12 @@ renderTopbar(lux: Lux, prefix: String) {
 renderSidebar(lux: Lux, prefix: String, guide: Guide, selectedHeading: String) {
     lux.add("nav") {
         lux.cssClass(Styles.guideSidebarCss)
-        lux.add("input") {
-            lux.cssClass(Styles.searchInputCss)
-            lux.set("placeholder", "Search...")
+        lux.add("form") {
+            lux.set("role", "search")
+            lux.add("input") {
+                lux.cssClass(Styles.searchInputCss)
+                lux.set("placeholder", "Search...")
+            }
         }
         lux.add("ul") {
             lux.cssClass(Styles.guideSidebarUlCss)
