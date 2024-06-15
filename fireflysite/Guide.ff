@@ -155,10 +155,10 @@ renderParagraph(lux: Lux, inlines: List[Inline]) {
 renderCodeBlock(lux: Lux, code: String) {
     let lines = code.lines().dropWhile {_.all {_ == ' '}}.reverse().dropWhile {_.all {_ == ' '}}.reverse()
     let indentation = lines.first().map {_.takeWhile {_ == ' '}.size()}.else {0}
-    lux.add("code") {
-        lux.cssClass(Styles.guideCodeCss)
-        lux.add("pre") {
-            lux.cssClass(Styles.guideCodeBlockCss)
+    lux.add("pre") {
+        lux.cssClass(Styles.guideCodeBlockCss)
+        lux.add("code") {
+            lux.cssClass(Styles.guideCodeCss)
             lux.text(lines.map {_.dropFirst(indentation)}.join("\n"))
         }
     }
