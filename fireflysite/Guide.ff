@@ -99,7 +99,7 @@ renderSidebar(lux: Lux, prefix: String, guide: Guide, selectedHeading: String) {
     lux.add("nav") {
         lux.cssClass(Styles.guideSidebarCss)
         lux.add("form") {
-            lux.set("aria-hidden", "true")
+            lux.set("role", "search")
             lux.add("input") {
                 lux.cssClass(Styles.searchInputCss)
                 lux.set("placeholder", "Search...")
