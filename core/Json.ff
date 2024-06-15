@@ -184,7 +184,7 @@ extend self: Json {
 
     index(key: Int): Json
         target js sync """
-            return typeof self_ === 'array' ? self_[key] ?? null : null;
+            return Array.isArray(self_) ? self_[key] ?? null : null;
         """
 
     hasField(key: String): Bool
@@ -200,7 +200,7 @@ extend self: Json {
 
     getIndex(key: Int): Option[Json]
         target js sync """
-            return typeof self_ === 'array' ? ff_core_Option.Some(self_[key_] ?? null) : ff_core_Option.None();
+            return Array.isArray(self_) ? ff_core_Option.Some(self_[key_] ?? null) : ff_core_Option.None();
         """
         
     getFields(): Option[List[String]]
