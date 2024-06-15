@@ -101,6 +101,7 @@ renderSidebar(lux: Lux, prefix: String, guide: Guide, selectedHeading: String) {
         lux.add("form") {
             lux.set("role", "search")
             lux.add("input") {
+                lux.set("aria-label", "Search")
                 lux.cssClass(Styles.searchInputCss)
                 lux.set("placeholder", "Search...")
             }
