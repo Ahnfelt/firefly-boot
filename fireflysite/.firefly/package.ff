@@ -1,3 +1,4 @@
+package ff:fireflysite:0.0.0
 dependency ff:webserver:0.0.0
 dependency ff:lux:0.0.0
-package ff:fireflysite:0.0.0
+dependency ff:compiler:0.0.0

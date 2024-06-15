@@ -276,3 +276,12 @@ guideLinkCss: CssClass = CssClass(
     ]
     []
 )
+
+codeCommentCss: CssClass = CssClass([Css.color("#6a9955")], [], [])
+codeStringCss: CssClass = CssClass([Css.color("#ce9178")], [], [])
+codeNumberCss: CssClass = CssClass([Css.color("#b5cea8")], [], [])
+codeKeywordCss: CssClass = CssClass([Css.color("#569cd6")], [], [])
+codeTypeCss: CssClass = CssClass([Css.color("#4ec9b0")], [], [])
+codeVariableCss: CssClass = CssClass([Css.color("#9cdcfe")], [], [])
+codeCallCss: CssClass = CssClass([Css.color("#dcdcaa")], [], [])
+codeOtherCss: CssClass = CssClass([Css.color("#cccccc")], [], [])

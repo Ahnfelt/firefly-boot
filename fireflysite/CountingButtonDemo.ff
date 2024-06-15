@@ -52,7 +52,7 @@ newDocument(): Document {
                         }
                     }
                 }
-            """)
+            """, firefly = True)
         ])
     ])
 }

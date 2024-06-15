@@ -1,5 +1,7 @@
 import Lux from ff:lux
 import Css from ff:lux
+import Tokenizer from ff:compiler
+import Token from ff:compiler
 import Styles
 
 data Guide(
@@ -18,7 +20,7 @@ data Section(
 data Block {
     Paragraph(inlines: List[Inline])
     Bullets(items: List[List[Inline]])
-    CodeBlock(code: String)
+    CodeBlock(code: String, firefly: Bool = False)
     Image(url: String)
     Video(url: String)
     LuxDemo(demo: String)
@@ -28,7 +30,7 @@ data Inline {
     Text(text: String)
     Bold(text: String)
     Italic(text: String)
-    Code(code: String)
+    Code(code: String, firefly: Bool = False)
     Link(text: String, url: String)
     Anchor(heading: String, title: Option[String] = None)
 }
@@ -144,7 +146,7 @@ renderSection(lux: Lux, first: Bool, section: Section, demos: List[Demo]) {
 renderBlock(lux: Lux, block: Block, demos: List[Demo]) {
     block.{
         | Paragraph(inlines) => renderParagraph(lux, inlines)
-        | CodeBlock(code) => renderCodeBlock(lux, code)
+        | CodeBlock(code, firefly) => renderCodeBlock(lux, code, firefly)
         | Bullets(items) => renderBullets(lux, items)
         | Image(url) => renderImage(lux, url)
         | Video(url) => renderVideo(lux, url)
@@ -158,14 +160,19 @@ renderParagraph(lux: Lux, inlines: List[Inline]) {
     }
 }
 
-renderCodeBlock(lux: Lux, code: String) {
+renderCodeBlock(lux: Lux, code: String, firefly: Bool) {
     let lines = code.lines().dropWhile {_.all {_ == ' '}}.reverse().dropWhile {_.all {_ == ' '}}.reverse()
     let indentation = lines.first().map {_.takeWhile {_ == ' '}.size()}.else {0}
     lux.add("pre") {
         lux.cssClass(Styles.guideCodeBlockCss)
         lux.add("code") {
             lux.cssClass(Styles.guideCodeCss)
-            lux.text(lines.map {_.dropFirst(indentation)}.join("\n"))
+            let unindentedCode = lines.map {_.dropFirst(indentation)}.join("\n")
+            if(firefly) {
+                renderHighlightedCode(lux, unindentedCode)
+            } else {
+                lux.text(unindentedCode)
+            }
         }
     }
 }
@@ -215,10 +222,14 @@ renderInline(lux: Lux, inline: Inline) {
             lux.add("b") {
                 lux.text(text)
             }
-        | Code(code) => 
+        | Code(code, firefly) => 
             lux.add("code") {
                 lux.cssClass(Styles.guideCodeCss)
-                lux.text(code)
+                if(firefly) {
+                    renderHighlightedCode(lux, code)
+                } else {
+                    lux.text(code)
+                }
             }
         | Italic(text) => 
             lux.add("i") {
@@ -232,6 +243,44 @@ renderInline(lux: Lux, inline: Inline) {
             }
         | Text(text) => 
             lux.text(text)
+    }
+}
+
+renderHighlightedCode(lux: Lux, code: String) {
+    let tokens = Tokenizer.tokenize("<example>", code, None, False)
+    mutable offset = 0
+    mutable index = 0
+    tokens.each {token =>
+        if(token.startOffset > offset) {
+            lux.span {
+                lux.cssClass(Styles.codeCommentCss)
+                lux.text(code.slice(offset, token.startOffset))
+            }
+        }
+        if(token.kind != LEnd) {
+            let css = token.kind.{
+                | LChar => Styles.codeStringCss
+                | LFloat => Styles.codeNumberCss
+                | LInt => Styles.codeNumberCss
+                | LKeyword => Styles.codeKeywordCss
+                | LNamespace => Styles.codeTypeCss
+                | LString => Styles.codeStringCss
+                | LUpper => Styles.codeTypeCss
+                | LWildcard => Styles.codeVariableCss
+                | LLower {tokens.get(index - 1).any {t => 
+                    t.kind == LBracketRight || t.kind == LDot
+                }} => Styles.codeCallCss
+                | LLower {tokens.grab(index + 1).kind == LBracketLeft} => Styles.codeCallCss
+                | LLower => Styles.codeVariableCss
+                | _ => Styles.codeOtherCss
+            }
+            lux.span {
+                lux.cssClass(css)
+                lux.text(code.slice(token.startOffset, token.stopOffset))
+            }
+            offset = token.stopOffset
+        }
+        index += 1
     }
 }
 

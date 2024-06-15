@@ -43,7 +43,7 @@ new(): Document {
                 nodeMain(system: NodeSystem) {
                     system.writeLine("Hello, World!")
                 }
-            """)
+            """, firefly = True)
             Paragraph([
                 Text("And run it:")
             ])
