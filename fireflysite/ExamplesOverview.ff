@@ -15,8 +15,10 @@ new(): Document {
                 Text("Here you'll find examples that demonstrate what you can do with Firefly.")
                 Text("In fact, you're looking at an example right now - this site is") 
                 Link("written in Firefly", "https://github.com/Ahnfelt/firefly-boot/tree/master/fireflysite")
-                Text("and so is the ")
+                Text("and so is the")
                 Link("Firefly compiler", "https://github.com/Ahnfelt/firefly-boot/tree/master/compiler")
+                Text("and")
+                Link("language server", "https://github.com/Ahnfelt/firefly-boot/tree/master/lsp")
                 Text(".")
             ])
             Paragraph([
