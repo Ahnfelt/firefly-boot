@@ -29,12 +29,9 @@ new(): Document {
         Section("Getting started", [
             Paragraph([
                 Text("Firefly comes with a compiler, a build system and a package manager.")
-                Text("There is comprehensive IDE support through the VSCode extension.")
             ])
             Paragraph([
-                Text("Install the")
-                Link("VSCode extension", "https://marketplace.visualstudio.com/items?itemName=firefly-team.firefly-lang")
-                Text("and then install Firefly:")
+                Text("Install Firefly:")
             ])
             CodeBlock("npm install -g firefly-compiler")
             Paragraph([
@@ -53,6 +50,19 @@ new(): Document {
             CodeBlock("firefly Hello.ff")
             Paragraph([
                 Text("You now know how to run Firefly code!")
+            ])
+        ])
+        Section("IDE support", [
+            Paragraph([
+                Text("Firefly has a comprehensive language server.")
+            ])
+            Paragraph([
+                Text("Install the")
+                Link("VSCode extension", "https://marketplace.visualstudio.com/items?itemName=firefly-team.firefly-lang")
+                Text(" (you can find it under Extensions in VSCode).")
+            ])
+            Paragraph([
+                Text("You're now ready to edit Firefly code!")
             ])
         ])
     ])
