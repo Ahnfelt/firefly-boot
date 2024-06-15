@@ -52,9 +52,9 @@ new(): Document {
                 Text("You now know how to run Firefly code!")
             ])
         ])
-        Section("IDE support", [
+        Section("Editor support", [
             Paragraph([
-                Text("Firefly has a comprehensive language server.")
+                Text("Firefly has a comprehensive language server and a VSCode extension.")
             ])
             Paragraph([
                 Text("Install the")
@@ -63,6 +63,9 @@ new(): Document {
             ])
             Paragraph([
                 Text("You're now ready to edit Firefly code!")
+            ])
+            Paragraph([
+                Text("If you'd like to use a different editor, the language server is available, as well as the source code for the VSCode extension.")
             ])
         ])
     ])
