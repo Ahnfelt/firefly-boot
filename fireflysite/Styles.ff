@@ -230,7 +230,7 @@ guideCodeCss: CssClass = CssClass(
     [
         Css.fontFamily("Consolas, 'Liberation Mono', Menlo, Courier, monospace")
         Css.fontSize("17px")
-        Css.lineHeight("1.5")
+        Css.lineHeight("1.4")
         Css.color("#4ec9b0")
     ]
     [
@@ -243,6 +243,7 @@ guideCodeCss: CssClass = CssClass(
 
 guideCodeBlockCss: CssClass = CssClass(
     [
+        Css.lineHeight("1.4")
         Css.backgroundColor("#2b2d30")
         Css.padding("12px 18px")
         Css.paddingBottom("14px")
