@@ -59,9 +59,6 @@ new(): Document {
                 Text(" to get autocompletion, renaming, go to definition, highlighting, etc. You can find it under Extensions in VSCode.")
             ])
             Paragraph([
-                Text("You're now ready to edit Firefly code!")
-            ])
-            Paragraph([
                 Text("If you'd like to use a different editor, the language server is available, as well as the source code for the VSCode extension.")
             ])
         ])
