@@ -1,10 +1,12 @@
 import Guide
 import CountingButtonDemo
+import MatchingPasswordsDemo
 
 mock(): List[Document] {
     [
         new()
         CountingButtonDemo.newDocument()
+        MatchingPasswordsDemo.newDocument()
     ]
 }
 
