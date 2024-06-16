@@ -54,12 +54,9 @@ new(): Document {
         ])
         Section("Editor support", [
             Paragraph([
-                Text("Firefly has a comprehensive language server and a VSCode extension.")
-            ])
-            Paragraph([
                 Text("Install the")
-                Link("VSCode extension", "https://marketplace.visualstudio.com/items?itemName=firefly-team.firefly-lang")
-                Text(" (you can find it under Extensions in VSCode).")
+                Link("Firefly Language VSCode extension", "https://marketplace.visualstudio.com/items?itemName=firefly-team.firefly-lang")
+                Text(" to get autocompletion, renaming, go to definition, highlighting, etc. You can find it under Extensions in VSCode.")
             ])
             Paragraph([
                 Text("You're now ready to edit Firefly code!")
