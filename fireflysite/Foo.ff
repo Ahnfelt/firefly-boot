@@ -1,0 +1,33 @@
+nodeMain(system: NodeSystem) {
+    let path = system.arguments().{
+        | [file] => system.path(file)
+        | _ => 
+            system.writeErrorLine("Missing file name")
+            system.exit(1)
+    }
+    
+    if(!path.exists()) {
+        system.exit(1)
+    } 
+
+    let directory = if(path.isDirectory()) {path} else {path.parent().grab()}
+    
+    let file = directory
+    if(file.exists()) {
+        file.delete()
+    }
+    
+    let i = 0
+    
+    mutable directory = directory1
+
+    if(directory1.exists()) {
+        directory = directory1
+    } elseIf(directory2.exists) {
+        directory = directory1
+    } else {
+        directory = makeTemporatyDirectory()
+    }
+    
+    123
+}

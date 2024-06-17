@@ -1,0 +1,66 @@
+import Guide
+
+new(): Document {
+    Document([
+        Section("Control flow", [
+            Paragraph([
+                Text("Firefly provides many ways to control the path of program execution. ")
+                Text("There are if/elseIf/else, pattern matching, exceptions but also methods such as map and each on Option and List controls your program flow. ")
+            ])
+        ])        
+        Section("if — elseIf — else", [
+            Paragraph([
+                Text("You can write if-statements in Firefly like in most other languages like this")
+            ])
+            CodeBlock("""
+                if(file.exists()) {
+                    ...
+                } elseIf(directory.exists) {
+                    ...
+                } else {
+                    ...
+                }
+            """, firefly = True)
+            Paragraph([
+                Text("You can also use it as an expression returning a value like this")
+            ])
+            CodeBlock("""
+                let directory = if(directory1.exists()) {
+                    directory1
+                } elseIf(directory2.exists) {
+                    directory2
+                } else {
+                    makeTemporatyDirectory()
+                }
+            """, firefly = True)
+            Paragraph([
+                Text("We could end the story here. . Think of ")
+                Code("if")
+                Text(", ")
+                Code("elseIf")
+                Text(" and ")
+                Code("else")
+                Text(" as keywords and use them as you would in most other inperative or functional languages. But of you are curious, go take a look at how they are implemented. if is really just a function and elseIf and else are methods and the curlybraces in the examples above are zero argument lambda functions.")
+            ])
+            Paragraph([
+                Text("But still, why are this syntactically correct? ")
+            ])                        
+            
+        ])
+        Section("Option", [
+            Paragraph([
+                Text("...")
+            ])
+        ])
+        Section("Pattern matching", [
+            Paragraph([
+                Text("...")
+            ])
+        ])
+        Section("Exceptions", [
+            Paragraph([
+                Text("...")
+            ])
+        ])
+    ])
+}

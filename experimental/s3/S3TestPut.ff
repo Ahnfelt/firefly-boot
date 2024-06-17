@@ -1,4 +1,5 @@
-import S3
+dependency ff:s3:0.0.0
+import S3 from ff:s3
 
 nodeMain(system: NodeSystem) {
     S3.put(system, 

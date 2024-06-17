@@ -1,7 +1,7 @@
 import WebServer from ff:webserver
 import Lux from ff:lux
 import Guide
-import GuideIntroduction
+import GuideAll
 import ExamplesOverview
 import Styles
 import CountingButtonDemo
@@ -41,7 +41,7 @@ browserMain(system: BrowserSystem): Unit {
     if(system.urlPath().startsWith("/guide/")) {
         let kebab = system.urlPath().dropFirst("/guide/".size())
         Lux.renderById(system, "main") {lux => 
-            Guide.render(lux, "/guide/", kebab, Guide(GuideIntroduction.mock()), [])
+            Guide.render(lux, "/guide/", kebab, Guide(GuideAll.mock()), [])
         }
     } else {
         let kebab = system.urlPath().dropFirst("/examples/".size())

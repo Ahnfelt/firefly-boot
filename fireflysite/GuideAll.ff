@@ -1,0 +1,20 @@
+import Guide
+import GuideIntroduction
+import GuideControlFlow
+
+mock(): List[Document] {
+    [
+        GuideIntroduction.new()
+        GuideControlFlow.new()
+        Document([Section("Base types", [])])
+        Document([Section("Collections", [])])
+        Document([Section("Custom types", [])])
+        Document([Section("Async I/O", [])])
+        Document([Section("Structured concurrency", [])])
+        Document([Section("Applications", [])])
+        Document([Section("Packages and modules", [])])
+        Document([Section("Functions and methods", [])])
+        Document([Section("Traits and instances", [])])
+        Document([Section("JavaScript interop", [])])
+    ]
+}
