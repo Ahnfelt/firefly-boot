@@ -7,7 +7,7 @@ new(): Document {
         Section("Packages", [
             Paragraph([
                 Text("Here you'll eventually find the package index.")
-                Text("For now, here's a short section documenting some essential packages.") 
+                Text("For now, here's a short list of essential packages.") 
             ])
         ])
         Section("ff:core", [
