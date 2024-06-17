@@ -253,7 +253,7 @@ guideCodeCss: CssClass = CssClass(
     ]
     [
         CssNest(mobileMediaQuery, [
-            Css.fontSize("16px")
+            Css.fontSize("15px")
         ], [])
     ]
     []
