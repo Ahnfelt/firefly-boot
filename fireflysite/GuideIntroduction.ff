@@ -23,7 +23,7 @@ new(): Document {
             Paragraph([
                 Text("In this guide you will learn to use Firefly.")
                 Text("Firefly is a programming language that compiles to JavaScript.")
-                Text("It runs in the browser and on the server, often with less hassle than comparable full stack languages.")
+                Text("It runs in the browser and on the server, and lets you develop webapps with a minimum of hassle.")
             ])
         ])
         Section("Getting started", [
@@ -59,7 +59,10 @@ new(): Document {
                 Text(" to get autocompletion, renaming, go to definition, highlighting, etc. You can find it under Extensions in VSCode.")
             ])
             Paragraph([
-                Text("If you'd like to use a different editor, the language server is available, as well as the source code for the VSCode extension.")
+                Text("The Firefly code highlighting on this site matches the Dark Modern theme in VSCode.")
+            ])
+            Paragraph([
+                Text("If you'd like to make an extension for a different editor, the language server is available, as well as the source code for the VSCode extension.")
             ])
         ])
     ])

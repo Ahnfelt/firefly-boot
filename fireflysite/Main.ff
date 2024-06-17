@@ -3,6 +3,8 @@ import Lux from ff:lux
 import Guide
 import GuideIntroduction
 import ExamplesOverview
+import PackagesOverview
+import CommunityOverview
 import Styles
 import CountingButtonDemo
 import MatchingPasswordsDemo
@@ -16,6 +18,10 @@ nodeMain(system: NodeSystem): Unit {
             serveGuideHtml("Firefly Guide", request)
         } elseIf {path.startsWith("/examples/")} {
             serveGuideHtml("Firefly Examples", request)
+        } elseIf {path.startsWith("/packages/")} {
+            serveGuideHtml("Firefly Packages", request)
+        } elseIf {path.startsWith("/community/")} {
+            serveGuideHtml("Firefly Community", request)
         } elseIf {path.startsWith("/js/") && !path.contains("..")} {
             request.writeHeader("Content-Type", "text/javascript; charset=UTF-8")
             let asset = if(path == "/js/ff/fireflysite/Main.mjs" && system.assets().exists("/js/Main.bundle.js")) {
@@ -43,11 +49,21 @@ browserMain(system: BrowserSystem): Unit {
         Lux.renderById(system, "main") {lux => 
             Guide.render(lux, "/guide/", kebab, Guide(GuideIntroduction.mock()), [])
         }
-    } else {
+    } elseIf {system.urlPath().startsWith("/examples/")} {
         let kebab = system.urlPath().dropFirst("/examples/".size())
         let demos = [CountingButtonDemo.new(), MatchingPasswordsDemo.new()]
         Lux.renderById(system, "main") {lux => 
             Guide.render(lux, "/examples/", kebab, Guide(ExamplesOverview.mock()), demos)
+        }
+    } elseIf {system.urlPath().startsWith("/packages/")} {
+        let kebab = system.urlPath().dropFirst("/packages/".size())
+        Lux.renderById(system, "main") {lux => 
+            Guide.renderSoleDocument(lux, "/packages/", PackagesOverview.new(), [])
+        }
+    } else {
+        let kebab = system.urlPath().dropFirst("/community/".size())
+        Lux.renderById(system, "main") {lux => 
+            Guide.renderSoleDocument(lux, "/community/", CommunityOverview.new(), [])
         }
     }
 }
