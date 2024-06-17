@@ -24,6 +24,9 @@ nodeMain(system: NodeSystem): Unit {
                 path
             }
             request.writeText(system.assets().readText(asset))
+        } elseIf {path.startsWith("/favicon.ico")} {
+            request.writeHeader("Content-Type", "image/png")
+            request.writeStream(system.assets().readStream("/images/firefly-logo-notext.png"))
         } else {
             let parameters = if(request.readRawQueryString().size() == 0) {""} else {
                 "?" + request.readRawQueryString()
@@ -53,6 +56,7 @@ buildMain(system: BuildSystem) {
     let browser = system.compileForBrowser("Main.ff")
     let assets = AssetSystem.create()
         .addAssets("/js/", browser.assets())
+        .addAssets("/images/", system.packageAssets().asset("/firefly-logo-notext.png"))
     system.setAssets(assets)
 }
 
