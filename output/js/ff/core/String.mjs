@@ -329,6 +329,16 @@ export function String_all(self_, body_) {
         
 }
 
+export function String_filter(self_, body_) {
+
+            const result = [];
+            for(let i = 0; i < self_.length; i++) {
+                if(body_(self_.charCodeAt(i))) result.push(self_.charAt(i));
+            }
+            return result.join("");
+        
+}
+
 export function String_toBuffer(self_) {
 
             const encoded = new TextEncoder().encode(self_)
@@ -507,6 +517,16 @@ export async function String_all$(self_, body_, $task) {
                 if(!await body_(self_.charCodeAt(i), $task)) return false;
             }
             return true;
+        
+}
+
+export async function String_filter$(self_, body_, $task) {
+
+            const result = [];
+            for(let i = 0; i < self_.length; i++) {
+                if(await body_(self_.charCodeAt(i))) result.push(self_.charAt(i));
+            }
+            return result.join("");
         
 }
 

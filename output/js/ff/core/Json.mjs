@@ -452,7 +452,7 @@ export function Json_field(self_, key_) {
 
 export function Json_index(self_, key_) {
 
-            return typeof self_ === 'array' ? self_[key] ?? null : null;
+            return Array.isArray(self_) ? self_[key] ?? null : null;
         
 }
 
@@ -471,7 +471,7 @@ export function Json_getField(self_, key_) {
 
 export function Json_getIndex(self_, key_) {
 
-            return typeof self_ === 'array' ? ff_core_Option.Some(self_[key_] ?? null) : ff_core_Option.None();
+            return Array.isArray(self_) ? ff_core_Option.Some(self_[key_] ?? null) : ff_core_Option.None();
         
 }
 
