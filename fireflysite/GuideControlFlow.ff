@@ -59,9 +59,9 @@ new(): Document {
                 Text(" and ")
                 Code("else")
                 Text(" are methods on Option. ")
-                Text("The curly braces (")
+                Text("The curly braces ")
                 Code("{...}")
-                Text(") in the examples above are zero argument lambda functions.")
+                Text(" in the examples above are zero argument lambda functions.")
             ])
             Paragraph([
                 Text("But still, why are this syntactically correct? ...")
@@ -70,8 +70,38 @@ new(): Document {
         ])
         Section("Option", [
             Paragraph([
-                Text("...")
+                Text("Sometimes you don't have a value. Other languages uses ")
+                Code("null")
+                Text(" for this purpose - but Firefly don't have  ")
+                Code("null")
+                Text(". But we have ")
+                Code("Option")
+                Text(" from the core package.")
             ])
+            CodeBlock("""
+                data Option[T] {
+                    None
+                    Some(value: T)
+                }
+            """, firefly = True)
+            Paragraph([
+                Text("For some type T, say String, Option[String] is either some string or no value/none. This way, the type system will guide you when to check for no-value.")
+            ])
+            Paragraph([
+                Text("In Firefly ")
+                Anchor("if - elseIf - else")
+                Text(" are implemented using ")
+                Code("Option")
+                Text(".")
+            ])
+            CodeBlock("""
+                if[T](condition: Bool, body: () => T): Option[T] {
+                    condition.{
+                        | False => None
+                        | True => Some(body())
+                    }
+                }
+            """, firefly = True)            
         ])
         Section("Pattern matching", [
             Paragraph([
