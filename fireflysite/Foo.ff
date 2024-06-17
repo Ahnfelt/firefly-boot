@@ -31,3 +31,66 @@ nodeMain(system: NodeSystem) {
     
     123
 }
+
+dependency ff:webserver:0.0.0
+import WebServer from ff:webserver
+
+browserMain(system: BrowserSystem): Unit {
+    let message = system.httpClient().get("http://localhost:8080/hello", []) {_.readText()}
+    let window = system.js().global().get("window")
+    window.call1("alert", message)
+}
+
+nodeMain(system: NodeSystem): Unit {
+    WebServer.make(system, "localhost", 8080).listen {request =>
+        let path = request.readPath()
+        
+        if(path == "/") {
+            request.writeText("<!doctype html>")
+        } elseIf {path.startsWith("/js/")} {
+            request.writeText("<script>")
+        } else {
+            request.writeStatus("404 Not found")
+        }
+
+    }
+}
+
+buildMain(system: BuildSystem) {
+    let browser = system.compileForBrowser("Foo.ff")
+    let assets = AssetSystem.create().addAssets("/js", browser.assets())
+    system.setAssets(assets)
+}
+
+dependency ff:webserver:0.0.0
+import WebServer from ff:webserver
+
+browserMain(system: BrowserSystem): Unit {
+    let message = system.httpClient().get("http://localhost:8080/hello", []) {_.readText()}
+    let window = system.js().global().get("window")
+    window.call1("alert", message)
+}
+
+nodeMain(system: NodeSystem): Unit {
+    WebServer.make(system, "localhost", 8080).listen {request =>
+        if(request.readPath() == "/") {
+            request.writeHeader("Content-Type", "text/html; charset=UTF-8")
+            request.writeText("<!doctype html>")
+            request.writeText("<script type='module' src='/js/script/script/Foo.mjs'></script>")
+        } elseIf {request.readPath() == "/hello"} {
+            request.writeHeader("Content-Type", "text/plain; charset=UTF-8")
+            request.writeText("Hello from server!")
+        } elseIf {request.readPath().startsWith("/js/") && !request.readPath().contains("..")} {
+            request.writeHeader("Content-Type", "text/javascript; charset=UTF-8")
+            request.writeText(system.assets().readText(request.readPath()))
+        } else {
+            request.writeStatus("404 Not found")
+        }
+    }
+}
+
+buildMain(system: BuildSystem) {
+    let browser = system.compileForBrowser("Foo.ff")
+    let assets = AssetSystem.create().addAssets("/js", browser.assets())
+    system.setAssets(assets)
+}

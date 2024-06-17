@@ -4,46 +4,67 @@ new(): Document {
     Document([
         Section("Control flow", [
             Paragraph([
-                Text("Firefly provides many ways to control the path of program execution. ")
-                Text("There are if/elseIf/else, pattern matching, exceptions but also methods such as map and each on Option and List controls your program flow. ")
+                Text("Firefly provides several ways to control program execution. ")
+                Text("The most direct are ")
+                Anchor("if - elseIf - else")
+                Text(", ")
+                Anchor("pattern matching")
+                Text(" and ")
+                Anchor("exceptions")
+                Text(". But methods such as ")
+                Code("map")
+                Text(" and ")
+                Code("each")
+                Text(" on ")
+                Anchor("Option")
+                Text(" controls your program flow as well.")
             ])
         ])        
-        Section("if — elseIf — else", [
+        Section("if - elseIf - else", [
             Paragraph([
-                Text("You can write if-statements in Firefly like in most other languages like this")
+                Text("You write if-statements in Firefly like this")
             ])
             CodeBlock("""
-                if(file.exists()) {
-                    ...
-                } elseIf(directory.exists) {
-                    ...
+                if(path == "/") {
+                    response.writeText("<!doctype html>")
+                } elseIf {path.startsWith("/js/")} {
+                    response.writeText("<script>")
                 } else {
-                    ...
+                    response.writeStatus("404 Not found")
                 }
             """, firefly = True)
             Paragraph([
-                Text("You can also use it as an expression returning a value like this")
+                Text("You can also use it as an expression like this")
             ])
             CodeBlock("""
-                let directory = if(directory1.exists()) {
-                    directory1
+                let contentType = if(path == "/") {
+                    "text/html; charset=UTF-8"
                 } elseIf(directory2.exists) {
-                    directory2
+                    "text/javascript; charset=UTF-8"
                 } else {
-                    makeTemporatyDirectory()
+                    "text/plain; charset=UTF-8"
                 }
             """, firefly = True)
             Paragraph([
-                Text("We could end the story here. . Think of ")
                 Code("if")
                 Text(", ")
                 Code("elseIf")
                 Text(" and ")
                 Code("else")
-                Text(" as keywords and use them as you would in most other inperative or functional languages. But of you are curious, go take a look at how they are implemented. if is really just a function and elseIf and else are methods and the curlybraces in the examples above are zero argument lambda functions.")
+                Text(" are not keywords or construct build into Firefly. You don't need to know this, but if your are curious, read on. ")
+                Text("Go take a look at how they are implemented. ")
+                Code("if")
+                Text(" is really just a function and ")
+                Code("elseIf")
+                Text(" and ")
+                Code("else")
+                Text(" are methods on Option. ")
+                Text("The curly braces (")
+                Code("{...}")
+                Text(") in the examples above are zero argument lambda functions.")
             ])
             Paragraph([
-                Text("But still, why are this syntactically correct? ")
+                Text("But still, why are this syntactically correct? ...")
             ])                        
             
         ])
