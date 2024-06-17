@@ -177,6 +177,7 @@ guideMainCss: CssClass = CssClass(
     [
         CssNest(mobileMediaQuery, [
             Css.paddingTop("30px")
+            Css.paddingBottom("20px")
         ], [])
         CssNest(desktopMediaQuery, [
             Css.paddingRight("200px")
