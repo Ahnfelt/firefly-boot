@@ -30,6 +30,11 @@ new(): Document {
                 Text("A package for connecting to PostgreSQL. Has connection pool support.")
             ])
         ])
+        Section("ff:lux", [
+            Paragraph([
+                Text("A package for building interactive web interfaces.")
+            ])
+        ])
         Section("ff:rpc", [
             Paragraph([
                 Text("A package for type safe remote procedure calls.")
