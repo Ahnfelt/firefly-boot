@@ -184,6 +184,24 @@ guideMainCss: CssClass = CssClass(
     []
 )
 
+guideSoleDocumentCss: CssClass = CssClass(
+    [
+        Css.flex("1")
+        Css.display("flex")
+        Css.justifyContent("center")
+        Css.padding("20px")
+        Css.paddingTop("70px")
+        Css.position("relative")
+        Css.boxSizing("content-box")
+    ]
+    [
+        CssNest(mobileMediaQuery, [
+            Css.paddingTop("30px")
+        ], [])
+    ]
+    []
+)
+
 guideDocumentCss: CssClass = CssClass(
     [
         Css.maxWidth("800px")

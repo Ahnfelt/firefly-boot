@@ -1,0 +1,49 @@
+import Guide
+import CountingButtonDemo
+import MatchingPasswordsDemo
+
+new(): Document {
+    Document([
+        Section("Packages", [
+            Paragraph([
+                Text("Here you'll eventually find the package index.")
+                Text("For now, here's a short list of essential packages.") 
+            ])
+        ])
+        Section("ff:core", [
+            Paragraph([
+                Text("The standard library of Firefly.")
+            ])
+        ])
+        Section("ff:webserver", [
+            Paragraph([
+                Text("A webserver package. Has HTTPS and WebSocket support.")
+            ])
+        ])
+        Section("ff:websocket", [
+            Paragraph([
+                Text("A package for making websocket connections.")
+            ])
+        ])
+        Section("ff:postgresql", [
+            Paragraph([
+                Text("A package for connecting to PostgreSQL. Has connection pool support.")
+            ])
+        ])
+        Section("ff:lux", [
+            Paragraph([
+                Text("A package for building interactive web interfaces.")
+            ])
+        ])
+        Section("ff:rpc", [
+            Paragraph([
+                Text("A package for type safe remote procedure calls.")
+            ])
+        ])
+        Section("ff:unsafejs", [
+            Paragraph([
+                Text("A FFI package for JavaScript.")
+            ])
+        ])
+    ])
+}

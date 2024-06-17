@@ -1,0 +1,20 @@
+import Guide
+import CountingButtonDemo
+import MatchingPasswordsDemo
+
+new(): Document {
+    Document([
+        Section("Community", [
+            Paragraph([
+                Text("The developers of Firefly hang out in")
+                Code("#firefly")
+                Text("on the")
+                Link("r/ProgrammingLanguages", "https://discord.gg/yQ9mSk7CJ5")
+                Text("Discord.")
+            ])
+            Paragraph([
+                Text("If you're interested in Firefly, that's the best way to be part of the community for now.")
+            ])
+        ])
+    ])
+}
