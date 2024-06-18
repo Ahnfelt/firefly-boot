@@ -28,6 +28,7 @@ newDocument(): Document {
                     Log.debug(emails)
                 }
             """, firefly = True)
+            Paragraph([Text("Note that"), Code(".map", firefly = True), Text("here runs for each row of the result.")])
         ])
     ])
 }
