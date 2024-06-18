@@ -1,0 +1,33 @@
+import Guide
+import Lux from ff:lux
+import LuxEvent from ff:lux
+
+name = "Connecting to PostgreSQL"
+
+newDocument(): Document {
+    Document([
+        Section(name, [
+            Paragraph([Text("Connect to a PostgreSQL database and run a query.")])
+            Paragraph([Text("Add a dependency on "), Code("ff:postgresql"), Text(":")])
+            CodeBlock("""
+                dependency ff:postgresql:0.0.0
+            """, firefly = True)
+            Paragraph([Text("Import the"), Code("Pg"), Text("module from it:")])
+            CodeBlock("""
+                import Pg from ff:postgresql
+            """, firefly = True)
+            Paragraph([Text("Create a connection pool with the appropriate connection parameters:")])
+            CodeBlock("""
+                let pool = Pg.makePool(...)
+            """, firefly = True)
+            Paragraph([Text("And run your first transaction, e.g.:")])
+            CodeBlock("""
+                pool.transaction {connection =>
+                    let emails = connection.statement("select email from users")
+                        .map {row => row.getString("email").grab()}
+                    Log.debug(emails)
+                }
+            """, firefly = True)
+        ])
+    ])
+}

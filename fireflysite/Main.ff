@@ -6,8 +6,6 @@ import ExamplesOverview
 import PackagesOverview
 import CommunityOverview
 import Styles
-import CountingButtonDemo
-import MatchingPasswordsDemo
 
 nodeMain(system: NodeSystem): Unit {
     let host = system.arguments().grab(0)
@@ -51,7 +49,7 @@ browserMain(system: BrowserSystem): Unit {
         }
     } elseIf {system.urlPath().startsWith("/examples/")} {
         let kebab = system.urlPath().dropFirst("/examples/".size())
-        let demos = [CountingButtonDemo.new(), MatchingPasswordsDemo.new()]
+        let demos = ExamplesOverview.demos()
         Lux.renderById(system, "main") {lux => 
             Guide.render(lux, "/examples/", kebab, Guide(ExamplesOverview.mock()), demos)
         }

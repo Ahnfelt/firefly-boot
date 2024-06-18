@@ -260,41 +260,44 @@ renderInline(lux: Lux, inline: Inline) {
 }
 
 renderHighlightedCode(lux: Lux, code: String) {
-    let tokens = Tokenizer.tokenize("<example>", code, None, False)
-    mutable offset = 0
-    mutable index = 0
-    tokens.each {token =>
-        if(token.startOffset > offset) {
-            lux.span {
-                lux.cssClass(Styles.codeCommentCss)
-                lux.text(code.slice(offset, token.startOffset))
+    try {
+        Tokenizer.tokenize("<example>", code + "\n", None, False)
+    }.toOption().map {tokens => 
+        mutable offset = 0
+        mutable index = 0
+        tokens.each {token =>
+            if(token.startOffset > offset) {
+                lux.span {
+                    lux.cssClass(Styles.codeCommentCss)
+                    lux.text(code.slice(offset, token.startOffset))
+                }
             }
+            if(token.kind != LEnd) {
+                let css = token.kind.{
+                    | LChar => Styles.codeStringCss
+                    | LFloat => Styles.codeNumberCss
+                    | LInt => Styles.codeNumberCss
+                    | LKeyword => Styles.codeKeywordCss
+                    | LNamespace => Styles.codeTypeCss
+                    | LString => Styles.codeStringCss
+                    | LUpper => Styles.codeTypeCss
+                    | LWildcard => Styles.codeVariableCss
+                    | LLower {tokens.get(index - 1).any {t => 
+                        t.kind == LBracketRight || t.kind == LDot
+                    }} => Styles.codeCallCss
+                    | LLower {tokens.grab(index + 1).kind == LBracketLeft} => Styles.codeCallCss
+                    | LLower => Styles.codeVariableCss
+                    | _ => Styles.codeOtherCss
+                }
+                lux.span {
+                    lux.cssClass(css)
+                    lux.text(code.slice(token.startOffset, token.stopOffset))
+                }
+                offset = token.stopOffset
+            }
+            index += 1
         }
-        if(token.kind != LEnd) {
-            let css = token.kind.{
-                | LChar => Styles.codeStringCss
-                | LFloat => Styles.codeNumberCss
-                | LInt => Styles.codeNumberCss
-                | LKeyword => Styles.codeKeywordCss
-                | LNamespace => Styles.codeTypeCss
-                | LString => Styles.codeStringCss
-                | LUpper => Styles.codeTypeCss
-                | LWildcard => Styles.codeVariableCss
-                | LLower {tokens.get(index - 1).any {t => 
-                    t.kind == LBracketRight || t.kind == LDot
-                }} => Styles.codeCallCss
-                | LLower {tokens.grab(index + 1).kind == LBracketLeft} => Styles.codeCallCss
-                | LLower => Styles.codeVariableCss
-                | _ => Styles.codeOtherCss
-            }
-            lux.span {
-                lux.cssClass(css)
-                lux.text(code.slice(token.startOffset, token.stopOffset))
-            }
-            offset = token.stopOffset
-        }
-        index += 1
-    }
+    }.else {lux.text(code)}
 }
 
 kebabCase(text: String): String {
