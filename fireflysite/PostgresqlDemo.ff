@@ -18,7 +18,7 @@ newDocument(): Document {
             """, firefly = True)
             Paragraph([Text("Create a connection pool with the appropriate connection parameters:")])
             CodeBlock("""
-                let pool = Pg.makePool(...)
+                let pool = Pg.newPool(...)
             """, firefly = True)
             Paragraph([Text("And run your first transaction, e.g.:")])
             CodeBlock("""
