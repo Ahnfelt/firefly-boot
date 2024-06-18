@@ -134,6 +134,7 @@ guideSidebarCss: CssClass = CssClass(
         CssNest(mobileMediaQuery, [
             Css.order("2")
             Css.width("100%")
+            Css.minHeight("auto")
             Css.height("auto")
             Css.paddingTop("20px")
             Css.paddingBottom("20px")
