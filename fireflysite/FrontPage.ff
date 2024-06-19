@@ -4,12 +4,7 @@ import MatchingPasswordsDemo
 
 new(): Document {
     Document([
-        Section("Firefly", [
-            /*Paragraph([
-                Bold("A full stack in one file:")
-                Text("The smallest client+server webapp is just one source file.")
-            ])*/
-        ])
+        Section("Firefly", [])
         SplitSection(
             "Concise type definitions"
             Paragraph([
