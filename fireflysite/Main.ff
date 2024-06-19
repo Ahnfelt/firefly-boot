@@ -5,6 +5,7 @@ import GuideAll
 import ExamplesOverview
 import PackagesOverview
 import CommunityOverview
+import FrontPage
 import Styles
 
 nodeMain(system: NodeSystem): Unit {
@@ -20,6 +21,8 @@ nodeMain(system: NodeSystem): Unit {
             serveGuideHtml("Firefly Packages", request)
         } elseIf {path.startsWith("/community/")} {
             serveGuideHtml("Firefly Community", request)
+        } elseIf {path.startsWith("/front/")} {
+            serveGuideHtml("Firefly", request)
         } elseIf {path.startsWith("/js/") && !path.contains("..")} {
             request.writeHeader("Content-Type", "text/javascript; charset=UTF-8")
             let asset = if(path == "/js/ff/fireflysite/Main.mjs" && system.assets().exists("/js/Main.bundle.js")) {
@@ -58,10 +61,15 @@ browserMain(system: BrowserSystem): Unit {
         Lux.renderById(system, "main") {lux => 
             Guide.renderSoleDocument(lux, "/packages/", PackagesOverview.new(), [])
         }
-    } else {
+    } elseIf {system.urlPath().startsWith("/community/")} {
         let kebab = system.urlPath().dropFirst("/community/".size())
         Lux.renderById(system, "main") {lux => 
             Guide.renderSoleDocument(lux, "/community/", CommunityOverview.new(), [])
+        }
+    } else {
+        let kebab = system.urlPath().dropFirst("/front/".size())
+        Lux.renderById(system, "main") {lux => 
+            Guide.renderSoleDocument(lux, "/front/", FrontPage.new(), [])
         }
     }
 }

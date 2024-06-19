@@ -12,10 +12,15 @@ data Document(
     sections: List[Section]
 )
 
-data Section(
-    heading: String
-    blocks: List[Block]
-)
+data Section(heading: String) {
+    Section(
+        blocks: List[Block]
+    )
+    SplitSection(
+        first: Block
+        second: Block
+    )
+}
 
 data Block {
     Paragraph(inlines: List[Inline])
@@ -76,8 +81,8 @@ renderTopbar(lux: Lux, prefix: String) {
             lux.add("a") {
                 lux.cssClass(Styles.whiteLinkCss)
                 lux.cssClass(Styles.topbarFireflyCss)
-                if(prefix == "/") {lux.set("aria-current", "page")}
-                lux.set("href", "/")
+                if(prefix == "/front/") {lux.set("aria-current", "page")}
+                lux.set("href", "/front/")
                 lux.text("Firefly")
             }
             lux.add("a") {
@@ -148,12 +153,29 @@ renderDocument(lux: Lux, document: Document, demos: List[Demo]) {
     }
 }
 
-renderSection(lux: Lux, first: Bool, section: Section, demos: List[Demo]) {
-    lux.add(if(first) {"h1"} else {"h2"}) {
-        lux.cssClass(if(first) {Styles.guideH1Css} else {Styles.guideH2Css})
-        lux.text(section.heading)
-    }
-    section.blocks.each {renderBlock(lux, _, demos)}
+renderSection(lux: Lux, firstSection: Bool, section: Section, demos: List[Demo]) {
+    section.{
+        | Section(heading, blocks) => 
+            lux.add(if(firstSection) {"h1"} else {"h2"}) {
+                lux.cssClass(if(firstSection) {Styles.guideH1Css} else {Styles.guideH2Css})
+                lux.text(heading)
+            }
+            blocks.each {renderBlock(lux, _, demos)}
+        | SplitSection(heading, first, second) => 
+            lux.add("div") {
+                lux.cssClass(Styles.guideSplitCss)
+                lux.add("div") {
+                    lux.add("h4") {
+                        lux.cssClass(Styles.guideSplitHeadingCss)
+                        lux.text(section.heading)
+                    }
+                    renderBlock(lux, first, demos)
+                }
+                lux.add("div") {
+                    renderBlock(lux, second, demos)
+                }
+            }
+        }
 }
 
 renderBlock(lux: Lux, block: Block, demos: List[Demo]) {

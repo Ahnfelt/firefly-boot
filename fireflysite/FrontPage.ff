@@ -1,0 +1,53 @@
+import Guide
+import CountingButtonDemo
+import MatchingPasswordsDemo
+
+new(): Document {
+    Document([
+        Section("Firefly", [
+            /*Paragraph([
+                Bold("A full stack in one file:")
+                Text("The smallest client+server webapp is just one source file.")
+            ])*/
+        ])
+        SplitSection(
+            "Concise type definitions"
+            Paragraph([
+                Text("Model your types in a breif format that fits multiple definitions on one screen.")
+                Text("Be precise about whether things can be missing with")
+                Code("Option[T]", firefly = True)
+                Text("and make invalid states unrepresentable with variants and type parameters.")
+            ])
+            CodeBlock("""
+                data User(
+                    id: UserId
+                    name: String
+                    email: Option[String]
+                )
+                
+                data Tree[T](
+                    Leaf(value: T)
+                    Branch(left: Tree[T], right: Tree[T])
+                )
+            """, firefly = True)
+        )
+        SplitSection(
+            "Convenient collections"
+            Paragraph([
+                Text("Immutable and mutable collections are part of the standard library.")
+                Text("Maps, sets, arrays, lists and streams come with a rich set of methods that you can use to write succint code.")
+            ])
+            CodeBlock("""
+                let emails = houses
+                    .flatMap {_.owners}
+                    .map {_.email}
+                    .filter {!_.endsWith("example.com")}
+                    .toSet()
+                    
+                emails.each {email =>
+                    sendNeighborhoodNewsletter(email)
+                }
+            """, firefly = True)
+        )
+    ])
+}

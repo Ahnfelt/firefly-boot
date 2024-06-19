@@ -222,6 +222,54 @@ guideDocumentCss: CssClass = CssClass(
     []
 )
 
+guideSplitCss: CssClass = CssClass(
+    [
+        Css.display("flex")
+        Css.gap("30px")
+        Css.justifyContent("space-between")
+        Css.marginTop("50px")
+        Css.marginBottom("50px")
+    ]
+    [
+        CssNest("&>div:first-child", [
+            Css.width("calc(350px - 15px)")
+        ], [])
+        CssNest("&>div:last-child", [
+            Css.width("calc(450px - 15px)")
+        ], [])
+        CssNest("&>div>:first-child", [
+            Css.marginTop("0")
+        ], [])
+        CssNest("&>div>:last-child", [
+            Css.marginBottom("0")
+        ], [])
+        CssNest(mobileMediaQuery, [
+            Css.flexDirection("column")
+        ], [
+            CssNest("&>div:first-child", [
+                Css.width("auto")
+            ], [])
+            CssNest("&>div:last-child", [
+                Css.width("auto")
+            ], [])
+        ])
+    ]
+    []
+)
+
+guideSplitHeadingCss: CssClass = CssClass(
+    [
+        Css.fontSize("23px")
+        Css.margin("0")
+    ]
+    [
+        CssNest(mobileMediaQuery, [
+            Css.fontSize("21px")
+        ], [])
+    ]
+    []
+)
+
 guideH1Css: CssClass = CssClass(
     [
         Css.fontSize("32px")
