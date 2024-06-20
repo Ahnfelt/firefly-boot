@@ -227,8 +227,8 @@ guideSplitCss: CssClass = CssClass(
         Css.display("flex")
         Css.gap("30px")
         Css.justifyContent("space-between")
-        Css.marginTop("50px")
-        Css.marginBottom("50px")
+        Css.marginTop("70px")
+        Css.marginBottom("70px")
     ]
     [
         CssNest("&>div:first-child", [
@@ -243,6 +243,9 @@ guideSplitCss: CssClass = CssClass(
         CssNest("&>div>:last-child", [
             Css.marginBottom("0")
         ], [])
+        CssNest("&>div pre>code", [
+            Css.fontSize("16px")
+        ], [])
         CssNest(mobileMediaQuery, [
             Css.flexDirection("column")
         ], [
@@ -251,6 +254,9 @@ guideSplitCss: CssClass = CssClass(
             ], [])
             CssNest("&>div:last-child", [
                 Css.width("auto")
+            ], [])
+            CssNest("&>div pre>code", [
+                Css.fontSize("15px")
             ], [])
         ])
     ]

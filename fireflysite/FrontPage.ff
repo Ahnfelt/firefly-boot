@@ -88,7 +88,7 @@ new(): Document {
             """, firefly = True)
         )
         SplitSection(
-            "Painless effect system"
+            "Managed I/O and effects"
             Paragraph([
                 Text("The main function is passed a")
                 Code("system")
@@ -110,6 +110,11 @@ new(): Document {
                 }
             """, firefly = True)
         )
+        Section("The website obesity crisis", [
+            Paragraph([
+                Text("Have you noticed")
+            ])
+        ])
     ])
 }
 nodeMain(system: NodeSystem) {
