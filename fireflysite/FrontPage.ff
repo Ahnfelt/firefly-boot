@@ -20,10 +20,10 @@ new(): Document {
                     email: Option[String]
                 )
                 
-                data Tree[T](
+                data Tree[T] {
                     Leaf(value: T)
                     Branch(left: Tree[T], right: Tree[T])
-                )
+                }
             """, firefly = True)
         )
         SplitSection(
