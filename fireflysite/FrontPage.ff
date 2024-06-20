@@ -6,6 +6,24 @@ new(): Document {
     Document([
         Section("Firefly", [])
         SplitSection(
+            "Single file webapps"
+            Paragraph([
+                Text("Firefly code runs in the browser and on the server, or even at build time.")
+                Text("When starting out, you can put everything in a single")
+                Code(".ff")
+                Text("file, including your dependency list.")
+            ])
+            CodeBlock("""
+                dependency ff:webserver:0.0.0
+            
+                nodeMain(system: NodeSystem) {...}
+                    
+                browserMain(system: BrowserSystem) {...}
+                
+                buildMain(system: BuildSystem) {...}
+            """, firefly = True)
+        )
+        SplitSection(
             "Concise type definitions"
             Paragraph([
                 Text("Model your types in a breif format that fits multiple definitions on one screen.")
