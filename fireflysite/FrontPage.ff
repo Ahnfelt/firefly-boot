@@ -111,6 +111,26 @@ new(): Document {
             """, firefly = True)
         )
         SplitSection(
+            "Interactive webapps"
+            Paragraph([
+                Text("The")
+                Code("ff:lux")
+                Text("package provides a declarative DOM framework for building highly interactive webapps.")
+                Text("Tasks that belong to removed nodes are automatically cancelled.")
+                Text("All without any virtual DOM.")
+            ])
+            CodeBlock("""
+                lux.useState(0): count, setCount => 
+                lux.button {
+                    lux.text("Clicked " + count + " times")
+                    lux.onClick {event =>
+                        event.preventDefault()
+                        setCount(count + 1)
+                    }
+                }
+            """, firefly = True)
+        )
+        SplitSection(
             "Type safe RPC"
             Paragraph([
                 Text("All your custom")
@@ -134,6 +154,27 @@ new(): Document {
                 // the webserver replies with an Int
                 let server = Rpc.newServer(...)
                 server.add {| context, Message(text) => 42 }
+            """, firefly = True)
+        )
+        SplitSection(
+            "Easy database connections"
+            Paragraph([
+                Text("The")
+                Code("ff:postgresql")
+                Text("package lets you create a connection pool for a PostgreSQL database.")
+                Text("You can then execute transactions and build stateful applications.")
+            ])
+            CodeBlock("""
+                dependency ff:postgresql:0.0.0
+                import Pg from ff:postgresql
+                
+                // in nodeMain
+                let pool = Pg.newPool(...)
+                let emails = pool.transaction {connection =>
+                    connection.statement(
+                        "select email from users"
+                    ).map {_.getString("email").grab()}
+                }
             """, firefly = True)
         )
     ])
