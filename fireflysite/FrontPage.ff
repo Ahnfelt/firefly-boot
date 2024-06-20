@@ -62,5 +62,30 @@ new(): Document {
                 }
             """, firefly = True)
         )
+        SplitSection(
+            "Uncolored async/await"
+            Paragraph([
+                Text("In Firefly, there's no")
+                Code("async")
+                Text("or")
+                Code("await")
+                Text("syntax.")
+                Text("Instead, the compiler infers which calls are asynchronous and automatically generates the appropriate code.")
+                Text("A method like")
+                Code(".map")
+                Text("on lists is called asynchronously only when the lambda function you pass is asynchronous.")
+            ])
+            CodeBlock("""
+                let files = ["a.txt", "b.txt"]
+                // async .map call
+                let contents = files.map {file =>
+                    system.path(file).readText()
+                }
+                // sync .map call
+                let upper = contents.map {content =>
+                    content.upper()
+                }
+            """, firefly = True)
+        )
     ])
 }
