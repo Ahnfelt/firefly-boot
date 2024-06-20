@@ -68,16 +68,3 @@ newClient(
         ) {_.readBuffer()}
     }
 }
-
-data Message(text: String)
-instance Message: Rpc[Int]
-
-browserMain(system: BrowserSystem) {
-    let client = Rpc.newClient(...)
-    let messageId = client.call(Message("Hello"))
-}
-
-nodeMain(system: NodeSystem) {
-    let server = Rpc.newServer(...)
-    server.add {| context, Message(text) => 42 }
-}
