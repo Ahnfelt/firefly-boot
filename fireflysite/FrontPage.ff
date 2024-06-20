@@ -165,10 +165,6 @@ new(): Document {
                 Text("You can then execute transactions and build stateful applications.")
             ])
             CodeBlock("""
-                dependency ff:postgresql:0.0.0
-                import Pg from ff:postgresql
-                
-                // in nodeMain
                 let pool = Pg.newPool(...)
                 let emails = pool.transaction {connection =>
                     connection.statement(
