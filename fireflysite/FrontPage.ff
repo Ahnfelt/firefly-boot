@@ -127,11 +127,11 @@ new(): Document {
                 data Message(text: String)
                 instance Message: Rpc[Int]
 
-                // in the browser
+                // the browser sends a Message
                 let client = Rpc.newClient(...)
                 let messageId = client.call(Message("Hello"))
 
-                // on the webserevr
+                // the webserver replies with an Int
                 let server = Rpc.newServer(...)
                 server.add {| context, Message(text) => 42 }
             """, firefly = True)
