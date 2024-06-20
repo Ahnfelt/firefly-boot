@@ -348,7 +348,7 @@ guideLinkCss: CssClass = CssClass(
     []
 )
 
-codeCommentCss: CssClass = CssClass([Css.color("#6a9955")], [], [])
+codeCommentCss: CssClass = CssClass([Css.color("#757c8a")], [], [])
 codeStringCss: CssClass = CssClass([Css.color("#ce9178")], [], [])
 codeNumberCss: CssClass = CssClass([Css.color("#b5cea8")], [], [])
 codeKeywordCss: CssClass = CssClass([Css.color("#569cd6")], [], [])
