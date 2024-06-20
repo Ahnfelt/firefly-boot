@@ -95,26 +95,47 @@ new(): Document {
                 Text("argument that represents all the I/O you can do.")
                 Text("It's a plain object, and you can simply wrap it to create a new")
                 Text("object with less capabilities. You can tell what effects a top level function")
-                Text("can have simply by looking at what arguments it takes in.")
+                Text("can have simply by looking at what arguments it receives.")
             ])
             CodeBlock("""
                 nodeMain(system: NodeSytem) {
-                    let r = fetchSite(system.httpClient())
-                    system.writeLine(r)
+                    let html = fetchSite(system.httpClient())
+                    system.writeLine(html)
                 }
 
-                // This function can only do HTTP requests
+                // this function can only do HTTP requests
                 fetchSite(httpClient: HttpClient): String {
                     let url = "https://www.example.com/"
                     httpClient.get(url, []) {_.readText()}
                 }
             """, firefly = True)
         )
-        Section("The website obesity crisis", [
+        SplitSection(
+            "Type safe RPC"
             Paragraph([
-                Text("Have you noticed")
+                Text("All your custom")
+                Code("data")
+                Text("types are automatically serializable in Firefly.")
+                Text("With ")
+                Code("ff:rpc")
+                Text("you can set up type safe remote procedure calls from the browser to the webserver or between services.")
+                Text("You can even")
+                Italic("go to definition")
+                Text("across RPC boundaries.")
             ])
-        ])
+            CodeBlock("""
+                data Message(text: String)
+                instance Message: Rpc[Int]
+
+                // in the browser
+                let client = Rpc.newClient(...)
+                let messageId = client.call(Message("Hello"))
+
+                // on the webserevr
+                let server = Rpc.newServer(...)
+                server.add {| context, Message(text) => 42 }
+            """, firefly = True)
+        )
     ])
 }
 nodeMain(system: NodeSystem) {
