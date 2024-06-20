@@ -87,5 +87,32 @@ new(): Document {
                 }
             """, firefly = True)
         )
+        SplitSection(
+            "Painless effect system"
+            Paragraph([
+                Text("The main function is passed a")
+                Code("system")
+                Text("argument that represents all the I/O you can do.")
+                Text("It's a plain object, and you can simply wrap it to create a new")
+                Text("object with less capabilities. You can tell what effects a top level function")
+                Text("can have simply by looking at what arguments it takes in.")
+            ])
+            CodeBlock("""
+                nodeMain(system: NodeSytem) {
+                    let r = fetchSite(system.httpClient())
+                    system.writeLine(r)
+                }
+
+                // This function can only do HTTP requests
+                fetchSite(httpClient: HttpClient): String {
+                    let url = "https://www.example.com/"
+                    httpClient.get(url, []) {_.readText()}
+                }
+            """, firefly = True)
+        )
     ])
+}
+nodeMain(system: NodeSystem) {
+    system.httpClient().get("https://www.example.com/", []) {_.readText()}
+    
 }
