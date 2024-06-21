@@ -45,31 +45,19 @@ nodeMain(system: NodeSystem): Unit {
 }
 
 browserMain(system: BrowserSystem): Unit {
-    if(system.urlPath().startsWith("/guide/")) {
-        let kebab = system.urlPath().dropFirst("/guide/".size())
+    let demos = ExamplesOverview.demos()
+    let guides = [
+        Guide("/front/", [FrontPage.new()])
+        Guide("/guide/", GuideAll.mock())
+        Guide("/examples/", ExamplesOverview.mock())
+        Guide("/packages/", [PackagesOverview.new()])
+        Guide("/community/", [CommunityOverview.new()])
+    ]
+    guides.collect {guide => 
+        if(system.urlPath().startsWith(guide.prefix)):
         Lux.renderById(system, "main") {lux => 
-            Guide.render(lux, "/guide/", kebab, Guide(GuideAll.mock()), [])
-        }
-    } elseIf {system.urlPath().startsWith("/examples/")} {
-        let kebab = system.urlPath().dropFirst("/examples/".size())
-        let demos = ExamplesOverview.demos()
-        Lux.renderById(system, "main") {lux => 
-            Guide.render(lux, "/examples/", kebab, Guide(ExamplesOverview.mock()), demos)
-        }
-    } elseIf {system.urlPath().startsWith("/packages/")} {
-        let kebab = system.urlPath().dropFirst("/packages/".size())
-        Lux.renderById(system, "main") {lux => 
-            Guide.renderSoleDocument(lux, "/packages/", PackagesOverview.new(), [])
-        }
-    } elseIf {system.urlPath().startsWith("/community/")} {
-        let kebab = system.urlPath().dropFirst("/community/".size())
-        Lux.renderById(system, "main") {lux => 
-            Guide.renderSoleDocument(lux, "/community/", CommunityOverview.new(), [])
-        }
-    } else {
-        let kebab = system.urlPath().dropFirst("/front/".size())
-        Lux.renderById(system, "main") {lux => 
-            Guide.renderSoleDocument(lux, "/front/", FrontPage.new(), [])
+            let kebab = system.urlPath().dropFirst(guide.prefix.size())
+            Guide.render(lux, guide.prefix, kebab, guides, demos)
         }
     }
 }

@@ -1,10 +1,12 @@
 import Lux from ff:lux
+import LuxEvent from ff:lux
 import Css from ff:lux
 import Tokenizer from ff:compiler
 import Token from ff:compiler
 import Styles
 
 data Guide(
+    prefix: String
     documents: List[Document]
 )
 
@@ -45,77 +47,44 @@ capability Demo(
     render: Lux => Unit
 )
 
-render(lux: Lux, prefix: String, kebab: String, guide: Guide, demos: List[Demo]) {
+render(lux: Lux, prefix: String, kebab: String, guides: List[Guide], demos: List[Demo]) {
+    let guide = guides.find {_.prefix == prefix}.else {guides.grabFirst()}
     let document = guide.documents.find {
         _.sections.first().any {kebabCase(_.heading) == kebab}
     }.else {guide.documents.grabFirst()}
     lux.add("div") {
+        lux.useState(False): menu, setMenu =>
         lux.cssClass(Styles.pageCss)
-        renderTopbar(lux, prefix)
         lux.add("div") {
             lux.cssClass(Styles.guideCss)
-            renderSidebar(lux, prefix, guide, document.sections.first().map {_.heading}.else {""})
             lux.add("main") {
                 lux.cssClass(Styles.guideMainCss)
                 renderDocument(lux, document, demos)
             }
+            lux.add("button") {
+                lux.cssClass(Styles.guideSidebarButtonCss)
+                lux.onClick {event =>
+                    event.preventDefault()
+                    setMenu(True)
+                }
+            }
+            lux.add("div") {
+                lux.cssClass(Styles.guideSidebarBackdropCss)
+                if(menu) {lux.cssClass(Styles.guideSidebarBackdropOpenCss)}
+                lux.onClick {event =>
+                    event.preventDefault()
+                    setMenu(False)
+                }
+            }
+            renderSidebar(lux, guides, guide, document.sections.first().map {_.heading}.else {""}, menu)
         }
     }
 }
 
-renderSoleDocument(lux: Lux, prefix: String, document: Document, demos: List[Demo]) {
-    lux.add("div") {
-        lux.cssClass(Styles.pageCss)
-        renderTopbar(lux, prefix)
-        lux.add("main") {
-            lux.cssClass(Styles.guideSoleDocumentCss)
-            renderDocument(lux, document, demos)
-        }
-    }
-}
-
-renderTopbar(lux: Lux, prefix: String) {
-    lux.add("header") {
-        lux.add("nav") {
-            lux.cssClass(Styles.topbarCss)
-            lux.add("a") {
-                lux.cssClass(Styles.whiteLinkCss)
-                lux.cssClass(Styles.topbarFireflyCss)
-                if(prefix == "/front/") {lux.set("aria-current", "page")}
-                lux.set("href", "/front/")
-                lux.text("Firefly")
-            }
-            lux.add("a") {
-                lux.cssClass(Styles.whiteLinkCss)
-                if(prefix == "/guide/") {lux.set("aria-current", "page")}
-                lux.set("href", "/guide/")
-                lux.text("Guide")
-            }
-            lux.add("a") {
-                lux.cssClass(Styles.whiteLinkCss)
-                if(prefix == "/examples/") {lux.set("aria-current", "page")}
-                lux.set("href", "/examples/")
-                lux.text("Examples")
-            }
-            lux.add("a") {
-                lux.cssClass(Styles.whiteLinkCss)
-                if(prefix == "/packages/") {lux.set("aria-current", "page")}
-                lux.set("href", "/packages/")
-                lux.text("Packages")
-            }
-            lux.add("a") {
-                lux.cssClass(Styles.whiteLinkCss)
-                if(prefix == "/community/") {lux.set("aria-current", "page")}
-                lux.set("href", "/community/")
-                lux.text("Community")
-            }
-        }
-    }
-}
-
-renderSidebar(lux: Lux, prefix: String, guide: Guide, selectedHeading: String) {
+renderSidebar(lux: Lux, guides: List[Guide], selectedGuide: Guide, selectedHeading: String, menu: Bool) {
     lux.add("nav") {
         lux.cssClass(Styles.guideSidebarCss)
+        if(menu) {lux.cssClass(Styles.guideSidebarOpenCss)}
         lux.add("form") {
             lux.set("role", "search")
             lux.add("input") {
@@ -125,20 +94,38 @@ renderSidebar(lux: Lux, prefix: String, guide: Guide, selectedHeading: String) {
             }
         }
         lux.add("ul") {
-            lux.cssClass(Styles.guideSidebarUlCss)
-            mutable first = True
-            guide.documents.each {document =>
+            lux.cssClass(Styles.guideSidebarUl1Css)
+            guides.each {guide =>
                 lux.add("li") {
-                    lux.cssClass(Styles.guideSidebarLiCss)
+                    lux.cssClass(Styles.guideSidebarLi1Css)
                     lux.add("a") {
-                        let heading = document.sections.grabFirst().heading
                         lux.cssClass(Styles.whiteLinkCss)
-                        if(heading == selectedHeading) {lux.set("aria-current", "page")}
-                        lux.set("href", if(first) {prefix} else {prefix + kebabCase(heading)})
+                        let heading = guide.documents.grabFirst().sections.grabFirst().heading
+                        if(selectedGuide.prefix == guide.prefix && heading == selectedHeading) {
+                            lux.set("aria-current", "page")
+                        }
+                        lux.set("href", guide.prefix)
                         lux.text(heading)
                     }
+                    if(guide.documents.size() > 1): 
+                    lux.add("ul") {
+                        lux.cssClass(Styles.guideSidebarUl2Css)
+                        guide.documents.dropFirst().each {document =>
+                            lux.add("li") {
+                                lux.cssClass(Styles.guideSidebarLi2Css)
+                                lux.add("a") {
+                                    lux.cssClass(Styles.whiteLinkCss)
+                                    let heading = document.sections.grabFirst().heading
+                                    if(selectedGuide.prefix == guide.prefix && heading == selectedHeading) {
+                                        lux.set("aria-current", "page")
+                                    }
+                                    lux.set("href", guide.prefix + kebabCase(heading))
+                                    lux.text(heading)
+                                }
+                            }
+                        }
+                    }
                 }
-                first = False
             }
         }
     }
