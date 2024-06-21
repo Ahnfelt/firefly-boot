@@ -215,7 +215,7 @@ guideMainCss: CssClass = CssClass(
         Css.justifyContent("center")
         Css.marginLeft("300px")
         Css.paddingLeft("20px")
-        Css.paddingRight("calc(max(20px, 20vw - 300px))")
+        Css.paddingRight("calc(max(20px, 25vw - 300px))")
         Css.paddingTop("80px")
         Css.paddingBottom("80px")
         Css.position("relative")
