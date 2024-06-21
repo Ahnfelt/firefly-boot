@@ -167,11 +167,11 @@ new(): Document {
             CodeBlock("""
                 let pool = Pg.newPool(...)
                 let emails = pool.transaction {connection =>
-                    connection.statement(
-                        "select email from users"
-                    ).map {_.getString("email").grab()}
+                    connection.statement('''
+                        select email from users
+                    ''').map {_.getString("email").grab()}
                 }
-            """, firefly = True)
+            """.replace("'''", "\"\"\""), firefly = True)
         )
     ])
 }
