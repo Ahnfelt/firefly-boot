@@ -150,6 +150,7 @@ guideSidebarBackdropCss: CssClass = CssClass(
         Css.left("0")
         Css.right("0px")
         Css.backgroundColor("rgba(0, 0, 0, 0.4)")
+        Css.touchAction("none")
     ]
     []
     []
