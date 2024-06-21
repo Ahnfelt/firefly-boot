@@ -1,7 +1,7 @@
 import Css from ff:lux
 
-mobileMediaQuery: String = "@media only screen and (max-width: 600px)"
-desktopMediaQuery: String = "@media only screen and (min-width: 1500px)"
+mobileMediaQuery: String = "@media only screen and (max-width: 840px)"
+mobileOrTabletMediaQuery: String = "@media only screen and (max-width: 1140px)"
 
 pageCss: CssClass = CssClass(
     [
@@ -43,44 +43,6 @@ greenLinkCss: CssClass = CssClass(
     []
 )
 
-topbarCss: CssClass = CssClass(
-    [
-        Css.display("flex")
-        Css.gap("30px")
-        Css.paddingLeft("20px")
-        Css.paddingRight("30px")
-        Css.lineHeight("49px")
-        Css.fontSize("17px")
-        Css.backgroundColor("#34373d")
-        Css.borderBottom("1px solid #2b2d30")
-        Css.boxSizing("border-box")
-    ]
-    [
-        CssNest(mobileMediaQuery, [
-            Css.paddingLeft("20px")
-            Css.paddingRight("20px")
-            Css.gap("10px")
-            Css.fontSize("15px")
-            Css.overflowX("auto")
-            Css.justifyContent("space-between")
-        ], [])
-    ]
-    []
-)
-
-topbarFireflyCss: CssClass = CssClass(
-    [
-        Css.marginRight("auto")
-        Css.fontSize("19px")
-    ]
-    [
-        CssNest(mobileMediaQuery, [
-            Css.fontSize("15px")
-        ], [])
-    ]
-    []
-)
-
 searchInputCss: CssClass = CssClass(
     [
         Css.appearance("none")
@@ -114,11 +76,7 @@ guideCss: CssClass = CssClass(
     [
         Css.display("flex")
     ]
-    [
-        CssNest(mobileMediaQuery, [
-            Css.flexDirection("column")
-        ], [])
-    ]
+    []
     []
 )
 
@@ -178,7 +136,7 @@ guideSidebarCss: CssClass = CssClass(
         Css.transition("200ms transform")
     ]
     [
-        CssNest(mobileMediaQuery, [
+        CssNest(mobileOrTabletMediaQuery, [
             Css.order("2")
             Css.width("calc(100% - 50px)")
             Css.maxWidth("300px")
@@ -196,7 +154,7 @@ guideSidebarCss: CssClass = CssClass(
 guideSidebarOpenCss: CssClass = CssClass(
     []
     [
-        CssNest(mobileMediaQuery, [
+        CssNest(mobileOrTabletMediaQuery, [
             Css.transform("translateX(0)")
         ], [])
     ]
@@ -256,40 +214,20 @@ guideMainCss: CssClass = CssClass(
         Css.display("flex")
         Css.justifyContent("center")
         Css.marginLeft("300px")
-        Css.padding("20px")
-        Css.paddingTop("70px")
-        Css.paddingBottom("50px")
+        Css.paddingLeft("20px")
+        Css.paddingRight("calc(max(20px, 20vw - 300px))")
+        Css.paddingTop("80px")
+        Css.paddingBottom("80px")
         Css.position("relative")
         Css.boxSizing("content-box")
     ]
     [
-        CssNest(mobileMediaQuery, [
+        CssNest(mobileOrTabletMediaQuery, [
             Css.marginLeft("0")
             Css.paddingLeft("20px")
-            Css.paddingTop("30px")
-            Css.paddingBottom("20px")
-        ], [])
-        CssNest(desktopMediaQuery, [
-            Css.paddingRight("200px")
-        ], [])
-    ]
-    []
-)
-
-guideSoleDocumentCss: CssClass = CssClass(
-    [
-        Css.flex("1")
-        Css.display("flex")
-        Css.justifyContent("center")
-        Css.padding("20px")
-        Css.paddingTop("70px")
-        Css.paddingBottom("50px")
-        Css.position("relative")
-        Css.boxSizing("content-box")
-    ]
-    [
-        CssNest(mobileMediaQuery, [
-            Css.paddingTop("30px")
+            Css.paddingRight("20px")
+            Css.paddingTop("60px")
+            Css.paddingBottom("50px")
         ], [])
     ]
     []
