@@ -42,9 +42,40 @@ data Inline {
     Anchor(heading: String, title: Option[String] = None)
 }
 
+extend self: Guide {
+    title(): String {
+        self.documents.first().map {_.heading()}.else {""}
+    }
+}
+
+extend self: Document {
+    heading(): String {
+        self.sections.first().map {_.heading}.else {""}
+    }
+    title(guide: Guide): String {
+        if(guide.documents.first().any {_.heading() == self.heading()}) {
+            self.heading()
+        } else {
+            self.heading() + " · Firefly " + guide.title()
+        }
+    }
+    path(guide: Guide): String {
+        if(guide.documents.first().any {_.heading() == self.heading()}) {
+            guide.prefix
+        } else {
+            guide.prefix + kebabCase(self.heading())
+        }
+    }
+}
+
 capability Demo(
     name: String
     render: Lux => Unit
+)
+
+data GuideDocument(
+    guide: Guide
+    document: Document
 )
 
 render(lux: Lux, browser: BrowserSystem, prefix: String, kebab: String, guides: List[Guide], demos: List[Demo]) {
@@ -52,12 +83,13 @@ render(lux: Lux, browser: BrowserSystem, prefix: String, kebab: String, guides: 
     let document = guide.documents.find {
         _.sections.first().any {kebabCase(_.heading) == kebab}
     }.else {guide.documents.grabFirst()}
-    let guideTitle = guide.documents.grabFirst().sections.grabFirst().heading
-    let documentHeading = document.sections.grabFirst().heading
-    browser.js().global().get("document").set("title"
-        if(documentHeading != guideTitle) {documentHeading + " · "} else {""} + 
-        if(guideTitle != "Firefly") {"Firefly " + guideTitle} else {"Firefly"}
-    )
+    browser.js().global().get("document").set("title", document.title(guide))
+    let guideDocuments = guides.flatMap {guide => guide.documents.map {document => 
+        GuideDocument(guide, document)
+    }}
+    let nextDocument = guideDocuments.dropWhile {n => 
+        n.guide.prefix != guide.prefix || n.document.heading() != document.heading()
+    }.dropFirst().first()
     lux.add("div") {
         lux.useState(False): menu, setMenu =>
         lux.cssClass(Styles.pageCss)
@@ -65,7 +97,7 @@ render(lux: Lux, browser: BrowserSystem, prefix: String, kebab: String, guides: 
             lux.cssClass(Styles.guideCss)
             lux.add("main") {
                 lux.cssClass(Styles.guideMainCss)
-                renderDocument(lux, document, demos)
+                renderDocument(lux, document, demos, nextDocument)
             }
             lux.add("button") {
                 lux.cssClass(Styles.guideSidebarButtonCss)
@@ -137,11 +169,21 @@ renderSidebar(lux: Lux, guides: List[Guide], selectedGuide: Guide, selectedHeadi
     }
 }
 
-renderDocument(lux: Lux, document: Document, demos: List[Demo]) {
+renderDocument(lux: Lux, document: Document, demos: List[Demo], nextDocument: Option[GuideDocument]) {
     lux.add("article") {
         lux.cssClass(Styles.guideDocumentCss)
         document.sections.pairs().each {| Pair(index, section) => 
             renderSection(lux, index == 0, section, demos)
+        }
+        nextDocument.each {next => 
+            lux.div {
+                lux.cssClass(Styles.guideNextButtonCss)
+                lux.add("a") {
+                    lux.cssClass(Styles.guideButtonCss)
+                    lux.set("href", next.document.path(next.guide))
+                    lux.text("Next: " + next.document.heading())
+                }
+            }
         }
     }
 }

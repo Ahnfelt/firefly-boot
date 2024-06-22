@@ -379,7 +379,36 @@ guideLinkCss: CssClass = CssClass(
         Css.textDecoration("none")
     ]
     [
-        CssNest("&:hover", [Css.textDecoration("underline")], [])
+        CssNest("&:hover", [
+            Css.textDecoration("underline")
+        ], [])
+    ]
+    []
+)
+
+guideNextButtonCss: CssClass = CssClass(
+    [
+        Css.marginTop("70px")
+    ]
+    []
+    []
+)
+
+guideButtonCss: CssClass = CssClass(
+    [
+        Css.padding("15px 30px")
+        Css.borderRadius("10px")
+        Css.background("#252527")
+        Css.color("#dadada")
+        Css.textDecoration("none")
+    ]
+    [
+        CssNest("&::after", [
+            Css.content("' →'")
+        ], [])
+        CssNest("&:hover", [
+            Css.textDecoration("underline")
+        ], [])
     ]
     []
 )
