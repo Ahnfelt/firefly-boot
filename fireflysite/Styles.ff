@@ -358,7 +358,7 @@ guideCodeBlockCss: CssClass = CssClass(
     ]
     [
         CssNest(mobileMediaQuery, [
-            Css.maxWidth("calc(100% + 40px)")
+            Css.maxWidth("calc(100vw)")
             Css.marginLeft("-20px")
             Css.marginRight("-20px")
             Css.borderRadius("0")
