@@ -401,8 +401,12 @@ guideButtonCss: CssClass = CssClass(
         Css.background("#252527")
         Css.color("#dadada")
         Css.textDecoration("none")
+        Css.fontSize("17px")
     ]
     [
+        CssNest(mobileMediaQuery, [
+            Css.fontSize("15px")
+        ], [])
         CssNest("&::after", [
             Css.content("' →'")
         ], [])
