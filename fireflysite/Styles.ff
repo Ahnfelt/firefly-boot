@@ -116,9 +116,12 @@ guideSidebarBackdropCss: CssClass = CssClass(
 
 guideSidebarBackdropOpenCss: CssClass = CssClass(
     [
-        Css.display("block")
     ]
-    []
+    [
+        CssNest(mobileOrTabletMediaQuery, [
+            Css.display("block")
+        ], [])
+    ]
     []
 )
 
