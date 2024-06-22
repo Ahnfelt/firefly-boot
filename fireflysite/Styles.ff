@@ -55,7 +55,7 @@ searchInputCss: CssClass = CssClass(
         Css.backgroundColor("#34373d")
         Css.color("#dadada")
         Css.height("34px")
-        Css.fontSize("15px")
+        Css.fontSize("16px")
         Css.borderRadius("17px")
         Css.paddingLeft("15px")
         Css.paddingRight("15px")
@@ -67,6 +67,7 @@ searchInputCss: CssClass = CssClass(
         CssNest("&::placeholder", [
             Css.color("#dadada")
             Css.opacity("0.7")
+            Css.fontSize("15px")
         ], [])
     ]
     []
@@ -94,7 +95,6 @@ guideSidebarButtonCss: CssClass = CssClass(
         Css.border("none")
         Css.outline("none")
         Css.padding("none")
-        Css.touchAction("manipulation")
     ]
     []
     []
@@ -137,7 +137,6 @@ guideSidebarCss: CssClass = CssClass(
         Css.backgroundColor("#2b2d30")
         Css.overflowY("auto")
         Css.transition("200ms transform")
-        Css.touchAction("manipulation")
     ]
     [
         CssNest(mobileOrTabletMediaQuery, [
