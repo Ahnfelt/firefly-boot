@@ -57,7 +57,7 @@ browserMain(system: BrowserSystem): Unit {
         if(system.urlPath().startsWith(guide.prefix)):
         Lux.renderById(system, "main") {lux => 
             let kebab = system.urlPath().dropFirst(guide.prefix.size())
-            Guide.render(lux, guide.prefix, kebab, guides, demos)
+            Guide.render(lux, system, guide.prefix, kebab, guides, demos)
         }
     }
 }

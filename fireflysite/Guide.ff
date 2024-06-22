@@ -47,11 +47,17 @@ capability Demo(
     render: Lux => Unit
 )
 
-render(lux: Lux, prefix: String, kebab: String, guides: List[Guide], demos: List[Demo]) {
+render(lux: Lux, browser: BrowserSystem, prefix: String, kebab: String, guides: List[Guide], demos: List[Demo]) {
     let guide = guides.find {_.prefix == prefix}.else {guides.grabFirst()}
     let document = guide.documents.find {
         _.sections.first().any {kebabCase(_.heading) == kebab}
     }.else {guide.documents.grabFirst()}
+    let guideTitle = guide.documents.grabFirst().sections.grabFirst().heading
+    let documentHeading = document.sections.grabFirst().heading
+    browser.js().global().get("document").set("title"
+        if(documentHeading != guideTitle) {documentHeading + " · "} else {""} + 
+        if(guideTitle != "Firefly") {"Firefly " + guideTitle} else {"Firefly"}
+    )
     lux.add("div") {
         lux.useState(False): menu, setMenu =>
         lux.cssClass(Styles.pageCss)
