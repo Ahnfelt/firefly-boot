@@ -274,7 +274,7 @@ guideSplitCss: CssClass = CssClass(
             Css.marginBottom("0")
         ], [])
         CssNest("&>div pre>code", [
-            Css.fontSize("16px")
+            Css.fontSize("15px")
         ], [])
         CssNest(mobileMediaQuery, [
             Css.flexDirection("column")
@@ -334,9 +334,10 @@ guideH2Css: CssClass = CssClass(
 
 guideCodeCss: CssClass = CssClass(
     [
-        Css.fontFamily("Consolas, 'Liberation Mono', Menlo, Courier, monospace")
-        Css.fontSize("17px")
+        Css.fontFamily("'Firefly Mono', monospace")
+        Css.fontSize("16px")
         Css.lineHeight("1.4")
+        Css.letterSpacing("0.2px")
         Css.color("#4ec9b0")
     ]
     [
