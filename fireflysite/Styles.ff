@@ -94,6 +94,7 @@ guideSidebarButtonCss: CssClass = CssClass(
         Css.border("none")
         Css.outline("none")
         Css.padding("none")
+        Css.touchAction("manipulation")
     ]
     []
     []
@@ -136,6 +137,7 @@ guideSidebarCss: CssClass = CssClass(
         Css.backgroundColor("#2b2d30")
         Css.overflowY("auto")
         Css.transition("200ms transform")
+        Css.touchAction("manipulation")
     ]
     [
         CssNest(mobileOrTabletMediaQuery, [
