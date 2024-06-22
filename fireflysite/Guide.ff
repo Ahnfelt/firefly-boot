@@ -43,8 +43,11 @@ data Inline {
 }
 
 extend self: Guide {
-    title(): String {
+    heading(): String {
         self.documents.first().map {_.heading()}.else {""}
+    }
+    title(): String {
+        if(self.heading() == "Firefly") {self.heading()} else {"Firefly " + self.heading()}
     }
 }
 
@@ -54,9 +57,9 @@ extend self: Document {
     }
     title(guide: Guide): String {
         if(guide.documents.first().any {_.heading() == self.heading()}) {
-            self.heading()
+            guide.title()
         } else {
-            self.heading() + " · Firefly " + guide.title()
+            self.heading() + " · " + guide.title()
         }
     }
     path(guide: Guide): String {
