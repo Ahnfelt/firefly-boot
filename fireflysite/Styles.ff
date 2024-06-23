@@ -273,6 +273,11 @@ guideSplitCss: CssClass = CssClass(
         CssNest("&>div>:last-child", [
             Css.marginBottom("0")
         ], [])
+        CssNest("&>div>pre", [
+            Css.overflowX("hidden")
+            Css.paddingLeft("15px")
+            Css.paddingRight("15px")
+        ], [])
         CssNest(mobileMediaQuery, [
             Css.flexDirection("column")
         ], [
@@ -281,6 +286,11 @@ guideSplitCss: CssClass = CssClass(
             ], [])
             CssNest("&>div:last-child", [
                 Css.width("auto")
+            ], [])
+            CssNest("&>div>pre", [
+                Css.overflowX("auto")
+                Css.paddingLeft("20px")
+                Css.paddingRight("20px")
             ], [])
         ])
     ]
@@ -331,7 +341,6 @@ guideCodeCss: CssClass = CssClass(
         Css.fontFamily("'Firefly Mono', monospace")
         Css.fontSize("15px")
         Css.lineHeight("3ex")
-        Css.letterSpacing("0.2px")
         Css.color("#4ec9b0")
     ]
     []
