@@ -87,10 +87,11 @@ guideSidebarButtonCss: CssClass = CssClass(
         Css.display("block")
         Css.top("0")
         Css.left("0")
-        Css.width("50px")
-        Css.height("50px")
+        Css.width("70px")
+        Css.height("70px")
         Css.boxSizing("border-box")
-        Css.background("""url('data:image/svg+xml,<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(%23clip0_788_122)"><path d="M49.3536 0.353553L50.2071 -0.5H49H0H-0.5V0V49V50.2071L0.353553 49.3536L49.3536 0.353553Z" fill="%2334373D" stroke="%232B2D30"/><rect x="4" y="9" width="30" height="3" rx="1" fill="%23D9D9D9"/><rect x="4" y="17" width="21" height="3" rx="1" fill="%23D9D9D9"/><rect x="4" y="25" width="13" height="3" rx="1" fill="%23D9D9D9"/></g><defs><clipPath id="clip0_788_122"><rect width="50" height="50" fill="white"/></clipPath></defs></svg>')""")
+        Css.background("""url('data:image/svg+xml,<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(%23clip0_788_122)"><path d="M49.3536 0.353553L50.2071 -0.5H49H0H-0.5V0V49V50.2071L0.353553 49.3536L49.3536 0.353553Z" fill="%2334373D" stroke="%232B2D30"/><rect x="4" y="9" width="30" height="3" rx="1" fill="%23D9D9D9"/><rect x="4" y="17" width="21" height="3" rx="1" fill="%23D9D9D9"/><rect x="4" y="25" width="13" height="3" rx="1" fill="%23D9D9D9"/></g><defs><clipPath id="clip0_788_122"><rect width="50" height="50" fill="white"/></clipPath></defs></svg>') no-repeat top left""")
+        Css.backgroundSize("50px 50px")
         Css.appearance("none")
         Css.border("none")
         Css.outline("none")
@@ -336,16 +337,21 @@ guideCodeCss: CssClass = CssClass(
     [
         Css.fontFamily("'Firefly Mono', monospace")
         Css.fontSize("15px")
-        Css.lineHeight("3ex")
+        Css.lineHeight("1.3")
         Css.color("#4ec9b0")
     ]
-    []
+    [
+        CssNest(mobileMediaQuery, [
+            Css.fontSize("14px")
+            Css.lineHeight("1.4")
+        ], [])
+    ]
     []
 )
 
 guideCodeBlockCss: CssClass = CssClass(
     [
-        Css.lineHeight("3ex")
+        Css.lineHeight("1.3")
         Css.backgroundColor("#2b2d30")
         Css.padding("12px 18px")
         Css.paddingBottom("14px")
@@ -364,6 +370,7 @@ guideCodeBlockCss: CssClass = CssClass(
             Css.borderLeft("none")
             Css.borderRight("none")
             Css.padding("12px 20px")
+            Css.lineHeight("1.4")
         ], [])
     ]
     []
