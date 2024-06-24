@@ -140,6 +140,8 @@ guideSidebarCss: CssClass = CssClass(
         Css.backgroundColor("#2b2d30")
         Css.overflowY("auto")
         Css.transition("200ms transform")
+        Css.scrollbarWidth("thin")
+        Css.scrollbarColor("#303236 #2b2d30")
     ]
     [
         CssNest(mobileOrTabletMediaQuery, [
@@ -152,9 +154,6 @@ guideSidebarCss: CssClass = CssClass(
             Css.paddingBottom("20px")
             Css.transform("translateX(-110%)")
             Css.outline("1px solid rgba(0, 0, 0, 0.15)")
-        ], [])
-        CssNest("&::-webkit-scrollbar", [
-            Css.opacity("0.5")
         ], [])
     ]
     []
