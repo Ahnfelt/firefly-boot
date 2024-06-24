@@ -153,13 +153,8 @@ guideSidebarCss: CssClass = CssClass(
             Css.transform("translateX(-110%)")
             Css.outline("1px solid rgba(0, 0, 0, 0.15)")
         ], [])
-        CssNest("&:hover::-webkit-scrollbar", [
-            Css.opacity("1")
-            Css.transition("100ms opacity")
-        ], [])
-        CssNest("&:not(:hover)::-webkit-scrollbar", [
-            Css.opacity("0")
-            Css.transition("100ms opacity")
+        CssNest("&::-webkit-scrollbar", [
+            Css.opacity("0.5")
         ], [])
     ]
     []
