@@ -177,8 +177,17 @@ guideSidebarUl1Css: CssClass = CssClass(
         Css.listStyle("none")
         Css.margin("0px")
         Css.padding("20px")
+        Css.opacity("0.85")
+        Css.transition("100ms opacity")
     ]
-    []
+    [
+        CssNest(mobileOrTabletMediaQuery, [
+            Css.opacity("1.00")
+        ], [])
+        CssNest("&:hover", [
+            Css.opacity("1.00")
+        ], [])
+    ]
     []
 )
 
