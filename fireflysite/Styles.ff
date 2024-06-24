@@ -97,7 +97,7 @@ guideSidebarButtonCss: CssClass = CssClass(
         Css.appearance("none")
         Css.border("none")
         Css.outline("none")
-        Css.padding("none")
+        Css.touchAction("none")
     ]
     []
     []
