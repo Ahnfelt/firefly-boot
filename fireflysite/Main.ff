@@ -37,6 +37,9 @@ nodeMain(system: NodeSystem): Unit {
         } elseIf {path.startsWith("/assets/FireflyMono.ttf")} {
             request.writeHeader("Content-Type", "font/ttf")
             request.writeStream(system.assets().readStream("/assets/NotoSansMono-Regular.ttf"))
+        } elseIf {path.startsWith("/assets/FireflySans.ttf")} {
+            request.writeHeader("Content-Type", "font/ttf")
+            request.writeStream(system.assets().readStream("/assets/FiraSans-Regular.ttf"))
         } else {
             let parameters = if(request.readRawQueryString().size() == 0) {""} else {
                 "?" + request.readRawQueryString()
@@ -82,6 +85,7 @@ serveGuideHtml(title: String, request: WebRequest[WebResponse]): Unit {
     request.writeText("<meta name='viewport' content='width=device-width, initial-scale=1.0'>")
     request.writeText("<meta name='theme-color' content='#303236'>")
     request.writeText("<style>@font-face { font-family: 'Firefly Mono'; src: url('/assets/FireflyMono.ttf'); }</style>")
+    request.writeText("<style>@font-face { font-family: 'Firefly Sans'; src: url('/assets/FireflySans.ttf'); }</style>")
     request.writeText("</head>")
     request.writeText("<body style='margin: 0; padding: 0; width: 100%; height: 100%; touch-action: manipulation;'>")
     request.writeText("<div id='main'></div>")
