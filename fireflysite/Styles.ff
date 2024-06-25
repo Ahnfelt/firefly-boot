@@ -8,7 +8,7 @@ pageCss: CssClass = CssClass(
         Css.display("flex")
         Css.flexDirection("column")
         Css.minHeight("100vh")
-        Css.fontFamily("'Helvetica Neue', Helvetica, Arial, sans-serif")
+        Css.fontFamily("'Firefly Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif")
         Css.textRendering("optimizeLegibility")
     ]
     [

@@ -39,7 +39,7 @@ nodeMain(system: NodeSystem): Unit {
             request.writeStream(system.assets().readStream("/assets/NotoSansMono-Regular.ttf"))
         } elseIf {path.startsWith("/assets/FireflySans.ttf")} {
             request.writeHeader("Content-Type", "font/ttf")
-            request.writeStream(system.assets().readStream("/assets/FiraSans-Regular.ttf"))
+            request.writeStream(system.assets().readStream("/assets/Ubuntu-Regular.ttf"))
         } else {
             let parameters = if(request.readRawQueryString().size() == 0) {""} else {
                 "?" + request.readRawQueryString()
