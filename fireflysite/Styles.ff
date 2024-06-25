@@ -140,7 +140,7 @@ guideSidebarCss: CssClass = CssClass(
         Css.overflowY("auto")
         Css.transition("200ms transform")
         Css.scrollbarWidth("thin")
-        Css.scrollbarColor("#303236 #2b2d30")
+        Css.scrollbarColor("#34373d #2b2d30")
     ]
     [
         CssNest(mobileOrTabletMediaQuery, [
