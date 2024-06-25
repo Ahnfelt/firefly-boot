@@ -85,7 +85,7 @@ guideSidebarButtonCss: CssClass = CssClass(
     [
         Css.position("fixed")
         Css.bottom("-70px")
-        Css.right("-70px")
+        Css.right("-65px")
         Css.width("70px")
         Css.height("70px")
         Css.padding("0")
