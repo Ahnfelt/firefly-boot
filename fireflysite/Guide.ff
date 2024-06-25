@@ -105,6 +105,7 @@ render(lux: Lux, browser: BrowserSystem, prefix: String, kebab: String, guides: 
             lux.add("button") {
                 lux.set("aria-label", "Toggle the menu")
                 lux.cssClass(Styles.guideSidebarButtonCss)
+                if(menu) {lux.cssClass(Styles.guideSidebarButtonOpenCss)}
                 lux.onClick {event =>
                     event.preventDefault()
                     setMenu(True)
