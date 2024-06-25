@@ -96,13 +96,13 @@ guideSidebarButtonCss: CssClass = CssClass(
         Css.border("none")
         Css.outline("none")
         Css.transformOrigin("top left")
-        Css.transform("rotate(180deg) scale(0)")
+        Css.transform("rotate(180deg) scale(0, 0)")
         Css.transition("200ms transform")
     ]
     [
         CssNest(mobileOrTabletMediaQuery, [
             Css.display("block")
-            Css.transform("rotate(180deg) scale(1)")
+            Css.transform("rotate(180deg) scale(1, 1)")
         ], [])        
     ]
     []
@@ -112,7 +112,7 @@ guideSidebarButtonOpenCss: CssClass = CssClass(
     []
     [
         CssNest(mobileOrTabletMediaQuery, [
-            Css.transform("rotate(180deg) scale(0)")
+            Css.transform("rotate(180deg) scale(0, 1)")
         ], [])
     ]
     []
