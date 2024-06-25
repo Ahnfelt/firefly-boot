@@ -84,7 +84,7 @@ guideCss: CssClass = CssClass(
 guideSidebarButtonCss: CssClass = CssClass(
     [
         Css.position("fixed")
-        Css.bottom("-70px")
+        Css.bottom("-68px")
         Css.right("-65px")
         Css.width("70px")
         Css.height("70px")
@@ -97,7 +97,7 @@ guideSidebarButtonCss: CssClass = CssClass(
         Css.outline("none")
         Css.transformOrigin("top left")
         Css.transform("rotate(180deg) scale(0, 0)")
-        Css.transition("200ms transform")
+        Css.transition("100ms transform")
     ]
     [
         CssNest(mobileOrTabletMediaQuery, [
@@ -258,8 +258,8 @@ guideMainCss: CssClass = CssClass(
             Css.marginLeft("0")
             Css.paddingLeft("20px")
             Css.paddingRight("20px")
-            Css.paddingTop("60px")
-            Css.paddingBottom("50px")
+            Css.paddingTop("20px")
+            Css.paddingBottom("70px")
         ], [])
     ]
     []
