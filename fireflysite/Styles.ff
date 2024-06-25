@@ -342,7 +342,7 @@ guideH1Css: CssClass = CssClass(
     ]
     [
         CssNest(mobileMediaQuery, [
-            Css.fontSize("30px")
+            Css.fontSize("26px")
         ], [])
     ]
     []
@@ -355,7 +355,7 @@ guideH2Css: CssClass = CssClass(
     ]
     [
         CssNest(mobileMediaQuery, [
-            Css.fontSize("25px")
+            Css.fontSize("23px")
         ], [])
     ]
     []
