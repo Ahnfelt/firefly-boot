@@ -253,7 +253,7 @@ guideMainCss: CssClass = CssClass(
         Css.paddingBottom("80px")
         Css.position("relative")
         Css.boxSizing("content-box")
-        Css.background("linear-gradient(179deg, #22385c, transparent 500px), linear-gradient(123deg, #7e5571, transparent 500px), linear-gradient(350deg, #22385cac, transparent 200px), radial-gradient(#303236, #323945 100px)")
+        Css.background("linear-gradient(179deg, #22385c, transparent 500px), linear-gradient(123deg, #7e5571, transparent 500px), linear-gradient(350deg, #22385cac, transparent 200px), radial-gradient(#16233a, #212a38)")
         Css.color("#ffffff")
     ]
     [
