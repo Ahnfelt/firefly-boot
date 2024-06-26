@@ -386,7 +386,7 @@ guideCodeCss: CssClass = CssClass(
 guideCodeBlockCss: CssClass = CssClass(
     [
         Css.lineHeight("1.3")
-        Css.backgroundColor("#2b2d30")
+        Css.backgroundColor("#00000020")
         Css.boxShadow("0 1px 0 1px #00000080")
         Css.padding("12px 18px")
         Css.paddingBottom("14px")
