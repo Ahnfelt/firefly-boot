@@ -39,7 +39,7 @@ nodeMain(system: NodeSystem): Unit {
             request.writeStream(system.assets().readStream("/assets/NotoSansMono-Regular.ttf"))
         } elseIf {path.startsWith("/assets/FireflySans.ttf")} {
             request.writeHeader("Content-Type", "font/ttf")
-            request.writeStream(system.assets().readStream("/assets/UbuntuSans-VariableFont_wdth,wght.ttf"))
+            request.writeStream(system.assets().readStream("/assets/NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf"))
         } else {
             let parameters = if(request.readRawQueryString().size() == 0) {""} else {
                 "?" + request.readRawQueryString()
@@ -83,7 +83,7 @@ serveGuideHtml(title: String, request: WebRequest[WebResponse]): Unit {
     request.writeText("<head>")
     request.writeText("<title>" + title + "</title>")
     request.writeText("<meta name='viewport' content='width=device-width, initial-scale=1.0'>")
-    request.writeText("<meta name='theme-color' content='#303236'>")
+    request.writeText("<meta name='theme-color' content='#22385c'>")
     request.writeText("<style>@font-face { font-family: 'Firefly Mono'; font-display: fallback; src: url('/assets/FireflyMono.ttf'); unicode-range: U+000-5FF; }</style>")
     request.writeText("<style>@font-face { font-family: 'Firefly Sans'; font-display: fallback; src: url('/assets/FireflySans.ttf'); unicode-range: U+000-5FF; }</style>")
     request.writeText("</head>")
