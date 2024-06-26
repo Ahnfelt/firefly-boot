@@ -254,7 +254,7 @@ guideMainCss: CssClass = CssClass(
         Css.position("relative")
         Css.boxSizing("content-box")
         Css.background("linear-gradient(179deg, #22385c, transparent 500px), linear-gradient(123deg, #7e5571, transparent 500px), linear-gradient(350deg, #22385cac, transparent 200px), radial-gradient(#16233a, #212a38)")
-        Css.color("#ffffff")
+        Css.color("#ffffffea")
     ]
     [
         CssNest(mobileOrTabletMediaQuery, [
@@ -289,12 +289,15 @@ guideSplitCss: CssClass = CssClass(
         Css.display("flex")
         Css.gap("30px")
         Css.justifyContent("space-between")
+        Css.alignItems("stretch")
         Css.marginTop("70px")
-        Css.marginBottom("70px")
+        Css.marginBottom("170px")
     ]
     [
         CssNest("&>div:first-child", [
             Css.width("calc(350px - 15px)")
+            Css.paddingTop("10px")
+            Css.paddingBottom("15px")
         ], [])
         CssNest("&>div:last-child", [
             Css.width("calc(450px - 15px)")
@@ -307,6 +310,7 @@ guideSplitCss: CssClass = CssClass(
         ], [])
         CssNest("&>div>pre", [
             Css.overflowX("hidden")
+            Css.minHeight("100%")
         ], [])
         CssNest(mobileMediaQuery, [
             Css.flexDirection("column")
@@ -436,7 +440,8 @@ guideButtonCss: CssClass = CssClass(
     [
         Css.padding("15px 30px")
         Css.borderRadius("10px")
-        Css.background("#252527")
+        Css.background("linear-gradient(#4b3f57, #3a3045a0)")
+        Css.boxShadow("0 1px 0 1px #00000080")
         Css.color("#dadada")
         Css.textDecoration("none")
         Css.fontSize("17px")
