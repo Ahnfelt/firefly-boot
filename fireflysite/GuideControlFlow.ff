@@ -2,27 +2,164 @@ import Guide
 
 new(): Document {
     Document([
+
         Section("Control flow", [
             Paragraph([
-                Text("Firefly provides several ways to control program execution. ")
-                Text("The most direct are ")
-                Anchor("if - elseIf - else")
+                Text("Firefly provides several ways to implement branching. ")
+                Anchor("Pattern matching")
+                Text(" is the most powerful, built directly into the language. ")
+                Code("if")
                 Text(", ")
-                Anchor("pattern matching")
+                Code("elseIf")
                 Text(" and ")
-                Anchor("exceptions")
-                Text(". But methods such as ")
-                Code("map")
-                Text(" and ")
-                Code("each")
-                Text(" on ")
+                Code("else")
+                Text(" do what you expect and are functions and methods in the standard library, implemented using the")
                 Anchor("Option")
-                Text(" controls your program flow as well.")
+                Text(" type. An then finally, there are ")
+                Anchor("exceptions")
+                Text(".")
             ])
-        ])        
+        ])
+
+        Section("Pattern matching", [
+            Paragraph([
+                Text("Pattern matching allows you to check a given data structure against a pattern. ")
+                Text("For example, if we want to parse the command line arguments provided by the user, we could do it like this:")
+            ])
+            CodeBlock("""
+                let pair = system.arguments().{
+                    | [host] => Pair(host, 80)
+                    | ["localhost", port] => Pair("localhost", port.grabInt())
+                    | _ => 
+                        system.writeErrorLine("Usage: 'localhost' | (host port)")
+                        system.exit(0)
+                }            
+            """, firefly = True)
+            Paragraph([
+                Text("In Firefly you construct a list of strings (")
+                Code("List[String]")
+                Text(") like this ")
+                Code("""["example.com", "80"]""")
+                Text(", and using pattern matching you can de-construct in the same way.")
+            ])  
+            Paragraph([
+                Text("The basic syntax for pattern matching is:")
+            ])
+            CodeBlock("""
+                data.{
+                    | pattern1 => // case 1
+                    | pattern2 => // case N
+                    ...
+                }
+            """, firefly = True)
+            Paragraph([
+                Text("The patterns must be exhaustive, that is, for any possible value of the given type, there must be a matching pattern. ")
+                Text("In the example above, there are no value for the empty list ")
+                Code("[]")
+                Text(", list with two values, where the first is not ")
+                Code(""""localhost"""")
+                Text(" or lists with more than 2 arguments. That's why we need the wildcard case at the end. ")
+                Text("Without this last case, the compiler would  produce a compile-time error, stating that the patterns must be exhaustive.")
+            ])
+            Paragraph([
+                Text("Here are more examples — all exhaustive. Let's start with records:")
+            ])  
+            CodeBlock("""
+                pair.{
+                    | Pair(first, second) => 
+                }
+            """, firefly = True)
+
+            Paragraph([
+                Text("Numbers")
+            ])  
+            CodeBlock("""
+                n.{
+                    | 1 => 
+                    | 2 => 
+                    | n => 
+                }
+            """, firefly = True)    
+            
+            Paragraph([
+                Text("Booleans")
+            ])  
+            CodeBlock("""
+                n.{
+                    | True => 
+                    | False => 
+                }
+            """, firefly = True)    
+            Paragraph([
+                Text("And you can combine pattern as needed. Imagine you have a pair of type ")
+                Code("Pair[List[Bool], Pair(Int, String)]")
+            ])  
+            CodeBlock("""
+                pair.{
+                    | Pair([True, False], Pair(42, "foo")) => 
+                    | other => 
+                }
+            """, firefly = True)          
+        ])
+
+        Section("Option", [
+            Paragraph([
+                Text("Sometimes you don't have a value. Other languages uses ")
+                Code("null")
+                Text(" for this purpose, but Firefly does not have ")
+                Code("null")
+                Text(". Instead, we have ")
+                Code("Option")
+                Text(" from the core package.")
+            ])
+            CodeBlock("""
+                data Option[T] {
+                    None
+                    Some(value: T)
+                }
+            """, firefly = True)
+            Paragraph([
+                Text("For some type T, say String, Option[String] is either some string or no value (")
+                Code("None")
+                Text("). This way, the type system guides you to check for no-value.")                
+            ])
+
+            Paragraph([
+                Text("Many functions and methods returns an ") 
+                Code("Option")
+                Text(" in Firefly. For instance the ")
+                Code("getInt ")
+                Text(" method on ")
+                Code("String")
+                Text(" . This method returns ")
+                Code("Some[Int]")
+                Text(" when the string consists only of digits and ")
+                Code("None")
+                Text(" otherwise. We can perform pattern matching on ")
+                Code("Option")
+                Text("like this:")
+            ])
+            CodeBlock("""
+                port.getInt().{
+                    | None => 80
+                    | Some(p) => p
+                }
+            """, firefly = True)  
+            Paragraph([
+                Text("Many methods like ")
+                Code("getInt")
+                Text(" have a non-total counterpart ")
+                Code("grabInt")
+                Text(" , which returns an ")
+                Code("Int")
+                Text(" . But it will throw an exception when the input cannot be parsed. Options let's you code in an exception-safe manner.")
+            ])
+        ])
+
+
         Section("if - elseIf - else", [
             Paragraph([
-                Text("You write if-statements in Firefly like this")
+                Text("You write if-statements in Firefly like this:")
             ])
             CodeBlock("""
                 if(path == "/") {
@@ -51,48 +188,10 @@ new(): Document {
                 Code("elseIf")
                 Text(" and ")
                 Code("else")
-                Text(" are not keywords or construct build into Firefly. You don't need to know this, but if your are curious, read on. ")
-                Text("Go take a look at how they are implemented. ")
+                Text(" are not keywords or construct build into Firefly. ")
+                Text("If you are curious, you can look at how they are implemented. ")
                 Code("if")
-                Text(" is really just a function and ")
-                Code("elseIf")
-                Text(" and ")
-                Code("else")
-                Text(" are methods on Option. ")
-                Text("The curly braces ")
-                Code("{...}")
-                Text(" in the examples above are zero argument lambda functions.")
-            ])
-            Paragraph([
-                Text("But still, why are this syntactically correct? ...")
-            ])                        
-            
-        ])
-        Section("Option", [
-            Paragraph([
-                Text("Sometimes you don't have a value. Other languages uses ")
-                Code("null")
-                Text(" for this purpose - but Firefly don't have  ")
-                Code("null")
-                Text(". But we have ")
-                Code("Option")
-                Text(" from the core package.")
-            ])
-            CodeBlock("""
-                data Option[T] {
-                    None
-                    Some(value: T)
-                }
-            """, firefly = True)
-            Paragraph([
-                Text("For some type T, say String, Option[String] is either some string or no value/none. This way, the type system will guide you when to check for no-value.")
-            ])
-            Paragraph([
-                Text("In Firefly ")
-                Anchor("if - elseIf - else")
-                Text(" are implemented using ")
-                Code("Option")
-                Text(".")
+                Text(" is just a function defined like this: ")
             ])
             CodeBlock("""
                 if[T](condition: Bool, body: () => T): Option[T] {
@@ -101,12 +200,8 @@ new(): Document {
                         | True => Some(body())
                     }
                 }
-            """, firefly = True)            
-        ])
-        Section("Pattern matching", [
-            Paragraph([
-                Text("...")
-            ])
+            """, firefly = True)
+            // TODO: But still, why are this syntactically correct?            
         ])
         Section("Exceptions", [
             Paragraph([
