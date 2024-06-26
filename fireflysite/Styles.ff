@@ -289,12 +289,15 @@ guideSplitCss: CssClass = CssClass(
         Css.display("flex")
         Css.gap("30px")
         Css.justifyContent("space-between")
+        Css.alignItems("stretch")
         Css.marginTop("70px")
         Css.marginBottom("170px")
     ]
     [
         CssNest("&>div:first-child", [
             Css.width("calc(350px - 15px)")
+            Css.paddingTop("10px")
+            Css.paddingBottom("15px")
         ], [])
         CssNest("&>div:last-child", [
             Css.width("calc(450px - 15px)")
@@ -307,6 +310,7 @@ guideSplitCss: CssClass = CssClass(
         ], [])
         CssNest("&>div>pre", [
             Css.overflowX("hidden")
+            Css.minHeight("100%")
         ], [])
         CssNest(mobileMediaQuery, [
             Css.flexDirection("column")
