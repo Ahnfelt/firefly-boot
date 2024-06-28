@@ -439,8 +439,7 @@ guideButtonCss: CssClass = CssClass(
     [
         Css.padding("15px 30px")
         Css.borderRadius("10px")
-        Css.background("linear-gradient(#4b3f57, #3a3045a0)")
-        Css.boxShadow("0 1px 0 1px #00000080")
+        Css.background("#000000a0")
         Css.color("#dadada")
         Css.textDecoration("none")
         Css.fontSize("17px")
