@@ -34,6 +34,12 @@ nodeMain(system: NodeSystem): Unit {
         } elseIf {path.startsWith("/favicon.ico")} {
             request.writeHeader("Content-Type", "image/png")
             request.writeStream(system.assets().readStream("/assets/firefly-logo-notext.png"))
+        } elseIf {path.startsWith("/assets/autocomplete.png")} {
+            request.writeHeader("Content-Type", "image/png")
+            request.writeStream(system.assets().readStream("/assets/autocomplete.png"))
+        } elseIf {path.startsWith("/assets/feature-interactions.png")} {
+            request.writeHeader("Content-Type", "image/png")
+            request.writeStream(system.assets().readStream("/assets/feature-interactions.png"))
         } elseIf {path.startsWith("/assets/FireflyMono.ttf")} {
             request.writeHeader("Content-Type", "font/ttf")
             request.writeStream(system.assets().readStream("/assets/NotoSansMono-Regular.ttf"))

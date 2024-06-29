@@ -266,6 +266,7 @@ renderImage(lux: Lux, url: String) {
     lux.add("img") {
         lux.set("src", url)
         lux.css(Css.maxWidth("100%"))
+        lux.css(Css.borderRadius("8px"))
     }
 }
 
