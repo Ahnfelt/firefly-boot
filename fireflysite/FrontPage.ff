@@ -13,7 +13,7 @@ new(): Document {
             Image("/assets/autocomplete.png")
             Paragraph([
                 Italic("Firefly in VSCode, showcasing instant type driven autocompletion and edit time error detection.")
-                Italic("An example of DX that's only possible for a certain class of languages. Read on for more.")
+                Italic("An example of DX that's only possible for a certain class of languages. Read on for more Firefly DX.")
             ])
         ])
         SplitSection(
