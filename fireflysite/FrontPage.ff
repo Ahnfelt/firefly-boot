@@ -197,7 +197,7 @@ new(): Document {
         Section("What doesn't Firefly have?", [
             Paragraph([
                 Bold("No subtyping.")
-                Italic("Subtyping is a mechanism that lets you mix weakly related types, masking errors and encourages unexhaustive runtime type casing.")
+                Italic("Subtyping is a mechanism that lets you mix weakly related types, masking errors and encouraging unexhaustive runtime type casing.")
             ])
             Paragraph([
                 Bold("No inheritance.")
