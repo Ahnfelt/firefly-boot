@@ -5,34 +5,15 @@ import MatchingPasswordsDemo
 new(): Document {
     Document([
         Section("Firefly", [
-            Paragraph([Bold("A full stack language with great DX")])
+            Paragraph([
+                Bold("Is DX an add-on feature?")
+                Italic("We don't think so.")
+                Text("Firefly is a fresh language that has been designed from the ground up with one overarching goal—to be a full stack language with great developer experience.")
+            ])
             Image("/assets/autocomplete.png")
             Paragraph([
                 Italic("Firefly in VSCode, showcasing instant type driven autocompletion and edit time error detection.")
-                Italic("State of the art, but only part of the full developer experience (DX).")
-            ])
-        ])
-        Section("Why Firefly?", [
-            Paragraph([
-                Text("It seems like every year, there's a new feature, a new build system, a new framework for JavaScript.")
-                Text("And they seem to age like milk. It's like fast fashion. Next year, we're chasing something else—why is that?")
-            ])
-            Paragraph([
-                Text("Imagine you're tasked to build a small house.")
-                Text("There's just one constraint: You have to balance it on top of an old mansion, and its inhabitants must not be disturbed in the slightest by the construction.")
-                Text("Is it going to work out? This is the task you're facing when you're trying to improve the DX of an old language.")
-            ])
-            Paragraph([
-                Text("Firefly is something different.")
-                Text("It is a fresh language that has been designed from the ground up with one overarching goal—to be a full stack language with great DX.")
-            ])
-        ])
-        Section("The DX of Firefly", [
-            Paragraph([
-                Text("Firefly comes with a compiler, a build system and a package manager.")
-                Text("You can install the Firefly Language extension in VSCode to get autocompletion, renaming, go to definition, highlighting and more.")
-                Text("There are first party packages for building a complete webapp.")
-                Text("Everything you need to build full webapps, in a language made for web development.")
+                Italic("An example of DX that's only possible for a certain class of languages.")
             ])
         ])
         SplitSection(
