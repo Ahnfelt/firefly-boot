@@ -56,15 +56,6 @@ new(): Document {
             """, firefly = True)
         )
         SplitSection(
-            "Edit time error detection"
-            Paragraph([
-                Text("In Firefly, a large class of errors is detected by the IDE as you type.")
-                Text("You can usually fix these without even reading the error message.")
-                Text("And when you need to read the error messages, they're short and to the point.")
-            ])
-            Image("/assets/edit-time-error.png")
-        )
-        SplitSection(
             "Convenient collections"
             Paragraph([
                 Text("Immutable and mutable collections are part of the standard library.")
@@ -81,6 +72,15 @@ new(): Document {
                     sendNeighborhoodNewsletter(email)
                 }
             """, firefly = True)
+        )
+        SplitSection(
+            "Edit time error detection"
+            Paragraph([
+                Text("In Firefly, a large class of errors is detected by the IDE as you type.")
+                Text("You can usually fix these without even reading the error message.")
+                Text("And when you need to read the error messages, they're short and to the point.")
+            ])
+            Image("/assets/edit-time-error.png")
         )
         SplitSection(
             "Uncolored async/await"
