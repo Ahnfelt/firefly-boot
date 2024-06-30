@@ -8,12 +8,12 @@ new(): Document {
             Paragraph([
                 Bold("Is DX an add-on feature?")
                 Italic("We don't think so.")
-                Text("Firefly is a fresh language that has been designed from the ground up with one overarching goal—to be a full stack language with great developer experience.")
+                Text("Firefly is a has been designed from the ground up to be a full stack language with great developer experience.")
             ])
             Image("/assets/autocomplete.png")
             Paragraph([
                 Italic("Firefly in VSCode, showcasing instant type driven autocompletion and edit time error detection.")
-                Italic("An example of DX that's only possible for a certain class of languages. Read on for more DX.")
+                Italic("An example of DX that's only possible for a certain class of languages. Read on for more.")
             ])
         ])
         SplitSection(
@@ -60,7 +60,7 @@ new(): Document {
             Paragraph([
                 Text("In Firefly, a large class of errors is detected by the IDE as you type.")
                 Text("You can usually fix these without even reading the error message.")
-                Text("In addition, a lot of errors are just not possible to make in the language.")
+                Text("And when you need to read the error messages, they're short and to the point.")
             ])
             Image("/assets/edit-time-error.png")
         )
@@ -213,7 +213,7 @@ new(): Document {
             ])
             Paragraph([
                 Bold("No implicit casts.")
-                Italic("Ever recieved an email addressed to 'Dear None'? Static type doesn't prevent this if you can implicitly cast an Option[T] to a String.")
+                Italic("Ever recieved an email addressed to 'Dear None'? Static types doesn't prevent this if you can implicitly cast an Option[T] to a String.")
             ])
         ])
     ])
