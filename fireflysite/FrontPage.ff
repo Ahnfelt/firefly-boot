@@ -13,7 +13,7 @@ new(): Document {
             Image("/assets/autocomplete.png")
             Paragraph([
                 Italic("Firefly in VSCode, showcasing instant type driven autocompletion and edit time error detection.")
-                Italic("An example of DX that's only possible for a certain class of languages.")
+                Italic("An example of DX that's only possible for a certain class of languages. Read on for more DX.")
             ])
         ])
         SplitSection(
@@ -54,6 +54,15 @@ new(): Document {
                     Branch(left: Tree[T], right: Tree[T])
                 }
             """, firefly = True)
+        )
+        SplitSection(
+            "Edit time error detection"
+            Paragraph([
+                Text("In Firefly, a large class of errors is detected by the IDE as you type.")
+                Text("You can usually fix these without even reading the error message.")
+                Text("In addition, a lot of errors are just not possible to make in the language.")
+            ])
+            Image("/assets/edit-time-error.png")
         )
         SplitSection(
             "Convenient collections"
@@ -177,6 +186,7 @@ new(): Document {
             ])
             CodeBlock("""
                 let pool = Pg.newPool(...)
+                
                 let emails = pool.transaction {connection =>
                     connection.statement('''
                         select email from users
@@ -184,9 +194,27 @@ new(): Document {
                 }
             """.replace("'''", "\"\"\""), firefly = True)
         )
+        Section("What doesn't Firefly have?", [
+            Paragraph([
+                Bold("No subtyping.")
+                Italic("Subtyping is a mechanism that lets you mix weakly related types, masking errors and encourages unexhaustive runtime type casing.")
+            ])
+            Paragraph([
+                Bold("No inheritance.")
+                Italic("Inheritance is a device for overgeneralization and for distributing business logic so it's hard to keep track of.")
+            ])
+            Paragraph([
+                Bold("No null.")
+                Italic("When all types are nullable, types don't reflect when you know something isn't null. This leads to run time errors and encourages redundant checks.")
+            ])
+            Paragraph([
+                Bold("No dynamic typing.")
+                Italic("Dynamic typing causes runtime errors and encourages hidden and underspecified contracts that makes refactoring harder than it needs to be.")
+            ])
+            Paragraph([
+                Bold("No implicit casts.")
+                Italic("Ever recieved an email addressed to 'Dear None'? Static type doesn't prevent this if you can implicitly cast an Option[T] to a String.")
+            ])
+        ])
     ])
-}
-nodeMain(system: NodeSystem) {
-    system.httpClient().get("https://www.example.com/", []) {_.readText()}
-    
 }

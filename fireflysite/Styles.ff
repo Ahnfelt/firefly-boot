@@ -360,7 +360,7 @@ guideH2Css: CssClass = CssClass(
     [
         Css.fontSize("28px")
         Css.fontWeight("600")
-        Css.marginTop("40px")
+        Css.marginTop("70px")
     ]
     [
         CssNest(mobileMediaQuery, [
@@ -389,10 +389,10 @@ guideCodeCss: CssClass = CssClass(
 guideCodeBlockCss: CssClass = CssClass(
     [
         Css.lineHeight("1.3")
-        Css.backgroundColor("#00000020")
+        Css.background("#1f1f1f")
         Css.boxShadow("0 1px 0 1px #00000080")
-        Css.padding("12px 18px")
-        Css.paddingBottom("14px")
+        Css.padding("20px 25px")
+        Css.margin("30px 0")
         Css.border("1px solid #232323")
         Css.borderRadius("5px")
         Css.boxSizing("border-box")
@@ -407,7 +407,7 @@ guideCodeBlockCss: CssClass = CssClass(
             Css.borderRadius("0")
             Css.borderLeft("none")
             Css.borderRight("none")
-            Css.padding("12px 20px")
+            Css.padding("20px 20px")
             Css.lineHeight("1.4")
         ], [])
     ]
@@ -429,7 +429,7 @@ guideLinkCss: CssClass = CssClass(
 
 guideNextButtonCss: CssClass = CssClass(
     [
-        Css.marginTop("70px")
+        Css.marginTop("100px")
     ]
     []
     []

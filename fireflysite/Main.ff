@@ -37,9 +37,9 @@ nodeMain(system: NodeSystem): Unit {
         } elseIf {path.startsWith("/assets/autocomplete.png")} {
             request.writeHeader("Content-Type", "image/png")
             request.writeStream(system.assets().readStream("/assets/autocomplete.png"))
-        } elseIf {path.startsWith("/assets/feature-interactions.png")} {
+        } elseIf {path.startsWith("/assets/edit-time-error.png")} {
             request.writeHeader("Content-Type", "image/png")
-            request.writeStream(system.assets().readStream("/assets/feature-interactions.png"))
+            request.writeStream(system.assets().readStream("/assets/edit-time-error.png"))
         } elseIf {path.startsWith("/assets/FireflyMono.ttf")} {
             request.writeHeader("Content-Type", "font/ttf")
             request.writeStream(system.assets().readStream("/assets/NotoSansMono-Regular.ttf"))
@@ -89,7 +89,7 @@ serveGuideHtml(title: String, request: WebRequest[WebResponse]): Unit {
     request.writeText("<head>")
     request.writeText("<title>" + title + "</title>")
     request.writeText("<meta name='viewport' content='width=device-width, initial-scale=1.0'>")
-    request.writeText("<meta name='theme-color' content='#22385c'>")
+    request.writeText("<meta name='theme-color' content='#303236'>")
     request.writeText("<style>@font-face { font-family: 'Firefly Mono'; font-display: fallback; src: url('/assets/FireflyMono.ttf'); unicode-range: U+000-5FF; }</style>")
     request.writeText("<style>@font-face { font-family: 'Firefly Sans'; font-display: fallback; src: url('/assets/FireflySans.ttf'); unicode-range: U+000-5FF; }</style>")
     request.writeText("</head>")
