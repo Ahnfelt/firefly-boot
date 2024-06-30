@@ -213,7 +213,7 @@ new(): Document {
             ])
             Paragraph([
                 Bold("No implicit casts.")
-                Italic("Ever recieved an email addressed to 'Dear None'? Static types doesn't prevent this if you can implicitly cast an Option[T] to a String.")
+                Italic("Ever recieved an email addressed to 'Dear None'? Static types don't prevent this if you can implicitly cast an Option[T] to a String.")
             ])
         ])
     ])
