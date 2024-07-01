@@ -37,7 +37,7 @@ new(): Document {
         SplitSection(
             "Concise type definitions"
             Paragraph([
-                Text("Model your types in a breif format that fits multiple definitions on one screen.")
+                Text("Model your types in a brief format that fits multiple definitions on one screen.")
                 Text("Be precise about whether things can be missing with")
                 Code("Option[T]", firefly = True)
                 Text("and make invalid states unrepresentable with variants and type parameters.")
