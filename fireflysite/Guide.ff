@@ -205,7 +205,7 @@ renderSection(lux: Lux, firstSection: Bool, section: Section, demos: List[Demo])
             lux.add("div") {
                 lux.cssClass(Styles.guideSplitCss)
                 lux.add("div") {
-                    lux.add("h4") {
+                    lux.add("h2") {
                         lux.cssClass(Styles.guideSplitHeadingCss)
                         lux.text(section.heading)
                     }

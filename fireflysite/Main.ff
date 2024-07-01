@@ -11,6 +11,7 @@ import Styles
 nodeMain(system: NodeSystem): Unit {
     let host = system.arguments().grab(0)
     let port = system.arguments().grab(1).grabInt()
+    let cacheSalt = system.crypto().randomBuffer(16)
     WebServer.new(system, host, port).listen {request =>
         let path = request.readPath()
         if(path.startsWith("/guide/")) {
@@ -24,28 +25,22 @@ nodeMain(system: NodeSystem): Unit {
         } elseIf {path.startsWith("/front/")} {
             serveGuideHtml("Firefly", request)
         } elseIf {path.startsWith("/js/") && !path.contains("..")} {
-            request.writeHeader("Content-Type", "text/javascript; charset=UTF-8")
             let asset = if(path == "/js/ff/fireflysite/Main.mjs" && system.assets().exists("/js/Main.bundle.js")) {
                 "/js/Main.bundle.js"
             } else {
                 path
             }
-            request.writeText(system.assets().readText(asset))
+            serveAsset(system, cacheSalt, request, "text/javascript; charset=UTF-8", asset)
         } elseIf {path.startsWith("/favicon.ico")} {
-            request.writeHeader("Content-Type", "image/png")
-            request.writeStream(system.assets().readStream("/assets/firefly-logo-notext.png"))
+            serveAsset(system, cacheSalt, request, "image/png", "/assets/firefly-logo-notext.png")
         } elseIf {path.startsWith("/assets/autocomplete.png")} {
-            request.writeHeader("Content-Type", "image/png")
-            request.writeStream(system.assets().readStream("/assets/autocomplete.png"))
+            serveAsset(system, cacheSalt, request, "image/png", "/assets/autocomplete.png")
         } elseIf {path.startsWith("/assets/edit-time-error.png")} {
-            request.writeHeader("Content-Type", "image/png")
-            request.writeStream(system.assets().readStream("/assets/edit-time-error.png"))
+            serveAsset(system, cacheSalt, request, "image/png", "/assets/edit-time-error.png")
         } elseIf {path.startsWith("/assets/FireflyMono.ttf")} {
-            request.writeHeader("Content-Type", "font/ttf")
-            request.writeStream(system.assets().readStream("/assets/NotoSansMono-Regular.ttf"))
+            serveAsset(system, cacheSalt, request, "font/ttf", "/assets/NotoSansMono-Regular.ttf")
         } elseIf {path.startsWith("/assets/FireflySans.ttf")} {
-            request.writeHeader("Content-Type", "font/ttf")
-            request.writeStream(system.assets().readStream("/assets/NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf"))
+            serveAsset(system, cacheSalt, request, "font/ttf", "/assets/NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf")
         } else {
             let parameters = if(request.readRawQueryString().size() == 0) {""} else {
                 "?" + request.readRawQueryString()
@@ -80,6 +75,18 @@ buildMain(system: BuildSystem) {
         .addAssets("/js/", browser.assets())
         .addAssets("/assets/", system.packageAssets().assets("/assets/"))
     system.setAssets(assets)
+}
+
+serveAsset(system: NodeSystem, salt: Buffer, request: WebRequest[WebResponse], contentType: String, asset: String): Unit {
+    let etag = "\"" + system.crypto().hmacSha256(salt, asset.toBuffer()).toHex() + "\""
+    request.writeHeader("Content-Type", contentType)
+    request.writeHeader("Cache-Control", "public, max-age=60, must-revalidate")
+    request.writeHeader("ETag", etag)
+    if(request.readHeader("if-none-match").any {_.trim() == etag}) {
+        request.writeStatus("304 Not Modified")
+    } else {
+        request.writeStream(system.assets().readStream(asset))
+    }
 }
 
 serveGuideHtml(title: String, request: WebRequest[WebResponse]): Unit {

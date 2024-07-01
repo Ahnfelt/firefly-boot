@@ -289,7 +289,7 @@ guideSplitCss: CssClass = CssClass(
         Css.gap("30px")
         Css.justifyContent("space-between")
         Css.alignItems("stretch")
-        Css.marginTop("70px")
+        Css.marginTop("170px")
         Css.marginBottom("170px")
     ]
     [
