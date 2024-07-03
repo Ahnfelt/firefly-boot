@@ -219,7 +219,7 @@ new(): Document {
         Section("What Firefly doesn't have", [
             Paragraph([
                 Bold("Feature envy?")
-                Text("Not around here.")
+                Text("Absolutely not.")
                 Italic("We think great DX requires low complexity.")
             ])
             Bullets([
