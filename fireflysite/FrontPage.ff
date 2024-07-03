@@ -248,7 +248,7 @@ new(): Document {
                 ]
                 [
                     Bold("No feature envy.")
-                    Text("Every new feature adds ways to write code, creating sprawl.")
+                    Text("Every feature adds new ways to write code, creating sprawl.")
                     Text("It makes existing patterns obsolete, generating churn.")
                     Text("And it doubles the potential for bad interactions.")
                 ]
