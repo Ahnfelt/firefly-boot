@@ -247,7 +247,7 @@ new(): Document {
                     Text("Type level programming leads to inscrutable function signatures and hard to understand error messages.")
                 ]
                 [
-                    Bold("No bloat.")
+                    Bold("No feature envy.")
                     Text("Every new feature adds ways to write code, creating sprawl.")
                     Text("It makes existing patterns obsolete, generating churn.")
                     Text("And it doubles the potential for bad interactions.")
