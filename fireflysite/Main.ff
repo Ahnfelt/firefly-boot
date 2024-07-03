@@ -80,7 +80,11 @@ buildMain(system: BuildSystem) {
 serveAsset(system: NodeSystem, salt: Buffer, request: WebRequest[WebResponse], contentType: String, asset: String): Unit {
     let etag = "\"" + system.crypto().hmacSha256(salt, asset.toBuffer()).toHex() + "\""
     request.writeHeader("Content-Type", contentType)
-    request.writeHeader("Cache-Control", "public, max-age=60, must-revalidate")
+    if(request.readHeader("host") == Some("localhost:8080")) {
+        request.writeHeader("Cache-Control", "public, max-age=0, must-revalidate")
+    } else {
+        request.writeHeader("Cache-Control", "public, max-age=60, must-revalidate")
+    }
     request.writeHeader("ETag", etag)
     if(request.readHeader("if-none-match").any {_.trim() == etag}) {
         request.writeStatus("304 Not Modified")

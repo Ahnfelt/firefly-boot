@@ -74,6 +74,28 @@ new(): Document {
             """, firefly = True)
         )
         SplitSection(
+            "Deep pattern matching"
+            Paragraph([
+                Text("You can directly pattern match on function arguments, even in lambda functions.")
+                Text("The compiler checks for exhaustiveness, ensuring that all possible cases are covered.")
+                Text("Pattern guards are supported, so you can extract things with arbitrary logic.")
+            ])
+            CodeBlock("""
+                blockElements.map {
+                    | Paragraph(inlines) => 
+                        renderParagraph(inlines)
+                    | Code(code, Some(language)) => 
+                        renderHighlighted(code, language)
+                    | Code(code, None) => 
+                        renderCode(code)
+                    | Video(url) {vimeoId(url) | Some(id)} => 
+                        renderVimeo(id)
+                    | Video(url) => 
+                        renderVideo(url)
+                }
+            """, firefly = True)
+        )
+        SplitSection(
             "Edit time error detection"
             Paragraph([
                 Text("In Firefly, a large class of errors is detected by the IDE as you type.")
@@ -194,26 +216,41 @@ new(): Document {
                 }
             """.replace("'''", "\"\"\""), firefly = True)
         )
-        Section("What doesn't Firefly have?", [
+        Section("What Firefly doesn't have", [
             Paragraph([
-                Bold("No subtyping.")
-                Italic("Subtyping allows mixing loosely related types, potentially masking errors and promoting incomplete runtime type checks.")
+                Bold("Feature envy?")
+                Text("Not around here.")
+                Italic("We think great DX requires low complexity.")
             ])
-            Paragraph([
-                Bold("No inheritance.")
-                Italic("Inheritance can lead to overgeneralization and scattering of business logic, making it challenging to maintain oversight.")
-            ])
-            Paragraph([
-                Bold("No null.")
-                Italic("Eliminating null ensures types accurately represent known values, reducing runtime errors and redundant checks.")
-            ])
-            Paragraph([
-                Bold("No dynamic typing.")
-                Italic("Dynamic typing causes runtime errors and encourages hidden and underspecified contracts that makes refactoring harder than it needs to be.")
-            ])
-            Paragraph([
-                Bold("No implicit casts.")
-                Italic("Ever recieved an email addressed to 'Dear None'? Static types don't prevent this if you can implicitly cast an Option[T] to a String.")
+            Bullets([
+                [
+                    Bold("No function overloading.")
+                    Text("Overloading leads to uninformative \"No matching overload\" errors.")
+                ]
+                [
+                    Bold("No implicit casts.")
+                    Text("Ever recieved an email addressed to \"Dear None\"? Static types fail to prevent this if you can implicitly cast an Option[T] to a String.")
+                ]
+                [
+                    Bold("No dynamic typing.")
+                    Text("Dynamic typing causes runtime errors and encourages hidden and underspecified contracts that makes refactoring harder than it needs to be.")
+                ]
+                [
+                    Bold("No nulls.")
+                    Text("Eliminating null ensures types accurately represent known values, reducing runtime errors and redundant checks.")
+                ]
+                [
+                    Bold("No subtyping.")
+                    Text("Subtyping introduces complexity via type bounds and variance. It also allows mixing loosely related types, promoting incomplete runtime type checks.")
+                ]
+                [
+                    Bold("No inheritance.")
+                    Text("Inheritance can lead to overgeneralization and scattering of business logic, making it hard to get the full picture at any level.")
+                ]
+                [
+                    Bold("No type level programming.")
+                    Text("Type level programming leads to inscrutable function signatures and hard to understand error messages.")
+                ]
             ])
         ])
     ])
