@@ -217,11 +217,6 @@ new(): Document {
             """.replace("'''", "\"\"\""), firefly = True)
         )
         Section("What Firefly doesn't have", [
-            Paragraph([
-                Bold("Feature envy?")
-                Text("Absolutely not.")
-                Italic("We think great DX requires low complexity.")
-            ])
             Bullets([
                 [
                     Bold("No function overloading.")
@@ -250,6 +245,12 @@ new(): Document {
                 [
                     Bold("No type level programming.")
                     Text("Type level programming leads to inscrutable function signatures and hard to understand error messages.")
+                ]
+                [
+                    Bold("No bloat.")
+                    Text("Every new feature adds ways to write code, creating sprawl.")
+                    Text("It makes existing patterns obsolete, generating churn.")
+                    Text("And it doubles the potential for bad interactions.")
                 ]
             ])
         ])
