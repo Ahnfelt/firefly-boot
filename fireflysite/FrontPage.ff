@@ -223,9 +223,9 @@ new(): Document {
                 Code("ff:webserver")
                 Text("package comes with WebSockets support.")
                 Text("In just a few lines of code, you can start serving WebSockets.")
-                Text("You can connect to any websocket server with the")
+                Text("The ")
                 Code("ff:websocket")
-                Text("package.")
+                Text("package allows you to connect to any WebSocket server.")
                 Text("If both ends are running Firefly, you can use the built-in binary serialization.")
             ])
             CodeBlock("""
