@@ -199,7 +199,7 @@ new(): Document {
             """, firefly = True)
         )
         SplitSection(
-            "Easy database connections"
+            "Database pooling"
             Paragraph([
                 Text("The")
                 Code("ff:postgresql")
@@ -213,6 +213,32 @@ new(): Document {
                     connection.statement('''
                         select email from users
                     ''').map {_.getString("email").grab()}
+                }
+            """.replace("'''", "\"\"\""), firefly = True)
+        )
+        SplitSection(
+            "WebSocket server & client"
+            Paragraph([
+                Text("The ")
+                Code("ff:webserver")
+                Text("package comes with WebSockets support.")
+                Text("In just a few lines of code, you can start serving WebSockets.")
+                Text("You can connect to any websocket server with the")
+                Code("ff:websocket")
+                Text("package.")
+                Text("If both ends are running Firefly, you can use the built-in binary serialization.")
+            ])
+            CodeBlock("""
+                let server = WebServer.new(system, host, port)
+                server.enableWebSockets()
+                
+                server.listen {request =>
+                    let ws = request.openWebSocket()
+                    ws.subscribe("chat")
+                    while {True} {
+                        let message = ws.readText().grab()
+                        ws.publishText("chat", message)
+                    }
                 }
             """.replace("'''", "\"\"\""), firefly = True)
         )
