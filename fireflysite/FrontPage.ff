@@ -221,7 +221,7 @@ new(): Document {
             Paragraph([
                 Text("The ")
                 Code("ff:webserver")
-                Text("package comes with WebSockets support.")
+                Text("package comes with WebSocket support.")
                 Text("In just a few lines of code, you can start serving WebSockets.")
                 Text("The ")
                 Code("ff:websocket")
