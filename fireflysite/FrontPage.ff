@@ -199,24 +199,6 @@ new(): Document {
             """, firefly = True)
         )
         SplitSection(
-            "Database pooling"
-            Paragraph([
-                Text("The")
-                Code("ff:postgresql")
-                Text("package lets you create a connection pool for a PostgreSQL database.")
-                Text("You can then execute transactions and build stateful applications.")
-            ])
-            CodeBlock("""
-                let pool = Pg.newPool(...)
-                
-                let emails = pool.transaction {connection =>
-                    connection.statement('''
-                        select email from users
-                    ''').map {_.getString("email").grab()}
-                }
-            """.replace("'''", "\"\"\""), firefly = True)
-        )
-        SplitSection(
             "WebSocket server & client"
             Paragraph([
                 Text("The ")
@@ -239,6 +221,28 @@ new(): Document {
                         let message = ws.readText().grab()
                         ws.publishText("chat", message)
                     }
+                }
+            """.replace("'''", "\"\"\""), firefly = True)
+        )
+        SplitSection(
+            "Database pooling"
+            Paragraph([
+                Text("The")
+                Code("ff:postgresql")
+                Text("package lets you create a connection pool for a PostgreSQL database.")
+                Text("You can then execute transactions and build stateful applications.")
+            ])
+            CodeBlock("""
+                let pool = Pg.newPool(...)
+                
+                let emails = pool.transaction {connection =>
+                    connection
+                        .statement('''
+                            select email from users
+                            where id <= $maxId
+                        ''')
+                        .withInt("maxId", 100)
+                        .map {_.getString("email").grab()}
                 }
             """.replace("'''", "\"\"\""), firefly = True)
         )
