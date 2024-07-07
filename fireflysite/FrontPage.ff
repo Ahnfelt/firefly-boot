@@ -152,6 +152,13 @@ new(): Document {
                 }
             """, firefly = True)
         )
+        Section("The Firefly Stack", [
+            Paragraph([
+                Text("What's a full stack language without the packages to build a webapp?")
+                Bold("The Firefly team maintains a full set of core webapp packages.")
+                Italic("Here's what you can do with that.")
+            ])
+        ])
         SplitSection(
             "Interactive webapps"
             Paragraph([
@@ -271,6 +278,10 @@ new(): Document {
                 [
                     Bold("No inheritance.")
                     Text("Inheritance can lead to overgeneralization and scattering of business logic, making it hard to get the full picture at any level.")
+                ]
+                [
+                    Bold("No macros.")
+                    Text("Macros let you define whole new languages, that are typically wildly undertooled compared to the base language.")
                 ]
                 [
                     Bold("No type level programming.")
