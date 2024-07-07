@@ -154,8 +154,7 @@ new(): Document {
         )
         Section("The Firefly Stack", [
             Paragraph([
-                Text("What's a full stack language without the packages to build a webapp?")
-                Bold("The developers of Firefly maintain a full set of core webapp packages.")
+                Bold("The Firefly Stack is a full set of core webapp packages that you can use individually or together.")
                 Italic("Here's what you can do with that.")
             ])
         ])
