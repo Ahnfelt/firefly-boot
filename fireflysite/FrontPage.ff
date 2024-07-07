@@ -152,6 +152,24 @@ new(): Document {
                 }
             """, firefly = True)
         )
+        /*
+        SplitSection(
+            "Batteries included"
+            Paragraph([
+                Text("The standard library contains functionality that's required by most applications.")
+                Text("Apart from what you've seen above, there's also the following modules.")
+            ])
+            Bullets([
+                [Bold("Random:"), Text("Pseudorandom numbers")]
+                [Bold("Instant:"), Text("UTC timestamps")]
+                [Bold("Json:"), Text("JSON support")]
+                [Bold("Buffer:"), Text("Binary data")]
+                [Bold("Stream:"), Text("Streams (sync or async)")]
+                [Bold("Task:"), Text("Structured concurrency")]
+                [Bold("Log:"), Text("Simple logging")]
+            ])
+        )
+        */
         Section("The Firefly Stack", [
             Paragraph([
                 Bold("The Firefly Stack is a set of packages for building webapps.")
