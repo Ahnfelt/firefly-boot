@@ -294,12 +294,12 @@ guideSplitCss: CssClass = CssClass(
     ]
     [
         CssNest("&>div:first-child", [
-            Css.width("calc(350px - 15px)")
+            Css.width("calc(345px - 15px)")
             Css.paddingTop("10px")
             Css.paddingBottom("15px")
         ], [])
         CssNest("&>div:last-child", [
-            Css.width("calc(450px - 15px)")
+            Css.width("calc(455px - 15px)")
         ], [])
         CssNest("&>div>:first-child", [
             Css.marginTop("0")
