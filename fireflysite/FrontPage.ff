@@ -154,7 +154,9 @@ new(): Document {
         )
         Section("The Firefly Stack", [
             Paragraph([
-                Bold("The Firefly Stack is a full set of core webapp packages that you can use individually or together.")
+                Bold("The Firefly Stack is a set of packages for building webapps.")
+                Text("The packages are maintained by the developers of Firefly.")
+                Text("You can use them individually or together.")
                 Italic("Here's what you can do with that.")
             ])
         ])
