@@ -37,6 +37,9 @@
                     "light": "./icons/firefly-icon.svg",
                     "dark": "./icons/firefly-icon.svg"
                 }
+            },
+            {
+                "id": "firefly-markdown-injection"
             }
         ],
         "grammars": [
@@ -46,6 +49,17 @@
                 "path": "./syntaxes/firefly.tmLanguage.json",
                 "embeddedLanguages": {
                     "meta.embedded.block.javascript": "javascript"
+                }
+            },
+            {
+                "language": "firefly-markdown-injection",
+                "scopeName": "markdown.firefly.codeblock",
+                "path": "./syntaxes/firefly-markdown-injection.json",
+                "injectTo": [
+                    "text.html.markdown"
+                ],
+                "embeddedLanguages": {
+                    "meta.embedded.block.firefly": "firefly"
                 }
             }
         ],
