@@ -103,6 +103,7 @@ serveGuideHtml(title: String, request: WebRequest[WebResponse]): Unit {
     request.writeText("<meta name='theme-color' content='#303236'>")
     request.writeText("<link rel='preload' href='/assets/FireflyMono.ttf' as='font' crossorigin='anonymous'>")
     request.writeText("<link rel='preload' href='/assets/FireflySans.ttf' as='font' crossorigin='anonymous'>")
+    request.writeText("<link rel='preload' href='/assets/autocomplete.png' as='image'>")
     request.writeText("<style>@font-face { font-family: 'Firefly Mono'; font-display: fallback; src: url('/assets/FireflyMono.ttf'); unicode-range: U+000-5FF; }</style>")
     request.writeText("<style>@font-face { font-family: 'Firefly Sans'; font-display: fallback; src: url('/assets/FireflySans.ttf'); unicode-range: U+000-5FF; }</style>")
     request.writeText("</head>")
