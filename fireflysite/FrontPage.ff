@@ -152,6 +152,33 @@ new(): Document {
                 }
             """, firefly = True)
         )
+        SplitSection(
+            "Simplified traits"
+            Paragraph([
+                Text("Traits are used for equality, ordering etc., and the core traits are automatically implemented for")
+                Code("data")
+                Text("types if you don't supply your own implementation.")
+                Text("They make")
+                Code("==")
+                Text("and")
+                Code("<")
+                Text("type safe, unlike in most languages, and")
+                Text("they're a lot simpler than the traits you find in Rust.")
+            ])
+            CodeBlock("""
+                trait T: Order {
+                    compare(x: T, y: T): Ordering
+                }
+                    
+                instance Bool: Order {
+                    compare(x: Bool, y: Bool): Ordering {
+                        | False, True => OrderingBefore
+                        | True, False => OrderingAfter
+                        | _, _ => OrderingSame
+                    }
+                }
+            """, firefly = True)
+        )
         /*
         SplitSection(
             "Batteries included"
