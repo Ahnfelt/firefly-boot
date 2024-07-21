@@ -59,7 +59,7 @@ new(): Document {
             "Convenient collections"
             Paragraph([
                 Text("Immutable and mutable collections are part of the standard library.")
-                Text("Maps, sets, arrays, lists and streams come with a rich set of methods that you can use to write succint code.")
+                Text("Maps, sets, arrays, lists and streams come with a rich set of methods that you can use to write code that's instantly clear to the reader.")
             ])
             CodeBlock("""
                 let emails = houses
