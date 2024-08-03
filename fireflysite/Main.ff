@@ -96,11 +96,11 @@ serveAsset(system: NodeSystem, salt: Buffer, request: WebRequest[WebResponse], c
 serveGuideHtml(title: String, request: WebRequest[WebResponse]): Unit {
     request.writeHeader("Content-Type", "text/html; charset=UTF-8")
     request.writeText("<!doctype html>")
-    request.writeText("<html lang='en' style='background-color: #303236; color: #dadada; width: 100%; height: 100%; color-scheme: dark;'>")
+    request.writeText("<html lang='en' style='background-color: #ffffff; color: #333333; width: 100%; height: 100%; color-scheme: light;'>")
     request.writeText("<head>")
     request.writeText("<title>" + title + "</title>")
     request.writeText("<meta name='viewport' content='width=device-width, initial-scale=1.0'>")
-    request.writeText("<meta name='theme-color' content='#303236'>")
+    request.writeText("<meta name='theme-color' content='#ecc45e'>")
     request.writeText("<link rel='preload' href='/assets/FireflyMono.ttf' as='font' crossorigin='anonymous'>")
     request.writeText("<link rel='preload' href='/assets/FireflySans.ttf' as='font' crossorigin='anonymous'>")
     request.writeText("<link rel='preload' href='/assets/autocomplete.png' as='image'>")

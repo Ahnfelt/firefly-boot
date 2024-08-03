@@ -13,7 +13,7 @@ pageCss: CssClass = CssClass(
     ]
     [
         CssNest("*:focus-visible", [
-            Css.outline("2px solid #4fc1ff")
+            Css.outline("2px solid #ecc45e")
             Css.outlineOffset("2px")
         ], [])
     ]
@@ -22,12 +22,13 @@ pageCss: CssClass = CssClass(
 
 whiteLinkCss: CssClass = CssClass(
     [
-        Css.color("#dadada")
+        Css.color("#000000")
         Css.textDecoration("none")
+        Css.fontWeight("600")
     ]
     [
         CssNest("&:hover", [Css.textDecoration("underline")], [])
-        CssNest("&[aria-current='page']", [Css.color("#4ec9b0")], [])
+        CssNest("&[aria-current='page']", [Css.color("#000000")], [])
     ]
     []
 )
@@ -47,27 +48,35 @@ searchInputCss: CssClass = CssClass(
     [
         Css.appearance("none")
         Css.boxSizing("border-box")
-        Css.marginLeft("15px")
+        Css.marginLeft("20px")
         Css.marginRight("25px")
-        Css.width("calc(100% - 15px - 25px)")
+        Css.width("calc(100% - 20px - 25px)")
         Css.display("flex")
         Css.border("none")
-        Css.backgroundColor("#34373d")
-        Css.color("#dadada")
+        Css.borderBottom("2px solid #000000")
+        Css.backgroundColor("transparent")
+        Css.color("#000000")
         Css.height("34px")
         Css.fontSize("16px")
-        Css.borderRadius("17px")
-        Css.paddingLeft("15px")
-        Css.paddingRight("15px")
+        Css.borderRadius("0")
+        Css.paddingLeft("0")
+        Css.paddingRight("0")
         Css.paddingTop("0")
         Css.paddingBottom("0")
         Css.marginBottom("20px")
     ]
     [
         CssNest("&::placeholder", [
-            Css.color("#dadada")
-            Css.opacity("0.7")
-            Css.fontSize("15px")
+            Css.color("#000000")
+            Css.opacity("unset")
+            Css.fontSize("16px")
+        ], [])
+        CssNest("&:focus::placeholder", [
+            Css.opacity("0")
+        ], [])
+        CssNest("&:focus", [
+            Css.paddingLeft("5px")
+            Css.paddingRight("5px")
         ], [])
     ]
     []
@@ -91,7 +100,7 @@ guideSidebarButtonCss: CssClass = CssClass(
         Css.height("70px")
         Css.padding("0")
         Css.boxSizing("border-box")
-        Css.background("""url('data:image/svg+xml,<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(%23clip0_788_122)"><rect x="4" y="9" width="30" height="3" rx="1" fill="%23D9D9D9"/><rect x="4" y="17" width="21" height="3" rx="1" fill="%23D9D9D9"/><rect x="4" y="25" width="13" height="3" rx="1" fill="%23D9D9D9"/></g><defs><clipPath id="clip0_788_122"><rect width="50" height="50" fill="white"/></clipPath></defs></svg>') no-repeat center""")
+        Css.background("""url('data:image/svg+xml,<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(%23clip0_788_122)"><rect x="4" y="9" width="30" height="3" rx="1" fill="%23ecc45e"/><rect x="4" y="17" width="21" height="3" rx="1" fill="%23ecc45e"/><rect x="4" y="25" width="13" height="3" rx="1" fill="%23ecc45e"/></g><defs><clipPath id="clip0_788_122"><rect width="50" height="50" fill="white"/></clipPath></defs></svg>') no-repeat center""")
         Css.backgroundSize("70px 70px")
         Css.appearance("none")
         Css.border("none")
@@ -127,7 +136,8 @@ guideSidebarBackdropCss: CssClass = CssClass(
         Css.bottom("0px")
         Css.left("0")
         Css.right("0px")
-        Css.backgroundColor("rgba(0, 0, 0, 0.4)")
+        Css.backgroundColor("rgba(20, 20, 0, 0.7)")
+        Css.backdropFilter("blur(1px)")
         Css.touchAction("none")
     ]
     []
@@ -153,11 +163,11 @@ guideSidebarCss: CssClass = CssClass(
         Css.width("300px")
         Css.boxSizing("border-box")
         Css.paddingTop("20px")
-        Css.backgroundColor("#2b2d30")
+        Css.backgroundColor("#ecc45e")
         Css.overflowY("auto")
         Css.transition("200ms transform")
         Css.scrollbarWidth("thin")
-        Css.scrollbarColor("#34373d #2b2d30")
+        Css.scrollbarColor("#333333 #ecc45e")
     ]
     [
         CssNest(mobileOrTabletMediaQuery, [
@@ -170,6 +180,10 @@ guideSidebarCss: CssClass = CssClass(
             Css.paddingBottom("20px")
             Css.transform("translateX(-110%)")
             Css.outline("1px solid rgba(0, 0, 0, 0.15)")
+        ], [])
+        CssNest("& *:focus-visible", [
+            Css.outline("2px solid #000000")
+            Css.outlineOffset("2px")
         ], [])
     ]
     []
@@ -227,7 +241,7 @@ guideSidebarUl2Css: CssClass = CssClass(
         Css.paddingTop("20px")
         Css.paddingRight("0")
         Css.paddingBottom("5px")
-        Css.fontSize("16px")
+        Css.fontSize("17px")
     ]
     []
     []
@@ -253,14 +267,15 @@ guideMainCss: CssClass = CssClass(
         Css.paddingBottom("80px")
         Css.position("relative")
         Css.boxSizing("content-box")
-        Css.color("#ffffffea")
+        Css.color("#333333")
+        Css.fontWeight("500")
     ]
     [
         CssNest(mobileOrTabletMediaQuery, [
             Css.marginLeft("0")
             Css.paddingLeft("20px")
             Css.paddingRight("20px")
-            Css.paddingTop("20px")
+            Css.paddingTop("40px")
             Css.paddingBottom("70px")
         ], [])
     ]
@@ -274,12 +289,7 @@ guideDocumentCss: CssClass = CssClass(
         Css.fontSize("17px")
         Css.lineHeight("1.7")
     ]
-    [
-        CssNest(mobileMediaQuery, [
-            Css.fontSize("16px")
-            Css.lineHeight("1.6")
-        ], [])
-    ]
+    []
     []
 )
 
@@ -375,12 +385,15 @@ guideCodeCss: CssClass = CssClass(
         Css.fontFamily("'Firefly Mono', monospace")
         Css.fontSize("15px")
         Css.lineHeight("1.3")
-        Css.color("#4ec9b0")
+        Css.color("#000000")
     ]
     [
         CssNest(mobileMediaQuery, [
             Css.fontSize("14px")
             Css.lineHeight("1.4")
+        ], [])
+        CssNest("pre>&", [
+            Css.color("#4ec9b0")
         ], [])
     ]
     []
@@ -390,10 +403,8 @@ guideCodeBlockCss: CssClass = CssClass(
     [
         Css.lineHeight("1.3")
         Css.background("#1f1f1f")
-        Css.boxShadow("0 1px 0 1px #00000080")
         Css.padding("20px 25px")
         Css.margin("30px 0")
-        Css.border("1px solid #232323")
         Css.borderRadius("5px")
         Css.boxSizing("border-box")
         Css.overflowX("auto")
@@ -416,12 +427,13 @@ guideCodeBlockCss: CssClass = CssClass(
 
 guideLinkCss: CssClass = CssClass(
     [
-        Css.color("#4fc1ff")
-        Css.textDecoration("none")
+        Css.color("#000000")
+        Css.textDecoration("2px #ecc45e underline")
+        Css.fontWeight("600")
     ]
     [
         CssNest("&:hover", [
-            Css.textDecoration("underline")
+            Css.textDecoration("2px #ecc45e underline")
         ], [])
     ]
     []
@@ -438,11 +450,13 @@ guideNextButtonCss: CssClass = CssClass(
 guideButtonCss: CssClass = CssClass(
     [
         Css.padding("15px 30px")
-        Css.borderRadius("10px")
-        Css.background("#000000a0")
-        Css.color("#dadada")
+        Css.borderRadius("5px")
+        Css.background("#ecc45e")
+        Css.color("#000000")
+        Css.border("2px solid black")
         Css.textDecoration("none")
         Css.fontSize("17px")
+        Css.fontWeight("600")
     ]
     [
         CssNest(mobileMediaQuery, [
@@ -450,9 +464,6 @@ guideButtonCss: CssClass = CssClass(
         ], [])
         CssNest("&::after", [
             Css.content("' →'")
-        ], [])
-        CssNest("&:hover", [
-            Css.textDecoration("underline")
         ], [])
     ]
     []
