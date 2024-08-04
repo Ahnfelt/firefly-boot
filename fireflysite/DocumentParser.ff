@@ -1,0 +1,138 @@
+import WebServer from ff:webserver // This is required to run the file.
+import Guide
+
+nodeMain(system: NodeSystem) {
+    let file = system.path("assets/markdown/ControlFlow.md")
+    let content = file.readText()
+    system.writeLine(file.absolute())
+    let lines = content.split('\n')
+    let parser = DocumentParser(file.absolute(), lines)
+    let document = parser.parseDocument()
+    
+    system.writeLine("")
+    document.sections.each {
+        | Section(heading, blocks) => 
+            system.writeLine("# " + heading)
+            blocks.each {block => 
+                system.writeLine("  " + Show.show(block))
+            }
+        | SplitSection(heading, first, second) => 
+            system.writeLine("SPLIT")
+        }
+    
+}
+
+class DocumentParser(
+    fileName: String
+    mutable lines: List[String]
+)
+
+extend self: DocumentParser {
+    
+    parseDocument(): Document {
+        Document(iterate {self.parseSection()})
+    }
+    
+    parseSection(): Option[Section] {
+        self.dropWhile {_.trim() == ""}
+        self.lines.first().{
+            | Some(line) {line.trim().removeFirst("#") | Some(heading)} => 
+                self.dropFirst()
+                let blocks = iterate {self.parseBlock()}
+                Some(Section(heading.trim(), blocks))
+            | _ => None
+        }
+    }
+    
+    parseBlock(): Option[Block] {
+        self.dropWhile {_.trim() == ""}
+        let first = self.lines.first().map {_.trimStart()}
+        first.{
+            | Some(line) {line.removeFirst("```") | Some(l)} => 
+                self.dropFirst()
+                let isFirefly = l.startsWith("firefly")
+                let block = self.parseRemainingCodeBlock(isFirefly)
+                Some(block)
+            | Some(line) {line.first().any {_ != '#'}} => 
+                Some(self.parseParagraph())
+            | _ => None
+        }
+    }
+    
+    parseParagraph(): Block {
+        let lines = self.consumeWhile {_.trim() != ""}
+        let parser = InlineParser(self.fileName, lines.join("\n"))
+        let inlines = parser.parseInlines()
+        Paragraph(inlines)
+    }
+    
+    parseRemainingCodeBlock(isFirefly: Bool): Block {
+        let code = self.consumeWhile {!_.trimStart().startsWith("```")}
+        self.dropFirst(1)
+        CodeBlock(code.join("\n"), isFirefly)
+    } 
+    
+    
+    dropFirst(count: Int = 1): Unit {
+        self.lines = self.lines.dropFirst(count)
+    }
+    
+    dropWhile(body: String => Bool): Unit {
+        self.lines = self.lines.dropWhile(body)
+    }
+    
+    consumeWhile(body: String => Bool): List[String] {
+        let taken = self.lines.takeWhile(body)
+        self.dropFirst(taken.size())
+        taken
+    }
+}
+
+class InlineParser(
+    fileName: String
+    mutable line: String
+)
+
+extend self: InlineParser {
+    
+    parseInlines(): List[Inline] {
+        iterate {self.parseInline()}
+    }
+    
+    parseInline(): Option[Inline] {
+        self.line.first().map {
+            | '*' => // TODO **
+                self.line = self.line.dropFirst()
+                let text = self.line.takeWhile {_ != '*'}
+                self.line = self.line.dropFirst(text.size() + 1)
+                Bold(text)
+            | '_' => 
+                self.line = self.line.dropFirst()
+                let text = self.line.takeWhile {_ != '_'}
+                self.line = self.line.dropFirst(text.size() + 1)
+                Italic(text)
+            | '`' => 
+                self.line = self.line.dropFirst()
+                let text = self.line.takeWhile {_ != '`'}
+                self.line = self.line.dropFirst(text.size() + 1)
+                Code(text)
+            | _ => 
+                let text = self.line.takeWhile {c => c != '*' && c != '_' && c != '`'}
+                self.line = self.line.dropFirst(text.size())
+                Text(text)
+        }
+    }    
+}
+
+iterate[T](body: () => Option[T]): List[T] {
+    let array = Array.new()
+    doWhile {
+        body().{
+            | None => False
+            | Some(s) =>
+                array.push(s)
+                True
+        }
+    }
+    array.drain()  
+}   
