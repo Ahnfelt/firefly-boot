@@ -128,7 +128,8 @@ renderSidebar(lux: Lux, guides: List[Guide], selectedGuide: Guide, selectedHeadi
     lux.add("nav") {
         lux.cssClass(Styles.guideSidebarCss)
         if(menu) {lux.cssClass(Styles.guideSidebarOpenCss)}
-        lux.div {
+        lux.add("a") {
+            lux.set("href", "/front/")
             lux.css(Css.display("flex"))
             lux.css(Css.gap("20px"))
             lux.css(Css.alignItems("center"))
@@ -137,6 +138,8 @@ renderSidebar(lux: Lux, guides: List[Guide], selectedGuide: Guide, selectedHeadi
             lux.css(Css.padding("20px"))
             lux.css(Css.letterSpacing("5px"))
             lux.css(Css.textTransform("uppercase"))
+            lux.css(Css.color("inherit"))
+            lux.css(Css.textDecoration("none"))
             lux.add("img") {
                 lux.css(Css.width("100px"))
                 lux.set("src", "/assets/firefly-logo-yellow.png")
@@ -155,7 +158,7 @@ renderSidebar(lux: Lux, guides: List[Guide], selectedGuide: Guide, selectedHeadi
         }
         lux.add("ul") {
             lux.cssClass(Styles.guideSidebarUl1Css)
-            guides.each {guide =>
+            guides.dropFirst().each {guide =>
                 lux.add("li") {
                     lux.cssClass(Styles.guideSidebarLi1Css)
                     lux.add("a") {
