@@ -148,6 +148,7 @@ renderSidebar(lux: Lux, guides: List[Guide], selectedGuide: Guide, selectedHeadi
             }
             lux.div {
                 lux.text("Firefly")
+                lux.css(Css.width("145px"))
             }
         }
         lux.add("form") {
