@@ -4,10 +4,9 @@ import MatchingPasswordsDemo
 
 new(): Document {
     Document([
-        Section("Firefly", [
+        Section("Is DX an add-on feature?", [
             Paragraph([
-                Bold("Is DX an add-on feature?")
-                Italic("We don't think so.")
+                Bold("We don't think so.")
                 Text("Firefly is designed from the ground up as a full stack language with great developer experience.")
             ])
             Image("/assets/autocomplete.png")
