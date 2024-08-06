@@ -195,6 +195,26 @@ guideSidebarOpenCss: CssClass = CssClass(
     []
 )
 
+guideSidebarLogoCss: CssClass = CssClass(
+    [
+        Css.display("flex")
+        Css.gap("20px")
+        Css.alignItems("center")
+        Css.justifyContent("center")
+        Css.fontSize("30px")
+        Css.letterSpacing("5px")
+        Css.textTransform("uppercase")
+        Css.color("inherit")
+        Css.textDecoration("none")
+        Css.height("100px")
+    ]
+    [
+        CssNest("&>img", [Css.width("100px")], [])
+        CssNest("&>div", [Css.width("145px")], [])
+    ]
+    []
+)
+
 guideSidebarUl1Css: CssClass = CssClass(
     [
         Css.display("flex")

@@ -130,23 +130,12 @@ renderSidebar(lux: Lux, guides: List[Guide], selectedGuide: Guide, selectedHeadi
         if(menu) {lux.cssClass(Styles.guideSidebarOpenCss)}
         lux.add("a") {
             lux.set("href", "/front/")
-            lux.css(Css.display("flex"))
-            lux.css(Css.gap("20px"))
-            lux.css(Css.alignItems("center"))
-            lux.css(Css.justifyContent("center"))
-            lux.css(Css.fontSize("30px"))
-            lux.css(Css.letterSpacing("5px"))
-            lux.css(Css.textTransform("uppercase"))
-            lux.css(Css.color("inherit"))
-            lux.css(Css.textDecoration("none"))
-            lux.css(Css.height("103px"))
+            lux.cssClass(Styles.guideSidebarLogoCss)
             lux.add("img") {
-                lux.css(Css.width("100px"))
                 lux.set("src", "/assets/firefly-logo-yellow.png")
             }
             lux.div {
                 lux.text("Firefly")
-                lux.css(Css.width("145px"))
             }
         }
         lux.add("form") {

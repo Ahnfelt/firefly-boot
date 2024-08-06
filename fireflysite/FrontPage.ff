@@ -4,7 +4,7 @@ import MatchingPasswordsDemo
 
 new(): Document {
     Document([
-        Section("Is DX an add-on feature?", [
+        /*Section("Is DX an add-on feature?", [
             Paragraph([
                 Bold("We don't think so.")
                 Text("Firefly is designed from the ground up as a full stack language with great developer experience.")
@@ -13,6 +13,15 @@ new(): Document {
             Paragraph([
                 Italic("Firefly in VSCode, showcasing instant type driven autocompletion and edit time error detection.")
                 Italic("An example of DX that's only possible for a certain class of languages. Read on for more Firefly DX.")
+            ])
+        ])*/
+        Section("Webapps were never this fun!", [
+            Paragraph([
+                Text("Firefly is designed from the ground up as a full stack language with great developer experience.")
+                Text("It's lightweight, productive, and comes with the tools and libraries you need to build a webapp.")
+                Text("It's really easy to ")
+                Link("get started", "/guide/")
+                Text(" and the language features help you keep the code base maintainable.")
             ])
         ])
         SplitSection(
@@ -102,6 +111,14 @@ new(): Document {
                 Text("And when you need to read the error messages, they're short and to the point.")
             ])
             Image("/assets/edit-time-error.png")
+        )
+        SplitSection(
+            "Type driven autocompletion"
+            Paragraph([
+                Text("The language server comes with type driven autocompletion.")
+                Text("It instantly presents a very precise list of completions, and the expected type is used to preselect a likely completion.")
+            ])
+            Image("/assets/autocomplete-small.png")
         )
         SplitSection(
             "Uncolored async/await"

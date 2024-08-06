@@ -35,8 +35,8 @@ nodeMain(system: NodeSystem): Unit {
             serveAsset(system, cacheSalt, request, "image/png", "/assets/firefly-logo-notext.png")
         } elseIf {path.startsWith("/assets/firefly-logo-yellow.png")} {
             serveAsset(system, cacheSalt, request, "image/png", "/assets/firefly-logo-yellow.png")
-        } elseIf {path.startsWith("/assets/autocomplete.png")} {
-            serveAsset(system, cacheSalt, request, "image/png", "/assets/autocomplete.png")
+        } elseIf {path.startsWith("/assets/autocomplete-small.png")} {
+            serveAsset(system, cacheSalt, request, "image/png", "/assets/autocomplete-small.png")
         } elseIf {path.startsWith("/assets/edit-time-error.png")} {
             serveAsset(system, cacheSalt, request, "image/png", "/assets/edit-time-error.png")
         } elseIf {path.startsWith("/assets/FireflyMono.ttf")} {
@@ -106,7 +106,6 @@ serveGuideHtml(title: String, request: WebRequest[WebResponse]): Unit {
     request.writeText("<link rel='preload' href='/assets/FireflyMono.ttf' as='font' crossorigin='anonymous'>")
     request.writeText("<link rel='preload' href='/assets/FireflySans.ttf' as='font' crossorigin='anonymous'>")
     request.writeText("<link rel='preload' href='/assets/firefly-logo-yellow.png' as='image'>")
-    request.writeText("<link rel='preload' href='/assets/autocomplete.png' as='image'>")
     request.writeText("<style>@font-face { font-family: 'Firefly Mono'; font-display: fallback; src: url('/assets/FireflyMono.ttf'); unicode-range: U+000-5FF; }</style>")
     request.writeText("<style>@font-face { font-family: 'Firefly Sans'; font-display: fallback; src: url('/assets/FireflySans.ttf'); unicode-range: U+000-5FF; }</style>")
     request.writeText("</head>")
