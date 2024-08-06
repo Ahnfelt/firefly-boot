@@ -371,7 +371,7 @@ guideSplitHeadingCss: CssClass = CssClass(
 guideH1Css: CssClass = CssClass(
     [
         Css.fontSize("32px")
-        Css.fontWeight("700")
+        Css.fontWeight("600")
         Css.marginTop("0px")
     ]
     [
@@ -385,7 +385,7 @@ guideH1Css: CssClass = CssClass(
 guideH2Css: CssClass = CssClass(
     [
         Css.fontSize("28px")
-        Css.fontWeight("700")
+        Css.fontWeight("600")
         Css.marginTop("70px")
     ]
     [
