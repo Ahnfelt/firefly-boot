@@ -3,23 +3,15 @@ import Guide
 
 nodeMain(system: NodeSystem) {
     let file = system.path("assets/markdown/ControlFlow.md")
+    let document = parse(file)
+    printDocument(system, document)
+}
+
+parse(file: Path): Document {
     let content = file.readText()
-    system.writeLine(file.absolute())
     let lines = content.split('\n')
     let parser = DocumentParser(file.absolute(), lines)
-    let document = parser.parseDocument()
-    
-    system.writeLine("")
-    document.sections.each {
-        | Section(heading, blocks) => 
-            system.writeLine("# " + heading)
-            blocks.each {block => 
-                system.writeLine("  " + Show.show(block))
-            }
-        | SplitSection(heading, first, second) => 
-            system.writeLine("SPLIT")
-        }
-    
+    parser.parseDocument()
 }
 
 class DocumentParser(
@@ -100,27 +92,64 @@ extend self: InlineParser {
     }
     
     parseInline(): Option[Inline] {
-        self.line.first().map {
-            | '*' => // TODO **
-                self.line = self.line.dropFirst()
-                let text = self.line.takeWhile {_ != '*'}
-                self.line = self.line.dropFirst(text.size() + 1)
+        self.parseBold().orElse: 
+        self.parseItalic().orElse:
+        self.parseText()
+    }
+    
+    parseBold(): Option[Inline] {
+        self.line.removeFirst("**").flatMap {rest => 
+            indexOf(rest, "**").map {end => 
+                let text = rest.slice(0, end)
+                self.dropFirst(end + 4)
                 Bold(text)
-            | '_' => 
-                self.line = self.line.dropFirst()
-                let text = self.line.takeWhile {_ != '_'}
-                self.line = self.line.dropFirst(text.size() + 1)
-                Italic(text)
-            | '`' => 
-                self.line = self.line.dropFirst()
-                let text = self.line.takeWhile {_ != '`'}
-                self.line = self.line.dropFirst(text.size() + 1)
-                Code(text)
-            | _ => 
-                let text = self.line.takeWhile {c => c != '*' && c != '_' && c != '`'}
-                self.line = self.line.dropFirst(text.size())
-                Text(text)
+            }
         }
+    }
+
+    parseItalic(): Option[Inline] {
+        self.line.removeFirst("_").flatMap {rest => 
+            indexOf(rest, "_").map {end => 
+                let text = rest.slice(0, end)
+                self.dropFirst(end + 2)
+                Italic(text)
+            }
+        }
+    }
+    
+    parseCode(): Option[Inline] {
+        self.line.removeFirst("`").flatMap {rest => 
+            indexOf(rest, "`").map {end => 
+                let text = rest.slice(0, end)
+                self.dropFirst(end + 2)
+                Code(text)
+            }
+        }
+    }
+    
+    parseText(): Option[Inline] {
+        mutable i = 0
+        
+        while {
+            i < self.line.size() &&
+            self.line.grab(i) != '_' &&
+            self.line.grab(i) != '`' &&
+            (i == self.line.size() - 1 || self.line.grab(i) != '*' || self.line.grab(i + 1) != '*')
+        } {
+            i += 1
+        }
+        
+        i.{
+            | 0 => None
+            | _ => 
+                let text = self.line.slice(0, i)
+                self.dropFirst(text.size())
+                Some(Text(text))
+        }
+    }    
+
+    dropFirst(count: Int = 1): Unit {
+        self.line = self.line.dropFirst(count)
     }    
 }
 
@@ -136,3 +165,53 @@ iterate[T](body: () => Option[T]): List[T] {
     }
     array.drain()  
 }   
+
+indexOf(string: String, searchString: String, position: Int = 0): Option[Int]
+    target js sync """
+        const i = string_.indexOf(searchString_, position_);
+        return i == -1 ? ff_core_Option.None() : ff_core_Option.Some(i);
+    """
+    
+printDocument(system: NodeSystem, document: Document) {
+    document.sections.each {
+        | Section(heading, blocks) => 
+            system.writeLine("# " + heading)
+            blocks.each {
+                | Bullets(items) => 
+                    system.writeLine("  Bullets:")
+                    system.writeLine("    " + Show.show(items))
+                | CodeBlock(code, firefly) => 
+                    system.writeLine("  Code:")
+                    system.writeLine("    " + Show.show(firefly))
+                | Image(url) => 
+                    system.writeLine("  Image:")
+                    system.writeLine("    " + Show.show(url))
+                | LuxDemo(demo) => 
+                    system.writeLine("  Lux:")
+                    system.writeLine("    " + Show.show(demo))
+                | Paragraph(inlines) => 
+                    system.writeLine("  Paragraph:")
+                    inlines.each {
+                        | Anchor(heading, title) => 
+                            system.writeLine("    Anchor: " + Show.show(heading) + ", " + Show.show(title))
+                        | Bold(text) => 
+                            system.writeLine("    Bold: " + Show.show(text))
+                        | Code(code, True) => 
+                            system.writeLine("    Code (firefly): " + Show.show(code))
+                        | Code(code, False) => 
+                            system.writeLine("    Code: " + Show.show(code))
+                        | Italic(text) => 
+                            system.writeLine("    Italic: " + Show.show(text))
+                        | Link(text, url) => 
+                            system.writeLine("    Link: " + Show.show(text))
+                        | Text(text) => 
+                            system.writeLine("    Text: " + Show.show(text))
+                    }
+                | Video(url) => 
+                    system.writeLine("  Video:")
+                    system.writeLine("    " + Show.show(url))
+            }
+        | SplitSection(heading, first, second) => 
+            system.writeLine("SPLIT")
+    }    
+}
