@@ -15,13 +15,13 @@ new(): Document {
                 Italic("An example of DX that's only possible for a certain class of languages. Read on for more Firefly DX.")
             ])
         ])*/
-        Section("Webapps were never this fun!", [
+        Section("The only full stack programming language", [
             Paragraph([
-                Text("Firefly is designed from the ground up as a full stack language with great developer experience.")
-                Text("It's lightweight, productive, and comes with the tools and libraries you need to build a webapp.")
-                Text("It's really easy to ")
-                Link("get started", "/guide/")
-                Text(" and the language features help you keep the code base maintainable.")
+                Text("Firefly doesn't just run in the browser and on the server,")
+                Text("it comes with a complete stack that allows you to implement full webapps.")
+                Text("Everything in the stack is designed to fit together nicely, all with excellent IDE support.")
+                Text("We think this is unique —")
+                Link("read why", "#")
             ])
         ])
         SplitSection(
