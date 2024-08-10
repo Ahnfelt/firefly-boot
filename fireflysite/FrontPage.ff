@@ -20,8 +20,9 @@ new(): Document {
                 Text("Firefly doesn't just run in the browser and on the server,")
                 Text("it comes with a complete stack that allows you to implement full webapps.")
                 Text("Everything in the stack is designed to fit together nicely, all with excellent IDE support.")
-                Text("We think this is unique —")
-                Link("read why", "#")
+                Text("It's really easy to ")
+                Link("get started", "/guide/")
+                Text("and the language features help you keep the code base maintainable as it grows.")
             ])
         ])
         SplitSection(
