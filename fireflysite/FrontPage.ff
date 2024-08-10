@@ -32,14 +32,18 @@ new(): Document {
                 Text("When starting out, you can put everything in a single")
                 Code(".ff")
                 Text("file, including your dependency list.")
+                Text("As the code base grows, you can split it into multiple files or packages.")
             ])
             CodeBlock("""
                 dependency ff:webserver:0.0.0
             
+                // Runs on the server
                 nodeMain(system: NodeSystem) {...}
                     
+                // Runs in the browser
                 browserMain(system: BrowserSystem) {...}
                 
+                // Runs at build time
                 buildMain(system: BuildSystem) {...}
             """, firefly = True)
         )
