@@ -22,7 +22,7 @@ new(): Document {
                 Text("Everything in the stack is designed to fit together nicely, all with excellent IDE support.")
                 Text("It's really easy to ")
                 Link("get started", "/guide/")
-                Text("and the language features help you keep the code base maintainable as it grows.")
+                Text("and there's no magic.")
             ])
         ])
         SplitSection(
@@ -126,7 +126,7 @@ new(): Document {
             Image("/assets/autocomplete-small.png")
         )
         SplitSection(
-            "Uncolored async/await"
+            "No async dilemma"
             Paragraph([
                 Text("In Firefly, there's no")
                 Code("async")
@@ -151,7 +151,7 @@ new(): Document {
             """, firefly = True)
         )
         SplitSection(
-            "Managed I/O and effects"
+            "No hidden I/O"
             Paragraph([
                 Text("The main function is passed a")
                 Code("system")
@@ -174,7 +174,7 @@ new(): Document {
             """, firefly = True)
         )
         SplitSection(
-            "Simplified traits"
+            "Structural equality"
             Paragraph([
                 Text("Traits are used for equality, ordering etc., and the core traits are automatically implemented for")
                 Code("data")
