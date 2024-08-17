@@ -1,13 +1,13 @@
 import Guide
 import GuideIntroduction
 import GuideControlFlow
+import GuideBaseTypes
 
 mock(): List[Document] {
     [
         GuideIntroduction.new()
+        GuideBaseTypes.new()
         GuideControlFlow.new()
-        Document([Section("Base types", [])])
-        Document([Section("Collections", [])])
         Document([Section("Custom types", [])])
         Document([Section("Async I/O", [])])
         Document([Section("Structured concurrency", [])])
