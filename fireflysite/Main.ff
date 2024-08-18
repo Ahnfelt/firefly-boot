@@ -12,45 +12,39 @@ nodeMain(system: NodeSystem): Unit {
     let host = system.arguments().grab(0)
     let port = system.arguments().grab(1).grabInt()
     let cacheSalt = system.crypto().randomBuffer(16)
+    system.writeLine("Listening on " + host + ":" + port)
     WebServer.new(system, host, port).listen {request =>
         let path = request.readPath()
-        if(path.startsWith("/guide/")) {
-            serveGuideHtml("Firefly Guide", request)
-        } elseIf {path.startsWith("/examples/")} {
-            serveGuideHtml("Firefly Examples", request)
-        } elseIf {path.startsWith("/packages/")} {
-            serveGuideHtml("Firefly Packages", request)
-        } elseIf {path.startsWith("/community/")} {
-            serveGuideHtml("Firefly Community", request)
-        } elseIf {path.startsWith("/front/")} {
-            serveGuideHtml("Firefly", request)
-        } elseIf {path.startsWith("/js/") && !path.contains("..")} {
-            let asset = if(path == "/js/ff/fireflysite/Main.mjs" && system.assets().exists("/js/Main.bundle.js")) {
-                "/js/Main.bundle.js"
-            } else {
-                path
-            }
-            serveAsset(system, cacheSalt, request, "text/javascript; charset=UTF-8", asset)
-        } elseIf {path.startsWith("/favicon.ico")} {
-            serveAsset(system, cacheSalt, request, "image/png", "/assets/firefly-logo-notext.png")
-        } elseIf {path.startsWith("/assets/firefly-logo-yellow.png")} {
-            serveAsset(system, cacheSalt, request, "image/png", "/assets/firefly-logo-yellow.png")
-        } elseIf {path.startsWith("/assets/autocomplete-small.png")} {
-            serveAsset(system, cacheSalt, request, "image/png", "/assets/autocomplete-small.png")
-        } elseIf {path.startsWith("/assets/edit-time-error.png")} {
-            serveAsset(system, cacheSalt, request, "image/png", "/assets/edit-time-error.png")
-        } elseIf {path.startsWith("/assets/FireflyMono.ttf")} {
-            serveAsset(system, cacheSalt, request, "font/ttf", "/assets/NotoSansMono-Regular.ttf")
-        } elseIf {path.startsWith("/assets/FireflySans.ttf")} {
-            serveAsset(system, cacheSalt, request, "font/ttf", "/assets/NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf")
-        } else {
-            let parameters = if(request.readRawQueryString().size() == 0) {""} else {
-                "?" + request.readRawQueryString()
-            }
-            request.writeHeader("Location", "https://www.firefly-lang.org" + path + parameters)
-            request.writeStatus("302 Found")
+        let segments = path.split('/').filter {s => s != "" && s != "." && s != ".."}
+        segments.{
+            | ["guide", ...] => 
+                serveGuideHtml("Firefly Guide", request)
+            | ["examples", ...] => 
+                serveGuideHtml("Firefly Examples", request)
+            | ["packages", ...] => 
+                serveGuideHtml("Firefly Examples", request)
+            | ["community", ...] => 
+                serveGuideHtml("Firefly Examples", request)
+            | ["front", ...] => 
+                serveGuideHtml("Firefly Examples", request)
+            | ["js", ...] => 
+                let asset = if(path == "/js/ff/fireflysite/Main.mjs" && system.assets().exists("/js/Main.bundle.js")) {
+                    "/js/Main.bundle.js"
+                } else {
+                    path
+                }
+                serveAsset(system, cacheSalt, request, "text/javascript; charset=UTF-8", asset)
+            | ["favicon.ico"] =>
+                serveAsset(system, cacheSalt, request, "image/png", "/assets/firefly-logo-notext.png")
+            | ["assets", ...rest] => serveAssets(system, cacheSalt, request, rest)
+            | _ =>
+                let parameters = if(request.readRawQueryString().size() == 0) {""} else {
+                    "?" + request.readRawQueryString()
+                }
+                request.writeHeader("Location", "https://www.firefly-lang.org" + path + parameters)
+                request.writeStatus("302 Found")
         }
-    }
+    }    
 }
 
 browserMain(system: BrowserSystem): Unit {
@@ -77,6 +71,28 @@ buildMain(system: BuildSystem) {
         .addAssets("/js/", browser.assets())
         .addAssets("/assets/", system.packageAssets().assets("/assets/"))
     system.setAssets(assets)
+}
+
+serveAssets(system: NodeSystem, salt: Buffer, request: WebRequest[WebResponse], segments: List[String]): Unit {
+    let asset = "/assets/" + segments.join("/")
+    if(!system.assets().exists(asset)) {
+        request.writeStatus("404 Not Found")
+    } else:
+    
+    guessContentType(asset).or {
+        request.writeStatus("404 Not Found")
+    }: contentType =>
+
+    serveAsset(system, salt, request, contentType, asset)
+}
+
+guessContentType(path: String): Option[String] {
+    path.split('.').last().flatMap {
+        | "md" => Some("text/markdown")
+        | "png" => Some("image/png")
+        | "ttf" => Some("font/ttf")
+        | _ => None
+    }
 }
 
 serveAsset(system: NodeSystem, salt: Buffer, request: WebRequest[WebResponse], contentType: String, asset: String): Unit {
