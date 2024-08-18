@@ -104,6 +104,7 @@ guideSidebarButtonCss: CssClass = CssClass(
         Css.transformOrigin("top left")
         Css.transform("rotate(180deg) scale(0, 0)")
         Css.transition("100ms transform")
+        Css.filter("drop-shadow(1px 1px black)")
     ]
     [
         CssNest(mobileOrTabletMediaQuery, [
