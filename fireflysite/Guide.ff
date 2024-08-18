@@ -10,9 +10,16 @@ data Guide(
     documents: List[Document]
 )
 
-data Document(
-    sections: List[Section]
-)
+data Document {
+    ReadyDocument(
+        sections: List[Section]
+    )
+    UnfetchedDocument(
+        header: String
+    )
+}
+
+
 
 data Section(heading: String) {
     Section(
@@ -53,7 +60,11 @@ extend self: Guide {
 
 extend self: Document {
     heading(): String {
-        self.sections.first().map {_.heading}.else {""}
+        self.{
+            | ReadyDocument(sections) => 
+                sections.first().map {_.heading}.else {""}
+            | UnfetchedDocument(header) => header
+        }
     }
     title(guide: Guide): String {
         if(guide.documents.first().any {_.heading() == self.heading()}) {
@@ -83,8 +94,8 @@ data GuideDocument(
 
 render(lux: Lux, browser: BrowserSystem, prefix: String, kebab: String, guides: List[Guide], demos: List[Demo]) {
     let guide = guides.find {_.prefix == prefix}.else {guides.grabFirst()}
-    let document = guide.documents.find {
-        _.sections.first().any {kebabCase(_.heading) == kebab}
+    let document = guide.documents.find {d => 
+        kebabCase(d.heading()) == kebab
     }.else {guide.documents.grabFirst()}
     browser.js().global().get("document").set("title", document.title(guide))
     let guideDocuments = guides.flatMap {guide => guide.documents.map {document => 
@@ -100,7 +111,7 @@ render(lux: Lux, browser: BrowserSystem, prefix: String, kebab: String, guides: 
             lux.cssClass(Styles.guideCss)
             lux.add("main") {
                 lux.cssClass(Styles.guideMainCss)
-                renderDocument(lux, document, demos, nextDocument)
+                renderDocument(lux, browser.httpClient(), document, demos, nextDocument)
             }
             lux.add("button") {
                 lux.set("aria-label", "Toggle the menu")
@@ -119,7 +130,7 @@ render(lux: Lux, browser: BrowserSystem, prefix: String, kebab: String, guides: 
                     setMenu(False)
                 }
             }
-            renderSidebar(lux, guides, guide, document.sections.first().map {_.heading}.else {""}, menu)
+            renderSidebar(lux, guides, guide, document.heading(), menu)
         }
     }
 }
@@ -153,7 +164,7 @@ renderSidebar(lux: Lux, guides: List[Guide], selectedGuide: Guide, selectedHeadi
                     lux.cssClass(Styles.guideSidebarLi1Css)
                     lux.add("a") {
                         lux.cssClass(Styles.whiteLinkCss)
-                        let heading = guide.documents.grabFirst().sections.grabFirst().heading
+                        let heading = guide.documents.grabFirst().heading()
                         if(selectedGuide.prefix == guide.prefix && heading == selectedHeading) {
                             lux.set("aria-current", "page")
                         }
@@ -168,7 +179,7 @@ renderSidebar(lux: Lux, guides: List[Guide], selectedGuide: Guide, selectedHeadi
                                 lux.cssClass(Styles.guideSidebarLi2Css)
                                 lux.add("a") {
                                     lux.cssClass(Styles.whiteLinkCss)
-                                    let heading = document.sections.grabFirst().heading
+                                    let heading = document.heading()
                                     if(selectedGuide.prefix == guide.prefix && heading == selectedHeading) {
                                         lux.set("aria-current", "page")
                                     }
@@ -184,11 +195,19 @@ renderSidebar(lux: Lux, guides: List[Guide], selectedGuide: Guide, selectedHeadi
     }
 }
 
-renderDocument(lux: Lux, document: Document, demos: List[Demo], nextDocument: Option[GuideDocument]) {
+renderDocument(lux: Lux, http: HttpClient, document: Document, demos: List[Demo], nextDocument: Option[GuideDocument]) {
     lux.add("article") {
         lux.cssClass(Styles.guideDocumentCss)
-        document.sections.pairs().each {| Pair(index, section) => 
-            renderSection(lux, index == 0, section, demos)
+        document.{
+            | ReadyDocument(sections) => 
+                sections.pairs().each {| Pair(index, section) => 
+                    renderSection(lux, index == 0, section, demos)
+                }
+            | UnfetchedDocument(header) => 
+                lux.useSuspense {lux.div {lux.text("Loading document...")}}: lux =>
+                let asset = "/assets/markdown/" + kebabCase(document.heading()) + ".md"
+                let markdown = http.get(asset, []) {_.readText()}
+                lux.text(markdown)
         }
         nextDocument.each {next => 
             lux.div {

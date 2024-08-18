@@ -1,7 +1,7 @@
 import Guide
 
 new(): Document {
-    Document([
+    ReadyDocument([
         Section("Guide", [
             Paragraph([
                 Text("In this guide you will learn to use Firefly.")

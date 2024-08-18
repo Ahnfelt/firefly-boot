@@ -36,6 +36,10 @@ nodeMain(system: NodeSystem): Unit {
                 serveAsset(system, cacheSalt, request, "text/javascript; charset=UTF-8", asset)
             | ["favicon.ico"] =>
                 serveAsset(system, cacheSalt, request, "image/png", "/assets/firefly-logo-notext.png")
+            | ["assets", "FireflyMono.ttf"] => 
+                serveAsset(system, cacheSalt, request, "image/png", "/assets/NotoSansMono-Regular.ttf")
+            | ["assets", "FireflySans.ttf"] => 
+                serveAsset(system, cacheSalt, request, "image/png", "/assets/NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf")
             | ["assets", ...rest] => serveAssets(system, cacheSalt, request, rest)
             | _ =>
                 let parameters = if(request.readRawQueryString().size() == 0) {""} else {

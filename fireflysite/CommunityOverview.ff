@@ -3,7 +3,7 @@ import CountingButtonDemo
 import MatchingPasswordsDemo
 
 new(): Document {
-    Document([
+    ReadyDocument([
         Section("Community", [
             Paragraph([
                 Text("The developers of Firefly hang out in")

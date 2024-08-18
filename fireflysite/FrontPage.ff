@@ -3,7 +3,7 @@ import CountingButtonDemo
 import MatchingPasswordsDemo
 
 new(): Document {
-    Document([
+    ReadyDocument([
         /*Section("Is DX an add-on feature?", [
             Paragraph([
                 Bold("We don't think so.")

@@ -25,7 +25,7 @@ render(lux: Lux): Unit {
 }
 
 newDocument(): Document {
-    Document([
+    ReadyDocument([
         Section(name, [
             Paragraph([Text("A button that counts how many times it's been clicked.")])
         ])

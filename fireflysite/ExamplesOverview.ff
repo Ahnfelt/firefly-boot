@@ -20,7 +20,7 @@ demos(): List[Demo] {
 }
 
 new(): Document {
-    Document([
+    ReadyDocument([
         Section("Examples", [
             Paragraph([
                 Text("Here you'll find examples that demonstrate what you can do with Firefly.")
