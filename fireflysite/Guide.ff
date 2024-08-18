@@ -4,6 +4,7 @@ import Css from ff:lux
 import Tokenizer from ff:compiler
 import Token from ff:compiler
 import Styles
+import DocumentParser
 
 data Guide(
     prefix: String
@@ -18,7 +19,6 @@ data Document {
         header: String
     )
 }
-
 
 
 data Section(heading: String) {
@@ -200,14 +200,16 @@ renderDocument(lux: Lux, http: HttpClient, document: Document, demos: List[Demo]
         lux.cssClass(Styles.guideDocumentCss)
         document.{
             | ReadyDocument(sections) => 
-                sections.pairs().each {| Pair(index, section) => 
-                    renderSection(lux, index == 0, section, demos)
-                }
+                renderSections(lux, sections, demos)
             | UnfetchedDocument(header) => 
-                lux.useSuspense {lux.div {lux.text("Loading document...")}}: lux =>
-                let asset = "/assets/markdown/" + kebabCase(document.heading()) + ".md"
-                let markdown = http.get(asset, []) {_.readText()}
-                lux.text(markdown)
+                lux.div {
+                    lux.useSuspense {lux.div {lux.text("Loading document...")}}: lux =>
+                    let asset = "/assets/markdown/" + document.heading().replace(" ", "") + ".md"
+                    let markdown = http.get(asset, []) {_.readText()}
+                    let parser = DocumentParser(asset, markdown.split('\n'))
+                    let sections = parser.parseDocument()
+                    renderSections(lux, sections, demos)
+                }
         }
         nextDocument.each {next => 
             lux.div {
@@ -219,6 +221,12 @@ renderDocument(lux: Lux, http: HttpClient, document: Document, demos: List[Demo]
                 }
             }
         }
+    }
+}
+
+renderSections(lux: Lux, sections: List[Section], demos: List[Demo]) {
+    sections.pairs().each {| Pair(index, section) => 
+        renderSection(lux, index == 0, section, demos)
     }
 }
 

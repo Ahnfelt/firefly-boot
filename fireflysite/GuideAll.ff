@@ -7,7 +7,8 @@ mock(): List[Document] {
     [
         GuideIntroduction.new()
         GuideBaseTypes.new()
-        GuideControlFlow.new()
+        //GuideControlFlow.new()
+        UnfetchedDocument("Control Flow")
         ReadyDocument([Section("Custom types", [])])
         ReadyDocument([Section("Async I/O", [])])
         ReadyDocument([Section("Structured concurrency", [])])

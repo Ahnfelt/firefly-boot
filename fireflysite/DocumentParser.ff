@@ -4,10 +4,10 @@ import Guide
 nodeMain(system: NodeSystem) {
     let file = system.path("assets/markdown/ControlFlow.md")
     let document = parse(file)
-    printDocument(system, document)
+    printSections(system, document)
 }
 
-parse(file: Path): Document {
+parse(file: Path): List[Section] {
     let content = file.readText()
     let lines = content.split('\n')
     let parser = DocumentParser(file.absolute(), lines)
@@ -21,8 +21,8 @@ class DocumentParser(
 
 extend self: DocumentParser {
     
-    parseDocument(): Document {
-        Document(iterate {self.parseSection()})
+    parseDocument(): List[Section] {
+        iterate {self.parseSection()}
     }
     
     parseSection(): Option[Section] {
@@ -93,6 +93,7 @@ extend self: InlineParser {
     
     parseInline(): Option[Inline] {
         self.parseBold().orElse: 
+        self.parseCode().orElse:
         self.parseItalic().orElse:
         self.parseText()
     }
@@ -172,8 +173,8 @@ indexOf(string: String, searchString: String, position: Int = 0): Option[Int]
         return i == -1 ? ff_core_Option.None() : ff_core_Option.Some(i);
     """
     
-printDocument(system: NodeSystem, document: Document) {
-    document.sections.each {
+printSections(system: NodeSystem, sections: List[Section]) {
+    sections.each {
         | Section(heading, blocks) => 
             system.writeLine("# " + heading)
             blocks.each {
