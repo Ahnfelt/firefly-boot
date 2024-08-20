@@ -17,8 +17,8 @@ nodeMain(system: NodeSystem): Unit {
         let path = request.readPath()
         let segments = path.split('/').filter {s => s != "" && s != "." && s != ".."}
         segments.{
-            | ["guide", ...] => 
-                serveGuideHtml("Firefly Guide", request)
+            | ["reference", ...] => 
+                serveGuideHtml("Firefly Reference", request)
             | ["examples", ...] => 
                 serveGuideHtml("Firefly Examples", request)
             | ["packages", ...] => 
