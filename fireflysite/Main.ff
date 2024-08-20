@@ -1,7 +1,7 @@
 import WebServer from ff:webserver
 import Lux from ff:lux
 import Guide
-import GuideAll
+import ReferenceAll
 import ExamplesOverview
 import PackagesOverview
 import CommunityOverview
@@ -14,8 +14,8 @@ nodeMain(system: NodeSystem): Unit {
     let cacheSalt = system.crypto().randomBuffer(16)
     WebServer.new(system, host, port).listen {request =>
         let path = request.readPath()
-        if(path.startsWith("/guide/")) {
-            serveGuideHtml("Firefly Guide", request)
+        if(path.startsWith("/reference/")) {
+            serveGuideHtml("Firefly Reference", request)
         } elseIf {path.startsWith("/examples/")} {
             serveGuideHtml("Firefly Examples", request)
         } elseIf {path.startsWith("/packages/")} {
@@ -57,8 +57,8 @@ browserMain(system: BrowserSystem): Unit {
     let demos = ExamplesOverview.demos()
     let guides = [
         Guide("/front/", [FrontPage.new()])
-        Guide("/guide/", GuideAll.mock())
         Guide("/examples/", ExamplesOverview.mock())
+        Guide("/reference/", ReferenceAll.mock())
         Guide("/packages/", [PackagesOverview.new()])
         Guide("/community/", [CommunityOverview.new()])
     ]

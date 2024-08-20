@@ -2,7 +2,7 @@ import Guide
 
 new(): Document {
     Document([
-        Section("Guide", [
+        Section("Reference", [
             Paragraph([
                 Text("In this guide you will learn to use Firefly.")
                 Text("Firefly is a programming language that compiles to JavaScript.")
