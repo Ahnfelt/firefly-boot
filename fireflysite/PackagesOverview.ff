@@ -3,7 +3,7 @@ import CountingButtonDemo
 import MatchingPasswordsDemo
 
 new(): Document {
-    Document([
+    ReadyDocument([
         Section("Packages", [
             Paragraph([
                 Text("Here you'll eventually find the package index.")

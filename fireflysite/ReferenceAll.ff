@@ -7,14 +7,14 @@ mock(): List[Document] {
     [
         ReferenceIntroduction.new()
         ReferenceBaseTypes.new()
-        ReferenceControlFlow.new()
-        Document([Section("Custom types", [])])
-        Document([Section("Async I/O", [])])
-        Document([Section("Structured concurrency", [])])
-        Document([Section("Applications", [])])
-        Document([Section("Packages and modules", [])])
-        Document([Section("Functions and methods", [])])
-        Document([Section("Traits and instances", [])])
-        Document([Section("JavaScript interop", [])])
+        UnfetchedDocument("Control Flow")
+        ReadyDocument([Section("Custom types", [])])
+        ReadyDocument([Section("Async I/O", [])])
+        ReadyDocument([Section("Structured concurrency", [])])
+        ReadyDocument([Section("Applications", [])])
+        ReadyDocument([Section("Packages and modules", [])])
+        ReadyDocument([Section("Functions and methods", [])])
+        ReadyDocument([Section("Traits and instances", [])])
+        ReadyDocument([Section("JavaScript interop", [])])
     ]
 }
