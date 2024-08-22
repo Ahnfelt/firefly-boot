@@ -201,25 +201,21 @@ renderDocument(lux: Lux, http: HttpClient, document: Document, demos: List[Demo]
         document.{
             | ReadyDocument(sections) => 
                 renderSections(lux, sections, demos)
+                renderNext(lux, nextDocument)
             | UnfetchedDocument(header) => 
                 lux.div {
                     lux.useSuspense {lux.div {lux.text("Loading document...")}}: lux =>
-                    let asset = "/assets/markdown/" + document.heading().replace(" ", "") + ".md"
+                    let firstName = document.heading().split(' ').map {w => 
+                        let word = w.trim().lower()
+                        word.slice(0, 1).upper() + word.dropFirst()
+                    }.join()
+                    let asset = "/assets/markdown/" + firstName + ".md"
                     let markdown = http.get(asset, []) {_.readText()}
                     let parser = DocumentParser(asset, markdown.split('\n'), 0)
                     let sections = parser.parseDocument()
                     renderSections(lux, sections, demos)
+                    renderNext(lux, nextDocument)
                 }
-        }
-        nextDocument.each {next => 
-            lux.div {
-                lux.cssClass(Styles.guideNextButtonCss)
-                lux.add("a") {
-                    lux.cssClass(Styles.guideButtonCss)
-                    lux.set("href", next.document.path(next.guide))
-                    lux.text("Next: " + next.document.heading())
-                }
-            }
         }
     }
 }
@@ -227,6 +223,19 @@ renderDocument(lux: Lux, http: HttpClient, document: Document, demos: List[Demo]
 renderSections(lux: Lux, sections: List[Section], demos: List[Demo]) {
     sections.pairs().each {| Pair(index, section) => 
         renderSection(lux, index == 0, section, demos)
+    }
+}
+
+renderNext(lux: Lux, nextDocument: Option[GuideDocument]) {
+    nextDocument.each {next => 
+        lux.div {
+            lux.cssClass(Styles.guideNextButtonCss)
+            lux.add("a") {
+                lux.cssClass(Styles.guideButtonCss)
+                lux.set("href", next.document.path(next.guide))
+                lux.text("Next: " + next.document.heading())
+            }
+        }
     }
 }
 

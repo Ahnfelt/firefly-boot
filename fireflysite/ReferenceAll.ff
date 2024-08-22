@@ -6,8 +6,9 @@ import ReferenceBaseTypes
 mock(): List[Document] {
     [
         ReferenceIntroduction.new()
-        ReferenceBaseTypes.new()
-        UnfetchedDocument("Control Flow")
+        //ReferenceBaseTypes.new()
+        UnfetchedDocument("Base types")
+        UnfetchedDocument("Control flow")
         ReadyDocument([Section("Custom types", [])])
         ReadyDocument([Section("Async I/O", [])])
         ReadyDocument([Section("Structured concurrency", [])])
