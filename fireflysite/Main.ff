@@ -1,7 +1,7 @@
 import WebServer from ff:webserver
 import Lux from ff:lux
 import Guide
-import GuideAll
+import ReferenceAll
 import ExamplesOverview
 import PackagesOverview
 import CommunityOverview
@@ -17,8 +17,8 @@ nodeMain(system: NodeSystem): Unit {
         let path = request.readPath()
         let segments = path.split('/').filter {s => s != "" && s != "." && s != ".."}
         segments.{
-            | ["guide", ...] => 
-                serveGuideHtml("Firefly Guide", request)
+            | ["reference", ...] => 
+                serveGuideHtml("Firefly Reference", request)
             | ["examples", ...] => 
                 serveGuideHtml("Firefly Examples", request)
             | ["packages", ...] => 
@@ -55,8 +55,8 @@ browserMain(system: BrowserSystem): Unit {
     let demos = ExamplesOverview.demos()
     let guides = [
         Guide("/front/", [FrontPage.new()])
-        Guide("/guide/", GuideAll.mock())
         Guide("/examples/", ExamplesOverview.mock())
+        Guide("/reference/", ReferenceAll.mock())
         Guide("/packages/", [PackagesOverview.new()])
         Guide("/community/", [CommunityOverview.new()])
     ]
@@ -103,11 +103,11 @@ serveAsset(system: NodeSystem, salt: Buffer, request: WebRequest[WebResponse], c
     let etag = "\"" + system.crypto().hmacSha256(salt, asset.toBuffer()).toHex() + "\""
     request.writeHeader("Content-Type", contentType)
     if(request.readHeader("host") == Some("localhost:8080")) {
-        request.writeHeader("Cache-Control", "public, max-age=0, must-revalidate")
+        request.writeHeader("Cache-Control", "no-cache")
     } else {
         request.writeHeader("Cache-Control", "public, max-age=60, must-revalidate")
+        request.writeHeader("ETag", etag)
     }
-    request.writeHeader("ETag", etag)
     if(request.readHeader("if-none-match").any {_.trim() == etag}) {
         request.writeStatus("304 Not Modified")
     } else {

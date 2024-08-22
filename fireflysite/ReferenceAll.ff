@@ -1,13 +1,12 @@
 import Guide
-import GuideIntroduction
-import GuideControlFlow
-import GuideBaseTypes
+import ReferenceIntroduction
+import ReferenceControlFlow
+import ReferenceBaseTypes
 
 mock(): List[Document] {
     [
-        GuideIntroduction.new()
-        GuideBaseTypes.new()
-        //GuideControlFlow.new()
+        ReferenceIntroduction.new()
+        ReferenceBaseTypes.new()
         UnfetchedDocument("Control Flow")
         ReadyDocument([Section("Custom types", [])])
         ReadyDocument([Section("Async I/O", [])])
