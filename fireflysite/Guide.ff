@@ -206,7 +206,7 @@ renderDocument(lux: Lux, http: HttpClient, document: Document, demos: List[Demo]
                     lux.useSuspense {lux.div {lux.text("Loading document...")}}: lux =>
                     let asset = "/assets/markdown/" + document.heading().replace(" ", "") + ".md"
                     let markdown = http.get(asset, []) {_.readText()}
-                    let parser = DocumentParser(asset, markdown.split('\n'))
+                    let parser = DocumentParser(asset, markdown.split('\n'), 0)
                     let sections = parser.parseDocument()
                     renderSections(lux, sections, demos)
                 }

@@ -1,6 +1,6 @@
 # Control flow
 
-Firefly provides several ways to implement branching. Pattern matching is the most powerful, built directly into the language. `if`, `elseIf` and `else` do what you expect and are functions and methods in the standard library, implemented using the `Option` type. An then finally, there are exceptions.
+Firefly provides several ways to implement branching. Pattern matching is the most powerful, built directly into the language. `if`, `elseIf` and `else` do what you expect and are functions and methods in the standard library, implemented using the `Option` type. An then finally, there are [exceptions](#Exceptions).
 
 # Pattern matching
 

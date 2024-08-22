@@ -2,21 +2,40 @@ import WebServer from ff:webserver // This is required to run the file.
 import Guide
 
 nodeMain(system: NodeSystem) {
-    let file = system.path("assets/markdown/ControlFlow.md")
+
+    function logDuration[T](label: String, body: () => T): T {
+        let started = system.mainTask().elapsed()
+        let result = body()
+        Log.debug(label + ": " + Show.show(Duration(system.mainTask().elapsed().seconds - started.seconds)))
+        result
+    }
+    
+    let file = system.path("assets/markdown/Example.md")
+    
+    logDuration("parse " + file.base()) {
+        mutable i = 0
+        while {i < 10000} {
+            parse(file)
+            i += 1
+        }
+    }    
     let document = parse(file)
     printSections(system, document)
 }
 
+
+
 parse(file: Path): List[Section] {
     let content = file.readText()
     let lines = content.split('\n')
-    let parser = DocumentParser(file.absolute(), lines)
+    let parser = DocumentParser(file.absolute(), lines, 0)
     parser.parseDocument()
 }
 
 class DocumentParser(
     fileName: String
-    mutable lines: List[String]
+    lines: List[String]
+    mutable i: Int
 )
 
 extend self: DocumentParser {
@@ -26,10 +45,10 @@ extend self: DocumentParser {
     }
     
     parseSection(): Option[Section] {
-        self.dropWhile {_.trim() == ""}
-        self.lines.first().{
+        self.skipWhile {_.trim() == ""}
+        self.first().{
             | Some(line) {line.trim().removeFirst("#") | Some(heading)} => 
-                self.dropFirst()
+                self.skip(1)
                 let blocks = iterate {self.parseBlock()}
                 Some(Section(heading.trim(), blocks))
             | _ => None
@@ -37,11 +56,11 @@ extend self: DocumentParser {
     }
     
     parseBlock(): Option[Block] {
-        self.dropWhile {_.trim() == ""}
-        let first = self.lines.first().map {_.trimStart()}
+        self.skipWhile {_.trim() == ""}
+        let first = self.first().map {_.trimStart()}
         first.{
             | Some(line) {line.removeFirst("```") | Some(l)} => 
-                self.dropFirst()
+                self.skip(1)
                 let isFirefly = l.startsWith("firefly")
                 let block = self.parseRemainingCodeBlock(isFirefly)
                 Some(block)
@@ -53,104 +72,144 @@ extend self: DocumentParser {
     
     parseParagraph(): Block {
         let lines = self.consumeWhile {_.trim() != ""}
-        let parser = InlineParser(self.fileName, lines.join("\n"))
+        let parser = InlineParser(self.fileName, lines.join("\n"), 0)
         let inlines = parser.parseInlines()
         Paragraph(inlines)
     }
     
     parseRemainingCodeBlock(isFirefly: Bool): Block {
         let code = self.consumeWhile {!_.trimStart().startsWith("```")}
-        self.dropFirst(1)
+        self.skip(1)
         CodeBlock(code.join("\n"), isFirefly)
     } 
     
-    
-    dropFirst(count: Int = 1): Unit {
-        self.lines = self.lines.dropFirst(count)
+    first(): Option[String] {
+        if(self.i < self.lines.size()) {
+            self.lines.grab(self.i)
+        }
     }
     
-    dropWhile(body: String => Bool): Unit {
-        self.lines = self.lines.dropWhile(body)
+    skip(count: Int): Unit {
+        self.i += count
+    }
+    
+    skipWhile(body: String => Bool): Unit {
+        while {self.i < self.lines.size() && body(self.lines.grab(self.i))} {
+            self.i += 1
+        }
     }
     
     consumeWhile(body: String => Bool): List[String] {
-        let taken = self.lines.takeWhile(body)
-        self.dropFirst(taken.size())
-        taken
+        let oldI = self.i
+        self.skipWhile(body)
+        self.lines.slice(oldI, self.i)
     }
 }
 
 class InlineParser(
     fileName: String
-    mutable line: String
+    line: String
+    mutable i: Int
 )
 
 extend self: InlineParser {
     
     parseInlines(): List[Inline] {
-        iterate {self.parseInline()}
+        iterateLists {self.parseInline()}
+    }
+       
+    parseInline(): List[Inline] {
+        mutable inline = []
+        mutable j = 0
+        
+        doWhile {
+            let remaining = self.size() - j
+            if(remaining >= 3) {
+                self.grab(j).{
+                    | '_' => inline = self.parseNextInline(j, {self.parseItalic()})
+                    | '`' => inline = self.parseNextInline(j, {self.parseCode()})
+                    | '[' => inline = self.parseNextInline(j, {self.parseLink()})
+                    | '*' {self.grab(j + 1) == '*'} => inline = self.parseNextInline(j, {self.parseBold()})
+                    | _ =>
+                }
+            }
+            j += 1
+            remaining > 0 && inline.isEmpty()
+        }
+
+        inline.{
+            | [] {j == 1} => []
+            | []  => [Text(self.consume(j - 1))]
+            | inlines => inlines
+        }
+    }     
+    
+    parseNextInline(offset: Int, parseNext: () => Option[Inline]): List[Inline] {
+        if(offset == 0) {parseNext().toList()} else:
+
+        let oldI = self.i
+        self.i += offset
+        parseNext().{
+            | None => 
+                self.i = oldI
+                []
+            | Some(nextInline) => 
+                let text = self.line.slice(oldI, oldI + offset)
+                let textInline = Text(text)
+                [textInline, nextInline]
+        }
     }
     
-    parseInline(): Option[Inline] {
-        self.parseBold().orElse: 
-        self.parseCode().orElse:
-        self.parseItalic().orElse:
-        self.parseText()
-    }
-    
-    parseBold(): Option[Inline] {
-        self.line.removeFirst("**").flatMap {rest => 
-            indexOf(rest, "**").map {end => 
-                let text = rest.slice(0, end)
-                self.dropFirst(end + 4)
-                Bold(text)
+    parseLink(): Option[Inline] {
+        let oldI = self.i
+        self.parseEnclosed("[", "]").flatMap {text => 
+            self.parseEnclosed("(", ")").{
+                | None => 
+                    self.i = oldI
+                    None
+                | Some(url) => Some(Link(text, url))
             }
         }
+    }
+
+    parseBold(): Option[Inline] {
+        self.parseEnclosed("**", "**").map {Bold(_)}
     }
 
     parseItalic(): Option[Inline] {
-        self.line.removeFirst("_").flatMap {rest => 
-            indexOf(rest, "_").map {end => 
-                let text = rest.slice(0, end)
-                self.dropFirst(end + 2)
-                Italic(text)
-            }
-        }
+        self.parseEnclosed("_", "_").map {Italic(_)}
     }
     
     parseCode(): Option[Inline] {
-        self.line.removeFirst("`").flatMap {rest => 
-            indexOf(rest, "`").map {end => 
-                let text = rest.slice(0, end)
-                self.dropFirst(end + 2)
-                Code(text)
-            }
-        }
+        self.parseEnclosed("`", "`").map {Code(_)}
     }
     
-    parseText(): Option[Inline] {
-        mutable i = 0
-        
-        while {
-            i < self.line.size() &&
-            self.line.grab(i) != '_' &&
-            self.line.grab(i) != '`' &&
-            (i == self.line.size() - 1 || self.line.grab(i) != '*' || self.line.grab(i + 1) != '*')
-        } {
-            i += 1
-        }
-        
-        i.{
-            | 0 => None
-            | _ => 
-                let text = self.line.slice(0, i)
-                self.dropFirst(text.size())
-                Some(Text(text))
-        }
+    parseEnclosed(left: String, right: String): Option[String] {
+        if(self.startsWith(left)) {
+            indexOf(self.line, right, self.i + left.size()).map {end =>
+                let text = self.line.slice(self.i + left.size(), end)
+                self.i = end + right.size()
+                text
+            }
+        }.flatten()
     }    
-
-    dropFirst(count: Int = 1): Unit {
-        self.line = self.line.dropFirst(count)
+       
+    grab(index: Int): Char {
+        self.line.grab(self.i + index)
+    }
+    
+    size(): Int {
+        self.line.size() - self.i
+    }
+    
+    startsWith(text: String): Bool {
+        self.size() >= text.size() && self.line.slice(self.i, self.i + text.size()) == text
+    }
+    
+    consume(count: Int): String {
+        let text = self.line.slice(self.i, self.i + count)
+        self.i += count
+        text
     }    
 }
 
@@ -161,6 +220,19 @@ iterate[T](body: () => Option[T]): List[T] {
             | None => False
             | Some(s) =>
                 array.push(s)
+                True
+        }
+    }
+    array.drain()  
+}   
+
+iterateLists[T](body: () => List[T]): List[T] {
+    let array = Array.new()
+    doWhile {
+        body().{
+            | [] => False
+            | list =>
+                array.pushList(list)
                 True
         }
     }
@@ -181,9 +253,12 @@ printSections(system: NodeSystem, sections: List[Section]) {
                 | Bullets(items) => 
                     system.writeLine("  Bullets:")
                     system.writeLine("    " + Show.show(items))
-                | CodeBlock(code, firefly) => 
+                | CodeBlock(code, True) => 
+                    system.writeLine("  Code (Firefly):")
+                    system.writeLine("    " + Show.show(code))
+                | CodeBlock(code, False) => 
                     system.writeLine("  Code:")
-                    system.writeLine("    " + Show.show(firefly))
+                    system.writeLine("    " + Show.show(code))
                 | Image(url) => 
                     system.writeLine("  Image:")
                     system.writeLine("    " + Show.show(url))
@@ -204,7 +279,7 @@ printSections(system: NodeSystem, sections: List[Section]) {
                         | Italic(text) => 
                             system.writeLine("    Italic: " + Show.show(text))
                         | Link(text, url) => 
-                            system.writeLine("    Link: " + Show.show(text))
+                            system.writeLine("    Link: " + Show.show(text) + ", " + Show.show(url))
                         | Text(text) => 
                             system.writeLine("    Text: " + Show.show(text))
                     }
