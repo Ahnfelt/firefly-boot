@@ -119,7 +119,7 @@ guideTopbarLogoCss: CssClass = CssClass(
         Css.textTransform("uppercase")
         Css.color("inherit")
         Css.textDecoration("none")
-        Css.height("100px")
+        Css.height("70px")
         Css.paddingLeft("20px")
     ]
     [
@@ -359,7 +359,7 @@ guideMainCss: CssClass = CssClass(
             Css.marginLeft("0")
             Css.paddingLeft("20px")
             Css.paddingRight("20px")
-            Css.paddingTop("100px")
+            Css.paddingTop("120px")
             Css.paddingBottom("70px")
         ], [])
     ]
