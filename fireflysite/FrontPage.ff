@@ -20,7 +20,7 @@ new(): Document {
                 Text("Firefly doesn't just run in the browser and on the server,")
                 Text("it comes with libraries that allow you to implement sophisticated webapps.")
                 Text("It's really easy to ")
-                Link("get started", "/guide/")
+                Link("get started", "/reference/")
                 Text("and there's no hidden complexity.")
             ])
             CodeBlock("""
