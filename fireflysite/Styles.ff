@@ -87,6 +87,72 @@ guideCss: CssClass = CssClass(
     []
 )
 
+guideTopbarCss: CssClass = CssClass(
+    [
+        Css.display("none")
+        Css.justifyContent("space-between")
+        Css.alignItems("center")
+        Css.backgroundColor("#ecc45e")
+        Css.color("#000000")
+        Css.position("fixed")
+        Css.top("0")
+        Css.left("0")
+        Css.right("0")
+        Css.height("76px")
+    ]
+    [
+        CssNest(mobileOrTabletMediaQuery, [
+            Css.display("flex")
+        ], [])
+    ]
+    []
+)
+
+guideTopbarLogoCss: CssClass = CssClass(
+    [
+        Css.display("flex")
+        Css.gap("20px")
+        Css.alignItems("center")
+        Css.justifyContent("center")
+        Css.fontSize("25px")
+        Css.letterSpacing("5px")
+        Css.textTransform("uppercase")
+        Css.color("inherit")
+        Css.textDecoration("none")
+        Css.height("100px")
+        Css.paddingLeft("20px")
+    ]
+    [
+        CssNest("&>img", [Css.width("70px")], [])
+    ]
+    []
+)
+
+guideTopbarButtonCss: CssClass = CssClass(
+    [
+        Css.display("none")
+        Css.appearance("none")
+        Css.border("none")
+        Css.outline("none")
+        Css.background("""url('data:image/svg+xml,<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(%23clip0_788_122)"><rect x="4" y="9" width="25" height="2" rx="1" fill="%23000000"/><rect x="4" y="17" width="25" height="2" rx="1" fill="%23000000"/><rect x="4" y="25" width="25" height="2" rx="1" fill="%23000000"/></g><defs><clipPath id="clip0_788_122"><rect width="50" height="50" fill="white"/></clipPath></defs></svg>') no-repeat center""")
+        Css.backgroundSize("60px 60px")
+        Css.backgroundPosition("20px 16px")
+        Css.fontSize("20px")
+        Css.cursor("pointer")
+        Css.padding("0")
+        Css.margin("0")
+        Css.height("76px")
+        Css.width("76px")
+        Css.marginLeft("auto")
+    ]
+    [
+        CssNest(mobileOrTabletMediaQuery, [
+            Css.display("block")
+        ], [])
+    ]
+    []
+)
+
 guideSidebarButtonCss: CssClass = CssClass(
     [
         Css.position("fixed")
@@ -132,8 +198,7 @@ guideSidebarBackdropCss: CssClass = CssClass(
         Css.bottom("0px")
         Css.left("0")
         Css.right("0px")
-        Css.backgroundColor("rgba(20, 20, 0, 0.7)")
-        Css.backdropFilter("blur(1px)")
+        Css.backgroundColor("rgba(20, 20, 0, 0.6)")
         Css.touchAction("none")
     ]
     []
@@ -211,6 +276,9 @@ guideSidebarLogoCss: CssClass = CssClass(
     [
         CssNest("&>img", [Css.width("100px")], [])
         CssNest("&>div", [Css.width("145px")], [])
+        CssNest(mobileOrTabletMediaQuery, [
+            Css.display("none")
+        ], [])
     ]
     []
 )
@@ -291,7 +359,7 @@ guideMainCss: CssClass = CssClass(
             Css.marginLeft("0")
             Css.paddingLeft("20px")
             Css.paddingRight("20px")
-            Css.paddingTop("40px")
+            Css.paddingTop("100px")
             Css.paddingBottom("70px")
         ], [])
     ]

@@ -113,15 +113,7 @@ render(lux: Lux, browser: BrowserSystem, prefix: String, kebab: String, guides: 
                 lux.cssClass(Styles.guideMainCss)
                 renderDocument(lux, browser.httpClient(), document, demos, nextDocument)
             }
-            lux.add("button") {
-                lux.set("aria-label", "Toggle the menu")
-                lux.cssClass(Styles.guideSidebarButtonCss)
-                if(menu) {lux.cssClass(Styles.guideSidebarButtonOpenCss)}
-                lux.onClick {event =>
-                    event.preventDefault()
-                    setMenu(True)
-                }
-            }
+            renderTopbar(lux, menu, setMenu)
             lux.add("div") {
                 lux.cssClass(Styles.guideSidebarBackdropCss)
                 if(menu) {lux.cssClass(Styles.guideSidebarBackdropOpenCss)}
@@ -131,6 +123,30 @@ render(lux: Lux, browser: BrowserSystem, prefix: String, kebab: String, guides: 
                 }
             }
             renderSidebar(lux, guides, guide, document.heading(), menu)
+        }
+    }
+}
+
+renderTopbar(lux: Lux, menu: Bool, setMenu: Bool => Unit) {
+    lux.add("div") {
+        lux.cssClass(Styles.guideTopbarCss)
+        lux.add("a") {
+            lux.set("href", "/front/")
+            lux.cssClass(Styles.guideTopbarLogoCss)
+            lux.add("img") {
+                lux.set("src", "/assets/firefly-logo-yellow.png")
+            }
+            lux.div {
+                lux.text("Firefly")
+            }
+        }
+        lux.add("button") {
+            lux.set("aria-label", "Toggle the menu")
+            lux.cssClass(Styles.guideTopbarButtonCss)
+            lux.onClick {event =>
+                event.preventDefault()
+                setMenu(True)
+            }
         }
     }
 }
