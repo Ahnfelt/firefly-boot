@@ -19,20 +19,9 @@ new(): Document {
             Paragraph([
                 Text("Firefly doesn't just run in the browser and on the server,")
                 Text("it comes with a complete stack that allows you to implement full webapps.")
-                Text("Everything in the stack is designed to fit together nicely, all with excellent IDE support.")
                 Text("It's really easy to ")
                 Link("get started", "/guide/")
                 Text("and there's no magic.")
-            ])
-        ])
-        SplitSection(
-            "Single file webapps"
-            Paragraph([
-                Text("Firefly code runs in the browser and on the server, or even at build time.")
-                Text("When starting out, you can put everything in a single")
-                Code(".ff")
-                Text("file, including your dependency list.")
-                Text("As the code base grows, you can split it into multiple files or packages.")
             ])
             CodeBlock("""
                 dependency ff:webserver:0.0.0
@@ -46,7 +35,14 @@ new(): Document {
                 // Runs at build time
                 buildMain(system: BuildSystem) {...}
             """, firefly = True)
-        )
+            Paragraph([
+                Text("Firefly code runs in the browser and on the server, or even at build time.")
+                Text("When starting out, you can put everything in a single")
+                Code(".ff")
+                Text("file, including your dependency list.")
+                Text("As the code base grows, you can split it into multiple files or packages.")
+            ])
+        ])
         SplitSection(
             "Concise type definitions"
             Paragraph([
