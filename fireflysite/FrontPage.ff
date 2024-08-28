@@ -15,13 +15,13 @@ new(): Document {
                 Italic("An example of DX that's only possible for a certain class of languages. Read on for more Firefly DX.")
             ])
         ])*/
-        Section("The full stack programming language", [
+        Section("The full-stack programming language", [
             Paragraph([
                 Text("Firefly doesn't just run in the browser and on the server,")
-                Text("it comes with a complete stack that allows you to implement full webapps.")
+                Text("it comes with libraries that allow you to implement sophisticated webapps.")
                 Text("It's really easy to ")
                 Link("get started", "/guide/")
-                Text("and there's no magic.")
+                Text("and there's no hidden complexity.")
             ])
             CodeBlock("""
                 dependency ff:webserver:0.0.0
