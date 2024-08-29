@@ -47,7 +47,7 @@ new(): Document {
                     email: Option[String]
                 )
                 
-                data Document {
+                data BlockElement {
                     Paragraph(text: String)
                     Code(code: String, type: Option[String])
                     Video(url: String)
