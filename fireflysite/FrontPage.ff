@@ -6,11 +6,11 @@ new(): Document {
     ReadyDocument([
         Section("The full-stack programming language", [
             Paragraph([
-                Text("Firefly lets you implement highly interactive webapps without writing any JavaScript. ")
-                Text("You can share code between the frontend and backend, and it works out of the box. ")
-                Text("The VSCode extension is plug and play, and you can ")
+                Text("Firefly code runs in the browser and on the server, or even at build time. ")
+                Text("You can implement highly interactive webapps without resorting to JavaScript. ")
+                Text("See how to ")
                 Link("get started", "/reference/")
-                Text(" quickly. Read on for a tour of the features.")
+                Text(" or read on for a tour.")
             ])
             CodeBlock("""
                 dependency ff:webserver:0.0.0
@@ -25,11 +25,10 @@ new(): Document {
                 buildMain(system: BuildSystem) {...}
             """, firefly = True)
             Paragraph([
-                Text("Firefly code runs in the browser and on the server, or even at build time.")
                 Text("When starting out, you can put everything in a single")
                 Code(".ff")
                 Text("file, including your dependency list.")
-                Text("As the code base grows, you can split it into multiple files or packages.")
+                Text("As the code base grows, you can split it into multiple files and packages.")
             ])
         ])
         SplitSection(
