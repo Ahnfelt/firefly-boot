@@ -4,24 +4,13 @@ import MatchingPasswordsDemo
 
 new(): Document {
     ReadyDocument([
-        /*Section("Is DX an add-on feature?", [
-            Paragraph([
-                Bold("We don't think so.")
-                Text("Firefly is designed from the ground up as a full stack language with great developer experience.")
-            ])
-            Image("/assets/autocomplete.png")
-            Paragraph([
-                Italic("Firefly in VSCode, showcasing instant type driven autocompletion and edit time error detection.")
-                Italic("An example of DX that's only possible for a certain class of languages. Read on for more Firefly DX.")
-            ])
-        ])*/
         Section("The full-stack programming language", [
             Paragraph([
-                Text("Firefly doesn't just run in the browser and on the server,")
-                Text("it comes with libraries that allow you to implement sophisticated webapps.")
-                Text("It's really easy to ")
+                Text("Firefly lets you implement highly interactive webapps without writing any JavaScript. ")
+                Text("You can share code between the frontend and backend, and it works out of the box. ")
+                Text("The VSCode extension is plug and play, and you can ")
                 Link("get started", "/reference/")
-                Text("and there's no hidden complexity.")
+                Text(" quickly. Read on for a tour of the features.")
             ])
             CodeBlock("""
                 dependency ff:webserver:0.0.0
