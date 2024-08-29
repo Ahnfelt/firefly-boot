@@ -47,9 +47,10 @@ new(): Document {
                     email: Option[String]
                 )
                 
-                data Tree[T] {
-                    Leaf(value: T)
-                    Branch(left: Tree[T], right: Tree[T])
+                data Document {
+                    Paragraph(text: String)
+                    Code(code: String, type: Option[String])
+                    Video(url: String)
                 }
             """, firefly = True)
         )
@@ -80,10 +81,10 @@ new(): Document {
             ])
             CodeBlock("""
                 blockElements.map {
-                    | Paragraph(inlines) => 
-                        renderParagraph(inlines)
-                    | Code(code, Some(language)) => 
-                        renderHighlighted(code, language)
+                    | Paragraph(text) => 
+                        renderParagraph(text)
+                    | Code(code, Some(type)) => 
+                        renderHighlighted(code, type)
                     | Code(code, None) => 
                         renderCode(code)
                     | Video(url) {vimeoId(url) | Some(id)} => 
