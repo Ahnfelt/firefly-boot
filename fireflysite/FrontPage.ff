@@ -25,10 +25,11 @@ new(): Document {
                 buildMain(system: BuildSystem) {...}
             """, firefly = True)
             Paragraph([
-                Text("When starting out, you can put everything in a single")
+                Text("When starting out, you can put everything in a single ")
                 Code(".ff")
-                Text("file, including your dependency list.")
-                Text("As the code base grows, you can split it into multiple files and packages.")
+                Text(" file, including your dependency list. ")
+                Text("As the code base grows, you can split it into multiple files and packages. ")
+                Text("Sharing code between the targets just works.")
             ])
         ])
         SplitSection(
