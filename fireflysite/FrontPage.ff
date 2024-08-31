@@ -8,7 +8,7 @@ new(): Document {
             Paragraph([
                 Text("Firefly code runs in the browser and on the server, or even at build time. ")
                 Text("You can implement highly interactive webapps without resorting to JavaScript. ")
-                Text("Here's the basic skeleton of a webapp. ")
+                Text("The basic skeleton of a webapp looks like this: ")
             ])
             CodeBlock("""
                 dependency ff:webserver:0.0.0
