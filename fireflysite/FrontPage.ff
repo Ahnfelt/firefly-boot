@@ -27,7 +27,7 @@ new(): Document {
                 Code(".ff")
                 Text(" file, including your dependency list. ")
                 Text("As the code base grows, you can split it into multiple files and packages. ")
-                Text("Read on for a tour of the language features. ")
+                Text("Read on for a tour of the language. ")
             ])
         ])
         SplitSection(
