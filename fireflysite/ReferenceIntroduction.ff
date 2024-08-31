@@ -4,48 +4,7 @@ new(): Document {
     ReadyDocument([
         Section("Reference", [
             Paragraph([
-                Text("In this guide you will learn to use Firefly.")
-                Text("Firefly is a programming language that compiles to JavaScript.")
-                Text("It runs in the browser and on the server, and lets you develop webapps with a minimum of hassle.")
-            ])
-        ])
-        Section("Getting started", [
-            Paragraph([
-                Text("Firefly comes with a compiler, a build system and a package manager.")
-            ])
-            Paragraph([
-                Text("Install Firefly:")
-            ])
-            CodeBlock("npm install -g firefly-compiler")
-            Paragraph([
-                Text("Save this code as")
-                Code("Hello.ff")
-                Text(":")
-            ])
-            CodeBlock("""
-                nodeMain(system: NodeSystem) {
-                    system.writeLine("Hello, World!")
-                }
-            """, firefly = True)
-            Paragraph([
-                Text("And run it:")
-            ])
-            CodeBlock("firefly Hello.ff")
-            Paragraph([
-                Text("You now know how to run Firefly code!")
-            ])
-        ])
-        Section("Editor support", [
-            Paragraph([
-                Text("Install the")
-                Link("Firefly Language VSCode extension", "https://marketplace.visualstudio.com/items?itemName=firefly-team.firefly-lang")
-                Text(" to get autocompletion, renaming, go to definition, highlighting, etc. You can find it under Extensions in VSCode.")
-            ])
-            Paragraph([
-                Text("The Firefly code highlighting on this site matches the Dark Modern theme in VSCode.")
-            ])
-            Paragraph([
-                Text("If you'd like to make an extension for a different editor, the language server is available, as well as the source code for the VSCode extension.")
+                Text("This is a reference for the Firefly programming language.")
             ])
         ])
     ])

@@ -8,8 +8,7 @@ new(): Document {
             Paragraph([
                 Text("Firefly code runs in the browser and on the server, or even at build time. ")
                 Text("You can implement highly interactive webapps without resorting to JavaScript. ")
-                Text("See how to ")
-                Link("get started", "/reference/")
+                Link("Get started", "/getting-started/")
                 Text(" or read on for a tour.")
             ])
             CodeBlock("""

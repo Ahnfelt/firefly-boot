@@ -1,6 +1,7 @@
 import WebServer from ff:webserver
 import Lux from ff:lux
 import Guide
+import GettingStarted
 import ReferenceAll
 import ExamplesOverview
 import PackagesOverview
@@ -19,14 +20,16 @@ nodeMain(system: NodeSystem): Unit {
         segments.{
             | ["reference", ...] => 
                 serveGuideHtml("Firefly Reference", request)
+            | ["getting-started", ...] => 
+                serveGuideHtml("Firefly Getting Started", request)
             | ["examples", ...] => 
                 serveGuideHtml("Firefly Examples", request)
             | ["packages", ...] => 
-                serveGuideHtml("Firefly Examples", request)
+                serveGuideHtml("Firefly Packages", request)
             | ["community", ...] => 
-                serveGuideHtml("Firefly Examples", request)
+                serveGuideHtml("Firefly Community", request)
             | ["front", ...] => 
-                serveGuideHtml("Firefly Examples", request)
+                serveGuideHtml("Firefly", request)
             | ["js", ...] => 
                 let asset = if(path == "/js/ff/fireflysite/Main.mjs" && system.assets().exists("/js/Main.bundle.js")) {
                     "/js/Main.bundle.js"
@@ -55,6 +58,7 @@ browserMain(system: BrowserSystem): Unit {
     let demos = ExamplesOverview.demos()
     let guides = [
         Guide("/front/", [FrontPage.new()])
+        Guide("/getting-started/", [GettingStarted.new()])
         Guide("/examples/", ExamplesOverview.mock())
         Guide("/reference/", ReferenceAll.mock())
         Guide("/packages/", [PackagesOverview.new()])
