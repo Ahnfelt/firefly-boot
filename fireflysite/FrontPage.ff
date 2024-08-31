@@ -8,8 +8,7 @@ new(): Document {
             Paragraph([
                 Text("Firefly code runs in the browser and on the server, or even at build time. ")
                 Text("You can implement highly interactive webapps without resorting to JavaScript. ")
-                Link("Get started", "/getting-started/")
-                Text(" or read on for a tour.")
+                Link("Here's the basic skeleton of a webapp.")
             ])
             CodeBlock("""
                 dependency ff:webserver:0.0.0
@@ -28,7 +27,8 @@ new(): Document {
                 Code(".ff")
                 Text(" file, including your dependency list. ")
                 Text("As the code base grows, you can split it into multiple files and packages. ")
-                Text("Sharing code between targets just works.")
+                Text("Sharing code between targets just works. ")
+                Text("Read on for a tour of the language features. ")
             ])
         ])
         SplitSection(
