@@ -1,21 +1,20 @@
 import Guide
 import ReferenceIntroduction
-import ReferenceControlFlow
-import ReferenceBaseTypes
 
 mock(): List[Document] {
     [
         ReferenceIntroduction.new()
-        //ReferenceBaseTypes.new()
-        UnfetchedDocument("Base types")
-        UnfetchedDocument("Control flow")
-        ReadyDocument([Section("Custom types", [])])
+        ReadyDocument([Section("A Firefly file", [])])
+        ReadyDocument([Section("Base types", [])])
+        ReadyDocument([Section("User defined types", [])])
+        ReadyDocument([Section("Pattern matching", [])])
+        ReadyDocument([Section("Functions", [])])
+        ReadyDocument([Section("Methods", [])])
+        ReadyDocument([Section("Traits and instances", [])])
+        ReadyDocument([Section("Exceptions", [])])
+        ReadyDocument([Section("Packages and modules", [])])
+        ReadyDocument([Section("JavaScript interop", [])])
         ReadyDocument([Section("Async I/O", [])])
         ReadyDocument([Section("Structured concurrency", [])])
-        ReadyDocument([Section("Applications", [])])
-        ReadyDocument([Section("Packages and modules", [])])
-        ReadyDocument([Section("Functions and methods", [])])
-        ReadyDocument([Section("Traits and instances", [])])
-        ReadyDocument([Section("JavaScript interop", [])])
     ]
 }
