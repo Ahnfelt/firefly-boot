@@ -391,7 +391,7 @@ renderHighlightedCode(lux: Lux, code: String) {
         mutable offset = 0
         mutable index = 0
         tokens.each {token =>
-            if(token.startOffset > offset) {
+            if(token.startOffset > offset && index <= tokens.size() - 5) {
                 lux.span {
                     lux.cssClass(Styles.codeCommentCss)
                     lux.text(code.slice(offset, token.startOffset))
