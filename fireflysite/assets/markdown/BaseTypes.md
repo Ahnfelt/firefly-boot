@@ -31,7 +31,7 @@ Logical and is an operator on booleans:
 True  && True  == True
 True  && False == False
 False && True  == False
-True  && False == False
+False && False == False
 ```
 
 Logical or is an operator on booleans:
@@ -40,7 +40,7 @@ Logical or is an operator on booleans:
 True  || True  == True
 True  || False == True
 False || True  == True
-True  || False == False
+False || False == False
 ```
 
 The comparison operators are supported for `Bool`:
@@ -172,7 +172,7 @@ Values of the `List[T]` types are immutable sequences of `T` values, where `T` i
 They can be constructed using list literals:
 
 ```firefly
-[1, 2, 3]   // A list of the Ints 1, 2 and 3
+[1, 2, 3]   // A List[Int] with three elements
 ```
 
 Note that commas can be omitted when they would occur before a newline:
