@@ -191,7 +191,7 @@ Lists can be flattened into other lists using the spread syntax:
 [1, ...[2, 3], 4, 5] == [1, 2, 3, 4, 5]
 ```
 
-The comparison operators are supported.
+The comparison operators are supported for lists when it's supported for the elements of the lists.
 
 
 # Unit
