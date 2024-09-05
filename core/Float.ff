@@ -158,6 +158,21 @@ extend self: Float {
             return Math.tanh(self_);
         """
         
+    isFinite(): Bool
+        target js sync """
+            return Number.isFinite(self_);
+        """
+        
+    isNan(): Bool
+        target js sync """
+            return Number.isNaN(self_);
+        """
+
+    isSafeInteger(): Bool
+        target js sync """
+            return Number.isSafeInteger(self_);
+        """
+
 }
 
 hypot(values: List[Float]): Float
@@ -203,4 +218,14 @@ sqrtHalf(): Float
 sqrt2(): Float
     target js sync """
         return Math.SQRT2;
+    """
+
+nan(): Float
+    target js sync """
+        return NaN;
+    """
+
+infinity(): Float
+    target js sync """
+        return Infinity;
     """

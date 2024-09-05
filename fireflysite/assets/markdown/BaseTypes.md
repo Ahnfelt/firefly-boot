@@ -1,24 +1,15 @@
 # Base types
 
-Firefly has four primitive types: `String`, `Char`, `Int`, `Float`. They have the following literal syntax:
-
-```firefly
-"Hello, World!" // String
-'H' // Char
-42 // Int
-3.14 // Float
-```
-
-Strings may be concatenated using plus, e.g. `"ban" + "ana"`. String literals may contain escape sequences, e.g. `\n`, `\t`, `\r`, `\"`, `\'`. You may also write multiline strings using triple quotes: `"""..."""`.
-
-Ints support the usual arithmetic operators: `+` `-` `*` `/` `^` (division returns a Float, use the `.div()` method for integer division).
-
-Float literals may use scientific notation, e.g. `1.0e3`, `1.0e-3` The usual arithmetic operators are available: `+` `-` `*` `/` `^`
+In Firefly, all types are defined in a `.ff` file somewhere. 
+However, some of the types in the `ff:core` package have dedicated syntax.
+These are considered base types and are documented in the following sections.
 
 
-# Booleans
+# Bool
 
-Bool is defined as a data type:
+Values of the `Bool` type represent truth values. They are either `False` or `True`.
+
+The type is defined in `ff:core` as follows:
 
 ```firefly
 data Bool {
@@ -27,83 +18,187 @@ data Bool {
 }
 ```
 
-Meaning it has two values: `False`, `True`. They support the usual logical operators: `&&` `||` `!`
-
-
-# Durations and instants
-
-Durations represent elapsed time, and instants represent points in time.
+Logical negation is an operator on booleans:
 
 ```firefly
-newtype Duration(seconds: Float)
-newtype Instant(since1970: Duration)
+!True  == False
+!False == True
 ```
 
-You can get the current instant: `system.mainTask.now()` or ask how much time elapsed since the program started: `system.mainTask.elapsed()`. Note that neither has a time zone nor support for local calendars.
-
-
-# Lists and arrays
-
-List is the most common data structure in Firefly. It's an immutable contiguous blocks of values that can be indexed by integers, mapped over, filtered and so on.
+Logical and is an operator on booleans:
 
 ```firefly
-let fruits: List[String] = 
-    ["apple", "banana", "orange"]
+True  && True  == True
+True  && False == False
+False && True  == False
+True  && False == False
 ```
 
-You can flatten one list into another using the spread syntax: `[...friuts, "cherry"] == ["apple", "banana", "orange", "cherry"]`.
-
-Arrays is the mutable (and resizable) version of lists. You can convert a list to an array like this: `fruits.toArray()`, and you can construct an empty array like this: `Array.new()`.
-
-
-# Sets and maps
-
-Set and Map are immutable and sorted collections. Sets have no duplicate entries, and maps have no duplicate keys.
+Logical or is an operator on booleans:
 
 ```firefly
-let fruitSet: Set[String] = 
-    ["apple", "banana", "orange"].toSet()
-    
-let numberMap: Map[String, Int] = 
-    [Pair("one", 1), Pair("two", 2)].toMap()
+True  || True  == True
+True  || False == True
+False || True  == True
+True  || False == False
 ```
 
-They have methods for lookup, union, intersection, etc. In addition, there's a mutable IntMap and StringMap that's optimized for integer and string keys, respectively.
-
-
-# Streams and buffers
-
-Streams are lazy sequences that are consumed when read. They're often used for streaming I/O.
+The comparison operators are supported for `Bool`:
 
 ```firefly
-// Streaming file copy
-let stream = system.path("file1.txt").readStream()
-system.path("file2.txt").writeStream(stream)
+True  == True     // Equality
+True  != False    // Inequality
+False <  True     // Less than
+False <= True     // Less than or equal
+True  >  False    // Greater than
+True  >= True     // Greater than or equal
 ```
 
-Note that there is no risk of leaking a file handle above, as the file isn't opened until the first element of the stream is read, and the writeStream method will take care of closing the stream, even in the face of I/O errors.
-
-In this case you get a `Stream[Buffer]` back, which is common for streaming I/O in Firefly. A buffer is a mutable fixed-size array of bytes that you can manipulate with hardware friendly binary operations (8-bit, 16-bit, 32-bit etc.).
+In addition, the standard library defines `if`, `while`, etc. as a functions with a `Bool` condition.
 
 
-# Option, Pair, Unit and Nothing
+# Int
 
-Option represent a value that may be missing. There's no null in Firefly, so Option is often the return type of lookups. It's defined like this:
+Values of the `Int` type represent whole numbers in the range `-9,007,199,254,740,991` to `9,007,199,254,740,991`. This range is specifically chosen to work inside the safe integer range of the `Number` type in JavaScript. Outside of this range, `Int` values may act like `Float` values.
+
+They can be constructed using the following literal syntax:
 
 ```firefly
-data Option[T] {
-    None
-    Some(value: T)
-}
+42  // Fourty two
+0   // Zero
+-1  // Minus one
 ```
 
-Pair is a generic record with two fields, e.g. for key/value pairs in a map:
+Basic arithmetic operators are supported:
 
 ```firefly
-data Pair[A, B](first: A, second: B)
+3 + 5       // Addition, == 8
+3 - 5       // Subtraction, == -2
+3 * 5       // Multiplication, == 15
+-(3 + 5)    // Negation, == -8
+3 / 5       // Division, == 0.6
 ```
 
-Unit is the return type for functions that have no interesting return value:
+As are the comparison operators.
+
+Note that the division `3 / 5` does not return an `Int`, but rather a `Float` value `0.6`. If you want integer division, which rounds towards zero, you can do `3.div(5) == 0`.
+
+
+# Float
+
+Values of the `Float` type are floating point numbers with the semantics of the `Number` type in JavaScript.
+
+They be constructed using following literal syntax:
+
+```firefly
+42.0    // Fourty two point zero
+0.0     // Zero point zero
+-1.0    // Minus one point zero
+1.0e3   // == 1000.0
+1.0e-3  // == 0.001
+```
+
+Like `Number` values in JavaScript, `Float` values may also be `Float.nan()`, `Float.infinity()` or `-Float.infinity()`.
+
+Basic arithmetic operators are supported:
+
+```firefly
+3.5 + 5.75      // Addition, == 9.25
+3.0 - 5.0       // Subtraction, == -2.0
+3.0 * 5.0       // Multiplication, == 15.0
+-(3.0 + 5.0)    // Negation, == -8.0
+3.0 / 5.0       // Division, == 0.6
+```
+
+As are the comparison operators. 
+However, as with `Number` values in JavaScript, comparing `Float.nan()` with any floating point value, including `Float.nan()` will return `False`.
+To test whether a number is `Float.nan()`, use the `isNan()` method, e.g. `x.isNan()`.
+
+
+# Char
+
+Values of the `Char` type represent UTF-16 code units. 
+Graphemes outside of the Unicode Basic Multilingual Plane may consist of multiple UTF-16 code units and thus require multiple `Char` values.
+
+They can be constructed using following literal syntax, where `\` (backslash) is used to escape characters:
+
+```firefly
+' '     // A space
+'\''    // Single quote
+'\r'    // Carriage return
+'\n'    // Line feed (Unix newline)
+'\t'    // Horizontal tab
+'\\'    // Backslash
+'A'     // Capital A
+```
+
+The comparison operators also works for `Char` values, but note that they compare the code unit rather than compare by any language-specific character ordering.
+
+
+# String
+
+Values of the `String` type are immutable sequences of `Char` values, representing Unicode strings. 
+
+Single line strings must be contained within a single line, and can be constructed using following literal syntax:
+
+```firefly
+"Hello, World!"
+```
+
+Multiline string literals begin and end with three double quotes, and may contain newlines:
+
+```firefly
+"""
+    Once upon a time,
+    in a land far, far away...
+"""
+```
+
+There's an operator for string concatenation:
+
+```firefly
+"ban" + "ana" == "banana"
+```
+
+The comparison operators are supported, but note that they compare the string as a sequence of `Char` values rather than by any language-specific ordering.
+
+The escape mechanism is the same as with the `Char` type.
+
+
+# List
+
+Values of the `List[T]` types are immutable sequences of `T` values, where `T` is a type of your choice.
+
+They can be constructed using list literals:
+
+```firefly
+[1, 2, 3]   // A list of the Ints 1, 2 and 3
+```
+
+Note that commas can be omitted when they would occur before a newline:
+
+```firefly
+[
+    1
+    2
+    3
+]
+```
+
+Lists can be flattened into other lists using the spread syntax:
+
+```firefly
+[1, ...[2, 3], 4, 5] == [1, 2, 3, 4, 5]
+```
+
+The comparison operators are supported.
+
+
+# Unit
+
+The `Unit` type has just one possible value, and is used as the return type for functions that have no interesting return value.
+
+The type is defined in `ff:core` as follows:
 
 ```firefly
 data Unit {
@@ -111,12 +206,4 @@ data Unit {
 }
 ```
 
-Meaning it only has one possible value: `Unit`.
-
-Nothing is a type that has no values:
-
-```firefly
-data Nothing {}
-```
-
-It's occasionally useful to statically rule out the possibility of constructing something.
+If you omit the return type, the `Unit` type is assumed. If you don't end a function with an expression, the `Unit` value is returned.

@@ -5,7 +5,7 @@ mock(): List[Document] {
     [
         ReferenceIntroduction.new()
         ReadyDocument([Section("A Firefly file", [])])
-        ReadyDocument([Section("Base types", [])])
+        UnfetchedDocument("Base types")
         ReadyDocument([Section("User defined types", [])])
         ReadyDocument([Section("Pattern matching", [])])
         ReadyDocument([Section("Functions", [])])
