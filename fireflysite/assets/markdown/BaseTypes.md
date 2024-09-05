@@ -25,7 +25,7 @@ Logical negation is an operator on booleans:
 !False == True
 ```
 
-Logical and is an operator on booleans:
+Logical and is an operator on booleans. The right hand side is only evaluated when the left hand side is `True`:
 
 ```firefly
 True  && True  == True
@@ -34,7 +34,7 @@ False && True  == False
 False && False == False
 ```
 
-Logical or is an operator on booleans:
+Logical or is an operator on booleans. The right hand side is only evaluated when the left hand side is `False`:
 
 ```firefly
 True  || True  == True
