@@ -139,6 +139,7 @@ guideTopbarButtonCss: CssClass = CssClass(
         Css.backgroundPosition("20px 16px")
         Css.fontSize("20px")
         Css.cursor("pointer")
+        Css.webkitTapHighlightColor("transparent")
         Css.padding("0")
         Css.margin("0")
         Css.height("76px")
