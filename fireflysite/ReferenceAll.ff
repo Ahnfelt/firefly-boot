@@ -6,7 +6,7 @@ mock(): List[Document] {
         ReferenceIntroduction.new()
         ReadyDocument([Section("A Firefly file", [])])
         UnfetchedDocument("Base types")
-        ReadyDocument([Section("User defined types", [])]) // data class capability (foo = 42, bar = "Baz")
+        UnfetchedDocument("User defined types")
         ReadyDocument([Section("Statements", [])]) // let, mutable += ; (sequence)
         ReadyDocument([Section("Functions and methods", [])]) // {...} Eta expansion extend
         ReadyDocument([Section("Pattern matching", [])])
