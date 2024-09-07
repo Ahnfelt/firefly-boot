@@ -56,7 +56,7 @@ data Shape(x: Float, y: Float) {
 }
 ```
 
-This is similar to the `Shape` definition above, but the `x` and `y` fields. 
+This is similar to the `Shape` definition above, but the `x` and `y` fields have been pulled out as common fields. 
 Given a value of a type, e.g. `shape: Shape`, common fields can be accessed without knowing which specific variant it is:
 
 ```firefly
