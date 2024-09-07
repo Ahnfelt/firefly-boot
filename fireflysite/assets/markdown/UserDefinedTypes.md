@@ -1,6 +1,6 @@
 # User defined types
 
-Named types can be defined at the tope level of a file, usine one of four modifiers: `data`, `class`, `capability` or `newtype`.
+Named types can be defined at the tope level of a file, using one of four keywords: `data`, `class`, `capability` or `newtype`.
 
 
 # data
