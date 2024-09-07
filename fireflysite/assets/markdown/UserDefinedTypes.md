@@ -161,8 +161,7 @@ data Basket[T] {
 Here the `T` in `Basket[T]` is a type parameter, and it's used as a type argument in `List[T]`.
 
 An unbounded type parameter can be instantiated to any type. 
-We can have a `Basket[Shape]`, which has a field `items: List[Shape]`, and a `Basket[EventHandler]`, which has a field `items: List[EventHandler]`.
-Generic types with different type arguments are incompatible.
+We can have a `Basket[Shape]`, which has a field `items: List[Shape]`, and a different type `Basket[EventHandler]`, which has a field `items: List[EventHandler]`.
 
 Note that type parameters are not concrete types, and are thus not subject to the field type restrictions stated earlier.
 
