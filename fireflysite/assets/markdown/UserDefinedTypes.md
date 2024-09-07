@@ -15,7 +15,7 @@ data Shape {
 ```
 
 This defines a type called `Shape` with two variants `Circle` and `Rectangle`. 
-The `Circle` variant has three named fields of type `Float`, while the `Rectangle variant has four.
+The `Circle` variant has three named fields of type `Float`, while the `Rectangle` variant has four.
 
 Type and variant names must start with a capital letter.
 
