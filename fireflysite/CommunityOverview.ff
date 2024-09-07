@@ -9,7 +9,7 @@ new(): Document {
                 Text("The developers of Firefly hang out in")
                 Code("#firefly")
                 Text("on the")
-                Link("r/ProgrammingLanguages", "https://discord.gg/yQ9mSk7CJ5")
+                Link("Programming Languages", "https://discord.gg/yQ9mSk7CJ5")
                 Text("Discord.")
             ])
             Paragraph([
