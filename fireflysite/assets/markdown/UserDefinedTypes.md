@@ -153,9 +153,9 @@ In this case, it means that `UserId(42)` is represented as the `Int` value `42` 
 Whether you use `data`, `class`, `capability` or `newtype` to define a type, it may have type parameters.
 
 ```firefly
-data Basket[T] {
+data Basket[T](
     items: List[T]
-}
+)
 ```
 
 Here the `T` in `Basket[T]` is a type parameter, and it's used as a type argument in `List[T]`.
