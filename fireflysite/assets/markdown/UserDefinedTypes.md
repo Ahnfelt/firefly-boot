@@ -168,7 +168,7 @@ Note that type parameters are not concrete types, and are thus not subject to th
 
 # Anonymous records
 
-An anonymous record is not defined anywhere, but consists of zero or more fields. The fields may have any type, but can't be reassigned after creation..
+An anonymous record is not defined anywhere, but consists of zero or more fields. The fields may have any type, but can't be reassigned after creation.
 
 ```firefly
 (red = 255, green = 255, blue = 0)
