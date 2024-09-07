@@ -44,6 +44,9 @@ Circle(radius = 1.0, 0.0, 0.0)
 
 To branch on the specific variant of a type, use [pattern matching](pattern-matching).
 
+
+# Common fields
+
 When all the variants share a set of fields, they can be moved to the common fields section of the declaration:
 
 ```firefly
@@ -68,6 +71,9 @@ data Point(x: Float, y: Float)
 ```
 
 This defines a type called `Point` with a single variant, also named `Point`, and two common fields of type `Float`.
+
+
+# Copying
 
 Variants can also be constructed from other values by specifying any fields that should be updated or are fields that the value doesn't expose.
 E.g. given a `point: Point`, we can construct a `Shape` of the `Rectangle` variant:
@@ -155,7 +161,8 @@ data Basket[T] {
 Here the `T` in `Basket[T]` is a type parameter, and it's used as a type argument in `List[T]`.
 
 An unbounded type parameter can be instantiated to any type. 
-We can have a `Basket[Shape]` and a `Basket[EventHandler]`, and they are different types.
+We can have a `Basket[Shape]`, which has a field `items: List[Shape]`, and a `Basket[EventHandler]`, which has a field `items: List[EventHandler]`.
+Generic types with different type arguments are incompatible.
 
 Note that type parameters are not concrete types, and are thus not subject to the field type restrictions stated earlier.
 
