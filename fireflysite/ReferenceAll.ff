@@ -4,17 +4,17 @@ import ReferenceIntroduction
 mock(): List[Document] {
     [
         ReferenceIntroduction.new()
-        ReadyDocument([Section("A Firefly file", [])])
+        UnfetchedDocument("A Firefly file")
         UnfetchedDocument("Base types")
         UnfetchedDocument("User defined types")
-        ReadyDocument([Section("Statements", [])]) // let, mutable += ; (sequence)
-        ReadyDocument([Section("Functions and methods", [])]) // {...} Eta expansion extend
-        ReadyDocument([Section("Pattern matching", [])])
-        ReadyDocument([Section("Traits and instances", [])])
-        ReadyDocument([Section("Exceptions", [])])
-        ReadyDocument([Section("Packages and modules", [])])
-        ReadyDocument([Section("JavaScript interop", [])])
-        ReadyDocument([Section("Async I/O", [])])
-        ReadyDocument([Section("Structured concurrency", [])])
+        UnfetchedDocument("Statements and variables")
+        UnfetchedDocument("Functions and methods")
+        UnfetchedDocument("Pattern matching")
+        UnfetchedDocument("Traits and instances")
+        UnfetchedDocument("Exceptions")
+        UnfetchedDocument("Packages and modules")
+        UnfetchedDocument("JavaScript interop")
+        UnfetchedDocument("Async I/O")
+        UnfetchedDocument("Structured concurrency")
     ]
 }
