@@ -33,3 +33,9 @@ import
 target
 # Async I/O
 # Structured concurrency
+
+
+
+Shadowing
+Type inference
+Operator precedence
