@@ -38,11 +38,11 @@ nodeMain(system: NodeSystem): Unit {
                 }
                 serveAsset(system, cacheSalt, request, "text/javascript; charset=UTF-8", asset)
             | ["favicon.ico"] =>
-                serveAsset(system, cacheSalt, request, "image/png", "/assets/firefly-logo-notext.png")
-            | ["assets", "FireflyMono.ttf"] => 
-                serveAsset(system, cacheSalt, request, "image/png", "/assets/NotoSansMono-Regular.ttf")
-            | ["assets", "FireflySans.ttf"] => 
-                serveAsset(system, cacheSalt, request, "image/png", "/assets/NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf")
+                serveAsset(system, cacheSalt, request, "image/png", "/assets/image/firefly-logo-notext.png")
+            | ["assets", "font", "FireflyMono.ttf"] => 
+                serveAsset(system, cacheSalt, request, "font/ttf", "/assets/font/NotoSansMono-Regular.ttf")
+            | ["assets", "font", "FireflySans.ttf"] => 
+                serveAsset(system, cacheSalt, request, "font/ttf", "/assets/font/NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf")
             | ["assets", ...rest] => serveAssets(system, cacheSalt, request, rest)
             | _ =>
                 let parameters = if(request.readRawQueryString().size() == 0) {""} else {
@@ -127,11 +127,11 @@ serveGuideHtml(title: String, request: WebRequest[WebResponse]): Unit {
     request.writeText("<title>" + title + "</title>")
     request.writeText("<meta name='viewport' content='width=device-width, initial-scale=1.0'>")
     request.writeText("<meta name='theme-color' content='#ecc45e'>")
-    request.writeText("<link rel='preload' href='/assets/FireflyMono.ttf' as='font' crossorigin='anonymous'>")
-    request.writeText("<link rel='preload' href='/assets/FireflySans.ttf' as='font' crossorigin='anonymous'>")
-    request.writeText("<link rel='preload' href='/assets/firefly-logo-yellow.png' as='image'>")
-    request.writeText("<style>@font-face { font-family: 'Firefly Mono'; font-display: fallback; src: url('/assets/FireflyMono.ttf'); unicode-range: U+000-5FF; }</style>")
-    request.writeText("<style>@font-face { font-family: 'Firefly Sans'; font-display: fallback; src: url('/assets/FireflySans.ttf'); unicode-range: U+000-5FF; }</style>")
+    request.writeText("<link rel='preload' href='/assets/font/FireflyMono.ttf' as='font' crossorigin='anonymous'>")
+    request.writeText("<link rel='preload' href='/assets/font/FireflySans.ttf' as='font' crossorigin='anonymous'>")
+    request.writeText("<link rel='preload' href='/assets/image/firefly-logo-yellow.png' as='image'>")
+    request.writeText("<style>@font-face { font-family: 'Firefly Mono'; font-display: fallback; src: url('/assets/font/FireflyMono.ttf'); unicode-range: U+000-5FF; }</style>")
+    request.writeText("<style>@font-face { font-family: 'Firefly Sans'; font-display: fallback; src: url('/assets/font/FireflySans.ttf'); unicode-range: U+000-5FF; }</style>")
     request.writeText("</head>")
     request.writeText("<body style='margin: 0; padding: 0; width: 100%; height: 100%; touch-action: manipulation;'>")
     request.writeText("<div id='main'></div>")

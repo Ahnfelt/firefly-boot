@@ -111,7 +111,7 @@ render(lux: Lux, browser: BrowserSystem, prefix: String, kebab: String, guides: 
             lux.cssClass(Styles.guideCss)
             lux.add("main") {
                 lux.cssClass(Styles.guideMainCss)
-                renderDocument(lux, browser.httpClient(), document, demos, nextDocument)
+                renderDocument(lux, browser.httpClient(), prefix, document, demos, nextDocument)
             }
             renderTopbar(lux, menu, setMenu)
             lux.add("div") {
@@ -134,7 +134,7 @@ renderTopbar(lux: Lux, menu: Bool, setMenu: Bool => Unit) {
             lux.set("href", "/front/")
             lux.cssClass(Styles.guideTopbarLogoCss)
             lux.add("img") {
-                lux.set("src", "/assets/firefly-logo-yellow.png")
+                lux.set("src", "/assets/image/firefly-logo-yellow.png")
             }
             lux.div {
                 lux.text("Firefly")
@@ -159,7 +159,7 @@ renderSidebar(lux: Lux, guides: List[Guide], selectedGuide: Guide, selectedHeadi
             lux.set("href", "/front/")
             lux.cssClass(Styles.guideSidebarLogoCss)
             lux.add("img") {
-                lux.set("src", "/assets/firefly-logo-yellow.png")
+                lux.set("src", "/assets/image/firefly-logo-yellow.png")
             }
             lux.div {
                 lux.text("Firefly")
@@ -211,7 +211,14 @@ renderSidebar(lux: Lux, guides: List[Guide], selectedGuide: Guide, selectedHeadi
     }
 }
 
-renderDocument(lux: Lux, http: HttpClient, document: Document, demos: List[Demo], nextDocument: Option[GuideDocument]) {
+renderDocument(
+    lux: Lux
+    http: HttpClient
+    prefix: String
+    document: Document
+    demos: List[Demo] 
+    nextDocument: Option[GuideDocument]
+) {
     lux.add("article") {
         lux.cssClass(Styles.guideDocumentCss)
         document.{
@@ -225,7 +232,7 @@ renderDocument(lux: Lux, http: HttpClient, document: Document, demos: List[Demo]
                         let word = w.trim().lower()
                         word.slice(0, 1).upper() + word.dropFirst()
                     }.join()
-                    let asset = "/assets/markdown/" + firstName + ".md"
+                    let asset = "/assets/markdown" + prefix + firstName + ".md"
                     let markdown = http.get(asset, []) {_.readText()}
                     let parser = DocumentParser(asset, markdown.split('\n'), 0)
                     let sections = parser.parseDocument()
