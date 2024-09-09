@@ -10,15 +10,17 @@ nodeMain(system: NodeSystem) {
         result
     }
     
-    let file = system.path("assets/markdown/Example.md")
+    let file = system.path("assets/markdown/reference/FunctionsAndMethods.md")
     
+    /*
     logDuration("parse " + file.base()) {
         mutable i = 0
         while {i < 10000} {
             parse(file)
             i += 1
         }
-    }    
+    } 
+    */   
     let document = parse(file)
     printSections(system, document)
 }
@@ -64,6 +66,9 @@ extend self: DocumentParser {
                 let isFirefly = l.startsWith("firefly")
                 let block = self.parseRemainingCodeBlock(isFirefly)
                 Some(block)
+            | Some(line) {line.removeFirst("* ") | Some(l)} => 
+                self.skip(1)
+                Some(Bullets(self.parseBullets(l)))
             | Some(line) {line.first().any {_ != '#'}} => 
                 Some(self.parseParagraph())
             | _ => None
@@ -72,11 +77,34 @@ extend self: DocumentParser {
     
     parseParagraph(): Block {
         let lines = self.consumeWhile {_.trim() != ""}
-        let parser = InlineParser(self.fileName, lines.join("\n"), 0)
-        let inlines = parser.parseInlines()
-        Paragraph(inlines)
+        Paragraph(self.parseInlines(lines))
     }
     
+    parseInlines(lines: List[String]): List[Inline] {
+        let parser = InlineParser(self.fileName, lines.join("\n"), 0)
+        let inlines = parser.parseInlines()
+        inlines
+    }
+
+    parseBullets(firstLine: String): List[List[Inline]] {
+        let pair = self.consumeToSome {line =>
+            let trimmed = line.trim()
+            let endWithNextLine = trimmed.{
+                | "" => Some(None)
+                | t {t.removeFirst("* ") | Some(nextLine)} => Some(Some(nextLine))
+                | _ => None
+            }
+            endWithNextLine
+        }
+        let bulletLines = [firstLine, ...pair.first]
+        let bullet = self.parseInlines(bulletLines)
+        pair.second.{
+            | None => [bullet]
+            | Some(None) => [bullet]
+            | Some(Some(nextLine)) => [bullet, ...self.parseBullets(nextLine)]
+        }
+    }
+
     parseRemainingCodeBlock(isFirefly: Bool): Block {
         let code = self.consumeWhile {!_.trimStart().startsWith("```")}
         self.skip(1)
@@ -103,6 +131,17 @@ extend self: DocumentParser {
         let oldI = self.i
         self.skipWhile(body)
         self.lines.slice(oldI, self.i)
+    }
+
+    consumeToSome[T](body: String => Option[T]): Pair[List[String], Option[T]] {
+        let oldI = self.i
+        mutable end = None
+        while {self.i < self.lines.size() && end.isEmpty()} {
+            end = body(self.lines.grab(self.i))
+            self.i += 1
+        }
+        let endI = if(end.isEmpty()) {self.i} else {self.i - 1}
+        Pair(self.lines.slice(oldI, endI), end)
     }
 }
 
