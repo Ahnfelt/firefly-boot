@@ -1,6 +1,6 @@
 # Base types
 
-In Firefly, all nominal types are defined in a `.ff` file somewhere. 
+In Firefly, all named types are defined in a `.ff` file somewhere. 
 However, some of the types in the `ff:core` package have dedicated syntax.
 These are considered base types and are documented in the following sections.
 

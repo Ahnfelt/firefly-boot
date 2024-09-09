@@ -19,7 +19,7 @@ The `Circle` variant has three named fields of type `Float`, while the `Rectangl
 
 Type and variant names must start with a capital letter.
 
-Concrete field types of a `data` type must have been defined using `data` or `newtype`. This ensures that fields have no interior mutability.
+No `class` or `capability` types can occur in the definition of a `data` type.
 
 A value of type `Shape` is either a `Circle` or a `Rectangle`, and they can be constructed as follows:
 
@@ -111,18 +111,12 @@ basket.oranges += 1     // The oranges field is now one greater
 basket.bananas -= 1     // The bananas field is now one less
 ```
 
-In addition to `data` and `newtype`, concrete field types of a `class` type may also have been defined using `class`,
-letting `class` types contain other mutable values.
+Except for `capability` types, all types can occur in the definition of a `class` type.
 
 
 # capability
 
 Types defined with the `capability` keyword work like `class` types, except for the differences noted here.
-
-Function types `=>` are considered `capability` types.
-
-In addition to `data`, `newtype` and `class`, concrete field types of a `capability` type may also have been defined using `capability`,
-letting `capability` types contain other capabilities.
 
 ```firefly
 capability EventHandler(
@@ -134,6 +128,10 @@ The `onEvent` field here contains a first class function, which may have capture
 Therefore, calling the function contained in this field may cause side effects.
 
 In particular, it may have captured the `system` argument that's passed to the main function, or other capabilities that allow it to do I/O.
+
+There are no restrictions on the types of fields that `capability` types can have.
+
+Function types `=>` are considered `capability` types.
 
 
 # newtype
