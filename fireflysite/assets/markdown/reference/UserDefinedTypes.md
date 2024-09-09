@@ -75,21 +75,19 @@ This defines a type called `Point` with a single variant, also named `Point`, an
 
 # Copying
 
-There is a shorthand for constructing a variant using one or more fields from another value. 
-
-For example, if you have a `point: Point` and want to construct a `Rectangle`, you can specify each field:
+If you have a value and want to construct a variant, you can copy each field explicitly:
 
 ```firefly
 Rectangle(x = point.x, y = point.y, width = 2.0, height = 1.5)
 ```
 
-However, the following notation is equivalent:
+There's a shorthand for doing this, however:
 
 ```firefly
 point.Rectangle(width = 2.0, height = 1.5)
 ```
 
-The fields of `Rectangle` that aren't specified will be copied from `point`.
+Using this shorthand, the fields of `Rectangle` that aren't specified will be copied from `point`.
 
 
 
