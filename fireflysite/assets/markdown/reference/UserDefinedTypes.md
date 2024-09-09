@@ -75,18 +75,22 @@ This defines a type called `Point` with a single variant, also named `Point`, an
 
 # Copying
 
-Variants can also be constructed from other values by specifying any fields that should be updated or are fields that the value doesn't expose.
-E.g. given a `point: Point`, we can construct a `Shape` of the `Rectangle` variant:
+There is a shorthand for constructing a variant using one or more fields from another value. 
+
+For example, if you have a `point: Point` and want to construct a `Rectangle`, you can specify each field:
+
+```firefly
+Rectangle(x = point.x, y = point.y, width = 2.0, height = 1.5)
+```
+
+However, the following notation is equivalent:
 
 ```firefly
 point.Rectangle(width = 2.0, height = 1.5)
 ```
 
-This is equivalent to:
+The fields of `Rectangle` that aren't specified will be copied from `point`.
 
-```firefly
-Rectangle(x = point.x, y = point.y, width = 2.0, height = 1.5)
-```
 
 
 # class
