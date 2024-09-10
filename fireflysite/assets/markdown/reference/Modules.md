@@ -11,12 +11,32 @@ For single-file `.ff` scripts, the contents of `.firefly/package.ff` can be plac
 
 # Imports
 
+To access the symbols that a module exports, it is necessary to import it:
+
 ```firefly
 import WebServer from ff:webserver
 ```
 
+This imports the `WebServer` module from the `ff:webserver` package, which must have been declared as a dependency elsewhere.
+
+Symbols exported from the module can then be accessed using the `WebServer.` prefix:
+
+```firefly
+WebServer.new(system, "localhost", 8080)
+```
+
+Types, variants and traits are available under the prefix, but can also be accessed with no prefix at all. In the case of naming collisions between these, the last import wins.
+
+If two imported modules have the same name, or a different prefix is desired, the symbols can be imported under a different prefix:
+
 ```firefly
 import WebServer as W from ff:webserver
+```
+
+The symbols can then be accessed using the `W.` prefix:
+
+```firefly
+W.new(system, "localhost", 8080)
 ```
 
 
