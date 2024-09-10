@@ -76,9 +76,12 @@ The `system` parameter is an object that lets you do I/O in the target system.
 
 # Constants
 
-Named constants may be defined at the top level:
+Named constants may be defined at the top level, and must have an explict type:
 
 ```firefly
-x: Int = 42
+answer: Int = 42
 ```
 
+Here `answer` is defined to be an `Int` with the value `42`.
+
+There's no global state in Firefly, and to enforce this, the type of a named constant must be declared with the `data` or `newtype` keyword.
