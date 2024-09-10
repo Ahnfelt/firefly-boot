@@ -40,6 +40,11 @@ W.new(system, "localhost", 8080)
 ```
 
 
+# Exports
+
+Currently, all top level symbols are automatically exported.
+
+
 # Main
 
 In Firefly, there are three targets, each with its own main function:
