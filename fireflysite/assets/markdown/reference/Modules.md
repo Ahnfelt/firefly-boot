@@ -85,3 +85,5 @@ answer: Int = 42
 Here `answer` is defined to be an `Int` with the value `42`.
 
 There's no global state in Firefly, and to enforce this, the type of a named constant must be declared with the `data` or `newtype` keyword.
+
+Named constants that occur on the right hand side must not directly or indirecly refer to the named constant being defined.
