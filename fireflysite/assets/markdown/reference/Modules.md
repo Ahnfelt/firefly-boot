@@ -42,7 +42,7 @@ W.new(system, "localhost", 8080)
 
 # Exports
 
-Currently, all top level symbols are automatically exported.
+Currently, all top level definitions are automatically exported.
 
 
 # Main
