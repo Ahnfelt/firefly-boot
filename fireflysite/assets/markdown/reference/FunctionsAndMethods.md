@@ -1,14 +1,14 @@
 # Functions and methods
 
-There are 5 kind of functions in Firefly: 
+There are 5 kinds of functions in Firefly: 
  
  * Top-level functions
  * Local functions 
  * Methods
  * Anonymous functions
- * Instance functions
+ * Trait functions
  
- Instance functions are covered in section [Traits and instances](traits-and-instances), the rest are covered below. 
+ Trait functions are covered in section [Traits and instances](traits-and-instances), the rest are covered below. 
  
 # Top-level functions
 
@@ -32,7 +32,7 @@ A function definition begins with a signature, followed by a body in curly brace
 
 The function signature may introduce a list of type parameters in square brackets, right after the function name. These type parameters may be used in parameter types, the return type, or to constrain other type parameters. The section [Traits and instances](traits-and-instances) will cover contraints.
 
-Here is an example of a function definition introducing an unbound type parameter called `T`, which is used for the parameter type and in the return type:
+Here is an example of a function definition introducing an unbounded type parameter called `T`, which is used for the parameter type and in the return type:
 
 ```firefly
 single[T](e: T): List[T] {
@@ -40,7 +40,7 @@ single[T](e: T): List[T] {
 }
 ```
 
-As `T` is unbound, this function may be called with values of any type.
+As `T` is unbounded, this function may be called with values of any type.
 
 
 # Local functions
