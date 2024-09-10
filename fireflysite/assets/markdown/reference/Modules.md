@@ -20,9 +20,9 @@ import WebServer as W from ff:webserver
 ```
 
 
-# Main functions
+# Main
 
-In Firefly, there are three targets, each with its own main file:
+In Firefly, there are three targets, each with its own main function:
 
 ```firefly
 nodeMain(system: NodeSystem) {
