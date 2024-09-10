@@ -6,7 +6,7 @@ A file may contain module imports and top level definitions, in that order.
 
 A top level definition is either a [type](user-defined-types), a [trait or instance](traits-and-instances), a [function or extends block](functions-and-methods), or a constant.
 
-If you're writing a single-file `.ff` script, you can put the contents of `.firefly/package.ff` at the top of your script instead, see [Packages and depdendencies](packages-and-dependencies).
+For single-file `.ff` scripts, the contents of `.firefly/package.ff` can be placed at the top of your script instead, see [Packages and depdendencies](packages-and-dependencies).
 
 
 # Imports
