@@ -8,6 +8,35 @@ A top level definition is either a [type](user-defined-types), a [trait or insta
 
 For single-file `.ff` scripts, the contents of `.firefly/package.ff` can be placed at the top of your script instead, see [Packages and depdendencies](packages-and-dependencies).
 
+```firefly
+package foo:bar:1.2.3
+dependency quux:baz:4.5.6
+include 'binary-or-js-stuff'
+
+import Lorem from foo:bar
+
+ipsum: Int = 42
+
+dolor(sit: String) {
+    // function body
+}
+
+data Amet(x: Int, y: Int)
+
+extend self: Amet {
+    // method definitions
+}
+
+trait T: Hello {
+    // trait function signatures
+}
+
+instance Amet: Hello {
+    // trait function implementations
+}
+```
+
+
 
 # Imports
 
