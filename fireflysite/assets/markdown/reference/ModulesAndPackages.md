@@ -13,7 +13,7 @@ dependency ff:webserver:0.0.0
 include "node_modules"
 
 // Module imports
-import TheirModule from theirgroup:theirpackage
+import WebServer from ff:webserver
 
 // Named constants
 answer: Int = 42
