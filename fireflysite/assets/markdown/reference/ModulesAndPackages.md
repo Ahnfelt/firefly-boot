@@ -20,7 +20,7 @@ ipsum: Int = 42
 
 // Functions
 dolor(sit: String) {
-    // (body)
+    // ...
 }
 
 // Type definitions
@@ -28,15 +28,15 @@ data Amet(x: Int, y: Int)
 
 // Methods
 extend self: Amet {
-    // (methods)
+    // ...
 }
 
 // Traits and trait instances
 trait T: Hello {
-    // (signatures)
+    // ...
 }
 instance Amet: Hello {
-    // (implementations)
+    // ...
 }
 ```
 
