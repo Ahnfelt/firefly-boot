@@ -441,3 +441,23 @@ kebabCase(text: String): String {
     }
     result.replace(" ", "-")
 }
+
+add(a: Int, b: Int): Int {
+    let sum = a + b
+    sum
+}
+
+swap[A, B](pair: Pair[A, B]): Pair[B, A] {
+    Pair(pair.second, pair.first)
+}
+
+same[E: Equal](pair: Pair[E, E]): Bool {
+    pair.first == pair.second
+}
+
+class Counter(mutable value: Int)
+foo() {
+    add(1, 2)              // 3
+    //same(Pair("A", 'A'))   // False
+    same(Pair(Counter(1), Counter(1)))   // False
+}
