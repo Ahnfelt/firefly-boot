@@ -40,7 +40,7 @@ instance Point: HasCenter {
 }
 ```
 
-Single-file packages are meant for small scripts that just have a single main file. In a multi-file package, the package information is specified in a separate file, `package.ff` which must live in the `.firefly/` subdirectory. A typical multi-file package looks like this:
+In a multi-file package, the package information is instead specified in a separate file `package.ff` which must live in the `.firefly/` subdirectory. A typical multi-file package looks like this:
 
 ```
 mypackage/
