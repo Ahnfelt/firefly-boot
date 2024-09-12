@@ -94,7 +94,7 @@ To access the symbols that a module exports, it is necessary to import it:
 import WebServer from ff:webserver
 ```
 
-This imports the `WebServer` module from the `ff:webserver` package, which must have been declared as a dependency elsewhere.
+This imports the `WebServer` module from the `ff:webserver` package, which must have been declared as a dependency.
 
 Symbols exported from the module can then be accessed using the `WebServer.` prefix:
 
