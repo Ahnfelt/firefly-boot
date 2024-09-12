@@ -18,7 +18,7 @@ import TheirModule from theirgroup:theirpackage
 // Named constants
 answer: Int = 42
 
-// Functions
+// Function definitions
 f(x: Int): Int {
     
 }
@@ -26,7 +26,7 @@ f(x: Int): Int {
 // Type definitions
 data Point(x: Int, y: Int)
 
-// Methods
+// Method definitions
 extend self: Point {
 
 }
