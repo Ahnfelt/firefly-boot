@@ -9,34 +9,34 @@ Such a module can contain the following top level constructs:
 ```firefly
 // Package information
 package mygroup:mypackage:1.2.3
-dependency quux:baz:4.5.6
-include "binary-or-js-stuff"
+dependency theirgroup:theirpackage:4.5.6
+include "node_modules"
 
 // Module imports
-import Lorem from foo:bar
+import TheirModule from theirgroup:theirpackage
 
 // Named constants
-ipsum: Int = 42
+answer: Int = 42
 
 // Functions
-dolor(sit: String) {
-    // ...
+f(x: Int): Int {
+    
 }
 
 // Type definitions
-data Amet(x: Int, y: Int)
+data Point(x: Int, y: Int)
 
 // Methods
-extend self: Amet {
-    // ...
+extend self: Point {
+
 }
 
 // Traits and trait instances
-trait T: Hello {
-    // ...
+trait T: HasCenter {
+
 }
-instance Amet: Hello {
-    // ...
+instance Point: HasCenter {
+
 }
 ```
 
@@ -72,7 +72,7 @@ If present, the `package` keyword must be the first token in the file. In a sing
 The `dependency` keyword specifies the group name, package name and major.minor.patch package version of a package that is a dependency of this package:
 
 ```firefly
-dependency quux:baz:4.5.6
+dependency theirgroup:theirpackage:4.5.6
 ```
 
 There may be zero or more dependencies. If there are conflicting versions of the same package in the dependencies or transitive dependencies, the first version that's encountered in a breadth first search from top to bottom will be used.
@@ -80,10 +80,10 @@ There may be zero or more dependencies. If there are conflicting versions of the
 The `include` keyword includes files verbatim in the JavaScript that is emitted by the compiler:
 
 ```firefly
-include "binary-or-js-stuff"
+include "node_modules"
 ```
 
-This instructs the compiler to copy the file or directory `mypackage/.firefly/include/binary-or-js-stuff` verbatim into the `mypackage/.firefly/ouput/node/mygroup/mypackage/node/binary-or-js-stuff` directory. It doesn't do anything for the browser target.
+This instructs the compiler to copy the file or directory `mypackage/.firefly/include/node_modules` verbatim into the `mypackage/.firefly/ouput/node/mygroup/mypackage/node/node_modules` directory. It doesn't do anything for the browser target.
 
 
 # Imports
