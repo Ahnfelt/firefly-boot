@@ -10,7 +10,7 @@ Such a module can contain the following top level constructs:
 // Package information
 package mygroup:mypackage:1.2.3
 dependency quux:baz:4.5.6
-include 'binary-or-js-stuff'
+include "binary-or-js-stuff"
 
 // Module imports
 import Lorem from foo:bar
@@ -80,7 +80,7 @@ There may be zero or more dependencies. If there are conflicting versions of the
 The `include` keyword includes files verbatim in the JavaScript that is emitted by the compiler:
 
 ```firefly
-include 'binary-or-js-stuff'
+include "binary-or-js-stuff"
 ```
 
 This instructs the compiler to copy the file or directory `mypackage/.firefly/include/binary-or-js-stuff` verbatim into the `mypackage/.firefly/ouput/node/mygroup/mypackage/node/binary-or-js-stuff` directory. It doesn't do anything for the browser target.
