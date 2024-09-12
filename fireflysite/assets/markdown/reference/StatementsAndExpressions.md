@@ -71,4 +71,4 @@ a + b       // Binary operator
 (a + b) * c // Grouping parenthesis
 ```
 
-The specific variations of these are documented elsewhere in the reference.
+The specific variations of these constructs are documented elsewhere in the reference.
