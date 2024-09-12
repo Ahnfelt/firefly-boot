@@ -9,7 +9,7 @@ Such a module can contain the following top level constructs:
 ```firefly
 // Package information
 package mygroup:mypackage:1.2.3
-dependency theirgroup:theirpackage:4.5.6
+dependency ff:webserver:0.0.0
 include "node_modules"
 
 // Module imports
@@ -72,7 +72,7 @@ If present, the `package` keyword must be the first token in the file. In a sing
 The `dependency` keyword specifies the group name, package name and major.minor.patch package version of a package that is a dependency of this package:
 
 ```firefly
-dependency theirgroup:theirpackage:4.5.6
+dependency ff:webserver:0.0.0
 ```
 
 There may be zero or more dependencies. If there are conflicting versions of the same package in the dependencies or transitive dependencies, the first version that's encountered in a breadth first search from top to bottom will be used.
