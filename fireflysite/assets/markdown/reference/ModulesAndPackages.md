@@ -8,7 +8,7 @@ Such a module can contain the following top level constructs:
 
 ```firefly
 // Package information
-package foo:bar:1.2.3
+package mygroup:mypackage:1.2.3
 dependency quux:baz:4.5.6
 include 'binary-or-js-stuff'
 
@@ -55,6 +55,35 @@ The two module files here `MyModule.ff` and `MyOtherModule.ff` defines the modul
 In general, identifiers of any kind in Firefly must start with an ASCII letter, and can only contain ASCII letters and numbers. This also applies to module and package names.
 
 Apart from containing the `package.ff` file, the `.firefly/` subdirectory is used for various compiler output and can contain an `include/` directory with JavaScript that you want to include verbatim into the build via the `include` directive.
+
+
+# Package information
+
+The `package` keyword specifies the group name, package name and major.minor.patch package version:
+
+```firefly
+package mygroup:mypackage:1.2.3
+```
+
+A group is a person, organization or similar entity that's allowed to publish packages under that group name.
+
+If present, the `package` keyword must be the first token in the file. In a single file package, all the package information goes before any other content.
+
+The `dependency` keyword specifies the group name, package name and major.minor.patch package version of a package that is a dependency of this package:
+
+```firefly
+dependency quux:baz:4.5.6
+```
+
+There may be zero or more dependencies. If there are conflicting versions of the same package in the dependencies or transitive dependencies, the first version that's encountered in a breadth first search from top to bottom will be used.
+
+The `include` keyword includes files verbatim in the JavaScript that is emitted by the compiler:
+
+```firefly
+include 'binary-or-js-stuff'
+```
+
+This instructs the compiler to copy the file or directory `mypackage/.firefly/include/binary-or-js-stuff` verbatim into the `mypackage/.firefly/ouput/node/mygroup/mypackage/node/binary-or-js-stuff` directory. It doesn't do anything for the browser target.
 
 
 # Imports
