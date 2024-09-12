@@ -40,7 +40,7 @@ instance Point: HasCenter {
 }
 ```
 
-In a multi-file package, the package information is instead specified in a separate file `package.ff` which must live in the `.firefly/` subdirectory. A typical multi-file package looks like this:
+In a multi-file package, the package information is instead specified in a separate `package.ff` file which must live in the `.firefly/` subdirectory. A typical multi-file package looks like this:
 
 ```
 mypackage/
