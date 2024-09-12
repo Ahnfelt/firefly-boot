@@ -1,4 +1,4 @@
-# Statements and variables
+# Statements and expressions
 
 In Firefly, the body of functions and methods consist of zero or more statements, separated by `;`.
 
@@ -45,3 +45,30 @@ z += 2      // z is now 4
 z -= 1      // z is now 3
 ```
 
+
+# Expressions
+
+Expressions can be one of the following syntactic constructs:
+
+```firefly
+42          // Int literal
+42.0        // Float literal
+'a'         // Char literal
+"foo"       // String literal
+[]          // List literal
+{}          // Function literal
+()          // Record literal
+True        // Variant construction
+x           // Variable
+_           // Anonymous parameter
+f()         // Function call
+x.y         // Field access
+x.m()       // Method call
+x.V()       // Copy construction
+x.{_}       // Piping
+!x          // Unary operator
+a + b       // Binary operator
+(a + b) * c // Grouping parenthesis
+```
+
+The specific variations of these are documented elsewhere in the reference.
