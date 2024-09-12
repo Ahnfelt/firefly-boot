@@ -1,41 +1,60 @@
-# Modules
+# Modules and packages
 
-Every Firefly module lives in a single `.ff` file. The name of the file without the extension is the module name. It must start with a capital letter, and can only contain alphanumeric characters. In general, names in Firefly must only contain ASCII letters and numbers.
+In Firefly, source code is organized in packages, which can be versioned, released and depended on. 
+Inside packages, there are modules, which are individual files that can be imported from other modules.
 
-A file may contain module imports and top level definitions, in that order.
-
-A top level definition is either a [type](user-defined-types), a [trait or instance](traits-and-instances), a [function or extends block](functions-and-methods), or a constant.
-
-For single-file `.ff` scripts, the contents of `.firefly/package.ff` can be placed at the top of your script instead, see [Packages and depdendencies](packages-and-dependencies).
+The minimal package consists of just a single module file, and nothing else.
+Such a module can contain the following top level constructs:
 
 ```firefly
+// Package information
 package foo:bar:1.2.3
 dependency quux:baz:4.5.6
 include 'binary-or-js-stuff'
 
+// Module imports
 import Lorem from foo:bar
 
+// Named constants
 ipsum: Int = 42
 
+// Functions
 dolor(sit: String) {
-    // function body
+    // (body)
 }
 
+// Type definitions
 data Amet(x: Int, y: Int)
 
+// Methods
 extend self: Amet {
-    // method definitions
+    // (methods)
 }
 
+// Traits and trait instances
 trait T: Hello {
-    // trait function signatures
+    // (signatures)
 }
-
 instance Amet: Hello {
-    // trait function implementations
+    // (implementations)
 }
 ```
 
+Single-file packages are especially useful for small scripts that just have a single main file. In a multi-file package, we move the package information to a separate file, `package.ff` which must live in the `.firefly/` subdirectory. A typical multi-file package looks like this:
+
+```
+mypackage/
+    .firefly/
+        package.ff
+    MyModule.ff
+    MyOtherModule.ff
+```
+
+The two module files here `MyModule.ff` and `MyOtherModule.ff` defines the modules `MyModule` and `MyOtherModule` respectively. Module files must start with a capital letter.
+
+In general, identifiers of any kind in Firefly must start with an ASCII letter, and can only contain ASCII letters and numbers. This also applies to module and package names.
+
+Apart from containing the `package.ff` file, the `.firefly/` subdirectory is used for various compiler output and can contain an `include/` directory with JavaScript that you want to include verbatim into the build via the `include` directive.
 
 
 # Imports
