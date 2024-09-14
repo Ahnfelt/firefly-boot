@@ -148,5 +148,3 @@ extend self: Renderer {
     }
 }
 ```
-
-To pattern match on `self`, you have to use piping as described above.
