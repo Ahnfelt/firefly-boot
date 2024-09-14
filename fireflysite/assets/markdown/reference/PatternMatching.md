@@ -32,6 +32,8 @@ data BlockElement {
 }
 ```
 
+If you have multiple arguments, you need to provide a pattern for each argument, separated by commas.
+
 
 # Cases
 
