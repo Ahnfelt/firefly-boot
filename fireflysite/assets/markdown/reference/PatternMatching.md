@@ -89,6 +89,26 @@ Cases are tried in order until one of them matches. When a case matches, its sta
 In this case a return value is expected, and thus the last statement must be an expression, whose value will be returned.
 
 
+# As patterns
+
+To extract all the fields of a variant as an anonymous record, use the a pattern like this:
+
+```firefly
+| Code c => 
+    renderCode(c.code)
+```
+
+Here `c: (code: String, type: Option[String])` - that is, it's an anonymous record with the fields of the variant.
+
+To pattern match on a value while also extracting that value into a variable, use a pattern like this:
+
+```firefly
+| Code(code, Some(_) @ typeOption) => 
+```
+
+This ensures that the case only matches if the type field is `Some`, but binds the whole option into a variable `typeOption: Option[String]`.
+
+
 # In pipes
 
 Another way to write the above is to pipe the argument into an anonymous function that pattern matches on it:
