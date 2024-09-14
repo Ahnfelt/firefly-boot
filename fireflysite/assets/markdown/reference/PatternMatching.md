@@ -166,7 +166,7 @@ fib(n: Int): Int {
 }
 ```
 
-The `_` here is a wildcard pattern that matches any value without binding it to a variable.
+The wildcard pattern `_` matches any value without binding it to a variable.
 
 Here's an example that matches on `Char`:
 
