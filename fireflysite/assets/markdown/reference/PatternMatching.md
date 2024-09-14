@@ -89,7 +89,7 @@ Cases are tried in order until one of them matches. When a case matches, its sta
 In this case a return value is expected, and thus the last statement must be an expression, whose value will be returned.
 
 
-# As patterns
+# Alias patterns
 
 To extract all the fields of a variant as an anonymous record, use the a pattern like this:
 
