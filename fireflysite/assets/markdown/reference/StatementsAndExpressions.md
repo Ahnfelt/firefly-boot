@@ -70,7 +70,7 @@ a + b       // Binary operator
 (a + b) * c // Grouping parenthesis
 ```
 
-Operators are left associative and the operator precedence is as follows, lowest to highest:
+Binary operators are left associative and the operator precedence is as follows, lowest to highest:
 
  * `||`
  * `&&`
@@ -81,3 +81,6 @@ Operators are left associative and the operator precedence is as follows, lowest
  * `^`
  * `f()`
  * `x.y` `x.V()` `x.{_}`
+
+Unary operators `!` and `-` have higher precedence than `^` and lower precedence than `f()`.
+
