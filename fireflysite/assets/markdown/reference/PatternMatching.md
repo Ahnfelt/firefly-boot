@@ -150,3 +150,55 @@ extend self: Renderer {
     }
 }
 ```
+
+
+# Literals
+
+It's also possible to match on `Int`, `Char`, `String`, and `List[T]` values. 
+
+Here's an example that matches on `Int`:
+
+```firefly
+fib(n: Int): Int {
+    | 0 => 0
+    | 1 => 1
+    | _ => fib(n - 1) + fib(n - 2)
+}
+```
+
+The `_` here is a wildcard pattern that matches any value without binding it to a variable.
+
+Here's an example that matches on `Char`:
+
+```firefly
+extend self: Player {
+    go(key: Char) {
+        | 'w' => self.goUp()
+        | 'a' => self.goLeft()
+        | 's' => self.goDown()
+        | 'd' => self.goRight()
+        | _ =>
+    }
+}
+```
+
+Here's an example that matches on `String`:
+
+```firefly
+name.{
+    | "" => "Hello, there!"
+    | _ => "Hello, " + name + "!"
+}
+```
+
+Here's an example that matches on `List[Int]`:
+
+```firefly
+numbers.{
+    | [] => "No numbers!"
+    | [n] => "One number, " + n + "!"
+    | [n, ...ns] => "A number, " + n + ", and " + ns.size() + " more numbers!"
+}
+```
+
+In patterns, the spread syntax `...` matches the rest of a list.
