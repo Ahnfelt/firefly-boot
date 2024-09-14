@@ -152,7 +152,7 @@ extend self: Renderer {
 ```
 
 
-# Literals
+# Literals and wildcards
 
 It's also possible to match on `Int`, `Char`, `String`, and `List[T]` values. 
 
