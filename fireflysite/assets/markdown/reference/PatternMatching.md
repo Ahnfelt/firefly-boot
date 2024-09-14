@@ -37,7 +37,7 @@ If you have multiple arguments, you need to provide a pattern for each argument,
 
 # Cases
 
-Each case has one or more patterns, zero or more guards, and zero or more statements.
+Each case must have one or more patterns, zero or more guards, and zero or more statements.
 
 The first case starts with a pattern that matches when the argument is `Paragraph`, and extracts its `text` field into a variable named `text`:
 
