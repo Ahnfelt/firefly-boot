@@ -43,11 +43,11 @@ Here's an example of how to define a normal top level function with a bounded ty
 
 ```firefly
 printArea[T: Shape](shape: T) {
-    Log.debug("The area of the shape is: " + area(shape))
+    Log.trace("Area: " + area(shape))
 }
 
-printArea(Circle(0.0))          // Prints 0
-printArea(Rectangle(5.0, 6.0))  // Prints 30
+printArea(Circle(0.0))          // Prints "Area: 0"
+printArea(Rectangle(5.0, 6.0))  // Prints "Area: 30"
 ```
 
 Multiple bounds are separated by `:`, e.g. `foo[T: Bar: Baz]` means that `T` must have instances for both `Bar` and `Baz`.
