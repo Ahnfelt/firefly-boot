@@ -50,7 +50,7 @@ printArea(Circle(0.0))          // Prints "Area: 0"
 printArea(Rectangle(5.0, 6.0))  // Prints "Area: 30"
 ```
 
-Multiple bounds are separated by `:`, e.g. `foo[T: Bar: Baz]` means that `T` must have instances for both `Bar` and `Baz`.
+Multiple bounds are separated by colons, e.g. `foo[T: Bar: Baz]` means that `T` must have instances for both `Bar` and `Baz`.
 
 
 # Traits with type parameters
