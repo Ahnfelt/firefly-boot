@@ -63,5 +63,5 @@ trait I: Rpc[O] {}
 instance MyMessage: Rpc[Int] {}
 ```
 
-The choice of `I` determines `O` - in this case, if `I` is `MyMessage`, then `O` is `Int`.
+The choice of `I` fully determines `O` - in this case, if `I` is `MyMessage`, then `O` is `Int`.
 
