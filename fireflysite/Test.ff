@@ -1,0 +1,8 @@
+import WebServer from ff:webserver // This is required to run the file.
+
+nodeMain(system: NodeSystem) {
+    let f = {x, y => Pair(x, y)}
+    let g = {Pair(_, _)}
+    Log.show(f(1, 2))
+    Log.show(g(1, 2))
+}
