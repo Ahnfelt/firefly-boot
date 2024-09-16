@@ -63,7 +63,6 @@ x           // Variable
 _           // Anonymous parameter
 f()         // Function call
 x.y         // Field access
-x.m()       // Method call
 x.V()       // Copy construction
 x.{_}       // Piping
 !x          // Unary operator
@@ -71,4 +70,17 @@ a + b       // Binary operator
 (a + b) * c // Grouping parenthesis
 ```
 
-The specific variations of these constructs are documented elsewhere in the reference.
+Binary operators are left associative and the operator precedence is as follows, lowest to highest:
+
+ * `||`
+ * `&&`
+ * `!=` `==`
+ * `<=` `>=` `<` `>`
+ *  `+` `-`
+ * `*` `/` `%`
+ * `^`
+ * `f()`
+ * `x.y` `x.V()` `x.{_}`
+
+Unary operators `!` and `-` have higher precedence than `^` and lower precedence than `f()`.
+
