@@ -5,4 +5,34 @@ nodeMain(system: NodeSystem) {
     let g = {Pair(_, _)}
     Log.show(f(1, 2))
     Log.show(g(1, 2))
+    Log.show(factorial(5))
+    Log.show(factorialTail(5))
+    Log.show([1, 2].map({x => x + x}))
+    
+    let x = {a, b => Pair(a, b)}(1, 2)
+    let f0: () => Unit = {42}
+    let p = {Pair(1, _)}
+    let p2 = {Pair(_, _)}
+
+    let increment: Int => Int = {i => i + 1}
+    let plus: (Int, Int) => Int = {a, b => a + b}
+        
+    Log.show([1, 2].map(increment))
+    
+}
+
+factorial(n: Int): Int {
+    if(n == 0) {
+        1
+    } else {
+        n * factorial(n - 1)
+    }
+}
+
+factorialTail(n: Int, acc: Int = 1): Int {
+    if(n == 0) {
+        acc
+    } else {
+        tailcall factorialTail(n - 1, n * acc)
+    }
 }

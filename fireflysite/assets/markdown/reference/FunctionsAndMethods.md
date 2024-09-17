@@ -48,7 +48,7 @@ The parameter types must be declares expitly and the parentheses are required, e
 
 # Type parameters
 
-In a function signature, you can introduce a list of type parameters enclosed in square brackets, immediately following the function name. These type parameters can be referenced in the types of the function's parameters, its return type, or to constrain other type parameters. 
+In a function signature, you can introduce a list of type parameters enclosed in square brackets, immediately following the function name. These type parameters can be used in the rest of the signature. 
 
 The following example defines a function `swap` that takes any Pair and returns a Pair with first and second values swapped:
 
@@ -58,9 +58,9 @@ swap[A, B](pair: Pair[A, B]): Pair[B, A] {
 }
 ```
 
-The relation between the input and the output type is expressed using the type parameters `A` and `B`. The type parameters are unbuilded in the sense that `swap` may be called with `A` and `B` replaced by any types.
+Two type parameters `A` and `B` are first introduced in the square brackets. These type parameters are swapped in the input and return type, expressing the value swap at type level. The type parameters are unbuilded in the sense that `swap` may be called with `A` and `B` replaced by any types.
 
-Type parameters can be bounded like this:
+Type parameters can be bounded or constrained like this:
 
 ```firefly
 same[E: Equal](pair: Pair[E, E]): Bool {
@@ -69,6 +69,8 @@ same[E: Equal](pair: Pair[E, E]): Bool {
 ```
 
 The type parameter `E` must implement the Equal trait, which is required to perform equality comparisons. The section on [traits and instances](traits-and-instances) will discuss constraints in more detail.
+
+Firefly cannot operate on the concrete types of type parameters at runtime. The behavior of a function is limited to what is specified in the function signature. 
 
 
 # Calling functions
@@ -81,17 +83,10 @@ same(Pair('A', 'a'))   // False
 ```
 
 Just like variants, the arguments can be named, and given out of order, like this:
+
 ```firefly
 add(b = 2, a = 1)
 add(b = 2, 1)     // Same as above
-```
-
-The function signature must match the types of the given arguments. The following calls are not well typed.
-
-```firefly
-add("1", 2)                          // Type mismatch: Int vs. String
-same(Pair('A', "a"))                 // Type mismatch: String vs. Char
-same(Pair(Counter(1), Counter(1)))   // No such instance: Counter: Equal
 ```
 
 # Default Values
@@ -101,24 +96,23 @@ Function parameters in Firefly can have default values, which are used when no a
 Here’s an example of a function with a default value:
 
 ```firefly
-greet(name: String = "World"): String {
-    "Hello, " + name + "!"
+add(a: Int, b: Int = 1): Int {
+    a + b
 }
 ```
 
-When called without arguments, the function will use the default value:
+When called without the second arguments, the function will use the default value:
 
 ```firefly
-greet()  // returns "Hello, World!"
+greet(1)  // returns 2
 ```
 
 If an argument is provided, it overrides the default:
 
 ```firefly
-greet("Alice")  // returns "Hello, Alice!"
+greet(1, 2)  // returns 3
 ```
 
-Using default values can simplify function calls by allowing common values to be assumed, while still giving the flexibility to specify custom values when needed.
 
 # Recursion
 
@@ -136,7 +130,7 @@ factorial(n: Int): Int {
 
 When calling `factorial(0)`, the base case is triggered, returning `1`. Calling the function with a positive integer will recursively calculate the factorial. However, calling it with negative values will result in infinite recursion, as no base case exists for such input.
 
-## Tail Recursion
+# Tail Recursion
 
 In some recursive functions, the recursive call is the last operation performed before returning the result. This is *tail recursion*. The Firefly compiler can optimize tail recursive calls, avoiding the buildup of function calls on the stack.
 
@@ -157,6 +151,48 @@ factorial(n: Int, acc: Int = 1): Int {
 This version introduces an additional parameter, `acc`, which acts as an accumulator to hold the running result of the factorial calculation. It is initialized to 1 by default, ensuring that when the function is first called with a single argument, the computation starts correctly. By moving the multiplication into the recursive call via the accumulator, the call becomes a tail-call, allowing the Firefly compiler to optimize it.
 
 # Anonymous functions
+
+Firefly has anonymous functions, where the function and the parameters do not have names. They have a concrete type without type parameters. They are first-class values and can be assigned and passed around like other values. Here is an example:
+
+```firefly
+let next: Int => Int = {i => i + 1}
+```
+
+The fat arrow (`=>`) is used both in the type and in the definition. This arrow is always part of the function type and separates the parameter types from the return type. In the anonymous function definition, the arrow separates the arguments from the function body and can be omitted in some cases, as shown later.
+
+This is an anonymous function taking no arguments:
+
+```firefly
+let life: () => Int = {42}
+```
+
+This is the anonymous function taking no arguments, returning `Unit`:
+
+```firefly
+let uhit: () => Unit = {}
+```
+
+This anonymous function takes multiple arguments:
+
+```firefly
+let plus: (Int, Int) => Int = {a, b => a + b}
+```
+
+Anonymous function are called like named function.
+
+```firefly
+life()      // returns 42
+unit()      // returns unit
+next(1)     // returns 2
+plus(1, 2)  // returns 3
+```
+
+Placeholders...
+
+```firefly
+let identity: Int => Int = {_}
+```
+
 
 # Local functions
 
