@@ -69,7 +69,6 @@ The choice of `I` fully determines `O` - in this case, if `I` is `MyMessage`, th
 # Automatic traits
 
 If instances for the following traits are not explicitly defined, they will be generated automatically.
-As with other traits, this only applies to types declared with `data` or `newtype`.
 
 ```firefly
 // Used for == !=
@@ -98,3 +97,5 @@ trait T: HasAnyTag {
     anyTag(): AnyTag[T]
 }
 ```
+
+As with other traits, this only applies to types declared with `data` or `newtype`.
