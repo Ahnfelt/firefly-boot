@@ -62,7 +62,7 @@ extend self: Lock {
             body()
         } finally {
             self.release()
-        } grab()
+        }
     }
 
 }

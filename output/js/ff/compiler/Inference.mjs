@@ -899,7 +899,7 @@ const c_ = _guard3;
 const _guard2 = c_.function_;
 if(_guard2.EField) {
 const f_ = _guard2;
-if(((((((f_.field_ === "else") || (f_.field_ === "elseIf")) || (f_.field_ === "grab")) || (f_.field_ === "catch")) || (f_.field_ === "catchAny")) || (f_.field_ === "finally"))) {
+if(((((((((f_.field_ === "else") || (f_.field_ === "elseIf")) || (f_.field_ === "tryCatch")) || (f_.field_ === "tryCatchAny")) || (f_.field_ === "tryFinally")) || (f_.field_ === "catch")) || (f_.field_ === "catchAny")) || (f_.field_ === "finally"))) {
 {
 const _1 = e_;
 {
@@ -2746,7 +2746,7 @@ const c_ = _guard3;
 const _guard2 = c_.function_;
 if(_guard2.EField) {
 const f_ = _guard2;
-if(((((((f_.field_ === "else") || (f_.field_ === "elseIf")) || (f_.field_ === "grab")) || (f_.field_ === "catch")) || (f_.field_ === "catchAny")) || (f_.field_ === "finally"))) {
+if(((((((((f_.field_ === "else") || (f_.field_ === "elseIf")) || (f_.field_ === "tryCatch")) || (f_.field_ === "tryCatchAny")) || (f_.field_ === "tryFinally")) || (f_.field_ === "catch")) || (f_.field_ === "catchAny")) || (f_.field_ === "finally"))) {
 {
 const _1 = e_;
 {

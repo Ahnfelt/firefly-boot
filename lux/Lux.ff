@@ -106,7 +106,7 @@ extend self: Lux {
             self.keys = savedKeys
             self.element = savedElement
             self.element.child += 1
-        } grab()
+        }
     }
 
     div(body: () => Unit = {}) {self.add("div", body)}
@@ -122,7 +122,7 @@ extend self: Lux {
             body()
         } finally {
             self.key = ""
-        } grab()
+        }
     }
     
     keyedList[T](values: List[T], getKey: T => String, body: T => Unit) {
@@ -133,7 +133,7 @@ extend self: Lux {
             }
         } finally {
             self.key = ""
-        } grab()
+        }
     }
 
     set(attribute: String, value: String) {
@@ -227,7 +227,7 @@ extend self: Lux {
             body(value, {setState(_)})
         } finally {
             self.depth -= 1
-        } grab()
+        }
     }
 
     useCallback1[A1: Equal: HasAnyTag](callback: A1 => Unit, body: (A1 => Unit) => Unit) {
@@ -242,7 +242,7 @@ extend self: Lux {
             }
         } finally {
             self.depth -= 1
-        } grab()
+        }
     }
 
     useLazy1[A1: Equal: HasAnyTag](a1: A1, body: A1 => Unit = {_ => }) {
@@ -258,7 +258,7 @@ extend self: Lux {
             }
         } finally {
             self.depth -= 1
-        } grab()
+        }
     }
 
     useMemo1[A1: Equal: HasAnyTag, T: HasAnyTag](a1: A1, compute: A1 => T, body: T => Unit) {
@@ -280,7 +280,7 @@ extend self: Lux {
             body(computed)
         } finally {
             self.depth -= 1
-        } grab()
+        }
     }
     
     useSuspense(suspense: () => Unit, body: Lux => Unit) {
@@ -310,7 +310,7 @@ extend self: Lux {
                 if(error.name() != "AbortError") {
                     error.rethrow()
                 }
-            } grab()
+            }
         }
         suspense()
         setTaskOnElement(self.element.childAt(self.element.child - 1), Some(subtask))
@@ -329,7 +329,7 @@ processRenderQueue(self: Lux) {
         }
     } finally {
         self.copyFrom(newLux)
-    } grab()
+    }
 }
 
 removeCurrentChild(self: Lux): Bool {

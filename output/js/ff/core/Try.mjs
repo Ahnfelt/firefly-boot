@@ -139,6 +139,53 @@ return ff_core_Any.fromAny_(any_, ff_core_Any_HasAnyTag$E)
 }));
 if(_guard1.Some) {
 const e_ = _guard1.value_;
+return body_(e_, error_)
+}
+}
+{
+return ff_core_Try.Try_grab(self_)
+}
+}
+}
+
+export function Try_catchAny(self_, body_) {
+{
+const _1 = self_;
+if(_1.Failure) {
+const error_ = _1.error_;
+return body_(error_)
+}
+{
+return ff_core_Try.Try_grab(self_)
+}
+}
+}
+
+export function Try_finally(self_, body_) {
+{
+const _1 = self_;
+if(_1.Success) {
+const value_ = _1.value_;
+body_();
+return value_
+}
+if(_1.Failure) {
+body_();
+return ff_core_Try.Try_grab(self_)
+}
+}
+}
+
+export function Try_tryCatch(self_, body_, ff_core_Any_HasAnyTag$E) {
+{
+const _1 = self_;
+if(_1.Failure) {
+const error_ = _1.error_;
+const _guard1 = ff_core_Option.Option_flatMap(ff_core_Error.Error_exception(error_), ((any_) => {
+return ff_core_Any.fromAny_(any_, ff_core_Any_HasAnyTag$E)
+}));
+if(_guard1.Some) {
+const e_ = _guard1.value_;
 return ff_core_Core.try_((() => {
 return body_(e_, error_)
 }))
@@ -151,7 +198,7 @@ return self_
 }
 }
 
-export function Try_catchAny(self_, body_) {
+export function Try_tryCatchAny(self_, body_) {
 {
 const _1 = self_;
 if(_1.Failure) {
@@ -167,7 +214,7 @@ return self_
 }
 }
 
-export function Try_finally(self_, body_) {
+export function Try_tryFinally(self_, body_) {
 {
 const _1 = self_;
 if(_1.Success) {
@@ -267,6 +314,53 @@ return ff_core_Any.fromAny_(any_, ff_core_Any_HasAnyTag$E)
 }));
 if(_guard1.Some) {
 const e_ = _guard1.value_;
+return (await body_(e_, error_, $task))
+}
+}
+{
+return ff_core_Try.Try_grab(self_)
+}
+}
+}
+
+export async function Try_catchAny$(self_, body_, $task) {
+{
+const _1 = self_;
+if(_1.Failure) {
+const error_ = _1.error_;
+return (await body_(error_, $task))
+}
+{
+return ff_core_Try.Try_grab(self_)
+}
+}
+}
+
+export async function Try_finally$(self_, body_, $task) {
+{
+const _1 = self_;
+if(_1.Success) {
+const value_ = _1.value_;
+(await body_($task));
+return value_
+}
+if(_1.Failure) {
+(await body_($task));
+return ff_core_Try.Try_grab(self_)
+}
+}
+}
+
+export async function Try_tryCatch$(self_, body_, ff_core_Any_HasAnyTag$E, $task) {
+{
+const _1 = self_;
+if(_1.Failure) {
+const error_ = _1.error_;
+const _guard1 = ff_core_Option.Option_flatMap(ff_core_Error.Error_exception(error_), ((any_) => {
+return ff_core_Any.fromAny_(any_, ff_core_Any_HasAnyTag$E)
+}));
+if(_guard1.Some) {
+const e_ = _guard1.value_;
 return (await ff_core_Core.try_$((async ($task) => {
 return (await body_(e_, error_, $task))
 }), $task))
@@ -279,7 +373,7 @@ return self_
 }
 }
 
-export async function Try_catchAny$(self_, body_, $task) {
+export async function Try_tryCatchAny$(self_, body_, $task) {
 {
 const _1 = self_;
 if(_1.Failure) {
@@ -295,7 +389,7 @@ return self_
 }
 }
 
-export async function Try_finally$(self_, body_, $task) {
+export async function Try_tryFinally$(self_, body_, $task) {
 {
 const _1 = self_;
 if(_1.Success) {

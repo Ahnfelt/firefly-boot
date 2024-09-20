@@ -276,13 +276,13 @@ extend self: Handler {
             let parser = Parser.new(PackagePair("script", "script"), path.absolute(), tokens, False, lspHook)
             parser.parseModuleWithPackageInfo()
             SymbolHandler.readAllSymbols(lspHook.results())
-        } catch {| CompileError(at, message), error =>
+        } tryCatch {| CompileError(at, message), error =>
             Log.trace("handleDocumentSymbol parse error: " + message)
             []
         } catch {| ReadSymbolsError e, _ => 
             Log.trace("handleDocumentSymbol ReadSymbolsError")
             []
-        } grab()        
+        }     
     }
 
     getDocumentSymbolsWithCache(system: NodeSystem, file: Path): List[DocumentSymbol] {
@@ -404,7 +404,7 @@ extend self: Handler {
             parser.parseModuleWithPackageInfo()
         } catch {| CompileError(at, message), error =>
             Log.trace("handleSignatureHelp check error: " + message)
-        } grab()
+        }
         let o = lspHook.results().collectFirst {
             | ParseArgumentHook h {parameters.get("context") | Some(context)} {
                 context.field("activeSignatureHelp") | help
@@ -635,7 +635,7 @@ extend self: Handler {
             }.else {fallback}
         } catchAny {_ =>
             fallback
-        } grab()
+        }
     }
 
     findTokenFromParameters(system: NodeSystem, parameters: Map[String, Json]): Location {

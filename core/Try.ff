@@ -16,21 +16,42 @@ extend self[T]: Try[T] {
         self.map(body).flatten()
     }
 
-    catch[E: HasAnyTag](body: (E, Error) => T): Try[T] {
+    catch[E: HasAnyTag](body: (E, Error) => T): T {
+        self.{
+            | Failure(error) {error.exception().flatMap(Any.fromAny) | Some(e)} => body(e, error)
+            | _ => self.grab()
+        }
+    }
+
+    catchAny(body: Error => T): T {
+        self.{
+            | Failure(error) => body(error)
+            | _ => self.grab()
+        }
+    }
+
+    finally(body: () => Unit): T {
+        self.{
+            | Success(value) => body(); value
+            | Failure(_) => body(); self.grab()
+        }
+    }
+
+    tryCatch[E: HasAnyTag](body: (E, Error) => T): Try[T] {
         self.{
             | Failure(error) {error.exception().flatMap(Any.fromAny) | Some(e)} => try {body(e, error)}
             | _ => self
         }
     }
 
-    catchAny(body: Error => T): Try[T] {
+    tryCatchAny(body: Error => T): Try[T] {
         self.{
             | Failure(error) => try {body(error)}
             | _ => self
         }
     }
 
-    finally(body: () => Unit): Try[T] {
+    tryFinally(body: () => Unit): Try[T] {
         self.{
             | Success(value) => try {body(); value}
             | Failure(_) =>
@@ -40,7 +61,7 @@ extend self[T]: Try[T] {
                 }
         }
     }
-
+    
     else(body: () => T): T {
         self.{
             | Success(value) => value

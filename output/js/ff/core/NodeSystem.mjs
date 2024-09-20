@@ -120,11 +120,11 @@ throw new Error('Function internalListDirectoryWithoutOpendir is missing on this
 }
 
 export function internalProcessError_(problem_) {
-return ff_core_Try.Try_grab(ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+return ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_NodeSystem.ProcessException(problem_), ff_core_NodeSystem.ff_core_Any_HasAnyTag$ff_core_NodeSystem_ProcessException)})
 })), ((error_) => {
 return error_
-})))
+}))
 }
 
 export function internalWindowsWhere_(system_, cmd_, command_, directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None()) {
@@ -156,11 +156,11 @@ export async function internalListDirectoryWithoutOpendir_$(system_, path_, $tas
 }
 
 export async function internalProcessError_$(problem_, $task) {
-return ff_core_Try.Try_grab(ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+return ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_NodeSystem.ProcessException(problem_), ff_core_NodeSystem.ff_core_Any_HasAnyTag$ff_core_NodeSystem_ProcessException)})
 })), ((error_) => {
 return error_
-})))
+}))
 }
 
 export async function internalWindowsWhere_$(system_, cmd_, command_, directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), $task) {

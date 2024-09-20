@@ -150,7 +150,7 @@ extend self: ModuleCache {
         } catchAny {error =>
             self.emittedModules = self.emittedModules.remove(path.absolute())
             error.rethrow()
-        } grab()
+        }
     }
     
 }

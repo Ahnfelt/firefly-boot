@@ -479,7 +479,8 @@ extend self: Inference {
                                     | a => a
                                 })
                             | ECall e {e.target | DynamicCall c} {c.function | EField f} {
-                                f.field == "else" || f.field == "elseIf" || f.field == "grab" ||
+                                f.field == "else" || f.field == "elseIf" ||
+                                f.field == "tryCatch" || f.field == "tryCatchAny" || f.field == "tryFinally" ||
                                 f.field == "catch" || f.field == "catchAny" || f.field == "finally"
                             } =>
                                 e.ECall(target = c.DynamicCall(function = f.EField(record = semicolonUnit(f.record))))

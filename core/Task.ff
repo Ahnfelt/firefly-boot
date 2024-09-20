@@ -104,7 +104,7 @@ extend self: Task {
             } catchAny {error =>
                 failureChannel.write(error)
                 t.abort()
-            } grab()
+            }
         }
         Channel.
             readOr(successChannel, {_}).
@@ -125,7 +125,7 @@ extend self: Task {
                     if(live == 0) {
                         failureChannel.write(e)
                     }
-                } grab()
+                }
             }
         }
         try {
@@ -135,7 +135,7 @@ extend self: Task {
                 wait()
         } finally {
             started.each {_.abort()}
-        } grab()
+        }
     }
             
 }

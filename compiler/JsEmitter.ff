@@ -86,7 +86,7 @@ extend self: JsEmitter {
             body()
         } finally {
             self.emittingAsync = False
-        } grab()
+        }
     }
 
     emitRun(functions: List[DFunction], mainPackagePair: PackagePair, bootstrapping: Bool): List[String] {
@@ -533,22 +533,16 @@ extend self: JsEmitter {
                 let d = self.emitDictionary(dictionary)
                 let a = self.emitArgument(at, argument, async)
                 "throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(" + a + ", " + d + ")})"
-            | ECall(at, StaticCall("ff:core/Core.try", _, _), _, _, _, _) {!last} =>
-                throw(CompileError(at, "Statements can't be a try without a grab"))
-            | ECall(at, StaticCall("ff:core/Try.Try_map", _, _), _, _, _, _) {!last} =>
-                throw(CompileError(at, "Statements can't be a map without a grab"))
-            | ECall(at, StaticCall("ff:core/Try.Try_flatMap", _, _), _, _, _, _) {!last} =>
-                throw(CompileError(at, "Statements can't be a flatMap without a grab"))
-            | ECall(at, StaticCall("ff:core/Try.Try_flatten", _, _), _, _, _, _) {!last} =>
-                throw(CompileError(at, "Statements can't be a flatten without a grab"))
-            | ECall(at, StaticCall("ff:core/Try.Try_catch", _, _), _, _, _, _) {!last} =>
-                throw(CompileError(at, "Statements can't be a catch without a grab"))
-            | ECall(at, StaticCall("ff:core/Try.Try_catchAny", _, _), _, _, _, _) {!last} =>
-                throw(CompileError(at, "Statements can't be a catchAny without a grab"))
-            | ECall(at, StaticCall("ff:core/Try.Try_finally", _, _), _, _, _, _) {!last} =>
-                throw(CompileError(at, "Statements can't be a finally without a grab"))
-            | ECall(at, StaticCall("ff:core/Try.Try_grab", _, _), _, _, [argument], _) {
-                self.emitTryCatchFinally(argument.value, last, async) | Some(code)
+            | ECall(at, StaticCall("ff:core/Try.Try_catch", _, _), _, _, _, _) {
+                self.emitTryCatchFinally(term, last, async) | Some(code)
+            } =>
+                code
+            | ECall(at, StaticCall("ff:core/Try.Try_catchAny", _, _), _, _, _, _) {
+                self.emitTryCatchFinally(term, last, async) | Some(code)
+            } =>
+                code
+            | ECall(at, StaticCall("ff:core/Try.Try_finally", _, _), _, _, _, _) {
+                self.emitTryCatchFinally(term, last, async) | Some(code)
             } =>
                 code
             | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.throwIfCancelled", _, _), _, _, [], _) =>

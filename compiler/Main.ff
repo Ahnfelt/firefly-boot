@@ -148,9 +148,9 @@ main(system: NodeSystem): Unit {
     try {
         let command = parseCommandLine(system.arguments())
         runCommand(command)
-    } catch {| CommandLineError(message), _ =>
+    } tryCatch {| CommandLineError(message), _ =>
         Log.debug(message)
-    } catch {| CompileError(at, message), _ =>
+    } tryCatch {| CompileError(at, message), _ =>
         Log.debug(message)
         Log.debug(" at " + at.file.replace("./", "") + ":" + at.line + ":" + at.column)
     } catch {| CompileErrors(errors), _ =>
@@ -158,7 +158,7 @@ main(system: NodeSystem): Unit {
             Log.debug(message)
             Log.debug(" at " + at.file.replace("./", "") + ":" + at.line + ":" + at.column)
         }
-    } grab()
+    }
 }
 
 usageString = """
