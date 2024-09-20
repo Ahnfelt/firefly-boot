@@ -65,3 +65,35 @@ instance MyMessage: Rpc[Int] {}
 
 The choice of `I` fully determines `O` - in this case, if `I` is `MyMessage`, then `O` is `Int`.
 
+
+# Automatic traits
+
+Instances for the following traits are automatically generated for types defined with `data` or `newtype`, unless explicitly defined.
+
+```firefly
+// Used for == !=
+trait T: Equal {
+    equals(x: T, y: T): Bool
+}
+
+// Used for < > <= >= and sorting
+trait T: Order {
+    compare(x: T, y: T): Ordering
+}
+
+// Used to display values for debugging
+trait T: Show {
+    show(value: T): String
+}
+
+// Used for binary serialization
+trait T: Serializable {
+    serializeUsing(serialization: Serialization, value: T): Unit
+    deserializeUsing(serialization: Serialization): T
+}
+
+// Used for throwing and catching exceptions
+trait T: HasAnyTag {
+    anyTag(): AnyTag[T]
+}
+```
