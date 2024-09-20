@@ -68,7 +68,8 @@ The choice of `I` fully determines `O` - in this case, if `I` is `MyMessage`, th
 
 # Automatic traits
 
-Instances for the following traits are automatically generated for types defined with `data` or `newtype`, unless explicitly defined.
+If instances for the following traits are not explicitly defined, they will be generated automatically.
+As with other traits, this only applies to types declared with `data` or `newtype`.
 
 ```firefly
 // Used for == !=
