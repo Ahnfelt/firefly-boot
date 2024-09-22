@@ -51,11 +51,12 @@ In the future, it may be possible to provide a whitelist of dependencies that ar
 
 The `target` keyword allows writing almost raw JavaScript.
 
-```
+```firefly
 doSomething(): String
     target js sync """
         return "Hi!";
     """
+```
 
 Multiple target keywords are allowed per function/method. 
 The target type is `js` or the more specific types `browser` or `node`, and then a variant that's either `sync` for when called synchronously, or `async` for when called asynchronously.
