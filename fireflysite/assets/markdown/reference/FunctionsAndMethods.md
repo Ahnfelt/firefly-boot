@@ -152,13 +152,40 @@ This version introduces an additional parameter, `acc`, which acts as an accumul
 
 # Anonymous functions
 
-Firefly has anonymous functions, where the function and the parameters do not have names. They have a concrete type without type parameters. They are first-class values and can be assigned and passed around like other values. Here is an example:
+In firefly anonymous functions are written in curlybrases and constucted like this:
 
 ```firefly
-let next: Int => Int = {i => i + 1}
+{a, b => 
+    let sum = a + b
+    sum
+}
 ```
 
-The fat arrow (`=>`) is used both in the type and in the definition. This arrow is always part of the function type and separates the parameter types from the return type. In the anonymous function definition, the arrow separates the arguments from the function body and can be omitted in some cases, as shown later.
+This anonymous function takes two arguments and returns their sum. Like named functions, the body is a sequence of statements where the last expression is returned.
+
+The anonymous function below increments the given value by one:
+
+```firefly
+[1, 2, 3].map({x => x + 1}) // Returns [2, 3, 4]
+```
+
+It is passed as argument to the methods `map` working on lists.
+
+These anonymous functions are anonymous in the sense that they do not bring a name into scope themselves. They are just expressions that construct a function value. Like all other values, they can be assigned to variables, passed as arguments in function calls, or returned from other functions. But unlike other values, they can also be called.
+
+This is in contrast to named functions, which are not first-class in Firefly. The name of a top-level function can only be called but is not an expression in Firefly. To pass a top-level function as an argument, for instance, it must be converted to an anonymous function first.
+
+The type of function values are writen like this:
+
+```firefly
+Int => Int         // One parameter
+(Int, Int) => Int  // Multiple parameters
+() => Int          // No parameters
+```
+
+The type of an anonymous function cannot be written explicitly in the definition but is inferred from its usage. It will always have a monomorphic type where the argument and return types are concrete types.
+
+Here are some examples of anonymous functions assigned to variables explicitly given a type.
 
 This is an anonymous function taking no arguments:
 
@@ -166,10 +193,16 @@ This is an anonymous function taking no arguments:
 let life: () => Int = {42}
 ```
 
-This is the anonymous function taking no arguments, returning `Unit`:
+This is an anonymous function taking no arguments and returning `Unit`:
 
 ```firefly
-let uhit: () => Unit = {}
+let unit: () => Unit = {}
+```
+
+This is an anonymous function that increments its input:
+
+```firefly
+let next: Int => Int = {i => i + 1}
 ```
 
 This anonymous function takes multiple arguments:
@@ -186,6 +219,8 @@ unit()      // returns unit
 next(1)     // returns 2
 plus(1, 2)  // returns 3
 ```
+
+Parameter names are not part of the function type, and likewise, anonymous functions cannot be called with named arguments. The same goes for default argument values, which are not supported for anonymous functions.
 
 Placeholders...
 

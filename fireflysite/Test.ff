@@ -19,6 +19,9 @@ nodeMain(system: NodeSystem) {
         
     Log.show([1, 2].map(increment))
     
+    Show.show(p(42))
+    Show.show(p("42"))
+    
 }
 
 factorial(n: Int): Int {
