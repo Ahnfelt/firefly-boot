@@ -63,4 +63,6 @@ The target type is `js` or the more specific types `browser` or `node`, and then
 
 Argument names are avaliable with a `_` suffix in the JavaScript code block.
 
+JavaScript module imports can be done in the beginning of a JavaScript code block with the specfic syntax `import * as foo from 'bar'`. The import statement will be hoisted to a top level import.
+
 In the future, the `target` keyword and its functionality may be removed from the language.
