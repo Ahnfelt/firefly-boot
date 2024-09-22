@@ -145,11 +145,11 @@ check(
                 } else {
                     compiler.resolve(resolvedDependencies.mainPackagePair, localFile.dropLast(".ff".size()))
                 }
-            } catch {| CompileError(_, _) @ c, error =>
+            } tryCatch {| CompileError(_, _) @ c, error =>
                 errors.push(c)
             } catch {| CompileErrors(compileErrors), error =>
                 errors.pushList(compileErrors)
-            } grab()
+            }
         }
         cache.mergeVersions(compiler.cache)
     }

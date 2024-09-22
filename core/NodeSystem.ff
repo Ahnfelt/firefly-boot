@@ -192,7 +192,7 @@ internalProcessError(problem: String): Error {
         throw(ProcessException(problem))
     } catchAny {error =>
         error
-    } grab()
+    }
 }
 
 internalWindowsWhere(

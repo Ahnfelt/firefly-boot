@@ -203,7 +203,7 @@ return (!ff_core_Path.Path_contains(_w1, [".firefly", "dependencies"]))
 })));
 ff_core_List.List_each(files_, ((file_) => {
 const localFile_ = ff_core_Path.Path_base(file_);
-ff_core_Try.Try_grab(ff_core_Try.Try_catch(ff_core_Try.Try_catch(ff_core_Core.try_((() => {
+ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch(ff_core_Core.try_((() => {
 if(infer_) {
 ff_compiler_Compiler.Compiler_infer(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localFile_, ff_core_String.String_size(".ff")))
 } else {
@@ -223,7 +223,7 @@ const error_ = _2;
 ff_core_Array.Array_pushList(errors_, compileErrors_)
 return
 }
-}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors))
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
 }));
 ff_compiler_ModuleCache.ModuleCache_mergeVersions(cache_, compiler_.cache_)
 }));
@@ -397,7 +397,7 @@ return (!(await ff_core_Path.Path_contains$(_w1, [".firefly", "dependencies"], $
 }), $task)));
 (await ff_core_List.List_each$(files_, (async (file_, $task) => {
 const localFile_ = (await ff_core_Path.Path_base$(file_, $task));
-ff_core_Try.Try_grab(ff_core_Try.Try_catch(ff_core_Try.Try_catch((await ff_core_Core.try_$((async ($task) => {
+ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch((await ff_core_Core.try_$((async ($task) => {
 if(infer_) {
 (await ff_compiler_Compiler.Compiler_infer$(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localFile_, ff_core_String.String_size(".ff")), $task))
 } else {
@@ -417,7 +417,7 @@ const error_ = _2;
 ff_core_Array.Array_pushList(errors_, compileErrors_)
 return
 }
-}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors))
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
 }), $task));
 ff_compiler_ModuleCache.ModuleCache_mergeVersions(cache_, compiler_.cache_)
 }), $task));

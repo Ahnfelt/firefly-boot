@@ -139,5 +139,5 @@ trySleep(task: Task, name: String) {
             Log.debug(name + " aborted")
         }
         error.rethrow()
-    } grab()    
+    }
 }

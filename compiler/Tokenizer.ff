@@ -268,7 +268,7 @@ tokenize(file: String, code: String, completionAt: Option[Location], attemptFixe
         }
     } catch {| GrabException e, error =>
         throw(CompileError(Location(file, line, i - lineOffset), "Unexpected end of file"))
-    } grab()
+    }
 
     List.range(5).each {_ => emitToken(LEnd, i, i) }
 

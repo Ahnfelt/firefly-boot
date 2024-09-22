@@ -149,6 +149,18 @@ export function sqrt2_() {
     
 }
 
+export function nan_() {
+
+        return NaN;
+    
+}
+
+export function infinity_() {
+
+        return Infinity;
+    
+}
+
 export async function hypot_$(values_, $task) {
 throw new Error('Function hypot is missing on this target in async context.');
 }
@@ -183,6 +195,14 @@ throw new Error('Function sqrtHalf is missing on this target in async context.')
 
 export async function sqrt2_$($task) {
 throw new Error('Function sqrt2 is missing on this target in async context.');
+}
+
+export async function nan_$($task) {
+throw new Error('Function nan is missing on this target in async context.');
+}
+
+export async function infinity_$($task) {
+throw new Error('Function infinity is missing on this target in async context.');
 }
 
 export function Float_toInt(self_) {
@@ -374,6 +394,24 @@ export function Float_tanh(self_) {
         
 }
 
+export function Float_isFinite(self_) {
+
+            return Number.isFinite(self_);
+        
+}
+
+export function Float_isNan(self_) {
+
+            return Number.isNaN(self_);
+        
+}
+
+export function Float_isSafeInteger(self_) {
+
+            return Number.isSafeInteger(self_);
+        
+}
+
 export async function Float_toInt$(self_, $task) {
 throw new Error('Function Float_toInt is missing on this target in async context.');
 }
@@ -517,6 +555,18 @@ throw new Error('Function Float_tan is missing on this target in async context.'
 
 export async function Float_tanh$(self_, $task) {
 throw new Error('Function Float_tanh is missing on this target in async context.');
+}
+
+export async function Float_isFinite$(self_, $task) {
+throw new Error('Function Float_isFinite is missing on this target in async context.');
+}
+
+export async function Float_isNan$(self_, $task) {
+throw new Error('Function Float_isNan is missing on this target in async context.');
+}
+
+export async function Float_isSafeInteger$(self_, $task) {
+throw new Error('Function Float_isSafeInteger is missing on this target in async context.');
 }
 
 export const ff_core_Any_HasAnyTag$ff_core_Float_Float = {

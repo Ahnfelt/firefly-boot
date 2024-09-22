@@ -82,13 +82,13 @@ main(system: NodeSystem) {
                             let body = makeResponseMessage(id, problem)
                             responseChannel.write(Pair(body, message.method))
                         }
-                    } grab()
+                    }
                 }
             }
         }
     } catch {| BadRequestException(reason), error =>
         Log.trace(reason)
-    } grab()
+    }
 }
 
 taskGroup[K: Order, R](
@@ -104,7 +104,7 @@ taskGroup[K: Order, R](
                 body(task)
             } finally {
                 lock.do(reentrant = True) {tasks = tasks.remove(key)}
-            } grab()
+            }
         }
         parentTask.spawn(body2)
     }
@@ -172,7 +172,7 @@ parseRequestBody(contentLength: Int, input: Stream[Buffer]): Pair[Json, Stream[B
         input.readBytes(contentLength) // Should Stream.readBytes return an option?
     } catchAny {error =>
         throw(BadRequestException("End of input while parsing request body"))
-    } grab()
+    }
     let body = Buffer.fromBufferList(bodyPair.first).toString()
     let json = Json.read(body).else {
         throw(BadRequestException("Invalid JSON in request body: " + body))
@@ -229,7 +229,7 @@ handleRequestMessage(system: NodeSystem, handler: Handler, message: RequestMessa
     } catchAny {error =>
         //system.files().writeText("lsp-failure.txt", error.name() + ": " + error.message())
         error.rethrow()
-    } grab()
+    }
 }
 
 makeResponseMessage(id: MessageId, result: ResultOrError): Json {

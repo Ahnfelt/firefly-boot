@@ -98,7 +98,7 @@ extend self: PgPool {
         } finally {
             if(!done) {connection.statement("rollback").run()}
             connection.release()
-        } grab()
+        }
     }
 
 }

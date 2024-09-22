@@ -67,7 +67,7 @@ extend self: Unification {
             body()
         } finally {
             self.instances = oldInstances
-        } grab()
+        }
     }
 
     freshUnificationVariable(at: Location): Type {

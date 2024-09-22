@@ -229,7 +229,7 @@ ff_compiler_Builder.build_(system_, ff_compiler_JsEmitter.EmitNode(), ff_compile
 return
 }
 }
-ff_core_Try.Try_grab(ff_core_Try.Try_catch(ff_core_Try.Try_catch(ff_core_Try.Try_catch(ff_core_Core.try_((() => {
+ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch(ff_core_Try.Try_tryCatch(ff_core_Core.try_((() => {
 const command_ = ff_compiler_Main.parseCommandLine_(ff_core_NodeSystem.NodeSystem_arguments(system_));
 runCommand_(command_)
 })), ((_1, _2) => {
@@ -259,7 +259,7 @@ return ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_,
 }))
 return
 }
-}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors))
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
 }
 
 export function parseCommandLine_(arguments_) {
@@ -477,7 +477,7 @@ const fakeLocation_ = ff_compiler_Syntax.Location("<core>", 0, 0);
 return
 }
 }
-ff_core_Try.Try_grab(ff_core_Try.Try_catch(ff_core_Try.Try_catch(ff_core_Try.Try_catch((await ff_core_Core.try_$((async ($task) => {
+ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch(ff_core_Try.Try_tryCatch((await ff_core_Core.try_$((async ($task) => {
 const command_ = ff_compiler_Main.parseCommandLine_((await ff_core_NodeSystem.NodeSystem_arguments$(system_, $task)));
 (await runCommand_$(command_, $task))
 }), $task)), ((_1, _2) => {
@@ -507,7 +507,7 @@ return ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_,
 }))
 return
 }
-}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors))
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
 }
 
 export async function parseCommandLine_$(arguments_, $task) {

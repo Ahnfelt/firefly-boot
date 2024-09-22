@@ -42,7 +42,7 @@ extend self[T]: Stream[T] {
                 self.close()
             } finally {
                 that.close()
-            } grab()
+            }
         }
     }
 
@@ -76,7 +76,7 @@ extend self[T]: Stream[T] {
                 inner.close()
             } finally {
                 self.close()
-            } grab()
+            }
         }
     }
 
@@ -111,7 +111,7 @@ extend self[T]: Stream[T] {
                 self.close()
             } finally {
                 that.close()
-            } grab()
+            }
         }
     }
 
@@ -224,7 +224,7 @@ extend self[T]: Stream[T] {
             body(self)
         } finally {
             self.close()
-        } grab()
+        }
     }
 
     each(body: T => Unit): Unit {
@@ -238,7 +238,7 @@ extend self[T]: Stream[T] {
             }
         } finally {
             self.close()
-        } grab()
+        }
     }
 
     eachWhile(body: T => Bool): Unit {
@@ -252,7 +252,7 @@ extend self[T]: Stream[T] {
             }
         } finally {
             self.close()
-        } grab()
+        }
     }
 
     all(body: T => Bool): Bool {
@@ -278,7 +278,7 @@ extend self[T]: Stream[T] {
             self.next()
         } finally {
             self.close()
-        } grab()
+        }
     }
 
     last(): Option[T] {
@@ -294,7 +294,7 @@ extend self[T]: Stream[T] {
             result
         } finally {
             self.close()
-        } grab()
+        }
     }
 
     grabFirst(): T {
@@ -324,7 +324,7 @@ extend self[T]: Stream[T] {
             result
         } finally {
             self.close()
-        } grab()
+        }
     }
 
     find(body: T => Bool): Option[T] {
