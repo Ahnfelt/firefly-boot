@@ -59,7 +59,7 @@ sayHi(name: String): String
 ```
 
 Multiple target keywords are allowed per function/method. 
-The target type is `js` or the more specific types `browser` or `node`, and then a variant that's either `sync` for when called synchronously, or `async` for when called asynchronously.
+The target type is `js` or the more specific types `browser` or `node`, and then a mode that's either `sync` for when called synchronously, or `async` for when called asynchronously.
 
 Argument names are avaliable with a `_` suffix in the JavaScript code block.
 
