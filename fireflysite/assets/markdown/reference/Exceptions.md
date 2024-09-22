@@ -39,7 +39,7 @@ It is used when the exception is caught where it can't be fully handled.
 If the exception reaches the top of the call stack, the exception value and the stack trace will be printed.
 
 
-# Handling any exception
+# Catching any exception
 
 It is also posssible to catch any exception, regardless of its type, using the `catchAny` method:
 
@@ -71,7 +71,7 @@ If the program is terminated abnormally (force closed, power is lost, etc.) ther
 In most environments, the operating system will occasionally terminate the program abnormally, so programs should be designed such that they can recover from abnormal termination.
 
 
-# Handling multiple exceptions
+# Catching multiple exceptions
 
 The `try` function returns a value of type `Try[T]` that is defined as follows:
 
