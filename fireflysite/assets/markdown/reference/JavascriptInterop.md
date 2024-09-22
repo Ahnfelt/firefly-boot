@@ -52,9 +52,9 @@ In the future, it may be possible to provide a whitelist of dependencies that ar
 The `target` keyword allows writing almost raw JavaScript.
 
 ```firefly
-sayHi(name: String): String
-    target js sync """
-        return "Hi " + name_ + "!";
+alertHi(name: String): Unit
+    target browser sync """
+        alert("Hi " + name_ + "!");
     """
 ```
 
