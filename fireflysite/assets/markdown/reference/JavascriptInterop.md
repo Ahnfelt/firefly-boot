@@ -61,4 +61,4 @@ sayHi(): String
 Multiple target keywords are allowed per function/method. 
 The target type is `js` or the more specific types `browser` or `node`, and then a variant that's either `sync` for when called synchronously, or `async` for when called asynchronously.
 
-In the future, the `target` keyword and its functionality may be removed from the language, because it hinders optimizations like dead code elemination.
+In the future, the `target` keyword and its functionality may be removed from the language.
