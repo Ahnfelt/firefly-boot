@@ -73,7 +73,7 @@ In most environments, the operating system will occasionally terminate the progr
 
 # Handling multiple exceptions
 
-The `try` function returns a `Try[T]` value that is defined as follows:
+The `try` function returns a value of type `Try[T]` that is defined as follows:
 
 ```firefly
 data Try[T] {
