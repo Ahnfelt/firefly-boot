@@ -223,7 +223,8 @@ plus(1, 2)  // returns 3
 
 Parameter names are not part of the function type, and likewise, anonymous functions cannot be called with named arguments. The same goes for default argument values, which are not supported for anonymous functions.
 
-The parameter list and the function arrow can be omitted when the parameters are only used once in the function body. The parameters in the body are then replaced with underscores, like this:
+The parameter list and the function arrow can be omitted when the parameters are only used once in the function body. In such cases, the parameters in the body are replaced with underscores (`_`), like this:
+
 
 ```firefly
 let next: Int => Int = {_ + 1}
@@ -231,11 +232,13 @@ let plus: (Int, Int) => Int = {_ + _}
 let identity: Int => Int = {_}
 ```
 
-These underscores or anonymous parameters, always belongs to the nearest anonymous function. The following function take one argument and not two:
+These underscores, or anonymous parameters, always belong to the nearest anonymous function. Consider the following function:
 
 ```firefly
-let pp: Int => Pair[Int, Int => Int] = {Pair(_, {_})}
+let f: Int => Int = {{_ + 1}(_)}
 ```
+
+In this code, there is an outer and an inner anonymous function, both taking one argument. The first underscore belongs to the inner function, which is called immediately by the outer function with the outer function's anonymous parameter as the argument.
 
 
 # Local functions
@@ -253,9 +256,82 @@ The above local function definition is a statement, similar to local variables d
 
 Furthermore, local functions declared in sequence are in scope within each other's bodies, allowing them to be mutually recursive.
 
+# Trailing lambda calls
+
+```firefly
+if(x == 1) {"One"}
+```
+
 # Methods
 
+Firefly has methods, which are called like this:
 
+```firefly
+Some(1).isEmpty() // False
+Some(1).map {_ + 1} // Some(2)
+```
+
+The examples above, calls the two methods `isEmpty` and `map` defined on `Option`. The code below, shows how these methods are defined in `ff:core` package.
+
+```firefly
+data Option[T] {
+    None
+    Some(value: T)
+}
+
+extend self[T]: Option[T] {
+    isEmpty(): Bool {
+        self.{
+            | None => True
+            | Some(_) => False
+        }
+    }
+    
+    map[R](body: T => R): Option[R] {
+        self.{
+            | None => None
+            | Some(v) => Some(body(v))
+        }
+    }    
+}
+```
+
+Methods can be defined for a more narrow targer type, like `flatten` below:
+
+```firefly
+extend self[T]: Option[Option[T]] {
+    flatten(): Option[T] {
+        self.{
+            | None => None
+            | Some(v) => v
+        }
+    }
+}
+```
+
+The extend block above, will only define `flatten` for options types of options. 
+
+In code below, the extend block defines methods for the target type `Option[T]`, but only when `T` implements the `Equal` trait.
+
+
+```firefly
+extend self[T: Equal]: Option[T] {
+    contains(value: T): Bool {
+        self.{
+            | None => False
+            | Some(v) => v == value
+        }
+    }
+}
+```
+
+
+
+# Special method call syntax
+
+```firefly
+if(x == 1) {"One"} else {"Several"}
+```
 
 # Trait functions
  

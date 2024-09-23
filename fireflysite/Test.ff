@@ -23,7 +23,9 @@ nodeMain(system: NodeSystem) {
     let f2 = {42}
     Log.show(f2())
     let pairs = {Pair(_, {_})}
-    let p = pairs(42)
+    let pp = pairs(42)
+    let foo = {{_ + 1}(_)}
+    Log.show(foo(1))
     
 }
 
