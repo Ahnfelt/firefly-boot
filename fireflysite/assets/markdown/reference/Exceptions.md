@@ -55,7 +55,7 @@ try {
 
 # Cleaning up
 
-Cleanup often needs to happen whether or not an exception is raised.
+Cleanup often needs to happen whether or not an exception is thrown.
 This is what the `finally` method guarantees:
 
 ```firefly
