@@ -3,9 +3,9 @@
 There are 5 kinds of functions in Firefly: 
  
  * Top-level functions
+ * Anonymous functions
  * Local functions 
  * Methods
- * Anonymous functions
  * Trait functions
  
  Trait functions are covered in section [Traits and instances](traits-and-instances), the rest are covered below. 
@@ -163,15 +163,16 @@ In firefly anonymous functions are written in curlybrases and constucted like th
 
 This anonymous function takes two arguments and returns their sum. Like named functions, the body is a sequence of statements where the last expression is returned.
 
-The anonymous function below increments the given value by one:
+Anonymous functions are often used right away, like below:
+:
 
 ```firefly
 [1, 2, 3].map({x => x + 1}) // Returns [2, 3, 4]
 ```
 
-It is passed as argument to the methods `map` working on lists.
+An anonymous function that increments the given value by one is passed as argument to the methods `map` working on lists.
 
-These anonymous functions are anonymous in the sense that they do not bring a name into scope themselves. They are just expressions that construct a function value. Like all other values, they can be assigned to variables, passed as arguments in function calls, or returned from other functions. But unlike other values, they can also be called.
+These functions are anonymous in the sense that they do not bring a name into scope themselves. They are just expressions that construct a function value. Like all other values, they can be assigned to variables, passed as arguments, or returned from other functions. But unlike other values, they can also be called.
 
 This is in contrast to named functions, which are not first-class in Firefly. The name of a top-level function can only be called but is not an expression in Firefly. To pass a top-level function as an argument, for instance, it must be converted to an anonymous function first.
 
@@ -187,7 +188,7 @@ The type of an anonymous function cannot be written explicitly in the definition
 
 Here are some examples of anonymous functions assigned to variables explicitly given a type.
 
-This is an anonymous function taking no arguments:
+Anonymous function without parameters are written without the arrow (`=>`), like this:
 
 ```firefly
 let life: () => Int = {42}
@@ -222,10 +223,18 @@ plus(1, 2)  // returns 3
 
 Parameter names are not part of the function type, and likewise, anonymous functions cannot be called with named arguments. The same goes for default argument values, which are not supported for anonymous functions.
 
-Placeholders...
+The parameter list and the function arrow can be omitted when the parameters are only used once in the function body. The parameters in the body are then replaced with underscores, like this:
 
 ```firefly
+let next: Int => Int = {_ + 1}
+let plus: (Int, Int) => Int = {_ + _}
 let identity: Int => Int = {_}
+```
+
+These underscores or anonymous parameters, always belongs to the nearest anonymous function. The following function take one argument and not two:
+
+```firefly
+let pp: Int => Pair[Int, Int => Int] = {Pair(_, {_})}
 ```
 
 
@@ -240,4 +249,14 @@ function square(n: Int): Int {
 }
 ```
 
+The above local function definition is a statement, similar to local variables declared with `let`. The function name `square` will be in scope for the rest of the code block.
+
+Furthermore, local functions declared in sequence are in scope within each other's bodies, allowing them to be mutually recursive.
+
 # Methods
+
+
+
+# Trait functions
+ 
+Trait functions are covered in the section about [traits and instances](traits-and-instances)

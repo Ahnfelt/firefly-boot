@@ -19,8 +19,11 @@ nodeMain(system: NodeSystem) {
         
     Log.show([1, 2].map(increment))
     
-    Show.show(p(42))
-    Show.show(p("42"))
+    Log.show(p(42))
+    let f2 = {42}
+    Log.show(f2())
+    let pairs = {Pair(_, {_})}
+    let p = pairs(42)
     
 }
 
