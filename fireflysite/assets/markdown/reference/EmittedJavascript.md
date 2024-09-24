@@ -1,6 +1,6 @@
 # Emitted JavaScript
 
-While most Firefly code maps directly to the JavaScript equivalent, there are two important exceptions:
+While most Firefly code maps directly to the JavaScript equivalent, there are two notable exceptions:
 
  * I/O appears to be blocking, but compiles down to JavaScript `async`/`await`.
  * Methods are resolved statically in Firefly and become top level functions in JavaScript.
