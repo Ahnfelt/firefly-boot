@@ -62,3 +62,5 @@ the analysis picks the asynchronous version `List_map$` and uses the `await` key
 
 The second call to `map` is passed an anonymous function that doesn't involve any other capabilities, the analysis picks the synchronous version `List_map`.
 
+This static analysis is necessarily conservative, and may occasionally call the asynchronous version of a function where the synchrhonous version would suffice.
+When using the VSCode extension, the hover information for a call will note if the call is asynchronous.
