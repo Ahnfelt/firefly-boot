@@ -60,5 +60,5 @@ A static analysis is performed to decide which version to call.
 Because the first call to `map` is passed an anonymous function that calls a method on `system`, which is a capability, and the current top level function is asynchronous,
 the analysis picks the asynchronous version `List_map$` and uses the `await` keyword.
 
-However, the second call to `map` is passed an anonymous function that doesn't involve any other capabilities, the analysis picks the synchronous version `List_map`.
+The second call to `map` is passed an anonymous function that doesn't involve any other capabilities, the analysis picks the synchronous version `List_map`.
 
