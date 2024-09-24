@@ -13,7 +13,7 @@ mock(): List[Document] {
         UnfetchedDocument("Traits and instances")
         UnfetchedDocument("Exceptions")
         UnfetchedDocument("JavaScript interop")
-        UnfetchedDocument("Async I/O")
+        UnfetchedDocument("Emitted JavaScript")
         UnfetchedDocument("Structured concurrency")
     ]
 }
