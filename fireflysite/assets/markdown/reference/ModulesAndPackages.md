@@ -140,13 +140,10 @@ buildMain(system: BuildSystem) {
 }
 ```
 
-The three main functions may coexist in the same file.
-
-The `nodeMain` function runs when you run your executable.
-
-The `browserMain` function runs in the browser.
-
-The `buildMain` function runs when you build your program.
+The three main functions may coexist in the same file. 
+The `nodeMain` function runs when you run your executable,
+the `browserMain` function runs in the browser, and
+the `buildMain` function runs when you build your program.
 
 The `system` parameter is an object that lets you do I/O in the target system.
 
