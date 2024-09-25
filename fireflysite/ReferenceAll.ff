@@ -14,6 +14,5 @@ mock(): List[Document] {
         UnfetchedDocument("Exceptions")
         UnfetchedDocument("Structured concurrency")
         UnfetchedDocument("JavaScript interop")
-        UnfetchedDocument("Emitted JavaScript")
     ]
 }
