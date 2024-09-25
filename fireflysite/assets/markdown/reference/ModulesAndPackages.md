@@ -142,7 +142,7 @@ The `nodeMain` function runs when you run your executable,
 the `browserMain` function runs in the browser, and
 the `buildMain` function runs when you build your program.
 
-The `system` parameter is an object that lets you do I/O in the target system.
+The `system` parameter is an object with methods that let you do I/O in the target system.
 
 
 # Constants
