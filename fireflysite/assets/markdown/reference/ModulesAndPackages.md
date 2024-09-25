@@ -86,7 +86,7 @@ include "node_modules"
 This instructs the compiler to copy the file or directory `mypackage/.firefly/include/node_modules` verbatim into the `mypackage/.firefly/ouput/node/mygroup/mypackage/node/node_modules` directory. It doesn't do anything for the browser target.
 
 
-# Imports
+# Imports and exports
 
 To access the symbols that a module exports, it is necessary to import it:
 
@@ -116,13 +116,10 @@ The symbols can then be accessed using the `W.` prefix:
 W.new(system, "localhost", 8080)
 ```
 
-
-# Exports
-
 Currently, all top level definitions are automatically exported. This is likely to change in the future.
 
 
-# Main
+# Main functions
 
 In Firefly, there are three targets, each with its own main function:
 
