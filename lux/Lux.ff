@@ -26,6 +26,8 @@ class LuxElement(element: JsValue, mutable child: Int, mutable keepChildren: Boo
 
 class LuxDocument(document: JsValue)
 
+data LuxInvaldNameException(name: String)
+
 class DryNode {
     DryElement(tagName: String, attributes: StringMap[String], children: Array[DryNode])
     DryFragment(children: Array[DryNode])
@@ -36,9 +38,9 @@ extend self: DryNode {
     toHtml(): String {
         // https://www.w3.org/TR/xml/ - wrt. checkXmmlName, we only accept the ASCII subset
         function checkXmlName(name: String): String {
-            if(name.size() == 0) {throw(GrabException)}
-            if(!name.grabFirst().isAsciiLetter() && !name.startsWith(":") && !name.startsWith("_")) {throw(GrabException)}
-            if(!name.all {c => c.isAsciiLetterOrDigit() || c == ':' || c == '_' || c == '-' || c == '.'}) {throw(GrabException)}
+            if(name.size() == 0) {throw(LuxInvaldNameException(name))}
+            if(!name.grabFirst().isAsciiLetter() && !name.startsWith(":") && !name.startsWith("_")) {throw(LuxInvaldNameException(name))}
+            if(!name.all {c => c.isAsciiLetterOrDigit() || c == ':' || c == '_' || c == '-' || c == '.'}) {throw(LuxInvaldNameException(name))}
             name
         }
         function escapeAttributeValue(value: String): String {
