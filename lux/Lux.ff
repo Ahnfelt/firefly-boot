@@ -36,6 +36,9 @@ class DryNode {
 
 extend self: DryNode {
     toHtml(): String {
+        let voidHtmlElements = [
+            "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"
+        ].toSet()
         // https://www.w3.org/TR/xml/ - wrt. checkXmmlName, we only accept the ASCII subset
         function checkXmlName(name: String): String {
             if(name.size() == 0) {throw(LuxInvaldNameException(name))}
@@ -55,7 +58,8 @@ extend self: DryNode {
                     " " + checkXmlName(name) + "=\"" + escapeAttributeValue(value) + "\""
                 }.join()
                 let childrenHtml = children.toList().map {_.toHtml()}.join()
-                "<" + checkXmlName(tagName) + attributeHtml + ">" + childrenHtml + "</" + tagName + ">"
+                let endHtml = if(voidHtmlElements.contains(tagName)) {""} else {"</" + tagName + ">"}
+                "<" + checkXmlName(tagName) + attributeHtml + ">" + childrenHtml + endHtml
             | DryFragment(children) => 
                 children.toList().map {_.toHtml()}.join()
             | DryText(text) => 
