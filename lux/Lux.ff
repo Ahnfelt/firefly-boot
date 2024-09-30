@@ -57,11 +57,11 @@ extend self: DryNode {
                 let attributeHtml = attributes.toList().map {| Pair(name, value) => 
                     " " + checkXmlName(name) + "=\"" + escapeAttributeValue(value) + "\""
                 }.join()
-                let childrenHtml = children.toList().map {_.toHtml()}.join()
+                let childrenHtml = children.toList().map {toHtml(_)}.join()
                 let endHtml = if(voidHtmlElements.contains(tagName)) {""} else {"</" + tagName + ">"}
                 "<" + checkXmlName(tagName) + attributeHtml + ">" + childrenHtml + endHtml
             | DryFragment(children) => 
-                children.toList().map {_.toHtml()}.join()
+                children.toList().map {toHtml(_)}.join()
             | DryText(text) => 
                 escapeText(text)
         }
