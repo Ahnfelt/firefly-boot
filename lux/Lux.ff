@@ -36,9 +36,6 @@ class DryNode {
 
 extend self: DryNode {
     toHtml(): String {
-        let voidHtmlElements = [
-            "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"
-        ].toSet()
         // https://www.w3.org/TR/xml/ - wrt. checkXmmlName, we only accept the ASCII subset
         function checkXmlName(name: String): String {
             if(name.size() == 0) {throw(LuxInvaldNameException(name))}
@@ -52,6 +49,9 @@ extend self: DryNode {
         function escapeText(text: String): String {
             text.replace("&", "&#x26;").replace("<", "&#x3C;").replace(">", "&#x3E;")
         }
+        let voidHtmlElements = [
+            "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"
+        ].toSet()
         function toHtml(node: DryNode): String {
             | DryElement(tagName, attributes, children) => 
                 let attributeHtml = attributes.toList().map {| Pair(name, value) => 
