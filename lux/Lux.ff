@@ -34,14 +34,30 @@ class DryNode {
 
 extend self: DryNode {
     toHtml(): String {
-        self.{ // TODO: Escape tagName/attributes/text
+        // https://www.w3.org/TR/xml/ - wrt. checkXmmlName, we only accept the ASCII subset
+        function checkXmlName(name: String): String {
+            if(name.size() == 0) {throw(GrabException)}
+            if(!name.grabFirst().isAsciiLetter() && !name.startsWith(":") && !name.startsWith("_")) {throw(GrabException)}
+            if(!name.all {c => c.isAsciiLetterOrDigit() || c == ':' || c == '_' || c == '-' || c == '.'}) {throw(GrabException)}
+            name
+        }
+        function escapeAttributeValue(value: String): String {
+            value.replace("&", "&#x26;").replace("<", "&#x3C;").replace(">", "&#x3E;").replace("\"", "&#x22;")
+        }
+        function escapeText(text: String): String {
+            text.replace("&", "&#x26;").replace("<", "&#x3C;").replace(">", "&#x3E;")
+        }
+        self.{
             | DryElement(tagName, attributes, children) => 
-                let attributeHtml = attributes.toList().map {| Pair(name, value) => " " + name + "='" + value + "'"}.join()
-                "<" + tagName + attributeHtml + ">" + children.toList().map {_.toHtml()}.join() + "</" + tagName + ">"
+                let attributeHtml = attributes.toList().map {| Pair(name, value) => 
+                    " " + checkXmlName(name) + "=\"" + escapeAttributeValue(value) + "\""
+                }.join()
+                let childrenHtml = children.toList().map {_.toHtml()}.join()
+                "<" + checkXmlName(tagName) + attributeHtml + ">" + childrenHtml + "</" + tagName + ">"
             | DryFragment(children) => 
                 children.toList().map {_.toHtml()}.join()
             | DryText(text) => 
-                text
+                escapeText(text)
         }
     }
 }
