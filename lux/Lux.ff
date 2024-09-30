@@ -52,7 +52,7 @@ extend self: DryNode {
         function escapeText(text: String): String {
             text.replace("&", "&#x26;").replace("<", "&#x3C;").replace(">", "&#x3E;")
         }
-        self.{
+        function toHtml(node: DryNode): String {
             | DryElement(tagName, attributes, children) => 
                 let attributeHtml = attributes.toList().map {| Pair(name, value) => 
                     " " + checkXmlName(name) + "=\"" + escapeAttributeValue(value) + "\""
@@ -65,6 +65,7 @@ extend self: DryNode {
             | DryText(text) => 
                 escapeText(text)
         }
+        toHtml(self)
     }
 }
 
