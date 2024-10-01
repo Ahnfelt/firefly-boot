@@ -85,6 +85,14 @@ extend self: Task {
             readOr(self.channel()) {_ => }.
             timeout(duration) {}
     }
+    
+    mapList[T, R](list: List[T], body: T => R): List[R] {
+        self.all(list.map {x => {body(x)}})
+    }
+    
+    raceList[T, R](list: List[T], body: T => R): R {
+        self.race(list.map {x => {body(x)}})
+    }
 
     all[T](tasks: List[() => T]): List[T] {
         let successChannel = self.channel()
