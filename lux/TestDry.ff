@@ -1,0 +1,27 @@
+import Lux
+
+nodeMain(system: NodeSystem) {
+    
+    
+    
+    let html = Lux.renderToString(system, render)
+    Log.trace(html)
+    
+}
+
+render(lux: Lux): Unit {
+    lux.div {
+        lux.set("id", "its-me")
+        lux.span {
+            lux.text("Hello")
+            lux.div {
+                lux.set("id", "it's \"a-me\"")
+                lux.span {
+                    lux.text("Hello ]]>")
+                }
+                lux.text("Hi")
+            }
+        }
+        lux.text("Hi")
+    }
+}

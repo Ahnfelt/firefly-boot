@@ -5,6 +5,7 @@ import Css
 capability Lux(
     document: LuxDocument
     jsSystem: JsSystem
+    mutable dry: Option[Array[DryNode]]
     mutable cssClasses: StringMap[CssClass]
     mutable renderLock: Lock
     mutable task: Task
@@ -24,6 +25,49 @@ capability RenderQueueItem(
 class LuxElement(element: JsValue, mutable child: Int, mutable keepChildren: Bool)
 
 class LuxDocument(document: JsValue)
+
+data LuxInvaldNameException(name: String)
+
+class DryNode {
+    DryElement(tagName: String, attributes: StringMap[String], children: Array[DryNode])
+    DryFragment(children: Array[DryNode])
+    DryText(text: String)
+}
+
+extend self: DryNode {
+    toHtml(): String {
+        // https://www.w3.org/TR/xml/ - wrt. checkXmmlName, we only accept the ASCII subset
+        function checkXmlName(name: String): String {
+            if(name.size() == 0) {throw(LuxInvaldNameException(name))}
+            if(!name.grabFirst().isAsciiLetter() && !name.startsWith(":") && !name.startsWith("_")) {throw(LuxInvaldNameException(name))}
+            if(!name.all {c => c.isAsciiLetterOrDigit() || c == ':' || c == '_' || c == '-' || c == '.'}) {throw(LuxInvaldNameException(name))}
+            name
+        }
+        function escapeAttributeValue(value: String): String {
+            value.replace("&", "&#x26;").replace("<", "&#x3C;").replace(">", "&#x3E;").replace("\"", "&#x22;")
+        }
+        function escapeText(text: String): String {
+            text.replace("&", "&#x26;").replace("<", "&#x3C;").replace(">", "&#x3E;")
+        }
+        let voidHtmlElements = [
+            "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"
+        ].toSet()
+        function toHtml(node: DryNode): String {
+            | DryElement(tagName, attributes, children) => 
+                let attributeHtml = attributes.toList().map {| Pair(name, value) => 
+                    " " + checkXmlName(name) + "=\"" + escapeAttributeValue(value) + "\""
+                }.join()
+                let childrenHtml = children.toList().map {toHtml(_)}.join()
+                let endHtml = if(voidHtmlElements.contains(tagName)) {""} else {"</" + tagName + ">"}
+                "<" + checkXmlName(tagName) + attributeHtml + ">" + childrenHtml + endHtml
+            | DryFragment(children) => 
+                children.toList().map {toHtml(_)}.join()
+            | DryText(text) => 
+                escapeText(text)
+        }
+        toHtml(self)
+    }
+}
 
 extend self: LuxElement {
     childAt(index: Int): JsValue {
@@ -69,6 +113,7 @@ extend self: Lux {
     }
     
     text(value: String) {
+        self.dry.map {_.push(DryText(value))}.else:
         let oldNode = self.element.childAt(self.element.child)
         let oldValue = if(!oldNode.isNullOrUndefined()) {oldNode.get("data")} else {oldNode}
         if(oldValue.isNullOrUndefined() || oldValue.grabString() != value) {
@@ -79,6 +124,24 @@ extend self: Lux {
     }
     
     add(tagName: String, body: () => Unit = {}) {
+        self.dry.map {dry => 
+            self.dry = Some([].toArray())
+            let savedAttributes = self.attributes
+            let savedKeys = self.keys
+            self.attributes = None
+            self.key = ""
+            self.depth += 1
+            try {
+                body()
+            } finally {
+                dry.push(DryElement(tagName, self.attributes.else {StringMap.new()}, self.dry.grab()))
+                self.depth -= 1
+                self.attributes = savedAttributes
+                self.keys = savedKeys
+                self.element.child += 1
+                self.dry = Some(dry)
+            }
+        }.else:
         let node = patchElement(self, tagName)
         if(!node.get("luxHandlers").isNullOrUndefined()) {
             node.get("luxHandlers").grabArray().each {pair =>
@@ -148,6 +211,7 @@ extend self: Lux {
     setId(value: String) {self.set("id", value)}
     
     setValue(value: String) { // TODO: Not an attribute
+        self.dry.map {_ => self.set("value", value)}.else:
         self.element.element.set("value", value)
     }
     
@@ -165,6 +229,7 @@ extend self: Lux {
     }
     
     cssClass(class: CssClass) {
+        if(self.dry.isEmpty()):
         if(!self.cssClasses.has(class.name())) {
             self.cssClasses.set(class.name(), class)
             let styleSheet = self.document.createElement("style")
@@ -176,6 +241,7 @@ extend self: Lux {
     }
     
     on(event: String, handler: LuxEvent => Unit) {
+        if(self.dry.isEmpty()):
         let jsHandler = unsafeAsyncFunction1ToJs(self) {jsEvent =>
             self.renderLock.do(reentrant = False) {
                 handler(unsafeJsToValue(jsEvent))
@@ -195,6 +261,7 @@ extend self: Lux {
     onInput(handler: LuxEvent => Unit) {self.on("input", handler)}
 
     useState[T: HasAnyTag](initialValue: T, body: (T, T => Unit) => Unit) {
+        self.dry.map {_ => body(initialValue, {_ => })}.else:
         self.depth += 1
         let value = getStateOnElement(self.element.element, self.depth, initialValue)
         mutable i = 0
@@ -231,6 +298,7 @@ extend self: Lux {
     }
 
     useCallback1[A1: Equal: HasAnyTag](callback: A1 => Unit, body: (A1 => Unit) => Unit) {
+        self.dry.map {_ => body(callback)}.else:
         self.depth += 1
         setStateOnElement(self.element.element, self.depth, callback)
         let element = self.element.element
@@ -246,6 +314,7 @@ extend self: Lux {
     }
 
     useLazy1[A1: Equal: HasAnyTag](a1: A1, body: A1 => Unit = {_ => }) {
+        self.dry.map {_ => body(a1)}.else:
         self.depth += 1
         try {
             let old = getStateOnElement(self.element.element, self.depth, None)
@@ -262,6 +331,7 @@ extend self: Lux {
     }
 
     useMemo1[A1: Equal: HasAnyTag, T: HasAnyTag](a1: A1, compute: A1 => T, body: T => Unit) {
+        self.dry.map {_ => body(compute(a1))}.else:
         self.depth += 1
         try {
             let old = getStateOnElement(self.element.element, self.depth, Pair(a1, None))
@@ -284,6 +354,7 @@ extend self: Lux {
     }
     
     useSuspense(suspense: () => Unit, body: Lux => Unit) {
+        self.dry.map {_ => suspense()}.else:
         let oldSubtask = getTaskOnElement(self.element.element)
         oldSubtask.each {task =>
             forceAsyncAbort(self, task)
@@ -466,6 +537,7 @@ render(browserSystem: BrowserSystem, element: JsValue, body: Lux => Unit) {
     let lux = Lux(
         jsSystem = browserSystem.js()
         renderLock = browserSystem.mainTask().lock()
+        dry = None
         cssClasses = StringMap.new()
         task = browserSystem.mainTask()
         depth = 0
@@ -484,4 +556,24 @@ render(browserSystem: BrowserSystem, element: JsValue, body: Lux => Unit) {
 renderById(browserSystem: BrowserSystem, id: String, body: Lux => Unit) {
     let element = browserSystem.js().global().get("document").call1("getElementById", id)
     render(browserSystem, element, body)
+}
+
+renderToString(nodeSystem: NodeSystem, body: Lux => Unit): String {
+    let children = [].toArray()
+    let lux = Lux(
+        jsSystem = nodeSystem.js()
+        renderLock = nodeSystem.mainTask().lock()
+        dry = Some(children)
+        cssClasses = StringMap.new()
+        task = nodeSystem.mainTask()
+        depth = 0
+        document = LuxDocument(nodeSystem.js().null())
+        element = LuxElement(nodeSystem.js().null(), 0, keepChildren = False)
+        keys = None
+        key = ""
+        attributes = None
+        renderQueue = Array.new()
+    )
+    body(lux)
+    children.toList().map {_.toHtml()}.join()
 }
