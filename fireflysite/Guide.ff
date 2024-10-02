@@ -92,12 +92,11 @@ data GuideDocument(
     document: Document
 )
 
-render(lux: Lux, browser: BrowserSystem, prefix: String, kebab: String, guides: List[Guide], demos: List[Demo]) {
+render(lux: Lux, httpClient: HttpClient, prefix: String, kebab: String, guides: List[Guide], demos: List[Demo]) {
     let guide = guides.find {_.prefix == prefix}.else {guides.grabFirst()}
     let document = guide.documents.find {d => 
         kebabCase(d.heading()) == kebab
     }.else {guide.documents.grabFirst()}
-    browser.js().global().get("document").set("title", document.title(guide))
     let guideDocuments = guides.flatMap {guide => guide.documents.map {document => 
         GuideDocument(guide, document)
     }}
@@ -111,7 +110,7 @@ render(lux: Lux, browser: BrowserSystem, prefix: String, kebab: String, guides: 
             lux.cssClass(Styles.guideCss)
             lux.add("main") {
                 lux.cssClass(Styles.guideMainCss)
-                renderDocument(lux, browser.httpClient(), prefix, document, demos, nextDocument)
+                renderDocument(lux, httpClient, prefix, document, demos, nextDocument)
             }
             renderTopbar(lux, menu, setMenu)
             lux.add("div") {
