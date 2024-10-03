@@ -19,7 +19,6 @@ nodeMain(system: NodeSystem): Unit {
         let path = request.readPath()
         let segments = path.split('/').filter {s => s != "" && s != "." && s != ".."}
         segments.{
-            | _ {serveGuide(system, request)} => 
             | ["js", ...] => 
                 let asset = if(path == "/js/ff/fireflysite/Main.mjs" && system.assets().exists("/js/Main.bundle.js")) {
                     "/js/Main.bundle.js"
@@ -34,6 +33,7 @@ nodeMain(system: NodeSystem): Unit {
             | ["assets", "font", "FireflySans.ttf"] => 
                 serveAsset(system, cacheSalt, request, "font/ttf", "/assets/font/NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf")
             | ["assets", ...rest] => serveAssets(system, cacheSalt, request, rest)
+            | _ {serveGuide(system, request)} => 
             | _ =>
                 let parameters = if(request.readRawQueryString().size() == 0) {""} else {
                     "?" + request.readRawQueryString()
