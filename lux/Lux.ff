@@ -569,7 +569,7 @@ renderById(browserSystem: BrowserSystem, id: String, body: Lux => Unit) {
     render(browserSystem, element, body)
 }
 
-renderToString(nodeSystem: NodeSystem, body: Lux => Unit): Pair[String, StringMap[CssClass]] {
+renderToString(nodeSystem: NodeSystem, body: Lux => Unit): Pair[String, String] {
     let children = [].toArray()
     let lux = Lux(
         jsSystem = nodeSystem.js()
@@ -586,5 +586,8 @@ renderToString(nodeSystem: NodeSystem, body: Lux => Unit): Pair[String, StringMa
         renderQueue = Array.new()
     )
     body(lux)
-    Pair(children.toList().map {_.toHtml()}.join(), lux.cssClasses)
+    let styleTags = lux.cssClasses.values().map {c => 
+        "<style lux-class=\"" + c.name() + "\">" + c.show() + "</style>"
+    }.join()
+    Pair(children.toList().map {_.toHtml()}.join(), styleTags)
 }

@@ -30,13 +30,10 @@ nodeMain(system: NodeSystem): Unit {
             | ["community", ...] => 
                 serveGuideHtml("Firefly Community", "", "", request)
             | ["front", ...] => 
-                let htmlAndCssClasses = Lux.renderToString(system) {lux =>
+                let htmlAndCss = Lux.renderToString(system) {lux =>
                     Guide.render(lux, system.httpClient(), "/front/", "front", guides, [])
                 }
-                let styleTags = htmlAndCssClasses.second.values().map {c => 
-                    "<style lux-class=\"" + c.name() + "\">" + c.show() + "</style>"
-                }.join()
-                serveGuideHtml("Firefly", htmlAndCssClasses.first, styleTags, request)
+                serveGuideHtml("Firefly", htmlAndCss.first, htmlAndCss.second, request)
             | ["js", ...] => 
                 let asset = if(path == "/js/ff/fireflysite/Main.mjs" && system.assets().exists("/js/Main.bundle.js")) {
                     "/js/Main.bundle.js"
