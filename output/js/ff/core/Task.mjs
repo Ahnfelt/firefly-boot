@@ -210,6 +210,22 @@ ff_core_Channel.ChannelAction_timeout(ff_core_Channel.readOr_(ff_core_Task.Task_
 }))
 }
 
+export function Task_mapList(self_, list_, body_) {
+return ff_core_Task.Task_all(self_, ff_core_List.List_map(list_, ((x_) => {
+return (() => {
+return body_(x_)
+})
+})))
+}
+
+export function Task_raceList(self_, list_, body_) {
+return ff_core_Task.Task_race(self_, ff_core_List.List_map(list_, ((x_) => {
+return (() => {
+return body_(x_)
+})
+})))
+}
+
 export function Task_all(self_, tasks_) {
 const successChannel_ = ff_core_Task.Task_channel(self_, 0);
 const failureChannel_ = ff_core_Task.Task_channel(self_, 0);
@@ -281,6 +297,22 @@ export async function Task_sleep$(self_, duration_, $task) {
 }), $task)), duration_, (async ($task) => {
 
 }), $task))
+}
+
+export async function Task_mapList$(self_, list_, body_, $task) {
+return (await ff_core_Task.Task_all$(self_, ff_core_List.List_map(list_, ((x_) => {
+return (async ($task) => {
+return (await body_(x_, $task))
+})
+})), $task))
+}
+
+export async function Task_raceList$(self_, list_, body_, $task) {
+return (await ff_core_Task.Task_race$(self_, ff_core_List.List_map(list_, ((x_) => {
+return (async ($task) => {
+return (await body_(x_, $task))
+})
+})), $task))
 }
 
 export async function Task_all$(self_, tasks_, $task) {
