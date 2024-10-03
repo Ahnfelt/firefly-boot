@@ -62,7 +62,10 @@ serveGuide(system: NodeSystem, request: WebRequest[WebResponse]): Bool {
         let htmlAndCss = Lux.renderToString(system) {lux =>
             Guide.render(lux, system.httpClient(), guide.prefix, kebab, guides, demos)
         }
-        serveGuideHtml(guide.title(), htmlAndCss.first, htmlAndCss.second, request)
+        let title = guide.documents.find {d => 
+            Guide.kebabCase(d.heading()) == kebab
+        }.map {_.title(guide)}.else {guide.title()}
+        serveGuideHtml(title, htmlAndCss.first, htmlAndCss.second, request)
         served = True
     }
     served
