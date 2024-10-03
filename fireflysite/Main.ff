@@ -19,21 +19,7 @@ nodeMain(system: NodeSystem): Unit {
         let path = request.readPath()
         let segments = path.split('/').filter {s => s != "" && s != "." && s != ".."}
         segments.{
-            | ["reference", ...] => 
-                serveGuideHtml("Firefly Reference", "", "", request)
-            | ["getting-started", ...] => 
-                serveGuideHtml("Firefly Getting Started", "", "", request)
-            | ["examples", ...] => 
-                serveGuideHtml("Firefly Examples", "", "", request)
-            | ["packages", ...] => 
-                serveGuideHtml("Firefly Packages", "", "", request)
-            | ["community", ...] => 
-                serveGuideHtml("Firefly Community", "", "", request)
-            | ["front", ...] => 
-                let htmlAndCss = Lux.renderToString(system) {lux =>
-                    Guide.render(lux, system.httpClient(), "/front/", "front", guides, [])
-                }
-                serveGuideHtml("Firefly", htmlAndCss.first, htmlAndCss.second, request)
+            | _ {serveGuide(system, request)} => 
             | ["js", ...] => 
                 let asset = if(path == "/js/ff/fireflysite/Main.mjs" && system.assets().exists("/js/Main.bundle.js")) {
                     "/js/Main.bundle.js"
@@ -66,6 +52,21 @@ guides = [
     Guide("/packages/", [PackagesOverview.new()])
     Guide("/community/", [CommunityOverview.new()])
 ]
+
+serveGuide(system: NodeSystem, request: WebRequest[WebResponse]): Bool {
+    let demos = ExamplesOverview.demos()
+    mutable served = False
+    guides.each {guide => 
+        if(request.readPath().startsWith(guide.prefix)):
+        let kebab = request.readPath().dropFirst(guide.prefix.size())
+        let htmlAndCss = Lux.renderToString(system) {lux =>
+            Guide.render(lux, system.httpClient(), guide.prefix, kebab, guides, demos)
+        }
+        serveGuideHtml(guide.title(), htmlAndCss.first, htmlAndCss.second, request)
+        served = True
+    }
+    served
+}
 
 browserMain(system: BrowserSystem): Unit {
     let demos = ExamplesOverview.demos()
