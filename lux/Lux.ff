@@ -229,15 +229,20 @@ extend self: Lux {
     }
     
     cssClass(class: CssClass) {
-        if(self.dry.isEmpty()):
         if(!self.cssClasses.has(class.name())) {
             self.cssClasses.set(class.name(), class)
+            if(self.dry.isEmpty()):
             let styleSheet = self.document.createElement("style")
             styleSheet.set("textContent", class.show())
             self.document.document.get("head").call1("appendChild", styleSheet)
         }
-        self.element.element.get("classList").call1("add", class.name())
-        self.set("class", self.element.element.get("className").grabString())
+        if(!self.dry.isEmpty()) {
+            let classNames = self.attributes.flatMap {_.get("class")}.else {""}
+            self.set("class", (classNames + " " + class.name()).trim())
+        } else {
+            self.element.element.get("classList").call1("add", class.name())
+            self.set("class", self.element.element.get("className").grabString())
+        }
     }
     
     on(event: String, handler: LuxEvent => Unit) {
@@ -534,11 +539,17 @@ render(browserSystem: BrowserSystem, element: JsValue, body: Lux => Unit) {
     while {!document.get("parentNode").isNullOrUndefined()} {
         document = document.get("parentNode")
     }
+    // [...document.querySelectorAll("[lux-class]")].map(x => x.getAttribute("lux-class")) 
+    let staticCssClasses = StringMap.new()
+    let dummyCssClass = CssClass([], [], [])
+    document.call1("querySelectorAll", "[lux-class]").each {e => 
+        staticCssClasses.set(e.call1("getAttribute", "lux-class").grabString(), dummyCssClass)
+    }
     let lux = Lux(
         jsSystem = browserSystem.js()
         renderLock = browserSystem.mainTask().lock()
         dry = None
-        cssClasses = StringMap.new()
+        cssClasses = staticCssClasses
         task = browserSystem.mainTask()
         depth = 0
         document = LuxDocument(document)
@@ -558,7 +569,7 @@ renderById(browserSystem: BrowserSystem, id: String, body: Lux => Unit) {
     render(browserSystem, element, body)
 }
 
-renderToString(nodeSystem: NodeSystem, body: Lux => Unit): String {
+renderToString(nodeSystem: NodeSystem, body: Lux => Unit): Pair[String, StringMap[CssClass]] {
     let children = [].toArray()
     let lux = Lux(
         jsSystem = nodeSystem.js()
@@ -575,5 +586,5 @@ renderToString(nodeSystem: NodeSystem, body: Lux => Unit): String {
         renderQueue = Array.new()
     )
     body(lux)
-    children.toList().map {_.toHtml()}.join()
+    Pair(children.toList().map {_.toHtml()}.join(), lux.cssClasses)
 }

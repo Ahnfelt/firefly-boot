@@ -1,5 +1,6 @@
 import WebServer from ff:webserver
 import Lux from ff:lux
+import Css from ff:lux
 import Guide
 import GettingStarted
 import ReferenceAll
@@ -19,18 +20,23 @@ nodeMain(system: NodeSystem): Unit {
         let segments = path.split('/').filter {s => s != "" && s != "." && s != ".."}
         segments.{
             | ["reference", ...] => 
-                serveGuideHtml("Firefly Reference", "", request)
+                serveGuideHtml("Firefly Reference", "", "", request)
             | ["getting-started", ...] => 
-                serveGuideHtml("Firefly Getting Started", "", request)
+                serveGuideHtml("Firefly Getting Started", "", "", request)
             | ["examples", ...] => 
-                serveGuideHtml("Firefly Examples", "", request)
+                serveGuideHtml("Firefly Examples", "", "", request)
             | ["packages", ...] => 
-                serveGuideHtml("Firefly Packages", "", request)
+                serveGuideHtml("Firefly Packages", "", "", request)
             | ["community", ...] => 
-                serveGuideHtml("Firefly Community", "", request)
+                serveGuideHtml("Firefly Community", "", "", request)
             | ["front", ...] => 
-                let html = Lux.renderToString(system) {Guide.render(_, system.httpClient(), "/front/", "front", guides, [])}
-                serveGuideHtml("Firefly", html, request)
+                let htmlAndCssClasses = Lux.renderToString(system) {lux =>
+                    Guide.render(lux, system.httpClient(), "/front/", "front", guides, [])
+                }
+                let styleTags = htmlAndCssClasses.second.values().map {c => 
+                    "<style lux-class=\"" + c.name() + "\">" + c.show() + "</style>"
+                }.join()
+                serveGuideHtml("Firefly", htmlAndCssClasses.first, styleTags, request)
             | ["js", ...] => 
                 let asset = if(path == "/js/ff/fireflysite/Main.mjs" && system.assets().exists("/js/Main.bundle.js")) {
                     "/js/Main.bundle.js"
@@ -121,11 +127,11 @@ serveAsset(system: NodeSystem, salt: Buffer, request: WebRequest[WebResponse], c
     }
 }
 
-serveGuideHtml(title: String, contentHtml: String, request: WebRequest[WebResponse]): Unit {
+serveGuideHtml(title: String, contentHtml: String, styleTags: String, request: WebRequest[WebResponse]): Unit {
     request.writeHeader("Content-Type", "text/html; charset=UTF-8")
     request.writeText("<!doctype html>")
     request.writeText("<html lang='en' style='background-color: #ffffff; color: #333333; width: 100%; height: 100%; color-scheme: light;'>")
-    request.writeText("<script type='module' blocking='render' src='/js/ff/fireflysite/Main.mjs'></script>")
+    request.writeText("<script type='module' src='/js/ff/fireflysite/Main.mjs'></script>")
     request.writeText("<head>")
     request.writeText("<title>" + title + "</title>")
     request.writeText("<meta name='viewport' content='width=device-width, initial-scale=1.0'>")
@@ -135,6 +141,7 @@ serveGuideHtml(title: String, contentHtml: String, request: WebRequest[WebRespon
     request.writeText("<link rel='preload' href='/assets/image/firefly-logo-yellow.png' as='image'>")
     request.writeText("<style>@font-face { font-family: 'Firefly Mono'; font-display: fallback; src: url('/assets/font/FireflyMono.ttf'); unicode-range: U+000-5FF; }</style>")
     request.writeText("<style>@font-face { font-family: 'Firefly Sans'; font-display: fallback; src: url('/assets/font/FireflySans.ttf'); unicode-range: U+000-5FF; }</style>")
+    request.writeText(styleTags)
     request.writeText("</head>")
     request.writeText("<body style='margin: 0; padding: 0; width: 100%; height: 100%; touch-action: manipulation;'>")
     request.writeText("<div id='main'>" + contentHtml + "</div>")
