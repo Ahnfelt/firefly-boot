@@ -468,7 +468,7 @@ forceAsyncAbort(self: Lux, task: Task): Unit {
 patchElement(self: Lux, tagName: String): JsValue {
     let newKey = if(self.key != "") {tagName.upper() + ">" + self.key} else {""}
     let oldNode = self.element.childAt(self.element.child)
-    let oldKey = if(!oldNode.isNullOrUndefined()) {oldNode.get("dataset").get("luxKey")} else {oldNode}
+    let oldKey = if(!oldNode.isNullOrUndefined()) {oldNode.call1("getAttribute", "data-lux-key")} else {oldNode}
     let match = if(newKey != "") {
         !oldKey.isNullOrUndefined() && 
         oldKey.grabString() == newKey
@@ -487,7 +487,7 @@ patchElement(self: Lux, tagName: String): JsValue {
                 mutable i = self.element.child
                 mutable c = self.element.childAt(i)
                 while {!c.isNullOrUndefined()} {
-                    let k = c.get("dataset").get("luxKey")
+                    let k = c.call1("getAttribute", "data-lux-key")
                     if(!k.isNullOrUndefined()) {map.set(k.grabString(), c)}
                     c = self.element.childAt(i)
                     i += 1
@@ -501,7 +501,7 @@ patchElement(self: Lux, tagName: String): JsValue {
                 foundNode
             } else {
                 let createdNode = self.document.createElement(tagName)
-                createdNode.get("dataset").set("luxKey", newKey)
+                createdNode.call2("setAttribute", "data-lux-key", newKey)
                 createdNode
             }
         }
