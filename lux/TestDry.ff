@@ -5,7 +5,7 @@ nodeMain(system: NodeSystem) {
     
     
     let html = Lux.renderToString(system, render)
-    Log.trace(html)
+    Log.trace(html.first)
     
 }
 
@@ -14,6 +14,7 @@ render(lux: Lux): Unit {
         lux.set("id", "its-me")
         lux.span {
             lux.text("Hello")
+            lux.keyed("noegle"):
             lux.div {
                 lux.set("id", "it's \"a-me\"")
                 lux.span {
