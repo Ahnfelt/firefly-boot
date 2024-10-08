@@ -15,6 +15,7 @@ capability Lux(
     mutable keys: Option[StringMap[JsValue]]
     mutable key: String
     mutable attributes: Option[StringMap[String]]
+    mutable texts: Array[String]
 )
 
 capability RenderQueueItem(
@@ -113,17 +114,13 @@ extend self: Lux {
     }
     
     text(value: String) {
-        self.dry.map {_.push(DryText(value))}.else:
-        let oldNode = self.element.childAt(self.element.child)
-        let oldValue = if(!oldNode.isNullOrUndefined()) {oldNode.get("data")} else {oldNode}
-        if(oldValue.isNullOrUndefined() || oldValue.grabString() != value) {
-            let node = self.document.createTextNode(value)
-            self.element.insertBefore(node, oldNode)
+        if(value.size() != 0) {
+            self.texts.push(value)
         }
-        self.element.child += 1
     }
     
     add(tagName: String, body: () => Unit = {}) {
+        patchText(self)
         self.dry.map {dry => 
             self.dry = Some([].toArray())
             let savedAttributes = self.attributes
@@ -138,6 +135,7 @@ extend self: Lux {
             try {
                 body()
             } finally {
+                patchText(self)
                 dry.push(DryElement(tagName, self.attributes.else {StringMap.new()}, self.dry.grab()))
                 self.depth -= 1
                 self.attributes = savedAttributes
@@ -164,6 +162,7 @@ extend self: Lux {
         try {
             body()
         } finally {
+            patchText(self)
             if(!self.element.keepChildren) {
                 doWhile {removeCurrentChild(self)}
             }
@@ -464,7 +463,20 @@ unsafeAsyncFunction1ToJs[R](self: Lux, body: JsValue => R): JsValue
 forceAsyncAbort(self: Lux, task: Task): Unit {
     task.abort()
 }
-        
+
+patchText(self: Lux) {
+    if(!self.texts.isEmpty()):
+    let value = self.texts.drain().join()
+    self.dry.map {_.push(DryText(value))}.else:
+    let oldNode = self.element.childAt(self.element.child)
+    let oldValue = if(!oldNode.isNullOrUndefined()) {oldNode.get("data")} else {oldNode}
+    if(oldValue.isNullOrUndefined() || oldValue.grabString() != value) {
+        let node = self.document.createTextNode(value)
+        self.element.insertBefore(node, oldNode)
+    }
+    self.element.child += 1
+}
+
 patchElement(self: Lux, tagName: String): JsValue {
     let newKey = if(self.key != "") {tagName.upper() + ">" + self.key} else {""}
     let oldNode = self.element.childAt(self.element.child)
@@ -565,6 +577,7 @@ render(browserSystem: BrowserSystem, element: JsValue, body: Lux => Unit) {
         keys = None
         key = ""
         attributes = None
+        texts = Array.new()
         renderQueue = Array.new()
     )
     lux.renderLock.do(reentrant = False) {
@@ -591,6 +604,7 @@ renderToString(nodeSystem: NodeSystem, body: Lux => Unit): Pair[String, String] 
         keys = None
         key = ""
         attributes = None
+        texts = Array.new()
         renderQueue = Array.new()
     )
     body(lux)
