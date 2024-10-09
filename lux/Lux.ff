@@ -582,6 +582,7 @@ render(browserSystem: BrowserSystem, element: JsValue, body: Lux => Unit) {
     )
     lux.renderLock.do(reentrant = False) {
         body(lux)
+        patchText(lux)
     }
 }
 
@@ -608,6 +609,7 @@ renderToString(nodeSystem: NodeSystem, body: Lux => Unit): Pair[String, String] 
         renderQueue = Array.new()
     )
     body(lux)
+    patchText(lux)
     let styleTags = lux.cssClasses.values().map {c => 
         "<style lux-class=\"" + c.name() + "\">" + c.show() + "</style>"
     }.join()
