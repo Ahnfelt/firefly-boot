@@ -211,6 +211,14 @@ export function JsValue_set(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff
 self_[key_] = value_
 }
 
+export function JsValue_increment(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff_core_JsValue_IsJsValue$V) {
+self_[key_] += value_
+}
+
+export function JsValue_decrement(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff_core_JsValue_IsJsValue$V) {
+self_[key_] -= value_
+}
+
 export function JsValue_delete(self_, key_, ff_core_JsValue_IsJsValue$K) {
 delete self_[key_]
 }
@@ -494,6 +502,14 @@ return ff_core_Option.None()
 
 export async function JsValue_set$(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff_core_JsValue_IsJsValue$V, $task) {
 throw new Error('Function JsValue_set is missing on this target in async context.');
+}
+
+export async function JsValue_increment$(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff_core_JsValue_IsJsValue$V, $task) {
+throw new Error('Function JsValue_increment is missing on this target in async context.');
+}
+
+export async function JsValue_decrement$(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff_core_JsValue_IsJsValue$V, $task) {
+throw new Error('Function JsValue_decrement is missing on this target in async context.');
 }
 
 export async function JsValue_delete$(self_, key_, ff_core_JsValue_IsJsValue$K, $task) {

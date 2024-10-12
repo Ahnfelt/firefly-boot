@@ -38,6 +38,10 @@ extend token: Token {
         token.kind == kind1 || token.kind == kind2 || token.kind == kind3
     }
 
+    is4(kind1: TokenKind, kind2: TokenKind, kind3: TokenKind, kind4: TokenKind): Bool {
+        token.kind == kind1 || token.kind == kind2 || token.kind == kind3 || token.kind == kind4
+    }
+
     rawIs(value: String): Bool {
         token.stopOffset - token.startOffset == value.size() &&
         token.code.startsWith(value, token.startOffset)
@@ -78,11 +82,11 @@ data TokenKind {
     LPipe
     LColon
     LDotDotDot
+    LArrowThin
     LArrowThick
     LAssign
     LAssignPlus
     LAssignMinus
-    LAssignLink
 }
 
 extend self: TokenKind {
@@ -109,11 +113,11 @@ extend self: TokenKind {
             | LPipe => False
             | LColon => False
             | LDotDotDot => False
+            | LArrowThin => False
             | LArrowThick => False
             | LAssign => False
             | LAssignPlus => False
             | LAssignMinus => False
-            | LAssignLink => False
         }
     }
 
@@ -139,11 +143,11 @@ extend self: TokenKind {
             | LPipe => False
             | LColon => False
             | LDotDotDot => True
+            | LArrowThin => False
             | LArrowThick => False
             | LAssign => False
             | LAssignPlus => False
             | LAssignMinus => False
-            | LAssignLink => False
         }
     }
 
@@ -169,11 +173,11 @@ extend self: TokenKind {
             | LPipe => False
             | LColon => False
             | LDotDotDot => False
+            | LArrowThin => False
             | LArrowThick => False
             | LAssign => False
             | LAssignPlus => False
             | LAssignMinus => False
-            | LAssignLink => False
         }
     }
 

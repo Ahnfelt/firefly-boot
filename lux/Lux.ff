@@ -72,16 +72,16 @@ extend self: DryNode {
 
 extend self: LuxElement {
     childAt(index: Int): JsValue {
-        self.element.get("childNodes").get(index)
+        self.element->childNodes.get(index)
     }
     insertBefore(newNode: JsValue, referenceNode: JsValue): JsValue {
-        self.element.call2("insertBefore", newNode, referenceNode)
+        self.element->insertBefore(newNode, referenceNode)
     }
     removeAt(index: Int): Bool {
         let node = self.childAt(index)
         let remove = !node.isNullOrUndefined()
         if(remove) {
-            self.element.call1("removeChild", node)
+            self.element->removeChild(node)
         }
         remove
     }
@@ -89,15 +89,15 @@ extend self: LuxElement {
 
 extend self: LuxDocument {
     createTextNode(value: String): JsValue {
-        self.document.call1("createTextNode", value)
+        self.document->createTextNode(value)
     }
 
     createElement(tagName: String): JsValue {
-        self.document.call1("createElement", tagName)
+        self.document->createElement(tagName)
     }
     
     createFragment(): JsValue {
-        self.document.call0("createDocumentFragment")
+        self.document->createDocumentFragment()
     }
 }
 
@@ -145,18 +145,18 @@ extend self: Lux {
             }
         }.else:
         let node = patchElement(self, tagName)
-        if(!node.get("luxHandlers").isNullOrUndefined()) {
-            node.get("luxHandlers").grabArray().each {pair =>
-                node.call2("removeEventListener", pair.get("event"), pair.get("handler"))
+        if(!node->luxHandlers.isNullOrUndefined()) {
+            node->luxHandlers.grabArray().each {pair =>
+                node->removeEventListener(pair->event, pair->handler)
             }
-            node.set("luxHandlers", self.jsSystem.array([]))
+            node->luxHandlers = self.jsSystem.array([])
         }
         let savedAttributes = self.attributes
         let savedKeys = self.keys
         let savedElement = self.element
         self.attributes = None
         self.element = LuxElement(node, 0, keepChildren = False)
-        self.element.element.get("classList").set("value", "")
+        self.element.element->classList->value = ""
         self.key = ""
         self.depth += 1
         try {
@@ -215,7 +215,7 @@ extend self: Lux {
     
     setValue(value: String) { // TODO: Not an attribute
         self.dry.map {_ => self.set("value", value)}.else:
-        self.element.element.set("value", value)
+        self.element.element->value = value
     }
     
     css(style: Css) {
@@ -236,15 +236,15 @@ extend self: Lux {
             self.cssClasses.set(class.name(), class)
             if(self.dry.isEmpty()):
             let styleSheet = self.document.createElement("style")
-            styleSheet.set("textContent", class.show())
-            self.document.document.get("head").call1("appendChild", styleSheet)
+            styleSheet->textContent = class.show()
+            self.document.document->head->appendChild(styleSheet)
         }
         if(!self.dry.isEmpty()) {
             let classNames = self.attributes.flatMap {_.get("class")}.else {""}
             self.set("class", (classNames + " " + class.name()).trim())
         } else {
-            self.element.element.get("classList").call1("add", class.name())
-            self.set("class", self.element.element.get("className").grabString())
+            self.element.element->classList->add(class.name())
+            self.set("class", self.element.element->className.grabString())
         }
     }
     
@@ -256,11 +256,11 @@ extend self: Lux {
                 processRenderQueue(self)
             }
         }
-        self.element.element.call2("addEventListener", event, jsHandler)
-        if(self.element.element.get("luxHandlers").isNullOrUndefined()) {
-            self.element.element.set("luxHandlers", self.jsSystem.array([]))
+        self.element.element->addEventListener(event, jsHandler)
+        if(self.element.element->luxHandlers.isNullOrUndefined()) {
+            self.element.element->luxHandlers = self.jsSystem.array([])
         }
-        self.element.element.get("luxHandlers").call1("push"
+        self.element.element->luxHandlers->push(
             self.jsSystem.object().with("event", event).with("handler", jsHandler)
         )
     }
@@ -413,7 +413,7 @@ processRenderQueue(self: Lux) {
 
 removeCurrentChild(self: Lux): Bool {
     let child = self.element.childAt(self.element.child)
-    if(!child.isNullOrUndefined() && !child.get("children").isNullOrUndefined()) {
+    if(!child.isNullOrUndefined() && !child->children.isNullOrUndefined()) {
         abortTasksOnElement(self, child, False)
     }
     self.element.removeAt(self.element.child)
@@ -432,21 +432,21 @@ setStateOnElement[T /*: HasAnyTag*/](element: JsValue, depth: Int, value: T): Un
 
 
 getTaskOnElement(element: JsValue): Option[Task] {
-    let value = element.get("luxTask")
+    let value = element->luxTask
     if(value.isNullOrUndefined()) {None} else {
         unsafeJsToValue(value)
     }
 }
 
 setTaskOnElement(element: JsValue, task: Option[Task]): Unit {
-    element.set("luxTask", unsafeJsFromValue(task))
+    element->luxTask = unsafeJsFromValue(task)
 }
 
 abortTasksOnElement(lux: Lux, element: JsValue, onlyChildren: Bool): Unit {
     if(!onlyChildren) {
         getTaskOnElement(element).each {task => forceAsyncAbort(lux, task)}
     }
-    element.get("children").each {child => 
+    element->children.each {child => 
         abortTasksOnElement(lux, child, False)
     }
 }
@@ -469,7 +469,7 @@ patchText(self: Lux) {
     let value = self.texts.drain().join()
     self.dry.map {_.push(DryText(value))}.else:
     let oldNode = self.element.childAt(self.element.child)
-    let oldValue = if(!oldNode.isNullOrUndefined()) {oldNode.get("data")} else {oldNode}
+    let oldValue = if(!oldNode.isNullOrUndefined()) {oldNode->data} else {oldNode}
     if(oldValue.isNullOrUndefined() || oldValue.grabString() != value) {
         let node = self.document.createTextNode(value)
         self.element.insertBefore(node, oldNode)
@@ -480,8 +480,8 @@ patchText(self: Lux) {
 patchElement(self: Lux, tagName: String): JsValue {
     let newKey = if(self.key != "") {tagName.upper() + ">" + self.key} else {""}
     let oldNode = self.element.childAt(self.element.child)
-    let oldKey = if(!oldNode.isNullOrUndefined() && !oldNode.get("getAttribute").isNullOrUndefined()) {
-        oldNode.call1("getAttribute", "data-lux-key")
+    let oldKey = if(!oldNode.isNullOrUndefined() && !oldNode->getAttribute.isNullOrUndefined()) {
+        oldNode->getAttribute("data-lux-key")
     } else {oldNode}
     let match = if(newKey != "") {
         !oldKey.isNullOrUndefined() && 
@@ -489,8 +489,8 @@ patchElement(self: Lux, tagName: String): JsValue {
     } else {
         oldKey.isNullOrUndefined() && 
         !oldNode.isNullOrUndefined() &&
-        !oldNode.get("tagName").isNullOrUndefined() && 
-        oldNode.get("tagName").grabString() == tagName.upper()
+        !oldNode->tagName.isNullOrUndefined() && 
+        oldNode->tagName.grabString() == tagName.upper()
     }
     if(match) {
         oldNode
@@ -501,8 +501,8 @@ patchElement(self: Lux, tagName: String): JsValue {
                 mutable i = self.element.child
                 mutable c = self.element.childAt(i)
                 while {!c.isNullOrUndefined()} {
-                    if(!c.get("getAttribute").isNullOrUndefined()) {
-                        let k = c.call1("getAttribute", "data-lux-key")
+                    if(!c->getAttribute.isNullOrUndefined()) {
+                        let k = c->getAttribute("data-lux-key")
                         if(!k.isNullOrUndefined()) {map.set(k.grabString(), c)}
                     }
                     c = self.element.childAt(i)
@@ -517,7 +517,7 @@ patchElement(self: Lux, tagName: String): JsValue {
                 foundNode
             } else {
                 let createdNode = self.document.createElement(tagName)
-                createdNode.call2("setAttribute", "data-lux-key", newKey)
+                createdNode->setAttribute("data-lux-key", newKey)
                 createdNode
             }
         }
@@ -527,28 +527,28 @@ patchElement(self: Lux, tagName: String): JsValue {
 }
 
 patchAttributes(self: Lux) {
-    let attributes = self.element.element.get("attributes")
+    let attributes = self.element.element->attributes
     self.attributes.{
         | None => 
-            mutable i = attributes.get("length").grabInt() - 1
+            mutable i = attributes->length.grabInt() - 1
             while {i >= 0} {
                 let attribute = attributes.get(i)
-                self.element.element.call1("removeAttribute", attribute.get("name"))
+                self.element.element->removeAttribute(attribute->name)
                 i -= 1
             }
         | Some(map) => 
-            mutable i = attributes.get("length").grabInt() - 1
+            mutable i = attributes->length.grabInt() - 1
             while {i >= 0} {
                 let attribute = attributes.get(i)
-                if(!map.has(attribute.get("name").grabString())) {
-                    self.element.element.call1("removeAttribute", attribute.get("name"))
+                if(!map.has(attribute->name.grabString())) {
+                    self.element.element->removeAttribute(attribute->name)
                 }
                 i -= 1
             }
             map.each {name, value =>
-                let oldValue = self.element.element.call1("getAttribute", name)
+                let oldValue = self.element.element->getAttribute(name)
                 if(oldValue.isNullOrUndefined() || !oldValue.equals(value)) {
-                    self.element.element.call2("setAttribute", name, value)
+                    self.element.element->setAttribute(name, value)
                 }
             }
     }    
@@ -556,14 +556,14 @@ patchAttributes(self: Lux) {
 
 render(browserSystem: BrowserSystem, element: JsValue, body: Lux => Unit) {
     mutable document = element
-    while {!document.get("parentNode").isNullOrUndefined()} {
-        document = document.get("parentNode")
+    while {!document->parentNode.isNullOrUndefined()} {
+        document = document->parentNode
     }
     // [...document.querySelectorAll("[lux-class]")].map(x => x.getAttribute("lux-class")) 
     let staticCssClasses = StringMap.new()
     let dummyCssClass = CssClass([], [], [])
-    document.call1("querySelectorAll", "[lux-class]").each {e => 
-        staticCssClasses.set(e.call1("getAttribute", "lux-class").grabString(), dummyCssClass)
+    document->querySelectorAll("[lux-class]").each {e => 
+        staticCssClasses.set(e->getAttribute("lux-class").grabString(), dummyCssClass)
     }
     let lux = Lux(
         jsSystem = browserSystem.js()
@@ -587,7 +587,7 @@ render(browserSystem: BrowserSystem, element: JsValue, body: Lux => Unit) {
 }
 
 renderById(browserSystem: BrowserSystem, id: String, body: Lux => Unit) {
-    let element = browserSystem.js().global().get("document").call1("getElementById", id)
+    let element = browserSystem.js()->document->getElementById(id)
     render(browserSystem, element, body)
 }
 

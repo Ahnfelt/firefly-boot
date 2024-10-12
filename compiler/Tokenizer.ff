@@ -226,6 +226,8 @@ tokenize(file: String, code: String, completionAt: Option[Location], attemptFixe
                         LColon
                     } elseIf {i - start == 3 && code.grab(i - 3) == '.' && code.grab(i - 2) == '.' && code.grab(i - 1) == '.'} {
                         LDotDotDot
+                    } elseIf {i - start == 2 && code.grab(i - 2) == '-' && code.grab(i - 1) == '>'} {
+                        LArrowThin
                     } elseIf {i - start == 2 && code.grab(i - 2) == '=' && code.grab(i - 1) == '>'} {
                         LArrowThick
                     } elseIf {i - start == 1 && code.grab(i - 1) == '='} {
@@ -234,8 +236,6 @@ tokenize(file: String, code: String, completionAt: Option[Location], attemptFixe
                         LAssignPlus
                     } elseIf {i - start == 2 && code.grab(i - 2) == '-' && code.grab(i - 1) == '='} {
                         LAssignMinus
-                    } elseIf {i - start == 3 && code.grab(i - 3) == ':' && code.grab(i - 2) == ':' && code.grab(i - 1) == '='} {
-                        LAssignLink
                     } else {
                         LOperator
                     }

@@ -1025,11 +1025,10 @@ extend self: Parser {
         if(self.current().is(LKeyword) && (self.current().rawIs("let") || self.current().rawIs("mutable"))) {self.parseLet()} else:
         if(self.current().is(LKeyword) && self.current().rawIs("function")) {self.parseFunctions()} else:
         let term = self.parseTerm()
-        if(!self.current().is(LAssign) && !self.current().is3(LAssignPlus, LAssignMinus, LAssignLink)) {term} else:
+        if(!self.current().is(LAssign) && !self.current().is2(LAssignPlus, LAssignMinus)) {term} else:
         let token = do {
             if(self.current().is(LAssignPlus)) {self.skip(LAssignPlus)} else:
             if(self.current().is(LAssignMinus)) {self.skip(LAssignMinus)} else:
-            if(self.current().is(LAssignLink)) {self.skip(LAssignLink)} else:
             self.skip(LAssign)
         }
         let operator = token.raw().dropLast(1)
@@ -1153,7 +1152,7 @@ extend self: Parser {
             True
         } else {False}
         mutable result = self.parseAtom()
-        while {self.current().is(LBracketLeft) || self.current().is(LColon) || self.current().is(LDot)} {
+        while {self.current().is4(LBracketLeft, LColon, LDot, LArrowThin)} {
             if(self.current().is(LDot)) {
                 self.skip(LDot)
                 if(self.current().rawIs("{")) {
@@ -1166,6 +1165,8 @@ extend self: Parser {
                     let token = self.skip(LLower)
                     result = EField(token.at(), False, result, token.raw())
                 }
+            } elseIf {self.current().is(LArrowThin)} {
+                result = self.parseDynamicMember(result)
             } else {
                 let at = self.current().at()
                 let typeArguments = if(!self.current().rawIs("[")) {[]} else {self.parseTypeArguments()}
@@ -1180,6 +1181,46 @@ extend self: Parser {
             }
         }
         result
+    }
+    
+    parseDynamicMember(record: Term): Term {
+        self.skip(LArrowThin)
+        let token = self.skip(LLower)
+        let member = EString(token.at(), "\"" + token.raw() + "\"")
+        if(self.current().rawIs("(")) {
+            let arguments = self.parseFunctionArguments(record.at, False)
+            let effect = self.freshUnificationVariable(record.at)
+            let target = DynamicCall(EField(token.at(), False, record, "call" + arguments.first.size()), False)
+            ECall(record.at, target, effect, [], [
+                Argument(member.at, None, member)
+                ...arguments.first
+            ], [])
+        } elseIf {self.current().is3(LAssign, LAssignPlus, LAssignMinus)} {
+            let method = 
+                if(self.current().is(LAssign)) {
+                    self.skip(LAssign)
+                    "set"
+                } elseIf {self.current().is(LAssignPlus)} {
+                    self.skip(LAssignPlus)
+                    "increment"
+                } else {
+                    self.skip(LAssignMinus)
+                    "decrement"
+                }
+            let value = self.parseTerm()
+            let effect = self.freshUnificationVariable(record.at)
+            let target = DynamicCall(EField(token.at(), False, record, "set"), False)
+            ECall(record.at, target, effect, [], [
+                Argument(member.at, None, member)
+                Argument(value.at, None, value)
+            ], [])
+        } else {
+            let effect = self.freshUnificationVariable(record.at)
+            let target = DynamicCall(EField(token.at(), False, record, "get"), False)
+            ECall(record.at, target, effect, [], [
+                Argument(member.at, None, member)
+            ], [])
+        }
     }
 
     parseAtom(): Term {

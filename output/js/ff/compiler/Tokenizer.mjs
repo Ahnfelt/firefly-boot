@@ -302,6 +302,8 @@ const o_ = ((((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1
 ? ff_compiler_Token.LColon()
 : (((((i_ - start_) === 3) && (ff_core_String.String_grab(code_, (i_ - 3)) === 46)) && (ff_core_String.String_grab(code_, (i_ - 2)) === 46)) && (ff_core_String.String_grab(code_, (i_ - 1)) === 46))
 ? ff_compiler_Token.LDotDotDot()
+: ((((i_ - start_) === 2) && (ff_core_String.String_grab(code_, (i_ - 2)) === 45)) && (ff_core_String.String_grab(code_, (i_ - 1)) === 62))
+? ff_compiler_Token.LArrowThin()
 : ((((i_ - start_) === 2) && (ff_core_String.String_grab(code_, (i_ - 2)) === 61)) && (ff_core_String.String_grab(code_, (i_ - 1)) === 62))
 ? ff_compiler_Token.LArrowThick()
 : (((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 61))
@@ -310,8 +312,6 @@ const o_ = ((((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1
 ? ff_compiler_Token.LAssignPlus()
 : ((((i_ - start_) === 2) && (ff_core_String.String_grab(code_, (i_ - 2)) === 45)) && (ff_core_String.String_grab(code_, (i_ - 1)) === 61))
 ? ff_compiler_Token.LAssignMinus()
-: (((((i_ - start_) === 3) && (ff_core_String.String_grab(code_, (i_ - 3)) === 58)) && (ff_core_String.String_grab(code_, (i_ - 2)) === 58)) && (ff_core_String.String_grab(code_, (i_ - 1)) === 61))
-? ff_compiler_Token.LAssignLink()
 : ff_compiler_Token.LOperator());
 emitToken_(o_, start_, i_)
 }
@@ -546,6 +546,8 @@ const o_ = ((((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1
 ? ff_compiler_Token.LColon()
 : (((((i_ - start_) === 3) && (ff_core_String.String_grab(code_, (i_ - 3)) === 46)) && (ff_core_String.String_grab(code_, (i_ - 2)) === 46)) && (ff_core_String.String_grab(code_, (i_ - 1)) === 46))
 ? ff_compiler_Token.LDotDotDot()
+: ((((i_ - start_) === 2) && (ff_core_String.String_grab(code_, (i_ - 2)) === 45)) && (ff_core_String.String_grab(code_, (i_ - 1)) === 62))
+? ff_compiler_Token.LArrowThin()
 : ((((i_ - start_) === 2) && (ff_core_String.String_grab(code_, (i_ - 2)) === 61)) && (ff_core_String.String_grab(code_, (i_ - 1)) === 62))
 ? ff_compiler_Token.LArrowThick()
 : (((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 61))
@@ -554,8 +556,6 @@ const o_ = ((((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1
 ? ff_compiler_Token.LAssignPlus()
 : ((((i_ - start_) === 2) && (ff_core_String.String_grab(code_, (i_ - 2)) === 45)) && (ff_core_String.String_grab(code_, (i_ - 1)) === 61))
 ? ff_compiler_Token.LAssignMinus()
-: (((((i_ - start_) === 3) && (ff_core_String.String_grab(code_, (i_ - 3)) === 58)) && (ff_core_String.String_grab(code_, (i_ - 2)) === 58)) && (ff_core_String.String_grab(code_, (i_ - 1)) === 61))
-? ff_compiler_Token.LAssignLink()
 : ff_compiler_Token.LOperator());
 emitToken_(o_, start_, i_)
 }

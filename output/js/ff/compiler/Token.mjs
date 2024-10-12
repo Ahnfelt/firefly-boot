@@ -180,6 +180,10 @@ const LDotDotDot$ = {LDotDotDot: true};
 export function LDotDotDot() {
 return LDotDotDot$;
 }
+const LArrowThin$ = {LArrowThin: true};
+export function LArrowThin() {
+return LArrowThin$;
+}
 const LArrowThick$ = {LArrowThick: true};
 export function LArrowThick() {
 return LArrowThick$;
@@ -195,10 +199,6 @@ return LAssignPlus$;
 const LAssignMinus$ = {LAssignMinus: true};
 export function LAssignMinus() {
 return LAssignMinus$;
-}
-const LAssignLink$ = {LAssignLink: true};
-export function LAssignLink() {
-return LAssignLink$;
 }
 
 
@@ -229,6 +229,10 @@ return (ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals
 
 export function Token_is3(token_, kind1_, kind2_, kind3_) {
 return ((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind1_) || ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind2_)) || ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind3_))
+}
+
+export function Token_is4(token_, kind1_, kind2_, kind3_, kind4_) {
+return (((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind1_) || ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind2_)) || ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind3_)) || ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind4_))
 }
 
 export function Token_rawIs(token_, value_) {
@@ -269,6 +273,10 @@ return (ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals
 
 export async function Token_is3$(token_, kind1_, kind2_, kind3_, $task) {
 return ((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind1_) || ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind2_)) || ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind3_))
+}
+
+export async function Token_is4$(token_, kind1_, kind2_, kind3_, kind4_, $task) {
+return (((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind1_) || ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind2_)) || ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind3_)) || ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind4_))
 }
 
 export async function Token_rawIs$(token_, value_, $task) {
@@ -350,6 +358,9 @@ return false
 if(_1.LDotDotDot) {
 return false
 }
+if(_1.LArrowThin) {
+return false
+}
 if(_1.LArrowThick) {
 return false
 }
@@ -360,9 +371,6 @@ if(_1.LAssignPlus) {
 return false
 }
 if(_1.LAssignMinus) {
-return false
-}
-if(_1.LAssignLink) {
 return false
 }
 }
@@ -431,6 +439,9 @@ return false
 if(_1.LDotDotDot) {
 return true
 }
+if(_1.LArrowThin) {
+return false
+}
 if(_1.LArrowThick) {
 return false
 }
@@ -441,9 +452,6 @@ if(_1.LAssignPlus) {
 return false
 }
 if(_1.LAssignMinus) {
-return false
-}
-if(_1.LAssignLink) {
 return false
 }
 }
@@ -512,6 +520,9 @@ return false
 if(_1.LDotDotDot) {
 return false
 }
+if(_1.LArrowThin) {
+return false
+}
 if(_1.LArrowThick) {
 return false
 }
@@ -522,9 +533,6 @@ if(_1.LAssignPlus) {
 return false
 }
 if(_1.LAssignMinus) {
-return false
-}
-if(_1.LAssignLink) {
 return false
 }
 }
@@ -593,6 +601,9 @@ return false
 if(_1.LDotDotDot) {
 return false
 }
+if(_1.LArrowThin) {
+return false
+}
 if(_1.LArrowThick) {
 return false
 }
@@ -603,9 +614,6 @@ if(_1.LAssignPlus) {
 return false
 }
 if(_1.LAssignMinus) {
-return false
-}
-if(_1.LAssignLink) {
 return false
 }
 }
@@ -674,6 +682,9 @@ return false
 if(_1.LDotDotDot) {
 return true
 }
+if(_1.LArrowThin) {
+return false
+}
 if(_1.LArrowThick) {
 return false
 }
@@ -684,9 +695,6 @@ if(_1.LAssignPlus) {
 return false
 }
 if(_1.LAssignMinus) {
-return false
-}
-if(_1.LAssignLink) {
 return false
 }
 }
@@ -755,6 +763,9 @@ return false
 if(_1.LDotDotDot) {
 return false
 }
+if(_1.LArrowThin) {
+return false
+}
 if(_1.LArrowThick) {
 return false
 }
@@ -765,9 +776,6 @@ if(_1.LAssignPlus) {
 return false
 }
 if(_1.LAssignMinus) {
-return false
-}
-if(_1.LAssignLink) {
 return false
 }
 }
@@ -891,6 +899,10 @@ if(value_a.LDotDotDot) {
 const z_ = value_a;
 return "LDotDotDot"
 }
+if(value_a.LArrowThin) {
+const z_ = value_a;
+return "LArrowThin"
+}
 if(value_a.LArrowThick) {
 const z_ = value_a;
 return "LArrowThick"
@@ -906,10 +918,6 @@ return "LAssignPlus"
 if(value_a.LAssignMinus) {
 const z_ = value_a;
 return "LAssignMinus"
-}
-if(value_a.LAssignLink) {
-const z_ = value_a;
-return "LAssignLink"
 }
 },
 async show_$(value_, $task) {
@@ -994,6 +1002,10 @@ if(value_a.LDotDotDot) {
 const z_ = value_a;
 return "LDotDotDot"
 }
+if(value_a.LArrowThin) {
+const z_ = value_a;
+return "LArrowThin"
+}
 if(value_a.LArrowThick) {
 const z_ = value_a;
 return "LArrowThick"
@@ -1009,10 +1021,6 @@ return "LAssignPlus"
 if(value_a.LAssignMinus) {
 const z_ = value_a;
 return "LAssignMinus"
-}
-if(value_a.LAssignLink) {
-const z_ = value_a;
-return "LAssignLink"
 }
 }
 };
@@ -1248,19 +1256,19 @@ return 18
 if(z_a.LDotDotDot) {
 return 19
 }
-if(z_a.LArrowThick) {
+if(z_a.LArrowThin) {
 return 20
 }
-if(z_a.LAssign) {
+if(z_a.LArrowThick) {
 return 21
 }
-if(z_a.LAssignPlus) {
+if(z_a.LAssign) {
 return 22
 }
-if(z_a.LAssignMinus) {
+if(z_a.LAssignPlus) {
 return 23
 }
-if(z_a.LAssignLink) {
+if(z_a.LAssignMinus) {
 return 24
 }
 }
@@ -1336,19 +1344,19 @@ return 18
 if(z_a.LDotDotDot) {
 return 19
 }
-if(z_a.LArrowThick) {
+if(z_a.LArrowThin) {
 return 20
 }
-if(z_a.LAssign) {
+if(z_a.LArrowThick) {
 return 21
 }
-if(z_a.LAssignPlus) {
+if(z_a.LAssign) {
 return 22
 }
-if(z_a.LAssignMinus) {
+if(z_a.LAssignPlus) {
 return 23
 }
-if(z_a.LAssignLink) {
+if(z_a.LAssignMinus) {
 return 24
 }
 }
@@ -1594,11 +1602,19 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
+if(value_a.LArrowThin) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 20);
+serialization_.offset_ += 1
+return
+}
 if(value_a.LArrowThick) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 20);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 21);
 serialization_.offset_ += 1
 return
 }
@@ -1606,7 +1622,7 @@ if(value_a.LAssign) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 21);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 22);
 serialization_.offset_ += 1
 return
 }
@@ -1614,21 +1630,13 @@ if(value_a.LAssignPlus) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 22);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 23);
 serialization_.offset_ += 1
 return
 }
 if(value_a.LAssignMinus) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
-ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 23);
-serialization_.offset_ += 1
-return
-}
-if(value_a.LAssignLink) {
-const v_ = value_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 24);
 serialization_.offset_ += 1
@@ -1721,24 +1729,24 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Token.LDotDotDot()
 }
 if(_1 === 20) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
+return ff_compiler_Token.LArrowThin()
+}
+if(_1 === 21) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Token.LArrowThick()
 }
-if(_1 === 21) {
+if(_1 === 22) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 return ff_compiler_Token.LAssign()
 }
-if(_1 === 22) {
+if(_1 === 23) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Token.LAssignPlus()
 }
-if(_1 === 23) {
+if(_1 === 24) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_Token.LAssignMinus()
-}
-if(_1 === 24) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
-return ff_compiler_Token.LAssignLink()
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -1908,11 +1916,19 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
+if(value_a.LArrowThin) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 20);
+serialization_.offset_ += 1
+return
+}
 if(value_a.LArrowThick) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 20);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 21);
 serialization_.offset_ += 1
 return
 }
@@ -1920,7 +1936,7 @@ if(value_a.LAssign) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 21);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 22);
 serialization_.offset_ += 1
 return
 }
@@ -1928,21 +1944,13 @@ if(value_a.LAssignPlus) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 22);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 23);
 serialization_.offset_ += 1
 return
 }
 if(value_a.LAssignMinus) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
-ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 23);
-serialization_.offset_ += 1
-return
-}
-if(value_a.LAssignLink) {
-const v_ = value_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 24);
 serialization_.offset_ += 1
@@ -2035,24 +2043,24 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Token.LDotDotDot()
 }
 if(_1 === 20) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
+return ff_compiler_Token.LArrowThin()
+}
+if(_1 === 21) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Token.LArrowThick()
 }
-if(_1 === 21) {
+if(_1 === 22) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 return ff_compiler_Token.LAssign()
 }
-if(_1 === 22) {
+if(_1 === 23) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Token.LAssignPlus()
 }
-if(_1 === 23) {
+if(_1 === 24) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_Token.LAssignMinus()
-}
-if(_1 === 24) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
-return ff_compiler_Token.LAssignLink()
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})

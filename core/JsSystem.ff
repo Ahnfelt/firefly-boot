@@ -5,6 +5,18 @@ extend self: JsSystem {
     global(): JsValue
         target js sync "return self_"
 
+    get(key: String): JsValue
+        target js sync "return self_[key_]"
+
+    set[V: IsJsValue](key: String, value: V): Unit
+        target js sync "self_[key_] = value_"
+
+    increment[V: IsJsValue](key: String, value: V): Unit
+        target js sync "self_[key_] += value_"
+        
+    decrement[V: IsJsValue](key: String, value: V): Unit
+        target js sync "self_[key_] -= value_"
+        
     parseJson(json: String): JsValue
         target js sync "return JSON.parse(json_)"
 

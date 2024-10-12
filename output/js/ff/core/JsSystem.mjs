@@ -103,6 +103,22 @@ export function JsSystem_global(self_) {
 return self_
 }
 
+export function JsSystem_get(self_, key_) {
+return self_[key_]
+}
+
+export function JsSystem_set(self_, key_, value_, ff_core_JsValue_IsJsValue$V) {
+self_[key_] = value_
+}
+
+export function JsSystem_increment(self_, key_, value_, ff_core_JsValue_IsJsValue$V) {
+self_[key_] += value_
+}
+
+export function JsSystem_decrement(self_, key_, value_, ff_core_JsValue_IsJsValue$V) {
+self_[key_] -= value_
+}
+
 export function JsSystem_parseJson(self_, json_) {
 return JSON.parse(json_)
 }
@@ -173,6 +189,22 @@ return body_
 
 export async function JsSystem_global$(self_, $task) {
 throw new Error('Function JsSystem_global is missing on this target in async context.');
+}
+
+export async function JsSystem_get$(self_, key_, $task) {
+throw new Error('Function JsSystem_get is missing on this target in async context.');
+}
+
+export async function JsSystem_set$(self_, key_, value_, ff_core_JsValue_IsJsValue$V, $task) {
+throw new Error('Function JsSystem_set is missing on this target in async context.');
+}
+
+export async function JsSystem_increment$(self_, key_, value_, ff_core_JsValue_IsJsValue$V, $task) {
+throw new Error('Function JsSystem_increment is missing on this target in async context.');
+}
+
+export async function JsSystem_decrement$(self_, key_, value_, ff_core_JsValue_IsJsValue$V, $task) {
+throw new Error('Function JsSystem_decrement is missing on this target in async context.');
 }
 
 export async function JsSystem_parseJson$(self_, json_, $task) {

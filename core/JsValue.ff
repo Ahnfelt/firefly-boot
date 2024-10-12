@@ -88,6 +88,12 @@ extend self: JsValue {
     set[K: IsJsValue, V: IsJsValue](key: K, value: V): Unit
         target js sync "self_[key_] = value_"
 
+    increment[K: IsJsValue, V: IsJsValue](key: K, value: V): Unit
+        target js sync "self_[key_] += value_"
+        
+    decrement[K: IsJsValue, V: IsJsValue](key: K, value: V): Unit
+        target js sync "self_[key_] -= value_"
+
     delete[K: IsJsValue](key: K): Unit
         target js sync "delete self_[key_]"
 

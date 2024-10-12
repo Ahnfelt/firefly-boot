@@ -16,6 +16,7 @@
             {"include": "#number"},
             {"include": "#keyword"}, 
             {"include": "#spread"}, 
+            {"include": "#dynamic-member"},
             {"include": "#field-or-call"},
             {"include": "#upper-dot"},
             {"include": "#upper"},
@@ -35,6 +36,10 @@
         "spread": {
             "name": "punctuation.spread.firefly",
             "match": "[.][.][.]"
+        },
+        "dynamic-member": {
+            "name": "variable.other.member.firefly",
+            "match": "(?<=[-][>][ ]*)[a-z][A-Za-z0-9]*\\b"
         },
         "field-or-call": {
             "name": "entity.name.function.member.firefly",
