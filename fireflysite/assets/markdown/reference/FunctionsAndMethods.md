@@ -58,7 +58,7 @@ swap[A, B](pair: Pair[A, B]): Pair[B, A] {
 }
 ```
 
-Two type parameters `A` and `B` are first introduced in the square brackets. These type parameters are swapped in the input and return type, expressing the value swap at type level. The type parameters are unbuilded in the sense that `swap` may be called with `A` and `B` replaced by any types.
+Two type parameters `A` and `B` are first introduced in the square brackets. These type parameters are swapped in the input and return type, expressing the value swap at type level. The type parameters are unbounded in the sense that `swap` may be called with `A` and `B` replaced by any types.
 
 Type parameters can be bounded or constrained like this:
 
@@ -104,13 +104,13 @@ add(a: Int, b: Int = 1): Int {
 When called without the second arguments, the function will use the default value:
 
 ```firefly
-greet(1)  // returns 2
+add(1)  // returns 2
 ```
 
 If an argument is provided, it overrides the default:
 
 ```firefly
-greet(1, 2)  // returns 3
+add(1, 2)  // returns 3
 ```
 
 
@@ -132,7 +132,7 @@ When calling `factorial(0)`, the base case is triggered, returning `1`. Calling 
 
 # Tail Recursion
 
-In some recursive functions, the recursive call is the last operation performed before returning the result. This is *tail recursion*. The Firefly compiler can optimize tail recursive calls, avoiding the buildup of function calls on the stack.
+In some recursive functions, the recursive call is the last operation performed before returning the result. This is _tail recursion_. The Firefly compiler can optimize tail recursive calls, avoiding the buildup of function calls on the stack.
 
 You can use the `tailcall` keyword to explicitly mark a recursive call as tail-recursive, ensuring the compiler applies the optimization.
 
@@ -164,13 +164,12 @@ In firefly anonymous functions are written in curlybrases and constucted like th
 This anonymous function takes two arguments and returns their sum. Like named functions, the body is a sequence of statements where the last expression is returned.
 
 Anonymous functions are often used right away, like below:
-:
 
 ```firefly
 [1, 2, 3].map({x => x + 1}) // Returns [2, 3, 4]
 ```
 
-An anonymous function that increments the given value by one is passed as argument to the methods `map` working on lists.
+An anonymous function that increments the given value by one is passed as argument to the method `map` working on lists.
 
 These functions are anonymous in the sense that they do not bring a name into scope themselves. They are just expressions that construct a function value. Like all other values, they can be assigned to variables, passed as arguments, or returned from other functions. But unlike other values, they can also be called.
 
@@ -200,7 +199,7 @@ This is an anonymous function taking no arguments and returning `Unit`:
 let unit: () => Unit = {}
 ```
 
-This is an anonymous function that increments its input:
+This is an anonymous function that increments its input by one:
 
 ```firefly
 let next: Int => Int = {i => i + 1}
