@@ -452,7 +452,7 @@ export function Json_field(self_, key_) {
 
 export function Json_index(self_, key_) {
 
-            return Array.isArray(self_) ? self_[key] ?? null : null;
+            return Array.isArray(self_) ? self_[key_] ?? null : null;
         
 }
 
