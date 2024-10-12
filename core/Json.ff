@@ -184,7 +184,7 @@ extend self: Json {
 
     index(key: Int): Json
         target js sync """
-            return Array.isArray(self_) ? self_[key] ?? null : null;
+            return Array.isArray(self_) ? self_[key_] ?? null : null;
         """
 
     hasField(key: String): Bool
