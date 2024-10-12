@@ -413,6 +413,7 @@ renderHighlightedCode(lux: Lux, code: String) {
                     | LString => Styles.codeStringCss
                     | LUpper => Styles.codeTypeCss
                     | LWildcard => Styles.codeVariableCss
+                    | LLower {tokens.get(index - 1).any {_.kind == LArrowThin}} => Styles.codeStringCss
                     | LLower {tokens.get(index - 1).any {t => 
                         t.kind == LBracketRight || t.kind == LDot
                     }} => Styles.codeCallCss
