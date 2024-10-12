@@ -38,7 +38,7 @@
             "match": "[.][.][.]"
         },
         "dynamic-member": {
-            "name": "variable.other.member.firefly",
+            "name": "string.unquoted.firefly",
             "match": "(?<=[-][>][ ]*)[a-z][A-Za-z0-9]*\\b"
         },
         "field-or-call": {
