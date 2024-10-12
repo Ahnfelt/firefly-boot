@@ -12,13 +12,15 @@ Most JavaScript functionality can be accessed via the `JsSystem` object.
 
 ```firefly
 browserMain(system: BrowserSystem): Unit {
-    let document = system.js().global().get("document")
-    let element = document.call1("getElementById", "my-id")
-    element.set("innerText", "Hi!")
+    let document = system.js()->document
+    let element = document->getElementById("my-id")
+    element->innerText = "Hi!"
 }
 ```
 
 This example gets the global `document`, calls `getElementId("my-id")` on it, and sets `innerText = "Hi!"`.
+
+The `->` is shorthand for calling the methods `get`, `set`, `increment`, `decrement`, `call1` etc.
 
 The type of the `document` and `element` variables here is `JsValue`, which represents an arbitrary JavaScript value.
 
