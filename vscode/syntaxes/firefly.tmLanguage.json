@@ -39,7 +39,7 @@
         },
         "dynamic-member": {
             "name": "string.unquoted.firefly",
-            "match": "(?<=[-][>][ ]*)[a-z][A-Za-z0-9]*\\b"
+            "match": "(?<=[-][>][ ]*)[A-Za-z][A-Za-z0-9]*\\b"
         },
         "field-or-call": {
             "name": "entity.name.function.member.firefly",

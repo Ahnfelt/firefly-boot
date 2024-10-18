@@ -1185,7 +1185,7 @@ extend self: Parser {
     
     parseDynamicMember(record: Term): Term {
         self.skip(LArrowThin)
-        let token = self.skip(LLower)
+        let token = if(self.current().is(LUpper)) {self.skip(LUpper)} else {self.skip(LLower)}
         let member = EString(token.at(), "\"" + token.raw() + "\"")
         if(self.current().rawIs("(")) {
             let arguments = self.parseFunctionArguments(record.at, False)
