@@ -4,7 +4,7 @@
     "description": "Firefly compiler",
     "author": "Firefly team",
     "license": "MIT",
-    "version": "0.4.85",
+    "version": "0.4.86",
     "repository": {
         "type": "git",
         "url": "https://github.com/Ahnfelt/firefly-boot"
