@@ -190,7 +190,7 @@ extend self: PgStatement {
     }
 
     withInstant(name: String, value: Instant): PgStatement {
-        let jsDate = UnsafeJs.jsSystem().global().get("Date")
+        let jsDate = UnsafeJs.jsSystem().globalThis().get("Date")
         function toJsDate(instant: Instant): JsValue {
             jsDate.new1(instant.since1970.seconds * 1000.0)
         }
@@ -199,7 +199,7 @@ extend self: PgStatement {
     }
 
     withNullableInstant(name: String, value: Option[Instant]): PgStatement {
-        let jsDate = UnsafeJs.jsSystem().global().get("Date")
+        let jsDate = UnsafeJs.jsSystem().globalThis().get("Date")
         function toJsDate(instant: Instant): JsValue {
             jsDate.new1(instant.since1970.seconds * 1000.0)
         }
@@ -258,7 +258,7 @@ extend self: PgStatement {
     }
 
     withInstantArray(name: String, value: List[Instant]): PgStatement {
-        let jsDate = UnsafeJs.jsSystem().global().get("Date")
+        let jsDate = UnsafeJs.jsSystem().globalThis().get("Date")
         function toJsDate(instant: Instant): JsValue {
             jsDate.new1(instant.since1970.seconds * 1000.0)
         }
@@ -267,7 +267,7 @@ extend self: PgStatement {
     }
 
     withNullableInstantArray(name: String, value: Option[List[Instant]]): PgStatement {
-        let jsDate = UnsafeJs.jsSystem().global().get("Date")
+        let jsDate = UnsafeJs.jsSystem().globalThis().get("Date")
         function toJsDate(instant: Instant): JsValue {
             jsDate.new1(instant.since1970.seconds * 1000.0)
         }

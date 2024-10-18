@@ -43,7 +43,7 @@
 			"",
 			"browserMain(system: BrowserSystem): Unit {",
 			"    let response = system.httpClient().fetch(\"http://localhost:8080/hello\")",
-			"    let window = system.js().global().get(\"window\")",
+			"    let window = system.js().globalThis().get(\"window\")",
 			"    window.call1(\"alert\", response.readText())",
 			"}",
 			"",

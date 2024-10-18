@@ -1,8 +1,8 @@
-class JsSystem {} // TODO: It has to be async if the async ffi is to be called - solve in the compiler?
+class JsSystem {}
 
 extend self: JsSystem {
 
-    global(): JsValue
+    globalThis(): JsValue
         target js sync "return self_"
 
     get(key: String): JsValue
@@ -16,6 +16,36 @@ extend self: JsSystem {
         
     decrement[V: IsJsValue](key: String, value: V): Unit
         target js sync "self_[key_] -= value_"
+
+    call0(name: String): JsValue
+        target js sync "return self_[name_].call(void 0)"
+
+    call1[A1: IsJsValue](name: String, a1: A1): JsValue
+        target js sync "return self_[name_].call(void 0, a1_)"
+
+    call2[A1: IsJsValue, A2: IsJsValue](name: String, a1: A1, a2: A2): JsValue
+        target js sync "return self_[name_].call(void 0, a1_, a2_)"
+
+    call3[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue](name: String, a1: A1, a2: A2, a3: A3): JsValue
+        target js sync "return self_[name_].call(void 0, a1_, a2_, a3_)"
+
+    call4[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4): JsValue
+        target js sync "return self_[name_].call(void 0, a1_, a2_, a3_, a4_)"
+
+    call5[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5): JsValue
+        target js sync "return self_[name_].call(void 0, a1_, a2_, a3_, a4_, a5_)"
+
+    call6[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6): JsValue
+        target js sync "return self_[name_].call(void 0, a1_, a2_, a3_, a4_, a5_, a6_)"
+
+    call7[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7): JsValue
+        target js sync "return self_[name_].call(void 0, a1_, a2_, a3_, a4_, a5_, a6_, a7_)"
+
+    call8[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8): JsValue
+        target js sync "return self_[name_].call(void 0, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_)"
+
+    call9[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue, A9: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8, a9: A9): JsValue
+        target js sync "return self_[name_].call(void 0, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_)"
         
     parseJson(json: String): JsValue
         target js sync "return JSON.parse(json_)"
