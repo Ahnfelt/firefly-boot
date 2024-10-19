@@ -1540,10 +1540,10 @@ return result_
 
 export function Parser_parseDynamicMember(self_, record_) {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LArrowThin());
-const token_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LUpper())
-? ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper())
-: ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower())
+const token_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower())
 ? ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower())
+: ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LUpper())
+? ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper())
 : ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LString()));
 const member_ = ff_compiler_Syntax.EString(ff_compiler_Token.Token_at(token_), (ff_compiler_Token.Token_is(token_, ff_compiler_Token.LString())
 ? ff_compiler_Token.Token_raw(token_)
@@ -3109,10 +3109,10 @@ return result_
 
 export async function Parser_parseDynamicMember$(self_, record_, $task) {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LArrowThin());
-const token_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LUpper())
-? ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper())
-: ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower())
+const token_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower())
 ? ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower())
+: ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LUpper())
+? ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper())
 : ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LString()));
 const member_ = ff_compiler_Syntax.EString(ff_compiler_Token.Token_at(token_), (ff_compiler_Token.Token_is(token_, ff_compiler_Token.LString())
 ? ff_compiler_Token.Token_raw(token_)

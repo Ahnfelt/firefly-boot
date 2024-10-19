@@ -1185,10 +1185,10 @@ extend self: Parser {
     
     parseDynamicMember(record: Term): Term {
         self.skip(LArrowThin)
-        let token = if(self.current().is(LUpper)) {
-            self.skip(LUpper)
-        } elseIf {self.current().is(LLower)} {
+        let token = if(self.current().is(LLower)) {
             self.skip(LLower)
+        } elseIf {self.current().is(LUpper)} {
+            self.skip(LUpper)
         } else {
             self.skip(LString)
         }
