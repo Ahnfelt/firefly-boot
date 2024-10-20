@@ -13,17 +13,33 @@ Most JavaScript functionality can be accessed via the `JsSystem` object.
 ```firefly
 browserMain(system: BrowserSystem): Unit {
     let js = system.js()
-    js->Notification->requestPermission()->then(js->{
-        js->Notification->("Hi!", js->(body = "From the Firefly JS FFI"))
+    js->document->onclick = js->{
+        js->Notification->requestPermission()->then(js->{
+            js->Notification->(
+                "Hi!"
+                js->(body = "From the Firefly JS FFI")
+            )
+        })
+    }
+}
+```
+
+This is equivalent to the following JavaScript:
+
+```js
+document.onclick = {() =>
+    Notification.requestPermission().then({() =>
+        new Notification(
+            "Hi!",
+            {body: "From the Firefly JS FFI"}
+        )
     })
 }
 ```
 
-This example gets the global `document`, calls `getElementId("my-id")` on it, and sets `innerText = "Hi!"`.
+The `->` is shorthand for calling the methods `get`, `set`, `increment`, `decrement`, `object`, `call1`, `new1` and `function1` (substitute 0 to 9 for 1).
 
-The `->` is shorthand for calling the methods `get`, `set`, `increment`, `decrement`, `call1` etc.
-
-The type of the `document` and `element` variables here is `JsValue`, which represents an arbitrary JavaScript value.
+The `js` variable is of the type `JsSystem` and the rest of the expressions return `JsValue`, which represents an arbitrary JavaScript value.
 
 
 # The ff:unsafejs package
@@ -45,6 +61,9 @@ throwIfCancelled(): Unit
 
 // Returns true if the current task has been aborted
 cancelled(): Bool
+
+// Casts any Firefly value to a JavaScript value without conversion
+value[T](value: T): JsValue
 ```
 
 In the future, it may be possible to provide a whitelist of dependencies that are allowed to use this package.
