@@ -1190,6 +1190,9 @@ extend self: Parser {
             let effect = self.freshUnificationVariable(record.at)
             arguments.first.indexWhere {!_.name.isEmpty()}.{
                 | None =>
+                    let target = DynamicCall(EField(token.at(), False, record, "new" + arguments.first.size()), False)
+                    ECall(record.at, target, effect, [], arguments.first, [])
+                | Some(0) => 
                     let objectTarget = DynamicCall(EField(token.at(), False, record, "object"), False)
                     mutable result = ECall(record.at, objectTarget, effect, [], [], [])
                     arguments.first.each {argument =>
@@ -1203,9 +1206,6 @@ extend self: Parser {
                         ], [])
                     }
                     result
-                | Some(0) => 
-                    let target = DynamicCall(EField(token.at(), False, record, "new" + arguments.first.size()), False)
-                    ECall(record.at, target, effect, [], arguments.first, [])
                 | Some(i) => 
                     throw(CompileError(arguments.first.grab(i).at, "Unexpected named argument"))
             }
@@ -1228,6 +1228,9 @@ extend self: Parser {
         let member = EString(token.at(), if(token.is(LString)) {token.raw()} else {"\"" + token.raw() + "\""})
         if(self.current().rawIs("(")) {
             let arguments = self.parseFunctionArguments(record.at, False)
+            arguments.first.find {!_.name.isEmpty()}.each {argument =>
+                throw(CompileError(argument.at, "Unexpected named argument"))
+            }
             let effect = self.freshUnificationVariable(record.at)
             let target = DynamicCall(EField(token.at(), False, record, "call" + arguments.first.size()), False)
             ECall(record.at, target, effect, [], [
