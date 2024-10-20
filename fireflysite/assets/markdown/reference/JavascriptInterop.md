@@ -27,8 +27,8 @@ browserMain(system: BrowserSystem): Unit {
 This is equivalent to the following JavaScript:
 
 ```js
-document.onclick = {() =>
-    Notification.requestPermission().then({() =>
+document.onclick = () => {
+    Notification.requestPermission().then(() => {
         new Notification(
             "Hi!",
             {body: "From the Firefly JS FFI"}
