@@ -61,6 +61,9 @@ extend self: JsSystem {
 
     object(): JsValue
         target js sync "return {}"
+        
+    new0(): JsValue
+        target js sync "return {}"
 
     array(values: List[JsValue]): JsValue
         target js sync "return values_.slice()"
