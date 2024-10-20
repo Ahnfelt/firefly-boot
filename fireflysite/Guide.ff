@@ -412,8 +412,8 @@ renderHighlightedCode(lux: Lux, code: String) {
                     | LNamespace => Styles.codeTypeCss
                     | LString => Styles.codeStringCss
                     | LWildcard => Styles.codeVariableCss
-                    | LUpper => Styles.codeTypeCss
                     | LUpper {tokens.get(index - 1).any {_.kind == LArrowThin}} => Styles.codeStringCss
+                    | LUpper => Styles.codeTypeCss
                     | LLower {tokens.get(index - 1).any {_.kind == LArrowThin}} => Styles.codeStringCss
                     | LLower {tokens.get(index - 1).any {t => 
                         t.kind == LBracketRight || t.kind == LDot
