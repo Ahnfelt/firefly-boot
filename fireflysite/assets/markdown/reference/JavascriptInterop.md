@@ -27,14 +27,13 @@ browserMain(system: BrowserSystem): Unit {
 This is equivalent to the following JavaScript:
 
 ```js
-document.onclick = () => {
-    Notification.requestPermission().then(() => {
+document.onclick = () =>
+    Notification.requestPermission().then(() =>
         new Notification(
             "Hi!",
             {body: "From the Firefly JS FFI"}
         )
-    })
-}
+    )
 ```
 
 The `->` is shorthand for calling the methods `get`, `set`, `increment`, `decrement`, `object`, `call1`, `new1` and `function1` (substitute 0 to 9 for 1).
