@@ -17,3 +17,6 @@ throwIfCancelled(): Unit
 cancelled(): Bool
     // Replaced by the compiler
     target js sync "return false"
+
+value[T](value: T): JsValue
+    target js sync "return value_"

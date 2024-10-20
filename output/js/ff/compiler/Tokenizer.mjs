@@ -245,7 +245,7 @@ i_ += 1;
 while(((i_ < ff_core_String.String_size(code_)) && ff_core_Char.Char_isAsciiLetterOrDigit(ff_core_String.String_grab(code_, i_)))) {
 i_ += 1
 };
-if((((i_ < ff_core_String.String_size(code_)) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(kind_, ff_compiler_Token.LUpper())) && (ff_core_String.String_grab(code_, i_) === 46))) {
+if(((((i_ < ff_core_String.String_size(code_)) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(kind_, ff_compiler_Token.LUpper())) && (ff_core_String.String_grab(code_, i_) === 46)) && (ff_core_Array.Array_isEmpty(tokens_) || ff_core_Equal.notEquals_(ff_core_Array.Array_grabLast(tokens_).kind_, ff_compiler_Token.LArrowThin(), ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind)))) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LNamespace(), start_, i_)
 } else {
@@ -489,7 +489,7 @@ i_ += 1;
 while(((i_ < ff_core_String.String_size(code_)) && ff_core_Char.Char_isAsciiLetterOrDigit(ff_core_String.String_grab(code_, i_)))) {
 i_ += 1
 };
-if((((i_ < ff_core_String.String_size(code_)) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(kind_, ff_compiler_Token.LUpper())) && (ff_core_String.String_grab(code_, i_) === 46))) {
+if(((((i_ < ff_core_String.String_size(code_)) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(kind_, ff_compiler_Token.LUpper())) && (ff_core_String.String_grab(code_, i_) === 46)) && (ff_core_Array.Array_isEmpty(tokens_) || ff_core_Equal.notEquals_(ff_core_Array.Array_grabLast(tokens_).kind_, ff_compiler_Token.LArrowThin(), ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind)))) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LNamespace(), start_, i_)
 } else {

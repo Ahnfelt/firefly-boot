@@ -179,6 +179,10 @@ export function JsSystem_object(self_) {
 return {}
 }
 
+export function JsSystem_new0(self_) {
+return {}
+}
+
 export function JsSystem_array(self_, values_) {
 return values_.slice()
 }
@@ -305,6 +309,10 @@ throw new Error('Function JsSystem_value is missing on this target in async cont
 
 export async function JsSystem_object$(self_, $task) {
 throw new Error('Function JsSystem_object is missing on this target in async context.');
+}
+
+export async function JsSystem_new0$(self_, $task) {
+throw new Error('Function JsSystem_new0 is missing on this target in async context.');
 }
 
 export async function JsSystem_array$(self_, values_, $task) {

@@ -162,7 +162,9 @@ tokenize(file: String, code: String, completionAt: Option[Location], attemptFixe
                 let kind = if(code.grab(i) >= 'a') {LLower} else {LUpper}
                 i += 1
                 while {i < code.size() && code.grab(i).isAsciiLetterOrDigit()} {i += 1}
-                if(i < code.size() && kind == LUpper && code.grab(i) == '.') {
+                if(i < code.size() && kind == LUpper && code.grab(i) == '.' && (
+                    tokens.isEmpty() || tokens.grabLast().kind != LArrowThin
+                )) {
                     i += 1
                     emitToken(LNamespace, start, i)
                 } else {

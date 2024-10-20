@@ -39,6 +39,7 @@ release(
     releaseFireflyPackage(system, accessKeyId, secretAccessKey, "webserver")
     runSuccessful(system, "git", ["commit", "-a", "-m", "Autorelease " + version], system.path(".."))
     runSuccessful(system, "git", ["push"], system.path(".."))
+    runSuccessful(system, "npm", ["install", "-g", "firefly-compiler"], system.path(".."))
 }
 
 releaseFireflyPackage(
