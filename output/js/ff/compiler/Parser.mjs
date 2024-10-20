@@ -1539,7 +1539,42 @@ return result_
 }
 
 export function Parser_parseDynamicMember(self_, record_) {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LArrowThin());
+const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LArrowThin());
+if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "(")) {
+const arguments_ = ff_compiler_Parser.Parser_parseFunctionArguments(self_, ff_compiler_Token.Token_at(token_), false);
+const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
+{
+const _1 = ff_core_List.List_indexWhere(arguments_.first_, ((_w1) => {
+return (!ff_core_Option.Option_isEmpty(_w1.name_))
+}));
+if(_1.None) {
+const objectTarget_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, "object"), false);
+let result_ = ff_compiler_Syntax.ECall(record_.at_, objectTarget_, effect_, [], [], []);
+ff_core_List.List_each(arguments_.first_, ((argument_) => {
+if(ff_core_Option.Option_isEmpty(argument_.name_)) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(argument_.at_, "Expected a named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+};
+const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, "with"), false);
+result_ = ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(argument_.at_, ff_core_Option.None(), ff_compiler_Syntax.EString(argument_.at_, ff_core_Option.Option_grab(argument_.name_))), argument_], [])
+}));
+return result_
+}
+if(_1.Some && _1.value_ === 0) {
+const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, ("new" + ff_core_List.List_size(arguments_.first_))), false);
+return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], arguments_.first_, [])
+}
+if(_1.Some) {
+const i_ = _1.value_;
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_core_List.List_grab(arguments_.first_, i_).at_, "Unexpected named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
+}
+} else if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")) {
+const lambda_ = ff_compiler_Parser.Parser_parseLambda(self_, 0, false, false);
+const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
+const arguments_ = ff_core_List.List_size(ff_core_List.List_grabFirst(lambda_.cases_).patterns_);
+const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, ("function" + arguments_)), false);
+return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(lambda_.at_, ff_core_Option.None(), ff_compiler_Syntax.ELambda(lambda_.at_, lambda_))], [])
+} else {
 const token_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower())
 ? ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower())
 : ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LUpper())
@@ -1576,6 +1611,7 @@ return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, "get"), false);
 return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(member_.at_, ff_core_Option.None(), member_)], [])
+}
 }
 }
 
@@ -3108,7 +3144,42 @@ return result_
 }
 
 export async function Parser_parseDynamicMember$(self_, record_, $task) {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LArrowThin());
+const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LArrowThin());
+if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "(")) {
+const arguments_ = ff_compiler_Parser.Parser_parseFunctionArguments(self_, ff_compiler_Token.Token_at(token_), false);
+const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
+{
+const _1 = ff_core_List.List_indexWhere(arguments_.first_, ((_w1) => {
+return (!ff_core_Option.Option_isEmpty(_w1.name_))
+}));
+if(_1.None) {
+const objectTarget_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, "object"), false);
+let result_ = ff_compiler_Syntax.ECall(record_.at_, objectTarget_, effect_, [], [], []);
+ff_core_List.List_each(arguments_.first_, ((argument_) => {
+if(ff_core_Option.Option_isEmpty(argument_.name_)) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(argument_.at_, "Expected a named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+};
+const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, "with"), false);
+result_ = ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(argument_.at_, ff_core_Option.None(), ff_compiler_Syntax.EString(argument_.at_, ff_core_Option.Option_grab(argument_.name_))), argument_], [])
+}));
+return result_
+}
+if(_1.Some && _1.value_ === 0) {
+const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, ("new" + ff_core_List.List_size(arguments_.first_))), false);
+return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], arguments_.first_, [])
+}
+if(_1.Some) {
+const i_ = _1.value_;
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_core_List.List_grab(arguments_.first_, i_).at_, "Unexpected named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
+}
+} else if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")) {
+const lambda_ = ff_compiler_Parser.Parser_parseLambda(self_, 0, false, false);
+const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
+const arguments_ = ff_core_List.List_size(ff_core_List.List_grabFirst(lambda_.cases_).patterns_);
+const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, ("function" + arguments_)), false);
+return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(lambda_.at_, ff_core_Option.None(), ff_compiler_Syntax.ELambda(lambda_.at_, lambda_))], [])
+} else {
 const token_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower())
 ? ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower())
 : ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LUpper())
@@ -3145,6 +3216,7 @@ return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, "get"), false);
 return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(member_.at_, ff_core_Option.None(), member_)], [])
+}
 }
 }
 
