@@ -1559,7 +1559,7 @@ if(ff_core_Option.Option_isEmpty(argument_.name_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(argument_.at_, "Expected a named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, result_, "with"), false);
-result_ = ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(argument_.at_, ff_core_Option.None(), ff_compiler_Syntax.EString(argument_.at_, ff_core_Option.Option_grab(argument_.name_))), ff_compiler_Syntax.Argument(argument_.value_.at_, ff_core_Option.None(), argument_.value_)], [])
+result_ = ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(argument_.at_, ff_core_Option.None(), ff_compiler_Syntax.EString(argument_.at_, (("\"" + ff_core_Option.Option_grab(argument_.name_)) + "\""))), ff_compiler_Syntax.Argument(argument_.value_.at_, ff_core_Option.None(), argument_.value_)], [])
 }));
 return result_
 }
@@ -3169,7 +3169,7 @@ if(ff_core_Option.Option_isEmpty(argument_.name_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(argument_.at_, "Expected a named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, result_, "with"), false);
-result_ = ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(argument_.at_, ff_core_Option.None(), ff_compiler_Syntax.EString(argument_.at_, ff_core_Option.Option_grab(argument_.name_))), ff_compiler_Syntax.Argument(argument_.value_.at_, ff_core_Option.None(), argument_.value_)], [])
+result_ = ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(argument_.at_, ff_core_Option.None(), ff_compiler_Syntax.EString(argument_.at_, (("\"" + ff_core_Option.Option_grab(argument_.name_)) + "\""))), ff_compiler_Syntax.Argument(argument_.value_.at_, ff_core_Option.None(), argument_.value_)], [])
 }));
 return result_
 }

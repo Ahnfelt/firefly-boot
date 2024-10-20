@@ -1201,7 +1201,7 @@ extend self: Parser {
                         }
                         let target = DynamicCall(EField(token.at(), False, result, "with"), False)
                         result = ECall(record.at, target, effect, [], [
-                            Argument(argument.at, None, EString(argument.at, argument.name.grab()))
+                            Argument(argument.at, None, EString(argument.at, "\"" + argument.name.grab() + "\""))
                             Argument(argument.value.at, None, argument.value)
                         ], [])
                     }

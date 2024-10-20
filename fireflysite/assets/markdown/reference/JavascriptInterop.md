@@ -12,9 +12,10 @@ Most JavaScript functionality can be accessed via the `JsSystem` object.
 
 ```firefly
 browserMain(system: BrowserSystem): Unit {
-    let document = system.js()->document
-    let element = document->getElementById("my-id")
-    element->innerText = "Hi!"
+    let js = system.js()
+    js->Notification->requestPermission()->then(js->{
+        js->Notification->("Hi!", js->(body = "From the Firefly JS FFI"))
+    })
 }
 ```
 
