@@ -27,6 +27,12 @@ nodeMain(system: NodeSystem) {
     let foo = {{_ + 1}(_)}
     Log.show(foo(1))
     
+    let x1 = work(initial = 3) {i => 
+        i + 1
+    } {s => 
+        "*" + s + "*"
+    }
+    //let x2 = work(initial = 3, {i => i + 1}, {s => s + "*"}) 
 }
 
 factorial(n: Int): Int {
@@ -43,4 +49,8 @@ factorialTail(n: Int, acc: Int = 1): Int {
     } else {
         tailcall factorialTail(n - 1, n * acc)
     }
+}
+
+work(f: Int => Int, g: String => String, initial: Int = 0): String {
+    g("" + f(initial))
 }

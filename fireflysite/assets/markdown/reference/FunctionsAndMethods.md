@@ -240,26 +240,54 @@ let f: Int => Int = {{_ + 1}(_)}
 In this code, there is an outer and an inner anonymous function, both taking one argument. The first underscore belongs to the inner function, which is called immediately by the outer function with the outer function's anonymous parameter as the argument.
 
 
+# Trailing lambda calls
+
+Firefly has special syntax for passing an anonymous function as the last argument in a function call. Consider the `if` function from the standard library, with this signature:
+
+```firefly
+if[T](condition: Bool, body: () => T): Option[T]
+```
+
+The `if` function takes two parameters, where the last is a function. Calling `if` with the standard syntax looks like this:
+
+```firefly
+if(x == 0, {"Zero"}) 
+```
+
+Using the special syntax for trailing lambda calls, it looks like this:
+
+```firefly
+if(x == 0) {"Zero"}
+```
+
+With this trailing lambda call syntax, the anonymous function is written after the call parentheses. This syntax is available for multiple trailing function arguments in sequence.
+
+The function below takes three parameters. Two functions and one `Int` with a default value:
+
+```firefly
+work(f: Int => Int, g: String => String, initial: Int = 0): String {
+    g("" + f(initial))
+}
+```
+
+This function may be called with two trailling lambda arguments, like this:
+
+```firefly
+work(initial = 3) {i => 
+    i + 1
+} {s => 
+    "*" + s + "*"
+}
+```
+
+
 # Local functions
 
 Local functions are declared exactly like top-level functions but with the `function` keyword in front of the signature, like this:
 
-
-```firefly
-function square(n: Int): Int {
-    n * n
-}
-```
-
 The above local function definition is a statement, similar to local variables declared with `let`. The function name `square` will be in scope for the rest of the code block.
 
 Furthermore, local functions declared in sequence are in scope within each other's bodies, allowing them to be mutually recursive.
-
-# Trailing lambda calls
-
-```firefly
-if(x == 1) {"One"}
-```
 
 # Methods
 
