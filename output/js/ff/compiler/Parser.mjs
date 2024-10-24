@@ -1529,7 +1529,7 @@ const method_ = (ff_compiler_Token.Token_rawIs(token_, "!")
 : "ff:core/UnsafeJs.fromValue");
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), method_), false);
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, ff_compiler_Token.Token_at(token_));
-result_ = ff_compiler_Parser.Parser_parseDynamicMember(self_, ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), target_, effect_, [], [ff_compiler_Syntax.Argument(result_.at_, ff_core_Option.None(), result_)], []))
+result_ = ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), target_, effect_, [], [ff_compiler_Syntax.Argument(result_.at_, ff_core_Option.None(), result_)], [])
 } else {
 const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_));
 const typeArguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "["))
@@ -3147,7 +3147,7 @@ const method_ = (ff_compiler_Token.Token_rawIs(token_, "!")
 : "ff:core/UnsafeJs.fromValue");
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), method_), false);
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, ff_compiler_Token.Token_at(token_));
-result_ = ff_compiler_Parser.Parser_parseDynamicMember(self_, ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), target_, effect_, [], [ff_compiler_Syntax.Argument(result_.at_, ff_core_Option.None(), result_)], []))
+result_ = ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), target_, effect_, [], [ff_compiler_Syntax.Argument(result_.at_, ff_core_Option.None(), result_)], [])
 } else {
 const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_));
 const typeArguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "["))

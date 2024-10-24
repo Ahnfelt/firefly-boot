@@ -453,6 +453,18 @@ export function List_map(self_, body_) {
         
 }
 
+export function List_map2(self_, body_) {
+if((!false)) {
+return ff_core_JsValue.JsValue_call1(self_, "map", body_, ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue)
+} else {
+const result_ = ff_core_Array.new_();
+ff_core_List.List_each(ff_core_Int.Int_until(0, ff_core_List.List_size(self_)), ((i_) => {
+ff_core_Array.Array_push(result_, body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_))))
+}));
+return ff_core_Array.Array_drain(result_)
+}
+}
+
 export function List_flatMap(self_, body_) {
 const results_ = ff_core_Array.new_();
 ff_core_List.List_each(self_, ((x_) => {
@@ -813,6 +825,18 @@ export async function List_map$(self_, body_, $task) {
             }
             return result;
         
+}
+
+export async function List_map2$(self_, body_, $task) {
+if((!true)) {
+return ff_core_JsValue.JsValue_call1(self_, "map", body_, ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue)
+} else {
+const result_ = ff_core_Array.new_();
+(await ff_core_List.List_each$(ff_core_Int.Int_until(0, ff_core_List.List_size(self_)), (async (i_, $task) => {
+ff_core_Array.Array_push(result_, (await body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), $task)))
+}), $task));
+return ff_core_Array.Array_drain(result_)
+}
 }
 
 export async function List_flatMap$(self_, body_, $task) {
