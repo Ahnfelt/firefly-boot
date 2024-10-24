@@ -98,6 +98,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
+
 // type JsEmitter
 export function JsEmitter(otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModulePath_, packagePair_, moduleName_, emittingAsync_, tailCallUsed_) {
 return {otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModulePath_, packagePair_, moduleName_, emittingAsync_, tailCallUsed_};
@@ -931,23 +933,22 @@ const x1_ = _1.arguments_[0].value_.name_;
 const x2_ = _1.arguments_[1].value_.name_;
 return ((((((((("(" + ff_compiler_JsEmitter.escapeResolved_(x1_)) + ".array[") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "] ?? ") + "ff_core_Array.internalGrab_(") + ff_compiler_JsEmitter.escapeResolved_(x1_)) + ", ") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "))")
 }
-if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:unsafejs/UnsafeJs.import" && _1.arguments_.length === 1 && _1.arguments_[0].value_.EString) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.import" && _1.arguments_.length === 1 && _1.arguments_[0].value_.EString) {
 const at_ = _1.at_;
 const url_ = _1.arguments_[0].value_.value_;
 return ff_compiler_JsImporter.JsImporter_add(self_.jsImporter_, ff_core_String.String_replace(url_, "\"", ""))
 }
-if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:unsafejs/UnsafeJs.await" && _1.arguments_.length === 1) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.await" && _1.arguments_.length === 1) {
 const at_ = _1.at_;
 const body_ = _1.arguments_[0].value_;
-const emittedBody_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_);
 if(async_) {
-return (("(await " + emittedBody_) + "($task))")
+return (("(await " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_)) + "($task))")
 } else {
-return (("(" + emittedBody_) + "())")
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), async_)
 }
 return
 }
-if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:unsafejs/UnsafeJs.cancelled" && _1.arguments_.length === 0) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.cancelled" && _1.arguments_.length === 0) {
 const at_ = _1.at_;
 if(async_) {
 return "$task.controller.signal.aborted"
@@ -956,7 +957,7 @@ return "false"
 }
 return
 }
-if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:unsafejs/UnsafeJs.throwIfCancelled" && _1.arguments_.length === 0) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.throwIfCancelled" && _1.arguments_.length === 0) {
 const at_ = _1.at_;
 if(async_) {
 return "((() => ff_core_Task.Task_throwIfAborted($task))())"
@@ -964,6 +965,52 @@ return "((() => ff_core_Task.Task_throwIfAborted($task))())"
 return ""
 }
 return
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.inAsync" && _1.arguments_.length === 0) {
+const at_ = _1.at_;
+if(self_.emittingAsync_) {
+return "true"
+} else {
+return "false"
+}
+return
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.inBrowser" && _1.arguments_.length === 0) {
+const at_ = _1.at_;
+if(ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser())) {
+return "true"
+} else {
+return "false"
+}
+return
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.inNode" && _1.arguments_.length === 0) {
+const at_ = _1.at_;
+if(ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitNode())) {
+return "true"
+} else {
+return "false"
+}
+return
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.inBuild" && _1.arguments_.length === 0) {
+const at_ = _1.at_;
+if(ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild())) {
+return "true"
+} else {
+return "false"
+}
+return
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.value" && _1.arguments_.length === 1) {
+const at_ = _1.at_;
+const e_ = _1.arguments_[0].value_;
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_)
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.fromValue" && _1.arguments_.length === 1) {
+const at_ = _1.at_;
+const e_ = _1.arguments_[0].value_;
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_)
 }
 if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Equal.equals" && _1.arguments_.length === 2 && _1.dictionaries_.length === 1 && _1.dictionaries_[0].dictionaries_.length === 0) {
 const at_ = _1.at_;
@@ -1331,7 +1378,7 @@ const code_ = _guard1.value_;
 return code_
 }
 }
-if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:unsafejs/UnsafeJs.throwIfCancelled" && _1.arguments_.length === 0) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.throwIfCancelled" && _1.arguments_.length === 0) {
 const at_ = _1.at_;
 if(async_) {
 return "ff_core_Task.Task_throwIfAborted($task)"
@@ -2269,23 +2316,22 @@ const x1_ = _1.arguments_[0].value_.name_;
 const x2_ = _1.arguments_[1].value_.name_;
 return ((((((((("(" + ff_compiler_JsEmitter.escapeResolved_(x1_)) + ".array[") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "] ?? ") + "ff_core_Array.internalGrab_(") + ff_compiler_JsEmitter.escapeResolved_(x1_)) + ", ") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "))")
 }
-if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:unsafejs/UnsafeJs.import" && _1.arguments_.length === 1 && _1.arguments_[0].value_.EString) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.import" && _1.arguments_.length === 1 && _1.arguments_[0].value_.EString) {
 const at_ = _1.at_;
 const url_ = _1.arguments_[0].value_.value_;
 return ff_compiler_JsImporter.JsImporter_add(self_.jsImporter_, ff_core_String.String_replace(url_, "\"", ""))
 }
-if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:unsafejs/UnsafeJs.await" && _1.arguments_.length === 1) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.await" && _1.arguments_.length === 1) {
 const at_ = _1.at_;
 const body_ = _1.arguments_[0].value_;
-const emittedBody_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, body_, async_, $task));
 if(async_) {
-return (("(await " + emittedBody_) + "($task))")
+return (("(await " + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, body_, async_, $task))) + "($task))")
 } else {
-return (("(" + emittedBody_) + "())")
+return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), async_, $task))
 }
 return
 }
-if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:unsafejs/UnsafeJs.cancelled" && _1.arguments_.length === 0) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.cancelled" && _1.arguments_.length === 0) {
 const at_ = _1.at_;
 if(async_) {
 return "$task.controller.signal.aborted"
@@ -2294,7 +2340,7 @@ return "false"
 }
 return
 }
-if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:unsafejs/UnsafeJs.throwIfCancelled" && _1.arguments_.length === 0) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.throwIfCancelled" && _1.arguments_.length === 0) {
 const at_ = _1.at_;
 if(async_) {
 return "((() => ff_core_Task.Task_throwIfAborted($task))())"
@@ -2302,6 +2348,52 @@ return "((() => ff_core_Task.Task_throwIfAborted($task))())"
 return ""
 }
 return
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.inAsync" && _1.arguments_.length === 0) {
+const at_ = _1.at_;
+if(self_.emittingAsync_) {
+return "true"
+} else {
+return "false"
+}
+return
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.inBrowser" && _1.arguments_.length === 0) {
+const at_ = _1.at_;
+if(ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser())) {
+return "true"
+} else {
+return "false"
+}
+return
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.inNode" && _1.arguments_.length === 0) {
+const at_ = _1.at_;
+if(ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitNode())) {
+return "true"
+} else {
+return "false"
+}
+return
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.inBuild" && _1.arguments_.length === 0) {
+const at_ = _1.at_;
+if(ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild())) {
+return "true"
+} else {
+return "false"
+}
+return
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.value" && _1.arguments_.length === 1) {
+const at_ = _1.at_;
+const e_ = _1.arguments_[0].value_;
+return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e_, async_, $task))
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.fromValue" && _1.arguments_.length === 1) {
+const at_ = _1.at_;
+const e_ = _1.arguments_[0].value_;
+return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e_, async_, $task))
 }
 if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Equal.equals" && _1.arguments_.length === 2 && _1.dictionaries_.length === 1 && _1.dictionaries_[0].dictionaries_.length === 0) {
 const at_ = _1.at_;
@@ -2669,7 +2761,7 @@ const code_ = _guard1.value_;
 return code_
 }
 }
-if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:unsafejs/UnsafeJs.throwIfCancelled" && _1.arguments_.length === 0) {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.throwIfCancelled" && _1.arguments_.length === 0) {
 const at_ = _1.at_;
 if(async_) {
 return "ff_core_Task.Task_throwIfAborted($task)"

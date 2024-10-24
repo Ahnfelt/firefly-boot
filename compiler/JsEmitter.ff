@@ -362,15 +362,30 @@ extend self: JsEmitter {
         | ECall(at, StaticCall("ff:core/Array.Array_grab", _, _), _, _, [Argument(_, _, EVariable(_, x1)), Argument(_, _, EVariable(_, x2))], _) =>
             "(" + escapeResolved(x1) + ".array[" + escapeResolved(x2) + "] ?? " + 
             "ff_core_Array.internalGrab_(" + escapeResolved(x1) + ", " + escapeResolved(x2) + "))"
-        | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.import", _, _), _, _, [Argument(_, _, EString(_, url))], _) =>
+        | ECall(at, StaticCall("ff:core/UnsafeJs.import", _, _), _, _, [Argument(_, _, EString(_, url))], _) =>
             self.jsImporter.add(url.replace("\"", ""))
-        | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.await", _, _), _, _, [Argument(_, _, body)], _) =>
-            let emittedBody = self.emitTerm(body, async)
-            if(async) {"(await " + emittedBody + "($task))"} else {"(" + emittedBody + "())"}
-        | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.cancelled", _, _), _, _, [], _) =>
+        | ECall(at, StaticCall("ff:core/UnsafeJs.await", _, _), _, _, [Argument(_, _, body)], _) =>
+            if(async) {
+                "(await " + self.emitTerm(body, async) + "($task))"
+            } else {
+                self.emitTerm(invokeImmediately(body), async)
+            }
+        | ECall(at, StaticCall("ff:core/UnsafeJs.cancelled", _, _), _, _, [], _) =>
             if(async) {"$task.controller.signal.aborted"} else {"false"}
-        | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.throwIfCancelled", _, _), _, _, [], _) =>
+        | ECall(at, StaticCall("ff:core/UnsafeJs.throwIfCancelled", _, _), _, _, [], _) =>
             if(async) {"((() => ff_core_Task.Task_throwIfAborted($task))())"} else {""}
+        | ECall(at, StaticCall("ff:core/UnsafeJs.inAsync", _, _), _, _, [], _) =>
+            if(self.emittingAsync) {"true"} else {"false"}
+        | ECall(at, StaticCall("ff:core/UnsafeJs.inBrowser", _, _), _, _, [], _) =>
+            if(self.emitTarget == EmitBrowser) {"true"} else {"false"}
+        | ECall(at, StaticCall("ff:core/UnsafeJs.inNode", _, _), _, _, [], _) =>
+            if(self.emitTarget == EmitNode) {"true"} else {"false"}
+        | ECall(at, StaticCall("ff:core/UnsafeJs.inBuild", _, _), _, _, [], _) =>
+            if(self.emitTarget == EmitBuild) {"true"} else {"false"}
+        | ECall(at, StaticCall("ff:core/UnsafeJs.value", _, _), _, _, [Argument(_, _, e)], _) =>
+            self.emitTerm(e, async)
+        | ECall(at, StaticCall("ff:core/UnsafeJs.fromValue", _, _), _, _, [Argument(_, _, e)], _) =>
+            self.emitTerm(e, async)
         | ECall(at, StaticCall("ff:core/Equal.equals", _, _), _, _, [left, right], [Dictionary(_, _, _, typeName, [])]) {
             primitiveTypes.contains(typeName) || typeName == "ff:core/Ordering.Ordering"
         } =>
@@ -545,7 +560,7 @@ extend self: JsEmitter {
                 self.emitTryCatchFinally(term, last, async) | Some(code)
             } =>
                 code
-            | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.throwIfCancelled", _, _), _, _, [], _) =>
+            | ECall(at, StaticCall("ff:core/UnsafeJs.throwIfCancelled", _, _), _, _, [], _) =>
                 if(async) {"ff_core_Task.Task_throwIfAborted($task)"} else {""}
             | ECall(at, StaticCall(name, True, instanceCall), effect, _, arguments, _) =>
                 if(instanceCall) {throw(CompileError(at, "Not yet implemented: Tail calls on trait methods."))}

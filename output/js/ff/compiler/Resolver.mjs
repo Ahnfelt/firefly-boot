@@ -96,6 +96,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
+
 // type Resolver
 export function Resolver(variables_, variableLocations_, variants_, types_, typeGenerics_, typeLocations_, asyncTypes_, typeParameters_, traits_, traitLocations_, state_, lspHook_) {
 return {variables_, variableLocations_, variants_, types_, typeGenerics_, typeLocations_, asyncTypes_, typeParameters_, traits_, traitLocations_, state_, lspHook_};

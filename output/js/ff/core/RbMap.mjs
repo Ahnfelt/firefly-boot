@@ -92,6 +92,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
+
 // type Color
 const R$ = {R: true};
 export function R() {

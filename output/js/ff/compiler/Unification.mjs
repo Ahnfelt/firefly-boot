@@ -96,6 +96,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
+
 // type Unification
 export function Unification(substitution_, constraints_, nextUnificationVariableIndex_, instances_, affects_, attemptFixes_) {
 return {substitution_, constraints_, nextUnificationVariableIndex_, instances_, affects_, attemptFixes_};

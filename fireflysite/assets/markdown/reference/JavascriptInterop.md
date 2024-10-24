@@ -41,9 +41,9 @@ The `->` is shorthand for calling the methods `get`, `set`, `increment`, `decrem
 The `js` variable is of the type `JsSystem` and the rest of the expressions return `JsValue`, which represents an arbitrary JavaScript value.
 
 
-# The ff:unsafejs package
+# The UnsafeJs module
 
-This package provides access to unsafe JavaScript features:
+This module provides access to unsafe JavaScript features:
 
 ```firefly
 // Obtains the JsSystem without a capability
@@ -65,7 +65,7 @@ cancelled(): Bool
 value[T](value: T): JsValue
 ```
 
-In the future, it may be possible to provide a whitelist of dependencies that are allowed to use this package.
+In the future, it may be possible to provide a whitelist of dependencies that are allowed to use this module.
 
 
 # Internal FFI

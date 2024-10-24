@@ -114,12 +114,14 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
+
 // type Compiler
 export function Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, cache_, lspHook_, phaseDurationDelta_, phaseDurations_) {
 return {emitTarget_, task_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, cache_, lspHook_, phaseDurationDelta_, phaseDurations_};
 }
 
-export const coreImports_ = ff_core_List.List_map(["Any", "Array", "AssetSystem", "Atomic", "Bool", "BrowserSystem", "Buffer", "BuildSystem", "Channel", "Char", "Core", "Crypto", "Duration", "Equal", "Error", "FileHandle", "Float", "HttpClient", "Instant", "Int", "IntMap", "Json", "JsValue", "JsSystem", "List", "Lock", "Log", "Map", "NodeSystem", "Nothing", "Option", "Ordering", "Pair", "Path", "Random", "Serializable", "Set", "Show", "SourceLocation", "Stream", "String", "StringMap", "Task", "Try", "Unit"], ((moduleName_) => {
+export const coreImports_ = ff_core_List.List_map(["Any", "Array", "AssetSystem", "Atomic", "Bool", "BrowserSystem", "Buffer", "BuildSystem", "Channel", "Char", "Core", "Crypto", "Duration", "Equal", "Error", "FileHandle", "Float", "HttpClient", "Instant", "Int", "IntMap", "Json", "JsValue", "JsSystem", "List", "Lock", "Log", "Map", "NodeSystem", "Nothing", "Option", "Ordering", "Pair", "Path", "Random", "Serializable", "Set", "Show", "SourceLocation", "Stream", "String", "StringMap", "Task", "Try", "Unit", "UnsafeJs"], ((moduleName_) => {
 return ff_compiler_Syntax.DImport(ff_compiler_Syntax.Location("<prelude>", 1, 1), moduleName_, ff_compiler_Syntax.PackagePair("ff", "core"), [], moduleName_)
 }));
 

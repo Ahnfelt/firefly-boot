@@ -94,6 +94,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
+
 // type PatternInfo
 export function PatternInfo(variant_, otherVariants_, fields_) {
 return {variant_, otherVariants_, fields_};

@@ -100,6 +100,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
+
 // type Parser
 export function Parser(packagePair_, file_, tokens_, end_, targetIsNode_, lspHook_, lspEmittedArgumentHook_, offset_, nextUnificationVariableIndex_) {
 return {packagePair_, file_, tokens_, end_, targetIsNode_, lspHook_, lspEmittedArgumentHook_, offset_, nextUnificationVariableIndex_};
@@ -1520,6 +1522,14 @@ result_ = ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, r
 }
 } else if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThin())) {
 result_ = ff_compiler_Parser.Parser_parseDynamicMember(self_, result_)
+} else if(ff_compiler_Token.Token_rawIs2(ff_compiler_Parser.Parser_current(self_), "!", "?")) {
+const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator());
+const method_ = (ff_compiler_Token.Token_rawIs(token_, "!")
+? "ff:core/UnsafeJs.value"
+: "ff:core/UnsafeJs.fromValue");
+const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), method_), false);
+const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, ff_compiler_Token.Token_at(token_));
+result_ = ff_compiler_Parser.Parser_parseDynamicMember(self_, ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), target_, effect_, [], [ff_compiler_Syntax.Argument(result_.at_, ff_core_Option.None(), result_)], []))
 } else {
 const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_));
 const typeArguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "["))
@@ -3130,6 +3140,14 @@ result_ = ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, r
 }
 } else if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThin())) {
 result_ = ff_compiler_Parser.Parser_parseDynamicMember(self_, result_)
+} else if(ff_compiler_Token.Token_rawIs2(ff_compiler_Parser.Parser_current(self_), "!", "?")) {
+const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator());
+const method_ = (ff_compiler_Token.Token_rawIs(token_, "!")
+? "ff:core/UnsafeJs.value"
+: "ff:core/UnsafeJs.fromValue");
+const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), method_), false);
+const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, ff_compiler_Token.Token_at(token_));
+result_ = ff_compiler_Parser.Parser_parseDynamicMember(self_, ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), target_, effect_, [], [ff_compiler_Syntax.Argument(result_.at_, ff_core_Option.None(), result_)], []))
 } else {
 const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_));
 const typeArguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "["))

@@ -1167,6 +1167,14 @@ extend self: Parser {
                 }
             } elseIf {self.current().is(LArrowThin)} {
                 result = self.parseDynamicMember(result)
+            } elseIf {self.current().rawIs2("!", "?")} {
+                let token = self.skip(LOperator)
+                let method = if(token.rawIs("!")) {"ff:core/UnsafeJs.value"} else {"ff:core/UnsafeJs.fromValue"}
+                let target = DynamicCall(EVariable(token.at(), method), False)
+                let effect = self.freshUnificationVariable(token.at())
+                result = self.parseDynamicMember(ECall(token.at(), target, effect, [], [
+                    Argument(result.at, None, result)
+                ], []))
             } else {
                 let at = self.current().at()
                 let typeArguments = if(!self.current().rawIs("[")) {[]} else {self.parseTypeArguments()}
