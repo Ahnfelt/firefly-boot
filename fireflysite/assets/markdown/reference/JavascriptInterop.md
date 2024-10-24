@@ -40,6 +40,8 @@ The `->` is shorthand for calling the methods `get`, `set`, `increment`, `decrem
 
 The `js` variable is of the type `JsSystem` and the rest of the expressions return `JsValue`, which represents an arbitrary JavaScript value.
 
+In addition, the `!` and `?` postfix operators can be used as shorthand for `UnsafeJs.value(...)` and `UnsafeJs.fromValue(..)`.
+
 
 # The UnsafeJs module
 
@@ -61,8 +63,23 @@ throwIfCancelled(): Unit
 // Returns true if the current task has been aborted
 cancelled(): Bool
 
+// Returns true if the current target is async
+inAsync(): Bool
+    
+// Returns true if the current target is browser
+inBrowser(): Bool
+    
+// Returns true if the current target is node
+inNode(): Bool
+    
+// Returns true if the current target is build
+inBuild(): Bool
+
 // Casts any Firefly value to a JavaScript value without conversion
 value[T](value: T): JsValue
+
+// Casts any JavaScript value to a Firefly value without conversion
+fromValue[T](value: JsValue): T
 ```
 
 In the future, it may be possible to provide a whitelist of dependencies that are allowed to use this module.
