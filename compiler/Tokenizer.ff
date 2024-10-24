@@ -205,12 +205,12 @@ tokenize(file: String, code: String, completionAt: Option[Location], attemptFixe
                 emitToken(LComma, start, i)
 
             } elseIf {
-                (code.grab(i) == '!' || code.grab(i) == '?') && i + 1 < code.size() && 
-                (code.grab(i + 1) == '.' || code.grab(i + 1) == '-')
+                code.grab(i) == '?' || 
+                (code.grab(i) == '!' && (i + 1 >= code.size() || code.grab(i + 1) != '='))
             } {
                 
                 i += 1
-                emitToken(LOperator, start, i)
+                emitToken(LUnary, start, i)
                 
             } elseIf {operatorCharacters.contains(code.grab(i))} {
 

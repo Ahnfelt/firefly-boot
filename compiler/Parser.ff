@@ -1135,8 +1135,8 @@ extend self: Parser {
     }
 
     parseUnary(): Term {
-        if(self.current().is(LOperator)) {
-            let token = self.skip(LOperator)
+        if(self.current().is2(LUnary, LOperator)) {
+            let token = if(self.current().is(LUnary)) {self.skip(LUnary)} else {self.skip(LOperator)}
             let term = self.parseUnary()
             let effect = self.freshUnificationVariable(token.at())
             let target = DynamicCall(EVariable(token.at(), token.raw()), False)
@@ -1152,7 +1152,7 @@ extend self: Parser {
             True
         } else {False}
         mutable result = self.parseAtom()
-        while {self.current().is4(LBracketLeft, LColon, LDot, LArrowThin) || self.current().rawIs2("!", "?")} {
+        while {self.current().is5(LBracketLeft, LColon, LDot, LArrowThin, LUnary)} {
             if(self.current().is(LDot)) {
                 self.skip(LDot)
                 if(self.current().rawIs("{")) {
@@ -1167,8 +1167,8 @@ extend self: Parser {
                 }
             } elseIf {self.current().is(LArrowThin)} {
                 result = self.parseDynamicMember(result)
-            } elseIf {self.current().rawIs2("!", "?")} {
-                let token = self.skip(LOperator)
+            } elseIf {self.current().is(LUnary)} {
+                let token = self.skip(LUnary)
                 let method = if(token.rawIs("!")) {"ff:core/UnsafeJs.value"} else {"ff:core/UnsafeJs.fromValue"}
                 let target = DynamicCall(EVariable(token.at(), method), False)
                 let effect = self.freshUnificationVariable(token.at())

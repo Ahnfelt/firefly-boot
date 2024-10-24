@@ -1488,8 +1488,10 @@ return result_
 }
 
 export function Parser_parseUnary(self_) {
-if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LOperator())) {
-const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator());
+if(ff_compiler_Token.Token_is2(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LUnary(), ff_compiler_Token.LOperator())) {
+const token_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LUnary())
+? ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUnary())
+: ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator()));
 const term_ = ff_compiler_Parser.Parser_parseUnary(self_);
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, ff_compiler_Token.Token_at(token_));
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_)), false);
@@ -1507,7 +1509,7 @@ return true
 })()
 : false);
 let result_ = ff_compiler_Parser.Parser_parseAtom(self_);
-while((ff_compiler_Token.Token_is4(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketLeft(), ff_compiler_Token.LColon(), ff_compiler_Token.LDot(), ff_compiler_Token.LArrowThin()) || ff_compiler_Token.Token_rawIs2(ff_compiler_Parser.Parser_current(self_), "!", "?"))) {
+while(ff_compiler_Token.Token_is5(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketLeft(), ff_compiler_Token.LColon(), ff_compiler_Token.LDot(), ff_compiler_Token.LArrowThin(), ff_compiler_Token.LUnary())) {
 if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LDot())) {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LDot());
 if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")) {
@@ -1522,8 +1524,8 @@ result_ = ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, r
 }
 } else if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThin())) {
 result_ = ff_compiler_Parser.Parser_parseDynamicMember(self_, result_)
-} else if(ff_compiler_Token.Token_rawIs2(ff_compiler_Parser.Parser_current(self_), "!", "?")) {
-const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator());
+} else if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LUnary())) {
+const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUnary());
 const method_ = (ff_compiler_Token.Token_rawIs(token_, "!")
 ? "ff:core/UnsafeJs.value"
 : "ff:core/UnsafeJs.fromValue");
@@ -3106,8 +3108,10 @@ return result_
 }
 
 export async function Parser_parseUnary$(self_, $task) {
-if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LOperator())) {
-const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator());
+if(ff_compiler_Token.Token_is2(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LUnary(), ff_compiler_Token.LOperator())) {
+const token_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LUnary())
+? ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUnary())
+: ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator()));
 const term_ = ff_compiler_Parser.Parser_parseUnary(self_);
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, ff_compiler_Token.Token_at(token_));
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_)), false);
@@ -3125,7 +3129,7 @@ return true
 })())
 : false);
 let result_ = ff_compiler_Parser.Parser_parseAtom(self_);
-while((ff_compiler_Token.Token_is4(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketLeft(), ff_compiler_Token.LColon(), ff_compiler_Token.LDot(), ff_compiler_Token.LArrowThin()) || ff_compiler_Token.Token_rawIs2(ff_compiler_Parser.Parser_current(self_), "!", "?"))) {
+while(ff_compiler_Token.Token_is5(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketLeft(), ff_compiler_Token.LColon(), ff_compiler_Token.LDot(), ff_compiler_Token.LArrowThin(), ff_compiler_Token.LUnary())) {
 if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LDot())) {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LDot());
 if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")) {
@@ -3140,8 +3144,8 @@ result_ = ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, r
 }
 } else if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThin())) {
 result_ = ff_compiler_Parser.Parser_parseDynamicMember(self_, result_)
-} else if(ff_compiler_Token.Token_rawIs2(ff_compiler_Parser.Parser_current(self_), "!", "?")) {
-const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator());
+} else if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LUnary())) {
+const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUnary());
 const method_ = (ff_compiler_Token.Token_rawIs(token_, "!")
 ? "ff:core/UnsafeJs.value"
 : "ff:core/UnsafeJs.fromValue");
