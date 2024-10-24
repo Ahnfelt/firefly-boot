@@ -1152,7 +1152,7 @@ extend self: Parser {
             True
         } else {False}
         mutable result = self.parseAtom()
-        while {self.current().is4(LBracketLeft, LColon, LDot, LArrowThin)} {
+        while {self.current().is4(LBracketLeft, LColon, LDot, LArrowThin) || self.current().rawIs2("!", "?")} {
             if(self.current().is(LDot)) {
                 self.skip(LDot)
                 if(self.current().rawIs("{")) {

@@ -280,6 +280,9 @@ emitToken_(ff_compiler_Token.LWildcard(), start_, i_)
 } else if((ff_core_String.String_grab(code_, i_) === 44)) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LComma(), start_, i_)
+} else if(((((ff_core_String.String_grab(code_, i_) === 33) || (ff_core_String.String_grab(code_, i_) === 63)) && ((i_ + 1) < ff_core_String.String_size(code_))) && ((ff_core_String.String_grab(code_, (i_ + 1)) === 46) || (ff_core_String.String_grab(code_, (i_ + 1)) === 45)))) {
+i_ += 1;
+emitToken_(ff_compiler_Token.LOperator(), start_, i_)
 } else if(ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_grab(code_, i_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)) {
 i_ += 1;
 if(((((ff_core_String.String_grab(code_, (i_ - 1)) === 46) && ((i_ + 1) < ff_core_String.String_size(code_))) && (ff_core_String.String_grab(code_, i_) === 46)) && (ff_core_String.String_grab(code_, (i_ + 1)) !== 46))) {
@@ -524,6 +527,9 @@ emitToken_(ff_compiler_Token.LWildcard(), start_, i_)
 } else if((ff_core_String.String_grab(code_, i_) === 44)) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LComma(), start_, i_)
+} else if(((((ff_core_String.String_grab(code_, i_) === 33) || (ff_core_String.String_grab(code_, i_) === 63)) && ((i_ + 1) < ff_core_String.String_size(code_))) && ((ff_core_String.String_grab(code_, (i_ + 1)) === 46) || (ff_core_String.String_grab(code_, (i_ + 1)) === 45)))) {
+i_ += 1;
+emitToken_(ff_compiler_Token.LOperator(), start_, i_)
 } else if(ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_grab(code_, i_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)) {
 i_ += 1;
 if(((((ff_core_String.String_grab(code_, (i_ - 1)) === 46) && ((i_ + 1) < ff_core_String.String_size(code_))) && (ff_core_String.String_grab(code_, i_) === 46)) && (ff_core_String.String_grab(code_, (i_ + 1)) !== 46))) {

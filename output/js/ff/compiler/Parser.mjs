@@ -1507,7 +1507,7 @@ return true
 })()
 : false);
 let result_ = ff_compiler_Parser.Parser_parseAtom(self_);
-while(ff_compiler_Token.Token_is4(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketLeft(), ff_compiler_Token.LColon(), ff_compiler_Token.LDot(), ff_compiler_Token.LArrowThin())) {
+while((ff_compiler_Token.Token_is4(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketLeft(), ff_compiler_Token.LColon(), ff_compiler_Token.LDot(), ff_compiler_Token.LArrowThin()) || ff_compiler_Token.Token_rawIs2(ff_compiler_Parser.Parser_current(self_), "!", "?"))) {
 if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LDot())) {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LDot());
 if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")) {
@@ -3125,7 +3125,7 @@ return true
 })())
 : false);
 let result_ = ff_compiler_Parser.Parser_parseAtom(self_);
-while(ff_compiler_Token.Token_is4(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketLeft(), ff_compiler_Token.LColon(), ff_compiler_Token.LDot(), ff_compiler_Token.LArrowThin())) {
+while((ff_compiler_Token.Token_is4(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketLeft(), ff_compiler_Token.LColon(), ff_compiler_Token.LDot(), ff_compiler_Token.LArrowThin()) || ff_compiler_Token.Token_rawIs2(ff_compiler_Parser.Parser_current(self_), "!", "?"))) {
 if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LDot())) {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LDot());
 if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")) {
