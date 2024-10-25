@@ -386,6 +386,14 @@ extend self: JsEmitter {
             self.emitTerm(e, async)
         | ECall(at, StaticCall("ff:core/UnsafeJs.fromValue", _, _), _, _, [Argument(_, _, e)], _) =>
             self.emitTerm(e, async)
+        | ECall(at, StaticCall("ff:core/JsValue.JsValue_get", _, _), _, _, [Argument(_, _, e), Argument(_, _, EString(_, q))], _) {
+            q.removeFirst("\"").flatMap {_.removeLast("\"")} | Some(s)
+        } {
+            s.first().any {_.isAsciiLetter()} && s.all {_.isAsciiLetterOrDigit()}
+        } =>
+            self.emitTerm(e, async) + "." + s
+        | ECall(at, StaticCall("ff:core/JsValue.JsValue_get", _, _), _, _, [Argument(_, _, e1), Argument(_, _, e2)], _) =>
+            self.emitTerm(e1, async) + "[" + self.emitTerm(e2, async) + "]"
         | ECall(at, StaticCall("ff:core/Equal.equals", _, _), _, _, [left, right], [Dictionary(_, _, _, typeName, [])]) {
             primitiveTypes.contains(typeName) || typeName == "ff:core/Ordering.Ordering"
         } =>
