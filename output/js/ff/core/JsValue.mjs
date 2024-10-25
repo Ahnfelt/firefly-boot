@@ -203,7 +203,7 @@ return self_[key_]
 
 export function JsValue_getOwn(self_, key_) {
 if(ff_core_JsValue.JsValue_hasOwn(self_, key_)) {
-return ff_core_Option.Some(ff_core_JsValue.JsValue_get(self_, key_, ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_String_String))
+return ff_core_Option.Some(self_[key_])
 } else {
 return ff_core_Option.None()
 }
@@ -496,7 +496,7 @@ throw new Error('Function JsValue_get is missing on this target in async context
 
 export async function JsValue_getOwn$(self_, key_, $task) {
 if(ff_core_JsValue.JsValue_hasOwn(self_, key_)) {
-return ff_core_Option.Some(ff_core_JsValue.JsValue_get(self_, key_, ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_String_String))
+return ff_core_Option.Some(self_[key_])
 } else {
 return ff_core_Option.None()
 }

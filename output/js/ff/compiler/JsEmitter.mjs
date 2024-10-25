@@ -1012,6 +1012,30 @@ const at_ = _1.at_;
 const e_ = _1.arguments_[0].value_;
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_)
 }
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/JsValue.JsValue_get" && _1.arguments_.length === 2 && _1.arguments_[1].value_.EString) {
+const at_ = _1.at_;
+const e_ = _1.arguments_[0].value_;
+const q_ = _1.arguments_[1].value_.value_;
+const _guard2 = ff_core_Option.Option_flatMap(ff_core_String.String_removeFirst(q_, "\""), ((_w1) => {
+return ff_core_String.String_removeLast(_w1, "\"")
+}));
+if(_guard2.Some) {
+const s_ = _guard2.value_;
+if((ff_core_Option.Option_any(ff_core_String.String_first(s_), ((_w1) => {
+return ff_core_Char.Char_isAsciiLetter(_w1)
+})) && ff_core_String.String_all(s_, ((_w1) => {
+return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
+})))) {
+return ((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_) + ".") + s_)
+}
+}
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/JsValue.JsValue_get" && _1.arguments_.length === 2) {
+const at_ = _1.at_;
+const e1_ = _1.arguments_[0].value_;
+const e2_ = _1.arguments_[1].value_;
+return (((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + "[") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + "]")
+}
 if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Equal.equals" && _1.arguments_.length === 2 && _1.dictionaries_.length === 1 && _1.dictionaries_[0].dictionaries_.length === 0) {
 const at_ = _1.at_;
 const left_ = _1.arguments_[0];
@@ -1403,6 +1427,32 @@ return ff_core_Option.Some(ff_core_Pair.Pair((((("const " + ff_compiler_JsEmitte
 return _w1
 })));
 return (((("{\n" + ff_core_List.List_join(pair_.first_, "\n")) + "\n") + ff_core_List.List_join(pair_.second_, "\n")) + "\ncontinue _tailcall\n}")
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/JsValue.JsValue_set" && _1.arguments_.length === 3 && _1.arguments_[1].value_.EString) {
+const at_ = _1.at_;
+const e1_ = _1.arguments_[0].value_;
+const q_ = _1.arguments_[1].value_.value_;
+const e2_ = _1.arguments_[2].value_;
+const _guard2 = ff_core_Option.Option_flatMap(ff_core_String.String_removeFirst(q_, "\""), ((_w1) => {
+return ff_core_String.String_removeLast(_w1, "\"")
+}));
+if(_guard2.Some) {
+const s_ = _guard2.value_;
+if((ff_core_Option.Option_any(ff_core_String.String_first(s_), ((_w1) => {
+return ff_core_Char.Char_isAsciiLetter(_w1)
+})) && ff_core_String.String_all(s_, ((_w1) => {
+return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
+})))) {
+return ((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ".") + s_) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_))
+}
+}
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/JsValue.JsValue_set" && _1.arguments_.length === 3) {
+const at_ = _1.at_;
+const e1_ = _1.arguments_[0].value_;
+const e2_ = _1.arguments_[1].value_;
+const e3_ = _1.arguments_[2].value_;
+return ((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + "[") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + "] = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_))
 }
 if(_1.EPipe && _1.function_.ELambda) {
 const at_ = _1.at_;
@@ -2395,6 +2445,30 @@ const at_ = _1.at_;
 const e_ = _1.arguments_[0].value_;
 return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e_, async_, $task))
 }
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/JsValue.JsValue_get" && _1.arguments_.length === 2 && _1.arguments_[1].value_.EString) {
+const at_ = _1.at_;
+const e_ = _1.arguments_[0].value_;
+const q_ = _1.arguments_[1].value_.value_;
+const _guard2 = ff_core_Option.Option_flatMap(ff_core_String.String_removeFirst(q_, "\""), ((_w1) => {
+return ff_core_String.String_removeLast(_w1, "\"")
+}));
+if(_guard2.Some) {
+const s_ = _guard2.value_;
+if((ff_core_Option.Option_any(ff_core_String.String_first(s_), ((_w1) => {
+return ff_core_Char.Char_isAsciiLetter(_w1)
+})) && ff_core_String.String_all(s_, ((_w1) => {
+return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
+})))) {
+return (((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e_, async_, $task)) + ".") + s_)
+}
+}
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/JsValue.JsValue_get" && _1.arguments_.length === 2) {
+const at_ = _1.at_;
+const e1_ = _1.arguments_[0].value_;
+const e2_ = _1.arguments_[1].value_;
+return ((((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e1_, async_, $task)) + "[") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e2_, async_, $task))) + "]")
+}
 if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Equal.equals" && _1.arguments_.length === 2 && _1.dictionaries_.length === 1 && _1.dictionaries_[0].dictionaries_.length === 0) {
 const at_ = _1.at_;
 const left_ = _1.arguments_[0];
@@ -2786,6 +2860,32 @@ return ff_core_Option.Some(ff_core_Pair.Pair((((("const " + ff_compiler_JsEmitte
 return _w1
 })));
 return (((("{\n" + ff_core_List.List_join(pair_.first_, "\n")) + "\n") + ff_core_List.List_join(pair_.second_, "\n")) + "\ncontinue _tailcall\n}")
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/JsValue.JsValue_set" && _1.arguments_.length === 3 && _1.arguments_[1].value_.EString) {
+const at_ = _1.at_;
+const e1_ = _1.arguments_[0].value_;
+const q_ = _1.arguments_[1].value_.value_;
+const e2_ = _1.arguments_[2].value_;
+const _guard2 = ff_core_Option.Option_flatMap(ff_core_String.String_removeFirst(q_, "\""), ((_w1) => {
+return ff_core_String.String_removeLast(_w1, "\"")
+}));
+if(_guard2.Some) {
+const s_ = _guard2.value_;
+if((ff_core_Option.Option_any(ff_core_String.String_first(s_), ((_w1) => {
+return ff_core_Char.Char_isAsciiLetter(_w1)
+})) && ff_core_String.String_all(s_, ((_w1) => {
+return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
+})))) {
+return (((((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e1_, async_, $task)) + ".") + s_) + " = ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e2_, async_, $task)))
+}
+}
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/JsValue.JsValue_set" && _1.arguments_.length === 3) {
+const at_ = _1.at_;
+const e1_ = _1.arguments_[0].value_;
+const e2_ = _1.arguments_[1].value_;
+const e3_ = _1.arguments_[2].value_;
+return (((((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e1_, async_, $task)) + "[") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e2_, async_, $task))) + "] = ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e3_, async_, $task)))
 }
 if(_1.EPipe && _1.function_.ELambda) {
 const at_ = _1.at_;

@@ -580,6 +580,18 @@ extend self: JsEmitter {
                     ))
                 }.collect {_}.unzip()
                 "{\n" + pair.first.join("\n") + "\n" + pair.second.join("\n") + "\ncontinue _tailcall\n}"
+            | ECall(at, StaticCall("ff:core/JsValue.JsValue_set", _, _), _, _, [
+                Argument(_, _, e1), Argument(_, _, EString(_, q)), Argument(_, _, e2)
+            ], _) {
+                q.removeFirst("\"").flatMap {_.removeLast("\"")} | Some(s)
+            } {
+                s.first().any {_.isAsciiLetter()} && s.all {_.isAsciiLetterOrDigit()}
+            } =>
+                self.emitTerm(e1, async) + "." + s + " = " + self.emitTerm(e2, async)
+            | ECall(at, StaticCall("ff:core/JsValue.JsValue_set", _, _), _, _, [
+                Argument(_, _, e1), Argument(_, _, e2), Argument(_, _, e3)
+            ], _) =>
+                self.emitTerm(e1, async) + "[" + self.emitTerm(e2, async) + "] = " + self.emitTerm(e3, async)
             | EPipe(at, value, _, ELambda(_, Lambda(_, _, cases))) =>
                 Patterns.convertAndCheck(self.otherModules, cases)
                 if(!last) {"do "}.else {""} +
