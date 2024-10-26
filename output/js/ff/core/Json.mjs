@@ -825,7 +825,8 @@ fromJson_(json_) {
 return ff_core_Option.Option_flatMap(ff_core_Json.Json_getArray(json_), ((array_) => {
 let convertible_ = true;
 const result_ = ff_core_Array.new_();
-ff_core_List.List_eachWhile(array_, ((item_) => {
+for(let for_i = 0, for_a = array_, for_l = for_a.length; for_i < for_l; for_i++) {
+const item_ = for_a[for_i];
 do {
 const _1 = ff_core_Json_JsonLike$T.fromJson_(item_);
 if(_1.None) {
@@ -838,8 +839,8 @@ result_.array.push(value_)
 break
 }
 } while(false);
-return convertible_
-}));
+if(!convertible_) break
+};
 if(convertible_) {
 return ff_core_Option.Some(ff_core_Array.Array_drain(result_))
 } else return ff_core_Option.None()
@@ -854,7 +855,8 @@ async fromJson_$(json_, $task) {
 return ff_core_Option.Option_flatMap(ff_core_Json.Json_getArray(json_), ((array_) => {
 let convertible_ = true;
 const result_ = ff_core_Array.new_();
-ff_core_List.List_eachWhile(array_, ((item_) => {
+for(let for_i = 0, for_a = array_, for_l = for_a.length; for_i < for_l; for_i++) {
+const item_ = for_a[for_i];
 do {
 const _1 = ff_core_Json_JsonLike$T.fromJson_(item_);
 if(_1.None) {
@@ -867,8 +869,8 @@ result_.array.push(value_)
 break
 }
 } while(false);
-return convertible_
-}));
+if(!convertible_) break
+};
 if(convertible_) {
 return ff_core_Option.Some(ff_core_Array.Array_drain(result_))
 } else return ff_core_Option.None()

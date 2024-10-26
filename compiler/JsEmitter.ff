@@ -705,6 +705,29 @@ extend self: JsEmitter {
                         self.emitStatements(body, last, async) +
                     "\n}"
                 )
+            | "ff:core/List.List_eachWhile" {arguments | [list, ELambda(_, Lambda(_, _, [
+                MatchCase(_, [PVariable(_, name)], [], ESequential(_, body, condition))
+            ]))]} =>
+                let listCode = self.emitTerm(list, async)
+                Some(
+                    "for(let " +
+                    "for_i = 0, for_a = " + listCode + ", for_l = for_a.length" + "; for_i < for_l; for_i++) {\n" +
+                        name.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
+                        self.emitStatements(body, last, async) + ";\n" +
+                        "if(!" + self.emitComma(condition, async) + ") break" +
+                    "\n}"
+                )
+            | "ff:core/List.List_eachWhile" {arguments | [list, ELambda(_, Lambda(_, _, [
+                MatchCase(_, [PVariable(_, name)], [], condition)
+            ]))]} =>
+                let listCode = self.emitTerm(list, async)
+                Some(
+                    "for(let " +
+                    "for_i = 0, for_a = " + listCode + ", for_l = for_a.length" + "; for_i < for_l; for_i++) {\n" +
+                        name.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
+                        "if(!" + self.emitComma(condition, async) + ") break" +
+                    "\n}"
+                )
             | "ff:core/Array.Array_push" {arguments | [array, value]} =>
                 Some(self.emitTerm(array, async) + ".array.push(" + self.emitTerm(value, async) + ")")
             | "ff:core/Core.if" {arguments | [condition, body]} =>

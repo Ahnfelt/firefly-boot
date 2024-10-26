@@ -389,47 +389,53 @@ for(const value of self_) if(!body_(value)) break
 
 export function List_all(self_, body_) {
 let result_ = true;
-ff_core_List.List_eachWhile(self_, ((x_) => {
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 result_ = (result_ && body_(x_));
-return result_
-}));
+if(!result_) break
+};
 return result_
 }
 
 export function List_any(self_, body_) {
 let result_ = false;
-ff_core_List.List_eachWhile(self_, ((x_) => {
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 result_ = (result_ || body_(x_));
-return (!result_)
-}));
+if(!(!result_)) break
+};
 return result_
 }
 
 export function List_indexWhere(self_, body_) {
 let result_ = ff_core_Option.None();
 let i_ = 0;
-ff_core_List.List_eachWhile(self_, ((x_) => {
-if(body_(x_)) {
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
+if(!(body_(x_)
+? (function() {
 result_ = ff_core_Option.Some(i_);
 return false
-} else {
+})()
+: (function() {
 i_ += 1;
 return true
-}
-}));
+})())) break
+};
 return result_
 }
 
 export function List_find(self_, body_) {
 let result_ = ff_core_Option.None();
-ff_core_List.List_eachWhile(self_, ((x_) => {
-if(body_(x_)) {
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
+if(!(body_(x_)
+? (function() {
 result_ = ff_core_Option.Some(x_);
 return false
-} else {
-return true
-}
-}));
+})()
+: true)) break
+};
 return result_
 }
 
@@ -478,9 +484,9 @@ return ff_core_Array.Array_drain(result_)
 
 export function List_collectFirst(self_, body_) {
 let result_ = ff_core_Option.None();
-ff_core_List.List_eachWhile(self_, ((x_) => {
-{
-const _1 = body_(x_);
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
+if(!(((_1) => {
 if(_1.None) {
 return true
 }
@@ -489,8 +495,8 @@ const o_ = _1;
 result_ = o_;
 return false
 }
-}
-}));
+}))(body_(x_))) break
+};
 return result_
 }
 
@@ -752,47 +758,53 @@ for(const value of self_) if(!await body_(value, $task)) break
 
 export async function List_all$(self_, body_, $task) {
 let result_ = true;
-(await ff_core_List.List_eachWhile$(self_, (async (x_, $task) => {
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 result_ = (result_ && (await body_(x_, $task)));
-return result_
-}), $task));
+if(!result_) break
+};
 return result_
 }
 
 export async function List_any$(self_, body_, $task) {
 let result_ = false;
-(await ff_core_List.List_eachWhile$(self_, (async (x_, $task) => {
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 result_ = (result_ || (await body_(x_, $task)));
-return (!result_)
-}), $task));
+if(!(!result_)) break
+};
 return result_
 }
 
 export async function List_indexWhere$(self_, body_, $task) {
 let result_ = ff_core_Option.None();
 let i_ = 0;
-(await ff_core_List.List_eachWhile$(self_, (async (x_, $task) => {
-if((await body_(x_, $task))) {
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
+if(!((await body_(x_, $task))
+? (await (async function() {
 result_ = ff_core_Option.Some(i_);
 return false
-} else {
+})())
+: (await (async function() {
 i_ += 1;
 return true
-}
-}), $task));
+})()))) break
+};
 return result_
 }
 
 export async function List_find$(self_, body_, $task) {
 let result_ = ff_core_Option.None();
-(await ff_core_List.List_eachWhile$(self_, (async (x_, $task) => {
-if((await body_(x_, $task))) {
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
+if(!((await body_(x_, $task))
+? (await (async function() {
 result_ = ff_core_Option.Some(x_);
 return false
-} else {
-return true
-}
-}), $task));
+})())
+: true)) break
+};
 return result_
 }
 
@@ -845,9 +857,9 @@ return ff_core_Array.Array_drain(result_)
 
 export async function List_collectFirst$(self_, body_, $task) {
 let result_ = ff_core_Option.None();
-(await ff_core_List.List_eachWhile$(self_, (async (x_, $task) => {
-{
-const _1 = (await body_(x_, $task));
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
+if(!(((_1) => {
 if(_1.None) {
 return true
 }
@@ -856,8 +868,8 @@ const o_ = _1;
 result_ = o_;
 return false
 }
-}
-}), $task));
+}))((await body_(x_, $task)))) break
+};
 return result_
 }
 
