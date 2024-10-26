@@ -1966,9 +1966,19 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const array_ = _guard1[0];
 const list_ = _guard1[1];
-const listCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_);
 const arrayCode_ = (ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, array_, async_) + ".array");
-return ff_core_Option.Some(((((("for(let for_i = 0, for_a = " + listCode_) + ", for_l = for_a.length, for_r = ") + arrayCode_) + "; ") + "for_i < for_l; for_i++) for_r.push(for_a[for_i])"))
+const listCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_);
+return ff_core_Option.Some(((((("for(let for_i = 0, for_r = " + arrayCode_) + ", for_a = ") + listCode_) + ", for_l = for_a.length; ") + "for_i < for_l; for_i++) for_r.push(for_a[for_i])"))
+}
+}
+if(_1 === "ff:core/Array.Array_pushArray") {
+const _guard1 = arguments_;
+if(_guard1.length === 2) {
+const array_ = _guard1[0];
+const list_ = _guard1[1];
+const arrayCode_ = (ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, array_, async_) + ".array");
+const listCode_ = (ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_) + ".array");
+return ff_core_Option.Some(((((("for(let for_i = 0, for_r = " + arrayCode_) + ", for_a = ") + listCode_) + ", for_l = for_a.length; ") + "for_i < for_l; for_i++) for_r.push(for_a[for_i])"))
 }
 }
 if(_1 === "ff:core/Core.if") {
@@ -3823,9 +3833,19 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const array_ = _guard1[0];
 const list_ = _guard1[1];
-const listCode_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, list_, async_, $task));
 const arrayCode_ = ((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, array_, async_, $task)) + ".array");
-return ff_core_Option.Some(((((("for(let for_i = 0, for_a = " + listCode_) + ", for_l = for_a.length, for_r = ") + arrayCode_) + "; ") + "for_i < for_l; for_i++) for_r.push(for_a[for_i])"))
+const listCode_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, list_, async_, $task));
+return ff_core_Option.Some(((((("for(let for_i = 0, for_r = " + arrayCode_) + ", for_a = ") + listCode_) + ", for_l = for_a.length; ") + "for_i < for_l; for_i++) for_r.push(for_a[for_i])"))
+}
+}
+if(_1 === "ff:core/Array.Array_pushArray") {
+const _guard1 = arguments_;
+if(_guard1.length === 2) {
+const array_ = _guard1[0];
+const list_ = _guard1[1];
+const arrayCode_ = ((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, array_, async_, $task)) + ".array");
+const listCode_ = ((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, list_, async_, $task)) + ".array");
+return ff_core_Option.Some(((((("for(let for_i = 0, for_r = " + arrayCode_) + ", for_a = ") + listCode_) + ", for_l = for_a.length; ") + "for_i < for_l; for_i++) for_r.push(for_a[for_i])"))
 }
 }
 if(_1 === "ff:core/Core.if") {

@@ -513,7 +513,7 @@ return ff_core_Array.Array_drain(array_)
 export function Json_flatMap(self_, body_) {
 const array_ = ff_core_Array.new_();
 ff_core_Json.Json_each(self_, ((field_, value_) => {
-for(let for_i = 0, for_a = body_(field_, value_), for_l = for_a.length, for_r = array_.array; for_i < for_l; for_i++) for_r.push(for_a[for_i])
+for(let for_i = 0, for_r = array_.array, for_a = body_(field_, value_), for_l = for_a.length; for_i < for_l; for_i++) for_r.push(for_a[for_i])
 }));
 return ff_core_Array.Array_drain(array_)
 }
@@ -689,7 +689,7 @@ return ff_core_Array.Array_drain(array_)
 export async function Json_flatMap$(self_, body_, $task) {
 const array_ = ff_core_Array.new_();
 (await ff_core_Json.Json_each$(self_, (async (field_, value_, $task) => {
-for(let for_i = 0, for_a = (await body_(field_, value_, $task)), for_l = for_a.length, for_r = array_.array; for_i < for_l; for_i++) for_r.push(for_a[for_i])
+for(let for_i = 0, for_r = array_.array, for_a = (await body_(field_, value_, $task)), for_l = for_a.length; for_i < for_l; for_i++) for_r.push(for_a[for_i])
 }), $task));
 return ff_core_Array.Array_drain(array_)
 }

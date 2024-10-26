@@ -708,10 +708,17 @@ extend self: JsEmitter {
             | "ff:core/Array.Array_push" {arguments | [array, value]} =>
                 Some(self.emitTerm(array, async) + ".array.push(" + self.emitTerm(value, async) + ")")
             | "ff:core/Array.Array_pushList" {arguments | [array, list]} =>
-                let listCode = self.emitTerm(list, async)
                 let arrayCode = self.emitTerm(array, async) + ".array"
+                let listCode = self.emitTerm(list, async)
                 Some(
-                    "for(let for_i = 0, for_a = " + listCode + ", for_l = for_a.length, for_r = " + arrayCode + "; " +
+                    "for(let for_i = 0, for_r = " + arrayCode + ", for_a = " + listCode + ", for_l = for_a.length; " +
+                    "for_i < for_l; for_i++) for_r.push(for_a[for_i])"
+                )
+            | "ff:core/Array.Array_pushArray" {arguments | [array, list]} =>
+                let arrayCode = self.emitTerm(array, async) + ".array"
+                let listCode = self.emitTerm(list, async) + ".array"
+                Some(
+                    "for(let for_i = 0, for_r = " + arrayCode + ", for_a = " + listCode + ", for_l = for_a.length; " +
                     "for_i < for_l; for_i++) for_r.push(for_a[for_i])"
                 )
             | "ff:core/Core.if" {arguments | [condition, body]} =>

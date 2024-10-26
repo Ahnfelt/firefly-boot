@@ -460,7 +460,7 @@ export function List_flatMap(self_, body_) {
 const results_ = ff_core_Array.new_();
 for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
-for(let for_i = 0, for_a = body_(x_), for_l = for_a.length, for_r = results_.array; for_i < for_l; for_i++) for_r.push(for_a[for_i])
+for(let for_i = 0, for_r = results_.array, for_a = body_(x_), for_l = for_a.length; for_i < for_l; for_i++) for_r.push(for_a[for_i])
 };
 return ff_core_Array.Array_drain(results_)
 }
@@ -519,7 +519,7 @@ ff_core_List.List_each(ff_core_List.List_pairs(self_), ((_1) => {
 const i_ = _1.first_;
 const x_ = _1.second_;
 if((i_ !== 0)) {
-for(let for_i = 0, for_a = separator_, for_l = for_a.length, for_r = array_.array; for_i < for_l; for_i++) for_r.push(for_a[for_i])
+for(let for_i = 0, for_r = array_.array, for_a = separator_, for_l = for_a.length; for_i < for_l; for_i++) for_r.push(for_a[for_i])
 };
 array_.array.push(x_)
 return
@@ -827,7 +827,7 @@ export async function List_flatMap$(self_, body_, $task) {
 const results_ = ff_core_Array.new_();
 for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
-for(let for_i = 0, for_a = (await body_(x_, $task)), for_l = for_a.length, for_r = results_.array; for_i < for_l; for_i++) for_r.push(for_a[for_i])
+for(let for_i = 0, for_r = results_.array, for_a = (await body_(x_, $task)), for_l = for_a.length; for_i < for_l; for_i++) for_r.push(for_a[for_i])
 };
 return ff_core_Array.Array_drain(results_)
 }
@@ -886,7 +886,7 @@ ff_core_List.List_each(ff_core_List.List_pairs(self_), ((_1) => {
 const i_ = _1.first_;
 const x_ = _1.second_;
 if((i_ !== 0)) {
-for(let for_i = 0, for_a = separator_, for_l = for_a.length, for_r = array_.array; for_i < for_l; for_i++) for_r.push(for_a[for_i])
+for(let for_i = 0, for_r = array_.array, for_a = separator_, for_l = for_a.length; for_i < for_l; for_i++) for_r.push(for_a[for_i])
 };
 array_.array.push(x_)
 return
@@ -955,7 +955,7 @@ export function List_flatten(self_) {
 const result_ = ff_core_Array.new_();
 for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
 const xs_ = for_a[for_i];
-for(let for_i = 0, for_a = xs_, for_l = for_a.length, for_r = result_.array; for_i < for_l; for_i++) for_r.push(for_a[for_i])
+for(let for_i = 0, for_r = result_.array, for_a = xs_, for_l = for_a.length; for_i < for_l; for_i++) for_r.push(for_a[for_i])
 };
 return ff_core_Array.Array_drain(result_)
 }
@@ -964,7 +964,7 @@ export async function List_flatten$(self_, $task) {
 const result_ = ff_core_Array.new_();
 for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
 const xs_ = for_a[for_i];
-for(let for_i = 0, for_a = xs_, for_l = for_a.length, for_r = result_.array; for_i < for_l; for_i++) for_r.push(for_a[for_i])
+for(let for_i = 0, for_r = result_.array, for_a = xs_, for_l = for_a.length; for_i < for_l; for_i++) for_r.push(for_a[for_i])
 };
 return ff_core_Array.Array_drain(result_)
 }
