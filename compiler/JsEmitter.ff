@@ -416,9 +416,9 @@ extend self: JsEmitter {
             "(function() {\n" + self.emitStatements(term, True, async) + "\n})()"
     }}
     
-    emitField(term: Term, async: Bool): String {
+    emitField(term: Term, async: Bool, dot: String = "."): String {
         term.{
-            | EString(_, q) {safeBare(q) | Some(s)} => "." + s
+            | EString(_, q) {safeBare(q) | Some(s)} => dot + s
             | _ => "[" + self.emitTerm(term, async) + "]"
         }
     }
@@ -593,9 +593,29 @@ extend self: JsEmitter {
                 Some(self.emitTerm(e, async))
             | "ff:core/JsValue.JsValue_get" {arguments | [e1, e2]} =>
                 Some(self.emitTerm(e1, async) + self.emitField(e2, async))
-            | "ff:core/JsSystem.object" =>
+            | "ff:core/JsValue.JsValue_with" =>
+                function go(e: Term, fields: List[Pair[Term, Term]]): String {
+                    e.{
+                        | ECall(_, StaticCall("ff:core/JsValue.JsValue_with", _, _), _, _, [a1, a2, a3], _) =>
+                            go(a1.value, [Pair(a2.value, a3.value), ...fields])
+                        | ECall(_, StaticCall(name, _, _), _, _, [a], _) {
+                            name == "ff:core/JsSystem.JsSystem_object" || name == "ff:core/JsSystem.JsSystem_new0"
+                        } {
+                            noSideEffects(a.value)
+                        } =>
+                            "{" + fields.map {p =>
+                                self.emitField(p.first, async, dot = "") + ": " + self.emitTerm(p.second, async)
+                            }.join(", ") + "}"
+                        | _ =>
+                            "{..." + self.emitTerm(e, async) + ", " + fields.map {p =>
+                                self.emitField(p.first, async, dot = "") + ": " + self.emitTerm(p.second, async)
+                            }.join(", ") + "}"
+                    }
+                }
+                Some(go(term, []))
+            | "ff:core/JsSystem.JsSystem_object" {arguments | [e]} {noSideEffects(e)} =>
                 Some("{}")
-            | "ff:core/JsSystem.new0" =>
+            | "ff:core/JsSystem.JsSystem_new0" {arguments | [e]} {noSideEffects(e)} =>
                 Some("{}")
             | _ =>
                 None
@@ -1007,8 +1027,25 @@ effectTypeIsAsync(effect: Type): Bool {
 }
 
 safeBare(quotedString: String): Option[String] {
+    // TODO: And not a reserved word in JS
     quotedString.removeFirst("\"").flatMap {_.removeLast("\"")}.filter {s => 
         s.first().any {_.isAsciiLetter()} && s.all {_.isAsciiLetterOrDigit()}
+    }
+}
+
+noSideEffects(term: Term): Bool {
+    term.{
+        | EField(_, _, e, _) => noSideEffects(e)
+        | EVariable(_, _) => True
+        | ECall(_, StaticCall("ff:core/BrowserSystem.BrowserSystem_js", _, _), _, _, [a], _) => noSideEffects(a.value)
+        | ECall(_, StaticCall("ff:core/BuildSystem.BuildSystem_js", _, _), _, _, [a], _) => noSideEffects(a.value)
+        | ECall(_, StaticCall("ff:core/NodeSystem.NodeSystem_js", _, _), _, _, [a], _) => noSideEffects(a.value)
+        | ECall(_, StaticCall("ff:core/UnsafeJs.jsSystem", _, _), _, _, _, _) => True
+        | EString(_, _) => True
+        | EInt(_, _) => True
+        | EChar(_, _) => True
+        | EFloat(_, _) => True
+        | _ => False
     }
 }
 
