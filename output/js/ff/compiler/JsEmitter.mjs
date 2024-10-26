@@ -1631,6 +1631,20 @@ return
 }
 return ff_core_Option.Some(go_(term_, []))
 }
+if(_1 === "ff:core/JsSystem.JsSystem_get") {
+const _guard2 = arguments_;
+if(_guard2.length === 2 && _guard2[1].EString) {
+const e1_ = _guard2[0];
+const e2_ = _guard2[1];
+const q_ = _guard2[1].value_;
+if(ff_compiler_JsEmitter.noSideEffects_(e1_)) {
+return ff_core_Option.Some(ff_core_Option.Option_else(ff_compiler_JsEmitter.safeBare_(q_), (() => {
+return (("globalThis[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + "]")
+})))
+return
+}
+}
+}
 if(_1 === "ff:core/JsSystem.JsSystem_object") {
 const _guard2 = arguments_;
 if(_guard2.length === 1) {
@@ -1769,6 +1783,54 @@ const e1_ = _guard1[0];
 const e2_ = _guard1[1];
 const e3_ = _guard1[2];
 return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
+}
+}
+if(_1 === "ff:core/JsSystem.JsSystem_set") {
+const _guard3 = arguments_;
+if(_guard3.length === 3 && _guard3[1].EString) {
+const e1_ = _guard3[0];
+const q_ = _guard3[1].value_;
+const e3_ = _guard3[2];
+const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
+if(_guard2) {
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+{
+const s_ = _guard1;
+return ff_core_Option.Some(((q_ + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
+}
+}
+}
+}
+if(_1 === "ff:core/JsSystem.JsSystem_increment") {
+const _guard3 = arguments_;
+if(_guard3.length === 3 && _guard3[1].EString) {
+const e1_ = _guard3[0];
+const q_ = _guard3[1].value_;
+const e3_ = _guard3[2];
+const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
+if(_guard2) {
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+{
+const s_ = _guard1;
+return ff_core_Option.Some(((q_ + " += ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
+}
+}
+}
+}
+if(_1 === "ff:core/JsSystem.JsSystem_decrement") {
+const _guard3 = arguments_;
+if(_guard3.length === 3 && _guard3[1].EString) {
+const e1_ = _guard3[0];
+const q_ = _guard3[1].value_;
+const e3_ = _guard3[2];
+const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
+if(_guard2) {
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+{
+const s_ = _guard1;
+return ff_core_Option.Some(((q_ + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
+}
+}
 }
 }
 {
@@ -3206,6 +3268,20 @@ return
 }
 return ff_core_Option.Some((await go_$(term_, [], $task)))
 }
+if(_1 === "ff:core/JsSystem.JsSystem_get") {
+const _guard2 = arguments_;
+if(_guard2.length === 2 && _guard2[1].EString) {
+const e1_ = _guard2[0];
+const e2_ = _guard2[1];
+const q_ = _guard2[1].value_;
+if(ff_compiler_JsEmitter.noSideEffects_(e1_)) {
+return ff_core_Option.Some((await ff_core_Option.Option_else$(ff_compiler_JsEmitter.safeBare_(q_), (async ($task) => {
+return (("globalThis[" + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e2_, async_, $task))) + "]")
+}), $task)))
+return
+}
+}
+}
 if(_1 === "ff:core/JsSystem.JsSystem_object") {
 const _guard2 = arguments_;
 if(_guard2.length === 1) {
@@ -3344,6 +3420,54 @@ const e1_ = _guard1[0];
 const e2_ = _guard1[1];
 const e3_ = _guard1[2];
 return ff_core_Option.Some(((((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e1_, async_, $task)) + (await ff_compiler_JsEmitter.JsEmitter_emitField$(self_, e2_, async_, ".", $task))) + " -= ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e3_, async_, $task))))
+}
+}
+if(_1 === "ff:core/JsSystem.JsSystem_set") {
+const _guard3 = arguments_;
+if(_guard3.length === 3 && _guard3[1].EString) {
+const e1_ = _guard3[0];
+const q_ = _guard3[1].value_;
+const e3_ = _guard3[2];
+const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
+if(_guard2) {
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+{
+const s_ = _guard1;
+return ff_core_Option.Some(((q_ + " = ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e3_, async_, $task))))
+}
+}
+}
+}
+if(_1 === "ff:core/JsSystem.JsSystem_increment") {
+const _guard3 = arguments_;
+if(_guard3.length === 3 && _guard3[1].EString) {
+const e1_ = _guard3[0];
+const q_ = _guard3[1].value_;
+const e3_ = _guard3[2];
+const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
+if(_guard2) {
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+{
+const s_ = _guard1;
+return ff_core_Option.Some(((q_ + " += ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e3_, async_, $task))))
+}
+}
+}
+}
+if(_1 === "ff:core/JsSystem.JsSystem_decrement") {
+const _guard3 = arguments_;
+if(_guard3.length === 3 && _guard3[1].EString) {
+const e1_ = _guard3[0];
+const q_ = _guard3[1].value_;
+const e3_ = _guard3[2];
+const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
+if(_guard2) {
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+{
+const s_ = _guard1;
+return ff_core_Option.Some(((q_ + " -= ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e3_, async_, $task))))
+}
+}
 }
 }
 {
