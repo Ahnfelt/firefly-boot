@@ -1917,11 +1917,11 @@ return ff_core_Option.Some((("while(" + ff_compiler_JsEmitter.JsEmitter_emitComm
 }
 if(_1 === "ff:core/List.List_each") {
 const _guard2 = arguments_;
-if(_guard2.length === 2 && _guard2[0].ECall && _guard2[0].target_.StaticCall && _guard2[0].arguments_.length === 2 && _guard2[1].ELambda && _guard2[1].lambda_.cases_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_[0].PVariable && _guard2[1].lambda_.cases_[0].patterns_[0].name_.Some && _guard2[1].lambda_.cases_[0].guards_.length === 0) {
+if(_guard2.length === 2 && _guard2[0].ECall && _guard2[0].target_.StaticCall && _guard2[0].arguments_.length === 2 && _guard2[1].ELambda && _guard2[1].lambda_.cases_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_[0].PVariable && _guard2[1].lambda_.cases_[0].guards_.length === 0) {
 const r_ = _guard2[0].target_.name_;
 const start_ = _guard2[0].arguments_[0];
 const end_ = _guard2[0].arguments_[1];
-const name_ = _guard2[1].lambda_.cases_[0].patterns_[0].name_.value_;
+const name_ = _guard2[1].lambda_.cases_[0].patterns_[0].name_;
 const body_ = _guard2[1].lambda_.cases_[0].body_;
 if(((r_ === "ff:core/Int.Int_until") || (r_ === "ff:core/Int.Int_to"))) {
 const startCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, start_.value_, async_);
@@ -1929,18 +1929,28 @@ const endCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, end_.value_, as
 const op_ = ((r_ === "ff:core/Int.Int_until")
 ? "<"
 : "<=");
-return ff_core_Option.Some((((((((((((("for(let " + "for_i = ") + startCode_) + ", for_e = ") + endCode_) + "; for_i ") + op_) + " for_e; for_i++) {\n") + "const ") + ff_compiler_JsEmitter.escapeKeyword_(name_)) + " = for_i;\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, async_)) + "\n}"))
+return ff_core_Option.Some((((((((((("for(let " + "for_i = ") + startCode_) + ", for_e = ") + endCode_) + "; for_i ") + op_) + " for_e; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_i;\n")
+})), (() => {
+return ""
+}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, async_)) + "\n}"))
+return
 }
 }
 }
 if(_1 === "ff:core/List.List_each") {
 const _guard1 = arguments_;
-if(_guard1.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_[0].PVariable && _guard1[1].lambda_.cases_[0].patterns_[0].name_.Some && _guard1[1].lambda_.cases_[0].guards_.length === 0) {
+if(_guard1.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_[0].PVariable && _guard1[1].lambda_.cases_[0].guards_.length === 0) {
 const list_ = _guard1[0];
-const name_ = _guard1[1].lambda_.cases_[0].patterns_[0].name_.value_;
+const name_ = _guard1[1].lambda_.cases_[0].patterns_[0].name_;
 const body_ = _guard1[1].lambda_.cases_[0].body_;
 const listCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_);
-return ff_core_Option.Some(((((((((("for(let " + "for_i = 0, for_a = ") + listCode_) + ", for_l = for_a.length") + "; for_i < for_l; for_i++) {\n") + "const ") + ff_compiler_JsEmitter.escapeKeyword_(name_)) + " = for_a[for_i];\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, async_)) + "\n}"))
+return ff_core_Option.Some(((((((("for(let " + "for_i = 0, for_a = ") + listCode_) + ", for_l = for_a.length") + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
+})), (() => {
+return ""
+}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, async_)) + "\n}"))
+return
 }
 }
 if(_1 === "ff:core/Core.if") {
@@ -3746,11 +3756,11 @@ return ff_core_Option.Some((("while(" + (await ff_compiler_JsEmitter.JsEmitter_e
 }
 if(_1 === "ff:core/List.List_each") {
 const _guard2 = arguments_;
-if(_guard2.length === 2 && _guard2[0].ECall && _guard2[0].target_.StaticCall && _guard2[0].arguments_.length === 2 && _guard2[1].ELambda && _guard2[1].lambda_.cases_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_[0].PVariable && _guard2[1].lambda_.cases_[0].patterns_[0].name_.Some && _guard2[1].lambda_.cases_[0].guards_.length === 0) {
+if(_guard2.length === 2 && _guard2[0].ECall && _guard2[0].target_.StaticCall && _guard2[0].arguments_.length === 2 && _guard2[1].ELambda && _guard2[1].lambda_.cases_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_[0].PVariable && _guard2[1].lambda_.cases_[0].guards_.length === 0) {
 const r_ = _guard2[0].target_.name_;
 const start_ = _guard2[0].arguments_[0];
 const end_ = _guard2[0].arguments_[1];
-const name_ = _guard2[1].lambda_.cases_[0].patterns_[0].name_.value_;
+const name_ = _guard2[1].lambda_.cases_[0].patterns_[0].name_;
 const body_ = _guard2[1].lambda_.cases_[0].body_;
 if(((r_ === "ff:core/Int.Int_until") || (r_ === "ff:core/Int.Int_to"))) {
 const startCode_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, start_.value_, async_, $task));
@@ -3758,18 +3768,28 @@ const endCode_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, end_.va
 const op_ = ((r_ === "ff:core/Int.Int_until")
 ? "<"
 : "<=");
-return ff_core_Option.Some((((((((((((("for(let " + "for_i = ") + startCode_) + ", for_e = ") + endCode_) + "; for_i ") + op_) + " for_e; for_i++) {\n") + "const ") + ff_compiler_JsEmitter.escapeKeyword_(name_)) + " = for_i;\n") + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, body_, last_, async_, $task))) + "\n}"))
+return ff_core_Option.Some((((((((((("for(let " + "for_i = ") + startCode_) + ", for_e = ") + endCode_) + "; for_i ") + op_) + " for_e; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_i;\n")
+})), (() => {
+return ""
+}))) + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, body_, last_, async_, $task))) + "\n}"))
+return
 }
 }
 }
 if(_1 === "ff:core/List.List_each") {
 const _guard1 = arguments_;
-if(_guard1.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_[0].PVariable && _guard1[1].lambda_.cases_[0].patterns_[0].name_.Some && _guard1[1].lambda_.cases_[0].guards_.length === 0) {
+if(_guard1.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_[0].PVariable && _guard1[1].lambda_.cases_[0].guards_.length === 0) {
 const list_ = _guard1[0];
-const name_ = _guard1[1].lambda_.cases_[0].patterns_[0].name_.value_;
+const name_ = _guard1[1].lambda_.cases_[0].patterns_[0].name_;
 const body_ = _guard1[1].lambda_.cases_[0].body_;
 const listCode_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, list_, async_, $task));
-return ff_core_Option.Some(((((((((("for(let " + "for_i = 0, for_a = ") + listCode_) + ", for_l = for_a.length") + "; for_i < for_l; for_i++) {\n") + "const ") + ff_compiler_JsEmitter.escapeKeyword_(name_)) + " = for_a[for_i];\n") + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, body_, last_, async_, $task))) + "\n}"))
+return ff_core_Option.Some(((((((("for(let " + "for_i = 0, for_a = ") + listCode_) + ", for_l = for_a.length") + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
+})), (() => {
+return ""
+}))) + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, body_, last_, async_, $task))) + "\n}"))
+return
 }
 }
 if(_1 === "ff:core/Core.if") {
