@@ -1600,124 +1600,68 @@ const e2_ = _guard1[1];
 return ff_core_Option.Some((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")))
 }
 }
-if(_1 === "ff:core/JsValue.JsValue_call0") {
+{
+const name_ = _1;
+const _guard3 = ff_core_String.String_removeFirst(name_, "ff:core/JsValue.JsValue_call");
+if(_guard3.Some) {
+const n_ = _guard3.value_;
+const _guard2 = ff_core_String.String_all(n_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+}));
+if(_guard2) {
 const _guard1 = arguments_;
 if(_guard1.length >= 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
 const es_ = _guard1.slice(2);
-return ff_core_Option.Some(((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + "(") + ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
+const argumentCode_ = ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
-})), ", ")) + ")"))
-return
+})), ", ");
+return ff_core_Option.Some(((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + "(") + argumentCode_) + ")"))
 }
 }
-if(_1 === "ff:core/JsValue.JsValue_call1") {
+}
+}
+{
+const name_ = _1;
+const _guard3 = ff_core_String.String_removeFirst(name_, "ff:core/JsValue.JsValue_callValue");
+if(_guard3.Some) {
+const n_ = _guard3.value_;
+const _guard2 = ff_core_String.String_all(n_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+}));
+if(_guard2) {
 const _guard1 = arguments_;
-if(_guard1.length >= 2) {
+if(_guard1.length >= 1) {
 const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const es_ = _guard1.slice(2);
-return ff_core_Option.Some(((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + "(") + ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
+const es_ = _guard1.slice(1);
+const argumentCode_ = ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
-})), ", ")) + ")"))
-return
+})), ", ");
+return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + "(") + argumentCode_) + ")"))
 }
 }
-if(_1 === "ff:core/JsValue.JsValue_call2") {
+}
+}
+{
+const name_ = _1;
+const _guard3 = ff_core_String.String_removeFirst(name_, "ff:core/JsValue.JsValue_new");
+if(_guard3.Some) {
+const n_ = _guard3.value_;
+const _guard2 = ff_core_String.String_all(n_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+}));
+if(_guard2) {
 const _guard1 = arguments_;
-if(_guard1.length >= 2) {
+if(_guard1.length >= 1) {
 const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const es_ = _guard1.slice(2);
-return ff_core_Option.Some(((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + "(") + ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
+const es_ = _guard1.slice(1);
+const argumentCode_ = ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
-})), ", ")) + ")"))
-return
+})), ", ");
+return ff_core_Option.Some(((((("(new " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + "(") + argumentCode_) + ")") + ")"))
 }
 }
-if(_1 === "ff:core/JsValue.JsValue_call3") {
-const _guard1 = arguments_;
-if(_guard1.length >= 2) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const es_ = _guard1.slice(2);
-return ff_core_Option.Some(((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + "(") + ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
-})), ", ")) + ")"))
-return
-}
-}
-if(_1 === "ff:core/JsValue.JsValue_call4") {
-const _guard1 = arguments_;
-if(_guard1.length >= 2) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const es_ = _guard1.slice(2);
-return ff_core_Option.Some(((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + "(") + ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
-})), ", ")) + ")"))
-return
-}
-}
-if(_1 === "ff:core/JsValue.JsValue_call5") {
-const _guard1 = arguments_;
-if(_guard1.length >= 2) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const es_ = _guard1.slice(2);
-return ff_core_Option.Some(((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + "(") + ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
-})), ", ")) + ")"))
-return
-}
-}
-if(_1 === "ff:core/JsValue.JsValue_call6") {
-const _guard1 = arguments_;
-if(_guard1.length >= 2) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const es_ = _guard1.slice(2);
-return ff_core_Option.Some(((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + "(") + ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
-})), ", ")) + ")"))
-return
-}
-}
-if(_1 === "ff:core/JsValue.JsValue_call7") {
-const _guard1 = arguments_;
-if(_guard1.length >= 2) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const es_ = _guard1.slice(2);
-return ff_core_Option.Some(((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + "(") + ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
-})), ", ")) + ")"))
-return
-}
-}
-if(_1 === "ff:core/JsValue.JsValue_call8") {
-const _guard1 = arguments_;
-if(_guard1.length >= 2) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const es_ = _guard1.slice(2);
-return ff_core_Option.Some(((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + "(") + ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
-})), ", ")) + ")"))
-return
-}
-}
-if(_1 === "ff:core/JsValue.JsValue_call9") {
-const _guard1 = arguments_;
-if(_guard1.length >= 2) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const es_ = _guard1.slice(2);
-return ff_core_Option.Some(((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + "(") + ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
-})), ", ")) + ")"))
-return
 }
 }
 if(_1 === "ff:core/JsValue.JsValue_with") {
@@ -3357,124 +3301,68 @@ const e2_ = _guard1[1];
 return ff_core_Option.Some(((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e1_, async_, $task)) + (await ff_compiler_JsEmitter.JsEmitter_emitField$(self_, e2_, async_, ".", $task))))
 }
 }
-if(_1 === "ff:core/JsValue.JsValue_call0") {
+{
+const name_ = _1;
+const _guard3 = ff_core_String.String_removeFirst(name_, "ff:core/JsValue.JsValue_call");
+if(_guard3.Some) {
+const n_ = _guard3.value_;
+const _guard2 = ff_core_String.String_all(n_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+}));
+if(_guard2) {
 const _guard1 = arguments_;
 if(_guard1.length >= 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
 const es_ = _guard1.slice(2);
-return ff_core_Option.Some((((((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e1_, async_, $task)) + (await ff_compiler_JsEmitter.JsEmitter_emitField$(self_, e2_, async_, ".", $task))) + "(") + ff_core_List.List_join((await ff_core_List.List_map$(es_, (async (_w1, $task) => {
+const argumentCode_ = ff_core_List.List_join((await ff_core_List.List_map$(es_, (async (_w1, $task) => {
 return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, _w1, async_, $task))
-}), $task)), ", ")) + ")"))
-return
+}), $task)), ", ");
+return ff_core_Option.Some((((((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e1_, async_, $task)) + (await ff_compiler_JsEmitter.JsEmitter_emitField$(self_, e2_, async_, ".", $task))) + "(") + argumentCode_) + ")"))
 }
 }
-if(_1 === "ff:core/JsValue.JsValue_call1") {
+}
+}
+{
+const name_ = _1;
+const _guard3 = ff_core_String.String_removeFirst(name_, "ff:core/JsValue.JsValue_callValue");
+if(_guard3.Some) {
+const n_ = _guard3.value_;
+const _guard2 = ff_core_String.String_all(n_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+}));
+if(_guard2) {
 const _guard1 = arguments_;
-if(_guard1.length >= 2) {
+if(_guard1.length >= 1) {
 const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const es_ = _guard1.slice(2);
-return ff_core_Option.Some((((((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e1_, async_, $task)) + (await ff_compiler_JsEmitter.JsEmitter_emitField$(self_, e2_, async_, ".", $task))) + "(") + ff_core_List.List_join((await ff_core_List.List_map$(es_, (async (_w1, $task) => {
+const es_ = _guard1.slice(1);
+const argumentCode_ = ff_core_List.List_join((await ff_core_List.List_map$(es_, (async (_w1, $task) => {
 return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, _w1, async_, $task))
-}), $task)), ", ")) + ")"))
-return
+}), $task)), ", ");
+return ff_core_Option.Some(((((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e1_, async_, $task)) + "(") + argumentCode_) + ")"))
 }
 }
-if(_1 === "ff:core/JsValue.JsValue_call2") {
+}
+}
+{
+const name_ = _1;
+const _guard3 = ff_core_String.String_removeFirst(name_, "ff:core/JsValue.JsValue_new");
+if(_guard3.Some) {
+const n_ = _guard3.value_;
+const _guard2 = ff_core_String.String_all(n_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+}));
+if(_guard2) {
 const _guard1 = arguments_;
-if(_guard1.length >= 2) {
+if(_guard1.length >= 1) {
 const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const es_ = _guard1.slice(2);
-return ff_core_Option.Some((((((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e1_, async_, $task)) + (await ff_compiler_JsEmitter.JsEmitter_emitField$(self_, e2_, async_, ".", $task))) + "(") + ff_core_List.List_join((await ff_core_List.List_map$(es_, (async (_w1, $task) => {
+const es_ = _guard1.slice(1);
+const argumentCode_ = ff_core_List.List_join((await ff_core_List.List_map$(es_, (async (_w1, $task) => {
 return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, _w1, async_, $task))
-}), $task)), ", ")) + ")"))
-return
+}), $task)), ", ");
+return ff_core_Option.Some(((((("(new " + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e1_, async_, $task))) + "(") + argumentCode_) + ")") + ")"))
 }
 }
-if(_1 === "ff:core/JsValue.JsValue_call3") {
-const _guard1 = arguments_;
-if(_guard1.length >= 2) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const es_ = _guard1.slice(2);
-return ff_core_Option.Some((((((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e1_, async_, $task)) + (await ff_compiler_JsEmitter.JsEmitter_emitField$(self_, e2_, async_, ".", $task))) + "(") + ff_core_List.List_join((await ff_core_List.List_map$(es_, (async (_w1, $task) => {
-return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, _w1, async_, $task))
-}), $task)), ", ")) + ")"))
-return
-}
-}
-if(_1 === "ff:core/JsValue.JsValue_call4") {
-const _guard1 = arguments_;
-if(_guard1.length >= 2) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const es_ = _guard1.slice(2);
-return ff_core_Option.Some((((((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e1_, async_, $task)) + (await ff_compiler_JsEmitter.JsEmitter_emitField$(self_, e2_, async_, ".", $task))) + "(") + ff_core_List.List_join((await ff_core_List.List_map$(es_, (async (_w1, $task) => {
-return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, _w1, async_, $task))
-}), $task)), ", ")) + ")"))
-return
-}
-}
-if(_1 === "ff:core/JsValue.JsValue_call5") {
-const _guard1 = arguments_;
-if(_guard1.length >= 2) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const es_ = _guard1.slice(2);
-return ff_core_Option.Some((((((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e1_, async_, $task)) + (await ff_compiler_JsEmitter.JsEmitter_emitField$(self_, e2_, async_, ".", $task))) + "(") + ff_core_List.List_join((await ff_core_List.List_map$(es_, (async (_w1, $task) => {
-return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, _w1, async_, $task))
-}), $task)), ", ")) + ")"))
-return
-}
-}
-if(_1 === "ff:core/JsValue.JsValue_call6") {
-const _guard1 = arguments_;
-if(_guard1.length >= 2) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const es_ = _guard1.slice(2);
-return ff_core_Option.Some((((((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e1_, async_, $task)) + (await ff_compiler_JsEmitter.JsEmitter_emitField$(self_, e2_, async_, ".", $task))) + "(") + ff_core_List.List_join((await ff_core_List.List_map$(es_, (async (_w1, $task) => {
-return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, _w1, async_, $task))
-}), $task)), ", ")) + ")"))
-return
-}
-}
-if(_1 === "ff:core/JsValue.JsValue_call7") {
-const _guard1 = arguments_;
-if(_guard1.length >= 2) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const es_ = _guard1.slice(2);
-return ff_core_Option.Some((((((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e1_, async_, $task)) + (await ff_compiler_JsEmitter.JsEmitter_emitField$(self_, e2_, async_, ".", $task))) + "(") + ff_core_List.List_join((await ff_core_List.List_map$(es_, (async (_w1, $task) => {
-return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, _w1, async_, $task))
-}), $task)), ", ")) + ")"))
-return
-}
-}
-if(_1 === "ff:core/JsValue.JsValue_call8") {
-const _guard1 = arguments_;
-if(_guard1.length >= 2) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const es_ = _guard1.slice(2);
-return ff_core_Option.Some((((((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e1_, async_, $task)) + (await ff_compiler_JsEmitter.JsEmitter_emitField$(self_, e2_, async_, ".", $task))) + "(") + ff_core_List.List_join((await ff_core_List.List_map$(es_, (async (_w1, $task) => {
-return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, _w1, async_, $task))
-}), $task)), ", ")) + ")"))
-return
-}
-}
-if(_1 === "ff:core/JsValue.JsValue_call9") {
-const _guard1 = arguments_;
-if(_guard1.length >= 2) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const es_ = _guard1.slice(2);
-return ff_core_Option.Some((((((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e1_, async_, $task)) + (await ff_compiler_JsEmitter.JsEmitter_emitField$(self_, e2_, async_, ".", $task))) + "(") + ff_core_List.List_join((await ff_core_List.List_map$(es_, (async (_w1, $task) => {
-return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, _w1, async_, $task))
-}), $task)), ", ")) + ")"))
-return
 }
 }
 if(_1 === "ff:core/JsValue.JsValue_with") {

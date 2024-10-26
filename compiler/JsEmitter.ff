@@ -593,26 +593,21 @@ extend self: JsEmitter {
                 Some(self.emitTerm(e, async))
             | "ff:core/JsValue.JsValue_get" {arguments | [e1, e2]} =>
                 Some(self.emitTerm(e1, async) + self.emitField(e2, async))
-            | "ff:core/JsValue.JsValue_call0" {arguments | [e1, e2, ...es]} =>
-                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + "(" + es.map {self.emitTerm(_, async)}.join(", ") + ")")
-            | "ff:core/JsValue.JsValue_call1" {arguments | [e1, e2, ...es]} =>
-                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + "(" + es.map {self.emitTerm(_, async)}.join(", ") + ")")
-            | "ff:core/JsValue.JsValue_call2" {arguments | [e1, e2, ...es]} =>
-                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + "(" + es.map {self.emitTerm(_, async)}.join(", ") + ")")
-            | "ff:core/JsValue.JsValue_call3" {arguments | [e1, e2, ...es]} =>
-                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + "(" + es.map {self.emitTerm(_, async)}.join(", ") + ")")
-            | "ff:core/JsValue.JsValue_call4" {arguments | [e1, e2, ...es]} =>
-                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + "(" + es.map {self.emitTerm(_, async)}.join(", ") + ")")
-            | "ff:core/JsValue.JsValue_call5" {arguments | [e1, e2, ...es]} =>
-                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + "(" + es.map {self.emitTerm(_, async)}.join(", ") + ")")
-            | "ff:core/JsValue.JsValue_call6" {arguments | [e1, e2, ...es]} =>
-                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + "(" + es.map {self.emitTerm(_, async)}.join(", ") + ")")
-            | "ff:core/JsValue.JsValue_call7" {arguments | [e1, e2, ...es]} =>
-                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + "(" + es.map {self.emitTerm(_, async)}.join(", ") + ")")
-            | "ff:core/JsValue.JsValue_call8" {arguments | [e1, e2, ...es]} =>
-                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + "(" + es.map {self.emitTerm(_, async)}.join(", ") + ")")
-            | "ff:core/JsValue.JsValue_call9" {arguments | [e1, e2, ...es]} =>
-                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + "(" + es.map {self.emitTerm(_, async)}.join(", ") + ")")
+            | name {name.removeFirst("ff:core/JsValue.JsValue_call") | Some(n)} {n.all {_.isAsciiDigit()}} {
+                arguments | [e1, e2, ...es]
+            } =>
+                let argumentCode = es.map {self.emitTerm(_, async)}.join(", ")
+                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + "(" + argumentCode + ")")
+            | name {name.removeFirst("ff:core/JsValue.JsValue_callValue") | Some(n)} {n.all {_.isAsciiDigit()}} {
+                arguments | [e1, ...es]
+            } =>
+                let argumentCode = es.map {self.emitTerm(_, async)}.join(", ")
+                Some(self.emitTerm(e1, async) + "(" + argumentCode + ")")
+            | name {name.removeFirst("ff:core/JsValue.JsValue_new") | Some(n)} {n.all {_.isAsciiDigit()}} {
+                arguments | [e1, ...es]
+            } =>
+                let argumentCode = es.map {self.emitTerm(_, async)}.join(", ")
+                Some("(new " + self.emitTerm(e1, async) + "(" + argumentCode + ")" + ")")
             | "ff:core/JsValue.JsValue_with" =>
                 function go(e: Term, fields: List[Pair[Term, Term]]): String {
                     e.{
