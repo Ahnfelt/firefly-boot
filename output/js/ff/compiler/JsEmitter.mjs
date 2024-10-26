@@ -192,6 +192,42 @@ return ff_compiler_Syntax.ECall(function_.at_, ff_compiler_Syntax.DynamicCall(fu
 }
 }
 
+export function safeCommable_(term_) {
+{
+const _1 = term_;
+if(_1.EField) {
+return true
+}
+if(_1.EVariable) {
+return true
+}
+if(_1.EAssign) {
+return true
+}
+if(_1.EAssignField) {
+return true
+}
+if(_1.ECall) {
+return true
+}
+if(_1.EString) {
+return true
+}
+if(_1.EInt) {
+return true
+}
+if(_1.EChar) {
+return true
+}
+if(_1.EFloat) {
+return true
+}
+{
+return false
+}
+}
+}
+
 export function extractTypeName_(type_) {
 const type_a = type_;
 if(type_a.TVariable) {
@@ -388,6 +424,42 @@ return body_
 {
 const effect_ = ff_compiler_Syntax.TConstructor(function_.at_, "Q$", []);
 return ff_compiler_Syntax.ECall(function_.at_, ff_compiler_Syntax.DynamicCall(function_, false), effect_, [], [], [])
+}
+}
+
+export async function safeCommable_$(term_, $task) {
+{
+const _1 = term_;
+if(_1.EField) {
+return true
+}
+if(_1.EVariable) {
+return true
+}
+if(_1.EAssign) {
+return true
+}
+if(_1.EAssignField) {
+return true
+}
+if(_1.ECall) {
+return true
+}
+if(_1.EString) {
+return true
+}
+if(_1.EInt) {
+return true
+}
+if(_1.EChar) {
+return true
+}
+if(_1.EFloat) {
+return true
+}
+{
+return false
+}
 }
 }
 
@@ -638,7 +710,10 @@ const mutability_ = (mutable_
 ? "let"
 : "const");
 const valueCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, definition_.value_, async_);
-return (((((mutability_ + " ") + ff_compiler_JsEmitter.escapeKeyword_(definition_.name_)) + " = ") + valueCode_) + ";")
+const assignmentCode_ = ((valueCode_ !== "(void 0)")
+? (" = " + valueCode_)
+: "");
+return ((((mutability_ + " ") + ff_compiler_JsEmitter.escapeKeyword_(definition_.name_)) + assignmentCode_) + ";")
 }
 
 export function JsEmitter_emitExtendsDefinition(self_, definition_) {
@@ -1782,6 +1857,24 @@ return ff_core_Option.Some("{}")
 }
 }
 }
+if(_1 === "ff:core/JsSystem.JsSystem_null") {
+const _guard2 = arguments_;
+if(_guard2.length === 1) {
+const e_ = _guard2[0];
+if(ff_compiler_JsEmitter.noSideEffects_(e_)) {
+return ff_core_Option.Some("null")
+}
+}
+}
+if(_1 === "ff:core/JsSystem.JsSystem_undefined") {
+const _guard2 = arguments_;
+if(_guard2.length === 1) {
+const e_ = _guard2[0];
+if(ff_compiler_JsEmitter.noSideEffects_(e_)) {
+return ff_core_Option.Some("(void 0)")
+}
+}
+}
 {
 return ff_core_Option.None()
 }
@@ -1796,7 +1889,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const condition_ = _guard1[0];
 const body_ = _guard1[1];
-return ff_core_Option.Some((((("while(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(condition_), async_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), false, async_)) + "\n}"))
+return ff_core_Option.Some((((("while(" + ff_compiler_JsEmitter.JsEmitter_emitComma(self_, ff_compiler_JsEmitter.invokeImmediately_(condition_), async_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), false, async_)) + "\n}"))
 }
 }
 if(_1 === "ff:core/Core.doWhile") {
@@ -1807,7 +1900,7 @@ const _guard1 = ff_compiler_JsEmitter.invokeImmediately_(doWhileBody_);
 if(_guard1.ESequential) {
 const body_ = _guard1.before_;
 const condition_ = _guard1.after_;
-return ff_core_Option.Some(((((("while(true) {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, false, async_)) + "\nif(!") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_)) + ") break") + "\n}"))
+return ff_core_Option.Some(((((("while(true) {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, false, async_)) + "\nif(!") + ff_compiler_JsEmitter.JsEmitter_emitComma(self_, condition_, async_)) + ") break") + "\n}"))
 }
 }
 }
@@ -1818,7 +1911,7 @@ const doWhileBody_ = _guard2[0];
 const _guard1 = ff_compiler_JsEmitter.invokeImmediately_(doWhileBody_);
 {
 const body_ = _guard1;
-return ff_core_Option.Some((("while(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_)) + ") {}"))
+return ff_core_Option.Some((("while(" + ff_compiler_JsEmitter.JsEmitter_emitComma(self_, body_, async_)) + ") {}"))
 }
 }
 }
@@ -1827,7 +1920,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const condition_ = _guard1[0];
 const body_ = _guard1[1];
-return ff_core_Option.Some(((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_)) + ") {\n") + (last_
+return ff_core_Option.Some(((("if(" + ff_compiler_JsEmitter.JsEmitter_emitComma(self_, condition_, async_)) + ") {\n") + (last_
 ? (("return ff_core_Option.Some(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), async_)) + ")\n} else return ff_core_Option.None()")
 : (ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), false, async_) + "\n}"))))
 return
@@ -2284,6 +2377,30 @@ return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)
 }
 }
 
+export function JsEmitter_emitComma(self_, term_, async_) {
+{
+const _1 = term_;
+if(_1.ESequential && _1.before_.ESequential) {
+const before1_ = _1.before_.before_;
+const before2_ = _1.before_.after_;
+const after_ = _1.after_;
+if((ff_compiler_JsEmitter.safeCommable_(before1_) && ff_compiler_JsEmitter.safeCommable_(before2_))) {
+return (((((("(" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before1_, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before2_, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, after_, async_)) + ")")
+}
+}
+if(_1.ESequential) {
+const before_ = _1.before_;
+const after_ = _1.after_;
+if(ff_compiler_JsEmitter.safeCommable_(before_)) {
+return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before_, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, after_, async_)) + ")")
+}
+}
+{
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, term_, async_)
+}
+}
+}
+
 export async function JsEmitter_emitModule$(self_, packagePair_, module_, $task) {
 const selfImport_ = ((((((((("import * as " + ff_compiler_Syntax.PackagePair_groupName(packagePair_, "_")) + "_") + ff_core_String.String_dropLast(module_.file_, 3)) + " ") + "from \"../../") + ff_compiler_Syntax.PackagePair_groupName(packagePair_, "/")) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".mjs\"");
 const imports_ = ff_core_List.List_flatten([ff_core_Option.Option_toList((await ff_core_Option.Option_map$(self_.compilerModulePath_, (async (_w1, $task) => {
@@ -2394,7 +2511,10 @@ const mutability_ = (mutable_
 ? "let"
 : "const");
 const valueCode_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, definition_.value_, async_, $task));
-return (((((mutability_ + " ") + ff_compiler_JsEmitter.escapeKeyword_(definition_.name_)) + " = ") + valueCode_) + ";")
+const assignmentCode_ = ((valueCode_ !== "(void 0)")
+? (" = " + valueCode_)
+: "");
+return ((((mutability_ + " ") + ff_compiler_JsEmitter.escapeKeyword_(definition_.name_)) + assignmentCode_) + ";")
 }
 
 export async function JsEmitter_emitExtendsDefinition$(self_, definition_, $task) {
@@ -3538,6 +3658,24 @@ return ff_core_Option.Some("{}")
 }
 }
 }
+if(_1 === "ff:core/JsSystem.JsSystem_null") {
+const _guard2 = arguments_;
+if(_guard2.length === 1) {
+const e_ = _guard2[0];
+if(ff_compiler_JsEmitter.noSideEffects_(e_)) {
+return ff_core_Option.Some("null")
+}
+}
+}
+if(_1 === "ff:core/JsSystem.JsSystem_undefined") {
+const _guard2 = arguments_;
+if(_guard2.length === 1) {
+const e_ = _guard2[0];
+if(ff_compiler_JsEmitter.noSideEffects_(e_)) {
+return ff_core_Option.Some("(void 0)")
+}
+}
+}
 {
 return ff_core_Option.None()
 }
@@ -3552,7 +3690,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const condition_ = _guard1[0];
 const body_ = _guard1[1];
-return ff_core_Option.Some((((("while(" + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, ff_compiler_JsEmitter.invokeImmediately_(condition_), async_, $task))) + ") {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), false, async_, $task))) + "\n}"))
+return ff_core_Option.Some((((("while(" + (await ff_compiler_JsEmitter.JsEmitter_emitComma$(self_, ff_compiler_JsEmitter.invokeImmediately_(condition_), async_, $task))) + ") {\n") + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), false, async_, $task))) + "\n}"))
 }
 }
 if(_1 === "ff:core/Core.doWhile") {
@@ -3563,7 +3701,7 @@ const _guard1 = ff_compiler_JsEmitter.invokeImmediately_(doWhileBody_);
 if(_guard1.ESequential) {
 const body_ = _guard1.before_;
 const condition_ = _guard1.after_;
-return ff_core_Option.Some(((((("while(true) {\n" + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, body_, false, async_, $task))) + "\nif(!") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, condition_, async_, $task))) + ") break") + "\n}"))
+return ff_core_Option.Some(((((("while(true) {\n" + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, body_, false, async_, $task))) + "\nif(!") + (await ff_compiler_JsEmitter.JsEmitter_emitComma$(self_, condition_, async_, $task))) + ") break") + "\n}"))
 }
 }
 }
@@ -3574,7 +3712,7 @@ const doWhileBody_ = _guard2[0];
 const _guard1 = ff_compiler_JsEmitter.invokeImmediately_(doWhileBody_);
 {
 const body_ = _guard1;
-return ff_core_Option.Some((("while(" + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, body_, async_, $task))) + ") {}"))
+return ff_core_Option.Some((("while(" + (await ff_compiler_JsEmitter.JsEmitter_emitComma$(self_, body_, async_, $task))) + ") {}"))
 }
 }
 }
@@ -3583,7 +3721,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const condition_ = _guard1[0];
 const body_ = _guard1[1];
-return ff_core_Option.Some(((("if(" + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, condition_, async_, $task))) + ") {\n") + (last_
+return ff_core_Option.Some(((("if(" + (await ff_compiler_JsEmitter.JsEmitter_emitComma$(self_, condition_, async_, $task))) + ") {\n") + (last_
 ? (("return ff_core_Option.Some(" + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), async_, $task))) + ")\n} else return ff_core_Option.None()")
 : ((await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), false, async_, $task)) + "\n}"))))
 return
@@ -4036,6 +4174,30 @@ return (((((((((("\"" + self_.moduleName_) + ":") + callAt_.line_) + ":") + call
 {
 const value_ = _1;
 return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, value_, async_, $task))
+}
+}
+}
+
+export async function JsEmitter_emitComma$(self_, term_, async_, $task) {
+{
+const _1 = term_;
+if(_1.ESequential && _1.before_.ESequential) {
+const before1_ = _1.before_.before_;
+const before2_ = _1.before_.after_;
+const after_ = _1.after_;
+if((ff_compiler_JsEmitter.safeCommable_(before1_) && ff_compiler_JsEmitter.safeCommable_(before2_))) {
+return (((((("(" + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, before1_, false, async_, $task))) + ", ") + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, before2_, false, async_, $task))) + ", ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, after_, async_, $task))) + ")")
+}
+}
+if(_1.ESequential) {
+const before_ = _1.before_;
+const after_ = _1.after_;
+if(ff_compiler_JsEmitter.safeCommable_(before_)) {
+return (((("(" + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, before_, false, async_, $task))) + ", ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, after_, async_, $task))) + ")")
+}
+}
+{
+return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, term_, async_, $task))
 }
 }
 }

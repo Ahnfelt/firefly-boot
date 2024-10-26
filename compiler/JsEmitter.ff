@@ -160,7 +160,8 @@ extend self: JsEmitter {
     emitLetDefinition(definition: DLet, mutable: Bool, async: Bool): String {
         let mutability = if(mutable) {"let"} else {"const"}
         let valueCode = self.emitTerm(definition.value, async)
-        mutability + " " + escapeKeyword(definition.name) + " = " + valueCode + ";"
+        let assignmentCode = if(valueCode != "(void 0)") {" = " + valueCode} else {""}
+        mutability + " " + escapeKeyword(definition.name) + assignmentCode + ";"
     }
 
     emitExtendsDefinition(definition: DExtend): String {
@@ -643,6 +644,10 @@ extend self: JsEmitter {
                 Some("{}")
             | "ff:core/JsSystem.JsSystem_new0" {arguments | [e]} {noSideEffects(e)} =>
                 Some("{}")
+            | "ff:core/JsSystem.JsSystem_null" {arguments | [e]} {noSideEffects(e)} =>
+                Some("null")
+            | "ff:core/JsSystem.JsSystem_undefined" {arguments | [e]} {noSideEffects(e)} =>
+                Some("(void 0)")
             | _ =>
                 None
         }
@@ -659,7 +664,7 @@ extend self: JsEmitter {
         name.{
             | "ff:core/Core.while" {arguments | [condition, body]} =>
                 Some(
-                    "while(" + self.emitTerm(invokeImmediately(condition), async) + ") {\n" +
+                    "while(" + self.emitComma(invokeImmediately(condition), async) + ") {\n" +
                     self.emitStatements(invokeImmediately(body), False, async) + "\n}"
                 )
             | "ff:core/Core.doWhile" {arguments | [doWhileBody]} {
@@ -668,16 +673,16 @@ extend self: JsEmitter {
                 Some(
                     "while(true) {\n" +
                     self.emitStatements(body, False, async) +
-                    "\nif(!" + self.emitTerm(condition, async) + ") break" +
+                    "\nif(!" + self.emitComma(condition, async) + ") break" +
                     "\n}"
                 )
             | "ff:core/Core.doWhile" {arguments | [doWhileBody]} {
                 invokeImmediately(doWhileBody) | body
             } =>
-                Some("while(" + self.emitTerm(body, async) + ") {}")
+                Some("while(" + self.emitComma(body, async) + ") {}")
             | "ff:core/Core.if" {arguments | [condition, body]} =>
                 Some(
-                    "if(" + self.emitTerm(condition, async) + ") {\n" +
+                    "if(" + self.emitComma(condition, async) + ") {\n" +
                     if(last) {
                         "return ff_core_Option.Some(" + self.emitTerm(invokeImmediately(body), async) +
                         ")\n} else return ff_core_Option.None()"
@@ -978,6 +983,22 @@ extend self: JsEmitter {
                 self.emitTerm(value, async)
         }
     }
+    
+    emitComma(term: Term, async: Bool): String {
+        term.{
+            | ESequential(_, ESequential(_, before1, before2), after) {
+                safeCommable(before1) && safeCommable(before2)
+            } =>
+                "(" + self.emitStatements(before1, False, async) + ", " + 
+                self.emitStatements(before2, False, async) + ", " + 
+                self.emitTerm(after, async) + ")"
+            | ESequential(_, before, after) {safeCommable(before)} =>
+                "(" + self.emitStatements(before, False, async) + ", " + 
+                self.emitTerm(after, async) + ")"
+            | _ =>
+                self.emitTerm(term, async)
+        }
+    }
 
 }
 
@@ -1009,6 +1030,21 @@ invokeImmediately(function: Term): Term {
     | _ =>
         let effect = TConstructor(function.at, "Q$", []) // Awaits more often than required in async context
         ECall(function.at, DynamicCall(function, False), effect, [], [], [])
+}
+
+safeCommable(term: Term): Bool {
+    term.{
+        | EField _ => True
+        | EVariable _ => True
+        | EAssign _ => True
+        | EAssignField _ => True
+        | ECall _ => True
+        | EString(_, _) => True
+        | EInt(_, _) => True
+        | EChar(_, _) => True
+        | EFloat(_, _) => True
+        | _ => False
+    }
 }
 
 extractTypeName(type: Type): String {
