@@ -1916,6 +1916,24 @@ return ff_core_Option.Some((("while(" + ff_compiler_JsEmitter.JsEmitter_emitComm
 }
 }
 if(_1 === "ff:core/List.List_each") {
+const _guard2 = arguments_;
+if(_guard2.length === 2 && _guard2[0].ECall && _guard2[0].target_.StaticCall && _guard2[0].arguments_.length === 2 && _guard2[1].ELambda && _guard2[1].lambda_.cases_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_[0].PVariable && _guard2[1].lambda_.cases_[0].patterns_[0].name_.Some && _guard2[1].lambda_.cases_[0].guards_.length === 0) {
+const r_ = _guard2[0].target_.name_;
+const start_ = _guard2[0].arguments_[0];
+const end_ = _guard2[0].arguments_[1];
+const name_ = _guard2[1].lambda_.cases_[0].patterns_[0].name_.value_;
+const body_ = _guard2[1].lambda_.cases_[0].body_;
+if(((r_ === "ff:core/Int.Int_until") || (r_ === "ff:core/Int.Int_to"))) {
+const startCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, start_.value_, async_);
+const endCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, end_.value_, async_);
+const op_ = ((r_ === "ff:core/Int.Int_until")
+? "<"
+: "<=");
+return ff_core_Option.Some((((((((((((("for(let " + "for_i = ") + startCode_) + ", for_e = ") + endCode_) + "; for_i ") + op_) + " for_e; for_i++) {\n") + "const ") + ff_compiler_JsEmitter.escapeKeyword_(name_)) + " = for_i;\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, async_)) + "\n}"))
+}
+}
+}
+if(_1 === "ff:core/List.List_each") {
 const _guard1 = arguments_;
 if(_guard1.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_[0].PVariable && _guard1[1].lambda_.cases_[0].patterns_[0].name_.Some && _guard1[1].lambda_.cases_[0].guards_.length === 0) {
 const list_ = _guard1[0];
@@ -3723,6 +3741,24 @@ const _guard1 = ff_compiler_JsEmitter.invokeImmediately_(doWhileBody_);
 {
 const body_ = _guard1;
 return ff_core_Option.Some((("while(" + (await ff_compiler_JsEmitter.JsEmitter_emitComma$(self_, body_, async_, $task))) + ") {}"))
+}
+}
+}
+if(_1 === "ff:core/List.List_each") {
+const _guard2 = arguments_;
+if(_guard2.length === 2 && _guard2[0].ECall && _guard2[0].target_.StaticCall && _guard2[0].arguments_.length === 2 && _guard2[1].ELambda && _guard2[1].lambda_.cases_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_[0].PVariable && _guard2[1].lambda_.cases_[0].patterns_[0].name_.Some && _guard2[1].lambda_.cases_[0].guards_.length === 0) {
+const r_ = _guard2[0].target_.name_;
+const start_ = _guard2[0].arguments_[0];
+const end_ = _guard2[0].arguments_[1];
+const name_ = _guard2[1].lambda_.cases_[0].patterns_[0].name_.value_;
+const body_ = _guard2[1].lambda_.cases_[0].body_;
+if(((r_ === "ff:core/Int.Int_until") || (r_ === "ff:core/Int.Int_to"))) {
+const startCode_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, start_.value_, async_, $task));
+const endCode_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, end_.value_, async_, $task));
+const op_ = ((r_ === "ff:core/Int.Int_until")
+? "<"
+: "<=");
+return ff_core_Option.Some((((((((((((("for(let " + "for_i = ") + startCode_) + ", for_e = ") + endCode_) + "; for_i ") + op_) + " for_e; for_i++) {\n") + "const ") + ff_compiler_JsEmitter.escapeKeyword_(name_)) + " = for_i;\n") + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, body_, last_, async_, $task))) + "\n}"))
 }
 }
 }

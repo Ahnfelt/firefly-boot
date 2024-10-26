@@ -680,6 +680,20 @@ extend self: JsEmitter {
                 invokeImmediately(doWhileBody) | body
             } =>
                 Some("while(" + self.emitComma(body, async) + ") {}")
+            | "ff:core/List.List_each" {arguments | [
+                ECall(_, StaticCall(r, _, _), _, _, [start, end], _)
+                ELambda(_, Lambda(_, _, [MatchCase(_, [PVariable(_, Some(name))], [], body)]))
+            ]} {r == "ff:core/Int.Int_until" || r == "ff:core/Int.Int_to"} =>
+                let startCode = self.emitTerm(start.value, async)
+                let endCode = self.emitTerm(end.value, async)
+                let op = if(r == "ff:core/Int.Int_until") {"<"} else {"<="}
+                Some(
+                    "for(let " +
+                    "for_i = " + startCode + ", for_e = " + endCode + "; for_i " + op + " for_e; for_i++) {\n" +
+                        "const " + escapeKeyword(name) + " = for_i;\n" +
+                        self.emitStatements(body, last, async) +
+                    "\n}"
+                )
             | "ff:core/List.List_each" {arguments | [list, ELambda(_, Lambda(_, _, [
                 MatchCase(_, [PVariable(_, Some(name))], [], body)
             ]))]} =>
