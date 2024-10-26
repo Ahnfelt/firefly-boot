@@ -682,7 +682,7 @@ extend self: JsEmitter {
                 Some("while(" + self.emitComma(body, async) + ") {}")
             | "ff:core/List.List_each" {arguments | [
                 ECall(_, StaticCall(r, _, _), _, _, [start, end], _)
-                ELambda(_, Lambda(_, _, [MatchCase(_, [PVariable(_, Some(name))], [], body)]))
+                ELambda(_, Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], body)]))
             ]} {r == "ff:core/Int.Int_until" || r == "ff:core/Int.Int_to"} =>
                 let startCode = self.emitTerm(start.value, async)
                 let endCode = self.emitTerm(end.value, async)
@@ -690,18 +690,18 @@ extend self: JsEmitter {
                 Some(
                     "for(let " +
                     "for_i = " + startCode + ", for_e = " + endCode + "; for_i " + op + " for_e; for_i++) {\n" +
-                        "const " + escapeKeyword(name) + " = for_i;\n" +
+                        name.map {"const " + escapeKeyword(_) + " = for_i;\n"}.else {""} +
                         self.emitStatements(body, last, async) +
                     "\n}"
                 )
             | "ff:core/List.List_each" {arguments | [list, ELambda(_, Lambda(_, _, [
-                MatchCase(_, [PVariable(_, Some(name))], [], body)
+                MatchCase(_, [PVariable(_, name)], [], body)
             ]))]} =>
                 let listCode = self.emitTerm(list, async)
                 Some(
                     "for(let " +
                     "for_i = 0, for_a = " + listCode + ", for_l = for_a.length" + "; for_i < for_l; for_i++) {\n" +
-                        "const " + escapeKeyword(name) + " = for_a[for_i];\n" +
+                        name.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
                         self.emitStatements(body, last, async) +
                     "\n}"
                 )
