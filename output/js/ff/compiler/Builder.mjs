@@ -218,14 +218,14 @@ ff_compiler_Compiler.Compiler_resolve(compiler_, resolvedDependencies_.mainPacka
 {
 const c_ = _1;
 const error_ = _2;
-ff_core_Array.Array_push(errors_, c_)
+errors_.array.push(c_)
 return
 }
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
 {
 const compileErrors_ = _1.errors_;
 const error_ = _2;
-ff_core_Array.Array_pushList(errors_, compileErrors_)
+for(let for_i = 0, for_a = compileErrors_, for_l = for_a.length, for_r = errors_.array; for_i < for_l; for_i++) for_r.push(for_a[for_i])
 return
 }
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
@@ -415,14 +415,14 @@ if(infer_) {
 {
 const c_ = _1;
 const error_ = _2;
-ff_core_Array.Array_push(errors_, c_)
+errors_.array.push(c_)
 return
 }
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
 {
 const compileErrors_ = _1.errors_;
 const error_ = _2;
-ff_core_Array.Array_pushList(errors_, compileErrors_)
+for(let for_i = 0, for_a = compileErrors_, for_l = for_a.length, for_r = errors_.array; for_i < for_l; for_i++) for_r.push(for_a[for_i])
 return
 }
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)

@@ -150,7 +150,7 @@ for(const [k, v] of self_) if(!body_(k, v)) break
 export function IntMap_toArray(self_) {
 const array_ = ff_core_Array.new_();
 ff_core_IntMap.IntMap_each(self_, ((k_, v_) => {
-ff_core_Array.Array_push(array_, ff_core_Pair.Pair(k_, v_))
+array_.array.push(ff_core_Pair.Pair(k_, v_))
 }));
 return array_
 }
@@ -170,7 +170,7 @@ return ff_core_List.List_toMap(ff_core_IntMap.IntMap_toList(self_), ff_core_Orde
 export function IntMap_keys(self_) {
 const array_ = ff_core_Array.new_();
 ff_core_IntMap.IntMap_each(self_, ((k_, v_) => {
-ff_core_Array.Array_push(array_, k_)
+array_.array.push(k_)
 }));
 return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
 }
@@ -178,7 +178,7 @@ return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
 export function IntMap_values(self_) {
 const array_ = ff_core_Array.new_();
 ff_core_IntMap.IntMap_each(self_, ((k_, v_) => {
-ff_core_Array.Array_push(array_, v_)
+array_.array.push(v_)
 }));
 return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
 }
@@ -233,7 +233,7 @@ for(const [k, v] of self_) if(!await body_(k, v)) break
 export async function IntMap_toArray$(self_, $task) {
 const array_ = ff_core_Array.new_();
 ff_core_IntMap.IntMap_each(self_, ((k_, v_) => {
-ff_core_Array.Array_push(array_, ff_core_Pair.Pair(k_, v_))
+array_.array.push(ff_core_Pair.Pair(k_, v_))
 }));
 return array_
 }
@@ -253,7 +253,7 @@ return ff_core_List.List_toMap(ff_core_IntMap.IntMap_toList(self_), ff_core_Orde
 export async function IntMap_keys$(self_, $task) {
 const array_ = ff_core_Array.new_();
 ff_core_IntMap.IntMap_each(self_, ((k_, v_) => {
-ff_core_Array.Array_push(array_, k_)
+array_.array.push(k_)
 }));
 return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
 }
@@ -261,7 +261,7 @@ return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
 export async function IntMap_values$(self_, $task) {
 const array_ = ff_core_Array.new_();
 ff_core_IntMap.IntMap_each(self_, ((k_, v_) => {
-ff_core_Array.Array_push(array_, v_)
+array_.array.push(v_)
 }));
 return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
 }
@@ -286,7 +286,7 @@ return
 }
 if(_1.Some) {
 const array_ = _1.value_;
-ff_core_Array.Array_push(array_, value_)
+array_.array.push(value_)
 return
 }
 }
@@ -301,7 +301,7 @@ return
 }
 if(_1.Some) {
 const array_ = _1.value_;
-ff_core_Array.Array_push(array_, value_)
+array_.array.push(value_)
 return
 }
 }

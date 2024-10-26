@@ -141,7 +141,7 @@ export function Int_to(self_, inclusiveEnd_) {
 const result_ = ff_core_Array.new_();
 let n_ = self_;
 while((n_ <= inclusiveEnd_)) {
-ff_core_Array.Array_push(result_, n_);
+result_.array.push(n_);
 n_ += 1
 };
 return ff_core_Array.Array_drain(result_)
@@ -151,7 +151,7 @@ export function Int_until(self_, exclusiveEnd_) {
 const result_ = ff_core_Array.new_();
 let n_ = self_;
 while((n_ < exclusiveEnd_)) {
-ff_core_Array.Array_push(result_, n_);
+result_.array.push(n_);
 n_ += 1
 };
 return ff_core_Array.Array_drain(result_)
@@ -221,7 +221,7 @@ export async function Int_to$(self_, inclusiveEnd_, $task) {
 const result_ = ff_core_Array.new_();
 let n_ = self_;
 while((n_ <= inclusiveEnd_)) {
-ff_core_Array.Array_push(result_, n_);
+result_.array.push(n_);
 n_ += 1
 };
 return ff_core_Array.Array_drain(result_)
@@ -231,7 +231,7 @@ export async function Int_until$(self_, exclusiveEnd_, $task) {
 const result_ = ff_core_Array.new_();
 let n_ = self_;
 while((n_ < exclusiveEnd_)) {
-ff_core_Array.Array_push(result_, n_);
+result_.array.push(n_);
 n_ += 1
 };
 return ff_core_Array.Array_drain(result_)

@@ -148,7 +148,7 @@ const stop_ = (ff_core_Task.Task_elapsed(self_.task_) - self_.phaseDurationDelta
 const duration_ = (stop_ - start_);
 self_.phaseDurationDelta_ = (self_.phaseDurationDelta_ + duration_);
 const text_ = ((((phase_ + " ") + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")) + "/") + moduleName_);
-ff_core_Array.Array_push(self_.phaseDurations_, ff_core_Pair.Pair(text_, duration_));
+self_.phaseDurations_.array.push(ff_core_Pair.Pair(text_, duration_));
 return result_
 }
 
@@ -279,7 +279,7 @@ const stop_ = ((await ff_core_Task.Task_elapsed$(self_.task_, $task)) - self_.ph
 const duration_ = (stop_ - start_);
 self_.phaseDurationDelta_ = (self_.phaseDurationDelta_ + duration_);
 const text_ = ((((phase_ + " ") + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")) + "/") + moduleName_);
-ff_core_Array.Array_push(self_.phaseDurations_, ff_core_Pair.Pair(text_, duration_));
+self_.phaseDurations_.array.push(ff_core_Pair.Pair(text_, duration_));
 return result_
 }
 

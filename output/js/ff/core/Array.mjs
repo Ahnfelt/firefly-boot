@@ -591,26 +591,26 @@ throw new Error('Function Array_join is missing on this target in async context.
 export function ff_core_Show_Show$ff_core_Array_Array(ff_core_Show_Show$T) { return {
 show_(value_) {
 const array_ = ff_core_Array.new_();
-ff_core_Array.Array_push(array_, "[");
+array_.array.push("[");
 ff_core_Array.Array_each(value_, ((x_) => {
 if((ff_core_Array.Array_size(array_) > 1)) {
-ff_core_Array.Array_push(array_, ", ")
+array_.array.push(", ")
 };
-ff_core_Array.Array_push(array_, ff_core_Show_Show$T.show_(x_))
+array_.array.push(ff_core_Show_Show$T.show_(x_))
 }));
-ff_core_Array.Array_push(array_, "].toArray()");
+array_.array.push("].toArray()");
 return ff_core_Array.Array_join(array_, "")
 },
 async show_$(value_, $task) {
 const array_ = ff_core_Array.new_();
-ff_core_Array.Array_push(array_, "[");
+array_.array.push("[");
 ff_core_Array.Array_each(value_, ((x_) => {
 if((ff_core_Array.Array_size(array_) > 1)) {
-ff_core_Array.Array_push(array_, ", ")
+array_.array.push(", ")
 };
-ff_core_Array.Array_push(array_, ff_core_Show_Show$T.show_(x_))
+array_.array.push(ff_core_Show_Show$T.show_(x_))
 }));
-ff_core_Array.Array_push(array_, "].toArray()");
+array_.array.push("].toArray()");
 return ff_core_Array.Array_join(array_, "")
 }
 }}

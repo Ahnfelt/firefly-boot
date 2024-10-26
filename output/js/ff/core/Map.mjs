@@ -368,7 +368,7 @@ return ff_core_Map.Map_add(self_, key_, ff_core_List.List_toArray([value_]), ff_
 }
 if(_1.Some) {
 const array_ = _1.value_;
-ff_core_Array.Array_push(array_, value_);
+array_.array.push(value_);
 return self_
 }
 }
@@ -382,7 +382,7 @@ return ff_core_Map.Map_add(self_, key_, ff_core_List.List_toArray([value_]), ff_
 }
 if(_1.Some) {
 const array_ = _1.value_;
-ff_core_Array.Array_push(array_, value_);
+array_.array.push(value_);
 return self_
 }
 }

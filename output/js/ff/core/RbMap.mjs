@@ -1010,7 +1010,7 @@ return ((ff_core_RbMap.RB_size(l_, ff_core_Ordering_Order$K) + 1) + ff_core_RbMa
 export function RB_pairs(self_, ff_core_Ordering_Order$K) {
 const result_ = ff_core_List.List_toArray([]);
 ff_core_RbMap.RB_each(self_, ((k_, v_) => {
-ff_core_Array.Array_push(result_, ff_core_Pair.Pair(k_, v_))
+result_.array.push(ff_core_Pair.Pair(k_, v_))
 }), ff_core_Ordering_Order$K);
 return ff_core_Array.Array_drain(result_)
 }
@@ -1203,7 +1203,7 @@ return ((ff_core_RbMap.RB_size(l_, ff_core_Ordering_Order$K) + 1) + ff_core_RbMa
 export async function RB_pairs$(self_, ff_core_Ordering_Order$K, $task) {
 const result_ = ff_core_List.List_toArray([]);
 ff_core_RbMap.RB_each(self_, ((k_, v_) => {
-ff_core_Array.Array_push(result_, ff_core_Pair.Pair(k_, v_))
+result_.array.push(ff_core_Pair.Pair(k_, v_))
 }), ff_core_Ordering_Order$K);
 return ff_core_Array.Array_drain(result_)
 }

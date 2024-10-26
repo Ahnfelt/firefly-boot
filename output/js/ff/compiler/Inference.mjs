@@ -463,7 +463,7 @@ const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing"
 return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(at_, name_, false, [], [], [], type_, noEffect_))
 }
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-ff_core_Array.Array_push(guards_, (((_c) => {
+guards_.array.push((((_c) => {
 return ff_compiler_Syntax.MatchGuard(_c.at_, guardTerm_, _c.pattern_)
 }))(g_));
 {
@@ -2315,7 +2315,7 @@ const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing"
 return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(at_, name_, false, [], [], [], type_, noEffect_))
 }
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-ff_core_Array.Array_push(guards_, (((_c) => {
+guards_.array.push((((_c) => {
 return ff_compiler_Syntax.MatchGuard(_c.at_, guardTerm_, _c.pattern_)
 }))(g_));
 {

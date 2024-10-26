@@ -492,7 +492,7 @@ return (((self_.definedAt_.line_ === at_.line_) && (self_.definedAt_.column_ ===
 }
 
 export function LspHook_emit(self_, result_) {
-ff_core_Array.Array_push(self_.arrayOfResults_, result_)
+self_.arrayOfResults_.array.push(result_)
 }
 
 export function LspHook_results(self_) {
@@ -512,7 +512,7 @@ return (((self_.definedAt_.line_ === at_.line_) && (self_.definedAt_.column_ ===
 }
 
 export async function LspHook_emit$(self_, result_, $task) {
-ff_core_Array.Array_push(self_.arrayOfResults_, result_)
+self_.arrayOfResults_.array.push(result_)
 }
 
 export async function LspHook_results$(self_, $task) {
