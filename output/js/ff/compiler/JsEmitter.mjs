@@ -1723,6 +1723,33 @@ return
 }
 }
 }
+{
+const name_ = _1;
+const _guard6 = ff_core_String.String_removeFirst(name_, "ff:core/JsSystem.JsSystem_function");
+if(_guard6.Some) {
+const n_ = _guard6.value_;
+const _guard5 = ff_core_String.String_all(n_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+}));
+if(_guard5) {
+const _guard4 = arguments_;
+if(_guard4.length === 2) {
+const e1_ = _guard4[0];
+const e2_ = _guard4[1];
+const _guard3 = ff_compiler_JsEmitter.noSideEffects_(e1_);
+if(_guard3) {
+const _guard2 = term_;
+if(_guard2.ECall) {
+const call_ = _guard2;
+if((!ff_compiler_JsEmitter.effectTypeIsAsync_(call_.effect_))) {
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_))
+}
+}
+}
+}
+}
+}
+}
 if(_1 === "ff:core/JsSystem.JsSystem_get") {
 const _guard2 = arguments_;
 if(_guard2.length === 2 && _guard2[1].EString) {
@@ -3447,6 +3474,33 @@ return ff_core_Option.Some(((((await ff_core_Option.Option_else$(ff_compiler_JsE
 return (("globalThis[" + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e2_, async_, $task))) + "]")
 }), $task)) + "(") + argumentCode_) + ")"))
 return
+}
+}
+}
+}
+}
+{
+const name_ = _1;
+const _guard6 = ff_core_String.String_removeFirst(name_, "ff:core/JsSystem.JsSystem_function");
+if(_guard6.Some) {
+const n_ = _guard6.value_;
+const _guard5 = ff_core_String.String_all(n_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+}));
+if(_guard5) {
+const _guard4 = arguments_;
+if(_guard4.length === 2) {
+const e1_ = _guard4[0];
+const e2_ = _guard4[1];
+const _guard3 = ff_compiler_JsEmitter.noSideEffects_(e1_);
+if(_guard3) {
+const _guard2 = term_;
+if(_guard2.ECall) {
+const call_ = _guard2;
+if((!ff_compiler_JsEmitter.effectTypeIsAsync_(call_.effect_))) {
+return ff_core_Option.Some((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e2_, async_, $task)))
+}
+}
 }
 }
 }
