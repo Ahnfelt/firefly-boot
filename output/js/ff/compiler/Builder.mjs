@@ -225,7 +225,7 @@ return
 {
 const compileErrors_ = _1.errors_;
 const error_ = _2;
-for(let for_i = 0, for_r = errors_.array, for_a = compileErrors_, for_l = for_a.length; for_i < for_l; for_i++) for_r.push(for_a[for_i])
+ff_core_Array.Array_pushList(errors_, compileErrors_)
 return
 }
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
@@ -422,7 +422,7 @@ return
 {
 const compileErrors_ = _1.errors_;
 const error_ = _2;
-for(let for_i = 0, for_r = errors_.array, for_a = compileErrors_, for_l = for_a.length; for_i < for_l; for_i++) for_r.push(for_a[for_i])
+ff_core_Array.Array_pushList(errors_, compileErrors_)
 return
 }
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
