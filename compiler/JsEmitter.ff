@@ -628,6 +628,11 @@ extend self: JsEmitter {
                     }
                 }
                 Some(go(term, []))
+            | name {name.removeFirst("ff:core/JsSystem.JsSystem_call") | Some(n)} {n.all {_.isAsciiDigit()}} {
+                arguments | [e1, EString(_, q)@e2, ...es]
+            } {noSideEffects(e1)} =>
+                let argumentCode = es.map {self.emitTerm(_, async)}.join(", ")
+                Some(safeBare(q).else {"globalThis[" + self.emitTerm(e2, async) + "]"} + "(" + argumentCode + ")")
             | "ff:core/JsSystem.JsSystem_get" {arguments | [e1, EString(_, q)@e2]} {noSideEffects(e1)} =>
                 Some(safeBare(q).else {"globalThis[" + self.emitTerm(e2, async) + "]"})
             | "ff:core/JsSystem.JsSystem_object" {arguments | [e]} {noSideEffects(e)} =>

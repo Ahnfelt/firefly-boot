@@ -1695,6 +1695,34 @@ return
 }
 return ff_core_Option.Some(go_(term_, []))
 }
+{
+const name_ = _1;
+const _guard4 = ff_core_String.String_removeFirst(name_, "ff:core/JsSystem.JsSystem_call");
+if(_guard4.Some) {
+const n_ = _guard4.value_;
+const _guard3 = ff_core_String.String_all(n_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+}));
+if(_guard3) {
+const _guard2 = arguments_;
+if(_guard2.length >= 2 && _guard2[1].EString) {
+const e1_ = _guard2[0];
+const e2_ = _guard2[1];
+const q_ = _guard2[1].value_;
+const es_ = _guard2.slice(2);
+if(ff_compiler_JsEmitter.noSideEffects_(e1_)) {
+const argumentCode_ = ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
+})), ", ");
+return ff_core_Option.Some((((ff_core_Option.Option_else(ff_compiler_JsEmitter.safeBare_(q_), (() => {
+return (("globalThis[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + "]")
+})) + "(") + argumentCode_) + ")"))
+return
+}
+}
+}
+}
+}
 if(_1 === "ff:core/JsSystem.JsSystem_get") {
 const _guard2 = arguments_;
 if(_guard2.length === 2 && _guard2[1].EString) {
@@ -3395,6 +3423,34 @@ return
 }
 }
 return ff_core_Option.Some((await go_$(term_, [], $task)))
+}
+{
+const name_ = _1;
+const _guard4 = ff_core_String.String_removeFirst(name_, "ff:core/JsSystem.JsSystem_call");
+if(_guard4.Some) {
+const n_ = _guard4.value_;
+const _guard3 = ff_core_String.String_all(n_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+}));
+if(_guard3) {
+const _guard2 = arguments_;
+if(_guard2.length >= 2 && _guard2[1].EString) {
+const e1_ = _guard2[0];
+const e2_ = _guard2[1];
+const q_ = _guard2[1].value_;
+const es_ = _guard2.slice(2);
+if(ff_compiler_JsEmitter.noSideEffects_(e1_)) {
+const argumentCode_ = ff_core_List.List_join((await ff_core_List.List_map$(es_, (async (_w1, $task) => {
+return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, _w1, async_, $task))
+}), $task)), ", ");
+return ff_core_Option.Some(((((await ff_core_Option.Option_else$(ff_compiler_JsEmitter.safeBare_(q_), (async ($task) => {
+return (("globalThis[" + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e2_, async_, $task))) + "]")
+}), $task)) + "(") + argumentCode_) + ")"))
+return
+}
+}
+}
+}
 }
 if(_1 === "ff:core/JsSystem.JsSystem_get") {
 const _guard2 = arguments_;
