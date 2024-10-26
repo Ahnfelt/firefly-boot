@@ -710,7 +710,7 @@ const mutability_ = (mutable_
 ? "let"
 : "const");
 const valueCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, definition_.value_, async_);
-const assignmentCode_ = ((valueCode_ !== "(void 0)")
+const assignmentCode_ = (((!mutable_) || (valueCode_ !== "(void 0)"))
 ? (" = " + valueCode_)
 : "");
 return ((((mutability_ + " ") + ff_compiler_JsEmitter.escapeKeyword_(definition_.name_)) + assignmentCode_) + ";")
@@ -2511,7 +2511,7 @@ const mutability_ = (mutable_
 ? "let"
 : "const");
 const valueCode_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, definition_.value_, async_, $task));
-const assignmentCode_ = ((valueCode_ !== "(void 0)")
+const assignmentCode_ = (((!mutable_) || (valueCode_ !== "(void 0)"))
 ? (" = " + valueCode_)
 : "");
 return ((((mutability_ + " ") + ff_compiler_JsEmitter.escapeKeyword_(definition_.name_)) + assignmentCode_) + ";")

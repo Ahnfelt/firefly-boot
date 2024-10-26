@@ -160,7 +160,7 @@ extend self: JsEmitter {
     emitLetDefinition(definition: DLet, mutable: Bool, async: Bool): String {
         let mutability = if(mutable) {"let"} else {"const"}
         let valueCode = self.emitTerm(definition.value, async)
-        let assignmentCode = if(valueCode != "(void 0)") {" = " + valueCode} else {""}
+        let assignmentCode = if(!mutable || valueCode != "(void 0)") {" = " + valueCode} else {""}
         mutability + " " + escapeKeyword(definition.name) + assignmentCode + ";"
     }
 
