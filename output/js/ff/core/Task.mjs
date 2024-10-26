@@ -287,9 +287,10 @@ return _w1
 return ff_core_Error.Error_rethrow(_w1)
 })))
 } finally {
-ff_core_List.List_each(started_, ((_w1) => {
+for(let for_i = 0, for_a = started_, for_l = for_a.length; for_i < for_l; for_i++) {
+const _w1 = for_a[for_i];
 ff_core_Task.Task_abort(_w1)
-}))
+}
 }
 }
 
@@ -376,9 +377,10 @@ return _w1
 return ff_core_Error.Error_rethrow(_w1)
 }), $task)), $task))
 } finally {
-(await ff_core_List.List_each$(started_, (async (_w1, $task) => {
+for(let for_i = 0, for_a = started_, for_l = for_a.length; for_i < for_l; for_i++) {
+const _w1 = for_a[for_i];
 (await ff_core_Task.Task_abort$(_w1, $task))
-}), $task))
+}
 }
 }
 

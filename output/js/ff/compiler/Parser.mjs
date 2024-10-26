@@ -1566,13 +1566,14 @@ return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], arguments_.fi
 if(_1.Some && _1.value_ === 0) {
 const objectTarget_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, "object"), false);
 let result_ = ff_compiler_Syntax.ECall(record_.at_, objectTarget_, effect_, [], [], []);
-ff_core_List.List_each(arguments_.first_, ((argument_) => {
+for(let for_i = 0, for_a = arguments_.first_, for_l = for_a.length; for_i < for_l; for_i++) {
+const argument_ = for_a[for_i];
 if(ff_core_Option.Option_isEmpty(argument_.name_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(argument_.at_, "Expected a named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, result_, "with"), false);
 result_ = ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(argument_.at_, ff_core_Option.None(), ff_compiler_Syntax.EString(argument_.at_, (("\"" + ff_core_Option.Option_grab(argument_.name_)) + "\""))), ff_compiler_Syntax.Argument(argument_.value_.at_, ff_core_Option.None(), argument_.value_)], [])
-}));
+};
 return result_
 }
 if(_1.Some) {
@@ -3186,13 +3187,14 @@ return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], arguments_.fi
 if(_1.Some && _1.value_ === 0) {
 const objectTarget_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, "object"), false);
 let result_ = ff_compiler_Syntax.ECall(record_.at_, objectTarget_, effect_, [], [], []);
-ff_core_List.List_each(arguments_.first_, ((argument_) => {
+for(let for_i = 0, for_a = arguments_.first_, for_l = for_a.length; for_i < for_l; for_i++) {
+const argument_ = for_a[for_i];
 if(ff_core_Option.Option_isEmpty(argument_.name_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(argument_.at_, "Expected a named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, result_, "with"), false);
 result_ = ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(argument_.at_, ff_core_Option.None(), ff_compiler_Syntax.EString(argument_.at_, (("\"" + ff_core_Option.Option_grab(argument_.name_)) + "\""))), ff_compiler_Syntax.Argument(argument_.value_.at_, ff_core_Option.None(), argument_.value_)], [])
-}));
+};
 return result_
 }
 if(_1.Some) {

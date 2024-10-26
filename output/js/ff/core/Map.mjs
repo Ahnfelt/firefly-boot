@@ -149,9 +149,10 @@ return result_
 
 export function Map_removeList(self_, keys_, ff_core_Ordering_Order$K) {
 let result_ = self_;
-ff_core_List.List_each(keys_, ((k_) => {
+for(let for_i = 0, for_a = keys_, for_l = for_a.length; for_i < for_l; for_i++) {
+const k_ = for_a[for_i];
 result_ = ff_core_RbMap.delete_(k_, result_, ff_core_Ordering_Order$K)
-}));
+};
 return result_
 }
 
@@ -267,9 +268,10 @@ return result_
 
 export async function Map_removeList$(self_, keys_, ff_core_Ordering_Order$K, $task) {
 let result_ = self_;
-ff_core_List.List_each(keys_, ((k_) => {
+for(let for_i = 0, for_a = keys_, for_l = for_a.length; for_i < for_l; for_i++) {
+const k_ = for_a[for_i];
 result_ = ff_core_RbMap.delete_(k_, result_, ff_core_Ordering_Order$K)
-}));
+};
 return result_
 }
 

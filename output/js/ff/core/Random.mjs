@@ -190,9 +190,10 @@ return (ff_core_Random.Random_nextInt(self_, 0, 2) === 0)
 }
 
 export function Random_nextBytes(self_, buffer_, start_, stop_) {
-ff_core_List.List_each(ff_core_Int.Int_until(start_, stop_), ((i_) => {
+for(let for_i = 0, for_a = ff_core_Int.Int_until(start_, stop_), for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_a[for_i];
 ff_core_Buffer.Buffer_setUint8(buffer_, i_, ff_core_Random.Random_nextInt(self_, 0, 256))
-}))
+}
 }
 
 export function Random_nextGauss(self_, mean_, standardDeviation_) {
@@ -216,12 +217,13 @@ export function Random_nextGauss(self_, mean_, standardDeviation_) {
 }
 
 export function Random_shuffleArray(self_, array_) {
-ff_core_List.List_each(ff_core_Int.Int_until(0, (ff_core_Array.Array_size(array_) - 1)), ((i_) => {
+for(let for_i = 0, for_a = ff_core_Int.Int_until(0, (ff_core_Array.Array_size(array_) - 1)), for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_a[for_i];
 const j_ = (ff_core_Random.Random_nextInt(self_, 0, (ff_core_Array.Array_size(array_) - i_)) + i_);
 const value_ = (array_.array[i_] ?? ff_core_Array.internalGrab_(array_, i_));
 ff_core_Array.Array_set(array_, i_, (array_.array[j_] ?? ff_core_Array.internalGrab_(array_, j_)));
 ff_core_Array.Array_set(array_, j_, value_)
-}))
+}
 }
 
 export function Random_shuffleList(self_, list_) {
@@ -231,9 +233,10 @@ return ff_core_Array.Array_drain(array_)
 }
 
 export function Random_sampleArray(self_, count_, array_, body_) {
-ff_core_List.List_each(ff_core_List.List_takeFirst(ff_core_Random.Random_shuffleList(self_, ff_core_Array.Array_toList(array_, 0, 9007199254740991)), count_), ((_w1) => {
+for(let for_i = 0, for_a = ff_core_List.List_takeFirst(ff_core_Random.Random_shuffleList(self_, ff_core_Array.Array_toList(array_, 0, 9007199254740991)), count_), for_l = for_a.length; for_i < for_l; for_i++) {
+const _w1 = for_a[for_i];
 body_(_w1)
-}))
+}
 }
 
 export function Random_sampleList(self_, count_, list_) {
@@ -265,9 +268,10 @@ return (ff_core_Random.Random_nextInt(self_, 0, 2) === 0)
 }
 
 export async function Random_nextBytes$(self_, buffer_, start_, stop_, $task) {
-ff_core_List.List_each(ff_core_Int.Int_until(start_, stop_), ((i_) => {
+for(let for_i = 0, for_a = ff_core_Int.Int_until(start_, stop_), for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_a[for_i];
 ff_core_Buffer.Buffer_setUint8(buffer_, i_, ff_core_Random.Random_nextInt(self_, 0, 256))
-}))
+}
 }
 
 export async function Random_nextGauss$(self_, mean_, standardDeviation_, $task) {
@@ -275,12 +279,13 @@ throw new Error('Function Random_nextGauss is missing on this target in async co
 }
 
 export async function Random_shuffleArray$(self_, array_, $task) {
-ff_core_List.List_each(ff_core_Int.Int_until(0, (ff_core_Array.Array_size(array_) - 1)), ((i_) => {
+for(let for_i = 0, for_a = ff_core_Int.Int_until(0, (ff_core_Array.Array_size(array_) - 1)), for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_a[for_i];
 const j_ = (ff_core_Random.Random_nextInt(self_, 0, (ff_core_Array.Array_size(array_) - i_)) + i_);
 const value_ = (array_.array[i_] ?? ff_core_Array.internalGrab_(array_, i_));
 ff_core_Array.Array_set(array_, i_, (array_.array[j_] ?? ff_core_Array.internalGrab_(array_, j_)));
 ff_core_Array.Array_set(array_, j_, value_)
-}))
+}
 }
 
 export async function Random_shuffleList$(self_, list_, $task) {
@@ -290,9 +295,10 @@ return ff_core_Array.Array_drain(array_)
 }
 
 export async function Random_sampleArray$(self_, count_, array_, body_, $task) {
-(await ff_core_List.List_each$(ff_core_List.List_takeFirst(ff_core_Random.Random_shuffleList(self_, ff_core_Array.Array_toList(array_, 0, 9007199254740991)), count_), (async (_w1, $task) => {
+for(let for_i = 0, for_a = ff_core_List.List_takeFirst(ff_core_Random.Random_shuffleList(self_, ff_core_Array.Array_toList(array_, 0, 9007199254740991)), count_), for_l = for_a.length; for_i < for_l; for_i++) {
+const _w1 = for_a[for_i];
 (await body_(_w1, $task))
-}), $task))
+}
 }
 
 export async function Random_sampleList$(self_, count_, list_, $task) {

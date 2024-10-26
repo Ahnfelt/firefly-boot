@@ -292,9 +292,10 @@ return ff_core_List.List_takeFirst(ff_core_List.List_dropFirst(self_, from_), (u
 
 export function List_foldLeft(self_, initial_, body_) {
 let result_ = initial_;
-ff_core_List.List_each(self_, ((x_) => {
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 result_ = body_(result_, x_)
-}));
+};
 return result_
 }
 
@@ -335,7 +336,8 @@ export function List_chunk(self_, chunkSize_) {
 const results_ = ff_core_Array.new_();
 const result_ = ff_core_Array.new_();
 let added_ = 0;
-ff_core_List.List_each(self_, ((item_) => {
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const item_ = for_a[for_i];
 if((added_ < chunkSize_)) {
 added_ += 1
 } else {
@@ -343,7 +345,7 @@ ff_core_Array.Array_push(results_, ff_core_Array.Array_drain(result_));
 added_ = 1
 };
 ff_core_Array.Array_push(result_, item_)
-}));
+};
 if((added_ !== 0)) {
 ff_core_Array.Array_push(results_, ff_core_Array.Array_drain(result_))
 };
@@ -433,11 +435,12 @@ return result_
 
 export function List_filter(self_, body_) {
 const result_ = ff_core_Array.new_();
-ff_core_List.List_each(self_, ((x_) => {
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 if(body_(x_)) {
 ff_core_Array.Array_push(result_, x_)
 }
-}));
+};
 return ff_core_Array.Array_drain(result_)
 }
 
@@ -455,19 +458,21 @@ export function List_map(self_, body_) {
 
 export function List_flatMap(self_, body_) {
 const results_ = ff_core_Array.new_();
-ff_core_List.List_each(self_, ((x_) => {
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 ff_core_Array.Array_pushList(results_, body_(x_))
-}));
+};
 return ff_core_Array.Array_drain(results_)
 }
 
 export function List_collect(self_, body_) {
 let result_ = ff_core_Array.new_();
-ff_core_List.List_each(self_, ((x_) => {
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 ff_core_Option.Option_each(body_(x_), ((_w1) => {
 ff_core_Array.Array_push(result_, _w1)
 }))
-}));
+};
 return ff_core_Array.Array_drain(result_)
 }
 
@@ -648,9 +653,10 @@ return ff_core_List.List_takeFirst(ff_core_List.List_dropFirst(self_, from_), (u
 
 export async function List_foldLeft$(self_, initial_, body_, $task) {
 let result_ = initial_;
-(await ff_core_List.List_each$(self_, (async (x_, $task) => {
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 result_ = (await body_(result_, x_, $task))
-}), $task));
+};
 return result_
 }
 
@@ -691,7 +697,8 @@ export async function List_chunk$(self_, chunkSize_, $task) {
 const results_ = ff_core_Array.new_();
 const result_ = ff_core_Array.new_();
 let added_ = 0;
-ff_core_List.List_each(self_, ((item_) => {
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const item_ = for_a[for_i];
 if((added_ < chunkSize_)) {
 added_ += 1
 } else {
@@ -699,7 +706,7 @@ ff_core_Array.Array_push(results_, ff_core_Array.Array_drain(result_));
 added_ = 1
 };
 ff_core_Array.Array_push(result_, item_)
-}));
+};
 if((added_ !== 0)) {
 ff_core_Array.Array_push(results_, ff_core_Array.Array_drain(result_))
 };
@@ -791,11 +798,12 @@ return result_
 
 export async function List_filter$(self_, body_, $task) {
 const result_ = ff_core_Array.new_();
-(await ff_core_List.List_each$(self_, (async (x_, $task) => {
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 if((await body_(x_, $task))) {
 ff_core_Array.Array_push(result_, x_)
 }
-}), $task));
+};
 return ff_core_Array.Array_drain(result_)
 }
 
@@ -817,19 +825,21 @@ export async function List_map$(self_, body_, $task) {
 
 export async function List_flatMap$(self_, body_, $task) {
 const results_ = ff_core_Array.new_();
-(await ff_core_List.List_each$(self_, (async (x_, $task) => {
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 ff_core_Array.Array_pushList(results_, (await body_(x_, $task)))
-}), $task));
+};
 return ff_core_Array.Array_drain(results_)
 }
 
 export async function List_collect$(self_, body_, $task) {
 let result_ = ff_core_Array.new_();
-(await ff_core_List.List_each$(self_, (async (x_, $task) => {
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 ff_core_Option.Option_each((await body_(x_, $task)), ((_w1) => {
 ff_core_Array.Array_push(result_, _w1)
 }))
-}), $task));
+};
 return ff_core_Array.Array_drain(result_)
 }
 
@@ -943,17 +953,19 @@ return false
 
 export function List_flatten(self_) {
 const result_ = ff_core_Array.new_();
-ff_core_List.List_each(self_, ((xs_) => {
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const xs_ = for_a[for_i];
 ff_core_Array.Array_pushList(result_, xs_)
-}));
+};
 return ff_core_Array.Array_drain(result_)
 }
 
 export async function List_flatten$(self_, $task) {
 const result_ = ff_core_Array.new_();
-ff_core_List.List_each(self_, ((xs_) => {
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const xs_ = for_a[for_i];
 ff_core_Array.Array_pushList(result_, xs_)
-}));
+};
 return ff_core_Array.Array_drain(result_)
 }
 
@@ -1051,24 +1063,26 @@ export function ff_core_Show_Show$ff_core_List_List(ff_core_Show_Show$T) { retur
 show_(value_) {
 const array_ = ff_core_Array.new_();
 ff_core_Array.Array_push(array_, "[");
-ff_core_List.List_each(value_, ((x_) => {
+for(let for_i = 0, for_a = value_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 if((ff_core_Array.Array_size(array_) > 1)) {
 ff_core_Array.Array_push(array_, ", ")
 };
 ff_core_Array.Array_push(array_, ff_core_Show_Show$T.show_(x_))
-}));
+};
 ff_core_Array.Array_push(array_, "]");
 return ff_core_Array.Array_join(array_, "")
 },
 async show_$(value_, $task) {
 const array_ = ff_core_Array.new_();
 ff_core_Array.Array_push(array_, "[");
-ff_core_List.List_each(value_, ((x_) => {
+for(let for_i = 0, for_a = value_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 if((ff_core_Array.Array_size(array_) > 1)) {
 ff_core_Array.Array_push(array_, ", ")
 };
 ff_core_Array.Array_push(array_, ff_core_Show_Show$T.show_(x_))
-}));
+};
 ff_core_Array.Array_push(array_, "]");
 return ff_core_Array.Array_join(array_, "")
 }

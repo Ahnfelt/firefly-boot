@@ -251,9 +251,10 @@ serialization_.offset_ += (1 + 4)
 } else {
 ff_core_Core.panic_("Can't serialize arrays where size() >= 1073741824")
 };
-ff_core_List.List_each(value_, ((_w1) => {
+for(let for_i = 0, for_a = value_, for_l = for_a.length; for_i < for_l; for_i++) {
+const _w1 = for_a[for_i];
 ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, _w1)
-}))
+}
 },
 deserializeUsing_(serialization_) {
 const smallSize_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -293,9 +294,10 @@ serialization_.offset_ += (1 + 4)
 } else {
 ff_core_Core.panic_("Can't serialize arrays where size() >= 1073741824")
 };
-ff_core_List.List_each(value_, ((_w1) => {
+for(let for_i = 0, for_a = value_, for_l = for_a.length; for_i < for_l; for_i++) {
+const _w1 = for_a[for_i];
 ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, _w1)
-}))
+}
 },
 async deserializeUsing_$(serialization_, $task) {
 const smallSize_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);

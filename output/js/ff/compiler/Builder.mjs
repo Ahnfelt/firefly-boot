@@ -152,11 +152,12 @@ ff_core_Path.Path_renameTo(jsPathFile_, jsOutputPath_)
 }
 
 export function processIncludes_(jsPathFile_, packagePath_, info_) {
-ff_core_List.List_each(info_.includes_, ((include_) => {
+for(let for_i = 0, for_a = info_.includes_, for_l = for_a.length; for_i < for_l; for_i++) {
+const include_ = for_a[for_i];
 const fromPath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(ff_core_Path.Path_slash(packagePath_, ".firefly"), "include"), include_.path_);
 const toPath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(jsPathFile_, ff_compiler_Syntax.PackagePair_groupName(info_.package_.packagePair_, "/")), include_.path_);
 ff_core_Path.Path_copyTo(fromPath_, toPath_, 0, 100)
-}))
+}
 }
 
 export function buildViaBuildSystem_(system_, fireflyPath_, mainFile_, target_) {
@@ -185,9 +186,10 @@ return [ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab(ff_core_Path
 }
 }))(ff_core_Path.Path_isDirectory(path_));
 const errors_ = ff_core_Array.new_();
-ff_core_List.List_each(ff_core_List.List_filter(packages_, ((_w1) => {
+for(let for_i = 0, for_a = ff_core_List.List_filter(packages_, ((_w1) => {
 return (!ff_core_List.List_isEmpty(_w1.files_))
-})), ((package_) => {
+})), for_l = for_a.length; for_i < for_l; for_i++) {
+const package_ = for_a[for_i];
 const firstFile_ = ff_core_List.List_grabFirst(package_.files_);
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), dependencyLock_, firstFile_);
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
@@ -203,7 +205,8 @@ const files_ = (checkDependencies_
 : ff_core_List.List_filter(package_.files_, ((_w1) => {
 return (!ff_core_Path.Path_contains(_w1, [".firefly", "dependencies"]))
 })));
-ff_core_List.List_each(files_, ((file_) => {
+for(let for_i = 0, for_a = files_, for_l = for_a.length; for_i < for_l; for_i++) {
+const file_ = for_a[for_i];
 const localFile_ = ff_core_Path.Path_base(file_);
 ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch(ff_core_Core.try_((() => {
 if(infer_) {
@@ -226,9 +229,9 @@ ff_core_Array.Array_pushList(errors_, compileErrors_)
 return
 }
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
-}));
+};
 ff_compiler_ModuleCache.ModuleCache_mergeVersions(cache_, compiler_.cache_)
-}));
+};
 return ff_core_Array.Array_drain(errors_)
 }
 
@@ -346,11 +349,12 @@ if((await ff_core_Path.Path_exists$(jsOutputPath_, false, false, false, $task)))
 }
 
 export async function processIncludes_$(jsPathFile_, packagePath_, info_, $task) {
-(await ff_core_List.List_each$(info_.includes_, (async (include_, $task) => {
+for(let for_i = 0, for_a = info_.includes_, for_l = for_a.length; for_i < for_l; for_i++) {
+const include_ = for_a[for_i];
 const fromPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(packagePath_, ".firefly", $task)), "include", $task)), include_.path_, $task));
 const toPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(jsPathFile_, ff_compiler_Syntax.PackagePair_groupName(info_.package_.packagePair_, "/"), $task)), include_.path_, $task));
 (await ff_core_Path.Path_copyTo$(fromPath_, toPath_, 0, 100, $task))
-}), $task))
+}
 }
 
 export async function buildViaBuildSystem_$(system_, fireflyPath_, mainFile_, target_, $task) {
@@ -379,9 +383,10 @@ return [ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab((await ff_co
 }
 }))((await ff_core_Path.Path_isDirectory$(path_, $task)), $task));
 const errors_ = ff_core_Array.new_();
-(await ff_core_List.List_each$(ff_core_List.List_filter(packages_, ((_w1) => {
+for(let for_i = 0, for_a = ff_core_List.List_filter(packages_, ((_w1) => {
 return (!ff_core_List.List_isEmpty(_w1.files_))
-})), (async (package_, $task) => {
+})), for_l = for_a.length; for_i < for_l; for_i++) {
+const package_ = for_a[for_i];
 const firstFile_ = ff_core_List.List_grabFirst(package_.files_);
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), dependencyLock_, firstFile_, $task));
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
@@ -397,7 +402,8 @@ const files_ = (checkDependencies_
 : (await ff_core_List.List_filter$(package_.files_, (async (_w1, $task) => {
 return (!(await ff_core_Path.Path_contains$(_w1, [".firefly", "dependencies"], $task)))
 }), $task)));
-(await ff_core_List.List_each$(files_, (async (file_, $task) => {
+for(let for_i = 0, for_a = files_, for_l = for_a.length; for_i < for_l; for_i++) {
+const file_ = for_a[for_i];
 const localFile_ = (await ff_core_Path.Path_base$(file_, $task));
 ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch((await ff_core_Core.try_$((async ($task) => {
 if(infer_) {
@@ -420,9 +426,9 @@ ff_core_Array.Array_pushList(errors_, compileErrors_)
 return
 }
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
-}), $task));
+};
 ff_compiler_ModuleCache.ModuleCache_mergeVersions(cache_, compiler_.cache_)
-}), $task));
+};
 return ff_core_Array.Array_drain(errors_)
 }
 
