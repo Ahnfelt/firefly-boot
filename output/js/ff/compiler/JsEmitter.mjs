@@ -1794,9 +1794,9 @@ const e3_ = _guard3[2];
 const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
 if(_guard2) {
 const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
-{
-const s_ = _guard1;
-return ff_core_Option.Some(((q_ + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
 }
 }
 }
@@ -1810,9 +1810,9 @@ const e3_ = _guard3[2];
 const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
 if(_guard2) {
 const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
-{
-const s_ = _guard1;
-return ff_core_Option.Some(((q_ + " += ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " += ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
 }
 }
 }
@@ -1826,9 +1826,9 @@ const e3_ = _guard3[2];
 const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
 if(_guard2) {
 const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
-{
-const s_ = _guard1;
-return ff_core_Option.Some(((q_ + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
 }
 }
 }
@@ -3431,9 +3431,9 @@ const e3_ = _guard3[2];
 const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
 if(_guard2) {
 const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
-{
-const s_ = _guard1;
-return ff_core_Option.Some(((q_ + " = ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e3_, async_, $task))))
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " = ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e3_, async_, $task))))
 }
 }
 }
@@ -3447,9 +3447,9 @@ const e3_ = _guard3[2];
 const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
 if(_guard2) {
 const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
-{
-const s_ = _guard1;
-return ff_core_Option.Some(((q_ + " += ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e3_, async_, $task))))
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " += ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e3_, async_, $task))))
 }
 }
 }
@@ -3463,9 +3463,9 @@ const e3_ = _guard3[2];
 const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
 if(_guard2) {
 const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
-{
-const s_ = _guard1;
-return ff_core_Option.Some(((q_ + " -= ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e3_, async_, $task))))
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " -= ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e3_, async_, $task))))
 }
 }
 }
