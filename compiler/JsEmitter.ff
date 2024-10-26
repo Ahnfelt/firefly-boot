@@ -525,32 +525,6 @@ extend self: JsEmitter {
                     "(" + escapeResolved(x1) + ".array[" + escapeResolved(x2) + "] ?? " + 
                     "ff_core_Array.internalGrab_(" + escapeResolved(x1) + ", " + escapeResolved(x2) + "))"
                 )
-            | "ff:core/UnsafeJs.import" {arguments | [EString(_, url)]} =>
-                Some(self.jsImporter.add(url.replace("\"", "")))
-            | "ff:core/UnsafeJs.await" {arguments | [body]} =>
-                if(async) {
-                    Some("(await " + self.emitTerm(body, async) + "($task))")
-                } else {
-                    Some(self.emitTerm(invokeImmediately(body), async))
-                }
-            | "ff:core/UnsafeJs.cancelled" =>
-                Some(if(async) {"$task.controller.signal.aborted"} else {"false"})
-            | "ff:core/UnsafeJs.throwIfCancelled" =>
-                Some(if(async) {"((() => ff_core_Task.Task_throwIfAborted($task))())"} else {""})
-            | "ff:core/UnsafeJs.inAsync" =>
-                Some(if(self.emittingAsync) {"true"} else {"false"})
-            | "ff:core/UnsafeJs.inBrowser" =>
-                Some(if(self.emitTarget == EmitBrowser) {"true"} else {"false"})
-            | "ff:core/UnsafeJs.inNode" =>
-                Some(if(self.emitTarget == EmitNode) {"true"} else {"false"})
-            | "ff:core/UnsafeJs.inBuild" =>
-                Some(if(self.emitTarget == EmitBuild) {"true"} else {"false"})
-            | "ff:core/UnsafeJs.value" {arguments | [e]} =>
-                Some(self.emitTerm(e, async))
-            | "ff:core/UnsafeJs.fromValue" {arguments | [e]} =>
-                Some(self.emitTerm(e, async))
-            | "ff:core/JsValue.JsValue_get" {arguments | [e1, e2]} =>
-                Some(self.emitTerm(e1, async) + self.emitField(e2, async))
             | "ff:core/Equal.equals" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, _, typeName, [])]} {
                 primitiveTypes.contains(typeName) || typeName == "ff:core/Ordering.Ordering"
             } =>
@@ -593,6 +567,36 @@ extend self: JsEmitter {
                     "return result;\n" +
                     "})())"
                 )
+            | "ff:core/UnsafeJs.import" {arguments | [EString(_, url)]} =>
+                Some(self.jsImporter.add(url.replace("\"", "")))
+            | "ff:core/UnsafeJs.await" {arguments | [body]} =>
+                if(async) {
+                    Some("(await " + self.emitTerm(body, async) + "($task))")
+                } else {
+                    Some(self.emitTerm(invokeImmediately(body), async))
+                }
+            | "ff:core/UnsafeJs.cancelled" =>
+                Some(if(async) {"$task.controller.signal.aborted"} else {"false"})
+            | "ff:core/UnsafeJs.throwIfCancelled" =>
+                Some(if(async) {"((() => ff_core_Task.Task_throwIfAborted($task))())"} else {""})
+            | "ff:core/UnsafeJs.inAsync" =>
+                Some(if(self.emittingAsync) {"true"} else {"false"})
+            | "ff:core/UnsafeJs.inBrowser" =>
+                Some(if(self.emitTarget == EmitBrowser) {"true"} else {"false"})
+            | "ff:core/UnsafeJs.inNode" =>
+                Some(if(self.emitTarget == EmitNode) {"true"} else {"false"})
+            | "ff:core/UnsafeJs.inBuild" =>
+                Some(if(self.emitTarget == EmitBuild) {"true"} else {"false"})
+            | "ff:core/UnsafeJs.value" {arguments | [e]} =>
+                Some(self.emitTerm(e, async))
+            | "ff:core/UnsafeJs.fromValue" {arguments | [e]} =>
+                Some(self.emitTerm(e, async))
+            | "ff:core/JsValue.JsValue_get" {arguments | [e1, e2]} =>
+                Some(self.emitTerm(e1, async) + self.emitField(e2, async))
+            | "ff:core/JsSystem.object" =>
+                Some("{}")
+            | "ff:core/JsSystem.new0" =>
+                Some("{}")
             | _ =>
                 None
         }
@@ -649,6 +653,10 @@ extend self: JsEmitter {
                 Some(if(async) {"ff_core_Task.Task_throwIfAborted($task)"} else {""})
             | "ff:core/JsValue.JsValue_set" {arguments | [e1, e2, e3]} =>
                 Some(self.emitTerm(e1, async) + self.emitField(e2, async) + " = " + self.emitTerm(e3, async))
+            | "ff:core/JsValue.JsValue_increment" {arguments | [e1, e2, e3]} =>
+                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + " += " + self.emitTerm(e3, async))
+            | "ff:core/JsValue.JsValue_decrement" {arguments | [e1, e2, e3]} =>
+                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + " -= " + self.emitTerm(e3, async))
             | _ =>
                 None
         }
