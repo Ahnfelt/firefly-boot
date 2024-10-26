@@ -113,6 +113,7 @@ return ff_core_Option.Some(body_())
 }
 
 export function while_(condition_, body_) {
+_tailcall: for(;;) {
 {
 const _1 = condition_();
 if(!_1) {
@@ -121,11 +122,17 @@ return
 }
 if(_1) {
 body_();
-while(condition_()) {
-body_()
+{
+const condition_r_ = condition_;
+const body_r_ = body_;
+condition_ = condition_r_
+body_ = body_r_
+continue _tailcall
 }
 return
 }
+}
+return
 }
 }
 
@@ -199,6 +206,7 @@ return ff_core_Option.Some((await body_($task)))
 }
 
 export async function while_$(condition_, body_, $task) {
+_tailcall: for(;;) {
 {
 const _1 = (await condition_($task));
 if(!_1) {
@@ -207,11 +215,17 @@ return
 }
 if(_1) {
 (await body_($task));
-while((await condition_($task))) {
-(await body_($task))
+{
+const condition_r_ = condition_;
+const body_r_ = body_;
+condition_ = condition_r_
+body_ = body_r_
+continue _tailcall
 }
 return
 }
+}
+return
 }
 }
 
