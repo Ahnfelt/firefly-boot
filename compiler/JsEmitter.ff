@@ -385,7 +385,7 @@ extend self: JsEmitter {
                     let call = functionCode + "(" + [...emittedArguments, ...ds, ...controller].join(", ") + ")"
                     if(await) {"(await " + call + ")"} else {call}
                 | [Pair(EVariant(_, "ff:core/Bool.True", _, _), elseBody), ...list] =>
-                    "(" + list.foldLeft(self.emitTerm(elseBody, async)) {| otherwise, Pair(condition, body) =>
+                    "(" + list.foldLeft(self.emitComma(elseBody, async)) {| otherwise, Pair(condition, body) =>
                         self.emitComma(condition, async) +
                         "\n? " + self.emitComma(body, async) + "\n: " + otherwise
                     } + ")"

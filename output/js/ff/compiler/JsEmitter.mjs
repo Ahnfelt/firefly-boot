@@ -1213,7 +1213,7 @@ return
 if(_1.length >= 1 && _1[0].first_.EVariant && _1[0].first_.name_ === "ff:core/Bool.True") {
 const elseBody_ = _1[0].second_;
 const list_ = _1.slice(1);
-return (("(" + ff_core_List.List_foldLeft(list_, ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, elseBody_, async_), ((_1, _2) => {
+return (("(" + ff_core_List.List_foldLeft(list_, ff_compiler_JsEmitter.JsEmitter_emitComma(self_, elseBody_, async_), ((_1, _2) => {
 {
 const otherwise_ = _1;
 const condition_ = _2.first_;
@@ -3166,7 +3166,7 @@ return
 if(_1.length >= 1 && _1[0].first_.EVariant && _1[0].first_.name_ === "ff:core/Bool.True") {
 const elseBody_ = _1[0].second_;
 const list_ = _1.slice(1);
-return (("(" + (await ff_core_List.List_foldLeft$(list_, (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, elseBody_, async_, $task)), (async (_1, _2, $task) => {
+return (("(" + (await ff_core_List.List_foldLeft$(list_, (await ff_compiler_JsEmitter.JsEmitter_emitComma$(self_, elseBody_, async_, $task)), (async (_1, _2, $task) => {
 {
 const otherwise_ = _1;
 const condition_ = _2.first_;

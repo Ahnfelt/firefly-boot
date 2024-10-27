@@ -202,10 +202,7 @@ const packageDirectory_ = ((ff_core_Path.Path_extension(path_) === ".ff")
 const sharedPackageFile_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(packageDirectory_, ".firefly"), "package.ff");
 const packageFile_ = (ff_core_Path.Path_exists(sharedPackageFile_, false, false, false)
 ? sharedPackageFile_
-: (function() {
-self_.singleFilePackages_ = ff_core_Set.Set_add(self_.singleFilePackages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
-return path_
-})());
+: (self_.singleFilePackages_ = ff_core_Set.Set_add(self_.singleFilePackages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), path_));
 const code_ = ff_core_Path.Path_readText(packageFile_);
 return ff_compiler_Dependencies.Dependencies_parsePackageFile(self_, packagePair_, ff_core_Path.Path_relativeTo(packageFile_, path_), code_)
 }
@@ -307,10 +304,7 @@ const packageDirectory_ = (((await ff_core_Path.Path_extension$(path_, $task)) =
 const sharedPackageFile_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(packageDirectory_, ".firefly", $task)), "package.ff", $task));
 const packageFile_ = ((await ff_core_Path.Path_exists$(sharedPackageFile_, false, false, false, $task))
 ? sharedPackageFile_
-: (await (async function() {
-self_.singleFilePackages_ = ff_core_Set.Set_add(self_.singleFilePackages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
-return path_
-})()));
+: (self_.singleFilePackages_ = ff_core_Set.Set_add(self_.singleFilePackages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), path_));
 const code_ = (await ff_core_Path.Path_readText$(packageFile_, $task));
 return (await ff_compiler_Dependencies.Dependencies_parsePackageFile$(self_, packagePair_, (await ff_core_Path.Path_relativeTo$(packageFile_, path_, $task)), code_, $task))
 }

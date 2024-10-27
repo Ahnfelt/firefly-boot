@@ -1010,10 +1010,7 @@ ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
 const parameterType_ = ff_compiler_Parser.Parser_parseType(self_);
 const default_ = ((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssign()))
 ? ff_core_Option.None()
-: (function() {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssign());
-return ff_core_Option.Some(ff_compiler_Parser.Parser_parseTerm(self_))
-})());
+: (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssign()), ff_core_Option.Some(ff_compiler_Parser.Parser_parseTerm(self_))));
 parameters_.array.push(ff_compiler_Syntax.Parameter(ff_compiler_Token.Token_at(parameterNameToken_), mutable_, ff_compiler_Token.Token_raw(parameterNameToken_), parameterType_, default_));
 if(lspTrackSymbols_) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseSymbolEnd(ff_compiler_Token.Token_raw(parameterNameToken_), ff_compiler_LspHook.SParameter(), ff_compiler_Token.Token_at(parameterNameToken_), ff_compiler_Token.Token_end(parameterNameToken_), ff_compiler_Token.Token_at(lspFirst_), ff_compiler_Token.Token_end(ff_compiler_Parser.Parser_behind(self_))))
@@ -1175,10 +1172,7 @@ const guardToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LBra
 const term_ = ff_compiler_Parser.Parser_parseStatements(self_);
 const p_ = ((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LPipe()))
 ? ff_compiler_Syntax.PVariant(ff_compiler_Token.Token_at(guardToken_), "True", [])
-: (function() {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LPipe());
-return ff_compiler_Parser.Parser_parsePattern(self_)
-})());
+: (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LPipe()), ff_compiler_Parser.Parser_parsePattern(self_)));
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LBracketRight());
 return ff_compiler_Syntax.MatchGuard(ff_compiler_Token.Token_at(guardToken_), term_, p_)
 }
@@ -1372,10 +1366,7 @@ const keywordToken_ = (mutable_
 const nameToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower());
 const valueType_ = ((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LColon()))
 ? ff_compiler_Parser.Parser_freshUnificationVariable(self_, ff_compiler_Token.Token_at(nameToken_))
-: (function() {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
-return ff_compiler_Parser.Parser_parseType(self_)
-})());
+: (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon()), ff_compiler_Parser.Parser_parseType(self_)));
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssign())))) {
 const unit_ = ff_compiler_Syntax.EVariant(ff_compiler_Token.Token_at(keywordToken_), "Unit", [], ff_core_Option.None());
 return ff_compiler_Syntax.ELet(ff_compiler_Token.Token_at(nameToken_), mutable_, ff_compiler_Token.Token_raw(nameToken_), valueType_, unit_, unit_)
@@ -1593,10 +1584,7 @@ const method_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(se
 ? (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssign()), "set")
 : ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssignPlus())
 ? (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignPlus()), "increment")
-: (function() {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignMinus());
-return "decrement"
-})());
+: (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignMinus()), "decrement"));
 const value_ = ff_compiler_Parser.Parser_parseTerm(self_);
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, "set"), false);
@@ -2604,10 +2592,7 @@ ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
 const parameterType_ = ff_compiler_Parser.Parser_parseType(self_);
 const default_ = ((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssign()))
 ? ff_core_Option.None()
-: (await (async function() {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssign());
-return ff_core_Option.Some(ff_compiler_Parser.Parser_parseTerm(self_))
-})()));
+: (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssign()), ff_core_Option.Some(ff_compiler_Parser.Parser_parseTerm(self_))));
 parameters_.array.push(ff_compiler_Syntax.Parameter(ff_compiler_Token.Token_at(parameterNameToken_), mutable_, ff_compiler_Token.Token_raw(parameterNameToken_), parameterType_, default_));
 if(lspTrackSymbols_) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseSymbolEnd(ff_compiler_Token.Token_raw(parameterNameToken_), ff_compiler_LspHook.SParameter(), ff_compiler_Token.Token_at(parameterNameToken_), ff_compiler_Token.Token_end(parameterNameToken_), ff_compiler_Token.Token_at(lspFirst_), ff_compiler_Token.Token_end(ff_compiler_Parser.Parser_behind(self_))))
@@ -2769,10 +2754,7 @@ const guardToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LBra
 const term_ = ff_compiler_Parser.Parser_parseStatements(self_);
 const p_ = ((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LPipe()))
 ? ff_compiler_Syntax.PVariant(ff_compiler_Token.Token_at(guardToken_), "True", [])
-: (await (async function() {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LPipe());
-return ff_compiler_Parser.Parser_parsePattern(self_)
-})()));
+: (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LPipe()), ff_compiler_Parser.Parser_parsePattern(self_)));
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LBracketRight());
 return ff_compiler_Syntax.MatchGuard(ff_compiler_Token.Token_at(guardToken_), term_, p_)
 }
@@ -2966,10 +2948,7 @@ const keywordToken_ = (mutable_
 const nameToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower());
 const valueType_ = ((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LColon()))
 ? ff_compiler_Parser.Parser_freshUnificationVariable(self_, ff_compiler_Token.Token_at(nameToken_))
-: (await (async function() {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
-return ff_compiler_Parser.Parser_parseType(self_)
-})()));
+: (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon()), ff_compiler_Parser.Parser_parseType(self_)));
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssign())))) {
 const unit_ = ff_compiler_Syntax.EVariant(ff_compiler_Token.Token_at(keywordToken_), "Unit", [], ff_core_Option.None());
 return ff_compiler_Syntax.ELet(ff_compiler_Token.Token_at(nameToken_), mutable_, ff_compiler_Token.Token_raw(nameToken_), valueType_, unit_, unit_)
@@ -3187,10 +3166,7 @@ const method_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(se
 ? (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssign()), "set")
 : ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssignPlus())
 ? (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignPlus()), "increment")
-: (await (async function() {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignMinus());
-return "decrement"
-})()));
+: (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignMinus()), "decrement"));
 const value_ = ff_compiler_Parser.Parser_parseTerm(self_);
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, "set"), false);
