@@ -696,7 +696,7 @@ extend self: JsEmitter {
                 MatchCase(_, [PVariable(_, name)], [], body)
             ]))]} =>
                 Some(
-                    "for(let for_o = " + self.emitTerm(list, async) + "; for_o.Some;) {\n" +
+                    "for(const for_o = " + self.emitTerm(list, async) + "; for_o.Some;) {\n" +
                         name.map {"const " + escapeKeyword(_) + " = for_o.value_;\n"}.else {""} +
                         self.emitStatements(body, last, async) +
                     "\nbreak\n}"

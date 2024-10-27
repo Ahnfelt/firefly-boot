@@ -136,7 +136,7 @@ const rules_ = ff_core_List.List_collect(lines_, ((line_) => {
 const columns_ = ff_core_List.List_filter(ff_core_String.String_split(ff_core_String.String_replace(line_, "\t", " "), 32), ((_w1) => {
 return (ff_core_String.String_size(_w1) !== 0)
 }));
-for(let for_o = defaultLocation_; for_o.Some;) {
+for(const for_o = defaultLocation_; for_o.Some;) {
 ff_core_Core.panic_(("Unexpected rule after the * rule: " + line_))
 break
 };
@@ -201,7 +201,7 @@ const rules_ = ff_core_List.List_collect(lines_, ((line_) => {
 const columns_ = ff_core_List.List_filter(ff_core_String.String_split(ff_core_String.String_replace(line_, "\t", " "), 32), ((_w1) => {
 return (ff_core_String.String_size(_w1) !== 0)
 }));
-for(let for_o = defaultLocation_; for_o.Some;) {
+for(const for_o = defaultLocation_; for_o.Some;) {
 ff_core_Core.panic_(("Unexpected rule after the * rule: " + line_))
 break
 };

@@ -867,7 +867,7 @@ return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, ["Q$", ...sign
 : (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, _c.generics_, _c.constraints_, _c.parameters_, _c.returnType_, ff_compiler_Resolver.Resolver_freshUnificationVariable(self_, signature_.at_))
 }))(signature_));
-for(let for_o = ff_core_List.List_find(newSignature_.generics_, ((name_) => {
+for(const for_o = ff_core_List.List_find(newSignature_.generics_, ((name_) => {
 return ff_core_Set.Set_contains(self_.typeParameters_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 })); for_o.Some;) {
 const name_ = for_o.value_;
@@ -1812,7 +1812,7 @@ return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, ["Q$", ...sign
 : (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, _c.generics_, _c.constraints_, _c.parameters_, _c.returnType_, ff_compiler_Resolver.Resolver_freshUnificationVariable(self_, signature_.at_))
 }))(signature_));
-for(let for_o = ff_core_List.List_find(newSignature_.generics_, ((name_) => {
+for(const for_o = ff_core_List.List_find(newSignature_.generics_, ((name_) => {
 return ff_core_Set.Set_contains(self_.typeParameters_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 })); for_o.Some;) {
 const name_ = for_o.value_;

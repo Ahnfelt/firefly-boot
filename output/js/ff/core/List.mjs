@@ -466,7 +466,7 @@ export function List_collect(self_, body_) {
 let result_ = ff_core_Array.new_();
 for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
-for(let for_o = body_(x_); for_o.Some;) {
+for(const for_o = body_(x_); for_o.Some;) {
 const _w1 = for_o.value_;
 result_.array.push(_w1)
 break
@@ -832,7 +832,7 @@ export async function List_collect$(self_, body_, $task) {
 let result_ = ff_core_Array.new_();
 for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
-for(let for_o = (await body_(x_, $task)); for_o.Some;) {
+for(const for_o = (await body_(x_, $task)); for_o.Some;) {
 const _w1 = for_o.value_;
 result_.array.push(_w1)
 break

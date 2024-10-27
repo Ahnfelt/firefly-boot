@@ -137,7 +137,7 @@ if(printMeasurements_) {
 ff_compiler_Compiler.Compiler_printMeasurements(compiler_)
 };
 ff_core_Map.Map_each(resolvedDependencies_.packagePaths_, ((packagePair_, packagePath_) => {
-for(let for_o = ff_core_Map.Map_get(resolvedDependencies_.packages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair); for_o.Some;) {
+for(const for_o = ff_core_Map.Map_get(resolvedDependencies_.packages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair); for_o.Some;) {
 const packageInfo_ = for_o.value_;
 ff_compiler_Builder.processIncludes_(jsPathFile_, packagePath_, packageInfo_)
 break
@@ -336,7 +336,7 @@ if(printMeasurements_) {
 (await ff_compiler_Compiler.Compiler_printMeasurements$(compiler_, $task))
 };
 (await ff_core_Map.Map_each$(resolvedDependencies_.packagePaths_, (async (packagePair_, packagePath_, $task) => {
-for(let for_o = ff_core_Map.Map_get(resolvedDependencies_.packages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair); for_o.Some;) {
+for(const for_o = ff_core_Map.Map_get(resolvedDependencies_.packages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair); for_o.Some;) {
 const packageInfo_ = for_o.value_;
 (await ff_compiler_Builder.processIncludes_$(jsPathFile_, packagePath_, packageInfo_, $task))
 break
