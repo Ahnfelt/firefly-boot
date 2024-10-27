@@ -669,9 +669,11 @@ if(_1.EField) {
 const e_ = _1;
 const recordType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, term_.at_)) {
-ff_core_Option.Option_each(hookRecordTypeBox_, ((_w1) => {
+for(let for_o = hookRecordTypeBox_; for_o.Some;) {
+const _w1 = for_o.value_;
 _w1.value_ = ff_core_Option.Some(recordType_)
-}))
+break
+}
 };
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, e_.record_);
 {
@@ -1201,9 +1203,11 @@ if(_1.EField) {
 const f_ = _1;
 const recordType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, f_.at_);
 if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, term_.at_)) {
-ff_core_Option.Option_each(hookRecordTypeBox_, ((_w1) => {
+for(let for_o = hookRecordTypeBox_; for_o.Some;) {
+const _w1 = for_o.value_;
 _w1.value_ = ff_core_Option.Some(recordType_)
-}))
+break
+}
 };
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, f_.record_);
 const e2_ = (((_c) => {
@@ -1503,9 +1507,11 @@ const arguments_ = ff_core_List.List_map(ff_core_List.List_zip(e_.arguments_, ar
 {
 const argument_ = _1.first_;
 const t_ = _1.second_;
-ff_core_Option.Option_each(argument_.name_, ((name_) => {
+for(let for_o = argument_.name_; for_o.Some;) {
+const name_ = for_o.value_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(argument_.at_, ("Named argument not allowed here: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}));
+break
+};
 {
 const _1 = argument_;
 {
@@ -1516,9 +1522,11 @@ return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Inference.Infer
 return
 }
 }));
-ff_core_Option.Option_each(ff_core_List.List_first(e_.typeArguments_), ((typeArgument_) => {
+for(let for_o = ff_core_List.List_first(e_.typeArguments_); for_o.Some;) {
+const typeArgument_ = for_o.value_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(typeArgument_.at_, "Type arguments not allowed here"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}));
+break
+};
 ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, effect_, environment_.effect_);
 {
 const _1 = e_;
@@ -1881,11 +1889,13 @@ return ff_core_Option.Option_contains(_w1.name_, p_.name_, ff_core_Equal.ff_core
 {
 const at_ = _1.at_;
 const e_ = _1.value_;
-ff_core_Option.Option_each(ff_core_Array.Array_indexWhere(remainingArguments_, ((_w1) => {
+for(let for_o = ff_core_Array.Array_indexWhere(remainingArguments_, ((_w1) => {
 return ff_core_Option.Option_contains(_w1.name_, p_.name_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
-})), ((_w1) => {
+})); for_o.Some;) {
+const _w1 = for_o.value_;
 ff_core_Array.Array_delete(remainingArguments_, _w1, 1)
-}));
+break
+};
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, e_);
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(p_.name_), e2_)
 }
@@ -2521,9 +2531,11 @@ if(_1.EField) {
 const e_ = _1;
 const recordType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, term_.at_)) {
-ff_core_Option.Option_each(hookRecordTypeBox_, ((_w1) => {
+for(let for_o = hookRecordTypeBox_; for_o.Some;) {
+const _w1 = for_o.value_;
 _w1.value_ = ff_core_Option.Some(recordType_)
-}))
+break
+}
 };
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, e_.record_);
 {
@@ -3053,9 +3065,11 @@ if(_1.EField) {
 const f_ = _1;
 const recordType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, f_.at_);
 if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, term_.at_)) {
-ff_core_Option.Option_each(hookRecordTypeBox_, ((_w1) => {
+for(let for_o = hookRecordTypeBox_; for_o.Some;) {
+const _w1 = for_o.value_;
 _w1.value_ = ff_core_Option.Some(recordType_)
-}))
+break
+}
 };
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, f_.record_);
 const e2_ = (((_c) => {
@@ -3355,9 +3369,11 @@ const arguments_ = ff_core_List.List_map(ff_core_List.List_zip(e_.arguments_, ar
 {
 const argument_ = _1.first_;
 const t_ = _1.second_;
-ff_core_Option.Option_each(argument_.name_, ((name_) => {
+for(let for_o = argument_.name_; for_o.Some;) {
+const name_ = for_o.value_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(argument_.at_, ("Named argument not allowed here: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}));
+break
+};
 {
 const _1 = argument_;
 {
@@ -3368,9 +3384,11 @@ return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Inference.Infer
 return
 }
 }));
-ff_core_Option.Option_each(ff_core_List.List_first(e_.typeArguments_), ((typeArgument_) => {
+for(let for_o = ff_core_List.List_first(e_.typeArguments_); for_o.Some;) {
+const typeArgument_ = for_o.value_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(typeArgument_.at_, "Type arguments not allowed here"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}));
+break
+};
 ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, effect_, environment_.effect_);
 {
 const _1 = e_;
@@ -3733,11 +3751,13 @@ return ff_core_Option.Option_contains(_w1.name_, p_.name_, ff_core_Equal.ff_core
 {
 const at_ = _1.at_;
 const e_ = _1.value_;
-ff_core_Option.Option_each(ff_core_Array.Array_indexWhere(remainingArguments_, ((_w1) => {
+for(let for_o = ff_core_Array.Array_indexWhere(remainingArguments_, ((_w1) => {
 return ff_core_Option.Option_contains(_w1.name_, p_.name_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
-})), ((_w1) => {
+})); for_o.Some;) {
+const _w1 = for_o.value_;
 ff_core_Array.Array_delete(remainingArguments_, _w1, 1)
-}));
+break
+};
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, e_);
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(p_.name_), e2_)
 }

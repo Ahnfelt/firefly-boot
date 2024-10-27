@@ -324,9 +324,11 @@ return ff_compiler_Parser.Parser_skip(self_, kind_)
 
 export function Parser_parseModuleWithoutPackageInfo(self_) {
 const moduleWithPackageInfo_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(self_);
-ff_core_Option.Option_each(moduleWithPackageInfo_.packageInfo_, ((info_) => {
+for(let for_o = moduleWithPackageInfo_.packageInfo_; for_o.Some;) {
+const info_ = for_o.value_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(info_.package_.at_, "Package and dependencies already declared in package.ff"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}));
+break
+};
 return moduleWithPackageInfo_.module_
 }
 
@@ -1571,11 +1573,13 @@ const member_ = ff_compiler_Syntax.EString(ff_compiler_Token.Token_at(token_), (
 : (("\"" + ff_compiler_Token.Token_raw(token_)) + "\"")));
 if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "(")) {
 const arguments_ = ff_compiler_Parser.Parser_parseFunctionArguments(self_, record_.at_, false);
-ff_core_Option.Option_each(ff_core_List.List_find(arguments_.first_, ((_w1) => {
+for(let for_o = ff_core_List.List_find(arguments_.first_, ((_w1) => {
 return (!ff_core_Option.Option_isEmpty(_w1.name_))
-})), ((argument_) => {
+})); for_o.Some;) {
+const argument_ = for_o.value_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(argument_.at_, "Unexpected named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}));
+break
+};
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, ("call" + arguments_.first_.length)), false);
 return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(member_.at_, ff_core_Option.None(), member_), ...arguments_.first_], [])
@@ -1906,9 +1910,11 @@ return ff_compiler_Parser.Parser_skip(self_, kind_)
 
 export async function Parser_parseModuleWithoutPackageInfo$(self_, $task) {
 const moduleWithPackageInfo_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(self_);
-ff_core_Option.Option_each(moduleWithPackageInfo_.packageInfo_, ((info_) => {
+for(let for_o = moduleWithPackageInfo_.packageInfo_; for_o.Some;) {
+const info_ = for_o.value_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(info_.package_.at_, "Package and dependencies already declared in package.ff"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}));
+break
+};
 return moduleWithPackageInfo_.module_
 }
 
@@ -3153,11 +3159,13 @@ const member_ = ff_compiler_Syntax.EString(ff_compiler_Token.Token_at(token_), (
 : (("\"" + ff_compiler_Token.Token_raw(token_)) + "\"")));
 if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "(")) {
 const arguments_ = ff_compiler_Parser.Parser_parseFunctionArguments(self_, record_.at_, false);
-ff_core_Option.Option_each(ff_core_List.List_find(arguments_.first_, ((_w1) => {
+for(let for_o = ff_core_List.List_find(arguments_.first_, ((_w1) => {
 return (!ff_core_Option.Option_isEmpty(_w1.name_))
-})), ((argument_) => {
+})); for_o.Some;) {
+const argument_ = for_o.value_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(argument_.at_, "Unexpected named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}));
+break
+};
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, ("call" + arguments_.first_.length)), false);
 return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(member_.at_, ff_core_Option.None(), member_), ...arguments_.first_], [])

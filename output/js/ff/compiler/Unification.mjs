@@ -469,7 +469,8 @@ const t_ = ff_compiler_Unification.Unification_substitute(self_, type_);
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Infinite type: " + ff_compiler_Syntax.Type_show(ff_compiler_Syntax.TVariable(at_, index_), [t_])) + " = ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, type_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
-ff_core_Option.Option_each(ff_core_Map.Map_get(self_.constraints_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((map_) => {
+for(let for_o = ff_core_Map.Map_get(self_.constraints_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int); for_o.Some;) {
+const map_ = for_o.value_;
 self_.constraints_ = ff_core_Map.Map_remove(self_.constraints_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 ff_core_List.List_each(ff_core_Map.Map_pairs(map_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
 {
@@ -480,13 +481,16 @@ ff_compiler_Unification.Unification_constrain(self_, at2_, type_, name_, generic
 return
 }
 }))
-}));
-ff_core_Option.Option_each(ff_core_Map.Map_get(self_.affects_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((affected_) => {
+break
+};
+for(let for_o = ff_core_Map.Map_get(self_.affects_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int); for_o.Some;) {
+const affected_ = for_o.value_;
 ff_core_Map.Map_remove(self_.affects_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 ff_core_Set.Set_each(affected_, ((i_) => {
 ff_compiler_Unification.Unification_affect(self_, at_, type_, ff_compiler_Syntax.TVariable(at_, i_))
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
-}))
+break
+}
 }
 
 export function Unification_affect(self_, at_, source_, target_) {
@@ -846,7 +850,8 @@ const t_ = ff_compiler_Unification.Unification_substitute(self_, type_);
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Infinite type: " + ff_compiler_Syntax.Type_show(ff_compiler_Syntax.TVariable(at_, index_), [t_])) + " = ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, type_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
-ff_core_Option.Option_each(ff_core_Map.Map_get(self_.constraints_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((map_) => {
+for(let for_o = ff_core_Map.Map_get(self_.constraints_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int); for_o.Some;) {
+const map_ = for_o.value_;
 self_.constraints_ = ff_core_Map.Map_remove(self_.constraints_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 ff_core_List.List_each(ff_core_Map.Map_pairs(map_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
 {
@@ -857,13 +862,16 @@ ff_compiler_Unification.Unification_constrain(self_, at2_, type_, name_, generic
 return
 }
 }))
-}));
-ff_core_Option.Option_each(ff_core_Map.Map_get(self_.affects_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((affected_) => {
+break
+};
+for(let for_o = ff_core_Map.Map_get(self_.affects_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int); for_o.Some;) {
+const affected_ = for_o.value_;
 ff_core_Map.Map_remove(self_.affects_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 ff_core_Set.Set_each(affected_, ((i_) => {
 ff_compiler_Unification.Unification_affect(self_, at_, type_, ff_compiler_Syntax.TVariable(at_, i_))
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
-}))
+break
+}
 }
 
 export async function Unification_affect$(self_, at_, source_, target_, $task) {

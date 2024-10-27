@@ -466,9 +466,11 @@ export function List_collect(self_, body_) {
 let result_ = ff_core_Array.new_();
 for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
-ff_core_Option.Option_each(body_(x_), ((_w1) => {
+for(let for_o = body_(x_); for_o.Some;) {
+const _w1 = for_o.value_;
 result_.array.push(_w1)
-}))
+break
+}
 };
 return ff_core_Array.Array_drain(result_)
 }
@@ -830,9 +832,11 @@ export async function List_collect$(self_, body_, $task) {
 let result_ = ff_core_Array.new_();
 for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
-ff_core_Option.Option_each((await body_(x_, $task)), ((_w1) => {
+for(let for_o = (await body_(x_, $task)); for_o.Some;) {
+const _w1 = for_o.value_;
 result_.array.push(_w1)
-}))
+break
+}
 };
 return ff_core_Array.Array_drain(result_)
 }

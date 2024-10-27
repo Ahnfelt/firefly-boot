@@ -1971,6 +1971,20 @@ return ff_core_Option.Some((("while(" + ff_compiler_JsEmitter.JsEmitter_emitComm
 }
 }
 }
+if(_1 === "ff:core/Option.Option_each") {
+const _guard1 = arguments_;
+if(_guard1.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_[0].PVariable && _guard1[1].lambda_.cases_[0].guards_.length === 0) {
+const list_ = _guard1[0];
+const name_ = _guard1[1].lambda_.cases_[0].patterns_[0].name_;
+const body_ = _guard1[1].lambda_.cases_[0].body_;
+return ff_core_Option.Some(((((("for(let for_o = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_)) + "; for_o.Some;) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_o.value_;\n")
+})), (() => {
+return ""
+}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, async_)) + "\nbreak\n}"))
+return
+}
+}
 if(_1 === "ff:core/List.List_each") {
 const _guard2 = arguments_;
 if(_guard2.length === 2 && _guard2[0].ECall && _guard2[0].target_.StaticCall && _guard2[0].arguments_.length === 2 && _guard2[1].ELambda && _guard2[1].lambda_.cases_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_[0].PVariable && _guard2[1].lambda_.cases_[0].guards_.length === 0) {
@@ -3942,6 +3956,20 @@ const _guard1 = ff_compiler_JsEmitter.invokeImmediately_(doWhileBody_);
 const body_ = _guard1;
 return ff_core_Option.Some((("while(" + (await ff_compiler_JsEmitter.JsEmitter_emitComma$(self_, body_, async_, $task))) + ") {}"))
 }
+}
+}
+if(_1 === "ff:core/Option.Option_each") {
+const _guard1 = arguments_;
+if(_guard1.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_[0].PVariable && _guard1[1].lambda_.cases_[0].guards_.length === 0) {
+const list_ = _guard1[0];
+const name_ = _guard1[1].lambda_.cases_[0].patterns_[0].name_;
+const body_ = _guard1[1].lambda_.cases_[0].body_;
+return ff_core_Option.Some(((((("for(let for_o = " + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, list_, async_, $task))) + "; for_o.Some;) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_o.value_;\n")
+})), (() => {
+return ""
+}))) + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, body_, last_, async_, $task))) + "\nbreak\n}"))
+return
 }
 }
 if(_1 === "ff:core/List.List_each") {

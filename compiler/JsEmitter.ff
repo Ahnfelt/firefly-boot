@@ -692,6 +692,15 @@ extend self: JsEmitter {
                 invokeImmediately(doWhileBody) | body
             } =>
                 Some("while(" + self.emitComma(body, async) + ") {}")
+            | "ff:core/Option.Option_each" {arguments | [list, ELambda(_, Lambda(_, _, [
+                MatchCase(_, [PVariable(_, name)], [], body)
+            ]))]} =>
+                Some(
+                    "for(let for_o = " + self.emitTerm(list, async) + "; for_o.Some;) {\n" +
+                        name.map {"const " + escapeKeyword(_) + " = for_o.value_;\n"}.else {""} +
+                        self.emitStatements(body, last, async) +
+                    "\nbreak\n}"
+                )
             | "ff:core/List.List_each" {arguments | [
                 ECall(_, StaticCall(r, _, _), _, _, [start, end], _)
                 ELambda(_, Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], body)]))
