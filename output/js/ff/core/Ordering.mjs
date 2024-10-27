@@ -461,12 +461,12 @@ export function ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering_Order$
 compare_(x_, y_) {
 let ordering_ = ff_core_Ordering.OrderingSame();
 let i_ = 0;
-while((((i_ < ff_core_List.List_size(x_)) && (i_ < ff_core_List.List_size(y_))) && (ordering_ === ff_core_Ordering.OrderingSame()))) {
+while((((i_ < x_.length) && (i_ < y_.length)) && (ordering_ === ff_core_Ordering.OrderingSame()))) {
 ordering_ = ff_core_Ordering_Order$T.compare_((x_[i_] ?? ff_core_List.internalGrab_(x_, i_)), (y_[i_] ?? ff_core_List.internalGrab_(y_, i_)));
 i_ += 1
 };
 if((ordering_ !== ff_core_Ordering.OrderingSame())) {
-return ff_core_Ordering.fromInt_((ff_core_List.List_size(x_) - ff_core_List.List_size(y_)))
+return ff_core_Ordering.fromInt_((x_.length - y_.length))
 } else {
 return ordering_
 }
@@ -474,12 +474,12 @@ return ordering_
 async compare_$(x_, y_, $task) {
 let ordering_ = ff_core_Ordering.OrderingSame();
 let i_ = 0;
-while((((i_ < ff_core_List.List_size(x_)) && (i_ < ff_core_List.List_size(y_))) && (ordering_ === ff_core_Ordering.OrderingSame()))) {
+while((((i_ < x_.length) && (i_ < y_.length)) && (ordering_ === ff_core_Ordering.OrderingSame()))) {
 ordering_ = ff_core_Ordering_Order$T.compare_((x_[i_] ?? ff_core_List.internalGrab_(x_, i_)), (y_[i_] ?? ff_core_List.internalGrab_(y_, i_)));
 i_ += 1
 };
 if((ordering_ !== ff_core_Ordering.OrderingSame())) {
-return ff_core_Ordering.fromInt_((ff_core_List.List_size(x_) - ff_core_List.List_size(y_)))
+return ff_core_Ordering.fromInt_((x_.length - y_.length))
 } else {
 return ordering_
 }

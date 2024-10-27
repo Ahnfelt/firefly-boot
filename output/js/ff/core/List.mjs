@@ -192,15 +192,15 @@ return ff_core_List.List_get(self_, 0)
 }
 
 export function List_last(self_) {
-return ff_core_List.List_get(self_, (ff_core_List.List_size(self_) - 1))
+return ff_core_List.List_get(self_, (self_.length - 1))
 }
 
 export function List_grabFirst(self_) {
-return ff_core_List.List_grab(self_, 0)
+return (self_[0] ?? ff_core_List.internalGrab_(self_, 0))
 }
 
 export function List_grabLast(self_) {
-return ff_core_List.List_grab(self_, (ff_core_List.List_size(self_) - 1))
+return ff_core_List.List_grab(self_, (self_.length - 1))
 }
 
 export function List_takeFirst(self_, count_ = 1) {
@@ -222,7 +222,7 @@ return self_.slice(0, self_.length - count_)
 export function List_count(self_, body_) {
 let result_ = 0;
 let i_ = 0;
-while((i_ < ff_core_List.List_size(self_))) {
+while((i_ < self_.length)) {
 if(body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)))) {
 result_ += 1
 };
@@ -233,7 +233,7 @@ return result_
 
 export function List_countWhile(self_, body_) {
 let i_ = 0;
-while(((i_ < ff_core_List.List_size(self_)) && body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_))))) {
+while(((i_ < self_.length) && body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_))))) {
 i_ += 1
 };
 return i_
@@ -242,7 +242,7 @@ return i_
 export function List_takeWhile(self_, body_) {
 const result_ = ff_core_Array.new_();
 let i_ = 0;
-while(((i_ < ff_core_List.List_size(self_)) && body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_))))) {
+while(((i_ < self_.length) && body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_))))) {
 result_.array.push((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
 i_ += 1
 };
@@ -252,10 +252,10 @@ return ff_core_Array.Array_drain(result_)
 export function List_dropWhile(self_, body_) {
 const result_ = ff_core_Array.new_();
 let i_ = 0;
-while(((i_ < ff_core_List.List_size(self_)) && body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_))))) {
+while(((i_ < self_.length) && body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_))))) {
 i_ += 1
 };
-while((i_ < ff_core_List.List_size(self_))) {
+while((i_ < self_.length)) {
 result_.array.push((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
 i_ += 1
 };
@@ -266,11 +266,11 @@ export function List_partitionWhile(self_, body_) {
 const first_ = ff_core_Array.new_();
 const second_ = ff_core_Array.new_();
 let i_ = 0;
-while(((i_ < ff_core_List.List_size(self_)) && body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_))))) {
+while(((i_ < self_.length) && body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_))))) {
 first_.array.push((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
 i_ += 1
 };
-while((i_ < ff_core_List.List_size(self_))) {
+while((i_ < self_.length)) {
 second_.array.push((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
 i_ += 1
 };
@@ -317,7 +317,7 @@ export function List_modify(self_, index_, body_) {
 }
 
 export function List_zip(self_, that_) {
-if((ff_core_List.List_size(self_) <= ff_core_List.List_size(that_))) {
+if((self_.length <= that_.length)) {
 let i_ = (-1);
 return ff_core_List.List_map(self_, ((x_) => {
 i_ += 1;
@@ -355,7 +355,7 @@ return ff_core_Array.Array_drain(results_)
 export function List_toStream(self_, cycle_ = false) {
 let index_ = 0;
 return ff_core_Stream.new_((() => {
-if((index_ < ff_core_List.List_size(self_))) {
+if((index_ < self_.length)) {
 return ff_core_Option.Some((function() {
 const result_ = (self_[index_] ?? ff_core_List.internalGrab_(self_, index_));
 index_ += 1;
@@ -363,7 +363,7 @@ return result_
 })())
 } else if((cycle_ && (index_ !== 0))) {
 return ff_core_Option.Some((function() {
-const result_ = ff_core_List.List_grab(self_, 0);
+const result_ = (self_[0] ?? ff_core_List.internalGrab_(self_, 0));
 index_ = 1;
 return result_
 })())
@@ -504,8 +504,8 @@ return ff_core_Array.Array_drain(array_)
 }
 
 export function List_reverse(self_) {
-return ff_core_List.List_map(ff_core_Int.Int_to(1, ff_core_List.List_size(self_)), ((i_) => {
-return ff_core_List.List_grab(self_, (ff_core_List.List_size(self_) - i_))
+return ff_core_List.List_map(ff_core_Int.Int_to(1, self_.length), ((i_) => {
+return ff_core_List.List_grab(self_, (self_.length - i_))
 }))
 }
 
@@ -550,15 +550,15 @@ return ff_core_List.List_get(self_, 0)
 }
 
 export async function List_last$(self_, $task) {
-return ff_core_List.List_get(self_, (ff_core_List.List_size(self_) - 1))
+return ff_core_List.List_get(self_, (self_.length - 1))
 }
 
 export async function List_grabFirst$(self_, $task) {
-return ff_core_List.List_grab(self_, 0)
+return (self_[0] ?? ff_core_List.internalGrab_(self_, 0))
 }
 
 export async function List_grabLast$(self_, $task) {
-return ff_core_List.List_grab(self_, (ff_core_List.List_size(self_) - 1))
+return ff_core_List.List_grab(self_, (self_.length - 1))
 }
 
 export async function List_takeFirst$(self_, count_ = 1, $task) {
@@ -580,7 +580,7 @@ throw new Error('Function List_dropLast is missing on this target in async conte
 export async function List_count$(self_, body_, $task) {
 let result_ = 0;
 let i_ = 0;
-while((i_ < ff_core_List.List_size(self_))) {
+while((i_ < self_.length)) {
 if((await body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), $task))) {
 result_ += 1
 };
@@ -591,7 +591,7 @@ return result_
 
 export async function List_countWhile$(self_, body_, $task) {
 let i_ = 0;
-while(((i_ < ff_core_List.List_size(self_)) && (await body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), $task)))) {
+while(((i_ < self_.length) && (await body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), $task)))) {
 i_ += 1
 };
 return i_
@@ -600,7 +600,7 @@ return i_
 export async function List_takeWhile$(self_, body_, $task) {
 const result_ = ff_core_Array.new_();
 let i_ = 0;
-while(((i_ < ff_core_List.List_size(self_)) && (await body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), $task)))) {
+while(((i_ < self_.length) && (await body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), $task)))) {
 result_.array.push((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
 i_ += 1
 };
@@ -610,10 +610,10 @@ return ff_core_Array.Array_drain(result_)
 export async function List_dropWhile$(self_, body_, $task) {
 const result_ = ff_core_Array.new_();
 let i_ = 0;
-while(((i_ < ff_core_List.List_size(self_)) && (await body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), $task)))) {
+while(((i_ < self_.length) && (await body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), $task)))) {
 i_ += 1
 };
-while((i_ < ff_core_List.List_size(self_))) {
+while((i_ < self_.length)) {
 result_.array.push((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
 i_ += 1
 };
@@ -624,11 +624,11 @@ export async function List_partitionWhile$(self_, body_, $task) {
 const first_ = ff_core_Array.new_();
 const second_ = ff_core_Array.new_();
 let i_ = 0;
-while(((i_ < ff_core_List.List_size(self_)) && (await body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), $task)))) {
+while(((i_ < self_.length) && (await body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), $task)))) {
 first_.array.push((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
 i_ += 1
 };
-while((i_ < ff_core_List.List_size(self_))) {
+while((i_ < self_.length)) {
 second_.array.push((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
 i_ += 1
 };
@@ -675,7 +675,7 @@ export async function List_modify$(self_, index_, body_, $task) {
 }
 
 export async function List_zip$(self_, that_, $task) {
-if((ff_core_List.List_size(self_) <= ff_core_List.List_size(that_))) {
+if((self_.length <= that_.length)) {
 let i_ = (-1);
 return ff_core_List.List_map(self_, ((x_) => {
 i_ += 1;
@@ -713,7 +713,7 @@ return ff_core_Array.Array_drain(results_)
 export async function List_toStream$(self_, cycle_ = false, $task) {
 let index_ = 0;
 return (await ff_core_Stream.new_$((async ($task) => {
-if((index_ < ff_core_List.List_size(self_))) {
+if((index_ < self_.length)) {
 return ff_core_Option.Some((await (async function() {
 const result_ = (self_[index_] ?? ff_core_List.internalGrab_(self_, index_));
 index_ += 1;
@@ -721,7 +721,7 @@ return result_
 })()))
 } else if((cycle_ && (index_ !== 0))) {
 return ff_core_Option.Some((await (async function() {
-const result_ = ff_core_List.List_grab(self_, 0);
+const result_ = (self_[0] ?? ff_core_List.internalGrab_(self_, 0));
 index_ = 1;
 return result_
 })()))
@@ -868,8 +868,8 @@ return ff_core_Array.Array_drain(array_)
 }
 
 export async function List_reverse$(self_, $task) {
-return ff_core_List.List_map(ff_core_Int.Int_to(1, ff_core_List.List_size(self_)), ((i_) => {
-return ff_core_List.List_grab(self_, (ff_core_List.List_size(self_) - i_))
+return ff_core_List.List_map(ff_core_Int.Int_to(1, self_.length), ((i_) => {
+return ff_core_List.List_grab(self_, (self_.length - i_))
 }))
 }
 
@@ -1059,7 +1059,7 @@ const array_ = ff_core_Array.new_();
 array_.array.push("[");
 for(let for_i = 0, for_a = value_, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
-if((ff_core_Array.Array_size(array_) > 1)) {
+if((array_.array.length > 1)) {
 array_.array.push(", ")
 };
 array_.array.push(ff_core_Show_Show$T.show_(x_))
@@ -1072,7 +1072,7 @@ const array_ = ff_core_Array.new_();
 array_.array.push("[");
 for(let for_i = 0, for_a = value_, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
-if((ff_core_Array.Array_size(array_) > 1)) {
+if((array_.array.length > 1)) {
 array_.array.push(", ")
 };
 array_.array.push(ff_core_Show_Show$T.show_(x_))
@@ -1087,7 +1087,7 @@ equals_(x_, y_) {
 if(ff_core_List.internalSame_(x_, y_)) {
 return true
 } else {
-if((ff_core_List.List_size(x_) !== ff_core_List.List_size(y_))) {
+if((x_.length !== y_.length)) {
 return false
 } else {
 let i_ = (-1);
@@ -1102,7 +1102,7 @@ async equals_$(x_, y_, $task) {
 if(ff_core_List.internalSame_(x_, y_)) {
 return true
 } else {
-if((ff_core_List.List_size(x_) !== ff_core_List.List_size(y_))) {
+if((x_.length !== y_.length)) {
 return false
 } else {
 let i_ = (-1);
@@ -1120,7 +1120,7 @@ compare_(x_, y_) {
 if(ff_core_List.internalSame_(x_, y_)) {
 return ff_core_Ordering.OrderingSame()
 } else {
-const size_ = ff_core_Int.Int_min(ff_core_List.List_size(x_), ff_core_List.List_size(y_));
+const size_ = ff_core_Int.Int_min(x_.length, y_.length);
 let i_ = 0;
 let ordering_ = ff_core_Ordering.OrderingSame();
 while(((ordering_ === ff_core_Ordering.OrderingSame()) && (i_ < size_))) {
@@ -1130,7 +1130,7 @@ i_ += 1
 if((ordering_ !== ff_core_Ordering.OrderingSame())) {
 return ordering_
 } else {
-return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(ff_core_List.List_size(x_), ff_core_List.List_size(y_))
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.length, y_.length)
 }
 }
 },
@@ -1138,7 +1138,7 @@ async compare_$(x_, y_, $task) {
 if(ff_core_List.internalSame_(x_, y_)) {
 return ff_core_Ordering.OrderingSame()
 } else {
-const size_ = ff_core_Int.Int_min(ff_core_List.List_size(x_), ff_core_List.List_size(y_));
+const size_ = ff_core_Int.Int_min(x_.length, y_.length);
 let i_ = 0;
 let ordering_ = ff_core_Ordering.OrderingSame();
 while(((ordering_ === ff_core_Ordering.OrderingSame()) && (i_ < size_))) {
@@ -1148,7 +1148,7 @@ i_ += 1
 if((ordering_ !== ff_core_Ordering.OrderingSame())) {
 return ordering_
 } else {
-return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(ff_core_List.List_size(x_), ff_core_List.List_size(y_))
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.length, y_.length)
 }
 }
 }

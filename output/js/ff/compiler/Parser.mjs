@@ -239,7 +239,7 @@ export function Parser_behind(self_) {
 if((self_.offset_ === 0)) {
 return ff_compiler_Parser.Parser_current(self_)
 } else {
-if(((self_.offset_ - 1) < ff_core_List.List_size(self_.tokens_))) {
+if(((self_.offset_ - 1) < self_.tokens_.length)) {
 return ff_core_List.List_grab(self_.tokens_, (self_.offset_ - 1))
 } else {
 return self_.end_
@@ -248,15 +248,15 @@ return self_.end_
 }
 
 export function Parser_current(self_) {
-if((self_.offset_ < ff_core_List.List_size(self_.tokens_))) {
-return ff_core_List.List_grab(self_.tokens_, self_.offset_)
+if((self_.offset_ < self_.tokens_.length)) {
+return (self_.tokens_[self_.offset_] ?? ff_core_List.internalGrab_(self_.tokens_, self_.offset_))
 } else {
 return self_.end_
 }
 }
 
 export function Parser_ahead(self_) {
-if(((self_.offset_ + 1) < ff_core_List.List_size(self_.tokens_))) {
+if(((self_.offset_ + 1) < self_.tokens_.length)) {
 return ff_core_List.List_grab(self_.tokens_, (self_.offset_ + 1))
 } else {
 return self_.end_
@@ -264,7 +264,7 @@ return self_.end_
 }
 
 export function Parser_aheadAhead(self_) {
-if(((self_.offset_ + 2) < ff_core_List.List_size(self_.tokens_))) {
+if(((self_.offset_ + 2) < self_.tokens_.length)) {
 return ff_core_List.List_grab(self_.tokens_, (self_.offset_ + 2))
 } else {
 return self_.end_
@@ -431,9 +431,9 @@ ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseSymbol
 };
 const signature_ = ff_compiler_Parser.Parser_parseSignature(self_, member_);
 const body_ = (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")
-? ff_core_Option.Some(ff_compiler_Parser.Parser_parseLambda(self_, ff_core_List.List_size(signature_.parameters_), false, false))
+? ff_core_Option.Some(ff_compiler_Parser.Parser_parseLambda(self_, signature_.parameters_.length, false, false))
 : ff_core_Option.None());
-const targets_ = ff_compiler_Parser.Parser_parseTargets(self_, ff_core_List.List_size(signature_.parameters_));
+const targets_ = ff_compiler_Parser.Parser_parseTargets(self_, signature_.parameters_.length);
 const bestTarget_ = ff_compiler_Parser.findBestTarget_(self_.targetIsNode_, body_, targets_);
 const result_ = ff_compiler_Syntax.DFunction(signature_.at_, signature_, bestTarget_);
 if(self_.lspHook_.trackSymbols_) {
@@ -656,7 +656,7 @@ ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseSymbol
 signatures_.array.push(signature_);
 if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")) {
 const generator_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_ahead(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_ahead(self_), "generate"));
-const body_ = ff_compiler_Parser.Parser_parseLambda(self_, ff_core_List.List_size(signature_.parameters_), true, false);
+const body_ = ff_compiler_Parser.Parser_parseLambda(self_, signature_.parameters_.length, true, false);
 if(generator_) {
 methodGenerators_.array.push(ff_core_Pair.Pair(signature_.name_, body_))
 } else {
@@ -780,7 +780,7 @@ ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseSymbol
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "}");
 return ff_core_Array.Array_toList(variantsBuilder_, 0, 9007199254740991)
 })());
-if((newtype_ && (ff_core_List.List_size(commonFields_) !== 1))) {
+if((newtype_ && (commonFields_.length !== 1))) {
 ff_core_Log.show_(commonFields_, ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Parameter));
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(nameToken_), "Newtypes must have exactly one field"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
@@ -901,7 +901,7 @@ const parts_ = ff_core_String.String_split(ff_compiler_Token.Token_raw(majorMino
 const patch_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LDot())
 ? (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LDot()), ff_core_String.String_grabInt(ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LInt()))))
 : 0);
-return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(majorMinor_), ff_core_String.String_grabInt(ff_core_List.List_grab(parts_, 0)), ff_core_String.String_grabInt(ff_core_List.List_grab(parts_, 1)), patch_)
+return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(majorMinor_), ff_core_String.String_grabInt((parts_[0] ?? ff_core_List.internalGrab_(parts_, 0))), ff_core_String.String_grabInt((parts_[1] ?? ff_core_List.internalGrab_(parts_, 1))), patch_)
 } else {
 const major_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LInt());
 return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(major_), ff_core_String.String_grabInt(ff_compiler_Token.Token_raw(major_)), 0, 0)
@@ -1040,7 +1040,7 @@ return ff_core_Option.Some(token_)
 const value_ = ff_compiler_Parser.Parser_parseTerm(self_);
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!self_.lspEmittedArgumentHook_))) {
 if(ff_compiler_LspHook.strictlyBetween_(callAt_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), self_.lspHook_.at_, 1)) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(callAt_, ff_core_Array.Array_size(arguments_), ff_core_Option.Option_map(nameToken_, ((_w1) => {
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(callAt_, arguments_.array.length, ff_core_Option.Option_map(nameToken_, ((_w1) => {
 return ff_compiler_Token.Token_raw(_w1)
 }))));
 self_.lspEmittedArgumentHook_ = true
@@ -1055,7 +1055,7 @@ ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LComma())
 };
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!self_.lspEmittedArgumentHook_))) {
 if(ff_compiler_LspHook.strictlyBetween_(callAt_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), self_.lspHook_.at_, 1)) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(callAt_, ff_core_Array.Array_size(arguments_), ff_core_Option.None()));
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(callAt_, arguments_.array.length, ff_core_Option.None()));
 self_.lspEmittedArgumentHook_ = true
 }
 };
@@ -1070,7 +1070,7 @@ const temporaryEffect_ = ff_compiler_Syntax.TConstructor(term_.at_, "TemporaryEf
 const cases_ = [ff_compiler_Syntax.MatchCase(term_.at_, [], [], term_)];
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!self_.lspEmittedArgumentHook_))) {
 if(ff_compiler_LspHook.strictlyBetween_(callAt_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), self_.lspHook_.at_, 1)) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(callAt_, ff_core_Array.Array_size(arguments_), ff_core_Option.None()));
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(callAt_, arguments_.array.length, ff_core_Option.None()));
 self_.lspEmittedArgumentHook_ = true
 }
 };
@@ -1081,7 +1081,7 @@ lastWasCurly_ = ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(
 const lambda_ = ff_compiler_Parser.Parser_parseLambda(self_, 0, false, true);
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!self_.lspEmittedArgumentHook_))) {
 if(ff_compiler_LspHook.strictlyBetween_(callAt_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), self_.lspHook_.at_, 1)) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(callAt_, ff_core_Array.Array_size(arguments_), ff_core_Option.None()));
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(callAt_, arguments_.array.length, ff_core_Option.None()));
 self_.lspEmittedArgumentHook_ = true
 }
 };
@@ -1220,7 +1220,7 @@ while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_
 const pattern_ = ff_compiler_Parser.Parser_parsePattern(self_);
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!self_.lspEmittedArgumentHook_))) {
 if(ff_compiler_LspHook.strictlyBetween_(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), self_.lspHook_.at_, 1)) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(ff_compiler_Token.Token_at(token_), ff_core_Array.Array_size(patterns_), ff_core_Option.None()));
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(ff_compiler_Token.Token_at(token_), patterns_.array.length, ff_core_Option.None()));
 self_.lspEmittedArgumentHook_ = true
 }
 };
@@ -1231,7 +1231,7 @@ ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma())
 };
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!self_.lspEmittedArgumentHook_))) {
 if(ff_compiler_LspHook.strictlyBetween_(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), self_.lspHook_.at_, 1)) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(ff_compiler_Token.Token_at(token_), ff_core_Array.Array_size(patterns_), ff_core_Option.None()));
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(ff_compiler_Token.Token_at(token_), patterns_.array.length, ff_core_Option.None()));
 self_.lspEmittedArgumentHook_ = true
 }
 };
@@ -1277,12 +1277,12 @@ const arguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_cu
 : ff_compiler_Parser.Parser_parseTypeArguments(self_, false));
 return [ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(token_), (namespace_ + ff_compiler_Token.Token_raw(token_)), arguments_)]
 })());
-if(((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick())) && (ff_core_List.List_size(leftTypes_) === 1))) {
+if(((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick())) && (leftTypes_.length === 1))) {
 return ff_core_List.List_grabFirst(leftTypes_)
 } else {
 const arrowToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LArrowThick());
 const rightType_ = ff_compiler_Parser.Parser_parseType(self_);
-return ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(arrowToken_), ("Function$" + ff_core_List.List_size(leftTypes_)), [...leftTypes_, rightType_])
+return ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(arrowToken_), ("Function$" + leftTypes_.length), [...leftTypes_, rightType_])
 }
 }
 
@@ -1397,7 +1397,7 @@ const body_ = ((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!ff_co
 const temporaryEffect_ = ff_compiler_Syntax.TConstructor(functionAt_, "TemporaryEffect$", []);
 return ff_compiler_Syntax.Lambda(functionAt_, temporaryEffect_, [])
 })()
-: ff_compiler_Parser.Parser_parseLambda(self_, ff_core_List.List_size(signature_.parameters_), false, false));
+: ff_compiler_Parser.Parser_parseLambda(self_, signature_.parameters_.length, false, false));
 functions_.array.push(ff_compiler_Syntax.DFunction(signature_.at_, signature_, ff_compiler_Syntax.FireflyTarget(body_)));
 if(self_.lspHook_.trackSymbols_) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseSymbolEnd(signature_.name_, ff_compiler_LspHook.SFunction(false), signature_.at_, (((_c) => {
@@ -1419,7 +1419,7 @@ return ff_compiler_Parser.Parser_parseBinary(self_, 0)
 }
 
 export function Parser_parseBinary(self_, level_) {
-if((level_ >= ff_core_List.List_size(ff_compiler_Parser.binaryOperators_))) {
+if((level_ >= ff_compiler_Parser.binaryOperators_.length)) {
 return ff_compiler_Parser.Parser_parseUnary(self_)
 } else {
 const operators_ = (ff_compiler_Parser.binaryOperators_[level_] ?? ff_core_List.internalGrab_(ff_compiler_Parser.binaryOperators_, level_));
@@ -1533,7 +1533,7 @@ const _1 = ff_core_List.List_indexWhere(arguments_.first_, ((_w1) => {
 return (!ff_core_Option.Option_isEmpty(_w1.name_))
 }));
 if(_1.None) {
-const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, ("new" + ff_core_List.List_size(arguments_.first_))), false);
+const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, ("new" + arguments_.first_.length)), false);
 return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], arguments_.first_, [])
 }
 if(_1.Some && _1.value_ === 0) {
@@ -1551,13 +1551,13 @@ return result_
 }
 if(_1.Some) {
 const i_ = _1.value_;
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_core_List.List_grab(arguments_.first_, i_).at_, "Unexpected named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError((arguments_.first_[i_] ?? ff_core_List.internalGrab_(arguments_.first_, i_)).at_, "Unexpected named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
 } else if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")) {
 const lambda_ = ff_compiler_Parser.Parser_parseLambda(self_, 0, false, false);
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
-const arguments_ = ff_core_List.List_size(ff_core_List.List_grabFirst(lambda_.cases_).patterns_);
+const arguments_ = ff_core_List.List_grabFirst(lambda_.cases_).patterns_.length;
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, ("function" + arguments_)), false);
 return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(lambda_.at_, ff_core_Option.None(), ff_compiler_Syntax.ELambda(lambda_.at_, lambda_))], [])
 } else {
@@ -1577,7 +1577,7 @@ return (!ff_core_Option.Option_isEmpty(_w1.name_))
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(argument_.at_, "Unexpected named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
-const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, ("call" + ff_core_List.List_size(arguments_.first_))), false);
+const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, ("call" + arguments_.first_.length)), false);
 return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(member_.at_, ff_core_Option.None(), member_), ...arguments_.first_], [])
 } else if(ff_compiler_Token.Token_is3(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssign(), ff_compiler_Token.LAssignPlus(), ff_compiler_Token.LAssignMinus())) {
 const method_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssign())
@@ -1701,7 +1701,7 @@ const field_ = (((!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) || ff_
 : ff_compiler_Syntax.Field(ff_compiler_Token.Token_at(fieldToken_), ff_compiler_Token.Token_raw(fieldToken_), ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(fieldToken_), ff_compiler_Token.Token_raw(fieldToken_))));
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!self_.lspEmittedArgumentHook_))) {
 if(ff_compiler_LspHook.strictlyBetween_(startAt_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), self_.lspHook_.at_, 1)) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(startAt_, ff_core_Array.Array_size(fields_), ff_core_Option.Option_filter(ff_core_Option.Some(field_.name_), ((_w1) => {
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(startAt_, fields_.array.length, ff_core_Option.Option_filter(ff_core_Option.Some(field_.name_), ((_w1) => {
 return (_w1 !== "")
 }))));
 self_.lspEmittedArgumentHook_ = true
@@ -1714,7 +1714,7 @@ ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LComma())
 };
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!self_.lspEmittedArgumentHook_))) {
 if(ff_compiler_LspHook.strictlyBetween_(startAt_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), self_.lspHook_.at_, 1)) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(startAt_, ff_core_Array.Array_size(fields_), ff_core_Option.None()));
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(startAt_, fields_.array.length, ff_core_Option.None()));
 self_.lspEmittedArgumentHook_ = true
 }
 };
@@ -1821,7 +1821,7 @@ export async function Parser_behind$(self_, $task) {
 if((self_.offset_ === 0)) {
 return ff_compiler_Parser.Parser_current(self_)
 } else {
-if(((self_.offset_ - 1) < ff_core_List.List_size(self_.tokens_))) {
+if(((self_.offset_ - 1) < self_.tokens_.length)) {
 return ff_core_List.List_grab(self_.tokens_, (self_.offset_ - 1))
 } else {
 return self_.end_
@@ -1830,15 +1830,15 @@ return self_.end_
 }
 
 export async function Parser_current$(self_, $task) {
-if((self_.offset_ < ff_core_List.List_size(self_.tokens_))) {
-return ff_core_List.List_grab(self_.tokens_, self_.offset_)
+if((self_.offset_ < self_.tokens_.length)) {
+return (self_.tokens_[self_.offset_] ?? ff_core_List.internalGrab_(self_.tokens_, self_.offset_))
 } else {
 return self_.end_
 }
 }
 
 export async function Parser_ahead$(self_, $task) {
-if(((self_.offset_ + 1) < ff_core_List.List_size(self_.tokens_))) {
+if(((self_.offset_ + 1) < self_.tokens_.length)) {
 return ff_core_List.List_grab(self_.tokens_, (self_.offset_ + 1))
 } else {
 return self_.end_
@@ -1846,7 +1846,7 @@ return self_.end_
 }
 
 export async function Parser_aheadAhead$(self_, $task) {
-if(((self_.offset_ + 2) < ff_core_List.List_size(self_.tokens_))) {
+if(((self_.offset_ + 2) < self_.tokens_.length)) {
 return ff_core_List.List_grab(self_.tokens_, (self_.offset_ + 2))
 } else {
 return self_.end_
@@ -2013,9 +2013,9 @@ ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseSymbol
 };
 const signature_ = ff_compiler_Parser.Parser_parseSignature(self_, member_);
 const body_ = (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")
-? ff_core_Option.Some(ff_compiler_Parser.Parser_parseLambda(self_, ff_core_List.List_size(signature_.parameters_), false, false))
+? ff_core_Option.Some(ff_compiler_Parser.Parser_parseLambda(self_, signature_.parameters_.length, false, false))
 : ff_core_Option.None());
-const targets_ = ff_compiler_Parser.Parser_parseTargets(self_, ff_core_List.List_size(signature_.parameters_));
+const targets_ = ff_compiler_Parser.Parser_parseTargets(self_, signature_.parameters_.length);
 const bestTarget_ = ff_compiler_Parser.findBestTarget_(self_.targetIsNode_, body_, targets_);
 const result_ = ff_compiler_Syntax.DFunction(signature_.at_, signature_, bestTarget_);
 if(self_.lspHook_.trackSymbols_) {
@@ -2238,7 +2238,7 @@ ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseSymbol
 signatures_.array.push(signature_);
 if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")) {
 const generator_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_ahead(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_ahead(self_), "generate"));
-const body_ = ff_compiler_Parser.Parser_parseLambda(self_, ff_core_List.List_size(signature_.parameters_), true, false);
+const body_ = ff_compiler_Parser.Parser_parseLambda(self_, signature_.parameters_.length, true, false);
 if(generator_) {
 methodGenerators_.array.push(ff_core_Pair.Pair(signature_.name_, body_))
 } else {
@@ -2362,7 +2362,7 @@ ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseSymbol
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "}");
 return ff_core_Array.Array_toList(variantsBuilder_, 0, 9007199254740991)
 })()));
-if((newtype_ && (ff_core_List.List_size(commonFields_) !== 1))) {
+if((newtype_ && (commonFields_.length !== 1))) {
 ff_core_Log.show_(commonFields_, ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Parameter));
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(nameToken_), "Newtypes must have exactly one field"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
@@ -2483,7 +2483,7 @@ const parts_ = ff_core_String.String_split(ff_compiler_Token.Token_raw(majorMino
 const patch_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LDot())
 ? (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LDot()), ff_core_String.String_grabInt(ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LInt()))))
 : 0);
-return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(majorMinor_), ff_core_String.String_grabInt(ff_core_List.List_grab(parts_, 0)), ff_core_String.String_grabInt(ff_core_List.List_grab(parts_, 1)), patch_)
+return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(majorMinor_), ff_core_String.String_grabInt((parts_[0] ?? ff_core_List.internalGrab_(parts_, 0))), ff_core_String.String_grabInt((parts_[1] ?? ff_core_List.internalGrab_(parts_, 1))), patch_)
 } else {
 const major_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LInt());
 return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(major_), ff_core_String.String_grabInt(ff_compiler_Token.Token_raw(major_)), 0, 0)
@@ -2622,7 +2622,7 @@ return ff_core_Option.Some(token_)
 const value_ = ff_compiler_Parser.Parser_parseTerm(self_);
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!self_.lspEmittedArgumentHook_))) {
 if(ff_compiler_LspHook.strictlyBetween_(callAt_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), self_.lspHook_.at_, 1)) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(callAt_, ff_core_Array.Array_size(arguments_), ff_core_Option.Option_map(nameToken_, ((_w1) => {
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(callAt_, arguments_.array.length, ff_core_Option.Option_map(nameToken_, ((_w1) => {
 return ff_compiler_Token.Token_raw(_w1)
 }))));
 self_.lspEmittedArgumentHook_ = true
@@ -2637,7 +2637,7 @@ ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LComma())
 };
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!self_.lspEmittedArgumentHook_))) {
 if(ff_compiler_LspHook.strictlyBetween_(callAt_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), self_.lspHook_.at_, 1)) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(callAt_, ff_core_Array.Array_size(arguments_), ff_core_Option.None()));
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(callAt_, arguments_.array.length, ff_core_Option.None()));
 self_.lspEmittedArgumentHook_ = true
 }
 };
@@ -2652,7 +2652,7 @@ const temporaryEffect_ = ff_compiler_Syntax.TConstructor(term_.at_, "TemporaryEf
 const cases_ = [ff_compiler_Syntax.MatchCase(term_.at_, [], [], term_)];
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!self_.lspEmittedArgumentHook_))) {
 if(ff_compiler_LspHook.strictlyBetween_(callAt_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), self_.lspHook_.at_, 1)) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(callAt_, ff_core_Array.Array_size(arguments_), ff_core_Option.None()));
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(callAt_, arguments_.array.length, ff_core_Option.None()));
 self_.lspEmittedArgumentHook_ = true
 }
 };
@@ -2663,7 +2663,7 @@ lastWasCurly_ = ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(
 const lambda_ = ff_compiler_Parser.Parser_parseLambda(self_, 0, false, true);
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!self_.lspEmittedArgumentHook_))) {
 if(ff_compiler_LspHook.strictlyBetween_(callAt_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), self_.lspHook_.at_, 1)) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(callAt_, ff_core_Array.Array_size(arguments_), ff_core_Option.None()));
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(callAt_, arguments_.array.length, ff_core_Option.None()));
 self_.lspEmittedArgumentHook_ = true
 }
 };
@@ -2802,7 +2802,7 @@ while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_
 const pattern_ = ff_compiler_Parser.Parser_parsePattern(self_);
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!self_.lspEmittedArgumentHook_))) {
 if(ff_compiler_LspHook.strictlyBetween_(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), self_.lspHook_.at_, 1)) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(ff_compiler_Token.Token_at(token_), ff_core_Array.Array_size(patterns_), ff_core_Option.None()));
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(ff_compiler_Token.Token_at(token_), patterns_.array.length, ff_core_Option.None()));
 self_.lspEmittedArgumentHook_ = true
 }
 };
@@ -2813,7 +2813,7 @@ ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma())
 };
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!self_.lspEmittedArgumentHook_))) {
 if(ff_compiler_LspHook.strictlyBetween_(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), self_.lspHook_.at_, 1)) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(ff_compiler_Token.Token_at(token_), ff_core_Array.Array_size(patterns_), ff_core_Option.None()));
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(ff_compiler_Token.Token_at(token_), patterns_.array.length, ff_core_Option.None()));
 self_.lspEmittedArgumentHook_ = true
 }
 };
@@ -2859,12 +2859,12 @@ const arguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_cu
 : ff_compiler_Parser.Parser_parseTypeArguments(self_, false));
 return [ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(token_), (namespace_ + ff_compiler_Token.Token_raw(token_)), arguments_)]
 })()));
-if(((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick())) && (ff_core_List.List_size(leftTypes_) === 1))) {
+if(((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick())) && (leftTypes_.length === 1))) {
 return ff_core_List.List_grabFirst(leftTypes_)
 } else {
 const arrowToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LArrowThick());
 const rightType_ = ff_compiler_Parser.Parser_parseType(self_);
-return ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(arrowToken_), ("Function$" + ff_core_List.List_size(leftTypes_)), [...leftTypes_, rightType_])
+return ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(arrowToken_), ("Function$" + leftTypes_.length), [...leftTypes_, rightType_])
 }
 }
 
@@ -2979,7 +2979,7 @@ const body_ = ((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!ff_co
 const temporaryEffect_ = ff_compiler_Syntax.TConstructor(functionAt_, "TemporaryEffect$", []);
 return ff_compiler_Syntax.Lambda(functionAt_, temporaryEffect_, [])
 })())
-: ff_compiler_Parser.Parser_parseLambda(self_, ff_core_List.List_size(signature_.parameters_), false, false));
+: ff_compiler_Parser.Parser_parseLambda(self_, signature_.parameters_.length, false, false));
 functions_.array.push(ff_compiler_Syntax.DFunction(signature_.at_, signature_, ff_compiler_Syntax.FireflyTarget(body_)));
 if(self_.lspHook_.trackSymbols_) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseSymbolEnd(signature_.name_, ff_compiler_LspHook.SFunction(false), signature_.at_, (((_c) => {
@@ -3001,7 +3001,7 @@ return ff_compiler_Parser.Parser_parseBinary(self_, 0)
 }
 
 export async function Parser_parseBinary$(self_, level_, $task) {
-if((level_ >= ff_core_List.List_size(ff_compiler_Parser.binaryOperators_))) {
+if((level_ >= ff_compiler_Parser.binaryOperators_.length)) {
 return ff_compiler_Parser.Parser_parseUnary(self_)
 } else {
 const operators_ = (ff_compiler_Parser.binaryOperators_[level_] ?? ff_core_List.internalGrab_(ff_compiler_Parser.binaryOperators_, level_));
@@ -3115,7 +3115,7 @@ const _1 = ff_core_List.List_indexWhere(arguments_.first_, ((_w1) => {
 return (!ff_core_Option.Option_isEmpty(_w1.name_))
 }));
 if(_1.None) {
-const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, ("new" + ff_core_List.List_size(arguments_.first_))), false);
+const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, ("new" + arguments_.first_.length)), false);
 return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], arguments_.first_, [])
 }
 if(_1.Some && _1.value_ === 0) {
@@ -3133,13 +3133,13 @@ return result_
 }
 if(_1.Some) {
 const i_ = _1.value_;
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_core_List.List_grab(arguments_.first_, i_).at_, "Unexpected named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError((arguments_.first_[i_] ?? ff_core_List.internalGrab_(arguments_.first_, i_)).at_, "Unexpected named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
 } else if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")) {
 const lambda_ = ff_compiler_Parser.Parser_parseLambda(self_, 0, false, false);
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
-const arguments_ = ff_core_List.List_size(ff_core_List.List_grabFirst(lambda_.cases_).patterns_);
+const arguments_ = ff_core_List.List_grabFirst(lambda_.cases_).patterns_.length;
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, ("function" + arguments_)), false);
 return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(lambda_.at_, ff_core_Option.None(), ff_compiler_Syntax.ELambda(lambda_.at_, lambda_))], [])
 } else {
@@ -3159,7 +3159,7 @@ return (!ff_core_Option.Option_isEmpty(_w1.name_))
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(argument_.at_, "Unexpected named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
-const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, ("call" + ff_core_List.List_size(arguments_.first_))), false);
+const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, ("call" + arguments_.first_.length)), false);
 return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(member_.at_, ff_core_Option.None(), member_), ...arguments_.first_], [])
 } else if(ff_compiler_Token.Token_is3(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssign(), ff_compiler_Token.LAssignPlus(), ff_compiler_Token.LAssignMinus())) {
 const method_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssign())
@@ -3283,7 +3283,7 @@ const field_ = (((!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) || ff_
 : ff_compiler_Syntax.Field(ff_compiler_Token.Token_at(fieldToken_), ff_compiler_Token.Token_raw(fieldToken_), ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(fieldToken_), ff_compiler_Token.Token_raw(fieldToken_))));
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!self_.lspEmittedArgumentHook_))) {
 if(ff_compiler_LspHook.strictlyBetween_(startAt_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), self_.lspHook_.at_, 1)) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(startAt_, ff_core_Array.Array_size(fields_), ff_core_Option.Option_filter(ff_core_Option.Some(field_.name_), ((_w1) => {
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(startAt_, fields_.array.length, ff_core_Option.Option_filter(ff_core_Option.Some(field_.name_), ((_w1) => {
 return (_w1 !== "")
 }))));
 self_.lspEmittedArgumentHook_ = true
@@ -3296,7 +3296,7 @@ ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LComma())
 };
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!self_.lspEmittedArgumentHook_))) {
 if(ff_compiler_LspHook.strictlyBetween_(startAt_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), self_.lspHook_.at_, 1)) {
-ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(startAt_, ff_core_Array.Array_size(fields_), ff_core_Option.None()));
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseArgumentHook(startAt_, fields_.array.length, ff_core_Option.None()));
 self_.lspEmittedArgumentHook_ = true
 }
 };

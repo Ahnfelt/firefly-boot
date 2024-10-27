@@ -931,7 +931,7 @@ return ff_compiler_JsEmitter.escapeKeyword_(_w1.name_)
 })), ", ");
 if(ff_core_List.List_isEmpty(allFields_)) {
 return ((((((((((((("const " + definition_.name_) + "$ = {") + definition_.name_) + ": true};\n") + "export function ") + definition_.name_) + "(") + fields_) + ") {\n") + "return ") + definition_.name_) + "$;\n") + "}")
-} else if((ff_core_List.List_size(typeDefinition_.variants_) === 1)) {
+} else if((typeDefinition_.variants_.length === 1)) {
 return (((((((("export function " + definition_.name_) + "(") + fields_) + ") {\n") + "return {") + fields_) + "};\n") + "}")
 } else {
 return (((((((((("export function " + definition_.name_) + "(") + fields_) + ") {\n") + "return {") + definition_.name_) + ": true, ") + fields_) + "};\n") + "}")
@@ -1094,7 +1094,7 @@ const controller_ = (newAsync_
 ? ["$task"]
 : []);
 ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
-const arguments_ = ff_core_List.List_map(ff_core_List.List_pairs(ff_core_List.List_grab(cases_, 0).patterns_), ((_w1) => {
+const arguments_ = ff_core_List.List_map(ff_core_List.List_pairs((cases_[0] ?? ff_core_List.internalGrab_(cases_, 0)).patterns_), ((_w1) => {
 return ("_" + (_w1.first_ + 1))
 }));
 const escapedArguments_ = ff_core_List.List_map(arguments_, ((word_) => {
@@ -1179,7 +1179,7 @@ const typeArguments_ = _1.typeArguments_;
 const arguments_ = _1.arguments_;
 const dictionaries_ = _1.dictionaries_;
 if(ff_core_String.String_contains(name_, "bundleForBrowser")) {
-if((!ff_core_Option.Option_contains(ff_core_List.List_grab(arguments_, 0).name_, "system", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
+if((!ff_core_Option.Option_contains((arguments_[0] ?? ff_core_List.internalGrab_(arguments_, 0)).name_, "system", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 ff_core_Log.debug_(("Wrong arguments for bundleForBrowser: " + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String)).show_(ff_core_List.List_map(arguments_, ((_w1) => {
 return _w1.name_
 })))));
@@ -1508,19 +1508,39 @@ return ff_core_Option.Some((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(
 }
 }
 if(_1 === "ff:core/List.List_grab") {
-const _guard1 = arguments_;
-if(_guard1.length === 2 && _guard1[0].EVariable && _guard1[1].EVariable) {
-const x1_ = _guard1[0].name_;
-const x2_ = _guard1[1].name_;
-return ff_core_Option.Some(((((((((("(" + ff_compiler_JsEmitter.escapeResolved_(x1_)) + "[") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "] ?? ") + "ff_core_List.internalGrab_(") + ff_compiler_JsEmitter.escapeResolved_(x1_)) + ", ") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "))"))
+const _guard2 = arguments_;
+if(_guard2.length === 2) {
+const e1_ = _guard2[0];
+const e2_ = _guard2[1];
+if((ff_compiler_JsEmitter.noSideEffects_(e1_) && ff_compiler_JsEmitter.noSideEffects_(e2_))) {
+const code1_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_);
+const code2_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_);
+return ff_core_Option.Some(((((((((("(" + code1_) + "[") + code2_) + "] ?? ") + "ff_core_List.internalGrab_(") + code1_) + ", ") + code2_) + "))"))
+}
 }
 }
 if(_1 === "ff:core/Array.Array_grab") {
 const _guard1 = arguments_;
-if(_guard1.length === 2 && _guard1[0].EVariable && _guard1[1].EVariable) {
-const x1_ = _guard1[0].name_;
-const x2_ = _guard1[1].name_;
-return ff_core_Option.Some(((((((((("(" + ff_compiler_JsEmitter.escapeResolved_(x1_)) + ".array[") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "] ?? ") + "ff_core_Array.internalGrab_(") + ff_compiler_JsEmitter.escapeResolved_(x1_)) + ", ") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "))"))
+if(_guard1.length === 2) {
+const e1_ = _guard1[0];
+const e2_ = _guard1[1];
+const code1_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_);
+const code2_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_);
+return ff_core_Option.Some(((((((((("(" + code1_) + ".array[") + code2_) + "] ?? ") + "ff_core_Array.internalGrab_(") + code1_) + ", ") + code2_) + "))"))
+}
+}
+if(_1 === "ff:core/List.List_size") {
+const _guard1 = arguments_;
+if(_guard1.length === 1) {
+const e_ = _guard1[0];
+return ff_core_Option.Some((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_) + ".length"))
+}
+}
+if(_1 === "ff:core/Array.Array_size") {
+const _guard1 = arguments_;
+if(_guard1.length === 1) {
+const e_ = _guard1[0];
+return ff_core_Option.Some((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_) + ".array.length"))
 }
 }
 if(_1 === "ff:core/Equal.equals") {
@@ -2306,7 +2326,7 @@ const _1 = ff_core_Pair.Pair(matchCase_.patterns_, matchCase_.guards_);
 if(_1.first_.length >= 1) {
 const p_ = _1.first_[0];
 const ps_ = _1.first_.slice(1);
-return ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, ff_core_List.List_grab(arguments_, 0), p_, ff_core_List.List_dropFirst(arguments_, 1), (((_c) => {
+return ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, (arguments_[0] ?? ff_core_List.internalGrab_(arguments_, 0)), p_, ff_core_List.List_dropFirst(arguments_, 1), (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, ps_, _c.guards_, _c.body_)
 }))(matchCase_), conditions_, variables_, jump_, last_, async_)
 return
@@ -2331,7 +2351,7 @@ return emitWrapper_(code_)
 if(_1.first_.length === 0 && _1.second_.length >= 1) {
 const guard_ = _1.second_[0];
 const guards_ = _1.second_.slice(1);
-const guardName_ = ("_guard" + (ff_core_List.List_size(guards_) + 1));
+const guardName_ = ("_guard" + (guards_.length + 1));
 const newCase_ = (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, [guard_.pattern_], guards_, _c.body_)
 }))(matchCase_);
@@ -2417,7 +2437,7 @@ return (((argument_ + "[") + i_) + "]")
 }
 }));
 const restArgument_ = ff_core_Option.Option_map(restPattern_, ((_) => {
-return (((argument_ + ".slice(") + ff_core_List.List_size(patterns_)) + ")")
+return (((argument_ + ".slice(") + patterns_.length) + ")")
 }));
 const newArguments_ = [...itemArguments_, ...ff_core_Option.Option_toList(restArgument_), ...arguments_];
 const newMatchCase_ = (((_c) => {
@@ -2428,7 +2448,7 @@ return ">="
 })), (() => {
 return "==="
 }));
-const newConditions_ = [...conditions_, ((((argument_ + ".length ") + operator_) + " ") + ff_core_List.List_size(patterns_))];
+const newConditions_ = [...conditions_, ((((argument_ + ".length ") + operator_) + " ") + patterns_.length)];
 return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, newArguments_, newMatchCase_, newConditions_, variables_, jump_, last_, async_)
 }
 }
@@ -2504,7 +2524,7 @@ return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, (
 return (_w1.name_ === variantName_)
 })), ((variant_) => {
 newtype_ = definition_.newtype_;
-loneVariant_ = (ff_core_List.List_size(definition_.variants_) === 1);
+loneVariant_ = (definition_.variants_.length === 1);
 return [...ff_core_List.List_map(definition_.commonFields_, ((_w1) => {
 return _w1.name_
 })), ...ff_core_List.List_map(variant_.fields_, ((_w1) => {
@@ -2884,7 +2904,7 @@ return ff_compiler_JsEmitter.escapeKeyword_(_w1.name_)
 })), ", ");
 if(ff_core_List.List_isEmpty(allFields_)) {
 return ((((((((((((("const " + definition_.name_) + "$ = {") + definition_.name_) + ": true};\n") + "export function ") + definition_.name_) + "(") + fields_) + ") {\n") + "return ") + definition_.name_) + "$;\n") + "}")
-} else if((ff_core_List.List_size(typeDefinition_.variants_) === 1)) {
+} else if((typeDefinition_.variants_.length === 1)) {
 return (((((((("export function " + definition_.name_) + "(") + fields_) + ") {\n") + "return {") + fields_) + "};\n") + "}")
 } else {
 return (((((((((("export function " + definition_.name_) + "(") + fields_) + ") {\n") + "return {") + definition_.name_) + ": true, ") + fields_) + "};\n") + "}")
@@ -3047,7 +3067,7 @@ const controller_ = (newAsync_
 ? ["$task"]
 : []);
 ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
-const arguments_ = ff_core_List.List_map(ff_core_List.List_pairs(ff_core_List.List_grab(cases_, 0).patterns_), ((_w1) => {
+const arguments_ = ff_core_List.List_map(ff_core_List.List_pairs((cases_[0] ?? ff_core_List.internalGrab_(cases_, 0)).patterns_), ((_w1) => {
 return ("_" + (_w1.first_ + 1))
 }));
 const escapedArguments_ = ff_core_List.List_map(arguments_, ((word_) => {
@@ -3132,7 +3152,7 @@ const typeArguments_ = _1.typeArguments_;
 const arguments_ = _1.arguments_;
 const dictionaries_ = _1.dictionaries_;
 if(ff_core_String.String_contains(name_, "bundleForBrowser")) {
-if((!ff_core_Option.Option_contains(ff_core_List.List_grab(arguments_, 0).name_, "system", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
+if((!ff_core_Option.Option_contains((arguments_[0] ?? ff_core_List.internalGrab_(arguments_, 0)).name_, "system", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 ff_core_Log.debug_(("Wrong arguments for bundleForBrowser: " + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String)).show_(ff_core_List.List_map(arguments_, ((_w1) => {
 return _w1.name_
 })))));
@@ -3461,19 +3481,39 @@ return ff_core_Option.Some((((((("(" + (await ff_compiler_JsEmitter.JsEmitter_em
 }
 }
 if(_1 === "ff:core/List.List_grab") {
-const _guard1 = arguments_;
-if(_guard1.length === 2 && _guard1[0].EVariable && _guard1[1].EVariable) {
-const x1_ = _guard1[0].name_;
-const x2_ = _guard1[1].name_;
-return ff_core_Option.Some(((((((((("(" + ff_compiler_JsEmitter.escapeResolved_(x1_)) + "[") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "] ?? ") + "ff_core_List.internalGrab_(") + ff_compiler_JsEmitter.escapeResolved_(x1_)) + ", ") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "))"))
+const _guard2 = arguments_;
+if(_guard2.length === 2) {
+const e1_ = _guard2[0];
+const e2_ = _guard2[1];
+if((ff_compiler_JsEmitter.noSideEffects_(e1_) && ff_compiler_JsEmitter.noSideEffects_(e2_))) {
+const code1_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e1_, async_, $task));
+const code2_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e2_, async_, $task));
+return ff_core_Option.Some(((((((((("(" + code1_) + "[") + code2_) + "] ?? ") + "ff_core_List.internalGrab_(") + code1_) + ", ") + code2_) + "))"))
+}
 }
 }
 if(_1 === "ff:core/Array.Array_grab") {
 const _guard1 = arguments_;
-if(_guard1.length === 2 && _guard1[0].EVariable && _guard1[1].EVariable) {
-const x1_ = _guard1[0].name_;
-const x2_ = _guard1[1].name_;
-return ff_core_Option.Some(((((((((("(" + ff_compiler_JsEmitter.escapeResolved_(x1_)) + ".array[") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "] ?? ") + "ff_core_Array.internalGrab_(") + ff_compiler_JsEmitter.escapeResolved_(x1_)) + ", ") + ff_compiler_JsEmitter.escapeResolved_(x2_)) + "))"))
+if(_guard1.length === 2) {
+const e1_ = _guard1[0];
+const e2_ = _guard1[1];
+const code1_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e1_, async_, $task));
+const code2_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e2_, async_, $task));
+return ff_core_Option.Some(((((((((("(" + code1_) + ".array[") + code2_) + "] ?? ") + "ff_core_Array.internalGrab_(") + code1_) + ", ") + code2_) + "))"))
+}
+}
+if(_1 === "ff:core/List.List_size") {
+const _guard1 = arguments_;
+if(_guard1.length === 1) {
+const e_ = _guard1[0];
+return ff_core_Option.Some(((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e_, async_, $task)) + ".length"))
+}
+}
+if(_1 === "ff:core/Array.Array_size") {
+const _guard1 = arguments_;
+if(_guard1.length === 1) {
+const e_ = _guard1[0];
+return ff_core_Option.Some(((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, e_, async_, $task)) + ".array.length"))
 }
 }
 if(_1 === "ff:core/Equal.equals") {
@@ -4259,7 +4299,7 @@ const _1 = ff_core_Pair.Pair(matchCase_.patterns_, matchCase_.guards_);
 if(_1.first_.length >= 1) {
 const p_ = _1.first_[0];
 const ps_ = _1.first_.slice(1);
-return (await ff_compiler_JsEmitter.JsEmitter_emitPattern$(self_, ff_core_List.List_grab(arguments_, 0), p_, ff_core_List.List_dropFirst(arguments_, 1), (((_c) => {
+return (await ff_compiler_JsEmitter.JsEmitter_emitPattern$(self_, (arguments_[0] ?? ff_core_List.internalGrab_(arguments_, 0)), p_, ff_core_List.List_dropFirst(arguments_, 1), (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, ps_, _c.guards_, _c.body_)
 }))(matchCase_), conditions_, variables_, jump_, last_, async_, $task))
 return
@@ -4284,7 +4324,7 @@ return emitWrapper_(code_)
 if(_1.first_.length === 0 && _1.second_.length >= 1) {
 const guard_ = _1.second_[0];
 const guards_ = _1.second_.slice(1);
-const guardName_ = ("_guard" + (ff_core_List.List_size(guards_) + 1));
+const guardName_ = ("_guard" + (guards_.length + 1));
 const newCase_ = (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, [guard_.pattern_], guards_, _c.body_)
 }))(matchCase_);
@@ -4370,7 +4410,7 @@ return (((argument_ + "[") + i_) + "]")
 }
 }));
 const restArgument_ = ff_core_Option.Option_map(restPattern_, ((_) => {
-return (((argument_ + ".slice(") + ff_core_List.List_size(patterns_)) + ")")
+return (((argument_ + ".slice(") + patterns_.length) + ")")
 }));
 const newArguments_ = [...itemArguments_, ...ff_core_Option.Option_toList(restArgument_), ...arguments_];
 const newMatchCase_ = (((_c) => {
@@ -4381,7 +4421,7 @@ return ">="
 })), (() => {
 return "==="
 }));
-const newConditions_ = [...conditions_, ((((argument_ + ".length ") + operator_) + " ") + ff_core_List.List_size(patterns_))];
+const newConditions_ = [...conditions_, ((((argument_ + ".length ") + operator_) + " ") + patterns_.length)];
 return (await ff_compiler_JsEmitter.JsEmitter_emitCase$(self_, newArguments_, newMatchCase_, newConditions_, variables_, jump_, last_, async_, $task))
 }
 }
@@ -4457,7 +4497,7 @@ return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, (
 return (_w1.name_ === variantName_)
 })), ((variant_) => {
 newtype_ = definition_.newtype_;
-loneVariant_ = (ff_core_List.List_size(definition_.variants_) === 1);
+loneVariant_ = (definition_.variants_.length === 1);
 return [...ff_core_List.List_map(definition_.commonFields_, ((_w1) => {
 return _w1.name_
 })), ...ff_core_List.List_map(variant_.fields_, ((_w1) => {

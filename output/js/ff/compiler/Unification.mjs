@@ -426,7 +426,7 @@ const name1_ = t1_a.name_;
 const generics1_ = t1_a.generics_;
 const name2_ = t2_a.name_;
 const generics2_ = t2_a.generics_;
-if(((name1_ !== name2_) || (ff_core_List.List_size(generics1_) !== ff_core_List.List_size(generics2_)))) {
+if(((name1_ !== name2_) || (generics1_.length !== generics2_.length))) {
 if((!self_.attemptFixes_)) {
 const t3_ = ff_compiler_Unification.Unification_substitute(self_, t1_);
 const t4_ = ff_compiler_Unification.Unification_substitute(self_, t2_);
@@ -803,7 +803,7 @@ const name1_ = t1_a.name_;
 const generics1_ = t1_a.generics_;
 const name2_ = t2_a.name_;
 const generics2_ = t2_a.generics_;
-if(((name1_ !== name2_) || (ff_core_List.List_size(generics1_) !== ff_core_List.List_size(generics2_)))) {
+if(((name1_ !== name2_) || (generics1_.length !== generics2_.length))) {
 if((!self_.attemptFixes_)) {
 const t3_ = ff_compiler_Unification.Unification_substitute(self_, t1_);
 const t4_ = ff_compiler_Unification.Unification_substitute(self_, t2_);

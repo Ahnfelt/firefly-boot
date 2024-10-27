@@ -136,7 +136,7 @@ if((((last_.stopLine_ === startLine_) && ff_compiler_Token.ff_core_Equal_Equal$f
 if((((completionLine_ === last_.startLine_) && (completionColumn_ >= ((1 + last_.startOffset_) - last_.startLineOffset_))) && (completionColumn_ <= ((1 + last_.stopOffset_) - last_.stopLineOffset_)))) {
 tokens_.array.push(ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
 } else {
-ff_core_Array.Array_modify(tokens_, (ff_core_Array.Array_size(tokens_) - 1), ((_w1) => {
+ff_core_Array.Array_modify(tokens_, (tokens_.array.length - 1), ((_w1) => {
 {
 const _1 = _w1;
 {
@@ -383,7 +383,7 @@ if((((last_.stopLine_ === startLine_) && ff_compiler_Token.ff_core_Equal_Equal$f
 if((((completionLine_ === last_.startLine_) && (completionColumn_ >= ((1 + last_.startOffset_) - last_.startLineOffset_))) && (completionColumn_ <= ((1 + last_.stopOffset_) - last_.stopLineOffset_)))) {
 tokens_.array.push(ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
 } else {
-ff_core_Array.Array_modify(tokens_, (ff_core_Array.Array_size(tokens_) - 1), ((_w1) => {
+ff_core_Array.Array_modify(tokens_, (tokens_.array.length - 1), ((_w1) => {
 {
 const _1 = _w1;
 {
