@@ -1971,6 +1971,31 @@ end_ = ((end_ + " - ") + count_)
 };
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_)
 }
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_takeFirst" && _1.arguments_.length === 2) {
+const a1_ = _1.arguments_[0];
+const a2_ = _1.arguments_[1];
+end_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_);
+if((!ff_core_String.String_all(end_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+})))) {
+end_ = (("Math.max(" + end_) + ", 0)")
+};
+end_ = (("Math.min(" + end_) + ", for_a.length)");
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_)
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_takeLast" && _1.arguments_.length === 2) {
+const a1_ = _1.arguments_[0];
+const a2_ = _1.arguments_[1];
+const count_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_);
+if((!ff_core_String.String_all(count_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+})))) {
+start_ = (("Math.max(for_a.length - Math.max(" + count_) + ", 0), 0)")
+} else {
+start_ = (("Math.max(for_a.length - " + count_) + ", 0)")
+};
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_)
+}
 {
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_)
 }
@@ -2014,6 +2039,31 @@ return ff_core_Char.Char_isAsciiDigit(_w1)
 end_ = (((end_ + " - Math.max(") + count_) + ", 0)")
 } else {
 end_ = ((end_ + " - ") + count_)
+};
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_)
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_takeFirst" && _1.arguments_.length === 2) {
+const a1_ = _1.arguments_[0];
+const a2_ = _1.arguments_[1];
+end_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_);
+if((!ff_core_String.String_all(end_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+})))) {
+end_ = (("Math.max(" + end_) + ", 0)")
+};
+end_ = (("Math.min(" + end_) + ", for_a.length)");
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_)
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_takeLast" && _1.arguments_.length === 2) {
+const a1_ = _1.arguments_[0];
+const a2_ = _1.arguments_[1];
+const count_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_);
+if((!ff_core_String.String_all(count_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+})))) {
+start_ = (("Math.max(for_a.length - Math.max(" + count_) + ", 0), 0)")
+} else {
+start_ = (("Math.max(for_a.length - " + count_) + ", 0)")
 };
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_)
 }
@@ -3909,6 +3959,31 @@ end_ = ((end_ + " - ") + count_)
 };
 return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, a1_.value_, async_, $task))
 }
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_takeFirst" && _1.arguments_.length === 2) {
+const a1_ = _1.arguments_[0];
+const a2_ = _1.arguments_[1];
+end_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, a2_.value_, async_, $task));
+if((!ff_core_String.String_all(end_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+})))) {
+end_ = (("Math.max(" + end_) + ", 0)")
+};
+end_ = (("Math.min(" + end_) + ", for_a.length)");
+return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, a1_.value_, async_, $task))
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_takeLast" && _1.arguments_.length === 2) {
+const a1_ = _1.arguments_[0];
+const a2_ = _1.arguments_[1];
+const count_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, a2_.value_, async_, $task));
+if((!ff_core_String.String_all(count_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+})))) {
+start_ = (("Math.max(for_a.length - Math.max(" + count_) + ", 0), 0)")
+} else {
+start_ = (("Math.max(for_a.length - " + count_) + ", 0)")
+};
+return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, a1_.value_, async_, $task))
+}
 {
 return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, list_, async_, $task))
 }
@@ -3952,6 +4027,31 @@ return ff_core_Char.Char_isAsciiDigit(_w1)
 end_ = (((end_ + " - Math.max(") + count_) + ", 0)")
 } else {
 end_ = ((end_ + " - ") + count_)
+};
+return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, a1_.value_, async_, $task))
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_takeFirst" && _1.arguments_.length === 2) {
+const a1_ = _1.arguments_[0];
+const a2_ = _1.arguments_[1];
+end_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, a2_.value_, async_, $task));
+if((!ff_core_String.String_all(end_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+})))) {
+end_ = (("Math.max(" + end_) + ", 0)")
+};
+end_ = (("Math.min(" + end_) + ", for_a.length)");
+return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, a1_.value_, async_, $task))
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_takeLast" && _1.arguments_.length === 2) {
+const a1_ = _1.arguments_[0];
+const a2_ = _1.arguments_[1];
+const count_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, a2_.value_, async_, $task));
+if((!ff_core_String.String_all(count_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+})))) {
+start_ = (("Math.max(for_a.length - Math.max(" + count_) + ", 0), 0)")
+} else {
+start_ = (("Math.max(for_a.length - " + count_) + ", 0)")
 };
 return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, a1_.value_, async_, $task))
 }

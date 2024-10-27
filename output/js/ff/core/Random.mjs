@@ -233,7 +233,7 @@ return ff_core_Array.Array_drain(array_)
 }
 
 export function Random_sampleArray(self_, count_, array_, body_) {
-for(let for_i = 0, for_a = ff_core_List.List_takeFirst(ff_core_Random.Random_shuffleList(self_, ff_core_Array.Array_toList(array_, 0, 9007199254740991)), count_), for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_i = 0, for_a = ff_core_Random.Random_shuffleList(self_, ff_core_Array.Array_toList(array_, 0, 9007199254740991)), for_l = Math.min(Math.max(count_, 0), for_a.length); for_i < for_l; for_i++) {
 const _w1 = for_a[for_i];
 body_(_w1)
 }
@@ -295,7 +295,7 @@ return ff_core_Array.Array_drain(array_)
 }
 
 export async function Random_sampleArray$(self_, count_, array_, body_, $task) {
-for(let for_i = 0, for_a = ff_core_List.List_takeFirst(ff_core_Random.Random_shuffleList(self_, ff_core_Array.Array_toList(array_, 0, 9007199254740991)), count_), for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_i = 0, for_a = ff_core_Random.Random_shuffleList(self_, ff_core_Array.Array_toList(array_, 0, 9007199254740991)), for_l = Math.min(Math.max(count_, 0), for_a.length); for_i < for_l; for_i++) {
 const _w1 = for_a[for_i];
 (await body_(_w1, $task))
 }

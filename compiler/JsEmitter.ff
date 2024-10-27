@@ -697,26 +697,10 @@ extend self: JsEmitter {
             | "ff:core/List.List_each" {arguments | [list, ELambda(_, Lambda(_, _, [
                 MatchCase(_, [PVariable(_, name)], [], body)
             ]))]} =>
-                mutable start = "0"
-                mutable end = "for_a.length"
-                let listCode = list.{
-                    | ECall(_, StaticCall("ff:core/List.List_dropFirst", _, _), _, _, [a1, a2], _) =>
-                        start = self.emitTerm(a2.value, async)
-                        if(!start.all {_.isAsciiDigit()}) {
-                            start = "Math.max(" + start + ", 0)"
-                        }
-                        self.emitTerm(a1.value, async)
-                    | ECall(_, StaticCall("ff:core/List.List_dropLast", _, _), _, _, [a1, a2], _) =>
-                        let count = self.emitTerm(a2.value, async)
-                        if(!count.all {_.isAsciiDigit()}) {
-                            end = end + " - Math.max(" + count + ", 0)"
-                        } else {
-                            end = end + " - " + count
-                        }
-                        self.emitTerm(a1.value, async)
-                    | _ => 
-                        self.emitTerm(list, async)
-                } 
+                let fusion = self.emitLightFusion(list, async)
+                let start = fusion.second.first
+                let end = fusion.second.second
+                let listCode = fusion.first
                 Some(
                     "for(let for_i = " + start + ", for_a = " + listCode + ", for_l = " + end + 
                     "; for_i < for_l; for_i++) {\n" +
@@ -727,26 +711,10 @@ extend self: JsEmitter {
             | "ff:core/List.List_eachWhile" {arguments | [list, ELambda(_, Lambda(_, _, [
                 MatchCase(_, [PVariable(_, name)], [], ESequential(_, body, condition))
             ]))]} =>
-                mutable start = "0"
-                mutable end = "for_a.length"
-                let listCode = list.{
-                    | ECall(_, StaticCall("ff:core/List.List_dropFirst", _, _), _, _, [a1, a2], _) =>
-                        start = self.emitTerm(a2.value, async)
-                        if(!start.all {_.isAsciiDigit()}) {
-                            start = "Math.max(" + start + ", 0)"
-                        }
-                        self.emitTerm(a1.value, async)
-                    | ECall(_, StaticCall("ff:core/List.List_dropLast", _, _), _, _, [a1, a2], _) =>
-                        let count = self.emitTerm(a2.value, async)
-                        if(!count.all {_.isAsciiDigit()}) {
-                            end = end + " - Math.max(" + count + ", 0)"
-                        } else {
-                            end = end + " - " + count
-                        }
-                        self.emitTerm(a1.value, async)
-                    | _ => 
-                        self.emitTerm(list, async)
-                } 
+                let fusion = self.emitLightFusion(list, async)
+                let start = fusion.second.first
+                let end = fusion.second.second
+                let listCode = fusion.first
                 Some(
                     "for(let for_i = " + start + ", for_a = " + listCode + ", for_l = " + end + 
                     "; for_i < for_l; for_i++) {\n" +
@@ -805,6 +773,45 @@ extend self: JsEmitter {
             | _ =>
                 None
         }
+    }
+    
+    emitLightFusion(list: Term, async: Bool): Pair[String, Pair[String, String]] {
+        mutable start = "0"
+        mutable end = "for_a.length"
+        let listCode = list.{
+            | ECall(_, StaticCall("ff:core/List.List_dropFirst", _, _), _, _, [a1, a2], _) =>
+                start = self.emitTerm(a2.value, async)
+                if(!start.all {_.isAsciiDigit()}) {
+                    start = "Math.max(" + start + ", 0)"
+                }
+                self.emitTerm(a1.value, async)
+            | ECall(_, StaticCall("ff:core/List.List_dropLast", _, _), _, _, [a1, a2], _) =>
+                let count = self.emitTerm(a2.value, async)
+                if(!count.all {_.isAsciiDigit()}) {
+                    end = end + " - Math.max(" + count + ", 0)"
+                } else {
+                    end = end + " - " + count
+                }
+                self.emitTerm(a1.value, async)
+            | ECall(_, StaticCall("ff:core/List.List_takeFirst", _, _), _, _, [a1, a2], _) =>
+                end = self.emitTerm(a2.value, async)
+                if(!end.all {_.isAsciiDigit()}) {
+                    end = "Math.max(" + end + ", 0)"
+                }
+                end = "Math.min(" + end + ", for_a.length)"
+                self.emitTerm(a1.value, async)
+            | ECall(_, StaticCall("ff:core/List.List_takeLast", _, _), _, _, [a1, a2], _) =>
+                let count = self.emitTerm(a2.value, async)
+                if(!count.all {_.isAsciiDigit()}) {
+                    start = "Math.max(for_a.length - Math.max(" + count + ", 0), 0)"
+                } else {
+                    start = "Math.max(for_a.length - " + count + ", 0)"
+                }
+                self.emitTerm(a1.value, async)
+            | _ => 
+                self.emitTerm(list, async)
+        } 
+        Pair(listCode, Pair(start, end))
     }
 
     emitTryCatchFinally(term: Term, last: Bool, async: Bool): Option[String] {
