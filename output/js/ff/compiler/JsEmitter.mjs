@@ -1944,8 +1944,38 @@ if(_guard1.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.lengt
 const list_ = _guard1[0];
 const name_ = _guard1[1].lambda_.cases_[0].patterns_[0].name_;
 const body_ = _guard1[1].lambda_.cases_[0].body_;
-const listCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_);
-return ff_core_Option.Some(((((((("for(let " + "for_i = 0, for_a = ") + listCode_) + ", for_l = for_a.length") + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+let start_ = "0";
+let end_ = "for_a.length";
+const listCode_ = (((_1) => {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_dropFirst" && _1.arguments_.length === 2) {
+const a1_ = _1.arguments_[0];
+const a2_ = _1.arguments_[1];
+start_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_);
+if((!ff_core_String.String_all(start_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+})))) {
+start_ = (("Math.max(" + start_) + ", 0)")
+};
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_)
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_dropLast" && _1.arguments_.length === 2) {
+const a1_ = _1.arguments_[0];
+const a2_ = _1.arguments_[1];
+const count_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_);
+if((!ff_core_String.String_all(count_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+})))) {
+end_ = (((end_ + " - Math.max(") + count_) + ", 0)")
+} else {
+end_ = ((end_ + " - ") + count_)
+};
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_)
+}
+{
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_)
+}
+}))(list_);
+return ff_core_Option.Some(((((((((("for(let for_i = " + start_) + ", for_a = ") + listCode_) + ", for_l = ") + end_) + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
 })), (() => {
 return ""
@@ -1960,8 +1990,38 @@ const list_ = _guard1[0];
 const name_ = _guard1[1].lambda_.cases_[0].patterns_[0].name_;
 const body_ = _guard1[1].lambda_.cases_[0].body_.before_;
 const condition_ = _guard1[1].lambda_.cases_[0].body_.after_;
-const listCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_);
-return ff_core_Option.Some(((((((((((("for(let " + "for_i = 0, for_a = ") + listCode_) + ", for_l = for_a.length") + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+let start_ = "0";
+let end_ = "for_a.length";
+const listCode_ = (((_1) => {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_dropFirst" && _1.arguments_.length === 2) {
+const a1_ = _1.arguments_[0];
+const a2_ = _1.arguments_[1];
+start_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_);
+if((!ff_core_String.String_all(start_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+})))) {
+start_ = (("Math.max(" + start_) + ", 0)")
+};
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_)
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_dropLast" && _1.arguments_.length === 2) {
+const a1_ = _1.arguments_[0];
+const a2_ = _1.arguments_[1];
+const count_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_);
+if((!ff_core_String.String_all(count_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+})))) {
+end_ = (((end_ + " - Math.max(") + count_) + ", 0)")
+} else {
+end_ = ((end_ + " - ") + count_)
+};
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_)
+}
+{
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_)
+}
+}))(list_);
+return ff_core_Option.Some(((((((((((((("for(let for_i = " + start_) + ", for_a = ") + listCode_) + ", for_l = ") + end_) + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
 })), (() => {
 return ""
@@ -3822,8 +3882,38 @@ if(_guard1.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.lengt
 const list_ = _guard1[0];
 const name_ = _guard1[1].lambda_.cases_[0].patterns_[0].name_;
 const body_ = _guard1[1].lambda_.cases_[0].body_;
-const listCode_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, list_, async_, $task));
-return ff_core_Option.Some(((((((("for(let " + "for_i = 0, for_a = ") + listCode_) + ", for_l = for_a.length") + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+let start_ = "0";
+let end_ = "for_a.length";
+const listCode_ = (await ((async (_1, $task) => {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_dropFirst" && _1.arguments_.length === 2) {
+const a1_ = _1.arguments_[0];
+const a2_ = _1.arguments_[1];
+start_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, a2_.value_, async_, $task));
+if((!ff_core_String.String_all(start_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+})))) {
+start_ = (("Math.max(" + start_) + ", 0)")
+};
+return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, a1_.value_, async_, $task))
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_dropLast" && _1.arguments_.length === 2) {
+const a1_ = _1.arguments_[0];
+const a2_ = _1.arguments_[1];
+const count_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, a2_.value_, async_, $task));
+if((!ff_core_String.String_all(count_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+})))) {
+end_ = (((end_ + " - Math.max(") + count_) + ", 0)")
+} else {
+end_ = ((end_ + " - ") + count_)
+};
+return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, a1_.value_, async_, $task))
+}
+{
+return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, list_, async_, $task))
+}
+}))(list_, $task));
+return ff_core_Option.Some(((((((((("for(let for_i = " + start_) + ", for_a = ") + listCode_) + ", for_l = ") + end_) + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
 })), (() => {
 return ""
@@ -3838,8 +3928,38 @@ const list_ = _guard1[0];
 const name_ = _guard1[1].lambda_.cases_[0].patterns_[0].name_;
 const body_ = _guard1[1].lambda_.cases_[0].body_.before_;
 const condition_ = _guard1[1].lambda_.cases_[0].body_.after_;
-const listCode_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, list_, async_, $task));
-return ff_core_Option.Some(((((((((((("for(let " + "for_i = 0, for_a = ") + listCode_) + ", for_l = for_a.length") + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+let start_ = "0";
+let end_ = "for_a.length";
+const listCode_ = (await ((async (_1, $task) => {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_dropFirst" && _1.arguments_.length === 2) {
+const a1_ = _1.arguments_[0];
+const a2_ = _1.arguments_[1];
+start_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, a2_.value_, async_, $task));
+if((!ff_core_String.String_all(start_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+})))) {
+start_ = (("Math.max(" + start_) + ", 0)")
+};
+return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, a1_.value_, async_, $task))
+}
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_dropLast" && _1.arguments_.length === 2) {
+const a1_ = _1.arguments_[0];
+const a2_ = _1.arguments_[1];
+const count_ = (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, a2_.value_, async_, $task));
+if((!ff_core_String.String_all(count_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+})))) {
+end_ = (((end_ + " - Math.max(") + count_) + ", 0)")
+} else {
+end_ = ((end_ + " - ") + count_)
+};
+return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, a1_.value_, async_, $task))
+}
+{
+return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, list_, async_, $task))
+}
+}))(list_, $task));
+return ff_core_Option.Some(((((((((((((("for(let for_i = " + start_) + ", for_a = ") + listCode_) + ", for_l = ") + end_) + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
 })), (() => {
 return ""

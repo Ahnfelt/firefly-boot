@@ -697,10 +697,29 @@ extend self: JsEmitter {
             | "ff:core/List.List_each" {arguments | [list, ELambda(_, Lambda(_, _, [
                 MatchCase(_, [PVariable(_, name)], [], body)
             ]))]} =>
-                let listCode = self.emitTerm(list, async)
+                mutable start = "0"
+                mutable end = "for_a.length"
+                let listCode = list.{
+                    | ECall(_, StaticCall("ff:core/List.List_dropFirst", _, _), _, _, [a1, a2], _) =>
+                        start = self.emitTerm(a2.value, async)
+                        if(!start.all {_.isAsciiDigit()}) {
+                            start = "Math.max(" + start + ", 0)"
+                        }
+                        self.emitTerm(a1.value, async)
+                    | ECall(_, StaticCall("ff:core/List.List_dropLast", _, _), _, _, [a1, a2], _) =>
+                        let count = self.emitTerm(a2.value, async)
+                        if(!count.all {_.isAsciiDigit()}) {
+                            end = end + " - Math.max(" + count + ", 0)"
+                        } else {
+                            end = end + " - " + count
+                        }
+                        self.emitTerm(a1.value, async)
+                    | _ => 
+                        self.emitTerm(list, async)
+                } 
                 Some(
-                    "for(let " +
-                    "for_i = 0, for_a = " + listCode + ", for_l = for_a.length" + "; for_i < for_l; for_i++) {\n" +
+                    "for(let for_i = " + start + ", for_a = " + listCode + ", for_l = " + end + 
+                    "; for_i < for_l; for_i++) {\n" +
                         name.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
                         self.emitStatements(body, last, async) +
                     "\n}"
@@ -708,10 +727,29 @@ extend self: JsEmitter {
             | "ff:core/List.List_eachWhile" {arguments | [list, ELambda(_, Lambda(_, _, [
                 MatchCase(_, [PVariable(_, name)], [], ESequential(_, body, condition))
             ]))]} =>
-                let listCode = self.emitTerm(list, async)
+                mutable start = "0"
+                mutable end = "for_a.length"
+                let listCode = list.{
+                    | ECall(_, StaticCall("ff:core/List.List_dropFirst", _, _), _, _, [a1, a2], _) =>
+                        start = self.emitTerm(a2.value, async)
+                        if(!start.all {_.isAsciiDigit()}) {
+                            start = "Math.max(" + start + ", 0)"
+                        }
+                        self.emitTerm(a1.value, async)
+                    | ECall(_, StaticCall("ff:core/List.List_dropLast", _, _), _, _, [a1, a2], _) =>
+                        let count = self.emitTerm(a2.value, async)
+                        if(!count.all {_.isAsciiDigit()}) {
+                            end = end + " - Math.max(" + count + ", 0)"
+                        } else {
+                            end = end + " - " + count
+                        }
+                        self.emitTerm(a1.value, async)
+                    | _ => 
+                        self.emitTerm(list, async)
+                } 
                 Some(
-                    "for(let " +
-                    "for_i = 0, for_a = " + listCode + ", for_l = for_a.length" + "; for_i < for_l; for_i++) {\n" +
+                    "for(let for_i = " + start + ", for_a = " + listCode + ", for_l = " + end + 
+                    "; for_i < for_l; for_i++) {\n" +
                         name.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
                         self.emitStatements(body, last, async) + ";\n" +
                         "if(!" + self.emitComma(condition, async) + ") break" +
