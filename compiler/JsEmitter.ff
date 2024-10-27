@@ -1081,6 +1081,13 @@ extend self: JsEmitter {
     
     emitComma(term: Term, async: Bool): String {
         term.{
+            | ESequential(_, ESequential(_, ESequential(_, before1, before2), before3), after) {
+                safeCommable(before1) && safeCommable(before2) && safeCommable(before3) && safeCommable(after)
+            } =>
+                "(" + self.emitStatements(before1, False, async) + ", " + 
+                self.emitStatements(before2, False, async) + ", " + 
+                self.emitStatements(before3, False, async) + ", " + 
+                self.emitTerm(after, async) + ")"
             | ESequential(_, ESequential(_, before1, before2), after) {
                 safeCommable(before1) && safeCommable(before2) && safeCommable(after)
             } =>

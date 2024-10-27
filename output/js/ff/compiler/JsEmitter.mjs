@@ -2523,6 +2523,15 @@ return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)
 export function JsEmitter_emitComma(self_, term_, async_) {
 {
 const _1 = term_;
+if(_1.ESequential && _1.before_.ESequential && _1.before_.before_.ESequential) {
+const before1_ = _1.before_.before_.before_;
+const before2_ = _1.before_.before_.after_;
+const before3_ = _1.before_.after_;
+const after_ = _1.after_;
+if((((ff_compiler_JsEmitter.safeCommable_(before1_) && ff_compiler_JsEmitter.safeCommable_(before2_)) && ff_compiler_JsEmitter.safeCommable_(before3_)) && ff_compiler_JsEmitter.safeCommable_(after_))) {
+return (((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before1_, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before2_, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before3_, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, after_, async_)) + ")")
+}
+}
 if(_1.ESequential && _1.before_.ESequential) {
 const before1_ = _1.before_.before_;
 const before2_ = _1.before_.after_;
@@ -4467,6 +4476,15 @@ return (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, value_, async_, $
 export async function JsEmitter_emitComma$(self_, term_, async_, $task) {
 {
 const _1 = term_;
+if(_1.ESequential && _1.before_.ESequential && _1.before_.before_.ESequential) {
+const before1_ = _1.before_.before_.before_;
+const before2_ = _1.before_.before_.after_;
+const before3_ = _1.before_.after_;
+const after_ = _1.after_;
+if((((ff_compiler_JsEmitter.safeCommable_(before1_) && ff_compiler_JsEmitter.safeCommable_(before2_)) && ff_compiler_JsEmitter.safeCommable_(before3_)) && ff_compiler_JsEmitter.safeCommable_(after_))) {
+return (((((((("(" + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, before1_, false, async_, $task))) + ", ") + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, before2_, false, async_, $task))) + ", ") + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, before3_, false, async_, $task))) + ", ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, after_, async_, $task))) + ")")
+}
+}
 if(_1.ESequential && _1.before_.ESequential) {
 const before1_ = _1.before_.before_;
 const before2_ = _1.before_.after_;
