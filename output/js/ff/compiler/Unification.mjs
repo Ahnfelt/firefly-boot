@@ -96,6 +96,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
+
 // type Unification
 export function Unification(substitution_, constraints_, nextUnificationVariableIndex_, instances_, affects_, attemptFixes_) {
 return {substitution_, constraints_, nextUnificationVariableIndex_, instances_, affects_, attemptFixes_};
@@ -310,17 +312,18 @@ const instantiation_ = ff_core_List.List_toMap(ff_core_List.List_zip(definition_
 const traitType1_ = ff_compiler_Unification.Unification_instantiate(self_, instantiation_, ff_compiler_Syntax.TConstructor(at_, definition_.traitName_, definition_.typeArguments_));
 const traitType2_ = ff_compiler_Syntax.TConstructor(at_, constraintName_, [type_, ...generics_]);
 ff_compiler_Unification.Unification_unify(self_, at_, traitType1_, traitType2_);
-ff_core_List.List_each(definition_.constraints_, ((constraint_) => {
-{
+for(let for_i = 0, for_a = definition_.constraints_, for_l = for_a.length; for_i < for_l; for_i++) {
+const constraint_ = for_a[for_i];
+do {
 const _1 = ff_compiler_Unification.Unification_instantiateConstraint(self_, instantiation_, constraint_);
 {
 const constraintName_ = _1.name_;
 const newGenerics_ = _1.generics_;
 ff_compiler_Unification.Unification_constrain(self_, at_, ff_core_List.List_grabFirst(newGenerics_), constraintName_, ff_core_List.List_dropFirst(newGenerics_, 1))
-return
+break
 }
+} while(false)
 }
-}))
 return
 }
 }
@@ -423,7 +426,7 @@ const name1_ = t1_a.name_;
 const generics1_ = t1_a.generics_;
 const name2_ = t2_a.name_;
 const generics2_ = t2_a.generics_;
-if(((name1_ !== name2_) || (ff_core_List.List_size(generics1_) !== ff_core_List.List_size(generics2_)))) {
+if(((name1_ !== name2_) || (generics1_.length !== generics2_.length))) {
 if((!self_.attemptFixes_)) {
 const t3_ = ff_compiler_Unification.Unification_substitute(self_, t1_);
 const t4_ = ff_compiler_Unification.Unification_substitute(self_, t2_);
@@ -686,17 +689,18 @@ const instantiation_ = ff_core_List.List_toMap(ff_core_List.List_zip(definition_
 const traitType1_ = ff_compiler_Unification.Unification_instantiate(self_, instantiation_, ff_compiler_Syntax.TConstructor(at_, definition_.traitName_, definition_.typeArguments_));
 const traitType2_ = ff_compiler_Syntax.TConstructor(at_, constraintName_, [type_, ...generics_]);
 ff_compiler_Unification.Unification_unify(self_, at_, traitType1_, traitType2_);
-ff_core_List.List_each(definition_.constraints_, ((constraint_) => {
-{
+for(let for_i = 0, for_a = definition_.constraints_, for_l = for_a.length; for_i < for_l; for_i++) {
+const constraint_ = for_a[for_i];
+do {
 const _1 = ff_compiler_Unification.Unification_instantiateConstraint(self_, instantiation_, constraint_);
 {
 const constraintName_ = _1.name_;
 const newGenerics_ = _1.generics_;
 ff_compiler_Unification.Unification_constrain(self_, at_, ff_core_List.List_grabFirst(newGenerics_), constraintName_, ff_core_List.List_dropFirst(newGenerics_, 1))
-return
+break
 }
+} while(false)
 }
-}))
 return
 }
 }
@@ -799,7 +803,7 @@ const name1_ = t1_a.name_;
 const generics1_ = t1_a.generics_;
 const name2_ = t2_a.name_;
 const generics2_ = t2_a.generics_;
-if(((name1_ !== name2_) || (ff_core_List.List_size(generics1_) !== ff_core_List.List_size(generics2_)))) {
+if(((name1_ !== name2_) || (generics1_.length !== generics2_.length))) {
 if((!self_.attemptFixes_)) {
 const t3_ = ff_compiler_Unification.Unification_substitute(self_, t1_);
 const t4_ = ff_compiler_Unification.Unification_substitute(self_, t2_);

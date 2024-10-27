@@ -42,6 +42,10 @@ extend token: Token {
         token.kind == kind1 || token.kind == kind2 || token.kind == kind3 || token.kind == kind4
     }
 
+    is5(kind1: TokenKind, kind2: TokenKind, kind3: TokenKind, kind4: TokenKind, kind5: TokenKind): Bool {
+        token.kind == kind1 || token.kind == kind2 || token.kind == kind3 || token.kind == kind4 || token.kind == kind5
+    }
+
     rawIs(value: String): Bool {
         token.stopOffset - token.startOffset == value.size() &&
         token.code.startsWith(value, token.startOffset)
@@ -75,6 +79,7 @@ data TokenKind {
     LBracketLeft
     LBracketRight
     LOperator
+    LUnary
     LComma
     LSeparator
     LDot
@@ -105,6 +110,7 @@ extend self: TokenKind {
             | LWildcard => True
             | LBracketLeft => False
             | LBracketRight => True
+            | LUnary => True
             | LOperator => False
             | LComma => False
             | LSeparator => False
@@ -135,6 +141,7 @@ extend self: TokenKind {
             | LWildcard => True
             | LBracketLeft => True
             | LBracketRight => False
+            | LUnary => True
             | LOperator => False
             | LComma => False
             | LSeparator => False
@@ -165,6 +172,7 @@ extend self: TokenKind {
             | LWildcard => True
             | LBracketLeft => False
             | LBracketRight => False
+            | LUnary => False
             | LOperator => False
             | LComma => False
             | LSeparator => False

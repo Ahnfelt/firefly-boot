@@ -96,6 +96,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
+
 // type Resolver
 export function Resolver(variables_, variableLocations_, variants_, types_, typeGenerics_, typeLocations_, asyncTypes_, typeParameters_, traits_, traitLocations_, state_, lspHook_) {
 return {variables_, variableLocations_, variants_, types_, typeGenerics_, typeLocations_, asyncTypes_, typeParameters_, traits_, traitLocations_, state_, lspHook_};
@@ -150,11 +152,13 @@ return ff_compiler_Resolver.Resolver_resolveLetDefinition(self3_, _w1, true)
 return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self3_, _w1, true, false)
 })))
 }))(module_);
-ff_core_List.List_each(module2_.instances_, ((_w1) => {
-ff_core_List.List_each(_w1.typeArguments_, ((_w1) => {
+for(let for_i = 0, for_a = module2_.instances_, for_l = for_a.length; for_i < for_l; for_i++) {
+const _w1 = for_a[for_i];
+for(let for_i = 0, for_a = _w1.typeArguments_, for_l = for_a.length; for_i < for_l; for_i++) {
+const _w1 = for_a[for_i];
 ff_compiler_Resolver.Resolver_checkInstanceType(self3_, _w1)
-}))
-}));
+}
+};
 return module2_
 }
 
@@ -167,9 +171,10 @@ const typeArguments_ = _1.generics_;
 if(ff_core_Set.Set_contains(self_.asyncTypes_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(type_.at_, "Traits must not be instantiated for capability types"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
-ff_core_List.List_each(typeArguments_, ((_w1) => {
+for(let for_i = 0, for_a = typeArguments_, for_l = for_a.length; for_i < for_l; for_i++) {
+const _w1 = for_a[for_i];
 ff_compiler_Resolver.Resolver_checkInstanceType(self_, _w1)
-}))
+}
 return
 }
 {
@@ -181,21 +186,22 @@ return
 
 export function Resolver_processImports(self_, imports_, modules_) {
 let resolver_ = self_;
-ff_core_List.List_each(imports_, ((import_) => {
-{
+for(let for_i = 0, for_a = imports_, for_l = for_a.length; for_i < for_l; for_i++) {
+const import_ = for_a[for_i];
+do {
 const _1 = ff_core_List.List_find(modules_, ((_w1) => {
 return (ff_core_String.String_dropLast(_w1.file_, 3) === import_.file_)
 }));
 if(_1.Some) {
 const module_ = _1.value_;
 resolver_ = ff_compiler_Resolver.Resolver_processDefinitions(resolver_, module_, ff_core_Option.Some(import_.alias_))
-return
+break
 }
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("No such module: " + import_.file_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
-}
-}));
+} while(false)
+};
 return resolver_
 }
 
@@ -315,13 +321,14 @@ return ff_compiler_Resolver.Resolver(_c.variables_, _c.variableLocations_, _c.va
 if((!ff_core_Option.Option_any(ff_core_List.List_first(definition_.generics_), ((_w1) => {
 return (_w1 === "Q$")
 })))) {
-ff_core_List.List_each([...definition_.commonFields_, ...ff_core_List.List_flatMap(definition_.variants_, ((_w1) => {
+for(let for_i = 0, for_a = [...definition_.commonFields_, ...ff_core_List.List_flatMap(definition_.variants_, ((_w1) => {
 return _w1.fields_
-}))], ((f_) => {
+}))], for_l = for_a.length; for_i < for_l; for_i++) {
+const f_ = for_a[for_i];
 if(ff_compiler_Resolver.Resolver_containsAsyncType(self2_, f_.valueType_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, "Only capabilities can contain fields of concrete capability types"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
-}))
+}
 };
 {
 const _1 = definition_;
@@ -1088,11 +1095,13 @@ return ff_compiler_Resolver.Resolver_resolveLetDefinition(self3_, _w1, true)
 return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self3_, _w1, true, false)
 })))
 }))(module_);
-ff_core_List.List_each(module2_.instances_, ((_w1) => {
-ff_core_List.List_each(_w1.typeArguments_, ((_w1) => {
+for(let for_i = 0, for_a = module2_.instances_, for_l = for_a.length; for_i < for_l; for_i++) {
+const _w1 = for_a[for_i];
+for(let for_i = 0, for_a = _w1.typeArguments_, for_l = for_a.length; for_i < for_l; for_i++) {
+const _w1 = for_a[for_i];
 ff_compiler_Resolver.Resolver_checkInstanceType(self3_, _w1)
-}))
-}));
+}
+};
 return module2_
 }
 
@@ -1105,9 +1114,10 @@ const typeArguments_ = _1.generics_;
 if(ff_core_Set.Set_contains(self_.asyncTypes_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(type_.at_, "Traits must not be instantiated for capability types"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
-ff_core_List.List_each(typeArguments_, ((_w1) => {
+for(let for_i = 0, for_a = typeArguments_, for_l = for_a.length; for_i < for_l; for_i++) {
+const _w1 = for_a[for_i];
 ff_compiler_Resolver.Resolver_checkInstanceType(self_, _w1)
-}))
+}
 return
 }
 {
@@ -1119,21 +1129,22 @@ return
 
 export async function Resolver_processImports$(self_, imports_, modules_, $task) {
 let resolver_ = self_;
-ff_core_List.List_each(imports_, ((import_) => {
-{
+for(let for_i = 0, for_a = imports_, for_l = for_a.length; for_i < for_l; for_i++) {
+const import_ = for_a[for_i];
+do {
 const _1 = ff_core_List.List_find(modules_, ((_w1) => {
 return (ff_core_String.String_dropLast(_w1.file_, 3) === import_.file_)
 }));
 if(_1.Some) {
 const module_ = _1.value_;
 resolver_ = ff_compiler_Resolver.Resolver_processDefinitions(resolver_, module_, ff_core_Option.Some(import_.alias_))
-return
+break
 }
 if(_1.None) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("No such module: " + import_.file_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
-}
-}));
+} while(false)
+};
 return resolver_
 }
 
@@ -1253,13 +1264,14 @@ return ff_compiler_Resolver.Resolver(_c.variables_, _c.variableLocations_, _c.va
 if((!ff_core_Option.Option_any(ff_core_List.List_first(definition_.generics_), ((_w1) => {
 return (_w1 === "Q$")
 })))) {
-ff_core_List.List_each([...definition_.commonFields_, ...ff_core_List.List_flatMap(definition_.variants_, ((_w1) => {
+for(let for_i = 0, for_a = [...definition_.commonFields_, ...ff_core_List.List_flatMap(definition_.variants_, ((_w1) => {
 return _w1.fields_
-}))], ((f_) => {
+}))], for_l = for_a.length; for_i < for_l; for_i++) {
+const f_ = for_a[for_i];
 if(ff_compiler_Resolver.Resolver_containsAsyncType(self2_, f_.valueType_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, "Only capabilities can contain fields of concrete capability types"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
-}))
+}
 };
 {
 const _1 = definition_;

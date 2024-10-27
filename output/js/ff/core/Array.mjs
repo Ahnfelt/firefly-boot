@@ -90,6 +90,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
+
 // type Array
 
 
@@ -133,7 +135,7 @@ i_ += 1
 const value_ = (array_.array[j_] ?? ff_core_Array.internalGrab_(array_, j_));
 let k_ = j_;
 while((k_ > i_)) {
-ff_core_Array.Array_set(array_, k_, ff_core_Array.Array_grab(array_, (k_ - 1)));
+ff_core_Array.Array_set(array_, k_, (array_.array[(k_ - 1)] ?? ff_core_Array.internalGrab_(array_, (k_ - 1))));
 k_ -= 1
 };
 ff_core_Array.Array_set(array_, i_, value_);
@@ -183,7 +185,7 @@ i_ += 1
 const value_ = (array_.array[j_] ?? ff_core_Array.internalGrab_(array_, j_));
 let k_ = j_;
 while((k_ > i_)) {
-ff_core_Array.Array_set(array_, k_, ff_core_Array.Array_grab(array_, (k_ - 1)));
+ff_core_Array.Array_set(array_, k_, (array_.array[(k_ - 1)] ?? ff_core_Array.internalGrab_(array_, (k_ - 1))));
 k_ -= 1
 };
 ff_core_Array.Array_set(array_, i_, value_);
@@ -222,11 +224,11 @@ export function Array_grab(self_, index_) {
 }
 
 export function Array_grabFirst(self_) {
-return ff_core_Array.Array_grab(self_, 0)
+return (self_.array[0] ?? ff_core_Array.internalGrab_(self_, 0))
 }
 
 export function Array_grabLast(self_) {
-return ff_core_Array.Array_grab(self_, (ff_core_Array.Array_size(self_) - 1))
+return (self_.array[(self_.array.length - 1)] ?? ff_core_Array.internalGrab_(self_, (self_.array.length - 1)))
 }
 
 export function Array_first(self_) {
@@ -416,11 +418,11 @@ throw new Error('Function Array_grab is missing on this target in async context.
 }
 
 export async function Array_grabFirst$(self_, $task) {
-return ff_core_Array.Array_grab(self_, 0)
+return (self_.array[0] ?? ff_core_Array.internalGrab_(self_, 0))
 }
 
 export async function Array_grabLast$(self_, $task) {
-return ff_core_Array.Array_grab(self_, (ff_core_Array.Array_size(self_) - 1))
+return (self_.array[(self_.array.length - 1)] ?? ff_core_Array.internalGrab_(self_, (self_.array.length - 1)))
 }
 
 export async function Array_first$(self_, $task) {
@@ -589,26 +591,26 @@ throw new Error('Function Array_join is missing on this target in async context.
 export function ff_core_Show_Show$ff_core_Array_Array(ff_core_Show_Show$T) { return {
 show_(value_) {
 const array_ = ff_core_Array.new_();
-ff_core_Array.Array_push(array_, "[");
+array_.array.push("[");
 ff_core_Array.Array_each(value_, ((x_) => {
-if((ff_core_Array.Array_size(array_) > 1)) {
-ff_core_Array.Array_push(array_, ", ")
+if((array_.array.length > 1)) {
+array_.array.push(", ")
 };
-ff_core_Array.Array_push(array_, ff_core_Show_Show$T.show_(x_))
+array_.array.push(ff_core_Show_Show$T.show_(x_))
 }));
-ff_core_Array.Array_push(array_, "].toArray()");
+array_.array.push("].toArray()");
 return ff_core_Array.Array_join(array_, "")
 },
 async show_$(value_, $task) {
 const array_ = ff_core_Array.new_();
-ff_core_Array.Array_push(array_, "[");
+array_.array.push("[");
 ff_core_Array.Array_each(value_, ((x_) => {
-if((ff_core_Array.Array_size(array_) > 1)) {
-ff_core_Array.Array_push(array_, ", ")
+if((array_.array.length > 1)) {
+array_.array.push(", ")
 };
-ff_core_Array.Array_push(array_, ff_core_Show_Show$T.show_(x_))
+array_.array.push(ff_core_Show_Show$T.show_(x_))
 }));
-ff_core_Array.Array_push(array_, "].toArray()");
+array_.array.push("].toArray()");
 return ff_core_Array.Array_join(array_, "")
 }
 }}

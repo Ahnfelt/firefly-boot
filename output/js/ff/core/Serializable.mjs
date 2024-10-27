@@ -90,6 +90,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
+
 // type DeserializationChecksumException
 const DeserializationChecksumException$ = {DeserializationChecksumException: true};
 export function DeserializationChecksumException() {
@@ -237,21 +239,22 @@ return (result_ === 1)
 
 export function ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable_Serializable$T) { return {
 serializeUsing_(serialization_, value_) {
-if((ff_core_List.List_size(value_) < 255)) {
+if((value_.length < 255)) {
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, ff_core_List.List_size(value_));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, value_.length);
 serialization_.offset_ += 1
-} else if((ff_core_List.List_size(value_) < 1073741824)) {
+} else if((value_.length < 1073741824)) {
 ff_core_Serializable.Serialization_autoResize(serialization_, (1 + 4));
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 255);
-ff_core_Buffer.Buffer_setUint32(serialization_.buffer_, (1 + serialization_.offset_), ff_core_List.List_size(value_), true);
+ff_core_Buffer.Buffer_setUint32(serialization_.buffer_, (1 + serialization_.offset_), value_.length, true);
 serialization_.offset_ += (1 + 4)
 } else {
 ff_core_Core.panic_("Can't serialize arrays where size() >= 1073741824")
 };
-ff_core_List.List_each(value_, ((_w1) => {
+for(let for_i = 0, for_a = value_, for_l = for_a.length; for_i < for_l; for_i++) {
+const _w1 = for_a[for_i];
 ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, _w1)
-}))
+}
 },
 deserializeUsing_(serialization_) {
 const smallSize_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -279,21 +282,22 @@ return result;
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-if((ff_core_List.List_size(value_) < 255)) {
+if((value_.length < 255)) {
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, ff_core_List.List_size(value_));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, value_.length);
 serialization_.offset_ += 1
-} else if((ff_core_List.List_size(value_) < 1073741824)) {
+} else if((value_.length < 1073741824)) {
 ff_core_Serializable.Serialization_autoResize(serialization_, (1 + 4));
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 255);
-ff_core_Buffer.Buffer_setUint32(serialization_.buffer_, (1 + serialization_.offset_), ff_core_List.List_size(value_), true);
+ff_core_Buffer.Buffer_setUint32(serialization_.buffer_, (1 + serialization_.offset_), value_.length, true);
 serialization_.offset_ += (1 + 4)
 } else {
 ff_core_Core.panic_("Can't serialize arrays where size() >= 1073741824")
 };
-ff_core_List.List_each(value_, ((_w1) => {
+for(let for_i = 0, for_a = value_, for_l = for_a.length; for_i < for_l; for_i++) {
+const _w1 = for_a[for_i];
 ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, _w1)
-}))
+}
 },
 async deserializeUsing_$(serialization_, $task) {
 const smallSize_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);

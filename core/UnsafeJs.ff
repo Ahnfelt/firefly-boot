@@ -18,5 +18,25 @@ cancelled(): Bool
     // Replaced by the compiler
     target js sync "return false"
 
+inAsync(): Bool
+    // Replaced by the compiler
+    target js sync "return false"
+    
+inBrowser(): Bool
+    // Replaced by the compiler
+    target js sync "return false"
+    
+inNode(): Bool
+    // Replaced by the compiler
+    target js sync "return false"
+    
+inBuild(): Bool
+    // Replaced by the compiler
+    target js sync "return false"
+    
 value[T](value: T): JsValue
     target js sync "return value_"
+
+fromValue[T](value: JsValue): T
+    target js sync "return value_"
+

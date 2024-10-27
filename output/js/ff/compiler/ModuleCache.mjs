@@ -94,6 +94,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
+
 // type ModuleCache
 export function ModuleCache(version_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_) {
 return {version_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_};

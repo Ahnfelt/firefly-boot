@@ -90,6 +90,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
+
 // type Json
 
 
@@ -503,7 +505,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.G
 export function Json_map(self_, body_) {
 const array_ = ff_core_Array.new_();
 ff_core_Json.Json_each(self_, ((field_, value_) => {
-ff_core_Array.Array_push(array_, body_(field_, value_))
+array_.array.push(body_(field_, value_))
 }));
 return ff_core_Array.Array_drain(array_)
 }
@@ -679,7 +681,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.G
 export async function Json_map$(self_, body_, $task) {
 const array_ = ff_core_Array.new_();
 (await ff_core_Json.Json_each$(self_, (async (field_, value_, $task) => {
-ff_core_Array.Array_push(array_, (await body_(field_, value_, $task)))
+array_.array.push((await body_(field_, value_, $task)))
 }), $task));
 return ff_core_Array.Array_drain(array_)
 }
@@ -823,7 +825,8 @@ fromJson_(json_) {
 return ff_core_Option.Option_flatMap(ff_core_Json.Json_getArray(json_), ((array_) => {
 let convertible_ = true;
 const result_ = ff_core_Array.new_();
-ff_core_List.List_eachWhile(array_, ((item_) => {
+for(let for_i = 0, for_a = array_, for_l = for_a.length; for_i < for_l; for_i++) {
+const item_ = for_a[for_i];
 do {
 const _1 = ff_core_Json_JsonLike$T.fromJson_(item_);
 if(_1.None) {
@@ -832,12 +835,12 @@ break
 }
 if(_1.Some) {
 const value_ = _1.value_;
-ff_core_Array.Array_push(result_, value_)
+result_.array.push(value_)
 break
 }
 } while(false);
-return convertible_
-}));
+if(!convertible_) break
+};
 if(convertible_) {
 return ff_core_Option.Some(ff_core_Array.Array_drain(result_))
 } else return ff_core_Option.None()
@@ -852,7 +855,8 @@ async fromJson_$(json_, $task) {
 return ff_core_Option.Option_flatMap(ff_core_Json.Json_getArray(json_), ((array_) => {
 let convertible_ = true;
 const result_ = ff_core_Array.new_();
-ff_core_List.List_eachWhile(array_, ((item_) => {
+for(let for_i = 0, for_a = array_, for_l = for_a.length; for_i < for_l; for_i++) {
+const item_ = for_a[for_i];
 do {
 const _1 = ff_core_Json_JsonLike$T.fromJson_(item_);
 if(_1.None) {
@@ -861,12 +865,12 @@ break
 }
 if(_1.Some) {
 const value_ = _1.value_;
-ff_core_Array.Array_push(result_, value_)
+result_.array.push(value_)
 break
 }
 } while(false);
-return convertible_
-}));
+if(!convertible_) break
+};
 if(convertible_) {
 return ff_core_Option.Some(ff_core_Array.Array_drain(result_))
 } else return ff_core_Option.None()

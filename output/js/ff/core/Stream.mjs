@@ -90,6 +90,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
+
 // type Stream
 export function Stream(next_, close_) {
 return {next_, close_};
@@ -599,7 +601,7 @@ return result_
 export function Stream_toArray(self_) {
 const array_ = ff_core_Array.new_();
 ff_core_Stream.Stream_each(self_, ((_w1) => {
-ff_core_Array.Array_push(array_, _w1)
+array_.array.push(_w1)
 }));
 return array_
 }
@@ -1056,7 +1058,7 @@ return result_
 export async function Stream_toArray$(self_, $task) {
 const array_ = ff_core_Array.new_();
 (await ff_core_Stream.Stream_each$(self_, (async (_w1, $task) => {
-ff_core_Array.Array_push(array_, _w1)
+array_.array.push(_w1)
 }), $task));
 return array_
 }
@@ -1096,7 +1098,7 @@ return ff_core_List.List_toMap((await ff_core_Stream.Stream_toList$(self_, $task
 export function Stream_toBuffer(self_) {
 const builder_ = ff_core_Array.new_();
 ff_core_Stream.Stream_each(self_, ((_w1) => {
-ff_core_Array.Array_push(builder_, _w1)
+builder_.array.push(_w1)
 }));
 return ff_core_Buffer.fromBufferList_(ff_core_Array.Array_drain(builder_))
 }
@@ -1116,11 +1118,11 @@ let remainder_ = ff_core_Option.None();
 while(ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Buffer.ff_core_Equal_Equal$ff_core_Buffer_Buffer).equals_(remainder_, ff_core_Option.None())) {
 const needed_ = (bytes_ - taken_);
 if((needed_ > ff_core_Buffer.Buffer_size(buffer_))) {
-ff_core_Array.Array_push(buffers_, buffer_);
+buffers_.array.push(buffer_);
 taken_ += ff_core_Buffer.Buffer_size(buffer_);
 buffer_ = ff_core_Option.Option_grab(self_.next_())
 } else {
-ff_core_Array.Array_push(buffers_, ff_core_Buffer.Buffer_view(buffer_, 0, needed_));
+buffers_.array.push(ff_core_Buffer.Buffer_view(buffer_, 0, needed_));
 remainder_ = ff_core_Option.Some(ff_core_Buffer.Buffer_view(buffer_, needed_, ff_core_Buffer.Buffer_size(buffer_)))
 }
 };
@@ -1131,7 +1133,7 @@ return ff_core_Pair.Pair(ff_core_Array.Array_drain(buffers_), ff_core_Stream.Str
 export async function Stream_toBuffer$(self_, $task) {
 const builder_ = ff_core_Array.new_();
 (await ff_core_Stream.Stream_each$(self_, (async (_w1, $task) => {
-ff_core_Array.Array_push(builder_, _w1)
+builder_.array.push(_w1)
 }), $task));
 return ff_core_Buffer.fromBufferList_(ff_core_Array.Array_drain(builder_))
 }
@@ -1151,11 +1153,11 @@ let remainder_ = ff_core_Option.None();
 while(ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Buffer.ff_core_Equal_Equal$ff_core_Buffer_Buffer).equals_(remainder_, ff_core_Option.None())) {
 const needed_ = (bytes_ - taken_);
 if((needed_ > ff_core_Buffer.Buffer_size(buffer_))) {
-ff_core_Array.Array_push(buffers_, buffer_);
+buffers_.array.push(buffer_);
 taken_ += ff_core_Buffer.Buffer_size(buffer_);
 buffer_ = ff_core_Option.Option_grab((await self_.next_($task)))
 } else {
-ff_core_Array.Array_push(buffers_, ff_core_Buffer.Buffer_view(buffer_, 0, needed_));
+buffers_.array.push(ff_core_Buffer.Buffer_view(buffer_, 0, needed_));
 remainder_ = ff_core_Option.Some(ff_core_Buffer.Buffer_view(buffer_, needed_, ff_core_Buffer.Buffer_size(buffer_)))
 }
 };

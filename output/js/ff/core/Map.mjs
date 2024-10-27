@@ -92,6 +92,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
+
 // newtype Map
 
 
@@ -147,9 +149,10 @@ return result_
 
 export function Map_removeList(self_, keys_, ff_core_Ordering_Order$K) {
 let result_ = self_;
-ff_core_List.List_each(keys_, ((k_) => {
+for(let for_i = 0, for_a = keys_, for_l = for_a.length; for_i < for_l; for_i++) {
+const k_ = for_a[for_i];
 result_ = ff_core_RbMap.delete_(k_, result_, ff_core_Ordering_Order$K)
-}));
+};
 return result_
 }
 
@@ -265,9 +268,10 @@ return result_
 
 export async function Map_removeList$(self_, keys_, ff_core_Ordering_Order$K, $task) {
 let result_ = self_;
-ff_core_List.List_each(keys_, ((k_) => {
+for(let for_i = 0, for_a = keys_, for_l = for_a.length; for_i < for_l; for_i++) {
+const k_ = for_a[for_i];
 result_ = ff_core_RbMap.delete_(k_, result_, ff_core_Ordering_Order$K)
-}));
+};
 return result_
 }
 
@@ -364,7 +368,7 @@ return ff_core_Map.Map_add(self_, key_, ff_core_List.List_toArray([value_]), ff_
 }
 if(_1.Some) {
 const array_ = _1.value_;
-ff_core_Array.Array_push(array_, value_);
+array_.array.push(value_);
 return self_
 }
 }
@@ -378,7 +382,7 @@ return ff_core_Map.Map_add(self_, key_, ff_core_List.List_toArray([value_]), ff_
 }
 if(_1.Some) {
 const array_ = _1.value_;
-ff_core_Array.Array_push(array_, value_);
+array_.array.push(value_);
 return self_
 }
 }

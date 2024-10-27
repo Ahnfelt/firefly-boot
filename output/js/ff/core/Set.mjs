@@ -90,6 +90,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
+
 // newtype Set
 
 
@@ -112,9 +114,10 @@ return ff_core_Map.Map_addAll(self_, that_, ff_core_Ordering_Order$T)
 
 export function Set_addList(self_, that_, ff_core_Ordering_Order$T) {
 let result_ = self_;
-ff_core_List.List_each(that_, ((k_) => {
+for(let for_i = 0, for_a = that_, for_l = for_a.length; for_i < for_l; for_i++) {
+const k_ = for_a[for_i];
 result_ = ff_core_Map.Map_add(result_, k_, (void 0), ff_core_Ordering_Order$T)
-}));
+};
 return result_
 }
 
@@ -176,9 +179,10 @@ return ff_core_Map.Map_addAll(self_, that_, ff_core_Ordering_Order$T)
 
 export async function Set_addList$(self_, that_, ff_core_Ordering_Order$T, $task) {
 let result_ = self_;
-ff_core_List.List_each(that_, ((k_) => {
+for(let for_i = 0, for_a = that_, for_l = for_a.length; for_i < for_l; for_i++) {
+const k_ = for_a[for_i];
 result_ = ff_core_Map.Map_add(result_, k_, (void 0), ff_core_Ordering_Order$T)
-}));
+};
 return result_
 }
 

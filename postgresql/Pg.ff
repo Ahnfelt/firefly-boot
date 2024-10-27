@@ -1,5 +1,3 @@
-import UnsafeJs from ff:unsafejs
-
 capability PgPool(jsValue: JsValue)
 capability PgConnection(jsValue: JsValue)
 capability PgRow(jsValue: JsValue) // TODO: Should be a sync class, make deriver not touch those

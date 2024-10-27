@@ -94,6 +94,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
+
 // type Deriver
 const Deriver$ = {Deriver: true};
 export function Deriver() {
@@ -201,7 +203,7 @@ const variants_ = _1;
 return ff_core_List.List_map(variants_, ((variant_) => {
 const variantName_ = ((modulePrefix_ + ".") + variant_.name_);
 const fields_ = [...declaration_.commonFields_, ...variant_.fields_];
-const strings_ = ((ff_core_List.List_size(fields_) === 0)
+const strings_ = ((fields_.length === 0)
 ? []
 : [ff_compiler_Syntax.EString(at_, "\"(\""), ...ff_core_List.List_separate(ff_core_List.List_map(fields_, ((field_) => {
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Show.show", [ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "z"), field_.name_)], [])
@@ -603,7 +605,7 @@ const variants_ = _1;
 return ff_core_List.List_map(variants_, ((variant_) => {
 const variantName_ = ((modulePrefix_ + ".") + variant_.name_);
 const fields_ = [...declaration_.commonFields_, ...variant_.fields_];
-const strings_ = ((ff_core_List.List_size(fields_) === 0)
+const strings_ = ((fields_.length === 0)
 ? []
 : [ff_compiler_Syntax.EString(at_, "\"(\""), ...ff_core_List.List_separate(ff_core_List.List_map(fields_, ((field_) => {
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Show.show", [ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "z"), field_.name_)], [])

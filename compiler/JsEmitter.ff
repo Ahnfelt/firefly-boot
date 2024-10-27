@@ -160,7 +160,8 @@ extend self: JsEmitter {
     emitLetDefinition(definition: DLet, mutable: Bool, async: Bool): String {
         let mutability = if(mutable) {"let"} else {"const"}
         let valueCode = self.emitTerm(definition.value, async)
-        mutability + " " + escapeKeyword(definition.name) + " = " + valueCode + ";"
+        let assignmentCode = if(!mutable || valueCode != "(void 0)") {" = " + valueCode} else {""}
+        mutability + " " + escapeKeyword(definition.name) + assignmentCode + ";"
     }
 
     emitExtendsDefinition(definition: DExtend): String {
@@ -352,65 +353,10 @@ extend self: JsEmitter {
             let c = if(await) {", $task"} else {""}
             let call = "(" + self.emitTerm(function, async) + ")(" + self.emitTerm(value, async) + c + ")"
             if(await) {"(await " + call + ")"} else {call}
-        | ECall(at, StaticCall(operator, _, _), _, [], [value], _) {!operator.grabFirst().isAsciiLetter()} =>
-            "(" + operator + self.emitArgument(at, value, async) + ")"
-        | ECall(at, StaticCall(operator, _, _), _, [], [left, right], _) {!operator.grabFirst().isAsciiLetter()} =>
-            "(" + self.emitArgument(at, left, async) + " " + operator + " " + self.emitArgument(at, right, async) + ")"
-        | ECall(at, StaticCall("ff:core/List.List_grab", _, _), _, _, [Argument(_, _, EVariable(_, x1)), Argument(_, _, EVariable(_, x2))], _) =>
-            "(" + escapeResolved(x1) + "[" + escapeResolved(x2) + "] ?? " + 
-            "ff_core_List.internalGrab_(" + escapeResolved(x1) + ", " + escapeResolved(x2) + "))"
-        | ECall(at, StaticCall("ff:core/Array.Array_grab", _, _), _, _, [Argument(_, _, EVariable(_, x1)), Argument(_, _, EVariable(_, x2))], _) =>
-            "(" + escapeResolved(x1) + ".array[" + escapeResolved(x2) + "] ?? " + 
-            "ff_core_Array.internalGrab_(" + escapeResolved(x1) + ", " + escapeResolved(x2) + "))"
-        | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.import", _, _), _, _, [Argument(_, _, EString(_, url))], _) =>
-            self.jsImporter.add(url.replace("\"", ""))
-        | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.await", _, _), _, _, [Argument(_, _, body)], _) =>
-            let emittedBody = self.emitTerm(body, async)
-            if(async) {"(await " + emittedBody + "($task))"} else {"(" + emittedBody + "())"}
-        | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.cancelled", _, _), _, _, [], _) =>
-            if(async) {"$task.controller.signal.aborted"} else {"false"}
-        | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.throwIfCancelled", _, _), _, _, [], _) =>
-            if(async) {"((() => ff_core_Task.Task_throwIfAborted($task))())"} else {""}
-        | ECall(at, StaticCall("ff:core/Equal.equals", _, _), _, _, [left, right], [Dictionary(_, _, _, typeName, [])]) {
-            primitiveTypes.contains(typeName) || typeName == "ff:core/Ordering.Ordering"
+        | ECall(at, StaticCall(name, _, _), _, _, arguments, dictionaries) {
+            self.emitSpecialCall(term, async, name, arguments.map {_.value}, dictionaries) | Some(code)
         } =>
-            "(" + self.emitArgument(at, left, async) + " === " + self.emitArgument(at, right, async) + ")"
-        | ECall(at, StaticCall("ff:core/Equal.notEquals", _, _), _, _, [left, right], [Dictionary(_, _, _, typeName, [])]) {
-            primitiveTypes.contains(typeName) || typeName == "ff:core/Ordering.Ordering"
-        } =>
-            "(" + self.emitArgument(at, left, async) + " !== " + self.emitArgument(at, right, async) + ")"
-        | ECall(at, StaticCall("ff:core/Ordering.before", _, _), _, _, [left, right], [Dictionary(_, _, _, typeName, [])]) {
-            primitiveTypes.contains(typeName)
-        } =>
-            "(" + self.emitArgument(at, left, async) + " < " + self.emitArgument(at, right, async) + ")"
-        | ECall(at, StaticCall("ff:core/Ordering.notBefore", _, _), _, _, [left, right], [Dictionary(_, _, _, typeName, [])]) {
-            primitiveTypes.contains(typeName)
-        } =>
-            "(" + self.emitArgument(at, left, async) + " >= " + self.emitArgument(at, right, async) + ")"
-        | ECall(at, StaticCall("ff:core/Ordering.after", _, _), _, _, [left, right], [Dictionary(_, _, _, typeName, [])]) {
-            primitiveTypes.contains(typeName)
-        } =>
-            "(" + self.emitArgument(at, left, async) + " > " + self.emitArgument(at, right, async) + ")"
-        | ECall(at, StaticCall("ff:core/Ordering.notAfter", _, _), _, _, [left, right], [Dictionary(_, _, _, typeName, [])]) {
-            primitiveTypes.contains(typeName)
-        } =>
-            "(" + self.emitArgument(at, left, async) + " <= " + self.emitArgument(at, right, async) + ")"
-        | ECall(_, StaticCall("ff:core/List.fillBy", _, _), effect, _, [size, Argument(_, _, ELambda(at,
-            Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], body)@c])@l
-        ))], _) {
-            !effectTypeIsAsync(effect)
-        } =>
-            let n = name.map {escapeResolved(_)}.else {"i"}
-            let newAsync = self.emittingAsync && effectTypeIsAsync(effect)
-            let await = if(newAsync) {"await "} else {""}
-            await + "((() => {\n" +
-            "const size = " + self.emitArgument(at, size, async) + ";\n" + // Not correct if async and body isn't
-            "const result = [];\n" +
-            "for(let " + n + " = 0; " + n + " < size; " + n + "++) {\n" +
-            "result.push(" + self.emitTerm(body, newAsync) + ");\n" +
-            "}\n" +
-            "return result;\n" +
-            "})())"
+            code
         | ECall(at, StaticCall(name, _, True), effect, typeArguments, arguments, dictionaries) =>
             let await = async && effectTypeIsAsync(effect)
             let dictionaryStrings = dictionaries.map {self.emitDictionary(_)}
@@ -439,14 +385,14 @@ extend self: JsEmitter {
                     let call = functionCode + "(" + [...emittedArguments, ...ds, ...controller].join(", ") + ")"
                     if(await) {"(await " + call + ")"} else {call}
                 | [Pair(EVariant(_, "ff:core/Bool.True", _, _), elseBody), ...list] =>
-                    "(" + list.foldLeft(self.emitTerm(elseBody, async)) {| otherwise, Pair(condition, body) =>
-                        self.emitTerm(condition, async) +
-                        "\n? " + self.emitTerm(body, async) + "\n: " + otherwise
+                    "(" + list.foldLeft(self.emitComma(elseBody, async)) {| otherwise, Pair(condition, body) =>
+                        self.emitComma(condition, async) +
+                        "\n? " + self.emitComma(body, async) + "\n: " + otherwise
                     } + ")"
                 | list =>
                     "(" + list.foldLeft("ff_core_Option.None()") {| otherwise, Pair(condition, body) =>
-                        self.emitTerm(condition, async) +
-                        "\n? ff_core_Option.Some(" + self.emitTerm(body, async) + ")\n: " + otherwise
+                        self.emitComma(condition, async) +
+                        "\n? ff_core_Option.Some(" + self.emitComma(body, async) + ")\n: " + otherwise
                     } + ")"
             }
         | ECall(at, DynamicCall(function, _), effect, typeArguments, arguments, dictionaries) =>
@@ -470,6 +416,13 @@ extend self: JsEmitter {
         | _ =>
             "(function() {\n" + self.emitStatements(term, True, async) + "\n})()"
     }}
+    
+    emitField(term: Term, async: Bool, dot: String = "."): String {
+        term.{
+            | EString(_, q) {safeBare(q) | Some(s)} => dot + s
+            | _ => "[" + self.emitTerm(term, async) + "]"
+        }
+    }
 
     emitDictionary(d: Dictionary): String {
         let m = if(d.moduleName != "") {
@@ -507,46 +460,6 @@ extend self: JsEmitter {
             | EAssignField(at, operator, record, field, value) =>
                 self.emitTerm(record, async) + "." + escapeKeyword(field) + " " + operator + "= " +
                 self.emitTerm(value, async)
-            | ECall(at, StaticCall("ff:core/Core.while", _, _), _, _, [condition, body], _) =>
-                "while(" + self.emitTerm(invokeImmediately(condition.value), async) + ") {\n" +
-                self.emitStatements(invokeImmediately(body.value), False, async) + "\n}"
-            | ECall(at, StaticCall("ff:core/Core.doWhile", _, _), _, _, [Argument(_, _, doWhileBody)], _) {
-                invokeImmediately(doWhileBody) | ESequential(_, body, condition)
-            } =>
-                "while(true) {\n" +
-                self.emitStatements(body, False, async) +
-                "\nif(!" + self.emitTerm(condition, async) + ") break" +
-                "\n}"
-            | ECall(at, StaticCall("ff:core/Core.doWhile", _, _), _, _, [Argument(_, _, doWhileBody)], _) {
-                invokeImmediately(doWhileBody) | body
-            } =>
-                "while(" + self.emitTerm(body, async) + ") {}"
-            | ECall(at, StaticCall("ff:core/Core.if", _, _), _, _, [condition, body], _) =>
-                "if(" + self.emitTerm(condition.value, async) + ") {\n" +
-                if(last) {
-                    "return ff_core_Option.Some(" + self.emitTerm(invokeImmediately(body.value), async) +
-                    ")\n} else return ff_core_Option.None()"
-                } else {
-                    self.emitStatements(invokeImmediately(body.value), False, async) + "\n}"
-                }
-            | ECall(at, StaticCall("ff:core/Core.throw", _, _), _, _, [argument], [dictionary]) =>
-                let d = self.emitDictionary(dictionary)
-                let a = self.emitArgument(at, argument, async)
-                "throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(" + a + ", " + d + ")})"
-            | ECall(at, StaticCall("ff:core/Try.Try_catch", _, _), _, _, _, _) {
-                self.emitTryCatchFinally(term, last, async) | Some(code)
-            } =>
-                code
-            | ECall(at, StaticCall("ff:core/Try.Try_catchAny", _, _), _, _, _, _) {
-                self.emitTryCatchFinally(term, last, async) | Some(code)
-            } =>
-                code
-            | ECall(at, StaticCall("ff:core/Try.Try_finally", _, _), _, _, _, _) {
-                self.emitTryCatchFinally(term, last, async) | Some(code)
-            } =>
-                code
-            | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.throwIfCancelled", _, _), _, _, [], _) =>
-                if(async) {"ff_core_Task.Task_throwIfAborted($task)"} else {""}
             | ECall(at, StaticCall(name, True, instanceCall), effect, _, arguments, _) =>
                 if(instanceCall) {throw(CompileError(at, "Not yet implemented: Tail calls on trait methods."))}
                 self.tailCallUsed = True
@@ -557,6 +470,10 @@ extend self: JsEmitter {
                     ))
                 }.collect {_}.unzip()
                 "{\n" + pair.first.join("\n") + "\n" + pair.second.join("\n") + "\ncontinue _tailcall\n}"
+            | ECall(at, StaticCall(name, _, _), _, _, arguments, dictionaries) {
+                self.emitSpecialStatement(term, last, async, name, arguments.map {_.value}, dictionaries) | Some(code)
+            } =>
+                code
             | EPipe(at, value, _, ELambda(_, Lambda(_, _, cases))) =>
                 Patterns.convertAndCheck(self.otherModules, cases)
                 if(!last) {"do "}.else {""} +
@@ -585,6 +502,328 @@ extend self: JsEmitter {
                         }
                 }
         }
+    }
+    
+    emitSpecialCall(
+        term: Term
+        async: Bool
+        name: String
+        arguments: List[Term]
+        dictionaries: List[Dictionary]
+    ): Option[String] {
+        name.{
+            | operator {!operator.grabFirst().isAsciiLetter()} {arguments | [value]} =>
+                Some("(" + operator + self.emitTerm(value, async) + ")")
+            | operator {!operator.grabFirst().isAsciiLetter()} {arguments | [left, right]}  =>
+                Some("(" + self.emitTerm(left, async) + " " + operator + " " + self.emitTerm(right, async) + ")")
+            | "ff:core/List.List_grab" {arguments | [e1, e2]} {noSideEffects(e1) && noSideEffects(e2)} =>
+                let code1 = self.emitTerm(e1, async)
+                let code2 = self.emitTerm(e2, async)
+                Some(
+                    "(" + code1 + "[" + code2 + "] ?? " + 
+                    "ff_core_List.internalGrab_(" + code1 + ", " + code2 + "))"
+                )
+            | "ff:core/Array.Array_grab" {arguments | [e1, e2]} =>
+                let code1 = self.emitTerm(e1, async)
+                let code2 = self.emitTerm(e2, async)
+                Some(
+                    "(" + code1 + ".array[" + code2 + "] ?? " + 
+                    "ff_core_Array.internalGrab_(" + code1 + ", " + code2 + "))"
+                )
+            | "ff:core/List.List_size" {arguments | [e]} =>
+                Some(
+                    self.emitTerm(e, async) + ".length"
+                )
+            | "ff:core/Array.Array_size" {arguments | [e]} =>
+                Some(
+                    self.emitTerm(e, async) + ".array.length"
+                )
+            | "ff:core/Equal.equals" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, _, typeName, [])]} {
+                primitiveTypes.contains(typeName) || typeName == "ff:core/Ordering.Ordering"
+            } =>
+                Some("(" + self.emitTerm(left, async) + " === " + self.emitTerm(right, async) + ")")
+            | "ff:core/Equal.notEquals" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, _, typeName, [])]} {
+                primitiveTypes.contains(typeName) || typeName == "ff:core/Ordering.Ordering"
+            } =>
+                Some("(" + self.emitTerm(left, async) + " !== " + self.emitTerm(right, async) + ")")
+            | "ff:core/Ordering.before" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, _, typeName, [])]} {
+                primitiveTypes.contains(typeName)
+            } =>
+                Some("(" + self.emitTerm(left, async) + " < " + self.emitTerm(right, async) + ")")
+            | "ff:core/Ordering.notBefore" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, _, typeName, [])]} {
+                primitiveTypes.contains(typeName)
+            } =>
+                Some("(" + self.emitTerm(left, async) + " >= " + self.emitTerm(right, async) + ")")
+            | "ff:core/Ordering.after" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, _, typeName, [])]} {
+                primitiveTypes.contains(typeName)
+            } =>
+                Some("(" + self.emitTerm(left, async) + " > " + self.emitTerm(right, async) + ")")
+            | "ff:core/Ordering.notAfter" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, _, typeName, [])]} {
+                primitiveTypes.contains(typeName)
+            } =>
+                Some("(" + self.emitTerm(left, async) + " <= " + self.emitTerm(right, async) + ")")
+            | "ff:core/List.fillBy" {term | ECall call} {arguments | [size, ELambda(at,
+                Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], body)@c])@l
+            )]} {
+                !effectTypeIsAsync(call.effect)
+            } =>
+                let n = name.map {escapeResolved(_)}.else {"i"}
+                let newAsync = self.emittingAsync && effectTypeIsAsync(call.effect)
+                let await = if(newAsync) {"await "} else {""}
+                Some(
+                    await + "((() => {\n" +
+                    "const size = " + self.emitTerm(size, async) + ";\n" + // Not correct if async and body isn't
+                    "const result = [];\n" +
+                    "for(let " + n + " = 0; " + n + " < size; " + n + "++) {\n" +
+                    "result.push(" + self.emitTerm(body, newAsync) + ");\n" +
+                    "}\n" +
+                    "return result;\n" +
+                    "})())"
+                )
+            | "ff:core/UnsafeJs.import" {arguments | [EString(_, url)]} =>
+                Some(self.jsImporter.add(url.replace("\"", "")))
+            | "ff:core/UnsafeJs.await" {arguments | [body]} =>
+                if(async) {
+                    Some("(await " + self.emitTerm(body, async) + "($task))")
+                } else {
+                    Some(self.emitTerm(invokeImmediately(body), async))
+                }
+            | "ff:core/UnsafeJs.cancelled" =>
+                Some(if(async) {"$task.controller.signal.aborted"} else {"false"})
+            | "ff:core/UnsafeJs.throwIfCancelled" =>
+                Some(if(async) {"((() => ff_core_Task.Task_throwIfAborted($task))())"} else {""})
+            | "ff:core/UnsafeJs.inAsync" =>
+                Some(if(self.emittingAsync) {"true"} else {"false"})
+            | "ff:core/UnsafeJs.inBrowser" =>
+                Some(if(self.emitTarget == EmitBrowser) {"true"} else {"false"})
+            | "ff:core/UnsafeJs.inNode" =>
+                Some(if(self.emitTarget == EmitNode) {"true"} else {"false"})
+            | "ff:core/UnsafeJs.inBuild" =>
+                Some(if(self.emitTarget == EmitBuild) {"true"} else {"false"})
+            | "ff:core/UnsafeJs.value" {arguments | [e]} =>
+                Some(self.emitTerm(e, async))
+            | "ff:core/UnsafeJs.fromValue" {arguments | [e]} =>
+                Some(self.emitTerm(e, async))
+            | "ff:core/JsValue.JsValue_get" {arguments | [e1, e2]} =>
+                Some(self.emitTerm(e1, async) + self.emitField(e2, async))
+            | name {name.removeFirst("ff:core/JsValue.JsValue_call") | Some(n)} {n.all {_.isAsciiDigit()}} {
+                arguments | [e1, e2, ...es]
+            } =>
+                let argumentCode = es.map {self.emitTerm(_, async)}.join(", ")
+                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + "(" + argumentCode + ")")
+            | name {name.removeFirst("ff:core/JsValue.JsValue_callValue") | Some(n)} {n.all {_.isAsciiDigit()}} {
+                arguments | [e1, ...es]
+            } =>
+                let argumentCode = es.map {self.emitTerm(_, async)}.join(", ")
+                Some(self.emitTerm(e1, async) + "(" + argumentCode + ")")
+            | name {name.removeFirst("ff:core/JsValue.JsValue_new") | Some(n)} {n.all {_.isAsciiDigit()}} {
+                arguments | [e1, ...es]
+            } =>
+                let argumentCode = es.map {self.emitTerm(_, async)}.join(", ")
+                Some("(new " + self.emitTerm(e1, async) + "(" + argumentCode + ")" + ")")
+            | "ff:core/JsValue.JsValue_with" =>
+                function go(e: Term, fields: List[Pair[Term, Term]]): String {
+                    e.{
+                        | ECall(_, StaticCall("ff:core/JsValue.JsValue_with", _, _), _, _, [a1, a2, a3], _) =>
+                            go(a1.value, [Pair(a2.value, a3.value), ...fields])
+                        | ECall(_, StaticCall(name, _, _), _, _, [a], _) {
+                            name == "ff:core/JsSystem.JsSystem_object" || name == "ff:core/JsSystem.JsSystem_new0"
+                        } {
+                            noSideEffects(a.value)
+                        } =>
+                            "{" + fields.map {p =>
+                                self.emitField(p.first, async, dot = "") + ": " + self.emitTerm(p.second, async)
+                            }.join(", ") + "}"
+                        | _ =>
+                            "{..." + self.emitTerm(e, async) + ", " + fields.map {p =>
+                                self.emitField(p.first, async, dot = "") + ": " + self.emitTerm(p.second, async)
+                            }.join(", ") + "}"
+                    }
+                }
+                Some(go(term, []))
+            | name {name.removeFirst("ff:core/JsSystem.JsSystem_call") | Some(n)} {n.all {_.isAsciiDigit()}} {
+                arguments | [e1, EString(_, q)@e2, ...es]
+            } {noSideEffects(e1)} =>
+                let argumentCode = es.map {self.emitTerm(_, async)}.join(", ")
+                Some(safeBare(q).else {"globalThis[" + self.emitTerm(e2, async) + "]"} + "(" + argumentCode + ")")
+            | name {name.removeFirst("ff:core/JsSystem.JsSystem_function") | Some(n)} {n.all {_.isAsciiDigit()}} {
+                arguments | [e1, e2]
+            } {noSideEffects(e1)} {term | ECall call} {!effectTypeIsAsync(call.effect)} =>
+                Some(self.emitTerm(e2, async))
+            | "ff:core/JsSystem.JsSystem_get" {arguments | [e1, EString(_, q)@e2]} {noSideEffects(e1)} =>
+                Some(safeBare(q).else {"globalThis[" + self.emitTerm(e2, async) + "]"})
+            | "ff:core/JsSystem.JsSystem_object" {arguments | [e]} {noSideEffects(e)} =>
+                Some("{}")
+            | "ff:core/JsSystem.JsSystem_new0" {arguments | [e]} {noSideEffects(e)} =>
+                Some("{}")
+            | "ff:core/JsSystem.JsSystem_null" {arguments | [e]} {noSideEffects(e)} =>
+                Some("null")
+            | "ff:core/JsSystem.JsSystem_undefined" {arguments | [e]} {noSideEffects(e)} =>
+                Some("(void 0)")
+            | _ =>
+                None
+        }
+    }
+    
+    emitSpecialStatement(
+        term: Term 
+        last: Bool 
+        async: Bool 
+        name: String
+        arguments: List[Term]
+        dictionaries: List[Dictionary]
+    ): Option[String] {
+        name.{
+            | "ff:core/Core.while" {arguments | [condition, body]} =>
+                Some(
+                    "while(" + self.emitComma(invokeImmediately(condition), async) + ") {\n" +
+                    self.emitStatements(invokeImmediately(body), False, async) + "\n}"
+                )
+            | "ff:core/Core.doWhile" {arguments | [doWhileBody]} {
+                invokeImmediately(doWhileBody) | ESequential(_, body, condition)
+            } =>
+                Some(
+                    "while(true) {\n" +
+                    self.emitStatements(body, False, async) +
+                    "\nif(!" + self.emitComma(condition, async) + ") break" +
+                    "\n}"
+                )
+            | "ff:core/Core.doWhile" {arguments | [doWhileBody]} {
+                invokeImmediately(doWhileBody) | body
+            } =>
+                Some("while(" + self.emitComma(body, async) + ") {}")
+            | "ff:core/List.List_each" {arguments | [
+                ECall(_, StaticCall(r, _, _), _, _, [start, end], _)
+                ELambda(_, Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], body)]))
+            ]} {r == "ff:core/Int.Int_until" || r == "ff:core/Int.Int_to"} =>
+                let startCode = self.emitTerm(start.value, async)
+                let endCode = self.emitTerm(end.value, async)
+                let op = if(r == "ff:core/Int.Int_until") {"<"} else {"<="}
+                Some(
+                    "for(let " +
+                    "for_i = " + startCode + ", for_e = " + endCode + "; for_i " + op + " for_e; for_i++) {\n" +
+                        name.map {"const " + escapeKeyword(_) + " = for_i;\n"}.else {""} +
+                        self.emitStatements(body, last, async) +
+                    "\n}"
+                )
+            | "ff:core/List.List_each" {arguments | [list, ELambda(_, Lambda(_, _, [
+                MatchCase(_, [PVariable(_, name)], [], body)
+            ]))]} =>
+                let fusion = self.emitLightFusion(list, async)
+                let start = fusion.second.first
+                let end = fusion.second.second
+                let listCode = fusion.first
+                Some(
+                    "for(let for_i = " + start + ", for_a = " + listCode + ", for_l = " + end + 
+                    "; for_i < for_l; for_i++) {\n" +
+                        name.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
+                        self.emitStatements(body, last, async) +
+                    "\n}"
+                )
+            | "ff:core/List.List_eachWhile" {arguments | [list, ELambda(_, Lambda(_, _, [
+                MatchCase(_, [PVariable(_, name)], [], ESequential(_, body, condition))
+            ]))]} =>
+                let fusion = self.emitLightFusion(list, async)
+                let start = fusion.second.first
+                let end = fusion.second.second
+                let listCode = fusion.first
+                Some(
+                    "for(let for_i = " + start + ", for_a = " + listCode + ", for_l = " + end + 
+                    "; for_i < for_l; for_i++) {\n" +
+                        name.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
+                        self.emitStatements(body, last, async) + ";\n" +
+                        "if(!" + self.emitComma(condition, async) + ") break" +
+                    "\n}"
+                )
+            | "ff:core/List.List_eachWhile" {arguments | [list, ELambda(_, Lambda(_, _, [
+                MatchCase(_, [PVariable(_, name)], [], condition)
+            ]))]} =>
+                let listCode = self.emitTerm(list, async)
+                Some(
+                    "for(let " +
+                    "for_i = 0, for_a = " + listCode + ", for_l = for_a.length" + "; for_i < for_l; for_i++) {\n" +
+                        name.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
+                        "if(!" + self.emitComma(condition, async) + ") break" +
+                    "\n}"
+                )
+            | "ff:core/Array.Array_push" {arguments | [array, value]} =>
+                Some(self.emitTerm(array, async) + ".array.push(" + self.emitTerm(value, async) + ")")
+            | "ff:core/Core.if" {arguments | [condition, body]} =>
+                Some(
+                    "if(" + self.emitComma(condition, async) + ") {\n" +
+                    if(last) {
+                        "return ff_core_Option.Some(" + self.emitTerm(invokeImmediately(body), async) +
+                        ")\n} else return ff_core_Option.None()"
+                    } else {
+                        self.emitStatements(invokeImmediately(body), False, async) + "\n}"
+                    }
+                )
+            | "ff:core/Core.throw" {term | ECall c} {c.arguments | [argument]} {dictionaries | [dictionary]} =>
+                let d = self.emitDictionary(dictionary)
+                let a = self.emitArgument(term.at, argument, async)
+                Some("throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(" + a + ", " + d + ")})")
+            | "ff:core/Try.Try_catch" {self.emitTryCatchFinally(term, last, async) | Some(code)} =>
+                Some(code)
+            | "ff:core/Try.Try_catchAny" {self.emitTryCatchFinally(term, last, async) | Some(code)} =>
+                Some(code)
+            | "ff:core/Try.Try_finally" {self.emitTryCatchFinally(term, last, async) | Some(code)} =>
+                Some(code)
+            | "ff:core/UnsafeJs.throwIfCancelled" =>
+                Some(if(async) {"ff_core_Task.Task_throwIfAborted($task)"} else {""})
+            | "ff:core/JsValue.JsValue_set" {arguments | [e1, e2, e3]} =>
+                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + " = " + self.emitTerm(e3, async))
+            | "ff:core/JsValue.JsValue_increment" {arguments | [e1, e2, e3]} =>
+                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + " += " + self.emitTerm(e3, async))
+            | "ff:core/JsValue.JsValue_decrement" {arguments | [e1, e2, e3]} =>
+                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + " -= " + self.emitTerm(e3, async))
+            | "ff:core/JsSystem.JsSystem_set" {arguments | [e1, EString(_, q), e3]} {noSideEffects(e1)} {safeBare(q) | Some(s)} =>
+                Some(s + " = " + self.emitTerm(e3, async))
+            | "ff:core/JsSystem.JsSystem_increment" {arguments | [e1, EString(_, q), e3]} {noSideEffects(e1)} {safeBare(q) | Some(s)} =>
+                Some(s + " += " + self.emitTerm(e3, async))
+            | "ff:core/JsSystem.JsSystem_decrement" {arguments | [e1, EString(_, q), e3]} {noSideEffects(e1)} {safeBare(q) | Some(s)} =>
+                Some(s + " -= " + self.emitTerm(e3, async))
+            | _ =>
+                None
+        }
+    }
+    
+    emitLightFusion(list: Term, async: Bool): Pair[String, Pair[String, String]] {
+        mutable start = "0"
+        mutable end = "for_a.length"
+        let listCode = list.{
+            | ECall(_, StaticCall("ff:core/List.List_dropFirst", _, _), _, _, [a1, a2], _) =>
+                start = self.emitTerm(a2.value, async)
+                if(!start.all {_.isAsciiDigit()}) {
+                    start = "Math.max(" + start + ", 0)"
+                }
+                self.emitTerm(a1.value, async)
+            | ECall(_, StaticCall("ff:core/List.List_dropLast", _, _), _, _, [a1, a2], _) =>
+                let count = self.emitTerm(a2.value, async)
+                if(!count.all {_.isAsciiDigit()}) {
+                    end = end + " - Math.max(" + count + ", 0)"
+                } else {
+                    end = end + " - " + count
+                }
+                self.emitTerm(a1.value, async)
+            | ECall(_, StaticCall("ff:core/List.List_takeFirst", _, _), _, _, [a1, a2], _) =>
+                end = self.emitTerm(a2.value, async)
+                if(!end.all {_.isAsciiDigit()}) {
+                    end = "Math.max(" + end + ", 0)"
+                }
+                end = "Math.min(" + end + ", for_a.length)"
+                self.emitTerm(a1.value, async)
+            | ECall(_, StaticCall("ff:core/List.List_takeLast", _, _), _, _, [a1, a2], _) =>
+                let count = self.emitTerm(a2.value, async)
+                if(!count.all {_.isAsciiDigit()}) {
+                    start = "Math.max(for_a.length - Math.max(" + count + ", 0), 0)"
+                } else {
+                    start = "Math.max(for_a.length - " + count + ", 0)"
+                }
+                self.emitTerm(a1.value, async)
+            | _ => 
+                self.emitTerm(list, async)
+        } 
+        Pair(listCode, Pair(start, end))
     }
 
     emitTryCatchFinally(term: Term, last: Bool, async: Bool): Option[String] {
@@ -851,6 +1090,31 @@ extend self: JsEmitter {
                 self.emitTerm(value, async)
         }
     }
+    
+    emitComma(term: Term, async: Bool): String {
+        term.{
+            | ESequential(_, ESequential(_, ESequential(_, before1, before2), before3), after) {
+                safeCommable(before1) && safeCommable(before2) && safeCommable(before3) && safeCommable(after)
+            } =>
+                "(" + self.emitStatements(before1, False, async) + ", " + 
+                self.emitStatements(before2, False, async) + ", " + 
+                self.emitStatements(before3, False, async) + ", " + 
+                self.emitTerm(after, async) + ")"
+            | ESequential(_, ESequential(_, before1, before2), after) {
+                safeCommable(before1) && safeCommable(before2) && safeCommable(after)
+            } =>
+                "(" + self.emitStatements(before1, False, async) + ", " + 
+                self.emitStatements(before2, False, async) + ", " + 
+                self.emitTerm(after, async) + ")"
+            | ESequential(_, before, after) {
+                safeCommable(before) && safeCommable(after)
+            } =>
+                "(" + self.emitStatements(before, False, async) + ", " + 
+                self.emitTerm(after, async) + ")"
+            | _ =>
+                self.emitTerm(term, async)
+        }
+    }
 
 }
 
@@ -882,6 +1146,27 @@ invokeImmediately(function: Term): Term {
     | _ =>
         let effect = TConstructor(function.at, "Q$", []) // Awaits more often than required in async context
         ECall(function.at, DynamicCall(function, False), effect, [], [], [])
+}
+
+safeCommable(term: Term): Bool {
+    term.{
+        | EField _ => True
+        | EVariable _ => True
+        | EAssign _ => True
+        | EAssignField _ => True
+        | ECall _ => True
+        | ECopy _ => True
+        | EVariant _ => True
+        | EString(_, _) => True
+        | EInt(_, _) => True
+        | EChar(_, _) => True
+        | EFloat(_, _) => True
+        | EList _ => True
+        | EPipe _ => True
+        | ERecord _ => True
+        | EWildcard _ => True 
+        | _ => False
+    }
 }
 
 extractTypeName(type: Type): String {
@@ -929,6 +1214,29 @@ escapeKeyword(word: String): String {
 effectTypeIsAsync(effect: Type): Bool {
     | TConstructor(_, "Q$", _) => True
     | _ => False
+}
+
+safeBare(quotedString: String): Option[String] {
+    // TODO: And not a reserved word in JS
+    quotedString.removeFirst("\"").flatMap {_.removeLast("\"")}.filter {s => 
+        s.first().any {_.isAsciiLetter()} && s.all {_.isAsciiLetterOrDigit()}
+    }
+}
+
+noSideEffects(term: Term): Bool {
+    term.{
+        | EField(_, _, e, _) => noSideEffects(e)
+        | EVariable(_, _) => True
+        | ECall(_, StaticCall("ff:core/BrowserSystem.BrowserSystem_js", _, _), _, _, [a], _) => noSideEffects(a.value)
+        | ECall(_, StaticCall("ff:core/BuildSystem.BuildSystem_js", _, _), _, _, [a], _) => noSideEffects(a.value)
+        | ECall(_, StaticCall("ff:core/NodeSystem.NodeSystem_js", _, _), _, _, [a], _) => noSideEffects(a.value)
+        | ECall(_, StaticCall("ff:core/UnsafeJs.jsSystem", _, _), _, _, _, _) => True
+        | EString(_, _) => True
+        | EInt(_, _) => True
+        | EChar(_, _) => True
+        | EFloat(_, _) => True
+        | _ => False
+    }
 }
 
 primitiveTypes = [

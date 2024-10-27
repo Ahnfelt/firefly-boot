@@ -98,6 +98,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
+
 
 
 
@@ -132,9 +134,9 @@ if((!ff_core_Array.Array_isEmpty(tokens_))) {
 const last_ = ff_core_Array.Array_grabLast(tokens_);
 if((((last_.stopLine_ === startLine_) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(last_.kind_, ff_compiler_Token.LLower())) && ff_compiler_Token.TokenKind_afterKeyword(kind_))) {
 if((((completionLine_ === last_.startLine_) && (completionColumn_ >= ((1 + last_.startOffset_) - last_.startLineOffset_))) && (completionColumn_ <= ((1 + last_.stopOffset_) - last_.stopLineOffset_)))) {
-ff_core_Array.Array_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
+tokens_.array.push(ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
 } else {
-ff_core_Array.Array_modify(tokens_, (ff_core_Array.Array_size(tokens_) - 1), ((_w1) => {
+ff_core_Array.Array_modify(tokens_, (tokens_.array.length - 1), ((_w1) => {
 {
 const _1 = _w1;
 {
@@ -146,10 +148,10 @@ return ff_compiler_Token.Token(_c.file_, _c.code_, ff_compiler_Token.LKeyword(),
 }
 };
 if((((last_.stopLine_ !== startLine_) && ff_compiler_Token.TokenKind_beforeSeparator(last_.kind_)) && ff_compiler_Token.TokenKind_afterSeparator(kind_))) {
-ff_core_Array.Array_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
+tokens_.array.push(ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
 }
 };
-ff_core_Array.Array_push(tokens_, ff_compiler_Token.Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, line_, lineOffset_, stopOffset_))
+tokens_.array.push(ff_compiler_Token.Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, line_, lineOffset_, stopOffset_))
 }
 let i_ = 0;
 function throwError_(message_) {
@@ -278,6 +280,9 @@ emitToken_(ff_compiler_Token.LWildcard(), start_, i_)
 } else if((ff_core_String.String_grab(code_, i_) === 44)) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LComma(), start_, i_)
+} else if(((ff_core_String.String_grab(code_, i_) === 63) || ((ff_core_String.String_grab(code_, i_) === 33) && (((i_ + 1) >= ff_core_String.String_size(code_)) || (ff_core_String.String_grab(code_, (i_ + 1)) !== 61))))) {
+i_ += 1;
+emitToken_(ff_compiler_Token.LUnary(), start_, i_)
 } else if(ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_grab(code_, i_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)) {
 i_ += 1;
 if(((((ff_core_String.String_grab(code_, (i_ - 1)) === 46) && ((i_ + 1) < ff_core_String.String_size(code_))) && (ff_core_String.String_grab(code_, i_) === 46)) && (ff_core_String.String_grab(code_, (i_ + 1)) !== 46))) {
@@ -340,9 +345,9 @@ const error_ = _error;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (i_ - lineOffset_)), "Unexpected end of file"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 };
-ff_core_List.List_each(ff_core_List.range_(5), ((_) => {
+for(let for_i = 0, for_a = ff_core_List.range_(5), for_l = for_a.length; for_i < for_l; for_i++) {
 emitToken_(ff_compiler_Token.LEnd(), i_, i_)
-}));
+};
 return ff_core_Array.Array_drain(tokens_)
 }
 
@@ -376,9 +381,9 @@ if((!ff_core_Array.Array_isEmpty(tokens_))) {
 const last_ = ff_core_Array.Array_grabLast(tokens_);
 if((((last_.stopLine_ === startLine_) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(last_.kind_, ff_compiler_Token.LLower())) && ff_compiler_Token.TokenKind_afterKeyword(kind_))) {
 if((((completionLine_ === last_.startLine_) && (completionColumn_ >= ((1 + last_.startOffset_) - last_.startLineOffset_))) && (completionColumn_ <= ((1 + last_.stopOffset_) - last_.stopLineOffset_)))) {
-ff_core_Array.Array_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
+tokens_.array.push(ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
 } else {
-ff_core_Array.Array_modify(tokens_, (ff_core_Array.Array_size(tokens_) - 1), ((_w1) => {
+ff_core_Array.Array_modify(tokens_, (tokens_.array.length - 1), ((_w1) => {
 {
 const _1 = _w1;
 {
@@ -390,10 +395,10 @@ return ff_compiler_Token.Token(_c.file_, _c.code_, ff_compiler_Token.LKeyword(),
 }
 };
 if((((last_.stopLine_ !== startLine_) && ff_compiler_Token.TokenKind_beforeSeparator(last_.kind_)) && ff_compiler_Token.TokenKind_afterSeparator(kind_))) {
-ff_core_Array.Array_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
+tokens_.array.push(ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
 }
 };
-ff_core_Array.Array_push(tokens_, ff_compiler_Token.Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, line_, lineOffset_, stopOffset_))
+tokens_.array.push(ff_compiler_Token.Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, line_, lineOffset_, stopOffset_))
 }
 let i_ = 0;
 function throwError_(message_) {
@@ -522,6 +527,9 @@ emitToken_(ff_compiler_Token.LWildcard(), start_, i_)
 } else if((ff_core_String.String_grab(code_, i_) === 44)) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LComma(), start_, i_)
+} else if(((ff_core_String.String_grab(code_, i_) === 63) || ((ff_core_String.String_grab(code_, i_) === 33) && (((i_ + 1) >= ff_core_String.String_size(code_)) || (ff_core_String.String_grab(code_, (i_ + 1)) !== 61))))) {
+i_ += 1;
+emitToken_(ff_compiler_Token.LUnary(), start_, i_)
 } else if(ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_grab(code_, i_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)) {
 i_ += 1;
 if(((((ff_core_String.String_grab(code_, (i_ - 1)) === 46) && ((i_ + 1) < ff_core_String.String_size(code_))) && (ff_core_String.String_grab(code_, i_) === 46)) && (ff_core_String.String_grab(code_, (i_ + 1)) !== 46))) {
@@ -584,9 +592,9 @@ const error_ = _error;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (i_ - lineOffset_)), "Unexpected end of file"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 };
-ff_core_List.List_each(ff_core_List.range_(5), ((_) => {
+for(let for_i = 0, for_a = ff_core_List.range_(5), for_l = for_a.length; for_i < for_l; for_i++) {
 emitToken_(ff_compiler_Token.LEnd(), i_, i_)
-}));
+};
 return ff_core_Array.Array_drain(tokens_)
 }
 

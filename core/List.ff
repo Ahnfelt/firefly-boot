@@ -231,7 +231,7 @@ extend self[T]: List[T] {
                 await body_(self_[i], $task)
             }
         """
-
+        
     eachWhile(body: T => Bool): Unit
         target js sync "for(const value of self_) if(!body_(value)) break"
         target js async "for(const value of self_) if(!await body_(value, $task)) break"
@@ -364,7 +364,7 @@ extend self[T]: List[T] {
         }
         array.drain()
     }
-
+    
 }
 
 extend self[T: Order]: List[T] {

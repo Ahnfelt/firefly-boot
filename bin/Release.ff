@@ -35,7 +35,6 @@ release(
     releaseFireflyPackage(system, accessKeyId, secretAccessKey, "postgresql")
     releaseFireflyPackage(system, accessKeyId, secretAccessKey, "rpc")
     releaseFireflyPackage(system, accessKeyId, secretAccessKey, "s3")
-    releaseFireflyPackage(system, accessKeyId, secretAccessKey, "unsafejs")
     releaseFireflyPackage(system, accessKeyId, secretAccessKey, "webserver")
     runSuccessful(system, "git", ["commit", "-a", "-m", "Autorelease " + version], system.path(".."))
     runSuccessful(system, "git", ["push"], system.path(".."))

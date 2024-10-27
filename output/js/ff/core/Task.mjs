@@ -90,6 +90,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
+
 // type Task
 
 
@@ -265,7 +267,7 @@ return ff_core_Error.Error_rethrow(_w1)
 export function Task_race(self_, tasks_) {
 const successChannel_ = ff_core_Task.Task_channel(self_, 0);
 const failureChannel_ = ff_core_Task.Task_channel(self_, 0);
-let live_ = ff_core_List.List_size(tasks_);
+let live_ = tasks_.length;
 const started_ = ff_core_List.List_map(tasks_, ((task_) => {
 return ff_core_Task.Task_spawn(self_, ((_) => {
 ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
@@ -285,9 +287,10 @@ return _w1
 return ff_core_Error.Error_rethrow(_w1)
 })))
 } finally {
-ff_core_List.List_each(started_, ((_w1) => {
+for(let for_i = 0, for_a = started_, for_l = for_a.length; for_i < for_l; for_i++) {
+const _w1 = for_a[for_i];
 ff_core_Task.Task_abort(_w1)
-}))
+}
 }
 }
 
@@ -354,7 +357,7 @@ return ff_core_Error.Error_rethrow(_w1)
 export async function Task_race$(self_, tasks_, $task) {
 const successChannel_ = (await ff_core_Task.Task_channel$(self_, 0, $task));
 const failureChannel_ = (await ff_core_Task.Task_channel$(self_, 0, $task));
-let live_ = ff_core_List.List_size(tasks_);
+let live_ = tasks_.length;
 const started_ = (await ff_core_List.List_map$(tasks_, (async (task_, $task) => {
 return (await ff_core_Task.Task_spawn$(self_, (async (_, $task) => {
 (await ff_core_Try.Try_catchAny$((await ff_core_Core.try_$((async ($task) => {
@@ -374,9 +377,10 @@ return _w1
 return ff_core_Error.Error_rethrow(_w1)
 }), $task)), $task))
 } finally {
-(await ff_core_List.List_each$(started_, (async (_w1, $task) => {
+for(let for_i = 0, for_a = started_, for_l = for_a.length; for_i < for_l; for_i++) {
+const _w1 = for_a[for_i];
 (await ff_core_Task.Task_abort$(_w1, $task))
-}), $task))
+}
 }
 }
 

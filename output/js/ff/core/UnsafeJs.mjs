@@ -92,50 +92,100 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
 
-// type Unit
-const Unit$ = {Unit: true};
-export function Unit() {
-return Unit$;
+
+
+
+
+export function jsSystem_() {
+return typeof globalThis !== 'undefined' ? globalThis : window
+}
+
+export function import_(module_) {
+throw Error('Dynamic JS imports are not currently supported.')
+}
+
+export function await_(body_) {
+return body_()
+}
+
+export function throwIfCancelled_() {
+
+}
+
+export function cancelled_() {
+return false
+}
+
+export function inAsync_() {
+return false
+}
+
+export function inBrowser_() {
+return false
+}
+
+export function inNode_() {
+return false
+}
+
+export function inBuild_() {
+return false
+}
+
+export function value_(value_) {
+return value_
+}
+
+export function fromValue_(value_) {
+return value_
+}
+
+export async function jsSystem_$($task) {
+return typeof globalThis !== 'undefined' ? globalThis : window
+}
+
+export async function import_$(module_, $task) {
+throw new Error('Function import is missing on this target in async context.');
+}
+
+export async function await_$(body_, $task) {
+throw new Error('Function await is missing on this target in async context.');
+}
+
+export async function throwIfCancelled_$($task) {
+throw new Error('Function throwIfCancelled is missing on this target in async context.');
+}
+
+export async function cancelled_$($task) {
+throw new Error('Function cancelled is missing on this target in async context.');
+}
+
+export async function inAsync_$($task) {
+throw new Error('Function inAsync is missing on this target in async context.');
+}
+
+export async function inBrowser_$($task) {
+throw new Error('Function inBrowser is missing on this target in async context.');
+}
+
+export async function inNode_$($task) {
+throw new Error('Function inNode is missing on this target in async context.');
+}
+
+export async function inBuild_$($task) {
+throw new Error('Function inBuild is missing on this target in async context.');
+}
+
+export async function value_$(value_, $task) {
+throw new Error('Function value is missing on this target in async context.');
+}
+
+export async function fromValue_$(value_, $task) {
+throw new Error('Function fromValue is missing on this target in async context.');
 }
 
 
 
 
-
-
-
-
-
-export const ff_core_Any_HasAnyTag$ff_core_Unit_Unit = {
-anyTag_() {
-return ff_core_Any.internalAnyTag_((("ff:core/Unit.Unit" + "[") + "]"))
-},
-async anyTag_$($task) {
-return ff_core_Any.internalAnyTag_((("ff:core/Unit.Unit" + "[") + "]"))
-}
-};
-
-export const ff_core_Equal_Equal$ff_core_Unit_Unit = {
-equals_(x_, y_) {
-const x_a = x_;
-const y_a = y_;
-if((x_ === y_)) {
-return true
-}
-{
-return true
-}
-},
-async equals_$(x_, y_, $task) {
-const x_a = x_;
-const y_a = y_;
-if((x_ === y_)) {
-return true
-}
-{
-return true
-}
-}
-};
 
 
