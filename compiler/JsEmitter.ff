@@ -386,13 +386,13 @@ extend self: JsEmitter {
                     if(await) {"(await " + call + ")"} else {call}
                 | [Pair(EVariant(_, "ff:core/Bool.True", _, _), elseBody), ...list] =>
                     "(" + list.foldLeft(self.emitTerm(elseBody, async)) {| otherwise, Pair(condition, body) =>
-                        self.emitTerm(condition, async) +
-                        "\n? " + self.emitTerm(body, async) + "\n: " + otherwise
+                        self.emitComma(condition, async) +
+                        "\n? " + self.emitComma(body, async) + "\n: " + otherwise
                     } + ")"
                 | list =>
                     "(" + list.foldLeft("ff_core_Option.None()") {| otherwise, Pair(condition, body) =>
-                        self.emitTerm(condition, async) +
-                        "\n? ff_core_Option.Some(" + self.emitTerm(body, async) + ")\n: " + otherwise
+                        self.emitComma(condition, async) +
+                        "\n? ff_core_Option.Some(" + self.emitComma(body, async) + ")\n: " + otherwise
                     } + ")"
             }
         | ECall(at, DynamicCall(function, _), effect, typeArguments, arguments, dictionaries) =>
@@ -1143,10 +1143,16 @@ safeCommable(term: Term): Bool {
         | EAssign _ => True
         | EAssignField _ => True
         | ECall _ => True
+        | ECopy _ => True
+        | EVariant _ => True
         | EString(_, _) => True
         | EInt(_, _) => True
         | EChar(_, _) => True
         | EFloat(_, _) => True
+        | EList _ => True
+        | EPipe _ => True
+        | ERecord _ => True
+        | EWildcard _ => True 
         | _ => False
     }
 }

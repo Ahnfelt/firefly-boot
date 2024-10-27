@@ -413,10 +413,7 @@ let i_ = 0;
 for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
 if(!(body_(x_)
-? (function() {
-result_ = ff_core_Option.Some(i_);
-return false
-})()
+? (result_ = ff_core_Option.Some(i_), false)
 : (function() {
 i_ += 1;
 return true
@@ -430,10 +427,7 @@ let result_ = ff_core_Option.None();
 for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
 if(!(body_(x_)
-? (function() {
-result_ = ff_core_Option.Some(x_);
-return false
-})()
+? (result_ = ff_core_Option.Some(x_), false)
 : true)) break
 };
 return result_
@@ -782,10 +776,7 @@ let i_ = 0;
 for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
 if(!((await body_(x_, $task))
-? (await (async function() {
-result_ = ff_core_Option.Some(i_);
-return false
-})())
+? (result_ = ff_core_Option.Some(i_), false)
 : (await (async function() {
 i_ += 1;
 return true
@@ -799,10 +790,7 @@ let result_ = ff_core_Option.None();
 for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
 if(!((await body_(x_, $task))
-? (await (async function() {
-result_ = ff_core_Option.Some(x_);
-return false
-})())
+? (result_ = ff_core_Option.Some(x_), false)
 : true)) break
 };
 return result_

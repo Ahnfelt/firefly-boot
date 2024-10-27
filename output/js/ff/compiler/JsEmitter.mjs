@@ -210,6 +210,12 @@ return true
 if(_1.ECall) {
 return true
 }
+if(_1.ECopy) {
+return true
+}
+if(_1.EVariant) {
+return true
+}
 if(_1.EString) {
 return true
 }
@@ -220,6 +226,18 @@ if(_1.EChar) {
 return true
 }
 if(_1.EFloat) {
+return true
+}
+if(_1.EList) {
+return true
+}
+if(_1.EPipe) {
+return true
+}
+if(_1.ERecord) {
+return true
+}
+if(_1.EWildcard) {
 return true
 }
 {
@@ -445,6 +463,12 @@ return true
 if(_1.ECall) {
 return true
 }
+if(_1.ECopy) {
+return true
+}
+if(_1.EVariant) {
+return true
+}
 if(_1.EString) {
 return true
 }
@@ -455,6 +479,18 @@ if(_1.EChar) {
 return true
 }
 if(_1.EFloat) {
+return true
+}
+if(_1.EList) {
+return true
+}
+if(_1.EPipe) {
+return true
+}
+if(_1.ERecord) {
+return true
+}
+if(_1.EWildcard) {
 return true
 }
 {
@@ -1182,7 +1218,7 @@ return (("(" + ff_core_List.List_foldLeft(list_, ff_compiler_JsEmitter.JsEmitter
 const otherwise_ = _1;
 const condition_ = _2.first_;
 const body_ = _2.second_;
-return ((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_) + "\n? ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_)) + "\n: ") + otherwise_)
+return ((((ff_compiler_JsEmitter.JsEmitter_emitComma(self_, condition_, async_) + "\n? ") + ff_compiler_JsEmitter.JsEmitter_emitComma(self_, body_, async_)) + "\n: ") + otherwise_)
 }
 }))) + ")")
 return
@@ -1194,7 +1230,7 @@ return (("(" + ff_core_List.List_foldLeft(list_, "ff_core_Option.None()", ((_1, 
 const otherwise_ = _1;
 const condition_ = _2.first_;
 const body_ = _2.second_;
-return ((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_) + "\n? ff_core_Option.Some(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_)) + ")\n: ") + otherwise_)
+return ((((ff_compiler_JsEmitter.JsEmitter_emitComma(self_, condition_, async_) + "\n? ff_core_Option.Some(") + ff_compiler_JsEmitter.JsEmitter_emitComma(self_, body_, async_)) + ")\n: ") + otherwise_)
 }
 }))) + ")")
 return
@@ -3135,7 +3171,7 @@ return (("(" + (await ff_core_List.List_foldLeft$(list_, (await ff_compiler_JsEm
 const otherwise_ = _1;
 const condition_ = _2.first_;
 const body_ = _2.second_;
-return (((((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, condition_, async_, $task)) + "\n? ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, body_, async_, $task))) + "\n: ") + otherwise_)
+return (((((await ff_compiler_JsEmitter.JsEmitter_emitComma$(self_, condition_, async_, $task)) + "\n? ") + (await ff_compiler_JsEmitter.JsEmitter_emitComma$(self_, body_, async_, $task))) + "\n: ") + otherwise_)
 }
 }), $task))) + ")")
 return
@@ -3147,7 +3183,7 @@ return (("(" + (await ff_core_List.List_foldLeft$(list_, "ff_core_Option.None()"
 const otherwise_ = _1;
 const condition_ = _2.first_;
 const body_ = _2.second_;
-return (((((await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, condition_, async_, $task)) + "\n? ff_core_Option.Some(") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, body_, async_, $task))) + ")\n: ") + otherwise_)
+return (((((await ff_compiler_JsEmitter.JsEmitter_emitComma$(self_, condition_, async_, $task)) + "\n? ff_core_Option.Some(") + (await ff_compiler_JsEmitter.JsEmitter_emitComma$(self_, body_, async_, $task))) + ")\n: ") + otherwise_)
 }
 }), $task))) + ")")
 return
