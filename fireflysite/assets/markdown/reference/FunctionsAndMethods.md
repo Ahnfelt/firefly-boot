@@ -240,50 +240,69 @@ let f: Int => Int = {{_ + 1}(_)}
 In this code, there is an outer and an inner anonymous function, both taking one argument. The first underscore belongs to the inner function, which is called immediately by the outer function with the outer function's anonymous parameter as the argument.
 
 
-# Trailing lambda calls
+# Trailing Anonymous Function Arguments
 
-Firefly has special syntax for passing an anonymous function as the last argument in a function call. Consider the `if` function from the standard library, with this signature:
+Firefly has a special syntax for calling functions with function arguments. When a call has a sequence of literal anonymous functions as the last arguments, these arguments may be given using this special syntax. Consider the `if` function from the standard library, with this signature:
 
 ```firefly
 if[T](condition: Bool, body: () => T): Option[T]
 ```
 
-The `if` function takes two parameters, where the last is a function. Calling `if` with the standard syntax looks like this:
+The `if` function takes two parameters, where the last is a function. Calling `if` with the standard syntax could look like this:
 
 ```firefly
 if(x == 0, {"Zero"}) 
 ```
 
-Using the special syntax for trailing lambda calls, it looks like this:
+Using the special syntax for trailing anonymous function arguments, it looks like this:
 
 ```firefly
 if(x == 0) {"Zero"}
 ```
 
-With this trailing lambda call syntax, the anonymous function is written after the call parentheses. This syntax is available for multiple trailing function arguments in sequence.
-
-The function below takes three parameters. Two functions and one `Int` with a default value:
+With this syntax, the anonymous function is written after the call parentheses. Multiple trailing function arguments may be given in sequence. Consider the `while` function from the standard library, with this signature:
 
 ```firefly
-work(f: Int => Int, g: String => String, initial: Int = 0): String {
-    g("" + f(initial))
+while(condition: () => Bool, body: () => Unit): Unit
+```
+
+The `while` function takes two parameters, both functions. Using the special syntax, a call to `while` may look like this:
+
+```firefly
+while {array.size() < 5} {
+    array.push("X")
 }
 ```
 
-This function may be called with two trailling lambda arguments, like this:
+The code above will push a string to an array while the size of the array is less than 5.
+
+This syntax for trailing anonymous function arguments allows the use of `if` and `while` to resemble constructs in languages such as C and JavaScript, where these constructs are built-in keywords rather than functions.
+
+# Trailing Colon Function Argument
+
+Firefly has a variation of the trailing anonymous function argument syntax. The very last anonymous function argument may be written after a colon, without curly braces. The purpose of this syntax is to avoid aditional indentation.
+
+The example below calls `if` with a trailing colon function argument:
 
 ```firefly
-work(initial = 3) {i => 
-    i + 1
-} {s => 
-    "*" + s + "*"
+safeFactorial(n: Int, acc: Int = 1): Option[Int] {
+    if(n >= 0): 
+    factorial(n)
 }
 ```
+
+In this example, the `if` function is called with the condition `n >= 0` and an anonymous function that computes `factorial(n)`. If `n` is negative, the `if` function returns `None` and so does `safeFactorial`. Using the colon syntax, the `safeFactorial` functions continues unindented otherwise.
 
 
 # Local functions
 
 Local functions are declared exactly like top-level functions but with the `function` keyword in front of the signature, like this:
+
+```firefly
+function square(n: Int): Int {
+    n * n
+}
+```
 
 The above local function definition is a statement, similar to local variables declared with `let`. The function name `square` will be in scope for the rest of the code block.
 
@@ -322,6 +341,7 @@ extend self[T]: Option[T] {
     }    
 }
 ```
+
 
 Methods can be defined for a more narrow targer type, like `flatten` below:
 

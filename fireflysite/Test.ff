@@ -27,12 +27,18 @@ nodeMain(system: NodeSystem) {
     let foo = {{_ + 1}(_)}
     Log.show(foo(1))
     
+    /*
     let x1 = work(initial = 3) {i => 
         i + 1
     } {s => 
         "*" + s + "*"
-    }
+    }*/
     //let x2 = work(initial = 3, {i => i + 1}, {s => s + "*"}) 
+    
+    let array = Array.new()
+    while {array.size() < 5} {
+        array.push("X")
+    }
 }
 
 factorial(n: Int): Int {
