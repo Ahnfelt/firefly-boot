@@ -2527,14 +2527,14 @@ if(_1.ESequential && _1.before_.ESequential) {
 const before1_ = _1.before_.before_;
 const before2_ = _1.before_.after_;
 const after_ = _1.after_;
-if((ff_compiler_JsEmitter.safeCommable_(before1_) && ff_compiler_JsEmitter.safeCommable_(before2_))) {
+if(((ff_compiler_JsEmitter.safeCommable_(before1_) && ff_compiler_JsEmitter.safeCommable_(before2_)) && ff_compiler_JsEmitter.safeCommable_(after_))) {
 return (((((("(" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before1_, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before2_, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, after_, async_)) + ")")
 }
 }
 if(_1.ESequential) {
 const before_ = _1.before_;
 const after_ = _1.after_;
-if(ff_compiler_JsEmitter.safeCommable_(before_)) {
+if((ff_compiler_JsEmitter.safeCommable_(before_) && ff_compiler_JsEmitter.safeCommable_(after_))) {
 return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before_, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, after_, async_)) + ")")
 }
 }
@@ -4471,14 +4471,14 @@ if(_1.ESequential && _1.before_.ESequential) {
 const before1_ = _1.before_.before_;
 const before2_ = _1.before_.after_;
 const after_ = _1.after_;
-if((ff_compiler_JsEmitter.safeCommable_(before1_) && ff_compiler_JsEmitter.safeCommable_(before2_))) {
+if(((ff_compiler_JsEmitter.safeCommable_(before1_) && ff_compiler_JsEmitter.safeCommable_(before2_)) && ff_compiler_JsEmitter.safeCommable_(after_))) {
 return (((((("(" + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, before1_, false, async_, $task))) + ", ") + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, before2_, false, async_, $task))) + ", ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, after_, async_, $task))) + ")")
 }
 }
 if(_1.ESequential) {
 const before_ = _1.before_;
 const after_ = _1.after_;
-if(ff_compiler_JsEmitter.safeCommable_(before_)) {
+if((ff_compiler_JsEmitter.safeCommable_(before_) && ff_compiler_JsEmitter.safeCommable_(after_))) {
 return (((("(" + (await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, before_, false, async_, $task))) + ", ") + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, after_, async_, $task))) + ")")
 }
 }
