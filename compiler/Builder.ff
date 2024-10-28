@@ -45,6 +45,7 @@ build(
         resolvedDependencies.packagePaths.each {packagePair, packagePath =>
             resolvedDependencies.packages.get(packagePair).each {packageInfo =>
                 processIncludes(jsPathFile, packagePath, packageInfo)
+                // processNpmPackageLock(system, jsPathFile, packagePath, packageInfo)
             }
         }
         True
@@ -57,11 +58,23 @@ build(
 
 }
 
-processIncludes(jsPathFile: Path, packagePath: Path, info: PackageInfo): Unit {
+processIncludes(jsPathFile: Path, packagePath: Path, info: PackageInfo) {
     info.includes.each {include =>
         let fromPath = packagePath.slash(".firefly").slash("include").slash(include.path)
         let toPath = jsPathFile.slash(info.package.packagePair.groupName("/")).slash(include.path)
         fromPath.copyTo(toPath)
+    }
+}
+
+processNpmPackageLock(system: NodeSystem, jsPathFile: Path, packagePath: Path, info: PackageInfo) {
+    let packageJson = packagePath.slash(".firefly").slash("include").slash("package.json")
+    let packageLockJson = packagePath.slash(".firefly").slash("include").slash("package-lock.json")
+    if(packageJson.exists() && packageLockJson.exists()) {
+        let toPath = jsPathFile.slash(info.package.packagePair.groupName("/"))
+        packageJson.copyTo(toPath.slash("package.json"))
+        packageLockJson.copyTo(toPath.slash("package-lock.json"))
+        system.writeErrorLine("Running npm ci --no-bin-links in " + toPath.absolute())
+        system.execute("npm", ["ci", "--no-bin-links"], directory = Some(toPath))
     }
 }
 

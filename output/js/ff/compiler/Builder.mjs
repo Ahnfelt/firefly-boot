@@ -162,6 +162,18 @@ ff_core_Path.Path_copyTo(fromPath_, toPath_, 0, 100)
 }
 }
 
+export function processNpmPackageLock_(system_, jsPathFile_, packagePath_, info_) {
+const packageJson_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(ff_core_Path.Path_slash(packagePath_, ".firefly"), "include"), "package.json");
+const packageLockJson_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(ff_core_Path.Path_slash(packagePath_, ".firefly"), "include"), "package-lock.json");
+if((ff_core_Path.Path_exists(packageJson_, false, false, false) && ff_core_Path.Path_exists(packageLockJson_, false, false, false))) {
+const toPath_ = ff_core_Path.Path_slash(jsPathFile_, ff_compiler_Syntax.PackagePair_groupName(info_.package_.packagePair_, "/"));
+ff_core_Path.Path_copyTo(packageJson_, ff_core_Path.Path_slash(toPath_, "package.json"), 0, 100);
+ff_core_Path.Path_copyTo(packageLockJson_, ff_core_Path.Path_slash(toPath_, "package-lock.json"), 0, 100);
+ff_core_NodeSystem.NodeSystem_writeErrorLine(system_, ("Running npm ci --no-bin-links in " + ff_core_Path.Path_absolute(toPath_)));
+ff_core_NodeSystem.NodeSystem_execute(system_, "npm", ["ci", "--no-bin-links"], ff_core_Buffer.new_(0, false), ff_core_Option.Some(toPath_), ff_core_Option.None(), 16777216, 9, true)
+}
+}
+
 export function buildViaBuildSystem_(system_, fireflyPath_, mainFile_, target_) {
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), ff_compiler_DependencyLock.new_(ff_core_NodeSystem.NodeSystem_mainTask(system_)), ff_core_NodeSystem.NodeSystem_path(system_, mainFile_));
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
@@ -358,6 +370,18 @@ const include_ = for_a[for_i];
 const fromPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(packagePath_, ".firefly", $task)), "include", $task)), include_.path_, $task));
 const toPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(jsPathFile_, ff_compiler_Syntax.PackagePair_groupName(info_.package_.packagePair_, "/"), $task)), include_.path_, $task));
 (await ff_core_Path.Path_copyTo$(fromPath_, toPath_, 0, 100, $task))
+}
+}
+
+export async function processNpmPackageLock_$(system_, jsPathFile_, packagePath_, info_, $task) {
+const packageJson_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(packagePath_, ".firefly", $task)), "include", $task)), "package.json", $task));
+const packageLockJson_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(packagePath_, ".firefly", $task)), "include", $task)), "package-lock.json", $task));
+if(((await ff_core_Path.Path_exists$(packageJson_, false, false, false, $task)) && (await ff_core_Path.Path_exists$(packageLockJson_, false, false, false, $task)))) {
+const toPath_ = (await ff_core_Path.Path_slash$(jsPathFile_, ff_compiler_Syntax.PackagePair_groupName(info_.package_.packagePair_, "/"), $task));
+(await ff_core_Path.Path_copyTo$(packageJson_, (await ff_core_Path.Path_slash$(toPath_, "package.json", $task)), 0, 100, $task));
+(await ff_core_Path.Path_copyTo$(packageLockJson_, (await ff_core_Path.Path_slash$(toPath_, "package-lock.json", $task)), 0, 100, $task));
+(await ff_core_NodeSystem.NodeSystem_writeErrorLine$(system_, ("Running npm ci --no-bin-links in " + (await ff_core_Path.Path_absolute$(toPath_, $task))), $task));
+(await ff_core_NodeSystem.NodeSystem_execute$(system_, "npm", ["ci", "--no-bin-links"], ff_core_Buffer.new_(0, false), ff_core_Option.Some(toPath_), ff_core_Option.None(), 16777216, 9, true, $task))
 }
 }
 
