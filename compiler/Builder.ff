@@ -44,8 +44,8 @@ build(
         if(printMeasurements) {compiler.printMeasurements()}
         resolvedDependencies.packagePaths.each {packagePair, packagePath =>
             resolvedDependencies.packages.get(packagePair).each {packageInfo =>
+                processNodeModules(system, jsPathFile, packagePath, packageInfo)
                 processIncludes(jsPathFile, packagePath, packageInfo)
-                // processNpmPackageLock(system, jsPathFile, packagePath, packageInfo)
             }
         }
         True
@@ -66,15 +66,16 @@ processIncludes(jsPathFile: Path, packagePath: Path, info: PackageInfo) {
     }
 }
 
-processNpmPackageLock(system: NodeSystem, jsPathFile: Path, packagePath: Path, info: PackageInfo) {
-    let packageJson = packagePath.slash(".firefly").slash("include").slash("package.json")
-    let packageLockJson = packagePath.slash(".firefly").slash("include").slash("package-lock.json")
-    if(packageJson.exists() && packageLockJson.exists()) {
-        let toPath = jsPathFile.slash(info.package.packagePair.groupName("/"))
-        packageJson.copyTo(toPath.slash("package.json"))
-        packageLockJson.copyTo(toPath.slash("package-lock.json"))
-        system.writeErrorLine("Running npm ci --no-bin-links in " + toPath.absolute())
-        system.execute("npm", ["ci", "--no-bin-links"], directory = Some(toPath))
+processNodeModules(system: NodeSystem, jsPathFile: Path, packagePath: Path, info: PackageInfo) {
+    if(info.includes.any {_.path == "node_modules"}) {
+        let includePath = packagePath.slash(".firefly").slash("include")
+        let nodeModules = includePath.slash("node_modules")
+        let packageJson = includePath.slash("package.json")
+        let packageLockJson = includePath.slash("package-lock.json")
+        if(!nodeModules.exists() && packageJson.exists() && packageLockJson.exists()) {
+            system.writeErrorLine("Running npm ci --no-bin-links in " + includePath.absolute())
+            system.execute("npm", ["ci", "--no-bin-links"], directory = Some(includePath))
+        }
     }
 }
 

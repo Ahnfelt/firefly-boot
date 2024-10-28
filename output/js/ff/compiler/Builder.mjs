@@ -139,6 +139,7 @@ ff_compiler_Compiler.Compiler_printMeasurements(compiler_)
 ff_core_Map.Map_each(resolvedDependencies_.packagePaths_, ((packagePair_, packagePath_) => {
 for(const for_o = ff_core_Map.Map_get(resolvedDependencies_.packages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair); for_o.Some;) {
 const packageInfo_ = for_o.value_;
+ff_compiler_Builder.processNodeModules_(system_, jsPathFile_, packagePath_, packageInfo_);
 ff_compiler_Builder.processIncludes_(jsPathFile_, packagePath_, packageInfo_)
 break
 }
@@ -162,15 +163,18 @@ ff_core_Path.Path_copyTo(fromPath_, toPath_, 0, 100)
 }
 }
 
-export function processNpmPackageLock_(system_, jsPathFile_, packagePath_, info_) {
-const packageJson_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(ff_core_Path.Path_slash(packagePath_, ".firefly"), "include"), "package.json");
-const packageLockJson_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(ff_core_Path.Path_slash(packagePath_, ".firefly"), "include"), "package-lock.json");
-if((ff_core_Path.Path_exists(packageJson_, false, false, false) && ff_core_Path.Path_exists(packageLockJson_, false, false, false))) {
-const toPath_ = ff_core_Path.Path_slash(jsPathFile_, ff_compiler_Syntax.PackagePair_groupName(info_.package_.packagePair_, "/"));
-ff_core_Path.Path_copyTo(packageJson_, ff_core_Path.Path_slash(toPath_, "package.json"), 0, 100);
-ff_core_Path.Path_copyTo(packageLockJson_, ff_core_Path.Path_slash(toPath_, "package-lock.json"), 0, 100);
-ff_core_NodeSystem.NodeSystem_writeErrorLine(system_, ("Running npm ci --no-bin-links in " + ff_core_Path.Path_absolute(toPath_)));
-ff_core_NodeSystem.NodeSystem_execute(system_, "npm", ["ci", "--no-bin-links"], ff_core_Buffer.new_(0, false), ff_core_Option.Some(toPath_), ff_core_Option.None(), 16777216, 9, true)
+export function processNodeModules_(system_, jsPathFile_, packagePath_, info_) {
+if(ff_core_List.List_any(info_.includes_, ((_w1) => {
+return (_w1.path_ === "node_modules")
+}))) {
+const includePath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(packagePath_, ".firefly"), "include");
+const nodeModules_ = ff_core_Path.Path_slash(includePath_, "node_modules");
+const packageJson_ = ff_core_Path.Path_slash(includePath_, "package.json");
+const packageLockJson_ = ff_core_Path.Path_slash(includePath_, "package-lock.json");
+if((((!ff_core_Path.Path_exists(nodeModules_, false, false, false)) && ff_core_Path.Path_exists(packageJson_, false, false, false)) && ff_core_Path.Path_exists(packageLockJson_, false, false, false))) {
+ff_core_NodeSystem.NodeSystem_writeErrorLine(system_, ("Running npm ci --no-bin-links in " + ff_core_Path.Path_absolute(includePath_)));
+ff_core_NodeSystem.NodeSystem_execute(system_, "npm", ["ci", "--no-bin-links"], ff_core_Buffer.new_(0, false), ff_core_Option.Some(includePath_), ff_core_Option.None(), 16777216, 9, true)
+}
 }
 }
 
@@ -350,6 +354,7 @@ if(printMeasurements_) {
 (await ff_core_Map.Map_each$(resolvedDependencies_.packagePaths_, (async (packagePair_, packagePath_, $task) => {
 for(const for_o = ff_core_Map.Map_get(resolvedDependencies_.packages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair); for_o.Some;) {
 const packageInfo_ = for_o.value_;
+(await ff_compiler_Builder.processNodeModules_$(system_, jsPathFile_, packagePath_, packageInfo_, $task));
 (await ff_compiler_Builder.processIncludes_$(jsPathFile_, packagePath_, packageInfo_, $task))
 break
 }
@@ -373,15 +378,18 @@ const toPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(
 }
 }
 
-export async function processNpmPackageLock_$(system_, jsPathFile_, packagePath_, info_, $task) {
-const packageJson_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(packagePath_, ".firefly", $task)), "include", $task)), "package.json", $task));
-const packageLockJson_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(packagePath_, ".firefly", $task)), "include", $task)), "package-lock.json", $task));
-if(((await ff_core_Path.Path_exists$(packageJson_, false, false, false, $task)) && (await ff_core_Path.Path_exists$(packageLockJson_, false, false, false, $task)))) {
-const toPath_ = (await ff_core_Path.Path_slash$(jsPathFile_, ff_compiler_Syntax.PackagePair_groupName(info_.package_.packagePair_, "/"), $task));
-(await ff_core_Path.Path_copyTo$(packageJson_, (await ff_core_Path.Path_slash$(toPath_, "package.json", $task)), 0, 100, $task));
-(await ff_core_Path.Path_copyTo$(packageLockJson_, (await ff_core_Path.Path_slash$(toPath_, "package-lock.json", $task)), 0, 100, $task));
-(await ff_core_NodeSystem.NodeSystem_writeErrorLine$(system_, ("Running npm ci --no-bin-links in " + (await ff_core_Path.Path_absolute$(toPath_, $task))), $task));
-(await ff_core_NodeSystem.NodeSystem_execute$(system_, "npm", ["ci", "--no-bin-links"], ff_core_Buffer.new_(0, false), ff_core_Option.Some(toPath_), ff_core_Option.None(), 16777216, 9, true, $task))
+export async function processNodeModules_$(system_, jsPathFile_, packagePath_, info_, $task) {
+if(ff_core_List.List_any(info_.includes_, ((_w1) => {
+return (_w1.path_ === "node_modules")
+}))) {
+const includePath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(packagePath_, ".firefly", $task)), "include", $task));
+const nodeModules_ = (await ff_core_Path.Path_slash$(includePath_, "node_modules", $task));
+const packageJson_ = (await ff_core_Path.Path_slash$(includePath_, "package.json", $task));
+const packageLockJson_ = (await ff_core_Path.Path_slash$(includePath_, "package-lock.json", $task));
+if((((!(await ff_core_Path.Path_exists$(nodeModules_, false, false, false, $task))) && (await ff_core_Path.Path_exists$(packageJson_, false, false, false, $task))) && (await ff_core_Path.Path_exists$(packageLockJson_, false, false, false, $task)))) {
+(await ff_core_NodeSystem.NodeSystem_writeErrorLine$(system_, ("Running npm ci --no-bin-links in " + (await ff_core_Path.Path_absolute$(includePath_, $task))), $task));
+(await ff_core_NodeSystem.NodeSystem_execute$(system_, "npm", ["ci", "--no-bin-links"], ff_core_Buffer.new_(0, false), ff_core_Option.Some(includePath_), ff_core_Option.None(), 16777216, 9, true, $task))
+}
 }
 }
 
