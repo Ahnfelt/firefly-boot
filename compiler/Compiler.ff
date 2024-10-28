@@ -216,9 +216,14 @@ extend self: Compiler {
         }
 
         let allModules = [module, ...otherModules]
-        let js = 
-            JsEmitter.new(allModules, self.emitTarget, isMainModule, self.compilerModulePath, packagePair, moduleName)
-            .emitModule(packagePair, module)
+        let js = JsEmitter.new(
+            otherModules = allModules
+            emitTarget = self.emitTarget
+            isMainModule = isMainModule
+            compilerModuleFileUrl = self.compilerModulePath.map {_.url()}
+            packagePair = packagePair
+            moduleName = moduleName
+        ).emitModule(packagePair, module)
         let jsPath = self.jsOutputPath.slash(packagePair.group).slash(packagePair.name)
         let jsFile = jsPath.slash(moduleName + ".mjs")
         jsPath.createDirectory(createParentDirectories = True)
