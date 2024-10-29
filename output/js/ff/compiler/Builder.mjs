@@ -159,7 +159,11 @@ for(let for_i = 0, for_a = info_.includes_, for_l = for_a.length; for_i < for_l;
 const include_ = for_a[for_i];
 const fromPath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(ff_core_Path.Path_slash(packagePath_, ".firefly"), "include"), include_.path_);
 const toPath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(jsPathFile_, ff_compiler_Syntax.PackagePair_groupName(info_.package_.packagePair_, "/")), include_.path_);
+ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+ff_core_Path.Path_createSymlinkTo(toPath_, fromPath_)
+})), ((_) => {
 ff_core_Path.Path_copyTo(fromPath_, toPath_, 0, 100)
+}))
 }
 }
 
@@ -373,7 +377,11 @@ for(let for_i = 0, for_a = info_.includes_, for_l = for_a.length; for_i < for_l;
 const include_ = for_a[for_i];
 const fromPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(packagePath_, ".firefly", $task)), "include", $task)), include_.path_, $task));
 const toPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(jsPathFile_, ff_compiler_Syntax.PackagePair_groupName(info_.package_.packagePair_, "/"), $task)), include_.path_, $task));
+(await ff_core_Try.Try_catchAny$((await ff_core_Core.try_$((async ($task) => {
+(await ff_core_Path.Path_createSymlinkTo$(toPath_, fromPath_, $task))
+}), $task)), (async (_, $task) => {
 (await ff_core_Path.Path_copyTo$(fromPath_, toPath_, 0, 100, $task))
+}), $task))
 }
 }
 

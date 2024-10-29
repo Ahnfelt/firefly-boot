@@ -62,7 +62,11 @@ processIncludes(jsPathFile: Path, packagePath: Path, info: PackageInfo) {
     info.includes.each {include =>
         let fromPath = packagePath.slash(".firefly").slash("include").slash(include.path)
         let toPath = jsPathFile.slash(info.package.packagePair.groupName("/")).slash(include.path)
-        fromPath.copyTo(toPath)
+        try {
+            toPath.createSymlinkTo(fromPath)
+        } catchAny {_ =>
+            fromPath.copyTo(toPath)
+        }
     }
 }
 
