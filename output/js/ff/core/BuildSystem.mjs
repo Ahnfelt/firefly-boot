@@ -148,13 +148,12 @@ export async function internalCallEsBuild_$(self_, mainJsFile_, outputPath_, min
 
         const esbuild = import$0
         return await esbuild.build({
-            //entryPoints: [mainJsFile_],
             stdin: {contents: `import {$run$} from './${mainJsFile_}';`, resolveDir: '.'},
             bundle: true,
             minify: minify_,
             sourcemap: sourceMap_,
             platform: 'browser',
-            target: 'es6',
+            target: 'es2017',
             external: ['../../../node_modules/*'], // TODO
             outfile: outputPath_
         })
