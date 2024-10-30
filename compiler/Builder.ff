@@ -62,7 +62,7 @@ processIncludes(jsPathFile: Path, packagePath: Path, info: PackageInfo) {
     info.includes.each {include =>
         let fromPath = packagePath.slash(".firefly").slash("include").slash(include.path)
         let toPath = jsPathFile.slash(info.package.packagePair.groupName("/")).slash(include.path)
-        fromPath.copyTo(toPath)
+        toPath.createSymlinkTo(fromPath, junction = True)
     }
 }
 
@@ -71,10 +71,9 @@ processNodeModules(system: NodeSystem, jsPathFile: Path, packagePath: Path, info
         let includePath = packagePath.slash(".firefly").slash("include")
         let nodeModules = includePath.slash("node_modules")
         let packageJson = includePath.slash("package.json")
-        let packageLockJson = includePath.slash("package-lock.json")
-        if(!nodeModules.exists() && packageJson.exists() && packageLockJson.exists()) {
-            system.writeErrorLine("Running npm ci --no-bin-links in " + includePath.absolute())
-            system.execute("npm", ["ci", "--no-bin-links"], directory = Some(includePath))
+        if(!nodeModules.exists() && packageJson.exists()) {
+            system.writeErrorLine("Running npm install --no-package-lock --no-bin-links in " + includePath.absolute())
+            system.execute("npm", ["install", "--no-package-lock", "--no-bin-links"], directory = Some(includePath))
         }
     }
 }

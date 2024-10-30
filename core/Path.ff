@@ -181,6 +181,8 @@ extend self: Path {
             self.entries().each {file =>
                 file.path().copyTo(path.slash(file.path().relativeTo(self)), retries, retryDelay)
             }
+        } elseIf {self.isSymbolicLink()} {
+            path.createSymlinkTo(self.path(self.readSymbolicLink()), junction = True)
         } else {
             path.writeStream(self.readStream())
         }
@@ -192,10 +194,10 @@ extend self: Path {
             await fsPromises.mkdir(self_, {recursive: createParentDirectories_})
         """
 
-    createSymlinkTo(path: Path)
+    createSymlinkTo(path: Path, junction: Bool = False)
         target node async """
             import * as fsPromises from 'fs/promises'
-            await fsPromises.symlink(path_, self_)
+            await fsPromises.symlink(path_, self_, junction_ ? 'junction' : null)
         """
 
     delete(retries: Int = 0, retryDelay: Int = 100)
@@ -214,6 +216,12 @@ extend self: Path {
         target node async """
             import * as fsPromises from 'fs/promises'
             await fsPromises.rename(self_, path_)
+        """
+
+    readSymbolicLink(): String
+        target node async """
+            import * as fsPromises from 'fs/promises'
+            return await fsPromises.readlink(self_)
         """
 
     readText(): String

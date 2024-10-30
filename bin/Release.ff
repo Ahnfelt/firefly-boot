@@ -148,6 +148,7 @@ internalMakeTarGz(tarGzPath: Path, path: Path): Unit
             cwd: path_,
             filter: (path, stat) => 
                 !path.includes(".firefly/output") &&
-                !path.includes(".firefly/temporary")
+                !path.includes(".firefly/temporary") &&
+                !path.includes(".firefly/include/node_modules")
         }, ["."]);
     """

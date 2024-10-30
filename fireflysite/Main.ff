@@ -83,7 +83,7 @@ browserMain(system: BrowserSystem): Unit {
 }
 
 buildMain(system: BuildSystem) {
-    let browser = system.compileForBrowser("Main.ff")
+    let browser = system.compileForBrowser("Main.ff").bundle()
     let assets = AssetSystem.create()
         .addAssets("/js/", browser.assets())
         .addAssets("/assets/", system.packageAssets().assets("/assets/"))

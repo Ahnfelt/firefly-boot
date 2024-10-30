@@ -159,7 +159,7 @@ for(let for_i = 0, for_a = info_.includes_, for_l = for_a.length; for_i < for_l;
 const include_ = for_a[for_i];
 const fromPath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(ff_core_Path.Path_slash(packagePath_, ".firefly"), "include"), include_.path_);
 const toPath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(jsPathFile_, ff_compiler_Syntax.PackagePair_groupName(info_.package_.packagePair_, "/")), include_.path_);
-ff_core_Path.Path_copyTo(fromPath_, toPath_, 0, 100)
+ff_core_Path.Path_createSymlinkTo(toPath_, fromPath_, true)
 }
 }
 
@@ -170,10 +170,9 @@ return (_w1.path_ === "node_modules")
 const includePath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(packagePath_, ".firefly"), "include");
 const nodeModules_ = ff_core_Path.Path_slash(includePath_, "node_modules");
 const packageJson_ = ff_core_Path.Path_slash(includePath_, "package.json");
-const packageLockJson_ = ff_core_Path.Path_slash(includePath_, "package-lock.json");
-if((((!ff_core_Path.Path_exists(nodeModules_, false, false, false)) && ff_core_Path.Path_exists(packageJson_, false, false, false)) && ff_core_Path.Path_exists(packageLockJson_, false, false, false))) {
-ff_core_NodeSystem.NodeSystem_writeErrorLine(system_, ("Running npm ci --no-bin-links in " + ff_core_Path.Path_absolute(includePath_)));
-ff_core_NodeSystem.NodeSystem_execute(system_, "npm", ["ci", "--no-bin-links"], ff_core_Buffer.new_(0, false), ff_core_Option.Some(includePath_), ff_core_Option.None(), 16777216, 9, true)
+if(((!ff_core_Path.Path_exists(nodeModules_, false, false, false)) && ff_core_Path.Path_exists(packageJson_, false, false, false))) {
+ff_core_NodeSystem.NodeSystem_writeErrorLine(system_, ("Running npm install --no-package-lock --no-bin-links in " + ff_core_Path.Path_absolute(includePath_)));
+ff_core_NodeSystem.NodeSystem_execute(system_, "npm", ["install", "--no-package-lock", "--no-bin-links"], ff_core_Buffer.new_(0, false), ff_core_Option.Some(includePath_), ff_core_Option.None(), 16777216, 9, true)
 }
 }
 }
@@ -374,7 +373,7 @@ for(let for_i = 0, for_a = info_.includes_, for_l = for_a.length; for_i < for_l;
 const include_ = for_a[for_i];
 const fromPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(packagePath_, ".firefly", $task)), "include", $task)), include_.path_, $task));
 const toPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(jsPathFile_, ff_compiler_Syntax.PackagePair_groupName(info_.package_.packagePair_, "/"), $task)), include_.path_, $task));
-(await ff_core_Path.Path_copyTo$(fromPath_, toPath_, 0, 100, $task))
+(await ff_core_Path.Path_createSymlinkTo$(toPath_, fromPath_, true, $task))
 }
 }
 
@@ -385,10 +384,9 @@ return (_w1.path_ === "node_modules")
 const includePath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(packagePath_, ".firefly", $task)), "include", $task));
 const nodeModules_ = (await ff_core_Path.Path_slash$(includePath_, "node_modules", $task));
 const packageJson_ = (await ff_core_Path.Path_slash$(includePath_, "package.json", $task));
-const packageLockJson_ = (await ff_core_Path.Path_slash$(includePath_, "package-lock.json", $task));
-if((((!(await ff_core_Path.Path_exists$(nodeModules_, false, false, false, $task))) && (await ff_core_Path.Path_exists$(packageJson_, false, false, false, $task))) && (await ff_core_Path.Path_exists$(packageLockJson_, false, false, false, $task)))) {
-(await ff_core_NodeSystem.NodeSystem_writeErrorLine$(system_, ("Running npm ci --no-bin-links in " + (await ff_core_Path.Path_absolute$(includePath_, $task))), $task));
-(await ff_core_NodeSystem.NodeSystem_execute$(system_, "npm", ["ci", "--no-bin-links"], ff_core_Buffer.new_(0, false), ff_core_Option.Some(includePath_), ff_core_Option.None(), 16777216, 9, true, $task))
+if(((!(await ff_core_Path.Path_exists$(nodeModules_, false, false, false, $task))) && (await ff_core_Path.Path_exists$(packageJson_, false, false, false, $task)))) {
+(await ff_core_NodeSystem.NodeSystem_writeErrorLine$(system_, ("Running npm install --no-package-lock --no-bin-links in " + (await ff_core_Path.Path_absolute$(includePath_, $task))), $task));
+(await ff_core_NodeSystem.NodeSystem_execute$(system_, "npm", ["install", "--no-package-lock", "--no-bin-links"], ff_core_Buffer.new_(0, false), ff_core_Option.Some(includePath_), ff_core_Option.None(), 16777216, 9, true, $task))
 }
 }
 }
