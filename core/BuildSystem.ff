@@ -91,7 +91,7 @@ internalCallEsBuild(
             minify: minify_,
             sourcemap: sourceMap_,
             platform: 'browser',
-            target: 'es6',
+            target: 'es2017',
             external: ['../../../node_modules/*'], // TODO
             outfile: outputPath_
         })
