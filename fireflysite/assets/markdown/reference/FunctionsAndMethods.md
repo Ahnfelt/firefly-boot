@@ -314,70 +314,50 @@ Firefly has methods, which are called like this:
 
 ```firefly
 Some(1).isEmpty() // False
-Some(1).map {_ + 1} // Some(2)
+Some(1).map({_ + 1}) // Some(2)
 ```
 
-The examples above, calls the two methods `isEmpty` and `map` defined on `Option`. The code below, shows how these methods are defined in `ff:core` package.
+The examples above, calls the two methods `isEmpty` and `map` defined on `Option`. The code below, shows how these methods are defined in `ff:core` package:
 
 ```firefly
-data Option[T] {
-    None
-    Some(value: T)
-}
-
 extend self[T]: Option[T] {
-    isEmpty(): Bool {
-        self.{
-            | None => True
-            | Some(_) => False
-        }
-    }
-    
-    map[R](body: T => R): Option[R] {
-        self.{
-            | None => None
-            | Some(v) => Some(body(v))
-        }
-    }    
+    isEmpty(): Bool {...}
+    map[R](body: T => R): Option[R] {...}    
 }
 ```
 
+The `extend` keyword is used to declare methods on values of a given type. The code above extend values of type `Option[T]` with two methods. The identifier `self` holds a reference to the value receiving the methods. The square bracket right after the self variable are optional and used to introduce type variables used to express the type extended with methods.
 
-Methods can be defined for a more narrow targer type, like `flatten` below:
+The two methods above are defined for all values of type `Option[T]`, but methods can be også be defined for a more narrow targer type, like `flatten` below:
 
 ```firefly
 extend self[T]: Option[Option[T]] {
-    flatten(): Option[T] {
-        self.{
-            | None => None
-            | Some(v) => v
-        }
-    }
+    flatten(): Option[T] {...}
 }
 ```
 
-The extend block above, will only define `flatten` for options types of options. 
+The extend block above declares `self` as ` Option[Option[T]]`, and likewise will only define `flatten` for options types of options. 
 
-In code below, the extend block defines methods for the target type `Option[T]`, but only when `T` implements the `Equal` trait.
-
+The scope of a method can also be narrowed down with trait constraints. 
 
 ```firefly
 extend self[T: Equal]: Option[T] {
-    contains(value: T): Bool {
-        self.{
-            | None => False
-            | Some(v) => v == value
-        }
-    }
+    contains(value: T): Bool {...}
 }
 ```
 
+In code above, the extend block defines methods for the target type `Option[T]`, but only when `T` implements the `Equal` trait.
 
+Extend blocks must reside in the same module at definition of the type that are extended with methods.
+
+Methods are equivalent to top level functions in terms of expressibility but differnt in terms of scoping. Each type definition has its own method scope.
 
 # Special method call syntax
 
 ```firefly
 if(x == 1) {"One"} else {"Several"}
+Some(1).map {_ + 1} // Some(2)
+
 ```
 
 # Trait functions
