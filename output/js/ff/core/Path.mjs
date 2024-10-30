@@ -275,6 +275,8 @@ ff_core_Path.Path_createDirectory(path_, false);
 ff_core_Stream.Stream_each(ff_core_Path.Path_entries(self_), ((file_) => {
 ff_core_Path.Path_copyTo(ff_core_Path.PathEntry_path(file_), ff_core_Path.Path_slash(path_, ff_core_Path.Path_relativeTo(ff_core_Path.PathEntry_path(file_), self_)), retries_, retryDelay_)
 }))
+} else if(ff_core_Path.Path_isSymbolicLink(self_)) {
+ff_core_Path.Path_createSymlinkTo(path_, ff_core_Path.Path_path(self_, ff_core_Path.Path_readSymbolicLink(self_)), true)
 } else {
 ff_core_Path.Path_writeStream(path_, ff_core_Path.Path_readStream(self_), false)
 }
@@ -284,7 +286,7 @@ export function Path_createDirectory(self_, createParentDirectories_ = false) {
 throw new Error('Function Path_createDirectory is missing on this target in sync context.');
 }
 
-export function Path_createSymlinkTo(self_, path_) {
+export function Path_createSymlinkTo(self_, path_, junction_ = false) {
 throw new Error('Function Path_createSymlinkTo is missing on this target in sync context.');
 }
 
@@ -298,6 +300,10 @@ throw new Error('Function Path_truncate is missing on this target in sync contex
 
 export function Path_renameTo(self_, path_) {
 throw new Error('Function Path_renameTo is missing on this target in sync context.');
+}
+
+export function Path_readSymbolicLink(self_) {
+throw new Error('Function Path_readSymbolicLink is missing on this target in sync context.');
 }
 
 export function Path_readText(self_) {
@@ -559,6 +565,8 @@ if((await ff_core_Path.Path_exists$(path_, false, false, false, $task))) {
 (await ff_core_Stream.Stream_each$((await ff_core_Path.Path_entries$(self_, $task)), (async (file_, $task) => {
 (await ff_core_Path.Path_copyTo$((await ff_core_Path.PathEntry_path$(file_, $task)), (await ff_core_Path.Path_slash$(path_, (await ff_core_Path.Path_relativeTo$((await ff_core_Path.PathEntry_path$(file_, $task)), self_, $task)), $task)), retries_, retryDelay_, $task))
 }), $task))
+} else if((await ff_core_Path.Path_isSymbolicLink$(self_, $task))) {
+(await ff_core_Path.Path_createSymlinkTo$(path_, (await ff_core_Path.Path_path$(self_, (await ff_core_Path.Path_readSymbolicLink$(self_, $task)), $task)), true, $task))
 } else {
 (await ff_core_Path.Path_writeStream$(path_, (await ff_core_Path.Path_readStream$(self_, $task)), false, $task))
 }
@@ -571,10 +579,10 @@ export async function Path_createDirectory$(self_, createParentDirectories_ = fa
         
 }
 
-export async function Path_createSymlinkTo$(self_, path_, $task) {
+export async function Path_createSymlinkTo$(self_, path_, junction_ = false, $task) {
 
             const fsPromises = import$1
-            await fsPromises.symlink(path_, self_)
+            await fsPromises.symlink(path_, self_, junction_ ? 'junction' : null)
         
 }
 
@@ -596,6 +604,13 @@ export async function Path_renameTo$(self_, path_, $task) {
 
             const fsPromises = import$1
             await fsPromises.rename(self_, path_)
+        
+}
+
+export async function Path_readSymbolicLink$(self_, $task) {
+
+            const fsPromises = import$1
+            return await fsPromises.readlink(self_)
         
 }
 
