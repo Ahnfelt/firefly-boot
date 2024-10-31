@@ -1,14 +1,13 @@
 data List[T] {}
 
-new[T](): List[T]
-    target js sync """
-        return [];
-    """
+new[T](): List[T] {
+    []
+}
 
-fill[T](size: Int, value: T): List[T]
-    target js sync """
-        return new Array(size_).fill(value_);
-    """
+fill[T](size: Int, value: T): List[T] {
+    let js = UnsafeJs.jsSystem()
+    js->Array->(size)->fill(value!)?
+}
 
 fillBy[T](size: Int, body: Int => T): List[T]
     target js sync """
@@ -38,17 +37,20 @@ extend self[T]: List[T] {
     size(): Int
         target js sync "return self_.length"
 
-    get(index: Int): Option[T]
-        target js sync """
-            return index_ >= 0 && index_ < self_.length
-                ? ff_core_Option.Some(self_[index_])
-                : ff_core_Option.None()
-        """
+    get(index: Int): Option[T] {
+        if(index >= 0 && index < self.size()) {
+            Some(self!.get(index)?)
+        } else {
+            None
+        }
+    }
 
-    grab(index: Int): T
-        target js sync """
-            return self_[index_] ?? internalGrab_(self_, index_);
-        """
+    grab(index: Int): T {
+        if(index < 0 || index >= self.size()) {
+            throw(GrabException)
+        }
+        self!.get(index)?
+    }
 
     first(): Option[T] {self.get(0)}
 
@@ -58,17 +60,21 @@ extend self[T]: List[T] {
 
     grabLast(): T {self.grab(self.size() - 1)}
 
-    takeFirst(count: Int = 1): List[T]
-        target js sync "return self_.slice(0, count_)"
+    takeFirst(count: Int = 1): List[T] {
+        self!->slice(0, count)?
+    }
 
-    takeLast(count: Int = 1): List[T]
-        target js sync "return self_.slice(-count_)"
+    takeLast(count: Int = 1): List[T] {
+        self!->slice(-count)?
+    }
 
-    dropFirst(count: Int = 1): List[T]
-        target js sync "return self_.slice(count_)"
+    dropFirst(count: Int = 1): List[T] {
+        self!->slice(count)?
+    }
 
-    dropLast(count: Int = 1): List[T]
-        target js sync "return self_.slice(0, self_.length - count_)"
+    dropLast(count: Int = 1): List[T] {
+        self!->slice(0, self.size() - count)?
+    }
         
     count(body: T => Bool): Int {
         mutable result = 0
@@ -151,23 +157,14 @@ extend self[T]: List[T] {
         self.modify(index) {_ => value}
     }
     
-    modify(index: Int, body: T => T): List[T]
-        target js sync """
-            if(index_ < 0 || index_ >= self_.length) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            let result = self_.slice();
-            result[index_] = body_(result[index_]);
-            return result;
-        """
-        target js async """
-            if(index_ < 0 || index_ >= self_.length) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            let result = self_.slice();
-            result[index_] = await body_(result[index_], $task);
-            return result;
-        """
+    modify(index: Int, body: T => T): List[T] {
+        if(index < 0 || index >= self.size()) {
+            throw(GrabException())
+        }
+        let result = self!->slice()
+        result.set(index, body(result.get(index)?)!)
+        result?
+    }
         
     zip[S](that: List[S]): List[Pair[T, S]] {
         if(self.size() <= that.size()) {
@@ -219,22 +216,29 @@ extend self[T]: List[T] {
         }
     }
 
-    toArray(): Array[T]
-        target js sync "return {array: self_.slice()}"
+    toArray(): Array[T] {
+        let js = UnsafeJs.jsSystem()
+        js->(array = self!->slice())?
+    }
 
-    each(body: T => Unit): Unit
-        target js sync """
-            return self_.forEach(body_);
-        """
-        target js async """
-            for(let i = 0; i < self_.length; i++) {
-                await body_(self_[i], $task)
-            }
-        """
+    each(body: T => Unit): Unit {
+        mutable i = 0
+        while {i < self.size()} {
+            body(self!.get(i)?)
+            i += 1
+        }
+    }
         
-    eachWhile(body: T => Bool): Unit
-        target js sync "for(const value of self_) if(!body_(value)) break"
-        target js async "for(const value of self_) if(!await body_(value, $task)) break"
+    eachWhile(body: T => Bool): Unit {
+        mutable i = 0
+        while {i < self.size()} {
+            if(body(self!.get(i)?)) {
+                i += 1
+            } else {
+                i = self.size()
+            }
+        }
+    }
 
     all(body: T => Bool): Bool {
         mutable result = True
@@ -296,17 +300,13 @@ extend self[T]: List[T] {
         Pair(self.filter(body), self.filter {!body(_)})
     }
 
-    map[S](body: T => S): List[S]
-        target js sync """
-            return self_.map(body_)
-        """
-        target js async """
-            let result = [];
-            for(let i = 0; i < self_.length; i++) {
-                result.push(await body_(self_[i], $task));
-            }
-            return result;
-        """
+    map[S](body: T => S): List[S] {
+        let array = Array.new()
+        self.each {e => 
+            array.push(body(e))
+        }
+        array.drain()
+    }
         
     flatMap[S](body: T => List[S]): List[S] {
         let results = Array.new()

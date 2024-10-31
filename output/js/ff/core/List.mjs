@@ -98,15 +98,12 @@ import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
 
 
 export function new_() {
-
-        return [];
-    
+return []
 }
 
 export function fill_(size_, value_) {
-
-        return new Array(size_).fill(value_);
-    
+const js_ = ff_core_UnsafeJs.jsSystem_();
+return (new Array(size_)).fill(value_)
 }
 
 export function fillBy_(size_, body_) {
@@ -132,11 +129,12 @@ export function internalGrab_(self_, index_) {
 }
 
 export async function new_$($task) {
-throw new Error('Function new is missing on this target in async context.');
+return []
 }
 
 export async function fill_$(size_, value_, $task) {
-throw new Error('Function fill is missing on this target in async context.');
+const js_ = ff_core_UnsafeJs.jsSystem_();
+return (new Array(size_)).fill(value_)
 }
 
 export async function fillBy_$(size_, body_, $task) {
@@ -174,17 +172,18 @@ return self_.length
 }
 
 export function List_get(self_, index_) {
-
-            return index_ >= 0 && index_ < self_.length
-                ? ff_core_Option.Some(self_[index_])
-                : ff_core_Option.None()
-        
+if(((index_ >= 0) && (index_ < self_.length))) {
+return ff_core_Option.Some(self_[index_])
+} else {
+return ff_core_Option.None()
+}
 }
 
 export function List_grab(self_, index_) {
-
-            return self_[index_] ?? internalGrab_(self_, index_);
-        
+if(((index_ < 0) || (index_ >= self_.length))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+return self_[index_]
 }
 
 export function List_first(self_) {
@@ -208,7 +207,7 @@ return self_.slice(0, count_)
 }
 
 export function List_takeLast(self_, count_ = 1) {
-return self_.slice(-count_)
+return self_.slice((-count_))
 }
 
 export function List_dropFirst(self_, count_ = 1) {
@@ -216,7 +215,7 @@ return self_.slice(count_)
 }
 
 export function List_dropLast(self_, count_ = 1) {
-return self_.slice(0, self_.length - count_)
+return self_.slice(0, (self_.length - count_))
 }
 
 export function List_count(self_, body_) {
@@ -306,14 +305,12 @@ return value_
 }
 
 export function List_modify(self_, index_, body_) {
-
-            if(index_ < 0 || index_ >= self_.length) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            let result = self_.slice();
-            result[index_] = body_(result[index_]);
-            return result;
-        
+if(((index_ < 0) || (index_ >= self_.length))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+const result_ = self_.slice();
+result_[index_] = body_(result_[index_]);
+return result_
 }
 
 export function List_zip(self_, that_) {
@@ -374,17 +371,27 @@ return result_
 }
 
 export function List_toArray(self_) {
+const js_ = ff_core_UnsafeJs.jsSystem_();
 return {array: self_.slice()}
 }
 
 export function List_each(self_, body_) {
-
-            return self_.forEach(body_);
-        
+let i_ = 0;
+while((i_ < self_.length)) {
+body_(self_[i_]);
+i_ += 1
+}
 }
 
 export function List_eachWhile(self_, body_) {
-for(const value of self_) if(!body_(value)) break
+let i_ = 0;
+while((i_ < self_.length)) {
+if(body_(self_[i_])) {
+i_ += 1
+} else {
+i_ = self_.length
+}
+}
 }
 
 export function List_all(self_, body_) {
@@ -448,9 +455,12 @@ return (!body_(_w1))
 }
 
 export function List_map(self_, body_) {
-
-            return self_.map(body_)
-        
+const array_ = ff_core_Array.new_();
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const e_ = for_a[for_i];
+array_.array.push(body_(e_))
+};
+return ff_core_Array.Array_drain(array_)
 }
 
 export function List_flatMap(self_, body_) {
@@ -540,11 +550,18 @@ throw new Error('Function List_size is missing on this target in async context.'
 }
 
 export async function List_get$(self_, index_, $task) {
-throw new Error('Function List_get is missing on this target in async context.');
+if(((index_ >= 0) && (index_ < self_.length))) {
+return ff_core_Option.Some(self_[index_])
+} else {
+return ff_core_Option.None()
+}
 }
 
 export async function List_grab$(self_, index_, $task) {
-throw new Error('Function List_grab is missing on this target in async context.');
+if(((index_ < 0) || (index_ >= self_.length))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+return self_[index_]
 }
 
 export async function List_first$(self_, $task) {
@@ -564,19 +581,19 @@ return ff_core_List.List_grab(self_, (self_.length - 1))
 }
 
 export async function List_takeFirst$(self_, count_ = 1, $task) {
-throw new Error('Function List_takeFirst is missing on this target in async context.');
+return self_.slice(0, count_)
 }
 
 export async function List_takeLast$(self_, count_ = 1, $task) {
-throw new Error('Function List_takeLast is missing on this target in async context.');
+return self_.slice((-count_))
 }
 
 export async function List_dropFirst$(self_, count_ = 1, $task) {
-throw new Error('Function List_dropFirst is missing on this target in async context.');
+return self_.slice(count_)
 }
 
 export async function List_dropLast$(self_, count_ = 1, $task) {
-throw new Error('Function List_dropLast is missing on this target in async context.');
+return self_.slice(0, (self_.length - count_))
 }
 
 export async function List_count$(self_, body_, $task) {
@@ -666,14 +683,12 @@ return value_
 }
 
 export async function List_modify$(self_, index_, body_, $task) {
-
-            if(index_ < 0 || index_ >= self_.length) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            let result = self_.slice();
-            result[index_] = await body_(result[index_], $task);
-            return result;
-        
+if(((index_ < 0) || (index_ >= self_.length))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+const result_ = self_.slice();
+result_[index_] = (await body_(result_[index_], $task));
+return result_
 }
 
 export async function List_zip$(self_, that_, $task) {
@@ -734,19 +749,27 @@ return result_
 }
 
 export async function List_toArray$(self_, $task) {
-throw new Error('Function List_toArray is missing on this target in async context.');
+const js_ = ff_core_UnsafeJs.jsSystem_();
+return {array: self_.slice()}
 }
 
 export async function List_each$(self_, body_, $task) {
-
-            for(let i = 0; i < self_.length; i++) {
-                await body_(self_[i], $task)
-            }
-        
+let i_ = 0;
+while((i_ < self_.length)) {
+(await body_(self_[i_], $task));
+i_ += 1
+}
 }
 
 export async function List_eachWhile$(self_, body_, $task) {
-for(const value of self_) if(!await body_(value, $task)) break
+let i_ = 0;
+while((i_ < self_.length)) {
+if((await body_(self_[i_], $task))) {
+i_ += 1
+} else {
+i_ = self_.length
+}
+}
 }
 
 export async function List_all$(self_, body_, $task) {
@@ -810,13 +833,12 @@ return (!(await body_(_w1, $task)))
 }
 
 export async function List_map$(self_, body_, $task) {
-
-            let result = [];
-            for(let i = 0; i < self_.length; i++) {
-                result.push(await body_(self_[i], $task));
-            }
-            return result;
-        
+const array_ = ff_core_Array.new_();
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const e_ = for_a[for_i];
+array_.array.push((await body_(e_, $task)))
+};
+return ff_core_Array.Array_drain(array_)
 }
 
 export async function List_flatMap$(self_, body_, $task) {
