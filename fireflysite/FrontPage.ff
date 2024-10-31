@@ -107,7 +107,7 @@ new(): Document {
                 Text("The language server comes with type driven autocompletion.")
                 Text("It instantly presents a very precise list of completions, and the expected type is used to preselect a likely completion.")
             ])
-            Image("/assets/image/autocomplete-small.png")
+            Image("/assets/image/autocomplete-small.webp")
         )
         SplitSection(
             "No async dilemma"

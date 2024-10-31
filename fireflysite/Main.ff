@@ -107,6 +107,7 @@ guessContentType(path: String): Option[String] {
     path.split('.').last().flatMap {
         | "md" => Some("text/markdown")
         | "png" => Some("image/png")
+        | "webp" => Some("image/webp")
         | "ttf" => Some("font/ttf")
         | _ => None
     }
@@ -139,7 +140,7 @@ serveGuideHtml(title: String, contentHtml: String, styleTags: String, request: W
     request.writeText("<meta name='theme-color' content='#ecc45e'>")
     request.writeText("<link rel='preload' href='/assets/font/FireflyMono.ttf' as='font' crossorigin='anonymous'>")
     request.writeText("<link rel='preload' href='/assets/font/FireflySans.ttf' as='font' crossorigin='anonymous'>")
-    request.writeText("<link rel='preload' href='/assets/image/firefly-logo-yellow.png' as='image'>")
+    request.writeText("<link rel='preload' href='/assets/image/firefly-logo-yellow.webp' as='image'>")
     request.writeText("<style>@font-face { font-family: 'Firefly Mono'; font-display: fallback; src: url('/assets/font/FireflyMono.ttf'); unicode-range: U+000-5FF; }</style>")
     request.writeText("<style>@font-face { font-family: 'Firefly Sans'; font-display: fallback; src: url('/assets/font/FireflySans.ttf'); unicode-range: U+000-5FF; }</style>")
     request.writeText(styleTags)
