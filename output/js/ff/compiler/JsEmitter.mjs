@@ -2150,6 +2150,14 @@ const e3_ = _guard1[2];
 return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
 }
 }
+if(_1 === "ff_core/JsValue.JsValue_equals") {
+const _guard1 = arguments_;
+if(_guard1.length === 2) {
+const e1_ = _guard1[0];
+const e2_ = _guard1[1];
+return ff_core_Option.Some(((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + " === ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)))
+}
+}
 if(_1 === "ff:core/JsSystem.JsSystem_set") {
 const _guard3 = arguments_;
 if(_guard3.length === 3 && _guard3[1].EString) {
@@ -4135,6 +4143,14 @@ const e1_ = _guard1[0];
 const e2_ = _guard1[1];
 const e3_ = _guard1[2];
 return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
+}
+}
+if(_1 === "ff_core/JsValue.JsValue_equals") {
+const _guard1 = arguments_;
+if(_guard1.length === 2) {
+const e1_ = _guard1[0];
+const e2_ = _guard1[1];
+return ff_core_Option.Some(((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + " === ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)))
 }
 }
 if(_1 === "ff:core/JsSystem.JsSystem_set") {

@@ -785,6 +785,8 @@ extend self: JsEmitter {
                 Some(self.emitTerm(e1, async) + self.emitField(e2, async) + " += " + self.emitTerm(e3, async))
             | "ff:core/JsValue.JsValue_decrement" {arguments | [e1, e2, e3]} =>
                 Some(self.emitTerm(e1, async) + self.emitField(e2, async) + " -= " + self.emitTerm(e3, async))
+            | "ff_core/JsValue.JsValue_equals" {arguments | [e1, e2]} =>
+                Some(self.emitTerm(e1, async) + " === " + self.emitTerm(e2, async))
             | "ff:core/JsSystem.JsSystem_set" {arguments | [e1, EString(_, q), e3]} {noSideEffects(e1)} {safeBare(q) | Some(s)} =>
                 Some(s + " = " + self.emitTerm(e3, async))
             | "ff:core/JsSystem.JsSystem_increment" {arguments | [e1, EString(_, q), e3]} {noSideEffects(e1)} {safeBare(q) | Some(s)} =>
