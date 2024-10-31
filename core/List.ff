@@ -9,33 +9,39 @@ fill[T](size: Int, value: T): List[T] {
     js->Array->(size)->fill(value!)?
 }
 
-fillBy[T](size: Int, body: Int => T): List[T]
-    target js sync """
-        return Array.from({length: size_}, (_, i) => body_(i));
-    """
-    target js async """
-        const array = new Array(size_);
-        for(let i = 0; i < size_; i++) {
-            array[i] = await(body_(_i));
+fillBy[T](size: Int, body: Int => T): List[T] {
+    if(UnsafeJs.inAsync()) {
+        let js = UnsafeJs.jsSystem()
+        let array = js->Array->(size)
+        1.until(size).each {i => 
+            array.set(i, body(i)!)
         }
-        return array;
-    """
+        array?
+    } else {
+        let js = UnsafeJs.jsSystem()
+        js->Array->from(js->(length = size), {_, i => body(i)}!)?
+    }
+}
 
-range(size: Int): List[Int]
-    target js sync """
-        return Array.from({length: size_}, (_, i) => i);
-    """
+
+range(size: Int): List[Int] {
+    let js = UnsafeJs.jsSystem()
+    js->Array->from(js->(length = size), {_, i => i}!)?
+}
 
 extend self[T]: List[T] {
 
-    addAll(that: List[T]): List[T]
-        target js sync "return self_.concat(that_)"
+    addAll(that: List[T]): List[T] {
+        self!->concat(that!)?
+    }
 
-    isEmpty(): Bool
-        target js sync "return self_.length === 0"
+    isEmpty(): Bool {
+        self.size() == 0
+    }
 
-    size(): Int
-        target js sync "return self_.length"
+    size(): Int {
+        self!->length?
+    }
 
     get(index: Int): Option[T] {
         if(index >= 0 && index < self.size()) {
@@ -432,8 +438,9 @@ extend self[K, V]: List[Pair[K, V]] {
 
 extend self: List[String] {
 
-    join(separator: String = ""): String
-        target js sync "return self_.join(separator_)"
+    join(separator: String = ""): String {
+        self!->join(separator)?
+    }
 
 }
 
@@ -452,7 +459,7 @@ instance List[T: Show]: Show {
 
 instance List[T: Equal]: Equal {
     equals(x: List[T], y: List[T]): Bool {
-        if(internalSame(x, y)) {True} else:
+        if(x!.equals(y!)) {True} else:
         if(x.size() != y.size()) {False} else:
         mutable i = -1
         x.all {l =>
@@ -464,7 +471,7 @@ instance List[T: Equal]: Equal {
 
 instance List[T: Order]: Order {
     compare(x: List[T], y: List[T]): Ordering {
-        if(internalSame(x, y)) {OrderingSame} else:
+        if(x!.equals(y!)) {OrderingSame} else:
         let size = x.size().min(y.size())
         mutable i = 0
         mutable ordering = OrderingSame
@@ -476,9 +483,6 @@ instance List[T: Order]: Order {
         Ordering.compare(x.size(), y.size())
     }
 }
-
-internalSame[T](left: List[T], right: List[T]): Bool
-    target js sync "return left_ === right_"
 
 internalGrab[T](self: List[T], index: Int): T
     target js sync """

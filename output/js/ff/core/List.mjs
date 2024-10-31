@@ -107,19 +107,27 @@ return (new Array(size_)).fill(value_)
 }
 
 export function fillBy_(size_, body_) {
-
-        return Array.from({length: size_}, (_, i) => body_(i));
-    
+if(false) {
+const js_ = ff_core_UnsafeJs.jsSystem_();
+const array_ = (new Array(size_));
+for(let for_i = 1, for_e = size_; for_i < for_e; for_i++) {
+const i_ = for_i;
+array_[i_] = body_(i_)
+};
+return array_
+} else {
+const js_ = ff_core_UnsafeJs.jsSystem_();
+return Array.from({length: size_}, ((_, i_) => {
+return body_(i_)
+}))
+}
 }
 
 export function range_(size_) {
-
-        return Array.from({length: size_}, (_, i) => i);
-    
-}
-
-export function internalSame_(left_, right_) {
-return left_ === right_
+const js_ = ff_core_UnsafeJs.jsSystem_();
+return Array.from({length: size_}, ((_, i_) => {
+return i_
+}))
 }
 
 export function internalGrab_(self_, index_) {
@@ -138,21 +146,27 @@ return (new Array(size_)).fill(value_)
 }
 
 export async function fillBy_$(size_, body_, $task) {
-
-        const array = new Array(size_);
-        for(let i = 0; i < size_; i++) {
-            array[i] = await(body_(_i));
-        }
-        return array;
-    
+if(true) {
+const js_ = ff_core_UnsafeJs.jsSystem_();
+const array_ = (new Array(size_));
+for(let for_i = 1, for_e = size_; for_i < for_e; for_i++) {
+const i_ = for_i;
+array_[i_] = (await body_(i_, $task))
+};
+return array_
+} else {
+const js_ = ff_core_UnsafeJs.jsSystem_();
+return Array.from({length: size_}, (async (_, i_, $task) => {
+return (await body_(i_, $task))
+}))
+}
 }
 
 export async function range_$(size_, $task) {
-throw new Error('Function range is missing on this target in async context.');
-}
-
-export async function internalSame_$(left_, right_, $task) {
-throw new Error('Function internalSame is missing on this target in async context.');
+const js_ = ff_core_UnsafeJs.jsSystem_();
+return Array.from({length: size_}, ((_, i_) => {
+return i_
+}))
 }
 
 export async function internalGrab_$(self_, index_, $task) {
@@ -164,7 +178,7 @@ return self_.concat(that_)
 }
 
 export function List_isEmpty(self_) {
-return self_.length === 0
+return (self_.length === 0)
 }
 
 export function List_size(self_) {
@@ -538,15 +552,15 @@ return ff_core_Array.Array_drain(array_)
 }
 
 export async function List_addAll$(self_, that_, $task) {
-throw new Error('Function List_addAll is missing on this target in async context.');
+return self_.concat(that_)
 }
 
 export async function List_isEmpty$(self_, $task) {
-throw new Error('Function List_isEmpty is missing on this target in async context.');
+return (self_.length === 0)
 }
 
 export async function List_size$(self_, $task) {
-throw new Error('Function List_size is missing on this target in async context.');
+return self_.length
 }
 
 export async function List_get$(self_, index_, $task) {
@@ -1076,7 +1090,7 @@ return self_.join(separator_)
 }
 
 export async function List_join$(self_, separator_ = "", $task) {
-throw new Error('Function List_join is missing on this target in async context.');
+return self_.join(separator_)
 }
 
 export function ff_core_Show_Show$ff_core_List_List(ff_core_Show_Show$T) { return {
@@ -1110,7 +1124,7 @@ return ff_core_Array.Array_join(array_, "")
 
 export function ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal_Equal$T) { return {
 equals_(x_, y_) {
-if(ff_core_List.internalSame_(x_, y_)) {
+if(ff_core_JsValue.JsValue_equals(x_, y_, ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue)) {
 return true
 } else {
 if((x_.length !== y_.length)) {
@@ -1125,7 +1139,7 @@ return ff_core_Equal_Equal$T.equals_(l_, (y_[i_] ?? ff_core_List.internalGrab_(y
 }
 },
 async equals_$(x_, y_, $task) {
-if(ff_core_List.internalSame_(x_, y_)) {
+if(ff_core_JsValue.JsValue_equals(x_, y_, ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue)) {
 return true
 } else {
 if((x_.length !== y_.length)) {
@@ -1143,7 +1157,7 @@ return ff_core_Equal_Equal$T.equals_(l_, (y_[i_] ?? ff_core_List.internalGrab_(y
 
 export function ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering_Order$T) { return {
 compare_(x_, y_) {
-if(ff_core_List.internalSame_(x_, y_)) {
+if(ff_core_JsValue.JsValue_equals(x_, y_, ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue)) {
 return ff_core_Ordering.OrderingSame()
 } else {
 const size_ = ff_core_Int.Int_min(x_.length, y_.length);
@@ -1161,7 +1175,7 @@ return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.lengt
 }
 },
 async compare_$(x_, y_, $task) {
-if(ff_core_List.internalSame_(x_, y_)) {
+if(ff_core_JsValue.JsValue_equals(x_, y_, ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue)) {
 return ff_core_Ordering.OrderingSame()
 } else {
 const size_ = ff_core_Int.Int_min(x_.length, y_.length);
