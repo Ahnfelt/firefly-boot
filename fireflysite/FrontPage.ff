@@ -99,7 +99,7 @@ new(): Document {
                 Text("You can usually fix these without even reading the error message.")
                 Text("And when you need to read the error messages, they're short and to the point.")
             ])
-            Image("/assets/image/edit-time-error.png")
+            Image("/assets/image/edit-time-error.webp")
         )
         SplitSection(
             "Type driven autocompletion"
