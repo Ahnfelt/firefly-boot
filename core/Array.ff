@@ -1,63 +1,62 @@
 class Array[T] {}
 
-new[T](): Array[T]
-    target js sync "return {array: []}"
+new[T](): Array[T] {
+    let js = UnsafeJs.jsSystem()
+    js->(array = [])?
+}
+ 
+fill[T](size: Int, value: T): List[T] {
+    let js = UnsafeJs.jsSystem()
+    js->(array = List.fill(size, value)!)?
+}
 
-fill[T](size: Int, value: T): List[T]
-    target js sync """
-        return {array: new Array(size_).fill(value_)};
-    """
+fillBy[T](size: Int, body: Int => T): List[T] {
+    let js = UnsafeJs.jsSystem()
+    js->(array = List.fillBy(size, body)!)?
+}
 
-fillBy[T](size: Int, body: Int => T): List[T]
-    target js sync """
-        return {array: Array.from({length: size_}, (_, i) => body_(i))};
-    """
-
-range(size: Int): List[Int]
-    target js sync """
-        return {array: Array.from({length: size_}, (_, i) => i)};
-    """
+range(size: Int): List[Int] {
+    let js = UnsafeJs.jsSystem()
+    js->(array = List.range(size)!)?
+}
 
 extend self[T]: Array[T] {
+    
 
-    isEmpty(): Bool
-        target js sync "return self_.array.length === 0"
+    isEmpty(): Bool {
+        self.size() == 0
+    }
 
-    size(): Int
-        target js sync "return self_.array.length"
+    size(): Int {
+        self!->array->length?
+    }
 
-    get(index: Int): Option[T]
-        target js sync """
-            return index_ >= 0 && index_ < self_.array.length
-                ? ff_core_Option.Some(self_.array[index_])
-                : ff_core_Option.None()
-        """
+    get(index: Int): Option[T] {
+        if(index >= 0 && index < self.size()) {
+            Some(self!->array.get(index)?)
+        } else {
+            None
+        }
+    }
 
-    grab(index: Int): T
-        target js sync """
-            return self_.array[index_] ?? internalGrab_(self_, index_);
-        """
+    grab(index: Int): T {
+        if(index < 0 || index >= self.size()) {
+            throw(GrabException)
+        }
+        self!->array.get(index)?
+    }
+
+    first(): Option[T] {self.get(0)}
+
+    last(): Option[T] {self.get(self.size() - 1)}
 
     grabFirst(): T {self.grab(0)}
 
     grabLast(): T {self.grab(self.size() - 1)}
 
-    first(): Option[T]
-        target js sync """
-            return self_.array.length > 0
-                ? ff_core_Option.Some(self_.array[0])
-                : ff_core_Option.None()
-        """
-
-    last(): Option[T]
-        target js sync """
-            return self_.array.length > 0
-                ? ff_core_Option.Some(self_.array[self_.array.length - 1])
-                : ff_core_Option.None()
-        """
-
-    push(value: T): Unit
-        target js sync "self_.array.push(value_)"
+    push(value: T): Unit {
+        self!->array->push(value!)?
+    }
 
     pushArray(value: Array[T]): Unit
         target js sync "self_.array.push(...value_.array)"

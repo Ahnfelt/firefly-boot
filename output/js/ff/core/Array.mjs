@@ -98,25 +98,23 @@ import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
 
 
 export function new_() {
+const js_ = ff_core_UnsafeJs.jsSystem_();
 return {array: []}
 }
 
 export function fill_(size_, value_) {
-
-        return {array: new Array(size_).fill(value_)};
-    
+const js_ = ff_core_UnsafeJs.jsSystem_();
+return {array: ff_core_List.fill_(size_, value_)}
 }
 
 export function fillBy_(size_, body_) {
-
-        return {array: Array.from({length: size_}, (_, i) => body_(i))};
-    
+const js_ = ff_core_UnsafeJs.jsSystem_();
+return {array: ff_core_List.fillBy_(size_, body_)}
 }
 
 export function range_(size_) {
-
-        return {array: Array.from({length: size_}, (_, i) => i)};
-    
+const js_ = ff_core_UnsafeJs.jsSystem_();
+return {array: ff_core_List.range_(size_)}
 }
 
 export function sortRange_(array_, compare_, start_, end_) {
@@ -154,19 +152,23 @@ export function internalGrab_(self_, index_) {
 }
 
 export async function new_$($task) {
-throw new Error('Function new is missing on this target in async context.');
+const js_ = ff_core_UnsafeJs.jsSystem_();
+return {array: []}
 }
 
 export async function fill_$(size_, value_, $task) {
-throw new Error('Function fill is missing on this target in async context.');
+const js_ = ff_core_UnsafeJs.jsSystem_();
+return {array: ff_core_List.fill_(size_, value_)}
 }
 
 export async function fillBy_$(size_, body_, $task) {
-throw new Error('Function fillBy is missing on this target in async context.');
+const js_ = ff_core_UnsafeJs.jsSystem_();
+return {array: (await ff_core_List.fillBy_$(size_, body_, $task))}
 }
 
 export async function range_$(size_, $task) {
-throw new Error('Function range is missing on this target in async context.');
+const js_ = ff_core_UnsafeJs.jsSystem_();
+return {array: ff_core_List.range_(size_)}
 }
 
 export async function sortRange_$(array_, compare_, start_, end_, $task) {
@@ -202,7 +204,7 @@ throw new Error('Function internalGrab is missing on this target in async contex
 }
 
 export function Array_isEmpty(self_) {
-return self_.array.length === 0
+return (self_.array.length === 0)
 }
 
 export function Array_size(self_) {
@@ -210,17 +212,26 @@ return self_.array.length
 }
 
 export function Array_get(self_, index_) {
-
-            return index_ >= 0 && index_ < self_.array.length
-                ? ff_core_Option.Some(self_.array[index_])
-                : ff_core_Option.None()
-        
+if(((index_ >= 0) && (index_ < self_.array.length))) {
+return ff_core_Option.Some(self_.array[index_])
+} else {
+return ff_core_Option.None()
+}
 }
 
 export function Array_grab(self_, index_) {
+if(((index_ < 0) || (index_ >= self_.array.length))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+return self_.array[index_]
+}
 
-            return self_.array[index_] ?? internalGrab_(self_, index_);
-        
+export function Array_first(self_) {
+return ff_core_Array.Array_get(self_, 0)
+}
+
+export function Array_last(self_) {
+return ff_core_Array.Array_get(self_, (self_.array.length - 1))
 }
 
 export function Array_grabFirst(self_) {
@@ -229,22 +240,6 @@ return (self_.array[0] ?? ff_core_Array.internalGrab_(self_, 0))
 
 export function Array_grabLast(self_) {
 return (self_.array[(self_.array.length - 1)] ?? ff_core_Array.internalGrab_(self_, (self_.array.length - 1)))
-}
-
-export function Array_first(self_) {
-
-            return self_.array.length > 0
-                ? ff_core_Option.Some(self_.array[0])
-                : ff_core_Option.None()
-        
-}
-
-export function Array_last(self_) {
-
-            return self_.array.length > 0
-                ? ff_core_Option.Some(self_.array[self_.array.length - 1])
-                : ff_core_Option.None()
-        
 }
 
 export function Array_push(self_, value_) {
@@ -402,19 +397,34 @@ self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))
 }
 
 export async function Array_isEmpty$(self_, $task) {
-throw new Error('Function Array_isEmpty is missing on this target in async context.');
+return (self_.array.length === 0)
 }
 
 export async function Array_size$(self_, $task) {
-throw new Error('Function Array_size is missing on this target in async context.');
+return self_.array.length
 }
 
 export async function Array_get$(self_, index_, $task) {
-throw new Error('Function Array_get is missing on this target in async context.');
+if(((index_ >= 0) && (index_ < self_.array.length))) {
+return ff_core_Option.Some(self_.array[index_])
+} else {
+return ff_core_Option.None()
+}
 }
 
 export async function Array_grab$(self_, index_, $task) {
-throw new Error('Function Array_grab is missing on this target in async context.');
+if(((index_ < 0) || (index_ >= self_.array.length))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+return self_.array[index_]
+}
+
+export async function Array_first$(self_, $task) {
+return ff_core_Array.Array_get(self_, 0)
+}
+
+export async function Array_last$(self_, $task) {
+return ff_core_Array.Array_get(self_, (self_.array.length - 1))
 }
 
 export async function Array_grabFirst$(self_, $task) {
@@ -425,16 +435,8 @@ export async function Array_grabLast$(self_, $task) {
 return (self_.array[(self_.array.length - 1)] ?? ff_core_Array.internalGrab_(self_, (self_.array.length - 1)))
 }
 
-export async function Array_first$(self_, $task) {
-throw new Error('Function Array_first is missing on this target in async context.');
-}
-
-export async function Array_last$(self_, $task) {
-throw new Error('Function Array_last is missing on this target in async context.');
-}
-
 export async function Array_push$(self_, value_, $task) {
-throw new Error('Function Array_push is missing on this target in async context.');
+self_.array.push(value_)
 }
 
 export async function Array_pushArray$(self_, value_, $task) {
