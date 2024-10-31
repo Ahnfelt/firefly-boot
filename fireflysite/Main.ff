@@ -136,6 +136,7 @@ serveGuideHtml(title: String, contentHtml: String, styleTags: String, request: W
     request.writeText("<script type='module' src='/js/ff/fireflysite/Main.mjs'></script>")
     request.writeText("<head>")
     request.writeText("<title>" + title + "</title>")
+    request.writeText("<meta description='Firefly code runs in the browser and on the server, or even at build time. You can implement highly interactive webapps without resorting to JavaScript.'>")
     request.writeText("<meta name='viewport' content='width=device-width, initial-scale=1.0'>")
     request.writeText("<meta name='theme-color' content='#ecc45e'>")
     request.writeText("<link rel='preload' href='/assets/font/firefly-mono.woff2' as='font' crossorigin='anonymous'>")
