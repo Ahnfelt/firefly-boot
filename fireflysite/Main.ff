@@ -31,7 +31,7 @@ nodeMain(system: NodeSystem): Unit {
             | ["assets", "font", "firefly-mono.woff2"] => 
                 serveAsset(system, cacheSalt, request, "font/woff2", "/assets/font/gf-noto-sans-mono-latin.woff2")
             | ["assets", "font", "firefly-sans.woff2"] => 
-                serveAsset(system, cacheSalt, request, "font/woff2", "/assets/font/gf-inter-latin.woff2")
+                serveAsset(system, cacheSalt, request, "font/woff2", "/assets/font/gf-nunito-sans-latin.woff2")
             | ["assets", ...rest] => serveAssets(system, cacheSalt, request, rest)
             | _ {serveGuide(system, request)} => 
             | _ =>
