@@ -149,6 +149,12 @@ export function object_() {
     
 }
 
+export function new0_() {
+
+        return {};
+    
+}
+
 export function fields_(body_) {
 
         const result = {};
@@ -271,6 +277,10 @@ throw new Error('Function array is missing on this target in async context.');
 
 export async function object_$($task) {
 throw new Error('Function object is missing on this target in async context.');
+}
+
+export async function new0_$($task) {
+throw new Error('Function new0 is missing on this target in async context.');
 }
 
 export async function fields_$(body_, $task) {
@@ -443,6 +453,10 @@ export function Json_isNull(self_) {
 
             return self_ === null;
         
+}
+
+export function Json_get(self_, key_) {
+return ff_core_Json.Json_field(self_, key_)
 }
 
 export function Json_field(self_, key_) {
@@ -636,6 +650,10 @@ export async function Json_isNull$(self_, $task) {
 throw new Error('Function Json_isNull is missing on this target in async context.');
 }
 
+export async function Json_get$(self_, key_, $task) {
+return ff_core_Json.Json_field(self_, key_)
+}
+
 export async function Json_field$(self_, key_, $task) {
 throw new Error('Function Json_field is missing on this target in async context.');
 }
@@ -725,7 +743,7 @@ return ff_core_Option.Some(json_)
 
 export const ff_core_Json_JsonLike$ff_core_String_String = {
 toJson_(value_) {
-return ff_core_Json.string_(value_)
+return value_
 },
 fromJson_(json_) {
 const json_a = json_;
@@ -735,7 +753,7 @@ return ff_core_Json.Json_getString(_w1)
 }
 },
 async toJson_$(value_, $task) {
-return ff_core_Json.string_(value_)
+return value_
 },
 async fromJson_$(json_, $task) {
 const json_a = json_;
@@ -748,7 +766,7 @@ return ff_core_Json.Json_getString(_w1)
 
 export const ff_core_Json_JsonLike$ff_core_Int_Int = {
 toJson_(value_) {
-return ff_core_Json.int_(value_)
+return value_
 },
 fromJson_(json_) {
 const json_a = json_;
@@ -758,7 +776,7 @@ return ff_core_Json.Json_getInt(_w1)
 }
 },
 async toJson_$(value_, $task) {
-return ff_core_Json.int_(value_)
+return value_
 },
 async fromJson_$(json_, $task) {
 const json_a = json_;
@@ -771,7 +789,7 @@ return ff_core_Json.Json_getInt(_w1)
 
 export const ff_core_Json_JsonLike$ff_core_Float_Float = {
 toJson_(value_) {
-return ff_core_Json.float_(value_)
+return value_
 },
 fromJson_(json_) {
 const json_a = json_;
@@ -781,7 +799,7 @@ return ff_core_Json.Json_getFloat(_w1)
 }
 },
 async toJson_$(value_, $task) {
-return ff_core_Json.float_(value_)
+return value_
 },
 async fromJson_$(json_, $task) {
 const json_a = json_;
@@ -794,7 +812,7 @@ return ff_core_Json.Json_getFloat(_w1)
 
 export const ff_core_Json_JsonLike$ff_core_Bool_Bool = {
 toJson_(value_) {
-return ff_core_Json.bool_(value_)
+return value_
 },
 fromJson_(json_) {
 const json_a = json_;
@@ -804,7 +822,7 @@ return ff_core_Json.Json_getBool(_w1)
 }
 },
 async toJson_$(value_, $task) {
-return ff_core_Json.bool_(value_)
+return value_
 },
 async fromJson_$(json_, $task) {
 const json_a = json_;
@@ -817,9 +835,9 @@ return ff_core_Json.Json_getBool(_w1)
 
 export function ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json_JsonLike$T) { return {
 toJson_(value_) {
-return ff_core_Json.array_(ff_core_List.List_map(value_, ((value_) => {
+return ff_core_List.List_map(value_, ((value_) => {
 return ff_core_Json_JsonLike$T.toJson_(value_)
-})))
+}))
 },
 fromJson_(json_) {
 return ff_core_Option.Option_flatMap(ff_core_Json.Json_getArray(json_), ((array_) => {
@@ -847,9 +865,9 @@ return ff_core_Option.Some(ff_core_Array.Array_drain(result_))
 }))
 },
 async toJson_$(value_, $task) {
-return ff_core_Json.array_(ff_core_List.List_map(value_, ((value_) => {
+return ff_core_List.List_map(value_, ((value_) => {
 return ff_core_Json_JsonLike$T.toJson_(value_)
-})))
+}))
 },
 async fromJson_$(json_, $task) {
 return ff_core_Option.Option_flatMap(ff_core_Json.Json_getArray(json_), ((array_) => {
