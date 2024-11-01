@@ -98,22 +98,22 @@ import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
 
 
 export function new_() {
-const js_ = ff_core_UnsafeJs.jsSystem_();
+const js_ = globalThis;
 return {array: []}
 }
 
 export function fill_(size_, value_) {
-const js_ = ff_core_UnsafeJs.jsSystem_();
+const js_ = globalThis;
 return {array: ff_core_List.fill_(size_, value_)}
 }
 
 export function fillBy_(size_, body_) {
-const js_ = ff_core_UnsafeJs.jsSystem_();
+const js_ = globalThis;
 return {array: ff_core_List.fillBy_(size_, body_)}
 }
 
 export function range_(size_) {
-const js_ = ff_core_UnsafeJs.jsSystem_();
+const js_ = globalThis;
 return {array: ff_core_List.range_(size_)}
 }
 
@@ -152,22 +152,22 @@ export function internalGrab_(self_, index_) {
 }
 
 export async function new_$($task) {
-const js_ = ff_core_UnsafeJs.jsSystem_();
+const js_ = globalThis;
 return {array: []}
 }
 
 export async function fill_$(size_, value_, $task) {
-const js_ = ff_core_UnsafeJs.jsSystem_();
+const js_ = globalThis;
 return {array: ff_core_List.fill_(size_, value_)}
 }
 
 export async function fillBy_$(size_, body_, $task) {
-const js_ = ff_core_UnsafeJs.jsSystem_();
+const js_ = globalThis;
 return {array: (await ff_core_List.fillBy_$(size_, body_, $task))}
 }
 
 export async function range_$(size_, $task) {
-const js_ = ff_core_UnsafeJs.jsSystem_();
+const js_ = globalThis;
 return {array: ff_core_List.range_(size_)}
 }
 

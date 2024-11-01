@@ -19,14 +19,14 @@ fillBy[T](size: Int, body: Int => T): List[T] {
         array?
     } else {
         let js = UnsafeJs.jsSystem()
-        js->Array->from(js->(length = size), {_, i => body(i)}!)?
+        js->Array->from(js->(length = size), js->{_, i => body(i?)})?
     }
 }
 
 
 range(size: Int): List[Int] {
     let js = UnsafeJs.jsSystem()
-    js->Array->from(js->(length = size), {_, i => i}!)?
+    js->Array->from(js->(length = size), js->{_, i => i})?
 }
 
 extend self[T]: List[T] {

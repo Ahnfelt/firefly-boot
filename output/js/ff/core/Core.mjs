@@ -189,10 +189,6 @@ export function panic_(message_) {
 throw new Error(message_)
 }
 
-export function same_(x_, y_) {
-return x_ === y_
-}
-
 export async function if_$(condition_, body_, $task) {
 {
 const _1 = condition_;
@@ -280,10 +276,6 @@ throw new Error('Function throwAny is missing on this target in async context.')
 
 export async function panic_$(message_, $task) {
 throw new Error('Function panic is missing on this target in async context.');
-}
-
-export async function same_$(x_, y_, $task) {
-throw new Error('Function same is missing on this target in async context.');
 }
 
 

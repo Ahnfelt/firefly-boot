@@ -102,13 +102,13 @@ return []
 }
 
 export function fill_(size_, value_) {
-const js_ = ff_core_UnsafeJs.jsSystem_();
+const js_ = globalThis;
 return (new Array(size_)).fill(value_)
 }
 
 export function fillBy_(size_, body_) {
 if(false) {
-const js_ = ff_core_UnsafeJs.jsSystem_();
+const js_ = globalThis;
 const array_ = (new Array(size_));
 for(let for_i = 1, for_e = size_; for_i < for_e; for_i++) {
 const i_ = for_i;
@@ -116,15 +116,15 @@ array_[i_] = body_(i_)
 };
 return array_
 } else {
-const js_ = ff_core_UnsafeJs.jsSystem_();
-return Array.from({length: size_}, ((_, i_) => {
+const js_ = globalThis;
+return Array.from({length: size_}, ff_core_JsSystem.JsSystem_function2(js_, ((_, i_) => {
 return body_(i_)
-}))
+})))
 }
 }
 
 export function range_(size_) {
-const js_ = ff_core_UnsafeJs.jsSystem_();
+const js_ = globalThis;
 return Array.from({length: size_}, ((_, i_) => {
 return i_
 }))
@@ -141,13 +141,13 @@ return []
 }
 
 export async function fill_$(size_, value_, $task) {
-const js_ = ff_core_UnsafeJs.jsSystem_();
+const js_ = globalThis;
 return (new Array(size_)).fill(value_)
 }
 
 export async function fillBy_$(size_, body_, $task) {
 if(true) {
-const js_ = ff_core_UnsafeJs.jsSystem_();
+const js_ = globalThis;
 const array_ = (new Array(size_));
 for(let for_i = 1, for_e = size_; for_i < for_e; for_i++) {
 const i_ = for_i;
@@ -155,15 +155,15 @@ array_[i_] = (await body_(i_, $task))
 };
 return array_
 } else {
-const js_ = ff_core_UnsafeJs.jsSystem_();
-return Array.from({length: size_}, (async (_, i_, $task) => {
+const js_ = globalThis;
+return Array.from({length: size_}, (await ff_core_JsSystem.JsSystem_function2$(js_, (async (_, i_, $task) => {
 return (await body_(i_, $task))
-}))
+}), $task)))
 }
 }
 
 export async function range_$(size_, $task) {
-const js_ = ff_core_UnsafeJs.jsSystem_();
+const js_ = globalThis;
 return Array.from({length: size_}, ((_, i_) => {
 return i_
 }))
@@ -385,7 +385,7 @@ return result_
 }
 
 export function List_toArray(self_) {
-const js_ = ff_core_UnsafeJs.jsSystem_();
+const js_ = globalThis;
 return {array: self_.slice()}
 }
 
@@ -763,7 +763,7 @@ return result_
 }
 
 export async function List_toArray$(self_, $task) {
-const js_ = ff_core_UnsafeJs.jsSystem_();
+const js_ = globalThis;
 return {array: self_.slice()}
 }
 
@@ -1124,7 +1124,7 @@ return ff_core_Array.Array_join(array_, "")
 
 export function ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal_Equal$T) { return {
 equals_(x_, y_) {
-if(ff_core_JsValue.JsValue_equals(x_, y_, ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue)) {
+if((x_ === y_)) {
 return true
 } else {
 if((x_.length !== y_.length)) {
@@ -1139,7 +1139,7 @@ return ff_core_Equal_Equal$T.equals_(l_, (y_[i_] ?? ff_core_List.internalGrab_(y
 }
 },
 async equals_$(x_, y_, $task) {
-if(ff_core_JsValue.JsValue_equals(x_, y_, ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue)) {
+if((x_ === y_)) {
 return true
 } else {
 if((x_.length !== y_.length)) {
@@ -1157,7 +1157,7 @@ return ff_core_Equal_Equal$T.equals_(l_, (y_[i_] ?? ff_core_List.internalGrab_(y
 
 export function ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering_Order$T) { return {
 compare_(x_, y_) {
-if(ff_core_JsValue.JsValue_equals(x_, y_, ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue)) {
+if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 } else {
 const size_ = ff_core_Int.Int_min(x_.length, y_.length);
@@ -1175,7 +1175,7 @@ return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.lengt
 }
 },
 async compare_$(x_, y_, $task) {
-if(ff_core_JsValue.JsValue_equals(x_, y_, ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue)) {
+if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 } else {
 const size_ = ff_core_Int.Int_min(x_.length, y_.length);

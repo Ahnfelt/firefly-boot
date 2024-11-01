@@ -55,8 +55,4 @@ throwAny[T](exception: Any): T
 panic[T](message: String): T
     target js sync "throw new Error(message_)"
 
-
-same[T](x: T, y: T): Bool
-    target js sync """return x_ === y_"""
-    
 data GrabException()
