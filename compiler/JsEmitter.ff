@@ -621,13 +621,16 @@ extend self: JsEmitter {
             } =>
                 let argumentCode = es.map {self.emitTerm(_, async)}.join(", ")
                 Some("(new " + self.emitTerm(e1, async) + "(" + argumentCode + ")" + ")")
-            | "ff:core/JsValue.JsValue_with" =>
+            | name {name == "ff:core/JsValue.JsValue_with" || name == "ff:core/Json.Json_with"} =>
                 function go(e: Term, fields: List[Pair[Term, Term]]): String {
                     e.{
-                        | ECall(_, StaticCall("ff:core/JsValue.JsValue_with", _, _), _, _, [a1, a2, a3], _) =>
+                        | ECall(_, StaticCall(n, _, _), _, _, [a1, a2, a3], _) {n == name} =>
                             go(a1.value, [Pair(a2.value, a3.value), ...fields])
-                        | ECall(_, StaticCall(name, _, _), _, _, [a], _) {
-                            name == "ff:core/JsSystem.JsSystem_object" || name == "ff:core/JsSystem.JsSystem_new0"
+                        | ECall(_, StaticCall(n, _, _), _, _, [a], _) {
+                            n == "ff:core/JsSystem.JsSystem_object" || 
+                            n == "ff:core/JsSystem.JsSystem_new0" ||
+                            n == "ff:core/Json.Json_object" ||
+                            n == "ff:core/Json.Json_new0"
                         } {
                             noSideEffects(a.value)
                         } =>
@@ -660,6 +663,28 @@ extend self: JsEmitter {
                 Some("null")
             | "ff:core/JsSystem.JsSystem_undefined" {arguments | [e]} {noSideEffects(e)} =>
                 Some("(void 0)")
+            | "ff:core/BrowserSystem.BrowserSystem_js" {arguments | [e]} {noSideEffects(e)} => 
+                Some("globalThis")
+            | "ff:core/BuildSystem.BuildSystem_js" {arguments | [e]} {noSideEffects(e)} => 
+                Some("globalThis")
+            | "ff:core/NodeSystem.NodeSystem_js" {arguments | [e]} {noSideEffects(e)} => 
+                Some("globalThis")
+            | "ff:core/UnsafeJs.jsSystem" =>
+                Some("globalThis")
+            | "ff:core/Json.string" {arguments | [e]} =>
+                Some(self.emitTerm(e, async))
+            | "ff:core/Json.int" {arguments | [e]} =>
+                Some(self.emitTerm(e, async))
+            | "ff:core/Json.float" {arguments | [e]} =>
+                Some(self.emitTerm(e, async))
+            | "ff:core/Json.bool" {arguments | [e]} =>
+                Some(self.emitTerm(e, async))
+            | "ff:core/Json.array" {arguments | [e]} =>
+                Some(self.emitTerm(e, async))
+            | "ff:core/Json.null" {arguments | [e]} =>
+                Some("null")
+            | "ff:core/Json.object" {arguments | [e]} =>
+                Some("{}")
             | _ =>
                 None
         }

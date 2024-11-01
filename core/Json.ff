@@ -44,6 +44,11 @@ object(): Json
         return {};
     """
 
+new0(): Json
+    target js sync """
+        return {};
+    """
+
 fields(body: ((String, Json) => Unit) => Unit): Json
     target js sync """
         const result = {};
@@ -175,6 +180,10 @@ extend self: Json {
         target js sync """
             return self_ === null;
         """
+
+    get(key: String): Json {
+        self.field(key)
+    }
 
     field(key: String): Json
         target js sync """
