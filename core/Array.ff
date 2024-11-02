@@ -64,20 +64,18 @@ extend self[T]: Array[T] {
     pushList(value: List[T]): Unit
         target js sync "self_.array.push(...value_)"
 
-    pop(): Option[T]
-        target js sync """
-            return self_.array.length > 0
-                ? ff_core_Option.Some(self_.array.pop())
-                : ff_core_Option.None()
-        """
+    pop(): Option[T] {
+        if(self.size() > 0) {
+            self!->array->pop()?
+        }
+    }
 
-    set(index: Int, value: T): Unit
-        target js sync """
-            if(index_ < 0 || index_ > self_.array.length) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            self_.array[index_] = value_
-        """
+    set(index: Int, value: T): Unit {
+        if(index < 0 || index >= self.size()) {
+            throw(GrabException) // TODO Throw index out of bounds
+        }
+        self!->array.set(index, value!)
+    }
 
     modify(index: Int, body: T => T): Unit
         target js sync """
@@ -113,15 +111,45 @@ extend self[T]: Array[T] {
             self_.array.splice(start_, deleteCount_, value_);
         """
 
-    insertArray(start: Int, value: Array[T], deleteCount: Int = 0): Unit
-        target js sync """
-            self_.array.splice(start_, deleteCount_, ...value_.array);
-        """
+    insertArray(start: Int, array: Array[T], deleteCount: Int = 0): Unit {
+        self.insertList(start, array!->array?, deleteCount)
+    }
 
-    insertList(start: Int, value: List[T], deleteCount: Int = 0): Unit
-        target js sync """
-            self_.array.splice(start_, deleteCount_, ...value_);
-        """
+    insertList(start: Int, list: List[T], deleteCount: Int = 0): Unit {
+        if(start < 0 || start > self.size()) {
+            throw(GrabException) // TODO Throw index out of bounds
+        }
+
+        let deleteEnd = start + deleteCount
+
+        if(deleteEnd < 0 || deleteEnd > self.size()) {
+            throw(GrabException) // TODO Throw index out of bounds
+        }
+
+        let insertCount = list.size()
+        let arrayCount = self.size()
+        let delta = insertCount - deleteCount
+        
+        // Prepare for the new elements
+        if(delta > 0) {
+            self!->array.increment("length", delta)
+            
+            deleteEnd.until(arrayCount).reverse().each {i => 
+                self!->array.set(i + delta, self!->array.get(i))
+            }
+        } else {
+            deleteEnd.until(arrayCount).each {i => 
+                self!->array.set(i + delta, self!->array.get(i))
+            }
+
+            self!->array.increment("length", delta)
+        }
+
+        // Insert the new elements
+        0.until(insertCount).each {i => 
+            self!->array.set(start + i, list!.get(i))
+        }        
+    }
 
     each(body: T => Unit): Unit
         target js sync """

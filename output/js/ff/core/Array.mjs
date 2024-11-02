@@ -255,20 +255,16 @@ self_.array.push(...value_)
 }
 
 export function Array_pop(self_) {
-
-            return self_.array.length > 0
-                ? ff_core_Option.Some(self_.array.pop())
-                : ff_core_Option.None()
-        
+if((self_.array.length > 0)) {
+return ff_core_Option.Some(self_.array.pop())
+} else return ff_core_Option.None()
 }
 
 export function Array_set(self_, index_, value_) {
-
-            if(index_ < 0 || index_ > self_.array.length) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            self_.array[index_] = value_
-        
+if(((index_ < 0) || (index_ >= self_.array.length))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+self_.array[index_] = value_
 }
 
 export function Array_modify(self_, index_, body_) {
@@ -304,16 +300,38 @@ export function Array_insert(self_, start_, value_, deleteCount_ = 0) {
         
 }
 
-export function Array_insertArray(self_, start_, value_, deleteCount_ = 0) {
-
-            self_.array.splice(start_, deleteCount_, ...value_.array);
-        
+export function Array_insertArray(self_, start_, array_, deleteCount_ = 0) {
+ff_core_Array.Array_insertList(self_, start_, array_.array, deleteCount_)
 }
 
-export function Array_insertList(self_, start_, value_, deleteCount_ = 0) {
-
-            self_.array.splice(start_, deleteCount_, ...value_);
-        
+export function Array_insertList(self_, start_, list_, deleteCount_ = 0) {
+if(((start_ < 0) || (start_ > self_.array.length))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+const deleteEnd_ = (start_ + deleteCount_);
+if(((deleteEnd_ < 0) || (deleteEnd_ > self_.array.length))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+const insertCount_ = list_.length;
+const arrayCount_ = self_.array.length;
+const delta_ = (insertCount_ - deleteCount_);
+if((delta_ > 0)) {
+self_.array.length += delta_;
+for(let for_i = 0, for_a = ff_core_List.List_reverse(ff_core_Int.Int_until(deleteEnd_, arrayCount_)), for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_a[for_i];
+self_.array[(i_ + delta_)] = self_.array[i_]
+}
+} else {
+for(let for_i = deleteEnd_, for_e = arrayCount_; for_i < for_e; for_i++) {
+const i_ = for_i;
+self_.array[(i_ + delta_)] = self_.array[i_]
+};
+self_.array.length += delta_
+};
+for(let for_i = 0, for_e = insertCount_; for_i < for_e; for_i++) {
+const i_ = for_i;
+self_.array[(start_ + i_)] = list_[i_]
+}
 }
 
 export function Array_each(self_, body_) {
@@ -448,11 +466,16 @@ throw new Error('Function Array_pushList is missing on this target in async cont
 }
 
 export async function Array_pop$(self_, $task) {
-throw new Error('Function Array_pop is missing on this target in async context.');
+if((self_.array.length > 0)) {
+return ff_core_Option.Some(self_.array.pop())
+} else return ff_core_Option.None()
 }
 
 export async function Array_set$(self_, index_, value_, $task) {
-throw new Error('Function Array_set is missing on this target in async context.');
+if(((index_ < 0) || (index_ >= self_.array.length))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+self_.array[index_] = value_
 }
 
 export async function Array_modify$(self_, index_, body_, $task) {
@@ -480,12 +503,38 @@ export async function Array_insert$(self_, start_, value_, deleteCount_ = 0, $ta
 throw new Error('Function Array_insert is missing on this target in async context.');
 }
 
-export async function Array_insertArray$(self_, start_, value_, deleteCount_ = 0, $task) {
-throw new Error('Function Array_insertArray is missing on this target in async context.');
+export async function Array_insertArray$(self_, start_, array_, deleteCount_ = 0, $task) {
+ff_core_Array.Array_insertList(self_, start_, array_.array, deleteCount_)
 }
 
-export async function Array_insertList$(self_, start_, value_, deleteCount_ = 0, $task) {
-throw new Error('Function Array_insertList is missing on this target in async context.');
+export async function Array_insertList$(self_, start_, list_, deleteCount_ = 0, $task) {
+if(((start_ < 0) || (start_ > self_.array.length))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+const deleteEnd_ = (start_ + deleteCount_);
+if(((deleteEnd_ < 0) || (deleteEnd_ > self_.array.length))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+const insertCount_ = list_.length;
+const arrayCount_ = self_.array.length;
+const delta_ = (insertCount_ - deleteCount_);
+if((delta_ > 0)) {
+self_.array.length += delta_;
+for(let for_i = 0, for_a = ff_core_List.List_reverse(ff_core_Int.Int_until(deleteEnd_, arrayCount_)), for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_a[for_i];
+self_.array[(i_ + delta_)] = self_.array[i_]
+}
+} else {
+for(let for_i = deleteEnd_, for_e = arrayCount_; for_i < for_e; for_i++) {
+const i_ = for_i;
+self_.array[(i_ + delta_)] = self_.array[i_]
+};
+self_.array.length += delta_
+};
+for(let for_i = 0, for_e = insertCount_; for_i < for_e; for_i++) {
+const i_ = for_i;
+self_.array[(start_ + i_)] = list_[i_]
+}
 }
 
 export async function Array_each$(self_, body_, $task) {

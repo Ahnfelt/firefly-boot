@@ -39,7 +39,58 @@ nodeMain(system: NodeSystem) {
     while {array.size() < 5} {
         array.push("X")
     }
+    
+    testSplice([], 0, [], 0, [])
+    testSplice([], 0, [0], 0, [0])
+    testSplice([1, 2, 3], 0, [], 0, [1, 2, 3])
+
+    testSplice([1, 2, 3], 0, [0], 0, [0, 1, 2, 3])
+    testSplice([1, 2, 3], 1, [0], 0, [1, 0, 2, 3])
+    testSplice([1, 2, 3], 2, [0], 0, [1, 2, 0, 3])
+    testSplice([1, 2, 3], 3, [0], 0, [1, 2, 3, 0])
+
+    testSplice([1, 2, 3], 0, [0], 1, [0, 2, 3])
+    testSplice([1, 2, 3], 1, [0], 1, [1, 0, 3])
+    testSplice([1, 2, 3], 2, [0], 1, [1, 2, 0])
+
+    testSplice([1, 2, 3], 0, [0], 3, [0])
+    testSplice([1, 2, 3], 1, [0], 2, [1, 0])
+    testSplice([1, 2, 3], 2, [0], 1, [1, 2, 0])
+    testSplice([1, 2, 3], 3, [0], 0, [1, 2, 3, 0])
+
+    testSplice([1, 2, 3], 1, [0, -1, -2, -3, -4], 1, [1, 0, -1, -2, -3, -4, 3])
 }
+
+testSplice(
+    self: List[Int], 
+    start: Int, 
+    itemsArray: List[Int], 
+    deleteCount: Int, 
+    expected: List[Int]
+) {
+    do {
+        let array = self.toArray()
+        Log.debug("Test " + Show.show(array.toList()) + ".insertList(" + start + ", " + Show.show(itemsArray) + ", " + deleteCount + ") == " + Show.show(expected))
+        array.insertList(start, itemsArray, deleteCount)
+        if(array.toList() == expected) {
+            Log.debug("Passed")
+        } else {
+            Log.debug("Failed: " + Show.show(array))
+        }
+    }
+    
+    do {
+        let array = self.toArray()
+        Log.debug("Test " + Show.show(array.toList()) + ".insertArray(" + start + ", " + Show.show(itemsArray) + ", " + deleteCount + ") == " + Show.show(expected))
+        array.insertArray(start, itemsArray.toArray(), deleteCount)
+        if(array.toList() == expected) {
+            Log.debug("Passed")
+        } else {
+            Log.debug("Failed: " + Show.show(array))
+        }
+    }
+}
+
 
 factorial(n: Int): Int {
     if(n == 0) {
