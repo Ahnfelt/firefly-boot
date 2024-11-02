@@ -742,10 +742,33 @@ extend self: JsEmitter {
                         self.emitStatements(body, last, async) +
                     "\n}"
                 )
+            | "ff:core/List.List_each" {arguments | [
+                ECall(_, StaticCall("ff:core/List.List_zip", _, _), _, _, [list1, list2], _)
+                ELambda(_, Lambda(_, _, [MatchCase(_, [
+                    PVariant(_, "ff:core/Pair.Pair", [PVariable(_, name1), PVariable(_, name2)])
+                ], [], body)]))
+            ]} =>
+                let fusion1 = self.emitLightFusion("for_a", list1.value, async)
+                let fusion2 = self.emitLightFusion("for_a2", list2.value, async)
+                let start1 = fusion1.second.first
+                let end1 = fusion1.second.second
+                let listCode1 = fusion1.first
+                let start2 = fusion2.second.first
+                let end2 = fusion2.second.second
+                let listCode2 = fusion2.first
+                Some(
+                    "for(let for_i = " + start1 + ", for_a = " + listCode1 + ", for_l = " + end1 + ", " +
+                    "for_i2 = " + start2 + ", for_a2 = " + listCode2 + ", for_l2 = " + end2 + 
+                    "; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {\n" +
+                        name1.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
+                        name2.map {"const " + escapeKeyword(_) + " = for_a2[for_i2];\n"}.else {""} +
+                        self.emitStatements(body, last, async) +
+                    "\n}"
+                )
             | "ff:core/List.List_each" {arguments | [list, ELambda(_, Lambda(_, _, [
                 MatchCase(_, [PVariable(_, name)], [], body)
             ]))]} =>
-                let fusion = self.emitLightFusion(list, async)
+                let fusion = self.emitLightFusion("for_a", list, async)
                 let start = fusion.second.first
                 let end = fusion.second.second
                 let listCode = fusion.first
@@ -759,7 +782,7 @@ extend self: JsEmitter {
             | "ff:core/List.List_eachWhile" {arguments | [list, ELambda(_, Lambda(_, _, [
                 MatchCase(_, [PVariable(_, name)], [], ESequential(_, body, condition))
             ]))]} =>
-                let fusion = self.emitLightFusion(list, async)
+                let fusion = self.emitLightFusion("for_a", list, async)
                 let start = fusion.second.first
                 let end = fusion.second.second
                 let listCode = fusion.first
@@ -823,9 +846,9 @@ extend self: JsEmitter {
         }
     }
     
-    emitLightFusion(list: Term, async: Bool): Pair[String, Pair[String, String]] {
+    emitLightFusion(listName: String, list: Term, async: Bool): Pair[String, Pair[String, String]] {
         mutable start = "0"
-        mutable end = "for_a.length"
+        mutable end = listName + ".length"
         let listCode = list.{
             | ECall(_, StaticCall("ff:core/List.List_dropFirst", _, _), _, _, [a1, a2], _) =>
                 start = self.emitTerm(a2.value, async)
@@ -846,14 +869,14 @@ extend self: JsEmitter {
                 if(!end.all {_.isAsciiDigit()}) {
                     end = "Math.max(" + end + ", 0)"
                 }
-                end = "Math.min(" + end + ", for_a.length)"
+                end = "Math.min(" + end + ", " + listName + ".length)"
                 self.emitTerm(a1.value, async)
             | ECall(_, StaticCall("ff:core/List.List_takeLast", _, _), _, _, [a1, a2], _) =>
                 let count = self.emitTerm(a2.value, async)
                 if(!count.all {_.isAsciiDigit()}) {
-                    start = "Math.max(for_a.length - Math.max(" + count + ", 0), 0)"
+                    start = "Math.max(" + listName + ".length - Math.max(" + count + ", 0), 0)"
                 } else {
-                    start = "Math.max(for_a.length - " + count + ", 0)"
+                    start = "Math.max(" + listName + ".length - " + count + ", 0)"
                 }
                 self.emitTerm(a1.value, async)
             | _ => 

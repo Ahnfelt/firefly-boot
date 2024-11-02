@@ -260,14 +260,11 @@ for(let for_i = Math.max(instanceFunction_.signature_.parameters_.length, 0), fo
 const traitParameter_ = for_a[for_i];
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(instanceFunction_.at_, ("Missing parameter: " + traitParameter_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
-ff_core_List.List_each(ff_core_List.List_zip(parameters_, instanceFunction_.signature_.parameters_), ((_1) => {
-{
-const traitParameter_ = _1.first_;
-const instanceParameter_ = _1.second_;
+for(let for_i = 0, for_a = parameters_, for_l = for_a.length, for_i2 = 0, for_a2 = instanceFunction_.signature_.parameters_, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+const traitParameter_ = for_a[for_i];
+const instanceParameter_ = for_a2[for_i2];
 ff_compiler_Unification.Unification_unify(self_.unification_, instanceParameter_.valueType_.at_, traitParameter_.valueType_, instanceParameter_.valueType_)
-return
-}
-}));
+};
 ff_compiler_Unification.Unification_unify(self_.unification_, instanceFunction_.signature_.returnType_.at_, returnType_, instanceFunction_.signature_.returnType_);
 if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, instanceFunction_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, traitMethodScheme_.signature_.at_))) {
 const symbolHook_ = ff_compiler_LspHook.SymbolHook(instanceFunction_.signature_.name_, instanceFunction_.at_, traitMethodScheme_.signature_.at_);
@@ -2122,14 +2119,11 @@ for(let for_i = Math.max(instanceFunction_.signature_.parameters_.length, 0), fo
 const traitParameter_ = for_a[for_i];
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(instanceFunction_.at_, ("Missing parameter: " + traitParameter_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
-ff_core_List.List_each(ff_core_List.List_zip(parameters_, instanceFunction_.signature_.parameters_), ((_1) => {
-{
-const traitParameter_ = _1.first_;
-const instanceParameter_ = _1.second_;
+for(let for_i = 0, for_a = parameters_, for_l = for_a.length, for_i2 = 0, for_a2 = instanceFunction_.signature_.parameters_, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+const traitParameter_ = for_a[for_i];
+const instanceParameter_ = for_a2[for_i2];
 ff_compiler_Unification.Unification_unify(self_.unification_, instanceParameter_.valueType_.at_, traitParameter_.valueType_, instanceParameter_.valueType_)
-return
-}
-}));
+};
 ff_compiler_Unification.Unification_unify(self_.unification_, instanceFunction_.signature_.returnType_.at_, returnType_, instanceFunction_.signature_.returnType_);
 if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, instanceFunction_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, traitMethodScheme_.signature_.at_))) {
 const symbolHook_ = ff_compiler_LspHook.SymbolHook(instanceFunction_.signature_.name_, instanceFunction_.at_, traitMethodScheme_.signature_.at_);

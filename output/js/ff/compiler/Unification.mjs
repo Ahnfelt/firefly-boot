@@ -270,14 +270,11 @@ return
 }
 if(_1.Some) {
 const generics2_ = _1.value_.generics_;
-ff_core_List.List_each(ff_core_List.List_zip(generics_, generics2_), ((_1) => {
-{
-const t1_ = _1.first_;
-const t2_ = _1.second_;
+for(let for_i = 0, for_a = generics_, for_l = for_a.length, for_i2 = 0, for_a2 = generics2_, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+const t1_ = for_a[for_i];
+const t2_ = for_a2[for_i2];
 ff_compiler_Unification.Unification_unify(self_, at_, t1_, t2_)
-return
 }
-}))
 return
 }
 }
@@ -432,32 +429,23 @@ const t3_ = ff_compiler_Unification.Unification_substitute(self_, t1_);
 const t4_ = ff_compiler_Unification.Unification_substitute(self_, t2_);
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(t3_, [t3_, t4_])) + " vs. ") + ff_compiler_Syntax.Type_show(t4_, [t3_, t4_]))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else if((ff_core_String.String_startsWith(name1_, "Function$", 0) && ff_core_String.String_startsWith(name2_, "Function$", 0))) {
-ff_core_List.List_each(ff_core_List.List_zip(ff_core_List.List_dropLast(generics1_, 1), ff_core_List.List_dropLast(generics2_, 1)), ((_1) => {
-{
-const t3_ = _1.first_;
-const t4_ = _1.second_;
+for(let for_i = 0, for_a = generics1_, for_l = for_a.length - 1, for_i2 = 0, for_a2 = generics2_, for_l2 = for_a2.length - 1; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+const t3_ = for_a[for_i];
+const t4_ = for_a2[for_i2];
 ff_compiler_Unification.Unification_unify(self_, at_, t3_, t4_)
-return
-}
-}));
-ff_core_List.List_each(ff_core_List.List_zip(ff_core_List.List_takeLast(generics1_, 1), ff_core_List.List_takeLast(generics2_, 1)), ((_1) => {
-{
-const t3_ = _1.first_;
-const t4_ = _1.second_;
+};
+for(let for_i = Math.max(for_a.length - 1, 0), for_a = generics1_, for_l = for_a.length, for_i2 = Math.max(for_a2.length - 1, 0), for_a2 = generics2_, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+const t3_ = for_a[for_i];
+const t4_ = for_a2[for_i2];
 ff_compiler_Unification.Unification_unify(self_, at_, t3_, t4_)
-return
 }
-}))
 } else {}
 } else {
-ff_core_List.List_each(ff_core_List.List_zip(generics1_, generics2_), ((_1) => {
-{
-const t1_ = _1.first_;
-const t2_ = _1.second_;
+for(let for_i = 0, for_a = generics1_, for_l = for_a.length, for_i2 = 0, for_a2 = generics2_, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+const t1_ = for_a[for_i];
+const t2_ = for_a2[for_i2];
 ff_compiler_Unification.Unification_unify(self_, at_, t1_, t2_)
-return
 }
-}))
 }
 return
 }
@@ -651,14 +639,11 @@ return
 }
 if(_1.Some) {
 const generics2_ = _1.value_.generics_;
-ff_core_List.List_each(ff_core_List.List_zip(generics_, generics2_), ((_1) => {
-{
-const t1_ = _1.first_;
-const t2_ = _1.second_;
+for(let for_i = 0, for_a = generics_, for_l = for_a.length, for_i2 = 0, for_a2 = generics2_, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+const t1_ = for_a[for_i];
+const t2_ = for_a2[for_i2];
 ff_compiler_Unification.Unification_unify(self_, at_, t1_, t2_)
-return
 }
-}))
 return
 }
 }
@@ -813,32 +798,23 @@ const t3_ = ff_compiler_Unification.Unification_substitute(self_, t1_);
 const t4_ = ff_compiler_Unification.Unification_substitute(self_, t2_);
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(t3_, [t3_, t4_])) + " vs. ") + ff_compiler_Syntax.Type_show(t4_, [t3_, t4_]))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else if((ff_core_String.String_startsWith(name1_, "Function$", 0) && ff_core_String.String_startsWith(name2_, "Function$", 0))) {
-ff_core_List.List_each(ff_core_List.List_zip(ff_core_List.List_dropLast(generics1_, 1), ff_core_List.List_dropLast(generics2_, 1)), ((_1) => {
-{
-const t3_ = _1.first_;
-const t4_ = _1.second_;
+for(let for_i = 0, for_a = generics1_, for_l = for_a.length - 1, for_i2 = 0, for_a2 = generics2_, for_l2 = for_a2.length - 1; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+const t3_ = for_a[for_i];
+const t4_ = for_a2[for_i2];
 ff_compiler_Unification.Unification_unify(self_, at_, t3_, t4_)
-return
-}
-}));
-ff_core_List.List_each(ff_core_List.List_zip(ff_core_List.List_takeLast(generics1_, 1), ff_core_List.List_takeLast(generics2_, 1)), ((_1) => {
-{
-const t3_ = _1.first_;
-const t4_ = _1.second_;
+};
+for(let for_i = Math.max(for_a.length - 1, 0), for_a = generics1_, for_l = for_a.length, for_i2 = Math.max(for_a2.length - 1, 0), for_a2 = generics2_, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+const t3_ = for_a[for_i];
+const t4_ = for_a2[for_i2];
 ff_compiler_Unification.Unification_unify(self_, at_, t3_, t4_)
-return
 }
-}))
 } else {}
 } else {
-ff_core_List.List_each(ff_core_List.List_zip(generics1_, generics2_), ((_1) => {
-{
-const t1_ = _1.first_;
-const t2_ = _1.second_;
+for(let for_i = 0, for_a = generics1_, for_l = for_a.length, for_i2 = 0, for_a2 = generics2_, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+const t1_ = for_a[for_i];
+const t2_ = for_a2[for_i2];
 ff_compiler_Unification.Unification_unify(self_, at_, t1_, t2_)
-return
 }
-}))
 }
 return
 }

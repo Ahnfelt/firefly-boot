@@ -600,17 +600,14 @@ ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "}");
 if(self_.lspHook_.trackSymbols_) {
 let name_ = ff_compiler_Syntax.Type_show(type_, []);
-ff_core_List.List_each(ff_core_List.List_zip(poly_.generics_, poly_.constraints_), ((_1) => {
-{
-const generic_ = _1.first_;
-const constraint_ = _1.second_;
+for(let for_i = 0, for_a = poly_.generics_, for_l = for_a.length, for_i2 = 0, for_a2 = poly_.constraints_, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+const generic_ = for_a[for_i];
+const constraint_ = for_a2[for_i2];
 name_ = ff_core_String.String_replace(name_, (("[" + generic_) + "]"), (((("[" + generic_) + ": ") + constraint_.name_) + "]"));
 name_ = ff_core_String.String_replace(name_, (("[" + generic_) + ","), (((("[" + generic_) + ": ") + constraint_.name_) + ","));
 name_ = ff_core_String.String_replace(name_, ((", " + generic_) + ","), ((((", " + generic_) + ": ") + constraint_.name_) + ","));
 name_ = ff_core_String.String_replace(name_, ((", " + generic_) + "]"), ((((", " + generic_) + ": ") + constraint_.name_) + "]"))
-return
-}
-}));
+};
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseSymbolEnd(name_, ff_compiler_LspHook.SExtend(), ff_compiler_Token.Token_at(nameToken_), ff_compiler_Token.Token_end(nameToken_), ff_compiler_Token.Token_at(extendToken_), ff_compiler_Token.Token_end(ff_compiler_Parser.Parser_behind(self_))))
 };
 return ff_compiler_Syntax.DExtend(ff_compiler_Token.Token_at(nameToken_), ff_compiler_Token.Token_raw(nameToken_), poly_.generics_, poly_.constraints_, type_, ff_core_Array.Array_toList(methods_, 0, 9007199254740991))
@@ -2186,17 +2183,14 @@ ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "}");
 if(self_.lspHook_.trackSymbols_) {
 let name_ = ff_compiler_Syntax.Type_show(type_, []);
-ff_core_List.List_each(ff_core_List.List_zip(poly_.generics_, poly_.constraints_), ((_1) => {
-{
-const generic_ = _1.first_;
-const constraint_ = _1.second_;
+for(let for_i = 0, for_a = poly_.generics_, for_l = for_a.length, for_i2 = 0, for_a2 = poly_.constraints_, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+const generic_ = for_a[for_i];
+const constraint_ = for_a2[for_i2];
 name_ = ff_core_String.String_replace(name_, (("[" + generic_) + "]"), (((("[" + generic_) + ": ") + constraint_.name_) + "]"));
 name_ = ff_core_String.String_replace(name_, (("[" + generic_) + ","), (((("[" + generic_) + ": ") + constraint_.name_) + ","));
 name_ = ff_core_String.String_replace(name_, ((", " + generic_) + ","), ((((", " + generic_) + ": ") + constraint_.name_) + ","));
 name_ = ff_core_String.String_replace(name_, ((", " + generic_) + "]"), ((((", " + generic_) + ": ") + constraint_.name_) + "]"))
-return
-}
-}));
+};
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseSymbolEnd(name_, ff_compiler_LspHook.SExtend(), ff_compiler_Token.Token_at(nameToken_), ff_compiler_Token.Token_end(nameToken_), ff_compiler_Token.Token_at(extendToken_), ff_compiler_Token.Token_end(ff_compiler_Parser.Parser_behind(self_))))
 };
 return ff_compiler_Syntax.DExtend(ff_compiler_Token.Token_at(nameToken_), ff_compiler_Token.Token_raw(nameToken_), poly_.generics_, poly_.constraints_, type_, ff_core_Array.Array_toList(methods_, 0, 9007199254740991))
