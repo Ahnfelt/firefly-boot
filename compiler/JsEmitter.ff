@@ -765,6 +765,24 @@ extend self: JsEmitter {
                         self.emitStatements(body, last, async) +
                     "\n}"
                 )
+            | "ff:core/List.List_each" {arguments | [
+                ECall(_, StaticCall("ff:core/List.List_pairs", _, _), _, _, [list], _)
+                ELambda(_, Lambda(_, _, [MatchCase(_, [
+                    PVariant(_, "ff:core/Pair.Pair", [PVariable(_, name1), PVariable(_, name2)])
+                ], [], body)]))
+            ]} =>
+                let fusion = self.emitLightFusion("for_a", list.value, async)
+                let start = fusion.second.first
+                let end = fusion.second.second
+                let listCode = fusion.first
+                Some(
+                    "for(let for_i = " + start + ", for_a = " + listCode + ", for_l = " + end + 
+                    "; for_i < for_l; for_i++) {\n" +
+                        name1.map {"const " + escapeKeyword(_) + " = for_i;\n"}.else {""} +
+                        name2.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
+                        self.emitStatements(body, last, async) +
+                    "\n}"
+                )
             | "ff:core/List.List_each" {arguments | [list, ELambda(_, Lambda(_, _, [
                 MatchCase(_, [PVariable(_, name)], [], body)
             ]))]} =>

@@ -1065,10 +1065,9 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 };
 const signature_ = scheme_.signature_;
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
-ff_core_List.List_each(ff_core_List.List_pairs(e_.arguments_), ((_1) => {
-{
-const i_ = _1.first_;
-const a_ = _1.second_;
+for(let for_i = 0, for_a = e_.arguments_, for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_i;
+const a_ = for_a[for_i];
 const p_ = ff_core_List.List_find(signature_.parameters_, ((_w1) => {
 return (_w1.name_ === a_.name_)
 }));
@@ -1086,9 +1085,7 @@ return ff_compiler_Syntax.Argument(_c.at_, ff_core_Option.Some(f_.name_), _c.val
 }));
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferArgumentHook(self_.unification_, environment_, true, term_.at_, e_.name_, signature_.parameters_, arguments_, i_))
 }
-return
 }
-}))
 };
 const parameterNames_ = ff_core_List.List_map(signature_.parameters_, ((_w1) => {
 return _w1.name_
@@ -1839,10 +1836,9 @@ return ff_compiler_Environment.Environment(_c.modulePrefix_, _c.symbols_, _c.tra
 
 export function Inference_inferArguments(self_, callAt_, callName_, environment_, parameters_, arguments_) {
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
-ff_core_List.List_each(ff_core_List.List_pairs(arguments_), ((_1) => {
-{
-const i_ = _1.first_;
-const a_ = _1.second_;
+for(let for_i = 0, for_a = arguments_, for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_i;
+const a_ = for_a[for_i];
 const p_ = ff_core_List.List_find(parameters_, ((p_) => {
 return ff_core_Option.Option_any(a_.name_, ((_w1) => {
 return (_w1 === p_.name_)
@@ -1853,9 +1849,7 @@ return ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, _w1.at_)
 })))) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferArgumentHook(self_.unification_, environment_, false, callAt_, callName_, parameters_, arguments_, i_))
 }
-return
 }
-}))
 };
 let remainingArguments_ = ff_core_List.List_toArray(arguments_);
 ff_core_Array.Array_reverse(remainingArguments_);
@@ -2924,10 +2918,9 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 };
 const signature_ = scheme_.signature_;
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
-ff_core_List.List_each(ff_core_List.List_pairs(e_.arguments_), ((_1) => {
-{
-const i_ = _1.first_;
-const a_ = _1.second_;
+for(let for_i = 0, for_a = e_.arguments_, for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_i;
+const a_ = for_a[for_i];
 const p_ = ff_core_List.List_find(signature_.parameters_, ((_w1) => {
 return (_w1.name_ === a_.name_)
 }));
@@ -2945,9 +2938,7 @@ return ff_compiler_Syntax.Argument(_c.at_, ff_core_Option.Some(f_.name_), _c.val
 }));
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferArgumentHook(self_.unification_, environment_, true, term_.at_, e_.name_, signature_.parameters_, arguments_, i_))
 }
-return
 }
-}))
 };
 const parameterNames_ = ff_core_List.List_map(signature_.parameters_, ((_w1) => {
 return _w1.name_
@@ -3698,10 +3689,9 @@ return ff_compiler_Environment.Environment(_c.modulePrefix_, _c.symbols_, _c.tra
 
 export async function Inference_inferArguments$(self_, callAt_, callName_, environment_, parameters_, arguments_, $task) {
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
-ff_core_List.List_each(ff_core_List.List_pairs(arguments_), ((_1) => {
-{
-const i_ = _1.first_;
-const a_ = _1.second_;
+for(let for_i = 0, for_a = arguments_, for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_i;
+const a_ = for_a[for_i];
 const p_ = ff_core_List.List_find(parameters_, ((p_) => {
 return ff_core_Option.Option_any(a_.name_, ((_w1) => {
 return (_w1 === p_.name_)
@@ -3712,9 +3702,7 @@ return ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, _w1.at_)
 })))) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferArgumentHook(self_.unification_, environment_, false, callAt_, callName_, parameters_, arguments_, i_))
 }
-return
 }
-}))
 };
 let remainingArguments_ = ff_core_List.List_toArray(arguments_);
 ff_core_Array.Array_reverse(remainingArguments_);

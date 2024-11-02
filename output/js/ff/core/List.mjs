@@ -537,17 +537,14 @@ return ff_core_List.List_grab(self_, (self_.length - i_))
 
 export function List_separate(self_, separator_) {
 const array_ = ff_core_Array.new_();
-ff_core_List.List_each(ff_core_List.List_pairs(self_), ((_1) => {
-{
-const i_ = _1.first_;
-const x_ = _1.second_;
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_i;
+const x_ = for_a[for_i];
 if((i_ !== 0)) {
 ff_core_Array.Array_pushList(array_, separator_)
 };
 array_.array.push(x_)
-return
-}
-}));
+};
 return ff_core_Array.Array_drain(array_)
 }
 
@@ -915,17 +912,14 @@ return ff_core_List.List_grab(self_, (self_.length - i_))
 
 export async function List_separate$(self_, separator_, $task) {
 const array_ = ff_core_Array.new_();
-ff_core_List.List_each(ff_core_List.List_pairs(self_), ((_1) => {
-{
-const i_ = _1.first_;
-const x_ = _1.second_;
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_i;
+const x_ = for_a[for_i];
 if((i_ !== 0)) {
 ff_core_Array.Array_pushList(array_, separator_)
 };
 array_.array.push(x_)
-return
-}
-}));
+};
 return ff_core_Array.Array_drain(array_)
 }
 
