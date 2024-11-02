@@ -1666,9 +1666,9 @@ const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const body_ = _guard1[0];
 if(async_) {
-return ff_core_Option.Some((("(await " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_)) + "($task))"))
+return ff_core_Option.Some((("(await " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_)) + ")"))
 } else {
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_))
 }
 return
 }
@@ -3746,9 +3746,9 @@ const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const body_ = _guard1[0];
 if(async_) {
-return ff_core_Option.Some((("(await " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_)) + "($task))"))
+return ff_core_Option.Some((("(await " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_)) + ")"))
 } else {
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_))
 }
 return
 }

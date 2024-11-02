@@ -584,9 +584,9 @@ extend self: JsEmitter {
                 Some(self.jsImporter.add(url.replace("\"", "")))
             | "ff:core/UnsafeJs.await" {arguments | [body]} =>
                 if(async) {
-                    Some("(await " + self.emitTerm(body, async) + "($task))")
+                    Some("(await " + self.emitTerm(body, async) + ")")
                 } else {
-                    Some(self.emitTerm(invokeImmediately(body), async))
+                    Some(self.emitTerm(body, async))
                 }
             | "ff:core/UnsafeJs.cancelled" =>
                 Some(if(async) {"$task.controller.signal.aborted"} else {"false"})

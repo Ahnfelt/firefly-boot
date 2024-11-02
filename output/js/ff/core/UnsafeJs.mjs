@@ -104,8 +104,8 @@ export function import_(module_) {
 throw Error('Dynamic JS imports are not currently supported.')
 }
 
-export function await_(body_) {
-return body_()
+export function await_(promise_) {
+return promise_
 }
 
 export function throwIfCancelled_() {
@@ -148,8 +148,8 @@ export async function import_$(module_, $task) {
 throw new Error('Function import is missing on this target in async context.');
 }
 
-export async function await_$(body_, $task) {
-throw new Error('Function await is missing on this target in async context.');
+export async function await_$(promise_, $task) {
+return await promise_
 }
 
 export async function throwIfCancelled_$($task) {

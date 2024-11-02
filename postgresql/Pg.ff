@@ -60,23 +60,23 @@ extend self: PgPool {
 
     connect(): PgConnection {
         UnsafeJs.throwIfCancelled()
-        PgConnection(UnsafeJs.await {self.jsValue.call0("connect")})
+        PgConnection(UnsafeJs.await(self.jsValue->connect()))
     }
 
     close(): Unit {
-        UnsafeJs.await {self.jsValue.call0("end")}
+        UnsafeJs.await(self.jsValue->end())
     }
 
     connectionCount(): Int {
-        self.jsValue.get("totalCount").grabInt()
+        self.jsValue->totalCount.grabInt()
     }
 
     idleCount(): Int {
-        self.jsValue.get("idleCount").grabInt()
+        self.jsValue->idleCount.grabInt()
     }
 
     waitingCount(): Int {
-        self.jsValue.get("waitingCount").grabInt()
+        self.jsValue->waitingCount.grabInt()
     }
 
     transaction[T](body: PgConnection => T, level: PgLevel = PgReadCommitted): T {
@@ -105,9 +105,9 @@ extend self: PgConnection {
 
     release(): Unit {
         if(UnsafeJs.cancelled()) {
-            self.jsValue.call1("release", True)
+            self.jsValue->release(True)
         } else {
-            self.jsValue.call0("release")
+            self.jsValue->release()
         }
     }
 
@@ -377,7 +377,7 @@ internalRunStatement(statement: PgStatement, body: Option[PgRow => Bool]): Int {
     UnsafeJs.throwIfCancelled()
     let pair = internalParseParameters(statement.sql)
     let parameters = internalCheckParameters(pair.second, statement.parameters)
-    let result = UnsafeJs.await {statement.connection.grab().jsValue.call2("query", pair.first, parameters)}
+    let result = UnsafeJs.await(statement.connection.grab().jsValue->query(pair.first, parameters))
     body.{
         | None =>
             result.get("rowCount").grabInt()
@@ -414,11 +414,11 @@ internalBatchStatements(
         let query = UnsafeJs.jsSystem().object()
             .with("text", record.newSql)
             .with("values", parameters)
-        connection.jsValue.call1("query", record.prepared.map {query.with("name", _)}.else {query})
+        connection.jsValue->query(record.prepared.map {query.with("name", _)}.else {query})
     }
     let results = promises.map {promise =>
         UnsafeJs.throwIfCancelled()
-        let result = UnsafeJs.await {promise }
+        let result = UnsafeJs.await(promise)
         UnsafeJs.throwIfCancelled()
         body.{
             | None =>
