@@ -273,24 +273,18 @@ self_.array[index_] = value_
 }
 
 export function Array_modify(self_, index_, body_) {
-
-            if(index_ < 0 || index_ >= self_.array.length) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            self_.array[index_] = body_(self_.array[index_])
-        
+if(((index_ < 0) || (index_ >= self_.array.length))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+self_.array[index_] = body_(self_.array[index_])
 }
 
 export function Array_fill(self_, value_, start_ = 0, end_ = 9007199254740991) {
-
-            self_.array.fill(value_, start_, end_);
-        
+self_.array.fill(value_, start_, end_)
 }
 
 export function Array_copy(self_, target_, start_, end_) {
-
-            self_.array.copyWithin(target_, start_, end_);
-        
+self_.array.copyWithin(target_, start_, end_)
 }
 
 export function Array_delete(self_, start_, deleteCount_) {
@@ -318,19 +312,12 @@ if(((deleteEnd_ < 0) || (deleteEnd_ > self_.array.length))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
 };
 const insertCount_ = list_.length;
-const arrayCount_ = self_.array.length;
 const delta_ = (insertCount_ - deleteCount_);
 if((delta_ > 0)) {
 self_.array.length += delta_;
-for(let for_e = deleteEnd_, for_i = arrayCount_ - 1; for_i >= for_e; for_i--) {
-const i_ = for_i;
-self_.array[(i_ + delta_)] = self_.array[i_]
-}
+self_.array.copyWithin((start_ + insertCount_), deleteEnd_)
 } else {
-for(let for_i = deleteEnd_, for_e = arrayCount_; for_i < for_e; for_i++) {
-const i_ = for_i;
-self_.array[(i_ + delta_)] = self_.array[i_]
-};
+self_.array.copyWithin((start_ + insertCount_), deleteEnd_);
 self_.array.length += delta_
 };
 for(let for_i = 0, for_e = insertCount_; for_i < for_e; for_i++) {
@@ -489,20 +476,18 @@ self_.array[index_] = value_
 }
 
 export async function Array_modify$(self_, index_, body_, $task) {
-
-            if(index_ < 0 || index_ >= self_.array.length) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            self_.array[index_] = await body_(self_.array[index_], $task)
-        
+if(((index_ < 0) || (index_ >= self_.array.length))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+self_.array[index_] = (await body_(self_.array[index_], $task))
 }
 
 export async function Array_fill$(self_, value_, start_ = 0, end_ = 9007199254740991, $task) {
-throw new Error('Function Array_fill is missing on this target in async context.');
+self_.array.fill(value_, start_, end_)
 }
 
 export async function Array_copy$(self_, target_, start_, end_, $task) {
-throw new Error('Function Array_copy is missing on this target in async context.');
+self_.array.copyWithin(target_, start_, end_)
 }
 
 export async function Array_delete$(self_, start_, deleteCount_, $task) {
@@ -526,19 +511,12 @@ if(((deleteEnd_ < 0) || (deleteEnd_ > self_.array.length))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
 };
 const insertCount_ = list_.length;
-const arrayCount_ = self_.array.length;
 const delta_ = (insertCount_ - deleteCount_);
 if((delta_ > 0)) {
 self_.array.length += delta_;
-for(let for_e = deleteEnd_, for_i = arrayCount_ - 1; for_i >= for_e; for_i--) {
-const i_ = for_i;
-self_.array[(i_ + delta_)] = self_.array[i_]
-}
+self_.array.copyWithin((start_ + insertCount_), deleteEnd_)
 } else {
-for(let for_i = deleteEnd_, for_e = arrayCount_; for_i < for_e; for_i++) {
-const i_ = for_i;
-self_.array[(i_ + delta_)] = self_.array[i_]
-};
+self_.array.copyWithin((start_ + insertCount_), deleteEnd_);
 self_.array.length += delta_
 };
 for(let for_i = 0, for_e = insertCount_; for_i < for_e; for_i++) {

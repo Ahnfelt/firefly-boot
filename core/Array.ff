@@ -83,29 +83,20 @@ extend self[T]: Array[T] {
         self!->array.set(index, value!)
     }
 
-    modify(index: Int, body: T => T): Unit
-        target js sync """
-            if(index_ < 0 || index_ >= self_.array.length) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            self_.array[index_] = body_(self_.array[index_])
-        """
-        target js async """
-            if(index_ < 0 || index_ >= self_.array.length) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            self_.array[index_] = await body_(self_.array[index_], $task)
-        """
+    modify(index: Int, body: T => T): Unit {
+        if(index < 0 || index >= self.size()) {
+            throw(GrabException)
+        }
+        self!->array.set(index, body(self!->array.get(index)?)!)
+    }
 
-    fill(value: T, start: Int = 0, end: Int = 9007199254740991): Unit
-        target js sync """
-            self_.array.fill(value_, start_, end_);
-        """
+    fill(value: T, start: Int = 0, end: Int = 9007199254740991): Unit {
+        self!->array->fill(value!, start, end)
+    }
 
-    copy(target: Int, start: Int, end: Int): Unit
-        target js sync """
-            self_.array.copyWithin(target_, start_, end_);
-        """
+    copy(target: Int, start: Int, end: Int): Unit {
+        self!->array->copyWithin(target, start, end)
+    }
 
     delete(start: Int, deleteCount: Int): Unit
         target js sync """
@@ -133,22 +124,15 @@ extend self[T]: Array[T] {
         }
 
         let insertCount = list.size()
-        let arrayCount = self.size()
         let delta = insertCount - deleteCount
         
         // Prepare for the new elements
         if(delta > 0) {
             //self!->array->length += delta
             self!->array.increment("length", delta)
-            
-            deleteEnd.until(arrayCount).reverse().each {i => 
-                self!->array.set(i + delta, self!->array.get(i))
-            }
+            self!->array->copyWithin(start + insertCount, deleteEnd)
         } else {
-            deleteEnd.until(arrayCount).each {i => 
-                self!->array.set(i + delta, self!->array.get(i))
-            }
-
+            self!->array->copyWithin(start + insertCount, deleteEnd)
             //self!->array->length += delta
             self!->array.increment("length", delta)
         }
