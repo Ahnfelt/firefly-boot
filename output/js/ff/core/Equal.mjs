@@ -117,46 +117,46 @@ return true
 
 export const ff_core_Equal_Equal$ff_core_Bool_Bool = {
 equals_(x_, y_) {
-return x_ === y_
+return (x_ === y_)
 },
 async equals_$(x_, y_, $task) {
-throw new Error('Function equals is missing on this target in async context.');
+return (x_ === y_)
 }
 };
 
 export const ff_core_Equal_Equal$ff_core_Char_Char = {
 equals_(x_, y_) {
-return x_ === y_
+return (x_ === y_)
 },
 async equals_$(x_, y_, $task) {
-throw new Error('Function equals is missing on this target in async context.');
+return (x_ === y_)
 }
 };
 
 export const ff_core_Equal_Equal$ff_core_Int_Int = {
 equals_(x_, y_) {
-return x_ === y_
+return (x_ === y_)
 },
 async equals_$(x_, y_, $task) {
-throw new Error('Function equals is missing on this target in async context.');
+return (x_ === y_)
 }
 };
 
 export const ff_core_Equal_Equal$ff_core_Float_Float = {
 equals_(x_, y_) {
-return x_ === y_
+return (x_ === y_)
 },
 async equals_$(x_, y_, $task) {
-throw new Error('Function equals is missing on this target in async context.');
+return (x_ === y_)
 }
 };
 
 export const ff_core_Equal_Equal$ff_core_String_String = {
 equals_(x_, y_) {
-return x_ === y_
+return (x_ === y_)
 },
 async equals_$(x_, y_, $task) {
-throw new Error('Function equals is missing on this target in async context.');
+return (x_ === y_)
 }
 };
 

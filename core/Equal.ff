@@ -11,26 +11,31 @@ instance Nothing: Equal {
 }
 
 instance Bool: Equal {
-    equals(x: Bool, y: Bool): Bool
-        target js sync """return x_ === y_"""
+    equals(x: Bool, y: Bool): Bool {
+        x!.equals(y)
+    }
 }
 
 instance Char: Equal {
-    equals(x: Char, y: Char): Bool
-        target js sync """return x_ === y_"""
+    equals(x: Char, y: Char): Bool {
+        x!.equals(y)
+    }
 }
 
 instance Int: Equal {
-    equals(x: Int, y: Int): Bool
-        target js sync """return x_ === y_"""
+    equals(x: Int, y: Int): Bool {
+        x!.equals(y)
+    }
 }
 
 instance Float: Equal {
-    equals(x: Float, y: Float): Bool
-        target js sync """return x_ === y_"""
+    equals(x: Float, y: Float): Bool {
+        x!.equals(y)
+    }
 }
 
 instance String: Equal {
-    equals(x: String, y: String): Bool
-        target js sync """return x_ === y_"""
+    equals(x: String, y: String): Bool {
+        x!.equals(y)
+    }
 }
