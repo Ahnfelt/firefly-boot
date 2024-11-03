@@ -12,7 +12,9 @@ extend self: Char {
 
     isAsciiDigit(): Bool {self >= '0' && self <= '9'}
 
-    toString(): String
-        target js sync "return String.fromCharCode(self_)"
+    toString(): String {
+        let js = UnsafeJs.jsSystem()
+        js->String->fromCharCode(self)?
+    }
 
 }

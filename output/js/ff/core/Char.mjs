@@ -121,6 +121,7 @@ return ((self_ >= 48) && (self_ <= 57))
 }
 
 export function Char_toString(self_) {
+const js_ = globalThis;
 return String.fromCharCode(self_)
 }
 
@@ -145,7 +146,8 @@ return ((self_ >= 48) && (self_ <= 57))
 }
 
 export async function Char_toString$(self_, $task) {
-throw new Error('Function Char_toString is missing on this target in async context.');
+const js_ = globalThis;
+return String.fromCharCode(self_)
 }
 
 
