@@ -219,14 +219,14 @@ extend self[T]: Array[T] {
         self.sortWith {Ordering.compare(body(_), body(_))}
     }
 
-    sortWith(ordering: (T, T) => Ordering): Unit {
-        if(UnsafeJs.inAsync()) {
-            sortRange(self, ordering, 0, self.size())
-        } else {
-            let js = UnsafeJs.jsSystem()
-            self!->array->sort(js->{x, y => ordering(x?, y?).toInt()})
-        }
+sortWith(ordering: (T, T) => Ordering): Unit {
+    if(UnsafeJs.inAsync()) {
+        sortRange(self, ordering, 0, self.size())
+    } else {
+        let js = UnsafeJs.jsSystem()
+        self!->array->sort(js->{x, y => ordering(x?, y?).toInt()})
     }
+}
 
 }
 
