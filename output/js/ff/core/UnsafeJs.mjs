@@ -97,11 +97,11 @@ import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
 
 
 export function jsSystem_() {
-return typeof globalThis !== 'undefined' ? globalThis : window
+return globalThis
 }
 
 export function import_(module_) {
-throw Error('Dynamic JS imports are not currently supported.')
+return ff_core_Core.panic_("import module parameter must be a string literal")
 }
 
 export function await_(promise_) {
@@ -125,7 +125,7 @@ return false
 }
 
 export function inNode_() {
-return false
+return true
 }
 
 export function inBuild_() {
@@ -141,47 +141,47 @@ return value_
 }
 
 export async function jsSystem_$($task) {
-return typeof globalThis !== 'undefined' ? globalThis : window
+return globalThis
 }
 
 export async function import_$(module_, $task) {
-throw new Error('Function import is missing on this target in async context.');
+return ff_core_Core.panic_("import module parameter must be a string literal")
 }
 
 export async function await_$(promise_, $task) {
-return await promise_
+return (await promise_)
 }
 
 export async function throwIfCancelled_$($task) {
-throw new Error('Function throwIfCancelled is missing on this target in async context.');
+ff_core_Task.Task_throwIfAborted($task)
 }
 
 export async function cancelled_$($task) {
-throw new Error('Function cancelled is missing on this target in async context.');
+return $task.controller.signal.aborted
 }
 
 export async function inAsync_$($task) {
-throw new Error('Function inAsync is missing on this target in async context.');
+return true
 }
 
 export async function inBrowser_$($task) {
-throw new Error('Function inBrowser is missing on this target in async context.');
+return false
 }
 
 export async function inNode_$($task) {
-throw new Error('Function inNode is missing on this target in async context.');
+return true
 }
 
 export async function inBuild_$($task) {
-throw new Error('Function inBuild is missing on this target in async context.');
+return false
 }
 
 export async function value_$(value_, $task) {
-throw new Error('Function value is missing on this target in async context.');
+return value_
 }
 
 export async function fromValue_$(value_, $task) {
-throw new Error('Function fromValue is missing on this target in async context.');
+return value_
 }
 
 

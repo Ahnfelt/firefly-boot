@@ -1,43 +1,43 @@
-jsSystem(): JsSystem
-    target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
-    target js sync "return typeof globalThis !== 'undefined' ? globalThis : window"
+jsSystem(): JsSystem {
+    jsSystem() // Replaced by the compiler
+}
 
-import(module: String): JsValue
-    // Replaced by the compiler ~ hoisted top level import - dynamic imports not currently supported
-    target js sync "throw Error('Dynamic JS imports are not currently supported.')"
+import(module: String): JsValue {
+    panic("import module parameter must be a string literal") // Replaced by the compiler
+}
 
-await(promise: JsValue): JsValue
-    // Replaced by the compiler
-    target js sync "return promise_"
-    target js async "return await promise_"
+await(promise: JsValue): JsValue {
+    await(promise) // Replaced by the compiler
+}
 
-throwIfCancelled(): Unit
-    // Replaced by the compiler
-    target js sync ""
+throwIfCancelled(): Unit {
+    throwIfCancelled() // Replaced by the compiler
+}
 
-cancelled(): Bool
-    // Replaced by the compiler
-    target js sync "return false"
+cancelled(): Bool {
+    cancelled() // Replaced by the compiler
+}
 
-inAsync(): Bool
-    // Replaced by the compiler
-    target js sync "return false"
+inAsync(): Bool {
+    inAsync() // Replaced by the compiler
+}
     
-inBrowser(): Bool
-    // Replaced by the compiler
-    target js sync "return false"
+inBrowser(): Bool {
+    inBrowser() // Replaced by the compiler
+}
     
-inNode(): Bool
-    // Replaced by the compiler
-    target js sync "return false"
+inNode(): Bool {
+    inNode() // Replaced by the compiler
+}
     
-inBuild(): Bool
-    // Replaced by the compiler
-    target js sync "return false"
-    
-value[T](value: T): JsValue
-    target js sync "return value_"
+inBuild(): Bool {
+    inBuild() // Replaced by the compiler
+}
 
-fromValue[T](value: JsValue): T
-    target js sync "return value_"
+value[T](value: T): JsValue {
+    value! // Replaced by the compiler
+}
 
+fromValue[T](value: JsValue): T {
+    value? // Replaced by the compiler
+}
