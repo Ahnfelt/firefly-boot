@@ -412,7 +412,7 @@ export function List_all(self_, body_) {
 let result_ = true;
 for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
-result_ = (result_ && body_(x_));
+result_ = body_(x_);
 if(!result_) break
 };
 return result_
@@ -422,20 +422,8 @@ export function List_any(self_, body_) {
 let result_ = false;
 for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
-result_ = (result_ || body_(x_));
+result_ = body_(x_);
 if(!(!result_)) break
-};
-return result_
-}
-
-export function List_indexWhere(self_, body_) {
-let result_ = ff_core_Option.None();
-let i_ = 0;
-for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
-const x_ = for_a[for_i];
-if(!(body_(x_)
-? (result_ = ff_core_Option.Some(i_), false)
-: (i_ += 1, true))) break
 };
 return result_
 }
@@ -449,6 +437,20 @@ if(!(body_(x_)
 : true)) break
 };
 return result_
+}
+
+export function List_indexWhere(self_, body_) {
+let i_ = (-1);
+let result_ = false;
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
+i_ += 1;
+result_ = body_(x_);
+if(!(!result_)) break
+};
+if(result_) {
+return ff_core_Option.Some(i_)
+} else return ff_core_Option.None()
 }
 
 export function List_filter(self_, body_) {
@@ -787,7 +789,7 @@ export async function List_all$(self_, body_, $task) {
 let result_ = true;
 for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
-result_ = (result_ && (await body_(x_, $task)));
+result_ = (await body_(x_, $task));
 if(!result_) break
 };
 return result_
@@ -797,20 +799,8 @@ export async function List_any$(self_, body_, $task) {
 let result_ = false;
 for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
-result_ = (result_ || (await body_(x_, $task)));
+result_ = (await body_(x_, $task));
 if(!(!result_)) break
-};
-return result_
-}
-
-export async function List_indexWhere$(self_, body_, $task) {
-let result_ = ff_core_Option.None();
-let i_ = 0;
-for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
-const x_ = for_a[for_i];
-if(!((await body_(x_, $task))
-? (result_ = ff_core_Option.Some(i_), false)
-: (i_ += 1, true))) break
 };
 return result_
 }
@@ -824,6 +814,20 @@ if(!((await body_(x_, $task))
 : true)) break
 };
 return result_
+}
+
+export async function List_indexWhere$(self_, body_, $task) {
+let i_ = (-1);
+let result_ = false;
+for(let for_i = 0, for_a = self_, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
+i_ += 1;
+result_ = (await body_(x_, $task));
+if(!(!result_)) break
+};
+if(result_) {
+return ff_core_Option.Some(i_)
+} else return ff_core_Option.None()
 }
 
 export async function List_filter$(self_, body_, $task) {

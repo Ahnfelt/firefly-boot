@@ -288,15 +288,11 @@ self_.array.copyWithin(target_, start_, end_)
 }
 
 export function Array_delete(self_, start_, deleteCount_) {
-
-            self_.array.splice(start_, deleteCount_);
-        
+self_.array.splice(start_, deleteCount_)
 }
 
 export function Array_insert(self_, start_, value_, deleteCount_ = 0) {
-
-            self_.array.splice(start_, deleteCount_, value_);
-        
+self_.array.splice(start_, deleteCount_, value_)
 }
 
 export function Array_insertArray(self_, start_, array_, deleteCount_ = 0) {
@@ -327,13 +323,22 @@ self_.array[(start_ + i_)] = list_[i_]
 }
 
 export function Array_each(self_, body_) {
-
-            return self_.array.forEach(body_);
-        
+let i_ = 0;
+while((i_ < self_.array.length)) {
+body_(self_.array[i_]);
+i_ += 1
+}
 }
 
 export function Array_eachWhile(self_, body_) {
-for(const value of self_.array) if(!body_(value)) break
+let i_ = 0;
+while((i_ < self_.array.length)) {
+if(body_(self_.array[i_])) {
+i_ += 1
+} else {
+i_ = self_.array.length
+}
+}
 }
 
 export function Array_all(self_, body_) {
@@ -491,11 +496,11 @@ self_.array.copyWithin(target_, start_, end_)
 }
 
 export async function Array_delete$(self_, start_, deleteCount_, $task) {
-throw new Error('Function Array_delete is missing on this target in async context.');
+self_.array.splice(start_, deleteCount_)
 }
 
 export async function Array_insert$(self_, start_, value_, deleteCount_ = 0, $task) {
-throw new Error('Function Array_insert is missing on this target in async context.');
+self_.array.splice(start_, deleteCount_, value_)
 }
 
 export async function Array_insertArray$(self_, start_, array_, deleteCount_ = 0, $task) {
@@ -526,15 +531,22 @@ self_.array[(start_ + i_)] = list_[i_]
 }
 
 export async function Array_each$(self_, body_, $task) {
-
-            for(let i = 0; i < self_.array.length; i++) {
-                await body_(self_.array[i], $task)
-            }
-        
+let i_ = 0;
+while((i_ < self_.array.length)) {
+(await body_(self_.array[i_], $task));
+i_ += 1
+}
 }
 
 export async function Array_eachWhile$(self_, body_, $task) {
-for(const value of self_.array) if(!await body_(value, $task)) break
+let i_ = 0;
+while((i_ < self_.array.length)) {
+if((await body_(self_.array[i_], $task))) {
+i_ += 1
+} else {
+i_ = self_.array.length
+}
+}
 }
 
 export async function Array_all$(self_, body_, $task) {

@@ -77,7 +77,7 @@ extend self[T]: Array[T] {
 
     set(index: Int, value: T): Unit {
         if(index < 0 || index >= self.size()) {
-            throw(GrabException) // TODO Throw index out of bounds
+            throw(GrabException)
         }
         self!->array.set(index, value!)
     }
@@ -97,15 +97,13 @@ extend self[T]: Array[T] {
         self!->array->copyWithin(target, start, end)
     }
 
-    delete(start: Int, deleteCount: Int): Unit
-        target js sync """
-            self_.array.splice(start_, deleteCount_);
-        """
+    delete(start: Int, deleteCount: Int): Unit {
+        self!->array->splice(start, deleteCount)
+    }
 
-    insert(start: Int, value: T, deleteCount: Int = 0): Unit
-        target js sync """
-            self_.array.splice(start_, deleteCount_, value_);
-        """
+    insert(start: Int, value: T, deleteCount: Int = 0): Unit {
+        self!->array->splice(start, deleteCount, value!)
+    }
 
     insertArray(start: Int, array: Array[T], deleteCount: Int = 0): Unit {
         self.insertList(start, array!->array?, deleteCount)
@@ -113,13 +111,13 @@ extend self[T]: Array[T] {
 
     insertList(start: Int, list: List[T], deleteCount: Int = 0): Unit {
         if(start < 0 || start > self.size()) {
-            throw(GrabException) // TODO Throw index out of bounds
+            throw(GrabException)
         }
 
         let deleteEnd = start + deleteCount
 
         if(deleteEnd < 0 || deleteEnd > self.size()) {
-            throw(GrabException) // TODO Throw index out of bounds
+            throw(GrabException)
         }
 
         let insertCount = list.size()
@@ -138,19 +136,24 @@ extend self[T]: Array[T] {
         }        
     }
 
-    each(body: T => Unit): Unit
-        target js sync """
-            return self_.array.forEach(body_);
-        """
-        target js async """
-            for(let i = 0; i < self_.array.length; i++) {
-                await body_(self_.array[i], $task)
-            }
-        """
+    each(body: T => Unit): Unit {
+        mutable i = 0
+        while {i < self.size()} {
+            body(self!->array.get(i)?)
+            i += 1
+        }
+    }
 
-    eachWhile(body: T => Bool): Unit
-        target js sync "for(const value of self_.array) if(!body_(value)) break"
-        target js async "for(const value of self_.array) if(!await body_(value, $task)) break"
+    eachWhile(body: T => Bool): Unit {
+        mutable i = 0
+        while {i < self.size()} {
+            if(body(self!->array.get(i)?)) {
+                i += 1
+            } else {
+                i = self.size()
+            }
+        }
+    }
 
     all(body: T => Bool): Bool {
         mutable result = True

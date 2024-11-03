@@ -249,7 +249,7 @@ extend self[T]: List[T] {
     all(body: T => Bool): Bool {
         mutable result = True
         self.eachWhile {x =>
-            result = result && body(x)
+            result = body(x)
             result
         }
         result
@@ -258,27 +258,12 @@ extend self[T]: List[T] {
     any(body: T => Bool): Bool {
         mutable result = False
         self.eachWhile {x =>
-            result = result || body(x)
+            result = body(x)
             (!result)
         }
         result
     }
-
-    indexWhere(body: T => Bool): Option[Int] {
-        mutable result = None
-        mutable i = 0
-        self.eachWhile {x =>
-            if(body(x)) {
-                result = Some(i)
-                False
-            } else {
-                i += 1
-                True
-            }
-        }
-        result
-    }
-    
+   
     find(body: T => Bool): Option[T] {
         mutable result = None
         self.eachWhile {x =>
@@ -292,6 +277,17 @@ extend self[T]: List[T] {
         result
     }
 
+    indexWhere(body: T => Bool): Option[Int] {
+        mutable i = -1
+        mutable result = False
+        self.eachWhile {x =>
+            i += 1
+            result = body(x)
+            (!result)
+        }
+        if(result) {i}
+    }    
+    
     filter(body: T => Bool): List[T] {
         let result = Array.new()
         self.each {x =>
