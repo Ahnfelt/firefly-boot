@@ -197,27 +197,36 @@ extend self[T]: Array[T] {
         if(result) {i}
     }
 
-    drain(): List[T]
-        target js sync "const result = self_.array; self_.array = []; return result"
+    drain(): List[T] {
+        let result = self!->array
+        self!->array = []
+        result?
+    }
 
-    toList(start: Int = 0, end: Int = 9007199254740991): List[T]
-        target js sync """return self_.array.slice(start_, end_)"""
+    toList(start: Int = 0, end: Int = 9007199254740991): List[T] {
+        self!->array->slice(start, end)?
+    }
 
     toStream(start: Int = 0, end: Int = 9007199254740991): Stream[T] {
         self.toList(start, end).toStream()
     }
 
-    reverse(): Unit
-        target js sync "self_.array.reverse()"
+    reverse(): Unit {
+        self!->array->reverse()?
+    }
 
     sortBy[S: Order](body: T => S): Unit {
         self.sortWith {Ordering.compare(body(_), body(_))}
     }
 
     sortWith(ordering: (T, T) => Ordering): Unit {
-        sortRange(self, ordering, 0, self.size())
+        if(UnsafeJs.inAsync()) {
+            sortRange(self, ordering, 0, self.size())
+        } else {
+            let js = UnsafeJs.jsSystem()
+            self!->array->sort(js->{x, y => ordering(x?, y?).toInt()})
+        }
     }
-        target js sync "self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))"
 
 }
 

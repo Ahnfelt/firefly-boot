@@ -386,7 +386,9 @@ return ff_core_Option.Some(i_)
 }
 
 export function Array_drain(self_) {
-const result = self_.array; self_.array = []; return result
+const result_ = self_.array;
+self_.array = [];
+return result_
 }
 
 export function Array_toList(self_, start_ = 0, end_ = 9007199254740991) {
@@ -408,7 +410,14 @@ return ff_core_Ordering_Order$S.compare_(body_(_w1), body_(_w2))
 }
 
 export function Array_sortWith(self_, ordering_) {
-self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))
+if(false) {
+ff_core_Array.sortRange_(self_, ordering_, 0, self_.array.length)
+} else {
+const js_ = globalThis;
+self_.array.sort(ff_core_JsSystem.JsSystem_function2(js_, ((x_, y_) => {
+return ff_core_Ordering.Ordering_toInt(ordering_(x_, y_))
+})))
+}
 }
 
 export async function Array_isEmpty$(self_, $task) {
@@ -594,11 +603,13 @@ return ff_core_Option.Some(i_)
 }
 
 export async function Array_drain$(self_, $task) {
-throw new Error('Function Array_drain is missing on this target in async context.');
+const result_ = self_.array;
+self_.array = [];
+return result_
 }
 
 export async function Array_toList$(self_, start_ = 0, end_ = 9007199254740991, $task) {
-throw new Error('Function Array_toList is missing on this target in async context.');
+return self_.array.slice(start_, end_)
 }
 
 export async function Array_toStream$(self_, start_ = 0, end_ = 9007199254740991, $task) {
@@ -606,7 +617,7 @@ return (await ff_core_List.List_toStream$(ff_core_Array.Array_toList(self_, star
 }
 
 export async function Array_reverse$(self_, $task) {
-throw new Error('Function Array_reverse is missing on this target in async context.');
+self_.array.reverse()
 }
 
 export async function Array_sortBy$(self_, body_, ff_core_Ordering_Order$S, $task) {
@@ -616,7 +627,14 @@ return ff_core_Ordering_Order$S.compare_((await body_(_w1, $task)), (await body_
 }
 
 export async function Array_sortWith$(self_, ordering_, $task) {
-throw new Error('Function Array_sortWith is missing on this target in async context.');
+if(true) {
+(await ff_core_Array.sortRange_$(self_, ordering_, 0, self_.array.length, $task))
+} else {
+const js_ = globalThis;
+self_.array.sort((await ff_core_JsSystem.JsSystem_function2$(js_, (async (x_, y_, $task) => {
+return ff_core_Ordering.Ordering_toInt((await ordering_(x_, y_, $task)))
+}), $task)))
+}
 }
 
 export function Array_sort(self_, ff_core_Ordering_Order$T) {
