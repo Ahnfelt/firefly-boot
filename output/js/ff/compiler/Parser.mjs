@@ -1588,7 +1588,7 @@ const method_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(se
 : (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignMinus()), "decrement"));
 const value_ = ff_compiler_Parser.Parser_parseTerm(self_);
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
-const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, "set"), false);
+const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, method_), false);
 return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(member_.at_, ff_core_Option.None(), member_), ff_compiler_Syntax.Argument(value_.at_, ff_core_Option.None(), value_)], [])
 } else {
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
@@ -3171,7 +3171,7 @@ const method_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(se
 : (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignMinus()), "decrement"));
 const value_ = ff_compiler_Parser.Parser_parseTerm(self_);
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
-const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, "set"), false);
+const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, method_), false);
 return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(member_.at_, ff_core_Option.None(), member_), ff_compiler_Syntax.Argument(value_.at_, ff_core_Option.None(), value_)], [])
 } else {
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
