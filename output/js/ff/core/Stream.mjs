@@ -105,7 +105,7 @@ export function new_(next_, close_ = (() => {
 return ff_core_Stream.Stream(next_, close_)
 }
 
-export function init_(body_) {
+export function do_(body_) {
 let initialized_ = false;
 let stream_ = ff_core_Stream.Stream((() => {
 return ff_core_Option.None()
@@ -132,7 +132,7 @@ export async function new_$(next_, close_ = (async ($task) => {
 return ff_core_Stream.Stream(next_, close_)
 }
 
-export async function init_$(body_, $task) {
+export async function do_$(body_, $task) {
 let initialized_ = false;
 let stream_ = ff_core_Stream.Stream((async ($task) => {
 return ff_core_Option.None()

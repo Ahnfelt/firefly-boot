@@ -316,7 +316,7 @@ const insertCount_ = list_.length;
 const arrayCount_ = self_.array.length;
 const delta_ = (insertCount_ - deleteCount_);
 if((delta_ > 0)) {
-self_.array.length += delta_;
+self_.array.length = delta_;
 for(let for_e = deleteEnd_, for_i = arrayCount_ - 1; for_i >= for_e; for_i--) {
 const i_ = for_i;
 self_.array[(i_ + delta_)] = self_.array[i_]
@@ -326,7 +326,7 @@ for(let for_i = deleteEnd_, for_e = arrayCount_; for_i < for_e; for_i++) {
 const i_ = for_i;
 self_.array[(i_ + delta_)] = self_.array[i_]
 };
-self_.array.length += delta_
+self_.array.length = delta_
 };
 for(let for_i = 0, for_e = insertCount_; for_i < for_e; for_i++) {
 const i_ = for_i;
@@ -519,7 +519,7 @@ const insertCount_ = list_.length;
 const arrayCount_ = self_.array.length;
 const delta_ = (insertCount_ - deleteCount_);
 if((delta_ > 0)) {
-self_.array.length += delta_;
+self_.array.length = delta_;
 for(let for_e = deleteEnd_, for_i = arrayCount_ - 1; for_i >= for_e; for_i--) {
 const i_ = for_i;
 self_.array[(i_ + delta_)] = self_.array[i_]
@@ -529,7 +529,7 @@ for(let for_i = deleteEnd_, for_e = arrayCount_; for_i < for_e; for_i++) {
 const i_ = for_i;
 self_.array[(i_ + delta_)] = self_.array[i_]
 };
-self_.array.length += delta_
+self_.array.length = delta_
 };
 for(let for_i = 0, for_e = insertCount_; for_i < for_e; for_i++) {
 const i_ = for_i;
