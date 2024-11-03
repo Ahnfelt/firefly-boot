@@ -1,44 +1,43 @@
 jsSystem(): JsSystem {
-    jsSystem() // Replaced by the compiler
+    panic("This call should have been eliminated by the compiler")
 }
 
 import(module: String): JsValue {
-    // Replaced by the compiler when called with a string literal
-    panic("import module parameter must be a string literal")
+    panic("This call should have been eliminated by the compiler")
 }
 
 await(promise: JsValue): JsValue {
-    await(promise) // Replaced by the compiler
+    panic("This call should have been eliminated by the compiler")
 }
 
 throwIfCancelled(): Unit {
-    throwIfCancelled() // Replaced by the compiler
+    panic("This call should have been eliminated by the compiler")
 }
 
 cancelled(): Bool {
-    cancelled() // Replaced by the compiler
+    panic("This call should have been eliminated by the compiler")
 }
 
 inAsync(): Bool {
-    inAsync() // Replaced by the compiler
+    panic("This call should have been eliminated by the compiler")
 }
     
 inBrowser(): Bool {
-    inBrowser() // Replaced by the compiler
+    panic("This call should have been eliminated by the compiler")
 }
     
 inNode(): Bool {
-    inNode() // Replaced by the compiler
+    panic("This call should have been eliminated by the compiler")
 }
     
 inBuild(): Bool {
-    inBuild() // Replaced by the compiler
+    panic("This call should have been eliminated by the compiler")
 }
 
 value[T](value: T): JsValue {
-    value! // Replaced by the compiler
+    panic("This call should have been eliminated by the compiler")
 }
 
 fromValue[T](value: JsValue): T {
-    value? // Replaced by the compiler
+    panic("This call should have been eliminated by the compiler")
 }

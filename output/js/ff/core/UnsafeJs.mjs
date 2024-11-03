@@ -97,91 +97,91 @@ import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
 
 
 export function jsSystem_() {
-return globalThis
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function import_(module_) {
-return ff_core_Core.panic_("import module parameter must be a string literal")
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function await_(promise_) {
-return promise_
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function throwIfCancelled_() {
-
+ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function cancelled_() {
-return false
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function inAsync_() {
-return false
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function inBrowser_() {
-return false
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function inNode_() {
-return true
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function inBuild_() {
-return false
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function value_(value_) {
-return value_
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function fromValue_(value_) {
-return value_
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function jsSystem_$($task) {
-return globalThis
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function import_$(module_, $task) {
-return ff_core_Core.panic_("import module parameter must be a string literal")
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function await_$(promise_, $task) {
-return (await promise_)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function throwIfCancelled_$($task) {
-ff_core_Task.Task_throwIfAborted($task)
+ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function cancelled_$($task) {
-return $task.controller.signal.aborted
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function inAsync_$($task) {
-return true
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function inBrowser_$($task) {
-return false
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function inNode_$($task) {
-return true
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function inBuild_$($task) {
-return false
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function value_$(value_, $task) {
-return value_
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function fromValue_$(value_, $task) {
-return value_
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 
