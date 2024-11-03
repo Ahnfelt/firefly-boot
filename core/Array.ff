@@ -61,12 +61,10 @@ extend self[T]: Array[T] {
     pushArray(value: Array[T]): Unit
         target js sync "self_.array.push(...value_.array)"
 
-    pushList(value: List[T]): Unit
-        target js sync "self_.array.push(...value_)"
-        
-    pushList2(list: List[T]): Unit {
+    pushList(list: List[T]): Unit {
         let originalLength = self.size()
-        self!->array->length += list.size()
+        //self!->array->length += list.size()
+        self!->array.increment("length", list.size())
         0.until(list.size()).each {i =>
             self!->array.set(originalLength + i, list!.get(i))
         }
@@ -140,7 +138,8 @@ extend self[T]: Array[T] {
         
         // Prepare for the new elements
         if(delta > 0) {
-            self!->array->length += delta
+            //self!->array->length += delta
+            self!->array.increment("length", delta)
             
             deleteEnd.until(arrayCount).reverse().each {i => 
                 self!->array.set(i + delta, self!->array.get(i))
@@ -150,7 +149,8 @@ extend self[T]: Array[T] {
                 self!->array.set(i + delta, self!->array.get(i))
             }
 
-            self!->array->length += delta
+            //self!->array->length += delta
+            self!->array.increment("length", delta)
         }
 
         // Insert the new elements

@@ -250,8 +250,13 @@ export function Array_pushArray(self_, value_) {
 self_.array.push(...value_.array)
 }
 
-export function Array_pushList(self_, value_) {
-self_.array.push(...value_)
+export function Array_pushList(self_, list_) {
+const originalLength_ = self_.array.length;
+self_.array.length += list_.length;
+for(let for_i = 0, for_e = list_.length; for_i < for_e; for_i++) {
+const i_ = for_i;
+self_.array[(originalLength_ + i_)] = list_[i_]
+}
 }
 
 export function Array_pop(self_) {
@@ -316,7 +321,7 @@ const insertCount_ = list_.length;
 const arrayCount_ = self_.array.length;
 const delta_ = (insertCount_ - deleteCount_);
 if((delta_ > 0)) {
-self_.array.length = delta_;
+self_.array.length += delta_;
 for(let for_e = deleteEnd_, for_i = arrayCount_ - 1; for_i >= for_e; for_i--) {
 const i_ = for_i;
 self_.array[(i_ + delta_)] = self_.array[i_]
@@ -326,7 +331,7 @@ for(let for_i = deleteEnd_, for_e = arrayCount_; for_i < for_e; for_i++) {
 const i_ = for_i;
 self_.array[(i_ + delta_)] = self_.array[i_]
 };
-self_.array.length = delta_
+self_.array.length += delta_
 };
 for(let for_i = 0, for_e = insertCount_; for_i < for_e; for_i++) {
 const i_ = for_i;
@@ -461,8 +466,13 @@ export async function Array_pushArray$(self_, value_, $task) {
 throw new Error('Function Array_pushArray is missing on this target in async context.');
 }
 
-export async function Array_pushList$(self_, value_, $task) {
-throw new Error('Function Array_pushList is missing on this target in async context.');
+export async function Array_pushList$(self_, list_, $task) {
+const originalLength_ = self_.array.length;
+self_.array.length += list_.length;
+for(let for_i = 0, for_e = list_.length; for_i < for_e; for_i++) {
+const i_ = for_i;
+self_.array[(originalLength_ + i_)] = list_[i_]
+}
 }
 
 export async function Array_pop$(self_, $task) {
@@ -519,7 +529,7 @@ const insertCount_ = list_.length;
 const arrayCount_ = self_.array.length;
 const delta_ = (insertCount_ - deleteCount_);
 if((delta_ > 0)) {
-self_.array.length = delta_;
+self_.array.length += delta_;
 for(let for_e = deleteEnd_, for_i = arrayCount_ - 1; for_i >= for_e; for_i--) {
 const i_ = for_i;
 self_.array[(i_ + delta_)] = self_.array[i_]
@@ -529,7 +539,7 @@ for(let for_i = deleteEnd_, for_e = arrayCount_; for_i < for_e; for_i++) {
 const i_ = for_i;
 self_.array[(i_ + delta_)] = self_.array[i_]
 };
-self_.array.length = delta_
+self_.array.length += delta_
 };
 for(let for_i = 0, for_e = insertCount_; for_i < for_e; for_i++) {
 const i_ = for_i;
