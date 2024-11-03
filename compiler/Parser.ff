@@ -1259,7 +1259,7 @@ extend self: Parser {
                 }
             let value = self.parseTerm()
             let effect = self.freshUnificationVariable(record.at)
-            let target = DynamicCall(EField(token.at(), False, record, "set"), False)
+            let target = DynamicCall(EField(token.at(), False, record, method), False)
             ECall(record.at, target, effect, [], [
                 Argument(member.at, None, member)
                 Argument(value.at, None, value)

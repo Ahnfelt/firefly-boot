@@ -63,8 +63,7 @@ extend self[T]: Array[T] {
 
     pushList(list: List[T]): Unit {
         let originalLength = self.size()
-        //self!->array->length += list.size()
-        self!->array.increment("length", list.size())
+        self!->array->length += list.size()
         0.until(list.size()).each {i =>
             self!->array.set(originalLength + i, list!.get(i))
         }
@@ -126,18 +125,14 @@ extend self[T]: Array[T] {
         let insertCount = list.size()
         let delta = insertCount - deleteCount
         
-        // Prepare for the new elements
         if(delta > 0) {
-            //self!->array->length += delta
-            self!->array.increment("length", delta)
+            self!->array->length += delta
             self!->array->copyWithin(start + insertCount, deleteEnd)
         } else {
             self!->array->copyWithin(start + insertCount, deleteEnd)
-            //self!->array->length += delta
-            self!->array.increment("length", delta)
+            self!->array->length += delta
         }
 
-        // Insert the new elements
         0.until(insertCount).each {i => 
             self!->array.set(start + i, list!.get(i))
         }        
