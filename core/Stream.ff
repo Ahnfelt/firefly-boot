@@ -7,7 +7,7 @@ new[T](next: () => Option[T], close: () => Unit = {}): Stream[T] {
     Stream(next, close)
 }
 
-init[T](body: () => Stream[T]): Stream[T] {
+do[T](body: () => Stream[T]): Stream[T] {
     mutable initialized = False
     mutable stream = Stream {None} {}
     Stream({

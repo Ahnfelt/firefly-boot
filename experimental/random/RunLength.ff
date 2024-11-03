@@ -52,7 +52,7 @@ toRunLength(stream: Stream[Buffer], bufferSize: Int = 65536): Stream[Buffer] {
         }
         outBuffers.drain().toStream()
     }
-    result.addAll(Stream.init {
+    result.addAll(Stream.do {
         if(extraCount > 0) {
             writeByte(extraCount)
             writeByte(value)
