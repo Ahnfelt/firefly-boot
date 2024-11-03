@@ -3,7 +3,8 @@ jsSystem(): JsSystem {
 }
 
 import(module: String): JsValue {
-    panic("import module parameter must be a string literal") // Replaced by the compiler
+    // Replaced by the compiler when called with a string literal
+    panic("import module parameter must be a string literal")
 }
 
 await(promise: JsValue): JsValue {
