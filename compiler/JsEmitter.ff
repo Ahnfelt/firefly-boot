@@ -743,6 +743,22 @@ extend self: JsEmitter {
                     "\n}"
                 )
             | "ff:core/List.List_each" {arguments | [
+                ECall(_, StaticCall("ff:core/List.List_reverse", _, _), _, _, [
+                    Argument(_, _, ECall(_, StaticCall(r, _, _), _, _, [start, end], _))
+                ], _)
+                ELambda(_, Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], body)]))
+            ]} {r == "ff:core/Int.Int_until" || r == "ff:core/Int.Int_to"} =>
+                let startCode = self.emitTerm(start.value, async)
+                let endCode = self.emitTerm(end.value, async)
+                let delta = if(r == "ff:core/Int.Int_until") {" - 1"} else {""}
+                Some(
+                    "for(let " +
+                    "for_e = " + startCode + ", for_i = " + endCode + delta + "; for_i >= for_e; for_i--) {\n" +
+                        name.map {"const " + escapeKeyword(_) + " = for_i;\n"}.else {""} +
+                        self.emitStatements(body, last, async) +
+                    "\n}"
+                )
+            | "ff:core/List.List_each" {arguments | [
                 ECall(_, StaticCall("ff:core/List.List_zip", _, _), _, _, [list1, list2], _)
                 ELambda(_, Lambda(_, _, [MatchCase(_, [
                     PVariant(_, "ff:core/Pair.Pair", [PVariable(_, name1), PVariable(_, name2)])

@@ -317,8 +317,8 @@ const arrayCount_ = self_.array.length;
 const delta_ = (insertCount_ - deleteCount_);
 if((delta_ > 0)) {
 self_.array.length += delta_;
-for(let for_i = 0, for_a = ff_core_List.List_reverse(ff_core_Int.Int_until(deleteEnd_, arrayCount_)), for_l = for_a.length; for_i < for_l; for_i++) {
-const i_ = for_a[for_i];
+for(let for_e = deleteEnd_, for_i = arrayCount_ - 1; for_i >= for_e; for_i--) {
+const i_ = for_i;
 self_.array[(i_ + delta_)] = self_.array[i_]
 }
 } else {
@@ -520,8 +520,8 @@ const arrayCount_ = self_.array.length;
 const delta_ = (insertCount_ - deleteCount_);
 if((delta_ > 0)) {
 self_.array.length += delta_;
-for(let for_i = 0, for_a = ff_core_List.List_reverse(ff_core_Int.Int_until(deleteEnd_, arrayCount_)), for_l = for_a.length; for_i < for_l; for_i++) {
-const i_ = for_a[for_i];
+for(let for_e = deleteEnd_, for_i = arrayCount_ - 1; for_i >= for_e; for_i--) {
+const i_ = for_i;
 self_.array[(i_ + delta_)] = self_.array[i_]
 }
 } else {
