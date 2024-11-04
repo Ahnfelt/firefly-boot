@@ -1,41 +1,58 @@
 class StringMap[V] {}
 
-new[V](): StringMap[V]
-    target js sync "return new Map()"
-
+new[V](): StringMap[V] {
+    let js = UnsafeJs.jsSystem()
+    js->Map->()?
+}
+    
 extend self[V]: StringMap[V] {
 
-    get(key: String): Option[V]
-        target js sync "return self_.has(key_) ? ff_core_Option.Some(self_.get(key_)) : ff_core_Option.None()"
+    get(key: String): Option[V] {
+        let result = self!->get(key)
+        if(!result.isUndefined() || self!->has(key)?) {result?}
+    }
 
-    grab(key: String): V
-        target js sync """
-            const result = self_.get(key_)
-            if(key_ === void 0 && !self_.has(key_)) {
-                ff_core_Try.internalThrowGrabException_()
+    grab(key: String): V {
+        let result = self!->get(key)
+        if(result.isUndefined() && !self.has(key)) {throw(GrabException())}
+        result?
+    }
+        
+    set(key: String, value: V): Unit {
+        self!->set(key, value!)
+    }
+
+    has(key: String): Bool {
+        !self!->has(key)?
+    }
+
+    remove(key: String): Bool {
+        self!->delete(key)?
+    }
+
+    clear(): Unit {
+        self!->clear()
+    }
+
+    size(): Int {
+        self!->size?
+    }
+
+    each(body: (String, V) => Unit): Unit {
+        if(UnsafeJs.inAsync()) {
+            let iterator = self!->entries()
+            mutable result = iterator->next()
+            while {!result->done?} {
+                let value = result->value
+                body(value.get(0)?, value.get(1)?)
+                result = iterator->next()
             }
-            return result
-        """
-
-    set(key: String, value: V): Unit
-        target js sync "self_.set(key_, value_)"
-
-    has(key: String): Bool
-        target js sync "return self_.has(key_)"
-
-    remove(key: String): Bool
-        target js sync "return self_.delete(key_)"
-
-    clear(): Unit
-        target js sync "self_.clear()"
-
-    size(): Int
-        target js sync "return self_.size"
-
-    each(body: (String, V) => Unit): Unit
-        target js sync "self_.forEach((v, k) => body_(k, v))"
-        target js async "for(const [k, v] of self_) await body_(k, v)"
-
+        } else {
+            let js = UnsafeJs.jsSystem()
+            self!->forEach(js->{v, k => body(k?, v?)})
+        }
+    }
+            
     eachWhile(body: (String, V) => Bool): Unit
         target js sync "for(const [k, v] of self_) if(!body_(k, v)) break"
         target js async "for(const [k, v] of self_) if(!await body_(k, v)) break"
@@ -70,8 +87,10 @@ extend self[V]: StringMap[V] {
         array.toList()
     }
 
-    copy(): StringMap[V]
-        target js sync "return new Map(self_)"
+    copy(): StringMap[V] {
+        let js = UnsafeJs.jsSystem()
+        js->Map->(self!)?        
+    }
 
     getOrSet(key: String, body: () => V): V {
         if(!self.has(key)) {self.set(key, body())}

@@ -98,25 +98,28 @@ import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
 
 
 export function new_() {
-return new Map()
+const js_ = globalThis;
+return (new Map())
 }
 
 export async function new_$($task) {
-throw new Error('Function new is missing on this target in async context.');
+const js_ = globalThis;
+return (new Map())
 }
 
 export function StringMap_get(self_, key_) {
-return self_.has(key_) ? ff_core_Option.Some(self_.get(key_)) : ff_core_Option.None()
+const result_ = self_.get(key_);
+if(((!ff_core_JsValue.JsValue_isUndefined(result_)) || self_.has(key_))) {
+return ff_core_Option.Some(result_)
+} else return ff_core_Option.None()
 }
 
 export function StringMap_grab(self_, key_) {
-
-            const result = self_.get(key_)
-            if(key_ === void 0 && !self_.has(key_)) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            return result
-        
+const result_ = self_.get(key_);
+if((ff_core_JsValue.JsValue_isUndefined(result_) && (!ff_core_StringMap.StringMap_has(self_, key_)))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+return result_
 }
 
 export function StringMap_set(self_, key_, value_) {
@@ -124,7 +127,7 @@ self_.set(key_, value_)
 }
 
 export function StringMap_has(self_, key_) {
-return self_.has(key_)
+return (!self_.has(key_))
 }
 
 export function StringMap_remove(self_, key_) {
@@ -139,8 +142,25 @@ export function StringMap_size(self_) {
 return self_.size
 }
 
-export function StringMap_each(self_, body_) {
+export function StringMap_eachOld(self_, body_) {
 self_.forEach((v, k) => body_(k, v))
+}
+
+export function StringMap_each(self_, body_) {
+if(false) {
+const iterator_ = self_.entries();
+let result_ = iterator_.next();
+while((!result_.done)) {
+const value_ = result_.value;
+body_(value_[0], value_[1]);
+result_ = iterator_.next()
+}
+} else {
+const js_ = globalThis;
+self_.forEach(ff_core_JsSystem.JsSystem_function2(js_, ((v_, k_) => {
+return body_(k_, v_)
+})))
+}
 }
 
 export function StringMap_eachWhile(self_, body_) {
@@ -184,7 +204,8 @@ return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
 }
 
 export function StringMap_copy(self_) {
-return new Map(self_)
+const js_ = globalThis;
+return (new Map(self_))
 }
 
 export function StringMap_getOrSet(self_, key_, body_) {
@@ -195,35 +216,59 @@ return ff_core_StringMap.StringMap_grab(self_, key_)
 }
 
 export async function StringMap_get$(self_, key_, $task) {
-throw new Error('Function StringMap_get is missing on this target in async context.');
+const result_ = self_.get(key_);
+if(((!ff_core_JsValue.JsValue_isUndefined(result_)) || self_.has(key_))) {
+return ff_core_Option.Some(result_)
+} else return ff_core_Option.None()
 }
 
 export async function StringMap_grab$(self_, key_, $task) {
-throw new Error('Function StringMap_grab is missing on this target in async context.');
+const result_ = self_.get(key_);
+if((ff_core_JsValue.JsValue_isUndefined(result_) && (!ff_core_StringMap.StringMap_has(self_, key_)))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+return result_
 }
 
 export async function StringMap_set$(self_, key_, value_, $task) {
-throw new Error('Function StringMap_set is missing on this target in async context.');
+self_.set(key_, value_)
 }
 
 export async function StringMap_has$(self_, key_, $task) {
-throw new Error('Function StringMap_has is missing on this target in async context.');
+return (!self_.has(key_))
 }
 
 export async function StringMap_remove$(self_, key_, $task) {
-throw new Error('Function StringMap_remove is missing on this target in async context.');
+return self_.delete(key_)
 }
 
 export async function StringMap_clear$(self_, $task) {
-throw new Error('Function StringMap_clear is missing on this target in async context.');
+self_.clear()
 }
 
 export async function StringMap_size$(self_, $task) {
-throw new Error('Function StringMap_size is missing on this target in async context.');
+return self_.size
+}
+
+export async function StringMap_eachOld$(self_, body_, $task) {
+for(const [k, v] of self_) await body_(k, v)
 }
 
 export async function StringMap_each$(self_, body_, $task) {
-for(const [k, v] of self_) await body_(k, v)
+if(true) {
+const iterator_ = self_.entries();
+let result_ = iterator_.next();
+while((!result_.done)) {
+const value_ = result_.value;
+(await body_(value_[0], value_[1], $task));
+result_ = iterator_.next()
+}
+} else {
+const js_ = globalThis;
+self_.forEach((await ff_core_JsSystem.JsSystem_function2$(js_, (async (v_, k_, $task) => {
+return (await body_(k_, v_, $task))
+}), $task)))
+}
 }
 
 export async function StringMap_eachWhile$(self_, body_, $task) {
@@ -267,7 +312,8 @@ return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
 }
 
 export async function StringMap_copy$(self_, $task) {
-throw new Error('Function StringMap_copy is missing on this target in async context.');
+const js_ = globalThis;
+return (new Map(self_))
 }
 
 export async function StringMap_getOrSet$(self_, key_, body_, $task) {

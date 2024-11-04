@@ -53,7 +53,7 @@ extend self[T]: List[T] {
 
     grab(index: Int): T {
         if(index < 0 || index >= self.size()) {
-            throw(GrabException)
+            throw(GrabException())
         }
         self!.get(index)?
     }

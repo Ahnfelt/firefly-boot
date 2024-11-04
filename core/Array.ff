@@ -41,7 +41,7 @@ extend self[T]: Array[T] {
 
     grab(index: Int): T {
         if(index < 0 || index >= self.size()) {
-            throw(GrabException)
+            throw(GrabException())
         }
         self!->array.get(index)?
     }
@@ -78,14 +78,14 @@ extend self[T]: Array[T] {
 
     set(index: Int, value: T): Unit {
         if(index < 0 || index >= self.size()) {
-            throw(GrabException)
+            throw(GrabException())
         }
         self!->array.set(index, value!)
     }
 
     modify(index: Int, body: T => T): Unit {
         if(index < 0 || index >= self.size()) {
-            throw(GrabException)
+            throw(GrabException())
         }
         self!->array.set(index, body(self!->array.get(index)?)!)
     }
@@ -112,13 +112,13 @@ extend self[T]: Array[T] {
 
     insertList(start: Int, list: List[T], deleteCount: Int = 0): Unit {
         if(start < 0 || start > self.size()) {
-            throw(GrabException)
+            throw(GrabException())
         }
 
         let deleteEnd = start + deleteCount
 
         if(deleteEnd < 0 || deleteEnd > self.size()) {
-            throw(GrabException)
+            throw(GrabException())
         }
 
         let insertCount = list.size()
