@@ -58,8 +58,9 @@ extend self[T]: Array[T] {
         self!->array->push(value!)?
     }
 
-    pushArray(value: Array[T]): Unit
-        target js sync "self_.array.push(...value_.array)"
+    pushArray(value: Array[T]): Unit {
+        self.pushList(value!->array?)
+    }
 
     pushList(list: List[T]): Unit {
         let originalLength = self.size()
@@ -126,7 +127,7 @@ extend self[T]: Array[T] {
         if(delta > 0) {
             self!->array->length += delta
             self!->array->copyWithin(start + insertCount, deleteEnd)
-        } else {
+        } elseIf {delta < 0} {
             self!->array->copyWithin(start + insertCount, deleteEnd)
             self!->array->length += delta
         }
@@ -240,8 +241,9 @@ extend self[T: Order]: Array[T] {
 
 extend self: Array[String] {
 
-    join(separator: String = ""): String
-        target js sync "return self_.array.join(separator_)"
+    join(separator: String = ""): String {
+        self!->array->join(separator)?
+    }
 
 }
 
@@ -284,8 +286,3 @@ sortRange[T](array: Array[T], compare: (T, T) => Ordering, start: Int, end: Int)
         }
     }
 }
-
-internalGrab[T](self: Array[T], index: Int): T
-    target js sync """
-        return index_ < 0 || index_ >= self_.array.length ? ff_core_Try.internalThrowGrabException_() : self_.array[index_];
-    """

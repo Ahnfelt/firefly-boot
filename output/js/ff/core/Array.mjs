@@ -127,13 +127,13 @@ ff_core_Array.sortRange_(array_, compare_, middle_, end_);
 let i_ = start_;
 let j_ = middle_;
 while(((i_ < middle_) && (j_ < end_))) {
-if((compare_((array_.array[i_] ?? ff_core_Array.internalGrab_(array_, i_)), (array_.array[j_] ?? ff_core_Array.internalGrab_(array_, j_))) !== ff_core_Ordering.OrderingAfter())) {
+if((compare_((array_.array[i_] ?? ff_core_Array.Array_grab(array_, i_)), (array_.array[j_] ?? ff_core_Array.Array_grab(array_, j_))) !== ff_core_Ordering.OrderingAfter())) {
 i_ += 1
 } else {
-const value_ = (array_.array[j_] ?? ff_core_Array.internalGrab_(array_, j_));
+const value_ = (array_.array[j_] ?? ff_core_Array.Array_grab(array_, j_));
 let k_ = j_;
 while((k_ > i_)) {
-ff_core_Array.Array_set(array_, k_, (array_.array[(k_ - 1)] ?? ff_core_Array.internalGrab_(array_, (k_ - 1))));
+ff_core_Array.Array_set(array_, k_, ff_core_Array.Array_grab(array_, (k_ - 1)));
 k_ -= 1
 };
 ff_core_Array.Array_set(array_, i_, value_);
@@ -143,12 +143,6 @@ j_ += 1
 }
 }
 }
-}
-
-export function internalGrab_(self_, index_) {
-
-        return index_ < 0 || index_ >= self_.array.length ? ff_core_Try.internalThrowGrabException_() : self_.array[index_];
-    
 }
 
 export async function new_$($task) {
@@ -181,13 +175,13 @@ let middle_ = (start_ + ff_core_Int.Int_div((end_ - start_), 2));
 let i_ = start_;
 let j_ = middle_;
 while(((i_ < middle_) && (j_ < end_))) {
-if(((await compare_((array_.array[i_] ?? ff_core_Array.internalGrab_(array_, i_)), (array_.array[j_] ?? ff_core_Array.internalGrab_(array_, j_)), $task)) !== ff_core_Ordering.OrderingAfter())) {
+if(((await compare_((array_.array[i_] ?? ff_core_Array.Array_grab(array_, i_)), (array_.array[j_] ?? ff_core_Array.Array_grab(array_, j_)), $task)) !== ff_core_Ordering.OrderingAfter())) {
 i_ += 1
 } else {
-const value_ = (array_.array[j_] ?? ff_core_Array.internalGrab_(array_, j_));
+const value_ = (array_.array[j_] ?? ff_core_Array.Array_grab(array_, j_));
 let k_ = j_;
 while((k_ > i_)) {
-ff_core_Array.Array_set(array_, k_, (array_.array[(k_ - 1)] ?? ff_core_Array.internalGrab_(array_, (k_ - 1))));
+ff_core_Array.Array_set(array_, k_, ff_core_Array.Array_grab(array_, (k_ - 1)));
 k_ -= 1
 };
 ff_core_Array.Array_set(array_, i_, value_);
@@ -197,10 +191,6 @@ j_ += 1
 }
 }
 }
-}
-
-export async function internalGrab_$(self_, index_, $task) {
-throw new Error('Function internalGrab is missing on this target in async context.');
 }
 
 export function Array_isEmpty(self_) {
@@ -235,11 +225,11 @@ return ff_core_Array.Array_get(self_, (self_.array.length - 1))
 }
 
 export function Array_grabFirst(self_) {
-return (self_.array[0] ?? ff_core_Array.internalGrab_(self_, 0))
+return (self_.array[0] ?? ff_core_Array.Array_grab(self_, 0))
 }
 
 export function Array_grabLast(self_) {
-return (self_.array[(self_.array.length - 1)] ?? ff_core_Array.internalGrab_(self_, (self_.array.length - 1)))
+return ff_core_Array.Array_grab(self_, (self_.array.length - 1))
 }
 
 export function Array_push(self_, value_) {
@@ -452,11 +442,11 @@ return ff_core_Array.Array_get(self_, (self_.array.length - 1))
 }
 
 export async function Array_grabFirst$(self_, $task) {
-return (self_.array[0] ?? ff_core_Array.internalGrab_(self_, 0))
+return (self_.array[0] ?? ff_core_Array.Array_grab(self_, 0))
 }
 
 export async function Array_grabLast$(self_, $task) {
-return (self_.array[(self_.array.length - 1)] ?? ff_core_Array.internalGrab_(self_, (self_.array.length - 1)))
+return ff_core_Array.Array_grab(self_, (self_.array.length - 1))
 }
 
 export async function Array_push$(self_, value_, $task) {
@@ -654,7 +644,7 @@ return self_.array.join(separator_)
 }
 
 export async function Array_join$(self_, separator_ = "", $task) {
-throw new Error('Function Array_join is missing on this target in async context.');
+return self_.array.join(separator_)
 }
 
 export function ff_core_Show_Show$ff_core_Array_Array(ff_core_Show_Show$T) { return {

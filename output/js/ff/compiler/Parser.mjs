@@ -249,7 +249,7 @@ return self_.end_
 
 export function Parser_current(self_) {
 if((self_.offset_ < self_.tokens_.length)) {
-return (self_.tokens_[self_.offset_] ?? ff_core_List.internalGrab_(self_.tokens_, self_.offset_))
+return (self_.tokens_[self_.offset_] ?? ff_core_List.List_grab(self_.tokens_, self_.offset_))
 } else {
 return self_.end_
 }
@@ -900,7 +900,7 @@ const parts_ = ff_core_String.String_split(ff_compiler_Token.Token_raw(majorMino
 const patch_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LDot())
 ? (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LDot()), ff_core_String.String_grabInt(ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LInt()))))
 : 0);
-return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(majorMinor_), ff_core_String.String_grabInt((parts_[0] ?? ff_core_List.internalGrab_(parts_, 0))), ff_core_String.String_grabInt((parts_[1] ?? ff_core_List.internalGrab_(parts_, 1))), patch_)
+return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(majorMinor_), ff_core_String.String_grabInt((parts_[0] ?? ff_core_List.List_grab(parts_, 0))), ff_core_String.String_grabInt((parts_[1] ?? ff_core_List.List_grab(parts_, 1))), patch_)
 } else {
 const major_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LInt());
 return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(major_), ff_core_String.String_grabInt(ff_compiler_Token.Token_raw(major_)), 0, 0)
@@ -1421,7 +1421,7 @@ export function Parser_parseBinary(self_, level_) {
 if((level_ >= ff_compiler_Parser.binaryOperators_.length)) {
 return ff_compiler_Parser.Parser_parseUnary(self_)
 } else {
-const operators_ = (ff_compiler_Parser.binaryOperators_[level_] ?? ff_core_List.internalGrab_(ff_compiler_Parser.binaryOperators_, level_));
+const operators_ = (ff_compiler_Parser.binaryOperators_[level_] ?? ff_core_List.List_grab(ff_compiler_Parser.binaryOperators_, level_));
 let result_ = ff_compiler_Parser.Parser_parseBinary(self_, (level_ + 1));
 if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LOperator())) {
 while(ff_core_List.List_any(operators_, ((value_) => {
@@ -1550,7 +1550,7 @@ return result_
 }
 if(_1.Some) {
 const i_ = _1.value_;
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError((arguments_.first_[i_] ?? ff_core_List.internalGrab_(arguments_.first_, i_)).at_, "Unexpected named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError((arguments_.first_[i_] ?? ff_core_List.List_grab(arguments_.first_, i_)).at_, "Unexpected named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
 } else if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")) {
@@ -1832,7 +1832,7 @@ return self_.end_
 
 export async function Parser_current$(self_, $task) {
 if((self_.offset_ < self_.tokens_.length)) {
-return (self_.tokens_[self_.offset_] ?? ff_core_List.internalGrab_(self_.tokens_, self_.offset_))
+return (self_.tokens_[self_.offset_] ?? ff_core_List.List_grab(self_.tokens_, self_.offset_))
 } else {
 return self_.end_
 }
@@ -2483,7 +2483,7 @@ const parts_ = ff_core_String.String_split(ff_compiler_Token.Token_raw(majorMino
 const patch_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LDot())
 ? (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LDot()), ff_core_String.String_grabInt(ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LInt()))))
 : 0);
-return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(majorMinor_), ff_core_String.String_grabInt((parts_[0] ?? ff_core_List.internalGrab_(parts_, 0))), ff_core_String.String_grabInt((parts_[1] ?? ff_core_List.internalGrab_(parts_, 1))), patch_)
+return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(majorMinor_), ff_core_String.String_grabInt((parts_[0] ?? ff_core_List.List_grab(parts_, 0))), ff_core_String.String_grabInt((parts_[1] ?? ff_core_List.List_grab(parts_, 1))), patch_)
 } else {
 const major_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LInt());
 return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(major_), ff_core_String.String_grabInt(ff_compiler_Token.Token_raw(major_)), 0, 0)
@@ -3004,7 +3004,7 @@ export async function Parser_parseBinary$(self_, level_, $task) {
 if((level_ >= ff_compiler_Parser.binaryOperators_.length)) {
 return ff_compiler_Parser.Parser_parseUnary(self_)
 } else {
-const operators_ = (ff_compiler_Parser.binaryOperators_[level_] ?? ff_core_List.internalGrab_(ff_compiler_Parser.binaryOperators_, level_));
+const operators_ = (ff_compiler_Parser.binaryOperators_[level_] ?? ff_core_List.List_grab(ff_compiler_Parser.binaryOperators_, level_));
 let result_ = ff_compiler_Parser.Parser_parseBinary(self_, (level_ + 1));
 if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LOperator())) {
 while(ff_core_List.List_any(operators_, ((value_) => {
@@ -3133,7 +3133,7 @@ return result_
 }
 if(_1.Some) {
 const i_ = _1.value_;
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError((arguments_.first_[i_] ?? ff_core_List.internalGrab_(arguments_.first_, i_)).at_, "Unexpected named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError((arguments_.first_[i_] ?? ff_core_List.List_grab(arguments_.first_, i_)).at_, "Unexpected named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
 } else if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")) {

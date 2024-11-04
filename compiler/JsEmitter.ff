@@ -521,14 +521,14 @@ extend self: JsEmitter {
                 let code2 = self.emitTerm(e2, async)
                 Some(
                     "(" + code1 + "[" + code2 + "] ?? " + 
-                    "ff_core_List.internalGrab_(" + code1 + ", " + code2 + "))"
+                    "ff_core_List.List_grab(" + code1 + ", " + code2 + "))"
                 )
-            | "ff:core/Array.Array_grab" {arguments | [e1, e2]} =>
+            | "ff:core/Array.Array_grab" {arguments | [e1, e2]} {noSideEffects(e1) && noSideEffects(e2)} =>
                 let code1 = self.emitTerm(e1, async)
                 let code2 = self.emitTerm(e2, async)
                 Some(
                     "(" + code1 + ".array[" + code2 + "] ?? " + 
-                    "ff_core_Array.internalGrab_(" + code1 + ", " + code2 + "))"
+                    "ff_core_Array.Array_grab(" + code1 + ", " + code2 + "))"
                 )
             | "ff:core/List.List_size" {arguments | [e]} =>
                 Some(

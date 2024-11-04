@@ -220,8 +220,8 @@ export function Random_shuffleArray(self_, array_) {
 for(let for_i = 0, for_e = (array_.array.length - 1); for_i < for_e; for_i++) {
 const i_ = for_i;
 const j_ = (ff_core_Random.Random_nextInt(self_, 0, (array_.array.length - i_)) + i_);
-const value_ = (array_.array[i_] ?? ff_core_Array.internalGrab_(array_, i_));
-ff_core_Array.Array_set(array_, i_, (array_.array[j_] ?? ff_core_Array.internalGrab_(array_, j_)));
+const value_ = (array_.array[i_] ?? ff_core_Array.Array_grab(array_, i_));
+ff_core_Array.Array_set(array_, i_, (array_.array[j_] ?? ff_core_Array.Array_grab(array_, j_)));
 ff_core_Array.Array_set(array_, j_, value_)
 }
 }
@@ -244,7 +244,7 @@ return ff_core_List.List_takeFirst(ff_core_Random.Random_shuffleList(self_, list
 }
 
 export function Random_grabArray(self_, array_) {
-return (array_.array[ff_core_Random.Random_nextInt(self_, 0, array_.array.length)] ?? ff_core_Array.internalGrab_(array_, ff_core_Random.Random_nextInt(self_, 0, array_.array.length)))
+return ff_core_Array.Array_grab(array_, ff_core_Random.Random_nextInt(self_, 0, array_.array.length))
 }
 
 export function Random_grabList(self_, list_) {
@@ -282,8 +282,8 @@ export async function Random_shuffleArray$(self_, array_, $task) {
 for(let for_i = 0, for_e = (array_.array.length - 1); for_i < for_e; for_i++) {
 const i_ = for_i;
 const j_ = (ff_core_Random.Random_nextInt(self_, 0, (array_.array.length - i_)) + i_);
-const value_ = (array_.array[i_] ?? ff_core_Array.internalGrab_(array_, i_));
-ff_core_Array.Array_set(array_, i_, (array_.array[j_] ?? ff_core_Array.internalGrab_(array_, j_)));
+const value_ = (array_.array[i_] ?? ff_core_Array.Array_grab(array_, i_));
+ff_core_Array.Array_set(array_, i_, (array_.array[j_] ?? ff_core_Array.Array_grab(array_, j_)));
 ff_core_Array.Array_set(array_, j_, value_)
 }
 }
@@ -306,7 +306,7 @@ return ff_core_List.List_takeFirst(ff_core_Random.Random_shuffleList(self_, list
 }
 
 export async function Random_grabArray$(self_, array_, $task) {
-return (array_.array[ff_core_Random.Random_nextInt(self_, 0, array_.array.length)] ?? ff_core_Array.internalGrab_(array_, ff_core_Random.Random_nextInt(self_, 0, array_.array.length)))
+return ff_core_Array.Array_grab(array_, ff_core_Random.Random_nextInt(self_, 0, array_.array.length))
 }
 
 export async function Random_grabList$(self_, list_, $task) {

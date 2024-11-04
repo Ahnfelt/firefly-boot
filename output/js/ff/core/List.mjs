@@ -130,12 +130,6 @@ return i_
 }))
 }
 
-export function internalGrab_(self_, index_) {
-
-        return index_ < 0 || index_ >= self_.length ? ff_core_Try.internalThrowGrabException_() : self_[index_];
-    
-}
-
 export async function new_$($task) {
 return []
 }
@@ -167,10 +161,6 @@ const js_ = globalThis;
 return Array.from({length: size_}, ((_, i_) => {
 return i_
 }))
-}
-
-export async function internalGrab_$(self_, index_, $task) {
-throw new Error('Function internalGrab is missing on this target in async context.');
 }
 
 export function List_addAll(self_, that_) {
@@ -209,7 +199,7 @@ return ff_core_List.List_get(self_, (self_.length - 1))
 }
 
 export function List_grabFirst(self_) {
-return (self_[0] ?? ff_core_List.internalGrab_(self_, 0))
+return (self_[0] ?? ff_core_List.List_grab(self_, 0))
 }
 
 export function List_grabLast(self_) {
@@ -236,7 +226,7 @@ export function List_count(self_, body_) {
 let result_ = 0;
 let i_ = 0;
 while((i_ < self_.length)) {
-if(body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)))) {
+if(body_((self_[i_] ?? ff_core_List.List_grab(self_, i_)))) {
 result_ += 1
 };
 i_ += 1
@@ -246,7 +236,7 @@ return result_
 
 export function List_countWhile(self_, body_) {
 let i_ = 0;
-while(((i_ < self_.length) && body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_))))) {
+while(((i_ < self_.length) && body_((self_[i_] ?? ff_core_List.List_grab(self_, i_))))) {
 i_ += 1
 };
 return i_
@@ -255,8 +245,8 @@ return i_
 export function List_takeWhile(self_, body_) {
 const result_ = ff_core_Array.new_();
 let i_ = 0;
-while(((i_ < self_.length) && body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_))))) {
-result_.array.push((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
+while(((i_ < self_.length) && body_((self_[i_] ?? ff_core_List.List_grab(self_, i_))))) {
+result_.array.push((self_[i_] ?? ff_core_List.List_grab(self_, i_)));
 i_ += 1
 };
 return ff_core_Array.Array_drain(result_)
@@ -265,11 +255,11 @@ return ff_core_Array.Array_drain(result_)
 export function List_dropWhile(self_, body_) {
 const result_ = ff_core_Array.new_();
 let i_ = 0;
-while(((i_ < self_.length) && body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_))))) {
+while(((i_ < self_.length) && body_((self_[i_] ?? ff_core_List.List_grab(self_, i_))))) {
 i_ += 1
 };
 while((i_ < self_.length)) {
-result_.array.push((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
+result_.array.push((self_[i_] ?? ff_core_List.List_grab(self_, i_)));
 i_ += 1
 };
 return ff_core_Array.Array_drain(result_)
@@ -279,12 +269,12 @@ export function List_partitionWhile(self_, body_) {
 const first_ = ff_core_Array.new_();
 const second_ = ff_core_Array.new_();
 let i_ = 0;
-while(((i_ < self_.length) && body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_))))) {
-first_.array.push((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
+while(((i_ < self_.length) && body_((self_[i_] ?? ff_core_List.List_grab(self_, i_))))) {
+first_.array.push((self_[i_] ?? ff_core_List.List_grab(self_, i_)));
 i_ += 1
 };
 while((i_ < self_.length)) {
-second_.array.push((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
+second_.array.push((self_[i_] ?? ff_core_List.List_grab(self_, i_)));
 i_ += 1
 };
 return ff_core_Pair.Pair(ff_core_Array.Array_drain(first_), ff_core_Array.Array_drain(second_))
@@ -332,13 +322,13 @@ if((self_.length <= that_.length)) {
 let i_ = (-1);
 return ff_core_List.List_map(self_, ((x_) => {
 i_ += 1;
-return ff_core_Pair.Pair(x_, (that_[i_] ?? ff_core_List.internalGrab_(that_, i_)))
+return ff_core_Pair.Pair(x_, (that_[i_] ?? ff_core_List.List_grab(that_, i_)))
 }))
 } else {
 let i_ = (-1);
 return ff_core_List.List_map(that_, ((y_) => {
 i_ += 1;
-return ff_core_Pair.Pair((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), y_)
+return ff_core_Pair.Pair((self_[i_] ?? ff_core_List.List_grab(self_, i_)), y_)
 }))
 }
 }
@@ -368,13 +358,13 @@ let index_ = 0;
 return ff_core_Stream.new_((() => {
 if((index_ < self_.length)) {
 return ff_core_Option.Some((function() {
-const result_ = (self_[index_] ?? ff_core_List.internalGrab_(self_, index_));
+const result_ = (self_[index_] ?? ff_core_List.List_grab(self_, index_));
 index_ += 1;
 return result_
 })())
 } else if((cycle_ && (index_ !== 0))) {
 return ff_core_Option.Some((function() {
-const result_ = (self_[0] ?? ff_core_List.internalGrab_(self_, 0));
+const result_ = (self_[0] ?? ff_core_List.List_grab(self_, 0));
 index_ = 1;
 return result_
 })())
@@ -586,7 +576,7 @@ return ff_core_List.List_get(self_, (self_.length - 1))
 }
 
 export async function List_grabFirst$(self_, $task) {
-return (self_[0] ?? ff_core_List.internalGrab_(self_, 0))
+return (self_[0] ?? ff_core_List.List_grab(self_, 0))
 }
 
 export async function List_grabLast$(self_, $task) {
@@ -613,7 +603,7 @@ export async function List_count$(self_, body_, $task) {
 let result_ = 0;
 let i_ = 0;
 while((i_ < self_.length)) {
-if((await body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), $task))) {
+if((await body_((self_[i_] ?? ff_core_List.List_grab(self_, i_)), $task))) {
 result_ += 1
 };
 i_ += 1
@@ -623,7 +613,7 @@ return result_
 
 export async function List_countWhile$(self_, body_, $task) {
 let i_ = 0;
-while(((i_ < self_.length) && (await body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), $task)))) {
+while(((i_ < self_.length) && (await body_((self_[i_] ?? ff_core_List.List_grab(self_, i_)), $task)))) {
 i_ += 1
 };
 return i_
@@ -632,8 +622,8 @@ return i_
 export async function List_takeWhile$(self_, body_, $task) {
 const result_ = ff_core_Array.new_();
 let i_ = 0;
-while(((i_ < self_.length) && (await body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), $task)))) {
-result_.array.push((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
+while(((i_ < self_.length) && (await body_((self_[i_] ?? ff_core_List.List_grab(self_, i_)), $task)))) {
+result_.array.push((self_[i_] ?? ff_core_List.List_grab(self_, i_)));
 i_ += 1
 };
 return ff_core_Array.Array_drain(result_)
@@ -642,11 +632,11 @@ return ff_core_Array.Array_drain(result_)
 export async function List_dropWhile$(self_, body_, $task) {
 const result_ = ff_core_Array.new_();
 let i_ = 0;
-while(((i_ < self_.length) && (await body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), $task)))) {
+while(((i_ < self_.length) && (await body_((self_[i_] ?? ff_core_List.List_grab(self_, i_)), $task)))) {
 i_ += 1
 };
 while((i_ < self_.length)) {
-result_.array.push((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
+result_.array.push((self_[i_] ?? ff_core_List.List_grab(self_, i_)));
 i_ += 1
 };
 return ff_core_Array.Array_drain(result_)
@@ -656,12 +646,12 @@ export async function List_partitionWhile$(self_, body_, $task) {
 const first_ = ff_core_Array.new_();
 const second_ = ff_core_Array.new_();
 let i_ = 0;
-while(((i_ < self_.length) && (await body_((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), $task)))) {
-first_.array.push((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
+while(((i_ < self_.length) && (await body_((self_[i_] ?? ff_core_List.List_grab(self_, i_)), $task)))) {
+first_.array.push((self_[i_] ?? ff_core_List.List_grab(self_, i_)));
 i_ += 1
 };
 while((i_ < self_.length)) {
-second_.array.push((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)));
+second_.array.push((self_[i_] ?? ff_core_List.List_grab(self_, i_)));
 i_ += 1
 };
 return ff_core_Pair.Pair(ff_core_Array.Array_drain(first_), ff_core_Array.Array_drain(second_))
@@ -709,13 +699,13 @@ if((self_.length <= that_.length)) {
 let i_ = (-1);
 return ff_core_List.List_map(self_, ((x_) => {
 i_ += 1;
-return ff_core_Pair.Pair(x_, (that_[i_] ?? ff_core_List.internalGrab_(that_, i_)))
+return ff_core_Pair.Pair(x_, (that_[i_] ?? ff_core_List.List_grab(that_, i_)))
 }))
 } else {
 let i_ = (-1);
 return ff_core_List.List_map(that_, ((y_) => {
 i_ += 1;
-return ff_core_Pair.Pair((self_[i_] ?? ff_core_List.internalGrab_(self_, i_)), y_)
+return ff_core_Pair.Pair((self_[i_] ?? ff_core_List.List_grab(self_, i_)), y_)
 }))
 }
 }
@@ -745,13 +735,13 @@ let index_ = 0;
 return (await ff_core_Stream.new_$((async ($task) => {
 if((index_ < self_.length)) {
 return ff_core_Option.Some((await (async function() {
-const result_ = (self_[index_] ?? ff_core_List.internalGrab_(self_, index_));
+const result_ = (self_[index_] ?? ff_core_List.List_grab(self_, index_));
 index_ += 1;
 return result_
 })()))
 } else if((cycle_ && (index_ !== 0))) {
 return ff_core_Option.Some((await (async function() {
-const result_ = (self_[0] ?? ff_core_List.internalGrab_(self_, 0));
+const result_ = (self_[0] ?? ff_core_List.List_grab(self_, 0));
 index_ = 1;
 return result_
 })()))
@@ -1131,7 +1121,7 @@ return false
 let i_ = (-1);
 return ff_core_List.List_all(x_, ((l_) => {
 i_ += 1;
-return ff_core_Equal_Equal$T.equals_(l_, (y_[i_] ?? ff_core_List.internalGrab_(y_, i_)))
+return ff_core_Equal_Equal$T.equals_(l_, (y_[i_] ?? ff_core_List.List_grab(y_, i_)))
 }))
 }
 }
@@ -1146,7 +1136,7 @@ return false
 let i_ = (-1);
 return ff_core_List.List_all(x_, ((l_) => {
 i_ += 1;
-return ff_core_Equal_Equal$T.equals_(l_, (y_[i_] ?? ff_core_List.internalGrab_(y_, i_)))
+return ff_core_Equal_Equal$T.equals_(l_, (y_[i_] ?? ff_core_List.List_grab(y_, i_)))
 }))
 }
 }
@@ -1162,7 +1152,7 @@ const size_ = ff_core_Int.Int_min(x_.length, y_.length);
 let i_ = 0;
 let ordering_ = ff_core_Ordering.OrderingSame();
 while(((ordering_ === ff_core_Ordering.OrderingSame()) && (i_ < size_))) {
-ordering_ = ff_core_Ordering_Order$T.compare_((x_[i_] ?? ff_core_List.internalGrab_(x_, i_)), (y_[i_] ?? ff_core_List.internalGrab_(y_, i_)));
+ordering_ = ff_core_Ordering_Order$T.compare_((x_[i_] ?? ff_core_List.List_grab(x_, i_)), (y_[i_] ?? ff_core_List.List_grab(y_, i_)));
 i_ += 1
 };
 if((ordering_ !== ff_core_Ordering.OrderingSame())) {
@@ -1180,7 +1170,7 @@ const size_ = ff_core_Int.Int_min(x_.length, y_.length);
 let i_ = 0;
 let ordering_ = ff_core_Ordering.OrderingSame();
 while(((ordering_ === ff_core_Ordering.OrderingSame()) && (i_ < size_))) {
-ordering_ = ff_core_Ordering_Order$T.compare_((x_[i_] ?? ff_core_List.internalGrab_(x_, i_)), (y_[i_] ?? ff_core_List.internalGrab_(y_, i_)));
+ordering_ = ff_core_Ordering_Order$T.compare_((x_[i_] ?? ff_core_List.List_grab(x_, i_)), (y_[i_] ?? ff_core_List.List_grab(y_, i_)));
 i_ += 1
 };
 if((ordering_ !== ff_core_Ordering.OrderingSame())) {

@@ -1094,7 +1094,7 @@ const controller_ = (newAsync_
 ? ["$task"]
 : []);
 ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
-const arguments_ = ff_core_List.List_map(ff_core_List.List_pairs((cases_[0] ?? ff_core_List.internalGrab_(cases_, 0)).patterns_), ((_w1) => {
+const arguments_ = ff_core_List.List_map(ff_core_List.List_pairs((cases_[0] ?? ff_core_List.List_grab(cases_, 0)).patterns_), ((_w1) => {
 return ("_" + (_w1.first_ + 1))
 }));
 const escapedArguments_ = ff_core_List.List_map(arguments_, ((word_) => {
@@ -1179,7 +1179,7 @@ const typeArguments_ = _1.typeArguments_;
 const arguments_ = _1.arguments_;
 const dictionaries_ = _1.dictionaries_;
 if(ff_core_String.String_contains(name_, "bundleForBrowser")) {
-if((!ff_core_Option.Option_contains((arguments_[0] ?? ff_core_List.internalGrab_(arguments_, 0)).name_, "system", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
+if((!ff_core_Option.Option_contains((arguments_[0] ?? ff_core_List.List_grab(arguments_, 0)).name_, "system", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 ff_core_Log.debug_(("Wrong arguments for bundleForBrowser: " + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String)).show_(ff_core_List.List_map(arguments_, ((_w1) => {
 return _w1.name_
 })))));
@@ -1515,18 +1515,20 @@ const e2_ = _guard2[1];
 if((ff_compiler_JsEmitter.noSideEffects_(e1_) && ff_compiler_JsEmitter.noSideEffects_(e2_))) {
 const code1_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_);
 const code2_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_);
-return ff_core_Option.Some(((((((((("(" + code1_) + "[") + code2_) + "] ?? ") + "ff_core_List.internalGrab_(") + code1_) + ", ") + code2_) + "))"))
+return ff_core_Option.Some(((((((((("(" + code1_) + "[") + code2_) + "] ?? ") + "ff_core_List.List_grab(") + code1_) + ", ") + code2_) + "))"))
 }
 }
 }
 if(_1 === "ff:core/Array.Array_grab") {
-const _guard1 = arguments_;
-if(_guard1.length === 2) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
+const _guard2 = arguments_;
+if(_guard2.length === 2) {
+const e1_ = _guard2[0];
+const e2_ = _guard2[1];
+if((ff_compiler_JsEmitter.noSideEffects_(e1_) && ff_compiler_JsEmitter.noSideEffects_(e2_))) {
 const code1_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_);
 const code2_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_);
-return ff_core_Option.Some(((((((((("(" + code1_) + ".array[") + code2_) + "] ?? ") + "ff_core_Array.internalGrab_(") + code1_) + ", ") + code2_) + "))"))
+return ff_core_Option.Some(((((((((("(" + code1_) + ".array[") + code2_) + "] ?? ") + "ff_core_Array.Array_grab(") + code1_) + ", ") + code2_) + "))"))
+}
 }
 }
 if(_1 === "ff:core/List.List_size") {
@@ -2507,7 +2509,7 @@ const _1 = ff_core_Pair.Pair(matchCase_.patterns_, matchCase_.guards_);
 if(_1.first_.length >= 1) {
 const p_ = _1.first_[0];
 const ps_ = _1.first_.slice(1);
-return ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, (arguments_[0] ?? ff_core_List.internalGrab_(arguments_, 0)), p_, ff_core_List.List_dropFirst(arguments_, 1), (((_c) => {
+return ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, (arguments_[0] ?? ff_core_List.List_grab(arguments_, 0)), p_, ff_core_List.List_dropFirst(arguments_, 1), (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, ps_, _c.guards_, _c.body_)
 }))(matchCase_), conditions_, variables_, jump_, last_, async_)
 return
@@ -3248,7 +3250,7 @@ const controller_ = (newAsync_
 ? ["$task"]
 : []);
 ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
-const arguments_ = ff_core_List.List_map(ff_core_List.List_pairs((cases_[0] ?? ff_core_List.internalGrab_(cases_, 0)).patterns_), ((_w1) => {
+const arguments_ = ff_core_List.List_map(ff_core_List.List_pairs((cases_[0] ?? ff_core_List.List_grab(cases_, 0)).patterns_), ((_w1) => {
 return ("_" + (_w1.first_ + 1))
 }));
 const escapedArguments_ = ff_core_List.List_map(arguments_, ((word_) => {
@@ -3333,7 +3335,7 @@ const typeArguments_ = _1.typeArguments_;
 const arguments_ = _1.arguments_;
 const dictionaries_ = _1.dictionaries_;
 if(ff_core_String.String_contains(name_, "bundleForBrowser")) {
-if((!ff_core_Option.Option_contains((arguments_[0] ?? ff_core_List.internalGrab_(arguments_, 0)).name_, "system", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
+if((!ff_core_Option.Option_contains((arguments_[0] ?? ff_core_List.List_grab(arguments_, 0)).name_, "system", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 ff_core_Log.debug_(("Wrong arguments for bundleForBrowser: " + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String)).show_(ff_core_List.List_map(arguments_, ((_w1) => {
 return _w1.name_
 })))));
@@ -3669,18 +3671,20 @@ const e2_ = _guard2[1];
 if((ff_compiler_JsEmitter.noSideEffects_(e1_) && ff_compiler_JsEmitter.noSideEffects_(e2_))) {
 const code1_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_);
 const code2_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_);
-return ff_core_Option.Some(((((((((("(" + code1_) + "[") + code2_) + "] ?? ") + "ff_core_List.internalGrab_(") + code1_) + ", ") + code2_) + "))"))
+return ff_core_Option.Some(((((((((("(" + code1_) + "[") + code2_) + "] ?? ") + "ff_core_List.List_grab(") + code1_) + ", ") + code2_) + "))"))
 }
 }
 }
 if(_1 === "ff:core/Array.Array_grab") {
-const _guard1 = arguments_;
-if(_guard1.length === 2) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
+const _guard2 = arguments_;
+if(_guard2.length === 2) {
+const e1_ = _guard2[0];
+const e2_ = _guard2[1];
+if((ff_compiler_JsEmitter.noSideEffects_(e1_) && ff_compiler_JsEmitter.noSideEffects_(e2_))) {
 const code1_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_);
 const code2_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_);
-return ff_core_Option.Some(((((((((("(" + code1_) + ".array[") + code2_) + "] ?? ") + "ff_core_Array.internalGrab_(") + code1_) + ", ") + code2_) + "))"))
+return ff_core_Option.Some(((((((((("(" + code1_) + ".array[") + code2_) + "] ?? ") + "ff_core_Array.Array_grab(") + code1_) + ", ") + code2_) + "))"))
+}
 }
 }
 if(_1 === "ff:core/List.List_size") {
@@ -4661,7 +4665,7 @@ const _1 = ff_core_Pair.Pair(matchCase_.patterns_, matchCase_.guards_);
 if(_1.first_.length >= 1) {
 const p_ = _1.first_[0];
 const ps_ = _1.first_.slice(1);
-return ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, (arguments_[0] ?? ff_core_List.internalGrab_(arguments_, 0)), p_, ff_core_List.List_dropFirst(arguments_, 1), (((_c) => {
+return ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, (arguments_[0] ?? ff_core_List.List_grab(arguments_, 0)), p_, ff_core_List.List_dropFirst(arguments_, 1), (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, ps_, _c.guards_, _c.body_)
 }))(matchCase_), conditions_, variables_, jump_, last_, async_)
 return

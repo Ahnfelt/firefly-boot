@@ -703,7 +703,7 @@ return (_w1.second_ === e_.field_)
 })), ((_w1) => {
 return _w1.first_
 })), ((index_) => {
-const t1_ = (typeArguments_[index_] ?? ff_core_List.internalGrab_(typeArguments_, index_));
+const t1_ = (typeArguments_[index_] ?? ff_core_List.List_grab(typeArguments_, index_));
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_);
 {
 const _1 = e_;
@@ -736,7 +736,7 @@ if((!instantiated_.scheme_.isVariable_)) {
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, _c.generics_, _c.constraints_, ff_core_List.List_dropFirst(instantiated_.scheme_.signature_.parameters_, 1), _c.returnType_, _c.effect_)
 }))(instantiated_.scheme_.signature_);
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, recordType_, (instantiated_.scheme_.signature_.parameters_[0] ?? ff_core_List.internalGrab_(instantiated_.scheme_.signature_.parameters_, 0)).valueType_);
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, recordType_, (instantiated_.scheme_.signature_.parameters_[0] ?? ff_core_List.List_grab(instantiated_.scheme_.signature_.parameters_, 0)).valueType_);
 return ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, signature_, term_)
 }
 }
@@ -2556,7 +2556,7 @@ return (_w1.second_ === e_.field_)
 })), ((_w1) => {
 return _w1.first_
 })), ((index_) => {
-const t1_ = (typeArguments_[index_] ?? ff_core_List.internalGrab_(typeArguments_, index_));
+const t1_ = (typeArguments_[index_] ?? ff_core_List.List_grab(typeArguments_, index_));
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_);
 {
 const _1 = e_;
@@ -2589,7 +2589,7 @@ if((!instantiated_.scheme_.isVariable_)) {
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, _c.generics_, _c.constraints_, ff_core_List.List_dropFirst(instantiated_.scheme_.signature_.parameters_, 1), _c.returnType_, _c.effect_)
 }))(instantiated_.scheme_.signature_);
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, recordType_, (instantiated_.scheme_.signature_.parameters_[0] ?? ff_core_List.internalGrab_(instantiated_.scheme_.signature_.parameters_, 0)).valueType_);
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, recordType_, (instantiated_.scheme_.signature_.parameters_[0] ?? ff_core_List.List_grab(instantiated_.scheme_.signature_.parameters_, 0)).valueType_);
 return ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, signature_, term_)
 }
 }
