@@ -173,6 +173,23 @@ tokenize(file: String, code: String, completionAt: Option[Location], attemptFixe
 
             } elseIf {code.grab(i).isAsciiDigit()} {
 
+                if(i + 2 < code.size() && code.grab(i) == '0' && (
+                    code.grab(i + 1) == 'x' || code.grab(i + 1) == 'X'
+                )) {
+                    i += 2
+                    while {i < code.size() && (code.grab(i).isAsciiDigit() || (
+                        code.grab(i) >= 'a' && code.grab(i) <= 'f'
+                    ) || (
+                        code.grab(i) >= 'A' && code.grab(i) <= 'F'
+                    ))} {
+                        i += 1
+                    }
+                    if(start == i - 2) {
+                        throwError("Unexpected character: " + Show.show(code.grab(start + 2)))
+                    }
+                    emitToken(LInt, start, i)
+                } else:
+
                 mutable dot = False
                 mutable exponent = False
                 while {i < code.size() && code.grab(i).isAsciiDigit()} {

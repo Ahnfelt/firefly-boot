@@ -254,6 +254,16 @@ emitToken_(ff_compiler_Token.LNamespace(), start_, i_)
 emitToken_(kind_, start_, i_)
 }
 } else if(ff_core_Char.Char_isAsciiDigit(ff_core_String.String_grab(code_, i_))) {
+if(((((i_ + 2) < ff_core_String.String_size(code_)) && (ff_core_String.String_grab(code_, i_) === 48)) && ((ff_core_String.String_grab(code_, (i_ + 1)) === 120) || (ff_core_String.String_grab(code_, (i_ + 1)) === 88)))) {
+i_ += 2;
+while(((i_ < ff_core_String.String_size(code_)) && ((ff_core_Char.Char_isAsciiDigit(ff_core_String.String_grab(code_, i_)) || ((ff_core_String.String_grab(code_, i_) >= 97) && (ff_core_String.String_grab(code_, i_) <= 102))) || ((ff_core_String.String_grab(code_, i_) >= 65) && (ff_core_String.String_grab(code_, i_) <= 70))))) {
+i_ += 1
+};
+if((start_ === (i_ - 2))) {
+throwError_(("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_Char_Char.show_(ff_core_String.String_grab(code_, (start_ + 2)))))
+};
+emitToken_(ff_compiler_Token.LInt(), start_, i_)
+} else {
 let dot_ = false;
 let exponent_ = false;
 while(((i_ < ff_core_String.String_size(code_)) && ff_core_Char.Char_isAsciiDigit(ff_core_String.String_grab(code_, i_)))) {
@@ -274,6 +284,7 @@ dot_ = true
 emitToken_(((dot_ || exponent_)
 ? ff_compiler_Token.LFloat()
 : ff_compiler_Token.LInt()), start_, i_)
+}
 } else if((ff_core_String.String_grab(code_, i_) === 95)) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LWildcard(), start_, i_)
@@ -501,6 +512,16 @@ emitToken_(ff_compiler_Token.LNamespace(), start_, i_)
 emitToken_(kind_, start_, i_)
 }
 } else if(ff_core_Char.Char_isAsciiDigit(ff_core_String.String_grab(code_, i_))) {
+if(((((i_ + 2) < ff_core_String.String_size(code_)) && (ff_core_String.String_grab(code_, i_) === 48)) && ((ff_core_String.String_grab(code_, (i_ + 1)) === 120) || (ff_core_String.String_grab(code_, (i_ + 1)) === 88)))) {
+i_ += 2;
+while(((i_ < ff_core_String.String_size(code_)) && ((ff_core_Char.Char_isAsciiDigit(ff_core_String.String_grab(code_, i_)) || ((ff_core_String.String_grab(code_, i_) >= 97) && (ff_core_String.String_grab(code_, i_) <= 102))) || ((ff_core_String.String_grab(code_, i_) >= 65) && (ff_core_String.String_grab(code_, i_) <= 70))))) {
+i_ += 1
+};
+if((start_ === (i_ - 2))) {
+throwError_(("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_Char_Char.show_(ff_core_String.String_grab(code_, (start_ + 2)))))
+};
+emitToken_(ff_compiler_Token.LInt(), start_, i_)
+} else {
 let dot_ = false;
 let exponent_ = false;
 while(((i_ < ff_core_String.String_size(code_)) && ff_core_Char.Char_isAsciiDigit(ff_core_String.String_grab(code_, i_)))) {
@@ -521,6 +542,7 @@ dot_ = true
 emitToken_(((dot_ || exponent_)
 ? ff_compiler_Token.LFloat()
 : ff_compiler_Token.LInt()), start_, i_)
+}
 } else if((ff_core_String.String_grab(code_, i_) === 95)) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LWildcard(), start_, i_)
