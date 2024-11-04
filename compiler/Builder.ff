@@ -73,7 +73,9 @@ processNodeModules(system: NodeSystem, jsPathFile: Path, packagePath: Path, info
         let packageJson = includePath.slash("package.json")
         if(!nodeModules.exists() && packageJson.exists()) {
             system.writeErrorLine("Running npm install --no-package-lock --no-bin-links in " + includePath.absolute())
-            system.execute("npm", ["install", "--no-package-lock", "--no-bin-links"], directory = Some(includePath))
+            system.execute("npm", [
+                "install", "--no-package-lock", "--no-bin-links"
+            ], directory = Some(includePath), shell = True)
         }
     }
 }
