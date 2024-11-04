@@ -135,7 +135,7 @@ return ((ff_core_Char.Char_isAsciiLetterOrDigit(c_) || (c_ === 95)) || (c_ === 4
 })))) {
 return ff_core_Option.None()
 } else {
-const out_ = ff_core_NodeSystem.NodeSystem_execute(system_, cmd_, ["/c", "where", command_], ff_core_Buffer.new_(0, false), directory_, environment_, 16777216, 9, false);
+const out_ = ff_core_NodeSystem.NodeSystem_execute(system_, cmd_, ["/c", "where", command_], ff_core_Buffer.new_(0, false), directory_, environment_, 16777216, 9, false, false);
 return ff_core_List.List_first(ff_core_List.List_filter(ff_core_String.String_lines(ff_core_Buffer.Buffer_toString(out_.standardOut_, "utf8")), ((line_) => {
 return ((out_.exitCode_ === 0) && ff_core_Option.Option_any(ff_core_List.List_last(ff_core_String.String_split(line_, 92)), ((_w1) => {
 return ff_core_String.String_contains(_w1, ".")
@@ -171,7 +171,7 @@ return ((ff_core_Char.Char_isAsciiLetterOrDigit(c_) || (c_ === 95)) || (c_ === 4
 })))) {
 return ff_core_Option.None()
 } else {
-const out_ = (await ff_core_NodeSystem.NodeSystem_execute$(system_, cmd_, ["/c", "where", command_], ff_core_Buffer.new_(0, false), directory_, environment_, 16777216, 9, false, $task));
+const out_ = (await ff_core_NodeSystem.NodeSystem_execute$(system_, cmd_, ["/c", "where", command_], ff_core_Buffer.new_(0, false), directory_, environment_, 16777216, 9, false, false, $task));
 return ff_core_List.List_first(ff_core_List.List_filter(ff_core_String.String_lines(ff_core_Buffer.Buffer_toString(out_.standardOut_, "utf8")), ((line_) => {
 return ((out_.exitCode_ === 0) && ff_core_Option.Option_any(ff_core_List.List_last(ff_core_String.String_split(line_, 92)), ((_w1) => {
 return ff_core_String.String_contains(_w1, ".")
@@ -276,7 +276,7 @@ export function NodeSystem_environment(self_) {
 throw new Error('Function NodeSystem_environment is missing on this target in sync context.');
 }
 
-export function NodeSystem_execute(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, windowsWhere_ = true) {
+export function NodeSystem_execute(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, windowsWhere_ = true, shell_ = false) {
 throw new Error('Function NodeSystem_execute is missing on this target in sync context.');
 }
 
@@ -390,7 +390,7 @@ export async function NodeSystem_environment$(self_, $task) {
         
 }
 
-export async function NodeSystem_execute$(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, windowsWhere_ = true, $task) {
+export async function NodeSystem_execute$(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, windowsWhere_ = true, shell_ = false, $task) {
 
             const childProcess = import$3;
             const environment = environment_.value_ !== void 0 ? {} : process.env;
@@ -413,6 +413,7 @@ export async function NodeSystem_execute$(self_, command_, arguments_, standardI
                 signal: $task.controller.signal,
                 killSignal: killSignal_,
                 env: environment,
+                shell: shell_
             });
             
             let size = 0;

@@ -107,6 +107,7 @@ extend self: NodeSystem {
         maxBuffer: Int = 16777216
         killSignal: Int = 9
         windowsWhere: Bool = True
+        shell: Bool = False
     ): ProcessResult
         target node async """
             import * as childProcess from 'node:child_process';
@@ -130,6 +131,7 @@ extend self: NodeSystem {
                 signal: $task.controller.signal,
                 killSignal: killSignal_,
                 env: environment,
+                shell: shell_
             });
             
             let size = 0;
