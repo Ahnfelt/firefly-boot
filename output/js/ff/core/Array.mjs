@@ -237,7 +237,7 @@ self_.array.push(value_)
 }
 
 export function Array_pushArray(self_, value_) {
-self_.array.push(...value_.array)
+ff_core_Array.Array_pushList(self_, value_.array)
 }
 
 export function Array_pushList(self_, list_) {
@@ -302,10 +302,10 @@ const delta_ = (insertCount_ - deleteCount_);
 if((delta_ > 0)) {
 self_.array.length += delta_;
 self_.array.copyWithin((start_ + insertCount_), deleteEnd_)
-} else {
+} else if((delta_ < 0)) {
 self_.array.copyWithin((start_ + insertCount_), deleteEnd_);
 self_.array.length += delta_
-};
+} else {};
 for(let for_i = 0, for_e = insertCount_; for_i < for_e; for_i++) {
 const i_ = for_i;
 self_.array[(start_ + i_)] = list_[i_]
@@ -454,7 +454,7 @@ self_.array.push(value_)
 }
 
 export async function Array_pushArray$(self_, value_, $task) {
-throw new Error('Function Array_pushArray is missing on this target in async context.');
+ff_core_Array.Array_pushList(self_, value_.array)
 }
 
 export async function Array_pushList$(self_, list_, $task) {
@@ -519,10 +519,10 @@ const delta_ = (insertCount_ - deleteCount_);
 if((delta_ > 0)) {
 self_.array.length += delta_;
 self_.array.copyWithin((start_ + insertCount_), deleteEnd_)
-} else {
+} else if((delta_ < 0)) {
 self_.array.copyWithin((start_ + insertCount_), deleteEnd_);
 self_.array.length += delta_
-};
+} else {};
 for(let for_i = 0, for_e = insertCount_; for_i < for_e; for_i++) {
 const i_ = for_i;
 self_.array[(start_ + i_)] = list_[i_]
