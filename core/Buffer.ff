@@ -22,38 +22,48 @@ extend self: Buffer {
         result
     }
     
-    grabInt64(byteOffset: Int, littleEndian: Bool = True): Int
-        target js sync """
-            const high = self_.getInt32(byteOffset_ + (littleEndian_ ? 4 : 0), littleEndian_)
-            const low = self_.getUint32(byteOffset_ + (littleEndian_ ? 0 : 4), littleEndian_)
-            const result = (high * 0x100000000) + low
-            if(!Number.isSafeInteger(result)) throw 'grabInt64 out of range (consider grabBigInt64)'
-            return result
-        """
+    grabInt64(byteOffset: Int, littleEndian: Bool = True): Int {
+        let js = UnsafeJs.jsSystem()
+        let high = self!->getInt32(byteOffset + if(littleEndian) {4} else {0}, littleEndian)
+        let low = self!->getUint32(byteOffset + if(littleEndian) {0} else {4}, littleEndian)
+        let result = (high? * 0x100000000) + low?
+        if(!js->Number->isSafeInteger(result)?) {
+            throw(GrabException()) //grabInt64 out of range (consider grabBigInt64)'
+        }
+        result
+    }
 
-    grabFloat32(byteOffset: Int, littleEndian: Bool = True): Float
-        target js sync "return self_.getFloat32(byteOffset_, littleEndian_)"
+    grabFloat32(byteOffset: Int, littleEndian: Bool = True): Float {
+        self!->getFloat32(byteOffset, littleEndian)?
+    }
+    
+    grabFloat64(byteOffset: Int, littleEndian: Bool = True): Float {
+        self!->getFloat64(byteOffset, littleEndian)?
+    }
 
-    grabFloat64(byteOffset: Int, littleEndian: Bool = True): Float
-        target js sync "return self_.getFloat64(byteOffset_, littleEndian_)"
+    grabInt16(byteOffset: Int, littleEndian: Bool = True): Int {
+        self!->getInt16(byteOffset, littleEndian)?
+    }
 
-    grabInt16(byteOffset: Int, littleEndian: Bool = True): Int
-        target js sync "return self_.getInt16(byteOffset_, littleEndian_)"
+    grabInt32(byteOffset: Int, littleEndian: Bool = True): Int {
+        self!->getInt32(byteOffset, littleEndian)?
+    }
 
-    grabInt32(byteOffset: Int, littleEndian: Bool = True): Int
-        target js sync "return self_.getInt32(byteOffset_, littleEndian_)"
+    grabInt8(byteOffset: Int): Int {
+        self!->getInt8(byteOffset)?
+    }
 
-    grabInt8(byteOffset: Int): Int
-        target js sync "return self_.getInt8(byteOffset_)"
+    grabUint16(byteOffset: Int, littleEndian: Bool = True): Int {
+        self!->getUint16(byteOffset, littleEndian)?
+    }
 
-    grabUint16(byteOffset: Int, littleEndian: Bool = True): Int
-        target js sync "return self_.getUint16(byteOffset_, littleEndian_)"
+    grabUint32(byteOffset: Int, littleEndian: Bool = True): Int {
+        self!->getUint32(byteOffset, littleEndian)?
+    }
 
-    grabUint32(byteOffset: Int, littleEndian: Bool = True): Int
-        target js sync "return self_.getUint32(byteOffset_, littleEndian_)"
-
-    grabUint8(byteOffset: Int): Int
-        target js sync "return self_.getUint8(byteOffset_)"
+    grabUint8(byteOffset: Int): Int {
+        self!->getUint8(byteOffset)?
+    }
 
     /*setBigInt64(byteOffset: Int, value: BigInt, littleEndian: Bool = False): Unit
         target js sync "self_.setBigInt64(byteOffset_, value_, littleEndian_)"*/
@@ -61,48 +71,66 @@ extend self: Buffer {
     /*setBigUint64(byteOffset: Int, value: BigInt, littleEndian: Bool = False): Unit
         target js sync "self_.setBigUint64(byteOffset_, value_, littleEndian_)"*/
 
-    setUint64(byteOffset: Int, value: Int, littleEndian: Bool = True): Int
+    setUint64(byteOffset: Int, value: Int, littleEndian: Bool = True): Unit {
+        self!->setUint32(byteOffset + if(littleEndian) {4} else {0}, value.bitRight(16, False).bitRight(16, False), littleEndian)
+        self!->setUint32(byteOffset + if(littleEndian) {0} else {4}, value.bitAnd(0xffffffff), littleEndian)
+    }
+        
+    setUint64Old(byteOffset: Int, value: Int, littleEndian: Bool = True): Int
         target js sync """
             self_.setUint32(byteOffset_ + (littleEndian_ ? 4 : 0), (value_ >>> 16) >>> 16, littleEndian_)
             self_.setUint32(byteOffset_ + (littleEndian_ ? 0 : 4), value_ & 0xffffffff, littleEndian_)
         """
 
-    setInt64(byteOffset: Int, value: Int, littleEndian: Bool = True): Int
+    setInt64(byteOffset: Int, value: Int, littleEndian: Bool = True): Unit {
+        self!->setUint32(byteOffset + if(littleEndian) {4} else {0}, value.bitRight(16, True).bitRight(16, True), littleEndian)
+        self!->setUint32(byteOffset + if(littleEndian) {0} else {4}, value.bitAnd(0xffffffff), littleEndian)
+    }
+
+    setInt64Old(byteOffset: Int, value: Int, littleEndian: Bool = True): Int
         target js sync """
             self_.setUint32(byteOffset_ + (littleEndian_ ? 4 : 0), (value_ >> 16) >> 16, littleEndian_)
             self_.setUint32(byteOffset_ + (littleEndian_ ? 0 : 4), value_ & 0xffffffff, littleEndian_)
         """
 
-    setFloat32(byteOffset: Int, value: Float, littleEndian: Bool = True): Unit
-        target js sync "self_.setFloat32(byteOffset_, value_, littleEndian_)"
+    setFloat32(byteOffset: Int, value: Float, littleEndian: Bool = True): Unit {
+        self!->setFloat32(byteOffset, value, littleEndian)
+    }
 
-    setFloat64(byteOffset: Int, value: Float, littleEndian: Bool = True): Unit
-        target js sync "self_.setFloat64(byteOffset_, value_, littleEndian_)"
+    setFloat64(byteOffset: Int, value: Float, littleEndian: Bool = True): Unit {
+        self!->setFloat64(byteOffset, value, littleEndian)
+    }
 
-    setInt16(byteOffset: Int, value: Int, littleEndian: Bool = True): Unit
-        target js sync "self_.setInt16(byteOffset_, value_, littleEndian_)"
+    setInt16(byteOffset: Int, value: Int, littleEndian: Bool = True): Unit {
+        self!->setInt16(byteOffset, value, littleEndian)
+    }
 
-    setInt32(byteOffset: Int, value: Int, littleEndian: Bool = True): Unit
-        target js sync "self_.setInt32(byteOffset_, value_, littleEndian_)"
+    setInt32(byteOffset: Int, value: Int, littleEndian: Bool = True): Unit {
+        self!->setInt32(byteOffset, value, littleEndian)
+    }
 
-    setInt8(byteOffset: Int, value: Int): Unit
-        target js sync "self_.setInt8(byteOffset_, value_)"
+    setInt8(byteOffset: Int, value: Int): Unit {
+        self!->setInt8(byteOffset, value)
+    }
 
-    setUint16(byteOffset: Int, value: Int, littleEndian: Bool = True): Unit
-        target js sync "self_.setUint16(byteOffset_, value_, littleEndian_)"
+    setUint16(byteOffset: Int, value: Int, littleEndian: Bool = True): Unit {
+        self!->setUint16(byteOffset, value, littleEndian)
+    }
 
-    setUint32(byteOffset: Int, value: Int, littleEndian: Bool = True): Unit
-        target js sync "self_.setUint32(byteOffset_, value_, littleEndian_)"
+    setUint32(byteOffset: Int, value: Int, littleEndian: Bool = True): Unit {
+        self!->setUint32(byteOffset, value, littleEndian)
+    }
 
-    setUint8(byteOffset: Int, value: Int): Unit
-        target js sync "self_.setUint8(byteOffset_, value_)"
+    setUint8(byteOffset: Int, value: Int): Unit {
+        self!->setUint8(byteOffset, value)
+    }
 
-    setAll(byteOffset: Int, buffer: Buffer): Unit
-        target js sync """
-            const sourceBuffer = new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength)
-            const targetBuffer = new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength)
-            targetBuffer.set(sourceBuffer, byteOffset_)
-        """
+    setAll(byteOffset: Int, buffer: Buffer): Unit {
+        let js = UnsafeJs.jsSystem()
+        let sourceBuffer = js->Uint8Array->(buffer!->buffer, buffer!->byteOffset, buffer!->byteLength)
+        let targetBuffer = js->Uint8Array->(self!->buffer, self!->byteOffset, self!->byteLength)
+        targetBuffer->set(sourceBuffer, byteOffset)
+    }
 
     size(): Int
         target js sync "return self_.byteLength"

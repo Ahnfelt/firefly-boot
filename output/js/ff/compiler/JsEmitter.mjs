@@ -1756,6 +1756,30 @@ const e2_ = _guard1[1];
 return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " === ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
 }
 }
+if(_1 === "ff:core/Int.Int_bitAnd") {
+const _guard1 = arguments_;
+if(_guard1.length === 2) {
+const e1_ = _guard1[0];
+const e2_ = _guard1[1];
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " & ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
+}
+}
+if(_1 === "ff:core/Int.Int_bitRight") {
+const _guard1 = arguments_;
+if(_guard1.length === 3 && _guard1[2].EVariant && _guard1[2].name_ === "ff:core/Bool.False") {
+const e1_ = _guard1[0];
+const e2_ = _guard1[1];
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " >>> ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
+}
+}
+if(_1 === "ff:core/Int.Int_bitRight") {
+const _guard1 = arguments_;
+if(_guard1.length === 3 && _guard1[2].EVariant && _guard1[2].name_ === "ff:core/Bool.True") {
+const e1_ = _guard1[0];
+const e2_ = _guard1[1];
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " >> ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
+}
+}
 {
 const name_ = _1;
 const _guard3 = ff_core_String.String_removeFirst(name_, "ff:core/JsValue.JsValue_call");
@@ -3925,6 +3949,30 @@ if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
 return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " === ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
+}
+}
+if(_1 === "ff:core/Int.Int_bitAnd") {
+const _guard1 = arguments_;
+if(_guard1.length === 2) {
+const e1_ = _guard1[0];
+const e2_ = _guard1[1];
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " & ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
+}
+}
+if(_1 === "ff:core/Int.Int_bitRight") {
+const _guard1 = arguments_;
+if(_guard1.length === 3 && _guard1[2].EVariant && _guard1[2].name_ === "ff:core/Bool.False") {
+const e1_ = _guard1[0];
+const e2_ = _guard1[1];
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " >>> ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
+}
+}
+if(_1 === "ff:core/Int.Int_bitRight") {
+const _guard1 = arguments_;
+if(_guard1.length === 3 && _guard1[2].EVariant && _guard1[2].name_ === "ff:core/Bool.True") {
+const e1_ = _guard1[0];
+const e2_ = _guard1[1];
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " >> ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
 }
 }
 {

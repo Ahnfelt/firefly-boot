@@ -173,13 +173,18 @@ return result_
 }
 
 export function Buffer_grabInt64(self_, byteOffset_, littleEndian_ = true) {
-
-            const high = self_.getInt32(byteOffset_ + (littleEndian_ ? 4 : 0), littleEndian_)
-            const low = self_.getUint32(byteOffset_ + (littleEndian_ ? 0 : 4), littleEndian_)
-            const result = (high * 0x100000000) + low
-            if(!Number.isSafeInteger(result)) throw 'grabInt64 out of range (consider grabBigInt64)'
-            return result
-        
+const js_ = globalThis;
+const high_ = self_.getInt32((byteOffset_ + (littleEndian_
+? 4
+: 0)), littleEndian_);
+const low_ = self_.getUint32((byteOffset_ + (littleEndian_
+? 0
+: 4)), littleEndian_);
+const result_ = ((high_ * 0x100000000) + low_);
+if((!Number.isSafeInteger(result_))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+return result_
 }
 
 export function Buffer_grabFloat32(self_, byteOffset_, littleEndian_ = true) {
@@ -215,6 +220,15 @@ return self_.getUint8(byteOffset_)
 }
 
 export function Buffer_setUint64(self_, byteOffset_, value_, littleEndian_ = true) {
+self_.setUint32((byteOffset_ + (littleEndian_
+? 4
+: 0)), ((value_ >>> 16) >>> 16), littleEndian_);
+self_.setUint32((byteOffset_ + (littleEndian_
+? 0
+: 4)), (value_ & 0xffffffff), littleEndian_)
+}
+
+export function Buffer_setUint64Old(self_, byteOffset_, value_, littleEndian_ = true) {
 
             self_.setUint32(byteOffset_ + (littleEndian_ ? 4 : 0), (value_ >>> 16) >>> 16, littleEndian_)
             self_.setUint32(byteOffset_ + (littleEndian_ ? 0 : 4), value_ & 0xffffffff, littleEndian_)
@@ -222,6 +236,15 @@ export function Buffer_setUint64(self_, byteOffset_, value_, littleEndian_ = tru
 }
 
 export function Buffer_setInt64(self_, byteOffset_, value_, littleEndian_ = true) {
+self_.setUint32((byteOffset_ + (littleEndian_
+? 4
+: 0)), ((value_ >> 16) >> 16), littleEndian_);
+self_.setUint32((byteOffset_ + (littleEndian_
+? 0
+: 4)), (value_ & 0xffffffff), littleEndian_)
+}
+
+export function Buffer_setInt64Old(self_, byteOffset_, value_, littleEndian_ = true) {
 
             self_.setUint32(byteOffset_ + (littleEndian_ ? 4 : 0), (value_ >> 16) >> 16, littleEndian_)
             self_.setUint32(byteOffset_ + (littleEndian_ ? 0 : 4), value_ & 0xffffffff, littleEndian_)
@@ -261,11 +284,10 @@ self_.setUint8(byteOffset_, value_)
 }
 
 export function Buffer_setAll(self_, byteOffset_, buffer_) {
-
-            const sourceBuffer = new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength)
-            const targetBuffer = new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength)
-            targetBuffer.set(sourceBuffer, byteOffset_)
-        
+const js_ = globalThis;
+const sourceBuffer_ = (new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength));
+const targetBuffer_ = (new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength));
+targetBuffer_.set(sourceBuffer_, byteOffset_)
 }
 
 export function Buffer_size(self_) {
@@ -332,83 +354,115 @@ return result_
 }
 
 export async function Buffer_grabInt64$(self_, byteOffset_, littleEndian_ = true, $task) {
-throw new Error('Function Buffer_grabInt64 is missing on this target in async context.');
+const js_ = globalThis;
+const high_ = self_.getInt32((byteOffset_ + (littleEndian_
+? 4
+: 0)), littleEndian_);
+const low_ = self_.getUint32((byteOffset_ + (littleEndian_
+? 0
+: 4)), littleEndian_);
+const result_ = ((high_ * 0x100000000) + low_);
+if((!Number.isSafeInteger(result_))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+return result_
 }
 
 export async function Buffer_grabFloat32$(self_, byteOffset_, littleEndian_ = true, $task) {
-throw new Error('Function Buffer_grabFloat32 is missing on this target in async context.');
+return self_.getFloat32(byteOffset_, littleEndian_)
 }
 
 export async function Buffer_grabFloat64$(self_, byteOffset_, littleEndian_ = true, $task) {
-throw new Error('Function Buffer_grabFloat64 is missing on this target in async context.');
+return self_.getFloat64(byteOffset_, littleEndian_)
 }
 
 export async function Buffer_grabInt16$(self_, byteOffset_, littleEndian_ = true, $task) {
-throw new Error('Function Buffer_grabInt16 is missing on this target in async context.');
+return self_.getInt16(byteOffset_, littleEndian_)
 }
 
 export async function Buffer_grabInt32$(self_, byteOffset_, littleEndian_ = true, $task) {
-throw new Error('Function Buffer_grabInt32 is missing on this target in async context.');
+return self_.getInt32(byteOffset_, littleEndian_)
 }
 
 export async function Buffer_grabInt8$(self_, byteOffset_, $task) {
-throw new Error('Function Buffer_grabInt8 is missing on this target in async context.');
+return self_.getInt8(byteOffset_)
 }
 
 export async function Buffer_grabUint16$(self_, byteOffset_, littleEndian_ = true, $task) {
-throw new Error('Function Buffer_grabUint16 is missing on this target in async context.');
+return self_.getUint16(byteOffset_, littleEndian_)
 }
 
 export async function Buffer_grabUint32$(self_, byteOffset_, littleEndian_ = true, $task) {
-throw new Error('Function Buffer_grabUint32 is missing on this target in async context.');
+return self_.getUint32(byteOffset_, littleEndian_)
 }
 
 export async function Buffer_grabUint8$(self_, byteOffset_, $task) {
-throw new Error('Function Buffer_grabUint8 is missing on this target in async context.');
+return self_.getUint8(byteOffset_)
 }
 
 export async function Buffer_setUint64$(self_, byteOffset_, value_, littleEndian_ = true, $task) {
-throw new Error('Function Buffer_setUint64 is missing on this target in async context.');
+self_.setUint32((byteOffset_ + (littleEndian_
+? 4
+: 0)), ((value_ >>> 16) >>> 16), littleEndian_);
+self_.setUint32((byteOffset_ + (littleEndian_
+? 0
+: 4)), (value_ & 0xffffffff), littleEndian_)
+}
+
+export async function Buffer_setUint64Old$(self_, byteOffset_, value_, littleEndian_ = true, $task) {
+throw new Error('Function Buffer_setUint64Old is missing on this target in async context.');
 }
 
 export async function Buffer_setInt64$(self_, byteOffset_, value_, littleEndian_ = true, $task) {
-throw new Error('Function Buffer_setInt64 is missing on this target in async context.');
+self_.setUint32((byteOffset_ + (littleEndian_
+? 4
+: 0)), ((value_ >> 16) >> 16), littleEndian_);
+self_.setUint32((byteOffset_ + (littleEndian_
+? 0
+: 4)), (value_ & 0xffffffff), littleEndian_)
+}
+
+export async function Buffer_setInt64Old$(self_, byteOffset_, value_, littleEndian_ = true, $task) {
+throw new Error('Function Buffer_setInt64Old is missing on this target in async context.');
 }
 
 export async function Buffer_setFloat32$(self_, byteOffset_, value_, littleEndian_ = true, $task) {
-throw new Error('Function Buffer_setFloat32 is missing on this target in async context.');
+self_.setFloat32(byteOffset_, value_, littleEndian_)
 }
 
 export async function Buffer_setFloat64$(self_, byteOffset_, value_, littleEndian_ = true, $task) {
-throw new Error('Function Buffer_setFloat64 is missing on this target in async context.');
+self_.setFloat64(byteOffset_, value_, littleEndian_)
 }
 
 export async function Buffer_setInt16$(self_, byteOffset_, value_, littleEndian_ = true, $task) {
-throw new Error('Function Buffer_setInt16 is missing on this target in async context.');
+self_.setInt16(byteOffset_, value_, littleEndian_)
 }
 
 export async function Buffer_setInt32$(self_, byteOffset_, value_, littleEndian_ = true, $task) {
-throw new Error('Function Buffer_setInt32 is missing on this target in async context.');
+self_.setInt32(byteOffset_, value_, littleEndian_)
 }
 
 export async function Buffer_setInt8$(self_, byteOffset_, value_, $task) {
-throw new Error('Function Buffer_setInt8 is missing on this target in async context.');
+self_.setInt8(byteOffset_, value_)
 }
 
 export async function Buffer_setUint16$(self_, byteOffset_, value_, littleEndian_ = true, $task) {
-throw new Error('Function Buffer_setUint16 is missing on this target in async context.');
+self_.setUint16(byteOffset_, value_, littleEndian_)
 }
 
 export async function Buffer_setUint32$(self_, byteOffset_, value_, littleEndian_ = true, $task) {
-throw new Error('Function Buffer_setUint32 is missing on this target in async context.');
+self_.setUint32(byteOffset_, value_, littleEndian_)
 }
 
 export async function Buffer_setUint8$(self_, byteOffset_, value_, $task) {
-throw new Error('Function Buffer_setUint8 is missing on this target in async context.');
+self_.setUint8(byteOffset_, value_)
 }
 
 export async function Buffer_setAll$(self_, byteOffset_, buffer_, $task) {
-throw new Error('Function Buffer_setAll is missing on this target in async context.');
+const js_ = globalThis;
+const sourceBuffer_ = (new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength));
+const targetBuffer_ = (new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength));
+targetBuffer_.set(sourceBuffer_, byteOffset_)
 }
 
 export async function Buffer_size$(self_, $task) {
