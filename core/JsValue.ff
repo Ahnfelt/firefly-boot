@@ -240,6 +240,16 @@ extend self: JsValue {
             return self_
         """
 
+    typeof(): String
+        target js sync """
+            return typeof self_
+        """
+
+    instanceof(type: JsValue): Bool
+        target js sync """
+            return self_ instanceof type_
+        """
+
     //toList(): List[JsValue] // TODO
     // TODO: JS operators
 

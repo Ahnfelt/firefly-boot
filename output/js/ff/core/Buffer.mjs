@@ -158,13 +158,18 @@ throw new Error('Function fromBase64 is missing on this target in async context.
 }
 
 export function Buffer_grabUint64(self_, byteOffset_, littleEndian_ = true) {
-
-            const high = self_.getUint32(byteOffset_ + (littleEndian_ ? 4 : 0), littleEndian_)
-            const low = self_.getUint32(byteOffset_ + (littleEndian_ ? 0 : 4), littleEndian_)
-            const result = (high * 0x100000000) + low
-            if(!Number.isSafeInteger(result)) throw 'grabUint64 out of range (consider grabBigUint64)'
-            return result
-        
+const js_ = globalThis;
+const high_ = self_.getUint32((byteOffset_ + (littleEndian_
+? 4
+: 0)), littleEndian_);
+const low_ = self_.getUint32((byteOffset_ + (littleEndian_
+? 0
+: 4)), littleEndian_);
+const result_ = ((high_ * 0x100000000) + low_);
+if((!Number.isSafeInteger(result_))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+return result_
 }
 
 export function Buffer_grabInt64(self_, byteOffset_, littleEndian_ = true) {
@@ -268,7 +273,8 @@ return self_.byteLength
 }
 
 export function Buffer_shared(self_) {
-return typeof SharedArrayBuffer !== 'undefined' && self_.buffer instanceof SharedArrayBuffer
+const js_ = globalThis;
+return (((typeof SharedArrayBuffer) !== "undefined") && (self_.buffer instanceof SharedArrayBuffer))
 }
 
 export function Buffer_view(self_, begin_, end_) {
@@ -311,7 +317,18 @@ export function Buffer_toBase64(self_) {
 }
 
 export async function Buffer_grabUint64$(self_, byteOffset_, littleEndian_ = true, $task) {
-throw new Error('Function Buffer_grabUint64 is missing on this target in async context.');
+const js_ = globalThis;
+const high_ = self_.getUint32((byteOffset_ + (littleEndian_
+? 4
+: 0)), littleEndian_);
+const low_ = self_.getUint32((byteOffset_ + (littleEndian_
+? 0
+: 4)), littleEndian_);
+const result_ = ((high_ * 0x100000000) + low_);
+if((!Number.isSafeInteger(result_))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+return result_
 }
 
 export async function Buffer_grabInt64$(self_, byteOffset_, littleEndian_ = true, $task) {
@@ -399,7 +416,8 @@ throw new Error('Function Buffer_size is missing on this target in async context
 }
 
 export async function Buffer_shared$(self_, $task) {
-throw new Error('Function Buffer_shared is missing on this target in async context.');
+const js_ = globalThis;
+return (((typeof SharedArrayBuffer) !== "undefined") && (self_.buffer instanceof SharedArrayBuffer))
 }
 
 export async function Buffer_view$(self_, begin_, end_, $task) {

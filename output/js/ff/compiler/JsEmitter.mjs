@@ -1725,6 +1725,21 @@ const e_ = _guard1[0];
 return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
 }
 }
+if(_1 === "ff:core/JsValue.JsValue_typeof") {
+const _guard1 = arguments_;
+if(_guard1.length === 1) {
+const e_ = _guard1[0];
+return ff_core_Option.Some((("(typeof " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_)) + ")"))
+}
+}
+if(_1 === "ff:core/JsValue.JsValue_instanceof") {
+const _guard1 = arguments_;
+if(_guard1.length === 2) {
+const e1_ = _guard1[0];
+const e2_ = _guard1[1];
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " instanceof ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
+}
+}
 if(_1 === "ff:core/JsValue.JsValue_get") {
 const _guard1 = arguments_;
 if(_guard1.length === 2) {
@@ -3879,6 +3894,21 @@ const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
 return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
+}
+}
+if(_1 === "ff:core/JsValue.JsValue_typeof") {
+const _guard1 = arguments_;
+if(_guard1.length === 1) {
+const e_ = _guard1[0];
+return ff_core_Option.Some((("(typeof " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_)) + ")"))
+}
+}
+if(_1 === "ff:core/JsValue.JsValue_instanceof") {
+const _guard1 = arguments_;
+if(_guard1.length === 2) {
+const e1_ = _guard1[0];
+const e2_ = _guard1[1];
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " instanceof ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
 }
 }
 if(_1 === "ff:core/JsValue.JsValue_get") {

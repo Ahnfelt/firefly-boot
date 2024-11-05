@@ -11,15 +11,17 @@ extend self: Buffer {
     /*grabBigUint64(byteOffset: Int, littleEndian: Bool = True): BigInt
         target js sync "return self_.getBigUint64(byteOffset_, littleEndian_)"*/
 
-    grabUint64(byteOffset: Int, littleEndian: Bool = True): Int
-        target js sync """
-            const high = self_.getUint32(byteOffset_ + (littleEndian_ ? 4 : 0), littleEndian_)
-            const low = self_.getUint32(byteOffset_ + (littleEndian_ ? 0 : 4), littleEndian_)
-            const result = (high * 0x100000000) + low
-            if(!Number.isSafeInteger(result)) throw 'grabUint64 out of range (consider grabBigUint64)'
-            return result
-        """
-
+    grabUint64(byteOffset: Int, littleEndian: Bool = True): Int {
+        let js = UnsafeJs.jsSystem()
+        let high = self!->getUint32(byteOffset + if(littleEndian) {4} else {0}, littleEndian)
+        let low = self!->getUint32(byteOffset + if(littleEndian) {0} else {4}, littleEndian)
+        let result = (high? * 0x100000000) + low?
+        if(!js->Number->isSafeInteger(result)?) {
+            throw(GrabException)
+        }
+        result
+    }
+    
     grabInt64(byteOffset: Int, littleEndian: Bool = True): Int
         target js sync """
             const high = self_.getInt32(byteOffset_ + (littleEndian_ ? 4 : 0), littleEndian_)
@@ -105,8 +107,11 @@ extend self: Buffer {
     size(): Int
         target js sync "return self_.byteLength"
 
-    shared(): Bool
-        target js sync "return typeof SharedArrayBuffer !== 'undefined' && self_.buffer instanceof SharedArrayBuffer"
+    shared(): Bool {
+        let js = UnsafeJs.jsSystem()
+        js->SharedArrayBuffer.typeof() != "undefined" && self!->buffer.instanceof(js->SharedArrayBuffer)
+    }
+        //target js sync "return typeof SharedArrayBuffer !== 'undefined' && self_.buffer instanceof SharedArrayBuffer"
 
     view(begin: Int, end: Int): Buffer
         target js sync "return new DataView(self_.buffer, self_.byteOffset + begin_, end_ - begin_)"

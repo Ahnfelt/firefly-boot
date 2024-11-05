@@ -402,6 +402,18 @@ export function JsValue_grabStringMap(self_) {
         
 }
 
+export function JsValue_typeof(self_) {
+
+            return typeof self_
+        
+}
+
+export function JsValue_instanceof(self_, type_) {
+
+            return self_ instanceof type_
+        
+}
+
 export async function JsValue_grabString$(self_, $task) {
 throw new Error('Function JsValue_grabString is missing on this target in async context.');
 }
@@ -684,6 +696,14 @@ throw new Error('Function JsValue_grabIntMap is missing on this target in async 
 
 export async function JsValue_grabStringMap$(self_, $task) {
 throw new Error('Function JsValue_grabStringMap is missing on this target in async context.');
+}
+
+export async function JsValue_typeof$(self_, $task) {
+throw new Error('Function JsValue_typeof is missing on this target in async context.');
+}
+
+export async function JsValue_instanceof$(self_, type_, $task) {
+throw new Error('Function JsValue_instanceof is missing on this target in async context.');
 }
 
 export const ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue = {

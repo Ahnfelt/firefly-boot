@@ -142,10 +142,6 @@ export function StringMap_size(self_) {
 return self_.size
 }
 
-export function StringMap_eachOld(self_, body_) {
-self_.forEach((v, k) => body_(k, v))
-}
-
 export function StringMap_each(self_, body_) {
 if(false) {
 const iterator_ = self_.entries();
@@ -248,10 +244,6 @@ self_.clear()
 
 export async function StringMap_size$(self_, $task) {
 return self_.size
-}
-
-export async function StringMap_eachOld$(self_, body_, $task) {
-for(const [k, v] of self_) await body_(k, v)
 }
 
 export async function StringMap_each$(self_, body_, $task) {
