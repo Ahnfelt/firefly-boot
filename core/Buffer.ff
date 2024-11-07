@@ -76,22 +76,10 @@ extend self: Buffer {
         self!->setUint32(byteOffset + if(littleEndian) {0} else {4}, value.bitAnd(0xffffffff), littleEndian)
     }
         
-    setUint64Old(byteOffset: Int, value: Int, littleEndian: Bool = True): Int
-        target js sync """
-            self_.setUint32(byteOffset_ + (littleEndian_ ? 4 : 0), (value_ >>> 16) >>> 16, littleEndian_)
-            self_.setUint32(byteOffset_ + (littleEndian_ ? 0 : 4), value_ & 0xffffffff, littleEndian_)
-        """
-
     setInt64(byteOffset: Int, value: Int, littleEndian: Bool = True): Unit {
         self!->setUint32(byteOffset + if(littleEndian) {4} else {0}, value.bitRight(16, True).bitRight(16, True), littleEndian)
         self!->setUint32(byteOffset + if(littleEndian) {0} else {4}, value.bitAnd(0xffffffff), littleEndian)
     }
-
-    setInt64Old(byteOffset: Int, value: Int, littleEndian: Bool = True): Int
-        target js sync """
-            self_.setUint32(byteOffset_ + (littleEndian_ ? 4 : 0), (value_ >> 16) >> 16, littleEndian_)
-            self_.setUint32(byteOffset_ + (littleEndian_ ? 0 : 4), value_ & 0xffffffff, littleEndian_)
-        """
 
     setFloat32(byteOffset: Int, value: Float, littleEndian: Bool = True): Unit {
         self!->setFloat32(byteOffset, value, littleEndian)
@@ -215,30 +203,41 @@ instance Buffer: Show {
 }
 
 instance Buffer: Equal {
-    equals(x: Buffer, y: Buffer): Bool
-        target js sync """
-            if(x_.buffer.byteLength !== y_.buffer.byteLength) return false
-            if(x_.buffer === y_.buffer) return true
-            for(let i = 0; i + 4 <= x_.buffer.byteLength; i += 4) {
-                if(x_.getInt32(i) !== y_.getInt32(i)) return false
-            }
-            for(; i < x_.buffer.byteLength; i++) {
-                if(x_.getUint8(i) !== y_.getUint8(i)) return false
-            }
-            return true
-        """
+    equals(x: Buffer, y: Buffer): Bool {
+        if(x.size() != y.size()) {False} else:
+        if(x! === y!) {True} else:
+        mutable i = 0
+        mutable same = True
+        while {i + 4 < x.size() && same} {
+            same = x!->getInt32(i) === y!->getInt32(i)
+            i += 4
+        }
+        if(!same) {False} else:
+        i.until(x.size()).eachWhile {i =>
+            same = x!->getUint8(i) === y!->getUint8(i)
+            same
+        }
+        same
+    }
 }
 
 instance Buffer: Order {
-    compare(x: Buffer, y: Buffer): Ordering
-        target js sync """
-            if(x_.buffer === y_.buffer) return ff_core_Ordering.OrderingSame()
-            const minLength = Math.min(x_.buffer.byteLength, y_.buffer.byteLength)
-            for(let i = 0; i < minLength; i++) {
-                if(x_.getUint8(i) !== y_.getUint8(i)) {
-                    return ff_core_Ordering.fromInt_(x_.getUint8(i) - y_.getUint8(i))
-                }
+    compare(x: Buffer, y: Buffer): Ordering {
+        if(x!.equals(y!)) {OrderingSame} else:
+        let minLength = x.size().min(y.size())
+        mutable ordering = OrderingSame
+        0.until(minLength).eachWhile {i =>
+            if(x!->getUint8(i) !== x!->getUint8(i)) {
+                ordering = Ordering.fromInt((x!->getUint8(i) - y!->getUint8(i))?)
+                False
+            } else {
+                True
             }
-            return ff_core_Ordering.fromInt_(x_.buffer.byteLength - y_.buffer.byteLength)
-        """
+        }
+        if(ordering == OrderingSame) {
+            Ordering.fromInt(x.size() - y.size())
+        } else {
+            ordering
+        }
+    }
 }

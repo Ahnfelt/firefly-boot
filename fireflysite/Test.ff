@@ -59,6 +59,14 @@ nodeMain(system: NodeSystem) {
     testSplice([1, 2, 3], 3, [0], 0, [1, 2, 3, 0])
 
     testSplice([1, 2, 3], 1, [0, -1, -2, -3, -4], 1, [1, 0, -1, -2, -3, -4, 3])
+    
+    
+    //Some(42) + Some(42)
+    //let f = {x, y => x + y}
+    let jsInt = []!->length
+    let jsInt2 = []!->length
+    jsInt + jsInt
+    32
 }
 
 testSplice(

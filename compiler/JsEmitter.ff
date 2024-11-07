@@ -612,6 +612,8 @@ extend self: JsEmitter {
                 Some(self.emitTerm(e1, async) + self.emitField(e2, async))
             | "ff:core/JsValue.JsValue_equals" {arguments | [e1, e2]} =>
                 Some("(" + self.emitTerm(e1, async) + " === " + self.emitTerm(e2, async) + ")")
+            | "ff:core/JsValue.JsValue_notEquals" {arguments | [e1, e2]} =>
+                Some("(" + self.emitTerm(e1, async) + " !== " + self.emitTerm(e2, async) + ")")
             | "ff:core/Int.Int_bitAnd" {arguments | [e1, e2]} =>
                 Some("(" + self.emitTerm(e1, async) + " & " + self.emitTerm(e2, async) + ")")
             | "ff:core/Int.Int_bitRight" {arguments | [e1, e2, EVariant(_, "ff:core/Bool.False", _, _)]} =>

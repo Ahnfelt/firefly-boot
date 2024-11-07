@@ -34,6 +34,9 @@ extend self: JsValue {
     equals[V: IsJsValue](value: V): Bool
         target js sync "return self_ === value_"
 
+    notEquals[V: IsJsValue](value: V): Bool
+        target js sync "return self_ !== value_"
+
     isString(): Bool
         target js sync "return typeof self_ === 'string'"
 

@@ -1717,6 +1717,12 @@ const magic_ = ((t_) => {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_);
 if(_1.TConstructor && _1.generics_.length === 0) {
 const name_ = _1.name_;
+if((name_ === ff_compiler_Inference.core_("JsValue"))) {
+return ff_core_Option.Some("JsValue")
+}
+}
+if(_1.TConstructor && _1.generics_.length === 0) {
+const name_ = _1.name_;
 if((name_ === ff_compiler_Inference.core_("Float"))) {
 return ff_core_Option.Some("Float")
 }
@@ -1739,6 +1745,16 @@ return ff_core_Option.None()
 }
 });
 const chooseType_ = ((_1, _2) => {
+if(_1.Some && _1.value_ === "JsValue") {
+ff_compiler_Unification.Unification_unify(self_.unification_, e2_.at_, t1_, t2_);
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
+return
+}
+if(_2.Some && _2.value_ === "JsValue") {
+ff_compiler_Unification.Unification_unify(self_.unification_, e1_.at_, t2_, t1_);
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
+return
+}
 if(_1.Some && _1.value_ === "String" && _2.Some) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
@@ -1764,12 +1780,12 @@ ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_,
 return
 }
 if(_1.Some && _2.None) {
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t1_, t2_);
+ff_compiler_Unification.Unification_unify(self_.unification_, e2_.at_, t1_, t2_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }
 if(_1.None && _2.Some) {
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t2_, t1_);
+ff_compiler_Unification.Unification_unify(self_.unification_, e1_.at_, t2_, t1_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }
@@ -3570,6 +3586,12 @@ const magic_ = ((t_) => {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_);
 if(_1.TConstructor && _1.generics_.length === 0) {
 const name_ = _1.name_;
+if((name_ === ff_compiler_Inference.core_("JsValue"))) {
+return ff_core_Option.Some("JsValue")
+}
+}
+if(_1.TConstructor && _1.generics_.length === 0) {
+const name_ = _1.name_;
 if((name_ === ff_compiler_Inference.core_("Float"))) {
 return ff_core_Option.Some("Float")
 }
@@ -3592,6 +3614,16 @@ return ff_core_Option.None()
 }
 });
 const chooseType_ = ((_1, _2) => {
+if(_1.Some && _1.value_ === "JsValue") {
+ff_compiler_Unification.Unification_unify(self_.unification_, e2_.at_, t1_, t2_);
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
+return
+}
+if(_2.Some && _2.value_ === "JsValue") {
+ff_compiler_Unification.Unification_unify(self_.unification_, e1_.at_, t2_, t1_);
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
+return
+}
 if(_1.Some && _1.value_ === "String" && _2.Some) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
@@ -3617,12 +3649,12 @@ ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_,
 return
 }
 if(_1.Some && _2.None) {
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t1_, t2_);
+ff_compiler_Unification.Unification_unify(self_.unification_, e2_.at_, t1_, t2_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }
 if(_1.None && _2.Some) {
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t2_, t1_);
+ff_compiler_Unification.Unification_unify(self_.unification_, e1_.at_, t2_, t1_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }

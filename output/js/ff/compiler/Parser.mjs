@@ -117,7 +117,7 @@ export function ParsedTargets(js_, jsSync_, jsAsync_, browser_, browserSync_, br
 return {js_, jsSync_, jsAsync_, browser_, browserSync_, browserAsync_, node_, nodeSync_, nodeAsync_};
 }
 
-export const binaryOperators_ = [["||"], ["&&"], ["!=", "=="], ["<=", ">=", "<", ">"], ["+", "-"], ["*", "/", "%"], ["^"]];
+export const binaryOperators_ = [["||"], ["&&"], ["!=", "==", "!==", "==="], ["<=", ">=", "<", ">"], ["+", "-"], ["*", "/", "%"], ["^"]];
 
 export function new_(packagePair_, file_, tokens_, targetIsNode_, lspHook_) {
 return ff_compiler_Parser.Parser(packagePair_, file_, tokens_, ff_core_List.List_grabLast(tokens_), targetIsNode_, lspHook_, false, 0, 1)
@@ -1449,6 +1449,12 @@ return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_T
 }
 if(_1 === ">=") {
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Ordering.notBefore"), false)
+}
+if(_1 === "===") {
+return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/JsValue.JsValue_equals"), false)
+}
+if(_1 === "!==") {
+return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/JsValue.JsValue_notEquals"), false)
 }
 {
 const o_ = _1;
@@ -3032,6 +3038,12 @@ return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_T
 }
 if(_1 === ">=") {
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Ordering.notBefore"), false)
+}
+if(_1 === "===") {
+return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/JsValue.JsValue_equals"), false)
+}
+if(_1 === "!==") {
+return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/JsValue.JsValue_notEquals"), false)
 }
 {
 const o_ = _1;

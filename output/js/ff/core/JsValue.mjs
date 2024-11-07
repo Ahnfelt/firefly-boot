@@ -142,6 +142,10 @@ export function JsValue_equals(self_, value_, ff_core_JsValue_IsJsValue$V) {
 return self_ === value_
 }
 
+export function JsValue_notEquals(self_, value_, ff_core_JsValue_IsJsValue$V) {
+return self_ !== value_
+}
+
 export function JsValue_isString(self_) {
 return typeof self_ === 'string'
 }
@@ -448,6 +452,10 @@ throw new Error('Function JsValue_grabJson is missing on this target in async co
 
 export async function JsValue_equals$(self_, value_, ff_core_JsValue_IsJsValue$V, $task) {
 throw new Error('Function JsValue_equals is missing on this target in async context.');
+}
+
+export async function JsValue_notEquals$(self_, value_, ff_core_JsValue_IsJsValue$V, $task) {
+throw new Error('Function JsValue_notEquals is missing on this target in async context.');
 }
 
 export async function JsValue_isString$(self_, $task) {

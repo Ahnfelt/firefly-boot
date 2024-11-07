@@ -228,13 +228,6 @@ self_.setUint32((byteOffset_ + (littleEndian_
 : 4)), (value_ & 0xffffffff), littleEndian_)
 }
 
-export function Buffer_setUint64Old(self_, byteOffset_, value_, littleEndian_ = true) {
-
-            self_.setUint32(byteOffset_ + (littleEndian_ ? 4 : 0), (value_ >>> 16) >>> 16, littleEndian_)
-            self_.setUint32(byteOffset_ + (littleEndian_ ? 0 : 4), value_ & 0xffffffff, littleEndian_)
-        
-}
-
 export function Buffer_setInt64(self_, byteOffset_, value_, littleEndian_ = true) {
 self_.setUint32((byteOffset_ + (littleEndian_
 ? 4
@@ -242,13 +235,6 @@ self_.setUint32((byteOffset_ + (littleEndian_
 self_.setUint32((byteOffset_ + (littleEndian_
 ? 0
 : 4)), (value_ & 0xffffffff), littleEndian_)
-}
-
-export function Buffer_setInt64Old(self_, byteOffset_, value_, littleEndian_ = true) {
-
-            self_.setUint32(byteOffset_ + (littleEndian_ ? 4 : 0), (value_ >> 16) >> 16, littleEndian_)
-            self_.setUint32(byteOffset_ + (littleEndian_ ? 0 : 4), value_ & 0xffffffff, littleEndian_)
-        
 }
 
 export function Buffer_setFloat32(self_, byteOffset_, value_, littleEndian_ = true) {
@@ -409,10 +395,6 @@ self_.setUint32((byteOffset_ + (littleEndian_
 : 4)), (value_ & 0xffffffff), littleEndian_)
 }
 
-export async function Buffer_setUint64Old$(self_, byteOffset_, value_, littleEndian_ = true, $task) {
-throw new Error('Function Buffer_setUint64Old is missing on this target in async context.');
-}
-
 export async function Buffer_setInt64$(self_, byteOffset_, value_, littleEndian_ = true, $task) {
 self_.setUint32((byteOffset_ + (littleEndian_
 ? 4
@@ -420,10 +402,6 @@ self_.setUint32((byteOffset_ + (littleEndian_
 self_.setUint32((byteOffset_ + (littleEndian_
 ? 0
 : 4)), (value_ & 0xffffffff), littleEndian_)
-}
-
-export async function Buffer_setInt64Old$(self_, byteOffset_, value_, littleEndian_ = true, $task) {
-throw new Error('Function Buffer_setInt64Old is missing on this target in async context.');
 }
 
 export async function Buffer_setFloat32$(self_, byteOffset_, value_, littleEndian_ = true, $task) {
@@ -509,38 +487,97 @@ return ((`Buffer.fromHex("` + ff_core_Buffer.Buffer_toHex(value_)) + `")`)
 
 export const ff_core_Equal_Equal$ff_core_Buffer_Buffer = {
 equals_(x_, y_) {
-
-            if(x_.buffer.byteLength !== y_.buffer.byteLength) return false
-            if(x_.buffer === y_.buffer) return true
-            for(let i = 0; i + 4 <= x_.buffer.byteLength; i += 4) {
-                if(x_.getInt32(i) !== y_.getInt32(i)) return false
-            }
-            for(; i < x_.buffer.byteLength; i++) {
-                if(x_.getUint8(i) !== y_.getUint8(i)) return false
-            }
-            return true
-        
+if((ff_core_Buffer.Buffer_size(x_) !== ff_core_Buffer.Buffer_size(y_))) {
+return false
+} else {
+if((x_ === y_)) {
+return true
+} else {
+let i_ = 0;
+let same_ = true;
+while((((i_ + 4) < ff_core_Buffer.Buffer_size(x_)) && same_)) {
+same_ = (x_.getInt32(i_) === y_.getInt32(i_));
+i_ += 4
+};
+if((!same_)) {
+return false
+} else {
+for(let for_i = 0, for_a = ff_core_Int.Int_until(i_, ff_core_Buffer.Buffer_size(x_)), for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_a[for_i];
+same_ = (x_.getUint8(i_) === y_.getUint8(i_));
+if(!same_) break
+};
+return same_
+}
+}
+}
 },
 async equals_$(x_, y_, $task) {
-throw new Error('Function equals is missing on this target in async context.');
+if((ff_core_Buffer.Buffer_size(x_) !== ff_core_Buffer.Buffer_size(y_))) {
+return false
+} else {
+if((x_ === y_)) {
+return true
+} else {
+let i_ = 0;
+let same_ = true;
+while((((i_ + 4) < ff_core_Buffer.Buffer_size(x_)) && same_)) {
+same_ = (x_.getInt32(i_) === y_.getInt32(i_));
+i_ += 4
+};
+if((!same_)) {
+return false
+} else {
+for(let for_i = 0, for_a = ff_core_Int.Int_until(i_, ff_core_Buffer.Buffer_size(x_)), for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_a[for_i];
+same_ = (x_.getUint8(i_) === y_.getUint8(i_));
+if(!same_) break
+};
+return same_
+}
+}
+}
 }
 };
 
 export const ff_core_Ordering_Order$ff_core_Buffer_Buffer = {
 compare_(x_, y_) {
-
-            if(x_.buffer === y_.buffer) return ff_core_Ordering.OrderingSame()
-            const minLength = Math.min(x_.buffer.byteLength, y_.buffer.byteLength)
-            for(let i = 0; i < minLength; i++) {
-                if(x_.getUint8(i) !== y_.getUint8(i)) {
-                    return ff_core_Ordering.fromInt_(x_.getUint8(i) - y_.getUint8(i))
-                }
-            }
-            return ff_core_Ordering.fromInt_(x_.buffer.byteLength - y_.buffer.byteLength)
-        
+if((x_ === y_)) {
+return ff_core_Ordering.OrderingSame()
+} else {
+const minLength_ = ff_core_Int.Int_min(ff_core_Buffer.Buffer_size(x_), ff_core_Buffer.Buffer_size(y_));
+let ordering_ = ff_core_Ordering.OrderingSame();
+for(let for_i = 0, for_a = ff_core_Int.Int_until(0, minLength_), for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_a[for_i];
+if(!((x_.getUint8(i_) !== x_.getUint8(i_))
+? (ordering_ = ff_core_Ordering.fromInt_((x_.getUint8(i_) - y_.getUint8(i_))), false)
+: true)) break
+};
+if((ordering_ === ff_core_Ordering.OrderingSame())) {
+return ff_core_Ordering.fromInt_((ff_core_Buffer.Buffer_size(x_) - ff_core_Buffer.Buffer_size(y_)))
+} else {
+return ordering_
+}
+}
 },
 async compare_$(x_, y_, $task) {
-throw new Error('Function compare is missing on this target in async context.');
+if((x_ === y_)) {
+return ff_core_Ordering.OrderingSame()
+} else {
+const minLength_ = ff_core_Int.Int_min(ff_core_Buffer.Buffer_size(x_), ff_core_Buffer.Buffer_size(y_));
+let ordering_ = ff_core_Ordering.OrderingSame();
+for(let for_i = 0, for_a = ff_core_Int.Int_until(0, minLength_), for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_a[for_i];
+if(!((x_.getUint8(i_) !== x_.getUint8(i_))
+? (ordering_ = ff_core_Ordering.fromInt_((x_.getUint8(i_) - y_.getUint8(i_))), false)
+: true)) break
+};
+if((ordering_ === ff_core_Ordering.OrderingSame())) {
+return ff_core_Ordering.fromInt_((ff_core_Buffer.Buffer_size(x_) - ff_core_Buffer.Buffer_size(y_)))
+} else {
+return ordering_
+}
+}
 }
 };
 

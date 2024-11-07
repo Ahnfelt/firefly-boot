@@ -941,6 +941,7 @@ extend self: Inference {
                         let e2 = self.inferTerm(environment, t2, a2.value)
                         let magic: Type => Option[String] = {t =>
                             self.unification.substitute(t).{
+                                | TConstructor(_, name, []) {name == core("JsValue")} => Some("JsValue")
                                 | TConstructor(_, name, []) {name == core("Float")} => Some("Float")
                                 | TConstructor(_, name, []) {name == core("Int")} => Some("Int")
                                 | TConstructor(_, name, []) {operator == "+" && name == core("String")} => Some("String")
@@ -948,6 +949,12 @@ extend self: Inference {
                             }
                         }
                         let chooseType: (Option[String], Option[String]) => Unit = {
+                            | Some("JsValue"), _ =>
+                                self.unification.unify(e2.at, t1, t2)
+                                self.unification.unify(e.at, expected, t1)
+                            | _, Some("JsValue") =>
+                                self.unification.unify(e1.at, t2, t1)
+                                self.unification.unify(e.at, expected, t2)
                             | Some("String"), Some(_) => self.unification.unify(e.at, expected, t1)
                             | Some(_), Some("String") => self.unification.unify(e.at, expected, t2)
                             | Some("Float"), Some(_) => self.unification.unify(e.at, expected, t1)
@@ -955,10 +962,10 @@ extend self: Inference {
                             | Some("Int"), Some(_) => self.unification.unify(e.at, expected, t1)
                             | Some(_), Some("Int") => self.unification.unify(e.at, expected, t2)
                             | Some(_), None =>
-                                self.unification.unify(e.at, t1, t2)
+                                self.unification.unify(e2.at, t1, t2)
                                 self.unification.unify(e.at, expected, t1)
                             | None, Some(_) =>
-                                self.unification.unify(e.at, t2, t1)
+                                self.unification.unify(e1.at, t2, t1)
                                 self.unification.unify(e.at, expected, t2)
                             | _, _ {self.lspHook.isEnabled()} =>
                             | Some(_), Some(_) =>
