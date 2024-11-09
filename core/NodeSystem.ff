@@ -206,11 +206,12 @@ internalWindowsWhere(
 ): Option[String] {
     if(!command.all {c => c.isAsciiLetterOrDigit() || c == '_' || c == '-'}) {None} else:
     let out = system.execute(
-        cmd, 
-        ["/c", "where", command], 
+        "where", 
+        [command], 
         directory = directory
         environment = environment
         windowsWhere = False
+        shell = True
     )
     out.standardOut.toString().lines().filter {line => 
         out.exitCode == 0 && line.split('\\').last().any {_.contains(".")}
