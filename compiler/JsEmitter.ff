@@ -845,10 +845,11 @@ extend self: JsEmitter {
                         "if(!" + self.emitComma(condition, async) + ") break" +
                     "\n}"
                 )
-            | "ff:core/List.List_eachWhile" {arguments | [list, ELambda(_, Lambda(_, _, [
-                MatchCase(_, [PVariable(_, name)], [], condition)
-            ]))]} =>
-                let listCode = self.emitTerm(list, async)
+            | n {n == "ff:core/List.List_eachWhile" || n == "ff:core/Array.Array_eachWhile"} {arguments | [
+                list
+                ELambda(_, Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], condition)]))
+            ]} =>
+                let listCode = self.emitTerm(list, async) + if(n.startsWith("ff:core/Array.")) {".array"} else {""}
                 Some(
                     "for(let " +
                     "for_i = 0, for_a = " + listCode + ", for_l = for_a.length" + "; for_i < for_l; for_i++) {\n" +
