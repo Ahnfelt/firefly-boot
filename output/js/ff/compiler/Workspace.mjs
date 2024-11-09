@@ -130,11 +130,11 @@ return ff_core_String.String_takeWhile(ff_core_String.String_replace(_w1, "\r", 
 return (_w1 !== 35)
 }))
 })), ((_w1) => {
-return (ff_core_String.String_size(_w1) !== 0)
+return (_w1.length !== 0)
 }));
 const rules_ = ff_core_List.List_collect(lines_, ((line_) => {
 const columns_ = ff_core_List.List_filter(ff_core_String.String_split(ff_core_String.String_replace(line_, "\t", " "), 32), ((_w1) => {
-return (ff_core_String.String_size(_w1) !== 0)
+return (_w1.length !== 0)
 }));
 for(const for_o = defaultLocation_; for_o.Some;) {
 ff_core_Core.panic_(("Unexpected rule after the * rule: " + line_))
@@ -195,11 +195,11 @@ return ff_core_String.String_takeWhile(ff_core_String.String_replace(_w1, "\r", 
 return (_w1 !== 35)
 }))
 })), ((_w1) => {
-return (ff_core_String.String_size(_w1) !== 0)
+return (_w1.length !== 0)
 }));
 const rules_ = ff_core_List.List_collect(lines_, ((line_) => {
 const columns_ = ff_core_List.List_filter(ff_core_String.String_split(ff_core_String.String_replace(line_, "\t", " "), 32), ((_w1) => {
-return (ff_core_String.String_size(_w1) !== 0)
+return (_w1.length !== 0)
 }));
 for(const for_o = defaultLocation_; for_o.Some;) {
 ff_core_Core.panic_(("Unexpected rule after the * rule: " + line_))

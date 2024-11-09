@@ -287,7 +287,7 @@ return self_.endsWith(prefix_)
 
 export function String_removeFirst(self_, prefix_) {
 if(ff_core_String.String_startsWith(self_, prefix_, 0)) {
-return ff_core_Option.Some(ff_core_String.String_dropFirst(self_, ff_core_String.String_size(prefix_)))
+return ff_core_Option.Some(ff_core_String.String_dropFirst(self_, prefix_.length))
 } else {
 return ff_core_Option.None()
 }
@@ -295,7 +295,7 @@ return ff_core_Option.None()
 
 export function String_removeLast(self_, suffix_) {
 if(ff_core_String.String_endsWith(self_, suffix_)) {
-return ff_core_Option.Some(ff_core_String.String_dropLast(self_, ff_core_String.String_size(suffix_)))
+return ff_core_Option.Some(ff_core_String.String_dropLast(self_, suffix_.length))
 } else {
 return ff_core_Option.None()
 }
@@ -482,7 +482,7 @@ throw new Error('Function String_endsWith is missing on this target in async con
 
 export async function String_removeFirst$(self_, prefix_, $task) {
 if(ff_core_String.String_startsWith(self_, prefix_, 0)) {
-return ff_core_Option.Some(ff_core_String.String_dropFirst(self_, ff_core_String.String_size(prefix_)))
+return ff_core_Option.Some(ff_core_String.String_dropFirst(self_, prefix_.length))
 } else {
 return ff_core_Option.None()
 }
@@ -490,7 +490,7 @@ return ff_core_Option.None()
 
 export async function String_removeLast$(self_, suffix_, $task) {
 if(ff_core_String.String_endsWith(self_, suffix_)) {
-return ff_core_Option.Some(ff_core_String.String_dropLast(self_, ff_core_String.String_size(suffix_)))
+return ff_core_Option.Some(ff_core_String.String_dropLast(self_, suffix_.length))
 } else {
 return ff_core_Option.None()
 }

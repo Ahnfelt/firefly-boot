@@ -440,7 +440,7 @@ const bestTarget_ = ff_compiler_Parser.findBestTarget_(self_.targetIsNode_, body
 const result_ = ff_compiler_Syntax.DFunction(signature_.at_, signature_, bestTarget_);
 if(self_.lspHook_.trackSymbols_) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseSymbolEnd(signature_.name_, ff_compiler_LspHook.SFunction(member_), signature_.at_, (((_c) => {
-return ff_compiler_Syntax.Location(_c.file_, _c.line_, (signature_.at_.column_ + ff_core_String.String_size(signature_.name_)))
+return ff_compiler_Syntax.Location(_c.file_, _c.line_, (signature_.at_.column_ + signature_.name_.length))
 }))(signature_.at_), signature_.at_, ff_compiler_Token.Token_end(ff_compiler_Parser.Parser_behind(self_))))
 };
 return result_
@@ -1400,7 +1400,7 @@ return ff_compiler_Syntax.Lambda(functionAt_, temporaryEffect_, [])
 functions_.array.push(ff_compiler_Syntax.DFunction(signature_.at_, signature_, ff_compiler_Syntax.FireflyTarget(body_)));
 if(self_.lspHook_.trackSymbols_) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseSymbolEnd(signature_.name_, ff_compiler_LspHook.SFunction(false), signature_.at_, (((_c) => {
-return ff_compiler_Syntax.Location(_c.file_, _c.line_, (signature_.at_.column_ + ff_core_String.String_size(signature_.name_)))
+return ff_compiler_Syntax.Location(_c.file_, _c.line_, (signature_.at_.column_ + signature_.name_.length))
 }))(signature_.at_), functionAt_, ff_compiler_Token.Token_end(ff_compiler_Parser.Parser_behind(self_))))
 };
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!ff_compiler_Parser.Parser_currentIsSeparator(self_, ff_compiler_Token.LSemicolon())))) {
@@ -2029,7 +2029,7 @@ const bestTarget_ = ff_compiler_Parser.findBestTarget_(self_.targetIsNode_, body
 const result_ = ff_compiler_Syntax.DFunction(signature_.at_, signature_, bestTarget_);
 if(self_.lspHook_.trackSymbols_) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseSymbolEnd(signature_.name_, ff_compiler_LspHook.SFunction(member_), signature_.at_, (((_c) => {
-return ff_compiler_Syntax.Location(_c.file_, _c.line_, (signature_.at_.column_ + ff_core_String.String_size(signature_.name_)))
+return ff_compiler_Syntax.Location(_c.file_, _c.line_, (signature_.at_.column_ + signature_.name_.length))
 }))(signature_.at_), signature_.at_, ff_compiler_Token.Token_end(ff_compiler_Parser.Parser_behind(self_))))
 };
 return result_
@@ -2989,7 +2989,7 @@ return ff_compiler_Syntax.Lambda(functionAt_, temporaryEffect_, [])
 functions_.array.push(ff_compiler_Syntax.DFunction(signature_.at_, signature_, ff_compiler_Syntax.FireflyTarget(body_)));
 if(self_.lspHook_.trackSymbols_) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ParseSymbolEnd(signature_.name_, ff_compiler_LspHook.SFunction(false), signature_.at_, (((_c) => {
-return ff_compiler_Syntax.Location(_c.file_, _c.line_, (signature_.at_.column_ + ff_core_String.String_size(signature_.name_)))
+return ff_compiler_Syntax.Location(_c.file_, _c.line_, (signature_.at_.column_ + signature_.name_.length))
 }))(signature_.at_), functionAt_, ff_compiler_Token.Token_end(ff_compiler_Parser.Parser_behind(self_))))
 };
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (!ff_compiler_Parser.Parser_currentIsSeparator(self_, ff_compiler_Token.LSemicolon())))) {

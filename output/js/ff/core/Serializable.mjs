@@ -358,11 +358,11 @@ return ff_core_List.List_toMap(ff_core_Serializable.ff_core_Serializable_Seriali
 
 export const ff_core_Serializable_Serializable$ff_core_String_String = {
 serializeUsing_(serialization_, value_) {
-ff_core_Serializable.Serialization_autoResize(serialization_, (1 + ff_core_String.String_size(value_)));
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, ff_core_String.String_size(value_));
-if(((ff_core_String.String_size(value_) < 255) && ff_core_Serializable.internalSetLatin1_(serialization_.buffer_, (serialization_.offset_ + 1), value_))) {
-serialization_.offset_ += (1 + ff_core_String.String_size(value_))
-} else if((ff_core_String.String_size(value_) < 1073741824)) {
+ff_core_Serializable.Serialization_autoResize(serialization_, (1 + value_.length));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, value_.length);
+if(((value_.length < 255) && ff_core_Serializable.internalSetLatin1_(serialization_.buffer_, (serialization_.offset_ + 1), value_))) {
+serialization_.offset_ += (1 + value_.length)
+} else if((value_.length < 1073741824)) {
 const stringBuffer_ = ff_core_String.String_toBuffer(value_);
 ff_core_Serializable.Serialization_autoResize(serialization_, (5 + ff_core_Buffer.Buffer_size(stringBuffer_)));
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 255);
@@ -387,11 +387,11 @@ return ff_core_Buffer.Buffer_toString(stringBuffer_, "utf8")
 }
 },
 async serializeUsing_$(serialization_, value_, $task) {
-ff_core_Serializable.Serialization_autoResize(serialization_, (1 + ff_core_String.String_size(value_)));
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, ff_core_String.String_size(value_));
-if(((ff_core_String.String_size(value_) < 255) && ff_core_Serializable.internalSetLatin1_(serialization_.buffer_, (serialization_.offset_ + 1), value_))) {
-serialization_.offset_ += (1 + ff_core_String.String_size(value_))
-} else if((ff_core_String.String_size(value_) < 1073741824)) {
+ff_core_Serializable.Serialization_autoResize(serialization_, (1 + value_.length));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, value_.length);
+if(((value_.length < 255) && ff_core_Serializable.internalSetLatin1_(serialization_.buffer_, (serialization_.offset_ + 1), value_))) {
+serialization_.offset_ += (1 + value_.length)
+} else if((value_.length < 1073741824)) {
 const stringBuffer_ = ff_core_String.String_toBuffer(value_);
 ff_core_Serializable.Serialization_autoResize(serialization_, (5 + ff_core_Buffer.Buffer_size(stringBuffer_)));
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 255);

@@ -333,19 +333,21 @@ i_ = self_.array.length
 
 export function Array_all(self_, body_) {
 let result_ = true;
-ff_core_Array.Array_eachWhile(self_, ((x_) => {
+for(let for_i = 0, for_a = self_.array, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 result_ = body_(x_);
-return result_
-}));
+if(!result_) break
+};
 return result_
 }
 
 export function Array_any(self_, body_) {
 let result_ = false;
-ff_core_Array.Array_eachWhile(self_, ((x_) => {
+for(let for_i = 0, for_a = self_.array, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 result_ = body_(x_);
-return (!result_)
-}));
+if(!(!result_)) break
+};
 return result_
 }
 
@@ -365,11 +367,12 @@ return result_
 export function Array_indexWhere(self_, body_) {
 let i_ = (-1);
 let result_ = false;
-ff_core_Array.Array_eachWhile(self_, ((x_) => {
+for(let for_i = 0, for_a = self_.array, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 i_ += 1;
 result_ = body_(x_);
-return (!result_)
-}));
+if(!(!result_)) break
+};
 if(result_) {
 return ff_core_Option.Some(i_)
 } else return ff_core_Option.None()
@@ -550,19 +553,21 @@ i_ = self_.array.length
 
 export async function Array_all$(self_, body_, $task) {
 let result_ = true;
-(await ff_core_Array.Array_eachWhile$(self_, (async (x_, $task) => {
+for(let for_i = 0, for_a = self_.array, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 result_ = (await body_(x_, $task));
-return result_
-}), $task));
+if(!result_) break
+};
 return result_
 }
 
 export async function Array_any$(self_, body_, $task) {
 let result_ = false;
-(await ff_core_Array.Array_eachWhile$(self_, (async (x_, $task) => {
+for(let for_i = 0, for_a = self_.array, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 result_ = (await body_(x_, $task));
-return (!result_)
-}), $task));
+if(!(!result_)) break
+};
 return result_
 }
 
@@ -582,11 +587,12 @@ return result_
 export async function Array_indexWhere$(self_, body_, $task) {
 let i_ = (-1);
 let result_ = false;
-(await ff_core_Array.Array_eachWhile$(self_, (async (x_, $task) => {
+for(let for_i = 0, for_a = self_.array, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 i_ += 1;
 result_ = (await body_(x_, $task));
-return (!result_)
-}), $task));
+if(!(!result_)) break
+};
 if(result_) {
 return ff_core_Option.Some(i_)
 } else return ff_core_Option.None()
@@ -651,24 +657,26 @@ export function ff_core_Show_Show$ff_core_Array_Array(ff_core_Show_Show$T) { ret
 show_(value_) {
 const array_ = ff_core_Array.new_();
 array_.array.push("[");
-ff_core_Array.Array_each(value_, ((x_) => {
+for(let for_i = 0, for_a = value_.array, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 if((array_.array.length > 1)) {
 array_.array.push(", ")
 };
 array_.array.push(ff_core_Show_Show$T.show_(x_))
-}));
+};
 array_.array.push("].toArray()");
 return ff_core_Array.Array_join(array_, "")
 },
 async show_$(value_, $task) {
 const array_ = ff_core_Array.new_();
 array_.array.push("[");
-ff_core_Array.Array_each(value_, ((x_) => {
+for(let for_i = 0, for_a = value_.array, for_l = for_a.length; for_i < for_l; for_i++) {
+const x_ = for_a[for_i];
 if((array_.array.length > 1)) {
 array_.array.push(", ")
 };
 array_.array.push(ff_core_Show_Show$T.show_(x_))
-}));
+};
 array_.array.push("].toArray()");
 return ff_core_Array.Array_join(array_, "")
 }

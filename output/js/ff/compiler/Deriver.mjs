@@ -471,7 +471,7 @@ return ff_compiler_Syntax.ELet(at_, false, "variantIndex", intType_, grabVariant
 
 export function Deriver_makeUpdateChecksum(self_, at_, variantName_, declaration_, variant_) {
 const fields_ = [...declaration_.commonFields_, ...variant_.fields_];
-const variantChecksum_ = ff_core_String.String_size(variantName_);
+const variantChecksum_ = variantName_.length;
 return ff_compiler_Syntax.EAssignField(at_, "", ff_compiler_Syntax.EVariable(at_, "serialization"), "checksum", ff_compiler_Deriver.Deriver_makeMethodCall(self_, at_, ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "+", [ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "*", [ff_compiler_Syntax.EInt(at_, "31"), ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "serialization"), "checksum")], []), ff_compiler_Syntax.EInt(at_, ("" + variantChecksum_))], []), "bitOr", [ff_compiler_Syntax.EInt(at_, "0")]))
 }
 
@@ -873,7 +873,7 @@ return ff_compiler_Syntax.ELet(at_, false, "variantIndex", intType_, grabVariant
 
 export async function Deriver_makeUpdateChecksum$(self_, at_, variantName_, declaration_, variant_, $task) {
 const fields_ = [...declaration_.commonFields_, ...variant_.fields_];
-const variantChecksum_ = ff_core_String.String_size(variantName_);
+const variantChecksum_ = variantName_.length;
 return ff_compiler_Syntax.EAssignField(at_, "", ff_compiler_Syntax.EVariable(at_, "serialization"), "checksum", ff_compiler_Deriver.Deriver_makeMethodCall(self_, at_, ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "+", [ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "*", [ff_compiler_Syntax.EInt(at_, "31"), ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "serialization"), "checksum")], []), ff_compiler_Syntax.EInt(at_, ("" + variantChecksum_))], []), "bitOr", [ff_compiler_Syntax.EInt(at_, "0")]))
 }
 

@@ -138,26 +138,26 @@ export function JsImporter_process(self_, at_, code_) {
 const space_ = ff_core_String.String_takeWhile(code_, ((c_) => {
 return (((((c_ === 32) || (c_ === 9)) || (c_ === 13)) || (c_ === 10)) || (c_ === 59))
 }));
-const rest_ = ff_core_String.String_dropFirst(code_, ff_core_String.String_size(space_));
+const rest_ = ff_core_String.String_dropFirst(code_, space_.length);
 if((!ff_core_String.String_startsWith(rest_, "import * as ", 0))) {
 return code_
 } else {
-const rest2_ = ff_core_String.String_dropFirst(rest_, ff_core_String.String_size("import * as "));
+const rest2_ = ff_core_String.String_dropFirst(rest_, "import * as ".length);
 const name_ = ff_core_String.String_takeWhile(rest2_, ((_w1) => {
 return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
 }));
-if((ff_core_String.String_size(name_) === 0)) {
+if((name_.length === 0)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Expected alias after \"import * as \""), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
-const rest3_ = ff_core_String.String_dropFirst(rest2_, ff_core_String.String_size(name_));
+const rest3_ = ff_core_String.String_dropFirst(rest2_, name_.length);
 if((!ff_core_String.String_startsWith(rest3_, " from '", 0))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Expected \" from '\" after \"import * as ...\""), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
-const rest4_ = ff_core_String.String_dropFirst(rest3_, ff_core_String.String_size(" from '"));
+const rest4_ = ff_core_String.String_dropFirst(rest3_, " from '".length);
 const url_ = ff_core_String.String_takeWhile(rest4_, ((_w1) => {
 return (_w1 !== 39)
 }));
-if((ff_core_String.String_size(url_) === 0)) {
+if((url_.length === 0)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Expected module name after \" from '\""), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 if(ff_core_String.String_any(url_, ((_w1) => {
@@ -165,7 +165,7 @@ return (_w1 === 10)
 }))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Unclosed module name string"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
-const rest5_ = ff_core_String.String_dropFirst(rest4_, (ff_core_String.String_size(url_) + 1));
+const rest5_ = ff_core_String.String_dropFirst(rest4_, (url_.length + 1));
 const importName_ = ff_compiler_JsImporter.JsImporter_add(self_, url_);
 return (((((space_ + "const ") + name_) + " = ") + importName_) + ff_compiler_JsImporter.JsImporter_process(self_, at_, rest5_))
 }
@@ -205,26 +205,26 @@ export async function JsImporter_process$(self_, at_, code_, $task) {
 const space_ = ff_core_String.String_takeWhile(code_, ((c_) => {
 return (((((c_ === 32) || (c_ === 9)) || (c_ === 13)) || (c_ === 10)) || (c_ === 59))
 }));
-const rest_ = ff_core_String.String_dropFirst(code_, ff_core_String.String_size(space_));
+const rest_ = ff_core_String.String_dropFirst(code_, space_.length);
 if((!ff_core_String.String_startsWith(rest_, "import * as ", 0))) {
 return code_
 } else {
-const rest2_ = ff_core_String.String_dropFirst(rest_, ff_core_String.String_size("import * as "));
+const rest2_ = ff_core_String.String_dropFirst(rest_, "import * as ".length);
 const name_ = ff_core_String.String_takeWhile(rest2_, ((_w1) => {
 return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
 }));
-if((ff_core_String.String_size(name_) === 0)) {
+if((name_.length === 0)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Expected alias after \"import * as \""), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
-const rest3_ = ff_core_String.String_dropFirst(rest2_, ff_core_String.String_size(name_));
+const rest3_ = ff_core_String.String_dropFirst(rest2_, name_.length);
 if((!ff_core_String.String_startsWith(rest3_, " from '", 0))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Expected \" from '\" after \"import * as ...\""), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
-const rest4_ = ff_core_String.String_dropFirst(rest3_, ff_core_String.String_size(" from '"));
+const rest4_ = ff_core_String.String_dropFirst(rest3_, " from '".length);
 const url_ = ff_core_String.String_takeWhile(rest4_, ((_w1) => {
 return (_w1 !== 39)
 }));
-if((ff_core_String.String_size(url_) === 0)) {
+if((url_.length === 0)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Expected module name after \" from '\""), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 if(ff_core_String.String_any(url_, ((_w1) => {
@@ -232,7 +232,7 @@ return (_w1 === 10)
 }))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Unclosed module name string"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
-const rest5_ = ff_core_String.String_dropFirst(rest4_, (ff_core_String.String_size(url_) + 1));
+const rest5_ = ff_core_String.String_dropFirst(rest4_, (url_.length + 1));
 const importName_ = ff_compiler_JsImporter.JsImporter_add(self_, url_);
 return (((((space_ + "const ") + name_) + " = ") + importName_) + ff_compiler_JsImporter.JsImporter_process(self_, at_, rest5_))
 }

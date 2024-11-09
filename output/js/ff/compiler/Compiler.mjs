@@ -246,7 +246,7 @@ return ff_compiler_ModuleCache.ModuleCache_cacheInferredModule(self_.cache_, sel
 return ff_compiler_Compiler.Compiler_measure(self_, "Infer", packagePair_, moduleName_, (() => {
 const module_ = ff_compiler_Compiler.Compiler_derive(self_, packagePair_, moduleName_);
 const otherModules_ = ff_core_List.List_map(ff_compiler_Compiler.Compiler_imports(self_, module_), ((i_) => {
-return ff_compiler_Compiler.Compiler_derive(self_, i_.packagePair_, ff_core_String.String_dropLast(i_.file_, ff_core_String.String_size(".ff")))
+return ff_compiler_Compiler.Compiler_derive(self_, i_.packagePair_, ff_core_String.String_dropLast(i_.file_, ".ff".length))
 }));
 const inference_ = ff_compiler_Inference.new_([module_, ...otherModules_], self_.lspHook_);
 const inferredModule_ = ff_compiler_Inference.Inference_inferModule(inference_, module_, otherModules_);
@@ -260,7 +260,7 @@ ff_compiler_ModuleCache.ModuleCache_cacheEmittedModule(self_.cache_, self_.packa
 ff_compiler_Compiler.Compiler_measure(self_, "Emit", packagePair_, moduleName_, (() => {
 const module_ = ff_compiler_Compiler.Compiler_infer(self_, packagePair_, moduleName_);
 const otherModules_ = ff_core_List.List_map(ff_compiler_Compiler.Compiler_imports(self_, module_), ((i_) => {
-const newModuleName_ = ff_core_String.String_dropLast(i_.file_, ff_core_String.String_size(".ff"));
+const newModuleName_ = ff_core_String.String_dropLast(i_.file_, ".ff".length);
 ff_compiler_Compiler.Compiler_emit(self_, i_.packagePair_, newModuleName_, false);
 return ff_compiler_Compiler.Compiler_infer(self_, i_.packagePair_, newModuleName_)
 }));
@@ -381,7 +381,7 @@ return (await ff_compiler_ModuleCache.ModuleCache_cacheInferredModule$(self_.cac
 return (await ff_compiler_Compiler.Compiler_measure$(self_, "Infer", packagePair_, moduleName_, (async ($task) => {
 const module_ = (await ff_compiler_Compiler.Compiler_derive$(self_, packagePair_, moduleName_, $task));
 const otherModules_ = (await ff_core_List.List_map$((await ff_compiler_Compiler.Compiler_imports$(self_, module_, $task)), (async (i_, $task) => {
-return (await ff_compiler_Compiler.Compiler_derive$(self_, i_.packagePair_, ff_core_String.String_dropLast(i_.file_, ff_core_String.String_size(".ff")), $task))
+return (await ff_compiler_Compiler.Compiler_derive$(self_, i_.packagePair_, ff_core_String.String_dropLast(i_.file_, ".ff".length), $task))
 }), $task));
 const inference_ = ff_compiler_Inference.new_([module_, ...otherModules_], self_.lspHook_);
 const inferredModule_ = ff_compiler_Inference.Inference_inferModule(inference_, module_, otherModules_);
@@ -395,7 +395,7 @@ export async function Compiler_emit$(self_, packagePair_, moduleName_, isMainMod
 (await ff_compiler_Compiler.Compiler_measure$(self_, "Emit", packagePair_, moduleName_, (async ($task) => {
 const module_ = (await ff_compiler_Compiler.Compiler_infer$(self_, packagePair_, moduleName_, $task));
 const otherModules_ = (await ff_core_List.List_map$((await ff_compiler_Compiler.Compiler_imports$(self_, module_, $task)), (async (i_, $task) => {
-const newModuleName_ = ff_core_String.String_dropLast(i_.file_, ff_core_String.String_size(".ff"));
+const newModuleName_ = ff_core_String.String_dropLast(i_.file_, ".ff".length);
 (await ff_compiler_Compiler.Compiler_emit$(self_, i_.packagePair_, newModuleName_, false, $task));
 return (await ff_compiler_Compiler.Compiler_infer$(self_, i_.packagePair_, newModuleName_, $task))
 }), $task));

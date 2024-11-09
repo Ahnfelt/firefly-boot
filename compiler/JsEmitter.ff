@@ -277,7 +277,7 @@ extend self: JsEmitter {
             "export function " + definition.name + "(" + fields + ") {\n" +
             "return " + definition.name + "$;\n" +
             "}"
-        } elseIf { typeDefinition.variants.size() == 1 } {
+        } elseIf {typeDefinition.variants.size() == 1} {
             "export function " + definition.name + "(" + fields + ") {\n" +
             "return {" + fields + "};\n" +
             "}"
@@ -537,6 +537,10 @@ extend self: JsEmitter {
             | "ff:core/Array.Array_size" {arguments | [e]} =>
                 Some(
                     self.emitTerm(e, async) + ".array.length"
+                )
+            | "ff:core/String.String_size" {arguments | [e]} =>
+                Some(
+                    self.emitTerm(e, async) + ".length"
                 )
             | "ff:core/Equal.equals" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, _, typeName, [])]} {
                 primitiveTypes.contains(typeName) || typeName == "ff:core/Ordering.Ordering"
@@ -811,13 +815,13 @@ extend self: JsEmitter {
                         self.emitStatements(body, last, async) +
                     "\n}"
                 )
-            | "ff:core/List.List_each" {arguments | [list, ELambda(_, Lambda(_, _, [
-                MatchCase(_, [PVariable(_, name)], [], body)
-            ]))]} =>
+            | n {n == "ff:core/List.List_each" || n == "ff:core/Array.Array_each"} {
+                arguments | [list, ELambda(_, Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], body)]))]
+            } =>
                 let fusion = self.emitLightFusion("for_a", list, async)
                 let start = fusion.second.first
                 let end = fusion.second.second
-                let listCode = fusion.first
+                let listCode = fusion.first + if(n.startsWith("ff:core/Array.")) {".array"} else {""}
                 Some(
                     "for(let for_i = " + start + ", for_a = " + listCode + ", for_l = " + end + 
                     "; for_i < for_l; for_i++) {\n" +
@@ -825,13 +829,14 @@ extend self: JsEmitter {
                         self.emitStatements(body, last, async) +
                     "\n}"
                 )
-            | "ff:core/List.List_eachWhile" {arguments | [list, ELambda(_, Lambda(_, _, [
-                MatchCase(_, [PVariable(_, name)], [], ESequential(_, body, condition))
-            ]))]} =>
+            | n {n == "ff:core/List.List_eachWhile" || n == "ff:core/Array.Array_eachWhile"} {arguments | [
+                list
+                ELambda(_, Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], ESequential(_, body, condition))]))
+            ]} =>
                 let fusion = self.emitLightFusion("for_a", list, async)
                 let start = fusion.second.first
                 let end = fusion.second.second
-                let listCode = fusion.first
+                let listCode = fusion.first + if(n.startsWith("ff:core/Array.")) {".array"} else {""}
                 Some(
                     "for(let for_i = " + start + ", for_a = " + listCode + ", for_l = " + end + 
                     "; for_i < for_l; for_i++) {\n" +

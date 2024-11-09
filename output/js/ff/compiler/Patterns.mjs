@@ -179,7 +179,7 @@ if((name_ === "List$Link")) {
 return ff_core_List.List_toSet(["List$Empty"], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 } else {
 const variantName_ = unqualifiedName_(name_);
-const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantName_) + 1));
+const moduleName_ = ff_core_String.String_dropLast(name_, (variantName_.length + 1));
 const variantModule_ = ff_core_Map.Map_grab(modules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return ff_core_Option.Option_grab(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
 return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
@@ -349,7 +349,7 @@ if((name_ === "List$Link")) {
 return ff_core_List.List_toSet(["List$Empty"], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 } else {
 const variantName_ = unqualifiedName_(name_);
-const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantName_) + 1));
+const moduleName_ = ff_core_String.String_dropLast(name_, (variantName_.length + 1));
 const variantModule_ = ff_core_Map.Map_grab(modules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return ff_core_Option.Option_grab(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
 return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {

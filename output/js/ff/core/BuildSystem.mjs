@@ -294,10 +294,10 @@ const mainJsFile_ = ((((((prefix_ + "/") + self_.packageGroup_) + "/") + self_.p
 const mainDirectory_ = ff_core_Option.Option_grab(ff_core_Path.Path_parent(self_.mainFile_));
 const file_ = (prefix_ + "/Main.bundle.js");
 ff_core_BuildSystem.internalCallEsBuild_(self_, mainJsFile_, file_, minify_, sourceMap_);
-const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap([ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), (() => {
+const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap([ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, prefix_.length), (() => {
 return ff_core_Path.Path_readStream(ff_core_Path.Path_path(mainDirectory_, file_))
 })), ...(sourceMap_
-? [ff_core_Pair.Pair((ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)) + ".map"), (() => {
+? [ff_core_Pair.Pair((ff_core_String.String_dropFirst(file_, prefix_.length) + ".map"), (() => {
 return ff_core_Path.Path_readStream(ff_core_Path.Path_path(mainDirectory_, (file_ + ".map")))
 }))]
 : [])], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
@@ -315,10 +315,10 @@ const mainJsFile_ = ((((((prefix_ + "/") + self_.packageGroup_) + "/") + self_.p
 const mainDirectory_ = ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(self_.mainFile_, $task)));
 const file_ = (prefix_ + "/Main.bundle.js");
 (await ff_core_BuildSystem.internalCallEsBuild_$(self_, mainJsFile_, file_, minify_, sourceMap_, $task));
-const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap([ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), (async ($task) => {
+const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap([ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, prefix_.length), (async ($task) => {
 return (await ff_core_Path.Path_readStream$((await ff_core_Path.Path_path$(mainDirectory_, file_, $task)), $task))
 })), ...(sourceMap_
-? [ff_core_Pair.Pair((ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)) + ".map"), (async ($task) => {
+? [ff_core_Pair.Pair((ff_core_String.String_dropFirst(file_, prefix_.length) + ".map"), (async ($task) => {
 return (await ff_core_Path.Path_readStream$((await ff_core_Path.Path_path$(mainDirectory_, (file_ + ".map"), $task)), $task))
 }))]
 : [])], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));

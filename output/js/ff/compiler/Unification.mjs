@@ -126,7 +126,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 
 export function new_(modules_, attemptFixes_) {
 return ff_compiler_Unification.Unification(ff_core_Map.new_(), ff_core_Map.new_(), 3, ff_core_List.List_toMap(ff_core_List.List_flatMap(modules_, ((module_) => {
-const moduleName_ = ff_core_String.String_dropLast(module_.file_, ff_core_String.String_size(".ff"));
+const moduleName_ = ff_core_String.String_dropLast(module_.file_, ".ff".length);
 return ff_core_List.List_map(module_.instances_, ((definition_) => {
 const typeName_ = (((_1) => {
 if(_1.TConstructor) {
@@ -149,7 +149,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 
 export async function new_$(modules_, attemptFixes_, $task) {
 return ff_compiler_Unification.Unification(ff_core_Map.new_(), ff_core_Map.new_(), 3, ff_core_List.List_toMap(ff_core_List.List_flatMap(modules_, ((module_) => {
-const moduleName_ = ff_core_String.String_dropLast(module_.file_, ff_core_String.String_size(".ff"));
+const moduleName_ = ff_core_String.String_dropLast(module_.file_, ".ff".length);
 return ff_core_List.List_map(module_.instances_, ((definition_) => {
 const typeName_ = (((_1) => {
 if(_1.TConstructor) {

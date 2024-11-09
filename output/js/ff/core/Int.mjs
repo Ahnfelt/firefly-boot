@@ -170,7 +170,7 @@ return Math.min(Math.max(self_, from_), to_)
 }
 
 export function Int_pad(self_, padding_) {
-return ff_core_String.String_padStart(("" + self_), ff_core_String.String_size(padding_), padding_)
+return ff_core_String.String_padStart(("" + self_), padding_.length, padding_)
 }
 
 export function Int_div(self_, divisor_) {
@@ -250,7 +250,7 @@ throw new Error('Function Int_clamp is missing on this target in async context.'
 }
 
 export async function Int_pad$(self_, padding_, $task) {
-return ff_core_String.String_padStart(("" + self_), ff_core_String.String_size(padding_), padding_)
+return ff_core_String.String_padStart(("" + self_), padding_.length, padding_)
 }
 
 export async function Int_div$(self_, divisor_, $task) {

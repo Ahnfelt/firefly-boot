@@ -246,7 +246,7 @@ return ((((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equ
 }
 
 export function Token_rawIs(token_, value_) {
-return (((token_.stopOffset_ - token_.startOffset_) === ff_core_String.String_size(value_)) && ff_core_String.String_startsWith(token_.code_, value_, token_.startOffset_))
+return (((token_.stopOffset_ - token_.startOffset_) === value_.length) && ff_core_String.String_startsWith(token_.code_, value_, token_.startOffset_))
 }
 
 export function Token_rawIs2(token_, value1_, value2_) {
@@ -294,7 +294,7 @@ return ((((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equ
 }
 
 export async function Token_rawIs$(token_, value_, $task) {
-return (((token_.stopOffset_ - token_.startOffset_) === ff_core_String.String_size(value_)) && ff_core_String.String_startsWith(token_.code_, value_, token_.startOffset_))
+return (((token_.stopOffset_ - token_.startOffset_) === value_.length) && ff_core_String.String_startsWith(token_.code_, value_, token_.startOffset_))
 }
 
 export async function Token_rawIs2$(token_, value1_, value2_, $task) {
