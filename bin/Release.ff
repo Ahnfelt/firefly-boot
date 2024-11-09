@@ -36,7 +36,7 @@ release(
     releaseFireflyPackage(system, accessKeyId, secretAccessKey, "rpc")
     releaseFireflyPackage(system, accessKeyId, secretAccessKey, "s3")
     releaseFireflyPackage(system, accessKeyId, secretAccessKey, "webserver")
-    runSuccessful(system, "git", ["commit", "-a", "-m", "Autorelease " + version], system.path(".."))
+    runSuccessful(system, "git", ["commit", "-a", "-m", "Autorelease_v" + version], system.path(".."))
     runSuccessful(system, "git", ["push"], system.path(".."))
     runSuccessful(system, "npm", ["install", "-g", "firefly-compiler"], system.path(".."))
 }
@@ -95,7 +95,7 @@ requireVsceLoggedIn(system: NodeSystem, directory: Path) {
 run(system: NodeSystem, command: String, arguments: List[String], directory: Path): ProcessResult {
     system.writeLine("")
     system.writeLine(command + " " + arguments.join(" "))
-    system.execute(command, arguments, directory = Some(directory))
+    system.execute(command, arguments, directory = Some(directory), shell = True)
 }
 
 runSuccessful(system: NodeSystem, command: String, arguments: List[String], directory: Path): Buffer {
