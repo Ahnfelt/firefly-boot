@@ -73,9 +73,14 @@ processNodeModules(system: NodeSystem, jsPathFile: Path, packagePath: Path, info
         let packageJson = includePath.slash("package.json")
         if(!nodeModules.exists() && packageJson.exists()) {
             system.writeErrorLine("Running npm install --no-package-lock --no-bin-links in " + includePath.absolute())
-            system.execute("npm", [
+            let result = system.execute("npm", [
                 "install", "--no-package-lock", "--no-bin-links"
             ], directory = Some(includePath), shell = True)
+            if(result.exitCode != 0) {
+                system.writeErrorLine("Running npm failed with exit code " + result.exitCode + ":")
+                system.writeErrorBuffer(result.standardOut)
+                system.writeErrorBuffer(result.standardError)
+            }
         }
     }
 }
