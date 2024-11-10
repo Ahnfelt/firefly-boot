@@ -586,12 +586,24 @@ extend self: JsEmitter {
                 )
             | "ff:core/UnsafeJs.import" {arguments | [EString(_, url)]} =>
                 Some(self.jsImporter.add(url.replace("\"", "")))
+            | "ff:core/UnsafeJs.importDynamic" {arguments | [EString(_, url)]} =>
+                Some("import(" + url + ")")
             | "ff:core/UnsafeJs.await" {arguments | [body]} =>
                 if(async) {
                     Some("(await " + self.emitTerm(body, async) + ")")
                 } else {
                     Some(self.emitTerm(body, async))
                 }
+            | name {name.removeFirst("ff:core/UnsafeJs.async") | Some(n)} {n.all {_.isAsciiDigit()}} {
+                arguments | [ELambda(at, Lambda(_, effect, [MatchCase(_, patterns, [], body)]))]
+            } {
+                patterns.all {| PVariable _ => True | _ => False }
+            } =>
+                let patternParameters = patterns.map {
+                    | PVariable p => p.name.map(escapeKeyword).else {"_"}
+                    | _ => panic("!")
+                }
+                "async (" + patternParameters.join(", ") + ") => {\n" + self.emitStatements(body, True, False) + "\n}"
             | "ff:core/UnsafeJs.cancelled" =>
                 Some(if(async) {"$task.controller.signal.aborted"} else {"false"})
             | "ff:core/UnsafeJs.throwIfCancelled" =>

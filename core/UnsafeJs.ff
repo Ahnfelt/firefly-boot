@@ -6,7 +6,51 @@ import(module: String): JsValue {
     panic("This call should have been eliminated by the compiler")
 }
 
+importDynamic(module: String): JsValue {
+    panic("This call should have been eliminated by the compiler")
+}
+
 await(promise: JsValue): JsValue {
+    panic("This call should have been eliminated by the compiler")
+}
+
+async0[R](body: JsValue => JsValue): JsValue {
+    panic("This call should have been eliminated by the compiler")
+}
+
+async1[R](body: (JsValue, JsValue) => JsValue): JsValue {
+    panic("This call should have been eliminated by the compiler")
+}
+
+async2[R](body: (JsValue, JsValue, JsValue) => JsValue): JsValue {
+    panic("This call should have been eliminated by the compiler")
+}
+
+async3[R](body: (JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue {
+    panic("This call should have been eliminated by the compiler")
+}
+
+async4[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue {
+    panic("This call should have been eliminated by the compiler")
+}
+
+async5[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue {
+    panic("This call should have been eliminated by the compiler")
+}
+
+async6[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue {
+    panic("This call should have been eliminated by the compiler")
+}
+
+async7[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue {
+    panic("This call should have been eliminated by the compiler")
+}
+
+async8[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue {
+    panic("This call should have been eliminated by the compiler")
+}
+
+async9[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue {
     panic("This call should have been eliminated by the compiler")
 }
 
