@@ -114,7 +114,7 @@ return ff_core_Map.Map_addAll(self_, that_, ff_core_Ordering_Order$T)
 
 export function Set_addList(self_, that_, ff_core_Ordering_Order$T) {
 let result_ = self_;
-for(let for_i = 0, for_a = that_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = that_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const k_ = for_a[for_i];
 result_ = ff_core_Map.Map_add(result_, k_, (void 0), ff_core_Ordering_Order$T)
 };
@@ -179,7 +179,7 @@ return ff_core_Map.Map_addAll(self_, that_, ff_core_Ordering_Order$T)
 
 export async function Set_addList$(self_, that_, ff_core_Ordering_Order$T, $task) {
 let result_ = self_;
-for(let for_i = 0, for_a = that_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = that_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const k_ = for_a[for_i];
 result_ = ff_core_Map.Map_add(result_, k_, (void 0), ff_core_Ordering_Order$T)
 };

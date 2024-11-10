@@ -2252,7 +2252,7 @@ const listCode1_ = fusion1_.first_;
 const start2_ = fusion2_.second_.first_;
 const end2_ = fusion2_.second_.second_;
 const listCode2_ = fusion2_.first_;
-return ff_core_Option.Some(((((((((((((((((("for(let for_i = " + start1_) + ", for_a = ") + listCode1_) + ", for_l = ") + end1_) + ", ") + "for_i2 = ") + start2_) + ", for_a2 = ") + listCode2_) + ", for_l2 = ") + end2_) + "; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name1_, ((_w1) => {
+return ff_core_Option.Some(((((((((((((((((("for(let for_a = " + listCode1_) + ", for_i = ") + start1_) + ", for_l = ") + end1_) + ", ") + "for_a2 = ") + listCode2_) + ", for_i2 = ") + start2_) + ", for_l2 = ") + end2_) + "; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name1_, ((_w1) => {
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
 })), (() => {
 return ""
@@ -2275,7 +2275,7 @@ const fusion_ = ff_compiler_JsEmitter.JsEmitter_emitLightFusion(self_, "for_a", 
 const start_ = fusion_.second_.first_;
 const end_ = fusion_.second_.second_;
 const listCode_ = fusion_.first_;
-return ff_core_Option.Some((((((((((("for(let for_i = " + start_) + ", for_a = ") + listCode_) + ", for_l = ") + end_) + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name1_, ((_w1) => {
+return ff_core_Option.Some((((((((((("for(let for_a = " + listCode_) + ", for_i = ") + start_) + ", for_l = ") + end_) + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name1_, ((_w1) => {
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_i;\n")
 })), (() => {
 return ""
@@ -2302,7 +2302,7 @@ const end_ = fusion_.second_.second_;
 const listCode_ = (fusion_.first_ + (ff_core_String.String_startsWith(n_, "ff:core/Array.", 0)
 ? ".array"
 : ""));
-return ff_core_Option.Some(((((((((("for(let for_i = " + start_) + ", for_a = ") + listCode_) + ", for_l = ") + end_) + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+return ff_core_Option.Some(((((((((("for(let for_a = " + listCode_) + ", for_i = ") + start_) + ", for_l = ") + end_) + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
 })), (() => {
 return ""
@@ -2327,7 +2327,7 @@ const end_ = fusion_.second_.second_;
 const listCode_ = (fusion_.first_ + (ff_core_String.String_startsWith(n_, "ff:core/Array.", 0)
 ? ".array"
 : ""));
-return ff_core_Option.Some(((((((((((((("for(let for_i = " + start_) + ", for_a = ") + listCode_) + ", for_l = ") + end_) + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+return ff_core_Option.Some(((((((((((((("for(let for_a = " + listCode_) + ", for_i = ") + start_) + ", for_l = ") + end_) + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
 })), (() => {
 return ""
@@ -2348,7 +2348,7 @@ const condition_ = _guard1[1].lambda_.cases_[0].body_;
 const listCode_ = (ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_) + (ff_core_String.String_startsWith(n_, "ff:core/Array.", 0)
 ? ".array"
 : ""));
-return ff_core_Option.Some(((((((((("for(let " + "for_i = 0, for_a = ") + listCode_) + ", for_l = for_a.length") + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+return ff_core_Option.Some(((((((((("for(let " + "for_a = ") + listCode_) + ", for_i = 0, for_l = for_a.length") + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
 })), (() => {
 return ""
@@ -4536,7 +4536,7 @@ const listCode1_ = fusion1_.first_;
 const start2_ = fusion2_.second_.first_;
 const end2_ = fusion2_.second_.second_;
 const listCode2_ = fusion2_.first_;
-return ff_core_Option.Some(((((((((((((((((("for(let for_i = " + start1_) + ", for_a = ") + listCode1_) + ", for_l = ") + end1_) + ", ") + "for_i2 = ") + start2_) + ", for_a2 = ") + listCode2_) + ", for_l2 = ") + end2_) + "; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name1_, ((_w1) => {
+return ff_core_Option.Some(((((((((((((((((("for(let for_a = " + listCode1_) + ", for_i = ") + start1_) + ", for_l = ") + end1_) + ", ") + "for_a2 = ") + listCode2_) + ", for_i2 = ") + start2_) + ", for_l2 = ") + end2_) + "; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name1_, ((_w1) => {
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
 })), (() => {
 return ""
@@ -4559,7 +4559,7 @@ const fusion_ = ff_compiler_JsEmitter.JsEmitter_emitLightFusion(self_, "for_a", 
 const start_ = fusion_.second_.first_;
 const end_ = fusion_.second_.second_;
 const listCode_ = fusion_.first_;
-return ff_core_Option.Some((((((((((("for(let for_i = " + start_) + ", for_a = ") + listCode_) + ", for_l = ") + end_) + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name1_, ((_w1) => {
+return ff_core_Option.Some((((((((((("for(let for_a = " + listCode_) + ", for_i = ") + start_) + ", for_l = ") + end_) + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name1_, ((_w1) => {
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_i;\n")
 })), (() => {
 return ""
@@ -4586,7 +4586,7 @@ const end_ = fusion_.second_.second_;
 const listCode_ = (fusion_.first_ + (ff_core_String.String_startsWith(n_, "ff:core/Array.", 0)
 ? ".array"
 : ""));
-return ff_core_Option.Some(((((((((("for(let for_i = " + start_) + ", for_a = ") + listCode_) + ", for_l = ") + end_) + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+return ff_core_Option.Some(((((((((("for(let for_a = " + listCode_) + ", for_i = ") + start_) + ", for_l = ") + end_) + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
 })), (() => {
 return ""
@@ -4611,7 +4611,7 @@ const end_ = fusion_.second_.second_;
 const listCode_ = (fusion_.first_ + (ff_core_String.String_startsWith(n_, "ff:core/Array.", 0)
 ? ".array"
 : ""));
-return ff_core_Option.Some(((((((((((((("for(let for_i = " + start_) + ", for_a = ") + listCode_) + ", for_l = ") + end_) + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+return ff_core_Option.Some(((((((((((((("for(let for_a = " + listCode_) + ", for_i = ") + start_) + ", for_l = ") + end_) + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
 })), (() => {
 return ""
@@ -4632,7 +4632,7 @@ const condition_ = _guard1[1].lambda_.cases_[0].body_;
 const listCode_ = (ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_) + (ff_core_String.String_startsWith(n_, "ff:core/Array.", 0)
 ? ".array"
 : ""));
-return ff_core_Option.Some(((((((((("for(let " + "for_i = 0, for_a = ") + listCode_) + ", for_l = for_a.length") + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+return ff_core_Option.Some(((((((((("for(let " + "for_a = ") + listCode_) + ", for_i = 0, for_l = for_a.length") + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
 })), (() => {
 return ""

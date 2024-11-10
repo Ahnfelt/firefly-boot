@@ -155,7 +155,7 @@ ff_core_Path.Path_renameTo(jsPathFile_, jsOutputPath_)
 }
 
 export function processIncludes_(jsPathFile_, packagePath_, info_) {
-for(let for_i = 0, for_a = info_.includes_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = info_.includes_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const include_ = for_a[for_i];
 const fromPath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(ff_core_Path.Path_slash(packagePath_, ".firefly"), "include"), include_.path_);
 const toPath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(jsPathFile_, ff_compiler_Syntax.PackagePair_groupName(info_.package_.packagePair_, "/")), include_.path_);
@@ -208,9 +208,9 @@ return [ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab(ff_core_Path
 }
 }))(ff_core_Path.Path_isDirectory(path_));
 const errors_ = ff_core_Array.new_();
-for(let for_i = 0, for_a = ff_core_List.List_filter(packages_, ((_w1) => {
+for(let for_a = ff_core_List.List_filter(packages_, ((_w1) => {
 return (!ff_core_List.List_isEmpty(_w1.files_))
-})), for_l = for_a.length; for_i < for_l; for_i++) {
+})), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const package_ = for_a[for_i];
 const firstFile_ = ff_core_List.List_grabFirst(package_.files_);
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), dependencyLock_, firstFile_);
@@ -227,7 +227,7 @@ const files_ = (checkDependencies_
 : ff_core_List.List_filter(package_.files_, ((_w1) => {
 return (!ff_core_Path.Path_contains(_w1, [".firefly", "dependencies"]))
 })));
-for(let for_i = 0, for_a = files_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = files_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const file_ = for_a[for_i];
 const localFile_ = ff_core_Path.Path_base(file_);
 ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch(ff_core_Core.try_((() => {
@@ -374,7 +374,7 @@ if((await ff_core_Path.Path_exists$(jsOutputPath_, false, false, false, $task)))
 }
 
 export async function processIncludes_$(jsPathFile_, packagePath_, info_, $task) {
-for(let for_i = 0, for_a = info_.includes_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = info_.includes_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const include_ = for_a[for_i];
 const fromPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(packagePath_, ".firefly", $task)), "include", $task)), include_.path_, $task));
 const toPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(jsPathFile_, ff_compiler_Syntax.PackagePair_groupName(info_.package_.packagePair_, "/"), $task)), include_.path_, $task));
@@ -427,9 +427,9 @@ return [ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab((await ff_co
 }
 }))((await ff_core_Path.Path_isDirectory$(path_, $task)), $task));
 const errors_ = ff_core_Array.new_();
-for(let for_i = 0, for_a = ff_core_List.List_filter(packages_, ((_w1) => {
+for(let for_a = ff_core_List.List_filter(packages_, ((_w1) => {
 return (!ff_core_List.List_isEmpty(_w1.files_))
-})), for_l = for_a.length; for_i < for_l; for_i++) {
+})), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const package_ = for_a[for_i];
 const firstFile_ = ff_core_List.List_grabFirst(package_.files_);
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), dependencyLock_, firstFile_, $task));
@@ -446,7 +446,7 @@ const files_ = (checkDependencies_
 : (await ff_core_List.List_filter$(package_.files_, (async (_w1, $task) => {
 return (!(await ff_core_Path.Path_contains$(_w1, [".firefly", "dependencies"], $task)))
 }), $task)));
-for(let for_i = 0, for_a = files_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = files_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const file_ = for_a[for_i];
 const localFile_ = (await ff_core_Path.Path_base$(file_, $task));
 ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch((await ff_core_Core.try_$((async ($task) => {

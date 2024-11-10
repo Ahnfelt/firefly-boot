@@ -600,7 +600,7 @@ ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "}");
 if(self_.lspHook_.trackSymbols_) {
 let name_ = ff_compiler_Syntax.Type_show(type_, []);
-for(let for_i = 0, for_a = poly_.generics_, for_l = for_a.length, for_i2 = 0, for_a2 = poly_.constraints_, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+for(let for_a = poly_.generics_, for_i = 0, for_l = for_a.length, for_a2 = poly_.constraints_, for_i2 = 0, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
 const generic_ = for_a[for_i];
 const constraint_ = for_a2[for_i2];
 name_ = ff_core_String.String_replace(name_, (("[" + generic_) + "]"), (((("[" + generic_) + ": ") + constraint_.name_) + "]"));
@@ -1544,7 +1544,7 @@ return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], arguments_.fi
 if(_1.Some && _1.value_ === 0) {
 const objectTarget_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, "object"), false);
 let result_ = ff_compiler_Syntax.ECall(record_.at_, objectTarget_, effect_, [], [], []);
-for(let for_i = 0, for_a = arguments_.first_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = arguments_.first_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const argument_ = for_a[for_i];
 if(ff_core_Option.Option_isEmpty(argument_.name_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(argument_.at_, "Expected a named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -2189,7 +2189,7 @@ ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "}");
 if(self_.lspHook_.trackSymbols_) {
 let name_ = ff_compiler_Syntax.Type_show(type_, []);
-for(let for_i = 0, for_a = poly_.generics_, for_l = for_a.length, for_i2 = 0, for_a2 = poly_.constraints_, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+for(let for_a = poly_.generics_, for_i = 0, for_l = for_a.length, for_a2 = poly_.constraints_, for_i2 = 0, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
 const generic_ = for_a[for_i];
 const constraint_ = for_a2[for_i2];
 name_ = ff_core_String.String_replace(name_, (("[" + generic_) + "]"), (((("[" + generic_) + ": ") + constraint_.name_) + "]"));
@@ -3133,7 +3133,7 @@ return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], arguments_.fi
 if(_1.Some && _1.value_ === 0) {
 const objectTarget_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, record_, "object"), false);
 let result_ = ff_compiler_Syntax.ECall(record_.at_, objectTarget_, effect_, [], [], []);
-for(let for_i = 0, for_a = arguments_.first_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = arguments_.first_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const argument_ = for_a[for_i];
 if(ff_core_Option.Option_isEmpty(argument_.name_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(argument_.at_, "Expected a named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})

@@ -356,7 +356,7 @@ const error_ = _error;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (i_ - lineOffset_)), "Unexpected end of file"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 };
-for(let for_i = 0, for_a = ff_core_List.range_(5), for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = ff_core_List.range_(5), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 emitToken_(ff_compiler_Token.LEnd(), i_, i_)
 };
 return ff_core_Array.Array_drain(tokens_)
@@ -614,7 +614,7 @@ const error_ = _error;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (i_ - lineOffset_)), "Unexpected end of file"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 };
-for(let for_i = 0, for_a = ff_core_List.range_(5), for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = ff_core_List.range_(5), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 emitToken_(ff_compiler_Token.LEnd(), i_, i_)
 };
 return ff_core_Array.Array_drain(tokens_)

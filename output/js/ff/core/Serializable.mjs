@@ -251,7 +251,7 @@ serialization_.offset_ += (1 + 4)
 } else {
 ff_core_Core.panic_("Can't serialize arrays where size() >= 1073741824")
 };
-for(let for_i = 0, for_a = value_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = value_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const _w1 = for_a[for_i];
 ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, _w1)
 }
@@ -294,7 +294,7 @@ serialization_.offset_ += (1 + 4)
 } else {
 ff_core_Core.panic_("Can't serialize arrays where size() >= 1073741824")
 };
-for(let for_i = 0, for_a = value_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = value_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const _w1 = for_a[for_i];
 ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, _w1)
 }

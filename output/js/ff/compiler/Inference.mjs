@@ -217,7 +217,7 @@ if((traitDefinition_.generics_.length !== definition_.typeArguments_.length)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(definition_.at_, ((((("Wrong number of type arguments for " + traitName_) + ", expected ") + (traitDefinition_.generics_.length - 1)) + ", got ") + (definition_.typeArguments_.length - 1))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 const instantiationMap_ = ff_core_List.List_toMap(ff_core_List.List_zip(traitDefinition_.generics_, definition_.typeArguments_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-for(let for_i = 0, for_a = traitDefinition_.methods_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = traitDefinition_.methods_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const traitMethod_ = for_a[for_i];
 const found_ = ff_core_List.List_filter(definition_.methods_, ((_w1) => {
 return (_w1.signature_.name_ === traitMethod_.name_)
@@ -225,7 +225,7 @@ return (_w1.signature_.name_ === traitMethod_.name_)
 if(ff_core_List.List_isEmpty(found_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(definition_.at_, ("Missing instance method: " + traitMethod_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
-for(let for_i = 1, for_a = found_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = found_, for_i = 1, for_l = for_a.length; for_i < for_l; for_i++) {
 const duplicateMethod_ = for_a[for_i];
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(duplicateMethod_.at_, ("Duplicated instance method: " + traitMethod_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
@@ -252,15 +252,15 @@ return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_U
 }
 }));
 const returnType_ = ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, traitMethodScheme_.signature_.returnType_);
-for(let for_i = Math.max(parameters_.length, 0), for_a = instanceFunction_.signature_.parameters_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = instanceFunction_.signature_.parameters_, for_i = Math.max(parameters_.length, 0), for_l = for_a.length; for_i < for_l; for_i++) {
 const instanceParameter_ = for_a[for_i];
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(instanceParameter_.at_, ("Unexpected parameter: " + instanceParameter_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
-for(let for_i = Math.max(instanceFunction_.signature_.parameters_.length, 0), for_a = parameters_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = parameters_, for_i = Math.max(instanceFunction_.signature_.parameters_.length, 0), for_l = for_a.length; for_i < for_l; for_i++) {
 const traitParameter_ = for_a[for_i];
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(instanceFunction_.at_, ("Missing parameter: " + traitParameter_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
-for(let for_i = 0, for_a = parameters_, for_l = for_a.length, for_i2 = 0, for_a2 = instanceFunction_.signature_.parameters_, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+for(let for_a = parameters_, for_i = 0, for_l = for_a.length, for_a2 = instanceFunction_.signature_.parameters_, for_i2 = 0, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
 const traitParameter_ = for_a[for_i];
 const instanceParameter_ = for_a2[for_i2];
 ff_compiler_Unification.Unification_unify(self_.unification_, instanceParameter_.valueType_.at_, traitParameter_.valueType_, instanceParameter_.valueType_)
@@ -1065,7 +1065,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 };
 const signature_ = scheme_.signature_;
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
-for(let for_i = 0, for_a = e_.arguments_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = e_.arguments_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const i_ = for_i;
 const a_ = for_a[for_i];
 const p_ = ff_core_List.List_find(signature_.parameters_, ((_w1) => {
@@ -1852,7 +1852,7 @@ return ff_compiler_Environment.Environment(_c.modulePrefix_, _c.symbols_, _c.tra
 
 export function Inference_inferArguments(self_, callAt_, callName_, environment_, parameters_, arguments_) {
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
-for(let for_i = 0, for_a = arguments_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = arguments_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const i_ = for_i;
 const a_ = for_a[for_i];
 const p_ = ff_core_List.List_find(parameters_, ((p_) => {
@@ -2000,7 +2000,7 @@ return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_U
 }));
 const returnType_ = ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, scheme_.signature_.returnType_);
 const effect_ = ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, scheme_.signature_.effect_);
-for(let for_i = 0, for_a = scheme_.signature_.constraints_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = scheme_.signature_.constraints_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const c_ = for_a[for_i];
 const generics_ = ff_core_List.List_map(c_.generics_, ((_w1) => {
 return ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, _w1)
@@ -2086,7 +2086,7 @@ if((traitDefinition_.generics_.length !== definition_.typeArguments_.length)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(definition_.at_, ((((("Wrong number of type arguments for " + traitName_) + ", expected ") + (traitDefinition_.generics_.length - 1)) + ", got ") + (definition_.typeArguments_.length - 1))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 const instantiationMap_ = ff_core_List.List_toMap(ff_core_List.List_zip(traitDefinition_.generics_, definition_.typeArguments_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-for(let for_i = 0, for_a = traitDefinition_.methods_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = traitDefinition_.methods_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const traitMethod_ = for_a[for_i];
 const found_ = ff_core_List.List_filter(definition_.methods_, ((_w1) => {
 return (_w1.signature_.name_ === traitMethod_.name_)
@@ -2094,7 +2094,7 @@ return (_w1.signature_.name_ === traitMethod_.name_)
 if(ff_core_List.List_isEmpty(found_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(definition_.at_, ("Missing instance method: " + traitMethod_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
-for(let for_i = 1, for_a = found_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = found_, for_i = 1, for_l = for_a.length; for_i < for_l; for_i++) {
 const duplicateMethod_ = for_a[for_i];
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(duplicateMethod_.at_, ("Duplicated instance method: " + traitMethod_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
@@ -2121,15 +2121,15 @@ return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_U
 }
 }));
 const returnType_ = ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, traitMethodScheme_.signature_.returnType_);
-for(let for_i = Math.max(parameters_.length, 0), for_a = instanceFunction_.signature_.parameters_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = instanceFunction_.signature_.parameters_, for_i = Math.max(parameters_.length, 0), for_l = for_a.length; for_i < for_l; for_i++) {
 const instanceParameter_ = for_a[for_i];
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(instanceParameter_.at_, ("Unexpected parameter: " + instanceParameter_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
-for(let for_i = Math.max(instanceFunction_.signature_.parameters_.length, 0), for_a = parameters_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = parameters_, for_i = Math.max(instanceFunction_.signature_.parameters_.length, 0), for_l = for_a.length; for_i < for_l; for_i++) {
 const traitParameter_ = for_a[for_i];
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(instanceFunction_.at_, ("Missing parameter: " + traitParameter_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
-for(let for_i = 0, for_a = parameters_, for_l = for_a.length, for_i2 = 0, for_a2 = instanceFunction_.signature_.parameters_, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+for(let for_a = parameters_, for_i = 0, for_l = for_a.length, for_a2 = instanceFunction_.signature_.parameters_, for_i2 = 0, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
 const traitParameter_ = for_a[for_i];
 const instanceParameter_ = for_a2[for_i2];
 ff_compiler_Unification.Unification_unify(self_.unification_, instanceParameter_.valueType_.at_, traitParameter_.valueType_, instanceParameter_.valueType_)
@@ -2934,7 +2934,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 };
 const signature_ = scheme_.signature_;
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
-for(let for_i = 0, for_a = e_.arguments_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = e_.arguments_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const i_ = for_i;
 const a_ = for_a[for_i];
 const p_ = ff_core_List.List_find(signature_.parameters_, ((_w1) => {
@@ -3721,7 +3721,7 @@ return ff_compiler_Environment.Environment(_c.modulePrefix_, _c.symbols_, _c.tra
 
 export async function Inference_inferArguments$(self_, callAt_, callName_, environment_, parameters_, arguments_, $task) {
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
-for(let for_i = 0, for_a = arguments_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = arguments_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const i_ = for_i;
 const a_ = for_a[for_i];
 const p_ = ff_core_List.List_find(parameters_, ((p_) => {
@@ -3869,7 +3869,7 @@ return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_U
 }));
 const returnType_ = ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, scheme_.signature_.returnType_);
 const effect_ = ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, scheme_.signature_.effect_);
-for(let for_i = 0, for_a = scheme_.signature_.constraints_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = scheme_.signature_.constraints_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const c_ = for_a[for_i];
 const generics_ = ff_core_List.List_map(c_.generics_, ((_w1) => {
 return ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, _w1)

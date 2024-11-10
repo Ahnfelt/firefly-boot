@@ -807,8 +807,8 @@ extend self: JsEmitter {
                 let end2 = fusion2.second.second
                 let listCode2 = fusion2.first
                 Some(
-                    "for(let for_i = " + start1 + ", for_a = " + listCode1 + ", for_l = " + end1 + ", " +
-                    "for_i2 = " + start2 + ", for_a2 = " + listCode2 + ", for_l2 = " + end2 + 
+                    "for(let for_a = " + listCode1 + ", for_i = " + start1 + ", for_l = " + end1 + ", " +
+                    "for_a2 = " + listCode2 + ", for_i2 = " + start2 + ", for_l2 = " + end2 + 
                     "; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {\n" +
                         name1.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
                         name2.map {"const " + escapeKeyword(_) + " = for_a2[for_i2];\n"}.else {""} +
@@ -826,7 +826,7 @@ extend self: JsEmitter {
                 let end = fusion.second.second
                 let listCode = fusion.first
                 Some(
-                    "for(let for_i = " + start + ", for_a = " + listCode + ", for_l = " + end + 
+                    "for(let for_a = " + listCode + ", for_i = " + start + ", for_l = " + end + 
                     "; for_i < for_l; for_i++) {\n" +
                         name1.map {"const " + escapeKeyword(_) + " = for_i;\n"}.else {""} +
                         name2.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
@@ -841,7 +841,7 @@ extend self: JsEmitter {
                 let end = fusion.second.second
                 let listCode = fusion.first + if(n.startsWith("ff:core/Array.")) {".array"} else {""}
                 Some(
-                    "for(let for_i = " + start + ", for_a = " + listCode + ", for_l = " + end + 
+                    "for(let for_a = " + listCode + ", for_i = " + start + ", for_l = " + end + 
                     "; for_i < for_l; for_i++) {\n" +
                         name.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
                         self.emitStatements(body, last, async) +
@@ -856,7 +856,7 @@ extend self: JsEmitter {
                 let end = fusion.second.second
                 let listCode = fusion.first + if(n.startsWith("ff:core/Array.")) {".array"} else {""}
                 Some(
-                    "for(let for_i = " + start + ", for_a = " + listCode + ", for_l = " + end + 
+                    "for(let for_a = " + listCode + ", for_i = " + start + ", for_l = " + end + 
                     "; for_i < for_l; for_i++) {\n" +
                         name.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
                         self.emitStatements(body, last, async) + ";\n" +
@@ -870,7 +870,7 @@ extend self: JsEmitter {
                 let listCode = self.emitTerm(list, async) + if(n.startsWith("ff:core/Array.")) {".array"} else {""}
                 Some(
                     "for(let " +
-                    "for_i = 0, for_a = " + listCode + ", for_l = for_a.length" + "; for_i < for_l; for_i++) {\n" +
+                    "for_a = " + listCode + ", for_i = 0, for_l = for_a.length" + "; for_i < for_l; for_i++) {\n" +
                         name.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
                         "if(!" + self.emitComma(condition, async) + ") break" +
                     "\n}"

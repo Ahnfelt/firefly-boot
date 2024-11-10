@@ -333,7 +333,7 @@ i_ = self_.array.length
 
 export function Array_all(self_, body_) {
 let result_ = true;
-for(let for_i = 0, for_a = self_.array, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = self_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
 result_ = body_(x_);
 if(!result_) break
@@ -343,7 +343,7 @@ return result_
 
 export function Array_any(self_, body_) {
 let result_ = false;
-for(let for_i = 0, for_a = self_.array, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = self_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
 result_ = body_(x_);
 if(!(!result_)) break
@@ -353,7 +353,7 @@ return result_
 
 export function Array_find(self_, body_) {
 let result_ = ff_core_Option.None();
-for(let for_i = 0, for_a = self_.array, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = self_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
 if(!(body_(x_)
 ? (result_ = ff_core_Option.Some(x_), false)
@@ -365,7 +365,7 @@ return result_
 export function Array_indexWhere(self_, body_) {
 let i_ = (-1);
 let result_ = false;
-for(let for_i = 0, for_a = self_.array, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = self_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
 i_ += 1;
 result_ = body_(x_);
@@ -551,7 +551,7 @@ i_ = self_.array.length
 
 export async function Array_all$(self_, body_, $task) {
 let result_ = true;
-for(let for_i = 0, for_a = self_.array, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = self_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
 result_ = (await body_(x_, $task));
 if(!result_) break
@@ -561,7 +561,7 @@ return result_
 
 export async function Array_any$(self_, body_, $task) {
 let result_ = false;
-for(let for_i = 0, for_a = self_.array, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = self_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
 result_ = (await body_(x_, $task));
 if(!(!result_)) break
@@ -571,7 +571,7 @@ return result_
 
 export async function Array_find$(self_, body_, $task) {
 let result_ = ff_core_Option.None();
-for(let for_i = 0, for_a = self_.array, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = self_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
 if(!((await body_(x_, $task))
 ? (result_ = ff_core_Option.Some(x_), false)
@@ -583,7 +583,7 @@ return result_
 export async function Array_indexWhere$(self_, body_, $task) {
 let i_ = (-1);
 let result_ = false;
-for(let for_i = 0, for_a = self_.array, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = self_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
 i_ += 1;
 result_ = (await body_(x_, $task));
@@ -653,7 +653,7 @@ export function ff_core_Show_Show$ff_core_Array_Array(ff_core_Show_Show$T) { ret
 show_(value_) {
 const array_ = ff_core_Array.new_();
 array_.array.push("[");
-for(let for_i = 0, for_a = value_.array, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = value_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
 if((array_.array.length > 1)) {
 array_.array.push(", ")
@@ -666,7 +666,7 @@ return ff_core_Array.Array_join(array_, "")
 async show_$(value_, $task) {
 const array_ = ff_core_Array.new_();
 array_.array.push("[");
-for(let for_i = 0, for_a = value_.array, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = value_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
 if((array_.array.length > 1)) {
 array_.array.push(", ")

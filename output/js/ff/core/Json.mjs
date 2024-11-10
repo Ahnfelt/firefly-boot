@@ -843,7 +843,7 @@ fromJson_(json_) {
 return ff_core_Option.Option_flatMap(ff_core_Json.Json_getArray(json_), ((array_) => {
 let convertible_ = true;
 const result_ = ff_core_Array.new_();
-for(let for_i = 0, for_a = array_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = array_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const item_ = for_a[for_i];
 do {
 const _1 = ff_core_Json_JsonLike$T.fromJson_(item_);
@@ -873,7 +873,7 @@ async fromJson_$(json_, $task) {
 return ff_core_Option.Option_flatMap(ff_core_Json.Json_getArray(json_), ((array_) => {
 let convertible_ = true;
 const result_ = ff_core_Array.new_();
-for(let for_i = 0, for_a = array_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = array_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const item_ = for_a[for_i];
 do {
 const _1 = ff_core_Json_JsonLike$T.fromJson_(item_);

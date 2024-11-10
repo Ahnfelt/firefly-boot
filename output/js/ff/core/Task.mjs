@@ -234,7 +234,7 @@ const failureChannel_ = ff_core_Task.Task_channel(self_, 0);
 ff_core_Task.Task_spawn(self_, ((t_) => {
 const channel_ = ff_core_Task.Task_channel(t_, 0);
 ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
-for(let for_i = 0, for_a = tasks_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = tasks_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const i_ = for_i;
 const task_ = for_a[for_i];
 ff_core_Task.Task_spawn(t_, ((_) => {
@@ -284,7 +284,7 @@ return _w1
 return ff_core_Error.Error_rethrow(_w1)
 })))
 } finally {
-for(let for_i = 0, for_a = started_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = started_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const _w1 = for_a[for_i];
 ff_core_Task.Task_abort(_w1)
 }
@@ -321,7 +321,7 @@ const failureChannel_ = (await ff_core_Task.Task_channel$(self_, 0, $task));
 (await ff_core_Task.Task_spawn$(self_, (async (t_, $task) => {
 const channel_ = (await ff_core_Task.Task_channel$(t_, 0, $task));
 (await ff_core_Try.Try_catchAny$((await ff_core_Core.try_$((async ($task) => {
-for(let for_i = 0, for_a = tasks_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = tasks_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const i_ = for_i;
 const task_ = for_a[for_i];
 (await ff_core_Task.Task_spawn$(t_, (async (_, $task) => {
@@ -371,7 +371,7 @@ return _w1
 return ff_core_Error.Error_rethrow(_w1)
 }), $task)), $task))
 } finally {
-for(let for_i = 0, for_a = started_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = started_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const _w1 = for_a[for_i];
 (await ff_core_Task.Task_abort$(_w1, $task))
 }

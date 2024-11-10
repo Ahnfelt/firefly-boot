@@ -270,7 +270,7 @@ return
 }
 if(_1.Some) {
 const generics2_ = _1.value_.generics_;
-for(let for_i = 0, for_a = generics_, for_l = for_a.length, for_i2 = 0, for_a2 = generics2_, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+for(let for_a = generics_, for_i = 0, for_l = for_a.length, for_a2 = generics2_, for_i2 = 0, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
 const t1_ = for_a[for_i];
 const t2_ = for_a2[for_i2];
 ff_compiler_Unification.Unification_unify(self_, at_, t1_, t2_)
@@ -309,7 +309,7 @@ const instantiation_ = ff_core_List.List_toMap(ff_core_List.List_zip(definition_
 const traitType1_ = ff_compiler_Unification.Unification_instantiate(self_, instantiation_, ff_compiler_Syntax.TConstructor(at_, definition_.traitName_, definition_.typeArguments_));
 const traitType2_ = ff_compiler_Syntax.TConstructor(at_, constraintName_, [type_, ...generics_]);
 ff_compiler_Unification.Unification_unify(self_, at_, traitType1_, traitType2_);
-for(let for_i = 0, for_a = definition_.constraints_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = definition_.constraints_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const constraint_ = for_a[for_i];
 do {
 const _1 = ff_compiler_Unification.Unification_instantiateConstraint(self_, instantiation_, constraint_);
@@ -429,19 +429,19 @@ const t3_ = ff_compiler_Unification.Unification_substitute(self_, t1_);
 const t4_ = ff_compiler_Unification.Unification_substitute(self_, t2_);
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(t3_, [t3_, t4_])) + " vs. ") + ff_compiler_Syntax.Type_show(t4_, [t3_, t4_]))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else if((ff_core_String.String_startsWith(name1_, "Function$", 0) && ff_core_String.String_startsWith(name2_, "Function$", 0))) {
-for(let for_i = 0, for_a = generics1_, for_l = for_a.length - 1, for_i2 = 0, for_a2 = generics2_, for_l2 = for_a2.length - 1; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+for(let for_a = generics1_, for_i = 0, for_l = for_a.length - 1, for_a2 = generics2_, for_i2 = 0, for_l2 = for_a2.length - 1; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
 const t3_ = for_a[for_i];
 const t4_ = for_a2[for_i2];
 ff_compiler_Unification.Unification_unify(self_, at_, t3_, t4_)
 };
-for(let for_i = Math.max(for_a.length - 1, 0), for_a = generics1_, for_l = for_a.length, for_i2 = Math.max(for_a2.length - 1, 0), for_a2 = generics2_, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+for(let for_a = generics1_, for_i = Math.max(for_a.length - 1, 0), for_l = for_a.length, for_a2 = generics2_, for_i2 = Math.max(for_a2.length - 1, 0), for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
 const t3_ = for_a[for_i];
 const t4_ = for_a2[for_i2];
 ff_compiler_Unification.Unification_unify(self_, at_, t3_, t4_)
 }
 } else {}
 } else {
-for(let for_i = 0, for_a = generics1_, for_l = for_a.length, for_i2 = 0, for_a2 = generics2_, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+for(let for_a = generics1_, for_i = 0, for_l = for_a.length, for_a2 = generics2_, for_i2 = 0, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
 const t1_ = for_a[for_i];
 const t2_ = for_a2[for_i2];
 ff_compiler_Unification.Unification_unify(self_, at_, t1_, t2_)
@@ -639,7 +639,7 @@ return
 }
 if(_1.Some) {
 const generics2_ = _1.value_.generics_;
-for(let for_i = 0, for_a = generics_, for_l = for_a.length, for_i2 = 0, for_a2 = generics2_, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+for(let for_a = generics_, for_i = 0, for_l = for_a.length, for_a2 = generics2_, for_i2 = 0, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
 const t1_ = for_a[for_i];
 const t2_ = for_a2[for_i2];
 ff_compiler_Unification.Unification_unify(self_, at_, t1_, t2_)
@@ -678,7 +678,7 @@ const instantiation_ = ff_core_List.List_toMap(ff_core_List.List_zip(definition_
 const traitType1_ = ff_compiler_Unification.Unification_instantiate(self_, instantiation_, ff_compiler_Syntax.TConstructor(at_, definition_.traitName_, definition_.typeArguments_));
 const traitType2_ = ff_compiler_Syntax.TConstructor(at_, constraintName_, [type_, ...generics_]);
 ff_compiler_Unification.Unification_unify(self_, at_, traitType1_, traitType2_);
-for(let for_i = 0, for_a = definition_.constraints_, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = definition_.constraints_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const constraint_ = for_a[for_i];
 do {
 const _1 = ff_compiler_Unification.Unification_instantiateConstraint(self_, instantiation_, constraint_);
@@ -798,19 +798,19 @@ const t3_ = ff_compiler_Unification.Unification_substitute(self_, t1_);
 const t4_ = ff_compiler_Unification.Unification_substitute(self_, t2_);
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(t3_, [t3_, t4_])) + " vs. ") + ff_compiler_Syntax.Type_show(t4_, [t3_, t4_]))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else if((ff_core_String.String_startsWith(name1_, "Function$", 0) && ff_core_String.String_startsWith(name2_, "Function$", 0))) {
-for(let for_i = 0, for_a = generics1_, for_l = for_a.length - 1, for_i2 = 0, for_a2 = generics2_, for_l2 = for_a2.length - 1; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+for(let for_a = generics1_, for_i = 0, for_l = for_a.length - 1, for_a2 = generics2_, for_i2 = 0, for_l2 = for_a2.length - 1; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
 const t3_ = for_a[for_i];
 const t4_ = for_a2[for_i2];
 ff_compiler_Unification.Unification_unify(self_, at_, t3_, t4_)
 };
-for(let for_i = Math.max(for_a.length - 1, 0), for_a = generics1_, for_l = for_a.length, for_i2 = Math.max(for_a2.length - 1, 0), for_a2 = generics2_, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+for(let for_a = generics1_, for_i = Math.max(for_a.length - 1, 0), for_l = for_a.length, for_a2 = generics2_, for_i2 = Math.max(for_a2.length - 1, 0), for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
 const t3_ = for_a[for_i];
 const t4_ = for_a2[for_i2];
 ff_compiler_Unification.Unification_unify(self_, at_, t3_, t4_)
 }
 } else {}
 } else {
-for(let for_i = 0, for_a = generics1_, for_l = for_a.length, for_i2 = 0, for_a2 = generics2_, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
+for(let for_a = generics1_, for_i = 0, for_l = for_a.length, for_a2 = generics2_, for_i2 = 0, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
 const t1_ = for_a[for_i];
 const t2_ = for_a2[for_i2];
 ff_compiler_Unification.Unification_unify(self_, at_, t1_, t2_)

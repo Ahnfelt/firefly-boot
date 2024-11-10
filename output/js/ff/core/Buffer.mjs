@@ -502,7 +502,7 @@ i_ += 4
 if((!same_)) {
 return false
 } else {
-for(let for_i = 0, for_a = ff_core_Int.Int_until(i_, ff_core_Buffer.Buffer_size(x_)), for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = ff_core_Int.Int_until(i_, ff_core_Buffer.Buffer_size(x_)), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const i_ = for_a[for_i];
 same_ = (x_.getUint8(i_) === y_.getUint8(i_));
 if(!same_) break
@@ -528,7 +528,7 @@ i_ += 4
 if((!same_)) {
 return false
 } else {
-for(let for_i = 0, for_a = ff_core_Int.Int_until(i_, ff_core_Buffer.Buffer_size(x_)), for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = ff_core_Int.Int_until(i_, ff_core_Buffer.Buffer_size(x_)), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const i_ = for_a[for_i];
 same_ = (x_.getUint8(i_) === y_.getUint8(i_));
 if(!same_) break
@@ -547,7 +547,7 @@ return ff_core_Ordering.OrderingSame()
 } else {
 const minLength_ = ff_core_Int.Int_min(ff_core_Buffer.Buffer_size(x_), ff_core_Buffer.Buffer_size(y_));
 let ordering_ = ff_core_Ordering.OrderingSame();
-for(let for_i = 0, for_a = ff_core_Int.Int_until(0, minLength_), for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = ff_core_Int.Int_until(0, minLength_), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const i_ = for_a[for_i];
 if(!((x_.getUint8(i_) !== x_.getUint8(i_))
 ? (ordering_ = ff_core_Ordering.fromInt_((x_.getUint8(i_) - y_.getUint8(i_))), false)
@@ -566,7 +566,7 @@ return ff_core_Ordering.OrderingSame()
 } else {
 const minLength_ = ff_core_Int.Int_min(ff_core_Buffer.Buffer_size(x_), ff_core_Buffer.Buffer_size(y_));
 let ordering_ = ff_core_Ordering.OrderingSame();
-for(let for_i = 0, for_a = ff_core_Int.Int_until(0, minLength_), for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = ff_core_Int.Int_until(0, minLength_), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const i_ = for_a[for_i];
 if(!((x_.getUint8(i_) !== x_.getUint8(i_))
 ? (ordering_ = ff_core_Ordering.fromInt_((x_.getUint8(i_) - y_.getUint8(i_))), false)
