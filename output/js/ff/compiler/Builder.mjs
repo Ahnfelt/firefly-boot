@@ -171,8 +171,13 @@ const includePath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(packagePath
 const nodeModules_ = ff_core_Path.Path_slash(includePath_, "node_modules");
 const packageJson_ = ff_core_Path.Path_slash(includePath_, "package.json");
 if(((!ff_core_Path.Path_exists(nodeModules_, false, false, false)) && ff_core_Path.Path_exists(packageJson_, false, false, false))) {
-ff_core_NodeSystem.NodeSystem_writeErrorLine(system_, ("Running npm install --no-package-lock --no-bin-links in " + ff_core_Path.Path_absolute(includePath_)));
-ff_core_NodeSystem.NodeSystem_execute(system_, "npm", ["install", "--no-package-lock", "--no-bin-links"], ff_core_Buffer.new_(0, false), ff_core_Option.Some(includePath_), ff_core_Option.None(), 16777216, 9, true, true)
+ff_core_NodeSystem.NodeSystem_writeErrorLine(system_, ("Running npm install --no-bin-links in " + ff_core_Path.Path_absolute(includePath_)));
+const result_ = ff_core_NodeSystem.NodeSystem_execute(system_, "npm", ["install", "--no-bin-links"], ff_core_Buffer.new_(0, false), ff_core_Option.Some(includePath_), ff_core_Option.None(), 16777216, 9, true);
+if((result_.exitCode_ !== 0)) {
+ff_core_NodeSystem.NodeSystem_writeErrorLine(system_, (("Running npm failed with exit code " + result_.exitCode_) + ":"));
+ff_core_NodeSystem.NodeSystem_writeErrorBuffer(system_, result_.standardOut_);
+ff_core_NodeSystem.NodeSystem_writeErrorBuffer(system_, result_.standardError_)
+}
 }
 }
 }
@@ -385,8 +390,13 @@ const includePath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_sl
 const nodeModules_ = (await ff_core_Path.Path_slash$(includePath_, "node_modules", $task));
 const packageJson_ = (await ff_core_Path.Path_slash$(includePath_, "package.json", $task));
 if(((!(await ff_core_Path.Path_exists$(nodeModules_, false, false, false, $task))) && (await ff_core_Path.Path_exists$(packageJson_, false, false, false, $task)))) {
-(await ff_core_NodeSystem.NodeSystem_writeErrorLine$(system_, ("Running npm install --no-package-lock --no-bin-links in " + (await ff_core_Path.Path_absolute$(includePath_, $task))), $task));
-(await ff_core_NodeSystem.NodeSystem_execute$(system_, "npm", ["install", "--no-package-lock", "--no-bin-links"], ff_core_Buffer.new_(0, false), ff_core_Option.Some(includePath_), ff_core_Option.None(), 16777216, 9, true, true, $task))
+(await ff_core_NodeSystem.NodeSystem_writeErrorLine$(system_, ("Running npm install --no-bin-links in " + (await ff_core_Path.Path_absolute$(includePath_, $task))), $task));
+const result_ = (await ff_core_NodeSystem.NodeSystem_execute$(system_, "npm", ["install", "--no-bin-links"], ff_core_Buffer.new_(0, false), ff_core_Option.Some(includePath_), ff_core_Option.None(), 16777216, 9, true, $task));
+if((result_.exitCode_ !== 0)) {
+(await ff_core_NodeSystem.NodeSystem_writeErrorLine$(system_, (("Running npm failed with exit code " + result_.exitCode_) + ":"), $task));
+(await ff_core_NodeSystem.NodeSystem_writeErrorBuffer$(system_, result_.standardOut_, $task));
+(await ff_core_NodeSystem.NodeSystem_writeErrorBuffer$(system_, result_.standardError_, $task))
+}
 }
 }
 }
