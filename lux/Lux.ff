@@ -154,9 +154,14 @@ extend self: Lux {
         let savedAttributes = self.attributes
         let savedKeys = self.keys
         let savedElement = self.element
-        self.attributes = None
+        self.attributes = if(self.key != "") {
+            let attributes = StringMap.new()
+            attributes.set("data-lux-key", tagName.upper() + ">" + self.key)
+            attributes
+        }
         self.element = LuxElement(node, 0, keepChildren = False)
-        self.element.element->classList->value = ""
+        //self.element.element->classList->value = ""
+        self.keys = None
         self.key = ""
         self.depth += 1
         try {
@@ -239,13 +244,8 @@ extend self: Lux {
             styleSheet->textContent = class.show()
             self.document.document->head->appendChild(styleSheet)
         }
-        if(!self.dry.isEmpty()) {
-            let classNames = self.attributes.flatMap {_.get("class")}.else {""}
-            self.set("class", (classNames + " " + class.name()).trim())
-        } else {
-            self.element.element->classList->add(class.name())
-            self.set("class", self.element.element->className.grabString())
-        }
+        let classNames = self.attributes.flatMap {_.get("class")}.map {_ + " "}.else {""}
+        self.set("class", classNames + class.name())
     }
     
     on(event: String, handler: LuxEvent => Unit) {
@@ -505,8 +505,8 @@ patchElement(self: Lux, tagName: String): JsValue {
                         let k = c->getAttribute("data-lux-key")
                         if(!k.isNullOrUndefined()) {map.set(k.grabString(), c)}
                     }
-                    c = self.element.childAt(i)
                     i += 1
+                    c = self.element.childAt(i)
                 }
                 self.keys = Some(map)
                 map
