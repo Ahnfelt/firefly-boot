@@ -603,7 +603,13 @@ extend self: JsEmitter {
                     | PVariable p => p.name.map(escapeKeyword).else {"_"}
                     | _ => panic("!")
                 }
-                "async (" + patternParameters.join(", ") + ") => {\n" + self.emitStatements(body, True, False) + "\n}"
+                Some(
+                    "async (" + patternParameters.join(", ") + ") => {\n" + 
+                    self.emitStatements(body, True, False) + 
+                    "\n}"
+                )
+            | name {name.startsWith("ff:core/UnsafeJs.async")} =>
+                throw(CompileError(term.at, "JS async functions must take a simple parameter list."))
             | "ff:core/UnsafeJs.cancelled" =>
                 Some(if(async) {"$task.controller.signal.aborted"} else {"false"})
             | "ff:core/UnsafeJs.throwIfCancelled" =>

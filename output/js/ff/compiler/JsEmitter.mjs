@@ -1670,6 +1670,13 @@ const url_ = _guard1[0].value_;
 return ff_core_Option.Some(ff_compiler_JsImporter.JsImporter_add(self_.jsImporter_, ff_core_String.String_replace(url_, "\"", "")))
 }
 }
+if(_1 === "ff:core/UnsafeJs.importDynamic") {
+const _guard1 = arguments_;
+if(_guard1.length === 1 && _guard1[0].EString) {
+const url_ = _guard1[0].value_;
+return ff_core_Option.Some((("import(" + url_) + ")"))
+}
+}
 if(_1 === "ff:core/UnsafeJs.await") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
@@ -1680,6 +1687,55 @@ return ff_core_Option.Some((("(await " + ff_compiler_JsEmitter.JsEmitter_emitTer
 return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_))
 }
 return
+}
+}
+{
+const name_ = _1;
+const _guard4 = ff_core_String.String_removeFirst(name_, "ff:core/UnsafeJs.async");
+if(_guard4.Some) {
+const n_ = _guard4.value_;
+const _guard3 = ff_core_String.String_all(n_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+}));
+if(_guard3) {
+const _guard2 = arguments_;
+if(_guard2.length === 1 && _guard2[0].ELambda && _guard2[0].lambda_.cases_.length === 1 && _guard2[0].lambda_.cases_[0].guards_.length === 0) {
+const at_ = _guard2[0].at_;
+const effect_ = _guard2[0].lambda_.effect_;
+const patterns_ = _guard2[0].lambda_.cases_[0].patterns_;
+const body_ = _guard2[0].lambda_.cases_[0].body_;
+if(ff_core_List.List_all(patterns_, ((_1) => {
+if(_1.PVariable) {
+return true
+}
+{
+return false
+}
+}))) {
+const patternParameters_ = ff_core_List.List_map(patterns_, ((_1) => {
+if(_1.PVariable) {
+const p_ = _1;
+return ff_core_Option.Option_else(ff_core_Option.Option_map(p_.name_, ((word_) => {
+return ff_compiler_JsEmitter.escapeKeyword_(word_)
+})), (() => {
+return "_"
+}))
+return
+}
+{
+return ff_core_Core.panic_("!")
+}
+}));
+return ff_core_Option.Some((((("async (" + ff_core_List.List_join(patternParameters_, ", ")) + ") => {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, true, false)) + "\n}"))
+}
+}
+}
+}
+}
+{
+const name_ = _1;
+if(ff_core_String.String_startsWith(name_, "ff:core/UnsafeJs.async", 0)) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(term_.at_, "JS async functions must take a simple parameter list."), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
 if(_1 === "ff:core/UnsafeJs.cancelled") {
@@ -3898,6 +3954,13 @@ const url_ = _guard1[0].value_;
 return ff_core_Option.Some(ff_compiler_JsImporter.JsImporter_add(self_.jsImporter_, ff_core_String.String_replace(url_, "\"", "")))
 }
 }
+if(_1 === "ff:core/UnsafeJs.importDynamic") {
+const _guard1 = arguments_;
+if(_guard1.length === 1 && _guard1[0].EString) {
+const url_ = _guard1[0].value_;
+return ff_core_Option.Some((("import(" + url_) + ")"))
+}
+}
 if(_1 === "ff:core/UnsafeJs.await") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
@@ -3908,6 +3971,55 @@ return ff_core_Option.Some((("(await " + ff_compiler_JsEmitter.JsEmitter_emitTer
 return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_))
 }
 return
+}
+}
+{
+const name_ = _1;
+const _guard4 = ff_core_String.String_removeFirst(name_, "ff:core/UnsafeJs.async");
+if(_guard4.Some) {
+const n_ = _guard4.value_;
+const _guard3 = ff_core_String.String_all(n_, ((_w1) => {
+return ff_core_Char.Char_isAsciiDigit(_w1)
+}));
+if(_guard3) {
+const _guard2 = arguments_;
+if(_guard2.length === 1 && _guard2[0].ELambda && _guard2[0].lambda_.cases_.length === 1 && _guard2[0].lambda_.cases_[0].guards_.length === 0) {
+const at_ = _guard2[0].at_;
+const effect_ = _guard2[0].lambda_.effect_;
+const patterns_ = _guard2[0].lambda_.cases_[0].patterns_;
+const body_ = _guard2[0].lambda_.cases_[0].body_;
+if(ff_core_List.List_all(patterns_, ((_1) => {
+if(_1.PVariable) {
+return true
+}
+{
+return false
+}
+}))) {
+const patternParameters_ = ff_core_List.List_map(patterns_, ((_1) => {
+if(_1.PVariable) {
+const p_ = _1;
+return ff_core_Option.Option_else(ff_core_Option.Option_map(p_.name_, ((word_) => {
+return ff_compiler_JsEmitter.escapeKeyword_(word_)
+})), (() => {
+return "_"
+}))
+return
+}
+{
+return ff_core_Core.panic_("!")
+}
+}));
+return ff_core_Option.Some((((("async (" + ff_core_List.List_join(patternParameters_, ", ")) + ") => {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, true, false)) + "\n}"))
+}
+}
+}
+}
+}
+{
+const name_ = _1;
+if(ff_core_String.String_startsWith(name_, "ff:core/UnsafeJs.async", 0)) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(term_.at_, "JS async functions must take a simple parameter list."), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
 if(_1 === "ff:core/UnsafeJs.cancelled") {

@@ -104,7 +104,51 @@ export function import_(module_) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
+export function importDynamic_(module_) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
 export function await_(promise_) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export function async0_(body_) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export function async1_(body_) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export function async2_(body_) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export function async3_(body_) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export function async4_(body_) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export function async5_(body_) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export function async6_(body_) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export function async7_(body_) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export function async8_(body_) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export function async9_(body_) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
@@ -148,7 +192,51 @@ export async function import_$(module_, $task) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
+export async function importDynamic_$(module_, $task) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
 export async function await_$(promise_, $task) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export async function async0_$(body_, $task) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export async function async1_$(body_, $task) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export async function async2_$(body_, $task) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export async function async3_$(body_, $task) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export async function async4_$(body_, $task) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export async function async5_$(body_, $task) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export async function async6_$(body_, $task) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export async function async7_$(body_, $task) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export async function async8_$(body_, $task) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export async function async9_$(body_, $task) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
