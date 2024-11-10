@@ -1735,7 +1735,7 @@ return ff_core_Option.Some((((("async (" + ff_core_List.List_join(patternParamet
 {
 const name_ = _1;
 if(ff_core_String.String_startsWith(name_, "ff:core/UnsafeJs.async", 0)) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(term_.at_, "JS async functions must take a simple parameter list."), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(term_.at_, "JS async functions must take a simple parameter list"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
 if(_1 === "ff:core/UnsafeJs.cancelled") {
@@ -4019,7 +4019,7 @@ return ff_core_Option.Some((((("async (" + ff_core_List.List_join(patternParamet
 {
 const name_ = _1;
 if(ff_core_String.String_startsWith(name_, "ff:core/UnsafeJs.async", 0)) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(term_.at_, "JS async functions must take a simple parameter list."), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(term_.at_, "JS async functions must take a simple parameter list"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
 if(_1 === "ff:core/UnsafeJs.cancelled") {

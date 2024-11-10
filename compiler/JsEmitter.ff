@@ -609,7 +609,7 @@ extend self: JsEmitter {
                     "\n}"
                 )
             | name {name.startsWith("ff:core/UnsafeJs.async")} =>
-                throw(CompileError(term.at, "JS async functions must take a simple parameter list."))
+                throw(CompileError(term.at, "JS async functions must take a simple parameter list"))
             | "ff:core/UnsafeJs.cancelled" =>
                 Some(if(async) {"$task.controller.signal.aborted"} else {"false"})
             | "ff:core/UnsafeJs.throwIfCancelled" =>
