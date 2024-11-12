@@ -157,7 +157,20 @@ export async function internalReadStream_$(createReadStream_, $task) {
 }
 
 export function Path_exists(self_, checkReadable_ = false, checkWritable_ = false, checkExecutable_ = false) {
-throw new Error('Function Path_exists is missing on this target in sync context.');
+const fs_ = import$0;
+const fsPromises_ = import$1;
+const flagsR_ = (fs_.constants["R_OK"] * checkReadable_);
+const flagsW_ = (fs_.constants["W_OK"] * checkWritable_);
+const flagsX_ = (fs_.constants["X_OK"] * checkExecutable_);
+const flags_ = ff_core_Int.Int_bitOr(flagsR_, ff_core_Int.Int_bitOr(flagsW_, flagsX_));
+return ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+fsPromises_.access(self_, ((flags_ === 0)
+? fs_.constants["F_OK"]
+: flags_));
+return true
+})), ((_) => {
+return false
+}))
 }
 
 export function Path_isReadable(self_) {
@@ -355,20 +368,20 @@ throw new Error('Function Path_appendHandle is missing on this target in sync co
 }
 
 export async function Path_exists$(self_, checkReadable_ = false, checkWritable_ = false, checkExecutable_ = false, $task) {
-
-            const fs = import$0
-            const fsPromises = import$1
-            const flags = 
-                (fs.constants.R_OK * checkReadable_) | 
-                (fs.constants.W_OK * checkWritable_) | 
-                (fs.constants.X_OK * checkExecutable_)
-            try {
-                await fsPromises.access(self_, flags === 0 ? fs.constants.F_OK : flags)
-                return true
-            } catch(e) {
-                return false
-            }
-        
+const fs_ = import$0;
+const fsPromises_ = import$1;
+const flagsR_ = (fs_.constants["R_OK"] * checkReadable_);
+const flagsW_ = (fs_.constants["W_OK"] * checkWritable_);
+const flagsX_ = (fs_.constants["X_OK"] * checkExecutable_);
+const flags_ = ff_core_Int.Int_bitOr(flagsR_, ff_core_Int.Int_bitOr(flagsW_, flagsX_));
+return ff_core_Try.Try_catchAny((await ff_core_Core.try_$((async ($task) => {
+(await fsPromises_.access(self_, ((flags_ === 0)
+? fs_.constants["F_OK"]
+: flags_)));
+return true
+}), $task)), ((_) => {
+return false
+}))
 }
 
 export async function Path_isReadable$(self_, $task) {

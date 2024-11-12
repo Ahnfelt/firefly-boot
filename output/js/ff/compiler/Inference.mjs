@@ -1438,9 +1438,21 @@ export function Inference_inferFunctionCall(self_, environment_, expected_, sign
 const _1 = term_;
 if(_1.ECall) {
 const e_ = _1;
+let isUnsafeJsAwaitCall_ = false;
 const tailCall_ = (((_1) => {
 if(_1.DynamicCall) {
 const call_ = _1;
+do {
+const _1 = call_.function_;
+if(_1.EVariable && _1.name_ === "ff:core/UnsafeJs.await") {
+isUnsafeJsAwaitCall_ = true
+break
+}
+{
+
+break
+}
+} while(false);
 return call_.tailCall_
 }
 if(_1.StaticCall) {
@@ -1449,12 +1461,15 @@ return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not exp
 }))(e_.target_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, signature_.returnType_);
 const arguments_ = ff_compiler_Inference.Inference_inferArguments(self_, e_.at_, name_, environment_, signature_.parameters_, e_.arguments_);
-ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, signature_.effect_, environment_.effect_);
+const effect_ = (isUnsafeJsAwaitCall_
+? ff_compiler_Syntax.TConstructor(term_.at_, "Q$", [])
+: signature_.effect_);
+ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, effect_, environment_.effect_);
 {
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, ff_compiler_Syntax.StaticCall(name_, tailCall_, instanceCall_), signature_.effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
+return ff_compiler_Syntax.ECall(_c.at_, ff_compiler_Syntax.StaticCall(name_, tailCall_, instanceCall_), effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
 return _w1.second_
 })), arguments_, _c.dictionaries_)
 return
@@ -3307,9 +3322,21 @@ export async function Inference_inferFunctionCall$(self_, environment_, expected
 const _1 = term_;
 if(_1.ECall) {
 const e_ = _1;
+let isUnsafeJsAwaitCall_ = false;
 const tailCall_ = (((_1) => {
 if(_1.DynamicCall) {
 const call_ = _1;
+do {
+const _1 = call_.function_;
+if(_1.EVariable && _1.name_ === "ff:core/UnsafeJs.await") {
+isUnsafeJsAwaitCall_ = true
+break
+}
+{
+
+break
+}
+} while(false);
 return call_.tailCall_
 }
 if(_1.StaticCall) {
@@ -3318,12 +3345,15 @@ return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not exp
 }))(e_.target_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, signature_.returnType_);
 const arguments_ = ff_compiler_Inference.Inference_inferArguments(self_, e_.at_, name_, environment_, signature_.parameters_, e_.arguments_);
-ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, signature_.effect_, environment_.effect_);
+const effect_ = (isUnsafeJsAwaitCall_
+? ff_compiler_Syntax.TConstructor(term_.at_, "Q$", [])
+: signature_.effect_);
+ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, effect_, environment_.effect_);
 {
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, ff_compiler_Syntax.StaticCall(name_, tailCall_, instanceCall_), signature_.effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
+return ff_compiler_Syntax.ECall(_c.at_, ff_compiler_Syntax.StaticCall(name_, tailCall_, instanceCall_), effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
 return _w1.second_
 })), arguments_, _c.dictionaries_)
 return

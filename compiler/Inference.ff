@@ -818,18 +818,27 @@ extend self: Inference {
     ): Term {
         term.{
             | ECall e =>
+                mutable isUnsafeJsAwaitCall = False
                 let tailCall = e.target.{
-                    | DynamicCall call => call.tailCall
-                    | StaticCall _ => fail(e.at, "Internal error: Static calls not expected in inferFunctionCall")
+                    | DynamicCall call => 
+                        call.function.{
+                            | EVariable(_, "ff:core/UnsafeJs.await") => 
+                                isUnsafeJsAwaitCall = True
+                            | _ => 
+                        }
+                        call.tailCall
+                    | StaticCall _ => 
+                        fail(e.at, "Internal error: Static calls not expected in inferFunctionCall")
                 }
                 self.unification.unify(e.at, expected, signature.returnType)
                 let arguments = self.inferArguments(e.at, name, environment, signature.parameters, e.arguments)
-                self.unification.affect(term.at, signature.effect, environment.effect)
+                let effect = if(isUnsafeJsAwaitCall) {TConstructor(term.at, "Q$", [])} else {signature.effect}
+                self.unification.affect(term.at, effect, environment.effect)
                 e.ECall(
                     target = StaticCall(name, instanceCall = instanceCall, tailCall = tailCall)
                     typeArguments = instantiation.map {_.second}
                     arguments = arguments
-                    effect = signature.effect
+                    effect = effect
                 )
             | _ => fail(term.at, "Call expected")
         }

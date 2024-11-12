@@ -3,22 +3,23 @@ capability PathEntry {}
 
 extend self: Path {
 
-    exists(checkReadable: Bool = False, checkWritable: Bool = False, checkExecutable: Bool = False): Bool
-        target node async """
-            import * as fs from 'fs'
-            import * as fsPromises from 'fs/promises'
-            const flags = 
-                (fs.constants.R_OK * checkReadable_) | 
-                (fs.constants.W_OK * checkWritable_) | 
-                (fs.constants.X_OK * checkExecutable_)
-            try {
-                await fsPromises.access(self_, flags === 0 ? fs.constants.F_OK : flags)
-                return true
-            } catch(e) {
-                return false
-            }
-        """
-        
+    exists(checkReadable: Bool = False, checkWritable: Bool = False, checkExecutable: Bool = False): Bool {
+        let fs = UnsafeJs.import("fs")
+        let fsPromises = UnsafeJs.import("fs/promises")
+        let flagsR: Int = (fs->constants->"R_OK" * checkReadable!)?
+        let flagsW: Int = (fs->constants->"W_OK" * checkWritable!)?
+        let flagsX: Int = (fs->constants->"X_OK" * checkExecutable!)?
+        let flags = flagsR.bitOr(flagsW.bitOr(flagsX))
+        try {
+            UnsafeJs.await(
+                fsPromises->access(self!, if(flags == 0) {fs->constants->"F_OK"} else {flags!})
+            )
+            True
+        } catchAny {_ => 
+            False
+        }
+    }
+
     isReadable(): Bool {
         self.exists(checkReadable = True)
     }
