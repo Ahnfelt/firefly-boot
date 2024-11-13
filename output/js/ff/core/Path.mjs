@@ -186,27 +186,51 @@ return ff_core_Path.Path_exists(self_, false, false, true)
 }
 
 export function Path_isDirectory(self_) {
-throw new Error('Function Path_isDirectory is missing on this target in sync context.');
+const fsPromises_ = import$1;
+return ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+return fsPromises_.lstat(self_).isDirectory()
+})), ((_) => {
+return false
+}))
 }
 
 export function Path_isFile(self_) {
-throw new Error('Function Path_isFile is missing on this target in sync context.');
+const fsPromises_ = import$1;
+return ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+return fsPromises_.lstat(self_).isFile()
+})), ((_) => {
+return false
+}))
 }
 
 export function Path_isSymbolicLink(self_) {
-throw new Error('Function Path_isSymbolicLink is missing on this target in sync context.');
+const fsPromises_ = import$1;
+return ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+return fsPromises_.lstat(self_).isSymbolicLink()
+})), ((_) => {
+return false
+}))
 }
 
 export function Path_isInsideOf(self_, path_) {
-throw new Error('Function Path_isInsideOf is missing on this target in sync context.');
+const nodePath_ = import$2;
+if((path_ === "/")) {
+return true
+} else {
+const childPath_ = nodePath_.resolve(self_);
+const parentPath_ = nodePath_.resolve(path_);
+return (childPath_.startsWith((parentPath_ + nodePath_.sep)) || (childPath_ === parentPath_))
+}
 }
 
 export function Path_size(self_) {
-throw new Error('Function Path_size is missing on this target in sync context.');
+const fs_ = import$0;
+return fs_.promises.stat(self_)
 }
 
 export function Path_modified(self_) {
-throw new Error('Function Path_modified is missing on this target in sync context.');
+const fs_ = import$0;
+return (fs_.promises.stat(self_).mtimeMs * 0.001)
 }
 
 export function Path_entries(self_) {
@@ -214,11 +238,13 @@ throw new Error('Function Path_entries is missing on this target in sync context
 }
 
 export function Path_absolute(self_) {
-throw new Error('Function Path_absolute is missing on this target in sync context.');
+const path_ = import$2;
+return path_.resolve(self_)
 }
 
 export function Path_relativeTo(self_, path_) {
-throw new Error('Function Path_relativeTo is missing on this target in sync context.');
+const nodePath_ = import$2;
+return nodePath_.relative(path_, self_)
 }
 
 export function Path_endsWith(self_, parts_) {
@@ -248,35 +274,46 @@ return ff_core_Path.Path_contains(_w1, parts_)
 }
 
 export function Path_base(self_) {
-throw new Error('Function Path_base is missing on this target in sync context.');
+const path_ = import$2;
+return path_.basename(self_)
 }
 
 export function Path_extension(self_) {
-throw new Error('Function Path_extension is missing on this target in sync context.');
+const path_ = import$2;
+return path_.extname(self_)
 }
 
 export function Path_url(self_) {
-throw new Error('Function Path_url is missing on this target in sync context.');
+const url_ = import$3;
+return ("" + url_.pathToFileURL(self_))
 }
 
 export function Path_delimiter(self_) {
-throw new Error('Function Path_delimiter is missing on this target in sync context.');
+const path_ = import$2;
+return path_.delimiter(self_)
 }
 
 export function Path_separator(self_) {
-throw new Error('Function Path_separator is missing on this target in sync context.');
+const path_ = import$2;
+return path_.separator(self_)
 }
 
 export function Path_parent(self_) {
-throw new Error('Function Path_parent is missing on this target in sync context.');
+const path_ = import$2;
+const result_ = path_.dirname(self_);
+if(((result_ !== "") && (result_ !== self_))) {
+return ff_core_Option.Some(result_)
+} else return ff_core_Option.None()
 }
 
 export function Path_slash(self_, relativePath_) {
-throw new Error('Function Path_slash is missing on this target in sync context.');
+const path_ = import$2;
+return path_.join(self_, relativePath_)
 }
 
 export function Path_path(self_, absoluteOrRelativePath_) {
-throw new Error('Function Path_path is missing on this target in sync context.');
+const path_ = import$2;
+return path_.resolve(self_, absoluteOrRelativePath_)
 }
 
 export function Path_copyTo(self_, path_, retries_ = 0, retryDelay_ = 100) {
@@ -296,15 +333,23 @@ ff_core_Path.Path_writeStream(path_, ff_core_Path.Path_readStream(self_), false)
 }
 
 export function Path_createDirectory(self_, createParentDirectories_ = false) {
-throw new Error('Function Path_createDirectory is missing on this target in sync context.');
+const fsPromises_ = import$1;
+const js_ = globalThis;
+fsPromises_.mkdir(self_, {recursive: createParentDirectories_})
 }
 
 export function Path_createSymlinkTo(self_, path_, junction_ = false) {
-throw new Error('Function Path_createSymlinkTo is missing on this target in sync context.');
+const fsPromises_ = import$1;
+const js_ = globalThis;
+fsPromises_.symlink(path_, self_, (junction_
+? "junction"
+: null))
 }
 
 export function Path_delete(self_, retries_ = 0, retryDelay_ = 100) {
-throw new Error('Function Path_delete is missing on this target in sync context.');
+const fsPromises_ = import$1;
+const js_ = globalThis;
+fsPromises_.rm(self_, {recursive: true, retries: retries_, retryDelay: retryDelay_})
 }
 
 export function Path_truncate(self_, length_ = 0) {
@@ -397,58 +442,51 @@ return (await ff_core_Path.Path_exists$(self_, false, false, true, $task))
 }
 
 export async function Path_isDirectory$(self_, $task) {
-
-            const fsPromises = import$1
-            try {
-                return (await fsPromises.lstat(self_)).isDirectory();
-            } catch(e) {
-                return false;
-            }
-        
+const fsPromises_ = import$1;
+return ff_core_Try.Try_catchAny((await ff_core_Core.try_$((async ($task) => {
+return (await fsPromises_.lstat(self_)).isDirectory()
+}), $task)), ((_) => {
+return false
+}))
 }
 
 export async function Path_isFile$(self_, $task) {
-
-            const fsPromises = import$1
-            try {
-                return (await fsPromises.lstat(self_)).isFile();
-            } catch(e) {
-                return false;
-            }
-        
+const fsPromises_ = import$1;
+return ff_core_Try.Try_catchAny((await ff_core_Core.try_$((async ($task) => {
+return (await fsPromises_.lstat(self_)).isFile()
+}), $task)), ((_) => {
+return false
+}))
 }
 
 export async function Path_isSymbolicLink$(self_, $task) {
-
-            const fsPromises = import$1
-            try {
-                return (await fsPromises.lstat(self_)).isSymbolicLink();
-            } catch(e) {
-                return false;
-            }
-        
+const fsPromises_ = import$1;
+return ff_core_Try.Try_catchAny((await ff_core_Core.try_$((async ($task) => {
+return (await fsPromises_.lstat(self_)).isSymbolicLink()
+}), $task)), ((_) => {
+return false
+}))
 }
 
 export async function Path_isInsideOf$(self_, path_, $task) {
-
-            const path = import$2
-            if(path_ === '/') return true
-            const childPath = path.resolve(self_)
-            const parentPath = path.resolve(path_)
-            return childPath.startsWith(parentPath + path.sep) || childPath === parentPath
-        
+const nodePath_ = import$2;
+if((path_ === "/")) {
+return true
+} else {
+const childPath_ = nodePath_.resolve(self_);
+const parentPath_ = nodePath_.resolve(path_);
+return (childPath_.startsWith((parentPath_ + nodePath_.sep)) || (childPath_ === parentPath_))
+}
 }
 
 export async function Path_size$(self_, $task) {
-
-            return (await fs.promises.stat(file)).size
-        
+const fs_ = import$0;
+return (await fs_.promises.stat(self_))
 }
 
 export async function Path_modified$(self_, $task) {
-
-            return (await fs.promises.stat(file)).mtimeMs * 0.001
-        
+const fs_ = import$0;
+return ((await fs_.promises.stat(self_)).mtimeMs * 0.001)
 }
 
 export async function Path_entries$(self_, $task) {
@@ -471,17 +509,13 @@ export async function Path_entries$(self_, $task) {
 }
 
 export async function Path_absolute$(self_, $task) {
-
-            const path = import$2
-            return path.resolve(self_)
-        
+const path_ = import$2;
+return path_.resolve(self_)
 }
 
 export async function Path_relativeTo$(self_, path_, $task) {
-
-            const path = import$2;
-            return path.relative(path_, self_);
-        
+const nodePath_ = import$2;
+return nodePath_.relative(path_, self_)
 }
 
 export async function Path_endsWith$(self_, parts_, $task) {
@@ -511,62 +545,46 @@ return (await ff_core_Path.Path_contains$(_w1, parts_, $task))
 }
 
 export async function Path_base$(self_, $task) {
-
-            const path = import$2
-            return path.basename(self_)
-        
+const path_ = import$2;
+return path_.basename(self_)
 }
 
 export async function Path_extension$(self_, $task) {
-
-            const path = import$2
-            return path.extname(self_)
-        
+const path_ = import$2;
+return path_.extname(self_)
 }
 
 export async function Path_url$(self_, $task) {
-
-            const url = import$3;
-            return '' + url.pathToFileURL(self_);
-        
+const url_ = import$3;
+return ("" + url_.pathToFileURL(self_))
 }
 
 export async function Path_delimiter$(self_, $task) {
-
-            const path = import$2;
-            return path.delimiter(self_);
-        
+const path_ = import$2;
+return path_.delimiter(self_)
 }
 
 export async function Path_separator$(self_, $task) {
-
-            const path = import$2;
-            return path.separator();
-        
+const path_ = import$2;
+return path_.separator(self_)
 }
 
 export async function Path_parent$(self_, $task) {
-
-            const path = import$2
-            const result = path.dirname(self_)
-            return result !== "" && result !== self_
-                ? ff_core_Option.Some(result) 
-                : ff_core_Option.None()
-        
+const path_ = import$2;
+const result_ = path_.dirname(self_);
+if(((result_ !== "") && (result_ !== self_))) {
+return ff_core_Option.Some(result_)
+} else return ff_core_Option.None()
 }
 
 export async function Path_slash$(self_, relativePath_, $task) {
-
-            const path = import$2
-            return path.join(self_, relativePath_)
-        
+const path_ = import$2;
+return path_.join(self_, relativePath_)
 }
 
 export async function Path_path$(self_, absoluteOrRelativePath_, $task) {
-
-            const path = import$2
-            return path.resolve(self_, absoluteOrRelativePath_)
-        
+const path_ = import$2;
+return path_.resolve(self_, absoluteOrRelativePath_)
 }
 
 export async function Path_copyTo$(self_, path_, retries_ = 0, retryDelay_ = 100, $task) {
@@ -586,24 +604,23 @@ if((await ff_core_Path.Path_exists$(path_, false, false, false, $task))) {
 }
 
 export async function Path_createDirectory$(self_, createParentDirectories_ = false, $task) {
-
-            const fsPromises = import$1
-            await fsPromises.mkdir(self_, {recursive: createParentDirectories_})
-        
+const fsPromises_ = import$1;
+const js_ = globalThis;
+(await fsPromises_.mkdir(self_, {recursive: createParentDirectories_}))
 }
 
 export async function Path_createSymlinkTo$(self_, path_, junction_ = false, $task) {
-
-            const fsPromises = import$1
-            await fsPromises.symlink(path_, self_, junction_ ? 'junction' : null)
-        
+const fsPromises_ = import$1;
+const js_ = globalThis;
+(await fsPromises_.symlink(path_, self_, (junction_
+? "junction"
+: null)))
 }
 
 export async function Path_delete$(self_, retries_ = 0, retryDelay_ = 100, $task) {
-
-            const fsPromises = import$1
-            await fsPromises.rm(self_, {recursive: true, retries: retries_, retryDelay: retryDelay_})
-        
+const fsPromises_ = import$1;
+const js_ = globalThis;
+(await fsPromises_.rm(self_, {recursive: true, retries: retries_, retryDelay: retryDelay_}))
 }
 
 export async function Path_truncate$(self_, length_ = 0, $task) {

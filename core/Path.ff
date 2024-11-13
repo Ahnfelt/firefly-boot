@@ -32,54 +32,50 @@ extend self: Path {
         self.exists(checkExecutable = True)
     }
 
-    isDirectory(): Bool
-        target node async """
-            import * as fsPromises from 'fs/promises'
-            try {
-                return (await fsPromises.lstat(self_)).isDirectory();
-            } catch(e) {
-                return false;
-            }
-        """
+    isDirectory(): Bool {
+        let fsPromises = UnsafeJs.import("fs/promises")        
+        try {
+            UnsafeJs.await(fsPromises->lstat(self!))->isDirectory()?
+        } catchAny {_ => 
+            False
+        }
+    }
 
-    isFile(): Bool
-        target node async """
-            import * as fsPromises from 'fs/promises'
-            try {
-                return (await fsPromises.lstat(self_)).isFile();
-            } catch(e) {
-                return false;
-            }
-        """
+    isFile(): Bool {
+        let fsPromises = UnsafeJs.import("fs/promises")        
+        try {
+            UnsafeJs.await(fsPromises->lstat(self!))->isFile()?
+        } catchAny {_ => 
+            False
+        }        
+    }
 
-    isSymbolicLink(): Bool
-        target node async """
-            import * as fsPromises from 'fs/promises'
-            try {
-                return (await fsPromises.lstat(self_)).isSymbolicLink();
-            } catch(e) {
-                return false;
-            }
-        """
+    isSymbolicLink(): Bool {
+        let fsPromises = UnsafeJs.import("fs/promises")        
+        try {
+            UnsafeJs.await(fsPromises->lstat(self!))->isSymbolicLink()?
+        } catchAny {_ => 
+            False
+        }        
+    }
 
-    isInsideOf(path: Path): Bool
-        target node async """
-            import * as path from 'path'
-            if(path_ === '/') return true
-            const childPath = path.resolve(self_)
-            const parentPath = path.resolve(path_)
-            return childPath.startsWith(parentPath + path.sep) || childPath === parentPath
-        """
-
-    size(): Int
-        target node async """
-            return (await fs.promises.stat(file)).size
-        """
+    isInsideOf(path: Path): Bool {
+        let nodePath = UnsafeJs.import("path")
+        if(path! === "/") {True} else:
+        let childPath = nodePath->resolve(self!)
+        let parentPath = nodePath->resolve(path!)
+        childPath->startsWith(parentPath + nodePath->sep)? || childPath === parentPath
+    }
+    
+    size(): Int {
+        let fs = UnsafeJs.import("fs")
+        UnsafeJs.await(fs->promises->stat(self!))?
+    }
         
-    modified(): Instant
-        target node async """
-            return (await fs.promises.stat(file)).mtimeMs * 0.001
-        """
+    modified(): Instant {
+        let fs = UnsafeJs.import("fs")
+        (UnsafeJs.await(fs->promises->stat(self!))->mtimeMs * 0.001!)?
+    }
 
     entries(): Stream[PathEntry]
         target node async """
@@ -99,17 +95,15 @@ extend self: Path {
             )
         """
 
-    absolute(): String
-        target node async """
-            import * as path from 'path'
-            return path.resolve(self_)
-        """
+    absolute(): String {
+        let path = UnsafeJs.import("path")        
+        path->resolve(self!)?
+    }
 
-    relativeTo(path: Path): String
-        target node async """
-            import * as path from 'path';
-            return path.relative(path_, self_);
-        """
+    relativeTo(path: Path): String {
+        let nodePath = UnsafeJs.import("path")        
+        nodePath->relative(path!, self!)?
+    }
     
     endsWith(parts: List[String]): Bool {
         function go(pathOption: Option[Path], reversed: List[String]): Bool {
@@ -124,56 +118,46 @@ extend self: Path {
         self.endsWith(parts) || self.parent().any {_.contains(parts)}
     }
 
-    base(): String
-        target node async """
-            import * as path from 'path'
-            return path.basename(self_)
-        """
+    base(): String {
+        let path = UnsafeJs.import("path")
+        path->basename(self!)?        
+    }
 
-    extension(): String
-        target node async """
-            import * as path from 'path'
-            return path.extname(self_)
-        """
+    extension(): String {
+        let path = UnsafeJs.import("path")
+        path->extname(self!)?        
+    }
 
-    url(): String
-        target node async """
-            import * as url from 'url';
-            return '' + url.pathToFileURL(self_);
-        """
+    url(): String {
+        let url = UnsafeJs.import("url")
+        "" + url->pathToFileURL(self!)?        
+    }
 
-    delimiter(): String
-        target node async """
-            import * as path from 'path';
-            return path.delimiter(self_);
-        """
+    delimiter(): String {
+        let path = UnsafeJs.import("path")
+        path->delimiter(self!)?        
+    }
 
-    separator(): String
-        target node async """
-            import * as path from 'path';
-            return path.separator();
-        """
+    separator(): String {
+        let path = UnsafeJs.import("path")
+        path->separator(self!)?        
+    }
 
-    parent(): Option[Path]
-        target node async """
-            import * as path from 'path'
-            const result = path.dirname(self_)
-            return result !== "" && result !== self_
-                ? ff_core_Option.Some(result) 
-                : ff_core_Option.None()
-        """
+    parent(): Option[Path] {
+        let path = UnsafeJs.import("path")
+        let result = path->dirname(self!)
+        if(result !== "" && result !== self!) {result?}
+    }
 
-    slash(relativePath: String): Path
-        target node async """
-            import * as path from 'path'
-            return path.join(self_, relativePath_)
-        """
+    slash(relativePath: String): Path {
+        let path = UnsafeJs.import("path")
+        path->join(self!, relativePath)?
+    }
 
-    path(absoluteOrRelativePath: String): Path
-        target node async """
-            import * as path from 'path'
-            return path.resolve(self_, absoluteOrRelativePath_)
-        """
+    path(absoluteOrRelativePath: String): Path {
+        let path = UnsafeJs.import("path")
+        path->resolve(self!, absoluteOrRelativePath)?
+    }
 
     copyTo(path: Path, retries: Int = 0, retryDelay: Int = 100) {
         if(self.isDirectory()) {
@@ -189,41 +173,38 @@ extend self: Path {
         }
     }
 
-    createDirectory(createParentDirectories: Bool = False)
-        target node async """
-            import * as fsPromises from 'fs/promises'
-            await fsPromises.mkdir(self_, {recursive: createParentDirectories_})
-        """
+    createDirectory(createParentDirectories: Bool = False) {
+        let fsPromises = UnsafeJs.import("fs/promises")
+        let js = UnsafeJs.jsSystem()
+        UnsafeJs.await(fsPromises->mkdir(self!, js->(recursive = createParentDirectories)))
+    }
 
-    createSymlinkTo(path: Path, junction: Bool = False)
-        target node async """
-            import * as fsPromises from 'fs/promises'
-            await fsPromises.symlink(path_, self_, junction_ ? 'junction' : null)
-        """
+    createSymlinkTo(path: Path, junction: Bool = False) {
+        let fsPromises = UnsafeJs.import("fs/promises")
+        let js = UnsafeJs.jsSystem()
+        UnsafeJs.await(fsPromises->symlink(path!, self!, if(junction) {"junction"!} else {js.null()}))
+    }
 
-    delete(retries: Int = 0, retryDelay: Int = 100)
-        target node async """
-            import * as fsPromises from 'fs/promises'
-            await fsPromises.rm(self_, {recursive: true, retries: retries_, retryDelay: retryDelay_})
-        """
+    delete(retries: Int = 0, retryDelay: Int = 100) {
+        let fsPromises = UnsafeJs.import("fs/promises")
+        let js = UnsafeJs.jsSystem()
+        UnsafeJs.await(fsPromises->rm(self!, js->(recursive = True, retries = retries, retryDelay = retryDelay)))
+    }
     
-    truncate(length: Int = 0)
-        target node async """
-            import * as fsPromises from 'fs/promises'
-            await fsPromises.truncate(self_, length_)
-        """
+    truncate(length: Int = 0) {
+        let fsPromises = UnsafeJs.import("fs/promises")
+        UnsafeJs.await(fsPromises->truncate(self!, length))
+    }
 
-    renameTo(path: Path)
-        target node async """
-            import * as fsPromises from 'fs/promises'
-            await fsPromises.rename(self_, path_)
-        """
+    renameTo(path: Path) {
+        let fsPromises = UnsafeJs.import("fs/promises")
+        UnsafeJs.await(fsPromises->rename(self!, path!))
+    }
 
-    readSymbolicLink(): String
-        target node async """
-            import * as fsPromises from 'fs/promises'
-            return await fsPromises.readlink(self_)
-        """
+    readSymbolicLink(): String {
+        let fsPromises = UnsafeJs.import("fs/promises")
+        UnsafeJs.await(fsPromises->readlink(self!))?
+    }
 
     readText(): String
         target node async """
