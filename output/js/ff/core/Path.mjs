@@ -353,15 +353,18 @@ fsPromises_.rm(self_, {recursive: true, retries: retries_, retryDelay: retryDela
 }
 
 export function Path_truncate(self_, length_ = 0) {
-throw new Error('Function Path_truncate is missing on this target in sync context.');
+const fsPromises_ = import$1;
+fsPromises_.truncate(self_, length_)
 }
 
 export function Path_renameTo(self_, path_) {
-throw new Error('Function Path_renameTo is missing on this target in sync context.');
+const fsPromises_ = import$1;
+fsPromises_.rename(self_, path_)
 }
 
 export function Path_readSymbolicLink(self_) {
-throw new Error('Function Path_readSymbolicLink is missing on this target in sync context.');
+const fsPromises_ = import$1;
+return fsPromises_.readlink(self_)
 }
 
 export function Path_readText(self_) {
@@ -624,24 +627,18 @@ const js_ = globalThis;
 }
 
 export async function Path_truncate$(self_, length_ = 0, $task) {
-
-            const fsPromises = import$1
-            await fsPromises.truncate(self_, length_)
-        
+const fsPromises_ = import$1;
+(await fsPromises_.truncate(self_, length_))
 }
 
 export async function Path_renameTo$(self_, path_, $task) {
-
-            const fsPromises = import$1
-            await fsPromises.rename(self_, path_)
-        
+const fsPromises_ = import$1;
+(await fsPromises_.rename(self_, path_))
 }
 
 export async function Path_readSymbolicLink$(self_, $task) {
-
-            const fsPromises = import$1
-            return await fsPromises.readlink(self_)
-        
+const fsPromises_ = import$1;
+return (await fsPromises_.readlink(self_))
 }
 
 export async function Path_readText$(self_, $task) {

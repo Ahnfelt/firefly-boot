@@ -1750,6 +1750,9 @@ return ff_core_Option.Some((async_
 : ""))
 return
 }
+if(_1 === "ff:core/UnsafeJs.currentTask") {
+return ff_core_Option.Some("$task")
+}
 if(_1 === "ff:core/UnsafeJs.inAsync") {
 return ff_core_Option.Some((self_.emittingAsync_
 ? "true"
@@ -4033,6 +4036,9 @@ return ff_core_Option.Some((async_
 ? "((() => ff_core_Task.Task_throwIfAborted($task))())"
 : ""))
 return
+}
+if(_1 === "ff:core/UnsafeJs.currentTask") {
+return ff_core_Option.Some("$task")
 }
 if(_1 === "ff:core/UnsafeJs.inAsync") {
 return ff_core_Option.Some((self_.emittingAsync_

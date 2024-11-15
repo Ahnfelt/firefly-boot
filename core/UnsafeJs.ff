@@ -78,6 +78,10 @@ inBuild(): Bool {
     panic("This call should have been eliminated by the compiler")
 }
 
+currentTask(): JsValue {
+    panic("This call should have been eliminated by the compiler")
+}
+
 value[T](value: T): JsValue {
     panic("This call should have been eliminated by the compiler")
 }
