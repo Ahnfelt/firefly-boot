@@ -1750,8 +1750,15 @@ return ff_core_Option.Some((async_
 : ""))
 return
 }
-if(_1 === "ff:core/UnsafeJs.currentTask") {
-return ff_core_Option.Some("$task")
+if(_1 === "ff:core/UnsafeJs.controller") {
+return ff_core_Option.Some("$task.controller")
+}
+if(_1 === "ff:core/UnsafeJs.setController") {
+const _guard1 = arguments_;
+if(_guard1.length === 1) {
+const a_ = _guard1[0];
+return ff_core_Option.Some((("($task.controller = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_, async_)) + ")"))
+}
 }
 if(_1 === "ff:core/UnsafeJs.inAsync") {
 return ff_core_Option.Some((self_.emittingAsync_
@@ -4037,8 +4044,15 @@ return ff_core_Option.Some((async_
 : ""))
 return
 }
-if(_1 === "ff:core/UnsafeJs.currentTask") {
-return ff_core_Option.Some("$task")
+if(_1 === "ff:core/UnsafeJs.controller") {
+return ff_core_Option.Some("$task.controller")
+}
+if(_1 === "ff:core/UnsafeJs.setController") {
+const _guard1 = arguments_;
+if(_guard1.length === 1) {
+const a_ = _guard1[0];
+return ff_core_Option.Some((("($task.controller = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_, async_)) + ")"))
+}
 }
 if(_1 === "ff:core/UnsafeJs.inAsync") {
 return ff_core_Option.Some((self_.emittingAsync_

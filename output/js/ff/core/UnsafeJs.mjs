@@ -176,8 +176,12 @@ export function inBuild_() {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
-export function currentTask_() {
+export function controller_() {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export function setController_(controller_) {
+ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function value_(value_) {
@@ -268,8 +272,12 @@ export async function inBuild_$($task) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
-export async function currentTask_$($task) {
+export async function controller_$($task) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export async function setController_$(controller_, $task) {
+ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function value_$(value_, $task) {
