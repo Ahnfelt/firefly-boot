@@ -78,7 +78,11 @@ inBuild(): Bool {
     panic("This call should have been eliminated by the compiler")
 }
 
-currentTask(): JsValue {
+controller(): JsValue {
+    panic("This call should have been eliminated by the compiler")
+}
+
+setController(controller: JsValue) {
     panic("This call should have been eliminated by the compiler")
 }
 

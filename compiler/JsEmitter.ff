@@ -614,8 +614,10 @@ extend self: JsEmitter {
                 Some(if(async) {"$task.controller.signal.aborted"} else {"false"})
             | "ff:core/UnsafeJs.throwIfCancelled" =>
                 Some(if(async) {"((() => ff_core_Task.Task_throwIfAborted($task))())"} else {""})
-            | "ff:core/UnsafeJs.currentTask" =>
-                Some("$task")
+            | "ff:core/UnsafeJs.controller" =>
+                Some("$task.controller")
+            | "ff:core/UnsafeJs.setController" {arguments | [a]} =>
+                Some("($task.controller = " + self.emitTerm(a, async) + ")")
             | "ff:core/UnsafeJs.inAsync" =>
                 Some(if(self.emittingAsync) {"true"} else {"false"})
             | "ff:core/UnsafeJs.inBrowser" =>
