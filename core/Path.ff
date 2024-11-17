@@ -300,19 +300,19 @@ extend self: Path {
             }
         """
 
-    readHandle(alsoWrite: Bool = False): FileHandle
-        target node async """
-            import * as fsPromises from 'fs/promises'
-            return await fsPromises.open(self_, alsoWrite_ ? 'r+' : 'r')
-        """
+    readHandle(alsoWrite: Bool = False): FileHandle {
+        let fsPromises = UnsafeJs.import("fs/promises")
+        UnsafeJs.await(fsPromises->open(self!, if(alsoWrite) {"r+"} else {"r"}))?
+    }
 
-    writeHandle(alsoRead: Bool = False, mustCreate: Bool = False): FileHandle
-        target node async """
-            import * as fsPromises from 'fs/promises'
-            return await fsPromises.open(self_, (mustCreate_ ? 'wx' : 'w') + (alsoRead_ ? '+' : ''))
-        """
-
-    appendHandle(alsoRead: Bool = False, mustCreate: Bool = False): FileHandle
+    writeHandle(alsoRead: Bool = False, mustCreate: Bool = False): FileHandle {
+        let fsPromises = UnsafeJs.import("fs/promises")
+        let flags = if(mustCreate) {"wx"} else {"w"} + if(alsoRead) {"+"} else {""}
+        UnsafeJs.await(fsPromises->open(self!, flags))?
+    }
+   
+    appendHandle(alsoRead: Bool = False, mustCreate: Bool = False): FileHandle 
+        // Same as above ?
         target node async """
             import * as fsPromises from 'fs/promises'
             return await fsPromises.open(self_, (mustCreate_ ? 'wx' : 'w') + (alsoRead_ ? '+' : ''))
@@ -322,26 +322,22 @@ extend self: Path {
 
 extend self: PathEntry {
     
-    path(): Path
-        target node async """
-            import * as path from 'path'
-            return path.join(self_.ffPath, self_.name)
-        """
+    path(): Path {
+        let path = UnsafeJs.import("path")
+        path->join(self!->ffPath, self!->name)?
+    }
 
-    isDirectory(): Bool
-        target node async """
-            return self_.isDirectory()
-        """
+    isDirectory(): Bool {
+        self!->isDirectory()?
+    }
 
-    isFile(): Bool
-        target node async """
-            return self_.isFile()
-        """
+    isFile(): Bool {
+        self!->isFile()?
+    }
 
-    isSymbolicLink(): Bool
-        target node async """
-            return self_.isSymbolicLink()
-        """
+    isSymbolicLink(): Bool {
+        self!->isSymbolicLink()?
+    }
 
 }
 

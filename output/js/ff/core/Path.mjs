@@ -404,11 +404,20 @@ throw new Error('Function Path_appendStream is missing on this target in sync co
 }
 
 export function Path_readHandle(self_, alsoWrite_ = false) {
-throw new Error('Function Path_readHandle is missing on this target in sync context.');
+const fsPromises_ = import$1;
+return fsPromises_.open(self_, (alsoWrite_
+? "r+"
+: "r"))
 }
 
 export function Path_writeHandle(self_, alsoRead_ = false, mustCreate_ = false) {
-throw new Error('Function Path_writeHandle is missing on this target in sync context.');
+const fsPromises_ = import$1;
+const flags_ = ((mustCreate_
+? "wx"
+: "w") + (alsoRead_
+? "+"
+: ""));
+return fsPromises_.open(self_, flags_)
 }
 
 export function Path_appendHandle(self_, alsoRead_ = false, mustCreate_ = false) {
@@ -742,17 +751,16 @@ export async function Path_appendStream$(self_, stream_, $task) {
 }
 
 export async function Path_readHandle$(self_, alsoWrite_ = false, $task) {
-
-            const fsPromises = import$1
-            return await fsPromises.open(self_, alsoWrite_ ? 'r+' : 'r')
-        
+const fsPromises_ = import$1;
+return (await fsPromises_.open(self_, (alsoWrite_
+? "r+"
+: "r")))
 }
 
 export async function Path_writeHandle$(self_, alsoRead_ = false, mustCreate_ = false, $task) {
-
-            const fsPromises = import$1
-            return await fsPromises.open(self_, (mustCreate_ ? 'wx' : 'w') + (alsoRead_ ? '+' : ''))
-        
+const fsPromises_ = import$1;
+const flags_ = ((mustCreate_ ? "wx" : "w") + (alsoRead_ ? "+" : ""));
+return (await fsPromises_.open(self_, flags_))
 }
 
 export async function Path_appendHandle$(self_, alsoRead_ = false, mustCreate_ = false, $task) {
@@ -763,7 +771,8 @@ export async function Path_appendHandle$(self_, alsoRead_ = false, mustCreate_ =
 }
 
 export function PathEntry_path(self_) {
-throw new Error('Function PathEntry_path is missing on this target in sync context.');
+const path_ = import$2;
+return path_.join(self_.ffPath, self_.name)
 }
 
 export function PathEntry_isDirectory(self_) {
@@ -779,10 +788,8 @@ throw new Error('Function PathEntry_isSymbolicLink is missing on this target in 
 }
 
 export async function PathEntry_path$(self_, $task) {
-
-            const path = import$2
-            return path.join(self_.ffPath, self_.name)
-        
+const path_ = import$2;
+return path_.join(self_.ffPath, self_.name)
 }
 
 export async function PathEntry_isDirectory$(self_, $task) {
