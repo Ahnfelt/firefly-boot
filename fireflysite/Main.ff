@@ -35,17 +35,14 @@ nodeMain(system: NodeSystem): Unit {
             | ["assets", ...rest] => serveAssets(system, cacheSalt, request, rest)
             | _ {serveGuide(system, request)} => 
             | _ =>
-                let parameters = if(request.readRawQueryString().size() == 0) {""} else {
-                    "?" + request.readRawQueryString()
-                }
-                request.writeHeader("Location", "https://www.firefly-lang.org" + path + parameters)
-                request.writeStatus("302 Found")
+                request.writeText("404 Not Found")
+                request.writeStatus("404 Not Found")
         }
     }    
 }
 
 guides = [
-    Guide("/front/", [FrontPage.new()])
+    Guide("/", [FrontPage.new()])
     Guide("/getting-started/", [GettingStarted.new()])
     Guide("/examples/", ExamplesOverview.mock())
     Guide("/reference/", ReferenceAll.mock())
