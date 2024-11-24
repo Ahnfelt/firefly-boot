@@ -19,7 +19,10 @@ nodeMain(system: NodeSystem): Unit {
         let path = request.readPath()
         let segments = path.split('/').filter {s => s != "" && s != "." && s != ".."}
         segments.{
-            | _ {!request.readHeader("host").contains("www.firefly-lang.org")} =>
+            | _ {
+                !request.readHeader("host").contains("www.firefly-lang.org") &&
+                !request.readHeader("host").any {_.startsWith("localhost")}
+            } =>
                 let parameters = if(request.readRawQueryString().size() == 0) {""} else {
                     "?" + request.readRawQueryString()
                 }
