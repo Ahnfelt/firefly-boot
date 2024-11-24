@@ -86,7 +86,7 @@ browserMain(system: BrowserSystem): Unit {
 }
 
 isGuidePath(path: String, prefix: String): Bool {
-    (prefix == "/front/" && path == "/") || path.startsWith(prefix)
+    path.startsWith(prefix) || (prefix == "/front/" && (path == "/" || path == ""))
 }
 
 buildMain(system: BuildSystem) {
