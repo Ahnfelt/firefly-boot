@@ -48,7 +48,7 @@ nodeMain(system: NodeSystem): Unit {
 }
 
 guides = [
-    Guide("/", [FrontPage.new()])
+    Guide("/front/", [FrontPage.new()])
     Guide("/getting-started/", [GettingStarted.new()])
     Guide("/examples/", ExamplesOverview.mock())
     Guide("/reference/", ReferenceAll.mock())
@@ -59,8 +59,8 @@ guides = [
 serveGuide(system: NodeSystem, request: WebRequest[WebResponse]): Bool {
     let demos = ExamplesOverview.demos()
     mutable served = False
-    guides.each {guide => 
-        if(request.readPath().startsWith(guide.prefix)):
+    guides.each {guide =>
+        if(isGuidePath(request.readPath(), guide.prefix)):
         let kebab = request.readPath().dropFirst(guide.prefix.size())
         let htmlAndCss = Lux.renderToString(system) {lux =>
             Guide.render(lux, system.httpClient(), guide.prefix, kebab, guides, demos)
@@ -77,12 +77,16 @@ serveGuide(system: NodeSystem, request: WebRequest[WebResponse]): Bool {
 browserMain(system: BrowserSystem): Unit {
     let demos = ExamplesOverview.demos()
     guides.collect {guide => 
-        if(system.urlPath().startsWith(guide.prefix)):
+        if(isGuidePath(system.urlPath(), guide.prefix)):
         Lux.renderById(system, "main") {lux => 
             let kebab = system.urlPath().dropFirst(guide.prefix.size())
             Guide.render(lux, system.httpClient(), guide.prefix, kebab, guides, demos)
         }
     }
+}
+
+isGuidePath(path: String, prefix: String): Bool {
+    (prefix == "/front/" && path == "/") || path.startsWith(prefix)
 }
 
 buildMain(system: BuildSystem) {
