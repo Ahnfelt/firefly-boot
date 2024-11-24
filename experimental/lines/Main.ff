@@ -1,0 +1,40 @@
+nodeMain(system: NodeSystem) {
+    let extension = system.arguments().grab(0)
+    let root = system.arguments().grab(1)
+    let path = system.path(root)
+    let count = countPathLines(system, extension, path)
+    system.writeLine("Total lines: " + count)
+}
+
+countPathLines(system: NodeSystem, extension: String, path: Path): Int {
+    mutable count = 0
+    if(path.isFile()) {
+        if(path.extension() == extension) {
+            count += countFileLines(path)
+        }
+    } elseIf {path.isDirectory()} {
+        path.entries().each {p =>
+            let relative = p.path().relativeTo(path)
+            if(!relative.startsWith(".") && !relative.contains("_")) {
+                count += countPathLines(system, extension, p.path())
+            }
+        }
+    }
+    if(count != 0) {
+        system.writeLine(path.absolute() + "    " + count + " lines")
+    }
+    count
+}
+
+countFileLines(path: Path): Int {
+    mutable count = 0
+    path.readText().lines().each {line =>
+        let trimmed = line.trim()
+        if(trimmed == "" || trimmed.startsWith("//")) {
+            // Multiline comments not supported yet
+        } else {
+            count += 1
+        }
+    }
+    count
+}
