@@ -102,7 +102,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 export function toAny_(value_, ff_core_Any_HasAnyTag$T) {
 const anyTag_ = ff_core_Any_HasAnyTag$T.anyTag_();
-const js_ = globalThis;
 return {anyTag: anyTag_, value: value_}
 }
 
@@ -119,7 +118,6 @@ return tag_
 
 export async function toAny_$(value_, ff_core_Any_HasAnyTag$T, $task) {
 const anyTag_ = ff_core_Any_HasAnyTag$T.anyTag_();
-const js_ = globalThis;
 return {anyTag: anyTag_, value: value_}
 }
 

@@ -2578,6 +2578,42 @@ return ff_core_Option.Some(((s_ + " -= ") + ff_compiler_JsEmitter.JsEmitter_emit
 }
 }
 }
+if(_1 === "ff:core/Js.set") {
+const _guard2 = arguments_;
+if(_guard2.length === 2 && _guard2[0].EString) {
+const q_ = _guard2[0].value_;
+const e2_ = _guard2[1];
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)))
+}
+}
+}
+if(_1 === "ff:core/Js.increment") {
+const _guard2 = arguments_;
+if(_guard2.length === 2 && _guard2[0].EString) {
+const q_ = _guard2[0].value_;
+const e2_ = _guard2[1];
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " += ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)))
+}
+}
+}
+if(_1 === "ff:core/Js.decrement") {
+const _guard2 = arguments_;
+if(_guard2.length === 2 && _guard2[0].EString) {
+const q_ = _guard2[0].value_;
+const e2_ = _guard2[1];
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)))
+}
+}
+}
 {
 return ff_core_Option.None()
 }
@@ -4942,6 +4978,42 @@ if(_guard1.Some) {
 const s_ = _guard1.value_;
 return ff_core_Option.Some(((s_ + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
 }
+}
+}
+}
+if(_1 === "ff:core/Js.set") {
+const _guard2 = arguments_;
+if(_guard2.length === 2 && _guard2[0].EString) {
+const q_ = _guard2[0].value_;
+const e2_ = _guard2[1];
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)))
+}
+}
+}
+if(_1 === "ff:core/Js.increment") {
+const _guard2 = arguments_;
+if(_guard2.length === 2 && _guard2[0].EString) {
+const q_ = _guard2[0].value_;
+const e2_ = _guard2[1];
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " += ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)))
+}
+}
+}
+if(_1 === "ff:core/Js.decrement") {
+const _guard2 = arguments_;
+if(_guard2.length === 2 && _guard2[0].EString) {
+const q_ = _guard2[0].value_;
+const e2_ = _guard2[1];
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)))
 }
 }
 }

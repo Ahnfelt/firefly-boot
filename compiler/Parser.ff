@@ -1168,7 +1168,7 @@ extend self: Parser {
                     result = EField(token.at(), False, result, token.raw())
                 }
             } elseIf {self.current().is(LArrowThin)} {
-                result = self.parseDynamicMember(result)
+                result = self.parseDynamicMember(result, False)
             } elseIf {self.current().is(LUnary)} {
                 let token = self.skip(LUnary)
                 let method = if(token.rawIs("!")) {"ff:core/Js.value"} else {"ff:core/Js.fromValue"}
@@ -1193,17 +1193,23 @@ extend self: Parser {
         result
     }
     
-    parseDynamicMember(record: Term): Term {
+    parseDynamicMember(record: Term, isModule: Bool): Term {
+        function recordField(at: Location, name: String): Term {
+            record.{
+                | EVariant e {isModule} => EVariable(at, e.name + "." + name)
+                | _ => EField(at, False, record, name)
+            }
+        }
         let token = self.skip(LArrowThin)
         if(self.current().rawIs("(")) {
             let arguments = self.parseFunctionArguments(token.at(), trailing = False)
             let effect = self.freshUnificationVariable(record.at)
             arguments.first.indexWhere {!_.name.isEmpty()}.{
                 | None =>
-                    let target = DynamicCall(EField(token.at(), False, record, "new" + arguments.first.size()), False)
+                    let target = DynamicCall(recordField(token.at(), "new" + arguments.first.size()), False)
                     ECall(record.at, target, effect, [], arguments.first, [])
                 | Some(0) => 
-                    let objectTarget = DynamicCall(EField(token.at(), False, record, "object"), False)
+                    let objectTarget = DynamicCall(recordField(token.at(), "object"), False)
                     mutable result = ECall(record.at, objectTarget, effect, [], [], [])
                     arguments.first.each {argument =>
                         if(argument.name.isEmpty()) {
@@ -1223,7 +1229,7 @@ extend self: Parser {
             let lambda = self.parseLambda()
             let effect = self.freshUnificationVariable(record.at)
             let arguments = lambda.cases.grabFirst().patterns.size()
-            let target = DynamicCall(EField(token.at(), False, record, "function" + arguments), False)
+            let target = DynamicCall(recordField(token.at(), "function" + arguments), False)
             ECall(record.at, target, effect, [], [
                 Argument(lambda.at, None, ELambda(lambda.at, lambda))
             ], [])
@@ -1242,7 +1248,7 @@ extend self: Parser {
                 throw(CompileError(argument.at, "Unexpected named argument"))
             }
             let effect = self.freshUnificationVariable(record.at)
-            let target = DynamicCall(EField(token.at(), False, record, "call" + arguments.first.size()), False)
+            let target = DynamicCall(recordField(token.at(), "call" + arguments.first.size()), False)
             ECall(record.at, target, effect, [], [
                 Argument(member.at, None, member)
                 ...arguments.first
@@ -1261,14 +1267,14 @@ extend self: Parser {
                 }
             let value = self.parseTerm()
             let effect = self.freshUnificationVariable(record.at)
-            let target = DynamicCall(EField(token.at(), False, record, method), False)
+            let target = DynamicCall(recordField(token.at(), method), False)
             ECall(record.at, target, effect, [], [
                 Argument(member.at, None, member)
                 Argument(value.at, None, value)
             ], [])
         } else {
             let effect = self.freshUnificationVariable(record.at)
-            let target = DynamicCall(EField(token.at(), False, record, "get"), False)
+            let target = DynamicCall(recordField(token.at(), "get"), False)
             ECall(record.at, target, effect, [], [
                 Argument(member.at, None, member)
             ], [])
@@ -1301,6 +1307,8 @@ extend self: Parser {
             } else {
                 self.parseVariant(prefix)
             }
+        } elseIf {self.current().is(LUpper) && self.ahead().is(LArrowThin)} {
+            self.parseDynamicMember(self.parseVariant(""), True)
         } elseIf {self.current().is(LUpper)} {
             self.parseVariant("")
         } elseIf {self.current().rawIs("{")} {
