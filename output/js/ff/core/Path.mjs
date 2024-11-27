@@ -368,15 +368,27 @@ return fsPromises_.readlink(self_)
 }
 
 export function Path_readText(self_) {
-throw new Error('Function Path_readText is missing on this target in sync context.');
+const js_ = globalThis;
+const fsPromises_ = import$1;
+return ff_core_UnsafeJs.withSignal_(((signal_) => {
+return fsPromises_.readFile(self_, {encoding: "UTF-8", signal: signal_})
+}))
 }
 
 export function Path_writeText(self_, text_) {
-throw new Error('Function Path_writeText is missing on this target in sync context.');
+const js_ = globalThis;
+const fsPromises_ = import$1;
+ff_core_UnsafeJs.withSignal_(((signal_) => {
+return fsPromises_.writeFile(self_, text_, {encoding: "UTF-8", signal: signal_})
+}))
 }
 
 export function Path_appendText(self_, text_) {
-throw new Error('Function Path_appendText is missing on this target in sync context.');
+const js_ = globalThis;
+const fsPromises_ = import$1;
+ff_core_UnsafeJs.withSignal_(((signal_) => {
+return fsPromises_.appendFile(self_, text_, {encoding: "UTF-8", signal: signal_})
+}))
 }
 
 export function Path_readBuffer(self_) {
@@ -651,36 +663,27 @@ return (await fsPromises_.readlink(self_))
 }
 
 export async function Path_readText$(self_, $task) {
-
-            const fsPromises = import$1
-            try {
-                return await fsPromises.readFile(self_, {encoding: 'UTF-8', signal: $task.controller.signal})
-            } finally {
-                if($task.controller.signal.aborted) $task.controller = new AbortController()
-            }
-        
+const js_ = globalThis;
+const fsPromises_ = import$1;
+return (await ff_core_UnsafeJs.withSignal_$((async (signal_, $task) => {
+return (await fsPromises_.readFile(self_, {encoding: "UTF-8", signal: signal_}))
+}), $task))
 }
 
 export async function Path_writeText$(self_, text_, $task) {
-
-            const fsPromises = import$1
-            try {
-                await fsPromises.writeFile(self_, text_, {encoding: 'UTF-8', signal: $task.controller.signal})
-            } finally {
-                if($task.controller.signal.aborted) $task.controller = new AbortController()
-            }
-        
+const js_ = globalThis;
+const fsPromises_ = import$1;
+(await ff_core_UnsafeJs.withSignal_$((async (signal_, $task) => {
+return (await fsPromises_.writeFile(self_, text_, {encoding: "UTF-8", signal: signal_}))
+}), $task))
 }
 
 export async function Path_appendText$(self_, text_, $task) {
-
-            const fsPromises = import$1
-            try {
-                await fsPromises.appendFile(self_, text_, {encoding: 'UTF-8', signal: $task.controller.signal})
-            } finally {
-                if($task.controller.signal.aborted) $task.controller = new AbortController()
-            }
-        
+const js_ = globalThis;
+const fsPromises_ = import$1;
+(await ff_core_UnsafeJs.withSignal_$((async (signal_, $task) => {
+return (await fsPromises_.appendFile(self_, text_, {encoding: "UTF-8", signal: signal_}))
+}), $task))
 }
 
 export async function Path_readBuffer$(self_, $task) {
@@ -759,7 +762,11 @@ return (await fsPromises_.open(self_, (alsoWrite_
 
 export async function Path_writeHandle$(self_, alsoRead_ = false, mustCreate_ = false, $task) {
 const fsPromises_ = import$1;
-const flags_ = ((mustCreate_ ? "wx" : "w") + (alsoRead_ ? "+" : ""));
+const flags_ = ((mustCreate_
+? "wx"
+: "w") + (alsoRead_
+? "+"
+: ""));
 return (await fsPromises_.open(self_, flags_))
 }
 
@@ -776,15 +783,15 @@ return path_.join(self_.ffPath, self_.name)
 }
 
 export function PathEntry_isDirectory(self_) {
-throw new Error('Function PathEntry_isDirectory is missing on this target in sync context.');
+return self_.isDirectory()
 }
 
 export function PathEntry_isFile(self_) {
-throw new Error('Function PathEntry_isFile is missing on this target in sync context.');
+return self_.isFile()
 }
 
 export function PathEntry_isSymbolicLink(self_) {
-throw new Error('Function PathEntry_isSymbolicLink is missing on this target in sync context.');
+return self_.isSymbolicLink()
 }
 
 export async function PathEntry_path$(self_, $task) {
@@ -793,21 +800,15 @@ return path_.join(self_.ffPath, self_.name)
 }
 
 export async function PathEntry_isDirectory$(self_, $task) {
-
-            return self_.isDirectory()
-        
+return self_.isDirectory()
 }
 
 export async function PathEntry_isFile$(self_, $task) {
-
-            return self_.isFile()
-        
+return self_.isFile()
 }
 
 export async function PathEntry_isSymbolicLink$(self_, $task) {
-
-            return self_.isSymbolicLink()
-        
+return self_.isSymbolicLink()
 }
 
 

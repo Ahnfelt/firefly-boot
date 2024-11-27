@@ -184,6 +184,18 @@ export function setController_(controller_) {
 ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
+export function withSignal_(body_) {
+const js_ = globalThis;
+const controller_ = $task.controller;
+try {
+return body_(controller_.signal)
+} finally {
+if(controller_.signal.aborted) {
+($task.controller = (new AbortController()))
+}
+}
+}
+
 export function value_(value_) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
@@ -278,6 +290,18 @@ return ff_core_Core.panic_("This call should have been eliminated by the compile
 
 export async function setController_$(controller_, $task) {
 ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export async function withSignal_$(body_, $task) {
+const js_ = globalThis;
+const controller_ = $task.controller;
+try {
+return (await body_(controller_.signal, $task))
+} finally {
+if(controller_.signal.aborted) {
+($task.controller = (new AbortController()))
+}
+}
 }
 
 export async function value_$(value_, $task) {
