@@ -86,6 +86,17 @@ setController(controller: JsValue) {
     panic("This call should have been eliminated by the compiler")
 }
 
+    
+withSignal[T](body: JsValue => T): T {
+    let js = UnsafeJs.jsSystem()
+    let controller = UnsafeJs.controller()
+    try {
+        body(controller->signal)
+    } finally {
+        if(controller->signal->aborted?) {UnsafeJs.setController(js->AbortController->())}
+    }
+}
+
 value[T](value: T): JsValue {
     panic("This call should have been eliminated by the compiler")
 }

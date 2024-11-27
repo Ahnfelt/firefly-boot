@@ -206,35 +206,29 @@ extend self: Path {
         UnsafeJs.await(fsPromises->readlink(self!))?
     }
 
-    readText(): String
-        target node async """
-            import * as fsPromises from 'fs/promises'
-            try {
-                return await fsPromises.readFile(self_, {encoding: 'UTF-8', signal: $task.controller.signal})
-            } finally {
-                if($task.controller.signal.aborted) $task.controller = new AbortController()
-            }
-        """
+    readText(): String {
+        let js = UnsafeJs.jsSystem()
+        let fsPromises = UnsafeJs.import("fs/promises")
+        UnsafeJs.withSignal {signal =>
+            UnsafeJs.await(fsPromises->readFile(self!, js->(encoding = "UTF-8", signal = signal)))?
+        }
+    }
 
-    writeText(text: String)
-        target node async """
-            import * as fsPromises from 'fs/promises'
-            try {
-                await fsPromises.writeFile(self_, text_, {encoding: 'UTF-8', signal: $task.controller.signal})
-            } finally {
-                if($task.controller.signal.aborted) $task.controller = new AbortController()
-            }
-        """
+    writeText(text: String) {
+        let js = UnsafeJs.jsSystem()
+        let fsPromises = UnsafeJs.import("fs/promises")
+        UnsafeJs.withSignal {signal =>
+            UnsafeJs.await(fsPromises->writeFile(self!, text, js->(encoding = "UTF-8", signal = signal)))?
+        }
+    }
 
-    appendText(text: String)
-        target node async """
-            import * as fsPromises from 'fs/promises'
-            try {
-                await fsPromises.appendFile(self_, text_, {encoding: 'UTF-8', signal: $task.controller.signal})
-            } finally {
-                if($task.controller.signal.aborted) $task.controller = new AbortController()
-            }
-        """
+    appendText(text: String) {
+        let js = UnsafeJs.jsSystem()
+        let fsPromises = UnsafeJs.import("fs/promises")
+        UnsafeJs.withSignal {signal =>
+            UnsafeJs.await(fsPromises->appendFile(self!, text, js->(encoding = "UTF-8", signal = signal)))?
+        }
+    }
 
     readBuffer(): Buffer {
         self.readStream().toBuffer()
