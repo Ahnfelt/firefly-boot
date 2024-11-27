@@ -936,6 +936,12 @@ extend self: JsEmitter {
                 Some(s + " += " + self.emitTerm(e3, async))
             | "ff:core/JsSystem.JsSystem_decrement" {arguments | [e1, EString(_, q), e3]} {noSideEffects(e1)} {safeBare(q) | Some(s)} =>
                 Some(s + " -= " + self.emitTerm(e3, async))
+            | "ff:core/Js.set" {arguments | [EString(_, q), e2]} {safeBare(q) | Some(s)} =>
+                Some(s + " = " + self.emitTerm(e2, async))
+            | "ff:core/Js.increment" {arguments | [EString(_, q), e2]} {safeBare(q) | Some(s)} =>
+                Some(s + " += " + self.emitTerm(e2, async))
+            | "ff:core/Js.decrement" {arguments | [EString(_, q), e2]} {safeBare(q) | Some(s)} =>
+                Some(s + " -= " + self.emitTerm(e2, async))
             | _ =>
                 None
         }
