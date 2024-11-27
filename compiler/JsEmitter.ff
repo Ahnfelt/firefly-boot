@@ -666,13 +666,15 @@ extend self: JsEmitter {
                     e.{
                         | ECall(_, StaticCall(n, _, _), _, _, [a1, a2, a3], _) {n == name} =>
                             go(a1.value, [Pair(a2.value, a3.value), ...fields])
-                        | ECall(_, StaticCall(n, _, _), _, _, [a], _) {
+                        | ECall(_, StaticCall(n, _, _), _, _, as, _) {
                             n == "ff:core/JsSystem.JsSystem_object" || 
                             n == "ff:core/JsSystem.JsSystem_new0" ||
+                            n == "ff:core/Js.object" || 
+                            n == "ff:core/Js.new0" ||
                             n == "ff:core/Json.Json_object" ||
                             n == "ff:core/Json.Json_new0"
                         } {
-                            noSideEffects(a.value)
+                            as.all {noSideEffects(_.value)}
                         } =>
                             "{" + fields.map {p =>
                                 self.emitField(p.first, async, dot = "") + ": " + self.emitTerm(p.second, async)
@@ -702,6 +704,25 @@ extend self: JsEmitter {
             | "ff:core/JsSystem.JsSystem_null" {arguments | [e]} {noSideEffects(e)} =>
                 Some("null")
             | "ff:core/JsSystem.JsSystem_undefined" {arguments | [e]} {noSideEffects(e)} =>
+                Some("(void 0)")
+            | name {name.removeFirst("ff:core/Js.call") | Some(n)} {n.all {_.isAsciiDigit()}} {
+                arguments | [EString(_, q)@e1, ...es]
+            } =>
+                let argumentCode = es.map {self.emitTerm(_, async)}.join(", ")
+                Some(safeBare(q).else {"globalThis[" + self.emitTerm(e1, async) + "]"} + "(" + argumentCode + ")")
+            | name {name.removeFirst("ff:core/Js.function") | Some(n)} {n.all {_.isAsciiDigit()}} {
+                arguments | [e1]
+            } {term | ECall call} {!effectTypeIsAsync(call.effect)} =>
+                Some(self.emitTerm(e1, async))
+            | "ff:core/Js.get" {arguments | [EString(_, q)@e1]} =>
+                Some(safeBare(q).else {"globalThis[" + self.emitTerm(e1, async) + "]"})
+            | "ff:core/Js.object" =>
+                Some("{}")
+            | "ff:core/Js.new0" =>
+                Some("{}")
+            | "ff:core/Js.null" =>
+                Some("null")
+            | "ff:core/Js.undefined" =>
                 Some("(void 0)")
             | "ff:core/BrowserSystem.BrowserSystem_js" {arguments | [e]} {noSideEffects(e)} => 
                 Some("globalThis")
