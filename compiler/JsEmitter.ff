@@ -584,17 +584,17 @@ extend self: JsEmitter {
                     "return result;\n" +
                     "})())"
                 )
-            | "ff:core/UnsafeJs.import" {arguments | [EString(_, url)]} =>
+            | "ff:core/Js.import" {arguments | [EString(_, url)]} =>
                 Some(self.jsImporter.add(url.replace("\"", "")))
-            | "ff:core/UnsafeJs.importDynamic" {arguments | [EString(_, url)]} =>
+            | "ff:core/Js.importDynamic" {arguments | [EString(_, url)]} =>
                 Some("import(" + url + ")")
-            | "ff:core/UnsafeJs.await" {arguments | [body]} =>
+            | "ff:core/Js.await" {arguments | [body]} =>
                 if(async) {
                     Some("(await " + self.emitTerm(body, async) + ")")
                 } else {
                     Some(self.emitTerm(body, async))
                 }
-            | name {name.removeFirst("ff:core/UnsafeJs.async") | Some(n)} {n.all {_.isAsciiDigit()}} {
+            | name {name.removeFirst("ff:core/Js.async") | Some(n)} {n.all {_.isAsciiDigit()}} {
                 arguments | [ELambda(at, Lambda(_, effect, [MatchCase(_, patterns, [], body)]))]
             } {
                 patterns.all {| PVariable _ => True | _ => False }
@@ -608,27 +608,27 @@ extend self: JsEmitter {
                     self.emitStatements(body, True, False) + 
                     "\n}"
                 )
-            | name {name.startsWith("ff:core/UnsafeJs.async")} =>
+            | name {name.startsWith("ff:core/Js.async")} =>
                 throw(CompileError(term.at, "JS async functions must take a simple parameter list"))
-            | "ff:core/UnsafeJs.cancelled" =>
+            | "ff:core/Js.cancelled" =>
                 Some(if(async) {"$task.controller.signal.aborted"} else {"false"})
-            | "ff:core/UnsafeJs.throwIfCancelled" =>
+            | "ff:core/Js.throwIfCancelled" =>
                 Some(if(async) {"((() => ff_core_Task.Task_throwIfAborted($task))())"} else {""})
-            | "ff:core/UnsafeJs.controller" =>
+            | "ff:core/Js.controller" =>
                 Some("$task.controller")
-            | "ff:core/UnsafeJs.setController" {arguments | [a]} =>
+            | "ff:core/Js.setController" {arguments | [a]} =>
                 Some("($task.controller = " + self.emitTerm(a, async) + ")")
-            | "ff:core/UnsafeJs.inAsync" =>
+            | "ff:core/Js.inAsync" =>
                 Some(if(self.emittingAsync) {"true"} else {"false"})
-            | "ff:core/UnsafeJs.inBrowser" =>
+            | "ff:core/Js.inBrowser" =>
                 Some(if(self.emitTarget == EmitBrowser) {"true"} else {"false"})
-            | "ff:core/UnsafeJs.inNode" =>
+            | "ff:core/Js.inNode" =>
                 Some(if(self.emitTarget == EmitNode) {"true"} else {"false"})
-            | "ff:core/UnsafeJs.inBuild" =>
+            | "ff:core/Js.inBuild" =>
                 Some(if(self.emitTarget == EmitBuild) {"true"} else {"false"})
-            | "ff:core/UnsafeJs.value" {arguments | [e]} =>
+            | "ff:core/Js.value" {arguments | [e]} =>
                 Some(self.emitTerm(e, async))
-            | "ff:core/UnsafeJs.fromValue" {arguments | [e]} =>
+            | "ff:core/Js.fromValue" {arguments | [e]} =>
                 Some(self.emitTerm(e, async))
             | "ff:core/JsValue.JsValue_typeof" {arguments | [e]} =>
                 Some("(typeof " + self.emitTerm(e, async) + ")")
@@ -709,7 +709,7 @@ extend self: JsEmitter {
                 Some("globalThis")
             | "ff:core/NodeSystem.NodeSystem_js" {arguments | [e]} {noSideEffects(e)} => 
                 Some("globalThis")
-            | "ff:core/UnsafeJs.jsSystem" =>
+            | "ff:core/Js.jsSystem" =>
                 Some("globalThis")
             | "ff:core/Json.string" {arguments | [e]} =>
                 Some(self.emitTerm(e, async))
@@ -901,7 +901,7 @@ extend self: JsEmitter {
                 Some(code)
             | "ff:core/Try.Try_finally" {self.emitTryCatchFinally(term, last, async) | Some(code)} =>
                 Some(code)
-            | "ff:core/UnsafeJs.throwIfCancelled" =>
+            | "ff:core/Js.throwIfCancelled" =>
                 Some(if(async) {"ff_core_Task.Task_throwIfAborted($task)"} else {""})
             | "ff:core/JsValue.JsValue_set" {arguments | [e1, e2, e3]} =>
                 Some(self.emitTerm(e1, async) + self.emitField(e2, async) + " = " + self.emitTerm(e3, async))
@@ -1363,7 +1363,7 @@ noSideEffects(term: Term): Bool {
         | ECall(_, StaticCall("ff:core/BrowserSystem.BrowserSystem_js", _, _), _, _, [a], _) => noSideEffects(a.value)
         | ECall(_, StaticCall("ff:core/BuildSystem.BuildSystem_js", _, _), _, _, [a], _) => noSideEffects(a.value)
         | ECall(_, StaticCall("ff:core/NodeSystem.NodeSystem_js", _, _), _, _, [a], _) => noSideEffects(a.value)
-        | ECall(_, StaticCall("ff:core/UnsafeJs.jsSystem", _, _), _, _, _, _) => True
+        | ECall(_, StaticCall("ff:core/Js.jsSystem", _, _), _, _, _, _) => True
         | EString(_, _) => True
         | EInt(_, _) => True
         | EChar(_, _) => True

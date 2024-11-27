@@ -52,6 +52,8 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_IntMap from "../../ff/core/IntMap.mjs"
 
+import * as ff_core_Js from "../../ff/core/Js.mjs"
+
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -99,8 +101,6 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
 
 // type Parser
 export function Parser(packagePair_, file_, tokens_, end_, targetIsNode_, lspHook_, lspEmittedArgumentHook_, offset_, nextUnificationVariableIndex_) {
@@ -1505,8 +1505,8 @@ result_ = ff_compiler_Parser.Parser_parseDynamicMember(self_, result_)
 } else if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LUnary())) {
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUnary());
 const method_ = (ff_compiler_Token.Token_rawIs(token_, "!")
-? "ff:core/UnsafeJs.value"
-: "ff:core/UnsafeJs.fromValue");
+? "ff:core/Js.value"
+: "ff:core/Js.fromValue");
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), method_), false);
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, ff_compiler_Token.Token_at(token_));
 result_ = ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), target_, effect_, [], [ff_compiler_Syntax.Argument(result_.at_, ff_core_Option.None(), result_)], [])
@@ -3094,8 +3094,8 @@ result_ = ff_compiler_Parser.Parser_parseDynamicMember(self_, result_)
 } else if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LUnary())) {
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUnary());
 const method_ = (ff_compiler_Token.Token_rawIs(token_, "!")
-? "ff:core/UnsafeJs.value"
-: "ff:core/UnsafeJs.fromValue");
+? "ff:core/Js.value"
+: "ff:core/Js.fromValue");
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), method_), false);
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, ff_compiler_Token.Token_at(token_));
 result_ = ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), target_, effect_, [], [ff_compiler_Syntax.Argument(result_.at_, ff_core_Option.None(), result_)], [])

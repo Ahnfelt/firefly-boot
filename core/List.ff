@@ -5,27 +5,27 @@ new[T](): List[T] {
 }
 
 fill[T](size: Int, value: T): List[T] {
-    let js = UnsafeJs.jsSystem()
+    let js = Js.jsSystem()
     js->Array->(size)->fill(value!)?
 }
 
 fillBy[T](size: Int, body: Int => T): List[T] {
-    if(UnsafeJs.inAsync()) {
-        let js = UnsafeJs.jsSystem()
+    if(Js.inAsync()) {
+        let js = Js.jsSystem()
         let array = js->Array->(size)
         1.until(size).each {i => 
             array.set(i, body(i)!)
         }
         array?
     } else {
-        let js = UnsafeJs.jsSystem()
+        let js = Js.jsSystem()
         js->Array->from(js->(length = size), js->{_, i => body(i?)})?
     }
 }
 
 
 range(size: Int): List[Int] {
-    let js = UnsafeJs.jsSystem()
+    let js = Js.jsSystem()
     js->Array->from(js->(length = size), js->{_, i => i})?
 }
 
@@ -223,7 +223,7 @@ extend self[T]: List[T] {
     }
 
     toArray(): Array[T] {
-        let js = UnsafeJs.jsSystem()
+        let js = Js.jsSystem()
         js->(array = self!->slice())?
     }
 

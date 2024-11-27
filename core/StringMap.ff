@@ -1,7 +1,7 @@
 class StringMap[V] {}
 
 new[V](): StringMap[V] {
-    let js = UnsafeJs.jsSystem()
+    let js = Js.jsSystem()
     js->Map->()?
 }
     
@@ -39,7 +39,7 @@ extend self[V]: StringMap[V] {
     }
 
     each(body: (String, V) => Unit): Unit {
-        if(UnsafeJs.inAsync()) {
+        if(Js.inAsync()) {
             let iterator = self!->entries()
             mutable result = iterator->next()
             while {!result->done?} {
@@ -48,7 +48,7 @@ extend self[V]: StringMap[V] {
                 result = iterator->next()
             }
         } else {
-            let js = UnsafeJs.jsSystem()
+            let js = Js.jsSystem()
             self!->forEach(js->{v, k => body(k?, v?)})
         }
     }
@@ -88,7 +88,7 @@ extend self[V]: StringMap[V] {
     }
 
     copy(): StringMap[V] {
-        let js = UnsafeJs.jsSystem()
+        let js = Js.jsSystem()
         js->Map->(self!)?        
     }
 

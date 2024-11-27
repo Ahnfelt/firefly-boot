@@ -20,9 +20,9 @@ newPool(
     maxConnections: Int = 10
     allowExitOnIdle: Bool = True
 ): PgPool {
-    UnsafeJs.throwIfCancelled()
-    let js = UnsafeJs.jsSystem()
-    let pg = UnsafeJs.import("pg").get("default")
+    Js.throwIfCancelled()
+    let js = Js.jsSystem()
+    let pg = Js.import("pg").get("default")
     PgPool(pg.get("Pool").new1(js.object()
         .with("user", user)
         .with("host", host)
@@ -44,9 +44,9 @@ newPoolFromConnectionString(
     maxConnections: Int = 10
     allowExitOnIdle: Bool = True
 ): PgPool {
-    UnsafeJs.throwIfCancelled()
-    let js = UnsafeJs.jsSystem()
-    let pg = UnsafeJs.import("pg").get("default")
+    Js.throwIfCancelled()
+    let js = Js.jsSystem()
+    let pg = Js.import("pg").get("default")
     PgPool(pg.get("Pool").new1(js.object()
         .with("connectionString", connectionString)
         .with("connectionTimeoutMillis", connectionTimeout.seconds * 1000)
@@ -59,12 +59,12 @@ newPoolFromConnectionString(
 extend self: PgPool {
 
     connect(): PgConnection {
-        UnsafeJs.throwIfCancelled()
-        PgConnection(UnsafeJs.await(self.jsValue->connect()))
+        Js.throwIfCancelled()
+        PgConnection(Js.await(self.jsValue->connect()))
     }
 
     close(): Unit {
-        UnsafeJs.await(self.jsValue->end())
+        Js.await(self.jsValue->end())
     }
 
     connectionCount(): Int {
@@ -104,7 +104,7 @@ extend self: PgPool {
 extend self: PgConnection {
 
     release(): Unit {
-        if(UnsafeJs.cancelled()) {
+        if(Js.cancelled()) {
             self.jsValue->release(True)
         } else {
             self.jsValue->release()
@@ -148,47 +148,47 @@ extend self: PgConnection {
 extend self: PgStatement {
 
     withBool(name: String, value: Bool): PgStatement {
-        let p = UnsafeJs.jsSystem().value(value)
+        let p = Js.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withNullableBool(name: String, value: Option[Bool]): PgStatement {
-        let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        let p = value.map(Js.jsSystem().value).else {Js.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withInt(name: String, value: Int): PgStatement {
-        let p = UnsafeJs.jsSystem().value(value)
+        let p = Js.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withNullableInt(name: String, value: Option[Int]): PgStatement {
-        let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        let p = value.map(Js.jsSystem().value).else {Js.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withFloat(name: String, value: Float): PgStatement {
-        let p = UnsafeJs.jsSystem().value(value)
+        let p = Js.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withNullableFloat(name: String, value: Option[Float]): PgStatement {
-        let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        let p = value.map(Js.jsSystem().value).else {Js.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withString(name: String, value: String): PgStatement {
-        let p = UnsafeJs.jsSystem().value(value)
+        let p = Js.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withNullableString(name: String, value: Option[String]): PgStatement {
-        let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        let p = value.map(Js.jsSystem().value).else {Js.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withInstant(name: String, value: Instant): PgStatement {
-        let jsDate = UnsafeJs.jsSystem().globalThis().get("Date")
+        let jsDate = Js.jsSystem().globalThis().get("Date")
         function toJsDate(instant: Instant): JsValue {
             jsDate.new1(instant.since1970.seconds * 1000.0)
         }
@@ -197,89 +197,89 @@ extend self: PgStatement {
     }
 
     withNullableInstant(name: String, value: Option[Instant]): PgStatement {
-        let jsDate = UnsafeJs.jsSystem().globalThis().get("Date")
+        let jsDate = Js.jsSystem().globalThis().get("Date")
         function toJsDate(instant: Instant): JsValue {
             jsDate.new1(instant.since1970.seconds * 1000.0)
         }
-        let p = value.map(toJsDate).else {UnsafeJs.jsSystem().null()}
+        let p = value.map(toJsDate).else {Js.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withBuffer(name: String, value: Buffer): PgStatement {
-        let p = UnsafeJs.jsSystem().value(value)
+        let p = Js.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withNullableBuffer(name: String, value: Option[Buffer]): PgStatement {
-        let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        let p = value.map(Js.jsSystem().value).else {Js.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withBoolArray(name: String, value: List[Bool]): PgStatement {
-        let p = UnsafeJs.jsSystem().value(value)
+        let p = Js.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withNullableBoolArray(name: String, value: Option[List[Bool]]): PgStatement {
-        let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        let p = value.map(Js.jsSystem().value).else {Js.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withIntArray(name: String, value: List[Int]): PgStatement {
-        let p = UnsafeJs.jsSystem().value(value)
+        let p = Js.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withNullableIntArray(name: String, value: Option[List[Int]]): PgStatement {
-        let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        let p = value.map(Js.jsSystem().value).else {Js.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withFloatArray(name: String, value: List[Float]): PgStatement {
-        let p = UnsafeJs.jsSystem().value(value)
+        let p = Js.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withNullableFloatArray(name: String, value: Option[List[Float]]): PgStatement {
-        let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        let p = value.map(Js.jsSystem().value).else {Js.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withStringArray(name: String, value: List[String]): PgStatement {
-        let p = UnsafeJs.jsSystem().value(value)
+        let p = Js.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withNullableStringArray(name: String, value: Option[List[String]]): PgStatement {
-        let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        let p = value.map(Js.jsSystem().value).else {Js.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withInstantArray(name: String, value: List[Instant]): PgStatement {
-        let jsDate = UnsafeJs.jsSystem().globalThis().get("Date")
+        let jsDate = Js.jsSystem().globalThis().get("Date")
         function toJsDate(instant: Instant): JsValue {
             jsDate.new1(instant.since1970.seconds * 1000.0)
         }
-        let p = UnsafeJs.jsSystem().value(value.map(toJsDate))
+        let p = Js.jsSystem().value(value.map(toJsDate))
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withNullableInstantArray(name: String, value: Option[List[Instant]]): PgStatement {
-        let jsDate = UnsafeJs.jsSystem().globalThis().get("Date")
+        let jsDate = Js.jsSystem().globalThis().get("Date")
         function toJsDate(instant: Instant): JsValue {
             jsDate.new1(instant.since1970.seconds * 1000.0)
         }
-        let p = value.map {_.map(toJsDate)}.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        let p = value.map {_.map(toJsDate)}.map(Js.jsSystem().value).else {Js.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withBufferArray(name: String, value: List[Buffer]): PgStatement {
-        let p = UnsafeJs.jsSystem().value(value)
+        let p = Js.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withNullableBufferArray(name: String, value: Option[List[Buffer]]): PgStatement {
-        let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        let p = value.map(Js.jsSystem().value).else {Js.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
@@ -374,10 +374,10 @@ internalGet[T](row: PgRow, name: String, lower: Bool, body: JsValue => T): Optio
 }
 
 internalRunStatement(statement: PgStatement, body: Option[PgRow => Bool]): Int {
-    UnsafeJs.throwIfCancelled()
+    Js.throwIfCancelled()
     let pair = internalParseParameters(statement.sql)
     let parameters = internalCheckParameters(pair.second, statement.parameters)
-    let result = UnsafeJs.await(statement.connection.grab().jsValue->query(pair.first, parameters))
+    let result = Js.await(statement.connection.grab().jsValue->query(pair.first, parameters))
     body.{
         | None =>
             result.get("rowCount").grabInt()
@@ -398,7 +398,7 @@ internalBatchStatements(
     let sqlCache = statements.map {s => Pair(s.sql, s.sql)}.group().map {sql, list =>
         let pair = internalParseParameters(sql)
         let prepared = if(list.size() >= 10) {
-            let hash = UnsafeJs.import("crypto")
+            let hash = Js.import("crypto")
                 .call1("createHash", "md5")
                 .call1("update", pair.first)
                 .call1("update", "ffpgps")
@@ -408,18 +408,18 @@ internalBatchStatements(
         Pair(sql, (newSql = pair.first, parameterNames = pair.second, prepared = prepared))
     }
     let promises = statements.map {statement =>
-        UnsafeJs.throwIfCancelled()
+        Js.throwIfCancelled()
         let record = sqlCache.grab(statement.sql)
         let parameters = internalCheckParameters(record.parameterNames, statement.parameters)
-        let query = UnsafeJs.jsSystem().object()
+        let query = Js.jsSystem().object()
             .with("text", record.newSql)
             .with("values", parameters)
         connection.jsValue->query(record.prepared.map {query.with("name", _)}.else {query})
     }
     let results = promises.map {promise =>
-        UnsafeJs.throwIfCancelled()
-        let result = UnsafeJs.await(promise)
-        UnsafeJs.throwIfCancelled()
+        Js.throwIfCancelled()
+        let result = Js.await(promise)
+        Js.throwIfCancelled()
         body.{
             | None =>
                 result.get("rowCount").grabInt()

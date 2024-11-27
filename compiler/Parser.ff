@@ -1171,7 +1171,7 @@ extend self: Parser {
                 result = self.parseDynamicMember(result)
             } elseIf {self.current().is(LUnary)} {
                 let token = self.skip(LUnary)
-                let method = if(token.rawIs("!")) {"ff:core/UnsafeJs.value"} else {"ff:core/UnsafeJs.fromValue"}
+                let method = if(token.rawIs("!")) {"ff:core/Js.value"} else {"ff:core/Js.fromValue"}
                 let target = DynamicCall(EVariable(token.at(), method), False)
                 let effect = self.freshUnificationVariable(token.at())
                 result = ECall(token.at(), target, effect, [], [

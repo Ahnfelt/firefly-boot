@@ -48,6 +48,8 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_IntMap from "../../ff/core/IntMap.mjs"
 
+import * as ff_core_Js from "../../ff/core/Js.mjs"
+
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -95,8 +97,6 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
 
 // type Path
 
@@ -370,7 +370,7 @@ return fsPromises_.readlink(self_)
 export function Path_readText(self_) {
 const js_ = globalThis;
 const fsPromises_ = import$1;
-return ff_core_UnsafeJs.withSignal_(((signal_) => {
+return ff_core_Js.withSignal_(((signal_) => {
 return fsPromises_.readFile(self_, {encoding: "UTF-8", signal: signal_})
 }))
 }
@@ -378,7 +378,7 @@ return fsPromises_.readFile(self_, {encoding: "UTF-8", signal: signal_})
 export function Path_writeText(self_, text_) {
 const js_ = globalThis;
 const fsPromises_ = import$1;
-ff_core_UnsafeJs.withSignal_(((signal_) => {
+ff_core_Js.withSignal_(((signal_) => {
 return fsPromises_.writeFile(self_, text_, {encoding: "UTF-8", signal: signal_})
 }))
 }
@@ -386,7 +386,7 @@ return fsPromises_.writeFile(self_, text_, {encoding: "UTF-8", signal: signal_})
 export function Path_appendText(self_, text_) {
 const js_ = globalThis;
 const fsPromises_ = import$1;
-ff_core_UnsafeJs.withSignal_(((signal_) => {
+ff_core_Js.withSignal_(((signal_) => {
 return fsPromises_.appendFile(self_, text_, {encoding: "UTF-8", signal: signal_})
 }))
 }
@@ -665,7 +665,7 @@ return (await fsPromises_.readlink(self_))
 export async function Path_readText$(self_, $task) {
 const js_ = globalThis;
 const fsPromises_ = import$1;
-return (await ff_core_UnsafeJs.withSignal_$((async (signal_, $task) => {
+return (await ff_core_Js.withSignal_$((async (signal_, $task) => {
 return (await fsPromises_.readFile(self_, {encoding: "UTF-8", signal: signal_}))
 }), $task))
 }
@@ -673,7 +673,7 @@ return (await fsPromises_.readFile(self_, {encoding: "UTF-8", signal: signal_}))
 export async function Path_writeText$(self_, text_, $task) {
 const js_ = globalThis;
 const fsPromises_ = import$1;
-(await ff_core_UnsafeJs.withSignal_$((async (signal_, $task) => {
+(await ff_core_Js.withSignal_$((async (signal_, $task) => {
 return (await fsPromises_.writeFile(self_, text_, {encoding: "UTF-8", signal: signal_}))
 }), $task))
 }
@@ -681,7 +681,7 @@ return (await fsPromises_.writeFile(self_, text_, {encoding: "UTF-8", signal: si
 export async function Path_appendText$(self_, text_, $task) {
 const js_ = globalThis;
 const fsPromises_ = import$1;
-(await ff_core_UnsafeJs.withSignal_$((async (signal_, $task) => {
+(await ff_core_Js.withSignal_$((async (signal_, $task) => {
 return (await fsPromises_.appendFile(self_, text_, {encoding: "UTF-8", signal: signal_}))
 }), $task))
 }

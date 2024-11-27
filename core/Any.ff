@@ -7,7 +7,7 @@ trait T: HasAnyTag {
 
 toAny[T: HasAnyTag](value: T): Any {
     let anyTag: AnyTag[T] = anyTag()
-    let js = UnsafeJs.jsSystem()
+    let js = Js.jsSystem()
     js->(anyTag = anyTag!, value = value!)?
 }
 

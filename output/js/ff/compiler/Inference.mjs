@@ -54,6 +54,8 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_IntMap from "../../ff/core/IntMap.mjs"
 
+import * as ff_core_Js from "../../ff/core/Js.mjs"
+
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -101,8 +103,6 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
 
 // type Inference
 export function Inference(unification_, missing_, lspHook_) {
@@ -1444,7 +1444,7 @@ if(_1.DynamicCall) {
 const call_ = _1;
 do {
 const _1 = call_.function_;
-if(_1.EVariable && _1.name_ === "ff:core/UnsafeJs.await") {
+if(_1.EVariable && _1.name_ === "ff:core/Js.await") {
 isUnsafeJsAwaitCall_ = true
 break
 }
@@ -3328,7 +3328,7 @@ if(_1.DynamicCall) {
 const call_ = _1;
 do {
 const _1 = call_.function_;
-if(_1.EVariable && _1.name_ === "ff:core/UnsafeJs.await") {
+if(_1.EVariable && _1.name_ === "ff:core/Js.await") {
 isUnsafeJsAwaitCall_ = true
 break
 }

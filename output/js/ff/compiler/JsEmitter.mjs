@@ -50,6 +50,8 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_IntMap from "../../ff/core/IntMap.mjs"
 
+import * as ff_core_Js from "../../ff/core/Js.mjs"
+
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -97,8 +99,6 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-import * as ff_core_UnsafeJs from "../../ff/core/UnsafeJs.mjs"
 
 // type JsEmitter
 export function JsEmitter(otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModuleFileUrl_, packagePair_, moduleName_, emittingAsync_, tailCallUsed_) {
@@ -362,7 +362,7 @@ if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/NodeSystem
 const a_ = _1.arguments_[0];
 return ff_compiler_JsEmitter.noSideEffects_(a_.value_)
 }
-if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.jsSystem") {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Js.jsSystem") {
 return true
 }
 if(_1.EString) {
@@ -615,7 +615,7 @@ if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/NodeSystem
 const a_ = _1.arguments_[0];
 return ff_compiler_JsEmitter.noSideEffects_(a_.value_)
 }
-if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/UnsafeJs.jsSystem") {
+if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/Js.jsSystem") {
 return true
 }
 if(_1.EString) {
@@ -1663,21 +1663,21 @@ return ff_core_Option.Some(((((((((((((((((((await_ + "((() => {\n") + "const si
 }
 }
 }
-if(_1 === "ff:core/UnsafeJs.import") {
+if(_1 === "ff:core/Js.import") {
 const _guard1 = arguments_;
 if(_guard1.length === 1 && _guard1[0].EString) {
 const url_ = _guard1[0].value_;
 return ff_core_Option.Some(ff_compiler_JsImporter.JsImporter_add(self_.jsImporter_, ff_core_String.String_replace(url_, "\"", "")))
 }
 }
-if(_1 === "ff:core/UnsafeJs.importDynamic") {
+if(_1 === "ff:core/Js.importDynamic") {
 const _guard1 = arguments_;
 if(_guard1.length === 1 && _guard1[0].EString) {
 const url_ = _guard1[0].value_;
 return ff_core_Option.Some((("import(" + url_) + ")"))
 }
 }
-if(_1 === "ff:core/UnsafeJs.await") {
+if(_1 === "ff:core/Js.await") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const body_ = _guard1[0];
@@ -1691,7 +1691,7 @@ return
 }
 {
 const name_ = _1;
-const _guard4 = ff_core_String.String_removeFirst(name_, "ff:core/UnsafeJs.async");
+const _guard4 = ff_core_String.String_removeFirst(name_, "ff:core/Js.async");
 if(_guard4.Some) {
 const n_ = _guard4.value_;
 const _guard3 = ff_core_String.String_all(n_, ((_w1) => {
@@ -1734,64 +1734,64 @@ return ff_core_Option.Some((((("async (" + ff_core_List.List_join(patternParamet
 }
 {
 const name_ = _1;
-if(ff_core_String.String_startsWith(name_, "ff:core/UnsafeJs.async", 0)) {
+if(ff_core_String.String_startsWith(name_, "ff:core/Js.async", 0)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(term_.at_, "JS async functions must take a simple parameter list"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-if(_1 === "ff:core/UnsafeJs.cancelled") {
+if(_1 === "ff:core/Js.cancelled") {
 return ff_core_Option.Some((async_
 ? "$task.controller.signal.aborted"
 : "false"))
 return
 }
-if(_1 === "ff:core/UnsafeJs.throwIfCancelled") {
+if(_1 === "ff:core/Js.throwIfCancelled") {
 return ff_core_Option.Some((async_
 ? "((() => ff_core_Task.Task_throwIfAborted($task))())"
 : ""))
 return
 }
-if(_1 === "ff:core/UnsafeJs.controller") {
+if(_1 === "ff:core/Js.controller") {
 return ff_core_Option.Some("$task.controller")
 }
-if(_1 === "ff:core/UnsafeJs.setController") {
+if(_1 === "ff:core/Js.setController") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const a_ = _guard1[0];
 return ff_core_Option.Some((("($task.controller = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_, async_)) + ")"))
 }
 }
-if(_1 === "ff:core/UnsafeJs.inAsync") {
+if(_1 === "ff:core/Js.inAsync") {
 return ff_core_Option.Some((self_.emittingAsync_
 ? "true"
 : "false"))
 return
 }
-if(_1 === "ff:core/UnsafeJs.inBrowser") {
+if(_1 === "ff:core/Js.inBrowser") {
 return ff_core_Option.Some((ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser())
 ? "true"
 : "false"))
 return
 }
-if(_1 === "ff:core/UnsafeJs.inNode") {
+if(_1 === "ff:core/Js.inNode") {
 return ff_core_Option.Some((ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitNode())
 ? "true"
 : "false"))
 return
 }
-if(_1 === "ff:core/UnsafeJs.inBuild") {
+if(_1 === "ff:core/Js.inBuild") {
 return ff_core_Option.Some((ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild())
 ? "true"
 : "false"))
 return
 }
-if(_1 === "ff:core/UnsafeJs.value") {
+if(_1 === "ff:core/Js.value") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
 return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
 }
 }
-if(_1 === "ff:core/UnsafeJs.fromValue") {
+if(_1 === "ff:core/Js.fromValue") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
@@ -2094,7 +2094,7 @@ return ff_core_Option.Some("globalThis")
 }
 }
 }
-if(_1 === "ff:core/UnsafeJs.jsSystem") {
+if(_1 === "ff:core/Js.jsSystem") {
 return ff_core_Option.Some("globalThis")
 }
 if(_1 === "ff:core/Json.string") {
@@ -2424,7 +2424,7 @@ const code_ = _guard1.value_;
 return ff_core_Option.Some(code_)
 }
 }
-if(_1 === "ff:core/UnsafeJs.throwIfCancelled") {
+if(_1 === "ff:core/Js.throwIfCancelled") {
 return ff_core_Option.Some((async_
 ? "ff_core_Task.Task_throwIfAborted($task)"
 : ""))
@@ -3957,21 +3957,21 @@ return ff_core_Option.Some(((((((((((((((((((await_ + "((() => {\n") + "const si
 }
 }
 }
-if(_1 === "ff:core/UnsafeJs.import") {
+if(_1 === "ff:core/Js.import") {
 const _guard1 = arguments_;
 if(_guard1.length === 1 && _guard1[0].EString) {
 const url_ = _guard1[0].value_;
 return ff_core_Option.Some(ff_compiler_JsImporter.JsImporter_add(self_.jsImporter_, ff_core_String.String_replace(url_, "\"", "")))
 }
 }
-if(_1 === "ff:core/UnsafeJs.importDynamic") {
+if(_1 === "ff:core/Js.importDynamic") {
 const _guard1 = arguments_;
 if(_guard1.length === 1 && _guard1[0].EString) {
 const url_ = _guard1[0].value_;
 return ff_core_Option.Some((("import(" + url_) + ")"))
 }
 }
-if(_1 === "ff:core/UnsafeJs.await") {
+if(_1 === "ff:core/Js.await") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const body_ = _guard1[0];
@@ -3985,7 +3985,7 @@ return
 }
 {
 const name_ = _1;
-const _guard4 = ff_core_String.String_removeFirst(name_, "ff:core/UnsafeJs.async");
+const _guard4 = ff_core_String.String_removeFirst(name_, "ff:core/Js.async");
 if(_guard4.Some) {
 const n_ = _guard4.value_;
 const _guard3 = ff_core_String.String_all(n_, ((_w1) => {
@@ -4028,64 +4028,64 @@ return ff_core_Option.Some((((("async (" + ff_core_List.List_join(patternParamet
 }
 {
 const name_ = _1;
-if(ff_core_String.String_startsWith(name_, "ff:core/UnsafeJs.async", 0)) {
+if(ff_core_String.String_startsWith(name_, "ff:core/Js.async", 0)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(term_.at_, "JS async functions must take a simple parameter list"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
-if(_1 === "ff:core/UnsafeJs.cancelled") {
+if(_1 === "ff:core/Js.cancelled") {
 return ff_core_Option.Some((async_
 ? "$task.controller.signal.aborted"
 : "false"))
 return
 }
-if(_1 === "ff:core/UnsafeJs.throwIfCancelled") {
+if(_1 === "ff:core/Js.throwIfCancelled") {
 return ff_core_Option.Some((async_
 ? "((() => ff_core_Task.Task_throwIfAborted($task))())"
 : ""))
 return
 }
-if(_1 === "ff:core/UnsafeJs.controller") {
+if(_1 === "ff:core/Js.controller") {
 return ff_core_Option.Some("$task.controller")
 }
-if(_1 === "ff:core/UnsafeJs.setController") {
+if(_1 === "ff:core/Js.setController") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const a_ = _guard1[0];
 return ff_core_Option.Some((("($task.controller = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_, async_)) + ")"))
 }
 }
-if(_1 === "ff:core/UnsafeJs.inAsync") {
+if(_1 === "ff:core/Js.inAsync") {
 return ff_core_Option.Some((self_.emittingAsync_
 ? "true"
 : "false"))
 return
 }
-if(_1 === "ff:core/UnsafeJs.inBrowser") {
+if(_1 === "ff:core/Js.inBrowser") {
 return ff_core_Option.Some((ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser())
 ? "true"
 : "false"))
 return
 }
-if(_1 === "ff:core/UnsafeJs.inNode") {
+if(_1 === "ff:core/Js.inNode") {
 return ff_core_Option.Some((ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitNode())
 ? "true"
 : "false"))
 return
 }
-if(_1 === "ff:core/UnsafeJs.inBuild") {
+if(_1 === "ff:core/Js.inBuild") {
 return ff_core_Option.Some((ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild())
 ? "true"
 : "false"))
 return
 }
-if(_1 === "ff:core/UnsafeJs.value") {
+if(_1 === "ff:core/Js.value") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
 return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
 }
 }
-if(_1 === "ff:core/UnsafeJs.fromValue") {
+if(_1 === "ff:core/Js.fromValue") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
@@ -4388,7 +4388,7 @@ return ff_core_Option.Some("globalThis")
 }
 }
 }
-if(_1 === "ff:core/UnsafeJs.jsSystem") {
+if(_1 === "ff:core/Js.jsSystem") {
 return ff_core_Option.Some("globalThis")
 }
 if(_1 === "ff:core/Json.string") {
@@ -4718,7 +4718,7 @@ const code_ = _guard1.value_;
 return ff_core_Option.Some(code_)
 }
 }
-if(_1 === "ff:core/UnsafeJs.throwIfCancelled") {
+if(_1 === "ff:core/Js.throwIfCancelled") {
 return ff_core_Option.Some((async_
 ? "ff_core_Task.Task_throwIfAborted($task)"
 : ""))

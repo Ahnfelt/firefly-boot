@@ -4,14 +4,14 @@ capability PathEntry {}
 extend self: Path {
 
     exists(checkReadable: Bool = False, checkWritable: Bool = False, checkExecutable: Bool = False): Bool {
-        let fs = UnsafeJs.import("fs")
-        let fsPromises = UnsafeJs.import("fs/promises")
+        let fs = Js.import("fs")
+        let fsPromises = Js.import("fs/promises")
         let flagsR: Int = (fs->constants->"R_OK" * checkReadable!)?
         let flagsW: Int = (fs->constants->"W_OK" * checkWritable!)?
         let flagsX: Int = (fs->constants->"X_OK" * checkExecutable!)?
         let flags = flagsR.bitOr(flagsW.bitOr(flagsX))
         try {
-            UnsafeJs.await(
+            Js.await(
                 fsPromises->access(self!, if(flags == 0) {fs->constants->"F_OK"} else {flags!})
             )
             True
@@ -33,34 +33,34 @@ extend self: Path {
     }
 
     isDirectory(): Bool {
-        let fsPromises = UnsafeJs.import("fs/promises")        
+        let fsPromises = Js.import("fs/promises")        
         try {
-            UnsafeJs.await(fsPromises->lstat(self!))->isDirectory()?
+            Js.await(fsPromises->lstat(self!))->isDirectory()?
         } catchAny {_ => 
             False
         }
     }
 
     isFile(): Bool {
-        let fsPromises = UnsafeJs.import("fs/promises")        
+        let fsPromises = Js.import("fs/promises")        
         try {
-            UnsafeJs.await(fsPromises->lstat(self!))->isFile()?
+            Js.await(fsPromises->lstat(self!))->isFile()?
         } catchAny {_ => 
             False
         }        
     }
 
     isSymbolicLink(): Bool {
-        let fsPromises = UnsafeJs.import("fs/promises")        
+        let fsPromises = Js.import("fs/promises")        
         try {
-            UnsafeJs.await(fsPromises->lstat(self!))->isSymbolicLink()?
+            Js.await(fsPromises->lstat(self!))->isSymbolicLink()?
         } catchAny {_ => 
             False
         }        
     }
 
     isInsideOf(path: Path): Bool {
-        let nodePath = UnsafeJs.import("path")
+        let nodePath = Js.import("path")
         if(path! === "/") {True} else:
         let childPath = nodePath->resolve(self!)
         let parentPath = nodePath->resolve(path!)
@@ -68,13 +68,13 @@ extend self: Path {
     }
     
     size(): Int {
-        let fs = UnsafeJs.import("fs")
-        UnsafeJs.await(fs->promises->stat(self!))?
+        let fs = Js.import("fs")
+        Js.await(fs->promises->stat(self!))?
     }
         
     modified(): Instant {
-        let fs = UnsafeJs.import("fs")
-        (UnsafeJs.await(fs->promises->stat(self!))->mtimeMs * 0.001!)?
+        let fs = Js.import("fs")
+        (Js.await(fs->promises->stat(self!))->mtimeMs * 0.001!)?
     }
 
     entries(): Stream[PathEntry]
@@ -96,12 +96,12 @@ extend self: Path {
         """
 
     absolute(): String {
-        let path = UnsafeJs.import("path")        
+        let path = Js.import("path")        
         path->resolve(self!)?
     }
 
     relativeTo(path: Path): String {
-        let nodePath = UnsafeJs.import("path")        
+        let nodePath = Js.import("path")        
         nodePath->relative(path!, self!)?
     }
     
@@ -119,43 +119,43 @@ extend self: Path {
     }
 
     base(): String {
-        let path = UnsafeJs.import("path")
+        let path = Js.import("path")
         path->basename(self!)?        
     }
 
     extension(): String {
-        let path = UnsafeJs.import("path")
+        let path = Js.import("path")
         path->extname(self!)?        
     }
 
     url(): String {
-        let url = UnsafeJs.import("url")
+        let url = Js.import("url")
         "" + url->pathToFileURL(self!)?        
     }
 
     delimiter(): String {
-        let path = UnsafeJs.import("path")
+        let path = Js.import("path")
         path->delimiter(self!)?        
     }
 
     separator(): String {
-        let path = UnsafeJs.import("path")
+        let path = Js.import("path")
         path->separator(self!)?        
     }
 
     parent(): Option[Path] {
-        let path = UnsafeJs.import("path")
+        let path = Js.import("path")
         let result = path->dirname(self!)
         if(result !== "" && result !== self!) {result?}
     }
 
     slash(relativePath: String): Path {
-        let path = UnsafeJs.import("path")
+        let path = Js.import("path")
         path->join(self!, relativePath)?
     }
 
     path(absoluteOrRelativePath: String): Path {
-        let path = UnsafeJs.import("path")
+        let path = Js.import("path")
         path->resolve(self!, absoluteOrRelativePath)?
     }
 
@@ -174,59 +174,59 @@ extend self: Path {
     }
 
     createDirectory(createParentDirectories: Bool = False) {
-        let fsPromises = UnsafeJs.import("fs/promises")
-        let js = UnsafeJs.jsSystem()
-        UnsafeJs.await(fsPromises->mkdir(self!, js->(recursive = createParentDirectories)))
+        let fsPromises = Js.import("fs/promises")
+        let js = Js.jsSystem()
+        Js.await(fsPromises->mkdir(self!, js->(recursive = createParentDirectories)))
     }
 
     createSymlinkTo(path: Path, junction: Bool = False) {
-        let fsPromises = UnsafeJs.import("fs/promises")
-        let js = UnsafeJs.jsSystem()
-        UnsafeJs.await(fsPromises->symlink(path!, self!, if(junction) {"junction"!} else {js.null()}))
+        let fsPromises = Js.import("fs/promises")
+        let js = Js.jsSystem()
+        Js.await(fsPromises->symlink(path!, self!, if(junction) {"junction"!} else {js.null()}))
     }
 
     delete(retries: Int = 0, retryDelay: Int = 100) {
-        let fsPromises = UnsafeJs.import("fs/promises")
-        let js = UnsafeJs.jsSystem()
-        UnsafeJs.await(fsPromises->rm(self!, js->(recursive = True, retries = retries, retryDelay = retryDelay)))
+        let fsPromises = Js.import("fs/promises")
+        let js = Js.jsSystem()
+        Js.await(fsPromises->rm(self!, js->(recursive = True, retries = retries, retryDelay = retryDelay)))
     }
     
     truncate(length: Int = 0) {
-        let fsPromises = UnsafeJs.import("fs/promises")
-        UnsafeJs.await(fsPromises->truncate(self!, length))
+        let fsPromises = Js.import("fs/promises")
+        Js.await(fsPromises->truncate(self!, length))
     }
 
     renameTo(path: Path) {
-        let fsPromises = UnsafeJs.import("fs/promises")
-        UnsafeJs.await(fsPromises->rename(self!, path!))
+        let fsPromises = Js.import("fs/promises")
+        Js.await(fsPromises->rename(self!, path!))
     }
 
     readSymbolicLink(): String {
-        let fsPromises = UnsafeJs.import("fs/promises")
-        UnsafeJs.await(fsPromises->readlink(self!))?
+        let fsPromises = Js.import("fs/promises")
+        Js.await(fsPromises->readlink(self!))?
     }
 
     readText(): String {
-        let js = UnsafeJs.jsSystem()
-        let fsPromises = UnsafeJs.import("fs/promises")
-        UnsafeJs.withSignal {signal =>
-            UnsafeJs.await(fsPromises->readFile(self!, js->(encoding = "UTF-8", signal = signal)))?
+        let js = Js.jsSystem()
+        let fsPromises = Js.import("fs/promises")
+        Js.withSignal {signal =>
+            Js.await(fsPromises->readFile(self!, js->(encoding = "UTF-8", signal = signal)))?
         }
     }
 
     writeText(text: String) {
-        let js = UnsafeJs.jsSystem()
-        let fsPromises = UnsafeJs.import("fs/promises")
-        UnsafeJs.withSignal {signal =>
-            UnsafeJs.await(fsPromises->writeFile(self!, text, js->(encoding = "UTF-8", signal = signal)))?
+        let js = Js.jsSystem()
+        let fsPromises = Js.import("fs/promises")
+        Js.withSignal {signal =>
+            Js.await(fsPromises->writeFile(self!, text, js->(encoding = "UTF-8", signal = signal)))?
         }
     }
 
     appendText(text: String) {
-        let js = UnsafeJs.jsSystem()
-        let fsPromises = UnsafeJs.import("fs/promises")
-        UnsafeJs.withSignal {signal =>
-            UnsafeJs.await(fsPromises->appendFile(self!, text, js->(encoding = "UTF-8", signal = signal)))?
+        let js = Js.jsSystem()
+        let fsPromises = Js.import("fs/promises")
+        Js.withSignal {signal =>
+            Js.await(fsPromises->appendFile(self!, text, js->(encoding = "UTF-8", signal = signal)))?
         }
     }
 
@@ -295,14 +295,14 @@ extend self: Path {
         """
 
     readHandle(alsoWrite: Bool = False): FileHandle {
-        let fsPromises = UnsafeJs.import("fs/promises")
-        UnsafeJs.await(fsPromises->open(self!, if(alsoWrite) {"r+"} else {"r"}))?
+        let fsPromises = Js.import("fs/promises")
+        Js.await(fsPromises->open(self!, if(alsoWrite) {"r+"} else {"r"}))?
     }
 
     writeHandle(alsoRead: Bool = False, mustCreate: Bool = False): FileHandle {
-        let fsPromises = UnsafeJs.import("fs/promises")
+        let fsPromises = Js.import("fs/promises")
         let flags = if(mustCreate) {"wx"} else {"w"} + if(alsoRead) {"+"} else {""}
-        UnsafeJs.await(fsPromises->open(self!, flags))?
+        Js.await(fsPromises->open(self!, flags))?
     }
    
     appendHandle(alsoRead: Bool = False, mustCreate: Bool = False): FileHandle 
@@ -317,7 +317,7 @@ extend self: Path {
 extend self: PathEntry {
     
     path(): Path {
-        let path = UnsafeJs.import("path")
+        let path = Js.import("path")
         path->join(self!->ffPath, self!->name)?
     }
 

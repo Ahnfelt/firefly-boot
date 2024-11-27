@@ -1,22 +1,22 @@
 class Array[T] {}
 
 new[T](): Array[T] {
-    let js = UnsafeJs.jsSystem()
+    let js = Js.jsSystem()
     js->(array = [])?
 }
  
 fill[T](size: Int, value: T): List[T] {
-    let js = UnsafeJs.jsSystem()
+    let js = Js.jsSystem()
     js->(array = List.fill(size, value)!)?
 }
 
 fillBy[T](size: Int, body: Int => T): List[T] {
-    let js = UnsafeJs.jsSystem()
+    let js = Js.jsSystem()
     js->(array = List.fillBy(size, body)!)?
 }
 
 range(size: Int): List[Int] {
-    let js = UnsafeJs.jsSystem()
+    let js = Js.jsSystem()
     js->(array = List.range(size)!)?
 }
 
@@ -221,10 +221,10 @@ extend self[T]: Array[T] {
     }
 
     sortWith(ordering: (T, T) => Ordering): Unit {
-        if(UnsafeJs.inAsync()) {
+        if(Js.inAsync()) {
             sortRange(self, ordering, 0, self.size())
         } else {
-            let js = UnsafeJs.jsSystem()
+            let js = Js.jsSystem()
             self!->array->sort(js->{x, y => ordering(x?, y?).toInt()})
         }
     }

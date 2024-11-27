@@ -822,7 +822,7 @@ extend self: Inference {
                 let tailCall = e.target.{
                     | DynamicCall call => 
                         call.function.{
-                            | EVariable(_, "ff:core/UnsafeJs.await") => 
+                            | EVariable(_, "ff:core/Js.await") => 
                                 isUnsafeJsAwaitCall = True
                             | _ => 
                         }

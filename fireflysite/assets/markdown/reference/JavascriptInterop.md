@@ -40,10 +40,10 @@ The `->` is shorthand for calling the methods `get`, `set`, `increment`, `decrem
 
 The `js` variable is of the type `JsSystem` and the rest of the expressions return `JsValue`, which represents an arbitrary JavaScript value.
 
-In addition, the `!` and `?` postfix operators can be used as shorthand for `UnsafeJs.value(...)` and `UnsafeJs.fromValue(...)`.
+In addition, the `!` and `?` postfix operators can be used as shorthand for `Js.value(...)` and `Js.fromValue(...)`.
 
 
-# The UnsafeJs module
+# The Js module
 
 This module provides access to unsafe JavaScript features:
 

@@ -13,7 +13,7 @@ extend self: Char {
     isAsciiDigit(): Bool {self >= '0' && self <= '9'}
 
     toString(): String {
-        let js = UnsafeJs.jsSystem()
+        let js = Js.jsSystem()
         js->String->fromCharCode(self)?
     }
 
