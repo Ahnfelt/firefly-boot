@@ -334,13 +334,11 @@ ff_core_Path.Path_writeStream(path_, ff_core_Path.Path_readStream(self_), false)
 
 export function Path_createDirectory(self_, createParentDirectories_ = false) {
 const fsPromises_ = import$1;
-const js_ = globalThis;
 fsPromises_.mkdir(self_, {recursive: createParentDirectories_})
 }
 
 export function Path_createSymlinkTo(self_, path_, junction_ = false) {
 const fsPromises_ = import$1;
-const js_ = globalThis;
 fsPromises_.symlink(path_, self_, (junction_
 ? "junction"
 : null))
@@ -348,7 +346,6 @@ fsPromises_.symlink(path_, self_, (junction_
 
 export function Path_delete(self_, retries_ = 0, retryDelay_ = 100) {
 const fsPromises_ = import$1;
-const js_ = globalThis;
 fsPromises_.rm(self_, {recursive: true, retries: retries_, retryDelay: retryDelay_})
 }
 
@@ -368,7 +365,6 @@ return fsPromises_.readlink(self_)
 }
 
 export function Path_readText(self_) {
-const js_ = globalThis;
 const fsPromises_ = import$1;
 return ff_core_Js.withSignal_(((signal_) => {
 return fsPromises_.readFile(self_, {encoding: "UTF-8", signal: signal_})
@@ -376,7 +372,6 @@ return fsPromises_.readFile(self_, {encoding: "UTF-8", signal: signal_})
 }
 
 export function Path_writeText(self_, text_) {
-const js_ = globalThis;
 const fsPromises_ = import$1;
 ff_core_Js.withSignal_(((signal_) => {
 return fsPromises_.writeFile(self_, text_, {encoding: "UTF-8", signal: signal_})
@@ -384,7 +379,6 @@ return fsPromises_.writeFile(self_, text_, {encoding: "UTF-8", signal: signal_})
 }
 
 export function Path_appendText(self_, text_) {
-const js_ = globalThis;
 const fsPromises_ = import$1;
 ff_core_Js.withSignal_(((signal_) => {
 return fsPromises_.appendFile(self_, text_, {encoding: "UTF-8", signal: signal_})
@@ -629,13 +623,11 @@ if((await ff_core_Path.Path_exists$(path_, false, false, false, $task))) {
 
 export async function Path_createDirectory$(self_, createParentDirectories_ = false, $task) {
 const fsPromises_ = import$1;
-const js_ = globalThis;
 (await fsPromises_.mkdir(self_, {recursive: createParentDirectories_}))
 }
 
 export async function Path_createSymlinkTo$(self_, path_, junction_ = false, $task) {
 const fsPromises_ = import$1;
-const js_ = globalThis;
 (await fsPromises_.symlink(path_, self_, (junction_
 ? "junction"
 : null)))
@@ -643,7 +635,6 @@ const js_ = globalThis;
 
 export async function Path_delete$(self_, retries_ = 0, retryDelay_ = 100, $task) {
 const fsPromises_ = import$1;
-const js_ = globalThis;
 (await fsPromises_.rm(self_, {recursive: true, retries: retries_, retryDelay: retryDelay_}))
 }
 
@@ -663,7 +654,6 @@ return (await fsPromises_.readlink(self_))
 }
 
 export async function Path_readText$(self_, $task) {
-const js_ = globalThis;
 const fsPromises_ = import$1;
 return (await ff_core_Js.withSignal_$((async (signal_, $task) => {
 return (await fsPromises_.readFile(self_, {encoding: "UTF-8", signal: signal_}))
@@ -671,7 +661,6 @@ return (await fsPromises_.readFile(self_, {encoding: "UTF-8", signal: signal_}))
 }
 
 export async function Path_writeText$(self_, text_, $task) {
-const js_ = globalThis;
 const fsPromises_ = import$1;
 (await ff_core_Js.withSignal_$((async (signal_, $task) => {
 return (await fsPromises_.writeFile(self_, text_, {encoding: "UTF-8", signal: signal_}))
@@ -679,7 +668,6 @@ return (await fsPromises_.writeFile(self_, text_, {encoding: "UTF-8", signal: si
 }
 
 export async function Path_appendText$(self_, text_, $task) {
-const js_ = globalThis;
 const fsPromises_ = import$1;
 (await ff_core_Js.withSignal_$((async (signal_, $task) => {
 return (await fsPromises_.appendFile(self_, text_, {encoding: "UTF-8", signal: signal_}))

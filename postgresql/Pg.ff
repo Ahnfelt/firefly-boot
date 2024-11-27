@@ -21,13 +21,12 @@ newPool(
     allowExitOnIdle: Bool = True
 ): PgPool {
     Js.throwIfCancelled()
-    let js = Js.jsSystem()
     let pg = Js.import("pg").get("default")
-    PgPool(pg.get("Pool").new1(js.object()
+    PgPool(pg.get("Pool").new1(Js.object()
         .with("user", user)
         .with("host", host)
         .with("database", database)
-        .with("password", js.function0(password))
+        .with("password", Js.function0(password))
         .with("port", port)
         .with("connectionTimeoutMillis", connectionTimeout.seconds * 1000)
         .with("idleTimeoutMillis", idleTimeout.seconds * 1000)
@@ -45,9 +44,8 @@ newPoolFromConnectionString(
     allowExitOnIdle: Bool = True
 ): PgPool {
     Js.throwIfCancelled()
-    let js = Js.jsSystem()
     let pg = Js.import("pg").get("default")
-    PgPool(pg.get("Pool").new1(js.object()
+    PgPool(pg.get("Pool").new1(Js.object()
         .with("connectionString", connectionString)
         .with("connectionTimeoutMillis", connectionTimeout.seconds * 1000)
         .with("idleTimeoutMillis", idleTimeout.seconds * 1000)
@@ -153,7 +151,7 @@ extend self: PgStatement {
     }
 
     withNullableBool(name: String, value: Option[Bool]): PgStatement {
-        let p = value.map(Js.jsSystem().value).else {Js.jsSystem().null()}
+        let p = value.map(Js.jsSystem().value).else {Js.null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
@@ -163,7 +161,7 @@ extend self: PgStatement {
     }
 
     withNullableInt(name: String, value: Option[Int]): PgStatement {
-        let p = value.map(Js.jsSystem().value).else {Js.jsSystem().null()}
+        let p = value.map(Js.jsSystem().value).else {Js.null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
@@ -173,7 +171,7 @@ extend self: PgStatement {
     }
 
     withNullableFloat(name: String, value: Option[Float]): PgStatement {
-        let p = value.map(Js.jsSystem().value).else {Js.jsSystem().null()}
+        let p = value.map(Js.jsSystem().value).else {Js.null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
@@ -183,25 +181,23 @@ extend self: PgStatement {
     }
 
     withNullableString(name: String, value: Option[String]): PgStatement {
-        let p = value.map(Js.jsSystem().value).else {Js.jsSystem().null()}
+        let p = value.map(Js.jsSystem().value).else {Js.null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withInstant(name: String, value: Instant): PgStatement {
-        let jsDate = Js.jsSystem().globalThis().get("Date")
         function toJsDate(instant: Instant): JsValue {
-            jsDate.new1(instant.since1970.seconds * 1000.0)
+            Js->Date->(instant.since1970.seconds * 1000.0)
         }
         let p = toJsDate(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withNullableInstant(name: String, value: Option[Instant]): PgStatement {
-        let jsDate = Js.jsSystem().globalThis().get("Date")
         function toJsDate(instant: Instant): JsValue {
-            jsDate.new1(instant.since1970.seconds * 1000.0)
+            Js->Date->(instant.since1970.seconds * 1000.0)
         }
-        let p = value.map(toJsDate).else {Js.jsSystem().null()}
+        let p = value.map(toJsDate).else {Js.null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
@@ -211,7 +207,7 @@ extend self: PgStatement {
     }
 
     withNullableBuffer(name: String, value: Option[Buffer]): PgStatement {
-        let p = value.map(Js.jsSystem().value).else {Js.jsSystem().null()}
+        let p = value.map(Js.jsSystem().value).else {Js.null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
@@ -221,7 +217,7 @@ extend self: PgStatement {
     }
 
     withNullableBoolArray(name: String, value: Option[List[Bool]]): PgStatement {
-        let p = value.map(Js.jsSystem().value).else {Js.jsSystem().null()}
+        let p = value.map(Js.jsSystem().value).else {Js.null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
@@ -231,7 +227,7 @@ extend self: PgStatement {
     }
 
     withNullableIntArray(name: String, value: Option[List[Int]]): PgStatement {
-        let p = value.map(Js.jsSystem().value).else {Js.jsSystem().null()}
+        let p = value.map(Js.jsSystem().value).else {Js.null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
@@ -241,7 +237,7 @@ extend self: PgStatement {
     }
 
     withNullableFloatArray(name: String, value: Option[List[Float]]): PgStatement {
-        let p = value.map(Js.jsSystem().value).else {Js.jsSystem().null()}
+        let p = value.map(Js.jsSystem().value).else {Js.null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
@@ -251,25 +247,23 @@ extend self: PgStatement {
     }
 
     withNullableStringArray(name: String, value: Option[List[String]]): PgStatement {
-        let p = value.map(Js.jsSystem().value).else {Js.jsSystem().null()}
+        let p = value.map(Js.jsSystem().value).else {Js.null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withInstantArray(name: String, value: List[Instant]): PgStatement {
-        let jsDate = Js.jsSystem().globalThis().get("Date")
         function toJsDate(instant: Instant): JsValue {
-            jsDate.new1(instant.since1970.seconds * 1000.0)
+            Js->Date->(instant.since1970.seconds * 1000.0)
         }
         let p = Js.jsSystem().value(value.map(toJsDate))
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withNullableInstantArray(name: String, value: Option[List[Instant]]): PgStatement {
-        let jsDate = Js.jsSystem().globalThis().get("Date")
         function toJsDate(instant: Instant): JsValue {
-            jsDate.new1(instant.since1970.seconds * 1000.0)
+            Js->Date->(instant.since1970.seconds * 1000.0)
         }
-        let p = value.map {_.map(toJsDate)}.map(Js.jsSystem().value).else {Js.jsSystem().null()}
+        let p = value.map {_.map(toJsDate)}.map(Js.jsSystem().value).else {Js.null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
@@ -279,7 +273,7 @@ extend self: PgStatement {
     }
 
     withNullableBufferArray(name: String, value: Option[List[Buffer]]): PgStatement {
-        let p = value.map(Js.jsSystem().value).else {Js.jsSystem().null()}
+        let p = value.map(Js.jsSystem().value).else {Js.null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
@@ -292,7 +286,7 @@ extend self: PgStatement {
     }
 
     any(body: PgRow => Bool): Bool {
-        !self.all { row =>
+        !self.all {row =>
             !body(row)
         }
     }
@@ -411,7 +405,7 @@ internalBatchStatements(
         Js.throwIfCancelled()
         let record = sqlCache.grab(statement.sql)
         let parameters = internalCheckParameters(record.parameterNames, statement.parameters)
-        let query = Js.jsSystem().object()
+        let query = Js.object()
             .with("text", record.newSql)
             .with("values", parameters)
         connection.jsValue->query(record.prepared.map {query.with("name", _)}.else {query})

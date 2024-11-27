@@ -98,22 +98,18 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function new_() {
-const js_ = globalThis;
 return {array: []}
 }
 
 export function fill_(size_, value_) {
-const js_ = globalThis;
 return {array: ff_core_List.fill_(size_, value_)}
 }
 
 export function fillBy_(size_, body_) {
-const js_ = globalThis;
 return {array: ff_core_List.fillBy_(size_, body_)}
 }
 
 export function range_(size_) {
-const js_ = globalThis;
 return {array: ff_core_List.range_(size_)}
 }
 
@@ -146,22 +142,18 @@ j_ += 1
 }
 
 export async function new_$($task) {
-const js_ = globalThis;
 return {array: []}
 }
 
 export async function fill_$(size_, value_, $task) {
-const js_ = globalThis;
 return {array: ff_core_List.fill_(size_, value_)}
 }
 
 export async function fillBy_$(size_, body_, $task) {
-const js_ = globalThis;
 return {array: (await ff_core_List.fillBy_$(size_, body_, $task))}
 }
 
 export async function range_$(size_, $task) {
-const js_ = globalThis;
 return {array: ff_core_List.range_(size_)}
 }
 
@@ -404,8 +396,7 @@ export function Array_sortWith(self_, ordering_) {
 if(false) {
 ff_core_Array.sortRange_(self_, ordering_, 0, self_.array.length)
 } else {
-const js_ = globalThis;
-self_.array.sort(ff_core_JsSystem.JsSystem_function2(js_, ((x_, y_) => {
+self_.array.sort(ff_core_Js.function2_(((x_, y_) => {
 return ff_core_Ordering.Ordering_toInt(ordering_(x_, y_))
 })))
 }
@@ -622,8 +613,7 @@ export async function Array_sortWith$(self_, ordering_, $task) {
 if(true) {
 (await ff_core_Array.sortRange_$(self_, ordering_, 0, self_.array.length, $task))
 } else {
-const js_ = globalThis;
-self_.array.sort((await ff_core_JsSystem.JsSystem_function2$(js_, (async (x_, y_, $task) => {
+self_.array.sort((await ff_core_Js.function2_$((async (x_, y_, $task) => {
 return ff_core_Ordering.Ordering_toInt((await ordering_(x_, y_, $task)))
 }), $task)))
 }

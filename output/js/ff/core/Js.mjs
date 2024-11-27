@@ -185,7 +185,6 @@ ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function withSignal_(body_) {
-const js_ = globalThis;
 const controller_ = $task.controller;
 try {
 return body_(controller_.signal)
@@ -421,7 +420,6 @@ ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function withSignal_$(body_, $task) {
-const js_ = globalThis;
 const controller_ = $task.controller;
 try {
 return (await body_(controller_.signal, $task))

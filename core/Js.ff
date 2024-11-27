@@ -88,12 +88,11 @@ setController(controller: JsValue) {
 
     
 withSignal[T](body: JsValue => T): T {
-    let js = Js.jsSystem()
     let controller = Js.controller()
     try {
         body(controller->signal)
     } finally {
-        if(controller->signal->aborted?) {Js.setController(js->AbortController->())}
+        if(controller->signal->aborted?) {Js.setController(Js->AbortController->())}
     }
 }
 

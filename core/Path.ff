@@ -175,20 +175,17 @@ extend self: Path {
 
     createDirectory(createParentDirectories: Bool = False) {
         let fsPromises = Js.import("fs/promises")
-        let js = Js.jsSystem()
-        Js.await(fsPromises->mkdir(self!, js->(recursive = createParentDirectories)))
+        Js.await(fsPromises->mkdir(self!, Js->(recursive = createParentDirectories)))
     }
 
     createSymlinkTo(path: Path, junction: Bool = False) {
         let fsPromises = Js.import("fs/promises")
-        let js = Js.jsSystem()
-        Js.await(fsPromises->symlink(path!, self!, if(junction) {"junction"!} else {js.null()}))
+        Js.await(fsPromises->symlink(path!, self!, if(junction) {"junction"!} else {Js.null()}))
     }
 
     delete(retries: Int = 0, retryDelay: Int = 100) {
         let fsPromises = Js.import("fs/promises")
-        let js = Js.jsSystem()
-        Js.await(fsPromises->rm(self!, js->(recursive = True, retries = retries, retryDelay = retryDelay)))
+        Js.await(fsPromises->rm(self!, Js->(recursive = True, retries = retries, retryDelay = retryDelay)))
     }
     
     truncate(length: Int = 0) {
@@ -207,26 +204,23 @@ extend self: Path {
     }
 
     readText(): String {
-        let js = Js.jsSystem()
         let fsPromises = Js.import("fs/promises")
         Js.withSignal {signal =>
-            Js.await(fsPromises->readFile(self!, js->(encoding = "UTF-8", signal = signal)))?
+            Js.await(fsPromises->readFile(self!, Js->(encoding = "UTF-8", signal = signal)))?
         }
     }
 
     writeText(text: String) {
-        let js = Js.jsSystem()
         let fsPromises = Js.import("fs/promises")
         Js.withSignal {signal =>
-            Js.await(fsPromises->writeFile(self!, text, js->(encoding = "UTF-8", signal = signal)))?
+            Js.await(fsPromises->writeFile(self!, text, Js->(encoding = "UTF-8", signal = signal)))?
         }
     }
 
     appendText(text: String) {
-        let js = Js.jsSystem()
         let fsPromises = Js.import("fs/promises")
         Js.withSignal {signal =>
-            Js.await(fsPromises->appendFile(self!, text, js->(encoding = "UTF-8", signal = signal)))?
+            Js.await(fsPromises->appendFile(self!, text, Js->(encoding = "UTF-8", signal = signal)))?
         }
     }
 

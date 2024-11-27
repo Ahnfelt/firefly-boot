@@ -5,28 +5,24 @@ new[T](): List[T] {
 }
 
 fill[T](size: Int, value: T): List[T] {
-    let js = Js.jsSystem()
-    js->Array->(size)->fill(value!)?
+    Js->Array->(size)->fill(value!)?
 }
 
 fillBy[T](size: Int, body: Int => T): List[T] {
     if(Js.inAsync()) {
-        let js = Js.jsSystem()
-        let array = js->Array->(size)
+        let array = Js->Array->(size)
         1.until(size).each {i => 
             array.set(i, body(i)!)
         }
         array?
     } else {
-        let js = Js.jsSystem()
-        js->Array->from(js->(length = size), js->{_, i => body(i?)})?
+        Js->Array->from(Js->(length = size), Js->{_, i => body(i?)})?
     }
 }
 
 
 range(size: Int): List[Int] {
-    let js = Js.jsSystem()
-    js->Array->from(js->(length = size), js->{_, i => i})?
+    Js->Array->from(Js->(length = size), Js->{_, i => i})?
 }
 
 extend self[T]: List[T] {
@@ -223,8 +219,7 @@ extend self[T]: List[T] {
     }
 
     toArray(): Array[T] {
-        let js = Js.jsSystem()
-        js->(array = self!->slice())?
+        Js->(array = self!->slice())?
     }
 
     each(body: T => Unit): Unit {

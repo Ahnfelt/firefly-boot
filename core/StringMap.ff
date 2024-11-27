@@ -1,8 +1,7 @@
 class StringMap[V] {}
 
 new[V](): StringMap[V] {
-    let js = Js.jsSystem()
-    js->Map->()?
+    Js->Map->()?
 }
     
 extend self[V]: StringMap[V] {
@@ -48,8 +47,7 @@ extend self[V]: StringMap[V] {
                 result = iterator->next()
             }
         } else {
-            let js = Js.jsSystem()
-            self!->forEach(js->{v, k => body(k?, v?)})
+            self!->forEach(Js->{v, k => body(k?, v?)})
         }
     }
             
@@ -88,8 +86,7 @@ extend self[V]: StringMap[V] {
     }
 
     copy(): StringMap[V] {
-        let js = Js.jsSystem()
-        js->Map->(self!)?        
+        Js->Map->(self!)?
     }
 
     getOrSet(key: String, body: () => V): V {

@@ -12,22 +12,20 @@ extend self: Buffer {
         target js sync "return self_.getBigUint64(byteOffset_, littleEndian_)"*/
 
     grabUint64(byteOffset: Int, littleEndian: Bool = True): Int {
-        let js = Js.jsSystem()
         let high = self!->getUint32(byteOffset + if(littleEndian) {4} else {0}, littleEndian)
         let low = self!->getUint32(byteOffset + if(littleEndian) {0} else {4}, littleEndian)
         let result = (high? * 0x100000000) + low?
-        if(!js->Number->isSafeInteger(result)?) {
+        if(!Js->Number->isSafeInteger(result)?) {
             throw(GrabException)
         }
         result
     }
     
     grabInt64(byteOffset: Int, littleEndian: Bool = True): Int {
-        let js = Js.jsSystem()
         let high = self!->getInt32(byteOffset + if(littleEndian) {4} else {0}, littleEndian)
         let low = self!->getUint32(byteOffset + if(littleEndian) {0} else {4}, littleEndian)
         let result = (high? * 0x100000000) + low?
-        if(!js->Number->isSafeInteger(result)?) {
+        if(!Js->Number->isSafeInteger(result)?) {
             throw(GrabException()) //grabInt64 out of range (consider grabBigInt64)'
         }
         result
@@ -114,9 +112,8 @@ extend self: Buffer {
     }
 
     setAll(byteOffset: Int, buffer: Buffer): Unit {
-        let js = Js.jsSystem()
-        let sourceBuffer = js->Uint8Array->(buffer!->buffer, buffer!->byteOffset, buffer!->byteLength)
-        let targetBuffer = js->Uint8Array->(self!->buffer, self!->byteOffset, self!->byteLength)
+        let sourceBuffer = Js->Uint8Array->(buffer!->buffer, buffer!->byteOffset, buffer!->byteLength)
+        let targetBuffer = Js->Uint8Array->(self!->buffer, self!->byteOffset, self!->byteLength)
         targetBuffer->set(sourceBuffer, byteOffset)
     }
 
@@ -124,8 +121,7 @@ extend self: Buffer {
         target js sync "return self_.byteLength"
 
     shared(): Bool {
-        let js = Js.jsSystem()
-        js->SharedArrayBuffer.typeof() != "undefined" && self!->buffer.instanceof(js->SharedArrayBuffer)
+        Js->SharedArrayBuffer.typeof() != "undefined" && self!->buffer.instanceof(Js->SharedArrayBuffer)
     }
         //target js sync "return typeof SharedArrayBuffer !== 'undefined' && self_.buffer instanceof SharedArrayBuffer"
 

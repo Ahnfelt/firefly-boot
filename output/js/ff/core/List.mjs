@@ -102,13 +102,11 @@ return []
 }
 
 export function fill_(size_, value_) {
-const js_ = globalThis;
 return (new Array(size_)).fill(value_)
 }
 
 export function fillBy_(size_, body_) {
 if(false) {
-const js_ = globalThis;
 const array_ = (new Array(size_));
 for(let for_i = 1, for_e = size_; for_i < for_e; for_i++) {
 const i_ = for_i;
@@ -116,15 +114,13 @@ array_[i_] = body_(i_)
 };
 return array_
 } else {
-const js_ = globalThis;
-return Array.from({length: size_}, ff_core_JsSystem.JsSystem_function2(js_, ((_, i_) => {
+return Array.from({length: size_}, ff_core_Js.function2_(((_, i_) => {
 return body_(i_)
 })))
 }
 }
 
 export function range_(size_) {
-const js_ = globalThis;
 return Array.from({length: size_}, ((_, i_) => {
 return i_
 }))
@@ -135,13 +131,11 @@ return []
 }
 
 export async function fill_$(size_, value_, $task) {
-const js_ = globalThis;
 return (new Array(size_)).fill(value_)
 }
 
 export async function fillBy_$(size_, body_, $task) {
 if(true) {
-const js_ = globalThis;
 const array_ = (new Array(size_));
 for(let for_i = 1, for_e = size_; for_i < for_e; for_i++) {
 const i_ = for_i;
@@ -149,15 +143,13 @@ array_[i_] = (await body_(i_, $task))
 };
 return array_
 } else {
-const js_ = globalThis;
-return Array.from({length: size_}, (await ff_core_JsSystem.JsSystem_function2$(js_, (async (_, i_, $task) => {
+return Array.from({length: size_}, (await ff_core_Js.function2_$((async (_, i_, $task) => {
 return (await body_(i_, $task))
 }), $task)))
 }
 }
 
 export async function range_$(size_, $task) {
-const js_ = globalThis;
 return Array.from({length: size_}, ((_, i_) => {
 return i_
 }))
@@ -375,7 +367,6 @@ return result_
 }
 
 export function List_toArray(self_) {
-const js_ = globalThis;
 return {array: self_.slice()}
 }
 
@@ -752,7 +743,6 @@ return result_
 }
 
 export async function List_toArray$(self_, $task) {
-const js_ = globalThis;
 return {array: self_.slice()}
 }
 

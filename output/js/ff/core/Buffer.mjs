@@ -158,7 +158,6 @@ throw new Error('Function fromBase64 is missing on this target in async context.
 }
 
 export function Buffer_grabUint64(self_, byteOffset_, littleEndian_ = true) {
-const js_ = globalThis;
 const high_ = self_.getUint32((byteOffset_ + (littleEndian_
 ? 4
 : 0)), littleEndian_);
@@ -173,7 +172,6 @@ return result_
 }
 
 export function Buffer_grabInt64(self_, byteOffset_, littleEndian_ = true) {
-const js_ = globalThis;
 const high_ = self_.getInt32((byteOffset_ + (littleEndian_
 ? 4
 : 0)), littleEndian_);
@@ -270,7 +268,6 @@ self_.setUint8(byteOffset_, value_)
 }
 
 export function Buffer_setAll(self_, byteOffset_, buffer_) {
-const js_ = globalThis;
 const sourceBuffer_ = (new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength));
 const targetBuffer_ = (new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength));
 targetBuffer_.set(sourceBuffer_, byteOffset_)
@@ -281,7 +278,6 @@ return self_.byteLength
 }
 
 export function Buffer_shared(self_) {
-const js_ = globalThis;
 return (((typeof SharedArrayBuffer) !== "undefined") && (self_.buffer instanceof SharedArrayBuffer))
 }
 
@@ -325,7 +321,6 @@ export function Buffer_toBase64(self_) {
 }
 
 export async function Buffer_grabUint64$(self_, byteOffset_, littleEndian_ = true, $task) {
-const js_ = globalThis;
 const high_ = self_.getUint32((byteOffset_ + (littleEndian_
 ? 4
 : 0)), littleEndian_);
@@ -340,7 +335,6 @@ return result_
 }
 
 export async function Buffer_grabInt64$(self_, byteOffset_, littleEndian_ = true, $task) {
-const js_ = globalThis;
 const high_ = self_.getInt32((byteOffset_ + (littleEndian_
 ? 4
 : 0)), littleEndian_);
@@ -437,7 +431,6 @@ self_.setUint8(byteOffset_, value_)
 }
 
 export async function Buffer_setAll$(self_, byteOffset_, buffer_, $task) {
-const js_ = globalThis;
 const sourceBuffer_ = (new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength));
 const targetBuffer_ = (new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength));
 targetBuffer_.set(sourceBuffer_, byteOffset_)
@@ -448,7 +441,6 @@ throw new Error('Function Buffer_size is missing on this target in async context
 }
 
 export async function Buffer_shared$(self_, $task) {
-const js_ = globalThis;
 return (((typeof SharedArrayBuffer) !== "undefined") && (self_.buffer instanceof SharedArrayBuffer))
 }
 

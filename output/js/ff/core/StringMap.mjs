@@ -98,12 +98,10 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function new_() {
-const js_ = globalThis;
 return (new Map())
 }
 
 export async function new_$($task) {
-const js_ = globalThis;
 return (new Map())
 }
 
@@ -152,8 +150,7 @@ body_(value_[0], value_[1]);
 result_ = iterator_.next()
 }
 } else {
-const js_ = globalThis;
-self_.forEach(ff_core_JsSystem.JsSystem_function2(js_, ((v_, k_) => {
+self_.forEach(ff_core_Js.function2_(((v_, k_) => {
 return body_(k_, v_)
 })))
 }
@@ -200,7 +197,6 @@ return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
 }
 
 export function StringMap_copy(self_) {
-const js_ = globalThis;
 return (new Map(self_))
 }
 
@@ -256,8 +252,7 @@ const value_ = result_.value;
 result_ = iterator_.next()
 }
 } else {
-const js_ = globalThis;
-self_.forEach((await ff_core_JsSystem.JsSystem_function2$(js_, (async (v_, k_, $task) => {
+self_.forEach((await ff_core_Js.function2_$((async (v_, k_, $task) => {
 return (await body_(k_, v_, $task))
 }), $task)))
 }
@@ -304,7 +299,6 @@ return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
 }
 
 export async function StringMap_copy$(self_, $task) {
-const js_ = globalThis;
 return (new Map(self_))
 }
 

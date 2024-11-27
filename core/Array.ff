@@ -1,27 +1,22 @@
 class Array[T] {}
 
 new[T](): Array[T] {
-    let js = Js.jsSystem()
-    js->(array = [])?
+    Js->(array = [])?
 }
  
 fill[T](size: Int, value: T): List[T] {
-    let js = Js.jsSystem()
-    js->(array = List.fill(size, value)!)?
+    Js->(array = List.fill(size, value)!)?
 }
 
 fillBy[T](size: Int, body: Int => T): List[T] {
-    let js = Js.jsSystem()
-    js->(array = List.fillBy(size, body)!)?
+    Js->(array = List.fillBy(size, body)!)?
 }
 
 range(size: Int): List[Int] {
-    let js = Js.jsSystem()
-    js->(array = List.range(size)!)?
+    Js->(array = List.range(size)!)?
 }
 
 extend self[T]: Array[T] {
-    
 
     isEmpty(): Bool {
         self.size() == 0
@@ -224,8 +219,7 @@ extend self[T]: Array[T] {
         if(Js.inAsync()) {
             sortRange(self, ordering, 0, self.size())
         } else {
-            let js = Js.jsSystem()
-            self!->array->sort(js->{x, y => ordering(x?, y?).toInt()})
+            self!->array->sort(Js->{x, y => ordering(x?, y?).toInt()})
         }
     }
 

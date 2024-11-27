@@ -121,7 +121,6 @@ return ((self_ >= 48) && (self_ <= 57))
 }
 
 export function Char_toString(self_) {
-const js_ = globalThis;
 return String.fromCharCode(self_)
 }
 
@@ -146,7 +145,6 @@ return ((self_ >= 48) && (self_ <= 57))
 }
 
 export async function Char_toString$(self_, $task) {
-const js_ = globalThis;
 return String.fromCharCode(self_)
 }
 
