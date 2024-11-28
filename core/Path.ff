@@ -77,23 +77,24 @@ extend self: Path {
         (Js.await(fs->promises->stat(self!))->mtimeMs * 0.001!)?
     }
 
-    entries(): Stream[PathEntry]
-        target node async """
-            import * as fsPromises from 'fs/promises'
-            let dir = null
-            return ff_core_Stream.Stream(
-                async () => {
-                    if(dir === null) dir = await fsPromises.opendir(self_, {bufferSize: 128})
-                    const entry = await dir.read()
-                    if(entry === null) return ff_core_Option.None()
-                    entry.ffPath = self_
-                    return ff_core_Option.Some(entry)
-                },
-                async () => {
-                    if(dir !== null) await dir.close()
-                }
-            )
-        """
+    entries(): Stream[PathEntry] {
+        let fsPromises = Js.import("fs/promises")
+        mutable dir = Js.null()
+        Stream {
+            if(dir.isNull()) {
+                dir = Js.await(fsPromises->opendir(self!, Js->(bufferSize = 128)))
+            }
+            let entry = Js.await(dir->read())
+            if(!entry.isNull()) {
+                entry->ffPath = self!
+                entry?
+            }
+        } {
+            if(!dir.isNull()) {
+                Js.await(dir->close())
+            }
+        }
+    }
 
     absolute(): String {
         let path = Js.import("path")        
