@@ -203,7 +203,9 @@ throw new Error('Function NodeSystem_exit is missing on this target in sync cont
 }
 
 export function NodeSystem_readStream(self_) {
-throw new Error('Function NodeSystem_readStream is missing on this target in sync context.');
+return ff_core_Path.internalReadStream_((() => {
+return process.stdin
+}))
 }
 
 export function NodeSystem_writeBuffer(self_, buffer_) {
@@ -309,9 +311,9 @@ process.exit(exitCode_)
 }
 
 export async function NodeSystem_readStream$(self_, $task) {
-
-            return ff_core_Path.internalReadStream_$(() => process.stdin)
-        
+return (await ff_core_Path.internalReadStream_$((async ($task) => {
+return process.stdin
+}), $task))
 }
 
 export async function NodeSystem_writeBuffer$(self_, buffer_, $task) {

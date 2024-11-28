@@ -236,11 +236,10 @@ extend self: Path {
         self.appendStream([buffer].toStream())
     }
 
-    readStream(): Stream[Buffer]
-        target node async """
-            import * as fs from 'fs'
-            return ff_core_Path.internalReadStream_$(() => fs.createReadStream(self_))
-        """
+    readStream(): Stream[Buffer] {
+        let fs = Js.import("fs")
+        internalReadStream {fs->createReadStream(self!)}
+    }
 
     writeStream(stream: Stream[Buffer], createOnly: Bool = False)
         target node async """
@@ -330,11 +329,13 @@ extend self: PathEntry {
 
 internalReadStream(createReadStream: () => JsValue): Stream[Buffer] {
     mutable readable = None
+    mutable seenError = Js.null()
+    let emptyResolve = {}
+    let emptyReject = {_ => }
+    mutable doResolve = emptyResolve
+    mutable doReject = emptyReject
     Stream {
         Js.throwIfCancelled()
-        mutable doResolve = {}
-        mutable doReject = {_ => }
-        mutable seenError = Js.null()
         let jsStream = readable.else {
             let newReadable = createReadStream()
             newReadable->on("readable", Js->{
@@ -347,7 +348,7 @@ internalReadStream(createReadStream: () => JsValue): Stream[Buffer] {
             newReadable->on("close", Js->{
                 doResolve()
             })
-            readable = Some(createReadStream())
+            readable = Some(newReadable)
             newReadable
         }
         function go(): Option[Buffer] {
@@ -365,14 +366,14 @@ internalReadStream(createReadStream: () => JsValue): Stream[Buffer] {
                     let jsDoReject = Js->{doReject(_)}
                     doResolve = {
                         signal->removeEventListener("abort", jsDoReject)
-                        doResolve = {}
-                        doReject = {_ => }
+                        doResolve = emptyResolve
+                        doReject = emptyReject
                         resolve.callValue0()
                     }
                     doReject = {error => 
                         signal->removeEventListener("abort", jsDoReject)
-                        doResolve = {}
-                        doReject = {_ => }
+                        doResolve = emptyResolve
+                        doReject = emptyReject
                         reject.callValue1(error)
                     }
                     signal->addEventListener("abort", jsDoReject)
@@ -386,48 +387,3 @@ internalReadStream(createReadStream: () => JsValue): Stream[Buffer] {
         readable.each {_->destroy()}
     }
 }
-
-internalReadStreamOld(createReadStream: () => JsValue): Stream[Buffer]
-    target node async """
-        let task = null
-        let readable = null
-        let doResolve = null
-        let doReject = null
-        let seenError = null
-        const abort = () => {
-            if(task != null) {
-                task.controller.signal.removeEventListener('abort', abort)
-                readable.destroy()
-            }
-        }
-        function open($task) {
-            ff_core_Task.Task_throwIfAborted($task)
-            task = $task
-            readable = createReadStream_()
-            readable.on('readable', () => {
-                if(doResolve != null) doResolve()
-            })
-            readable.on('error', error => {
-                task.controller.signal.removeEventListener('abort', abort)
-                seenError = error
-                if(doReject != null) doReject(error)
-            })
-            readable.on('close', () => {
-                task.controller.signal.removeEventListener('abort', abort)
-                if(doResolve != null) doResolve()
-            })
-            $task.controller.signal.addEventListener('abort', abort)
-        }
-        return ff_core_Stream.Stream(async function go($task) {
-            if(task == null) open($task)
-            let buffer = readable.read()
-            if(buffer != null) return ff_core_Option.Some(new DataView(buffer.buffer, buffer.byteOffset, buffer.length))
-            if(seenError != null) throw seenError
-            if(readable.destroyed) return ff_core_Option.None()
-            let promise = new Promise((resolve, reject) => {
-                doResolve = () => {doResolve = null; doReject = null; resolve()}
-                doReject = error => {doResolve = null; doReject = null; reject(error)}
-            }).then(() => go($task))
-            return await promise
-        }, abort)
-    """

@@ -54,10 +54,9 @@ extend self: NodeSystem {
     exit[T](exitCode: Int = 0): T
         target js async "process.exit(exitCode_)"
 
-    readStream(): Stream[Buffer]
-        target js async """
-            return ff_core_Path.internalReadStream_$(() => process.stdin)
-        """
+    readStream(): Stream[Buffer] {
+        Path.internalReadStream {Js->process->stdin}
+    }
 
     writeBuffer(buffer: Buffer): Unit
         target js async "process.stdout.write(new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength))"

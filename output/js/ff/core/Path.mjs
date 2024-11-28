@@ -108,15 +108,17 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 export function internalReadStream_(createReadStream_) {
 let readable_ = ff_core_Option.None();
+let seenError_ = null;
+const emptyResolve_ = (() => {
+
+});
+const emptyReject_ = ((_) => {
+
+});
+let doResolve_ = emptyResolve_;
+let doReject_ = emptyReject_;
 return ff_core_Stream.Stream((() => {
 ;
-let doResolve_ = (() => {
-
-});
-let doReject_ = ((_) => {
-
-});
-let seenError_ = null;
 const jsStream_ = ff_core_Option.Option_else(readable_, (() => {
 const newReadable_ = createReadStream_();
 newReadable_.on("readable", (() => {
@@ -129,12 +131,11 @@ return doReject_(error_)
 newReadable_.on("close", (() => {
 return doResolve_()
 }));
-readable_ = ff_core_Option.Some(createReadStream_());
+readable_ = ff_core_Option.Some(newReadable_);
 return newReadable_
 }));
 function go_() {
 const jsBuffer_ = jsStream_.read();
-ff_core_Log.debug_(("Read" + jsBuffer_));
 if((!ff_core_JsValue.JsValue_isNullOrUndefined(jsBuffer_))) {
 const buffer_ = (new DataView(jsBuffer_.buffer, jsBuffer_.byteOffset, jsBuffer_.length));
 return ff_core_Option.Some(buffer_)
@@ -152,22 +153,14 @@ return doReject_(_w1)
 });
 doResolve_ = (() => {
 signal_.removeEventListener("abort", jsDoReject_);
-doResolve_ = (() => {
-
-});
-doReject_ = ((_) => {
-
-});
+doResolve_ = emptyResolve_;
+doReject_ = emptyReject_;
 resolve_()
 });
 doReject_ = ((error_) => {
 signal_.removeEventListener("abort", jsDoReject_);
-doResolve_ = (() => {
-
-});
-doReject_ = ((_) => {
-
-});
+doResolve_ = emptyResolve_;
+doReject_ = emptyReject_;
 reject_(error_)
 });
 return signal_.addEventListener("abort", jsDoReject_)
@@ -195,15 +188,17 @@ throw new Error('Function internalReadStreamOld is missing on this target in syn
 
 export async function internalReadStream_$(createReadStream_, $task) {
 let readable_ = ff_core_Option.None();
+let seenError_ = null;
+const emptyResolve_ = (() => {
+
+});
+const emptyReject_ = ((_) => {
+
+});
+let doResolve_ = emptyResolve_;
+let doReject_ = emptyReject_;
 return ff_core_Stream.Stream((async ($task) => {
 ff_core_Task.Task_throwIfAborted($task);
-let doResolve_ = (() => {
-
-});
-let doReject_ = ((_) => {
-
-});
-let seenError_ = null;
 const jsStream_ = (await ff_core_Option.Option_else$(readable_, (async ($task) => {
 const newReadable_ = (await createReadStream_($task));
 newReadable_.on("readable", (() => {
@@ -216,12 +211,11 @@ return doReject_(error_)
 newReadable_.on("close", (() => {
 return doResolve_()
 }));
-readable_ = ff_core_Option.Some((await createReadStream_($task)));
+readable_ = ff_core_Option.Some(newReadable_);
 return newReadable_
 }), $task));
 async function go_$($task) {
 const jsBuffer_ = jsStream_.read();
-ff_core_Log.debug_(("Read" + jsBuffer_));
 if((!ff_core_JsValue.JsValue_isNullOrUndefined(jsBuffer_))) {
 const buffer_ = (new DataView(jsBuffer_.buffer, jsBuffer_.byteOffset, jsBuffer_.length));
 return ff_core_Option.Some(buffer_)
@@ -239,22 +233,14 @@ return doReject_(_w1)
 });
 doResolve_ = (() => {
 signal_.removeEventListener("abort", jsDoReject_);
-doResolve_ = (() => {
-
-});
-doReject_ = ((_) => {
-
-});
+doResolve_ = emptyResolve_;
+doReject_ = emptyReject_;
 resolve_()
 });
 doReject_ = ((error_) => {
 signal_.removeEventListener("abort", jsDoReject_);
-doResolve_ = (() => {
-
-});
-doReject_ = ((_) => {
-
-});
+doResolve_ = emptyResolve_;
+doReject_ = emptyReject_;
 reject_(error_)
 });
 return signal_.addEventListener("abort", jsDoReject_)
@@ -564,7 +550,10 @@ ff_core_Path.Path_appendStream(self_, ff_core_List.List_toStream([buffer_], fals
 }
 
 export function Path_readStream(self_) {
-throw new Error('Function Path_readStream is missing on this target in sync context.');
+const fs_ = import$0;
+return ff_core_Path.internalReadStream_((() => {
+return fs_.createReadStream(self_)
+}))
 }
 
 export function Path_writeStream(self_, stream_, createOnly_ = false) {
@@ -859,10 +848,10 @@ export async function Path_appendBuffer$(self_, buffer_, $task) {
 }
 
 export async function Path_readStream$(self_, $task) {
-
-            const fs = import$0
-            return ff_core_Path.internalReadStream_$(() => fs.createReadStream(self_))
-        
+const fs_ = import$0;
+return (await ff_core_Path.internalReadStream_$((async ($task) => {
+return fs_.createReadStream(self_)
+}), $task))
 }
 
 export async function Path_writeStream$(self_, stream_, createOnly_ = false, $task) {

@@ -157,34 +157,34 @@ extend self: JsValue {
         target js sync "return self_.apply(this_, arguments_)"
 
     callValue0(): JsValue
-        target js sync "return self_.call(void 0)"
+        target js sync "return self_()"
 
     callValue1[A1: IsJsValue](a1: A1): JsValue
-        target js sync "return self_.call(void 0, a1_)"
+        target js sync "return self_(a1_)"
 
     callValue2[A1: IsJsValue, A2: IsJsValue](a1: A1, a2: A2): JsValue
-        target js sync "return self_.call(void 0, a1_, a2_)"
+        target js sync "return self_(a1_, a2_)"
 
     callValue3[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue](a1: A1, a2: A2, a3: A3): JsValue
-        target js sync "return self_.call(void 0, a1_, a2_, a3_)"
+        target js sync "return self_(a1_, a2_, a3_)"
 
     callValue4[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4): JsValue
-        target js sync "return self_.call(void 0, a1_, a2_, a3_, a4_)"
+        target js sync "return self_(a1_, a2_, a3_, a4_)"
 
     callValue5[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5): JsValue
-        target js sync "return self_.call(void 0, a1_, a2_, a3_, a4_, a5_)"
+        target js sync "return self_(a1_, a2_, a3_, a4_, a5_)"
 
     callValue6[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6): JsValue
-        target js sync "return self_.call(void 0, a1_, a2_, a3_, a4_, a5_, a6_)"
+        target js sync "return self_(a1_, a2_, a3_, a4_, a5_, a6_)"
 
     callValue7[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7): JsValue
-        target js sync "return self_.call(void 0, a1_, a2_, a3_, a4_, a5_, a6_, a7_)"
+        target js sync "return self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_)"
 
     callValue8[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8): JsValue
-        target js sync "return self_.call(void 0, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_)"
+        target js sync "return self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_)"
 
     callValue9[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue, A9: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8, a9: A9): JsValue
-        target js sync "return self_.call(void 0, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_)"
+        target js sync "return self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_)"
 
 
     new(this: JsValue, arguments: List[JsValue]): JsValue

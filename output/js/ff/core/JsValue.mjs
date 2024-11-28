@@ -298,43 +298,43 @@ return self_.apply(this_, arguments_)
 }
 
 export function JsValue_callValue0(self_) {
-return self_.call(void 0)
+return self_()
 }
 
 export function JsValue_callValue1(self_, a1_, ff_core_JsValue_IsJsValue$A1) {
-return self_.call(void 0, a1_)
+return self_(a1_)
 }
 
 export function JsValue_callValue2(self_, a1_, a2_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2) {
-return self_.call(void 0, a1_, a2_)
+return self_(a1_, a2_)
 }
 
 export function JsValue_callValue3(self_, a1_, a2_, a3_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3) {
-return self_.call(void 0, a1_, a2_, a3_)
+return self_(a1_, a2_, a3_)
 }
 
 export function JsValue_callValue4(self_, a1_, a2_, a3_, a4_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4) {
-return self_.call(void 0, a1_, a2_, a3_, a4_)
+return self_(a1_, a2_, a3_, a4_)
 }
 
 export function JsValue_callValue5(self_, a1_, a2_, a3_, a4_, a5_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5) {
-return self_.call(void 0, a1_, a2_, a3_, a4_, a5_)
+return self_(a1_, a2_, a3_, a4_, a5_)
 }
 
 export function JsValue_callValue6(self_, a1_, a2_, a3_, a4_, a5_, a6_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6) {
-return self_.call(void 0, a1_, a2_, a3_, a4_, a5_, a6_)
+return self_(a1_, a2_, a3_, a4_, a5_, a6_)
 }
 
 export function JsValue_callValue7(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7) {
-return self_.call(void 0, a1_, a2_, a3_, a4_, a5_, a6_, a7_)
+return self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_)
 }
 
 export function JsValue_callValue8(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8) {
-return self_.call(void 0, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_)
+return self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_)
 }
 
 export function JsValue_callValue9(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, ff_core_JsValue_IsJsValue$A9) {
-return self_.call(void 0, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_)
+return self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_)
 }
 
 export function JsValue_new(self_, this_, arguments_) {
