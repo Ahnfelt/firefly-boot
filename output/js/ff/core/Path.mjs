@@ -107,10 +107,176 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function internalReadStream_(createReadStream_) {
-throw new Error('Function internalReadStream is missing on this target in sync context.');
+let readable_ = ff_core_Option.None();
+return ff_core_Stream.Stream((() => {
+;
+let doResolve_ = (() => {
+
+});
+let doReject_ = ((_) => {
+
+});
+let seenError_ = null;
+const jsStream_ = ff_core_Option.Option_else(readable_, (() => {
+const newReadable_ = createReadStream_();
+newReadable_.on("readable", (() => {
+return doResolve_()
+}));
+newReadable_.on("error", ((error_) => {
+seenError_ = error_;
+return doReject_(error_)
+}));
+newReadable_.on("close", (() => {
+return doResolve_()
+}));
+readable_ = ff_core_Option.Some(createReadStream_());
+return newReadable_
+}));
+function go_() {
+const jsBuffer_ = jsStream_.read();
+ff_core_Log.debug_(("Read" + jsBuffer_));
+if((!ff_core_JsValue.JsValue_isNullOrUndefined(jsBuffer_))) {
+const buffer_ = (new DataView(jsBuffer_.buffer, jsBuffer_.byteOffset, jsBuffer_.length));
+return ff_core_Option.Some(buffer_)
+} else {
+if((!ff_core_JsValue.JsValue_isNullOrUndefined(seenError_))) {
+return ff_core_Core.throwAny_(seenError_)
+} else {
+if(jsStream_.destroyed) {
+return ff_core_Option.None()
+} else {
+ff_core_Js.withSignal_(((signal_) => {
+const promise_ = (new Promise(((resolve_, reject_) => {
+const jsDoReject_ = ((_w1) => {
+return doReject_(_w1)
+});
+doResolve_ = (() => {
+signal_.removeEventListener("abort", jsDoReject_);
+doResolve_ = (() => {
+
+});
+doReject_ = ((_) => {
+
+});
+resolve_()
+});
+doReject_ = ((error_) => {
+signal_.removeEventListener("abort", jsDoReject_);
+doResolve_ = (() => {
+
+});
+doReject_ = ((_) => {
+
+});
+reject_(error_)
+});
+return signal_.addEventListener("abort", jsDoReject_)
+})));
+return promise_
+}));
+return go_()
+}
+}
+}
+}
+return go_()
+}), (() => {
+for(const for_o = readable_; for_o.Some;) {
+const _w1 = for_o.value_;
+_w1.destroy()
+break
+}
+}))
+}
+
+export function internalReadStreamOld_(createReadStream_) {
+throw new Error('Function internalReadStreamOld is missing on this target in sync context.');
 }
 
 export async function internalReadStream_$(createReadStream_, $task) {
+let readable_ = ff_core_Option.None();
+return ff_core_Stream.Stream((async ($task) => {
+ff_core_Task.Task_throwIfAborted($task);
+let doResolve_ = (() => {
+
+});
+let doReject_ = ((_) => {
+
+});
+let seenError_ = null;
+const jsStream_ = (await ff_core_Option.Option_else$(readable_, (async ($task) => {
+const newReadable_ = (await createReadStream_($task));
+newReadable_.on("readable", (() => {
+return doResolve_()
+}));
+newReadable_.on("error", ((error_) => {
+seenError_ = error_;
+return doReject_(error_)
+}));
+newReadable_.on("close", (() => {
+return doResolve_()
+}));
+readable_ = ff_core_Option.Some((await createReadStream_($task)));
+return newReadable_
+}), $task));
+async function go_$($task) {
+const jsBuffer_ = jsStream_.read();
+ff_core_Log.debug_(("Read" + jsBuffer_));
+if((!ff_core_JsValue.JsValue_isNullOrUndefined(jsBuffer_))) {
+const buffer_ = (new DataView(jsBuffer_.buffer, jsBuffer_.byteOffset, jsBuffer_.length));
+return ff_core_Option.Some(buffer_)
+} else {
+if((!ff_core_JsValue.JsValue_isNullOrUndefined(seenError_))) {
+return ff_core_Core.throwAny_(seenError_)
+} else {
+if(jsStream_.destroyed) {
+return ff_core_Option.None()
+} else {
+(await ff_core_Js.withSignal_$((async (signal_, $task) => {
+const promise_ = (new Promise(((resolve_, reject_) => {
+const jsDoReject_ = ((_w1) => {
+return doReject_(_w1)
+});
+doResolve_ = (() => {
+signal_.removeEventListener("abort", jsDoReject_);
+doResolve_ = (() => {
+
+});
+doReject_ = ((_) => {
+
+});
+resolve_()
+});
+doReject_ = ((error_) => {
+signal_.removeEventListener("abort", jsDoReject_);
+doResolve_ = (() => {
+
+});
+doReject_ = ((_) => {
+
+});
+reject_(error_)
+});
+return signal_.addEventListener("abort", jsDoReject_)
+})));
+return (await promise_)
+}), $task));
+return (await go_$($task))
+}
+}
+}
+}
+return (await go_$($task))
+}), (async ($task) => {
+for(const for_o = readable_; for_o.Some;) {
+const _w1 = for_o.value_;
+_w1.destroy()
+break
+}
+}))
+}
+
+export async function internalReadStreamOld_$(createReadStream_, $task) {
 
         let task = null
         let readable = null
@@ -427,7 +593,13 @@ return fsPromises_.open(self_, flags_)
 }
 
 export function Path_appendHandle(self_, alsoRead_ = false, mustCreate_ = false) {
-throw new Error('Function Path_appendHandle is missing on this target in sync context.');
+const fsPromises_ = import$1;
+const flags_ = ((mustCreate_
+? "ax"
+: "a") + (alsoRead_
+? "+"
+: ""));
+return fsPromises_.open(self_, flags_)
 }
 
 export async function Path_exists$(self_, checkReadable_ = false, checkWritable_ = false, checkExecutable_ = false, $task) {
@@ -759,10 +931,13 @@ return (await fsPromises_.open(self_, flags_))
 }
 
 export async function Path_appendHandle$(self_, alsoRead_ = false, mustCreate_ = false, $task) {
-
-            const fsPromises = import$1
-            return await fsPromises.open(self_, (mustCreate_ ? 'wx' : 'w') + (alsoRead_ ? '+' : ''))
-        
+const fsPromises_ = import$1;
+const flags_ = ((mustCreate_
+? "ax"
+: "a") + (alsoRead_
+? "+"
+: ""));
+return (await fsPromises_.open(self_, flags_))
 }
 
 export function PathEntry_path(self_) {

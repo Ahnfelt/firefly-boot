@@ -328,7 +328,66 @@ extend self: PathEntry {
 
 }
 
-internalReadStream(createReadStream: () => JsValue): Stream[Buffer]
+internalReadStream(createReadStream: () => JsValue): Stream[Buffer] {
+    mutable readable = None
+    Stream {
+        Js.throwIfCancelled()
+        mutable doResolve = {}
+        mutable doReject = {_ => }
+        mutable seenError = Js.null()
+        let jsStream = readable.else {
+            let newReadable = createReadStream()
+            newReadable->on("readable", Js->{
+                doResolve()
+            })
+            newReadable->on("error", Js->{error =>
+                seenError = error
+                doReject(error)
+            })
+            newReadable->on("close", Js->{
+                doResolve()
+            })
+            readable = Some(createReadStream())
+            newReadable
+        }
+        function go(): Option[Buffer] {
+            let jsBuffer = jsStream->read()
+            if(!jsBuffer.isNullOrUndefined()) {
+                let buffer: Buffer = Js->DataView->(jsBuffer->buffer, jsBuffer->byteOffset, jsBuffer->length)?
+                Some(buffer)
+            } else:
+            if(!seenError.isNullOrUndefined()) {
+                throwAny(seenError?)
+            } else:
+            if(jsStream->destroyed?) {None} else:
+            Js.withSignal {signal =>
+                let promise = Js->Promise->(Js->{resolve, reject =>
+                    let jsDoReject = Js->{doReject(_)}
+                    doResolve = {
+                        signal->removeEventListener("abort", jsDoReject)
+                        doResolve = {}
+                        doReject = {_ => }
+                        resolve.callValue0()
+                    }
+                    doReject = {error => 
+                        signal->removeEventListener("abort", jsDoReject)
+                        doResolve = {}
+                        doReject = {_ => }
+                        reject.callValue1(error)
+                    }
+                    signal->addEventListener("abort", jsDoReject)
+                })
+                Js.await(promise)
+            }
+            go()
+        }
+        go()
+    } {
+        readable.each {_->destroy()}
+    }
+}
+
+internalReadStreamOld(createReadStream: () => JsValue): Stream[Buffer]
     target node async """
         let task = null
         let readable = null
