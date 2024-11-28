@@ -117,9 +117,7 @@ const emptyReject_ = ((_) => {
 });
 let doResolve_ = emptyResolve_;
 let doReject_ = emptyReject_;
-return ff_core_Stream.Stream((() => {
-;
-const jsStream_ = ff_core_Option.Option_else(readable_, (() => {
+const open_ = (() => {
 const newReadable_ = createReadStream_();
 newReadable_.on("readable", (() => {
 return doResolve_()
@@ -133,7 +131,10 @@ return doResolve_()
 }));
 readable_ = ff_core_Option.Some(newReadable_);
 return newReadable_
-}));
+});
+return ff_core_Stream.Stream((() => {
+;
+const jsStream_ = ff_core_Option.Option_else(readable_, open_);
 function go_() {
 const jsBuffer_ = jsStream_.read();
 if((!ff_core_JsValue.JsValue_isNullOrUndefined(jsBuffer_))) {
@@ -193,9 +194,7 @@ const emptyReject_ = ((_) => {
 });
 let doResolve_ = emptyResolve_;
 let doReject_ = emptyReject_;
-return ff_core_Stream.Stream((async ($task) => {
-ff_core_Task.Task_throwIfAborted($task);
-const jsStream_ = (await ff_core_Option.Option_else$(readable_, (async ($task) => {
+const open_ = (async ($task) => {
 const newReadable_ = (await createReadStream_($task));
 newReadable_.on("readable", (() => {
 return doResolve_()
@@ -209,7 +208,10 @@ return doResolve_()
 }));
 readable_ = ff_core_Option.Some(newReadable_);
 return newReadable_
-}), $task));
+});
+return ff_core_Stream.Stream((async ($task) => {
+ff_core_Task.Task_throwIfAborted($task);
+const jsStream_ = (await ff_core_Option.Option_else$(readable_, open_, $task));
 async function go_$($task) {
 const jsBuffer_ = jsStream_.read();
 if((!ff_core_JsValue.JsValue_isNullOrUndefined(jsBuffer_))) {

@@ -334,23 +334,24 @@ internalReadStream(createReadStream: () => JsValue): Stream[Buffer] {
     let emptyReject = {_ => }
     mutable doResolve = emptyResolve
     mutable doReject = emptyReject
+    let open = {
+        let newReadable = createReadStream()
+        newReadable->on("readable", Js->{
+            doResolve()
+        })
+        newReadable->on("error", Js->{error =>
+            seenError = error
+            doReject(error)
+        })
+        newReadable->on("close", Js->{
+            doResolve()
+        })
+        readable = Some(newReadable)
+        newReadable
+    }
     Stream {
         Js.throwIfCancelled()
-        let jsStream = readable.else {
-            let newReadable = createReadStream()
-            newReadable->on("readable", Js->{
-                doResolve()
-            })
-            newReadable->on("error", Js->{error =>
-                seenError = error
-                doReject(error)
-            })
-            newReadable->on("close", Js->{
-                doResolve()
-            })
-            readable = Some(newReadable)
-            newReadable
-        }
+        let jsStream = readable.else(open)
         function go(): Option[Buffer] {
             let jsBuffer = jsStream->read()
             if(!jsBuffer.isNullOrUndefined()) {
