@@ -299,12 +299,11 @@ extend self: Path {
         Js.await(fsPromises->open(self!, flags))?
     }
    
-    appendHandle(alsoRead: Bool = False, mustCreate: Bool = False): FileHandle 
-        // Same as above ?
-        target node async """
-            import * as fsPromises from 'fs/promises'
-            return await fsPromises.open(self_, (mustCreate_ ? 'wx' : 'w') + (alsoRead_ ? '+' : ''))
-        """
+    appendHandle(alsoRead: Bool = False, mustCreate: Bool = False): FileHandle {
+        let fsPromises = Js.import("fs/promises")
+        let flags = if(mustCreate) {"ax"} else {"a"} + if(alsoRead) {"+"} else {""}
+        Js.await(fsPromises->open(self!, flags))?
+    }
 
 }
 
