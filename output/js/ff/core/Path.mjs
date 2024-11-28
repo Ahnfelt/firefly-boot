@@ -398,7 +398,24 @@ return (fs_.promises.stat(self_).mtimeMs * 0.001)
 }
 
 export function Path_entries(self_) {
-throw new Error('Function Path_entries is missing on this target in sync context.');
+const fsPromises_ = import$1;
+let dir_ = null;
+return ff_core_Stream.Stream((() => {
+if(ff_core_JsValue.JsValue_isNull(dir_)) {
+dir_ = fsPromises_.opendir(self_, {bufferSize: 128})
+};
+const entry_ = dir_.read();
+if((!ff_core_JsValue.JsValue_isNull(entry_))) {
+return ff_core_Option.Some((function() {
+entry_.ffPath = self_;
+return entry_
+})())
+} else return ff_core_Option.None()
+}), (() => {
+if((!ff_core_JsValue.JsValue_isNull(dir_))) {
+dir_.close()
+}
+}))
 }
 
 export function Path_absolute(self_) {
@@ -683,22 +700,24 @@ return ((await fs_.promises.stat(self_)).mtimeMs * 0.001)
 }
 
 export async function Path_entries$(self_, $task) {
-
-            const fsPromises = import$1
-            let dir = null
-            return ff_core_Stream.Stream(
-                async () => {
-                    if(dir === null) dir = await fsPromises.opendir(self_, {bufferSize: 128})
-                    const entry = await dir.read()
-                    if(entry === null) return ff_core_Option.None()
-                    entry.ffPath = self_
-                    return ff_core_Option.Some(entry)
-                },
-                async () => {
-                    if(dir !== null) await dir.close()
-                }
-            )
-        
+const fsPromises_ = import$1;
+let dir_ = null;
+return ff_core_Stream.Stream((async ($task) => {
+if(ff_core_JsValue.JsValue_isNull(dir_)) {
+dir_ = (await fsPromises_.opendir(self_, {bufferSize: 128}))
+};
+const entry_ = (await dir_.read());
+if((!ff_core_JsValue.JsValue_isNull(entry_))) {
+return ff_core_Option.Some((await (async function() {
+entry_.ffPath = self_;
+return entry_
+})()))
+} else return ff_core_Option.None()
+}), (async ($task) => {
+if((!ff_core_JsValue.JsValue_isNull(dir_))) {
+(await dir_.close())
+}
+}))
 }
 
 export async function Path_absolute$(self_, $task) {
