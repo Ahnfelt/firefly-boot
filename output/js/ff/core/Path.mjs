@@ -183,6 +183,36 @@ break
 }))
 }
 
+export function internalWriteStream_(path_, stream_, flags_) {
+const fs_ = import$0;
+const writable_ = fs_.createWriteStream(path_, {flags: flags_});
+try {
+ff_core_Stream.Stream_each(stream_, ((buffer_) => {
+if((!writable_.write((new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength))))) {
+ff_core_Js.withSignal_(((signal_) => {
+return (new Promise(((resolve_, reject_) => {
+signal_.addEventListener("abort", reject_);
+return writable_.once("drain", (() => {
+signal_.removeEventListener("abort", reject_);
+return resolve_()
+}))
+})))
+}))
+}
+}))
+} finally {
+(new Promise(((resolve_, reject_) => {
+return writable_.close(((err_) => {
+if(err_) {
+return reject_(err_)
+} else {
+return resolve_()
+}
+}))
+})))
+}
+}
+
 export async function internalReadStream_$(createReadStream_, $task) {
 let readable_ = ff_core_Option.None();
 let seenError_ = null;
@@ -258,6 +288,36 @@ _w1.destroy()
 break
 }
 }))
+}
+
+export async function internalWriteStream_$(path_, stream_, flags_, $task) {
+const fs_ = import$0;
+const writable_ = fs_.createWriteStream(path_, {flags: flags_});
+try {
+(await ff_core_Stream.Stream_each$(stream_, (async (buffer_, $task) => {
+if((!writable_.write((new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength))))) {
+(await ff_core_Js.withSignal_$((async (signal_, $task) => {
+return (await (new Promise(((resolve_, reject_) => {
+signal_.addEventListener("abort", reject_);
+return writable_.once("drain", (() => {
+signal_.removeEventListener("abort", reject_);
+return resolve_()
+}))
+}))))
+}), $task))
+}
+}), $task))
+} finally {
+(await (new Promise(((resolve_, reject_) => {
+return writable_.close(((err_) => {
+if(err_) {
+return reject_(err_)
+} else {
+return resolve_()
+}
+}))
+}))))
+}
 }
 
 export function Path_exists(self_, checkReadable_ = false, checkWritable_ = false, checkExecutable_ = false) {
@@ -509,11 +569,13 @@ return fs_.createReadStream(self_)
 }
 
 export function Path_writeStream(self_, stream_, createOnly_ = false) {
-throw new Error('Function Path_writeStream is missing on this target in sync context.');
+ff_core_Path.internalWriteStream_(self_, stream_, (createOnly_
+? "wx"
+: "w"))
 }
 
 export function Path_appendStream(self_, stream_) {
-throw new Error('Function Path_appendStream is missing on this target in sync context.');
+ff_core_Path.internalWriteStream_(self_, stream_, "a")
 }
 
 export function Path_readHandle(self_, alsoWrite_ = false) {
@@ -807,51 +869,13 @@ return fs_.createReadStream(self_)
 }
 
 export async function Path_writeStream$(self_, stream_, createOnly_ = false, $task) {
-
-            const fs = import$0
-            let writeable = fs.createWriteStream(self_, {flags: createOnly_ ? 'wx' : 'w'})
-            try {
-                await ff_core_Stream.Stream_each$(stream_, async buffer => {
-                    if(!writeable.write(new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength))) {
-                        await new Promise((resolve, reject) => {
-                            $task.controller.signal.addEventListener('abort', reject)
-                            writeable.once('drain', () => {
-                                $task.controller.signal.removeEventListener('abort', reject)
-                                resolve()
-                            })
-                        })
-                    }
-                }, $task)
-            } finally {
-                await new Promise((resolve, reject) => {
-                    writeable.close(err => {if(err) reject(err); else resolve();});
-                });
-            }
-        
+(await ff_core_Path.internalWriteStream_$(self_, stream_, (createOnly_
+? "wx"
+: "w"), $task))
 }
 
 export async function Path_appendStream$(self_, stream_, $task) {
-
-            const fs = import$0
-            let writeable = fs.createWriteStream(self_, {flags: 'a'})
-            try {
-                await ff_core_Stream.Stream_each$(stream_, async buffer => {
-                    if(!writeable.write(new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength))) {
-                        await new Promise((resolve, reject) => {
-                            $task.controller.signal.addEventListener('abort', reject)
-                            writeable.once('drain', () => {
-                                $task.controller.signal.removeEventListener('abort', reject)
-                                resolve()
-                            })
-                        })
-                    }
-                }, $task)
-            } finally {
-                await new Promise((resolve, reject) => {
-                    writeable.close(err => {if(err) reject(err); else resolve();});
-                });
-            }
-        
+(await ff_core_Path.internalWriteStream_$(self_, stream_, "a", $task))
 }
 
 export async function Path_readHandle$(self_, alsoWrite_ = false, $task) {

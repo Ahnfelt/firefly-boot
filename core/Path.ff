@@ -240,52 +240,14 @@ extend self: Path {
         let fs = Js.import("fs")
         internalReadStream {fs->createReadStream(self!)}
     }
+    
+    writeStream(stream: Stream[Buffer], createOnly: Bool = False) {
+        internalWriteStream(self, stream, if(createOnly) {"wx"} else {"w"})
+    }
 
-    writeStream(stream: Stream[Buffer], createOnly: Bool = False)
-        target node async """
-            import * as fs from 'fs'
-            let writeable = fs.createWriteStream(self_, {flags: createOnly_ ? 'wx' : 'w'})
-            try {
-                await ff_core_Stream.Stream_each$(stream_, async buffer => {
-                    if(!writeable.write(new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength))) {
-                        await new Promise((resolve, reject) => {
-                            $task.controller.signal.addEventListener('abort', reject)
-                            writeable.once('drain', () => {
-                                $task.controller.signal.removeEventListener('abort', reject)
-                                resolve()
-                            })
-                        })
-                    }
-                }, $task)
-            } finally {
-                await new Promise((resolve, reject) => {
-                    writeable.close(err => {if(err) reject(err); else resolve();});
-                });
-            }
-        """
-
-    appendStream(stream: Stream[Buffer])
-        target node async """
-            import * as fs from 'fs'
-            let writeable = fs.createWriteStream(self_, {flags: 'a'})
-            try {
-                await ff_core_Stream.Stream_each$(stream_, async buffer => {
-                    if(!writeable.write(new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength))) {
-                        await new Promise((resolve, reject) => {
-                            $task.controller.signal.addEventListener('abort', reject)
-                            writeable.once('drain', () => {
-                                $task.controller.signal.removeEventListener('abort', reject)
-                                resolve()
-                            })
-                        })
-                    }
-                }, $task)
-            } finally {
-                await new Promise((resolve, reject) => {
-                    writeable.close(err => {if(err) reject(err); else resolve();});
-                });
-            }
-        """
+    appendStream(stream: Stream[Buffer]) {
+        internalWriteStream(self, stream, "a")
+    }
 
     readHandle(alsoWrite: Bool = False): FileHandle {
         let fsPromises = Js.import("fs/promises")
@@ -388,3 +350,28 @@ internalReadStream(createReadStream: () => JsValue): Stream[Buffer] {
         readable.each {_->destroy()}
     }
 }
+
+internalWriteStream(path: Path, stream: Stream[Buffer], flags: String) {
+    let fs = Js.import("fs")
+    let writable = fs->createWriteStream(path!, Js->(flags = flags))
+    try {
+        stream.each {buffer =>
+            if(!writable->write(Js->Uint8Array->(buffer!->buffer, buffer!->byteOffset, buffer!->byteLength))?) {
+                Js.withSignal {signal =>
+                    Js.await(Js->Promise->(Js->{resolve, reject =>
+                        signal->addEventListener("abort", reject)
+                        writable->once("drain", Js->{
+                            signal->removeEventListener("abort", reject)
+                            resolve.callValue0()
+                        })
+                    }))
+                }
+            }
+        }
+    } finally {
+        Js.await(Js->Promise->(Js->{resolve, reject =>
+            writable->close(Js->{err => if(err?) {reject.callValue1(err)} else {resolve.callValue0()}})
+        }))
+    }
+}
+
