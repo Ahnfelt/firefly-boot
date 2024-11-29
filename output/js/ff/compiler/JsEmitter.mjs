@@ -1667,10 +1667,35 @@ if(_1 === "ff:core/Js.import") {
 const _guard1 = arguments_;
 if(_guard1.length === 1 && _guard1[0].EString) {
 const url_ = _guard1[0].value_;
+{
+const _1 = self_.emitTarget_;
+if(_1.EmitBrowser) {
+return ff_core_Option.Some("(() => {throw new Error('Node.js imports are not supported in the browser')})()")
+}
+{
 return ff_core_Option.Some(ff_compiler_JsImporter.JsImporter_add(self_.jsImporter_, ff_core_String.String_replace(url_, "\"", "")))
 }
 }
-if(_1 === "ff:core/Js.importDynamic") {
+return
+}
+}
+if(_1 === "ff:core/Js.browserImport") {
+const _guard1 = arguments_;
+if(_guard1.length === 1 && _guard1[0].EString) {
+const url_ = _guard1[0].value_;
+{
+const _1 = self_.emitTarget_;
+if(_1.EmitBrowser) {
+return ff_core_Option.Some(ff_compiler_JsImporter.JsImporter_add(self_.jsImporter_, ff_core_String.String_replace(url_, "\"", "")))
+}
+{
+return ff_core_Option.Some("(() => {throw new Error('Browser imports are not supported in Node.js')})()")
+}
+}
+return
+}
+}
+if(_1 === "ff:core/Js.dynamicImport") {
 const _guard1 = arguments_;
 if(_guard1.length === 1 && _guard1[0].EString) {
 const url_ = _guard1[0].value_;
@@ -4070,10 +4095,35 @@ if(_1 === "ff:core/Js.import") {
 const _guard1 = arguments_;
 if(_guard1.length === 1 && _guard1[0].EString) {
 const url_ = _guard1[0].value_;
+{
+const _1 = self_.emitTarget_;
+if(_1.EmitBrowser) {
+return ff_core_Option.Some("(() => {throw new Error('Node.js imports are not supported in the browser')})()")
+}
+{
 return ff_core_Option.Some(ff_compiler_JsImporter.JsImporter_add(self_.jsImporter_, ff_core_String.String_replace(url_, "\"", "")))
 }
 }
-if(_1 === "ff:core/Js.importDynamic") {
+return
+}
+}
+if(_1 === "ff:core/Js.browserImport") {
+const _guard1 = arguments_;
+if(_guard1.length === 1 && _guard1[0].EString) {
+const url_ = _guard1[0].value_;
+{
+const _1 = self_.emitTarget_;
+if(_1.EmitBrowser) {
+return ff_core_Option.Some(ff_compiler_JsImporter.JsImporter_add(self_.jsImporter_, ff_core_String.String_replace(url_, "\"", "")))
+}
+{
+return ff_core_Option.Some("(() => {throw new Error('Browser imports are not supported in Node.js')})()")
+}
+}
+return
+}
+}
+if(_1 === "ff:core/Js.dynamicImport") {
 const _guard1 = arguments_;
 if(_guard1.length === 1 && _guard1[0].EString) {
 const url_ = _guard1[0].value_;

@@ -6,7 +6,11 @@ import(module: String): JsValue {
     panic("This call should have been eliminated by the compiler")
 }
 
-importDynamic(module: String): JsValue {
+browserImport(module: String): JsValue {
+    panic("This call should have been eliminated by the compiler")
+}
+
+dynamicImport(module: String): JsValue {
     panic("This call should have been eliminated by the compiler")
 }
 

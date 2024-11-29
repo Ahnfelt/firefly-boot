@@ -104,7 +104,11 @@ export function import_(module_) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
-export function importDynamic_(module_) {
+export function browserImport_(module_) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export function dynamicImport_(module_) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
@@ -339,7 +343,11 @@ export async function import_$(module_, $task) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
-export async function importDynamic_$(module_, $task) {
+export async function browserImport_$(module_, $task) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export async function dynamicImport_$(module_, $task) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 

@@ -585,8 +585,16 @@ extend self: JsEmitter {
                     "})())"
                 )
             | "ff:core/Js.import" {arguments | [EString(_, url)]} =>
-                Some(self.jsImporter.add(url.replace("\"", "")))
-            | "ff:core/Js.importDynamic" {arguments | [EString(_, url)]} =>
+                self.emitTarget.{
+                    | EmitBrowser => Some("(() => {throw new Error('Node.js imports are not supported in the browser')})()")
+                    | _ => Some(self.jsImporter.add(url.replace("\"", "")))
+                }
+            | "ff:core/Js.browserImport" {arguments | [EString(_, url)]} =>
+                self.emitTarget.{
+                    | EmitBrowser => Some(self.jsImporter.add(url.replace("\"", "")))
+                    | _ => Some("(() => {throw new Error('Browser imports are not supported in Node.js')})()")
+                }
+            | "ff:core/Js.dynamicImport" {arguments | [EString(_, url)]} =>
                 Some("import(" + url + ")")
             | "ff:core/Js.await" {arguments | [body]} =>
                 if(async) {
