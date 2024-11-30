@@ -98,12 +98,14 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function internalHashPassword_(system_, salt_, password_, iterations_) {
+;
 const keyMaterial_ = system_.subtle.importKey("raw", password_, {name: "PBKDF2"}, false, ["deriveBits"]);
 const hashBuffer_ = system_.subtle.deriveBits({name: "PBKDF2", salt: salt_, iterations: iterations_, hash: "SHA-256"}, keyMaterial_, 256);
 return (new DataView(hashBuffer_))
 }
 
 export async function internalHashPassword_$(system_, salt_, password_, iterations_, $task) {
+ff_core_Task.Task_throwIfAborted($task);
 const keyMaterial_ = (await system_.subtle.importKey("raw", password_, {name: "PBKDF2"}, false, ["deriveBits"]));
 const hashBuffer_ = (await system_.subtle.deriveBits({name: "PBKDF2", salt: salt_, iterations: iterations_, hash: "SHA-256"}, keyMaterial_, 256));
 return (new DataView(hashBuffer_))
@@ -131,6 +133,7 @@ return (new DataView(signature_))
 }
 
 export function Crypto_sha256(self_, buffer_) {
+;
 const hash_ = self_.subtle.digest("SHA-256", buffer_);
 return (new DataView(hash_))
 }
@@ -198,6 +201,7 @@ return (new DataView(signature_))
 }
 
 export async function Crypto_sha256$(self_, buffer_, $task) {
+ff_core_Task.Task_throwIfAborted($task);
 const hash_ = (await self_.subtle.digest("SHA-256", buffer_));
 return (new DataView(hash_))
 }
