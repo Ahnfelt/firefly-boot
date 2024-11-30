@@ -1,7 +1,8 @@
 class Buffer {}
 
-new(size: Int, shared: Bool = False): Buffer
-    target js sync "return new DataView(shared_ ? new SharedArrayBuffer(size_) : new ArrayBuffer(size_))"
+new(size: Int, shared: Bool = False): Buffer {
+    Js->DataView->(if(shared) {Js->SharedArrayBuffer->(size)} else {Js->ArrayBuffer->(size)})?
+}
 
 extend self: Buffer {
 
@@ -117,80 +118,84 @@ extend self: Buffer {
         targetBuffer->set(sourceBuffer, byteOffset)
     }
 
-    size(): Int
-        target js sync "return self_.byteLength"
+    size(): Int {
+        self!->byteLength?
+    }
 
     shared(): Bool {
         Js->SharedArrayBuffer.typeof() != "undefined" && self!->buffer.instanceof(Js->SharedArrayBuffer)
     }
-        //target js sync "return typeof SharedArrayBuffer !== 'undefined' && self_.buffer instanceof SharedArrayBuffer"
 
-    view(begin: Int, end: Int): Buffer
-        target js sync "return new DataView(self_.buffer, self_.byteOffset + begin_, end_ - begin_)"
+    view(begin: Int, end: Int): Buffer {
+        Js->DataView->(self!->buffer, self!->byteOffset + begin!, end - begin)?
+    }
 
-    copy(): Buffer
-        target js sync "return new DataView(self_.buffer.slice(self_.byteOffset, self_.byteOffset + self_.byteLength))"
+    copy(): Buffer {
+        Js->DataView->(self!->buffer->slice(self!->byteOffset, self!->byteOffset + self!->byteLength))?
+    }
 
-    toString(encoding: String = "utf8"): String
-        target js sync """
-            if(encoding_ === "utf8") {
-                if(typeof TextDecoder.ffSingleton === 'undefined') TextDecoder.ffSingleton = new TextDecoder()
-                return TextDecoder.ffSingleton.decode(self_)
+    toString(encoding: String = "utf8"): String {
+        if(encoding == "utf8") {
+            if(Js->TextDecoder->ffSingleton.typeof() == "undefined") {
+                Js->TextDecoder->ffSingleton = Js->TextDecoder->()
             }
-            return new TextDecoder().decode(self_)
-        """
+            Js->TextDecoder->ffSingleton->decode(self!)?
+        }
+        Js->TextDecoder->()->decode(self!)?
+    }
 
-    toByteArray(): List[Int]
-        target js sync "return [...new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength)]"
-
-    toHex(): String
-        target js sync """
-            let hex = ''
-            for (let i = 0; i < self_.byteLength; i++) {
-                hex += self_.getUint8(i).toString(16).padStart(2, '0')
-            }
-            return hex
-        """
-
-    toBase64(): String
-        target js sync """
-            const view = new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength);
-            return btoa(String.fromCharCode(...view));
-        """
+    toByteArray(): List[Int] {
+        Js->Uint8Array->(self!->buffer, self!->byteOffset, self!->byteLength).spreadToArray()!?
+    }
+    
+    toHex(): String {
+        mutable hex = ""
+        0.until(self!->byteLength?).each {i =>
+            hex = hex + self!->getUint8(i)->toString(16)->padStart(2, "0")?
+        }
+        hex
+    }
+    
+    toBase64(): String {
+        let view = Js->Uint8Array->(self!->buffer, self!->byteOffset, self!->byteLength)
+        let binaryString = Js->TextDecoder->("latin1")->decode(view)
+        Js->btoa(binaryString)?
+    }
 
 }
 
-fromByteList(array: List[Int]): Buffer
-    target js sync "return new DataView(new Uint8Array(array_).buffer)"
+fromByteList(array: List[Int]): Buffer {
+    Js->DataView->(Js->Uint8Array(array)->buffer)?
+}
 
-fromBufferList(array: List[Buffer]): Buffer
-    target js sync """
-        let length = 0
-        for(let b of array_) length += b.byteLength
-        const arrayBuffer = new ArrayBuffer(length);
-        const result = new Uint8Array(arrayBuffer)
-        let offset = 0
-        for(let b of array_) {
-            result.set(new Uint8Array(b.buffer, b.byteOffset, b.byteLength), offset)
-            offset += b.byteLength
-        }
-        return new DataView(arrayBuffer)
-    """
+fromBufferList(array: List[Buffer]): Buffer {
+    mutable length = 0
+    array.each {length += _!->byteLength?}
+    let arrayBuffer = Js->ArrayBuffer->(length)
+    let result = Js->Uint8Array->(arrayBuffer)
+    mutable offset = 0
+    array.each {b =>
+        result->set(Js->Uint8Array->(b!->buffer, b!->byteOffset, b!->byteLength), offset)
+        offset += b!->byteLength?
+    }
+    Js->DataView->(arrayBuffer)?
+}
 
-fromHex(hex: String): Buffer
-    target js sync """
-        const hexValues = hex_.match(/.{1,2}/g) || []
-        const numbers = hexValues.map(value => parseInt(value, 16))
-        return new DataView(new Uint8Array(numbers).buffer)
-    """
+fromHex(hex: String): Buffer {
+    let byteCount = (hex.size() * 0.5).ceil().toInt()
+    let arrayBuffer = Js->ArrayBuffer->(byteCount)
+    let result = Js->Uint8Array->(arrayBuffer)
+    0.until(byteCount).each {i =>
+        result.set(i, Js->parseInt(hex!->slice(i * 2, i * 2 + 2), 16))
+    }
+    Js->DataView->(arrayBuffer)?
+}
 
-fromBase64(base64: String): Buffer
-    target js sync """
-        const binaryString = atob(base64_)
-        const dataView = new DataView(new ArrayBuffer(binaryString.length))
-        dataView.setUint8(binaryString.split('').map(char => char.charCodeAt(0)))
-        return dataView
-    """
+fromBase64(base64: String): Buffer {
+    let binaryString = Js->atob(base64)
+    let bytes = Js->Uint8Array->from(binaryString, Js->{char => char->CharCodeAt(0)})
+    Js->DataView->(bytes->buffer)?
+}
 
 instance Buffer: Show {
     show(value: Buffer): String {

@@ -242,6 +242,11 @@ extend self: JsValue {
             if(!(self_ instanceof Map)) throw new Error('Expected map, got '+ typeof self_);;
             return self_
         """
+        
+    spreadToArray(): List[JsValue]
+        target js sync """
+            return [...self_]
+        """
 
     typeof(): String
         target js sync """
