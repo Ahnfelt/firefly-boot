@@ -1021,6 +1021,20 @@ extend self: JsEmitter {
                     "try {\n" + self.emitStatements(tryBody, last, tryAsync) +
                     "\n} finally {\n" + self.emitStatements(finallyBody, last, finallyAsync) + "\n}"
                 )
+            | ECall(_, StaticCall("ff:core/Try.Try_catchAny", _, _), _, _, [
+                Argument(_, _, ECall(_, StaticCall("ff:core/Core.try", _, _), _, _, [
+                    Argument(_, _, ELambda(_, Lambda(_, tryEffect, [MatchCase(_, [], [], tryBody)])))
+                ], _))
+                Argument(_, _, ELambda(_, Lambda(_, catchEffect, [MatchCase(_, [PVariable(_, name)], [], catchBody)])))
+            ], _) =>
+                let tryAsync = self.emittingAsync && effectTypeIsAsync(tryEffect)
+                Some(
+                    "try {\n" + 
+                        self.emitStatements(tryBody, last, tryAsync) +
+                    "\n} catch" + name.map {"(" + escapeKeyword(_) + ")"}.else {""} + " {\n" +
+                        self.emitStatements(catchBody, last, tryAsync) +
+                    "\n}"
+                )
             | ECall(_, StaticCall("ff:core/Try.Try_catch", _, _), _, _, [
                 Argument(_, _, ECall(_, StaticCall("ff:core/Core.try", _, _), _, _, [
                     Argument(_, _, ELambda(_, Lambda(_, tryEffect, [MatchCase(_, [], [], tryBody)])))

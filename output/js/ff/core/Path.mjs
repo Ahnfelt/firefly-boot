@@ -327,14 +327,14 @@ const flagsR_ = (fs_.constants["R_OK"] * checkReadable_);
 const flagsW_ = (fs_.constants["W_OK"] * checkWritable_);
 const flagsX_ = (fs_.constants["X_OK"] * checkExecutable_);
 const flags_ = ff_core_Int.Int_bitOr(flagsR_, ff_core_Int.Int_bitOr(flagsW_, flagsX_));
-return ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+try {
 fsPromises_.access(self_, ((flags_ === 0)
 ? fs_.constants["F_OK"]
 : flags_));
 return true
-})), ((_) => {
+} catch {
 return false
-}))
+}
 }
 
 export function Path_isReadable(self_) {
@@ -351,29 +351,29 @@ return ff_core_Path.Path_exists(self_, false, false, true)
 
 export function Path_isDirectory(self_) {
 const fsPromises_ = import$1;
-return ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+try {
 return fsPromises_.lstat(self_).isDirectory()
-})), ((_) => {
+} catch {
 return false
-}))
+}
 }
 
 export function Path_isFile(self_) {
 const fsPromises_ = import$1;
-return ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+try {
 return fsPromises_.lstat(self_).isFile()
-})), ((_) => {
+} catch {
 return false
-}))
+}
 }
 
 export function Path_isSymbolicLink(self_) {
 const fsPromises_ = import$1;
-return ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+try {
 return fsPromises_.lstat(self_).isSymbolicLink()
-})), ((_) => {
+} catch {
 return false
-}))
+}
 }
 
 export function Path_isInsideOf(self_, path_) {
@@ -629,14 +629,14 @@ const flagsR_ = (fs_.constants["R_OK"] * checkReadable_);
 const flagsW_ = (fs_.constants["W_OK"] * checkWritable_);
 const flagsX_ = (fs_.constants["X_OK"] * checkExecutable_);
 const flags_ = ff_core_Int.Int_bitOr(flagsR_, ff_core_Int.Int_bitOr(flagsW_, flagsX_));
-return ff_core_Try.Try_catchAny((await ff_core_Core.try_$((async ($task) => {
+try {
 (await fsPromises_.access(self_, ((flags_ === 0)
 ? fs_.constants["F_OK"]
 : flags_)));
 return true
-}), $task)), ((_) => {
+} catch {
 return false
-}))
+}
 }
 
 export async function Path_isReadable$(self_, $task) {
@@ -653,29 +653,29 @@ return (await ff_core_Path.Path_exists$(self_, false, false, true, $task))
 
 export async function Path_isDirectory$(self_, $task) {
 const fsPromises_ = import$1;
-return ff_core_Try.Try_catchAny((await ff_core_Core.try_$((async ($task) => {
+try {
 return (await fsPromises_.lstat(self_)).isDirectory()
-}), $task)), ((_) => {
+} catch {
 return false
-}))
+}
 }
 
 export async function Path_isFile$(self_, $task) {
 const fsPromises_ = import$1;
-return ff_core_Try.Try_catchAny((await ff_core_Core.try_$((async ($task) => {
+try {
 return (await fsPromises_.lstat(self_)).isFile()
-}), $task)), ((_) => {
+} catch {
 return false
-}))
+}
 }
 
 export async function Path_isSymbolicLink$(self_, $task) {
 const fsPromises_ = import$1;
-return ff_core_Try.Try_catchAny((await ff_core_Core.try_$((async ($task) => {
+try {
 return (await fsPromises_.lstat(self_)).isSymbolicLink()
-}), $task)), ((_) => {
+} catch {
 return false
-}))
+}
 }
 
 export async function Path_isInsideOf$(self_, path_, $task) {

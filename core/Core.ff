@@ -29,21 +29,14 @@ do[T](body: () => T): T {
     body()
 }
 
-try[T](body: () => T): Try[T]
-    target js sync """
-        try {
-            return {Success: true, value_: body_()}
-        } catch(e) {
-            return {Failure: true, error_: e}
-        }
-    """
-    target js async """
-        try {
-            return {Success: true, value_: await body_($task)}
-        } catch(e) {
-            return {Failure: true, error_: e}
-        }
-    """
+try[T](body: () => T): Try[T] {
+    // Special cased by the compiler
+    try {
+        Success(body())
+    } catchAny {e =>
+        Failure(e)
+    }
+}
 
 throw[E: HasAnyTag, T](exception: E): T {
     throwAny(Any.toAny(exception))

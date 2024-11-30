@@ -122,11 +122,11 @@ throw new Error('Function internalListDirectoryWithoutOpendir is missing on this
 }
 
 export function internalProcessError_(problem_) {
-return ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+try {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_NodeSystem.ProcessException(problem_), ff_core_NodeSystem.ff_core_Any_HasAnyTag$ff_core_NodeSystem_ProcessException)})
-})), ((error_) => {
+} catch(error_) {
 return error_
-}))
+}
 }
 
 export async function internalAssets_$(system_, $task) {
@@ -143,11 +143,11 @@ export async function internalListDirectoryWithoutOpendir_$(system_, path_, $tas
 }
 
 export async function internalProcessError_$(problem_, $task) {
-return ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+try {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_NodeSystem.ProcessException(problem_), ff_core_NodeSystem.ff_core_Any_HasAnyTag$ff_core_NodeSystem_ProcessException)})
-})), ((error_) => {
+} catch(error_) {
 return error_
-}))
+}
 }
 
 export function NodeSystem_arguments(self_) {

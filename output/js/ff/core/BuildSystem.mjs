@@ -108,11 +108,13 @@ return {assetSystem_};
 
 
 export function internalCallEsBuild_(self_, mainJsFile_, outputPath_, minify_, sourceMap_) {
-throw new Error('Function internalCallEsBuild is missing on this target in sync context.');
+const esbuild_ = import$0;
+esbuild_.build({stdin: {contents: (("import {$run$} from './" + mainJsFile_) + "';"), resolveDir: "."}, bundle: true, minify: minify_, sourcemap: sourceMap_, platform: "browser", target: "es2017", external: ["../../../node_modules/*"], outfile: outputPath_})
 }
 
 export function internalNodeCallEsBuild_(self_, mainJsFile_, outputPath_, minify_) {
-throw new Error('Function internalNodeCallEsBuild is missing on this target in sync context.');
+const esbuild_ = import$0;
+esbuild_.build({entryPoints: [mainJsFile_], bundle: true, minify: minify_, sourcemap: true, platform: "node", target: "es2017", external: ["../../../node_modules/*"], outfile: outputPath_})
 }
 
 export function internalListDirectory_(path_) {
@@ -133,47 +135,25 @@ return ff_core_Path.Path_readStream(file_)
 }
 
 export function internalPath_(buildSystem_, absoluteOrRelative_) {
-throw new Error('Function internalPath is missing on this target in sync context.');
+return absoluteOrRelative_
 }
 
 export function internalCompile_(buildSystem_, mainFile_, target_) {
-throw new Error('Function internalCompile is missing on this target in sync context.');
+globalThis["$firefly_compiler"]["buildViaBuildSystem_$"](buildSystem_, buildSystem_["fireflyPath_"], mainFile_, target_, globalThis["$task"])
 }
 
 export function internalMainPackagePair_(buildSystem_) {
-throw new Error('Function internalMainPackagePair is missing on this target in sync context.');
+return ff_core_Pair.Pair(buildSystem_["mainPackagePair_"]["group_"], buildSystem_["mainPackagePair_"]["name_"])
 }
 
 export async function internalCallEsBuild_$(self_, mainJsFile_, outputPath_, minify_, sourceMap_, $task) {
-
-        const esbuild = import$0
-        return await esbuild.build({
-            stdin: {contents: `import {$run$} from './${mainJsFile_}';`, resolveDir: '.'},
-            bundle: true,
-            minify: minify_,
-            sourcemap: sourceMap_,
-            platform: 'browser',
-            target: 'es2017',
-            external: ['../../../node_modules/*'], // TODO
-            outfile: outputPath_
-        })
-    
+const esbuild_ = import$0;
+esbuild_.build({stdin: {contents: (("import {$run$} from './" + mainJsFile_) + "';"), resolveDir: "."}, bundle: true, minify: minify_, sourcemap: sourceMap_, platform: "browser", target: "es2017", external: ["../../../node_modules/*"], outfile: outputPath_})
 }
 
 export async function internalNodeCallEsBuild_$(self_, mainJsFile_, outputPath_, minify_, $task) {
-
-        const esbuild = import$0
-        return await esbuild.build({
-            entryPoints: [mainJsFile_],
-            bundle: true,
-            minify: minify_,
-            sourcemap: true,
-            platform: 'node',
-            target: 'es6',
-            external: ['../../../node_modules/*'], // TODO
-            outfile: outputPath_
-        })
-    
+const esbuild_ = import$0;
+esbuild_.build({entryPoints: [mainJsFile_], bundle: true, minify: minify_, sourcemap: true, platform: "node", target: "es2017", external: ["../../../node_modules/*"], outfile: outputPath_})
 }
 
 export async function internalListDirectory_$(path_, $task) {
@@ -194,21 +174,15 @@ return (await ff_core_Path.Path_readStream$(file_, $task))
 }
 
 export async function internalPath_$(buildSystem_, absoluteOrRelative_, $task) {
-
-        return absoluteOrRelative_
-    
+return absoluteOrRelative_
 }
 
 export async function internalCompile_$(buildSystem_, mainFile_, target_, $task) {
-
-        return await $firefly_compiler.buildViaBuildSystem_$(buildSystem_, buildSystem_.fireflyPath_, mainFile_, target_, $task)
-    
+(await globalThis["$firefly_compiler"]["buildViaBuildSystem_$"](buildSystem_, buildSystem_["fireflyPath_"], mainFile_, target_, globalThis["$task"]))
 }
 
 export async function internalMainPackagePair_$(buildSystem_, $task) {
-
-        return {first_: buildSystem_.mainPackagePair_.group_, second_: buildSystem_.mainPackagePair_.name_}
-    
+return ff_core_Pair.Pair(buildSystem_["mainPackagePair_"]["group_"], buildSystem_["mainPackagePair_"]["name_"])
 }
 
 export function BuildSystem_compileForBrowser(self_, mainFile_) {
@@ -219,11 +193,11 @@ return ff_core_BuildSystem.BrowserCode(mainPackagePair_.first_, mainPackagePair_
 }
 
 export function BuildSystem_buildMode(self_) {
-throw new Error('Function BuildSystem_buildMode is missing on this target in sync context.');
+return (!(!self_["buildMode_"]))
 }
 
 export function BuildSystem_setAssets(self_, assetSystem_) {
-throw new Error('Function BuildSystem_setAssets is missing on this target in sync context.');
+self_["assets_"] = assetSystem_
 }
 
 export function BuildSystem_packageAssets(self_) {
@@ -236,15 +210,15 @@ return ff_core_Core.panic_("dependencyAssets not yet implemented")
 }
 
 export function BuildSystem_arguments(self_) {
-throw new Error('Function BuildSystem_arguments is missing on this target in sync context.');
+return self_["array_"]
 }
 
 export function BuildSystem_mainTask(self_) {
-throw new Error('Function BuildSystem_mainTask is missing on this target in sync context.');
+return self_["task_"]
 }
 
 export function BuildSystem_crypto(self_) {
-throw new Error('Function BuildSystem_crypto is missing on this target in sync context.');
+return crypto
 }
 
 export async function BuildSystem_compileForBrowser$(self_, mainFile_, $task) {
@@ -255,11 +229,11 @@ return ff_core_BuildSystem.BrowserCode(mainPackagePair_.first_, mainPackagePair_
 }
 
 export async function BuildSystem_buildMode$(self_, $task) {
-return !!self_.buildMode_
+return (!(!self_["buildMode_"]))
 }
 
 export async function BuildSystem_setAssets$(self_, assetSystem_, $task) {
-self_.assets_ = assetSystem_
+self_["assets_"] = assetSystem_
 }
 
 export async function BuildSystem_packageAssets$(self_, $task) {
@@ -272,15 +246,15 @@ return ff_core_Core.panic_("dependencyAssets not yet implemented")
 }
 
 export async function BuildSystem_arguments$(self_, $task) {
-return self_.array_
+return self_["array_"]
 }
 
 export async function BuildSystem_mainTask$(self_, $task) {
-return self_.task_
+return self_["task_"]
 }
 
 export async function BuildSystem_crypto$(self_, $task) {
-return (typeof globalThis !== 'undefined' ? globalThis : window).crypto
+return crypto
 }
 
 export function BrowserCode_assets(self_) {

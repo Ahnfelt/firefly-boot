@@ -168,13 +168,11 @@ return body_()
 }
 
 export function try_(body_) {
-
-        try {
-            return {Success: true, value_: body_()}
-        } catch(e) {
-            return {Failure: true, error_: e}
-        }
-    
+try {
+return ff_core_Try.Success(body_())
+} catch(e_) {
+return ff_core_Try.Failure(e_)
+}
 }
 
 export function throw_(exception_, ff_core_Any_HasAnyTag$E) {
@@ -257,13 +255,11 @@ return (await body_($task))
 }
 
 export async function try_$(body_, $task) {
-
-        try {
-            return {Success: true, value_: await body_($task)}
-        } catch(e) {
-            return {Failure: true, error_: e}
-        }
-    
+try {
+return ff_core_Try.Success((await body_($task)))
+} catch(e_) {
+return ff_core_Try.Failure(e_)
+}
 }
 
 export async function throw_$(exception_, ff_core_Any_HasAnyTag$E, $task) {
