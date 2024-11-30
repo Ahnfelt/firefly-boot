@@ -17,11 +17,13 @@ extend self: BuildSystem {
         )
     }
 
-    buildMode(): Bool
-        target node async "return !!self_.buildMode_"
-
-    setAssets(assetSystem: AssetSystem): Unit
-        target node async "self_.assets_ = assetSystem_"
+    buildMode(): Bool {
+        !!self!->"buildMode_"?
+    }
+    
+    setAssets(assetSystem: AssetSystem): Unit {
+        self!->"assets_" = assetSystem!
+    }
 
     packageAssets(): AssetSystem {
         let streams = internalListDirectory(internalPath(self, "."))
@@ -32,14 +34,17 @@ extend self: BuildSystem {
         panic("dependencyAssets not yet implemented")
     }
 
-    arguments(): List[String]
-        target node async "return self_.array_"
+    arguments(): List[String] {
+        self!->"array_"?
+    }
 
-    mainTask(): Task
-        target js async "return self_.task_"
+    mainTask(): Task {
+        self!->"task_"?
+    }
 
-    crypto(): Crypto
-        target js async "return (typeof globalThis !== 'undefined' ? globalThis : window).crypto"
+    crypto(): Crypto {
+        Js->crypto?
+    }
         
 }
 
@@ -82,40 +87,38 @@ internalCallEsBuild(
     outputPath: String
     minify: Bool
     sourceMap: Bool
-): Unit
-    target node async """
-        import * as esbuild from 'esbuild'
-        return await esbuild.build({
-            stdin: {contents: `import {$run$} from './${mainJsFile_}';`, resolveDir: '.'},
-            bundle: true,
-            minify: minify_,
-            sourcemap: sourceMap_,
-            platform: 'browser',
-            target: 'es2017',
-            external: ['../../../node_modules/*'], // TODO
-            outfile: outputPath_
-        })
-    """
+): Unit {
+    let esbuild = Js.import("esbuild")
+    esbuild->build(Js->(
+        stdin = Js->(contents = "import {$run$} from './" + mainJsFile + "';", resolveDir = ".")
+        bundle = True
+        minify = minify
+        sourcemap = sourceMap
+        platform = "browser"
+        target = "es2017"
+        external = ["../../../node_modules/*"] // TODO
+        outfile = outputPath
+    ))
+}
 
 internalNodeCallEsBuild(
     self: NodeSystem
     mainJsFile: String
     outputPath: String
     minify: Bool
-): Unit
-    target node async """
-        import * as esbuild from 'esbuild'
-        return await esbuild.build({
-            entryPoints: [mainJsFile_],
-            bundle: true,
-            minify: minify_,
-            sourcemap: true,
-            platform: 'node',
-            target: 'es6',
-            external: ['../../../node_modules/*'], // TODO
-            outfile: outputPath_
-        })
-    """
+): Unit {
+    let esbuild = Js.import("esbuild")
+    esbuild->build(Js->(
+        entryPoints = [mainJsFile]
+        bundle = True
+        minify = minify
+        sourcemap = True
+        platform = "node"
+        target = "es2017"
+        external = ["../../../node_modules/*"] // TODO
+        outfile = outputPath
+    ))
+}
 
 internalListDirectory(path: Path): List[Pair[String, () => Stream[Buffer]]] {
     function go(currentPath: Path): Stream[Path] {
@@ -132,17 +135,15 @@ internalListDirectory(path: Path): List[Pair[String, () => Stream[Buffer]]] {
     }.toList()
 }
 
-internalPath(buildSystem: BuildSystem, absoluteOrRelative: String): Path
-    target node async """
-        return absoluteOrRelative_
-    """
+internalPath(buildSystem: BuildSystem, absoluteOrRelative: String): Path {
+    absoluteOrRelative!?
+}
 
-internalCompile(buildSystem: BuildSystem, mainFile: Path, target: String): Unit
-    target node async """
-        return await $firefly_compiler.buildViaBuildSystem_$(buildSystem_, buildSystem_.fireflyPath_, mainFile_, target_, $task)
-    """
+internalCompile(buildSystem: BuildSystem, mainFile: Path, target: String): Unit {
+    // Directly translated from the old FFI. It's quite fragile w.r.t. changes in code generation.
+    Js.await(Js->"$firefly_compiler"->"buildViaBuildSystem_$"(buildSystem!, buildSystem!->"fireflyPath_", mainFile!, target, Js->"$task"))
+}
 
-internalMainPackagePair(buildSystem: BuildSystem): Pair[String, String]
-    target node async """
-        return {first_: buildSystem_.mainPackagePair_.group_, second_: buildSystem_.mainPackagePair_.name_}
-    """
+internalMainPackagePair(buildSystem: BuildSystem): Pair[String, String] {
+    Pair(buildSystem!->"mainPackagePair_"->"group_"?, buildSystem!->"mainPackagePair_"->"name_"?)
+}
