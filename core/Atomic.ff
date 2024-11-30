@@ -1,64 +1,63 @@
 class Atomic[T] {}
 
-new[T](value: T): Atomic[T]
-    target js sync """
-        return {value: value_}
-    """
+new[T](value: T): Atomic[T] {
+    Js->(value = value!)?
+}
 
 extend self[T]: Atomic[T] {
 
-    modify(body: T => T): T
-        target js sync """
-            return self_.value = body_(self_.value)
-        """
-        target js async """
-            let currentValue, newValue
-            do {
-                currentValue = self_.value
-                newValue = await body_(currentValue)
-            } while(currentValue !== self_.value)
-            self_.value = newValue
-            return newValue
-        """
+    modify(body: T => T): T {
+        if(Js.inAsync()) {
+            mutable currentValue = self!->value
+            mutable newValue = body(self!->value?)
+            while {currentValue !== self!->value} {
+                currentValue = self!->value
+                newValue = body(self!->value?)
+            }
+            self!->value = newValue!
+            newValue
+        } else {
+            let newValue = body(self!->value?)
+            self!->value = newValue!
+            newValue
+        }
+    }
 
-    getAndModify(body: T => T): T
-        target js sync """
-            const currentValue = self_.value
-            self_.value = body_(currentValue)
-            return currentValue
-        """
-        target js async """
-            let currentValue, newValue
-            do {
-                currentValue = self_.value
-                newValue = await body_(currentValue)
-            } while(currentValue !== self_.value)
-            self_.value = newValue
-            return currentValue
-        """
+    getAndModify(body: T => T): T {
+        mutable currentValue = self!->value
+        if(Js.inAsync()) {
+            mutable newValue = body(self!->value?)
+            while {currentValue !== self!->value} {
+                currentValue = self!->value
+                newValue = body(self!->value?)
+            }
+            self!->value = newValue!
+            currentValue?
+        } else {
+            let newValue = body(self!->value?)
+            self!->value = newValue!
+            currentValue?
+        }
+    }
 
-    get(): T
-        target js sync """
-            return self_.value
-        """
+    get(): T {
+        self!->value?
+    }
 
-    set(value: T): Unit
-        target js sync """
-            self_.value = value
-        """
+    set(value: T): Unit {
+        self!->value = value!
+    }
 
-    getAndSet(newValue: T): T
-        target js sync """
-            const currentValue = self_.value
-            self_.value = newValue
-            return currentValue
-        """
+    getAndSet(newValue: T): T {
+        let currentValue = self!->value
+        self!->value = newValue!
+        currentValue?
+    }
 
-    compareAndSet(currentValue: T, newValue: T): Bool
-        target js sync """
-            if(self_.value !== currentValue) return false
-            self_.value = newValue
-            return true
-        """
+    compareAndSet(currentValue: T, newValue: T): Bool {
+        if(self!->value !== currentValue!) {False} else:
+        self!->value = newValue!
+        True
+    }
 
 }
