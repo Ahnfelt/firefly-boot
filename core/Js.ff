@@ -108,8 +108,9 @@ fromValue[T](value: JsValue): T {
     panic("This call should have been eliminated by the compiler")
 }
 
-
-
+throw[T](value: JsValue): T {
+    panic("This call should have been eliminated by the compiler")
+}
 
 
 

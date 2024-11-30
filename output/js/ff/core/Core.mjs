@@ -180,11 +180,13 @@ return ff_core_Core.throwAny_(ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyT
 }
 
 export function throwAny_(exception_) {
-throw Object.assign(new Error(), {ffException: exception_})
+const e_ = (new Error());
+e_.ffException = exception_;
+throw e_
 }
 
 export function panic_(message_) {
-throw new Error(message_)
+throw (new Error(message_))
 }
 
 export async function if_$(condition_, body_, $task) {
@@ -267,11 +269,13 @@ return ff_core_Core.throwAny_(ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyT
 }
 
 export async function throwAny_$(exception_, $task) {
-throw new Error('Function throwAny is missing on this target in async context.');
+const e_ = (new Error());
+e_.ffException = exception_;
+throw e_
 }
 
 export async function panic_$(message_, $task) {
-throw new Error('Function panic is missing on this target in async context.');
+throw (new Error(message_))
 }
 
 

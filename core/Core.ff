@@ -42,10 +42,14 @@ throw[E: HasAnyTag, T](exception: E): T {
     throwAny(Any.toAny(exception))
 }
 
-throwAny[T](exception: Any): T
-    target js sync "throw Object.assign(new Error(), {ffException: exception_})"
+throwAny[T](exception: Any): T {
+    let e = Js->Error->()
+    e->ffException = exception!
+    Js.throw(e)
+}
 
-panic[T](message: String): T
-    target js sync "throw new Error(message_)"
+panic[T](message: String): T {
+    Js.throw(Js->Error->(message))
+}
 
 data GrabException()

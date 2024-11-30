@@ -932,6 +932,8 @@ extend self: JsEmitter {
                 Some(code)
             | "ff:core/Js.throwIfCancelled" =>
                 Some(if(async) {"ff_core_Task.Task_throwIfAborted($task)"} else {""})
+            | "ff:core/Js.throw" {term | ECall c} {c.arguments | [argument]} =>
+                Some("throw " + self.emitTerm(argument.value, async))
             | "ff:core/JsValue.JsValue_set" {arguments | [e1, e2, e3]} =>
                 Some(self.emitTerm(e1, async) + self.emitField(e2, async) + " = " + self.emitTerm(e3, async))
             | "ff:core/JsValue.JsValue_increment" {arguments | [e1, e2, e3]} =>

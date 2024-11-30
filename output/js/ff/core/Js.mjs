@@ -207,6 +207,10 @@ export function fromValue_(value_) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
+export function throw_(value_) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
 export function globalThis_() {
 return ff_core_JsSystem.JsSystem_globalThis(globalThis)
 }
@@ -443,6 +447,10 @@ return ff_core_Core.panic_("This call should have been eliminated by the compile
 }
 
 export async function fromValue_$(value_, $task) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export async function throw_$(value_, $task) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 

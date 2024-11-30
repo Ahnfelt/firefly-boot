@@ -2528,6 +2528,17 @@ return ff_core_Option.Some((async_
 : ""))
 return
 }
+if(_1 === "ff:core/Js.throw") {
+const _guard2 = term_;
+if(_guard2.ECall) {
+const c_ = _guard2;
+const _guard1 = c_.arguments_;
+if(_guard1.length === 1) {
+const argument_ = _guard1[0];
+return ff_core_Option.Some(("throw " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, argument_.value_, async_)))
+}
+}
+}
 if(_1 === "ff:core/JsValue.JsValue_set") {
 const _guard1 = arguments_;
 if(_guard1.length === 3) {
@@ -4969,6 +4980,17 @@ return ff_core_Option.Some((async_
 ? "ff_core_Task.Task_throwIfAborted($task)"
 : ""))
 return
+}
+if(_1 === "ff:core/Js.throw") {
+const _guard2 = term_;
+if(_guard2.ECall) {
+const c_ = _guard2;
+const _guard1 = c_.arguments_;
+if(_guard1.length === 1) {
+const argument_ = _guard1[0];
+return ff_core_Option.Some(("throw " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, argument_.value_, async_)))
+}
+}
 }
 if(_1 === "ff:core/JsValue.JsValue_set") {
 const _guard1 = arguments_;
