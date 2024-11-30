@@ -2,39 +2,39 @@ capability BrowserSystem {}
 
 extend self: BrowserSystem {
 
-    httpClient(): HttpClient
-        target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
+    httpClient(): HttpClient {
+        Js.globalThis()?
+    }
     
-    mainTask(): Task
-        target js async "return self_.task_"
+    mainTask(): Task {
+        self!->"task_"?
+    }
 
-    crypto(): Crypto
-        target js async "return (typeof globalThis !== 'undefined' ? globalThis : window).crypto"
+    crypto(): Crypto {
+        Js->crypto?
+    }
         
-    js(): JsSystem
-        target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
+    js(): JsSystem {
+        Js.globalThis()?
+    }
         
-    url(): String
-        target js async """
-            return location.href;
-        """
+    url(): String {
+        Js->location->href?
+    }
     
-    urlPath(): String
-        target js async """
-            return location.pathname;
-        """
+    urlPath(): String {
+        Js->location->pathname?
+    }
 
-    urlQuery(name: String): Option[String]
-        target js async """
-            const param = new URLSearchParams(location.search).get(name_)
-            if(param == null) return ff_core_Option.None();
-            return ff_core_Option.Some(param);
-        """
+    urlQuery(name: String): Option[String] {
+        let param = Js->URLSearchParams->(Js->location->search)->get(name)
+        if(param.isNullOrUndefined()) {None} else:
+        Some(param?)
+    }
 
-    urlFragment(): Option[String]
-        target js async """
-            if(!location.hash.startsWith('#')) return ff_core_Option.None();
-            return ff_core_Option.Some(location.hash.slice(1));
-        """
-               
+    urlFragment(): Option[String] {
+        if(!Js->location->hash->startsWith("#")?) {None} else:
+        Some(Js->location->hash->slice(1)?)
+    }
+                 
 }
