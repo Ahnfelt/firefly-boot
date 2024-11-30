@@ -2,10 +2,9 @@ capability Crypto {}
 
 extend self: Crypto {
     
-    randomUuid(): String
-        target js async """
-            return self_.randomUUID();
-        """
+    randomUuid(): String {
+        self!->randomUUID()?
+    }
     
     randomBuffer(size: Int): Buffer {
         let buffer = Buffer.new(size)
@@ -13,33 +12,31 @@ extend self: Crypto {
         buffer
     }
 
-    randomizeBuffer(buffer: Buffer): Unit
-        target js async """
-            self_.getRandomValues(new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength));
-        """
+    randomizeBuffer(buffer: Buffer): Unit {
+        self!->getRandomValues(Js->Uint8Array->(buffer!->buffer, buffer!->byteOffset, buffer!->byteLength))
+    }
 
-    hmacSha256(key: Buffer, buffer: Buffer): Buffer
-        target js async """
-            const cryptoKey = await self_.subtle.importKey(
-                'raw',
-                key_,
-                {name: 'HMAC', hash: {name: 'SHA-256'}},
-                false, 
-                ['sign']
-            );
-            const signature = await self_.subtle.sign(
-                'HMAC', 
-                cryptoKey, 
-                buffer_
-            );
-            return new DataView(signature);
-        """
+    hmacSha256(key: Buffer, buffer: Buffer): Buffer {
+        Js.throwIfCancelled()
+        let cryptoKey = Js.await(self!->subtle->importKey(
+            "raw"
+            key!
+            Js->(name = "HMAC", hash = Js->(name = "SHA-256"))
+            False
+            ["sign"]
+        ))
+        let signature = Js.await(self!->subtle->sign(
+            "HMAC"
+            cryptoKey
+            buffer!
+        )) 
+        Js->DataView->(signature)?
+    }
         
-    sha256(buffer: Buffer): Buffer 
-        target js async """
-            let hash = await self_.subtle.digest('SHA-256', buffer_);
-            return new DataView(hash);
-        """
+    sha256(buffer: Buffer): Buffer {
+        let hash = Js.await(self!->subtle->digest("SHA-256", buffer))
+        Js->DataView->(hash)?
+    }
 
     hashPassword(password: String, iterations: Int = 600000): String {
         let salt = self.randomBuffer(16)
@@ -73,24 +70,23 @@ extend self: Crypto {
 
 }
 
-internalHashPassword(system: Crypto, salt: Buffer, password: Buffer, iterations: Int): Buffer
-    target js async """
-        const keyMaterial = await crypto.subtle.importKey(
-            'raw',
-            password_,
-            {name: 'PBKDF2'},
-            false,
-            ['deriveBits']
-        );
-        const hashBuffer = await crypto.subtle.deriveBits(
-            {
-                name: 'PBKDF2',
-                salt: salt_,
-                iterations: iterations_,
-                hash: 'SHA-256'
-            },
-            keyMaterial,
-            256
-        );
-        return new DataView(hashBuffer);
-    """
+internalHashPassword(system: Crypto, salt: Buffer, password: Buffer, iterations: Int): Buffer {
+    let keyMaterial = Js.await(system!->subtle->importKey(
+        "raw"
+        password!
+        Js->(name = "PBKDF2")
+        False
+        ["deriveBits"]
+    ))
+    let hashBuffer = Js.await(system!->subtle->deriveBits(
+        Js->(
+            name = "PBKDF2"
+            salt = salt
+            iterations = iterations
+            hash = "SHA-256"
+        )
+        keyMaterial
+        256
+    ))
+    Js->DataView->(hashBuffer)?
+}

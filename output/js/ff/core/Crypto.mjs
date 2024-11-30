@@ -98,34 +98,19 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function internalHashPassword_(system_, salt_, password_, iterations_) {
-throw new Error('Function internalHashPassword is missing on this target in sync context.');
+const keyMaterial_ = system_.subtle.importKey("raw", password_, {name: "PBKDF2"}, false, ["deriveBits"]);
+const hashBuffer_ = system_.subtle.deriveBits({name: "PBKDF2", salt: salt_, iterations: iterations_, hash: "SHA-256"}, keyMaterial_, 256);
+return (new DataView(hashBuffer_))
 }
 
 export async function internalHashPassword_$(system_, salt_, password_, iterations_, $task) {
-
-        const keyMaterial = await crypto.subtle.importKey(
-            'raw',
-            password_,
-            {name: 'PBKDF2'},
-            false,
-            ['deriveBits']
-        );
-        const hashBuffer = await crypto.subtle.deriveBits(
-            {
-                name: 'PBKDF2',
-                salt: salt_,
-                iterations: iterations_,
-                hash: 'SHA-256'
-            },
-            keyMaterial,
-            256
-        );
-        return new DataView(hashBuffer);
-    
+const keyMaterial_ = (await system_.subtle.importKey("raw", password_, {name: "PBKDF2"}, false, ["deriveBits"]));
+const hashBuffer_ = (await system_.subtle.deriveBits({name: "PBKDF2", salt: salt_, iterations: iterations_, hash: "SHA-256"}, keyMaterial_, 256));
+return (new DataView(hashBuffer_))
 }
 
 export function Crypto_randomUuid(self_) {
-throw new Error('Function Crypto_randomUuid is missing on this target in sync context.');
+return self_.randomUUID()
 }
 
 export function Crypto_randomBuffer(self_, size_) {
@@ -135,15 +120,19 @@ return buffer_
 }
 
 export function Crypto_randomizeBuffer(self_, buffer_) {
-throw new Error('Function Crypto_randomizeBuffer is missing on this target in sync context.');
+self_.getRandomValues((new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength)))
 }
 
 export function Crypto_hmacSha256(self_, key_, buffer_) {
-throw new Error('Function Crypto_hmacSha256 is missing on this target in sync context.');
+;
+const cryptoKey_ = self_.subtle.importKey("raw", key_, {name: "HMAC", hash: {name: "SHA-256"}}, false, ["sign"]);
+const signature_ = self_.subtle.sign("HMAC", cryptoKey_, buffer_);
+return (new DataView(signature_))
 }
 
 export function Crypto_sha256(self_, buffer_) {
-throw new Error('Function Crypto_sha256 is missing on this target in sync context.');
+const hash_ = self_.subtle.digest("SHA-256", buffer_);
+return (new DataView(hash_))
 }
 
 export function Crypto_hashPassword(self_, password_, iterations_ = 600000) {
@@ -188,9 +177,7 @@ return (v_ === 0)
 }
 
 export async function Crypto_randomUuid$(self_, $task) {
-
-            return self_.randomUUID();
-        
+return self_.randomUUID()
 }
 
 export async function Crypto_randomBuffer$(self_, size_, $task) {
@@ -200,34 +187,19 @@ return buffer_
 }
 
 export async function Crypto_randomizeBuffer$(self_, buffer_, $task) {
-
-            self_.getRandomValues(new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength));
-        
+self_.getRandomValues((new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength)))
 }
 
 export async function Crypto_hmacSha256$(self_, key_, buffer_, $task) {
-
-            const cryptoKey = await self_.subtle.importKey(
-                'raw',
-                key_,
-                {name: 'HMAC', hash: {name: 'SHA-256'}},
-                false, 
-                ['sign']
-            );
-            const signature = await self_.subtle.sign(
-                'HMAC', 
-                cryptoKey, 
-                buffer_
-            );
-            return new DataView(signature);
-        
+ff_core_Task.Task_throwIfAborted($task);
+const cryptoKey_ = (await self_.subtle.importKey("raw", key_, {name: "HMAC", hash: {name: "SHA-256"}}, false, ["sign"]));
+const signature_ = (await self_.subtle.sign("HMAC", cryptoKey_, buffer_));
+return (new DataView(signature_))
 }
 
 export async function Crypto_sha256$(self_, buffer_, $task) {
-
-            let hash = await self_.subtle.digest('SHA-256', buffer_);
-            return new DataView(hash);
-        
+const hash_ = (await self_.subtle.digest("SHA-256", buffer_));
+return (new DataView(hash_))
 }
 
 export async function Crypto_hashPassword$(self_, password_, iterations_ = 600000, $task) {
