@@ -2,19 +2,24 @@ data Error {}
 
 extend self: Error {
 
-    rethrow[T](): T
-        target js sync "throw self_"
+    rethrow[T](): T {
+        Js.throw(self!)
+    }
 
-    name(): String
-        target js sync "return self_.name || ''"
+    name(): String {
+        self!->name.coalesce(""!)?
+    }
 
-    message(): String
-        target js sync "return self_.message || ''"
+    message(): String {
+        self!->message.coalesce(""!)?
+    }
 
-    stack(): String
-        target js sync "return self_.stack || ''"
+    stack(): String {
+        self!->stack.coalesce(""!)?
+    }
 
-    exception(): Option[Any]
-        target js sync "return self_.ffException ? ff_core_Option.Some(self_.ffException) : ff_core_Option.None()"
+    exception(): Option[Any] {
+        if(!self!->ffException.isNullOrUndefined()) {self!->ffException?}
+    }
 
 }

@@ -247,6 +247,10 @@ extend self: JsValue {
         target js sync """
             return [...self_]
         """
+        
+    coalesce(defaultValue: JsValue): JsValue {
+        if(self.isNullOrUndefined()) {defaultValue} else {self}
+    }
 
     typeof(): String
         target js sync """

@@ -106,39 +106,43 @@ throw self_
 }
 
 export function Error_name(self_) {
-return self_.name || ''
+return ff_core_JsValue.JsValue_coalesce(self_.name, "")
 }
 
 export function Error_message(self_) {
-return self_.message || ''
+return ff_core_JsValue.JsValue_coalesce(self_.message, "")
 }
 
 export function Error_stack(self_) {
-return self_.stack || ''
+return ff_core_JsValue.JsValue_coalesce(self_.stack, "")
 }
 
 export function Error_exception(self_) {
-return self_.ffException ? ff_core_Option.Some(self_.ffException) : ff_core_Option.None()
+if((!ff_core_JsValue.JsValue_isNullOrUndefined(self_.ffException))) {
+return ff_core_Option.Some(self_.ffException)
+} else return ff_core_Option.None()
 }
 
 export async function Error_rethrow$(self_, $task) {
-throw new Error('Function Error_rethrow is missing on this target in async context.');
+throw self_
 }
 
 export async function Error_name$(self_, $task) {
-throw new Error('Function Error_name is missing on this target in async context.');
+return ff_core_JsValue.JsValue_coalesce(self_.name, "")
 }
 
 export async function Error_message$(self_, $task) {
-throw new Error('Function Error_message is missing on this target in async context.');
+return ff_core_JsValue.JsValue_coalesce(self_.message, "")
 }
 
 export async function Error_stack$(self_, $task) {
-throw new Error('Function Error_stack is missing on this target in async context.');
+return ff_core_JsValue.JsValue_coalesce(self_.stack, "")
 }
 
 export async function Error_exception$(self_, $task) {
-throw new Error('Function Error_exception is missing on this target in async context.');
+if((!ff_core_JsValue.JsValue_isNullOrUndefined(self_.ffException))) {
+return ff_core_Option.Some(self_.ffException)
+} else return ff_core_Option.None()
 }
 
 

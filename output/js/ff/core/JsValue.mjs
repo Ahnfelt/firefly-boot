@@ -412,6 +412,14 @@ export function JsValue_spreadToArray(self_) {
         
 }
 
+export function JsValue_coalesce(self_, defaultValue_) {
+if(ff_core_JsValue.JsValue_isNullOrUndefined(self_)) {
+return defaultValue_
+} else {
+return self_
+}
+}
+
 export function JsValue_typeof(self_) {
 
             return typeof self_
@@ -714,6 +722,14 @@ throw new Error('Function JsValue_grabStringMap is missing on this target in asy
 
 export async function JsValue_spreadToArray$(self_, $task) {
 throw new Error('Function JsValue_spreadToArray is missing on this target in async context.');
+}
+
+export async function JsValue_coalesce$(self_, defaultValue_, $task) {
+if(ff_core_JsValue.JsValue_isNullOrUndefined(self_)) {
+return defaultValue_
+} else {
+return self_
+}
 }
 
 export async function JsValue_typeof$(self_, $task) {
