@@ -98,63 +98,95 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function new_(size_, shared_ = false) {
-return new DataView(shared_ ? new SharedArrayBuffer(size_) : new ArrayBuffer(size_))
+return (new DataView((shared_
+? (new SharedArrayBuffer(size_))
+: (new ArrayBuffer(size_)))))
 }
 
 export function fromByteList_(array_) {
-return new DataView(new Uint8Array(array_).buffer)
+return (new DataView(Uint8Array(array_).buffer))
 }
 
 export function fromBufferList_(array_) {
-
-        let length = 0
-        for(let b of array_) length += b.byteLength
-        const arrayBuffer = new ArrayBuffer(length);
-        const result = new Uint8Array(arrayBuffer)
-        let offset = 0
-        for(let b of array_) {
-            result.set(new Uint8Array(b.buffer, b.byteOffset, b.byteLength), offset)
-            offset += b.byteLength
-        }
-        return new DataView(arrayBuffer)
-    
+let length_ = 0;
+for(let for_a = array_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const _w1 = for_a[for_i];
+length_ += _w1.byteLength
+};
+const arrayBuffer_ = (new ArrayBuffer(length_));
+const result_ = (new Uint8Array(arrayBuffer_));
+let offset_ = 0;
+for(let for_a = array_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const b_ = for_a[for_i];
+result_.set((new Uint8Array(b_.buffer, b_.byteOffset, b_.byteLength)), offset_);
+offset_ += b_.byteLength
+};
+return (new DataView(arrayBuffer_))
 }
 
 export function fromHex_(hex_) {
-
-        const hexValues = hex_.match(/.{1,2}/g) || []
-        const numbers = hexValues.map(value => parseInt(value, 16))
-        return new DataView(new Uint8Array(numbers).buffer)
-    
+const byteCount_ = ff_core_Float.Float_toInt(ff_core_Float.Float_ceil((hex_.length * 0.5)));
+const arrayBuffer_ = (new ArrayBuffer(byteCount_));
+const result_ = (new Uint8Array(arrayBuffer_));
+for(let for_i = 0, for_e = byteCount_; for_i < for_e; for_i++) {
+const i_ = for_i;
+result_[i_] = parseInt(hex_.slice((i_ * 2), ((i_ * 2) + 2)), 16)
+};
+return (new DataView(arrayBuffer_))
 }
 
 export function fromBase64_(base64_) {
-
-        const binaryString = atob(base64_)
-        const dataView = new DataView(new ArrayBuffer(binaryString.length))
-        dataView.setUint8(binaryString.split('').map(char => char.charCodeAt(0)))
-        return dataView
-    
+const binaryString_ = atob(base64_);
+const bytes_ = Uint8Array.from(binaryString_, ((char_) => {
+return char_.CharCodeAt(0)
+}));
+return (new DataView(bytes_.buffer))
 }
 
 export async function new_$(size_, shared_ = false, $task) {
-throw new Error('Function new is missing on this target in async context.');
+return (new DataView((shared_
+? (new SharedArrayBuffer(size_))
+: (new ArrayBuffer(size_)))))
 }
 
 export async function fromByteList_$(array_, $task) {
-throw new Error('Function fromByteList is missing on this target in async context.');
+return (new DataView(Uint8Array(array_).buffer))
 }
 
 export async function fromBufferList_$(array_, $task) {
-throw new Error('Function fromBufferList is missing on this target in async context.');
+let length_ = 0;
+for(let for_a = array_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const _w1 = for_a[for_i];
+length_ += _w1.byteLength
+};
+const arrayBuffer_ = (new ArrayBuffer(length_));
+const result_ = (new Uint8Array(arrayBuffer_));
+let offset_ = 0;
+for(let for_a = array_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const b_ = for_a[for_i];
+result_.set((new Uint8Array(b_.buffer, b_.byteOffset, b_.byteLength)), offset_);
+offset_ += b_.byteLength
+};
+return (new DataView(arrayBuffer_))
 }
 
 export async function fromHex_$(hex_, $task) {
-throw new Error('Function fromHex is missing on this target in async context.');
+const byteCount_ = ff_core_Float.Float_toInt(ff_core_Float.Float_ceil((hex_.length * 0.5)));
+const arrayBuffer_ = (new ArrayBuffer(byteCount_));
+const result_ = (new Uint8Array(arrayBuffer_));
+for(let for_i = 0, for_e = byteCount_; for_i < for_e; for_i++) {
+const i_ = for_i;
+result_[i_] = parseInt(hex_.slice((i_ * 2), ((i_ * 2) + 2)), 16)
+};
+return (new DataView(arrayBuffer_))
 }
 
 export async function fromBase64_$(base64_, $task) {
-throw new Error('Function fromBase64 is missing on this target in async context.');
+const binaryString_ = atob(base64_);
+const bytes_ = Uint8Array.from(binaryString_, ((char_) => {
+return char_.CharCodeAt(0)
+}));
+return (new DataView(bytes_.buffer))
 }
 
 export function Buffer_grabUint64(self_, byteOffset_, littleEndian_ = true) {
@@ -282,42 +314,40 @@ return (((typeof SharedArrayBuffer) !== "undefined") && (self_.buffer instanceof
 }
 
 export function Buffer_view(self_, begin_, end_) {
-return new DataView(self_.buffer, self_.byteOffset + begin_, end_ - begin_)
+return (new DataView(self_.buffer, (self_.byteOffset + begin_), (end_ - begin_)))
 }
 
 export function Buffer_copy(self_) {
-return new DataView(self_.buffer.slice(self_.byteOffset, self_.byteOffset + self_.byteLength))
+return (new DataView(self_.buffer.slice(self_.byteOffset, (self_.byteOffset + self_.byteLength))))
 }
 
 export function Buffer_toString(self_, encoding_ = "utf8") {
-
-            if(encoding_ === "utf8") {
-                if(typeof TextDecoder.ffSingleton === 'undefined') TextDecoder.ffSingleton = new TextDecoder()
-                return TextDecoder.ffSingleton.decode(self_)
-            }
-            return new TextDecoder().decode(self_)
-        
+if((encoding_ === "utf8")) {
+if(((typeof TextDecoder.ffSingleton) === "undefined")) {
+TextDecoder.ffSingleton = (new TextDecoder())
+};
+TextDecoder.ffSingleton.decode(self_)
+};
+return (new TextDecoder()).decode(self_)
 }
 
 export function Buffer_toByteArray(self_) {
-return [...new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength)]
+return ff_core_JsValue.JsValue_spreadToArray((new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength)))
 }
 
 export function Buffer_toHex(self_) {
-
-            let hex = ''
-            for (let i = 0; i < self_.byteLength; i++) {
-                hex += self_.getUint8(i).toString(16).padStart(2, '0')
-            }
-            return hex
-        
+let hex_ = "";
+for(let for_i = 0, for_e = self_.byteLength; for_i < for_e; for_i++) {
+const i_ = for_i;
+hex_ = (hex_ + self_.getUint8(i_).toString(16).padStart(2, "0"))
+};
+return hex_
 }
 
 export function Buffer_toBase64(self_) {
-
-            const view = new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength);
-            return btoa(String.fromCharCode(...view));
-        
+const view_ = (new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength));
+const binaryString_ = (new TextDecoder("latin1")).decode(view_);
+return btoa(binaryString_)
 }
 
 export async function Buffer_grabUint64$(self_, byteOffset_, littleEndian_ = true, $task) {
@@ -437,7 +467,7 @@ targetBuffer_.set(sourceBuffer_, byteOffset_)
 }
 
 export async function Buffer_size$(self_, $task) {
-throw new Error('Function Buffer_size is missing on this target in async context.');
+return self_.byteLength
 }
 
 export async function Buffer_shared$(self_, $task) {
@@ -445,27 +475,40 @@ return (((typeof SharedArrayBuffer) !== "undefined") && (self_.buffer instanceof
 }
 
 export async function Buffer_view$(self_, begin_, end_, $task) {
-throw new Error('Function Buffer_view is missing on this target in async context.');
+return (new DataView(self_.buffer, (self_.byteOffset + begin_), (end_ - begin_)))
 }
 
 export async function Buffer_copy$(self_, $task) {
-throw new Error('Function Buffer_copy is missing on this target in async context.');
+return (new DataView(self_.buffer.slice(self_.byteOffset, (self_.byteOffset + self_.byteLength))))
 }
 
 export async function Buffer_toString$(self_, encoding_ = "utf8", $task) {
-throw new Error('Function Buffer_toString is missing on this target in async context.');
+if((encoding_ === "utf8")) {
+if(((typeof TextDecoder.ffSingleton) === "undefined")) {
+TextDecoder.ffSingleton = (new TextDecoder())
+};
+TextDecoder.ffSingleton.decode(self_)
+};
+return (new TextDecoder()).decode(self_)
 }
 
 export async function Buffer_toByteArray$(self_, $task) {
-throw new Error('Function Buffer_toByteArray is missing on this target in async context.');
+return ff_core_JsValue.JsValue_spreadToArray((new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength)))
 }
 
 export async function Buffer_toHex$(self_, $task) {
-throw new Error('Function Buffer_toHex is missing on this target in async context.');
+let hex_ = "";
+for(let for_i = 0, for_e = self_.byteLength; for_i < for_e; for_i++) {
+const i_ = for_i;
+hex_ = (hex_ + self_.getUint8(i_).toString(16).padStart(2, "0"))
+};
+return hex_
 }
 
 export async function Buffer_toBase64$(self_, $task) {
-throw new Error('Function Buffer_toBase64 is missing on this target in async context.');
+const view_ = (new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength));
+const binaryString_ = (new TextDecoder("latin1")).decode(view_);
+return btoa(binaryString_)
 }
 
 export const ff_core_Show_Show$ff_core_Buffer_Buffer = {

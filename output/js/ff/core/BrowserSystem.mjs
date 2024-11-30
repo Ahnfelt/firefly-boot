@@ -102,78 +102,85 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function BrowserSystem_httpClient(self_) {
-throw new Error('Function BrowserSystem_httpClient is missing on this target in sync context.');
+return ff_core_Js.globalThis_()
 }
 
 export function BrowserSystem_mainTask(self_) {
-throw new Error('Function BrowserSystem_mainTask is missing on this target in sync context.');
+return self_["task_"]
 }
 
 export function BrowserSystem_crypto(self_) {
-throw new Error('Function BrowserSystem_crypto is missing on this target in sync context.');
+return crypto
 }
 
 export function BrowserSystem_js(self_) {
-throw new Error('Function BrowserSystem_js is missing on this target in sync context.');
+return ff_core_Js.globalThis_()
 }
 
 export function BrowserSystem_url(self_) {
-throw new Error('Function BrowserSystem_url is missing on this target in sync context.');
+return location.href
 }
 
 export function BrowserSystem_urlPath(self_) {
-throw new Error('Function BrowserSystem_urlPath is missing on this target in sync context.');
+return location.pathname
 }
 
 export function BrowserSystem_urlQuery(self_, name_) {
-throw new Error('Function BrowserSystem_urlQuery is missing on this target in sync context.');
+const param_ = (new URLSearchParams(location.search)).get(name_);
+if(ff_core_JsValue.JsValue_isNullOrUndefined(param_)) {
+return ff_core_Option.None()
+} else {
+return ff_core_Option.Some(param_)
+}
 }
 
 export function BrowserSystem_urlFragment(self_) {
-throw new Error('Function BrowserSystem_urlFragment is missing on this target in sync context.');
+if((!location.hash.startsWith("#"))) {
+return ff_core_Option.None()
+} else {
+return ff_core_Option.Some(location.hash.slice(1))
+}
 }
 
 export async function BrowserSystem_httpClient$(self_, $task) {
-return typeof globalThis !== 'undefined' ? globalThis : window
+return ff_core_Js.globalThis_()
 }
 
 export async function BrowserSystem_mainTask$(self_, $task) {
-return self_.task_
+return self_["task_"]
 }
 
 export async function BrowserSystem_crypto$(self_, $task) {
-return (typeof globalThis !== 'undefined' ? globalThis : window).crypto
+return crypto
 }
 
 export async function BrowserSystem_js$(self_, $task) {
-return typeof globalThis !== 'undefined' ? globalThis : window
+return ff_core_Js.globalThis_()
 }
 
 export async function BrowserSystem_url$(self_, $task) {
-
-            return location.href;
-        
+return location.href
 }
 
 export async function BrowserSystem_urlPath$(self_, $task) {
-
-            return location.pathname;
-        
+return location.pathname
 }
 
 export async function BrowserSystem_urlQuery$(self_, name_, $task) {
-
-            const param = new URLSearchParams(location.search).get(name_)
-            if(param == null) return ff_core_Option.None();
-            return ff_core_Option.Some(param);
-        
+const param_ = (new URLSearchParams(location.search)).get(name_);
+if(ff_core_JsValue.JsValue_isNullOrUndefined(param_)) {
+return ff_core_Option.None()
+} else {
+return ff_core_Option.Some(param_)
+}
 }
 
 export async function BrowserSystem_urlFragment$(self_, $task) {
-
-            if(!location.hash.startsWith('#')) return ff_core_Option.None();
-            return ff_core_Option.Some(location.hash.slice(1));
-        
+if((!location.hash.startsWith("#"))) {
+return ff_core_Option.None()
+} else {
+return ff_core_Option.Some(location.hash.slice(1))
+}
 }
 
 

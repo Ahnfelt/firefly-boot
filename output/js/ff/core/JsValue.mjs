@@ -406,6 +406,12 @@ export function JsValue_grabStringMap(self_) {
         
 }
 
+export function JsValue_spreadToArray(self_) {
+
+            return [...self_]
+        
+}
+
 export function JsValue_typeof(self_) {
 
             return typeof self_
@@ -704,6 +710,10 @@ throw new Error('Function JsValue_grabIntMap is missing on this target in async 
 
 export async function JsValue_grabStringMap$(self_, $task) {
 throw new Error('Function JsValue_grabStringMap is missing on this target in async context.');
+}
+
+export async function JsValue_spreadToArray$(self_, $task) {
+throw new Error('Function JsValue_spreadToArray is missing on this target in async context.');
 }
 
 export async function JsValue_typeof$(self_, $task) {
