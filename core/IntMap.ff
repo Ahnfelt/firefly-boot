@@ -1,45 +1,62 @@
 class IntMap[V] {}
 
-new[V](): IntMap[V]
-    target js sync "return new Map()"
-
+new[V](): IntMap[V] {
+    Js->Map->()?
+}
+    
 extend self[V]: IntMap[V] {
 
-    get(key: Int): Option[V]
-        target js sync "return self_.has(key_) ? ff_core_Option.Some(self_.get(key_)) : ff_core_Option.None()"
+    get(key: Int): Option[V] {
+        let result = self!->get(key)
+        if(!result.isUndefined() || self!->has(key)?) {result?}
+    }
 
-    grab(key: Int): V
-        target js sync """
-            const result = self_.get(key_)
-            if(key_ === void 0 && !self_.has(key_)) {
-                ff_core_Try.internalThrowGrabException_()
+    grab(key: Int): V {
+        let result = self!->get(key)
+        if(result.isUndefined() && !self.has(key)) {throw(GrabException())}
+        result?
+    }
+        
+    set(key: Int, value: V): Unit {
+        self!->set(key, value!)
+    }
+
+    has(key: Int): Bool {
+        self!->has(key)?
+    }
+
+    remove(key: Int): Bool {
+        self!->delete(key)?
+    }
+
+    clear(): Unit {
+        self!->clear()
+    }
+
+    size(): Int {
+        self!->size?
+    }
+
+    each(body: (Int, V) => Unit): Unit {
+        if(Js.inAsync()) {
+            let iterator = self!->entries()
+            mutable result = iterator->next()
+            while {!result->done?} {
+                let value = result->value
+                body(value.get(0)?, value.get(1)?)
+                result = iterator->next()
             }
-            return result
-        """
-
-    set(key: Int, value: V): Unit
-        target js sync "self_.set(key_, value_)"
-
-    has(key: Int): Bool
-        target js sync "return self_.has(key_)"
-
-    remove(key: Int): Bool
-        target js sync "return self_.delete(key_)"
-
-    clear(): Unit
-        target js sync "self_.clear()"
-
-    size(): Int
-        target js sync "return self_.size"
-
-    each(body: (Int, V) => Unit): Bool
-        target js sync "return self_.forEach((v, k) => body_(k, v))"
-        target js async "for(const [k, v] of self_) await body_(k, v)"
-
-    eachWhile(body: (Int, V) => Bool): Bool
-        target js sync "for(const [k, v] of self_) if(!body_(k, v)) break"
-        target js async "for(const [k, v] of self_) if(!await body_(k, v)) break"
-
+        } else {
+            self!->forEach(Js->{v, k => body(k?, v?)})
+        }
+    }
+    
+    eachWhile(body: (Int, V) => Bool): Unit {
+        self!.eachWhile {value =>
+            body(value.get(0)?, value.get(1)?)
+        }
+    }
+            
     toArray(): Array[Pair[Int, V]] {
         let array = Array.new()
         self.each {k, v => array.push(Pair(k, v))}
@@ -51,7 +68,7 @@ extend self[V]: IntMap[V] {
     }
 
     toStream(): Stream[Pair[Int, V]] {
-        self.toArray().toStream()
+        self.toList().toStream()
     }
 
     toMap(): Map[Int, V] {
@@ -70,14 +87,15 @@ extend self[V]: IntMap[V] {
         array.toList()
     }
 
-    copy(): IntMap[V]
-        target js sync "return new Map(self_)"
-        
+    copy(): IntMap[V] {
+        Js->Map->(self!)?
+    }
+
     getOrSet(key: Int, body: () => V): V {
         if(!self.has(key)) {self.set(key, body())}
         self.grab(key)
     }
-        
+            
 }
 
 extend self[V]: IntMap[Array[V]] {
