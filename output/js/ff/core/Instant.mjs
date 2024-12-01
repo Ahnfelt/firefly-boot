@@ -108,9 +108,7 @@ return ff_core_Option.Some(ff_core_Instant.internalParseDate_(date_))
 }
 
 export function internalParseDate_(date_) {
-
-        return Date.parse(date_) * 0.001;
-    
+return (Date.parse(date_) * 0.001)
 }
 
 export async function fromIso_$(date_, $task) {
@@ -125,7 +123,7 @@ return ff_core_Option.Some(ff_core_Instant.internalParseDate_(date_))
 }
 
 export async function internalParseDate_$(date_, $task) {
-throw new Error('Function internalParseDate is missing on this target in async context.');
+return (Date.parse(date_) * 0.001)
 }
 
 export function Instant_add(self_, duration_) {
@@ -133,9 +131,7 @@ return (self_ + duration_)
 }
 
 export function Instant_toIso(self_) {
-
-            return new Date(self_ * 1000).toISOString();
-        
+return (new Date((self_ * 1000.0))).toISOString()
 }
 
 export async function Instant_add$(self_, duration_, $task) {
@@ -143,7 +139,7 @@ return (self_ + duration_)
 }
 
 export async function Instant_toIso$(self_, $task) {
-throw new Error('Function Instant_toIso is missing on this target in async context.');
+return (new Date((self_ * 1000.0))).toISOString()
 }
 
 

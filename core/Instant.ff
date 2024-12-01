@@ -13,14 +13,12 @@ extend self: Instant {
         Instant(Duration(self.since1970.seconds + duration.seconds))
     }
     
-    toIso(): String
-        target js sync """
-            return new Date(self_ * 1000).toISOString();
-        """
+    toIso(): String {
+        Js->Date->(self.since1970.seconds * 1000.0)->toISOString()?
+    }
 
 }
 
-internalParseDate(date: String): Instant
-    target js sync """
-        return Date.parse(date_) * 0.001;
-    """
+internalParseDate(date: String): Instant {
+    Instant(Duration(Js->Date->parse(date)? * 0.001))
+}
