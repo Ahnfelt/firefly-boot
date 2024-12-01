@@ -125,7 +125,7 @@ self_.set(key_, value_)
 }
 
 export function StringMap_has(self_, key_) {
-return (!self_.has(key_))
+return self_.has(key_)
 }
 
 export function StringMap_remove(self_, key_) {
@@ -227,7 +227,7 @@ self_.set(key_, value_)
 }
 
 export async function StringMap_has$(self_, key_, $task) {
-return (!self_.has(key_))
+return self_.has(key_)
 }
 
 export async function StringMap_remove$(self_, key_, $task) {
