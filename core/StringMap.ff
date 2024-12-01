@@ -22,7 +22,7 @@ extend self[V]: StringMap[V] {
     }
 
     has(key: String): Bool {
-        !self!->has(key)?
+        self!->has(key)?
     }
 
     remove(key: String): Bool {
