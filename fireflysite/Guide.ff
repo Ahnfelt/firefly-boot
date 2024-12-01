@@ -130,7 +130,7 @@ renderTopbar(lux: Lux, menu: Bool, setMenu: Bool => Unit) {
     lux.add("div") {
         lux.cssClass(Styles.guideTopbarCss)
         lux.add("a") {
-            lux.set("href", "/front/")
+            lux.set("href", "/")
             lux.cssClass(Styles.guideTopbarLogoCss)
             lux.add("img") {
                 lux.set("src", "/assets/image/firefly-logo-yellow.webp")
@@ -155,7 +155,7 @@ renderSidebar(lux: Lux, guides: List[Guide], selectedGuide: Guide, selectedHeadi
         lux.cssClass(Styles.guideSidebarCss)
         if(menu) {lux.cssClass(Styles.guideSidebarOpenCss)}
         lux.add("a") {
-            lux.set("href", "/front/")
+            lux.set("href", "/")
             lux.cssClass(Styles.guideSidebarLogoCss)
             lux.add("img") {
                 lux.set("src", "/assets/image/firefly-logo-yellow.webp")

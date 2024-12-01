@@ -19,6 +19,15 @@ nodeMain(system: NodeSystem): Unit {
         let path = request.readPath()
         let segments = path.split('/').filter {s => s != "" && s != "." && s != ".."}
         segments.{
+            | _ {
+                !request.readHeader("host").contains("www.firefly-lang.org") &&
+                !request.readHeader("host").any {_.startsWith("localhost")}
+            } =>
+                let parameters = if(request.readRawQueryString().size() == 0) {""} else {
+                    "?" + request.readRawQueryString()
+                }
+                request.writeHeader("Location", "https://www.firefly-lang.org" + path + parameters)
+                request.writeStatus("302 Found")
             | ["js", ...] => 
                 let asset = if(path == "/js/ff/fireflysite/Main.mjs" && system.assets().exists("/js/Main.bundle.js")) {
                     "/js/Main.bundle.js"
@@ -35,11 +44,8 @@ nodeMain(system: NodeSystem): Unit {
             | ["assets", ...rest] => serveAssets(system, cacheSalt, request, rest)
             | _ {serveGuide(system, request)} => 
             | _ =>
-                let parameters = if(request.readRawQueryString().size() == 0) {""} else {
-                    "?" + request.readRawQueryString()
-                }
-                request.writeHeader("Location", "https://www.firefly-lang.org" + path + parameters)
-                request.writeStatus("302 Found")
+                request.writeText("404 Not Found")
+                request.writeStatus("404 Not Found")
         }
     }    
 }
@@ -56,8 +62,8 @@ guides = [
 serveGuide(system: NodeSystem, request: WebRequest[WebResponse]): Bool {
     let demos = ExamplesOverview.demos()
     mutable served = False
-    guides.each {guide => 
-        if(request.readPath().startsWith(guide.prefix)):
+    guides.each {guide =>
+        if(isGuidePath(request.readPath(), guide.prefix)):
         let kebab = request.readPath().dropFirst(guide.prefix.size())
         let htmlAndCss = Lux.renderToString(system) {lux =>
             Guide.render(lux, system.httpClient(), guide.prefix, kebab, guides, demos)
@@ -74,12 +80,17 @@ serveGuide(system: NodeSystem, request: WebRequest[WebResponse]): Bool {
 browserMain(system: BrowserSystem): Unit {
     let demos = ExamplesOverview.demos()
     guides.collect {guide => 
-        if(system.urlPath().startsWith(guide.prefix)):
+        if(isGuidePath(system.urlPath(), guide.prefix)):
         Lux.renderById(system, "main") {lux => 
             let kebab = system.urlPath().dropFirst(guide.prefix.size())
             Guide.render(lux, system.httpClient(), guide.prefix, kebab, guides, demos)
         }
     }
+}
+
+isGuidePath(path: String, prefix: String): Bool {
+    //Log.debug(path + " vs. " + prefix)
+    path.startsWith(prefix) || (prefix == "/front/" && (path == "/" || path == "/index.html")) // Why is index.html requested
 }
 
 buildMain(system: BuildSystem) {
