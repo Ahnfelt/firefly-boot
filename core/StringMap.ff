@@ -50,11 +50,13 @@ extend self[V]: StringMap[V] {
             self!->forEach(Js->{v, k => body(k?, v?)})
         }
     }
+    
+    eachWhile(body: (String, V) => Bool): Unit {
+        self!.eachWhile {value =>
+            body(value.get(0)?, value.get(1)?)
+        }
+    }
             
-    eachWhile(body: (String, V) => Bool): Unit
-        target js sync "for(const [k, v] of self_) if(!body_(k, v)) break"
-        target js async "for(const [k, v] of self_) if(!await body_(k, v)) break"
-
     toArray(): Array[Pair[String, V]] {
         let array = Array.new()
         self.each {k, v => array.push(Pair(k, v))}
