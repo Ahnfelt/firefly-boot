@@ -123,18 +123,21 @@ return {redirect_, referrer_, integrity_, mode_, credentials_, cache_};
 
 
 export function internalCheck_(fetchResponse_) {
-
-        if(fetchResponse_.response === null) {
-            throw new Error("Response closed");
-        }
-        if(!fetchResponse_.statusChecked && !fetchResponse_.response.ok) {
-            throw new Error("Unchecked HTTP status code: " + fetchResponse_.response.status);
-        }
-    
+if(ff_core_JsValue.JsValue_isNull(fetchResponse_.response)) {
+throw (new Error("Response closed"))
+};
+if(((!fetchResponse_.statusChecked) && (!fetchResponse_.response.ok))) {
+throw (new Error(("Unchecked HTTP status code: " + fetchResponse_.response.status)))
+}
 }
 
 export async function internalCheck_$(fetchResponse_, $task) {
-throw new Error('Function internalCheck is missing on this target in async context.');
+if(ff_core_JsValue.JsValue_isNull(fetchResponse_.response)) {
+throw (new Error("Response closed"))
+};
+if(((!fetchResponse_.statusChecked) && (!fetchResponse_.response.ok))) {
+throw (new Error(("Unchecked HTTP status code: " + fetchResponse_.response.status)))
+}
 }
 
 export function HttpClient_get(self_, url_, headers_, body_) {
@@ -154,7 +157,71 @@ return ff_core_HttpClient.HttpClient_fetch(self_, "DELETE", url_, headers_, ff_c
 }
 
 export function HttpClient_fetch(self_, method_, url_, headers_ = [], payload_ = ff_core_Option.None(), options_ = ff_core_HttpClient.FetchOptions(), body_) {
-throw new Error('Function HttpClient_fetch is missing on this target in sync context.');
+const fetchResponse_ = {response: null, statusChecked: false};
+return ff_core_Js.withSignal_(((signal_) => {
+try {
+const fetchOptions_ = {headers: {}, signal: signal_, method: method_};
+ff_core_List.List_each(headers_, ((_1) => {
+{
+const k_ = _1.first_;
+const v_ = _1.second_;
+fetchOptions_.headers[k_] = v_
+return
+}
+}));
+for(const for_o = payload_; for_o.Some;) {
+const v_ = for_o.value_;
+fetchOptions_.body = v_
+break
+};
+do {
+const _1 = options_.redirect_;
+if(_1.RedirectError) {
+fetchOptions_.redirect = "error"
+break
+}
+if(_1.RedirectFollow) {
+
+break
+}
+if(_1.RedirectManual) {
+fetchOptions_.redirect = "manual"
+break
+}
+} while(false);
+for(const for_o = options_.referrer_; for_o.Some;) {
+const v_ = for_o.value_;
+fetchOptions_.referrer = v_
+break
+};
+for(const for_o = options_.integrity_; for_o.Some;) {
+const v_ = for_o.value_;
+fetchOptions_.integrity = v_
+break
+};
+for(const for_o = options_.mode_; for_o.Some;) {
+const v_ = for_o.value_;
+fetchOptions_.mode = v_
+break
+};
+for(const for_o = options_.credentials_; for_o.Some;) {
+const v_ = for_o.value_;
+fetchOptions_.credentials = v_
+break
+};
+for(const for_o = options_.cache_; for_o.Some;) {
+const v_ = for_o.value_;
+fetchOptions_.cache = v_
+break
+};
+fetchResponse_.response = self_.fetch(url_, fetchOptions_);
+const result_ = body_(fetchResponse_);
+ff_core_HttpClient.internalCheck_(fetchResponse_);
+return result_
+} finally {
+fetchResponse_.response = null
+}
+}))
 }
 
 export async function HttpClient_get$(self_, url_, headers_, body_, $task) {
@@ -174,112 +241,153 @@ return (await ff_core_HttpClient.HttpClient_fetch$(self_, "DELETE", url_, header
 }
 
 export async function HttpClient_fetch$(self_, method_, url_, headers_ = [], payload_ = ff_core_Option.None(), options_ = ff_core_HttpClient.FetchOptions(), body_, $task) {
+const fetchResponse_ = {response: null, statusChecked: false};
+return (await ff_core_Js.withSignal_$((async (signal_, $task) => {
+try {
+const fetchOptions_ = {headers: {}, signal: signal_, method: method_};
+ff_core_List.List_each(headers_, ((_1) => {
+{
+const k_ = _1.first_;
+const v_ = _1.second_;
+fetchOptions_.headers[k_] = v_
+return
+}
+}));
+for(const for_o = payload_; for_o.Some;) {
+const v_ = for_o.value_;
+fetchOptions_.body = v_
+break
+};
+do {
+const _1 = options_.redirect_;
+if(_1.RedirectError) {
+fetchOptions_.redirect = "error"
+break
+}
+if(_1.RedirectFollow) {
 
-            const fetchResponse = {response: null, statusChecked: false};
-            try {
-                const options = {headers: {}, signal: $task.controller.signal};
-                options.method = method_;
-                headers_.forEach(pair => {options.headers[pair.first_] = pair.second_});
-                if(payload_.value_) options.body = payload_.value_;
-                if(options_.redirect_.RedirectError) options.redirect = "error";
-                else if(options_.redirect_.RedirectManual) options.redirect = "manual";
-                if(options_.referrer_.value_) options.referrer = options_.referrer_.value_;
-                if(options_.integrity_.value_) options.integrity = options_.integrity_.value_;
-                if(options_.mode_.value_) options.mode = options_.mode_.value_;
-                if(options_.credentials_.value_) options.credentials = options_.credentials_.value_;
-                if(options_.cache_.value_) options.cache = options_.cache_.value_;
-                fetchResponse.response = await self_.fetch(url_, options);
-                const result = await body_(fetchResponse, $task);
-                internalCheck_(fetchResponse);
-                return result;
-            } finally {
-                fetchResponse.response = null;
-                if($task.controller.signal.aborted) $task.controller = new AbortController()
-            }
-        
+break
+}
+if(_1.RedirectManual) {
+fetchOptions_.redirect = "manual"
+break
+}
+} while(false);
+for(const for_o = options_.referrer_; for_o.Some;) {
+const v_ = for_o.value_;
+fetchOptions_.referrer = v_
+break
+};
+for(const for_o = options_.integrity_; for_o.Some;) {
+const v_ = for_o.value_;
+fetchOptions_.integrity = v_
+break
+};
+for(const for_o = options_.mode_; for_o.Some;) {
+const v_ = for_o.value_;
+fetchOptions_.mode = v_
+break
+};
+for(const for_o = options_.credentials_; for_o.Some;) {
+const v_ = for_o.value_;
+fetchOptions_.credentials = v_
+break
+};
+for(const for_o = options_.cache_; for_o.Some;) {
+const v_ = for_o.value_;
+fetchOptions_.cache = v_
+break
+};
+fetchResponse_.response = (await self_.fetch(url_, fetchOptions_));
+const result_ = (await (await body_(fetchResponse_, $task)));
+ff_core_HttpClient.internalCheck_(fetchResponse_);
+return result_
+} finally {
+fetchResponse_.response = null
+}
+}), $task))
 }
 
 export function FetchResponse_ok(self_) {
-throw new Error('Function FetchResponse_ok is missing on this target in sync context.');
+self_.statusChecked = true;
+ff_core_HttpClient.internalCheck_(self_);
+return self_.response.ok
 }
 
 export function FetchResponse_status(self_) {
-throw new Error('Function FetchResponse_status is missing on this target in sync context.');
+self_.statusChecked = true;
+ff_core_HttpClient.internalCheck_(self_);
+return self_.response.status
 }
 
 export function FetchResponse_statusText(self_) {
-throw new Error('Function FetchResponse_statusText is missing on this target in sync context.');
+self_.statusChecked = true;
+ff_core_HttpClient.internalCheck_(self_);
+return self_.response.statusText
 }
 
 export function FetchResponse_header(self_, name_) {
-throw new Error('Function FetchResponse_header is missing on this target in sync context.');
+ff_core_HttpClient.internalCheck_(self_);
+const header_ = self_.response.headers.get(name_);
+if((!ff_core_JsValue.JsValue_isNullOrUndefined(header_))) {
+return ff_core_Option.Some(header_)
+} else return ff_core_Option.None()
 }
 
 export function FetchResponse_readText(self_) {
-throw new Error('Function FetchResponse_readText is missing on this target in sync context.');
+ff_core_HttpClient.internalCheck_(self_);
+return self_.response.text()
 }
 
 export function FetchResponse_readJson(self_) {
-throw new Error('Function FetchResponse_readJson is missing on this target in sync context.');
+ff_core_HttpClient.internalCheck_(self_);
+return self_.response.json()
 }
 
 export function FetchResponse_readBuffer(self_) {
-throw new Error('Function FetchResponse_readBuffer is missing on this target in sync context.');
+ff_core_HttpClient.internalCheck_(self_);
+return (new DataView(self_.response.arrayBuffer()))
 }
 
 export async function FetchResponse_ok$(self_, $task) {
-
-            self_.statusChecked = true;
-            internalCheck_(self_);
-            return self_.response.ok;
-        
+self_.statusChecked = true;
+(await ff_core_HttpClient.internalCheck_$(self_, $task));
+return self_.response.ok
 }
 
 export async function FetchResponse_status$(self_, $task) {
-
-            self_.statusChecked = true;
-            internalCheck_(self_);
-            return self_.response.status;
-        
+self_.statusChecked = true;
+(await ff_core_HttpClient.internalCheck_$(self_, $task));
+return self_.response.status
 }
 
 export async function FetchResponse_statusText$(self_, $task) {
-
-            self_.statusChecked = true;
-            internalCheck_(self_);
-            return self_.response.statusText;
-        
+self_.statusChecked = true;
+(await ff_core_HttpClient.internalCheck_$(self_, $task));
+return self_.response.statusText
 }
 
 export async function FetchResponse_header$(self_, name_, $task) {
-
-            internalCheck_(self_);
-            const header = self_.response.headers.get(name_);
-            return header != null
-                ? ff_core_Option.Some(header)
-                : ff_core_Option.None();
-        
+(await ff_core_HttpClient.internalCheck_$(self_, $task));
+const header_ = self_.response.headers.get(name_);
+if((!ff_core_JsValue.JsValue_isNullOrUndefined(header_))) {
+return ff_core_Option.Some(header_)
+} else return ff_core_Option.None()
 }
 
 export async function FetchResponse_readText$(self_, $task) {
-
-            internalCheck_(self_);
-            return await self_.response.text();
-        
+(await ff_core_HttpClient.internalCheck_$(self_, $task));
+return (await self_.response.text())
 }
 
 export async function FetchResponse_readJson$(self_, $task) {
-
-            internalCheck_(self_);
-            return await self_.response.json();
-        
+(await ff_core_HttpClient.internalCheck_$(self_, $task));
+return (await self_.response.json())
 }
 
 export async function FetchResponse_readBuffer$(self_, $task) {
-
-            internalCheck_(self_);
-            return new DataView(await self_.response.arrayBuffer());
-        
+(await ff_core_HttpClient.internalCheck_$(self_, $task));
+return (new DataView((await self_.response.arrayBuffer())))
 }
 
 

@@ -139,7 +139,7 @@ return absoluteOrRelative_
 }
 
 export function internalCompile_(buildSystem_, mainFile_, target_) {
-globalThis["$firefly_compiler"]["buildViaBuildSystem_$"](buildSystem_, buildSystem_["fireflyPath_"], mainFile_, target_, globalThis["$task"])
+$firefly_compiler["buildViaBuildSystem_$"](buildSystem_, buildSystem_["fireflyPath_"], mainFile_, target_, $task)
 }
 
 export function internalMainPackagePair_(buildSystem_) {
@@ -178,7 +178,7 @@ return absoluteOrRelative_
 }
 
 export async function internalCompile_$(buildSystem_, mainFile_, target_, $task) {
-(await globalThis["$firefly_compiler"]["buildViaBuildSystem_$"](buildSystem_, buildSystem_["fireflyPath_"], mainFile_, target_, globalThis["$task"]))
+(await $firefly_compiler["buildViaBuildSystem_$"](buildSystem_, buildSystem_["fireflyPath_"], mainFile_, target_, $task))
 }
 
 export async function internalMainPackagePair_$(buildSystem_, $task) {

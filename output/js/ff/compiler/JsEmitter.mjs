@@ -332,11 +332,11 @@ export function safeBare_(quotedString_) {
 return ff_core_Option.Option_filter(ff_core_Option.Option_flatMap(ff_core_String.String_removeFirst(quotedString_, "\""), ((_w1) => {
 return ff_core_String.String_removeLast(_w1, "\"")
 })), ((s_) => {
-return (ff_core_Option.Option_any(ff_core_String.String_first(s_), ((_w1) => {
+return (((s_ === "$firefly_compiler") || (s_ === "$task")) || (ff_core_Option.Option_any(ff_core_String.String_first(s_), ((_w1) => {
 return ff_core_Char.Char_isAsciiLetter(_w1)
 })) && ff_core_String.String_all(s_, ((_w1) => {
 return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
-})))
+}))))
 }))
 }
 
@@ -585,11 +585,11 @@ export async function safeBare_$(quotedString_, $task) {
 return ff_core_Option.Option_filter(ff_core_Option.Option_flatMap(ff_core_String.String_removeFirst(quotedString_, "\""), ((_w1) => {
 return ff_core_String.String_removeLast(_w1, "\"")
 })), ((s_) => {
-return (ff_core_Option.Option_any(ff_core_String.String_first(s_), ((_w1) => {
+return (((s_ === "$firefly_compiler") || (s_ === "$task")) || (ff_core_Option.Option_any(ff_core_String.String_first(s_), ((_w1) => {
 return ff_core_Char.Char_isAsciiLetter(_w1)
 })) && ff_core_String.String_all(s_, ((_w1) => {
 return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
-})))
+}))))
 }))
 }
 

@@ -58,91 +58,85 @@ extend self: HttpClient {
         payload: Option[Buffer] = None
         options: FetchOptions = FetchOptions()
         body: FetchResponse => T
-    ): T
-        target js async """
-            const fetchResponse = {response: null, statusChecked: false};
+    ): T {
+        let fetchResponse = Js->(response = Js.null(), statusChecked = False)
+        Js.withSignal {signal =>
             try {
-                const options = {headers: {}, signal: $task.controller.signal};
-                options.method = method_;
-                headers_.forEach(pair => {options.headers[pair.first_] = pair.second_});
-                if(payload_.value_) options.body = payload_.value_;
-                if(options_.redirect_.RedirectError) options.redirect = "error";
-                else if(options_.redirect_.RedirectManual) options.redirect = "manual";
-                if(options_.referrer_.value_) options.referrer = options_.referrer_.value_;
-                if(options_.integrity_.value_) options.integrity = options_.integrity_.value_;
-                if(options_.mode_.value_) options.mode = options_.mode_.value_;
-                if(options_.credentials_.value_) options.credentials = options_.credentials_.value_;
-                if(options_.cache_.value_) options.cache = options_.cache_.value_;
-                fetchResponse.response = await self_.fetch(url_, options);
-                const result = await body_(fetchResponse, $task);
-                internalCheck_(fetchResponse);
-                return result;
+                let fetchOptions = Js->(headers = Js->(), signal = signal, method = method)
+                headers.each {| Pair(k, v) =>
+                    fetchOptions->headers.set(k, v)
+                }
+                payload.each {v => fetchOptions->body = v}
+                options.redirect.{
+                    | RedirectError => fetchOptions->redirect = "error"
+                    | RedirectFollow => 
+                    | RedirectManual => fetchOptions->redirect = "manual"
+                }
+                options.referrer.each {v => fetchOptions->referrer = v}
+                options.integrity.each {v => fetchOptions->integrity = v}
+                options.mode.each {v => fetchOptions->mode = v}
+                options.credentials.each {v => fetchOptions->credentials = v}
+                options.cache.each {v => fetchOptions->cache = v}
+                fetchResponse->response = Js.await(self!->fetch(url, fetchOptions))
+                let result = Js.await(body(fetchResponse?)!)
+                internalCheck(fetchResponse?)
+                result?
             } finally {
-                fetchResponse.response = null;
-                if($task.controller.signal.aborted) $task.controller = new AbortController()
+                fetchResponse->response = Js.null()
             }
-        """
+        }
+    }
 
 }
 
 extend self: FetchResponse {
 
-    ok(): Bool
-        target js async """
-            self_.statusChecked = true;
-            internalCheck_(self_);
-            return self_.response.ok;
-        """
+    ok(): Bool {
+        self!->statusChecked = True
+        internalCheck(self)
+        self!->response->ok?
+    }
 
-    status(): Int
-        target js async """
-            self_.statusChecked = true;
-            internalCheck_(self_);
-            return self_.response.status;
-        """
+    status(): Int {
+        self!->statusChecked = True
+        internalCheck(self)
+        self!->response->status?
+    }
 
-    statusText(): String
-        target js async """
-            self_.statusChecked = true;
-            internalCheck_(self_);
-            return self_.response.statusText;
-        """
+    statusText(): String {
+        self!->statusChecked = True
+        internalCheck(self)
+        self!->response->statusText?
+    }
 
-    header(name: String): Option[String]
-        target js async """
-            internalCheck_(self_);
-            const header = self_.response.headers.get(name_);
-            return header != null
-                ? ff_core_Option.Some(header)
-                : ff_core_Option.None();
-        """
+    header(name: String): Option[String] {
+        internalCheck(self)
+        let header = self!->response->headers->get(name)
+        if(!header.isNullOrUndefined()) {header?}
+    }
 
-    readText(): String
-        target js async """
-            internalCheck_(self_);
-            return await self_.response.text();
-        """
+    readText(): String {
+        internalCheck(self)
+        Js.await(self!->response->text())?
+    }
 
-    readJson(): Json
-        target js async """
-            internalCheck_(self_);
-            return await self_.response.json();
-        """
+    readJson(): Json {
+        internalCheck(self)
+        Js.await(self!->response->json())?
+    }
 
-    readBuffer(): Buffer
-        target js async """
-            internalCheck_(self_);
-            return new DataView(await self_.response.arrayBuffer());
-        """
+    readBuffer(): Buffer {
+        internalCheck(self)
+        Js->DataView->(Js.await(self!->response->arrayBuffer()))?
+    }
 
 }
 
-internalCheck(fetchResponse: FetchResponse)
-    target js sync """
-        if(fetchResponse_.response === null) {
-            throw new Error("Response closed");
-        }
-        if(!fetchResponse_.statusChecked && !fetchResponse_.response.ok) {
-            throw new Error("Unchecked HTTP status code: " + fetchResponse_.response.status);
-        }
-    """
+internalCheck(fetchResponse: FetchResponse) {
+    if(fetchResponse!->response.isNull()) {
+        Js.throw(Js->Error->("Response closed"))
+    }
+    if(!fetchResponse!->statusChecked? && !fetchResponse!->response->ok?) {
+        Js.throw(Js->Error->("Unchecked HTTP status code: " + fetchResponse!->response->status?))
+    }
+}
