@@ -106,15 +106,15 @@ throw self_
 }
 
 export function Error_name(self_) {
-return ff_core_JsValue.JsValue_coalesce(self_.name, "")
+return ff_core_JsValue.JsValue_coalesce(self_.name, "", ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue)
 }
 
 export function Error_message(self_) {
-return ff_core_JsValue.JsValue_coalesce(self_.message, "")
+return ff_core_JsValue.JsValue_coalesce(self_.message, "", ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue)
 }
 
 export function Error_stack(self_) {
-return ff_core_JsValue.JsValue_coalesce(self_.stack, "")
+return ff_core_JsValue.JsValue_coalesce(self_.stack, "", ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue)
 }
 
 export function Error_exception(self_) {
@@ -128,15 +128,15 @@ throw self_
 }
 
 export async function Error_name$(self_, $task) {
-return ff_core_JsValue.JsValue_coalesce(self_.name, "")
+return ff_core_JsValue.JsValue_coalesce(self_.name, "", ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue)
 }
 
 export async function Error_message$(self_, $task) {
-return ff_core_JsValue.JsValue_coalesce(self_.message, "")
+return ff_core_JsValue.JsValue_coalesce(self_.message, "", ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue)
 }
 
 export async function Error_stack$(self_, $task) {
-return ff_core_JsValue.JsValue_coalesce(self_.stack, "")
+return ff_core_JsValue.JsValue_coalesce(self_.stack, "", ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue)
 }
 
 export async function Error_exception$(self_, $task) {

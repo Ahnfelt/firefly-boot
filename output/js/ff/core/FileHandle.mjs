@@ -102,81 +102,117 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function FileHandle_close(self_) {
-throw new Error('Function FileHandle_close is missing on this target in sync context.');
+self_.close()
 }
 
 export function FileHandle_read(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None()) {
-throw new Error('Function FileHandle_read is missing on this target in sync context.');
+;
+self_.read(buffer_, {offset: offset_, length: ff_core_Option.Option_else(ff_core_Option.Option_map(length_, ((_w1) => {
+return _w1
+})), (() => {
+return (void 0)
+})), position: ff_core_Option.Option_else(ff_core_Option.Option_map(position_, ((_w1) => {
+return _w1
+})), (() => {
+return (void 0)
+}))})
 }
 
 export function FileHandle_write(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None()) {
-throw new Error('Function FileHandle_write is missing on this target in sync context.');
+;
+self_.write(buffer_, offset_, ff_core_Option.Option_else(ff_core_Option.Option_map(length_, ((_w1) => {
+return _w1
+})), (() => {
+return (void 0)
+})), ff_core_Option.Option_else(ff_core_Option.Option_map(position_, ((_w1) => {
+return _w1
+})), (() => {
+return (void 0)
+})))
 }
 
 export function FileHandle_writeText(self_, text_, position_ = ff_core_Option.None(), encoding_ = "utf8") {
-throw new Error('Function FileHandle_writeText is missing on this target in sync context.');
+;
+self_.write(text_, ff_core_Option.Option_else(ff_core_Option.Option_map(position_, ((_w1) => {
+return _w1
+})), (() => {
+return (void 0)
+})), encoding_)
 }
 
 export function FileHandle_writeLine(self_, text_, position_ = ff_core_Option.None(), encoding_ = "utf8") {
-throw new Error('Function FileHandle_writeLine is missing on this target in sync context.');
+ff_core_FileHandle.FileHandle_writeText(self_, (text_ + "\n"), position_, encoding_)
 }
 
 export function FileHandle_truncate(self_, length_ = 0) {
-throw new Error('Function FileHandle_truncate is missing on this target in sync context.');
+;
+self_.truncate(length_)
 }
 
 export function FileHandle_sync(self_, dataOnly_ = false) {
-throw new Error('Function FileHandle_sync is missing on this target in sync context.');
+;
+if(dataOnly_) {
+self_.datasync()
+} else {
+self_.sync()
+}
 }
 
 export async function FileHandle_close$(self_, $task) {
-
-            await self_.close()
-        
+(await self_.close())
 }
 
 export async function FileHandle_read$(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None(), $task) {
-
-            ff_core_Task.Task_throwIfAborted($task)
-            await self_.read(buffer_, {offset: offset_, length: length.value_, position: position.value_})
-        
+ff_core_Task.Task_throwIfAborted($task);
+(await self_.read(buffer_, {offset: offset_, length: ff_core_Option.Option_else(ff_core_Option.Option_map(length_, ((_w1) => {
+return _w1
+})), (() => {
+return (void 0)
+})), position: ff_core_Option.Option_else(ff_core_Option.Option_map(position_, ((_w1) => {
+return _w1
+})), (() => {
+return (void 0)
+}))}))
 }
 
 export async function FileHandle_write$(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None(), $task) {
-
-            ff_core_Task.Task_throwIfAborted($task)
-            await self_.write(buffer_, offset_, length.value_, position.value_)
-        
+ff_core_Task.Task_throwIfAborted($task);
+(await self_.write(buffer_, offset_, ff_core_Option.Option_else(ff_core_Option.Option_map(length_, ((_w1) => {
+return _w1
+})), (() => {
+return (void 0)
+})), ff_core_Option.Option_else(ff_core_Option.Option_map(position_, ((_w1) => {
+return _w1
+})), (() => {
+return (void 0)
+}))))
 }
 
 export async function FileHandle_writeText$(self_, text_, position_ = ff_core_Option.None(), encoding_ = "utf8", $task) {
-
-            ff_core_Task.Task_throwIfAborted($task)
-            await self_.write(text, position.value_, encoding_)
-        
+ff_core_Task.Task_throwIfAborted($task);
+(await self_.write(text_, ff_core_Option.Option_else(ff_core_Option.Option_map(position_, ((_w1) => {
+return _w1
+})), (() => {
+return (void 0)
+})), encoding_))
 }
 
 export async function FileHandle_writeLine$(self_, text_, position_ = ff_core_Option.None(), encoding_ = "utf8", $task) {
-
-            ff_core_Task.Task_throwIfAborted($task)
-            await self_.write(text + "\
-", position.value_, encoding_)
-        
+(await ff_core_FileHandle.FileHandle_writeText$(self_, (text_ + "\n"), position_, encoding_, $task))
 }
 
 export async function FileHandle_truncate$(self_, length_ = 0, $task) {
-
-            ff_core_Task.Task_throwIfAborted($task)
-            await self_.truncate(length_)
-        
+ff_core_Task.Task_throwIfAborted($task);
+(await self_.truncate(length_))
 }
 
 export async function FileHandle_sync$(self_, dataOnly_ = false, $task) {
-
-            ff_core_Task.Task_throwIfAborted($task)
-            if(dataOnly_) await self_.datasync()
-            else await self_.sync()
-        
+ff_core_Task.Task_throwIfAborted($task);
+if(dataOnly_) {
+(await self_.datasync())
+} else {
+(await self_.sync())
+}
 }
 
 

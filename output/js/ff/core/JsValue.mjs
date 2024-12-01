@@ -412,7 +412,7 @@ export function JsValue_spreadToArray(self_) {
         
 }
 
-export function JsValue_coalesce(self_, defaultValue_) {
+export function JsValue_coalesce(self_, defaultValue_, ff_core_JsValue_IsJsValue$T) {
 if(ff_core_JsValue.JsValue_isNullOrUndefined(self_)) {
 return defaultValue_
 } else {
@@ -724,7 +724,7 @@ export async function JsValue_spreadToArray$(self_, $task) {
 throw new Error('Function JsValue_spreadToArray is missing on this target in async context.');
 }
 
-export async function JsValue_coalesce$(self_, defaultValue_, $task) {
+export async function JsValue_coalesce$(self_, defaultValue_, ff_core_JsValue_IsJsValue$T, $task) {
 if(ff_core_JsValue.JsValue_isNullOrUndefined(self_)) {
 return defaultValue_
 } else {
