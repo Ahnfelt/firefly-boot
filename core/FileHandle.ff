@@ -2,46 +2,54 @@ capability FileHandle {}
 
 extend self: FileHandle {
 
-    close(): Unit
-        target js async """
-            await self_.close()
-        """
+    close(): Unit {
+        Js.await(self!->close())
+    }
 
-    read(buffer: Buffer, offset: Int = 0, length: Option[Int] = None, position: Option[Int] = None): Unit
-        target js async """
-            ff_core_Task.Task_throwIfAborted($task)
-            await self_.read(buffer_, {offset: offset_, length: length.value_, position: position.value_})
-        """
+    read(buffer: Buffer, offset: Int = 0, length: Option[Int] = None, position: Option[Int] = None): Unit {
+        Js.throwIfCancelled()
+        Js.await(self!->read(buffer, Js->(
+            offset = offset
+            length = length.map {_!}.else {Js.undefined()}
+            position = position.map {_!}.else {Js.undefined()}
+        )))
+    }
 
-    write(buffer: Buffer, offset: Int = 0, length: Option[Int] = None, position: Option[Int] = None): Unit
-        target js async """
-            ff_core_Task.Task_throwIfAborted($task)
-            await self_.write(buffer_, offset_, length.value_, position.value_)
-        """
-
-    writeText(text: String, position: Option[Int] = None, encoding: String = "utf8"): Unit
-        target js async """
-            ff_core_Task.Task_throwIfAborted($task)
-            await self_.write(text, position.value_, encoding_)
-        """
+    write(buffer: Buffer, offset: Int = 0, length: Option[Int] = None, position: Option[Int] = None): Unit {
+        Js.throwIfCancelled()
+        Js.await(self!->write(
+            buffer
+            offset
+            length.map {_!}.else {Js.undefined()}
+            position.map {_!}.else {Js.undefined()}
+        ))
+    }
+    
+    writeText(text: String, position: Option[Int] = None, encoding: String = "utf8"): Unit {
+        Js.throwIfCancelled()
+        Js.await(self!->write(
+            text
+            position.map {_!}.else {Js.undefined()}
+            encoding
+        ))
+    }
         
-    writeLine(text: String, position: Option[Int] = None, encoding: String = "utf8"): Unit
-        target js async """
-            ff_core_Task.Task_throwIfAborted($task)
-            await self_.write(text + "\\n", position.value_, encoding_)
-        """
+    writeLine(text: String, position: Option[Int] = None, encoding: String = "utf8"): Unit {
+        self.writeText(text + "\n", position, encoding)
+    }
         
-    truncate(length: Int = 0): Unit
-        target js async """
-            ff_core_Task.Task_throwIfAborted($task)
-            await self_.truncate(length_)
-        """
-
-    sync(dataOnly: Bool = False): Unit
-        target js async """
-            ff_core_Task.Task_throwIfAborted($task)
-            if(dataOnly_) await self_.datasync()
-            else await self_.sync()
-        """
+    truncate(length: Int = 0): Unit {
+        Js.throwIfCancelled()
+        Js.await(self!->truncate(length))
+    }
+    
+    sync(dataOnly: Bool = False): Unit {
+        Js.throwIfCancelled()
+        if(dataOnly) {
+            Js.await(self!->datasync())
+        } else {
+            Js.await(self!->sync())
+        }
+    }
 
 }
