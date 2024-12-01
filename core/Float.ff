@@ -2,38 +2,49 @@ data Float {}
 
 extend self: Float {
 
-    toInt(): Int
-        target js sync "return Math.trunc(self_) || 0"
+    toInt(): Int {
+        Js->Math->trunc(self).coalesce(0)?
+    }
 
-    round(): Float
-        target js sync "return Math.round(self_)"
+    round(): Float {
+        Js->Math->round(self)?
+    }
 
-    floor(): Float
-        target js sync "return Math.floor(self_)"
+    floor(): Float {
+        Js->Math->floor(self)?
+    }
 
-    ceil(): Float
-        target js sync "return Math.ceil(self_)"
+    ceil(): Float {
+        Js->Math->ceil(self)?
+    }
 
-    truncate(): Float
-        target js sync "return Math.trunc(self_)"
+    truncate(): Float {
+        Js->Math->trunc(self)?
+    }
 
-    sign(): Float
-        target js sync "return Math.sign(self_)"
+    sign(): Float {
+        Js->Math->sign(self)?
+    }
 
-    abs(): Float
-        target js sync "return Math.abs(self_)"
+    abs(): Float {
+        Js->Math->abs(self)?
+    }
 
-    toFixed(digits: Int): String
-        target js sync "return self_.toFixed(digits_)"
+    toFixed(digits: Int): String {
+        self!->toFixed(digits)?
+    }
 
-    min(that: Float): Float 
-        target js sync "return Math.min(self_, that_)"
+    min(that: Float): Float  {
+        Js->Math->min(self, that)?
+    }
 
-    max(that: Float): Float
-        target js sync "return Math.max(self_, that_)"
+    max(that: Float): Float {
+        Js->Math->max(self, that)?
+    }
 
-    clamp(from: Float, to: Float): Float
-        target js sync "return Math.min(Math.max(self_, from_), to_)"
+    clamp(from: Float, to: Float): Float {
+        Js->Math->min(Js->Math->max(self, from), to)?
+    }
     
     lerp(that: Float, factor: Float): Float {
         self + factor * (that - self)
@@ -48,184 +59,149 @@ extend self: Float {
         that + (self - that) * (-decay * factor).exp()
     }
     
-    acos(): Float
-        target js sync """
-            return Math.acos(self_);
-        """
+    acos(): Float {
+        Js->Math->acos(self)?
+    }
         
-    acosh(): Float
-        target js sync """
-            return Math.acosh(self_);
-        """
+    acosh(): Float {
+        Js->Math->acosh(self)?
+    }
         
-    asin(): Float
-        target js sync """
-            return Math.asin(self_);
-        """
+    asin(): Float {
+        Js->Math->asin(self)?
+    }
         
-    asinh(): Float
-        target js sync """
-            return Math.asinh(self_);
-        """
+    asinh(): Float {
+        Js->Math->asinh(self)?
+    }
         
-    atan(): Float
-        target js sync """
-            return Math.atan(self_);
-        """
+    atan(): Float {
+        Js->Math->atan(self)?
+    }
         
-    atan2(that: Float): Float
-        target js sync """
-            return Math.atan2(self_, that_);
-        """
+    atan2(that: Float): Float {
+        Js->Math->atan2(self, that)?
+    }
         
-    atanh(): Float
-        target js sync """
-            return Math.atanh(self_);
-        """
+    atanh(): Float {
+        Js->Math->atanh(self)?
+    }
         
-    cbrt(): Float
-        target js sync """
-            return Math.cbrt(self_);
-        """
+    cbrt(): Float {
+        Js->Math->cbrt(self)?
+    }
         
-    cos(): Float
-        target js sync """
-            return Math.cos(self_);
-        """
+    cos(): Float {
+        Js->Math->cos(self)?
+    }
         
-    cosh(): Float
-        target js sync """
-            return Math.cosh(self_);
-        """
+    cosh(): Float {
+        Js->Math->cosh(self)?
+    }
         
-    exp(): Float
-        target js sync """
-            return Math.exp(self_);
-        """
+    exp(): Float {
+        Js->Math->exp(self)?
+    }
         
-    expm1(): Float
-        target js sync """
-            return Math.expm1(self_);
-        """
+    expm1(): Float {
+        Js->Math->expm1(self)?
+    }
         
-    log(that: Float): Float
-        target js sync """
-            return Math.log2(self_) / Math.log2(that_);
-        """
+    log(that: Float): Float {
+        let l: Float = Js->Math->log2(self)?
+        l / Js->Math->log2(that)?
+    }
         
-    log10(): Float
-        target js sync """
-            return Math.log10(self_);
-        """
+    log10(): Float {
+        Js->Math->log10(self)?
+    }
         
-    log2(): Float
-        target js sync """
-            return Math.log2(self_);
-        """
+    log2(): Float {
+        Js->Math->log2(self)?
+    }
         
-    ln(): Float
-        target js sync """
-            return Math.log(self_);
-        """
+    ln(): Float {
+        Js->Math->ln(self)?
+    }
         
-    ln1p(): Float
-        target js sync """
-            return Math.log1p(self_);
-        """
-        
-    sin(): Float
-        target js sync """
-            return Math.sin(self_);
-        """
-        
-    sinh(): Float
-        target js sync """
-            return Math.sinh(self_);
-        """
-        
-    sqrt(): Float
-        target js sync """
-            return Math.sqrt(self_);
-        """
-        
-    tan(): Float
-        target js sync """
-            return Math.tan(self_);
-        """
-        
-    tanh(): Float
-        target js sync """
-            return Math.tanh(self_);
-        """
-        
-    isFinite(): Bool
-        target js sync """
-            return Number.isFinite(self_);
-        """
-        
-    isNan(): Bool
-        target js sync """
-            return Number.isNaN(self_);
-        """
+    ln1p(): Float {
+        Js->Math->log1p(self)?
+    }
 
-    isSafeInteger(): Bool
-        target js sync """
-            return Number.isSafeInteger(self_);
-        """
+    sin(): Float {
+        Js->Math->sin(self)?
+    }
+        
+    sinh(): Float {
+        Js->Math->sinh(self)?
+    }
+        
+    sqrt(): Float {
+        Js->Math->sqrt(self)?
+    }
+        
+    tan(): Float {
+        Js->Math->tan(self)?
+    }
+        
+    tanh(): Float {
+        Js->Math->tanh(self)?
+    }
+        
+    isFinite(): Bool {
+        Js->Number->isFinite(self)?
+    }
+        
+    isNan(): Bool {
+        Js->Number->isNaN(self)?
+    }
+
+    isSafeInteger(): Bool {
+        Js->Number->isSafeInteger(self)?
+    }
 
 }
 
-hypot(values: List[Float]): Float
-    target js sync """
-        return Math.hypot(...values_);
-    """
+hypot(a: Float, b: Float, c: Float = 0.0, d: Float = 0.0) {
+    Js->Math->hypot(a, b, c, d)?
+}
 
-e(): Float
-    target js sync """
-        return Math.E;
-    """
+e(): Float {
+    Js->Math->E?
+}
 
-ln10(): Float
-    target js sync """
-        return Math.LN10;
-    """
+ln10(): Float {
+    Js->Math->LN10?
+}
 
-ln2(): Float
-    target js sync """
-        return Math.LN2;
-    """
+ln2(): Float {
+    Js->Math->LN2?
+}
 
-log10e(): Float
-    target js sync """
-        return Math.LOG10E;
-    """
+log10e(): Float {
+    Js->Math->LOG10E?
+}
 
-log2e(): Float
-    target js sync """
-        return Math.LOG2E;
-    """
+log2e(): Float {
+    Js->Math->LOG2E?
+}
 
-pi(): Float
-    target js sync """
-        return Math.PI;
-    """
+pi(): Float {
+    Js->Math->PI?
+}
 
-sqrtHalf(): Float
-    target js sync """
-        return Math.SQRT1_2;
-    """
+sqrtHalf(): Float {
+    Js->Math->"SQRT1_2"?
+}
 
-sqrt2(): Float
-    target js sync """
-        return Math.SQRT2;
-    """
+sqrt2(): Float {
+    Js->Math->SQRT2?
+}
 
-nan(): Float
-    target js sync """
-        return NaN;
-    """
+nan(): Float {
+    Js->NaN?
+}
 
-infinity(): Float
-    target js sync """
-        return Infinity;
-    """
+infinity(): Float {
+    Js->Infinity?
+}

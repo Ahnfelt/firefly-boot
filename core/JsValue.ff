@@ -248,8 +248,8 @@ extend self: JsValue {
             return [...self_]
         """
         
-    coalesce(defaultValue: JsValue): JsValue {
-        if(self.isNullOrUndefined()) {defaultValue} else {self}
+    coalesce[T: IsJsValue](defaultValue: T): JsValue {
+        if(self.isNullOrUndefined()) {Js.value(defaultValue)} else {self}
     }
 
     typeof(): String
