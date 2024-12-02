@@ -1,5 +1,7 @@
 import * as import$0 from 'esbuild';
 
+import * as import$1 from 'path';
+
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -135,11 +137,12 @@ return ff_core_Path.Path_readStream(file_)
 }
 
 export function internalPath_(buildSystem_, absoluteOrRelative_) {
-return absoluteOrRelative_
+const nodePath_ = import$1;
+return ff_core_Path.Path(nodePath_.resolve(absoluteOrRelative_))
 }
 
 export function internalCompile_(buildSystem_, mainFile_, target_) {
-$firefly_compiler["buildViaBuildSystem_$"](buildSystem_, buildSystem_["fireflyPath_"], mainFile_, target_, $task)
+$firefly_compiler["buildViaBuildSystem_$"](buildSystem_, ff_core_BuildSystem.internalPath_(buildSystem_, buildSystem_["fireflyPath_"]), ff_core_Path.Path_base(mainFile_), target_, $task)
 }
 
 export function internalMainPackagePair_(buildSystem_) {
@@ -174,11 +177,12 @@ return (await ff_core_Path.Path_readStream$(file_, $task))
 }
 
 export async function internalPath_$(buildSystem_, absoluteOrRelative_, $task) {
-return absoluteOrRelative_
+const nodePath_ = import$1;
+return ff_core_Path.Path(nodePath_.resolve(absoluteOrRelative_))
 }
 
 export async function internalCompile_$(buildSystem_, mainFile_, target_, $task) {
-(await $firefly_compiler["buildViaBuildSystem_$"](buildSystem_, buildSystem_["fireflyPath_"], mainFile_, target_, $task))
+(await $firefly_compiler["buildViaBuildSystem_$"](buildSystem_, (await ff_core_BuildSystem.internalPath_$(buildSystem_, buildSystem_["fireflyPath_"], $task)), (await ff_core_Path.Path_base$(mainFile_, $task)), target_, $task))
 }
 
 export async function internalMainPackagePair_$(buildSystem_, $task) {

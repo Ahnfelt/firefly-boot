@@ -152,7 +152,8 @@ ff_core_Core.panic_(((("Dependency declaration and package declaration disagree 
 }
 
 export function internalExtractTarGz_(tarGzPath_, path_) {
-throw new Error('Function internalExtractTarGz is missing on this target in sync context.');
+const tar_ = import$0;
+tar_.extract({file: tarGzPath_.absolutePath_, cwd: path_.absolutePath_, strict: true})
 }
 
 export async function process_$(fetch_, dependencyLock_, path_, $task) {
@@ -189,10 +190,8 @@ ff_core_Core.panic_(((("Dependency declaration and package declaration disagree 
 }
 
 export async function internalExtractTarGz_$(tarGzPath_, path_, $task) {
-
-        const tar = import$0
-        await tar.extract({file: tarGzPath_, cwd: path_, strict: true})
-    
+const tar_ = import$0;
+(await tar_.extract({file: tarGzPath_.absolutePath_, cwd: path_.absolutePath_, strict: true}))
 }
 
 export function Dependencies_loadPackageInfo(self_, packagePair_, path_) {

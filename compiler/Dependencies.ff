@@ -180,8 +180,7 @@ checkPackagePairs(dependencyPair: PackagePair, packagePair: PackagePair): Unit {
     }
 }
 
-internalExtractTarGz(tarGzPath: Path, path: Path): Unit
-    target node async """
-        import * as tar from 'tar'
-        await tar.extract({file: tarGzPath_, cwd: path_, strict: true})
-    """
+internalExtractTarGz(tarGzPath: Path, path: Path): Unit {
+    let tar = Js.import("tar")
+    Js.await(tar->extract(Js->(file = tarGzPath.absolutePath, cwd = path.absolutePath, strict = True)))
+}

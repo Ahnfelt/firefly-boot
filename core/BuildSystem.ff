@@ -136,12 +136,19 @@ internalListDirectory(path: Path): List[Pair[String, () => Stream[Buffer]]] {
 }
 
 internalPath(buildSystem: BuildSystem, absoluteOrRelative: String): Path {
-    absoluteOrRelative!?
+    let nodePath = Js.import("path")
+    Path(nodePath->resolve(absoluteOrRelative)?)
 }
 
 internalCompile(buildSystem: BuildSystem, mainFile: Path, target: String): Unit {
-    // Directly translated from the old FFI. It's quite fragile w.r.t. changes in code generation.
-    Js.await(Js->"$firefly_compiler"->"buildViaBuildSystem_$"(buildSystem!, buildSystem!->"fireflyPath_", mainFile!, target, Js->"$task"))
+    // Ported from the old FFI. It's quite fragile w.r.t. changes in code generation.
+    Js.await(Js->"$firefly_compiler"->"buildViaBuildSystem_$"(
+        buildSystem! 
+        internalPath(buildSystem, buildSystem!->"fireflyPath_"?)!
+        mainFile.base()
+        target
+        Js->"$task"
+    ))
 }
 
 internalMainPackagePair(buildSystem: BuildSystem): Pair[String, String] {

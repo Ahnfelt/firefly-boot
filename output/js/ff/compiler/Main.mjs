@@ -399,7 +399,14 @@ ff_core_Path.Path_createDirectory(ff_core_Path.Path_slash(ff_core_Path.Path_slas
 }
 
 export function detectFireflyPath_(system_) {
-throw new Error('Function detectFireflyPath is missing on this target in sync context.');
+const url_ = import$0;
+const suffix_ = "/output/js/ff/compiler/Main.mjs";
+const moduleUrl_ = import.meta.url;
+if((!import.meta.url.endsWith(suffix_))) {
+throw (new Error(((("Expected module path to end with: " + suffix_) + ", but got: ") + moduleUrl_)))
+} else {
+return ff_core_Path.Path(url_.fileURLToPath((new URL(moduleUrl_.slice(0, (-suffix_.length))))))
+}
 }
 
 export async function main_$(system_, $task) {
@@ -641,7 +648,7 @@ export async function importAndRun_$(fireflyPath_, target_, packagePair_, mainFi
         const packagePath = packagePair_.group_ + "/" + packagePair_.name_
         const main = await import(workingDirectory + "/.firefly/output/" + target_ + "/" + packagePath + "/" + mainFile_ + ".mjs");
         if(typeof main.$run$ !== 'undefined') {
-            await main.$run$(fireflyPath_, arguments_);
+            await main.$run$(fireflyPath_.absolutePath_, arguments_);
             return true;
         } else {
             return false;
@@ -659,15 +666,14 @@ if((!(await ff_core_Path.Path_exists$((await ff_core_Path.Path_slash$(path_, ".f
 }
 
 export async function detectFireflyPath_$(system_, $task) {
-
-        const url = import$0
-        const suffix = '/output/js/ff/compiler/Main.mjs'
-        const moduleUrl = import.meta.url
-        if(!import.meta.url.endsWith(suffix)) {
-            throw 'Expected module path to end with: ' + suffix + ", but got: " + moduleUrl;
-        }
-        return url.fileURLToPath(new URL(moduleUrl.slice(0, -suffix.length)))
-    
+const url_ = import$0;
+const suffix_ = "/output/js/ff/compiler/Main.mjs";
+const moduleUrl_ = import.meta.url;
+if((!import.meta.url.endsWith(suffix_))) {
+throw (new Error(((("Expected module path to end with: " + suffix_) + ", but got: ") + moduleUrl_)))
+} else {
+return ff_core_Path.Path(url_.fileURLToPath((new URL(moduleUrl_.slice(0, (-suffix_.length))))))
+}
 }
 
 

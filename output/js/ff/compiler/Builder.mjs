@@ -339,7 +339,8 @@ ff_compiler_Builder.internalCallPkg_(self_, packageFile_, outputPath_, targets_)
 }
 
 export function internalCallPkg_(self_, packageFile_, outputPath_, targets_) {
-throw new Error('Function internalCallPkg is missing on this target in sync context.');
+const pkg_ = import$0;
+pkg_.exec([packageFile_.absolutePath_, "--out-path", outputPath_.absolutePath_, "--target", ff_core_List.List_join(targets_, ",")])
 }
 
 export async function build_$(system_, emitTarget_, mainPackage_, mainModule_, resolvedDependencies_, compilerModulePath_, tempPath_, jsOutputPath_, printMeasurements_, moduleCache_, $task) {
@@ -558,14 +559,8 @@ const packageFile_ = (await ff_core_Path.Path_slash$(outputPath_, "executable/pa
 }
 
 export async function internalCallPkg_$(self_, packageFile_, outputPath_, targets_, $task) {
-
-        const pkg = import$0
-        return await pkg.exec([
-            packageFile_,
-            '--out-path', outputPath_,
-            '--target', targets_.join(',')
-        ])
-    
+const pkg_ = import$0;
+(await pkg_.exec([packageFile_.absolutePath_, "--out-path", outputPath_.absolutePath_, "--target", ff_core_List.List_join(targets_, ",")]))
 }
 
 

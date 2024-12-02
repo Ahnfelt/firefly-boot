@@ -266,12 +266,11 @@ internalCallPkg(
     packageFile: Path
     outputPath: Path
     targets: List[String]
-): Unit
-    target node async """
-        import * as pkg from 'pkg'
-        return await pkg.exec([
-            packageFile_,
-            '--out-path', outputPath_,
-            '--target', targets_.join(',')
-        ])
-    """
+): Unit {
+    let pkg = Js.import("pkg")
+    Js.await(pkg->exec([
+        packageFile.absolutePath
+        "--out-path", outputPath.absolutePath
+        "--target", targets.join(",")
+    ]))
+}

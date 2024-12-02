@@ -257,7 +257,7 @@ importAndRun(
         const packagePath = packagePair_.group_ + "/" + packagePair_.name_
         const main = await import(workingDirectory + "/.firefly/output/" + target_ + "/" + packagePath + "/" + mainFile_ + ".mjs");
         if(typeof main.$run$ !== 'undefined') {
-            await main.$run$(fireflyPath_, arguments_);
+            await main.$run$(fireflyPath_.absolutePath_, arguments_);
             return true;
         } else {
             return false;
@@ -273,13 +273,13 @@ prepareFireflyDirectory(path: Path) {
     }
 }
 
-detectFireflyPath(system: NodeSystem): Path
-    target node async """
-        import * as url from 'url'
-        const suffix = '/output/js/ff/compiler/Main.mjs'
-        const moduleUrl = import.meta.url
-        if(!import.meta.url.endsWith(suffix)) {
-            throw 'Expected module path to end with: ' + suffix + ", but got: " + moduleUrl;
-        }
-        return url.fileURLToPath(new URL(moduleUrl.slice(0, -suffix.length)))
-    """
+detectFireflyPath(system: NodeSystem): Path {
+    let url = Js.import("url")
+    let suffix = "/output/js/ff/compiler/Main.mjs"
+    let moduleUrl = Js->import->meta->url
+    if(!Js->import->meta->url->endsWith(suffix)?) {
+        Js.throw(Js->Error->("Expected module path to end with: " + suffix + ", but got: " + moduleUrl?))
+    } else {
+        Path(url->fileURLToPath(Js->URL->(moduleUrl->slice(0, -suffix.size())))?)
+    }
+}
