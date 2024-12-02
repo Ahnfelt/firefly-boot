@@ -139,16 +139,19 @@ bumpMinorVersion(system: NodeSystem, packageJsonPath: Path): String {
     }
 }
 
-internalMakeTarGz(tarGzPath: Path, path: Path): Unit
-    target node async """
-        import * as tar from 'tar'
-        await tar.create({
-            file: tarGzPath_,
-            gzip: {level: 9},
-            cwd: path_,
-            filter: (path, stat) => 
-                !path.includes(".firefly/output") &&
-                !path.includes(".firefly/temporary") &&
-                !path.includes(".firefly/include/node_modules")
-        }, ["."]);
-    """
+internalMakeTarGz(tarGzPath: Path, path: Path): Unit {
+    let tar = Js.import("tar")
+    let options = Js->(
+        file = tarGzPath.absolutePath
+        gzip = Js->(level = 9)
+        cwd = path.absolutePath
+        filter = Js->{p, stat => 
+            !p->includes(".firefly/output")? &&
+            !p->includes(".firefly/temporary")? &&
+            !p->includes(".firefly/include/node_modules")?
+        }
+    )
+    Js.await(
+        tar->create(options, ["."])
+    )
+}

@@ -27,17 +27,15 @@ extend self: NodeSystem {
         }
     }
 
-    path(relativePath: String): Path
-        target node async """
-            import * as path from 'path'
-            return path.resolve(relativePath_)
-        """
+    path(relativePath: String): Path {
+        let nodePath = Js.import("path")
+        Path(nodePath->resolve(relativePath)?)
+    }
 
-    pathFromUrl(url: String): Path
-        target node async """
-            import * as url from 'url';
-            return url.fileURLToPath(new URL(url_));
-        """
+    pathFromUrl(url: String): Path {
+        let nodeUrl = Js.import("url")
+        Path(nodeUrl->fileURLToPath(Js->URL->(url))?)
+    }
 
     httpClient(): HttpClient
         target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
@@ -118,7 +116,7 @@ extend self: NodeSystem {
                 );
             }
             const newProcess = childProcess.spawn(command_, arguments_, {
-                cwd: directory_.value_,
+                cwd: directory_.value_ ? directory_.value_.absolutePath_ : void 0,
                 windowsHide: true,
                 signal: $task.controller.signal,
                 killSignal: killSignal_,
@@ -173,13 +171,12 @@ extend self: NodeSystem {
 internalAssets(system: NodeSystem): AssetSystem
     target node async "return system_.assets_"
 
-internalListDirectoryWithoutOpendir(system: NodeSystem, path: Path): List[Path]
-    target node async """
-        import * as fsPromises from 'fs/promises'
-        import * as path from 'path'
-        let files = await fsPromises.readdir(path_)
-        return files.map(file => path.join(path_, file))
-    """
+internalListDirectoryWithoutOpendir(system: NodeSystem, path: Path): List[Path] {
+    let fsPromises = Js.import("fs/promises")
+    let nodePath = Js.import("path")
+    let files = Js.await(fsPromises->readdir(path.absolutePath))
+    files.grabArray().map {file => Path(nodePath->join(path.absolutePath, file)?)}
+}
 
 internalProcessError(problem: String): Error {
     try {

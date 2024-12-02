@@ -99,7 +99,9 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Path
-
+export function Path(absolutePath_) {
+return {absolutePath_};
+}
 
 // type PathEntry
 
@@ -185,7 +187,7 @@ break
 
 export function internalWriteStream_(path_, stream_, flags_) {
 const fs_ = import$0;
-const writable_ = fs_.createWriteStream(path_, {flags: flags_});
+const writable_ = fs_.createWriteStream(path_.absolutePath_, {flags: flags_});
 try {
 ff_core_Stream.Stream_each(stream_, ((buffer_) => {
 if((!writable_.write((new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength))))) {
@@ -292,7 +294,7 @@ break
 
 export async function internalWriteStream_$(path_, stream_, flags_, $task) {
 const fs_ = import$0;
-const writable_ = fs_.createWriteStream(path_, {flags: flags_});
+const writable_ = fs_.createWriteStream(path_.absolutePath_, {flags: flags_});
 try {
 (await ff_core_Stream.Stream_each$(stream_, (async (buffer_, $task) => {
 if((!writable_.write((new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength))))) {
@@ -328,7 +330,7 @@ const flagsW_ = (fs_.constants["W_OK"] * checkWritable_);
 const flagsX_ = (fs_.constants["X_OK"] * checkExecutable_);
 const flags_ = ff_core_Int.Int_bitOr(flagsR_, ff_core_Int.Int_bitOr(flagsW_, flagsX_));
 try {
-fsPromises_.access(self_, ((flags_ === 0)
+fsPromises_.access(self_.absolutePath_, ((flags_ === 0)
 ? fs_.constants["F_OK"]
 : flags_));
 return true
@@ -352,7 +354,7 @@ return ff_core_Path.Path_exists(self_, false, false, true)
 export function Path_isDirectory(self_) {
 const fsPromises_ = import$1;
 try {
-return fsPromises_.lstat(self_).isDirectory()
+return fsPromises_.lstat(self_.absolutePath_).isDirectory()
 } catch {
 return false
 }
@@ -361,7 +363,7 @@ return false
 export function Path_isFile(self_) {
 const fsPromises_ = import$1;
 try {
-return fsPromises_.lstat(self_).isFile()
+return fsPromises_.lstat(self_.absolutePath_).isFile()
 } catch {
 return false
 }
@@ -370,7 +372,7 @@ return false
 export function Path_isSymbolicLink(self_) {
 const fsPromises_ = import$1;
 try {
-return fsPromises_.lstat(self_).isSymbolicLink()
+return fsPromises_.lstat(self_.absolutePath_).isSymbolicLink()
 } catch {
 return false
 }
@@ -378,23 +380,23 @@ return false
 
 export function Path_isInsideOf(self_, path_) {
 const nodePath_ = import$2;
-if((path_ === "/")) {
+if((path_.absolutePath_ === "/")) {
 return true
 } else {
-const childPath_ = nodePath_.resolve(self_);
-const parentPath_ = nodePath_.resolve(path_);
-return (childPath_.startsWith((parentPath_ + nodePath_.sep)) || (childPath_ === parentPath_))
+const childPath_ = self_.absolutePath_;
+const parentPath_ = path_.absolutePath_;
+return (ff_core_String.String_startsWith(childPath_, (parentPath_ + nodePath_.sep), 0) || (childPath_ === parentPath_))
 }
 }
 
 export function Path_size(self_) {
 const fs_ = import$0;
-return fs_.promises.stat(self_)
+return fs_.promises.stat(self_.absolutePath_)
 }
 
 export function Path_modified(self_) {
 const fs_ = import$0;
-return (fs_.promises.stat(self_).mtimeMs * 0.001)
+return (fs_.promises.stat(self_.absolutePath_).mtimeMs * 0.001)
 }
 
 export function Path_entries(self_) {
@@ -402,12 +404,12 @@ const fsPromises_ = import$1;
 let dir_ = null;
 return ff_core_Stream.Stream((() => {
 if(ff_core_JsValue.JsValue_isNull(dir_)) {
-dir_ = fsPromises_.opendir(self_, {bufferSize: 128})
+dir_ = fsPromises_.opendir(self_.absolutePath_, {bufferSize: 128})
 };
 const entry_ = dir_.read();
 if((!ff_core_JsValue.JsValue_isNull(entry_))) {
 return ff_core_Option.Some((function() {
-entry_.ffPath = self_;
+entry_.ffPath = self_.absolutePath_;
 return entry_
 })())
 } else return ff_core_Option.None()
@@ -419,13 +421,12 @@ dir_.close()
 }
 
 export function Path_absolute(self_) {
-const path_ = import$2;
-return path_.resolve(self_)
+return self_.absolutePath_
 }
 
 export function Path_relativeTo(self_, path_) {
 const nodePath_ = import$2;
-return nodePath_.relative(path_, self_)
+return nodePath_.relative(path_.absolutePath_, self_.absolutePath_)
 }
 
 export function Path_endsWith(self_, parts_) {
@@ -456,45 +457,45 @@ return ff_core_Path.Path_contains(_w1, parts_)
 
 export function Path_base(self_) {
 const path_ = import$2;
-return path_.basename(self_)
+return path_.basename(self_.absolutePath_)
 }
 
 export function Path_extension(self_) {
 const path_ = import$2;
-return path_.extname(self_)
+return path_.extname(self_.absolutePath_)
 }
 
 export function Path_url(self_) {
 const url_ = import$3;
-return ("" + url_.pathToFileURL(self_))
+return ("" + url_.pathToFileURL(self_.absolutePath_))
 }
 
 export function Path_delimiter(self_) {
 const path_ = import$2;
-return path_.delimiter(self_)
+return path_.delimiter(self_.absolutePath_)
 }
 
 export function Path_separator(self_) {
 const path_ = import$2;
-return path_.separator(self_)
+return path_.separator(self_.absolutePath_)
 }
 
 export function Path_parent(self_) {
 const path_ = import$2;
-const result_ = path_.dirname(self_);
-if(((result_ !== "") && (result_ !== self_))) {
-return ff_core_Option.Some(result_)
+const result_ = path_.dirname(self_.absolutePath_);
+if(((result_ !== "") && (result_ !== self_.absolutePath_))) {
+return ff_core_Option.Some(ff_core_Path.Path(result_))
 } else return ff_core_Option.None()
 }
 
 export function Path_slash(self_, relativePath_) {
 const path_ = import$2;
-return path_.join(self_, relativePath_)
+return ff_core_Path.Path(path_.join(self_.absolutePath_, relativePath_))
 }
 
 export function Path_path(self_, absoluteOrRelativePath_) {
 const path_ = import$2;
-return path_.resolve(self_, absoluteOrRelativePath_)
+return ff_core_Path.Path(path_.resolve(self_.absolutePath_, absoluteOrRelativePath_))
 }
 
 export function Path_copyTo(self_, path_, retries_ = 0, retryDelay_ = 100) {
@@ -515,54 +516,54 @@ ff_core_Path.Path_writeStream(path_, ff_core_Path.Path_readStream(self_), false)
 
 export function Path_createDirectory(self_, createParentDirectories_ = false) {
 const fsPromises_ = import$1;
-fsPromises_.mkdir(self_, {recursive: createParentDirectories_})
+fsPromises_.mkdir(self_.absolutePath_, {recursive: createParentDirectories_})
 }
 
 export function Path_createSymlinkTo(self_, path_, junction_ = false) {
 const fsPromises_ = import$1;
-fsPromises_.symlink(path_, self_, (junction_
+fsPromises_.symlink(path_.absolutePath_, self_.absolutePath_, (junction_
 ? "junction"
 : null))
 }
 
 export function Path_delete(self_, retries_ = 0, retryDelay_ = 100) {
 const fsPromises_ = import$1;
-fsPromises_.rm(self_, {recursive: true, retries: retries_, retryDelay: retryDelay_})
+fsPromises_.rm(self_.absolutePath_, {recursive: true, retries: retries_, retryDelay: retryDelay_})
 }
 
 export function Path_truncate(self_, length_ = 0) {
 const fsPromises_ = import$1;
-fsPromises_.truncate(self_, length_)
+fsPromises_.truncate(self_.absolutePath_, length_)
 }
 
 export function Path_renameTo(self_, path_) {
 const fsPromises_ = import$1;
-fsPromises_.rename(self_, path_)
+fsPromises_.rename(self_.absolutePath_, path_.absolutePath_)
 }
 
 export function Path_readSymbolicLink(self_) {
 const fsPromises_ = import$1;
-return fsPromises_.readlink(self_)
+return fsPromises_.readlink(self_.absolutePath_)
 }
 
 export function Path_readText(self_) {
 const fsPromises_ = import$1;
 return ff_core_Js.withSignal_(((signal_) => {
-return fsPromises_.readFile(self_, {encoding: "UTF-8", signal: signal_})
+return fsPromises_.readFile(self_.absolutePath_, {encoding: "UTF-8", signal: signal_})
 }))
 }
 
 export function Path_writeText(self_, text_) {
 const fsPromises_ = import$1;
 ff_core_Js.withSignal_(((signal_) => {
-return fsPromises_.writeFile(self_, text_, {encoding: "UTF-8", signal: signal_})
+return fsPromises_.writeFile(self_.absolutePath_, text_, {encoding: "UTF-8", signal: signal_})
 }))
 }
 
 export function Path_appendText(self_, text_) {
 const fsPromises_ = import$1;
 ff_core_Js.withSignal_(((signal_) => {
-return fsPromises_.appendFile(self_, text_, {encoding: "UTF-8", signal: signal_})
+return fsPromises_.appendFile(self_.absolutePath_, text_, {encoding: "UTF-8", signal: signal_})
 }))
 }
 
@@ -581,7 +582,7 @@ ff_core_Path.Path_appendStream(self_, ff_core_List.List_toStream([buffer_], fals
 export function Path_readStream(self_) {
 const fs_ = import$0;
 return ff_core_Path.internalReadStream_((() => {
-return fs_.createReadStream(self_)
+return fs_.createReadStream(self_.absolutePath_)
 }))
 }
 
@@ -597,7 +598,7 @@ ff_core_Path.internalWriteStream_(self_, stream_, "a")
 
 export function Path_readHandle(self_, alsoWrite_ = false) {
 const fsPromises_ = import$1;
-return fsPromises_.open(self_, (alsoWrite_
+return fsPromises_.open(self_.absolutePath_, (alsoWrite_
 ? "r+"
 : "r"))
 }
@@ -609,7 +610,7 @@ const flags_ = ((mustCreate_
 : "w") + (alsoRead_
 ? "+"
 : ""));
-return fsPromises_.open(self_, flags_)
+return fsPromises_.open(self_.absolutePath_, flags_)
 }
 
 export function Path_appendHandle(self_, alsoRead_ = false, mustCreate_ = false) {
@@ -619,7 +620,7 @@ const flags_ = ((mustCreate_
 : "a") + (alsoRead_
 ? "+"
 : ""));
-return fsPromises_.open(self_, flags_)
+return fsPromises_.open(self_.absolutePath_, flags_)
 }
 
 export async function Path_exists$(self_, checkReadable_ = false, checkWritable_ = false, checkExecutable_ = false, $task) {
@@ -630,7 +631,7 @@ const flagsW_ = (fs_.constants["W_OK"] * checkWritable_);
 const flagsX_ = (fs_.constants["X_OK"] * checkExecutable_);
 const flags_ = ff_core_Int.Int_bitOr(flagsR_, ff_core_Int.Int_bitOr(flagsW_, flagsX_));
 try {
-(await fsPromises_.access(self_, ((flags_ === 0)
+(await fsPromises_.access(self_.absolutePath_, ((flags_ === 0)
 ? fs_.constants["F_OK"]
 : flags_)));
 return true
@@ -654,7 +655,7 @@ return (await ff_core_Path.Path_exists$(self_, false, false, true, $task))
 export async function Path_isDirectory$(self_, $task) {
 const fsPromises_ = import$1;
 try {
-return (await fsPromises_.lstat(self_)).isDirectory()
+return (await fsPromises_.lstat(self_.absolutePath_)).isDirectory()
 } catch {
 return false
 }
@@ -663,7 +664,7 @@ return false
 export async function Path_isFile$(self_, $task) {
 const fsPromises_ = import$1;
 try {
-return (await fsPromises_.lstat(self_)).isFile()
+return (await fsPromises_.lstat(self_.absolutePath_)).isFile()
 } catch {
 return false
 }
@@ -672,7 +673,7 @@ return false
 export async function Path_isSymbolicLink$(self_, $task) {
 const fsPromises_ = import$1;
 try {
-return (await fsPromises_.lstat(self_)).isSymbolicLink()
+return (await fsPromises_.lstat(self_.absolutePath_)).isSymbolicLink()
 } catch {
 return false
 }
@@ -680,23 +681,23 @@ return false
 
 export async function Path_isInsideOf$(self_, path_, $task) {
 const nodePath_ = import$2;
-if((path_ === "/")) {
+if((path_.absolutePath_ === "/")) {
 return true
 } else {
-const childPath_ = nodePath_.resolve(self_);
-const parentPath_ = nodePath_.resolve(path_);
-return (childPath_.startsWith((parentPath_ + nodePath_.sep)) || (childPath_ === parentPath_))
+const childPath_ = self_.absolutePath_;
+const parentPath_ = path_.absolutePath_;
+return (ff_core_String.String_startsWith(childPath_, (parentPath_ + nodePath_.sep), 0) || (childPath_ === parentPath_))
 }
 }
 
 export async function Path_size$(self_, $task) {
 const fs_ = import$0;
-return (await fs_.promises.stat(self_))
+return (await fs_.promises.stat(self_.absolutePath_))
 }
 
 export async function Path_modified$(self_, $task) {
 const fs_ = import$0;
-return ((await fs_.promises.stat(self_)).mtimeMs * 0.001)
+return ((await fs_.promises.stat(self_.absolutePath_)).mtimeMs * 0.001)
 }
 
 export async function Path_entries$(self_, $task) {
@@ -704,12 +705,12 @@ const fsPromises_ = import$1;
 let dir_ = null;
 return ff_core_Stream.Stream((async ($task) => {
 if(ff_core_JsValue.JsValue_isNull(dir_)) {
-dir_ = (await fsPromises_.opendir(self_, {bufferSize: 128}))
+dir_ = (await fsPromises_.opendir(self_.absolutePath_, {bufferSize: 128}))
 };
 const entry_ = (await dir_.read());
 if((!ff_core_JsValue.JsValue_isNull(entry_))) {
 return ff_core_Option.Some((await (async function() {
-entry_.ffPath = self_;
+entry_.ffPath = self_.absolutePath_;
 return entry_
 })()))
 } else return ff_core_Option.None()
@@ -721,13 +722,12 @@ if((!ff_core_JsValue.JsValue_isNull(dir_))) {
 }
 
 export async function Path_absolute$(self_, $task) {
-const path_ = import$2;
-return path_.resolve(self_)
+return self_.absolutePath_
 }
 
 export async function Path_relativeTo$(self_, path_, $task) {
 const nodePath_ = import$2;
-return nodePath_.relative(path_, self_)
+return nodePath_.relative(path_.absolutePath_, self_.absolutePath_)
 }
 
 export async function Path_endsWith$(self_, parts_, $task) {
@@ -758,45 +758,45 @@ return (await ff_core_Path.Path_contains$(_w1, parts_, $task))
 
 export async function Path_base$(self_, $task) {
 const path_ = import$2;
-return path_.basename(self_)
+return path_.basename(self_.absolutePath_)
 }
 
 export async function Path_extension$(self_, $task) {
 const path_ = import$2;
-return path_.extname(self_)
+return path_.extname(self_.absolutePath_)
 }
 
 export async function Path_url$(self_, $task) {
 const url_ = import$3;
-return ("" + url_.pathToFileURL(self_))
+return ("" + url_.pathToFileURL(self_.absolutePath_))
 }
 
 export async function Path_delimiter$(self_, $task) {
 const path_ = import$2;
-return path_.delimiter(self_)
+return path_.delimiter(self_.absolutePath_)
 }
 
 export async function Path_separator$(self_, $task) {
 const path_ = import$2;
-return path_.separator(self_)
+return path_.separator(self_.absolutePath_)
 }
 
 export async function Path_parent$(self_, $task) {
 const path_ = import$2;
-const result_ = path_.dirname(self_);
-if(((result_ !== "") && (result_ !== self_))) {
-return ff_core_Option.Some(result_)
+const result_ = path_.dirname(self_.absolutePath_);
+if(((result_ !== "") && (result_ !== self_.absolutePath_))) {
+return ff_core_Option.Some(ff_core_Path.Path(result_))
 } else return ff_core_Option.None()
 }
 
 export async function Path_slash$(self_, relativePath_, $task) {
 const path_ = import$2;
-return path_.join(self_, relativePath_)
+return ff_core_Path.Path(path_.join(self_.absolutePath_, relativePath_))
 }
 
 export async function Path_path$(self_, absoluteOrRelativePath_, $task) {
 const path_ = import$2;
-return path_.resolve(self_, absoluteOrRelativePath_)
+return ff_core_Path.Path(path_.resolve(self_.absolutePath_, absoluteOrRelativePath_))
 }
 
 export async function Path_copyTo$(self_, path_, retries_ = 0, retryDelay_ = 100, $task) {
@@ -817,54 +817,54 @@ if((await ff_core_Path.Path_exists$(path_, false, false, false, $task))) {
 
 export async function Path_createDirectory$(self_, createParentDirectories_ = false, $task) {
 const fsPromises_ = import$1;
-(await fsPromises_.mkdir(self_, {recursive: createParentDirectories_}))
+(await fsPromises_.mkdir(self_.absolutePath_, {recursive: createParentDirectories_}))
 }
 
 export async function Path_createSymlinkTo$(self_, path_, junction_ = false, $task) {
 const fsPromises_ = import$1;
-(await fsPromises_.symlink(path_, self_, (junction_
+(await fsPromises_.symlink(path_.absolutePath_, self_.absolutePath_, (junction_
 ? "junction"
 : null)))
 }
 
 export async function Path_delete$(self_, retries_ = 0, retryDelay_ = 100, $task) {
 const fsPromises_ = import$1;
-(await fsPromises_.rm(self_, {recursive: true, retries: retries_, retryDelay: retryDelay_}))
+(await fsPromises_.rm(self_.absolutePath_, {recursive: true, retries: retries_, retryDelay: retryDelay_}))
 }
 
 export async function Path_truncate$(self_, length_ = 0, $task) {
 const fsPromises_ = import$1;
-(await fsPromises_.truncate(self_, length_))
+(await fsPromises_.truncate(self_.absolutePath_, length_))
 }
 
 export async function Path_renameTo$(self_, path_, $task) {
 const fsPromises_ = import$1;
-(await fsPromises_.rename(self_, path_))
+(await fsPromises_.rename(self_.absolutePath_, path_.absolutePath_))
 }
 
 export async function Path_readSymbolicLink$(self_, $task) {
 const fsPromises_ = import$1;
-return (await fsPromises_.readlink(self_))
+return (await fsPromises_.readlink(self_.absolutePath_))
 }
 
 export async function Path_readText$(self_, $task) {
 const fsPromises_ = import$1;
 return (await ff_core_Js.withSignal_$((async (signal_, $task) => {
-return (await fsPromises_.readFile(self_, {encoding: "UTF-8", signal: signal_}))
+return (await fsPromises_.readFile(self_.absolutePath_, {encoding: "UTF-8", signal: signal_}))
 }), $task))
 }
 
 export async function Path_writeText$(self_, text_, $task) {
 const fsPromises_ = import$1;
 (await ff_core_Js.withSignal_$((async (signal_, $task) => {
-return (await fsPromises_.writeFile(self_, text_, {encoding: "UTF-8", signal: signal_}))
+return (await fsPromises_.writeFile(self_.absolutePath_, text_, {encoding: "UTF-8", signal: signal_}))
 }), $task))
 }
 
 export async function Path_appendText$(self_, text_, $task) {
 const fsPromises_ = import$1;
 (await ff_core_Js.withSignal_$((async (signal_, $task) => {
-return (await fsPromises_.appendFile(self_, text_, {encoding: "UTF-8", signal: signal_}))
+return (await fsPromises_.appendFile(self_.absolutePath_, text_, {encoding: "UTF-8", signal: signal_}))
 }), $task))
 }
 
@@ -883,7 +883,7 @@ export async function Path_appendBuffer$(self_, buffer_, $task) {
 export async function Path_readStream$(self_, $task) {
 const fs_ = import$0;
 return (await ff_core_Path.internalReadStream_$((async ($task) => {
-return fs_.createReadStream(self_)
+return fs_.createReadStream(self_.absolutePath_)
 }), $task))
 }
 
@@ -899,7 +899,7 @@ export async function Path_appendStream$(self_, stream_, $task) {
 
 export async function Path_readHandle$(self_, alsoWrite_ = false, $task) {
 const fsPromises_ = import$1;
-return (await fsPromises_.open(self_, (alsoWrite_
+return (await fsPromises_.open(self_.absolutePath_, (alsoWrite_
 ? "r+"
 : "r")))
 }
@@ -911,7 +911,7 @@ const flags_ = ((mustCreate_
 : "w") + (alsoRead_
 ? "+"
 : ""));
-return (await fsPromises_.open(self_, flags_))
+return (await fsPromises_.open(self_.absolutePath_, flags_))
 }
 
 export async function Path_appendHandle$(self_, alsoRead_ = false, mustCreate_ = false, $task) {
@@ -921,12 +921,12 @@ const flags_ = ((mustCreate_
 : "a") + (alsoRead_
 ? "+"
 : ""));
-return (await fsPromises_.open(self_, flags_))
+return (await fsPromises_.open(self_.absolutePath_, flags_))
 }
 
 export function PathEntry_path(self_) {
 const path_ = import$2;
-return path_.join(self_.ffPath, self_.name)
+return ff_core_Path.Path(path_.join(self_.ffPath, self_.name))
 }
 
 export function PathEntry_isDirectory(self_) {
@@ -943,7 +943,7 @@ return self_.isSymbolicLink()
 
 export async function PathEntry_path$(self_, $task) {
 const path_ = import$2;
-return path_.join(self_.ffPath, self_.name)
+return ff_core_Path.Path(path_.join(self_.ffPath, self_.name))
 }
 
 export async function PathEntry_isDirectory$(self_, $task) {

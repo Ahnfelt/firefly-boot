@@ -7,15 +7,15 @@ extend self: Error {
     }
 
     name(): String {
-        self!->name.coalesce(""!)?
+        self!->name.coalesce("")?
     }
 
     message(): String {
-        self!->message.coalesce(""!)?
+        self!->message.coalesce("")?
     }
 
     stack(): String {
-        self!->stack.coalesce(""!)?
+        self!->stack.coalesce("")?
     }
 
     exception(): Option[Any] {

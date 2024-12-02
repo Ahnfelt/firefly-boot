@@ -157,7 +157,9 @@ return body_(k_, v_)
 }
 
 export function StringMap_eachWhile(self_, body_) {
-for(const [k, v] of self_) if(!body_(k, v)) break
+ff_core_JsValue.JsValue_eachWhile(self_, ((value_) => {
+return body_(value_[0], value_[1])
+}))
 }
 
 export function StringMap_toArray(self_) {
@@ -259,7 +261,9 @@ return (await body_(k_, v_, $task))
 }
 
 export async function StringMap_eachWhile$(self_, body_, $task) {
-for(const [k, v] of self_) if(!await body_(k, v)) break
+(await ff_core_JsValue.JsValue_eachWhile$(self_, (async (value_, $task) => {
+return (await body_(value_[0], value_[1], $task))
+}), $task))
 }
 
 export async function StringMap_toArray$(self_, $task) {

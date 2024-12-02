@@ -98,25 +98,26 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function new_() {
-return new Map()
+return (new Map())
 }
 
 export async function new_$($task) {
-throw new Error('Function new is missing on this target in async context.');
+return (new Map())
 }
 
 export function IntMap_get(self_, key_) {
-return self_.has(key_) ? ff_core_Option.Some(self_.get(key_)) : ff_core_Option.None()
+const result_ = self_.get(key_);
+if(((!ff_core_JsValue.JsValue_isUndefined(result_)) || self_.has(key_))) {
+return ff_core_Option.Some(result_)
+} else return ff_core_Option.None()
 }
 
 export function IntMap_grab(self_, key_) {
-
-            const result = self_.get(key_)
-            if(key_ === void 0 && !self_.has(key_)) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            return result
-        
+const result_ = self_.get(key_);
+if((ff_core_JsValue.JsValue_isUndefined(result_) && (!ff_core_IntMap.IntMap_has(self_, key_)))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+return result_
 }
 
 export function IntMap_set(self_, key_, value_) {
@@ -140,11 +141,25 @@ return self_.size
 }
 
 export function IntMap_each(self_, body_) {
-return self_.forEach((v, k) => body_(k, v))
+if(false) {
+const iterator_ = self_.entries();
+let result_ = iterator_.next();
+while((!result_.done)) {
+const value_ = result_.value;
+body_(value_[0], value_[1]);
+result_ = iterator_.next()
+}
+} else {
+self_.forEach(ff_core_Js.function2_(((v_, k_) => {
+return body_(k_, v_)
+})))
+}
 }
 
 export function IntMap_eachWhile(self_, body_) {
-for(const [k, v] of self_) if(!body_(k, v)) break
+ff_core_JsValue.JsValue_eachWhile(self_, ((value_) => {
+return body_(value_[0], value_[1])
+}))
 }
 
 export function IntMap_toArray(self_) {
@@ -160,7 +175,7 @@ return ff_core_Array.Array_drain(ff_core_IntMap.IntMap_toArray(self_))
 }
 
 export function IntMap_toStream(self_) {
-return ff_core_Array.Array_toStream(ff_core_IntMap.IntMap_toArray(self_), 0, 9007199254740991)
+return ff_core_List.List_toStream(ff_core_IntMap.IntMap_toList(self_), false)
 }
 
 export function IntMap_toMap(self_) {
@@ -184,7 +199,7 @@ return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
 }
 
 export function IntMap_copy(self_) {
-return new Map(self_)
+return (new Map(self_))
 }
 
 export function IntMap_getOrSet(self_, key_, body_) {
@@ -195,39 +210,60 @@ return ff_core_IntMap.IntMap_grab(self_, key_)
 }
 
 export async function IntMap_get$(self_, key_, $task) {
-throw new Error('Function IntMap_get is missing on this target in async context.');
+const result_ = self_.get(key_);
+if(((!ff_core_JsValue.JsValue_isUndefined(result_)) || self_.has(key_))) {
+return ff_core_Option.Some(result_)
+} else return ff_core_Option.None()
 }
 
 export async function IntMap_grab$(self_, key_, $task) {
-throw new Error('Function IntMap_grab is missing on this target in async context.');
+const result_ = self_.get(key_);
+if((ff_core_JsValue.JsValue_isUndefined(result_) && (!ff_core_IntMap.IntMap_has(self_, key_)))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+return result_
 }
 
 export async function IntMap_set$(self_, key_, value_, $task) {
-throw new Error('Function IntMap_set is missing on this target in async context.');
+self_.set(key_, value_)
 }
 
 export async function IntMap_has$(self_, key_, $task) {
-throw new Error('Function IntMap_has is missing on this target in async context.');
+return self_.has(key_)
 }
 
 export async function IntMap_remove$(self_, key_, $task) {
-throw new Error('Function IntMap_remove is missing on this target in async context.');
+return self_.delete(key_)
 }
 
 export async function IntMap_clear$(self_, $task) {
-throw new Error('Function IntMap_clear is missing on this target in async context.');
+self_.clear()
 }
 
 export async function IntMap_size$(self_, $task) {
-throw new Error('Function IntMap_size is missing on this target in async context.');
+return self_.size
 }
 
 export async function IntMap_each$(self_, body_, $task) {
-for(const [k, v] of self_) await body_(k, v)
+if(true) {
+const iterator_ = self_.entries();
+let result_ = iterator_.next();
+while((!result_.done)) {
+const value_ = result_.value;
+(await body_(value_[0], value_[1], $task));
+result_ = iterator_.next()
+}
+} else {
+self_.forEach((await ff_core_Js.function2_$((async (v_, k_, $task) => {
+return (await body_(k_, v_, $task))
+}), $task)))
+}
 }
 
 export async function IntMap_eachWhile$(self_, body_, $task) {
-for(const [k, v] of self_) if(!await body_(k, v)) break
+(await ff_core_JsValue.JsValue_eachWhile$(self_, (async (value_, $task) => {
+return (await body_(value_[0], value_[1], $task))
+}), $task))
 }
 
 export async function IntMap_toArray$(self_, $task) {
@@ -243,7 +279,7 @@ return ff_core_Array.Array_drain(ff_core_IntMap.IntMap_toArray(self_))
 }
 
 export async function IntMap_toStream$(self_, $task) {
-return (await ff_core_Array.Array_toStream$(ff_core_IntMap.IntMap_toArray(self_), 0, 9007199254740991, $task))
+return (await ff_core_List.List_toStream$(ff_core_IntMap.IntMap_toList(self_), false, $task))
 }
 
 export async function IntMap_toMap$(self_, $task) {
@@ -267,7 +303,7 @@ return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
 }
 
 export async function IntMap_copy$(self_, $task) {
-throw new Error('Function IntMap_copy is missing on this target in async context.');
+return (new Map(self_))
 }
 
 export async function IntMap_getOrSet$(self_, key_, body_, $task) {

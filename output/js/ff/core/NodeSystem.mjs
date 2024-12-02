@@ -118,7 +118,12 @@ throw new Error('Function internalAssets is missing on this target in sync conte
 }
 
 export function internalListDirectoryWithoutOpendir_(system_, path_) {
-throw new Error('Function internalListDirectoryWithoutOpendir is missing on this target in sync context.');
+const fsPromises_ = import$0;
+const nodePath_ = import$1;
+const files_ = fsPromises_.readdir(path_.absolutePath_);
+return ff_core_List.List_map(ff_core_JsValue.JsValue_grabArray(files_), ((file_) => {
+return ff_core_Path.Path(nodePath_.join(path_.absolutePath_, file_))
+}))
 }
 
 export function internalProcessError_(problem_) {
@@ -134,12 +139,12 @@ return system_.assets_
 }
 
 export async function internalListDirectoryWithoutOpendir_$(system_, path_, $task) {
-
-        const fsPromises = import$0
-        const path = import$1
-        let files = await fsPromises.readdir(path_)
-        return files.map(file => path.join(path_, file))
-    
+const fsPromises_ = import$0;
+const nodePath_ = import$1;
+const files_ = (await fsPromises_.readdir(path_.absolutePath_));
+return ff_core_List.List_map(ff_core_JsValue.JsValue_grabArray(files_), ((file_) => {
+return ff_core_Path.Path(nodePath_.join(path_.absolutePath_, file_))
+}))
 }
 
 export async function internalProcessError_$(problem_, $task) {
@@ -175,11 +180,13 @@ return ff_core_NodeSystem.internalAssets_(self_)
 }
 
 export function NodeSystem_path(self_, relativePath_) {
-throw new Error('Function NodeSystem_path is missing on this target in sync context.');
+const nodePath_ = import$1;
+return ff_core_Path.Path(nodePath_.resolve(relativePath_))
 }
 
 export function NodeSystem_pathFromUrl(self_, url_) {
-throw new Error('Function NodeSystem_pathFromUrl is missing on this target in sync context.');
+const nodeUrl_ = import$2;
+return ff_core_Path.Path(nodeUrl_.fileURLToPath((new URL(url_))))
 }
 
 export function NodeSystem_httpClient(self_) {
@@ -277,17 +284,13 @@ return (await ff_core_NodeSystem.internalAssets_$(self_, $task))
 }
 
 export async function NodeSystem_path$(self_, relativePath_, $task) {
-
-            const path = import$1
-            return path.resolve(relativePath_)
-        
+const nodePath_ = import$1;
+return ff_core_Path.Path(nodePath_.resolve(relativePath_))
 }
 
 export async function NodeSystem_pathFromUrl$(self_, url_, $task) {
-
-            const url = import$2;
-            return url.fileURLToPath(new URL(url_));
-        
+const nodeUrl_ = import$2;
+return ff_core_Path.Path(nodeUrl_.fileURLToPath((new URL(url_))))
 }
 
 export async function NodeSystem_httpClient$(self_, $task) {
@@ -374,7 +377,7 @@ export async function NodeSystem_execute$(self_, command_, arguments_, standardI
                 );
             }
             const newProcess = childProcess.spawn(command_, arguments_, {
-                cwd: directory_.value_,
+                cwd: directory_.value_ ? directory_.value_.absolutePath_ : void 0,
                 windowsHide: true,
                 signal: $task.controller.signal,
                 killSignal: killSignal_,

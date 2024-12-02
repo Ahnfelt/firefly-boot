@@ -1,4 +1,4 @@
-capability Path {}
+capability Path(absolutePath: String)
 capability PathEntry {}
 
 extend self: Path {
@@ -12,7 +12,7 @@ extend self: Path {
         let flags = flagsR.bitOr(flagsW.bitOr(flagsX))
         try {
             Js.await(
-                fsPromises->access(self!, if(flags == 0) {fs->constants->"F_OK"} else {flags!})
+                fsPromises->access(self.absolutePath, if(flags == 0) {fs->constants->"F_OK"} else {flags!})
             )
             True
         } catchAny {_ => 
@@ -35,7 +35,7 @@ extend self: Path {
     isDirectory(): Bool {
         let fsPromises = Js.import("fs/promises")        
         try {
-            Js.await(fsPromises->lstat(self!))->isDirectory()?
+            Js.await(fsPromises->lstat(self.absolutePath))->isDirectory()?
         } catchAny {_ => 
             False
         }
@@ -44,7 +44,7 @@ extend self: Path {
     isFile(): Bool {
         let fsPromises = Js.import("fs/promises")        
         try {
-            Js.await(fsPromises->lstat(self!))->isFile()?
+            Js.await(fsPromises->lstat(self.absolutePath))->isFile()?
         } catchAny {_ => 
             False
         }        
@@ -53,7 +53,7 @@ extend self: Path {
     isSymbolicLink(): Bool {
         let fsPromises = Js.import("fs/promises")        
         try {
-            Js.await(fsPromises->lstat(self!))->isSymbolicLink()?
+            Js.await(fsPromises->lstat(self.absolutePath))->isSymbolicLink()?
         } catchAny {_ => 
             False
         }        
@@ -61,20 +61,20 @@ extend self: Path {
 
     isInsideOf(path: Path): Bool {
         let nodePath = Js.import("path")
-        if(path! === "/") {True} else:
-        let childPath = nodePath->resolve(self!)
-        let parentPath = nodePath->resolve(path!)
-        childPath->startsWith(parentPath + nodePath->sep)? || childPath === parentPath
+        if(path.absolutePath == "/") {True} else:
+        let childPath = self.absolutePath
+        let parentPath = path.absolutePath
+        childPath.startsWith(parentPath + nodePath->sep?) || childPath == parentPath
     }
     
     size(): Int {
         let fs = Js.import("fs")
-        Js.await(fs->promises->stat(self!))?
+        Js.await(fs->promises->stat(self.absolutePath))?
     }
         
     modified(): Instant {
         let fs = Js.import("fs")
-        (Js.await(fs->promises->stat(self!))->mtimeMs * 0.001!)?
+        (Js.await(fs->promises->stat(self.absolutePath))->mtimeMs * 0.001!)?
     }
 
     entries(): Stream[PathEntry] {
@@ -82,11 +82,11 @@ extend self: Path {
         mutable dir = Js.null()
         Stream {
             if(dir.isNull()) {
-                dir = Js.await(fsPromises->opendir(self!, Js->(bufferSize = 128)))
+                dir = Js.await(fsPromises->opendir(self.absolutePath, Js->(bufferSize = 128)))
             }
             let entry = Js.await(dir->read())
             if(!entry.isNull()) {
-                entry->ffPath = self!
+                entry->ffPath = self.absolutePath
                 entry?
             }
         } {
@@ -97,13 +97,12 @@ extend self: Path {
     }
 
     absolute(): String {
-        let path = Js.import("path")        
-        path->resolve(self!)?
+        self.absolutePath
     }
 
     relativeTo(path: Path): String {
         let nodePath = Js.import("path")        
-        nodePath->relative(path!, self!)?
+        nodePath->relative(path.absolutePath, self.absolutePath)?
     }
     
     endsWith(parts: List[String]): Bool {
@@ -121,43 +120,43 @@ extend self: Path {
 
     base(): String {
         let path = Js.import("path")
-        path->basename(self!)?        
+        path->basename(self.absolutePath)?        
     }
 
     extension(): String {
         let path = Js.import("path")
-        path->extname(self!)?        
+        path->extname(self.absolutePath)?
     }
 
     url(): String {
         let url = Js.import("url")
-        "" + url->pathToFileURL(self!)?        
+        "" + url->pathToFileURL(self.absolutePath)?        
     }
 
     delimiter(): String {
         let path = Js.import("path")
-        path->delimiter(self!)?        
+        path->delimiter(self.absolutePath)?        
     }
 
     separator(): String {
         let path = Js.import("path")
-        path->separator(self!)?        
+        path->separator(self.absolutePath)?        
     }
 
     parent(): Option[Path] {
         let path = Js.import("path")
-        let result = path->dirname(self!)
-        if(result !== "" && result !== self!) {result?}
+        let result: String = path->dirname(self.absolutePath)?
+        if(result != "" && result != self.absolutePath) {Path(result)}
     }
 
     slash(relativePath: String): Path {
         let path = Js.import("path")
-        path->join(self!, relativePath)?
+        Path(path->join(self.absolutePath, relativePath)?)
     }
 
     path(absoluteOrRelativePath: String): Path {
         let path = Js.import("path")
-        path->resolve(self!, absoluteOrRelativePath)?
+        Path(path->resolve(self.absolutePath, absoluteOrRelativePath)?)
     }
 
     copyTo(path: Path, retries: Int = 0, retryDelay: Int = 100) {
@@ -176,52 +175,52 @@ extend self: Path {
 
     createDirectory(createParentDirectories: Bool = False) {
         let fsPromises = Js.import("fs/promises")
-        Js.await(fsPromises->mkdir(self!, Js->(recursive = createParentDirectories)))
+        Js.await(fsPromises->mkdir(self.absolutePath, Js->(recursive = createParentDirectories)))
     }
 
     createSymlinkTo(path: Path, junction: Bool = False) {
         let fsPromises = Js.import("fs/promises")
-        Js.await(fsPromises->symlink(path!, self!, if(junction) {"junction"!} else {Js.null()}))
+        Js.await(fsPromises->symlink(path.absolutePath, self.absolutePath, if(junction) {"junction"!} else {Js.null()}))
     }
 
     delete(retries: Int = 0, retryDelay: Int = 100) {
         let fsPromises = Js.import("fs/promises")
-        Js.await(fsPromises->rm(self!, Js->(recursive = True, retries = retries, retryDelay = retryDelay)))
+        Js.await(fsPromises->rm(self.absolutePath, Js->(recursive = True, retries = retries, retryDelay = retryDelay)))
     }
     
     truncate(length: Int = 0) {
         let fsPromises = Js.import("fs/promises")
-        Js.await(fsPromises->truncate(self!, length))
+        Js.await(fsPromises->truncate(self.absolutePath, length))
     }
 
     renameTo(path: Path) {
         let fsPromises = Js.import("fs/promises")
-        Js.await(fsPromises->rename(self!, path!))
+        Js.await(fsPromises->rename(self.absolutePath, path.absolutePath))
     }
 
     readSymbolicLink(): String {
         let fsPromises = Js.import("fs/promises")
-        Js.await(fsPromises->readlink(self!))?
+        Js.await(fsPromises->readlink(self.absolutePath))?
     }
 
     readText(): String {
         let fsPromises = Js.import("fs/promises")
         Js.withSignal {signal =>
-            Js.await(fsPromises->readFile(self!, Js->(encoding = "UTF-8", signal = signal)))?
+            Js.await(fsPromises->readFile(self.absolutePath, Js->(encoding = "UTF-8", signal = signal)))?
         }
     }
 
     writeText(text: String) {
         let fsPromises = Js.import("fs/promises")
         Js.withSignal {signal =>
-            Js.await(fsPromises->writeFile(self!, text, Js->(encoding = "UTF-8", signal = signal)))?
+            Js.await(fsPromises->writeFile(self.absolutePath, text, Js->(encoding = "UTF-8", signal = signal)))
         }
     }
 
     appendText(text: String) {
         let fsPromises = Js.import("fs/promises")
         Js.withSignal {signal =>
-            Js.await(fsPromises->appendFile(self!, text, Js->(encoding = "UTF-8", signal = signal)))?
+            Js.await(fsPromises->appendFile(self.absolutePath, text, Js->(encoding = "UTF-8", signal = signal)))
         }
     }
 
@@ -239,7 +238,7 @@ extend self: Path {
 
     readStream(): Stream[Buffer] {
         let fs = Js.import("fs")
-        internalReadStream {fs->createReadStream(self!)}
+        internalReadStream {fs->createReadStream(self.absolutePath)}
     }
     
     writeStream(stream: Stream[Buffer], createOnly: Bool = False) {
@@ -252,19 +251,19 @@ extend self: Path {
 
     readHandle(alsoWrite: Bool = False): FileHandle {
         let fsPromises = Js.import("fs/promises")
-        Js.await(fsPromises->open(self!, if(alsoWrite) {"r+"} else {"r"}))?
+        Js.await(fsPromises->open(self.absolutePath, if(alsoWrite) {"r+"} else {"r"}))?
     }
 
     writeHandle(alsoRead: Bool = False, mustCreate: Bool = False): FileHandle {
         let fsPromises = Js.import("fs/promises")
         let flags = if(mustCreate) {"wx"} else {"w"} + if(alsoRead) {"+"} else {""}
-        Js.await(fsPromises->open(self!, flags))?
+        Js.await(fsPromises->open(self.absolutePath, flags))?
     }
    
     appendHandle(alsoRead: Bool = False, mustCreate: Bool = False): FileHandle {
         let fsPromises = Js.import("fs/promises")
         let flags = if(mustCreate) {"ax"} else {"a"} + if(alsoRead) {"+"} else {""}
-        Js.await(fsPromises->open(self!, flags))?
+        Js.await(fsPromises->open(self.absolutePath, flags))?
     }
 
 }
@@ -273,7 +272,7 @@ extend self: PathEntry {
     
     path(): Path {
         let path = Js.import("path")
-        path->join(self!->ffPath, self!->name)?
+        Path(path->join(self!->ffPath, self!->name)?)
     }
 
     isDirectory(): Bool {
@@ -354,7 +353,7 @@ internalReadStream(createReadStream: () => JsValue): Stream[Buffer] {
 
 internalWriteStream(path: Path, stream: Stream[Buffer], flags: String) {
     let fs = Js.import("fs")
-    let writable = fs->createWriteStream(path!, Js->(flags = flags))
+    let writable = fs->createWriteStream(path.absolutePath, Js->(flags = flags))
     try {
         stream.each {buffer =>
             if(!writable->write(Js->Uint8Array->(buffer!->buffer, buffer!->byteOffset, buffer!->byteLength))?) {
