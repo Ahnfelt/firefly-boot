@@ -182,18 +182,18 @@ ff_core_Core.panic_("This call should have been eliminated by the compiler")
 
 export function cancelled_() {
 if(false) {
-return ff_core_Js.currentTask_().controller_.signal.aborted
+return $task.controller_.signal.aborted
 } else {
 return false
 }
 }
 
 export function controller_() {
-return ff_core_Js.currentTask_().controller_
+return $task.controller_
 }
 
 export function setController_(controller_) {
-ff_core_Js.currentTask_().controller_ = controller_
+$task.controller_ = controller_
 }
 
 export function withSignal_(body_) {
@@ -454,18 +454,18 @@ ff_core_Core.panic_("This call should have been eliminated by the compiler")
 
 export async function cancelled_$($task) {
 if(true) {
-return ff_core_Js.currentTask_().controller_.signal.aborted
+return $task.controller_.signal.aborted
 } else {
 return false
 }
 }
 
 export async function controller_$($task) {
-return ff_core_Js.currentTask_().controller_
+return $task.controller_
 }
 
 export async function setController_$(controller_, $task) {
-ff_core_Js.currentTask_().controller_ = controller_
+$task.controller_ = controller_
 }
 
 export async function withSignal_$(body_, $task) {

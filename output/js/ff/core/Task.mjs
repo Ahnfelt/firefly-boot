@@ -139,7 +139,7 @@ self_.controller_.abort()
 }
 
 export function Task_channel(self_, capacity_ = 0) {
-return {capacity: capacity_, buffer: [], readers: (new Set()), writers: (new Set())}
+return ff_core_Channel.Channel(capacity_, ff_core_Array.new_(), (new Set()), (new Set()))
 }
 
 export function Task_lock(self_) {
@@ -199,7 +199,7 @@ self_.controller_.abort()
 }
 
 export async function Task_channel$(self_, capacity_ = 0, $task) {
-return {capacity: capacity_, buffer: [], readers: (new Set()), writers: (new Set())}
+return ff_core_Channel.Channel(capacity_, ff_core_Array.new_(), (new Set()), (new Set()))
 }
 
 export async function Task_lock$(self_, $task) {

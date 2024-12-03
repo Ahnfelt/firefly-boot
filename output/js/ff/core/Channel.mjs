@@ -93,118 +93,335 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Channel
-
+export function Channel(capacity_, buffer_, readers_, writers_) {
+return {capacity_, buffer_, readers_, writers_};
+}
 
 // type ChannelAction
-
+export function ChannelAction(channel_, body_, message_, previous_) {
+return {channel_, body_, message_, previous_};
+}
 
 
 
 export function readOr_(channel_, body_) {
-throw new Error('Function readOr is missing on this target in sync context.');
+return ff_core_Channel.ChannelAction(channel_, body_, ff_core_Option.None(), ff_core_Option.None())
 }
 
 export function writeOr_(channel_, message_, body_) {
-throw new Error('Function writeOr is missing on this target in sync context.');
+return ff_core_Channel.ChannelAction(channel_, body_, ff_core_Option.Some(message_), ff_core_Option.None())
 }
 
 export function internalRunChannelAction_(action_, mode_) {
-throw new Error('Function internalRunChannelAction is missing on this target in sync context.');
+;
+const actions_ = ff_core_List.List_toArray([]);
+function findActions_(action_) {
+actions_.array.push(action_);
+for(const for_o = action_.previous_; for_o.Some;) {
+const _w1 = for_o.value_;
+findActions_(_w1)
+break
+}
+}
+findActions_(action_);
+let foundPromise_ = ff_core_Option.None();
+for(let for_a = actions_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const action_ = for_a[for_i];
+do {
+const _1 = action_.message_;
+if(_1.Some) {
+const message_ = _1.value_;
+if((action_.channel_.readers_.size !== 0)) {
+const reader_ = action_.channel_.readers_.values().next().value;
+action_.channel_.readers_.delete(reader_);
+reader_.resolve(message_);
+foundPromise_ = ff_core_Option.Some(action_.body_($task))
+break
+}
+}
+if(_1.Some) {
+const message_ = _1.value_;
+if((action_.channel_.buffer_.array.length < action_.channel_.capacity_)) {
+action_.channel_.buffer_.array.push(message_);
+foundPromise_ = ff_core_Option.Some(action_.body_($task))
+break
+}
+}
+if(_1.Some) {
+
+break
+}
+if(_1.None && (action_.channel_.buffer_.array.length !== 0)) {
+ff_core_Array.Array_reverse(action_.channel_.buffer_);
+const message_ = ff_core_Array.Array_pop(action_.channel_.buffer_);
+ff_core_Array.Array_reverse(action_.channel_.buffer_);
+foundPromise_ = ff_core_Option.Some(action_.body_(message_, $task))
+break
+}
+if(_1.None && (action_.channel_.writers_.size !== 0)) {
+const writer_ = action_.channel_.writers_.values().next().value;
+action_.channel_.writers_.delete(writer_);
+writer_.resolve();
+foundPromise_ = ff_core_Option.Some(action_.body_(writer_.message, $task))
+break
+}
+if(_1.None) {
+
+break
+}
+} while(false);
+if(!ff_core_Option.Option_isEmpty(foundPromise_)) break
+};
+return ff_core_Option.Option_else(ff_core_Option.Option_map(foundPromise_, ((_w1) => {
+return _w1
+})), (() => {
+if(ff_core_Option.Option_any(mode_, ((_w1) => {
+return ff_core_Option.Option_isEmpty(_w1.second_)
+}))) {
+const makePromise_ = ff_core_Option.Option_grab(mode_).first_;
+return makePromise_()
+} else {
+let abort_;
+let finish_;
+const cleanups_ = ff_core_Array.new_();
+function doCleanup_() {
+for(let for_a = cleanups_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const cleanup_ = for_a[for_i];
+cleanup_()
+}
+}
+const promise_ = (new Promise(((resolve_, reject_) => {
+for(const for_o = mode_; for_o.Some;) {
+const m_ = for_o.value_;
+finish_ = (() => {
+doCleanup_();
+return resolve_((() => {
+return m_.first_()
+}))
+})
+break
+};
+abort_ = (() => {
+doCleanup_();
+return reject_($task.controller_.signal.reason)
+});
+for(let for_a = actions_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const action_ = for_a[for_i];
+{
+const _1 = action_.message_;
+if(_1.Some) {
+const message_ = _1.value_;
+const writer_ = {resolve: (() => {
+doCleanup_();
+return resolve_((() => {
+return action_.body_($task)
+}))
+}), message: message_};
+cleanups_.array.push((() => {
+return action_.channel_.writers_.delete(writer_)
+}));
+action_.channel_.writers_.add(writer_)
+return
+}
+if(_1.None) {
+const reader_ = {resolve: ((m_) => {
+doCleanup_();
+return resolve_((() => {
+return action_.body_(m_, $task)
+}))
+})};
+cleanups_.array.push((() => {
+return action_.channel_.readers_.delete(reader_)
+}));
+action_.channel_.readers_.add(reader_)
+return
+}
+}
+}
+})));
+let timeout_;
+const controller_ = $task.controller_;
+return ff_core_Js.withSignal_(((signal_) => {
+try {
+signal_.addEventListener("abort", abort_);
+if((!ff_core_JsValue.JsValue_isUndefined(finish_))) {
+timeout_ = setTimeout(finish_, (ff_core_Option.Option_grab(ff_core_Option.Option_grab(mode_).second_) * 1000.0))
+};
+const body_ = promise_;
+if((!ff_core_JsValue.JsValue_isUndefined(timeout_))) {
+clearTimeout(timeout_);
+timeout_ = (void 0)
+};
+return body_()
+} finally {
+if((!ff_core_JsValue.JsValue_isUndefined(timeout_))) {
+clearTimeout(timeout_)
+};
+signal_.removeEventListener("abort", abort_)
+}
+}))
+}
+}))
 }
 
 export async function readOr_$(channel_, body_, $task) {
-return {channel: channel_, body: body_, previous: null}
+return ff_core_Channel.ChannelAction(channel_, body_, ff_core_Option.None(), ff_core_Option.None())
 }
 
 export async function writeOr_$(channel_, message_, body_, $task) {
-return {channel: channel_, body: body_, message: message_, previous: null}
+return ff_core_Channel.ChannelAction(channel_, body_, ff_core_Option.Some(message_), ff_core_Option.None())
 }
 
 export async function internalRunChannelAction_$(action_, mode_, $task) {
+ff_core_Task.Task_throwIfAborted($task);
+const actions_ = ff_core_List.List_toArray([]);
+function findActions_(action_) {
+actions_.array.push(action_);
+for(const for_o = action_.previous_; for_o.Some;) {
+const _w1 = for_o.value_;
+findActions_(_w1)
+break
+}
+}
+findActions_(action_);
+let foundPromise_ = ff_core_Option.None();
+for(let for_a = actions_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const action_ = for_a[for_i];
+do {
+const _1 = action_.message_;
+if(_1.Some) {
+const message_ = _1.value_;
+if((action_.channel_.readers_.size !== 0)) {
+const reader_ = action_.channel_.readers_.values().next().value;
+action_.channel_.readers_.delete(reader_);
+reader_.resolve(message_);
+foundPromise_ = ff_core_Option.Some(action_.body_($task))
+break
+}
+}
+if(_1.Some) {
+const message_ = _1.value_;
+if((action_.channel_.buffer_.array.length < action_.channel_.capacity_)) {
+action_.channel_.buffer_.array.push(message_);
+foundPromise_ = ff_core_Option.Some(action_.body_($task))
+break
+}
+}
+if(_1.Some) {
 
-        ff_core_Task.Task_throwIfAborted($task)
+break
+}
+if(_1.None && (action_.channel_.buffer_.array.length !== 0)) {
+ff_core_Array.Array_reverse(action_.channel_.buffer_);
+const message_ = ff_core_Array.Array_pop(action_.channel_.buffer_);
+ff_core_Array.Array_reverse(action_.channel_.buffer_);
+foundPromise_ = ff_core_Option.Some(action_.body_(message_, $task))
+break
+}
+if(_1.None && (action_.channel_.writers_.size !== 0)) {
+const writer_ = action_.channel_.writers_.values().next().value;
+action_.channel_.writers_.delete(writer_);
+writer_.resolve();
+foundPromise_ = ff_core_Option.Some(action_.body_(writer_.message, $task))
+break
+}
+if(_1.None) {
 
-        // Convert the linked actions into an array.
-        let actions = []
-        while(action_ != null) {
-            actions.push(action_)
-            action_ = action_.previous
-        }
-        actions.reverse()
-
-        // If any reads or writes can be done immediately, do the first one and return.
-        for(let action of actions) {
-            if(action.hasOwnProperty("message")) {
-                if(action.channel.readers.size != 0) {
-                    let reader = action.channel.readers.values().next().value
-                    action.channel.readers.delete(reader)
-                    reader.resolve(action.message)
-                    return await action.body($task)
-                } else if(action.channel.buffer.length < action.channel.capacity) {
-                    action.channel.buffer.push(action.message)
-                    return await action.body($task)
-                }
-            } else {
-                if(action.channel.buffer.length != 0) {
-                    return await action.body(action.channel.buffer.shift(), $task)
-                } else if(action.channel.writers.size != 0) {
-                    let writer = action.channel.writers.values().next().value
-                    action.channel.writers.delete(writer)
-                    writer.resolve()
-                    return await action.body(writer.message, $task)
-                }
-            }
-        }
-
-        // If there's an "immediately(body)" action, do that now.
-        if(mode_.value_ && mode_.value_.second_.value_ == null) return await mode_.value_.first_($task)
-
-        // Otherwise, start waiting for one of the readers or writers (or timeout(body), or cancellation) to happen.
-        let abort = null
-        let finish = null
-        let cleanups = []
-        function doCleanup() {
-            for(let cleanup of cleanups) cleanup()
-        }
-        let promise = new Promise((resolve, reject) => {
-            if(mode_.value_) finish = () => {doCleanup(); resolve(() => mode_.value_.first_($task))}
-            abort = () => {doCleanup(); reject($task.controller_.signal.reason)}
-            for(let action of actions) {
-                if(action.hasOwnProperty("message")) {
-                    let writer = {
-                        resolve: () => {
-                            doCleanup()
-                            resolve(() => action.body($task))
-                        },
-                        message: action.message
-                    }
-                    cleanups.push(() => action.channel.writers.delete(writer))
-                    action.channel.writers.add(writer)
-                } else {
-                    let reader = {
-                        resolve: m => {
-                            doCleanup()
-                            resolve(() => action.body(m, $task))
-                        }
-                    }
-                    cleanups.push(() => action.channel.readers.delete(reader))
-                    action.channel.readers.add(reader)
-                }
-            }
-        })
-        let timeout = null
-        try {
-            $task.controller_.signal.addEventListener('abort', abort)
-            if(finish != null) timeout = setTimeout(finish, mode_.value_.second_.value_ * 1000)
-            let body = await promise
-            if(timeout != null) { clearTimeout(timeout); timeout = null }
-            return await body()
-        } finally {
-            if(timeout != null) clearTimeout(timeout)
-            $task.controller_.signal.removeEventListener('abort', abort)
-            if($task.controller_.signal.aborted) $task.controller_ = new AbortController()
-        }
-    
+break
+}
+} while(false);
+if(!ff_core_Option.Option_isEmpty(foundPromise_)) break
+};
+return (await ff_core_Option.Option_else$((await ff_core_Option.Option_map$(foundPromise_, (async (_w1, $task) => {
+return (await _w1)
+}), $task)), (async ($task) => {
+if(ff_core_Option.Option_any(mode_, ((_w1) => {
+return ff_core_Option.Option_isEmpty(_w1.second_)
+}))) {
+const makePromise_ = ff_core_Option.Option_grab(mode_).first_;
+return (await (await makePromise_($task)))
+} else {
+let abort_;
+let finish_;
+const cleanups_ = ff_core_Array.new_();
+function doCleanup_() {
+for(let for_a = cleanups_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const cleanup_ = for_a[for_i];
+cleanup_()
+}
+}
+const promise_ = (new Promise((async (a_1, a_2) => await (async (resolve_, reject_, $task) => {
+for(const for_o = mode_; for_o.Some;) {
+const m_ = for_o.value_;
+finish_ = (async () => await (async ($task) => {
+doCleanup_();
+return resolve_((async () => await (async ($task) => {
+return (await m_.first_($task))
+})($task)))
+})($task))
+break
+};
+abort_ = (() => {
+doCleanup_();
+return reject_($task.controller_.signal.reason)
+});
+for(let for_a = actions_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const action_ = for_a[for_i];
+{
+const _1 = action_.message_;
+if(_1.Some) {
+const message_ = _1.value_;
+const writer_ = {resolve: (() => {
+doCleanup_();
+return resolve_((() => {
+return action_.body_($task)
+}))
+}), message: message_};
+cleanups_.array.push((() => {
+return action_.channel_.writers_.delete(writer_)
+}));
+action_.channel_.writers_.add(writer_)
+return
+}
+if(_1.None) {
+const reader_ = {resolve: ((m_) => {
+doCleanup_();
+return resolve_((() => {
+return action_.body_(m_, $task)
+}))
+})};
+cleanups_.array.push((() => {
+return action_.channel_.readers_.delete(reader_)
+}));
+action_.channel_.readers_.add(reader_)
+return
+}
+}
+}
+})(a_1, a_2, $task))));
+let timeout_;
+const controller_ = $task.controller_;
+return (await ff_core_Js.withSignal_$((async (signal_, $task) => {
+try {
+signal_.addEventListener("abort", abort_);
+if((!ff_core_JsValue.JsValue_isUndefined(finish_))) {
+timeout_ = setTimeout(finish_, (ff_core_Option.Option_grab(ff_core_Option.Option_grab(mode_).second_) * 1000.0))
+};
+const body_ = (await promise_);
+if((!ff_core_JsValue.JsValue_isUndefined(timeout_))) {
+clearTimeout(timeout_);
+timeout_ = (void 0)
+};
+return (await body_())
+} finally {
+if((!ff_core_JsValue.JsValue_isUndefined(timeout_))) {
+clearTimeout(timeout_)
+};
+signal_.removeEventListener("abort", abort_)
+}
+}), $task))
+}
+}), $task))
 }
 
 export function Channel_read(self_) {
@@ -232,11 +449,11 @@ export async function Channel_write$(self_, message_, $task) {
 }
 
 export function ChannelAction_readOr(self_, channel_, body_) {
-throw new Error('Function ChannelAction_readOr is missing on this target in sync context.');
+return ff_core_Channel.ChannelAction(channel_, body_, ff_core_Option.None(), ff_core_Option.Some(self_))
 }
 
 export function ChannelAction_writeOr(self_, channel_, message_, body_) {
-throw new Error('Function ChannelAction_writeOr is missing on this target in sync context.');
+return ff_core_Channel.ChannelAction(channel_, body_, ff_core_Option.Some(message_), ff_core_Option.Some(self_))
 }
 
 export function ChannelAction_wait(self_) {
@@ -252,11 +469,11 @@ return ff_core_Channel.internalRunChannelAction_(self_, ff_core_Option.Some(ff_c
 }
 
 export async function ChannelAction_readOr$(self_, channel_, body_, $task) {
-return {channel: channel_, body: body_, previous: self_}
+return ff_core_Channel.ChannelAction(channel_, body_, ff_core_Option.None(), ff_core_Option.Some(self_))
 }
 
 export async function ChannelAction_writeOr$(self_, channel_, message_, body_, $task) {
-return {channel: channel_, body: body_, message: message_, previous: self_}
+return ff_core_Channel.ChannelAction(channel_, body_, ff_core_Option.Some(message_), ff_core_Option.Some(self_))
 }
 
 export async function ChannelAction_wait$(self_, $task) {

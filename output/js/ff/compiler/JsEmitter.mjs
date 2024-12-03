@@ -1775,7 +1775,7 @@ return ff_core_Option.Some((async_
 : ""))
 return
 }
-if(_1 === "ff:core/Js.task") {
+if(_1 === "ff:core/Js.currentTask") {
 return ff_core_Option.Some("$task")
 }
 if(_1 === "ff:core/Js.controller") {
@@ -4276,7 +4276,7 @@ return ff_core_Option.Some((async_
 : ""))
 return
 }
-if(_1 === "ff:core/Js.task") {
+if(_1 === "ff:core/Js.currentTask") {
 return ff_core_Option.Some("$task")
 }
 if(_1 === "ff:core/Js.controller") {

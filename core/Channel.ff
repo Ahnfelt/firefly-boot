@@ -1,4 +1,9 @@
-capability Channel[T] {}
+capability Channel[T](
+    capacity: Int
+    buffer: Array[T]
+    readers: JsValue
+    writers: JsValue
+)
 
 extend self[T]: Channel[T] {
 
@@ -13,15 +18,22 @@ extend self[T]: Channel[T] {
 }
 
 
-capability ChannelAction[T] {}
+capability ChannelAction[T](
+    channel: Channel[JsValue]
+    body: JsValue
+    message: Option[JsValue]
+    previous: Option[ChannelAction[T]]
+)
 
 extend self[T]: ChannelAction[T] {
+    
+    readOr[M](channel: Channel[M], body: M => T): ChannelAction[T] {
+        ChannelAction(channel!?, body!, None, Some(self))
+    }
 
-    readOr[M](channel: Channel[M], body: M => T): ChannelAction[T]
-        target js async "return {channel: channel_, body: body_, previous: self_}"
-
-    writeOr[M](channel: Channel[M], message: M, body: () => T): ChannelAction[T]
-        target js async "return {channel: channel_, body: body_, message: message_, previous: self_}"
+    writeOr[M](channel: Channel[M], message: M, body: () => T): ChannelAction[T] {
+        ChannelAction(channel!?, body!, Some(message!), Some(self))
+    }
 
     wait(): T {
         internalRunChannelAction(self, None)
@@ -37,95 +49,118 @@ extend self[T]: ChannelAction[T] {
 
 }
 
-readOr[M, T](channel: Channel[M], body: M => T): ChannelAction[T]
-    target js async "return {channel: channel_, body: body_, previous: null}"
+readOr[M, T](channel: Channel[M], body: M => T): ChannelAction[T] {
+    ChannelAction(channel!?, body!, None, None)
+}
 
-writeOr[M, T](channel: Channel[M], message: M, body: () => T): ChannelAction[T]
-    target js async "return {channel: channel_, body: body_, message: message_, previous: null}"
+writeOr[M, T](channel: Channel[M], message: M, body: () => T): ChannelAction[T] {
+    ChannelAction(channel!?, body!, Some(message!), None)
+}
 
-
-internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T, Option[Duration]]]): T
-    target js async """
-        ff_core_Task.Task_throwIfAborted($task)
-
-        // Convert the linked actions into an array.
-        let actions = []
-        while(action_ != null) {
-            actions.push(action_)
-            action_ = action_.previous
+internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T, Option[Duration]]]): T {
+    Js.throwIfCancelled()
+    
+    // Convert the linked actions into an array.
+    let actions = [].toArray()
+    function findActions(action: ChannelAction[T]) {
+        actions.push(action)
+        action.previous.each {findActions(_)}
+    }
+    findActions(action)
+    
+    // If any reads or writes can be done immediately, do the first one and return.
+    mutable foundPromise = None
+    actions.eachWhile {action =>
+        action.message.{
+            | Some(message) {action.channel.readers->size !== 0} => 
+                let reader = action.channel.readers->values()->next()->value
+                action.channel.readers->delete(reader)
+                reader->resolve(message)
+                foundPromise = Some(action.body.callValue1(Js.currentTask()!))
+            | Some(message) {action.channel.buffer.size() < action.channel.capacity} =>
+                action.channel.buffer.push(message)
+                foundPromise = Some(action.body.callValue1(Js.currentTask()!))
+            | Some(_) =>
+            | None {action.channel.buffer.size() != 0} => 
+                action.channel.buffer.reverse()
+                let message = action.channel.buffer.pop()
+                action.channel.buffer.reverse()
+                foundPromise = Some(action.body.callValue2(message!, Js.currentTask()!))
+            | None {action.channel.writers->size !== 0} => 
+                let writer = action.channel.writers->values()->next()->value
+                action.channel.writers->delete(writer)
+                writer->resolve()
+                foundPromise = Some(action.body.callValue2(writer->message!, Js.currentTask()!))
+            | None => 
         }
-        actions.reverse()
-
-        // If any reads or writes can be done immediately, do the first one and return.
-        for(let action of actions) {
-            if(action.hasOwnProperty("message")) {
-                if(action.channel.readers.size != 0) {
-                    let reader = action.channel.readers.values().next().value
-                    action.channel.readers.delete(reader)
-                    reader.resolve(action.message)
-                    return await action.body($task)
-                } else if(action.channel.buffer.length < action.channel.capacity) {
-                    action.channel.buffer.push(action.message)
-                    return await action.body($task)
-                }
-            } else {
-                if(action.channel.buffer.length != 0) {
-                    return await action.body(action.channel.buffer.shift(), $task)
-                } else if(action.channel.writers.size != 0) {
-                    let writer = action.channel.writers.values().next().value
-                    action.channel.writers.delete(writer)
-                    writer.resolve()
-                    return await action.body(writer.message, $task)
-                }
-            }
+        foundPromise.isEmpty()
+    }
+    foundPromise.map {Js.await(_)?}.else:
+    
+    // If there's an "immediately(body)" action, do that now.
+    if(mode.any {_.second.isEmpty()}) {
+        let makePromise = mode.grab().first
+        Js.await(makePromise()!)?
+    } else:
+    
+    // Otherwise, start waiting for one of the readers or writers (or timeout(body), or cancellation) to happen.
+    mutable abort = Js.undefined()
+    mutable finish = Js.undefined()
+    let cleanups = Array.new()
+    function doCleanup() {
+        cleanups.each {cleanup =>
+            cleanup()
         }
-
-        // If there's an "immediately(body)" action, do that now.
-        if(mode_.value_ && mode_.value_.second_.value_ == null) return await mode_.value_.first_($task)
-
-        // Otherwise, start waiting for one of the readers or writers (or timeout(body), or cancellation) to happen.
-        let abort = null
-        let finish = null
-        let cleanups = []
-        function doCleanup() {
-            for(let cleanup of cleanups) cleanup()
-        }
-        let promise = new Promise((resolve, reject) => {
-            if(mode_.value_) finish = () => {doCleanup(); resolve(() => mode_.value_.first_($task))}
-            abort = () => {doCleanup(); reject($task.controller_.signal.reason)}
-            for(let action of actions) {
-                if(action.hasOwnProperty("message")) {
-                    let writer = {
-                        resolve: () => {
+    }
+    let promise = Js->Promise->(Js->{resolve, reject =>
+        mode.each {m => finish = Js->{doCleanup(); resolve.callValue1(Js->{m.first()})}}
+        abort = Js->{doCleanup(); reject.callValue1(Js.currentTask().controller->signal->reason)}
+        actions.each {action =>
+            action.message.{
+                | Some(message) => 
+                    let writer = Js->(
+                        resolve = Js->{
                             doCleanup()
-                            resolve(() => action.body($task))
-                        },
-                        message: action.message
-                    }
-                    cleanups.push(() => action.channel.writers.delete(writer))
-                    action.channel.writers.add(writer)
-                } else {
-                    let reader = {
-                        resolve: m => {
-                            doCleanup()
-                            resolve(() => action.body(m, $task))
+                            resolve.callValue1(Js->{
+                                action.body.callValue1(Js.currentTask()!)
+                            })
                         }
-                    }
-                    cleanups.push(() => action.channel.readers.delete(reader))
-                    action.channel.readers.add(reader)
-                }
+                        message = message
+                    )
+                    cleanups.push({action.channel.writers->delete(writer)})
+                    action.channel.writers->add(writer)
+                | None =>
+                    let reader = Js->(
+                        resolve = Js->{m =>
+                            doCleanup()
+                            resolve.callValue1(Js->{
+                                action.body.callValue2(m, Js.currentTask()!)
+                            })
+                        }
+                    )
+                    cleanups.push({action.channel.readers->delete(reader)})
+                    action.channel.readers->add(reader)
             }
-        })
-        let timeout = null
-        try {
-            $task.controller_.signal.addEventListener('abort', abort)
-            if(finish != null) timeout = setTimeout(finish, mode_.value_.second_.value_ * 1000)
-            let body = await promise
-            if(timeout != null) { clearTimeout(timeout); timeout = null }
-            return await body()
-        } finally {
-            if(timeout != null) clearTimeout(timeout)
-            $task.controller_.signal.removeEventListener('abort', abort)
-            if($task.controller_.signal.aborted) $task.controller_ = new AbortController()
         }
-    """
+    })
+    mutable timeout = Js.undefined()
+    let controller = Js.controller()
+    Js.withSignal {signal =>
+        try {
+            signal->addEventListener("abort", abort)
+            if(!finish.isUndefined()) {
+                timeout = Js->setTimeout(finish, mode.grab().second.grab().seconds * 1000.0)
+            }
+            let body = Js.await(promise)
+            if(!timeout.isUndefined()) {
+                Js->clearTimeout(timeout)
+                timeout = Js.undefined()
+            }
+            Js.await(body.callValue0())?
+        } finally {
+            if(!timeout.isUndefined()) {Js->clearTimeout(timeout)}
+            signal->removeEventListener("abort", abort)
+        }
+    }
+    
+}

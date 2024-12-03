@@ -57,12 +57,12 @@ extend self: Task {
     
     // Create a blocking channel with the specified capacity. The channel is not tied to the task.
     channel[T](capacity: Int = 0): Channel[T] {
-        Js->(
+        Channel(
             capacity = capacity
-            buffer = []
+            buffer = Array.new()
             readers = Js->Set->()
             writers = Js->Set->()
-        )?
+        )
     }
 
     // Create a mutex. The mutex is not tied to the task.

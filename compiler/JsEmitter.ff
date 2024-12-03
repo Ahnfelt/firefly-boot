@@ -622,7 +622,7 @@ extend self: JsEmitter {
                 Some(if(async) {"$task.controller_.signal.aborted"} else {"false"})
             | "ff:core/Js.throwIfCancelled" =>
                 Some(if(async) {"((() => ff_core_Task.Task_throwIfAborted($task))())"} else {""})
-            | "ff:core/Js.task" =>
+            | "ff:core/Js.currentTask" =>
                 Some("$task")
             | "ff:core/Js.controller" =>
                 Some("$task.controller_")
