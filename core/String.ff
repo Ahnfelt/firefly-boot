@@ -49,116 +49,98 @@ extend self: String {
         self!->toUpperCase()?
     }
 
-    dropWhile(p: Char => Bool): String
-        target js sync """
-            let i = 0
-            for(; i < self_.length && p_(self_.codePointAt(i)); i++);
-            return self_.slice(i)
-        """
-        target js async """
-            let i = 0
-            for(; i < self_.length && await p_(self_.codePointAt(i), $task); i++);
-            return self_.slice(i)
-        """
+    dropWhile(p: Char => Bool): String {
+        mutable i = 0
+        while {i < self.size() && p(self!->charCodeAt(i)?)} {
+            i += 1
+        }
+        self!->slice(i)?
+    }
 
-    takeWhile(p: Char => Bool): String
-        target js sync """
-            let i = 0
-            for(; i < self_.length && p_(self_.codePointAt(i)); i++);
-            return self_.slice(0, i)
-        """
-        target js async """
-            let i = 0
-            for(; i < self_.length && await p_(self_.codePointAt(i), $task); i++);
-            return self_.slice(0, i)
-        """
+    takeWhile(p: Char => Bool): String {
+        mutable i = 0
+        while {i < self.size() && p(self!->charCodeAt(i)?)} {
+            i += 1
+        }
+        self!->slice(0, i)?
+    }
 
-    slice(from: Int, until: Int): String
-        target js sync "return self_.slice(from_, until_)"
+    slice(from: Int, until: Int): String {
+        self!->slice(from, until)?
+    }
 
-    split(char: Char): List[String]
-        target js sync "return self_.split(String.fromCharCode(char_))"
+    split(char: Char): List[String] {
+        self!->split(Js->String->fromCharCode(char))?
+    }
+    
+    splitFirst(char: Char): Option[Pair[String, String]] {
+        let array: List[String] = self!->split(Js->String->fromCharCode(char), 2)?
+        if(array.size() == 2) {
+            Pair(array!.get(0)?, array!.get(1)?)
+        }
+    }    
 
-    splitFirst(char: Char): Option[Pair[String, String]]
-        target js sync """
-            const array = self_.split(String.fromCharCode(char_), 2)
-            return array.length === 2
-                ? ff_core_Option.Some(ff_core_Pair.Pair(array[0], array[1]))
-                : ff_core_Option.None()
-        """
+    lines(): List[String] {
+        self!->split(
+            Js->RegExp->("[" + Js->String->fromCharCode(13)? + "]?[" + Js->String->fromCharCode(10)? + "]", "g")
+        )?
+    }
 
-    lines(): List[String]
-        target js sync """
-            return self_.split(
-                new RegExp("[" + String.fromCharCode(13) + "]?[" + String.fromCharCode(10) + "]", "g")
-            )
-        """
+    dropFirst(count: Int = 1): String {
+        self!->slice(count)?
+    }
 
-    dropFirst(count: Int = 1): String
-        target js sync "return self_.slice(count_)"
+    dropLast(count: Int = 1): String {
+        self!->slice(0, self.size() - count)?
+    }
+    
+    getInt(): Option[Int] {
+        if(self.size() > 0 && self.all {c => 48 <= c.codeUnit && c.codeUnit <= 57}) {
+            Js->parseInt(self!, 10)?
+        }
+    }
+            
+    getFloat(): Option[Float] {
+        // TODO return None for invalid input
+        let result = Js->parseFloat(self!, 10)
+        if(Js->isFinite(result)?) {result?}
+    }
 
-    dropLast(count: Int = 1): String
-        target js sync "return self_.slice(0, self_.length - count_)"
-
-    getInt(): Option[Int]
-        target js sync """
-            if(self_.length == 0) {
-                return ff_core_Option.None()
-            }
-            for(let i = 0; i < self_.length; i++) {
-                const c = self_.codePointAt(i)
-                if(c < 48 || c > 57) return ff_core_Option.None()
-            }
-            return ff_core_Option.Some(parseInt(self_, 10));
-        """
+    grabInt(): Int {
+        self.getInt().else {
+            throw(GrabException())
+        }
+    }
         
-    getFloat(): Float
-        target js sync """
-            const result = parseFloat(self_, 10);
-            if(!isFinite(result)) {
-                return ff_core_Option.None()
-            }
-            return ff_core_Option.Some(result);
-        """        
+    grabFloat(): Float {
+        self.getFloat().else {
+            throw(GrabException())
+        }
+    }
 
-    grabInt(): Int
-        target js sync """
-            if(self_.length == 0) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            for(let i = 0; i < self_.length; i++) {
-                const c = self_.codePointAt(i)
-                if(c < 48 || c > 57) ff_core_Try.internalThrowGrabException_()
-            }
-            return parseInt(self_, 10);
-        """
-        
-    grabFloat(): Float
-        target js sync """
-            const result = parseFloat(self_, 10);
-            if(!isFinite(result)) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            return result;
-        """    
+    first(): Option[Char] {
+        if(self.size() > 0) {
+            Char(self!->charCodeAt(0)?)
+        }
+    }
 
-    first(): Option[Char]
-        target js sync """
-            return self_.length > 0
-                ? ff_core_Option.Some(self_.charCodeAt(0))
-                : ff_core_Option.None()
-        """
+    last(): Option[Char] {
+        if(self.size() > 0) {
+            Char(self!->charCodeAt(self.size() - 1)?)
+        }
+    }
 
-    last(): Option[Char]
-        target js sync """
-            return self_.length > 0
-                ? ff_core_Option.Some(self_.charCodeAt(self_.length - 1))
-                : ff_core_Option.None()
-        """
+    grabFirst(): Char {
+        self.first().else {
+            throw(GrabException())
+        }
+    }
 
-    grabFirst(): Char {self.first().else {Try.internalThrowGrabException()}}
-
-    grabLast(): Char {self.last().else {Try.internalThrowGrabException()}}
+    grabLast(): Char {
+        self.last().else {
+            throw(GrabException())
+        }
+    }
 
     contains(substring: String): Bool
         target js sync "return self_.includes(substring_)"
