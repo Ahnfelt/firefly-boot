@@ -2,33 +2,41 @@ data Int {}
 
 extend self: Int {
 
-    abs(): Int
-        target js sync "return Math.abs(self_)"
+    abs(): Int {
+        Js->Math->abs(self)?
+    }
 
-    toFloat(): Float
-        target js sync "return self_"
+    toFloat(): Float {
+        self!?
+    }
 
-    bitNot(): Int
-        target js sync "return ~self_;"
+    bitNot(): Int {
+        Js.unaryOperator("~", self)?
+    }
 
-    bitOr(that: Int): Int
-        target js sync "return self_ | that_;"
+    bitOr(that: Int): Int {
+        Js.binaryOperator("|", self, that)?
+    }
 
-    bitAnd(that: Int): Int
-        target js sync "return self_ & that_;"
+    bitAnd(that: Int): Int {
+        Js.binaryOperator("&", self, that)?
+    }
 
-    bitXor(that: Int): Int
-        target js sync "return self_ ^ that_;"
+    bitXor(that: Int): Int {
+        Js.binaryOperator("^", self, that)?
+    }
 
     bitLeft(bits: Int): Int {
         Js.binaryOperator("<<", self, bits)?
     }
 
-    bitRight(bits: Int, signed: Bool = True): Int
-        target js sync "return signed_ ? self_ >> bits_ : self_ >>> bits_;"
+    bitRight(bits: Int, signed: Bool = True): Int {
+        if(signed) {Js.binaryOperator(">>", self, bits)?} else {Js.binaryOperator(">>>", self, bits)?}
+    }
 
-    bitLeadingZeros(): Int
-        target js sync "return Math.clz32(self_);"
+    bitLeadingZeros(): Int {
+        Js->Math->clz32(self)?
+    }
 
     to(inclusiveEnd: Int): List[Int] {
         let result = Array.new()
@@ -50,14 +58,17 @@ extend self: Int {
         result.drain()
     }
 
-    min(that: Int): Int 
-        target js sync "return Math.min(self_, that_)"
+    min(that: Int): Int {
+        Js->Math->min(self, that)?
+    }
 
-    max(that: Int): Int
-        target js sync "return Math.max(self_, that_)"
+    max(that: Int): Int {
+        Js->Math->max(self, that)?
+    }
 
-    clamp(from: Int, to: Int): Int
-        target js sync "return Math.min(Math.max(self_, from_), to_)"
+    clamp(from: Int, to: Int): Int {
+        self.max(from).min(to)
+    }
     
     pad(padding: String): String {
         ("" + self).padStart(padding.size(), padding)
