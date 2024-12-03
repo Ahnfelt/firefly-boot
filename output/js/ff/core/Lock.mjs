@@ -93,10 +93,14 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Lock
-
+export function Lock(owner_, level_, stack_, queue_) {
+return {owner_, level_, stack_, queue_};
+}
 
 // type LockCondition
-
+export function LockCondition(lock_, stack_, queue_) {
+return {lock_, stack_, queue_};
+}
 
 
 
@@ -105,19 +109,46 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function Lock_condition(self_) {
-throw new Error('Function Lock_condition is missing on this target in sync context.');
+return ff_core_Lock.LockCondition(self_, ff_core_Array.new_(), ff_core_Array.new_())
 }
 
-export function Lock_acquire(self_, reentrant_) {
-throw new Error('Function Lock_acquire is missing on this target in sync context.');
+export function Lock_acquire(self_) {
+if(((self_.level_ === 0) || (self_.owner_ === $task))) {
+self_.owner_ = $task;
+self_.level_ += 1
+} else {
+;
+(new Promise(((resolve_, reject_) => {
+self_.queue_.array.push(ff_core_Pair.Pair($task, resolve_))
+})))
+}
 }
 
 export function Lock_release(self_) {
-throw new Error('Function Lock_release is missing on this target in sync context.');
+if((self_.owner_ !== $task)) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+} else if((self_.level_ > 1)) {
+self_.level_ -= 1
+} else {
+self_.owner_ = (void 0);
+self_.level_ = 0;
+if(ff_core_Array.Array_isEmpty(self_.stack_)) {
+const empty_ = self_.stack_;
+ff_core_Array.Array_reverse(self_.queue_);
+self_.stack_ = self_.queue_;
+self_.queue_ = empty_
+};
+if((!ff_core_Array.Array_isEmpty(self_.stack_))) {
+const pending_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_));
+self_.owner_ = pending_.first_;
+self_.level_ = 1;
+pending_.second_()
+}
+}
 }
 
-export function Lock_do(self_, reentrant_, body_) {
-ff_core_Lock.Lock_acquire(self_, reentrant_);
+export function Lock_do(self_, body_) {
+ff_core_Lock.Lock_acquire(self_);
 try {
 return body_()
 } finally {
@@ -126,63 +157,46 @@ ff_core_Lock.Lock_release(self_)
 }
 
 export async function Lock_condition$(self_, $task) {
-
-            return {lock: self_, stack: [], queue: []}
-        
+return ff_core_Lock.LockCondition(self_, ff_core_Array.new_(), ff_core_Array.new_())
 }
 
-export async function Lock_acquire$(self_, reentrant_, $task) {
-
-            if(self_.level === 0) {
-                self_.owner = $task
-                self_.level += 1
-            } else {
-                if(self_.owner !== $task || !reentrant_) {
-                    try {
-                        await new Promise((resolve, reject) => {
-                            $task.controller_.signal.addEventListener('abort', reject)
-                            try {
-                                self_.queue.push({owner: $task, resolve: resolve})
-                            } finally {
-                                $task.controller_.signal.removeEventListener('abort', reject)
-                            }
-                        })
-                    } finally {
-                        if($task.controller_.signal.aborted) $task.controller_ = new AbortController()
-                    }
-                } else {
-                    self_.level += 1
-                }
-            }
-        
+export async function Lock_acquire$(self_, $task) {
+if(((self_.level_ === 0) || (self_.owner_ === $task))) {
+self_.owner_ = $task;
+self_.level_ += 1
+} else {
+ff_core_Task.Task_throwIfAborted($task);
+(await (new Promise(((resolve_, reject_) => {
+self_.queue_.array.push(ff_core_Pair.Pair($task, resolve_))
+}))))
+}
 }
 
 export async function Lock_release$(self_, $task) {
-
-            if(self_.owner !== $task) {
-                throw new Error("Tried to release a lock without acquiring it first.")
-            } else if(self_.level > 1) {
-                self_.level -= 1
-            } else {
-                self_.owner = null
-                self_.level = 0
-                if(self_.stack.length === 0) {
-                    const empty = self_.stack
-                    self_.stack = self_.queue.reverse()
-                    self_.queue = empty
-                }
-                if(self_.stack.length !== 0) {
-                    const pending = self_.stack.pop()
-                    self_.owner = pending.owner
-                    self_.level = 1
-                    pending.resolve()
-                }
-            }
-        
+if((self_.owner_ !== $task)) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+} else if((self_.level_ > 1)) {
+self_.level_ -= 1
+} else {
+self_.owner_ = (void 0);
+self_.level_ = 0;
+if(ff_core_Array.Array_isEmpty(self_.stack_)) {
+const empty_ = self_.stack_;
+ff_core_Array.Array_reverse(self_.queue_);
+self_.stack_ = self_.queue_;
+self_.queue_ = empty_
+};
+if((!ff_core_Array.Array_isEmpty(self_.stack_))) {
+const pending_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_));
+self_.owner_ = pending_.first_;
+self_.level_ = 1;
+pending_.second_()
+}
+}
 }
 
-export async function Lock_do$(self_, reentrant_, body_, $task) {
-(await ff_core_Lock.Lock_acquire$(self_, reentrant_, $task));
+export async function Lock_do$(self_, body_, $task) {
+(await ff_core_Lock.Lock_acquire$(self_, $task));
 try {
 return (await body_($task))
 } finally {
@@ -191,7 +205,33 @@ return (await body_($task))
 }
 
 export function LockCondition_sleep(self_) {
-throw new Error('Function LockCondition_sleep is missing on this target in sync context.');
+if((self_.lock_.owner_ !== $task)) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+;
+const level_ = self_.lock_.level_;
+self_.lock_.level_ = 1;
+ff_core_Lock.Lock_release(self_.lock_);
+try {
+(new Promise(((resolve_, reject_) => {
+self_.queue_.array.push(resolve_)
+})))
+} finally {
+let error_;
+let acquired_ = false;
+while((!acquired_)) {
+try {
+ff_core_Lock.Lock_acquire(self_.lock_);
+self_.lock_.level_ = level_;
+acquired_ = true
+} catch(e_) {
+error_ = e_
+}
+};
+if(ff_core_JsValue.JsValue_isUndefined(error_)) {
+throw error_
+}
+}
 }
 
 export function LockCondition_sleepUntil(self_, body_) {
@@ -219,46 +259,61 @@ return
 }
 
 export function LockCondition_wakeOne(self_) {
-throw new Error('Function LockCondition_wakeOne is missing on this target in sync context.');
+if(ff_core_Array.Array_isEmpty(self_.stack_)) {
+const empty_ = self_.stack_;
+ff_core_Array.Array_reverse(self_.queue_);
+self_.stack_ = self_.queue_;
+self_.queue_ = empty_
+};
+if((!ff_core_Array.Array_isEmpty(self_.stack_))) {
+const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_));
+resolve_()
+}
 }
 
 export function LockCondition_wakeAll(self_) {
-throw new Error('Function LockCondition_wakeAll is missing on this target in sync context.');
+while((!ff_core_Array.Array_isEmpty(self_.stack_))) {
+const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_));
+resolve_()
+};
+const empty_ = self_.stack_;
+ff_core_Array.Array_reverse(self_.queue_);
+self_.stack_ = self_.queue_;
+self_.queue_ = empty_;
+while((!ff_core_Array.Array_isEmpty(self_.stack_))) {
+const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_));
+resolve_()
+}
 }
 
 export async function LockCondition_sleep$(self_, $task) {
-
-            if(self_.lock.owner !== $task) {
-                throw new Error("Tried to sleep on a condition without acquiring it first.")
-            }
-            const level = self_.lock.level
-            self_.lock.level = 1
-            await ff_core_Lock.Lock_release$(self_.lock)
-            try {
-                await new Promise((resolve, reject) => {
-                    $task.controller_.signal.addEventListener('abort', reject)
-                    try {
-                        self_.queue.push(resolve)
-                    } finally {
-                        $task.controller_.signal.removeEventListener('abort', reject)
-                        if($task.controller_.signal.aborted) $task.controller_ = new AbortController()
-                    }
-                })
-            } finally {
-                let exception = null
-                let acquired = false
-                while(!acquired) {
-                    try {
-                        await ff_core_Lock.Lock_acquire$(self_.lock)
-                        self_.lock.level = level
-                        acquired = true
-                    } catch(e) {
-                        exception = e
-                    }
-                }
-                if(e !== null) throw e;
-            }
-        
+if((self_.lock_.owner_ !== $task)) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+ff_core_Task.Task_throwIfAborted($task);
+const level_ = self_.lock_.level_;
+self_.lock_.level_ = 1;
+(await ff_core_Lock.Lock_release$(self_.lock_, $task));
+try {
+(await (new Promise(((resolve_, reject_) => {
+self_.queue_.array.push(resolve_)
+}))))
+} finally {
+let error_;
+let acquired_ = false;
+while((!acquired_)) {
+try {
+(await ff_core_Lock.Lock_acquire$(self_.lock_, $task));
+self_.lock_.level_ = level_;
+acquired_ = true
+} catch(e_) {
+error_ = e_
+}
+};
+if(ff_core_JsValue.JsValue_isUndefined(error_)) {
+throw error_
+}
+}
 }
 
 export async function LockCondition_sleepUntil$(self_, body_, $task) {
@@ -286,33 +341,31 @@ return
 }
 
 export async function LockCondition_wakeOne$(self_, $task) {
-
-            if(self_.stack.length === 0) {
-                const empty = self_.stack
-                self_.stack = self_.queue.reverse()
-                self_.queue = empty
-            }
-            if(self_.stack.length !== 0) {
-                const resolve = self_.stack.pop()
-                resolve()
-            }
-        
+if(ff_core_Array.Array_isEmpty(self_.stack_)) {
+const empty_ = self_.stack_;
+ff_core_Array.Array_reverse(self_.queue_);
+self_.stack_ = self_.queue_;
+self_.queue_ = empty_
+};
+if((!ff_core_Array.Array_isEmpty(self_.stack_))) {
+const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_));
+resolve_()
+}
 }
 
 export async function LockCondition_wakeAll$(self_, $task) {
-
-            while(self_.stack.length !== 0) {
-                const resolve = self_.stack.pop()
-                resolve()
-            }
-            const empty = self_.stack
-            self_.stack = self_.queue.reverse()
-            self_.queue = empty
-            while(self_.stack.length !== 0) {
-                const resolve = self_.stack.pop()
-                resolve()
-            }
-        
+while((!ff_core_Array.Array_isEmpty(self_.stack_))) {
+const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_));
+resolve_()
+};
+const empty_ = self_.stack_;
+ff_core_Array.Array_reverse(self_.queue_);
+self_.stack_ = self_.queue_;
+self_.queue_ = empty_;
+while((!ff_core_Array.Array_isEmpty(self_.stack_))) {
+const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_));
+resolve_()
+}
 }
 
 

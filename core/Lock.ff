@@ -1,63 +1,60 @@
-capability Lock {}
-capability LockCondition {}
+capability Lock(
+    mutable owner: JsValue
+    mutable level: Int
+    mutable stack: Array[Pair[JsValue, JsValue]]
+    mutable queue: Array[Pair[JsValue, JsValue]]
+)
+
+capability LockCondition(
+    lock: Lock
+    mutable stack: Array[JsValue]
+    mutable queue: Array[JsValue]
+)
 
 extend self: Lock {
 
-    condition(): LockCondition
-        target js async """
-            return {lock: self_, stack: [], queue: []}
-        """
-
-    acquire(reentrant: Bool): Unit
-        target js async """
-            if(self_.level === 0) {
-                self_.owner = $task
-                self_.level += 1
-            } else {
-                if(self_.owner !== $task || !reentrant_) {
-                    try {
-                        await new Promise((resolve, reject) => {
-                            $task.controller_.signal.addEventListener('abort', reject)
-                            try {
-                                self_.queue.push({owner: $task, resolve: resolve})
-                            } finally {
-                                $task.controller_.signal.removeEventListener('abort', reject)
-                            }
-                        })
-                    } finally {
-                        if($task.controller_.signal.aborted) $task.controller_ = new AbortController()
-                    }
-                } else {
-                    self_.level += 1
-                }
-            }
-        """
+    condition(): LockCondition {
+        LockCondition(self, Array.new(), Array.new())
+    }
     
-    release(): Unit
-        target js async """
-            if(self_.owner !== $task) {
-                throw new Error("Tried to release a lock without acquiring it first.")
-            } else if(self_.level > 1) {
-                self_.level -= 1
-            } else {
-                self_.owner = null
-                self_.level = 0
-                if(self_.stack.length === 0) {
-                    const empty = self_.stack
-                    self_.stack = self_.queue.reverse()
-                    self_.queue = empty
-                }
-                if(self_.stack.length !== 0) {
-                    const pending = self_.stack.pop()
-                    self_.owner = pending.owner
-                    self_.level = 1
-                    pending.resolve()
-                }
-            }
-        """
+    acquire(): Unit {
+        if(self.level == 0 || self.owner === Js.currentTask()!) {
+            self.owner = Js.currentTask()!
+            self.level += 1
+        } else {
+            Js.throwIfCancelled()
+            // TODO: Cancellation while waiting
+            Js.await(Js->Promise->(Js->{resolve, reject =>
+                self.queue.push(Pair(Js.currentTask()!, resolve))
+            }))
+        }
+    }
     
-    do[T](reentrant: Bool, body: () => T): T {
-        self.acquire(reentrant)
+    release(): Unit {
+        if(self.owner !== Js.currentTask()!) {
+            throw(GrabException)
+        } elseIf {self.level > 1} {
+            self.level -= 1
+        } else {
+            self.owner = Js.undefined()
+            self.level = 0
+            if(self.stack.isEmpty()) {
+                let empty = self.stack
+                self.queue.reverse()
+                self.stack = self.queue
+                self.queue = empty
+            }
+            if(!self.stack.isEmpty()) {
+                let pending = self.stack.pop().grab()
+                self.owner = pending.first
+                self.level = 1
+                pending.second.callValue0()
+            }
+        }
+    }
+    
+    do[T](body: () => T): T {
+        self.acquire()
         try {
             body()
         } finally {
@@ -69,39 +66,34 @@ extend self: Lock {
 
 extend self: LockCondition {
 
-    sleep(): Unit
-        target js async """
-            if(self_.lock.owner !== $task) {
-                throw new Error("Tried to sleep on a condition without acquiring it first.")
-            }
-            const level = self_.lock.level
-            self_.lock.level = 1
-            await ff_core_Lock.Lock_release$(self_.lock)
-            try {
-                await new Promise((resolve, reject) => {
-                    $task.controller_.signal.addEventListener('abort', reject)
-                    try {
-                        self_.queue.push(resolve)
-                    } finally {
-                        $task.controller_.signal.removeEventListener('abort', reject)
-                        if($task.controller_.signal.aborted) $task.controller_ = new AbortController()
-                    }
-                })
-            } finally {
-                let exception = null
-                let acquired = false
-                while(!acquired) {
-                    try {
-                        await ff_core_Lock.Lock_acquire$(self_.lock)
-                        self_.lock.level = level
-                        acquired = true
-                    } catch(e) {
-                        exception = e
-                    }
+    sleep(): Unit {
+        if(self.lock.owner !== Js.currentTask()!) {
+            throw(GrabException)
+        }
+        Js.throwIfCancelled()
+        let level = self.lock.level
+        self.lock.level = 1
+        self.lock.release()
+        try {
+            // TODO: Cancellation while waiting
+            Js.await(Js->Promise->(Js->{resolve, reject =>
+                self.queue.push(resolve)
+            }))
+        } finally {
+            mutable error = Js.undefined()
+            mutable acquired = False
+            while {!acquired} {
+                try {
+                    self.lock.acquire()
+                    self.lock.level = level
+                    acquired = True
+                } catchAny {e =>
+                    error = e!
                 }
-                if(e !== null) throw e;
             }
-        """
+            if(error.isUndefined()) {Js.throw(error)}
+        }
+    }
 
     sleepUntil[T](body: () => Option[T]): T {
         body().{
@@ -113,32 +105,32 @@ extend self: LockCondition {
         }
     }
 
-    wakeOne(): Unit
-        target js async """
-            if(self_.stack.length === 0) {
-                const empty = self_.stack
-                self_.stack = self_.queue.reverse()
-                self_.queue = empty
-            }
-            if(self_.stack.length !== 0) {
-                const resolve = self_.stack.pop()
-                resolve()
-            }
-        """
+    wakeOne(): Unit {
+        if(self.stack.isEmpty()) {
+            let empty = self.stack
+            self.queue.reverse()
+            self.stack = self.queue
+            self.queue = empty
+        }
+        if(!self.stack.isEmpty()) {
+            let resolve = self.stack.pop().grab()
+            resolve.callValue0()
+        }
+    }
 
-    wakeAll(): Unit
-        target js async """
-            while(self_.stack.length !== 0) {
-                const resolve = self_.stack.pop()
-                resolve()
-            }
-            const empty = self_.stack
-            self_.stack = self_.queue.reverse()
-            self_.queue = empty
-            while(self_.stack.length !== 0) {
-                const resolve = self_.stack.pop()
-                resolve()
-            }
-        """
+    wakeAll(): Unit {
+        while {!self.stack.isEmpty()} {
+            let resolve = self.stack.pop().grab()
+            resolve.callValue0()
+        }
+        let empty = self.stack
+        self.queue.reverse()
+        self.stack = self.queue
+        self.queue = empty
+        while {!self.stack.isEmpty()} {
+            let resolve = self.stack.pop().grab()
+            resolve.callValue0()
+        }
+    }
 
 }

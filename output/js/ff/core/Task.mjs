@@ -143,7 +143,7 @@ return ff_core_Channel.Channel(capacity_, ff_core_Array.new_(), (new Set()), (ne
 }
 
 export function Task_lock(self_) {
-return {owner: null, level: 0, stack: [], queue: []}
+return ff_core_Lock.Lock((void 0), 0, ff_core_Array.new_(), ff_core_Array.new_())
 }
 
 export function Task_now(self_) {
@@ -203,7 +203,7 @@ return ff_core_Channel.Channel(capacity_, ff_core_Array.new_(), (new Set()), (ne
 }
 
 export async function Task_lock$(self_, $task) {
-return {owner: null, level: 0, stack: [], queue: []}
+return ff_core_Lock.Lock((void 0), 0, ff_core_Array.new_(), ff_core_Array.new_())
 }
 
 export async function Task_now$(self_, $task) {

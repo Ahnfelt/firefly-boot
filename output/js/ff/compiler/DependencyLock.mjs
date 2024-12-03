@@ -113,7 +113,7 @@ export function DependencyLock_do(self_, doneFile_, body_) {
 const lock_ = ff_core_StringMap.StringMap_getOrSet(self_.doneLocks_, doneFile_, (() => {
 return ff_core_Task.Task_lock(self_.task_)
 }));
-return ff_core_Lock.Lock_do(lock_, false, (() => {
+return ff_core_Lock.Lock_do(lock_, (() => {
 return body_()
 }))
 }
@@ -122,7 +122,7 @@ export async function DependencyLock_do$(self_, doneFile_, body_, $task) {
 const lock_ = (await ff_core_StringMap.StringMap_getOrSet$(self_.doneLocks_, doneFile_, (async ($task) => {
 return (await ff_core_Task.Task_lock$(self_.task_, $task))
 }), $task));
-return (await ff_core_Lock.Lock_do$(lock_, false, (async ($task) => {
+return (await ff_core_Lock.Lock_do$(lock_, (async ($task) => {
 return (await body_($task))
 }), $task))
 }

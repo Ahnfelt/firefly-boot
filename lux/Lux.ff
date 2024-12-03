@@ -251,7 +251,7 @@ extend self: Lux {
     on(event: String, handler: LuxEvent => Unit) {
         if(self.dry.isEmpty()):
         let jsHandler = unsafeAsyncFunction1ToJs(self) {jsEvent =>
-            self.renderLock.do(reentrant = False) {
+            self.renderLock.do {
                 handler(unsafeJsToValue(jsEvent))
                 processRenderQueue(self)
             }
@@ -380,7 +380,7 @@ extend self: Lux {
                 body(lux)
                 task.throwIfAborted()
                 lux.copyFrom(luxCopy)
-                lux.renderLock.do(reentrant = False) {
+                lux.renderLock.do {
                     abortTasksOnElement(lux, lux.element.childAt(lux.element.child), onlyChildren = True)
                     lux.element.removeAt(lux.element.child)
                     lux.element.insertBefore(fragment, lux.jsSystem.null())
@@ -580,7 +580,7 @@ render(browserSystem: BrowserSystem, element: JsValue, body: Lux => Unit) {
         texts = Array.new()
         renderQueue = Array.new()
     )
-    lux.renderLock.do(reentrant = False) {
+    lux.renderLock.do {
         body(lux)
         patchText(lux)
     }

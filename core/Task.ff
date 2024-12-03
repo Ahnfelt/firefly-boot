@@ -67,12 +67,12 @@ extend self: Task {
 
     // Create a mutex. The mutex is not tied to the task.
     lock(): Lock {
-        Js->(
-            owner = Js.null()
+        Lock(
+            owner = Js.undefined()
             level = 0
-            stack = []
-            queue = []
-        )?
+            stack = Array.new()
+            queue = Array.new()
+        )
     }
     
     now(): Instant {
