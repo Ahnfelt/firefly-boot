@@ -109,6 +109,41 @@ withSignal[T](body: JsValue => T): T {
     }
 }
 
+awaitCancellablePromise[T](body: (T => Unit, Error => Unit, (Bool => Unit) => Unit) => Unit): T {
+    Js.throwIfCancelled()
+    Js.await(Js->Promise->(Js->{resolve, reject =>
+        mutable settled = False
+        let cleanups = Array.new[Bool => Unit]()
+        let doResolve: T => Unit = {v => 
+            if(!settled) {
+                settled = True
+                try {
+                    cleanups.each {c => c(True)}
+                    resolve.callValue1(v!)
+                } catchAny {e =>
+                    reject.callValue1(e!)
+                }
+            }
+        }
+        let doReject: Error => Unit = {v => 
+            if(!settled) {
+                settled = True
+                try {
+                    cleanups.each {c => c(False)}
+                    reject.callValue1(v!)
+                } catchAny {e =>
+                    reject.callValue1(e!)
+                }            
+            }
+        }
+        let jsReject = Js->{e => doReject(e?)}
+        let controller = Js.controller()
+        controller->signal->addEventListener("abort", jsReject)
+        cleanups.push({_ => controller->signal->removeEventListener("abort", jsReject)})
+        body(doResolve, doReject, {cleanup => cleanups.push(cleanup)})
+    }))?
+}
+
 value[T](value: T): JsValue {
     panic("This call should have been eliminated by the compiler")
 }

@@ -824,6 +824,8 @@ extend self: Inference {
                         call.function.{
                             | EVariable(_, "ff:core/Js.await") => 
                                 isUnsafeJsAwaitCall = True
+                            | EVariable(_, "ff:core/Js.awaitCancellablePromise") => 
+                                isUnsafeJsAwaitCall = True
                             | _ => 
                         }
                         call.tailCall

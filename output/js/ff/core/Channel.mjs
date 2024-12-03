@@ -181,85 +181,50 @@ return ff_core_Option.Option_isEmpty(_w1.second_)
 const makePromise_ = ff_core_Option.Option_grab(mode_).first_;
 return makePromise_()
 } else {
-let abort_;
-let finish_;
-const cleanups_ = ff_core_Array.new_();
-function doCleanup_() {
-for(let for_a = cleanups_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
-const cleanup_ = for_a[for_i];
-cleanup_()
-}
-}
-const promise_ = (new Promise(((resolve_, reject_) => {
+const body_ = ff_core_Js.awaitCancellablePromise_(((resolve_, reject_, onSettled_) => {
 for(const for_o = mode_; for_o.Some;) {
 const m_ = for_o.value_;
-finish_ = (() => {
-doCleanup_();
-return resolve_((() => {
-return m_.first_()
+const timeout_ = setTimeout((() => {
+return resolve_(m_.first_)
+}), (ff_core_Option.Option_grab(m_.second_) * 1000.0));
+onSettled_(((_) => {
+clearTimeout(timeout_)
 }))
-})
 break
 };
-abort_ = (() => {
-doCleanup_();
-return reject_($task.controller_.signal.reason)
-});
 for(let for_a = actions_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const action_ = for_a[for_i];
-{
+do {
 const _1 = action_.message_;
 if(_1.Some) {
 const message_ = _1.value_;
 const writer_ = {resolve: (() => {
-doCleanup_();
 return resolve_((() => {
 return action_.body_($task)
 }))
 }), message: message_};
-cleanups_.array.push((() => {
-return action_.channel_.writers_.delete(writer_)
-}));
-action_.channel_.writers_.add(writer_)
-return
+action_.channel_.writers_.add(writer_);
+onSettled_(((_) => {
+action_.channel_.writers_.delete(writer_)
+}))
+break
 }
 if(_1.None) {
 const reader_ = {resolve: ((m_) => {
-doCleanup_();
 return resolve_((() => {
 return action_.body_(m_, $task)
 }))
 })};
-cleanups_.array.push((() => {
-return action_.channel_.readers_.delete(reader_)
-}));
-action_.channel_.readers_.add(reader_)
-return
-}
-}
-}
-})));
-let timeout_;
-const controller_ = $task.controller_;
-return ff_core_Js.withSignal_(((signal_) => {
-try {
-signal_.addEventListener("abort", abort_);
-if((!ff_core_JsValue.JsValue_isUndefined(finish_))) {
-timeout_ = setTimeout(finish_, (ff_core_Option.Option_grab(ff_core_Option.Option_grab(mode_).second_) * 1000.0))
-};
-const body_ = promise_;
-if((!ff_core_JsValue.JsValue_isUndefined(timeout_))) {
-clearTimeout(timeout_);
-timeout_ = (void 0)
-};
-return body_()
-} finally {
-if((!ff_core_JsValue.JsValue_isUndefined(timeout_))) {
-clearTimeout(timeout_)
-};
-signal_.removeEventListener("abort", abort_)
-}
+action_.channel_.readers_.add(reader_);
+onSettled_(((_) => {
+action_.channel_.readers_.delete(reader_)
 }))
+break
+}
+} while(false)
+}
+}));
+return body_()
 }
 }))
 }
@@ -341,85 +306,50 @@ return ff_core_Option.Option_isEmpty(_w1.second_)
 const makePromise_ = ff_core_Option.Option_grab(mode_).first_;
 return (await (await makePromise_($task)))
 } else {
-let abort_;
-let finish_;
-const cleanups_ = ff_core_Array.new_();
-function doCleanup_() {
-for(let for_a = cleanups_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
-const cleanup_ = for_a[for_i];
-cleanup_()
-}
-}
-const promise_ = (new Promise((async (a_1, a_2) => await (async (resolve_, reject_, $task) => {
+const body_ = (await ff_core_Js.awaitCancellablePromise_$(((resolve_, reject_, onSettled_) => {
 for(const for_o = mode_; for_o.Some;) {
 const m_ = for_o.value_;
-finish_ = (async () => await (async ($task) => {
-doCleanup_();
-return resolve_((async () => await (async ($task) => {
-return (await m_.first_($task))
-})($task)))
-})($task))
+const timeout_ = setTimeout((() => {
+return resolve_(m_.first_)
+}), (ff_core_Option.Option_grab(m_.second_) * 1000.0));
+onSettled_(((_) => {
+clearTimeout(timeout_)
+}))
 break
 };
-abort_ = (() => {
-doCleanup_();
-return reject_($task.controller_.signal.reason)
-});
 for(let for_a = actions_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const action_ = for_a[for_i];
-{
+do {
 const _1 = action_.message_;
 if(_1.Some) {
 const message_ = _1.value_;
 const writer_ = {resolve: (() => {
-doCleanup_();
-return resolve_((() => {
+return resolve_((async ($task) => {
 return action_.body_($task)
 }))
 }), message: message_};
-cleanups_.array.push((() => {
-return action_.channel_.writers_.delete(writer_)
-}));
-action_.channel_.writers_.add(writer_)
-return
+action_.channel_.writers_.add(writer_);
+onSettled_(((_) => {
+action_.channel_.writers_.delete(writer_)
+}))
+break
 }
 if(_1.None) {
 const reader_ = {resolve: ((m_) => {
-doCleanup_();
-return resolve_((() => {
+return resolve_((async ($task) => {
 return action_.body_(m_, $task)
 }))
 })};
-cleanups_.array.push((() => {
-return action_.channel_.readers_.delete(reader_)
-}));
-action_.channel_.readers_.add(reader_)
-return
+action_.channel_.readers_.add(reader_);
+onSettled_(((_) => {
+action_.channel_.readers_.delete(reader_)
+}))
+break
 }
+} while(false)
 }
-}
-})(a_1, a_2, $task))));
-let timeout_;
-const controller_ = $task.controller_;
-return (await ff_core_Js.withSignal_$((async (signal_, $task) => {
-try {
-signal_.addEventListener("abort", abort_);
-if((!ff_core_JsValue.JsValue_isUndefined(finish_))) {
-timeout_ = setTimeout(finish_, (ff_core_Option.Option_grab(ff_core_Option.Option_grab(mode_).second_) * 1000.0))
-};
-const body_ = (await promise_);
-if((!ff_core_JsValue.JsValue_isUndefined(timeout_))) {
-clearTimeout(timeout_);
-timeout_ = (void 0)
-};
-return (await body_())
-} finally {
-if((!ff_core_JsValue.JsValue_isUndefined(timeout_))) {
-clearTimeout(timeout_)
-};
-signal_.removeEventListener("abort", abort_)
-}
-}), $task))
+}), $task));
+return (await body_($task))
 }
 }), $task))
 }

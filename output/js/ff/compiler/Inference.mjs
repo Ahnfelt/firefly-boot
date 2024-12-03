@@ -1448,6 +1448,10 @@ if(_1.EVariable && _1.name_ === "ff:core/Js.await") {
 isUnsafeJsAwaitCall_ = true
 break
 }
+if(_1.EVariable && _1.name_ === "ff:core/Js.awaitCancellablePromise") {
+isUnsafeJsAwaitCall_ = true
+break
+}
 {
 
 break
@@ -3329,6 +3333,10 @@ const call_ = _1;
 do {
 const _1 = call_.function_;
 if(_1.EVariable && _1.name_ === "ff:core/Js.await") {
+isUnsafeJsAwaitCall_ = true
+break
+}
+if(_1.EVariable && _1.name_ === "ff:core/Js.awaitCancellablePromise") {
 isUnsafeJsAwaitCall_ = true
 break
 }

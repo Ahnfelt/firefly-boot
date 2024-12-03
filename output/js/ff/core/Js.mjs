@@ -207,6 +207,53 @@ if(controller_.signal.aborted) {
 }
 }
 
+export function awaitCancellablePromise_(body_) {
+;
+return (new Promise(((resolve_, reject_) => {
+let settled_ = false;
+const cleanups_ = ff_core_Array.new_();
+const doResolve_ = ((v_) => {
+if((!settled_)) {
+settled_ = true;
+try {
+for(let for_a = cleanups_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const c_ = for_a[for_i];
+c_(true)
+};
+resolve_(v_)
+} catch(e_) {
+reject_(e_)
+}
+}
+});
+const doReject_ = ((v_) => {
+if((!settled_)) {
+settled_ = true;
+try {
+for(let for_a = cleanups_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const c_ = for_a[for_i];
+c_(false)
+};
+reject_(v_)
+} catch(e_) {
+reject_(e_)
+}
+}
+});
+const jsReject_ = ((e_) => {
+return doReject_(e_)
+});
+const controller_ = $task.controller_;
+controller_.signal.addEventListener("abort", jsReject_);
+cleanups_.array.push(((_) => {
+controller_.signal.removeEventListener("abort", jsReject_)
+}));
+return body_(doResolve_, doReject_, ((cleanup_) => {
+cleanups_.array.push(cleanup_)
+}))
+})))
+}
+
 export function value_(value_) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
@@ -477,6 +524,53 @@ if(controller_.signal.aborted) {
 ($task.controller_ = (new AbortController()))
 }
 }
+}
+
+export async function awaitCancellablePromise_$(body_, $task) {
+ff_core_Task.Task_throwIfAborted($task);
+return (await (new Promise((async (a_1, a_2) => await (async (resolve_, reject_, $task) => {
+let settled_ = false;
+const cleanups_ = ff_core_Array.new_();
+const doResolve_ = (async (v_, $task) => {
+if((!settled_)) {
+settled_ = true;
+try {
+for(let for_a = cleanups_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const c_ = for_a[for_i];
+(await c_(true, $task))
+};
+resolve_(v_)
+} catch(e_) {
+reject_(e_)
+}
+}
+});
+const doReject_ = (async (v_, $task) => {
+if((!settled_)) {
+settled_ = true;
+try {
+for(let for_a = cleanups_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const c_ = for_a[for_i];
+(await c_(false, $task))
+};
+reject_(v_)
+} catch(e_) {
+reject_(e_)
+}
+}
+});
+const jsReject_ = (async (a_1) => await (async (e_, $task) => {
+return (await doReject_(e_, $task))
+})(a_1, $task));
+const controller_ = $task.controller_;
+controller_.signal.addEventListener("abort", jsReject_);
+cleanups_.array.push((async (_, $task) => {
+controller_.signal.removeEventListener("abort", jsReject_)
+}));
+return (await body_(doResolve_, doReject_, (async (cleanup_, $task) => {
+cleanups_.array.push(cleanup_)
+}), $task))
+})(a_1, a_2, $task)))))
 }
 
 export async function value_$(value_, $task) {

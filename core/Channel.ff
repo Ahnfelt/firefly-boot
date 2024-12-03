@@ -104,63 +104,31 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
     } else:
     
     // Otherwise, start waiting for one of the readers or writers (or timeout(body), or cancellation) to happen.
-    mutable abort = Js.undefined()
-    mutable finish = Js.undefined()
-    let cleanups = Array.new()
-    function doCleanup() {
-        cleanups.each {cleanup =>
-            cleanup()
+    let body = Js.awaitCancellablePromise {resolve, reject, onSettled =>
+        mode.each {m =>
+            let timeout = Js->setTimeout(Js->{resolve(m.first)}, m.second.grab().seconds * 1000.0)
+            onSettled {_ => Js->clearTimeout(timeout)}
         }
-    }
-    let promise = Js->Promise->(Js->{resolve, reject =>
-        mode.each {m => finish = Js->{doCleanup(); resolve.callValue1(Js->{m.first()})}}
-        abort = Js->{doCleanup(); reject.callValue1(Js.currentTask().controller->signal->reason)}
         actions.each {action =>
             action.message.{
                 | Some(message) => 
                     let writer = Js->(
-                        resolve = Js->{
-                            doCleanup()
-                            resolve.callValue1(Js->{
-                                action.body.callValue1(Js.currentTask()!)
-                            })
-                        }
+                        resolve = Js->{resolve({action.body.callValue1(Js.currentTask()!)?})}
                         message = message
                     )
-                    cleanups.push({action.channel.writers->delete(writer)})
                     action.channel.writers->add(writer)
+                    onSettled {_ => action.channel.writers->delete(writer)}
                 | None =>
                     let reader = Js->(
                         resolve = Js->{m =>
-                            doCleanup()
-                            resolve.callValue1(Js->{
-                                action.body.callValue2(m, Js.currentTask()!)
-                            })
+                            resolve({action.body.callValue2(m, Js.currentTask()!)?})
                         }
                     )
-                    cleanups.push({action.channel.readers->delete(reader)})
                     action.channel.readers->add(reader)
+                    onSettled {_ => action.channel.readers->delete(reader)}
             }
-        }
-    })
-    mutable timeout = Js.undefined()
-    let controller = Js.controller()
-    Js.withSignal {signal =>
-        try {
-            signal->addEventListener("abort", abort)
-            if(!finish.isUndefined()) {
-                timeout = Js->setTimeout(finish, mode.grab().second.grab().seconds * 1000.0)
-            }
-            let body = Js.await(promise)
-            if(!timeout.isUndefined()) {
-                Js->clearTimeout(timeout)
-                timeout = Js.undefined()
-            }
-            Js.await(body.callValue0())?
-        } finally {
-            if(!timeout.isUndefined()) {Js->clearTimeout(timeout)}
-            signal->removeEventListener("abort", abort)
         }
     }
+    body()
     
 }
