@@ -117,7 +117,7 @@ return ff_core_Error.Error_rethrow(e_)
 ff_core_JsValue.JsValue_each(task_.subtasks_, ((subtask_) => {
 subtask_.controller_.abort()
 }));
-Promise.allSettled(ff_core_List.List_map(ff_core_JsValue.JsValue_spreadToArray(task_.subtasks_), ((subtask_) => {
+Promise.allSettled(ff_core_List.List_map([...task_.subtasks_], ((subtask_) => {
 return subtask_.promise_
 })));
 self_.subtasks_.delete(task_)
@@ -177,7 +177,7 @@ return ff_core_Error.Error_rethrow(e_)
 ff_core_JsValue.JsValue_each(task_.subtasks_, ((subtask_) => {
 subtask_.controller_.abort()
 }));
-(await Promise.allSettled(ff_core_List.List_map(ff_core_JsValue.JsValue_spreadToArray(task_.subtasks_), ((subtask_) => {
+(await Promise.allSettled(ff_core_List.List_map([...task_.subtasks_], ((subtask_) => {
 return subtask_.promise_
 }))));
 self_.subtasks_.delete(task_)

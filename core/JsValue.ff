@@ -2,265 +2,375 @@ class JsValue {}
 
 extend self: JsValue {
 
-    grabString(): String
-        target js sync "return self_"
+    grabString(): String {
+        if(!self.isString()) {throw(GrabException)}
+        self?
+    }
 
-    grabChar(): Char
-        target js sync "return self_"
+    grabChar(): Char {
+        if(!self.isChar()) {throw(GrabException)}
+        self?
+    }
 
-    grabInt(): Int
-        target js sync "return self_"
+    grabInt(): Int {
+        if(!self.isInt()) {throw(GrabException)}
+        self?
+    }
 
-    grabFloat(): Float
-        target js sync "return self_"
+    grabFloat(): Float {
+        if(!self.isFloat()) {throw(GrabException)}
+        self?
+    }
 
-    grabBool(): Bool
-        target js sync "return self_"
+    grabBool(): Bool {
+        if(!self.isBool()) {throw(GrabException)}
+        self?
+    }
 
-    grabArray(): List[JsValue]
-        target js sync "return self_"
+    grabArray(): List[JsValue] {
+        if(!self.isArray()) {throw(GrabException)}
+        self?
+    }
 
-    grabBuffer(): Buffer
-        target js sync """
-            if(!(self_ instanceof DataView)) throw new Error('Expected buffer, got '+ typeof self_);
-            return self_
-        """
+    grabBuffer(): Buffer {
+        if(!self.isBuffer()) {throw(GrabException)}
+        self?
+    }
         
-    grabJson(): Json
-        target js sync """
-            return self_
-        """
+    grabJson(): Json {
+        self? // Should check first
+    }
 
-    equals[V: IsJsValue](value: V): Bool
-        target js sync "return self_ === value_"
+    equals[V: IsJsValue](value: V): Bool {
+        self === value
+    }
 
-    notEquals[V: IsJsValue](value: V): Bool
-        target js sync "return self_ !== value_"
+    notEquals[V: IsJsValue](value: V): Bool {
+        self !== value
+    }
 
-    isString(): Bool
-        target js sync "return typeof self_ === 'string'"
+    isString(): Bool {
+        self.typeof() == "string"
+    }
+    
+    isChar(): Bool {
+        Js->Number->isInteger(self)? && 
+        Js->Math->abs(self)? <= Js->Number->"MAX_SAFE_INTEGER"? &&
+        self? >= 0 && 
+        self? < 1114112
+    }
+    
+    isInt(): Bool {
+        Js->Number->isInteger(self)? && 
+        Js->Math->abs(self)? <= Js->Number->"MAX_SAFE_INTEGER"?
+    }
 
-    isChar(): Bool
-        target js sync """
-            return Number.isInteger(self_) && Math.abs(self_) <= Number.MAX_SAFE_INTEGER
-                && self_ >= 0 && self_ < 1114112
-        """
+    isFloat(): Bool {
+        self.typeof() == "number"
+    }
 
-    isInt(): Bool
-        target js sync "return Number.isInteger(self_) && Math.abs(self_) <= Number.MAX_SAFE_INTEGER"
+    isBool(): Bool {
+        self.typeof() == "boolean"
+    }
 
-    isFloat(): Bool
-        target js sync "return typeof self_ === 'number'"
+    isArray(): Bool {
+        Js->Array->isArray(self)?
+    }
 
-    isBool(): Bool
-        target js sync "return typeof self_ === 'boolean'"
+    isObject(): Bool {
+        !self.isNull() && self.typeof() == "object"
+    }
 
-    isArray(): Bool
-        target js sync "return Array.isArray(self_)"
+    isFunction(): Bool {
+        self.typeof() == "function"
+    }
+    
+    isBuffer(): Bool {
+        self.instanceof(Js->DataView)
+    }
 
-    isObject(): Bool
-        target js sync "return self_ != null && typeof self_ === 'object'"
+    isNull(): Bool {
+        self === Js.null()
+    }
 
-    isFunction(): Bool
-        target js sync "return typeof self_ === 'function'"
-        
-    isNull(): Bool
-        target js sync "return self_ === null"
+    isUndefined(): Bool {
+        self === Js.undefined()
+    }
 
-    isUndefined(): Bool
-        target js sync "return typeof self_ === 'undefined'"
+    isNullOrUndefined(): Bool {
+        self.isNull() || self.isUndefined()
+    }
 
-    isNullOrUndefined(): Bool
-        target js sync "return self_ == null"
+    isNan(): Bool {
+        self.typeof() == "number" && self !== self
+    }
 
-    isNan(): Bool
-        target js sync "return typeof self_ === 'number' && self_ !== self_"
+    isFinite(): Bool {
+        self.typeof() == "number" && Js->isFinite(self)?
+    }
 
-    isFinite(): Bool
-        target js sync "return typeof self_ === 'number' && isFinite(self_)"
+    get[K: IsJsValue](key: K): JsValue {
+        // Special cased by the compiler
+        self.get(key)
+    }
 
-
-    get[K: IsJsValue](key: K): JsValue
-        target js sync "return self_[key_]"
-
-    // TODO rename
     getOwn(key: String): Option[JsValue] {
         if(self.hasOwn(key)) {Some(self.get(key))} else {None}
     }
 
-    set[K: IsJsValue, V: IsJsValue](key: K, value: V): Unit
-        target js sync "self_[key_] = value_"
+    set[K: IsJsValue, V: IsJsValue](key: K, value: V): Unit {
+        // Special cased by the compiler
+        self.set(key, value)
+    }
 
-    increment[K: IsJsValue, V: IsJsValue](key: K, value: V): Unit
-        target js sync "self_[key_] += value_"
+    increment[K: IsJsValue, V: IsJsValue](key: K, value: V): Unit {
+        // Special cased by the compiler
+        self.increment(key, value)
+    }
         
-    decrement[K: IsJsValue, V: IsJsValue](key: K, value: V): Unit
-        target js sync "self_[key_] -= value_"
+    decrement[K: IsJsValue, V: IsJsValue](key: K, value: V): Unit {
+        // Special cased by the compiler
+        self.decrement(key, value)
+    }
 
-    delete[K: IsJsValue](key: K): Unit
-        target js sync "delete self_[key_]"
+    delete[K: IsJsValue](key: K): Unit {
+        // Special cased by the compiler
+        self.delete(key)
+    }
 
-    with[K: IsJsValue, V: IsJsValue](key: K, value: V): JsValue
-        target js sync "return {...self_, [key_]: value_}"
+    with[K: IsJsValue, V: IsJsValue](key: K, value: V): JsValue {
+        // Special cased by the compiler
+        self.with(key, value)
+    }
 
-    hasOwn(name: String): Bool
-        target js sync "return Object.prototype.hasOwnProperty.call(self_, name_)"
-
-
-    assign(source: JsValue, source2: JsValue = source): JsValue
-        target js sync "return Object.assign(self_, source_, source2_ !== source_ ? source2_ : null)"
-
-
-    each(body: JsValue => Unit): Unit
-        target js sync "for(const value of self_) body_(value)"
-        target js async "for(const value of self_) await body_(value, $task)"
-
-    eachWhile(body: JsValue => Bool): Unit
-        target js sync "for(const value of self_) if(!body_(value)) break"
-        target js async "for(const value of self_) if(!await body_(value, $task)) break"
-
-    call[A0: IsJsValue](name: A0, arguments: List[JsValue]): JsValue
-        target js sync "return self_[name_].apply(this_, arguments_)"
-
-    call0[A0: IsJsValue](name: A0): JsValue
-        target js sync "return self_[name_].call(self_)"
-
-    call1[A0: IsJsValue, A1: IsJsValue](name: A0, a1: A1): JsValue
-        target js sync "return self_[name_].call(self_, a1_)"
-
-    call2[A0: IsJsValue, A1: IsJsValue, A2: IsJsValue](name: A0, a1: A1, a2: A2): JsValue
-        target js sync "return self_[name_].call(self_, a1_, a2_)"
-
-    call3[A0: IsJsValue, A1: IsJsValue, A2: IsJsValue, A3: IsJsValue](name: A0, a1: A1, a2: A2, a3: A3): JsValue
-        target js sync "return self_[name_].call(self_, a1_, a2_, a3_)"
-
-    call4[A0: IsJsValue, A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue](name: A0, a1: A1, a2: A2, a3: A3, a4: A4): JsValue
-        target js sync "return self_[name_].call(self_, a1_, a2_, a3_, a4_)"
-
-    call5[A0: IsJsValue, A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue](name: A0, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5): JsValue
-        target js sync "return self_[name_].call(self_, a1_, a2_, a3_, a4_, a5_)"
-
-    call6[A0: IsJsValue, A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue](name: A0, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6): JsValue
-        target js sync "return self_[name_].call(self_, a1_, a2_, a3_, a4_, a5_, a6_)"
-
-    call7[A0: IsJsValue, A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue](name: A0, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7): JsValue
-        target js sync "return self_[name_].call(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_)"
-
-    call8[A0: IsJsValue, A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue](name: A0, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8): JsValue
-        target js sync "return self_[name_].call(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_)"
-
-    call9[A0: IsJsValue, A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue, A9: IsJsValue](name: A0, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8, a9: A9): JsValue
-        target js sync "return self_[name_].call(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_)"
+    hasOwn(name: String): Bool {
+        Js->Object->prototype->hasOwnProperty->call(self, name)?
+    }
 
 
-    callValue(this: JsValue, arguments: List[JsValue]): JsValue
-        target js sync "return self_.apply(this_, arguments_)"
-
-    callValue0(): JsValue
-        target js sync "return self_()"
-
-    callValue1[A1: IsJsValue](a1: A1): JsValue
-        target js sync "return self_(a1_)"
-
-    callValue2[A1: IsJsValue, A2: IsJsValue](a1: A1, a2: A2): JsValue
-        target js sync "return self_(a1_, a2_)"
-
-    callValue3[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue](a1: A1, a2: A2, a3: A3): JsValue
-        target js sync "return self_(a1_, a2_, a3_)"
-
-    callValue4[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4): JsValue
-        target js sync "return self_(a1_, a2_, a3_, a4_)"
-
-    callValue5[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5): JsValue
-        target js sync "return self_(a1_, a2_, a3_, a4_, a5_)"
-
-    callValue6[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6): JsValue
-        target js sync "return self_(a1_, a2_, a3_, a4_, a5_, a6_)"
-
-    callValue7[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7): JsValue
-        target js sync "return self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_)"
-
-    callValue8[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8): JsValue
-        target js sync "return self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_)"
-
-    callValue9[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue, A9: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8, a9: A9): JsValue
-        target js sync "return self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_)"
+    assign(source: JsValue, source2: JsValue = source): JsValue {
+        Js->Object->assign(self, source, if(source2 !== source) {source2} else {Js.null()})?
+    }
 
 
-    new(this: JsValue, arguments: List[JsValue]): JsValue
-        target js sync "return new (Function.prototype.bind.apply(self_, arguments_))"
+    each(body: JsValue => Unit): Unit {
+        let iterator = self.call0(Js->Symbol->iterator)
+        mutable result = iterator->next()
+        while {!result->done?} {
+            body(result->value)
+            result = iterator->next()
+        }
+    }
 
-    new0(): JsValue
-        target js sync "return new self_()"
+    eachWhile(body: JsValue => Bool): Unit {
+        let iterator = self.call0(Js->Symbol->iterator)
+        mutable result = iterator->next()
+        while {!result->done? && body(result->value)} {
+            result = iterator->next()
+        }
+    }
 
-    new1[A1: IsJsValue](a1: A1): JsValue
-        target js sync "return new self_(a1_)"
+    call[A0: IsJsValue](name: A0, arguments: List[JsValue]): JsValue {
+        self.get(name)->apply(self, arguments)
+    }
 
-    new2[A1: IsJsValue, A2: IsJsValue](a1: A1, a2: A2): JsValue
-        target js sync "return new self_(a1_, a2_)"
+    call0[A0: IsJsValue](name: A0): JsValue {
+        // Special cased by the compiler
+        self.call0(name)
+    }
 
-    new3[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue](a1: A1, a2: A2, a3: A3): JsValue
-        target js sync "return new self_(a1_, a2_, a3_)"
+    call1[A0: IsJsValue, A1: IsJsValue](name: A0, a1: A1): JsValue {
+        // Special cased by the compiler
+        self.call1(name, a1)
+    }
 
-    new4[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4): JsValue
-        target js sync "return new self_(a1_, a2_, a3_, a4_)"
+    call2[A0: IsJsValue, A1: IsJsValue, A2: IsJsValue](name: A0, a1: A1, a2: A2): JsValue {
+        // Special cased by the compiler
+        self.call2(name, a1, a2)
+    }
 
-    new5[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5): JsValue
-        target js sync "return new self_(a1_, a2_, a3_, a4_, a5_)"
+    call3[A0: IsJsValue, A1: IsJsValue, A2: IsJsValue, A3: IsJsValue](name: A0, a1: A1, a2: A2, a3: A3): JsValue {
+        // Special cased by the compiler
+        self.call3(name, a1, a2, a3)
+    }
 
-    new6[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6): JsValue
-        target js sync "return new self_(a1_, a2_, a3_, a4_, a5_, a6_)"
+    call4[A0: IsJsValue, A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue](name: A0, a1: A1, a2: A2, a3: A3, a4: A4): JsValue {
+        // Special cased by the compiler
+        self.call4(name, a1, a2, a3, a4)
+    }
 
-    new7[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7): JsValue
-        target js sync "return new self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_)"
+    call5[A0: IsJsValue, A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue](name: A0, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5): JsValue {
+        // Special cased by the compiler
+        self.call5(name, a1, a2, a3, a4, a5)
+    }
 
-    new8[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8): JsValue
-        target js sync "return new self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_)"
+    call6[A0: IsJsValue, A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue](name: A0, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6): JsValue {
+        // Special cased by the compiler
+        self.call6(name, a1, a2, a3, a4, a5, a6)
+    }
 
-    new9[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue, A9: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8, a9: A9): JsValue
-        target js sync "return new self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_)"
+    call7[A0: IsJsValue, A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue](name: A0, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7): JsValue {
+        // Special cased by the compiler
+        self.call7(name, a1, a2, a3, a4, a5, a6, a7)
+    }
+
+    call8[A0: IsJsValue, A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue](name: A0, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8): JsValue {
+        // Special cased by the compiler
+        self.call8(name, a1, a2, a3, a4, a5, a6, a7, a8)
+    }
+
+    call9[A0: IsJsValue, A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue, A9: IsJsValue](name: A0, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8, a9: A9): JsValue {
+        // Special cased by the compiler
+        self.call9(name, a1, a2, a3, a4, a5, a6, a7, a8, a9)
+    }
+
+    callValue(this: JsValue, arguments: List[JsValue]): JsValue {
+        self->apply(this, arguments)
+    }
+
+    callValue0(): JsValue {
+        // Special cased by the compiler
+        self.callValue0()
+    }
+
+    callValue1[A1: IsJsValue](a1: A1): JsValue {
+        // Special cased by the compiler
+        self.callValue1(a1)
+    }
+
+    callValue2[A1: IsJsValue, A2: IsJsValue](a1: A1, a2: A2): JsValue {
+        // Special cased by the compiler
+        self.callValue2(a1, a2)
+    }
+
+    callValue3[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue](a1: A1, a2: A2, a3: A3): JsValue {
+        // Special cased by the compiler
+        self.callValue3(a1, a2, a3)
+    }
+
+    callValue4[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4): JsValue {
+        // Special cased by the compiler
+        self.callValue4(a1, a2, a3, a4)
+    }
+
+    callValue5[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5): JsValue {
+        // Special cased by the compiler
+        self.callValue5(a1, a2, a3, a4, a5)
+    }
+
+    callValue6[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6): JsValue {
+        // Special cased by the compiler
+        self.callValue6(a1, a2, a3, a4, a5, a6)
+    }
+
+    callValue7[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7): JsValue {
+        // Special cased by the compiler
+        self.callValue7(a1, a2, a3, a4, a5, a6, a7)
+    }
+
+    callValue8[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8): JsValue {
+        // Special cased by the compiler
+        self.callValue8(a1, a2, a3, a4, a5, a6, a7, a8)
+    }
+
+    callValue9[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue, A9: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8, a9: A9): JsValue {
+        // Special cased by the compiler
+        self.callValue9(a1, a2, a3, a4, a5, a6, a7, a8, a9)
+    }
 
 
-    grabPairs(): List[Pair[String, JsValue]]
-        target js sync """
-            if(!(self_ instanceof Object)) throw new Error('Expected object, got '+ typeof self_);;
-            return Object.getOwnPropertyNames(self_).map((name, i) => ff_core_Pair.Pair(name, self_[name]));
-        """
+    new(arguments: List[JsValue]): JsValue {
+        Js->Function->prototype->bind->apply->(self, arguments)
+    }
+
+    new0(): JsValue {
+        // Special cased by the compiler
+        self->()
+    }
+
+    new1[A1: IsJsValue](a1: A1): JsValue {
+        // Special cased by the compiler
+        self->(a1)
+    }
+
+    new2[A1: IsJsValue, A2: IsJsValue](a1: A1, a2: A2): JsValue {
+        // Special cased by the compiler
+        self->(a1, a2)
+    }
+
+    new3[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue](a1: A1, a2: A2, a3: A3): JsValue {
+        // Special cased by the compiler
+        self->(a1, a2, a3)
+    }
+
+    new4[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4): JsValue {
+        // Special cased by the compiler
+        self->(a1, a2, a3, a4)
+    }
+
+    new5[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5): JsValue {
+        // Special cased by the compiler
+        self->(a1, a2, a3, a4, a5)
+    }
+
+    new6[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6): JsValue {
+        // Special cased by the compiler
+        self->(a1, a2, a3, a4, a5, a6)
+    }
+
+    new7[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7): JsValue {
+        // Special cased by the compiler
+        self->(a1, a2, a3, a4, a5, a6, a7)
+    }
+
+    new8[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8): JsValue {
+        // Special cased by the compiler
+        self->(a1, a2, a3, a4, a5, a6, a7, a8)
+    }
+
+    new9[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue, A9: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8, a9: A9): JsValue {
+        // Special cased by the compiler
+        self->(a1, a2, a3, a4, a5, a6, a7, a8, a9)
+    }
+
+
+    grabPairs(): List[Pair[String, JsValue]] {
+        if(!self.isObject()) {throw(GrabException)}
+        Js->Object->getOwnPropertyNames(self)->map(Js->{name, i => Pair(name, self.get(name))})?
+    }
 
     grabMap(): Map[String, JsValue] {
         self.grabPairs().toMap()
     }
 
-    grabIntMap(): IntMap[JsValue]
-        target js sync """
-            if(!(self_ instanceof Map)) throw new Error('Expected map, got '+ typeof self_);;
-            return self_
-        """
+    grabIntMap(): IntMap[JsValue] {
+        if(!self.instanceof(Js->Map)) {throw(GrabException)}
+        self?
+    }
 
-    grabStringMap(): StringMap[JsValue]
-        target js sync """
-            if(!(self_ instanceof Map)) throw new Error('Expected map, got '+ typeof self_);;
-            return self_
-        """
+    grabStringMap(): StringMap[JsValue] {
+        if(!self.instanceof(Js->Map)) {throw(GrabException)}
+        self?
+    }
         
-    spreadToArray(): List[JsValue]
-        target js sync """
-            return [...self_]
-        """
+    spreadToArray(): List[JsValue] {
+        // Special cased by the compiler
+        self.spreadToArray()
+    }
         
     coalesce[T: IsJsValue](defaultValue: T): JsValue {
         if(self.isNullOrUndefined()) {Js.value(defaultValue)} else {self}
     }
 
-    typeof(): String
-        target js sync """
-            return typeof self_
-        """
+    typeof(): String {
+        // Special cased by the compiler
+        self.typeof()
+    }
 
-    instanceof(type: JsValue): Bool
-        target js sync """
-            return self_ instanceof type_
-        """
+    instanceof(type: JsValue): Bool {
+        // Special cased by the compiler
+        self.instanceof(type)
+    }
 
     //toList(): List[JsValue] // TODO
     // TODO: JS operators

@@ -332,7 +332,7 @@ return (new TextDecoder()).decode(self_)
 }
 
 export function Buffer_toByteArray(self_) {
-return ff_core_JsValue.JsValue_spreadToArray((new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength)))
+return [...(new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength))]
 }
 
 export function Buffer_toHex(self_) {
@@ -493,7 +493,7 @@ return (new TextDecoder()).decode(self_)
 }
 
 export async function Buffer_toByteArray$(self_, $task) {
-return ff_core_JsValue.JsValue_spreadToArray((new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength)))
+return [...(new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength))]
 }
 
 export async function Buffer_toHex$(self_, $task) {

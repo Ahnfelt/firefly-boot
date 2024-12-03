@@ -646,6 +646,8 @@ extend self: JsEmitter {
                 Some("(" + self.emitTerm(a1, async) + " " + op.replace("\"", "") + " " + self.emitTerm(a2, async) + ")")
             | "ff:core/Js.shortCircuitingOperator" {arguments | [EString(_, op), a1, a2]} =>
                 Some("(" + self.emitTerm(a1, async) + " " + op.replace("\"", "") + " " + self.emitTerm(invokeImmediately(a2), async) + ")")
+            | "ff:core/JsValue.JsValue_spreadToArray" {arguments | [e1]} =>
+                Some("[..." + self.emitTerm(e1, async) + "]")
             | "ff:core/JsValue.JsValue_typeof" {arguments | [e]} =>
                 Some("(typeof " + self.emitTerm(e, async) + ")")
             | "ff:core/JsValue.JsValue_instanceof" {arguments | [e1, e2]} =>
