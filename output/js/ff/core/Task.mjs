@@ -93,7 +93,9 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Task
-
+export function Task(controller_, subtasks_, promise_, started_) {
+return {controller_, subtasks_, promise_, started_};
+}
 
 
 
@@ -102,56 +104,55 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function Task_spawn(self_, body_) {
-
-            ff_core_Task.Task_throwIfAborted(self_)
-            const task = {controller: new AbortController(), subtasks: new Set(), started: performance.now() * 0.001}
-            self_.subtasks.add(task)
-            task.promise = Promise.resolve(task).then(async () => {
-                try {
-                    await body_(task, task)
-                } catch(e) {
-                    await ff_core_Task.Task_abort$(self_)
-                    throw e
-                } finally {
-                    for(const subtask of task.subtasks) subtask.controller.abort()
-                    await Promise.allSettled([...task.subtasks].map(subtask => subtask.promise))
-                    self_.subtasks.delete(task)
-                }
-            })
-            return task
-        
+ff_core_Task.Task_throwIfAborted(self_);
+const task_ = ff_core_Task.Task((new AbortController()), (new Set()), (void 0), (performance.now() * 0.001));
+self_.subtasks_.add(task_);
+task_.promise_ = Promise.resolve(task_).then(async () => {
+return ff_core_Try.Try_finally(ff_core_Try.Try_tryCatchAny(ff_core_Core.try_((() => {
+return body_(task_, task_)
+})), ((e_) => {
+self_.controller_.abort();
+return ff_core_Error.Error_rethrow(e_)
+})), (() => {
+ff_core_JsValue.JsValue_each(task_.subtasks_, ((subtask_) => {
+subtask_.controller_.abort()
+}));
+Promise.allSettled(ff_core_List.List_map(ff_core_JsValue.JsValue_spreadToArray(task_.subtasks_), ((subtask_) => {
+return subtask_.promise_
+})));
+self_.subtasks_.delete(task_)
+}))
+});
+return task_
 }
 
 export function Task_throwIfAborted(self_) {
-
-            if(self_.controller.signal.aborted) {
-                const signal = self_.controller.signal
-                self_.controller = new AbortController()
-                signal.throwIfAborted()
-            }
-        
+const signal_ = self_.controller_.signal;
+if(signal_.aborted) {
+self_.controller_ = (new AbortController());
+signal_.throwIfAborted()
+}
 }
 
 export function Task_abort(self_) {
-
-            self_.controller.abort()
-        
+self_.controller_.abort()
 }
 
 export function Task_channel(self_, capacity_ = 0) {
-return {capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}
+return {capacity: capacity_, buffer: [], readers: (new Set()), writers: (new Set())}
 }
 
 export function Task_lock(self_) {
-throw new Error('Function Task_lock is missing on this target in sync context.');
+return {owner: null, level: 0, stack: [], queue: []}
 }
 
 export function Task_now(self_) {
-return Date.now() * 0.001
+return (Date.now() * 0.001)
 }
 
 export function Task_elapsed(self_) {
-return performance.now() * 0.001 - self_.started
+const now_ = (performance.now() * 0.001);
+return (now_ - self_.started_)
 }
 
 export function Task_time(self_, body_) {
@@ -163,25 +164,42 @@ return ff_core_Pair.Pair(result_, duration_)
 }
 
 export async function Task_spawn$(self_, body_, $task) {
-
-            return ff_core_Task.Task_spawn(self_, body_)
-        
+(await ff_core_Task.Task_throwIfAborted$(self_, $task));
+const task_ = ff_core_Task.Task((new AbortController()), (new Set()), (void 0), (performance.now() * 0.001));
+self_.subtasks_.add(task_);
+task_.promise_ = Promise.resolve(task_).then(async () => {
+return ff_core_Try.Try_finally(ff_core_Try.Try_tryCatchAny(ff_core_Core.try_((async ($task) => {
+return (await body_(task_, task_))
+})), (async (e_, $task) => {
+(await self_.controller_.abort());
+return ff_core_Error.Error_rethrow(e_)
+})), (async ($task) => {
+ff_core_JsValue.JsValue_each(task_.subtasks_, ((subtask_) => {
+subtask_.controller_.abort()
+}));
+(await Promise.allSettled(ff_core_List.List_map(ff_core_JsValue.JsValue_spreadToArray(task_.subtasks_), ((subtask_) => {
+return subtask_.promise_
+}))));
+self_.subtasks_.delete(task_)
+}))
+});
+return task_
 }
 
 export async function Task_throwIfAborted$(self_, $task) {
-
-            ff_core_Task.Task_throwIfAborted(self_)
-        
+const signal_ = self_.controller_.signal;
+if(signal_.aborted) {
+self_.controller_ = (new AbortController());
+signal_.throwIfAborted()
+}
 }
 
 export async function Task_abort$(self_, $task) {
-
-            self_.controller.abort()
-        
+self_.controller_.abort()
 }
 
 export async function Task_channel$(self_, capacity_ = 0, $task) {
-return ff_core_Task.Task_channel(capacity_)
+return {capacity: capacity_, buffer: [], readers: (new Set()), writers: (new Set())}
 }
 
 export async function Task_lock$(self_, $task) {
@@ -189,11 +207,12 @@ return {owner: null, level: 0, stack: [], queue: []}
 }
 
 export async function Task_now$(self_, $task) {
-return Date.now() * 0.001
+return (Date.now() * 0.001)
 }
 
 export async function Task_elapsed$(self_, $task) {
-return performance.now() * 0.001 - self_.started
+const now_ = (performance.now() * 0.001);
+return (now_ - self_.started_)
 }
 
 export async function Task_time$(self_, body_, $task) {

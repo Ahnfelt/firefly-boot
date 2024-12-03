@@ -379,7 +379,7 @@ export async function NodeSystem_execute$(self_, command_, arguments_, standardI
             const newProcess = childProcess.spawn(command_, arguments_, {
                 cwd: directory_.value_ ? directory_.value_.absolutePath_ : void 0,
                 windowsHide: true,
-                signal: $task.controller.signal,
+                signal: $task.controller_.signal,
                 killSignal: killSignal_,
                 env: environment,
                 shell: shell_

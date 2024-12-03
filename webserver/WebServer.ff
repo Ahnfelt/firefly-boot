@@ -170,11 +170,11 @@ extend self: WebServer {
                 self_.internalJsApp_.listen(self_.internalHost_, self_.internalPort_, listenSocket => {
                     if(listenSocket) {
                         const abort = () => {
-                            $task.controller.signal.removeEventListener('abort', abort);
+                            $task.controller_.signal.removeEventListener('abort', abort);
                             uws.us_listen_socket_close(listenSocket);
                             self_.internalJsApp_.close();
                         }
-                        $task.controller.signal.addEventListener('abort', abort);
+                        $task.controller_.signal.addEventListener('abort', abort);
                     } else {
                         rejectServer();
                     }
@@ -395,10 +395,10 @@ extend self: WebRequest[WebResponse] {
                 if(callResolve) callResolve();
             });
             const abort = () => {
-                $task.controller.signal.removeEventListener('abort', abort);
+                $task.controller_.signal.removeEventListener('abort', abort);
                 if(callReject) callReject();
             }
-            $task.controller.signal.addEventListener('abort', abort);
+            $task.controller_.signal.addEventListener('abort', abort);
             return ff_core_Stream.Stream(
                 async () => {
                     while(true) {
@@ -454,7 +454,7 @@ extend self: WebRequest[WebResponse] {
                 const abort = () => {wrapper.webSocket = null; reject()};
                 userData.onOpen = ws => {wrapper.webSocket = ws; resolve(wrapper)};
                 userData.onClose = () => {
-                    $task.controller.signal.removeEventListener('abort', abort);
+                    $task.controller_.signal.removeEventListener('abort', abort);
                     abort();
                     for(let i = 0; i < wrapper.listeners.length; i++) wrapper.listeners[i]();
                     wrapper.listeners.length = 0;
@@ -464,7 +464,7 @@ extend self: WebRequest[WebResponse] {
                     for(let i = 0; i < wrapper.listeners.length; i++) wrapper.listeners[i]();
                     wrapper.listeners.length = 0;
                 };
-                $task.controller.signal.addEventListener('abort', abort);
+                $task.controller_.signal.addEventListener('abort', abort);
             });
             self_.internalJsResponse_.cork(() => {
                 ff_core_Task.Task_throwIfAborted($task);
@@ -509,12 +509,12 @@ extend self: WebSocketConnection {
                                 self_.listeners = self_.listeners.filter(l => l != resolve);
                                 reject();
                             };
-                            $task.controller.signal.addEventListener('abort', abort);
+                            $task.controller_.signal.addEventListener('abort', abort);
                         }
                     });
                 } finally {
                     if($task !== self_.task) {
-                        $task.controller.signal.removeEventListener('abort', abort);
+                        $task.controller_.signal.removeEventListener('abort', abort);
                     }
                 }
             }
@@ -593,7 +593,7 @@ internalSend[T](self: WebSocketConnection, send: () => Bool): JsValue
                             self_.listeners = self_.listeners.filter(l => l != resolve);
                             reject();
                         };
-                        $task.controller.signal.addEventListener('abort', abort);
+                        $task.controller_.signal.addEventListener('abort', abort);
                     }
                     if(self_.webSocket == null) {
                         reject(new Error("WebSocket is closed"));
@@ -606,7 +606,7 @@ internalSend[T](self: WebSocketConnection, send: () => Bool): JsValue
             });
         } finally {
             if($task !== self_.task) {
-                $task.controller.signal.removeEventListener('abort', abort);
+                $task.controller_.signal.removeEventListener('abort', abort);
             }
         }
     """

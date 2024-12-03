@@ -32,12 +32,12 @@ extend self: WebSocket {
                                 self_.ffListeners = self_.ffListeners.filter(l => l != resolve);
                                 reject();
                             };
-                            $task.controller.signal.addEventListener('abort', abort);
+                            $task.controller_.signal.addEventListener('abort', abort);
                         }
                     });
                 } finally {
                     if($task !== self_.ffTask) {
-                        $task.controller.signal.removeEventListener('abort', abort);
+                        $task.controller_.signal.removeEventListener('abort', abort);
                     }
                 }
             }
@@ -100,20 +100,20 @@ internalOpenBrowserWebSocket(browserSystem: BrowserSystem, url: String): WebSock
         socket.ffBack = [];
         socket.ffListeners = [];
         socket.ffTask = $task;
-        $task.controller.signal.addEventListener('message', m => socket.ffBack.push(m));
+        $task.controller_.signal.addEventListener('message', m => socket.ffBack.push(m));
         const abort = () => socket.close();
         try {
             await new Promise((resolve, reject) => {
                 socket.onopen = resolve;
                 socket.onerror = reject;
-                $task.controller.signal.addEventListener('abort', abort);
+                $task.controller_.signal.addEventListener('abort', abort);
             });
         } finally {
             socket.onopen = null;
             socket.onerror = null;
         }
         socket.addEventListener('close', () => {
-            $task.controller.signal.removeEventListener('abort', abort);
+            $task.controller_.signal.removeEventListener('abort', abort);
             for(let i = 0; i < socket.ffListeners.length; i++) socket.ffListeners[i]();
             socket.ffListeners.length = 0;
         });
