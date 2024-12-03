@@ -100,7 +100,7 @@ extend self: JsEmitter {
         mainFunction.map {_.signature.name}.map {mainName => [[
             "export async function $run$(fireflyPath_, arguments_) {"
             "Error.stackTraceLimit = 50"
-            "const $task = {controller: new AbortController(), subtasks: new Set(), promise: new Promise(() => {}), started: performance.now() * 0.001}"
+            "const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}"
             ...if(self.emitTarget != EmitBrowser) {[
                 "let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)" // To prevent deadlocks from exiting node
             ]} else {[]}
@@ -619,13 +619,15 @@ extend self: JsEmitter {
             | name {name.startsWith("ff:core/Js.async")} =>
                 throw(CompileError(term.at, "JS async functions must take a simple parameter list"))
             | "ff:core/Js.cancelled" =>
-                Some(if(async) {"$task.controller.signal.aborted"} else {"false"})
+                Some(if(async) {"$task.controller_.signal.aborted"} else {"false"})
             | "ff:core/Js.throwIfCancelled" =>
                 Some(if(async) {"((() => ff_core_Task.Task_throwIfAborted($task))())"} else {""})
+            | "ff:core/Js.task" =>
+                Some("$task")
             | "ff:core/Js.controller" =>
-                Some("$task.controller")
+                Some("$task.controller_")
             | "ff:core/Js.setController" {arguments | [a]} =>
-                Some("($task.controller = " + self.emitTerm(a, async) + ")")
+                Some("($task.controller_ = " + self.emitTerm(a, async) + ")")
             | "ff:core/Js.inAsync" =>
                 Some(if(self.emittingAsync) {"true"} else {"false"})
             | "ff:core/Js.inBrowser" =>

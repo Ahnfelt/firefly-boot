@@ -704,7 +704,7 @@ return (_w1.signature_.name_ === "main")
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(mainFunction_, ((_w1) => {
 return _w1.signature_.name_
 })), ((mainName_) => {
-return [ff_core_List.List_join(["export async function $run$(fireflyPath_, arguments_) {", "Error.stackTraceLimit = 50", "const $task = {controller: new AbortController(), subtasks: new Set(), promise: new Promise(() => {}), started: performance.now() * 0.001}", ...(ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
+return [ff_core_List.List_join(["export async function $run$(fireflyPath_, arguments_) {", "Error.stackTraceLimit = 50", "const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}", ...(ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
 ? ["let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)"]
 : []), "let system = {", "task_: $task,", "array_: arguments_,", "fireflyPath_: fireflyPath_,", (((("mainPackagePair_: {group_: \"" + mainPackagePair_.group_) + "\", name_: \"") + mainPackagePair_.name_) + "\"},"), (("executableMode_: " + (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable())
 ? "true"
@@ -1765,7 +1765,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 }
 if(_1 === "ff:core/Js.cancelled") {
 return ff_core_Option.Some((async_
-? "$task.controller.signal.aborted"
+? "$task.controller_.signal.aborted"
 : "false"))
 return
 }
@@ -1775,14 +1775,17 @@ return ff_core_Option.Some((async_
 : ""))
 return
 }
+if(_1 === "ff:core/Js.task") {
+return ff_core_Option.Some("$task")
+}
 if(_1 === "ff:core/Js.controller") {
-return ff_core_Option.Some("$task.controller")
+return ff_core_Option.Some("$task.controller_")
 }
 if(_1 === "ff:core/Js.setController") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const a_ = _guard1[0];
-return ff_core_Option.Some((("($task.controller = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_, async_)) + ")"))
+return ff_core_Option.Some((("($task.controller_ = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_, async_)) + ")"))
 }
 }
 if(_1 === "ff:core/Js.inAsync") {
@@ -3183,7 +3186,7 @@ return (_w1.signature_.name_ === "main")
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(mainFunction_, ((_w1) => {
 return _w1.signature_.name_
 })), ((mainName_) => {
-return [ff_core_List.List_join(["export async function $run$(fireflyPath_, arguments_) {", "Error.stackTraceLimit = 50", "const $task = {controller: new AbortController(), subtasks: new Set(), promise: new Promise(() => {}), started: performance.now() * 0.001}", ...(ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
+return [ff_core_List.List_join(["export async function $run$(fireflyPath_, arguments_) {", "Error.stackTraceLimit = 50", "const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}", ...(ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
 ? ["let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)"]
 : []), "let system = {", "task_: $task,", "array_: arguments_,", "fireflyPath_: fireflyPath_,", (((("mainPackagePair_: {group_: \"" + mainPackagePair_.group_) + "\", name_: \"") + mainPackagePair_.name_) + "\"},"), (("executableMode_: " + (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable())
 ? "true"
@@ -4244,7 +4247,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 }
 if(_1 === "ff:core/Js.cancelled") {
 return ff_core_Option.Some((async_
-? "$task.controller.signal.aborted"
+? "$task.controller_.signal.aborted"
 : "false"))
 return
 }
@@ -4254,14 +4257,17 @@ return ff_core_Option.Some((async_
 : ""))
 return
 }
+if(_1 === "ff:core/Js.task") {
+return ff_core_Option.Some("$task")
+}
 if(_1 === "ff:core/Js.controller") {
-return ff_core_Option.Some("$task.controller")
+return ff_core_Option.Some("$task.controller_")
 }
 if(_1 === "ff:core/Js.setController") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const a_ = _guard1[0];
-return ff_core_Option.Some((("($task.controller = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_, async_)) + ")"))
+return ff_core_Option.Some((("($task.controller_ = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_, async_)) + ")"))
 }
 }
 if(_1 === "ff:core/Js.inAsync") {

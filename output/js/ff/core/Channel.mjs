@@ -168,7 +168,7 @@ export async function internalRunChannelAction_$(action_, mode_, $task) {
         }
         let promise = new Promise((resolve, reject) => {
             if(mode_.value_) finish = () => {doCleanup(); resolve(() => mode_.value_.first_($task))}
-            abort = () => {doCleanup(); reject($task.controller.signal.reason)}
+            abort = () => {doCleanup(); reject($task.controller_.signal.reason)}
             for(let action of actions) {
                 if(action.hasOwnProperty("message")) {
                     let writer = {
@@ -194,15 +194,15 @@ export async function internalRunChannelAction_$(action_, mode_, $task) {
         })
         let timeout = null
         try {
-            $task.controller.signal.addEventListener('abort', abort)
+            $task.controller_.signal.addEventListener('abort', abort)
             if(finish != null) timeout = setTimeout(finish, mode_.value_.second_.value_ * 1000)
             let body = await promise
             if(timeout != null) { clearTimeout(timeout); timeout = null }
             return await body()
         } finally {
             if(timeout != null) clearTimeout(timeout)
-            $task.controller.signal.removeEventListener('abort', abort)
-            if($task.controller.signal.aborted) $task.controller = new AbortController()
+            $task.controller_.signal.removeEventListener('abort', abort)
+            if($task.controller_.signal.aborted) $task.controller_ = new AbortController()
         }
     
 }

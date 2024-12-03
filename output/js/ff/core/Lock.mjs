@@ -140,15 +140,15 @@ export async function Lock_acquire$(self_, reentrant_, $task) {
                 if(self_.owner !== $task || !reentrant_) {
                     try {
                         await new Promise((resolve, reject) => {
-                            $task.controller.signal.addEventListener('abort', reject)
+                            $task.controller_.signal.addEventListener('abort', reject)
                             try {
                                 self_.queue.push({owner: $task, resolve: resolve})
                             } finally {
-                                $task.controller.signal.removeEventListener('abort', reject)
+                                $task.controller_.signal.removeEventListener('abort', reject)
                             }
                         })
                     } finally {
-                        if($task.controller.signal.aborted) $task.controller = new AbortController()
+                        if($task.controller_.signal.aborted) $task.controller_ = new AbortController()
                     }
                 } else {
                     self_.level += 1
@@ -236,12 +236,12 @@ export async function LockCondition_sleep$(self_, $task) {
             await ff_core_Lock.Lock_release$(self_.lock)
             try {
                 await new Promise((resolve, reject) => {
-                    $task.controller.signal.addEventListener('abort', reject)
+                    $task.controller_.signal.addEventListener('abort', reject)
                     try {
                         self_.queue.push(resolve)
                     } finally {
-                        $task.controller.signal.removeEventListener('abort', reject)
-                        if($task.controller.signal.aborted) $task.controller = new AbortController()
+                        $task.controller_.signal.removeEventListener('abort', reject)
+                        if($task.controller_.signal.aborted) $task.controller_ = new AbortController()
                     }
                 })
             } finally {

@@ -58,14 +58,6 @@ async9[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, 
     panic("This call should have been eliminated by the compiler")
 }
 
-throwIfCancelled(): Unit {
-    panic("This call should have been eliminated by the compiler")
-}
-
-cancelled(): Bool {
-    panic("This call should have been eliminated by the compiler")
-}
-
 inAsync(): Bool {
     panic("This call should have been eliminated by the compiler")
 }
@@ -82,12 +74,28 @@ inBuild(): Bool {
     panic("This call should have been eliminated by the compiler")
 }
 
-controller(): JsValue {
+currentTask(): Task {
     panic("This call should have been eliminated by the compiler")
 }
 
-setController(controller: JsValue) {
+throwIfCancelled(): Unit {
     panic("This call should have been eliminated by the compiler")
+}
+
+cancelled(): Bool {
+    if(inAsync()) {
+        currentTask().controller->signal->aborted?
+    } else {
+        False
+    }
+}
+
+controller(): JsValue {
+    currentTask().controller
+}
+
+setController(controller: JsValue) {
+    currentTask().controller = controller
 }
     
 withSignal[T](body: JsValue => T): T {

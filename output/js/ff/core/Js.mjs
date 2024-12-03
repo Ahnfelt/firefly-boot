@@ -156,14 +156,6 @@ export function async9_(body_) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
-export function throwIfCancelled_() {
-ff_core_Core.panic_("This call should have been eliminated by the compiler")
-}
-
-export function cancelled_() {
-return ff_core_Core.panic_("This call should have been eliminated by the compiler")
-}
-
 export function inAsync_() {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
@@ -180,21 +172,37 @@ export function inBuild_() {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
-export function controller_() {
+export function currentTask_() {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
-export function setController_(controller_) {
+export function throwIfCancelled_() {
 ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
+export function cancelled_() {
+if(false) {
+return ff_core_Js.currentTask_().controller_.signal.aborted
+} else {
+return false
+}
+}
+
+export function controller_() {
+return ff_core_Js.currentTask_().controller_
+}
+
+export function setController_(controller_) {
+ff_core_Js.currentTask_().controller_ = controller_
+}
+
 export function withSignal_(body_) {
-const controller_ = $task.controller;
+const controller_ = $task.controller_;
 try {
 return body_(controller_.signal)
 } finally {
 if(controller_.signal.aborted) {
-($task.controller = (new AbortController()))
+($task.controller_ = (new AbortController()))
 }
 }
 }
@@ -424,14 +432,6 @@ export async function async9_$(body_, $task) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
-export async function throwIfCancelled_$($task) {
-ff_core_Core.panic_("This call should have been eliminated by the compiler")
-}
-
-export async function cancelled_$($task) {
-return ff_core_Core.panic_("This call should have been eliminated by the compiler")
-}
-
 export async function inAsync_$($task) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
@@ -448,21 +448,37 @@ export async function inBuild_$($task) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
-export async function controller_$($task) {
+export async function currentTask_$($task) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
-export async function setController_$(controller_, $task) {
+export async function throwIfCancelled_$($task) {
 ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
+export async function cancelled_$($task) {
+if(true) {
+return ff_core_Js.currentTask_().controller_.signal.aborted
+} else {
+return false
+}
+}
+
+export async function controller_$($task) {
+return ff_core_Js.currentTask_().controller_
+}
+
+export async function setController_$(controller_, $task) {
+ff_core_Js.currentTask_().controller_ = controller_
+}
+
 export async function withSignal_$(body_, $task) {
-const controller_ = $task.controller;
+const controller_ = $task.controller_;
 try {
 return (await body_(controller_.signal, $task))
 } finally {
 if(controller_.signal.aborted) {
-($task.controller = (new AbortController()))
+($task.controller_ = (new AbortController()))
 }
 }
 }
