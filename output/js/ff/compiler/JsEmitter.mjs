@@ -1899,9 +1899,9 @@ const e2_ = _guard1[1];
 return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " & ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
 }
 }
-if(_1 === "ff:core/Int.Int_bitRight") {
+if(_1 === "ff:core/Int.Int_bitRightUnsigned") {
 const _guard1 = arguments_;
-if(_guard1.length === 3 && _guard1[2].EVariant && _guard1[2].name_ === "ff:core/Bool.False") {
+if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
 return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " >>> ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
@@ -1909,7 +1909,7 @@ return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(se
 }
 if(_1 === "ff:core/Int.Int_bitRight") {
 const _guard1 = arguments_;
-if(_guard1.length === 3 && _guard1[2].EVariant && _guard1[2].name_ === "ff:core/Bool.True") {
+if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
 return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " >> ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
@@ -2150,22 +2150,31 @@ return
 }
 {
 const name_ = _1;
-const _guard5 = ff_core_String.String_removeFirst(name_, "ff:core/Js.function");
-if(_guard5.Some) {
-const n_ = _guard5.value_;
-const _guard4 = ff_core_String.String_all(n_, ((_w1) => {
+const _guard4 = ff_core_String.String_removeFirst(name_, "ff:core/Js.function");
+if(_guard4.Some) {
+const n_ = _guard4.value_;
+const _guard3 = ff_core_String.String_all(n_, ((_w1) => {
 return ff_core_Char.Char_isAsciiDigit(_w1)
 }));
-if(_guard4) {
-const _guard3 = arguments_;
-if(_guard3.length === 1) {
-const e1_ = _guard3[0];
-const _guard2 = term_;
-if(_guard2.ECall) {
-const call_ = _guard2;
-if((!ff_compiler_JsEmitter.effectTypeIsAsync_(call_.effect_))) {
+if(_guard3) {
+const _guard2 = arguments_;
+if(_guard2.length === 1) {
+const e1_ = _guard2[0];
+const _guard1 = term_;
+if(_guard1.ECall) {
+const call_ = _guard1;
+if((self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(call_.effect_))) {
+const argumentCode_ = ff_core_List.List_join(ff_core_List.List_map(ff_core_Int.Int_to(1, ff_core_String.String_grabInt(n_)), ((_w1) => {
+return ("a_" + _w1)
+})), ", ");
+const taskCode_ = ((argumentCode_ === "")
+? "$task"
+: ", $task");
+return ff_core_Option.Some(((((((("(async (" + argumentCode_) + ") => await ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + "(") + argumentCode_) + taskCode_) + "))"))
+} else {
 return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_))
 }
+return
 }
 }
 }
@@ -2193,6 +2202,9 @@ return ff_core_Option.Some("null")
 }
 if(_1 === "ff:core/Js.undefined") {
 return ff_core_Option.Some("(void 0)")
+}
+if(_1 === "ff:core/Js.globalThis") {
+return ff_core_Option.Some("globalThis")
 }
 if(_1 === "ff:core/BrowserSystem.BrowserSystem_js") {
 const _guard2 = arguments_;
@@ -4381,9 +4393,9 @@ const e2_ = _guard1[1];
 return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " & ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
 }
 }
-if(_1 === "ff:core/Int.Int_bitRight") {
+if(_1 === "ff:core/Int.Int_bitRightUnsigned") {
 const _guard1 = arguments_;
-if(_guard1.length === 3 && _guard1[2].EVariant && _guard1[2].name_ === "ff:core/Bool.False") {
+if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
 return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " >>> ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
@@ -4391,7 +4403,7 @@ return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(se
 }
 if(_1 === "ff:core/Int.Int_bitRight") {
 const _guard1 = arguments_;
-if(_guard1.length === 3 && _guard1[2].EVariant && _guard1[2].name_ === "ff:core/Bool.True") {
+if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
 return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " >> ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
@@ -4632,22 +4644,31 @@ return
 }
 {
 const name_ = _1;
-const _guard5 = ff_core_String.String_removeFirst(name_, "ff:core/Js.function");
-if(_guard5.Some) {
-const n_ = _guard5.value_;
-const _guard4 = ff_core_String.String_all(n_, ((_w1) => {
+const _guard4 = ff_core_String.String_removeFirst(name_, "ff:core/Js.function");
+if(_guard4.Some) {
+const n_ = _guard4.value_;
+const _guard3 = ff_core_String.String_all(n_, ((_w1) => {
 return ff_core_Char.Char_isAsciiDigit(_w1)
 }));
-if(_guard4) {
-const _guard3 = arguments_;
-if(_guard3.length === 1) {
-const e1_ = _guard3[0];
-const _guard2 = term_;
-if(_guard2.ECall) {
-const call_ = _guard2;
-if((!ff_compiler_JsEmitter.effectTypeIsAsync_(call_.effect_))) {
+if(_guard3) {
+const _guard2 = arguments_;
+if(_guard2.length === 1) {
+const e1_ = _guard2[0];
+const _guard1 = term_;
+if(_guard1.ECall) {
+const call_ = _guard1;
+if((self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(call_.effect_))) {
+const argumentCode_ = ff_core_List.List_join(ff_core_List.List_map(ff_core_Int.Int_to(1, ff_core_String.String_grabInt(n_)), ((_w1) => {
+return ("a_" + _w1)
+})), ", ");
+const taskCode_ = ((argumentCode_ === "")
+? "$task"
+: ", $task");
+return ff_core_Option.Some(((((((("(async (" + argumentCode_) + ") => await ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + "(") + argumentCode_) + taskCode_) + "))"))
+} else {
 return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_))
 }
+return
 }
 }
 }
@@ -4675,6 +4696,9 @@ return ff_core_Option.Some("null")
 }
 if(_1 === "ff:core/Js.undefined") {
 return ff_core_Option.Some("(void 0)")
+}
+if(_1 === "ff:core/Js.globalThis") {
+return ff_core_Option.Some("globalThis")
 }
 if(_1 === "ff:core/BrowserSystem.BrowserSystem_js") {
 const _guard2 = arguments_;

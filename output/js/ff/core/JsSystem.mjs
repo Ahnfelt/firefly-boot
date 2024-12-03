@@ -102,67 +102,63 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function JsSystem_globalThis(self_) {
-return self_
+return globalThis
 }
 
 export function JsSystem_get(self_, key_) {
-return self_[key_]
+return ff_core_Js.get_(key_)
 }
 
 export function JsSystem_set(self_, key_, value_, ff_core_JsValue_IsJsValue$V) {
-self_[key_] = value_
+ff_core_Js.set_(key_, value_, ff_core_JsValue_IsJsValue$V)
 }
 
 export function JsSystem_increment(self_, key_, value_, ff_core_JsValue_IsJsValue$V) {
-self_[key_] += value_
+ff_core_Js.increment_(key_, value_, ff_core_JsValue_IsJsValue$V)
 }
 
 export function JsSystem_decrement(self_, key_, value_, ff_core_JsValue_IsJsValue$V) {
-self_[key_] -= value_
+ff_core_Js.decrement_(key_, value_, ff_core_JsValue_IsJsValue$V)
 }
 
 export function JsSystem_call0(self_, name_) {
-return self_[name_].call(void 0)
+return ff_core_Js.call0_(name_)
 }
 
 export function JsSystem_call1(self_, name_, a1_, ff_core_JsValue_IsJsValue$A1) {
-return self_[name_].call(void 0, a1_)
+return ff_core_Js.call1_(name_, a1_, ff_core_JsValue_IsJsValue$A1)
 }
 
 export function JsSystem_call2(self_, name_, a1_, a2_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2) {
-return self_[name_].call(void 0, a1_, a2_)
+return ff_core_Js.call2_(name_, a1_, a2_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2)
 }
 
 export function JsSystem_call3(self_, name_, a1_, a2_, a3_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3) {
-return self_[name_].call(void 0, a1_, a2_, a3_)
+return ff_core_Js.call3_(name_, a1_, a2_, a3_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3)
 }
 
 export function JsSystem_call4(self_, name_, a1_, a2_, a3_, a4_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4) {
-return self_[name_].call(void 0, a1_, a2_, a3_, a4_)
+return ff_core_Js.call4_(name_, a1_, a2_, a3_, a4_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4)
 }
 
 export function JsSystem_call5(self_, name_, a1_, a2_, a3_, a4_, a5_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5) {
-return self_[name_].call(void 0, a1_, a2_, a3_, a4_, a5_)
+return ff_core_Js.call5_(name_, a1_, a2_, a3_, a4_, a5_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5)
 }
 
 export function JsSystem_call6(self_, name_, a1_, a2_, a3_, a4_, a5_, a6_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6) {
-return self_[name_].call(void 0, a1_, a2_, a3_, a4_, a5_, a6_)
+return ff_core_Js.call6_(name_, a1_, a2_, a3_, a4_, a5_, a6_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6)
 }
 
 export function JsSystem_call7(self_, name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7) {
-return self_[name_].call(void 0, a1_, a2_, a3_, a4_, a5_, a6_, a7_)
+return ff_core_Js.call7_(name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7)
 }
 
 export function JsSystem_call8(self_, name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8) {
-return self_[name_].call(void 0, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_)
+return ff_core_Js.call8_(name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8)
 }
 
 export function JsSystem_call9(self_, name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, ff_core_JsValue_IsJsValue$A9) {
-return self_[name_].call(void 0, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_)
-}
-
-export function JsSystem_parseJson(self_, json_) {
-return JSON.parse(json_)
+return ff_core_Js.call9_(name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, ff_core_JsValue_IsJsValue$A9)
 }
 
 export function JsSystem_null(self_) {
@@ -170,7 +166,7 @@ return null
 }
 
 export function JsSystem_undefined(self_) {
-return void 0
+return (void 0)
 }
 
 export function JsSystem_value(self_, jsValue_, ff_core_JsValue_IsJsValue$T) {
@@ -186,11 +182,11 @@ return {}
 }
 
 export function JsSystem_array(self_, values_) {
-return values_.slice()
+return ff_core_Js.array_(values_)
 }
 
 export function JsSystem_json(self_, value_) {
-return value_
+return ff_core_Js.json_(value_)
 }
 
 export function JsSystem_function0(self_, body_) {
@@ -234,135 +230,131 @@ return body_
 }
 
 export async function JsSystem_globalThis$(self_, $task) {
-throw new Error('Function JsSystem_globalThis is missing on this target in async context.');
+return globalThis
 }
 
 export async function JsSystem_get$(self_, key_, $task) {
-throw new Error('Function JsSystem_get is missing on this target in async context.');
+return ff_core_Js.get_(key_)
 }
 
 export async function JsSystem_set$(self_, key_, value_, ff_core_JsValue_IsJsValue$V, $task) {
-throw new Error('Function JsSystem_set is missing on this target in async context.');
+ff_core_Js.set_(key_, value_, ff_core_JsValue_IsJsValue$V)
 }
 
 export async function JsSystem_increment$(self_, key_, value_, ff_core_JsValue_IsJsValue$V, $task) {
-throw new Error('Function JsSystem_increment is missing on this target in async context.');
+ff_core_Js.increment_(key_, value_, ff_core_JsValue_IsJsValue$V)
 }
 
 export async function JsSystem_decrement$(self_, key_, value_, ff_core_JsValue_IsJsValue$V, $task) {
-throw new Error('Function JsSystem_decrement is missing on this target in async context.');
+ff_core_Js.decrement_(key_, value_, ff_core_JsValue_IsJsValue$V)
 }
 
 export async function JsSystem_call0$(self_, name_, $task) {
-throw new Error('Function JsSystem_call0 is missing on this target in async context.');
+return ff_core_Js.call0_(name_)
 }
 
 export async function JsSystem_call1$(self_, name_, a1_, ff_core_JsValue_IsJsValue$A1, $task) {
-throw new Error('Function JsSystem_call1 is missing on this target in async context.');
+return ff_core_Js.call1_(name_, a1_, ff_core_JsValue_IsJsValue$A1)
 }
 
 export async function JsSystem_call2$(self_, name_, a1_, a2_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, $task) {
-throw new Error('Function JsSystem_call2 is missing on this target in async context.');
+return ff_core_Js.call2_(name_, a1_, a2_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2)
 }
 
 export async function JsSystem_call3$(self_, name_, a1_, a2_, a3_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, $task) {
-throw new Error('Function JsSystem_call3 is missing on this target in async context.');
+return ff_core_Js.call3_(name_, a1_, a2_, a3_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3)
 }
 
 export async function JsSystem_call4$(self_, name_, a1_, a2_, a3_, a4_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, $task) {
-throw new Error('Function JsSystem_call4 is missing on this target in async context.');
+return ff_core_Js.call4_(name_, a1_, a2_, a3_, a4_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4)
 }
 
 export async function JsSystem_call5$(self_, name_, a1_, a2_, a3_, a4_, a5_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, $task) {
-throw new Error('Function JsSystem_call5 is missing on this target in async context.');
+return ff_core_Js.call5_(name_, a1_, a2_, a3_, a4_, a5_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5)
 }
 
 export async function JsSystem_call6$(self_, name_, a1_, a2_, a3_, a4_, a5_, a6_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, $task) {
-throw new Error('Function JsSystem_call6 is missing on this target in async context.');
+return ff_core_Js.call6_(name_, a1_, a2_, a3_, a4_, a5_, a6_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6)
 }
 
 export async function JsSystem_call7$(self_, name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, $task) {
-throw new Error('Function JsSystem_call7 is missing on this target in async context.');
+return ff_core_Js.call7_(name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7)
 }
 
 export async function JsSystem_call8$(self_, name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, $task) {
-throw new Error('Function JsSystem_call8 is missing on this target in async context.');
+return ff_core_Js.call8_(name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8)
 }
 
 export async function JsSystem_call9$(self_, name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, ff_core_JsValue_IsJsValue$A9, $task) {
-throw new Error('Function JsSystem_call9 is missing on this target in async context.');
-}
-
-export async function JsSystem_parseJson$(self_, json_, $task) {
-throw new Error('Function JsSystem_parseJson is missing on this target in async context.');
+return ff_core_Js.call9_(name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, ff_core_JsValue_IsJsValue$A9)
 }
 
 export async function JsSystem_null$(self_, $task) {
-throw new Error('Function JsSystem_null is missing on this target in async context.');
+return null
 }
 
 export async function JsSystem_undefined$(self_, $task) {
-throw new Error('Function JsSystem_undefined is missing on this target in async context.');
+return (void 0)
 }
 
 export async function JsSystem_value$(self_, jsValue_, ff_core_JsValue_IsJsValue$T, $task) {
-throw new Error('Function JsSystem_value is missing on this target in async context.');
+return jsValue_
 }
 
 export async function JsSystem_object$(self_, $task) {
-throw new Error('Function JsSystem_object is missing on this target in async context.');
+return {}
 }
 
 export async function JsSystem_new0$(self_, $task) {
-throw new Error('Function JsSystem_new0 is missing on this target in async context.');
+return {}
 }
 
 export async function JsSystem_array$(self_, values_, $task) {
-throw new Error('Function JsSystem_array is missing on this target in async context.');
+return ff_core_Js.array_(values_)
 }
 
 export async function JsSystem_json$(self_, value_, $task) {
-throw new Error('Function JsSystem_json is missing on this target in async context.');
+return ff_core_Js.json_(value_)
 }
 
 export async function JsSystem_function0$(self_, body_, $task) {
-return () => body_($task)
+return (async () => await body_($task))
 }
 
 export async function JsSystem_function1$(self_, body_, $task) {
-return a1 => body_(a1, $task)
+return (async (a_1) => await body_(a_1, $task))
 }
 
 export async function JsSystem_function2$(self_, body_, $task) {
-return (a1, a2) => body_(a1, a2, $task)
+return (async (a_1, a_2) => await body_(a_1, a_2, $task))
 }
 
 export async function JsSystem_function3$(self_, body_, $task) {
-return (a1, a2, a3) => body_(a1, a2, a3, $task)
+return (async (a_1, a_2, a_3) => await body_(a_1, a_2, a_3, $task))
 }
 
 export async function JsSystem_function4$(self_, body_, $task) {
-return (a1, a2, a3, a4) => body_(a1, a2, a3, a4, $task)
+return (async (a_1, a_2, a_3, a_4) => await body_(a_1, a_2, a_3, a_4, $task))
 }
 
 export async function JsSystem_function5$(self_, body_, $task) {
-return (a1, a2, a3, a4, a5) => body_(a1, a2, a3, a4, a5, $task)
+return (async (a_1, a_2, a_3, a_4, a_5) => await body_(a_1, a_2, a_3, a_4, a_5, $task))
 }
 
 export async function JsSystem_function6$(self_, body_, $task) {
-return (a1, a2, a3, a4, a5, a6) => body_(a1, a2, a3, a4, a5, a6, $task)
+return (async (a_1, a_2, a_3, a_4, a_5, a_6) => await body_(a_1, a_2, a_3, a_4, a_5, a_6, $task))
 }
 
 export async function JsSystem_function7$(self_, body_, $task) {
-return (a1, a2, a3, a4, a5, a6, a7) => body_(a1, a2, a3, a4, a5, a6, a7, $task)
+return (async (a_1, a_2, a_3, a_4, a_5, a_6, a_7) => await body_(a_1, a_2, a_3, a_4, a_5, a_6, a_7, $task))
 }
 
 export async function JsSystem_function8$(self_, body_, $task) {
-return (a1, a2, a3, a4, a5, a6, a7, a8) => body_(a1, a2, a3, a4, a5, a6, a7, a8, $task)
+return (async (a_1, a_2, a_3, a_4, a_5, a_6, a_7, a_8) => await body_(a_1, a_2, a_3, a_4, a_5, a_6, a_7, a_8, $task))
 }
 
 export async function JsSystem_function9$(self_, body_, $task) {
-return (a1, a2, a3, a4, a5, a6, a7, a8, a9) => body_(a1, a2, a3, a4, a5, a6, a7, a8, a9, $task)
+return (async (a_1, a_2, a_3, a_4, a_5, a_6, a_7, a_8, a_9) => await body_(a_1, a_2, a_3, a_4, a_5, a_6, a_7, a_8, a_9, $task))
 }
 
 

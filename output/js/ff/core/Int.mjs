@@ -110,31 +110,35 @@ return self_
 }
 
 export function Int_bitNot(self_) {
-return ~self_;
+return (~self_)
 }
 
 export function Int_bitOr(self_, that_) {
-return self_ | that_;
+return (self_ | that_)
 }
 
 export function Int_bitAnd(self_, that_) {
-return self_ & that_;
+return (self_ & that_)
 }
 
 export function Int_bitXor(self_, that_) {
-return self_ ^ that_;
+return (self_ ^ that_)
 }
 
 export function Int_bitLeft(self_, bits_) {
 return (self_ << bits_)
 }
 
-export function Int_bitRight(self_, bits_, signed_ = true) {
-return signed_ ? self_ >> bits_ : self_ >>> bits_;
+export function Int_bitRight(self_, bits_) {
+return (self_ >> bits_)
+}
+
+export function Int_bitRightUnsigned(self_, bits_) {
+return (self_ >>> bits_)
 }
 
 export function Int_bitLeadingZeros(self_) {
-return Math.clz32(self_);
+return Math.clz32(self_)
 }
 
 export function Int_to(self_, inclusiveEnd_) {
@@ -166,7 +170,7 @@ return Math.max(self_, that_)
 }
 
 export function Int_clamp(self_, from_, to_) {
-return Math.min(Math.max(self_, from_), to_)
+return ff_core_Int.Int_min(ff_core_Int.Int_max(self_, from_), to_)
 }
 
 export function Int_pad(self_, padding_) {
@@ -182,39 +186,43 @@ return ff_core_Float.Float_toInt((self_ % divisor_))
 }
 
 export async function Int_abs$(self_, $task) {
-throw new Error('Function Int_abs is missing on this target in async context.');
+return Math.abs(self_)
 }
 
 export async function Int_toFloat$(self_, $task) {
-throw new Error('Function Int_toFloat is missing on this target in async context.');
+return self_
 }
 
 export async function Int_bitNot$(self_, $task) {
-throw new Error('Function Int_bitNot is missing on this target in async context.');
+return (~self_)
 }
 
 export async function Int_bitOr$(self_, that_, $task) {
-throw new Error('Function Int_bitOr is missing on this target in async context.');
+return (self_ | that_)
 }
 
 export async function Int_bitAnd$(self_, that_, $task) {
-throw new Error('Function Int_bitAnd is missing on this target in async context.');
+return (self_ & that_)
 }
 
 export async function Int_bitXor$(self_, that_, $task) {
-throw new Error('Function Int_bitXor is missing on this target in async context.');
+return (self_ ^ that_)
 }
 
 export async function Int_bitLeft$(self_, bits_, $task) {
 return (self_ << bits_)
 }
 
-export async function Int_bitRight$(self_, bits_, signed_ = true, $task) {
-throw new Error('Function Int_bitRight is missing on this target in async context.');
+export async function Int_bitRight$(self_, bits_, $task) {
+return (self_ >> bits_)
+}
+
+export async function Int_bitRightUnsigned$(self_, bits_, $task) {
+return (self_ >>> bits_)
 }
 
 export async function Int_bitLeadingZeros$(self_, $task) {
-throw new Error('Function Int_bitLeadingZeros is missing on this target in async context.');
+return Math.clz32(self_)
 }
 
 export async function Int_to$(self_, inclusiveEnd_, $task) {
@@ -238,15 +246,15 @@ return ff_core_Array.Array_drain(result_)
 }
 
 export async function Int_min$(self_, that_, $task) {
-throw new Error('Function Int_min is missing on this target in async context.');
+return Math.min(self_, that_)
 }
 
 export async function Int_max$(self_, that_, $task) {
-throw new Error('Function Int_max is missing on this target in async context.');
+return Math.max(self_, that_)
 }
 
 export async function Int_clamp$(self_, from_, to_, $task) {
-throw new Error('Function Int_clamp is missing on this target in async context.');
+return ff_core_Int.Int_min(ff_core_Int.Int_max(self_, from_), to_)
 }
 
 export async function Int_pad$(self_, padding_, $task) {

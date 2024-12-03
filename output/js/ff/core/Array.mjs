@@ -396,9 +396,9 @@ export function Array_sortWith(self_, ordering_) {
 if(false) {
 ff_core_Array.sortRange_(self_, ordering_, 0, self_.array.length)
 } else {
-self_.array.sort(ff_core_Js.function2_(((x_, y_) => {
+self_.array.sort(((x_, y_) => {
 return ff_core_Ordering.Ordering_toInt(ordering_(x_, y_))
-})))
+}))
 }
 }
 
@@ -613,9 +613,9 @@ export async function Array_sortWith$(self_, ordering_, $task) {
 if(true) {
 (await ff_core_Array.sortRange_$(self_, ordering_, 0, self_.array.length, $task))
 } else {
-self_.array.sort((await ff_core_Js.function2_$((async (x_, y_, $task) => {
+self_.array.sort((async (a_1, a_2) => await (async (x_, y_, $task) => {
 return ff_core_Ordering.Ordering_toInt((await ordering_(x_, y_, $task)))
-}), $task)))
+})(a_1, a_2, $task)))
 }
 }
 

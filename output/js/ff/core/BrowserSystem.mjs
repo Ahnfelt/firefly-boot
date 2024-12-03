@@ -102,7 +102,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function BrowserSystem_httpClient(self_) {
-return ff_core_Js.globalThis_()
+return globalThis
 }
 
 export function BrowserSystem_mainTask(self_) {
@@ -114,7 +114,7 @@ return crypto
 }
 
 export function BrowserSystem_js(self_) {
-return ff_core_Js.globalThis_()
+return globalThis
 }
 
 export function BrowserSystem_url(self_) {
@@ -143,7 +143,7 @@ return ff_core_Option.Some(location.hash.slice(1))
 }
 
 export async function BrowserSystem_httpClient$(self_, $task) {
-return ff_core_Js.globalThis_()
+return globalThis
 }
 
 export async function BrowserSystem_mainTask$(self_, $task) {
@@ -155,7 +155,7 @@ return crypto
 }
 
 export async function BrowserSystem_js$(self_, $task) {
-return ff_core_Js.globalThis_()
+return globalThis
 }
 
 export async function BrowserSystem_url$(self_, $task) {

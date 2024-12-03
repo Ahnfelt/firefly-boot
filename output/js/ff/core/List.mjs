@@ -114,9 +114,9 @@ array_[i_] = body_(i_)
 };
 return array_
 } else {
-return Array.from({length: size_}, ff_core_Js.function2_(((_, i_) => {
+return Array.from({length: size_}, ((_, i_) => {
 return body_(i_)
-})))
+}))
 }
 }
 
@@ -143,9 +143,9 @@ array_[i_] = (await body_(i_, $task))
 };
 return array_
 } else {
-return Array.from({length: size_}, (await ff_core_Js.function2_$((async (_, i_, $task) => {
+return Array.from({length: size_}, (async (a_1, a_2) => await (async (_, i_, $task) => {
 return (await body_(i_, $task))
-}), $task)))
+})(a_1, a_2, $task)))
 }
 }
 
