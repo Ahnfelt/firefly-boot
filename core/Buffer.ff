@@ -71,12 +71,12 @@ extend self: Buffer {
         target js sync "self_.setBigUint64(byteOffset_, value_, littleEndian_)"*/
 
     setUint64(byteOffset: Int, value: Int, littleEndian: Bool = True): Unit {
-        self!->setUint32(byteOffset + if(littleEndian) {4} else {0}, value.bitRight(16, False).bitRight(16, False), littleEndian)
+        self!->setUint32(byteOffset + if(littleEndian) {4} else {0}, value.bitRightUnsigned(16).bitRightUnsigned(16), littleEndian)
         self!->setUint32(byteOffset + if(littleEndian) {0} else {4}, value.bitAnd(0xffffffff), littleEndian)
     }
         
     setInt64(byteOffset: Int, value: Int, littleEndian: Bool = True): Unit {
-        self!->setUint32(byteOffset + if(littleEndian) {4} else {0}, value.bitRight(16, True).bitRight(16, True), littleEndian)
+        self!->setUint32(byteOffset + if(littleEndian) {4} else {0}, value.bitRight(16).bitRight(16), littleEndian)
         self!->setUint32(byteOffset + if(littleEndian) {0} else {4}, value.bitAnd(0xffffffff), littleEndian)
     }
 

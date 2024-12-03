@@ -129,12 +129,12 @@ export function Int_bitLeft(self_, bits_) {
 return (self_ << bits_)
 }
 
-export function Int_bitRight(self_, bits_, signed_ = true) {
-if(signed_) {
+export function Int_bitRight(self_, bits_) {
 return (self_ >> bits_)
-} else {
-return (self_ >>> bits_)
 }
+
+export function Int_bitRightUnsigned(self_, bits_) {
+return (self_ >>> bits_)
 }
 
 export function Int_bitLeadingZeros(self_) {
@@ -213,12 +213,12 @@ export async function Int_bitLeft$(self_, bits_, $task) {
 return (self_ << bits_)
 }
 
-export async function Int_bitRight$(self_, bits_, signed_ = true, $task) {
-if(signed_) {
+export async function Int_bitRight$(self_, bits_, $task) {
 return (self_ >> bits_)
-} else {
-return (self_ >>> bits_)
 }
+
+export async function Int_bitRightUnsigned$(self_, bits_, $task) {
+return (self_ >>> bits_)
 }
 
 export async function Int_bitLeadingZeros$(self_, $task) {

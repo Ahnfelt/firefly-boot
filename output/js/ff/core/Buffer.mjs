@@ -252,7 +252,7 @@ return self_.getUint8(byteOffset_)
 export function Buffer_setUint64(self_, byteOffset_, value_, littleEndian_ = true) {
 self_.setUint32((byteOffset_ + (littleEndian_
 ? 4
-: 0)), ((value_ >>> 16) >>> 16), littleEndian_);
+: 0)), ff_core_Int.Int_bitRightUnsigned(ff_core_Int.Int_bitRightUnsigned(value_, 16), 16), littleEndian_);
 self_.setUint32((byteOffset_ + (littleEndian_
 ? 0
 : 4)), (value_ & 0xffffffff), littleEndian_)
@@ -261,7 +261,7 @@ self_.setUint32((byteOffset_ + (littleEndian_
 export function Buffer_setInt64(self_, byteOffset_, value_, littleEndian_ = true) {
 self_.setUint32((byteOffset_ + (littleEndian_
 ? 4
-: 0)), ((value_ >> 16) >> 16), littleEndian_);
+: 0)), ff_core_Int.Int_bitRight(ff_core_Int.Int_bitRight(value_, 16), 16), littleEndian_);
 self_.setUint32((byteOffset_ + (littleEndian_
 ? 0
 : 4)), (value_ & 0xffffffff), littleEndian_)
@@ -413,7 +413,7 @@ return self_.getUint8(byteOffset_)
 export async function Buffer_setUint64$(self_, byteOffset_, value_, littleEndian_ = true, $task) {
 self_.setUint32((byteOffset_ + (littleEndian_
 ? 4
-: 0)), ((value_ >>> 16) >>> 16), littleEndian_);
+: 0)), ff_core_Int.Int_bitRightUnsigned(ff_core_Int.Int_bitRightUnsigned(value_, 16), 16), littleEndian_);
 self_.setUint32((byteOffset_ + (littleEndian_
 ? 0
 : 4)), (value_ & 0xffffffff), littleEndian_)
@@ -422,7 +422,7 @@ self_.setUint32((byteOffset_ + (littleEndian_
 export async function Buffer_setInt64$(self_, byteOffset_, value_, littleEndian_ = true, $task) {
 self_.setUint32((byteOffset_ + (littleEndian_
 ? 4
-: 0)), ((value_ >> 16) >> 16), littleEndian_);
+: 0)), ff_core_Int.Int_bitRight(ff_core_Int.Int_bitRight(value_, 16), 16), littleEndian_);
 self_.setUint32((byteOffset_ + (littleEndian_
 ? 0
 : 4)), (value_ & 0xffffffff), littleEndian_)

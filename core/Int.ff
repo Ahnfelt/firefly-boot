@@ -30,10 +30,14 @@ extend self: Int {
         Js.binaryOperator("<<", self, bits)?
     }
 
-    bitRight(bits: Int, signed: Bool = True): Int {
-        if(signed) {Js.binaryOperator(">>", self, bits)?} else {Js.binaryOperator(">>>", self, bits)?}
+    bitRight(bits: Int): Int {
+        Js.binaryOperator(">>", self, bits)?
     }
 
+    bitRightUnsigned(bits: Int): Int {
+        Js.binaryOperator(">>>", self, bits)?
+    }
+    
     bitLeadingZeros(): Int {
         Js->Math->clz32(self)?
     }
