@@ -106,12 +106,10 @@ return self_.length
 }
 
 export function String_grab(self_, index_) {
-
-            if(index_ < 0 || index_ >= self_.length) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            return self_.charCodeAt(index_)
-        
+if(((index_ < 0) || (index_ >= self_.length))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+return self_.charCodeAt(index_)
 }
 
 export function String_replace(self_, needle_, replacement_) {
@@ -123,7 +121,7 @@ return self_.replace(needle_, replacement_)
 }
 
 export function String_reverse(self_) {
-return [...self_].reverse().join('')
+return self_.split("").reverse().join("")
 }
 
 export function String_repeat(self_, count_) {
@@ -349,47 +347,50 @@ export function String_toBuffer(self_) {
 }
 
 export async function String_size$(self_, $task) {
-throw new Error('Function String_size is missing on this target in async context.');
+return self_.length
 }
 
 export async function String_grab$(self_, index_, $task) {
-throw new Error('Function String_grab is missing on this target in async context.');
+if(((index_ < 0) || (index_ >= self_.length))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+};
+return self_.charCodeAt(index_)
 }
 
 export async function String_replace$(self_, needle_, replacement_, $task) {
-throw new Error('Function String_replace is missing on this target in async context.');
+return self_.replaceAll(needle_, replacement_)
 }
 
 export async function String_replaceFirst$(self_, needle_, replacement_, $task) {
-throw new Error('Function String_replaceFirst is missing on this target in async context.');
+return self_.replace(needle_, replacement_)
 }
 
 export async function String_reverse$(self_, $task) {
-throw new Error('Function String_reverse is missing on this target in async context.');
+return self_.split("").reverse().join("")
 }
 
 export async function String_repeat$(self_, count_, $task) {
-throw new Error('Function String_repeat is missing on this target in async context.');
+return self_.repeat(count_)
 }
 
 export async function String_trim$(self_, $task) {
-throw new Error('Function String_trim is missing on this target in async context.');
+return self_.trim()
 }
 
 export async function String_trimStart$(self_, $task) {
-throw new Error('Function String_trimStart is missing on this target in async context.');
+return self_.trimStart()
 }
 
 export async function String_trimEnd$(self_, $task) {
-throw new Error('Function String_trimEnd is missing on this target in async context.');
+return self_.trimEnd()
 }
 
 export async function String_lower$(self_, $task) {
-throw new Error('Function String_lower is missing on this target in async context.');
+return self_.toLowerCase()
 }
 
 export async function String_upper$(self_, $task) {
-throw new Error('Function String_upper is missing on this target in async context.');
+return self_.toUpperCase()
 }
 
 export async function String_dropWhile$(self_, p_, $task) {

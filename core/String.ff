@@ -2,43 +2,52 @@ data String {}
 
 extend self: String {
 
-    size(): Int
-        target js sync "return self_.length"
+    size(): Int {
+        self!->length?
+    }
 
-    grab(index: Int): Char
-        target js sync """
-            if(index_ < 0 || index_ >= self_.length) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            return self_.charCodeAt(index_)
-        """
+    grab(index: Int): Char {
+        if(index < 0 || index >= self.size()) {
+            throw(GrabException())
+        }
+        self!->charCodeAt(index)?
+    }
+    
+    replace(needle: String, replacement: String): String {
+        self!->replaceAll(needle, replacement)?
+    }
 
-    replace(needle: String, replacement: String): String
-        target js sync "return self_.replaceAll(needle_, replacement_)"
+    replaceFirst(needle: String, replacement: String): String {
+        self!->replace(needle, replacement)?
+    }
 
-    replaceFirst(needle: String, replacement: String): String
-        target js sync "return self_.replace(needle_, replacement_)"
+    reverse(): String {
+        self!->split("")->reverse()->join("")?
+    }
 
-    reverse(): String
-        target js sync "return [...self_].reverse().join('')"
+    repeat(count: Int): String {
+        self!->repeat(count)?
+    }
 
-    repeat(count: Int): String
-        target js sync "return self_.repeat(count_)"
+    trim(): String {
+        self!->trim()?
+    }
 
-    trim(): String
-        target js sync "return self_.trim()"
+    trimStart(): String {
+        self!->trimStart()?
+    }
 
-    trimStart(): String
-        target js sync "return self_.trimStart()"
+    trimEnd(): String {
+        self!->trimEnd()?
+    }
 
-    trimEnd(): String
-        target js sync "return self_.trimEnd()"
+    lower(): String {
+        self!->toLowerCase()?
+    }
 
-    lower(): String
-        target js sync "return self_.toLowerCase()"
-
-    upper(): String
-        target js sync "return self_.toUpperCase()"
+    upper(): String {
+        self!->toUpperCase()?
+    }
 
     dropWhile(p: Char => Bool): String
         target js sync """
