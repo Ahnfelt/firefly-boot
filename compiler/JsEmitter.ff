@@ -656,9 +656,9 @@ extend self: JsEmitter {
                 Some("(" + self.emitTerm(e1, async) + " !== " + self.emitTerm(e2, async) + ")")
             | "ff:core/Int.Int_bitAnd" {arguments | [e1, e2]} =>
                 Some("(" + self.emitTerm(e1, async) + " & " + self.emitTerm(e2, async) + ")")
-            | "ff:core/Int.Int_bitRight" {arguments | [e1, e2, EVariant(_, "ff:core/Bool.False", _, _)]} =>
+            | "ff:core/Int.Int_bitRightUnsigned" {arguments | [e1, e2]} =>
                 Some("(" + self.emitTerm(e1, async) + " >>> " + self.emitTerm(e2, async) + ")")
-            | "ff:core/Int.Int_bitRight" {arguments | [e1, e2, EVariant(_, "ff:core/Bool.True", _, _)]} =>
+            | "ff:core/Int.Int_bitRight" {arguments | [e1, e2]} =>
                 Some("(" + self.emitTerm(e1, async) + " >> " + self.emitTerm(e2, async) + ")")
             | name {name.removeFirst("ff:core/JsValue.JsValue_call") | Some(n)} {n.all {_.isAsciiDigit()}} {
                 arguments | [e1, e2, ...es]

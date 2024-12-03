@@ -1896,9 +1896,9 @@ const e2_ = _guard1[1];
 return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " & ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
 }
 }
-if(_1 === "ff:core/Int.Int_bitRight") {
+if(_1 === "ff:core/Int.Int_bitRightUnsigned") {
 const _guard1 = arguments_;
-if(_guard1.length === 3 && _guard1[2].EVariant && _guard1[2].name_ === "ff:core/Bool.False") {
+if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
 return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " >>> ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
@@ -1906,7 +1906,7 @@ return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(se
 }
 if(_1 === "ff:core/Int.Int_bitRight") {
 const _guard1 = arguments_;
-if(_guard1.length === 3 && _guard1[2].EVariant && _guard1[2].name_ === "ff:core/Bool.True") {
+if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
 return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " >> ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
@@ -4375,9 +4375,9 @@ const e2_ = _guard1[1];
 return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " & ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
 }
 }
-if(_1 === "ff:core/Int.Int_bitRight") {
+if(_1 === "ff:core/Int.Int_bitRightUnsigned") {
 const _guard1 = arguments_;
-if(_guard1.length === 3 && _guard1[2].EVariant && _guard1[2].name_ === "ff:core/Bool.False") {
+if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
 return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " >>> ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
@@ -4385,7 +4385,7 @@ return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(se
 }
 if(_1 === "ff:core/Int.Int_bitRight") {
 const _guard1 = arguments_;
-if(_guard1.length === 3 && _guard1[2].EVariant && _guard1[2].name_ === "ff:core/Bool.True") {
+if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
 return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " >> ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
