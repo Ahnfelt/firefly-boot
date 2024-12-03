@@ -92,281 +92,442 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-// type Json
-
+// newtype Json
 
 
 
 export function read_(json_) {
-
-        try {
-            return ff_core_Option.Some(JSON.parse(json_));
-        } catch(e) {
-            return ff_core_Option.None();
-        }
-    
+try {
+return ff_core_Option.Some(JSON.parse(json_))
+} catch {
+return ff_core_Option.None()
+}
 }
 
 export function string_(json_) {
-
-        return json_;
-    
+return json_
 }
 
 export function int_(json_) {
-
-        return json_;
-    
+return json_
 }
 
 export function float_(json_) {
-
-        return json_;
-    
+return json_
 }
 
 export function bool_(json_) {
-
-        return json_;
-    
+return json_
 }
 
 export function null_() {
-
-        return null;
-    
+return null
 }
 
 export function array_(json_) {
-
-        return json_;
-    
+return json_
 }
 
 export function object_() {
-
-        return {};
-    
+return {}
 }
 
 export function new0_() {
-
-        return {};
-    
+return {}
 }
 
 export function fields_(body_) {
-
-        const result = {};
-        body_((k, v) => {result[k] = v});
-        return result;
-    
-}
-
-export function internalWith_(self_, field_, value_) {
-
-        if(typeof self_ !== 'object' || self_ === null || Array.isArray(self_)) {
-            throw new Error('Not an object: ' + JSON.stringify(self_));
-        }
-        return {...self_, [field_]: value_};
-    
-}
-
-export function internalEach_(self_, body_) {
-for(const [key, value] of Object.entries(self_)) body_(key, value)
-}
-
-export function internalEachWhile_(self_, body_) {
-for(const [key, value] of Object.entries(self_)) if(!body_(key, value)) break
+const result_ = {};
+body_(((k_, v_) => {
+result_[k_] = v_
+}));
+return result_
 }
 
 export function internalEquals_(a_, b_) {
-
-        if(a_ === b_) {
-            return true;
-        } else if(Array.isArray(a_) || Array.isArray(b_)) {
-            if(!Array.isArray(a_) || !Array.isArray(b_)) return false;
-            if(a_.length !== b_.length) return false;
-            for(let i = 0; i < a_.length; i++) {
-                if(!internalEquals_(a_[i], b_[i])) return false;
-            }
-            return true;
-        } else if(typeof a_ === 'object' && typeof b_ === 'object' && a_ !== null && b_ !== null) {
-            const aKeys = Object.keys(a_);
-            const bKeys = Object.keys(b_);
-            if(aKeys.length !== bKeys.length) return false;
-            for(const key of aKeys) {
-                if(!Object.hasOwn(b_, key) || !internalEquals_(a_[key], b_[key])) return false;
-            }
-            return true;
-        } else {
-            return false;
-        }
-    
+if((a_ === b_)) {
+return true
+} else {
+if((ff_core_JsValue.JsValue_isArray(a_) || ff_core_JsValue.JsValue_isArray(b_))) {
+if(((!ff_core_JsValue.JsValue_isArray(a_)) || (!ff_core_JsValue.JsValue_isArray(b_)))) {
+return false
+} else {
+if((a_.length !== b_.length)) {
+return false
+} else {
+let equal_ = true;
+for(let for_a = ff_core_Int.Int_until(0, a_.length), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_a[for_i];
+equal_ = ff_core_Json.internalEquals_(a_[i_], b_[i_]);
+if(!equal_) break
+};
+return equal_
+}
+}
+} else {
+if((ff_core_Json.Json_isObject(a_) && ff_core_Json.Json_isObject(b_))) {
+const aKeys_ = Object.keys(a_);
+const bKeys_ = Object.keys(b_);
+if((aKeys_.length !== bKeys_.length)) {
+return false
+} else {
+let equal_ = true;
+ff_core_JsValue.JsValue_eachWhile(aKeys_, ((key_) => {
+equal_ = (ff_core_JsValue.JsValue_hasOwn(b_, key_) && ff_core_Json.internalEquals_(a_[key_], b_[key_]));
+return equal_
+}));
+return equal_
+}
+} else {
+return false
+}
+}
+}
 }
 
 export function internalCompare_(a_, b_) {
-
-        if(a_ === b_) {
-            return 0;
-        } else if (a_ === null || b_ === null) {
-            return a_ === null ? -1 : 1;
-        } else if (typeof a_ === 'boolean' || typeof b_ === 'boolean') {
-            if(typeof b_ !== 'boolean') return -1;
-            if(typeof a_ !== 'boolean') return 1;
-            return a_ < b_ ? -1 : 1;
-        } else if (typeof a_ === 'number' || typeof b_ === 'number') {
-            if(typeof b_ !== 'number') return -1;
-            if(typeof a_ !== 'number') return 1;
-            if(isNaN(a_)) return isNaN(b_) ? 0 : -1;
-            if(isNaN(b_)) return 1;
-            return a_ < b_ ? -1 : 1;
-        } else if (typeof a_ === 'string' || typeof b_ === 'string') {
-            if(typeof b_ !== 'string') return -1;
-            if(typeof a_ !== 'string') return 1;
-            return a_.localeCompare(b_, 'en');
-        } else if(Array.isArray(a_) || Array.isArray(b_)) {
-            if(!Array.isArray(a_) || !Array.isArray(b_)) return a_ < b_ ? -1 : 1;
-            const length = Math.min(a_.length, b_.length);
-            for(let i = 0; i < length; i++) {
-                const cmp = internalCompare_(a_[i], b_[i]);
-                if(cmp !== 0) return cmp;
-            }
-            return a_.length - b_.length;
-        } else {
-            const aKeys = Object.keys(a_).sort();
-            const bKeys = Object.keys(b_).sort();
-            const keyResult = internalCompare_(aKeys, bKeys);
-            if(keyResult !== 0) return keyResult;
-            for(const key of aKeys) {
-                const result = internalCompare_(a_[key], b_[key]);
-                if(result !== 0) return result;
-            }
-            return 0;
-        }
-    
+if((a_ === b_)) {
+return 0
+} else {
+if(((a_ === null) || (b_ === null))) {
+if((a_ === null)) {
+return (-1)
+} else {
+return 1
+}
+} else {
+if((ff_core_Json.Json_isBool(a_) || ff_core_Json.Json_isBool(b_))) {
+if(((!ff_core_Json.Json_isBool(b_)) || b_)) {
+return (-1)
+} else {
+return 1
+}
+} else {
+if((ff_core_Json.Json_isFloat(a_) || ff_core_Json.Json_isFloat(b_))) {
+if((!ff_core_Json.Json_isFloat(b_))) {
+return (-1)
+} else {
+if((!ff_core_Json.Json_isFloat(a_))) {
+return 1
+} else {
+if(ff_core_JsValue.JsValue_isNan(a_)) {
+if(ff_core_JsValue.JsValue_isNan(b_)) {
+return 0
+} else {
+return (-1)
+}
+} else {
+if(ff_core_JsValue.JsValue_isNan(b_)) {
+return 1
+} else {
+if(ff_core_Ordering.before_(a_, b_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Nothing_Nothing)) {
+return (-1)
+} else {
+return 1
+}
+}
+}
+}
+}
+} else {
+if((ff_core_Json.Json_isString(a_) || ff_core_Json.Json_isString(b_))) {
+if((!ff_core_Json.Json_isString(b_))) {
+return (-1)
+} else {
+if((!ff_core_Json.Json_isString(a_))) {
+return 1
+} else {
+return a_.localeCompare(b_, "en")
+}
+}
+} else {
+if((ff_core_Json.Json_isArray(a_) || ff_core_Json.Json_isArray(b_))) {
+if((!ff_core_Json.Json_isArray(b_))) {
+return (-1)
+} else {
+if((!ff_core_Json.Json_isArray(a_))) {
+return 1
+} else {
+const aLength_ = a_.length;
+const bLength_ = b_.length;
+let result_ = 0;
+for(let for_a = ff_core_Int.Int_until(0, ff_core_Int.Int_min(aLength_, bLength_)), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_a[for_i];
+result_ = ff_core_Json.internalCompare_(a_[i_], b_[i_]);
+if(!(result_ === 0)) break
+};
+if((result_ !== 0)) {
+return result_
+} else {
+return (aLength_ - bLength_)
+}
+}
+}
+} else {
+const aKeys_ = Object.keys(a_).sort();
+const bKeys_ = Object.keys(b_).sort();
+const keyResult_ = ff_core_Json.internalCompare_(aKeys_, bKeys_);
+if((keyResult_ !== 0)) {
+return keyResult_
+} else {
+let result_ = 0;
+ff_core_JsValue.JsValue_eachWhile(aKeys_, ((key_) => {
+result_ = ff_core_Json.internalCompare_(a_[key_], b_[key_]);
+return (result_ === 0)
+}));
+return result_
+}
+}
+}
+}
+}
+}
+}
 }
 
 export async function read_$(json_, $task) {
-throw new Error('Function read is missing on this target in async context.');
+try {
+return ff_core_Option.Some(JSON.parse(json_))
+} catch {
+return ff_core_Option.None()
+}
 }
 
 export async function string_$(json_, $task) {
-throw new Error('Function string is missing on this target in async context.');
+return json_
 }
 
 export async function int_$(json_, $task) {
-throw new Error('Function int is missing on this target in async context.');
+return json_
 }
 
 export async function float_$(json_, $task) {
-throw new Error('Function float is missing on this target in async context.');
+return json_
 }
 
 export async function bool_$(json_, $task) {
-throw new Error('Function bool is missing on this target in async context.');
+return json_
 }
 
 export async function null_$($task) {
-throw new Error('Function null is missing on this target in async context.');
+return null
 }
 
 export async function array_$(json_, $task) {
-throw new Error('Function array is missing on this target in async context.');
+return json_
 }
 
 export async function object_$($task) {
-throw new Error('Function object is missing on this target in async context.');
+return {}
 }
 
 export async function new0_$($task) {
-throw new Error('Function new0 is missing on this target in async context.');
+return {}
 }
 
 export async function fields_$(body_, $task) {
-
-        const result = {};
-        await body_((k, v) => {result[k] = v}, $task);
-        return result;
-    
-}
-
-export async function internalWith_$(self_, field_, value_, $task) {
-throw new Error('Function internalWith is missing on this target in async context.');
-}
-
-export async function internalEach_$(self_, body_, $task) {
-for(const [key, value] of Object.entries(self_)) await body_(key, value, $task)
-}
-
-export async function internalEachWhile_$(self_, body_, $task) {
-for(const [key, value] of Object.entries(self_)) if(!await body_(key, value, $task)) break
+const result_ = {};
+(await body_((async (k_, v_, $task) => {
+result_[k_] = v_
+}), $task));
+return result_
 }
 
 export async function internalEquals_$(a_, b_, $task) {
-throw new Error('Function internalEquals is missing on this target in async context.');
+if((a_ === b_)) {
+return true
+} else {
+if((ff_core_JsValue.JsValue_isArray(a_) || ff_core_JsValue.JsValue_isArray(b_))) {
+if(((!ff_core_JsValue.JsValue_isArray(a_)) || (!ff_core_JsValue.JsValue_isArray(b_)))) {
+return false
+} else {
+if((a_.length !== b_.length)) {
+return false
+} else {
+let equal_ = true;
+for(let for_a = ff_core_Int.Int_until(0, a_.length), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_a[for_i];
+equal_ = ff_core_Json.internalEquals_(a_[i_], b_[i_]);
+if(!equal_) break
+};
+return equal_
+}
+}
+} else {
+if((ff_core_Json.Json_isObject(a_) && ff_core_Json.Json_isObject(b_))) {
+const aKeys_ = Object.keys(a_);
+const bKeys_ = Object.keys(b_);
+if((aKeys_.length !== bKeys_.length)) {
+return false
+} else {
+let equal_ = true;
+ff_core_JsValue.JsValue_eachWhile(aKeys_, ((key_) => {
+equal_ = (ff_core_JsValue.JsValue_hasOwn(b_, key_) && ff_core_Json.internalEquals_(a_[key_], b_[key_]));
+return equal_
+}));
+return equal_
+}
+} else {
+return false
+}
+}
+}
 }
 
 export async function internalCompare_$(a_, b_, $task) {
-throw new Error('Function internalCompare is missing on this target in async context.');
+if((a_ === b_)) {
+return 0
+} else {
+if(((a_ === null) || (b_ === null))) {
+if((a_ === null)) {
+return (-1)
+} else {
+return 1
+}
+} else {
+if((ff_core_Json.Json_isBool(a_) || ff_core_Json.Json_isBool(b_))) {
+if(((!ff_core_Json.Json_isBool(b_)) || b_)) {
+return (-1)
+} else {
+return 1
+}
+} else {
+if((ff_core_Json.Json_isFloat(a_) || ff_core_Json.Json_isFloat(b_))) {
+if((!ff_core_Json.Json_isFloat(b_))) {
+return (-1)
+} else {
+if((!ff_core_Json.Json_isFloat(a_))) {
+return 1
+} else {
+if(ff_core_JsValue.JsValue_isNan(a_)) {
+if(ff_core_JsValue.JsValue_isNan(b_)) {
+return 0
+} else {
+return (-1)
+}
+} else {
+if(ff_core_JsValue.JsValue_isNan(b_)) {
+return 1
+} else {
+if(ff_core_Ordering.before_(a_, b_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Nothing_Nothing)) {
+return (-1)
+} else {
+return 1
+}
+}
+}
+}
+}
+} else {
+if((ff_core_Json.Json_isString(a_) || ff_core_Json.Json_isString(b_))) {
+if((!ff_core_Json.Json_isString(b_))) {
+return (-1)
+} else {
+if((!ff_core_Json.Json_isString(a_))) {
+return 1
+} else {
+return a_.localeCompare(b_, "en")
+}
+}
+} else {
+if((ff_core_Json.Json_isArray(a_) || ff_core_Json.Json_isArray(b_))) {
+if((!ff_core_Json.Json_isArray(b_))) {
+return (-1)
+} else {
+if((!ff_core_Json.Json_isArray(a_))) {
+return 1
+} else {
+const aLength_ = a_.length;
+const bLength_ = b_.length;
+let result_ = 0;
+for(let for_a = ff_core_Int.Int_until(0, ff_core_Int.Int_min(aLength_, bLength_)), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_a[for_i];
+result_ = ff_core_Json.internalCompare_(a_[i_], b_[i_]);
+if(!(result_ === 0)) break
+};
+if((result_ !== 0)) {
+return result_
+} else {
+return (aLength_ - bLength_)
+}
+}
+}
+} else {
+const aKeys_ = Object.keys(a_).sort();
+const bKeys_ = Object.keys(b_).sort();
+const keyResult_ = ff_core_Json.internalCompare_(aKeys_, bKeys_);
+if((keyResult_ !== 0)) {
+return keyResult_
+} else {
+let result_ = 0;
+ff_core_JsValue.JsValue_eachWhile(aKeys_, ((key_) => {
+result_ = ff_core_Json.internalCompare_(a_[key_], b_[key_]);
+return (result_ === 0)
+}));
+return result_
+}
+}
+}
+}
+}
+}
+}
 }
 
 export function Json_write(self_, indentation_ = ff_core_Option.None()) {
-
-            return JSON.stringify(self_, null, indentation_.value_);
-        
+return JSON.stringify(self_, null, ff_core_Js.orUndefined_(indentation_, ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_String_String))
 }
 
 export function Json_with(self_, field_, value_, ff_core_Json_JsonLike$T) {
-return ff_core_Json.internalWith_(self_, field_, ff_core_Json_JsonLike$T.toJson_(value_))
+if((!ff_core_Json.Json_isObject(self_))) {
+throw (new Error(("Not an object: " + ff_core_Json.Json_write(self_, ff_core_Option.None()))))
+};
+return {...self_, [field_]: ff_core_Json_JsonLike$T.toJson_(value_)}
 }
 
 export function Json_merge(self_, that_) {
-
-            if(typeof self_ !== 'object' || self_ === null || Array.isArray(self_)) {
-                throw new Error('Not an object: ' + JSON.stringify(self_));
-            }
-            if(typeof that_ !== 'object' || that_ === null || Array.isArray(that_)) {
-                throw new Error('Not an object: ' + JSON.stringify(that_));
-            }
-            return {...self_, ...that_};
-        
+if((!ff_core_Json.Json_isObject(self_))) {
+throw (new Error(("Not an object: " + ff_core_Json.Json_write(self_, ff_core_Option.None()))))
+};
+if((!ff_core_Json.Json_isObject(that_))) {
+throw (new Error(("Not an object: " + ff_core_Json.Json_write(that_, ff_core_Option.None()))))
+};
+return ff_core_JsValue.JsValue_assign({}, self_, that_)
 }
 
 export function Json_grabString(self_) {
-
-            if(typeof self_ !== 'string') throw new Error('Not a string: ' + JSON.stringify(self_));
-            return self_;
-        
+if((!ff_core_Json.Json_isString(self_))) {
+throw (new Error(("Not a String: " + ff_core_Json.Json_write(self_, ff_core_Option.None()))))
+};
+return self_
 }
 
 export function Json_grabInt(self_) {
-
-            if(!Number.isSafeInteger(self_)) throw new Error('Not an int: ' + JSON.stringify(self_));
-            return Math.trunc(self_);
-        
+if((!ff_core_Json.Json_isInt(self_))) {
+throw (new Error(("Not an Int: " + ff_core_Json.Json_write(self_, ff_core_Option.None()))))
+};
+return self_
 }
 
 export function Json_grabFloat(self_) {
-
-            if(typeof self_ !== 'number') throw new Error('Not a float: ' + JSON.stringify(self_));
-            return self_;
-        
+if((!ff_core_Json.Json_isFloat(self_))) {
+throw (new Error(("Not a Float: " + ff_core_Json.Json_write(self_, ff_core_Option.None()))))
+};
+return self_
 }
 
 export function Json_grabBool(self_) {
-
-            if(self_ === true) return true;
-            if(self_ === false) return false;
-            throw new Error('Not a bool: ' + JSON.stringify(self_));
-        
+if((!ff_core_Json.Json_isBool(self_))) {
+throw (new Error(("Not a Bool: " + ff_core_Json.Json_write(self_, ff_core_Option.None()))))
+};
+return self_
 }
 
 export function Json_grabArray(self_) {
-
-            if(!Array.isArray(self_)) throw new Error('Not an array: ' + JSON.stringify(self_));
-            return self_;
-        
+if((!ff_core_Json.Json_isArray(self_))) {
+throw (new Error(("Not an array: " + ff_core_Json.Json_write(self_, ff_core_Option.None()))))
+};
+return self_
 }
 
 export function Json_grabMap(self_) {
@@ -414,45 +575,31 @@ return ff_core_Option.Some(ff_core_Json.Json_grabMap(self_))
 }
 
 export function Json_isString(self_) {
-
-            return typeof self_ === 'string';
-        
+return ((typeof self_) === "string")
 }
 
 export function Json_isInt(self_) {
-
-            return Number.isSafeInteger(self_);
-        
+return Number.isSafeInteger(self_)
 }
 
 export function Json_isFloat(self_) {
-
-            return typeof self_ === 'number';
-        
+return ((typeof self_) === "number")
 }
 
 export function Json_isBool(self_) {
-
-            return typeof self_ === 'boolean';
-        
+return ((typeof self_) === "boolean")
 }
 
 export function Json_isArray(self_) {
-
-            return Array.isArray(self_);
-        
+return Array.isArray(self_)
 }
 
 export function Json_isObject(self_) {
-
-            return typeof self_ === 'object' && self_ !== null && !Array.isArray(self_);
-        
+return ((((typeof self_) === "object") && (!ff_core_JsValue.JsValue_isNull(self_))) && (!ff_core_JsValue.JsValue_isArray(self_)))
 }
 
 export function Json_isNull(self_) {
-
-            return self_ === null;
-        
+return ff_core_JsValue.JsValue_isNull(self_)
 }
 
 export function Json_get(self_, key_) {
@@ -460,42 +607,41 @@ return ff_core_Json.Json_field(self_, key_)
 }
 
 export function Json_field(self_, key_) {
-
-            return typeof self_ === 'object' && self_ !== null && !Array.isArray(self_) && Object.hasOwn(self_, key_)
-                ? self_[key_] : null;
-        
+if((ff_core_Json.Json_isObject(self_) && ff_core_JsValue.JsValue_hasOwn(self_, key_))) {
+return self_[key_]
+} else {
+return null
+}
 }
 
 export function Json_index(self_, key_) {
-
-            return Array.isArray(self_) ? self_[key_] ?? null : null;
-        
+if(ff_core_Json.Json_isArray(self_)) {
+return ff_core_JsValue.JsValue_coalesce(self_[key_], null, ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue)
+} else {
+return null
+}
 }
 
 export function Json_hasField(self_, key_) {
-
-            return typeof self_ === 'object' && self_ !== null && !Array.isArray(self_) && Object.hasOwn(self_, key_);
-        
+return (ff_core_Json.Json_isObject(self_) && ff_core_JsValue.JsValue_hasOwn(self_, key_))
 }
 
 export function Json_getField(self_, key_) {
-
-            return typeof self_ === 'object' && self_ !== null && !Array.isArray(self_) && Object.hasOwn(self_, key_)
-                ? ff_core_Option.Some(self_[key_]) : ff_core_Option.None();
-        
+if(ff_core_Json.Json_hasField(self_, key_)) {
+return ff_core_Option.Some(ff_core_Json.Json_get(self_, key_))
+} else return ff_core_Option.None()
 }
 
 export function Json_getIndex(self_, key_) {
-
-            return Array.isArray(self_) ? ff_core_Option.Some(self_[key_] ?? null) : ff_core_Option.None();
-        
+if((ff_core_Json.Json_isArray(self_) && (!ff_core_JsValue.JsValue_isUndefined(self_[key_])))) {
+return ff_core_Option.Some(self_[key_])
+} else return ff_core_Option.None()
 }
 
 export function Json_getFields(self_) {
-
-            return typeof self_ === 'object' && self_ !== null && !Array.isArray(self_)
-                ? ff_core_Option.Some(Object.keys(self_)) : ff_core_Option.None();
-        
+if(ff_core_Json.Json_isObject(self_)) {
+return ff_core_Option.Some(Object.keys(self_))
+} else return ff_core_Option.None()
 }
 
 export function Json_grabField(self_, key_) {
@@ -536,46 +682,74 @@ export function Json_each(self_, body_) {
 if((!ff_core_Json.Json_isObject(self_))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
 };
-ff_core_Json.internalEach_(self_, body_)
+ff_core_JsValue.JsValue_each(Object.entries(self_), ((p_) => {
+body_(p_[0], p_[1])
+}))
 }
 
 export function Json_eachWhile(self_, body_) {
 if((!ff_core_Json.Json_isObject(self_))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
 };
-ff_core_Json.internalEachWhile_(self_, body_)
+ff_core_JsValue.JsValue_eachWhile(Object.entries(self_), ((p_) => {
+return body_(p_[0], p_[1])
+}))
 }
 
 export async function Json_write$(self_, indentation_ = ff_core_Option.None(), $task) {
-throw new Error('Function Json_write is missing on this target in async context.');
+return JSON.stringify(self_, null, ff_core_Js.orUndefined_(indentation_, ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_String_String))
 }
 
 export async function Json_with$(self_, field_, value_, ff_core_Json_JsonLike$T, $task) {
-return ff_core_Json.internalWith_(self_, field_, ff_core_Json_JsonLike$T.toJson_(value_))
+if((!ff_core_Json.Json_isObject(self_))) {
+throw (new Error(("Not an object: " + ff_core_Json.Json_write(self_, ff_core_Option.None()))))
+};
+return {...self_, [field_]: ff_core_Json_JsonLike$T.toJson_(value_)}
 }
 
 export async function Json_merge$(self_, that_, $task) {
-throw new Error('Function Json_merge is missing on this target in async context.');
+if((!ff_core_Json.Json_isObject(self_))) {
+throw (new Error(("Not an object: " + ff_core_Json.Json_write(self_, ff_core_Option.None()))))
+};
+if((!ff_core_Json.Json_isObject(that_))) {
+throw (new Error(("Not an object: " + ff_core_Json.Json_write(that_, ff_core_Option.None()))))
+};
+return ff_core_JsValue.JsValue_assign({}, self_, that_)
 }
 
 export async function Json_grabString$(self_, $task) {
-throw new Error('Function Json_grabString is missing on this target in async context.');
+if((!ff_core_Json.Json_isString(self_))) {
+throw (new Error(("Not a String: " + ff_core_Json.Json_write(self_, ff_core_Option.None()))))
+};
+return self_
 }
 
 export async function Json_grabInt$(self_, $task) {
-throw new Error('Function Json_grabInt is missing on this target in async context.');
+if((!ff_core_Json.Json_isInt(self_))) {
+throw (new Error(("Not an Int: " + ff_core_Json.Json_write(self_, ff_core_Option.None()))))
+};
+return self_
 }
 
 export async function Json_grabFloat$(self_, $task) {
-throw new Error('Function Json_grabFloat is missing on this target in async context.');
+if((!ff_core_Json.Json_isFloat(self_))) {
+throw (new Error(("Not a Float: " + ff_core_Json.Json_write(self_, ff_core_Option.None()))))
+};
+return self_
 }
 
 export async function Json_grabBool$(self_, $task) {
-throw new Error('Function Json_grabBool is missing on this target in async context.');
+if((!ff_core_Json.Json_isBool(self_))) {
+throw (new Error(("Not a Bool: " + ff_core_Json.Json_write(self_, ff_core_Option.None()))))
+};
+return self_
 }
 
 export async function Json_grabArray$(self_, $task) {
-throw new Error('Function Json_grabArray is missing on this target in async context.');
+if((!ff_core_Json.Json_isArray(self_))) {
+throw (new Error(("Not an array: " + ff_core_Json.Json_write(self_, ff_core_Option.None()))))
+};
+return self_
 }
 
 export async function Json_grabMap$(self_, $task) {
@@ -623,31 +797,31 @@ return ff_core_Option.Some(ff_core_Json.Json_grabMap(self_))
 }
 
 export async function Json_isString$(self_, $task) {
-throw new Error('Function Json_isString is missing on this target in async context.');
+return ((typeof self_) === "string")
 }
 
 export async function Json_isInt$(self_, $task) {
-throw new Error('Function Json_isInt is missing on this target in async context.');
+return Number.isSafeInteger(self_)
 }
 
 export async function Json_isFloat$(self_, $task) {
-throw new Error('Function Json_isFloat is missing on this target in async context.');
+return ((typeof self_) === "number")
 }
 
 export async function Json_isBool$(self_, $task) {
-throw new Error('Function Json_isBool is missing on this target in async context.');
+return ((typeof self_) === "boolean")
 }
 
 export async function Json_isArray$(self_, $task) {
-throw new Error('Function Json_isArray is missing on this target in async context.');
+return Array.isArray(self_)
 }
 
 export async function Json_isObject$(self_, $task) {
-throw new Error('Function Json_isObject is missing on this target in async context.');
+return ((((typeof self_) === "object") && (!ff_core_JsValue.JsValue_isNull(self_))) && (!ff_core_JsValue.JsValue_isArray(self_)))
 }
 
 export async function Json_isNull$(self_, $task) {
-throw new Error('Function Json_isNull is missing on this target in async context.');
+return ff_core_JsValue.JsValue_isNull(self_)
 }
 
 export async function Json_get$(self_, key_, $task) {
@@ -655,27 +829,41 @@ return ff_core_Json.Json_field(self_, key_)
 }
 
 export async function Json_field$(self_, key_, $task) {
-throw new Error('Function Json_field is missing on this target in async context.');
+if((ff_core_Json.Json_isObject(self_) && ff_core_JsValue.JsValue_hasOwn(self_, key_))) {
+return self_[key_]
+} else {
+return null
+}
 }
 
 export async function Json_index$(self_, key_, $task) {
-throw new Error('Function Json_index is missing on this target in async context.');
+if(ff_core_Json.Json_isArray(self_)) {
+return ff_core_JsValue.JsValue_coalesce(self_[key_], null, ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue)
+} else {
+return null
+}
 }
 
 export async function Json_hasField$(self_, key_, $task) {
-throw new Error('Function Json_hasField is missing on this target in async context.');
+return (ff_core_Json.Json_isObject(self_) && ff_core_JsValue.JsValue_hasOwn(self_, key_))
 }
 
 export async function Json_getField$(self_, key_, $task) {
-throw new Error('Function Json_getField is missing on this target in async context.');
+if(ff_core_Json.Json_hasField(self_, key_)) {
+return ff_core_Option.Some(ff_core_Json.Json_get(self_, key_))
+} else return ff_core_Option.None()
 }
 
 export async function Json_getIndex$(self_, key_, $task) {
-throw new Error('Function Json_getIndex is missing on this target in async context.');
+if((ff_core_Json.Json_isArray(self_) && (!ff_core_JsValue.JsValue_isUndefined(self_[key_])))) {
+return ff_core_Option.Some(self_[key_])
+} else return ff_core_Option.None()
 }
 
 export async function Json_getFields$(self_, $task) {
-throw new Error('Function Json_getFields is missing on this target in async context.');
+if(ff_core_Json.Json_isObject(self_)) {
+return ff_core_Option.Some(Object.keys(self_))
+} else return ff_core_Option.None()
 }
 
 export async function Json_grabField$(self_, key_, $task) {
@@ -716,14 +904,18 @@ export async function Json_each$(self_, body_, $task) {
 if((!ff_core_Json.Json_isObject(self_))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
 };
-(await ff_core_Json.internalEach_$(self_, body_, $task))
+(await ff_core_JsValue.JsValue_each$(Object.entries(self_), (async (p_, $task) => {
+(await body_(p_[0], p_[1], $task))
+}), $task))
 }
 
 export async function Json_eachWhile$(self_, body_, $task) {
 if((!ff_core_Json.Json_isObject(self_))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
 };
-(await ff_core_Json.internalEachWhile_$(self_, body_, $task))
+(await ff_core_JsValue.JsValue_eachWhile$(Object.entries(self_), (async (p_, $task) => {
+return (await body_(p_[0], p_[1], $task))
+}), $task))
 }
 
 export const ff_core_Json_JsonLike$ff_core_Json_Json = {

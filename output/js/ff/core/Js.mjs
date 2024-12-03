@@ -283,6 +283,19 @@ export function undefined_() {
 return (void 0)
 }
 
+export function orUndefined_(value_, ff_core_JsValue_IsJsValue$T) {
+{
+const _1 = value_;
+if(_1.None) {
+return (void 0)
+}
+if(_1.Some) {
+const v_ = _1.value_;
+return v_
+}
+}
+}
+
 export function object_() {
 return {}
 }
@@ -524,6 +537,19 @@ return null
 
 export async function undefined_$($task) {
 return (void 0)
+}
+
+export async function orUndefined_$(value_, ff_core_JsValue_IsJsValue$T, $task) {
+{
+const _1 = value_;
+if(_1.None) {
+return (void 0)
+}
+if(_1.Some) {
+const v_ = _1.value_;
+return v_
+}
+}
 }
 
 export async function object_$($task) {

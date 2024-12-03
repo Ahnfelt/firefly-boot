@@ -186,6 +186,13 @@ undefined(): JsValue {
     Js.jsSystem().undefined()
 }
 
+orUndefined[T: IsJsValue](value: Option[T]): JsValue {
+    value.{
+        | None => Js.undefined()
+        | Some(v) => v!
+    }
+}
+
 object(): JsValue {
     Js.jsSystem().object()
 }

@@ -1,119 +1,109 @@
-data Json {}
+newtype Json(jsValue: JsValue)
 
-read(json: String): Option[Json]
-    target js sync """
-        try {
-            return ff_core_Option.Some(JSON.parse(json_));
-        } catch(e) {
-            return ff_core_Option.None();
-        }
-    """
+read(json: String): Option[Json] {
+    try {
+        Some(Json(Js->JSON->parse(json)))
+    } catchAny {_ =>
+        None
+    }
+}
 
-string(json: String): Json
-    target js sync """
-        return json_;
-    """
+string(json: String): Json {
+    Json(json!)
+}
 
-int(json: Int): Json
-    target js sync """
-        return json_;
-    """
+int(json: Int): Json {
+    Json(json!)
+}
 
-float(json: Float): Json
-    target js sync """
-        return json_;
-    """
+float(json: Float): Json {
+    Json(json!)
+}
 
-bool(json: Bool): Json
-    target js sync """
-        return json_;
-    """
+bool(json: Bool): Json {
+    Json(json!)
+}
 
-null(): Json
-    target js sync """
-        return null;
-    """
+null(): Json {
+    Json(Js.null())
+}
 
-array(json: List[Json]): Json
-    target js sync """
-        return json_;
-    """
+array(json: List[Json]): Json {
+    Json(json!)
+}
 
-object(): Json
-    target js sync """
-        return {};
-    """
+object(): Json {
+    Json(Js->())
+}
 
-new0(): Json
-    target js sync """
-        return {};
-    """
+new0(): Json {
+    Json(Js->())
+}
 
-fields(body: ((String, Json) => Unit) => Unit): Json
-    target js sync """
-        const result = {};
-        body_((k, v) => {result[k] = v});
-        return result;
-    """
-    target js async """
-        const result = {};
-        await body_((k, v) => {result[k] = v}, $task);
-        return result;
-    """
+fields(body: ((String, Json) => Unit) => Unit): Json {
+    let result = Js->()
+    body {k, v => result.set(k, v.jsValue)}
+    Json(result)
+}
 
 extend self: Json {
     
-    write(indentation: Option[String] = None): String
-        target js sync """
-            return JSON.stringify(self_, null, indentation_.value_);
-        """
+    write(indentation: Option[String] = None): String {
+        Js->JSON->stringify(self.jsValue, Js.null(), Js.orUndefined(indentation))?
+    }
 
     with[T: JsonLike](field: String, value: T): Json {
-        internalWith(self, field, toJson(value))
+        if(!self.isObject()) {
+            Js.throw(Js->Error->("Not an object: " + self.write()))
+        }
+        Json(self.jsValue.with(field, toJson(value).jsValue))
     }
-        
-    merge(that: Json): Json
-        target js sync """
-            if(typeof self_ !== 'object' || self_ === null || Array.isArray(self_)) {
-                throw new Error('Not an object: ' + JSON.stringify(self_));
-            }
-            if(typeof that_ !== 'object' || that_ === null || Array.isArray(that_)) {
-                throw new Error('Not an object: ' + JSON.stringify(that_));
-            }
-            return {...self_, ...that_};
-        """
+    
+    merge(that: Json): Json {
+        if(!self.isObject()) {
+            Js.throw(Js->Error->("Not an object: " + self.write()))
+        }
+        if(!that.isObject()) {
+            Js.throw(Js->Error->("Not an object: " + that.write()))
+        }
+        Json(Js.object().assign(self.jsValue, that.jsValue))
+    }
+    
+    grabString(): String {
+        if(!self.isString()) {
+            Js.throw(Js->Error->("Not a String: " + self.write()))
+        }
+        self.jsValue?
+    }
+    
+    grabInt(): Int {
+        if(!self.isInt()) {
+            Js.throw(Js->Error->("Not an Int: " + self.write()))
+        }
+        self.jsValue?
+    }
 
-    grabString(): String
-        target js sync """
-            if(typeof self_ !== 'string') throw new Error('Not a string: ' + JSON.stringify(self_));
-            return self_;
-        """
+    grabFloat(): Float {
+        if(!self.isFloat()) {
+            Js.throw(Js->Error->("Not a Float: " + self.write()))
+        }
+        self.jsValue?
+    }
 
-    grabInt(): Int
-        target js sync """
-            if(!Number.isSafeInteger(self_)) throw new Error('Not an int: ' + JSON.stringify(self_));
-            return Math.trunc(self_);
-        """
+    grabBool(): Bool {
+        if(!self.isBool()) {
+            Js.throw(Js->Error->("Not a Bool: " + self.write()))
+        }
+        self.jsValue?
+    }
+    
+    grabArray(): List[Json] {
+        if(!self.isArray()) {
+            Js.throw(Js->Error->("Not an array: " + self.write()))
+        }
+        self.jsValue?
+    }
 
-    grabFloat(): Float
-        target js sync """
-            if(typeof self_ !== 'number') throw new Error('Not a float: ' + JSON.stringify(self_));
-            return self_;
-        """
-
-    grabBool(): Bool
-        target js sync """
-            if(self_ === true) return true;
-            if(self_ === false) return false;
-            throw new Error('Not a bool: ' + JSON.stringify(self_));
-        """
-
-    grabArray(): List[Json]
-        target js sync """
-            if(!Array.isArray(self_)) throw new Error('Not an array: ' + JSON.stringify(self_));
-            return self_;
-        """
-        
     grabMap(): Map[String, Json] {
         mutable map = Map.new()
         self.each {key, value => 
@@ -146,77 +136,73 @@ extend self: Json {
         if(self.isObject()) {self.grabMap()}
     }
 
-    isString(): Bool
-        target js sync """
-            return typeof self_ === 'string';
-        """
+    isString(): Bool {
+        self.jsValue.typeof() == "string"
+    }
 
-    isInt(): Bool
-        target js sync """
-            return Number.isSafeInteger(self_);
-        """
+    isInt(): Bool {
+        Js->Number->isSafeInteger(self.jsValue)?
+    }
 
-    isFloat(): Bool
-        target js sync """
-            return typeof self_ === 'number';
-        """
+    isFloat(): Bool {
+        self.jsValue.typeof() == "number"
+    }
 
-    isBool(): Bool
-        target js sync """
-            return typeof self_ === 'boolean';
-        """
+    isBool(): Bool {
+        self.jsValue.typeof() == "boolean"
+    }
 
-    isArray(): Bool
-        target js sync """
-            return Array.isArray(self_);
-        """
+    isArray(): Bool {
+        Js->Array->isArray(self.jsValue)?
+    }
 
-    isObject(): Bool
-        target js sync """
-            return typeof self_ === 'object' && self_ !== null && !Array.isArray(self_);
-        """
+    isObject(): Bool {
+        self.jsValue.typeof() == "object" && !self.jsValue.isNull() && !self.jsValue.isArray()
+    }
 
-    isNull(): Bool
-        target js sync """
-            return self_ === null;
-        """
+    isNull(): Bool {
+        self.jsValue.isNull()
+    }
 
     get(key: String): Json {
         self.field(key)
     }
 
-    field(key: String): Json
-        target js sync """
-            return typeof self_ === 'object' && self_ !== null && !Array.isArray(self_) && Object.hasOwn(self_, key_)
-                ? self_[key_] : null;
-        """
+    field(key: String): Json {
+        if(self.isObject() && self.jsValue.hasOwn(key)) {
+            Json(self.jsValue.get(key))
+        } else {
+            Json(Js.null())
+        }
+    }
 
-    index(key: Int): Json
-        target js sync """
-            return Array.isArray(self_) ? self_[key_] ?? null : null;
-        """
+    index(key: Int): Json {
+        if(self.isArray()) {
+            Json(self.jsValue.get(key).coalesce(Js.null()))
+        } else {
+            Json(Js.null())
+        }
+    }
+    
+    hasField(key: String): Bool {
+        self.isObject() && self.jsValue.hasOwn(key)
+    }
 
-    hasField(key: String): Bool
-        target js sync """
-            return typeof self_ === 'object' && self_ !== null && !Array.isArray(self_) && Object.hasOwn(self_, key_);
-        """
+    getField(key: String): Option[Json] {
+        if(self.hasField(key)) {self.get(key)}
+    }
 
-    getField(key: String): Option[Json]
-        target js sync """
-            return typeof self_ === 'object' && self_ !== null && !Array.isArray(self_) && Object.hasOwn(self_, key_)
-                ? ff_core_Option.Some(self_[key_]) : ff_core_Option.None();
-        """
-
-    getIndex(key: Int): Option[Json]
-        target js sync """
-            return Array.isArray(self_) ? ff_core_Option.Some(self_[key_] ?? null) : ff_core_Option.None();
-        """
+    getIndex(key: Int): Option[Json] {
+        if(self.isArray() && !self.jsValue.get(key).isUndefined()) {
+            Json(self.jsValue.get(key))
+        }
+    }
         
-    getFields(): Option[List[String]]
-        target js sync """
-            return typeof self_ === 'object' && self_ !== null && !Array.isArray(self_)
-                ? ff_core_Option.Some(Object.keys(self_)) : ff_core_Option.None();
-        """
+    getFields(): Option[List[String]] {
+        if(self.isObject()) {
+            Js->Object->keys(self.jsValue)?
+        }
+    }
 
     grabField(key: String): Json {
         self.getField(key).else {
@@ -250,31 +236,19 @@ extend self: Json {
     
     each(body: (String, Json) => Unit) {
         if(!self.isObject()) {throw(GrabException())}
-        internalEach(self, body)
+        Js->Object->entries(self.jsValue).each {p =>
+            body(p.get(0)?, p.get(1)?)
+        }
     }
 
     eachWhile(body: (String, Json) => Bool) {
         if(!self.isObject()) {throw(GrabException())}
-        internalEachWhile(self, body)
+        Js->Object->entries(self.jsValue).eachWhile {p =>
+            body(p.get(0)?, p.get(1)?)
+        }
     }
 
 }
-
-internalWith(self: Json, field: String, value: Json): Json
-    target js sync """
-        if(typeof self_ !== 'object' || self_ === null || Array.isArray(self_)) {
-            throw new Error('Not an object: ' + JSON.stringify(self_));
-        }
-        return {...self_, [field_]: value_};
-    """
-
-internalEach(self: Json, body: (String, Json) => Unit): Unit
-    target js sync "for(const [key, value] of Object.entries(self_)) body_(key, value)"
-    target js async "for(const [key, value] of Object.entries(self_)) await body_(key, value, $task)"
-
-internalEachWhile(self: Json, body: (String, Json) => Bool): Unit
-    target js sync "for(const [key, value] of Object.entries(self_)) if(!body_(key, value)) break"
-    target js async "for(const [key, value] of Object.entries(self_)) if(!await body_(key, value, $task)) break"
 
 trait T: JsonLike {
     toJson(value: T): Json
@@ -377,67 +351,73 @@ instance Json: Serializable {
 }
 
 
-internalEquals(a: Json, b: Json): Bool
-    target js sync """
-        if(a_ === b_) {
-            return true;
-        } else if(Array.isArray(a_) || Array.isArray(b_)) {
-            if(!Array.isArray(a_) || !Array.isArray(b_)) return false;
-            if(a_.length !== b_.length) return false;
-            for(let i = 0; i < a_.length; i++) {
-                if(!internalEquals_(a_[i], b_[i])) return false;
-            }
-            return true;
-        } else if(typeof a_ === 'object' && typeof b_ === 'object' && a_ !== null && b_ !== null) {
-            const aKeys = Object.keys(a_);
-            const bKeys = Object.keys(b_);
-            if(aKeys.length !== bKeys.length) return false;
-            for(const key of aKeys) {
-                if(!Object.hasOwn(b_, key) || !internalEquals_(a_[key], b_[key])) return false;
-            }
-            return true;
-        } else {
-            return false;
+internalEquals(a: Json, b: Json): Bool {
+    if(a.jsValue === b.jsValue) {True} else:
+    if(a.jsValue.isArray() || b.jsValue.isArray()) {
+        if(!a.jsValue.isArray() || !b.jsValue.isArray()) {False} else:
+        if(a.jsValue->length !== b.jsValue->length) {False} else:
+        mutable equal = True
+        0.until(a.jsValue->length?).eachWhile {i =>
+            equal = internalEquals(Json(a.jsValue.get(i)), Json(b.jsValue.get(i)))
+            equal
         }
-    """
+        equal
+    } else:
+    if(a.isObject() && b.isObject()) {
+        let aKeys = Js->Object->keys(a.jsValue)
+        let bKeys = Js->Object->keys(b.jsValue)
+        if(aKeys->length !== bKeys->length) {False} else:
+        mutable equal = True
+        aKeys.eachWhile {key =>
+            equal = b.jsValue.hasOwn(key?) && internalEquals(Json(a.jsValue.get(key)), Json(b.jsValue.get(key)))
+            equal
+        }
+        equal
+    } else:
+    False
+}
 
-internalCompare(a: Json, b: Json): Int
-    target js sync """
-        if(a_ === b_) {
-            return 0;
-        } else if (a_ === null || b_ === null) {
-            return a_ === null ? -1 : 1;
-        } else if (typeof a_ === 'boolean' || typeof b_ === 'boolean') {
-            if(typeof b_ !== 'boolean') return -1;
-            if(typeof a_ !== 'boolean') return 1;
-            return a_ < b_ ? -1 : 1;
-        } else if (typeof a_ === 'number' || typeof b_ === 'number') {
-            if(typeof b_ !== 'number') return -1;
-            if(typeof a_ !== 'number') return 1;
-            if(isNaN(a_)) return isNaN(b_) ? 0 : -1;
-            if(isNaN(b_)) return 1;
-            return a_ < b_ ? -1 : 1;
-        } else if (typeof a_ === 'string' || typeof b_ === 'string') {
-            if(typeof b_ !== 'string') return -1;
-            if(typeof a_ !== 'string') return 1;
-            return a_.localeCompare(b_, 'en');
-        } else if(Array.isArray(a_) || Array.isArray(b_)) {
-            if(!Array.isArray(a_) || !Array.isArray(b_)) return a_ < b_ ? -1 : 1;
-            const length = Math.min(a_.length, b_.length);
-            for(let i = 0; i < length; i++) {
-                const cmp = internalCompare_(a_[i], b_[i]);
-                if(cmp !== 0) return cmp;
-            }
-            return a_.length - b_.length;
-        } else {
-            const aKeys = Object.keys(a_).sort();
-            const bKeys = Object.keys(b_).sort();
-            const keyResult = internalCompare_(aKeys, bKeys);
-            if(keyResult !== 0) return keyResult;
-            for(const key of aKeys) {
-                const result = internalCompare_(a_[key], b_[key]);
-                if(result !== 0) return result;
-            }
-            return 0;
+internalCompare(a: Json, b: Json): Int {
+    if(a.jsValue === b.jsValue) {0} else:
+    if(a.jsValue === Js.null() || b.jsValue === Js.null()) {
+        if(a.jsValue === Js.null()) {-1} else {1}
+    } else:
+    if(a.isBool() || b.isBool()) {
+        if(!b.isBool() || b.jsValue?) {-1} else {1}
+    } else:
+    if(a.isFloat() || b.isFloat()) {
+        if(!b.isFloat()) {-1} else:
+        if(!a.isFloat()) {1} else:
+        if(a.jsValue.isNan()) {if(b.jsValue.isNan()) {0} else {-1}} else:
+        if(b.jsValue.isNan()) {1} else:
+        if(a.jsValue? < b.jsValue?) {-1} else {1}
+    } else:
+    if(a.isString() || b.isString()) {
+        if(!b.isString()) {-1} else:
+        if(!a.isString()) {1} else:
+        a.jsValue->localeCompare(b.jsValue, "en")?
+    } else:
+    if(a.isArray() || b.isArray()) {
+        if(!b.isArray()) {-1} else:
+        if(!a.isArray()) {1} else:
+        let aLength: Int = a.jsValue->length?
+        let bLength: Int = b.jsValue->length?
+        mutable result = 0
+        0.until(aLength.min(bLength)).eachWhile {i =>
+            result = internalCompare(Json(a.jsValue.get(i)), Json(b.jsValue.get(i)))
+            result == 0
         }
-    """
+        if(result != 0) {result} else:
+        aLength - bLength
+    } else:
+    let aKeys = Js->Object->keys(a.jsValue)->sort()
+    let bKeys = Js->Object->keys(b.jsValue)->sort()
+    let keyResult = internalCompare(Json(aKeys), Json(bKeys))
+    if(keyResult != 0) {keyResult} else:
+    mutable result = 0
+    aKeys.eachWhile {key =>
+        result = internalCompare(Json(a.jsValue.get(key)), Json(b.jsValue.get(key)))
+        result == 0
+    }
+    result
+}
