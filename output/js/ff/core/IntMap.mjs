@@ -150,9 +150,9 @@ body_(value_[0], value_[1]);
 result_ = iterator_.next()
 }
 } else {
-self_.forEach(ff_core_Js.function2_(((v_, k_) => {
+self_.forEach(((v_, k_) => {
 return body_(k_, v_)
-})))
+}))
 }
 }
 
@@ -254,9 +254,9 @@ const value_ = result_.value;
 result_ = iterator_.next()
 }
 } else {
-self_.forEach((await ff_core_Js.function2_$((async (v_, k_, $task) => {
+self_.forEach((async (a_1, a_2) => await (async (v_, k_, $task) => {
 return (await body_(k_, v_, $task))
-}), $task)))
+})(a_1, a_2, $task)))
 }
 }
 

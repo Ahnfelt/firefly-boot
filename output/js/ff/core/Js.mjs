@@ -224,75 +224,71 @@ return ff_core_Core.panic_("This call should have been eliminated by the compile
 }
 
 export function globalThis_() {
-return ff_core_JsSystem.JsSystem_globalThis(globalThis)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function get_(key_) {
-return ff_core_JsSystem.JsSystem_get(globalThis, key_)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function set_(key_, value_, ff_core_JsValue_IsJsValue$V) {
-ff_core_JsSystem.JsSystem_set(globalThis, key_, value_, ff_core_JsValue_IsJsValue$V)
+ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function increment_(key_, value_, ff_core_JsValue_IsJsValue$V) {
-ff_core_JsSystem.JsSystem_increment(globalThis, key_, value_, ff_core_JsValue_IsJsValue$V)
+ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function decrement_(key_, value_, ff_core_JsValue_IsJsValue$V) {
-ff_core_JsSystem.JsSystem_decrement(globalThis, key_, value_, ff_core_JsValue_IsJsValue$V)
+ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function call0_(name_) {
-return ff_core_JsSystem.JsSystem_call0(globalThis, name_)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function call1_(name_, a1_, ff_core_JsValue_IsJsValue$A1) {
-return ff_core_JsSystem.JsSystem_call1(globalThis, name_, a1_, ff_core_JsValue_IsJsValue$A1)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function call2_(name_, a1_, a2_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2) {
-return ff_core_JsSystem.JsSystem_call2(globalThis, name_, a1_, a2_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function call3_(name_, a1_, a2_, a3_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3) {
-return ff_core_JsSystem.JsSystem_call3(globalThis, name_, a1_, a2_, a3_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function call4_(name_, a1_, a2_, a3_, a4_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4) {
-return ff_core_JsSystem.JsSystem_call4(globalThis, name_, a1_, a2_, a3_, a4_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function call5_(name_, a1_, a2_, a3_, a4_, a5_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5) {
-return ff_core_JsSystem.JsSystem_call5(globalThis, name_, a1_, a2_, a3_, a4_, a5_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function call6_(name_, a1_, a2_, a3_, a4_, a5_, a6_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6) {
-return ff_core_JsSystem.JsSystem_call6(globalThis, name_, a1_, a2_, a3_, a4_, a5_, a6_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function call7_(name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7) {
-return ff_core_JsSystem.JsSystem_call7(globalThis, name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function call8_(name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8) {
-return ff_core_JsSystem.JsSystem_call8(globalThis, name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function call9_(name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, ff_core_JsValue_IsJsValue$A9) {
-return ff_core_JsSystem.JsSystem_call9(globalThis, name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, ff_core_JsValue_IsJsValue$A9)
-}
-
-export function parseJson_(json_) {
-return ff_core_JsSystem.JsSystem_parseJson(globalThis, json_)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function null_() {
-return null
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function undefined_() {
-return (void 0)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function orUndefined_(value_, ff_core_JsValue_IsJsValue$T) {
@@ -309,59 +305,59 @@ return v_
 }
 
 export function object_() {
-return {}
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function new0_() {
-return {}
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function array_(values_) {
-return ff_core_JsSystem.JsSystem_array(globalThis, values_)
+return values_
 }
 
 export function json_(value_) {
-return ff_core_JsSystem.JsSystem_json(globalThis, value_)
+return value_
 }
 
 export function function0_(body_) {
-return ff_core_JsSystem.JsSystem_function0(globalThis, body_)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function function1_(body_) {
-return ff_core_JsSystem.JsSystem_function1(globalThis, body_)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function function2_(body_) {
-return ff_core_JsSystem.JsSystem_function2(globalThis, body_)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function function3_(body_) {
-return ff_core_JsSystem.JsSystem_function3(globalThis, body_)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function function4_(body_) {
-return ff_core_JsSystem.JsSystem_function4(globalThis, body_)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function function5_(body_) {
-return ff_core_JsSystem.JsSystem_function5(globalThis, body_)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function function6_(body_) {
-return ff_core_JsSystem.JsSystem_function6(globalThis, body_)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function function7_(body_) {
-return ff_core_JsSystem.JsSystem_function7(globalThis, body_)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function function8_(body_) {
-return ff_core_JsSystem.JsSystem_function8(globalThis, body_)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function function9_(body_) {
-return ff_core_JsSystem.JsSystem_function9(globalThis, body_)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function jsSystem_$($task) {
@@ -492,75 +488,71 @@ return ff_core_Core.panic_("This call should have been eliminated by the compile
 }
 
 export async function globalThis_$($task) {
-return ff_core_JsSystem.JsSystem_globalThis(globalThis)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function get_$(key_, $task) {
-return ff_core_JsSystem.JsSystem_get(globalThis, key_)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function set_$(key_, value_, ff_core_JsValue_IsJsValue$V, $task) {
-ff_core_JsSystem.JsSystem_set(globalThis, key_, value_, ff_core_JsValue_IsJsValue$V)
+ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function increment_$(key_, value_, ff_core_JsValue_IsJsValue$V, $task) {
-ff_core_JsSystem.JsSystem_increment(globalThis, key_, value_, ff_core_JsValue_IsJsValue$V)
+ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function decrement_$(key_, value_, ff_core_JsValue_IsJsValue$V, $task) {
-ff_core_JsSystem.JsSystem_decrement(globalThis, key_, value_, ff_core_JsValue_IsJsValue$V)
+ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function call0_$(name_, $task) {
-return ff_core_JsSystem.JsSystem_call0(globalThis, name_)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function call1_$(name_, a1_, ff_core_JsValue_IsJsValue$A1, $task) {
-return ff_core_JsSystem.JsSystem_call1(globalThis, name_, a1_, ff_core_JsValue_IsJsValue$A1)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function call2_$(name_, a1_, a2_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, $task) {
-return ff_core_JsSystem.JsSystem_call2(globalThis, name_, a1_, a2_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function call3_$(name_, a1_, a2_, a3_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, $task) {
-return ff_core_JsSystem.JsSystem_call3(globalThis, name_, a1_, a2_, a3_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function call4_$(name_, a1_, a2_, a3_, a4_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, $task) {
-return ff_core_JsSystem.JsSystem_call4(globalThis, name_, a1_, a2_, a3_, a4_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function call5_$(name_, a1_, a2_, a3_, a4_, a5_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, $task) {
-return ff_core_JsSystem.JsSystem_call5(globalThis, name_, a1_, a2_, a3_, a4_, a5_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function call6_$(name_, a1_, a2_, a3_, a4_, a5_, a6_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, $task) {
-return ff_core_JsSystem.JsSystem_call6(globalThis, name_, a1_, a2_, a3_, a4_, a5_, a6_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function call7_$(name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, $task) {
-return ff_core_JsSystem.JsSystem_call7(globalThis, name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function call8_$(name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, $task) {
-return ff_core_JsSystem.JsSystem_call8(globalThis, name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function call9_$(name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, ff_core_JsValue_IsJsValue$A9, $task) {
-return ff_core_JsSystem.JsSystem_call9(globalThis, name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, ff_core_JsValue_IsJsValue$A9)
-}
-
-export async function parseJson_$(json_, $task) {
-return ff_core_JsSystem.JsSystem_parseJson(globalThis, json_)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function null_$($task) {
-return null
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function undefined_$($task) {
-return (void 0)
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function orUndefined_$(value_, ff_core_JsValue_IsJsValue$T, $task) {
@@ -577,59 +569,59 @@ return v_
 }
 
 export async function object_$($task) {
-return {}
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function new0_$($task) {
-return {}
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function array_$(values_, $task) {
-return ff_core_JsSystem.JsSystem_array(globalThis, values_)
+return values_
 }
 
 export async function json_$(value_, $task) {
-return ff_core_JsSystem.JsSystem_json(globalThis, value_)
+return value_
 }
 
 export async function function0_$(body_, $task) {
-return (await ff_core_JsSystem.JsSystem_function0$(globalThis, body_, $task))
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function function1_$(body_, $task) {
-return (await ff_core_JsSystem.JsSystem_function1$(globalThis, body_, $task))
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function function2_$(body_, $task) {
-return (await ff_core_JsSystem.JsSystem_function2$(globalThis, body_, $task))
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function function3_$(body_, $task) {
-return (await ff_core_JsSystem.JsSystem_function3$(globalThis, body_, $task))
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function function4_$(body_, $task) {
-return (await ff_core_JsSystem.JsSystem_function4$(globalThis, body_, $task))
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function function5_$(body_, $task) {
-return (await ff_core_JsSystem.JsSystem_function5$(globalThis, body_, $task))
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function function6_$(body_, $task) {
-return (await ff_core_JsSystem.JsSystem_function6$(globalThis, body_, $task))
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function function7_$(body_, $task) {
-return (await ff_core_JsSystem.JsSystem_function7$(globalThis, body_, $task))
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function function8_$(body_, $task) {
-return (await ff_core_JsSystem.JsSystem_function8$(globalThis, body_, $task))
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export async function function9_$(body_, $task) {
-return (await ff_core_JsSystem.JsSystem_function9$(globalThis, body_, $task))
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 

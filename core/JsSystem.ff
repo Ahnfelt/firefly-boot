@@ -1,114 +1,135 @@
 class JsSystem {}
 
+// The compiler may decide to access symbols by name instead of going through globalThis
+
 extend self: JsSystem {
 
-    globalThis(): JsValue
-        target js sync "return self_"
+    globalThis(): JsValue {
+        Js.globalThis()
+    }
 
-    get(key: String): JsValue
-        target js sync "return self_[key_]"
+    get(key: String): JsValue {
+        Js.get(key)
+    }
 
-    set[V: IsJsValue](key: String, value: V): Unit
-        target js sync "self_[key_] = value_"
+    set[V: IsJsValue](key: String, value: V): Unit {
+        Js.set(key, value)
+    }
 
-    increment[V: IsJsValue](key: String, value: V): Unit
-        target js sync "self_[key_] += value_"
+    increment[V: IsJsValue](key: String, value: V): Unit {
+        Js.increment(key, value)
+    }
         
-    decrement[V: IsJsValue](key: String, value: V): Unit
-        target js sync "self_[key_] -= value_"
+    decrement[V: IsJsValue](key: String, value: V): Unit {
+        Js.decrement(key, value)
+    }
 
-    call0(name: String): JsValue
-        target js sync "return self_[name_].call(void 0)"
+    call0(name: String): JsValue {
+        Js.call0(name)
+    }
 
-    call1[A1: IsJsValue](name: String, a1: A1): JsValue
-        target js sync "return self_[name_].call(void 0, a1_)"
+    call1[A1: IsJsValue](name: String, a1: A1): JsValue {
+        Js.call1(name, a1)
+    }
 
-    call2[A1: IsJsValue, A2: IsJsValue](name: String, a1: A1, a2: A2): JsValue
-        target js sync "return self_[name_].call(void 0, a1_, a2_)"
+    call2[A1: IsJsValue, A2: IsJsValue](name: String, a1: A1, a2: A2): JsValue {
+        Js.call2(name, a1, a2)
+    }
 
-    call3[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue](name: String, a1: A1, a2: A2, a3: A3): JsValue
-        target js sync "return self_[name_].call(void 0, a1_, a2_, a3_)"
+    call3[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue](name: String, a1: A1, a2: A2, a3: A3): JsValue {
+        Js.call3(name, a1, a2, a3)
+    }
 
-    call4[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4): JsValue
-        target js sync "return self_[name_].call(void 0, a1_, a2_, a3_, a4_)"
+    call4[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4): JsValue {
+        Js.call4(name, a1, a2, a3, a4)
+    }
 
-    call5[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5): JsValue
-        target js sync "return self_[name_].call(void 0, a1_, a2_, a3_, a4_, a5_)"
+    call5[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5): JsValue {
+        Js.call5(name, a1, a2, a3, a4, a5)
+    }
 
-    call6[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6): JsValue
-        target js sync "return self_[name_].call(void 0, a1_, a2_, a3_, a4_, a5_, a6_)"
+    call6[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6): JsValue {
+        Js.call6(name, a1, a2, a3, a4, a5, a6)
+    }
 
-    call7[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7): JsValue
-        target js sync "return self_[name_].call(void 0, a1_, a2_, a3_, a4_, a5_, a6_, a7_)"
+    call7[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7): JsValue {
+        Js.call7(name, a1, a2, a3, a4, a5, a6, a7)
+    }
 
-    call8[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8): JsValue
-        target js sync "return self_[name_].call(void 0, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_)"
+    call8[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8): JsValue {
+        Js.call8(name, a1, a2, a3, a4, a5, a6, a7, a8)
+    }
 
-    call9[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue, A9: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8, a9: A9): JsValue
-        target js sync "return self_[name_].call(void 0, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_)"
+    call9[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue, A9: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8, a9: A9): JsValue {
+        Js.call9(name, a1, a2, a3, a4, a5, a6, a7, a8, a9)
+    }
+
+    null(): JsValue {
+        Js.null()
+    }
+
+    undefined(): JsValue {
+        Js.undefined()
+    }
+
+    value[T: IsJsValue](jsValue: T): JsValue {
+        Js.value(jsValue)
+    }
+
+    object(): JsValue {
+        Js.object()
+    }
         
-    parseJson(json: String): JsValue
-        target js sync "return JSON.parse(json_)"
+    new0(): JsValue {
+        Js.new0()
+    }
 
-    null(): JsValue
-        target js sync "return null"
+    array(values: List[JsValue]): JsValue {
+        Js.array(values)
+    }
 
-    undefined(): JsValue
-        target js sync "return void 0"
+    json(value: Json): JsValue {
+        Js.json(value)
+    }
 
-    value[T: IsJsValue](jsValue: T): JsValue
-        target js sync "return jsValue_"
+    function0[R](body: () => R): JsValue {
+        Js.function0(body)
+    }
 
-    object(): JsValue
-        target js sync "return {}"
-        
-    new0(): JsValue
-        target js sync "return {}"
+    function1[R](body: JsValue => R): JsValue {
+        Js.function1(body)
+    }
 
-    array(values: List[JsValue]): JsValue
-        target js sync "return values_.slice()"
-        
-    json(value: Json): JsValue
-        target js sync "return value_"
+    function2[R](body: (JsValue, JsValue) => R): JsValue {
+        Js.function2(body)
+    }
 
-    function0[R](body: () => R): JsValue
-        target js sync "return body_"
-        target js async "return () => body_($task)"
+    function3[R](body: (JsValue, JsValue, JsValue) => R): JsValue {
+        Js.function3(body)
+    }
 
-    function1[R](body: JsValue => R): JsValue
-        target js sync "return body_"
-        target js async "return a1 => body_(a1, $task)"
+    function4[R](body: (JsValue, JsValue, JsValue, JsValue) => R): JsValue {
+        Js.function4(body)
+    }
 
-    function2[R](body: (JsValue, JsValue) => R): JsValue
-        target js sync "return body_"
-        target js async "return (a1, a2) => body_(a1, a2, $task)"
+    function5[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue) => R): JsValue {
+        Js.function5(body)
+    }
 
-    function3[R](body: (JsValue, JsValue, JsValue) => R): JsValue
-        target js sync "return body_"
-        target js async "return (a1, a2, a3) => body_(a1, a2, a3, $task)"
+    function6[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => R): JsValue {
+        Js.function6(body)
+    }
 
-    function4[R](body: (JsValue, JsValue, JsValue, JsValue) => R): JsValue
-        target js sync "return body_"
-        target js async "return (a1, a2, a3, a4) => body_(a1, a2, a3, a4, $task)"
+    function7[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => R): JsValue {
+        Js.function7(body)
+    }
 
-    function5[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue) => R): JsValue
-        target js sync "return body_"
-        target js async "return (a1, a2, a3, a4, a5) => body_(a1, a2, a3, a4, a5, $task)"
+    function8[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => R): JsValue {
+        Js.function8(body)
+    }
 
-    function6[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => R): JsValue
-        target js sync "return body_"
-        target js async "return (a1, a2, a3, a4, a5, a6) => body_(a1, a2, a3, a4, a5, a6, $task)"
-
-    function7[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => R): JsValue
-        target js sync "return body_"
-        target js async "return (a1, a2, a3, a4, a5, a6, a7) => body_(a1, a2, a3, a4, a5, a6, a7, $task)"
-
-    function8[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => R): JsValue
-        target js sync "return body_"
-        target js async "return (a1, a2, a3, a4, a5, a6, a7, a8) => body_(a1, a2, a3, a4, a5, a6, a7, a8, $task)"
-
-    function9[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => R): JsValue
-        target js sync "return body_"
-        target js async "return (a1, a2, a3, a4, a5, a6, a7, a8, a9) => body_(a1, a2, a3, a4, a5, a6, a7, a8, a9, $task)"
+    function9[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => R): JsValue {
+        Js.function9(body)
+    }
 
 }

@@ -726,8 +726,14 @@ extend self: JsEmitter {
                 Some(safeBare(q).else {"globalThis[" + self.emitTerm(e1, async) + "]"} + "(" + argumentCode + ")")
             | name {name.removeFirst("ff:core/Js.function") | Some(n)} {n.all {_.isAsciiDigit()}} {
                 arguments | [e1]
-            } {term | ECall call} {!effectTypeIsAsync(call.effect)} =>
-                Some(self.emitTerm(e1, async))
+            } {term | ECall call} =>
+                if(self.emittingAsync && effectTypeIsAsync(call.effect)) {
+                    let argumentCode = 1.to(n.grabInt()).map {"a_" + _}.join(", ")
+                    let taskCode = if(argumentCode == "") {"$task"} else {", $task"}
+                    Some("(async (" + argumentCode + ") => await " + self.emitTerm(e1, async) + "(" + argumentCode + taskCode + "))")
+                } else {
+                    Some(self.emitTerm(e1, async))
+                }
             | "ff:core/Js.get" {arguments | [EString(_, q)@e1]} =>
                 Some(safeBare(q).else {"globalThis[" + self.emitTerm(e1, async) + "]"})
             | "ff:core/Js.object" =>
@@ -738,6 +744,8 @@ extend self: JsEmitter {
                 Some("null")
             | "ff:core/Js.undefined" =>
                 Some("(void 0)")
+            | "ff:core/Js.globalThis" =>
+                Some("globalThis")
             | "ff:core/BrowserSystem.BrowserSystem_js" {arguments | [e]} {noSideEffects(e)} => 
                 Some("globalThis")
             | "ff:core/BuildSystem.BuildSystem_js" {arguments | [e]} {noSideEffects(e)} => 

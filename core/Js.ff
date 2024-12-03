@@ -1,3 +1,5 @@
+// The compiler may decide to access symbols by name instead of going through globalThis
+
 jsSystem(): JsSystem {
     panic("This call should have been eliminated by the compiler")
 }
@@ -125,75 +127,71 @@ shortCircuitingOperator[T1: IsJsValue, T2: IsJsValue](operator: String, a1: T1, 
 
 
 globalThis(): JsValue {
-    Js.jsSystem().globalThis()
+    panic("This call should have been eliminated by the compiler")
 }
 
 get(key: String): JsValue {
-    Js.jsSystem().get(key)
+    panic("This call should have been eliminated by the compiler")
 }
 
 set[V: IsJsValue](key: String, value: V): Unit {
-    Js.jsSystem().set(key, value)
+    panic("This call should have been eliminated by the compiler")
 }
 
 increment[V: IsJsValue](key: String, value: V): Unit {
-    Js.jsSystem().increment(key, value)
+    panic("This call should have been eliminated by the compiler")
 }
 
 decrement[V: IsJsValue](key: String, value: V): Unit {
-    Js.jsSystem().decrement(key, value)
+    panic("This call should have been eliminated by the compiler")
 }
 
 call0(name: String): JsValue {
-    Js.jsSystem().call0(name)
+    panic("This call should have been eliminated by the compiler")
 }
 
 call1[A1: IsJsValue](name: String, a1: A1): JsValue {
-    Js.jsSystem().call1(name, a1)
+    panic("This call should have been eliminated by the compiler")
 }
 
 call2[A1: IsJsValue, A2: IsJsValue](name: String, a1: A1, a2: A2): JsValue {
-    Js.jsSystem().call2(name, a1, a2)
+    panic("This call should have been eliminated by the compiler")
 }
 
 call3[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue](name: String, a1: A1, a2: A2, a3: A3): JsValue {
-    Js.jsSystem().call3(name, a1, a2, a3)
+    panic("This call should have been eliminated by the compiler")
 }
 
 call4[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4): JsValue {
-    Js.jsSystem().call4(name, a1, a2, a3, a4)
+    panic("This call should have been eliminated by the compiler")
 }
 
 call5[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5): JsValue {
-    Js.jsSystem().call5(name, a1, a2, a3, a4, a5)
+    panic("This call should have been eliminated by the compiler")
 }
 
 call6[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6): JsValue {
-    Js.jsSystem().call6(name, a1, a2, a3, a4, a5, a6)
+    panic("This call should have been eliminated by the compiler")
 }
 
 call7[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7): JsValue {
-    Js.jsSystem().call7(name, a1, a2, a3, a4, a5, a6, a7)
+    panic("This call should have been eliminated by the compiler")
 }
 
 call8[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8): JsValue {
-    Js.jsSystem().call8(name, a1, a2, a3, a4, a5, a6, a7, a8)
+    panic("This call should have been eliminated by the compiler")
 }
 
 call9[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue, A9: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8, a9: A9): JsValue {
-    Js.jsSystem().call9(name, a1, a2, a3, a4, a5, a6, a7, a8, a9)
-}
-
-parseJson(json: String): JsValue {
-    Js.jsSystem().parseJson(json)
+    panic("This call should have been eliminated by the compiler")
 }
 
 null(): JsValue {
-    Js.jsSystem().null()
+    panic("This call should have been eliminated by the compiler")
 }
 
 undefined(): JsValue {
-    Js.jsSystem().undefined()
+    panic("This call should have been eliminated by the compiler")
 }
 
 orUndefined[T: IsJsValue](value: Option[T]): JsValue {
@@ -204,57 +202,57 @@ orUndefined[T: IsJsValue](value: Option[T]): JsValue {
 }
 
 object(): JsValue {
-    Js.jsSystem().object()
+    panic("This call should have been eliminated by the compiler")
 }
 
 new0(): JsValue {
-    Js.jsSystem().new0()
+    panic("This call should have been eliminated by the compiler")
 }
 
 array(values: List[JsValue]): JsValue {
-    Js.jsSystem().array(values)
+    values!
 }
 
 json(value: Json): JsValue {
-    Js.jsSystem().json(value)
+    value.jsValue
 }
 
 function0[R](body: () => R): JsValue {
-    Js.jsSystem().function0(body)
+    panic("This call should have been eliminated by the compiler")
 }
 
 function1[R](body: JsValue => R): JsValue {
-    Js.jsSystem().function1(body)
+    panic("This call should have been eliminated by the compiler")
 }
 
 function2[R](body: (JsValue, JsValue) => R): JsValue {
-    Js.jsSystem().function2(body)
+    panic("This call should have been eliminated by the compiler")
 }
 
 function3[R](body: (JsValue, JsValue, JsValue) => R): JsValue {
-    Js.jsSystem().function3(body)
+    panic("This call should have been eliminated by the compiler")
 }
 
 function4[R](body: (JsValue, JsValue, JsValue, JsValue) => R): JsValue {
-    Js.jsSystem().function4(body)
+    panic("This call should have been eliminated by the compiler")
 }
 
 function5[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue) => R): JsValue {
-    Js.jsSystem().function5(body)
+    panic("This call should have been eliminated by the compiler")
 }
 
 function6[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => R): JsValue {
-    Js.jsSystem().function6(body)
+    panic("This call should have been eliminated by the compiler")
 }
 
 function7[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => R): JsValue {
-    Js.jsSystem().function7(body)
+    panic("This call should have been eliminated by the compiler")
 }
 
 function8[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => R): JsValue {
-    Js.jsSystem().function8(body)
+    panic("This call should have been eliminated by the compiler")
 }
 
 function9[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => R): JsValue {
-    Js.jsSystem().function9(body)
+    panic("This call should have been eliminated by the compiler")
 }
