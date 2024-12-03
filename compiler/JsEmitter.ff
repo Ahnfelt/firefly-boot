@@ -638,6 +638,12 @@ extend self: JsEmitter {
                 Some(self.emitTerm(e, async))
             | "ff:core/Js.fromValue" {arguments | [e]} =>
                 Some(self.emitTerm(e, async))
+            | "ff:core/Js.unaryOperator" {arguments | [EString(_, op), a1]} =>
+                Some("(" + op.replace("\"", "") + self.emitTerm(a1, async) + ")")
+            | "ff:core/Js.binaryOperator" {arguments | [EString(_, op), a1, a2]} =>
+                Some("(" + self.emitTerm(a1, async) + " " + op.replace("\"", "") + " " + self.emitTerm(a2, async) + ")")
+            | "ff:core/Js.shortCircuitingOperator" {arguments | [EString(_, op), a1, a2]} =>
+                Some("(" + self.emitTerm(a1, async) + " " + op.replace("\"", "") + " " + self.emitTerm(invokeImmediately(a2), async) + ")")
             | "ff:core/JsValue.JsValue_typeof" {arguments | [e]} =>
                 Some("(typeof " + self.emitTerm(e, async) + ")")
             | "ff:core/JsValue.JsValue_instanceof" {arguments | [e1, e2]} =>

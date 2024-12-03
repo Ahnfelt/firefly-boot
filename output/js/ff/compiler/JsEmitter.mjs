@@ -1823,6 +1823,32 @@ const e_ = _guard1[0];
 return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
 }
 }
+if(_1 === "ff:core/Js.unaryOperator") {
+const _guard1 = arguments_;
+if(_guard1.length === 2 && _guard1[0].EString) {
+const op_ = _guard1[0].value_;
+const a1_ = _guard1[1];
+return ff_core_Option.Some(((("(" + ff_core_String.String_replace(op_, "\"", "")) + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_, async_)) + ")"))
+}
+}
+if(_1 === "ff:core/Js.binaryOperator") {
+const _guard1 = arguments_;
+if(_guard1.length === 3 && _guard1[0].EString) {
+const op_ = _guard1[0].value_;
+const a1_ = _guard1[1];
+const a2_ = _guard1[2];
+return ff_core_Option.Some((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_, async_)) + " ") + ff_core_String.String_replace(op_, "\"", "")) + " ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_, async_)) + ")"))
+}
+}
+if(_1 === "ff:core/Js.shortCircuitingOperator") {
+const _guard1 = arguments_;
+if(_guard1.length === 3 && _guard1[0].EString) {
+const op_ = _guard1[0].value_;
+const a1_ = _guard1[1];
+const a2_ = _guard1[2];
+return ff_core_Option.Some((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_, async_)) + " ") + ff_core_String.String_replace(op_, "\"", "")) + " ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(a2_), async_)) + ")"))
+}
+}
 if(_1 === "ff:core/JsValue.JsValue_typeof") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
@@ -4274,6 +4300,32 @@ const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
 return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
+}
+}
+if(_1 === "ff:core/Js.unaryOperator") {
+const _guard1 = arguments_;
+if(_guard1.length === 2 && _guard1[0].EString) {
+const op_ = _guard1[0].value_;
+const a1_ = _guard1[1];
+return ff_core_Option.Some(((("(" + ff_core_String.String_replace(op_, "\"", "")) + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_, async_)) + ")"))
+}
+}
+if(_1 === "ff:core/Js.binaryOperator") {
+const _guard1 = arguments_;
+if(_guard1.length === 3 && _guard1[0].EString) {
+const op_ = _guard1[0].value_;
+const a1_ = _guard1[1];
+const a2_ = _guard1[2];
+return ff_core_Option.Some((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_, async_)) + " ") + ff_core_String.String_replace(op_, "\"", "")) + " ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_, async_)) + ")"))
+}
+}
+if(_1 === "ff:core/Js.shortCircuitingOperator") {
+const _guard1 = arguments_;
+if(_guard1.length === 3 && _guard1[0].EString) {
+const op_ = _guard1[0].value_;
+const a1_ = _guard1[1];
+const a2_ = _guard1[2];
+return ff_core_Option.Some((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_, async_)) + " ") + ff_core_String.String_replace(op_, "\"", "")) + " ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(a2_), async_)) + ")"))
 }
 }
 if(_1 === "ff:core/JsValue.JsValue_typeof") {

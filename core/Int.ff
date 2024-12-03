@@ -20,8 +20,9 @@ extend self: Int {
     bitXor(that: Int): Int
         target js sync "return self_ ^ that_;"
 
-    bitLeft(bits: Int): Int
-        target js sync "return self_ << bits_;"
+    bitLeft(bits: Int): Int {
+        Js.binaryOperator("<<", self, bits)?
+    }
 
     bitRight(bits: Int, signed: Bool = True): Int
         target js sync "return signed_ ? self_ >> bits_ : self_ >>> bits_;"

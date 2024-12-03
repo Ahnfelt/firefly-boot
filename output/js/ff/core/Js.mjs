@@ -211,6 +211,18 @@ export function throw_(value_) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
+export function unaryOperator_(operator_, a1_, ff_core_JsValue_IsJsValue$T1) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export function binaryOperator_(operator_, a1_, a2_, ff_core_JsValue_IsJsValue$T1, ff_core_JsValue_IsJsValue$T2) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export function shortCircuitingOperator_(operator_, a1_, a2_, ff_core_JsValue_IsJsValue$T1, ff_core_JsValue_IsJsValue$T2) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
 export function globalThis_() {
 return ff_core_JsSystem.JsSystem_globalThis(globalThis)
 }
@@ -464,6 +476,18 @@ return ff_core_Core.panic_("This call should have been eliminated by the compile
 }
 
 export async function throw_$(value_, $task) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export async function unaryOperator_$(operator_, a1_, ff_core_JsValue_IsJsValue$T1, $task) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export async function binaryOperator_$(operator_, a1_, a2_, ff_core_JsValue_IsJsValue$T1, ff_core_JsValue_IsJsValue$T2, $task) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export async function shortCircuitingOperator_$(operator_, a1_, a2_, ff_core_JsValue_IsJsValue$T1, ff_core_JsValue_IsJsValue$T2, $task) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 

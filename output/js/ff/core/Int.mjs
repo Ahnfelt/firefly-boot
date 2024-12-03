@@ -126,7 +126,7 @@ return self_ ^ that_;
 }
 
 export function Int_bitLeft(self_, bits_) {
-return self_ << bits_;
+return (self_ << bits_)
 }
 
 export function Int_bitRight(self_, bits_, signed_ = true) {
@@ -206,7 +206,7 @@ throw new Error('Function Int_bitXor is missing on this target in async context.
 }
 
 export async function Int_bitLeft$(self_, bits_, $task) {
-throw new Error('Function Int_bitLeft is missing on this target in async context.');
+return (self_ << bits_)
 }
 
 export async function Int_bitRight$(self_, bits_, signed_ = true, $task) {
