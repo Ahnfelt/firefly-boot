@@ -149,19 +149,19 @@ return self_.toUpperCase()
 }
 
 export function String_dropWhile(self_, p_) {
-
-            let i = 0
-            for(; i < self_.length && p_(self_.codePointAt(i)); i++);
-            return self_.slice(i)
-        
+let i_ = 0;
+while(((i_ < self_.length) && p_(self_.charCodeAt(i_)))) {
+i_ += 1
+};
+return self_.slice(i_)
 }
 
 export function String_takeWhile(self_, p_) {
-
-            let i = 0
-            for(; i < self_.length && p_(self_.codePointAt(i)); i++);
-            return self_.slice(0, i)
-        
+let i_ = 0;
+while(((i_ < self_.length) && p_(self_.charCodeAt(i_)))) {
+i_ += 1
+};
+return self_.slice(0, i_)
 }
 
 export function String_slice(self_, from_, until_) {
@@ -173,20 +173,14 @@ return self_.split(String.fromCharCode(char_))
 }
 
 export function String_splitFirst(self_, char_) {
-
-            const array = self_.split(String.fromCharCode(char_), 2)
-            return array.length === 2
-                ? ff_core_Option.Some(ff_core_Pair.Pair(array[0], array[1]))
-                : ff_core_Option.None()
-        
+const array_ = self_.split(String.fromCharCode(char_), 2);
+if((array_.length === 2)) {
+return ff_core_Option.Some(ff_core_Pair.Pair(array_[0], array_[1]))
+} else return ff_core_Option.None()
 }
 
 export function String_lines(self_) {
-
-            return self_.split(
-                new RegExp("[" + String.fromCharCode(13) + "]?[" + String.fromCharCode(10) + "]", "g")
-            )
-        
+return self_.split((new RegExp((((("[" + String.fromCharCode(13)) + "]?[") + String.fromCharCode(10)) + "]"), "g")))
 }
 
 export function String_dropFirst(self_, count_ = 1) {
@@ -194,80 +188,57 @@ return self_.slice(count_)
 }
 
 export function String_dropLast(self_, count_ = 1) {
-return self_.slice(0, self_.length - count_)
+return self_.slice(0, (self_.length - count_))
 }
 
 export function String_getInt(self_) {
-
-            if(self_.length == 0) {
-                return ff_core_Option.None()
-            }
-            for(let i = 0; i < self_.length; i++) {
-                const c = self_.codePointAt(i)
-                if(c < 48 || c > 57) return ff_core_Option.None()
-            }
-            return ff_core_Option.Some(parseInt(self_, 10));
-        
+if(((self_.length > 0) && ff_core_String.String_all(self_, ((c_) => {
+return ((48 <= c_) && (c_ <= 57))
+})))) {
+return ff_core_Option.Some(parseInt(self_, 10))
+} else return ff_core_Option.None()
 }
 
 export function String_getFloat(self_) {
-
-            const result = parseFloat(self_, 10);
-            if(!isFinite(result)) {
-                return ff_core_Option.None()
-            }
-            return ff_core_Option.Some(result);
-        
+const result_ = parseFloat(self_, 10);
+if(isFinite(result_)) {
+return ff_core_Option.Some(result_)
+} else return ff_core_Option.None()
 }
 
 export function String_grabInt(self_) {
-
-            if(self_.length == 0) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            for(let i = 0; i < self_.length; i++) {
-                const c = self_.codePointAt(i)
-                if(c < 48 || c > 57) ff_core_Try.internalThrowGrabException_()
-            }
-            return parseInt(self_, 10);
-        
+return ff_core_Option.Option_else(ff_core_String.String_getInt(self_), (() => {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+}))
 }
 
 export function String_grabFloat(self_) {
-
-            const result = parseFloat(self_, 10);
-            if(!isFinite(result)) {
-                ff_core_Try.internalThrowGrabException_()
-            }
-            return result;
-        
+return ff_core_Option.Option_else(ff_core_String.String_getFloat(self_), (() => {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+}))
 }
 
 export function String_first(self_) {
-
-            return self_.length > 0
-                ? ff_core_Option.Some(self_.charCodeAt(0))
-                : ff_core_Option.None()
-        
+if((self_.length > 0)) {
+return ff_core_Option.Some(self_.charCodeAt(0))
+} else return ff_core_Option.None()
 }
 
 export function String_last(self_) {
-
-            return self_.length > 0
-                ? ff_core_Option.Some(self_.charCodeAt(self_.length - 1))
-                : ff_core_Option.None()
-        
+if((self_.length > 0)) {
+return ff_core_Option.Some(self_.charCodeAt((self_.length - 1)))
+} else return ff_core_Option.None()
 }
 
 export function String_grabFirst(self_) {
 return ff_core_Option.Option_else(ff_core_String.String_first(self_), (() => {
-return ff_core_Try.internalThrowGrabException_()
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
 }))
 }
 
 export function String_grabLast(self_) {
 return ff_core_Option.Option_else(ff_core_String.String_last(self_), (() => {
-return ff_core_Try.internalThrowGrabException_()
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
 }))
 }
 
@@ -394,78 +365,96 @@ return self_.toUpperCase()
 }
 
 export async function String_dropWhile$(self_, p_, $task) {
-
-            let i = 0
-            for(; i < self_.length && await p_(self_.codePointAt(i), $task); i++);
-            return self_.slice(i)
-        
+let i_ = 0;
+while(((i_ < self_.length) && (await p_(self_.charCodeAt(i_), $task)))) {
+i_ += 1
+};
+return self_.slice(i_)
 }
 
 export async function String_takeWhile$(self_, p_, $task) {
-
-            let i = 0
-            for(; i < self_.length && await p_(self_.codePointAt(i), $task); i++);
-            return self_.slice(0, i)
-        
+let i_ = 0;
+while(((i_ < self_.length) && (await p_(self_.charCodeAt(i_), $task)))) {
+i_ += 1
+};
+return self_.slice(0, i_)
 }
 
 export async function String_slice$(self_, from_, until_, $task) {
-throw new Error('Function String_slice is missing on this target in async context.');
+return self_.slice(from_, until_)
 }
 
 export async function String_split$(self_, char_, $task) {
-throw new Error('Function String_split is missing on this target in async context.');
+return self_.split(String.fromCharCode(char_))
 }
 
 export async function String_splitFirst$(self_, char_, $task) {
-throw new Error('Function String_splitFirst is missing on this target in async context.');
+const array_ = self_.split(String.fromCharCode(char_), 2);
+if((array_.length === 2)) {
+return ff_core_Option.Some(ff_core_Pair.Pair(array_[0], array_[1]))
+} else return ff_core_Option.None()
 }
 
 export async function String_lines$(self_, $task) {
-throw new Error('Function String_lines is missing on this target in async context.');
+return self_.split((new RegExp((((("[" + String.fromCharCode(13)) + "]?[") + String.fromCharCode(10)) + "]"), "g")))
 }
 
 export async function String_dropFirst$(self_, count_ = 1, $task) {
-throw new Error('Function String_dropFirst is missing on this target in async context.');
+return self_.slice(count_)
 }
 
 export async function String_dropLast$(self_, count_ = 1, $task) {
-throw new Error('Function String_dropLast is missing on this target in async context.');
+return self_.slice(0, (self_.length - count_))
 }
 
 export async function String_getInt$(self_, $task) {
-throw new Error('Function String_getInt is missing on this target in async context.');
+if(((self_.length > 0) && ff_core_String.String_all(self_, ((c_) => {
+return ((48 <= c_) && (c_ <= 57))
+})))) {
+return ff_core_Option.Some(parseInt(self_, 10))
+} else return ff_core_Option.None()
 }
 
 export async function String_getFloat$(self_, $task) {
-throw new Error('Function String_getFloat is missing on this target in async context.');
+const result_ = parseFloat(self_, 10);
+if(isFinite(result_)) {
+return ff_core_Option.Some(result_)
+} else return ff_core_Option.None()
 }
 
 export async function String_grabInt$(self_, $task) {
-throw new Error('Function String_grabInt is missing on this target in async context.');
+return ff_core_Option.Option_else(ff_core_String.String_getInt(self_), (() => {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+}))
 }
 
 export async function String_grabFloat$(self_, $task) {
-throw new Error('Function String_grabFloat is missing on this target in async context.');
+return ff_core_Option.Option_else(ff_core_String.String_getFloat(self_), (() => {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+}))
 }
 
 export async function String_first$(self_, $task) {
-throw new Error('Function String_first is missing on this target in async context.');
+if((self_.length > 0)) {
+return ff_core_Option.Some(self_.charCodeAt(0))
+} else return ff_core_Option.None()
 }
 
 export async function String_last$(self_, $task) {
-throw new Error('Function String_last is missing on this target in async context.');
+if((self_.length > 0)) {
+return ff_core_Option.Some(self_.charCodeAt((self_.length - 1)))
+} else return ff_core_Option.None()
 }
 
 export async function String_grabFirst$(self_, $task) {
 return ff_core_Option.Option_else(ff_core_String.String_first(self_), (() => {
-return ff_core_Try.internalThrowGrabException_()
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
 }))
 }
 
 export async function String_grabLast$(self_, $task) {
 return ff_core_Option.Option_else(ff_core_String.String_last(self_), (() => {
-return ff_core_Try.internalThrowGrabException_()
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
 }))
 }
 
