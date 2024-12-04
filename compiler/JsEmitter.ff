@@ -1421,7 +1421,7 @@ effectTypeIsAsync(effect: Type): Bool {
 safeBare(quotedString: String): Option[String] {
     // TODO: And not a reserved word in JS
     quotedString.removeFirst("\"").flatMap {_.removeLast("\"")}.filter {s => 
-        s == "$firefly_compiler" || s == "$task" || // Workaround for BuildSystem.internalCompile
+        s == "$firefly_compiler" || // Workaround for BuildSystem.internalCompile
         s.first().any {_.isAsciiLetter()} && s.all {_.isAsciiLetterOrDigit()}
     }
 }

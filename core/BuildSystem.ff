@@ -147,7 +147,7 @@ internalCompile(buildSystem: BuildSystem, mainFile: Path, target: String): Unit 
         internalPath(buildSystem, buildSystem!->"fireflyPath_"?)!
         mainFile.base()
         target
-        Js->"$task"
+        Js.currentTask()!
     ))
 }
 
