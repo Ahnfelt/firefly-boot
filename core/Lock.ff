@@ -7,8 +7,8 @@ capability Lock(
 
 capability LockCondition(
     lock: Lock
-    mutable stack: Array[Unit => Unit]
-    mutable queue: Array[Unit => Unit]
+    mutable stack: Array[Pair[JsValue, Unit => Unit]]
+    mutable queue: Array[Pair[JsValue, Unit => Unit]]
 )
 
 extend self: Lock {
@@ -24,6 +24,12 @@ extend self: Lock {
         } else {
             Js.awaitCancellablePromise {resolve, reject, onSettle =>
                 self.queue.push(Pair(Js.currentTask()!, resolve))
+                onSettle {fulfilled =>
+                    if(!fulfilled) {
+                        self.queue = self.queue.drain().filter {_.first !== Js.currentTask()!}.toArray()
+                        self.stack = self.stack.drain().filter {_.first !== Js.currentTask()!}.toArray()
+                    }
+                }
             }
         }
     }
@@ -73,8 +79,14 @@ extend self: LockCondition {
         self.lock.level = 1
         self.lock.release()
         try {
-            Js.awaitCancellablePromise {resolve, reject, addCleanup =>
-                self.queue.push(resolve)
+            Js.awaitCancellablePromise {resolve, reject, onSettle =>
+                self.queue.push(Pair(Js.currentTask()!, resolve))
+                onSettle {fulfilled =>
+                    if(!fulfilled) {
+                        self.queue = self.queue.drain().filter {_.first !== Js.currentTask()!}.toArray()
+                        self.stack = self.stack.drain().filter {_.first !== Js.currentTask()!}.toArray()
+                    }
+                }
             }
         } finally {
             mutable error = Js.undefined()
@@ -110,14 +122,14 @@ extend self: LockCondition {
             self.queue = empty
         }
         if(!self.stack.isEmpty()) {
-            let resolve = self.stack.pop().grab()
+            let resolve = self.stack.pop().grab().second
             resolve(Unit)
         }
     }
 
     wakeAll(): Unit {
         while {!self.stack.isEmpty()} {
-            let resolve = self.stack.pop().grab()
+            let resolve = self.stack.pop().grab().second
             resolve(Unit)
         }
         let empty = self.stack
@@ -125,7 +137,7 @@ extend self: LockCondition {
         self.stack = self.queue
         self.queue = empty
         while {!self.stack.isEmpty()} {
-            let resolve = self.stack.pop().grab()
+            let resolve = self.stack.pop().grab().second
             resolve(Unit)
         }
     }
