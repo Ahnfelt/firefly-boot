@@ -118,7 +118,17 @@ self_.owner_ = $task;
 self_.level_ += 1
 } else {
 ff_core_Js.awaitCancellablePromise_(((resolve_, reject_, onSettle_) => {
-self_.queue_.array.push(ff_core_Pair.Pair($task, resolve_))
+self_.queue_.array.push(ff_core_Pair.Pair($task, resolve_));
+onSettle_(((fulfilled_) => {
+if((!fulfilled_)) {
+self_.queue_ = ff_core_List.List_toArray(ff_core_List.List_filter(ff_core_Array.Array_drain(self_.queue_), ((_w1) => {
+return (_w1.first_ !== $task)
+})));
+self_.stack_ = ff_core_List.List_toArray(ff_core_List.List_filter(ff_core_Array.Array_drain(self_.stack_), ((_w1) => {
+return (_w1.first_ !== $task)
+})))
+}
+}))
 }))
 }
 }
@@ -165,7 +175,17 @@ self_.owner_ = $task;
 self_.level_ += 1
 } else {
 (await ff_core_Js.awaitCancellablePromise_$((async (resolve_, reject_, onSettle_, $task) => {
-self_.queue_.array.push(ff_core_Pair.Pair($task, resolve_))
+self_.queue_.array.push(ff_core_Pair.Pair($task, resolve_));
+(await onSettle_((async (fulfilled_, $task) => {
+if((!fulfilled_)) {
+self_.queue_ = ff_core_List.List_toArray(ff_core_List.List_filter(ff_core_Array.Array_drain(self_.queue_), ((_w1) => {
+return (_w1.first_ !== $task)
+})));
+self_.stack_ = ff_core_List.List_toArray(ff_core_List.List_filter(ff_core_Array.Array_drain(self_.stack_), ((_w1) => {
+return (_w1.first_ !== $task)
+})))
+}
+}), $task))
 }), $task))
 }
 }
@@ -211,8 +231,18 @@ const level_ = self_.lock_.level_;
 self_.lock_.level_ = 1;
 ff_core_Lock.Lock_release(self_.lock_);
 try {
-ff_core_Js.awaitCancellablePromise_(((resolve_, reject_, addCleanup_) => {
-self_.queue_.array.push(resolve_)
+ff_core_Js.awaitCancellablePromise_(((resolve_, reject_, onSettle_) => {
+self_.queue_.array.push(ff_core_Pair.Pair($task, resolve_));
+onSettle_(((fulfilled_) => {
+if((!fulfilled_)) {
+self_.queue_ = ff_core_List.List_toArray(ff_core_List.List_filter(ff_core_Array.Array_drain(self_.queue_), ((_w1) => {
+return (_w1.first_ !== $task)
+})));
+self_.stack_ = ff_core_List.List_toArray(ff_core_List.List_filter(ff_core_Array.Array_drain(self_.stack_), ((_w1) => {
+return (_w1.first_ !== $task)
+})))
+}
+}))
 }))
 } finally {
 let error_;
@@ -264,14 +294,14 @@ self_.stack_ = self_.queue_;
 self_.queue_ = empty_
 };
 if((!ff_core_Array.Array_isEmpty(self_.stack_))) {
-const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_));
+const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_)).second_;
 resolve_((void 0))
 }
 }
 
 export function LockCondition_wakeAll(self_) {
 while((!ff_core_Array.Array_isEmpty(self_.stack_))) {
-const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_));
+const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_)).second_;
 resolve_((void 0))
 };
 const empty_ = self_.stack_;
@@ -279,7 +309,7 @@ ff_core_Array.Array_reverse(self_.queue_);
 self_.stack_ = self_.queue_;
 self_.queue_ = empty_;
 while((!ff_core_Array.Array_isEmpty(self_.stack_))) {
-const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_));
+const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_)).second_;
 resolve_((void 0))
 }
 }
@@ -293,8 +323,18 @@ const level_ = self_.lock_.level_;
 self_.lock_.level_ = 1;
 (await ff_core_Lock.Lock_release$(self_.lock_, $task));
 try {
-(await ff_core_Js.awaitCancellablePromise_$((async (resolve_, reject_, addCleanup_, $task) => {
-self_.queue_.array.push(resolve_)
+(await ff_core_Js.awaitCancellablePromise_$((async (resolve_, reject_, onSettle_, $task) => {
+self_.queue_.array.push(ff_core_Pair.Pair($task, resolve_));
+(await onSettle_((async (fulfilled_, $task) => {
+if((!fulfilled_)) {
+self_.queue_ = ff_core_List.List_toArray(ff_core_List.List_filter(ff_core_Array.Array_drain(self_.queue_), ((_w1) => {
+return (_w1.first_ !== $task)
+})));
+self_.stack_ = ff_core_List.List_toArray(ff_core_List.List_filter(ff_core_Array.Array_drain(self_.stack_), ((_w1) => {
+return (_w1.first_ !== $task)
+})))
+}
+}), $task))
 }), $task))
 } finally {
 let error_;
@@ -346,14 +386,14 @@ self_.stack_ = self_.queue_;
 self_.queue_ = empty_
 };
 if((!ff_core_Array.Array_isEmpty(self_.stack_))) {
-const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_));
+const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_)).second_;
 (await resolve_((void 0), $task))
 }
 }
 
 export async function LockCondition_wakeAll$(self_, $task) {
 while((!ff_core_Array.Array_isEmpty(self_.stack_))) {
-const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_));
+const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_)).second_;
 (await resolve_((void 0), $task))
 };
 const empty_ = self_.stack_;
@@ -361,7 +401,7 @@ ff_core_Array.Array_reverse(self_.queue_);
 self_.stack_ = self_.queue_;
 self_.queue_ = empty_;
 while((!ff_core_Array.Array_isEmpty(self_.stack_))) {
-const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_));
+const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_)).second_;
 (await resolve_((void 0), $task))
 }
 }
