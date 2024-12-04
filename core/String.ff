@@ -142,14 +142,17 @@ extend self: String {
         }
     }
 
-    contains(substring: String): Bool
-        target js sync "return self_.includes(substring_)"
+    contains(substring: String): Bool {
+        self!->includes(substring)?
+    }
 
-    startsWith(prefix: String, offset: Int = 0): Bool
-        target js sync "return self_.startsWith(prefix_, offset_)"
+    startsWith(prefix: String, offset: Int = 0): Bool {
+        self!->startsWith(prefix, offset)?
+    }
 
-    endsWith(prefix: String): Bool
-        target js sync "return self_.endsWith(prefix_)"
+    endsWith(prefix: String): Bool {
+        self!->endsWith(prefix)?
+    }
 
     removeFirst(prefix: String): Option[String] {
         if(self.startsWith(prefix)) {Some(self.dropFirst(prefix.size()))} else {None}
@@ -159,64 +162,87 @@ extend self: String {
         if(self.endsWith(suffix)) {Some(self.dropLast(suffix.size()))} else {None}
     }
     
-    padStart(length: Int, padding: String = " "): String
-        target js sync """
-            return self_.padStart(length_, padding_);
-        """
+    padStart(length: Int, padding: String = " "): String {
+        self!->padStart(length, padding)?
+    }
 
-    padEnd(length: Int, padding: String = " "): String
-        target js sync """
-            return self_.padEnd(length_, padding_);
-        """
+    padEnd(length: Int, padding: String = " "): String {
+        self!->padEnd(length, padding)?
+    }
+    
+    each(body: Char => Unit): Unit {
+        mutable i = 0
+        while {i < self.size()} {
+            body(Char(self!->charCodeAt(i)?))
+            i += 1
+        }
+    }
 
-    any(body: Char => Bool): Bool
-        target js sync """
-            for(let i = 0; i < self_.length; i++) {
-                if(body_(self_.charCodeAt(i))) return true;
+    eachWhile(body: Char => Bool): Unit {
+        mutable i = 0
+        while {i < self.size()} {
+            if(body(Char(self!->charCodeAt(i)?))) {
+                i += 1
+            } else {
+                i = self.size()
             }
-            return false;
-        """
-        target js async """
-            for(let i = 0; i < self_.length; i++) {
-                if(await body_(self_.charCodeAt(i), $task)) return true;
-            }
-            return false;
-        """
+        }
+    }    
+    
+    all(body: Char => Bool): Bool {
+        mutable result = True
+        self.eachWhile {x =>
+            result = body(x)
+            result
+        }
+        result
+    }
 
-    all(body: Char => Bool): Bool
-        target js sync """
-            for(let i = 0; i < self_.length; i++) {
-                if(!body_(self_.charCodeAt(i))) return false;
+    any(body: Char => Bool): Bool {
+        mutable result = False
+        self.eachWhile {x =>
+            result = body(x)
+            (!result)
+        }
+        result
+    }
+    
+    find(body: Char => Bool): Option[Char] {
+        mutable result = None
+        self.eachWhile {x =>
+            if(body(x)) {
+                result = Some(x)
+                False
+            } else {
+                True
             }
-            return true;
-        """
-        target js async """
-            for(let i = 0; i < self_.length; i++) {
-                if(!await body_(self_.charCodeAt(i), $task)) return false;
-            }
-            return true;
-        """
+        }
+        result
+    }
 
-    filter(body: Char => Bool): String
-        target js sync """
-            const result = [];
-            for(let i = 0; i < self_.length; i++) {
-                if(body_(self_.charCodeAt(i))) result.push(self_.charAt(i));
+    indexWhere(body: Char => Bool): Option[Int] {
+        mutable i = -1
+        mutable result = False
+        self.eachWhile {x =>
+            i += 1
+            result = body(x)
+            (!result)
+        }
+        if(result) {i}
+    }    
+    
+    filter(body: Char => Bool): String {
+        let result = Array.new()
+        self.each {x =>
+            if(body(x)) {
+                result.push(x.toString())
             }
-            return result.join("");
-        """
-        target js async """
-            const result = [];
-            for(let i = 0; i < self_.length; i++) {
-                if(await body_(self_.charCodeAt(i))) result.push(self_.charAt(i));
-            }
-            return result.join("");
-        """
+        }
+        result.join()
+    }    
 
-    toBuffer(): Buffer
-        target js sync """
-            const encoded = new TextEncoder().encode(self_)
-            return new DataView(encoded.buffer, encoded.byteOffset, encoded.byteLength)
-        """
-
+    toBuffer(): Buffer {
+        let encoded = Js->TextEncoder->()->encode(self)
+        Js->DataView->(encoded->buffer, encoded->byteOffset, encoded->byteLength)?
+    }
 }

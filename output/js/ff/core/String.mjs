@@ -271,50 +271,89 @@ return ff_core_Option.None()
 }
 
 export function String_padStart(self_, length_, padding_ = " ") {
-
-            return self_.padStart(length_, padding_);
-        
+return self_.padStart(length_, padding_)
 }
 
 export function String_padEnd(self_, length_, padding_ = " ") {
-
-            return self_.padEnd(length_, padding_);
-        
+return self_.padEnd(length_, padding_)
 }
 
-export function String_any(self_, body_) {
+export function String_each(self_, body_) {
+let i_ = 0;
+while((i_ < self_.length)) {
+body_(self_.charCodeAt(i_));
+i_ += 1
+}
+}
 
-            for(let i = 0; i < self_.length; i++) {
-                if(body_(self_.charCodeAt(i))) return true;
-            }
-            return false;
-        
+export function String_eachWhile(self_, body_) {
+let i_ = 0;
+while((i_ < self_.length)) {
+if(body_(self_.charCodeAt(i_))) {
+i_ += 1
+} else {
+i_ = self_.length
+}
+}
 }
 
 export function String_all(self_, body_) {
+let result_ = true;
+ff_core_String.String_eachWhile(self_, ((x_) => {
+result_ = body_(x_);
+return result_
+}));
+return result_
+}
 
-            for(let i = 0; i < self_.length; i++) {
-                if(!body_(self_.charCodeAt(i))) return false;
-            }
-            return true;
-        
+export function String_any(self_, body_) {
+let result_ = false;
+ff_core_String.String_eachWhile(self_, ((x_) => {
+result_ = body_(x_);
+return (!result_)
+}));
+return result_
+}
+
+export function String_find(self_, body_) {
+let result_ = ff_core_Option.None();
+ff_core_String.String_eachWhile(self_, ((x_) => {
+if(body_(x_)) {
+result_ = ff_core_Option.Some(x_);
+return false
+} else {
+return true
+}
+}));
+return result_
+}
+
+export function String_indexWhere(self_, body_) {
+let i_ = (-1);
+let result_ = false;
+ff_core_String.String_eachWhile(self_, ((x_) => {
+i_ += 1;
+result_ = body_(x_);
+return (!result_)
+}));
+if(result_) {
+return ff_core_Option.Some(i_)
+} else return ff_core_Option.None()
 }
 
 export function String_filter(self_, body_) {
-
-            const result = [];
-            for(let i = 0; i < self_.length; i++) {
-                if(body_(self_.charCodeAt(i))) result.push(self_.charAt(i));
-            }
-            return result.join("");
-        
+const result_ = ff_core_Array.new_();
+ff_core_String.String_each(self_, ((x_) => {
+if(body_(x_)) {
+result_.array.push(ff_core_Char.Char_toString(x_))
+}
+}));
+return ff_core_Array.Array_join(result_, "")
 }
 
 export function String_toBuffer(self_) {
-
-            const encoded = new TextEncoder().encode(self_)
-            return new DataView(encoded.buffer, encoded.byteOffset, encoded.byteLength)
-        
+const encoded_ = (new TextEncoder()).encode(self_);
+return (new DataView(encoded_.buffer, encoded_.byteOffset, encoded_.byteLength))
 }
 
 export async function String_size$(self_, $task) {
@@ -459,15 +498,15 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.G
 }
 
 export async function String_contains$(self_, substring_, $task) {
-throw new Error('Function String_contains is missing on this target in async context.');
+return self_.includes(substring_)
 }
 
 export async function String_startsWith$(self_, prefix_, offset_ = 0, $task) {
-throw new Error('Function String_startsWith is missing on this target in async context.');
+return self_.startsWith(prefix_, offset_)
 }
 
 export async function String_endsWith$(self_, prefix_, $task) {
-throw new Error('Function String_endsWith is missing on this target in async context.');
+return self_.endsWith(prefix_)
 }
 
 export async function String_removeFirst$(self_, prefix_, $task) {
@@ -487,43 +526,89 @@ return ff_core_Option.None()
 }
 
 export async function String_padStart$(self_, length_, padding_ = " ", $task) {
-throw new Error('Function String_padStart is missing on this target in async context.');
+return self_.padStart(length_, padding_)
 }
 
 export async function String_padEnd$(self_, length_, padding_ = " ", $task) {
-throw new Error('Function String_padEnd is missing on this target in async context.');
+return self_.padEnd(length_, padding_)
 }
 
-export async function String_any$(self_, body_, $task) {
+export async function String_each$(self_, body_, $task) {
+let i_ = 0;
+while((i_ < self_.length)) {
+(await body_(self_.charCodeAt(i_), $task));
+i_ += 1
+}
+}
 
-            for(let i = 0; i < self_.length; i++) {
-                if(await body_(self_.charCodeAt(i), $task)) return true;
-            }
-            return false;
-        
+export async function String_eachWhile$(self_, body_, $task) {
+let i_ = 0;
+while((i_ < self_.length)) {
+if((await body_(self_.charCodeAt(i_), $task))) {
+i_ += 1
+} else {
+i_ = self_.length
+}
+}
 }
 
 export async function String_all$(self_, body_, $task) {
+let result_ = true;
+(await ff_core_String.String_eachWhile$(self_, (async (x_, $task) => {
+result_ = (await body_(x_, $task));
+return result_
+}), $task));
+return result_
+}
 
-            for(let i = 0; i < self_.length; i++) {
-                if(!await body_(self_.charCodeAt(i), $task)) return false;
-            }
-            return true;
-        
+export async function String_any$(self_, body_, $task) {
+let result_ = false;
+(await ff_core_String.String_eachWhile$(self_, (async (x_, $task) => {
+result_ = (await body_(x_, $task));
+return (!result_)
+}), $task));
+return result_
+}
+
+export async function String_find$(self_, body_, $task) {
+let result_ = ff_core_Option.None();
+(await ff_core_String.String_eachWhile$(self_, (async (x_, $task) => {
+if((await body_(x_, $task))) {
+result_ = ff_core_Option.Some(x_);
+return false
+} else {
+return true
+}
+}), $task));
+return result_
+}
+
+export async function String_indexWhere$(self_, body_, $task) {
+let i_ = (-1);
+let result_ = false;
+(await ff_core_String.String_eachWhile$(self_, (async (x_, $task) => {
+i_ += 1;
+result_ = (await body_(x_, $task));
+return (!result_)
+}), $task));
+if(result_) {
+return ff_core_Option.Some(i_)
+} else return ff_core_Option.None()
 }
 
 export async function String_filter$(self_, body_, $task) {
-
-            const result = [];
-            for(let i = 0; i < self_.length; i++) {
-                if(await body_(self_.charCodeAt(i))) result.push(self_.charAt(i));
-            }
-            return result.join("");
-        
+const result_ = ff_core_Array.new_();
+(await ff_core_String.String_each$(self_, (async (x_, $task) => {
+if((await body_(x_, $task))) {
+result_.array.push(ff_core_Char.Char_toString(x_))
+}
+}), $task));
+return ff_core_Array.Array_join(result_, "")
 }
 
 export async function String_toBuffer$(self_, $task) {
-throw new Error('Function String_toBuffer is missing on this target in async context.');
+const encoded_ = (new TextEncoder()).encode(self_);
+return (new DataView(encoded_.buffer, encoded_.byteOffset, encoded_.byteLength))
 }
 
 export const ff_core_Any_HasAnyTag$ff_core_String_String = {
