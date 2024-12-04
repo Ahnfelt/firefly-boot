@@ -1,4 +1,28 @@
-class Random {}
+nodeMain(system: NodeSystem) {
+    let random = newFromFloat(1337.0)
+    Log.show(random.nextInt(0, 1000000))
+    Log.show(random.nextInt(0, 1000000))
+    Log.show(random.nextInt(0, 1000000))
+    Log.show(random.nextBool())
+    Log.show(random.nextBool())
+    Log.show(random.nextGauss(0.0, 10.0))
+    /* Expected
+    752835
+    831587
+    18552
+    True
+    True
+    2.4907586970694573
+    */
+}
+
+class Random(
+    mutable s0: Float
+    mutable s1: Float
+    mutable s2: Float
+    mutable c: Float
+    mutable spareGauss: Float
+)
 
 // Using Alea PRNG by Johannes Baagøe <baagoe@baagoe.com>, 2010
 // Typical use: Random.seedInstant(system.task().now())
@@ -17,59 +41,57 @@ newFromInstant(seed: Instant): Random {
     newFromFloat(seed.since1970.seconds)
 }
 
-newFromBuffer(buffer: Buffer): Random
-    target js sync """
-        var n = 0xefc8249d;
-        function mash(data) {
-            for(var i = 0; i < data.byteLength; i++) {
-                n += data.getUint8(i);
-                var h = 0.02519603282416938 * n;
-                n = h >>> 0;
-                h -= n;
-                h *= n;
-                n = h >>> 0;
-                h -= n;
-                n += h * 0x100000000; // 2^32
-            }
-            return (n >>> 0) * 2.3283064365386963e-10; // 2^-32
+newFromBuffer(buffer: Buffer): Random {
+    mutable n: Float = (0xefc8249d).toFloat()
+    function mash(data: Buffer): Float {
+        0.until(data.size()).each {i =>
+            n = n + data.grabUint8(i).toFloat()
+            mutable h = 0.02519603282416938 * n
+            n = Js.binaryOperator(">>>", h, 0)?
+            h = h - n
+            h = h * n;
+            n = Js.binaryOperator(">>>", h, 0)?
+            h = h - n
+            n = n + h * 0x100000000 // 2^32
         }
-        var space = new DataView(new Uint8Array([32]).buffer);
-        var r = {
-            s0: mash(space),
-            s1: mash(space),
-            s2: mash(space),
-            c: 1,
-            spareGauss: NaN
-        };
-        r.s0 -= mash(buffer_);
-        if(r.s0 < 0) r.s0 += 1;
-        r.s1 -= mash(buffer_);
-        if(r.s1 < 0) r.s1 += 1;
-        r.s2 -= mash(buffer_);
-        if(r.s2 < 0) r.s2 += 1;
-        return r;
-    """
+        Js.binaryOperator(">>>", n, 0)? * 2.3283064365386963e-10
+    }
+    let space: Buffer = Js->DataView->(Js->Uint8Array->([32])->buffer)?
+    let r = Random(
+        s0 = mash(space)
+        s1 = mash(space)
+        s2 = mash(space)
+        c = 1.0
+        spareGauss = Float.nan()
+    )
+    r.s0 = r.s0 - mash(buffer)
+    if(r.s0 < 0.0) {r.s0 = r.s0 + 1}
+    r.s1 = r.s1 - mash(buffer);
+    if(r.s1 < 0.0) {r.s1 = r.s1 + 1}
+    r.s2 = r.s2 - mash(buffer);
+    if(r.s2 < 0.0) {r.s2 = r.s2 + 1}
+    r
+}
 
 extend self: Random {
     
-    copy(): Random
-        target js sync """
-            return {...self_};
-        """
+    copy(): Random {
+        self.Random()
+    }
 
-    nextInt(from: Int, until: Int): Int
-        target js sync """
-            return Random_nextFloat(self_, from_, until_) | 0;
-        """
+    nextInt(from: Int, until: Int): Int {
+        Js.binaryOperator("|", self.nextFloat(from.toFloat(), until.toFloat())!, 0)?
+    }
 
-    nextFloat(from: Float, until: Float): Float
-        target js sync """
-            var t = 2091639 * self_.s0 + self_.c * 2.3283064365386963e-10; // 2^-32
-            self_.s0 = self_.s1;
-            self_.s1 = self_.s2;
-            var uniform = self_.s2 = t - (self_.c = t | 0);
-            return from_ + uniform * (until_ - from_);
-        """
+    nextFloat(from: Float, until: Float): Float {
+        let t = 2091639 * self.s0 + self.c * 2.3283064365386963e-10
+        self.s0 = self.s1;
+        self.s1 = self.s2;
+        self.c = Js.binaryOperator("|", t, 0)?
+        let uniform = t - self.c
+        self.s2 = uniform
+        from + uniform * (until - from)
+    }
         
     nextBool(): Bool {
         self.nextInt(0, 2) == 0
@@ -81,24 +103,26 @@ extend self: Random {
         }
     }
 
-    nextGauss(mean: Float, standardDeviation: Float): Float
-        target js sync """
-            if(!isNaN(self_.spareGauss)) {
-                const result = self_.spareGauss * standardDeviation_ + mean_;
-                self_.spareGauss = NaN;
-                return result;
-            } else {
-                let u = 0.5, v = 0.5, s = 0.5;
-                do {
-                    u = Random_nextFloat(self_, 0.0, 1.0) * 2 - 1;
-                    v = Random_nextFloat(self_, 0.0, 1.0) * 2 - 1;
-                    s = u * u + v * v;
-                } while(s >= 1 || s == 0);
-                s = Math.sqrt(-2.0 * Math.log(s) / s);
-                self_.spareGauss = v * s;
-                return mean_ + standardDeviation_ * u * s;
+    nextGauss(mean: Float, standardDeviation: Float): Float {
+        if(self.spareGauss.isNan()) {
+            let result = self.spareGauss * standardDeviation + mean
+            self.spareGauss = Float.nan()
+            result
+        } else {
+            mutable u = 0.5
+            mutable v = 0.5
+            mutable s = 0.5
+            doWhile {
+                u = self.nextFloat(0.0, 1.0) * 2 - 1
+                v = self.nextFloat(0.0, 1.0) * 2 - 1
+                s = u * u + v * v
+                s >= 1.0 || s == 0.0
             }
-        """
+            s = (-2.0 * s.ln() / s).sqrt()
+            self.spareGauss = v * s
+            mean + standardDeviation * u * s
+        }
+    }
 
     shuffleArray[T](array: Array[T]): Unit {
         0.until(array.size() - 1).each {i =>
@@ -130,5 +154,5 @@ extend self: Random {
     grabList[T](list: List[T]): T {
         list.grab(self.nextInt(0, list.size()))
     }
-
+    
 }

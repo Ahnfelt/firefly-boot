@@ -121,7 +121,7 @@ extend self: Float {
     }
         
     ln(): Float {
-        Js->Math->ln(self)?
+        Js->Math->log(self)?
     }
         
     ln1p(): Float {

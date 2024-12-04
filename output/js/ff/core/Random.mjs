@@ -93,9 +93,21 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Random
+export function Random(s0_, s1_, s2_, c_, spareGauss_) {
+return {s0_, s1_, s2_, c_, spareGauss_};
+}
 
 
 
+export function nodeMain_(system_) {
+const random_ = ff_core_Random.newFromFloat_(1337.0);
+ff_core_Log.show_(ff_core_Random.Random_nextInt(random_, 0, 1000000), ff_core_Show.ff_core_Show_Show$ff_core_Int_Int);
+ff_core_Log.show_(ff_core_Random.Random_nextInt(random_, 0, 1000000), ff_core_Show.ff_core_Show_Show$ff_core_Int_Int);
+ff_core_Log.show_(ff_core_Random.Random_nextInt(random_, 0, 1000000), ff_core_Show.ff_core_Show_Show$ff_core_Int_Int);
+ff_core_Log.show_(ff_core_Random.Random_nextBool(random_), ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool);
+ff_core_Log.show_(ff_core_Random.Random_nextBool(random_), ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool);
+ff_core_Log.show_(ff_core_Random.Random_nextGauss(random_, 0.0, 10.0), ff_core_Show.ff_core_Show_Show$ff_core_Float_Float)
+}
 
 export function newFromInt_(seed_) {
 return ff_core_Random.newFromFloat_(ff_core_Int.Int_toFloat(seed_))
@@ -112,6 +124,39 @@ return ff_core_Random.newFromFloat_(seed_)
 }
 
 export function newFromBuffer_(buffer_) {
+let n_ = ff_core_Int.Int_toFloat(0xefc8249d);
+function mash_(data_) {
+for(let for_i = 0, for_e = ff_core_Buffer.Buffer_size(data_); for_i < for_e; for_i++) {
+const i_ = for_i;
+n_ = (n_ + ff_core_Int.Int_toFloat(ff_core_Buffer.Buffer_grabUint8(data_, i_)));
+let h_ = (0.02519603282416938 * n_);
+n_ = (h_ >>> 0);
+h_ = (h_ - n_);
+h_ = (h_ * n_);
+n_ = (h_ >>> 0);
+h_ = (h_ - n_);
+n_ = (n_ + (h_ * 0x100000000))
+};
+return ((n_ >>> 0) * 2.3283064365386963e-10)
+}
+const space_ = (new DataView((new Uint8Array([32])).buffer));
+const r_ = ff_core_Random.Random(mash_(space_), mash_(space_), mash_(space_), 1.0, ff_core_Float.nan_());
+r_.s0_ = (r_.s0_ - mash_(buffer_));
+if((r_.s0_ < 0.0)) {
+r_.s0_ = (r_.s0_ + 1)
+};
+r_.s1_ = (r_.s1_ - mash_(buffer_));
+if((r_.s1_ < 0.0)) {
+r_.s1_ = (r_.s1_ + 1)
+};
+r_.s2_ = (r_.s2_ - mash_(buffer_));
+if((r_.s2_ < 0.0)) {
+r_.s2_ = (r_.s2_ + 1)
+};
+return r_
+}
+
+export function newFromBufferOld_(buffer_) {
 
         var n = 0xefc8249d;
         function mash(data) {
@@ -145,6 +190,16 @@ export function newFromBuffer_(buffer_) {
     
 }
 
+export async function nodeMain_$(system_, $task) {
+const random_ = ff_core_Random.newFromFloat_(1337.0);
+ff_core_Log.show_(ff_core_Random.Random_nextInt(random_, 0, 1000000), ff_core_Show.ff_core_Show_Show$ff_core_Int_Int);
+ff_core_Log.show_(ff_core_Random.Random_nextInt(random_, 0, 1000000), ff_core_Show.ff_core_Show_Show$ff_core_Int_Int);
+ff_core_Log.show_(ff_core_Random.Random_nextInt(random_, 0, 1000000), ff_core_Show.ff_core_Show_Show$ff_core_Int_Int);
+ff_core_Log.show_(ff_core_Random.Random_nextBool(random_), ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool);
+ff_core_Log.show_(ff_core_Random.Random_nextBool(random_), ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool);
+ff_core_Log.show_(ff_core_Random.Random_nextGauss(random_, 0.0, 10.0), ff_core_Show.ff_core_Show_Show$ff_core_Float_Float)
+}
+
 export async function newFromInt_$(seed_, $task) {
 return ff_core_Random.newFromFloat_(ff_core_Int.Int_toFloat(seed_))
 }
@@ -160,22 +215,67 @@ return ff_core_Random.newFromFloat_(seed_)
 }
 
 export async function newFromBuffer_$(buffer_, $task) {
-throw new Error('Function newFromBuffer is missing on this target in async context.');
+let n_ = ff_core_Int.Int_toFloat(0xefc8249d);
+function mash_(data_) {
+for(let for_i = 0, for_e = ff_core_Buffer.Buffer_size(data_); for_i < for_e; for_i++) {
+const i_ = for_i;
+n_ = (n_ + ff_core_Int.Int_toFloat(ff_core_Buffer.Buffer_grabUint8(data_, i_)));
+let h_ = (0.02519603282416938 * n_);
+n_ = (h_ >>> 0);
+h_ = (h_ - n_);
+h_ = (h_ * n_);
+n_ = (h_ >>> 0);
+h_ = (h_ - n_);
+n_ = (n_ + (h_ * 0x100000000))
+};
+return ((n_ >>> 0) * 2.3283064365386963e-10)
+}
+const space_ = (new DataView((new Uint8Array([32])).buffer));
+const r_ = ff_core_Random.Random(mash_(space_), mash_(space_), mash_(space_), 1.0, ff_core_Float.nan_());
+r_.s0_ = (r_.s0_ - mash_(buffer_));
+if((r_.s0_ < 0.0)) {
+r_.s0_ = (r_.s0_ + 1)
+};
+r_.s1_ = (r_.s1_ - mash_(buffer_));
+if((r_.s1_ < 0.0)) {
+r_.s1_ = (r_.s1_ + 1)
+};
+r_.s2_ = (r_.s2_ - mash_(buffer_));
+if((r_.s2_ < 0.0)) {
+r_.s2_ = (r_.s2_ + 1)
+};
+return r_
+}
+
+export async function newFromBufferOld_$(buffer_, $task) {
+throw new Error('Function newFromBufferOld is missing on this target in async context.');
 }
 
 export function Random_copy(self_) {
-
-            return {...self_};
-        
+{
+const _1 = self_;
+{
+const _c = _1;
+return ff_core_Random.Random(_c.s0_, _c.s1_, _c.s2_, _c.c_, _c.spareGauss_)
+}
+}
 }
 
 export function Random_nextInt(self_, from_, until_) {
-
-            return Random_nextFloat(self_, from_, until_) | 0;
-        
+return (ff_core_Random.Random_nextFloat(self_, ff_core_Int.Int_toFloat(from_), ff_core_Int.Int_toFloat(until_)) | 0)
 }
 
 export function Random_nextFloat(self_, from_, until_) {
+const t_ = ((2091639 * self_.s0_) + (self_.c_ * 2.3283064365386963e-10));
+self_.s0_ = self_.s1_;
+self_.s1_ = self_.s2_;
+self_.c_ = (t_ | 0);
+const uniform_ = (t_ - self_.c_);
+self_.s2_ = uniform_;
+return (from_ + (uniform_ * (until_ - from_)))
+}
+
+export function Random_nextFloatOld(self_, from_, until_) {
 
             var t = 2091639 * self_.s0 + self_.c * 2.3283064365386963e-10; // 2^-32
             self_.s0 = self_.s1;
@@ -197,6 +297,27 @@ ff_core_Buffer.Buffer_setUint8(buffer_, i_, ff_core_Random.Random_nextInt(self_,
 }
 
 export function Random_nextGauss(self_, mean_, standardDeviation_) {
+if(ff_core_Float.Float_isNan(self_.spareGauss_)) {
+const result_ = ((self_.spareGauss_ * standardDeviation_) + mean_);
+self_.spareGauss_ = ff_core_Float.nan_();
+return result_
+} else {
+let u_ = 0.5;
+let v_ = 0.5;
+let s_ = 0.5;
+while(true) {
+u_ = ((ff_core_Random.Random_nextFloat(self_, 0.0, 1.0) * 2) - 1);
+v_ = ((ff_core_Random.Random_nextFloat(self_, 0.0, 1.0) * 2) - 1);
+s_ = ((u_ * u_) + (v_ * v_))
+if(!((s_ >= 1.0) || (s_ === 0.0))) break
+};
+s_ = ff_core_Float.Float_sqrt((((-2.0) * ff_core_Float.Float_log2(s_)) / s_));
+self_.spareGauss_ = (v_ * s_);
+return (mean_ + ((standardDeviation_ * u_) * s_))
+}
+}
+
+export function Random_nextGaussOld(self_, mean_, standardDeviation_) {
 
             if(!isNaN(self_.spareGauss)) {
                 const result = self_.spareGauss * standardDeviation_ + mean_;
@@ -252,15 +373,31 @@ return ff_core_List.List_grab(list_, ff_core_Random.Random_nextInt(self_, 0, lis
 }
 
 export async function Random_copy$(self_, $task) {
-throw new Error('Function Random_copy is missing on this target in async context.');
+{
+const _1 = self_;
+{
+const _c = _1;
+return ff_core_Random.Random(_c.s0_, _c.s1_, _c.s2_, _c.c_, _c.spareGauss_)
+}
+}
 }
 
 export async function Random_nextInt$(self_, from_, until_, $task) {
-throw new Error('Function Random_nextInt is missing on this target in async context.');
+return (ff_core_Random.Random_nextFloat(self_, ff_core_Int.Int_toFloat(from_), ff_core_Int.Int_toFloat(until_)) | 0)
 }
 
 export async function Random_nextFloat$(self_, from_, until_, $task) {
-throw new Error('Function Random_nextFloat is missing on this target in async context.');
+const t_ = ((2091639 * self_.s0_) + (self_.c_ * 2.3283064365386963e-10));
+self_.s0_ = self_.s1_;
+self_.s1_ = self_.s2_;
+self_.c_ = (t_ | 0);
+const uniform_ = (t_ - self_.c_);
+self_.s2_ = uniform_;
+return (from_ + (uniform_ * (until_ - from_)))
+}
+
+export async function Random_nextFloatOld$(self_, from_, until_, $task) {
+throw new Error('Function Random_nextFloatOld is missing on this target in async context.');
 }
 
 export async function Random_nextBool$(self_, $task) {
@@ -275,7 +412,28 @@ ff_core_Buffer.Buffer_setUint8(buffer_, i_, ff_core_Random.Random_nextInt(self_,
 }
 
 export async function Random_nextGauss$(self_, mean_, standardDeviation_, $task) {
-throw new Error('Function Random_nextGauss is missing on this target in async context.');
+if(ff_core_Float.Float_isNan(self_.spareGauss_)) {
+const result_ = ((self_.spareGauss_ * standardDeviation_) + mean_);
+self_.spareGauss_ = ff_core_Float.nan_();
+return result_
+} else {
+let u_ = 0.5;
+let v_ = 0.5;
+let s_ = 0.5;
+while(true) {
+u_ = ((ff_core_Random.Random_nextFloat(self_, 0.0, 1.0) * 2) - 1);
+v_ = ((ff_core_Random.Random_nextFloat(self_, 0.0, 1.0) * 2) - 1);
+s_ = ((u_ * u_) + (v_ * v_))
+if(!((s_ >= 1.0) || (s_ === 0.0))) break
+};
+s_ = ff_core_Float.Float_sqrt((((-2.0) * ff_core_Float.Float_log2(s_)) / s_));
+self_.spareGauss_ = (v_ * s_);
+return (mean_ + ((standardDeviation_ * u_) * s_))
+}
+}
+
+export async function Random_nextGaussOld$(self_, mean_, standardDeviation_, $task) {
+throw new Error('Function Random_nextGaussOld is missing on this target in async context.');
 }
 
 export async function Random_shuffleArray$(self_, array_, $task) {

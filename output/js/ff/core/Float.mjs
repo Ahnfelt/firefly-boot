@@ -303,8 +303,8 @@ export function Float_log2(self_) {
 return Math.log2(self_)
 }
 
-export function Float_ln(self_) {
-return Math.ln(self_)
+export function Float_lg(self_) {
+return Math.log(self_)
 }
 
 export function Float_ln1p(self_) {
@@ -461,8 +461,8 @@ export async function Float_log2$(self_, $task) {
 return Math.log2(self_)
 }
 
-export async function Float_ln$(self_, $task) {
-return Math.ln(self_)
+export async function Float_lg$(self_, $task) {
+return Math.log(self_)
 }
 
 export async function Float_ln1p$(self_, $task) {
