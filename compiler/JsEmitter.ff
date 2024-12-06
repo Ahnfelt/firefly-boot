@@ -214,7 +214,7 @@ extend self: JsEmitter {
                         | _ => False
                     }
                 } =>
-                    let body = self.emitTailCall {self.emitStatements(matchCase.body, True, async)}
+                    let body = self.emitTailCall {self.emitStatements(matchCase.body, True, False, async)}
                     signature + " {\n" + body + "\n}"
                 | Lambda(_, effect, cases) =>
                     Patterns.convertAndCheck(self.otherModules, cases)
@@ -337,7 +337,7 @@ extend self: JsEmitter {
             let controller = if(newAsync) {["$task"]} else {[]}
             let parameters = [...patternParameters, ...controller].join(", ")
             let prefix = if(newAsync) {"async "} else {""}
-            "(" + prefix + "(" + parameters + ") => {\n" + self.emitStatements(body, True, newAsync) + "\n})"
+            "(" + prefix + "(" + parameters + ") => {\n" + self.emitStatements(body, True, False, newAsync) + "\n})"
         | ELambda(at, Lambda(_, effect, cases)) =>
             let newAsync = self.emittingAsync && effectTypeIsAsync(effect)
             let controller = if(newAsync) {["$task"]} else {[]}
@@ -412,9 +412,9 @@ extend self: JsEmitter {
             if(index == 0) {fail(at, "Unbound wildcard")}
             "_w" + index
         | _ {async} =>
-            "(await (async function() {\n" + self.emitStatements(term, True, async) + "\n})())"
+            "(await (async function() {\n" + self.emitStatements(term, True, False, async) + "\n})())"
         | _ =>
-            "(function() {\n" + self.emitStatements(term, True, async) + "\n})()"
+            "(function() {\n" + self.emitStatements(term, True, False, async) + "\n})()"
     }}
     
     emitField(term: Term, async: Bool, dot: String = "."): String {
@@ -436,25 +436,26 @@ extend self: JsEmitter {
         }
     }
 
-    emitStatements(term: Term, last: Bool, async: Bool): String {
+    emitStatements(term: Term, last: Bool, break: Bool, async: Bool): String {
         term.{
             | EFunctions(at, functions, body) =>
                 let functionStrings = functions.map {f =>
                     let newAsync = self.emittingAsync && effectTypeIsAsync(f.signature.effect)
                     self.emitFunctionDefinition(f, newAsync)
                 }
-                functionStrings.join("\n") + "\n" + self.emitStatements(body, last, async)
+                functionStrings.join("\n") + "\n" + self.emitStatements(body, last, break, async)
             | ELet(at, mutable, name, valueType, value, body) =>
                 self.emitLetDefinition(DLet(at, name, valueType, value), mutable, async) + "\n" +
-                self.emitStatements(body, last, async)
+                self.emitStatements(body, last, break, async)
             | EVariant(at, "ff:core/Unit.Unit", _, _) =>
                 ""
             | ESequential(_, EVariant(_, "ff:core/Unit.Unit", _, _), after) =>
-                self.emitStatements(after, last, async)
+                self.emitStatements(after, last, break, async)
             | ESequential(_, before, EVariant(_, "ff:core/Unit.Unit", _, _)) =>
-                self.emitStatements(before, False, async)
+                self.emitStatements(before, False, break, async)
             | ESequential(at, before, after) =>
-                self.emitStatements(before, False, async) + ";\n" + self.emitStatements(after, last, async)
+                self.emitStatements(before, False, False, async) + ";\n" + 
+                self.emitStatements(after, last, break, async)
             | EAssign(at, operator, name, value) =>
                 escapeKeyword(name) + " " + operator + "= " + self.emitTerm(value, async)
             | EAssignField(at, operator, record, field, value) =>
@@ -483,17 +484,23 @@ extend self: JsEmitter {
             | _ =>
                 detectIfElse(term).{
                     | [] =>
-                        if(last) {"return " + self.emitTerm(term, async)} else {self.emitTerm(term, async)}
+                        if(break) {
+                            "if(!" + self.emitComma(term, async) + ") break"
+                        } elseIf {last} {
+                            "return " + self.emitTerm(term, async)
+                        } else {
+                            self.emitTerm(term, async)
+                        }
                     | [Pair(EVariant(_, "ff:core/Bool.True", _, _), elseBody), ...list] =>
-                        let initial = "{\n" + self.emitStatements(elseBody, last, async) + "\n}"
+                        let initial = "{\n" + self.emitStatements(elseBody, last, break, async) + "\n}"
                         list.foldLeft(initial) {| otherwise, Pair(condition, body) =>
                             "if(" + self.emitTerm(condition, async) + ") {\n" +
-                            self.emitStatements(body, last, async) + "\n} else " + otherwise
+                            self.emitStatements(body, last, break, async) + "\n} else " + otherwise
                         }
                     | list {!last} =>
                         list.foldLeft("{}") {| otherwise, Pair(condition, body) =>
                             "if(" + self.emitTerm(condition, async) + ") {\n" +
-                            self.emitStatements(body, last, async) + "\n} else " + otherwise
+                            self.emitStatements(body, last, break, async) + "\n} else " + otherwise
                         }
                     | list =>
                         list.foldLeft("return ff_core_Option.None()") {| otherwise, Pair(condition, body) =>
@@ -613,7 +620,7 @@ extend self: JsEmitter {
                 }
                 Some(
                     "async (" + patternParameters.join(", ") + ") => {\n" + 
-                    self.emitStatements(body, True, False) + 
+                    self.emitStatements(body, True, False, False) + 
                     "\n}"
                 )
             | name {name.startsWith("ff:core/Js.async")} =>
@@ -789,28 +796,23 @@ extend self: JsEmitter {
             | "ff:core/Core.while" {arguments | [condition, body]} =>
                 Some(
                     "while(" + self.emitComma(invokeImmediately(condition), async) + ") {\n" +
-                    self.emitStatements(invokeImmediately(body), False, async) + "\n}"
-                )
-            | "ff:core/Core.doWhile" {arguments | [doWhileBody]} {
-                invokeImmediately(doWhileBody) | ESequential(_, body, condition)
-            } =>
-                Some(
-                    "while(true) {\n" +
-                    self.emitStatements(body, False, async) +
-                    "\nif(!" + self.emitComma(condition, async) + ") break" +
-                    "\n}"
+                    self.emitStatements(invokeImmediately(body), False, False, async) + "\n}"
                 )
             | "ff:core/Core.doWhile" {arguments | [doWhileBody]} {
                 invokeImmediately(doWhileBody) | body
             } =>
-                Some("while(" + self.emitComma(body, async) + ") {}")
+                Some(
+                    "while(true) {\n" +
+                    self.emitStatements(body, False, True, async) +
+                    "\n}"
+                )
             | "ff:core/Option.Option_each" {arguments | [list, ELambda(_, Lambda(_, _, [
                 MatchCase(_, [PVariable(_, name)], [], body)
             ]))]} =>
                 Some(
                     "for(const for_o = " + self.emitTerm(list, async) + "; for_o.Some;) {\n" +
                         name.map {"const " + escapeKeyword(_) + " = for_o.value_;\n"}.else {""} +
-                        self.emitStatements(body, last, async) +
+                        self.emitStatements(body, last, False, async) +
                     "\nbreak\n}"
                 )
             | "ff:core/List.List_each" {arguments | [
@@ -824,7 +826,7 @@ extend self: JsEmitter {
                     "for(let " +
                     "for_i = " + startCode + ", for_e = " + endCode + "; for_i " + op + " for_e; for_i++) {\n" +
                         name.map {"const " + escapeKeyword(_) + " = for_i;\n"}.else {""} +
-                        self.emitStatements(body, last, async) +
+                        self.emitStatements(body, last, False, async) +
                     "\n}"
                 )
             | "ff:core/List.List_each" {arguments | [
@@ -840,7 +842,7 @@ extend self: JsEmitter {
                     "for(let " +
                     "for_e = " + startCode + ", for_i = " + endCode + delta + "; for_i >= for_e; for_i--) {\n" +
                         name.map {"const " + escapeKeyword(_) + " = for_i;\n"}.else {""} +
-                        self.emitStatements(body, last, async) +
+                        self.emitStatements(body, last, False, async) +
                     "\n}"
                 )
             | "ff:core/List.List_each" {arguments | [
@@ -863,7 +865,7 @@ extend self: JsEmitter {
                     "; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {\n" +
                         name1.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
                         name2.map {"const " + escapeKeyword(_) + " = for_a2[for_i2];\n"}.else {""} +
-                        self.emitStatements(body, last, async) +
+                        self.emitStatements(body, last, False, async) +
                     "\n}"
                 )
             | "ff:core/List.List_each" {arguments | [
@@ -881,7 +883,7 @@ extend self: JsEmitter {
                     "; for_i < for_l; for_i++) {\n" +
                         name1.map {"const " + escapeKeyword(_) + " = for_i;\n"}.else {""} +
                         name2.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
-                        self.emitStatements(body, last, async) +
+                        self.emitStatements(body, last, False, async) +
                     "\n}"
                 )
             | n {n == "ff:core/List.List_each" || n == "ff:core/Array.Array_each"} {
@@ -895,12 +897,12 @@ extend self: JsEmitter {
                     "for(let for_a = " + listCode + ", for_i = " + start + ", for_l = " + end + 
                     "; for_i < for_l; for_i++) {\n" +
                         name.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
-                        self.emitStatements(body, last, async) +
+                        self.emitStatements(body, last, False, async) +
                     "\n}"
                 )
             | n {n == "ff:core/List.List_eachWhile" || n == "ff:core/Array.Array_eachWhile"} {arguments | [
                 list
-                ELambda(_, Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], ESequential(_, body, condition))]))
+                ELambda(_, Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], body)]))
             ]} =>
                 let fusion = self.emitLightFusion("for_a", list, async)
                 let start = fusion.second.first
@@ -910,8 +912,7 @@ extend self: JsEmitter {
                     "for(let for_a = " + listCode + ", for_i = " + start + ", for_l = " + end + 
                     "; for_i < for_l; for_i++) {\n" +
                         name.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
-                        self.emitStatements(body, last, async) + ";\n" +
-                        "if(!" + self.emitComma(condition, async) + ") break" +
+                        self.emitStatements(body, last, True, async) +
                     "\n}"
                 )
             | n {n == "ff:core/List.List_eachWhile" || n == "ff:core/Array.Array_eachWhile"} {arguments | [
@@ -923,7 +924,7 @@ extend self: JsEmitter {
                     "for(let " +
                     "for_a = " + listCode + ", for_i = 0, for_l = for_a.length" + "; for_i < for_l; for_i++) {\n" +
                         name.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
-                        "if(!" + self.emitComma(condition, async) + ") break" +
+                        self.emitStatements(condition, last, True, async) +
                     "\n}"
                 )
             | "ff:core/Array.Array_push" {arguments | [array, value]} =>
@@ -935,7 +936,7 @@ extend self: JsEmitter {
                         "return ff_core_Option.Some(" + self.emitTerm(invokeImmediately(body), async) +
                         ")\n} else return ff_core_Option.None()"
                     } else {
-                        self.emitStatements(invokeImmediately(body), False, async) + "\n}"
+                        self.emitStatements(invokeImmediately(body), False, False, async) + "\n}"
                     }
                 )
             | "ff:core/Core.throw" {term | ECall c} {c.arguments | [argument]} {dictionaries | [dictionary]} =>
@@ -1038,8 +1039,8 @@ extend self: JsEmitter {
                 let tryAsync = self.emittingAsync && effectTypeIsAsync(tryEffect)
                 let finallyAsync = self.emittingAsync && effectTypeIsAsync(finallyEffect)
                 Some(
-                    "try {\n" + self.emitStatements(tryBody, last, tryAsync) +
-                    "\n} finally {\n" + self.emitStatements(finallyBody, last, finallyAsync) + "\n}"
+                    "try {\n" + self.emitStatements(tryBody, last, False, tryAsync) +
+                    "\n} finally {\n" + self.emitStatements(finallyBody, last, False, finallyAsync) + "\n}"
                 )
             | ECall(_, StaticCall("ff:core/Try.Try_catchAny", _, _), _, _, [
                 Argument(_, _, ECall(_, StaticCall("ff:core/Core.try", _, _), _, _, [
@@ -1050,9 +1051,9 @@ extend self: JsEmitter {
                 let tryAsync = self.emittingAsync && effectTypeIsAsync(tryEffect)
                 Some(
                     "try {\n" + 
-                        self.emitStatements(tryBody, last, tryAsync) +
+                        self.emitStatements(tryBody, last, False, tryAsync) +
                     "\n} catch" + name.map {"(" + escapeKeyword(_) + ")"}.else {""} + " {\n" +
-                        self.emitStatements(catchBody, last, tryAsync) +
+                        self.emitStatements(catchBody, last, False, tryAsync) +
                     "\n}"
                 )
             | ECall(_, StaticCall("ff:core/Try.Try_catch", _, _), _, _, [
@@ -1064,7 +1065,7 @@ extend self: JsEmitter {
                 let tryAsync = self.emittingAsync && effectTypeIsAsync(tryEffect)
                 let d = self.emitDictionary(dictionary)
                 Some(
-                    "try {\n" + self.emitStatements(tryBody, last, tryAsync) +
+                    "try {\n" + self.emitStatements(tryBody, last, False, tryAsync) +
                     "\n} catch(_error) {\n" +
                         "if(!_error.ffException) throw _error\n" +
                         "const _exception = ff_core_Any.fromAny_(_error.ffException, " + d + ")\n" +
@@ -1085,13 +1086,13 @@ extend self: JsEmitter {
                 let finallyAsync = self.emittingAsync && effectTypeIsAsync(finallyEffect)
                 let d = self.emitDictionary(dictionary)
                 Some(
-                    "try {\n" + self.emitStatements(tryBody, last, tryAsync) +
+                    "try {\n" + self.emitStatements(tryBody, last, False, tryAsync) +
                     "\n} catch(_error) {\n" +
                         "if(!_error.ffException) throw _error\n" +
                         "const _exception = ff_core_Any.fromAny_(_error.ffException, " + d + ")\n" +
                         "if(!_exception.Some) throw _error\n" +
                         emitCatch(catchEffect, cases) +
-                    "\n} finally {\n" + self.emitStatements(finallyBody, last, finallyAsync) + "\n}"
+                    "\n} finally {\n" + self.emitStatements(finallyBody, last, False, finallyAsync) + "\n}"
                 )
             | _ =>
                 None
@@ -1143,7 +1144,7 @@ extend self: JsEmitter {
                     self.emitCase([guardName], newCase, [], [], jump, last, async)
                 emitWrapper(code)
             | Pair([], []) =>
-                let statementsCode = self.emitStatements(matchCase.body, last, async)
+                let statementsCode = self.emitStatements(matchCase.body, last, False, async)
                 let lastLine = statementsCode.reverse().takeWhile {_ != '\n'}.reverse()
                 let returns = 
                     lastLine.startsWith("return ") || 
@@ -1298,20 +1299,20 @@ extend self: JsEmitter {
             | ESequential(_, ESequential(_, ESequential(_, before1, before2), before3), after) {
                 safeCommable(before1) && safeCommable(before2) && safeCommable(before3) && safeCommable(after)
             } =>
-                "(" + self.emitStatements(before1, False, async) + ", " + 
-                self.emitStatements(before2, False, async) + ", " + 
-                self.emitStatements(before3, False, async) + ", " + 
+                "(" + self.emitStatements(before1, False, False, async) + ", " + 
+                self.emitStatements(before2, False, False, async) + ", " + 
+                self.emitStatements(before3, False, False, async) + ", " + 
                 self.emitTerm(after, async) + ")"
             | ESequential(_, ESequential(_, before1, before2), after) {
                 safeCommable(before1) && safeCommable(before2) && safeCommable(after)
             } =>
-                "(" + self.emitStatements(before1, False, async) + ", " + 
-                self.emitStatements(before2, False, async) + ", " + 
+                "(" + self.emitStatements(before1, False, False, async) + ", " + 
+                self.emitStatements(before2, False, False, async) + ", " + 
                 self.emitTerm(after, async) + ")"
             | ESequential(_, before, after) {
                 safeCommable(before) && safeCommable(after)
             } =>
-                "(" + self.emitStatements(before, False, async) + ", " + 
+                "(" + self.emitStatements(before, False, False, async) + ", " + 
                 self.emitTerm(after, async) + ")"
             | _ =>
                 self.emitTerm(term, async)

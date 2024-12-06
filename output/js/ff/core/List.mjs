@@ -413,9 +413,12 @@ export function List_find(self_, body_) {
 let result_ = ff_core_Option.None();
 for(let for_a = self_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
-if(!(body_(x_)
-? (result_ = ff_core_Option.Some(x_), false)
-: true)) break
+if(body_(x_)) {
+result_ = ff_core_Option.Some(x_);
+if(!false) break
+} else {
+if(!true) break
+}
 };
 return result_
 }
@@ -486,16 +489,19 @@ export function List_collectFirst(self_, body_) {
 let result_ = ff_core_Option.None();
 for(let for_a = self_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
-if(!(((_1) => {
+do {
+const _1 = body_(x_);
 if(_1.None) {
-return true
+true
+break
 }
 {
 const o_ = _1;
 result_ = o_;
-return false
+false
+break
 }
-}))(body_(x_))) break
+} while(false)
 };
 return result_
 }
@@ -789,9 +795,12 @@ export async function List_find$(self_, body_, $task) {
 let result_ = ff_core_Option.None();
 for(let for_a = self_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
-if(!((await body_(x_, $task))
-? (result_ = ff_core_Option.Some(x_), false)
-: true)) break
+if((await body_(x_, $task))) {
+result_ = ff_core_Option.Some(x_);
+if(!false) break
+} else {
+if(!true) break
+}
 };
 return result_
 }
@@ -862,16 +871,19 @@ export async function List_collectFirst$(self_, body_, $task) {
 let result_ = ff_core_Option.None();
 for(let for_a = self_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
-if(!(((_1) => {
+do {
+const _1 = (await body_(x_, $task));
 if(_1.None) {
-return true
+true
+break
 }
 {
 const o_ = _1;
 result_ = o_;
-return false
+false
+break
 }
-}))((await body_(x_, $task)))) break
+} while(false)
 };
 return result_
 }

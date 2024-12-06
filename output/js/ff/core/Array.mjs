@@ -347,9 +347,12 @@ export function Array_find(self_, body_) {
 let result_ = ff_core_Option.None();
 for(let for_a = self_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
-if(!(body_(x_)
-? (result_ = ff_core_Option.Some(x_), false)
-: true)) break
+if(body_(x_)) {
+result_ = ff_core_Option.Some(x_);
+if(!false) break
+} else {
+if(!true) break
+}
 };
 return result_
 }
@@ -564,9 +567,12 @@ export async function Array_find$(self_, body_, $task) {
 let result_ = ff_core_Option.None();
 for(let for_a = self_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
-if(!((await body_(x_, $task))
-? (result_ = ff_core_Option.Some(x_), false)
-: true)) break
+if((await body_(x_, $task))) {
+result_ = ff_core_Option.Some(x_);
+if(!false) break
+} else {
+if(!true) break
+}
 };
 return result_
 }

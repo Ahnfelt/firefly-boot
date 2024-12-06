@@ -240,7 +240,7 @@ let s_ = 0.5;
 while(true) {
 u_ = ((ff_core_Random.Random_nextFloat(self_, 0.0, 1.0) * 2) - 1);
 v_ = ((ff_core_Random.Random_nextFloat(self_, 0.0, 1.0) * 2) - 1);
-s_ = ((u_ * u_) + (v_ * v_))
+s_ = ((u_ * u_) + (v_ * v_));
 if(!((s_ >= 1.0) || (s_ === 0.0))) break
 };
 s_ = ff_core_Float.Float_sqrt((((-2.0) * ff_core_Float.Float_ln(s_)) / s_));
@@ -331,7 +331,7 @@ let s_ = 0.5;
 while(true) {
 u_ = ((ff_core_Random.Random_nextFloat(self_, 0.0, 1.0) * 2) - 1);
 v_ = ((ff_core_Random.Random_nextFloat(self_, 0.0, 1.0) * 2) - 1);
-s_ = ((u_ * u_) + (v_ * v_))
+s_ = ((u_ * u_) + (v_ * v_));
 if(!((s_ >= 1.0) || (s_ === 0.0))) break
 };
 s_ = ff_core_Float.Float_sqrt((((-2.0) * ff_core_Float.Float_ln(s_)) / s_));
