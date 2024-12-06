@@ -2336,7 +2336,10 @@ return ""
 return
 }
 }
-if(_1 === "ff:core/List.List_each") {
+{
+const n_ = _1;
+const _guard3 = ((n_ === "ff:core/List.List_each") || (n_ === "ff:core/List.List_eachWhile"));
+if(_guard3) {
 const _guard2 = arguments_;
 if(_guard2.length === 2 && _guard2[0].ECall && _guard2[0].target_.StaticCall && _guard2[0].arguments_.length === 2 && _guard2[1].ELambda && _guard2[1].lambda_.cases_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_[0].PVariable && _guard2[1].lambda_.cases_[0].guards_.length === 0) {
 const r_ = _guard2[0].target_.name_;
@@ -2354,12 +2357,16 @@ return ff_core_Option.Some((((((((((("for(let " + "for_i = ") + startCode_) + ",
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_i;\n")
 })), (() => {
 return ""
-}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, false, async_)) + "\n}"))
+}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, ff_core_String.String_endsWith(n_, "eachWhile"), async_)) + "\n}"))
 return
 }
 }
 }
-if(_1 === "ff:core/List.List_each") {
+}
+{
+const n_ = _1;
+const _guard3 = ((n_ === "ff:core/List.List_each") || (n_ === "ff:core/List.List_eachWhile"));
+if(_guard3) {
 const _guard2 = arguments_;
 if(_guard2.length === 2 && _guard2[0].ECall && _guard2[0].target_.StaticCall && _guard2[0].target_.name_ === "ff:core/List.List_reverse" && _guard2[0].arguments_.length === 1 && _guard2[0].arguments_[0].value_.ECall && _guard2[0].arguments_[0].value_.target_.StaticCall && _guard2[0].arguments_[0].value_.arguments_.length === 2 && _guard2[1].ELambda && _guard2[1].lambda_.cases_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_[0].PVariable && _guard2[1].lambda_.cases_[0].guards_.length === 0) {
 const r_ = _guard2[0].arguments_[0].value_.target_.name_;
@@ -2377,12 +2384,16 @@ return ff_core_Option.Some(((((((((("for(let " + "for_e = ") + startCode_) + ", 
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_i;\n")
 })), (() => {
 return ""
-}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, false, async_)) + "\n}"))
+}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, ff_core_String.String_endsWith(n_, "eachWhile"), async_)) + "\n}"))
 return
 }
 }
 }
-if(_1 === "ff:core/List.List_each") {
+}
+{
+const n_ = _1;
+const _guard2 = ((n_ === "ff:core/List.List_each") || (n_ === "ff:core/List.List_eachWhile"));
+if(_guard2) {
 const _guard1 = arguments_;
 if(_guard1.length === 2 && _guard1[0].ECall && _guard1[0].target_.StaticCall && _guard1[0].target_.name_ === "ff:core/List.List_zip" && _guard1[0].arguments_.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_[0].PVariant && _guard1[1].lambda_.cases_[0].patterns_[0].name_ === "ff:core/Pair.Pair" && _guard1[1].lambda_.cases_[0].patterns_[0].patterns_.length === 2 && _guard1[1].lambda_.cases_[0].patterns_[0].patterns_[0].PVariable && _guard1[1].lambda_.cases_[0].patterns_[0].patterns_[1].PVariable && _guard1[1].lambda_.cases_[0].guards_.length === 0) {
 const list1_ = _guard1[0].arguments_[0];
@@ -2406,11 +2417,15 @@ return ""
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a2[for_i2];\n")
 })), (() => {
 return ""
-}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, false, async_)) + "\n}"))
+}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, ff_core_String.String_endsWith(n_, "eachWhile"), async_)) + "\n}"))
 return
 }
 }
-if(_1 === "ff:core/List.List_each") {
+}
+{
+const n_ = _1;
+const _guard2 = ((n_ === "ff:core/List.List_each") || (n_ === "ff:core/List.List_eachWhile"));
+if(_guard2) {
 const _guard1 = arguments_;
 if(_guard1.length === 2 && _guard1[0].ECall && _guard1[0].target_.StaticCall && _guard1[0].target_.name_ === "ff:core/List.List_pairs" && _guard1[0].arguments_.length === 1 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_[0].PVariant && _guard1[1].lambda_.cases_[0].patterns_[0].name_ === "ff:core/Pair.Pair" && _guard1[1].lambda_.cases_[0].patterns_[0].patterns_.length === 2 && _guard1[1].lambda_.cases_[0].patterns_[0].patterns_[0].PVariable && _guard1[1].lambda_.cases_[0].patterns_[0].patterns_[1].PVariable && _guard1[1].lambda_.cases_[0].guards_.length === 0) {
 const list_ = _guard1[0].arguments_[0];
@@ -2429,13 +2444,14 @@ return ""
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
 })), (() => {
 return ""
-}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, false, async_)) + "\n}"))
+}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, ff_core_String.String_endsWith(n_, "eachWhile"), async_)) + "\n}"))
 return
+}
 }
 }
 {
 const n_ = _1;
-const _guard2 = ((n_ === "ff:core/List.List_each") || (n_ === "ff:core/Array.Array_each"));
+const _guard2 = ((((n_ === "ff:core/List.List_each") || (n_ === "ff:core/List.List_eachWhile")) || (n_ === "ff:core/Array.Array_each")) || (n_ === "ff:core/Array.Array_eachWhile"));
 if(_guard2) {
 const _guard1 = arguments_;
 if(_guard1.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_[0].PVariable && _guard1[1].lambda_.cases_[0].guards_.length === 0) {
@@ -2452,52 +2468,7 @@ return ff_core_Option.Some(((((((((("for(let for_a = " + listCode_) + ", for_i =
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
 })), (() => {
 return ""
-}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, false, async_)) + "\n}"))
-return
-}
-}
-}
-{
-const n_ = _1;
-const _guard2 = ((n_ === "ff:core/List.List_eachWhile") || (n_ === "ff:core/Array.Array_eachWhile"));
-if(_guard2) {
-const _guard1 = arguments_;
-if(_guard1.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_[0].PVariable && _guard1[1].lambda_.cases_[0].guards_.length === 0) {
-const list_ = _guard1[0];
-const name_ = _guard1[1].lambda_.cases_[0].patterns_[0].name_;
-const body_ = _guard1[1].lambda_.cases_[0].body_;
-const fusion_ = ff_compiler_JsEmitter.JsEmitter_emitLightFusion(self_, "for_a", list_, async_);
-const start_ = fusion_.second_.first_;
-const end_ = fusion_.second_.second_;
-const listCode_ = (fusion_.first_ + (ff_core_String.String_startsWith(n_, "ff:core/Array.", 0)
-? ".array"
-: ""));
-return ff_core_Option.Some(((((((((("for(let for_a = " + listCode_) + ", for_i = ") + start_) + ", for_l = ") + end_) + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
-return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
-})), (() => {
-return ""
-}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, true, async_)) + "\n}"))
-return
-}
-}
-}
-{
-const n_ = _1;
-const _guard2 = ((n_ === "ff:core/List.List_eachWhile") || (n_ === "ff:core/Array.Array_eachWhile"));
-if(_guard2) {
-const _guard1 = arguments_;
-if(_guard1.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_[0].PVariable && _guard1[1].lambda_.cases_[0].guards_.length === 0) {
-const list_ = _guard1[0];
-const name_ = _guard1[1].lambda_.cases_[0].patterns_[0].name_;
-const condition_ = _guard1[1].lambda_.cases_[0].body_;
-const listCode_ = (ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_) + (ff_core_String.String_startsWith(n_, "ff:core/Array.", 0)
-? ".array"
-: ""));
-return ff_core_Option.Some(((((((("for(let " + "for_a = ") + listCode_) + ", for_i = 0, for_l = for_a.length") + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
-return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
-})), (() => {
-return ""
-}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, condition_, last_, true, async_)) + "\n}"))
+}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, ff_core_String.String_endsWith(n_, "eachWhile"), async_)) + "\n}"))
 return
 }
 }
@@ -4826,7 +4797,10 @@ return ""
 return
 }
 }
-if(_1 === "ff:core/List.List_each") {
+{
+const n_ = _1;
+const _guard3 = ((n_ === "ff:core/List.List_each") || (n_ === "ff:core/List.List_eachWhile"));
+if(_guard3) {
 const _guard2 = arguments_;
 if(_guard2.length === 2 && _guard2[0].ECall && _guard2[0].target_.StaticCall && _guard2[0].arguments_.length === 2 && _guard2[1].ELambda && _guard2[1].lambda_.cases_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_[0].PVariable && _guard2[1].lambda_.cases_[0].guards_.length === 0) {
 const r_ = _guard2[0].target_.name_;
@@ -4844,12 +4818,16 @@ return ff_core_Option.Some((((((((((("for(let " + "for_i = ") + startCode_) + ",
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_i;\n")
 })), (() => {
 return ""
-}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, false, async_)) + "\n}"))
+}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, ff_core_String.String_endsWith(n_, "eachWhile"), async_)) + "\n}"))
 return
 }
 }
 }
-if(_1 === "ff:core/List.List_each") {
+}
+{
+const n_ = _1;
+const _guard3 = ((n_ === "ff:core/List.List_each") || (n_ === "ff:core/List.List_eachWhile"));
+if(_guard3) {
 const _guard2 = arguments_;
 if(_guard2.length === 2 && _guard2[0].ECall && _guard2[0].target_.StaticCall && _guard2[0].target_.name_ === "ff:core/List.List_reverse" && _guard2[0].arguments_.length === 1 && _guard2[0].arguments_[0].value_.ECall && _guard2[0].arguments_[0].value_.target_.StaticCall && _guard2[0].arguments_[0].value_.arguments_.length === 2 && _guard2[1].ELambda && _guard2[1].lambda_.cases_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_.length === 1 && _guard2[1].lambda_.cases_[0].patterns_[0].PVariable && _guard2[1].lambda_.cases_[0].guards_.length === 0) {
 const r_ = _guard2[0].arguments_[0].value_.target_.name_;
@@ -4867,12 +4845,16 @@ return ff_core_Option.Some(((((((((("for(let " + "for_e = ") + startCode_) + ", 
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_i;\n")
 })), (() => {
 return ""
-}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, false, async_)) + "\n}"))
+}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, ff_core_String.String_endsWith(n_, "eachWhile"), async_)) + "\n}"))
 return
 }
 }
 }
-if(_1 === "ff:core/List.List_each") {
+}
+{
+const n_ = _1;
+const _guard2 = ((n_ === "ff:core/List.List_each") || (n_ === "ff:core/List.List_eachWhile"));
+if(_guard2) {
 const _guard1 = arguments_;
 if(_guard1.length === 2 && _guard1[0].ECall && _guard1[0].target_.StaticCall && _guard1[0].target_.name_ === "ff:core/List.List_zip" && _guard1[0].arguments_.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_[0].PVariant && _guard1[1].lambda_.cases_[0].patterns_[0].name_ === "ff:core/Pair.Pair" && _guard1[1].lambda_.cases_[0].patterns_[0].patterns_.length === 2 && _guard1[1].lambda_.cases_[0].patterns_[0].patterns_[0].PVariable && _guard1[1].lambda_.cases_[0].patterns_[0].patterns_[1].PVariable && _guard1[1].lambda_.cases_[0].guards_.length === 0) {
 const list1_ = _guard1[0].arguments_[0];
@@ -4896,11 +4878,15 @@ return ""
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a2[for_i2];\n")
 })), (() => {
 return ""
-}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, false, async_)) + "\n}"))
+}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, ff_core_String.String_endsWith(n_, "eachWhile"), async_)) + "\n}"))
 return
 }
 }
-if(_1 === "ff:core/List.List_each") {
+}
+{
+const n_ = _1;
+const _guard2 = ((n_ === "ff:core/List.List_each") || (n_ === "ff:core/List.List_eachWhile"));
+if(_guard2) {
 const _guard1 = arguments_;
 if(_guard1.length === 2 && _guard1[0].ECall && _guard1[0].target_.StaticCall && _guard1[0].target_.name_ === "ff:core/List.List_pairs" && _guard1[0].arguments_.length === 1 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_[0].PVariant && _guard1[1].lambda_.cases_[0].patterns_[0].name_ === "ff:core/Pair.Pair" && _guard1[1].lambda_.cases_[0].patterns_[0].patterns_.length === 2 && _guard1[1].lambda_.cases_[0].patterns_[0].patterns_[0].PVariable && _guard1[1].lambda_.cases_[0].patterns_[0].patterns_[1].PVariable && _guard1[1].lambda_.cases_[0].guards_.length === 0) {
 const list_ = _guard1[0].arguments_[0];
@@ -4919,13 +4905,14 @@ return ""
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
 })), (() => {
 return ""
-}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, false, async_)) + "\n}"))
+}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, ff_core_String.String_endsWith(n_, "eachWhile"), async_)) + "\n}"))
 return
+}
 }
 }
 {
 const n_ = _1;
-const _guard2 = ((n_ === "ff:core/List.List_each") || (n_ === "ff:core/Array.Array_each"));
+const _guard2 = ((((n_ === "ff:core/List.List_each") || (n_ === "ff:core/List.List_eachWhile")) || (n_ === "ff:core/Array.Array_each")) || (n_ === "ff:core/Array.Array_eachWhile"));
 if(_guard2) {
 const _guard1 = arguments_;
 if(_guard1.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_[0].PVariable && _guard1[1].lambda_.cases_[0].guards_.length === 0) {
@@ -4942,52 +4929,7 @@ return ff_core_Option.Some(((((((((("for(let for_a = " + listCode_) + ", for_i =
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
 })), (() => {
 return ""
-}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, false, async_)) + "\n}"))
-return
-}
-}
-}
-{
-const n_ = _1;
-const _guard2 = ((n_ === "ff:core/List.List_eachWhile") || (n_ === "ff:core/Array.Array_eachWhile"));
-if(_guard2) {
-const _guard1 = arguments_;
-if(_guard1.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_[0].PVariable && _guard1[1].lambda_.cases_[0].guards_.length === 0) {
-const list_ = _guard1[0];
-const name_ = _guard1[1].lambda_.cases_[0].patterns_[0].name_;
-const body_ = _guard1[1].lambda_.cases_[0].body_;
-const fusion_ = ff_compiler_JsEmitter.JsEmitter_emitLightFusion(self_, "for_a", list_, async_);
-const start_ = fusion_.second_.first_;
-const end_ = fusion_.second_.second_;
-const listCode_ = (fusion_.first_ + (ff_core_String.String_startsWith(n_, "ff:core/Array.", 0)
-? ".array"
-: ""));
-return ff_core_Option.Some(((((((((("for(let for_a = " + listCode_) + ", for_i = ") + start_) + ", for_l = ") + end_) + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
-return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
-})), (() => {
-return ""
-}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, true, async_)) + "\n}"))
-return
-}
-}
-}
-{
-const n_ = _1;
-const _guard2 = ((n_ === "ff:core/List.List_eachWhile") || (n_ === "ff:core/Array.Array_eachWhile"));
-if(_guard2) {
-const _guard1 = arguments_;
-if(_guard1.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_.length === 1 && _guard1[1].lambda_.cases_[0].patterns_[0].PVariable && _guard1[1].lambda_.cases_[0].guards_.length === 0) {
-const list_ = _guard1[0];
-const name_ = _guard1[1].lambda_.cases_[0].patterns_[0].name_;
-const condition_ = _guard1[1].lambda_.cases_[0].body_;
-const listCode_ = (ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_) + (ff_core_String.String_startsWith(n_, "ff:core/Array.", 0)
-? ".array"
-: ""));
-return ff_core_Option.Some(((((((("for(let " + "for_a = ") + listCode_) + ", for_i = 0, for_l = for_a.length") + "; for_i < for_l; for_i++) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
-return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_a[for_i];\n")
-})), (() => {
-return ""
-}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, condition_, last_, true, async_)) + "\n}"))
+}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, ff_core_String.String_endsWith(n_, "eachWhile"), async_)) + "\n}"))
 return
 }
 }

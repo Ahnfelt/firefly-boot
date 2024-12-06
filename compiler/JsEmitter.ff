@@ -815,7 +815,7 @@ extend self: JsEmitter {
                         self.emitStatements(body, last, False, async) +
                     "\nbreak\n}"
                 )
-            | "ff:core/List.List_each" {arguments | [
+            | n {n == "ff:core/List.List_each" || n == "ff:core/List.List_eachWhile"} {arguments | [
                 ECall(_, StaticCall(r, _, _), _, _, [start, end], _)
                 ELambda(_, Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], body)]))
             ]} {r == "ff:core/Int.Int_until" || r == "ff:core/Int.Int_to"} =>
@@ -826,10 +826,10 @@ extend self: JsEmitter {
                     "for(let " +
                     "for_i = " + startCode + ", for_e = " + endCode + "; for_i " + op + " for_e; for_i++) {\n" +
                         name.map {"const " + escapeKeyword(_) + " = for_i;\n"}.else {""} +
-                        self.emitStatements(body, last, False, async) +
+                        self.emitStatements(body, last, n.endsWith("eachWhile"), async) +
                     "\n}"
                 )
-            | "ff:core/List.List_each" {arguments | [
+            | n {n == "ff:core/List.List_each" || n == "ff:core/List.List_eachWhile"} {arguments | [
                 ECall(_, StaticCall("ff:core/List.List_reverse", _, _), _, _, [
                     Argument(_, _, ECall(_, StaticCall(r, _, _), _, _, [start, end], _))
                 ], _)
@@ -842,10 +842,10 @@ extend self: JsEmitter {
                     "for(let " +
                     "for_e = " + startCode + ", for_i = " + endCode + delta + "; for_i >= for_e; for_i--) {\n" +
                         name.map {"const " + escapeKeyword(_) + " = for_i;\n"}.else {""} +
-                        self.emitStatements(body, last, False, async) +
+                        self.emitStatements(body, last, n.endsWith("eachWhile"), async) +
                     "\n}"
                 )
-            | "ff:core/List.List_each" {arguments | [
+            | n {n == "ff:core/List.List_each" || n == "ff:core/List.List_eachWhile"} {arguments | [
                 ECall(_, StaticCall("ff:core/List.List_zip", _, _), _, _, [list1, list2], _)
                 ELambda(_, Lambda(_, _, [MatchCase(_, [
                     PVariant(_, "ff:core/Pair.Pair", [PVariable(_, name1), PVariable(_, name2)])
@@ -865,10 +865,10 @@ extend self: JsEmitter {
                     "; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {\n" +
                         name1.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
                         name2.map {"const " + escapeKeyword(_) + " = for_a2[for_i2];\n"}.else {""} +
-                        self.emitStatements(body, last, False, async) +
+                        self.emitStatements(body, last, n.endsWith("eachWhile"), async) +
                     "\n}"
                 )
-            | "ff:core/List.List_each" {arguments | [
+            | n {n == "ff:core/List.List_each" || n == "ff:core/List.List_eachWhile"} {arguments | [
                 ECall(_, StaticCall("ff:core/List.List_pairs", _, _), _, _, [list], _)
                 ELambda(_, Lambda(_, _, [MatchCase(_, [
                     PVariant(_, "ff:core/Pair.Pair", [PVariable(_, name1), PVariable(_, name2)])
@@ -883,10 +883,13 @@ extend self: JsEmitter {
                     "; for_i < for_l; for_i++) {\n" +
                         name1.map {"const " + escapeKeyword(_) + " = for_i;\n"}.else {""} +
                         name2.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
-                        self.emitStatements(body, last, False, async) +
+                        self.emitStatements(body, last, n.endsWith("eachWhile"), async) +
                     "\n}"
                 )
-            | n {n == "ff:core/List.List_each" || n == "ff:core/Array.Array_each"} {
+            | n {
+                n == "ff:core/List.List_each" || n == "ff:core/List.List_eachWhile" || 
+                n == "ff:core/Array.Array_each" || n == "ff:core/Array.Array_eachWhile"
+            } {
                 arguments | [list, ELambda(_, Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], body)]))]
             } =>
                 let fusion = self.emitLightFusion("for_a", list, async)
@@ -897,34 +900,7 @@ extend self: JsEmitter {
                     "for(let for_a = " + listCode + ", for_i = " + start + ", for_l = " + end + 
                     "; for_i < for_l; for_i++) {\n" +
                         name.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
-                        self.emitStatements(body, last, False, async) +
-                    "\n}"
-                )
-            | n {n == "ff:core/List.List_eachWhile" || n == "ff:core/Array.Array_eachWhile"} {arguments | [
-                list
-                ELambda(_, Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], body)]))
-            ]} =>
-                let fusion = self.emitLightFusion("for_a", list, async)
-                let start = fusion.second.first
-                let end = fusion.second.second
-                let listCode = fusion.first + if(n.startsWith("ff:core/Array.")) {".array"} else {""}
-                Some(
-                    "for(let for_a = " + listCode + ", for_i = " + start + ", for_l = " + end + 
-                    "; for_i < for_l; for_i++) {\n" +
-                        name.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
-                        self.emitStatements(body, last, True, async) +
-                    "\n}"
-                )
-            | n {n == "ff:core/List.List_eachWhile" || n == "ff:core/Array.Array_eachWhile"} {arguments | [
-                list
-                ELambda(_, Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], condition)]))
-            ]} =>
-                let listCode = self.emitTerm(list, async) + if(n.startsWith("ff:core/Array.")) {".array"} else {""}
-                Some(
-                    "for(let " +
-                    "for_a = " + listCode + ", for_i = 0, for_l = for_a.length" + "; for_i < for_l; for_i++) {\n" +
-                        name.map {"const " + escapeKeyword(_) + " = for_a[for_i];\n"}.else {""} +
-                        self.emitStatements(condition, last, True, async) +
+                        self.emitStatements(body, last, n.endsWith("eachWhile"), async) +
                     "\n}"
                 )
             | "ff:core/Array.Array_push" {arguments | [array, value]} =>
