@@ -765,12 +765,19 @@ extend self: Inference {
         signature: Signature
     ): Term {
         let t = signature.returnType
+        let newValue = self.inferTerm(environment, t, value)
         if(operator == "+" || operator == "-") {
-            self.unification.unify(at, t, TConstructor(at, core("Int"), []))
+            self.unification.substitute(t).{
+                | TConstructor(_, name, _) {
+                    name == core("Int") || name == core("Float") || name == core("String") || name == core("JsValue")
+                } => 
+                    
+                | _ => 
+                    self.unification.unify(at, t, TConstructor(at, core("Int"), []))
+            }
         } elseIf {operator != ""} {
             throw(CompileError(at, "Only +=, -= and = assignments are supported. Got: " + operator + "="))
         }
-        let newValue = self.inferTerm(environment, t, value)
         self.unification.unify(at, expected, TConstructor(at, core("Unit"), []))
         newValue
     }

@@ -1385,12 +1385,25 @@ return
 
 export function Inference_inferAssignment(self_, environment_, expected_, at_, operator_, value_, signature_) {
 const t_ = signature_.returnType_;
+const newValue_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, value_);
 if(((operator_ === "+") || (operator_ === "-"))) {
+do {
+const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_);
+if(_1.TConstructor) {
+const name_ = _1.name_;
+if(((((name_ === ff_compiler_Inference.core_("Int")) || (name_ === ff_compiler_Inference.core_("Float"))) || (name_ === ff_compiler_Inference.core_("String"))) || (name_ === ff_compiler_Inference.core_("JsValue")))) {
+
+break
+}
+}
+{
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, t_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Int"), []))
+break
+}
+} while(false)
 } else if((operator_ !== "")) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, (("Only +=, -= and = assignments are supported. Got: " + operator_) + "=")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else {};
-const newValue_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, value_);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), []));
 return newValue_
 }
@@ -3273,12 +3286,25 @@ return
 
 export async function Inference_inferAssignment$(self_, environment_, expected_, at_, operator_, value_, signature_, $task) {
 const t_ = signature_.returnType_;
+const newValue_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, value_);
 if(((operator_ === "+") || (operator_ === "-"))) {
+do {
+const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_);
+if(_1.TConstructor) {
+const name_ = _1.name_;
+if(((((name_ === ff_compiler_Inference.core_("Int")) || (name_ === ff_compiler_Inference.core_("Float"))) || (name_ === ff_compiler_Inference.core_("String"))) || (name_ === ff_compiler_Inference.core_("JsValue")))) {
+
+break
+}
+}
+{
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, t_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Int"), []))
+break
+}
+} while(false)
 } else if((operator_ !== "")) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, (("Only +=, -= and = assignments are supported. Got: " + operator_) + "=")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else {};
-const newValue_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, value_);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), []));
 return newValue_
 }
