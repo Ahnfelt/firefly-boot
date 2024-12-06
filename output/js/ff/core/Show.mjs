@@ -161,10 +161,10 @@ return ("" + value_)
 
 export const ff_core_Show_Show$ff_core_String_String = {
 show_(value_) {
-return JSON.stringify(value_);
+return JSON.stringify(value_)
 },
 async show_$(value_, $task) {
-throw new Error('Function show is missing on this target in async context.');
+return JSON.stringify(value_)
 }
 };
 
