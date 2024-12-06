@@ -26,8 +26,9 @@ instance Float: Show {
 }
 
 instance String: Show {
-    show(value: String): String
-        target js sync "return JSON.stringify(value_);"
+    show(value: String): String {
+        Js->JSON->stringify(value)?
+    }
 }
 
 instance List[T: Show]: Show {
