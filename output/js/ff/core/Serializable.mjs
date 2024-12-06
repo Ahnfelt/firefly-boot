@@ -125,21 +125,25 @@ return result_
 }
 
 export function internalSetLatin1_(self_, byteOffset_, value_) {
-
-        for(let i = 0; i < value_.length; i++) {
-            let charCode = value_.charCodeAt(i)
-            if(charCode >= 256) return false
-            self_.setUint8(byteOffset_ + i, charCode)
-        }
-        return true
-    
+let result_ = true;
+for(let for_a = ff_core_Int.Int_until(0, value_.length), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_a[for_i];
+if(!(function() {
+const charCode_ = ff_core_String.String_grab(value_, i_);
+if((charCode_ >= 256)) {
+result_ = false
+} else {
+ff_core_Buffer.Buffer_setUint8(self_, (byteOffset_ + i_), charCode_)
+};
+return result_
+})()) break
+};
+return result_
 }
 
 export function internalGrabLatin1_(self_, byteOffset_, size_) {
-
-        const codeUnits = new Uint8Array(self_.buffer, self_.byteOffset + byteOffset_, size_)
-        return String.fromCharCode.apply(null, codeUnits)
-    
+const codeUnits_ = (new Uint8Array(self_.buffer, (self_.byteOffset + byteOffset_), size_));
+return String.fromCharCode.apply(null, codeUnits_)
 }
 
 export async function serialize_$(value_, initialBufferSize_ = 1024, ff_core_Serializable_Serializable$T, $task) {
@@ -162,11 +166,25 @@ return result_
 }
 
 export async function internalSetLatin1_$(self_, byteOffset_, value_, $task) {
-throw new Error('Function internalSetLatin1 is missing on this target in async context.');
+let result_ = true;
+for(let for_a = ff_core_Int.Int_until(0, value_.length), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const i_ = for_a[for_i];
+if(!(await (async function() {
+const charCode_ = ff_core_String.String_grab(value_, i_);
+if((charCode_ >= 256)) {
+result_ = false
+} else {
+ff_core_Buffer.Buffer_setUint8(self_, (byteOffset_ + i_), charCode_)
+};
+return result_
+})())) break
+};
+return result_
 }
 
 export async function internalGrabLatin1_$(self_, byteOffset_, size_, $task) {
-throw new Error('Function internalGrabLatin1 is missing on this target in async context.');
+const codeUnits_ = (new Uint8Array(self_.buffer, (self_.byteOffset + byteOffset_), size_));
+return String.fromCharCode.apply(null, codeUnits_)
 }
 
 export function Serialization_autoResize(self_, minSpareCapacity_) {

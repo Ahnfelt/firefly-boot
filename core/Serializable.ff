@@ -147,18 +147,21 @@ instance String: Serializable {
 }
 
 
-internalSetLatin1(self: Buffer, byteOffset: Int, value: String): Bool
-    target js sync """
-        for(let i = 0; i < value_.length; i++) {
-            let charCode = value_.charCodeAt(i)
-            if(charCode >= 256) return false
-            self_.setUint8(byteOffset_ + i, charCode)
+internalSetLatin1(self: Buffer, byteOffset: Int, value: String): Bool {
+    mutable result = True
+    0.until(value.size()).eachWhile {i =>
+        let charCode = value.grab(i)
+        if(charCode.codeUnit >= 256) {
+            result = False
+        } else {
+            self.setUint8(byteOffset + i, charCode.codeUnit)
         }
-        return true
-    """
+        result
+    }
+    result
+}
 
-internalGrabLatin1(self: Buffer, byteOffset: Int, size: Int): String
-    target js sync """
-        const codeUnits = new Uint8Array(self_.buffer, self_.byteOffset + byteOffset_, size_)
-        return String.fromCharCode.apply(null, codeUnits)
-    """
+internalGrabLatin1(self: Buffer, byteOffset: Int, size: Int): String {
+    let codeUnits = Js->Uint8Array->(self!->buffer, self!->byteOffset + byteOffset!, size)
+    Js->String->fromCharCode->apply(Js.null(), codeUnits)?
+}
