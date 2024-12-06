@@ -128,11 +128,11 @@ export function internalSetLatin1_(self_, byteOffset_, value_) {
 let result_ = true;
 for(let for_i = 0, for_e = value_.length; for_i < for_e; for_i++) {
 const i_ = for_i;
-const charCode_ = ff_core_String.String_grab(value_, i_);
+const charCode_ = value_.charCodeAt(i_);
 if((charCode_ >= 256)) {
 result_ = false
 } else {
-ff_core_Buffer.Buffer_setUint8(self_, (byteOffset_ + i_), charCode_)
+self_.setUint8((byteOffset_ + i_), charCode_)
 };
 if(!result_) break
 };
@@ -167,11 +167,11 @@ export async function internalSetLatin1_$(self_, byteOffset_, value_, $task) {
 let result_ = true;
 for(let for_i = 0, for_e = value_.length; for_i < for_e; for_i++) {
 const i_ = for_i;
-const charCode_ = ff_core_String.String_grab(value_, i_);
+const charCode_ = value_.charCodeAt(i_);
 if((charCode_ >= 256)) {
 result_ = false
 } else {
-ff_core_Buffer.Buffer_setUint8(self_, (byteOffset_ + i_), charCode_)
+self_.setUint8((byteOffset_ + i_), charCode_)
 };
 if(!result_) break
 };

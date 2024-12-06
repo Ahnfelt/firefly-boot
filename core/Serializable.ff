@@ -150,11 +150,11 @@ instance String: Serializable {
 internalSetLatin1(self: Buffer, byteOffset: Int, value: String): Bool {
     mutable result = True
     0.until(value.size()).eachWhile {i =>
-        let charCode = value.grab(i)
-        if(charCode.codeUnit >= 256) {
+        let charCode: Int = value!->charCodeAt(i)?
+        if(charCode >= 256) {
             result = False
         } else {
-            self.setUint8(byteOffset + i, charCode.codeUnit)
+            self!->setUint8(byteOffset + i, charCode)
         }
         result
     }
