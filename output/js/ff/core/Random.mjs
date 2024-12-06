@@ -156,40 +156,6 @@ r_.s2_ = (r_.s2_ + 1)
 return r_
 }
 
-export function newFromBufferOld_(buffer_) {
-
-        var n = 0xefc8249d;
-        function mash(data) {
-            for(var i = 0; i < data.byteLength; i++) {
-                n += data.getUint8(i);
-                var h = 0.02519603282416938 * n;
-                n = h >>> 0;
-                h -= n;
-                h *= n;
-                n = h >>> 0;
-                h -= n;
-                n += h * 0x100000000; // 2^32
-            }
-            return (n >>> 0) * 2.3283064365386963e-10; // 2^-32
-        }
-        var space = new DataView(new Uint8Array([32]).buffer);
-        var r = {
-            s0: mash(space),
-            s1: mash(space),
-            s2: mash(space),
-            c: 1,
-            spareGauss: NaN
-        };
-        r.s0 -= mash(buffer_);
-        if(r.s0 < 0) r.s0 += 1;
-        r.s1 -= mash(buffer_);
-        if(r.s1 < 0) r.s1 += 1;
-        r.s2 -= mash(buffer_);
-        if(r.s2 < 0) r.s2 += 1;
-        return r;
-    
-}
-
 export async function nodeMain_$(system_, $task) {
 const random_ = ff_core_Random.newFromFloat_(1337.0);
 ff_core_Log.show_(ff_core_Random.Random_nextInt(random_, 0, 1000000), ff_core_Show.ff_core_Show_Show$ff_core_Int_Int);
@@ -247,10 +213,6 @@ r_.s2_ = (r_.s2_ + 1)
 return r_
 }
 
-export async function newFromBufferOld_$(buffer_, $task) {
-throw new Error('Function newFromBufferOld is missing on this target in async context.');
-}
-
 export function Random_copy(self_) {
 {
 const _1 = self_;
@@ -273,16 +235,6 @@ self_.c_ = (t_ | 0);
 const uniform_ = (t_ - self_.c_);
 self_.s2_ = uniform_;
 return (from_ + (uniform_ * (until_ - from_)))
-}
-
-export function Random_nextFloatOld(self_, from_, until_) {
-
-            var t = 2091639 * self_.s0 + self_.c * 2.3283064365386963e-10; // 2^-32
-            self_.s0 = self_.s1;
-            self_.s1 = self_.s2;
-            var uniform = self_.s2 = t - (self_.c = t | 0);
-            return from_ + uniform * (until_ - from_);
-        
 }
 
 export function Random_nextBool(self_) {
@@ -311,30 +263,10 @@ v_ = ((ff_core_Random.Random_nextFloat(self_, 0.0, 1.0) * 2) - 1);
 s_ = ((u_ * u_) + (v_ * v_))
 if(!((s_ >= 1.0) || (s_ === 0.0))) break
 };
-s_ = ff_core_Float.Float_sqrt((((-2.0) * ff_core_Float.Float_log2(s_)) / s_));
+s_ = ff_core_Float.Float_sqrt((((-2.0) * ff_core_Float.Float_ln(s_)) / s_));
 self_.spareGauss_ = (v_ * s_);
 return (mean_ + ((standardDeviation_ * u_) * s_))
 }
-}
-
-export function Random_nextGaussOld(self_, mean_, standardDeviation_) {
-
-            if(!isNaN(self_.spareGauss)) {
-                const result = self_.spareGauss * standardDeviation_ + mean_;
-                self_.spareGauss = NaN;
-                return result;
-            } else {
-                let u = 0.5, v = 0.5, s = 0.5;
-                do {
-                    u = Random_nextFloat(self_, 0.0, 1.0) * 2 - 1;
-                    v = Random_nextFloat(self_, 0.0, 1.0) * 2 - 1;
-                    s = u * u + v * v;
-                } while(s >= 1 || s == 0);
-                s = Math.sqrt(-2.0 * Math.log(s) / s);
-                self_.spareGauss = v * s;
-                return mean_ + standardDeviation_ * u * s;
-            }
-        
 }
 
 export function Random_shuffleArray(self_, array_) {
@@ -396,10 +328,6 @@ self_.s2_ = uniform_;
 return (from_ + (uniform_ * (until_ - from_)))
 }
 
-export async function Random_nextFloatOld$(self_, from_, until_, $task) {
-throw new Error('Function Random_nextFloatOld is missing on this target in async context.');
-}
-
 export async function Random_nextBool$(self_, $task) {
 return (ff_core_Random.Random_nextInt(self_, 0, 2) === 0)
 }
@@ -426,14 +354,10 @@ v_ = ((ff_core_Random.Random_nextFloat(self_, 0.0, 1.0) * 2) - 1);
 s_ = ((u_ * u_) + (v_ * v_))
 if(!((s_ >= 1.0) || (s_ === 0.0))) break
 };
-s_ = ff_core_Float.Float_sqrt((((-2.0) * ff_core_Float.Float_log2(s_)) / s_));
+s_ = ff_core_Float.Float_sqrt((((-2.0) * ff_core_Float.Float_ln(s_)) / s_));
 self_.spareGauss_ = (v_ * s_);
 return (mean_ + ((standardDeviation_ * u_) * s_))
 }
-}
-
-export async function Random_nextGaussOld$(self_, mean_, standardDeviation_, $task) {
-throw new Error('Function Random_nextGaussOld is missing on this target in async context.');
 }
 
 export async function Random_shuffleArray$(self_, array_, $task) {

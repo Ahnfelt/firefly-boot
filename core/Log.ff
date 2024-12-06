@@ -2,23 +2,34 @@ show[T: Show](value: T): Unit {
     trace(Show.show(value))
 }
 
-debugDynamic[T](value: T): Unit
-    target js sync "console.debug(value_)"
+debugDynamic[T](value: T): Unit {
+    Js->console->debug(value!)
+}
 
-debug(value: String): Unit
-    target js sync "console.debug(value_)"
+debug(value: String): Unit {
+    Js->console->debug(value)
+}
 
-verbose(value: String): Unit
-    target js sync "console.log(value_)"
+verbose(value: String): Unit {
+    Js->console->log(value)
+}
 
-info(value: String): Unit
-    target js sync "console.info(value_)"
+info(value: String): Unit {
+    Js->console->info(value)
+}
 
-warn(value: String): Unit
-    target js sync "console.warn(value_)"
+warn(value: String): Unit {
+    Js->console->warn(value)
+}
 
-error(value: String): Unit
-    target js sync "console.error(value_)"
+error(value: String): Unit {
+    Js->console->error(value)
+}
 
-trace(value: String): Unit
-    target js sync "process.stderr.write(value_ + String.fromCharCode(10))"
+trace(value: String): Unit {
+    if(Js.inBrowser()) {
+        Js->console->debug(value)
+    } else {
+        Js->process->stderr->write(value + "\n")
+    }
+}

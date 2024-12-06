@@ -125,7 +125,11 @@ console.error(value_)
 }
 
 export function trace_(value_) {
-process.stderr.write(value_ + String.fromCharCode(10))
+if(false) {
+console.debug(value_)
+} else {
+process.stderr.write((value_ + "\n"))
+}
 }
 
 export async function show_$(value_, ff_core_Show_Show$T, $task) {
@@ -133,31 +137,35 @@ ff_core_Log.trace_(ff_core_Show_Show$T.show_(value_))
 }
 
 export async function debugDynamic_$(value_, $task) {
-throw new Error('Function debugDynamic is missing on this target in async context.');
+console.debug(value_)
 }
 
 export async function debug_$(value_, $task) {
-throw new Error('Function debug is missing on this target in async context.');
+console.debug(value_)
 }
 
 export async function verbose_$(value_, $task) {
-throw new Error('Function verbose is missing on this target in async context.');
+console.log(value_)
 }
 
 export async function info_$(value_, $task) {
-throw new Error('Function info is missing on this target in async context.');
+console.info(value_)
 }
 
 export async function warn_$(value_, $task) {
-throw new Error('Function warn is missing on this target in async context.');
+console.warn(value_)
 }
 
 export async function error_$(value_, $task) {
-throw new Error('Function error is missing on this target in async context.');
+console.error(value_)
 }
 
 export async function trace_$(value_, $task) {
-throw new Error('Function trace is missing on this target in async context.');
+if(false) {
+console.debug(value_)
+} else {
+process.stderr.write((value_ + "\n"))
+}
 }
 
 
