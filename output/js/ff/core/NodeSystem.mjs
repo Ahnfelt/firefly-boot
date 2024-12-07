@@ -113,10 +113,6 @@ return {problem_};
 
 
 
-export function internalAssets_(system_) {
-throw new Error('Function internalAssets is missing on this target in sync context.');
-}
-
 export function internalListDirectoryWithoutOpendir_(system_, path_) {
 const fsPromises_ = import$0;
 const nodePath_ = import$1;
@@ -132,10 +128,6 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_NodeSy
 } catch(error_) {
 return error_
 }
-}
-
-export async function internalAssets_$(system_, $task) {
-return system_.assets_
 }
 
 export async function internalListDirectoryWithoutOpendir_$(system_, path_, $task) {
@@ -156,7 +148,7 @@ return error_
 }
 
 export function NodeSystem_arguments(self_) {
-throw new Error('Function NodeSystem_arguments is missing on this target in sync context.');
+return self_["array_"]
 }
 
 export function NodeSystem_assets(self_) {
@@ -175,7 +167,7 @@ return ff_core_Path.Path_readStream(file_)
 }
 return ff_core_AssetSystem.AssetSystem(ff_core_Stream.Stream_toMap(streams_(assetPkgSnapshotPath_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 } else {
-return ff_core_NodeSystem.internalAssets_(self_)
+return self_["assets_"]
 }
 }
 
@@ -190,23 +182,23 @@ return ff_core_Path.Path(nodeUrl_.fileURLToPath((new URL(url_))))
 }
 
 export function NodeSystem_httpClient(self_) {
-throw new Error('Function NodeSystem_httpClient is missing on this target in sync context.');
+return globalThis
 }
 
 export function NodeSystem_mainTask(self_) {
-throw new Error('Function NodeSystem_mainTask is missing on this target in sync context.');
+return self_["task_"]
 }
 
 export function NodeSystem_crypto(self_) {
-throw new Error('Function NodeSystem_crypto is missing on this target in sync context.');
+return globalThis.crypto
 }
 
 export function NodeSystem_js(self_) {
-throw new Error('Function NodeSystem_js is missing on this target in sync context.');
+return globalThis
 }
 
 export function NodeSystem_exit(self_, exitCode_ = 0) {
-throw new Error('Function NodeSystem_exit is missing on this target in sync context.');
+return process.exit(exitCode_)
 }
 
 export function NodeSystem_readStream(self_) {
@@ -216,7 +208,7 @@ return process.stdin
 }
 
 export function NodeSystem_writeBuffer(self_, buffer_) {
-throw new Error('Function NodeSystem_writeBuffer is missing on this target in sync context.');
+process.stdout.write((new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength)))
 }
 
 export function NodeSystem_writeStream(self_, stream_) {
@@ -234,7 +226,7 @@ ff_core_NodeSystem.NodeSystem_writeText(self_, (text_ + "\n"))
 }
 
 export function NodeSystem_writeErrorBuffer(self_, buffer_) {
-throw new Error('Function NodeSystem_writeErrorBuffer is missing on this target in sync context.');
+process.stderr.write((new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength)))
 }
 
 export function NodeSystem_writeErrorStream(self_, stream_) {
@@ -252,7 +244,11 @@ ff_core_NodeSystem.NodeSystem_writeErrorText(self_, (text_ + "\n"))
 }
 
 export function NodeSystem_environment(self_) {
-throw new Error('Function NodeSystem_environment is missing on this target in sync context.');
+let result_ = ff_core_Map.new_();
+ff_core_JsValue.JsValue_each(process.env, ((key_) => {
+result_ = ff_core_Map.Map_add(result_, key_, process.env[key_], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}));
+return result_
 }
 
 export function NodeSystem_execute(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, shell_ = false) {
@@ -260,7 +256,7 @@ throw new Error('Function NodeSystem_execute is missing on this target in sync c
 }
 
 export async function NodeSystem_arguments$(self_, $task) {
-return self_.array_
+return self_["array_"]
 }
 
 export async function NodeSystem_assets$(self_, $task) {
@@ -279,7 +275,7 @@ return (await ff_core_Path.Path_readStream$(file_, $task))
 }
 return ff_core_AssetSystem.AssetSystem((await ff_core_Stream.Stream_toMap$((await streams_$(assetPkgSnapshotPath_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, $task)))
 } else {
-return (await ff_core_NodeSystem.internalAssets_$(self_, $task))
+return self_["assets_"]
 }
 }
 
@@ -294,23 +290,23 @@ return ff_core_Path.Path(nodeUrl_.fileURLToPath((new URL(url_))))
 }
 
 export async function NodeSystem_httpClient$(self_, $task) {
-return typeof globalThis !== 'undefined' ? globalThis : window
+return globalThis
 }
 
 export async function NodeSystem_mainTask$(self_, $task) {
-return self_.task_
+return self_["task_"]
 }
 
 export async function NodeSystem_crypto$(self_, $task) {
-return (typeof globalThis !== 'undefined' ? globalThis : window).crypto
+return globalThis.crypto
 }
 
 export async function NodeSystem_js$(self_, $task) {
-return typeof globalThis !== 'undefined' ? globalThis : window
+return globalThis
 }
 
 export async function NodeSystem_exit$(self_, exitCode_ = 0, $task) {
-process.exit(exitCode_)
+return process.exit(exitCode_)
 }
 
 export async function NodeSystem_readStream$(self_, $task) {
@@ -320,7 +316,7 @@ return process.stdin
 }
 
 export async function NodeSystem_writeBuffer$(self_, buffer_, $task) {
-process.stdout.write(new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength))
+process.stdout.write((new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength)))
 }
 
 export async function NodeSystem_writeStream$(self_, stream_, $task) {
@@ -338,7 +334,7 @@ export async function NodeSystem_writeLine$(self_, text_, $task) {
 }
 
 export async function NodeSystem_writeErrorBuffer$(self_, buffer_, $task) {
-process.stderr.write(new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength))
+process.stderr.write((new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength)))
 }
 
 export async function NodeSystem_writeErrorStream$(self_, stream_, $task) {
@@ -356,13 +352,11 @@ export async function NodeSystem_writeErrorLine$(self_, text_, $task) {
 }
 
 export async function NodeSystem_environment$(self_, $task) {
-
-            const result = [];
-            for(const key in process.env) {
-                result.push(ff_core_Pair.Pair(key, process.env[key]));
-            }
-            return ff_core_List.List_toMap(result, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-        
+let result_ = ff_core_Map.new_();
+ff_core_JsValue.JsValue_each(process.env, ((key_) => {
+result_ = ff_core_Map.Map_add(result_, key_, process.env[key_], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}));
+return result_
 }
 
 export async function NodeSystem_execute$(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, shell_ = false, $task) {
