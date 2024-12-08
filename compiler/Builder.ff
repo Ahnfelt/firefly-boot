@@ -229,37 +229,36 @@ internalCreateExecutable(
     outputPath: Path = ".firefly/output"
     targets: List[String] = ["host"]
     assets: AssetSystem = AssetSystem.create()
-): Unit
-    target node {
-        let assetOutputPath = outputPath.slash("assets")
-        assets.files.pairs().each {| Pair(path, makeStream) =>
-            let p = assetOutputPath.slash(path)
-            p.parent().grab().createDirectory(createParentDirectories = True)
-            p.writeStream(makeStream())
-        }
-        let json = """{
-            "name": "main",
-            "bin": {
-                "firefly-main": "Main.bundle.js"
-            },
-            "devDependencies": {
-                "pkg": "^5.8.0"
-            },
-            "pkg": {
-                "scripts": "Main.bundle.js",
-                "outputPath": "bin",
-                "assets": ["../assets/**/*"],
-                "targets": [
-                    "node18-linux-x64",
-                    "node18-macos-x64",
-                    "node18-win-x64"
-                ]
-            }
-        }"""
-        let packageFile = outputPath.slash("executable/package.json")
-        packageFile.writeText(json)
-        internalCallPkg(self, packageFile, outputPath, targets)
+): Unit {
+    let assetOutputPath = outputPath.slash("assets")
+    assets.files.pairs().each {| Pair(path, makeStream) =>
+        let p = assetOutputPath.slash(path)
+        p.parent().grab().createDirectory(createParentDirectories = True)
+        p.writeStream(makeStream())
     }
+    let json = """{
+        "name": "main",
+        "bin": {
+            "firefly-main": "Main.bundle.js"
+        },
+        "devDependencies": {
+            "pkg": "^5.8.0"
+        },
+        "pkg": {
+            "scripts": "Main.bundle.js",
+            "outputPath": "bin",
+            "assets": ["../assets/**/*"],
+            "targets": [
+                "node18-linux-x64",
+                "node18-macos-x64",
+                "node18-win-x64"
+            ]
+        }
+    }"""
+    let packageFile = outputPath.slash("executable/package.json")
+    packageFile.writeText(json)
+    internalCallPkg(self, packageFile, outputPath, targets)
+}
 
 internalCallPkg(
     self: BuildSystem
