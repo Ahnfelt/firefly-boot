@@ -119,7 +119,7 @@ extend self: NodeSystem {
             o
         }.else {Js->process->env}
         Js.withSignal {signal => Js.awaitCancellablePromise {resolve, reject, onSettle =>
-            let newProcess = Js->childProcess->spawn(command, arguments, Js->(
+            let newProcess = childProcess->spawn(command, arguments, Js->(
                 cwd = directory.map {_.absolutePath!}.else {Js.undefined()}
                 windowsHide = True
                 signal = signal

@@ -264,7 +264,7 @@ return process.env
 }));
 return ff_core_Js.withSignal_(((signal_) => {
 return ff_core_Js.awaitCancellablePromise_(((resolve_, reject_, onSettle_) => {
-const newProcess_ = childProcess.spawn(command_, arguments_, {cwd: ff_core_Option.Option_else(ff_core_Option.Option_map(directory_, ((_w1) => {
+const newProcess_ = childProcess_.spawn(command_, arguments_, {cwd: ff_core_Option.Option_else(ff_core_Option.Option_map(directory_, ((_w1) => {
 return _w1.absolutePath_
 })), (() => {
 return (void 0)
@@ -434,7 +434,7 @@ return process.env
 }));
 return (await ff_core_Js.withSignal_$((async (signal_, $task) => {
 return (await ff_core_Js.awaitCancellablePromise_$(((resolve_, reject_, onSettle_) => {
-const newProcess_ = childProcess.spawn(command_, arguments_, {cwd: ff_core_Option.Option_else(ff_core_Option.Option_map(directory_, ((_w1) => {
+const newProcess_ = childProcess_.spawn(command_, arguments_, {cwd: ff_core_Option.Option_else(ff_core_Option.Option_map(directory_, ((_w1) => {
 return _w1.absolutePath_
 })), (() => {
 return (void 0)
