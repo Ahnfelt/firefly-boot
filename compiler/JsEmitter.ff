@@ -647,6 +647,8 @@ extend self: JsEmitter {
                 Some(self.emitTerm(e, async))
             | "ff:core/Js.fromValue" {arguments | [e]} =>
                 Some(self.emitTerm(e, async))
+            | "ff:core/Js.rawIdentifier" {arguments | [EString(_, op)]} =>
+                Some(op.replace("\"", ""))
             | "ff:core/Js.unaryOperator" {arguments | [EString(_, op), a1]} =>
                 Some("(" + op.replace("\"", "") + self.emitTerm(a1, async) + ")")
             | "ff:core/Js.binaryOperator" {arguments | [EString(_, op), a1, a2]} =>
@@ -1398,7 +1400,6 @@ effectTypeIsAsync(effect: Type): Bool {
 safeBare(quotedString: String): Option[String] {
     // TODO: And not a reserved word in JS
     quotedString.removeFirst("\"").flatMap {_.removeLast("\"")}.filter {s => 
-        s == "$firefly_compiler" || // Workaround for BuildSystem.internalCompile
         s.first().any {_.isAsciiLetter()} && s.all {_.isAsciiLetterOrDigit()}
     }
 }

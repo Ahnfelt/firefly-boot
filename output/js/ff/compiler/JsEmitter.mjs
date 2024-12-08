@@ -332,11 +332,11 @@ export function safeBare_(quotedString_) {
 return ff_core_Option.Option_filter(ff_core_Option.Option_flatMap(ff_core_String.String_removeFirst(quotedString_, "\""), ((_w1) => {
 return ff_core_String.String_removeLast(_w1, "\"")
 })), ((s_) => {
-return ((s_ === "$firefly_compiler") || (ff_core_Option.Option_any(ff_core_String.String_first(s_), ((_w1) => {
+return (ff_core_Option.Option_any(ff_core_String.String_first(s_), ((_w1) => {
 return ff_core_Char.Char_isAsciiLetter(_w1)
 })) && ff_core_String.String_all(s_, ((_w1) => {
 return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
-}))))
+})))
 }))
 }
 
@@ -585,11 +585,11 @@ export async function safeBare_$(quotedString_, $task) {
 return ff_core_Option.Option_filter(ff_core_Option.Option_flatMap(ff_core_String.String_removeFirst(quotedString_, "\""), ((_w1) => {
 return ff_core_String.String_removeLast(_w1, "\"")
 })), ((s_) => {
-return ((s_ === "$firefly_compiler") || (ff_core_Option.Option_any(ff_core_String.String_first(s_), ((_w1) => {
+return (ff_core_Option.Option_any(ff_core_String.String_first(s_), ((_w1) => {
 return ff_core_Char.Char_isAsciiLetter(_w1)
 })) && ff_core_String.String_all(s_, ((_w1) => {
 return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
-}))))
+})))
 }))
 }
 
@@ -1826,6 +1826,13 @@ const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
 return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
+}
+}
+if(_1 === "ff:core/Js.rawIdentifier") {
+const _guard1 = arguments_;
+if(_guard1.length === 1 && _guard1[0].EString) {
+const op_ = _guard1[0].value_;
+return ff_core_Option.Some(ff_core_String.String_replace(op_, "\"", ""))
 }
 }
 if(_1 === "ff:core/Js.unaryOperator") {
@@ -4287,6 +4294,13 @@ const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
 return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
+}
+}
+if(_1 === "ff:core/Js.rawIdentifier") {
+const _guard1 = arguments_;
+if(_guard1.length === 1 && _guard1[0].EString) {
+const op_ = _guard1[0].value_;
+return ff_core_Option.Some(ff_core_String.String_replace(op_, "\"", ""))
 }
 }
 if(_1 === "ff:core/Js.unaryOperator") {
