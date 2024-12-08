@@ -1391,7 +1391,7 @@ do {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_);
 if(_1.TConstructor) {
 const name_ = _1.name_;
-if(((((name_ === ff_compiler_Inference.core_("Int")) || (name_ === ff_compiler_Inference.core_("Float"))) || (name_ === ff_compiler_Inference.core_("JsValue"))) || ((name_ === ff_compiler_Inference.core_("String")) && ((operator_ === "+") || (operator_ === "-"))))) {
+if(((((name_ === ff_compiler_Inference.core_("Int")) || (name_ === ff_compiler_Inference.core_("Float"))) || (name_ === ff_compiler_Inference.core_("JsValue"))) || ((name_ === ff_compiler_Inference.core_("String")) && (operator_ === "+")))) {
 
 break
 }
@@ -3292,7 +3292,7 @@ do {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_);
 if(_1.TConstructor) {
 const name_ = _1.name_;
-if(((((name_ === ff_compiler_Inference.core_("Int")) || (name_ === ff_compiler_Inference.core_("Float"))) || (name_ === ff_compiler_Inference.core_("JsValue"))) || ((name_ === ff_compiler_Inference.core_("String")) && ((operator_ === "+") || (operator_ === "-"))))) {
+if(((((name_ === ff_compiler_Inference.core_("Int")) || (name_ === ff_compiler_Inference.core_("Float"))) || (name_ === ff_compiler_Inference.core_("JsValue"))) || ((name_ === ff_compiler_Inference.core_("String")) && (operator_ === "+")))) {
 
 break
 }

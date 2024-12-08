@@ -99,16 +99,6 @@ return {s0_, s1_, s2_, c_, spareGauss_};
 
 
 
-export function nodeMain_(system_) {
-const random_ = ff_core_Random.newFromFloat_(1337.0);
-ff_core_Log.show_(ff_core_Random.Random_nextInt(random_, 0, 1000000), ff_core_Show.ff_core_Show_Show$ff_core_Int_Int);
-ff_core_Log.show_(ff_core_Random.Random_nextInt(random_, 0, 1000000), ff_core_Show.ff_core_Show_Show$ff_core_Int_Int);
-ff_core_Log.show_(ff_core_Random.Random_nextInt(random_, 0, 1000000), ff_core_Show.ff_core_Show_Show$ff_core_Int_Int);
-ff_core_Log.show_(ff_core_Random.Random_nextBool(random_), ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool);
-ff_core_Log.show_(ff_core_Random.Random_nextBool(random_), ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool);
-ff_core_Log.show_(ff_core_Random.Random_nextGauss(random_, 0.0, 10.0), ff_core_Show.ff_core_Show_Show$ff_core_Float_Float)
-}
-
 export function newFromInt_(seed_) {
 return ff_core_Random.newFromFloat_(ff_core_Int.Int_toFloat(seed_))
 }
@@ -154,16 +144,6 @@ if((r_.s2_ < 0.0)) {
 r_.s2_ += 1.0
 };
 return r_
-}
-
-export async function nodeMain_$(system_, $task) {
-const random_ = ff_core_Random.newFromFloat_(1337.0);
-ff_core_Log.show_(ff_core_Random.Random_nextInt(random_, 0, 1000000), ff_core_Show.ff_core_Show_Show$ff_core_Int_Int);
-ff_core_Log.show_(ff_core_Random.Random_nextInt(random_, 0, 1000000), ff_core_Show.ff_core_Show_Show$ff_core_Int_Int);
-ff_core_Log.show_(ff_core_Random.Random_nextInt(random_, 0, 1000000), ff_core_Show.ff_core_Show_Show$ff_core_Int_Int);
-ff_core_Log.show_(ff_core_Random.Random_nextBool(random_), ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool);
-ff_core_Log.show_(ff_core_Random.Random_nextBool(random_), ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool);
-ff_core_Log.show_(ff_core_Random.Random_nextGauss(random_, 0.0, 10.0), ff_core_Show.ff_core_Show_Show$ff_core_Float_Float)
 }
 
 export async function newFromInt_$(seed_, $task) {
