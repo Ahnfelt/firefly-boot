@@ -1,4 +1,10 @@
-capability WebSocket {}
+capability WebSocket(
+    jsValue: JsValue
+    mutable front: Array[JsValue] 
+    mutable back: Array[JsValue]
+    mutable listeners: Array[Bool => Unit]
+    task: Task
+)
 
 open(browserSystem: BrowserSystem, url: String): WebSocket {
     internalOpenBrowserWebSocket(browserSystem, url)
@@ -14,76 +20,62 @@ extend self: WebSocket {
         self.readAny {_.toBuffer()} {_}
     }
     
-    readAny[T](fromText: String => T, fromBuffer: Buffer => T): Option[T]
-        target browser async """
-            ff_core_Task.Task_throwIfAborted($task);
-            while(self_.ffFront.length === 0) {
-                while(self_.ffBack.length !== 0) {
-                    self_.ffFront.push(self_.ffBack.pop());
-                }
-                if(self_.ffFront.length !== 0) break;
-                if(self_.readyState === 3) return ff_core_Option.None();
-                let abort = null;
-                try {
-                    await new Promise((resolve, reject) => {
-                        self_.ffListeners.push(resolve);
-                        if($task !== self_.ffTask) {
-                            abort = () => {
-                                self_.ffListeners = self_.ffListeners.filter(l => l != resolve);
-                                reject();
-                            };
-                            $task.controller_.signal.addEventListener('abort', abort);
-                        }
-                    });
-                } finally {
-                    if($task !== self_.ffTask) {
-                        $task.controller_.signal.removeEventListener('abort', abort);
+    readAny[T](fromText: String => T, fromBuffer: Buffer => T): Option[T] {
+        Js.throwIfCancelled()
+        doWhile {
+            if(self.front.size() != 0) {False} else:
+            while {self.back.size() != 0} {
+                self.front.push(self.back.pop().grab())
+            }
+            if(self.front.size() != 0) {False} else:
+            if(self.jsValue->readyState === 3) {False} else:
+            Js.awaitCancellablePromise {resolve, reject, onSettle =>
+                self.listeners.push(resolve)
+                onSettle {fulfilled =>
+                    if(!fulfilled) {
+                        self.listeners = self.listeners.drain().filter {_! !== resolve!}.toArray()
                     }
                 }
             }
-            const message = self_.ffFront.pop();
-            if(!(message instanceof MessageEvent)) throw new Error("WebSocket error");
-            const data = message.data;
-            if(typeof data === 'string') return ff_core_Option.Some(await fromText_(data));
-            return ff_core_Option.Some(await fromBuffer_(new DataView(data)));
-        """
+        }
+        if(self.jsValue->readyState === 3) {None} else:
+        let message = self.front.pop().grab()
+        if(!(message.instanceof(Js->MessageEvent))) {Js.throw(Js->Error->("WebSocket error"))}
+        let data = message->data
+        if(data.typeof() == "string") {Some(Js.await(fromText(data?)!)?)} else:
+        Some(Js.await(fromBuffer(Js->DataView->(data)?)!)?)
+    }
+            
+    writeBuffer(data: Buffer): Unit {
+        Js.throwIfCancelled()
+        self.jsValue->send(data)
+    }
 
-    writeBuffer(data: Buffer): Unit
-        target browser async """
-            ff_core_Task.Task_throwIfAborted($task);
-            self_.send(data_);
-        """
-
-    writeText(data: String): Unit
-        target browser async """
-            ff_core_Task.Task_throwIfAborted($task);
-            self_.send(data_);
-        """
+    writeText(data: String): Unit {
+        Js.throwIfCancelled()
+        self.jsValue->send(data)
+    }
         
-    close(code: Int = 1000, reason: String = ""): Unit
-        target browser async """
-            if(self_.readyState === 2 || self_.readyState === 3) return;
-            await new Promise((resolve, reject) => {
-                self_.addEventListener('close', resolve);
-                self_.close(code_, reason !== "" ? reason : void 0);
-            });
-            return;
-        """
+    close(code: Int = 1000, reason: String = ""): Unit {
+        if(self.jsValue->readyState !== 2 && self.jsValue->readyState !== 3) {
+            Js.await(Js->Promise->(Js->{resolve, reject =>
+                self.jsValue->addEventListener("close", resolve)
+                self.jsValue->close(code, if(reason != "") {reason!} else {Js.undefined()})
+            }))
+        }
+    }
 
-    isOpen(): Bool
-        target browser async """
-            return self_.readyState === 1;
-        """
+    isOpen(): Bool {
+        self.jsValue->readyState === 1
+    }
 
-    isClosing(): Bool
-        target browser async """
-            return self_.readyState === 2;
-        """
+    isClosing(): Bool {
+        self.jsValue->readyState === 2
+    }
 
-    isClosed(): Bool
-        target browser async """
-            return self_.readyState === 3;
-        """
+    isClosed(): Bool {
+        self.jsValue->readyState === 3
+    }
 
 }
 
