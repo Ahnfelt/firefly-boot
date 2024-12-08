@@ -249,20 +249,21 @@ importAndRun(
     packagePair: PackagePair
     mainFile: String
     arguments: List[String]
-): Bool
-    target node async """
-        const process = await import('process');
-        const cwd = process.cwd();
-        const workingDirectory = cwd.indexOf(':') == 1 ? 'file:///' + cwd : cwd;
-        const packagePath = packagePair_.group_ + "/" + packagePair_.name_
-        const main = await import(workingDirectory + "/.firefly/output/" + target_ + "/" + packagePath + "/" + mainFile_ + ".mjs");
-        if(typeof main.$run$ !== 'undefined') {
-            await main.$run$(fireflyPath_.absolutePath_, arguments_);
-            return true;
-        } else {
-            return false;
-        }
-    """
+): Bool {
+    let process = Js.await(Js.dynamicImport("process"))
+    let cwd = process->cwd()
+    let workingDirectory = if(cwd->indexOf(":") === 1) {"file:///" + cwd?} else {cwd?}
+    let packagePath = packagePair.group + "/" + packagePair.name
+    let main = Js.await(Js.dynamicImport(
+        workingDirectory + "/.firefly/output/" + target + "/" + packagePath + "/" + mainFile + ".mjs"
+    ))
+    if(main->"$run$".typeof() != "undefined") {
+        main->"$run$"(fireflyPath.absolutePath, arguments)
+        True
+    } else {
+        False
+    }
+}
 
 prepareFireflyDirectory(path: Path) {
     if(!path.slash(".firefly").slash("output").exists()) {

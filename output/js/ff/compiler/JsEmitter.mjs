@@ -1699,9 +1699,9 @@ return
 }
 if(_1 === "ff:core/Js.dynamicImport") {
 const _guard1 = arguments_;
-if(_guard1.length === 1 && _guard1[0].EString) {
-const url_ = _guard1[0].value_;
-return ff_core_Option.Some((("import(" + url_) + ")"))
+if(_guard1.length === 1) {
+const url_ = _guard1[0];
+return ff_core_Option.Some((("import(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, url_, async_)) + ")"))
 }
 }
 if(_1 === "ff:core/Js.await") {
@@ -4167,9 +4167,9 @@ return
 }
 if(_1 === "ff:core/Js.dynamicImport") {
 const _guard1 = arguments_;
-if(_guard1.length === 1 && _guard1[0].EString) {
-const url_ = _guard1[0].value_;
-return ff_core_Option.Some((("import(" + url_) + ")"))
+if(_guard1.length === 1) {
+const url_ = _guard1[0];
+return ff_core_Option.Some((("import(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, url_, async_)) + ")"))
 }
 }
 if(_1 === "ff:core/Js.await") {

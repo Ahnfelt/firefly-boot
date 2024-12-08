@@ -220,6 +220,11 @@ extend self: String {
         result
     }
 
+    indexOf(needle: String, position: Int = 0): Option[Int] {
+        let index = self!->indexOf(needle, position)?
+        if(index != -1) {index}
+    }
+    
     indexWhere(body: Char => Bool): Option[Int] {
         mutable i = -1
         mutable result = False

@@ -601,8 +601,8 @@ extend self: JsEmitter {
                     | EmitBrowser => Some(self.jsImporter.add(url.replace("\"", "")))
                     | _ => Some("(() => {throw new Error('Browser imports are not supported in Node.js')})()")
                 }
-            | "ff:core/Js.dynamicImport" {arguments | [EString(_, url)]} =>
-                Some("import(" + url + ")")
+            | "ff:core/Js.dynamicImport" {arguments | [url]} =>
+                Some("import(" + self.emitTerm(url, async) + ")")
             | "ff:core/Js.await" {arguments | [body]} =>
                 if(async) {
                     Some("(await " + self.emitTerm(body, async) + ")")
