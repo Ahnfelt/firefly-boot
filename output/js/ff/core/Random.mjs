@@ -99,6 +99,16 @@ return {s0_, s1_, s2_, c_, spareGauss_};
 
 
 
+export function nodeMain_(system_) {
+const random_ = ff_core_Random.newFromFloat_(1337.0);
+ff_core_Log.show_(ff_core_Random.Random_nextInt(random_, 0, 1000000), ff_core_Show.ff_core_Show_Show$ff_core_Int_Int);
+ff_core_Log.show_(ff_core_Random.Random_nextInt(random_, 0, 1000000), ff_core_Show.ff_core_Show_Show$ff_core_Int_Int);
+ff_core_Log.show_(ff_core_Random.Random_nextInt(random_, 0, 1000000), ff_core_Show.ff_core_Show_Show$ff_core_Int_Int);
+ff_core_Log.show_(ff_core_Random.Random_nextBool(random_), ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool);
+ff_core_Log.show_(ff_core_Random.Random_nextBool(random_), ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool);
+ff_core_Log.show_(ff_core_Random.Random_nextGauss(random_, 0.0, 10.0), ff_core_Show.ff_core_Show_Show$ff_core_Float_Float)
+}
+
 export function newFromInt_(seed_) {
 return ff_core_Random.newFromFloat_(ff_core_Int.Int_toFloat(seed_))
 }
@@ -118,32 +128,42 @@ let n_ = ff_core_Int.Int_toFloat(0xefc8249d);
 function mash_(data_) {
 for(let for_i = 0, for_e = ff_core_Buffer.Buffer_size(data_); for_i < for_e; for_i++) {
 const i_ = for_i;
-n_ = (n_ + ff_core_Int.Int_toFloat(ff_core_Buffer.Buffer_grabUint8(data_, i_)));
+n_ += ff_core_Int.Int_toFloat(ff_core_Buffer.Buffer_grabUint8(data_, i_));
 let h_ = (0.02519603282416938 * n_);
 n_ = (h_ >>> 0);
-h_ = (h_ - n_);
-h_ = (h_ * n_);
+h_ -= n_;
+h_ *= n_;
 n_ = (h_ >>> 0);
-h_ = (h_ - n_);
-n_ = (n_ + (h_ * 0x100000000))
+h_ -= n_;
+n_ += (h_ * 0x100000000)
 };
 return ((n_ >>> 0) * 2.3283064365386963e-10)
 }
 const space_ = (new DataView((new Uint8Array([32])).buffer));
 const r_ = ff_core_Random.Random(mash_(space_), mash_(space_), mash_(space_), 1.0, ff_core_Float.nan_());
-r_.s0_ = (r_.s0_ - mash_(buffer_));
+r_.s0_ -= mash_(buffer_);
 if((r_.s0_ < 0.0)) {
-r_.s0_ = (r_.s0_ + 1)
+r_.s0_ += 1.0
 };
-r_.s1_ = (r_.s1_ - mash_(buffer_));
+r_.s1_ -= mash_(buffer_);
 if((r_.s1_ < 0.0)) {
-r_.s1_ = (r_.s1_ + 1)
+r_.s1_ += 1.0
 };
-r_.s2_ = (r_.s2_ - mash_(buffer_));
+r_.s2_ -= mash_(buffer_);
 if((r_.s2_ < 0.0)) {
-r_.s2_ = (r_.s2_ + 1)
+r_.s2_ += 1.0
 };
 return r_
+}
+
+export async function nodeMain_$(system_, $task) {
+const random_ = ff_core_Random.newFromFloat_(1337.0);
+ff_core_Log.show_(ff_core_Random.Random_nextInt(random_, 0, 1000000), ff_core_Show.ff_core_Show_Show$ff_core_Int_Int);
+ff_core_Log.show_(ff_core_Random.Random_nextInt(random_, 0, 1000000), ff_core_Show.ff_core_Show_Show$ff_core_Int_Int);
+ff_core_Log.show_(ff_core_Random.Random_nextInt(random_, 0, 1000000), ff_core_Show.ff_core_Show_Show$ff_core_Int_Int);
+ff_core_Log.show_(ff_core_Random.Random_nextBool(random_), ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool);
+ff_core_Log.show_(ff_core_Random.Random_nextBool(random_), ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool);
+ff_core_Log.show_(ff_core_Random.Random_nextGauss(random_, 0.0, 10.0), ff_core_Show.ff_core_Show_Show$ff_core_Float_Float)
 }
 
 export async function newFromInt_$(seed_, $task) {
@@ -165,30 +185,30 @@ let n_ = ff_core_Int.Int_toFloat(0xefc8249d);
 function mash_(data_) {
 for(let for_i = 0, for_e = ff_core_Buffer.Buffer_size(data_); for_i < for_e; for_i++) {
 const i_ = for_i;
-n_ = (n_ + ff_core_Int.Int_toFloat(ff_core_Buffer.Buffer_grabUint8(data_, i_)));
+n_ += ff_core_Int.Int_toFloat(ff_core_Buffer.Buffer_grabUint8(data_, i_));
 let h_ = (0.02519603282416938 * n_);
 n_ = (h_ >>> 0);
-h_ = (h_ - n_);
-h_ = (h_ * n_);
+h_ -= n_;
+h_ *= n_;
 n_ = (h_ >>> 0);
-h_ = (h_ - n_);
-n_ = (n_ + (h_ * 0x100000000))
+h_ -= n_;
+n_ += (h_ * 0x100000000)
 };
 return ((n_ >>> 0) * 2.3283064365386963e-10)
 }
 const space_ = (new DataView((new Uint8Array([32])).buffer));
 const r_ = ff_core_Random.Random(mash_(space_), mash_(space_), mash_(space_), 1.0, ff_core_Float.nan_());
-r_.s0_ = (r_.s0_ - mash_(buffer_));
+r_.s0_ -= mash_(buffer_);
 if((r_.s0_ < 0.0)) {
-r_.s0_ = (r_.s0_ + 1)
+r_.s0_ += 1.0
 };
-r_.s1_ = (r_.s1_ - mash_(buffer_));
+r_.s1_ -= mash_(buffer_);
 if((r_.s1_ < 0.0)) {
-r_.s1_ = (r_.s1_ + 1)
+r_.s1_ += 1.0
 };
-r_.s2_ = (r_.s2_ - mash_(buffer_));
+r_.s2_ -= mash_(buffer_);
 if((r_.s2_ < 0.0)) {
-r_.s2_ = (r_.s2_ + 1)
+r_.s2_ += 1.0
 };
 return r_
 }

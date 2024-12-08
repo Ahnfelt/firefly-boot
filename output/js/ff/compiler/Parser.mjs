@@ -1317,7 +1317,7 @@ if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_comp
 return ff_compiler_Parser.Parser_parseFunctions(self_)
 } else {
 const term_ = ff_compiler_Parser.Parser_parseTerm(self_);
-if(((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssign())) && (!ff_compiler_Token.Token_is2(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssignPlus(), ff_compiler_Token.LAssignMinus())))) {
+if((!ff_compiler_Token.Token_is5(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssign(), ff_compiler_Token.LAssignPlus(), ff_compiler_Token.LAssignMinus(), ff_compiler_Token.LAssignMultiplication(), ff_compiler_Token.LAssignDivision()))) {
 return term_
 } else {
 const token_ = ff_core_Core.do_((() => {
@@ -1327,7 +1327,15 @@ return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignPlus())
 if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssignMinus())) {
 return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignMinus())
 } else {
+if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssignMultiplication())) {
+return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignMultiplication())
+} else {
+if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssignDivision())) {
+return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignDivision())
+} else {
 return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssign())
+}
+}
 }
 }
 }));
@@ -1600,12 +1608,16 @@ break
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
 const target_ = ff_compiler_Syntax.DynamicCall(recordField_(ff_compiler_Token.Token_at(token_), ("call" + arguments_.first_.length)), false);
 return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(member_.at_, ff_core_Option.None(), member_), ...arguments_.first_], [])
-} else if(ff_compiler_Token.Token_is3(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssign(), ff_compiler_Token.LAssignPlus(), ff_compiler_Token.LAssignMinus())) {
+} else if(ff_compiler_Token.Token_is5(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssign(), ff_compiler_Token.LAssignPlus(), ff_compiler_Token.LAssignMinus(), ff_compiler_Token.LAssignMultiplication(), ff_compiler_Token.LAssignDivision())) {
 const method_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssign())
 ? (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssign()), "set")
 : ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssignPlus())
 ? (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignPlus()), "increment")
-: (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignMinus()), "decrement"));
+: ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssignMinus())
+? (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignMinus()), "decrement")
+: ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssignMultiplication())
+? (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignMultiplication()), "multiply")
+: (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignDivision()), "divide"));
 const value_ = ff_compiler_Parser.Parser_parseTerm(self_);
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
 const target_ = ff_compiler_Syntax.DynamicCall(recordField_(ff_compiler_Token.Token_at(token_), method_), false);
@@ -2922,7 +2934,7 @@ if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_comp
 return ff_compiler_Parser.Parser_parseFunctions(self_)
 } else {
 const term_ = ff_compiler_Parser.Parser_parseTerm(self_);
-if(((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssign())) && (!ff_compiler_Token.Token_is2(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssignPlus(), ff_compiler_Token.LAssignMinus())))) {
+if((!ff_compiler_Token.Token_is5(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssign(), ff_compiler_Token.LAssignPlus(), ff_compiler_Token.LAssignMinus(), ff_compiler_Token.LAssignMultiplication(), ff_compiler_Token.LAssignDivision()))) {
 return term_
 } else {
 const token_ = ff_core_Core.do_((() => {
@@ -2932,7 +2944,15 @@ return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignPlus())
 if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssignMinus())) {
 return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignMinus())
 } else {
+if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssignMultiplication())) {
+return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignMultiplication())
+} else {
+if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssignDivision())) {
+return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignDivision())
+} else {
 return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssign())
+}
+}
 }
 }
 }));
@@ -3205,12 +3225,16 @@ break
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
 const target_ = ff_compiler_Syntax.DynamicCall(recordField_(ff_compiler_Token.Token_at(token_), ("call" + arguments_.first_.length)), false);
 return ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(member_.at_, ff_core_Option.None(), member_), ...arguments_.first_], [])
-} else if(ff_compiler_Token.Token_is3(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssign(), ff_compiler_Token.LAssignPlus(), ff_compiler_Token.LAssignMinus())) {
+} else if(ff_compiler_Token.Token_is5(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssign(), ff_compiler_Token.LAssignPlus(), ff_compiler_Token.LAssignMinus(), ff_compiler_Token.LAssignMultiplication(), ff_compiler_Token.LAssignDivision())) {
 const method_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssign())
 ? (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssign()), "set")
 : ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssignPlus())
 ? (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignPlus()), "increment")
-: (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignMinus()), "decrement"));
+: ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssignMinus())
+? (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignMinus()), "decrement")
+: ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LAssignMultiplication())
+? (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignMultiplication()), "multiply")
+: (ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssignDivision()), "divide"));
 const value_ = ff_compiler_Parser.Parser_parseTerm(self_);
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
 const target_ = ff_compiler_Syntax.DynamicCall(recordField_(ff_compiler_Token.Token_at(token_), method_), false);

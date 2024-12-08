@@ -766,17 +766,17 @@ extend self: Inference {
     ): Term {
         let t = signature.returnType
         let newValue = self.inferTerm(environment, t, value)
-        if(operator == "+" || operator == "-") {
+        if(operator == "+" || operator == "-" || operator == "*" || operator == "/") {
             self.unification.substitute(t).{
                 | TConstructor(_, name, _) {
-                    name == core("Int") || name == core("Float") || name == core("String") || name == core("JsValue")
+                    name == core("Int") || name == core("Float") || name == core("JsValue") ||
+                    name == core("String") && (operator == "+" || operator == "-")
                 } => 
-                    
                 | _ => 
                     self.unification.unify(at, t, TConstructor(at, core("Int"), []))
             }
         } elseIf {operator != ""} {
-            throw(CompileError(at, "Only +=, -= and = assignments are supported. Got: " + operator + "="))
+            throw(CompileError(at, "Only +=, -=, *=, /* and = assignments are supported. Got: " + operator + "="))
         }
         self.unification.unify(at, expected, TConstructor(at, core("Unit"), []))
         newValue

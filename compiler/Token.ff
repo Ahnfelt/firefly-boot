@@ -92,6 +92,8 @@ data TokenKind {
     LAssign
     LAssignPlus
     LAssignMinus
+    LAssignMultiplication
+    LAssignDivision
 }
 
 extend self: TokenKind {
@@ -124,6 +126,9 @@ extend self: TokenKind {
             | LAssign => False
             | LAssignPlus => False
             | LAssignMinus => False
+            | LAssignMultiplication => False
+            | LAssignDivision => False
+                            
         }
     }
 
@@ -155,6 +160,8 @@ extend self: TokenKind {
             | LAssign => False
             | LAssignPlus => False
             | LAssignMinus => False
+            | LAssignMultiplication => False
+            | LAssignDivision => False
         }
     }
 
@@ -186,6 +193,8 @@ extend self: TokenKind {
             | LAssign => False
             | LAssignPlus => False
             | LAssignMinus => False
+            | LAssignMultiplication => False
+            | LAssignDivision => False
         }
     }
 

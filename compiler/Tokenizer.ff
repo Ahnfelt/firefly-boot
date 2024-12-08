@@ -263,6 +263,10 @@ tokenize(file: String, code: String, completionAt: Option[Location], attemptFixe
                         LAssignPlus
                     } elseIf {i - start == 2 && code.grab(i - 2) == '-' && code.grab(i - 1) == '='} {
                         LAssignMinus
+                    } elseIf {i - start == 2 && code.grab(i - 2) == '*' && code.grab(i - 1) == '='} {
+                        LAssignMultiplication
+                    } elseIf {i - start == 2 && code.grab(i - 2) == '/' && code.grab(i - 1) == '='} {
+                        LAssignDivision
                     } else {
                         LOperator
                     }

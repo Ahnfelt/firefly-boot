@@ -1025,10 +1025,14 @@ extend self: Parser {
         if(self.current().is(LKeyword) && (self.current().rawIs("let") || self.current().rawIs("mutable"))) {self.parseLet()} else:
         if(self.current().is(LKeyword) && self.current().rawIs("function")) {self.parseFunctions()} else:
         let term = self.parseTerm()
-        if(!self.current().is(LAssign) && !self.current().is2(LAssignPlus, LAssignMinus)) {term} else:
+        if(!self.current().is5(
+            LAssign, LAssignPlus, LAssignMinus, LAssignMultiplication, LAssignDivision
+        )) {term} else:
         let token = do {
             if(self.current().is(LAssignPlus)) {self.skip(LAssignPlus)} else:
             if(self.current().is(LAssignMinus)) {self.skip(LAssignMinus)} else:
+            if(self.current().is(LAssignMultiplication)) {self.skip(LAssignMultiplication)} else:
+            if(self.current().is(LAssignDivision)) {self.skip(LAssignDivision)} else:
             self.skip(LAssign)
         }
         let operator = token.raw().dropLast(1)
@@ -1253,7 +1257,7 @@ extend self: Parser {
                 Argument(member.at, None, member)
                 ...arguments.first
             ], [])
-        } elseIf {self.current().is3(LAssign, LAssignPlus, LAssignMinus)} {
+        } elseIf {self.current().is5(LAssign, LAssignPlus, LAssignMinus, LAssignMultiplication, LAssignDivision)} {
             let method = 
                 if(self.current().is(LAssign)) {
                     self.skip(LAssign)
@@ -1261,9 +1265,15 @@ extend self: Parser {
                 } elseIf {self.current().is(LAssignPlus)} {
                     self.skip(LAssignPlus)
                     "increment"
-                } else {
+                } elseIf {self.current().is(LAssignMinus)} {
                     self.skip(LAssignMinus)
                     "decrement"
+                } elseIf {self.current().is(LAssignMultiplication)} {
+                    self.skip(LAssignMultiplication)
+                    "multiply"
+                } else {
+                    self.skip(LAssignDivision)
+                    "divide"
                 }
             let value = self.parseTerm()
             let effect = self.freshUnificationVariable(record.at)
