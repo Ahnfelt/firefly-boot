@@ -1,116 +1,79 @@
-class LuxEvent {}
+class LuxEvent(jsValue: JsValue)
 
 extend self: LuxEvent {
     
-    preventDefault(): Unit {unsupported()}
-        target js sync """self_.preventDefault()"""
+    preventDefault(): Unit {self.jsValue->preventDefault()}
 
-    stopPropagation(): Unit {unsupported()}
-        target js sync """self_.stopPropagation()"""
+    stopPropagation(): Unit {self.jsValue->stopPropagation()}
         
-    target(): JsValue {unsupported()}
-        target js sync """return self_.target"""
+    target(): JsValue {self.jsValue->target}
 
-    currentTarget(): JsValue {unsupported()}
-        target js sync """return self_.currentTarget"""
+    currentTarget(): JsValue {self.jsValue->currentTarget}
 
-    relatedTarget(): JsValue {unsupported()}
-        target js sync """return self_.relatedTarget"""
+    relatedTarget(): JsValue {self.jsValue->relatedTarget}
 
-    nativeEvent(): JsValue {unsupported()}
-        target js sync """return self_"""
+    nativeEvent(): JsValue {self.jsValue}
 
-    type(): String {unsupported()}
-        target js sync """return self_.type"""
+    type(): String {self.jsValue->type?}
 
-    altKey(): Bool {unsupported()}
-        target js sync """return self_.altKey || false"""
+    altKey(): Bool {Js.binaryOperator("||", self.jsValue->altKey, False)?}
 
-    ctrlKey(): Bool {unsupported()}
-        target js sync """return self_.ctrlKey || false"""
+    ctrlKey(): Bool {Js.binaryOperator("||", self.jsValue->ctrlKey, False)?}
 
-    shiftKey(): Bool {unsupported()}
-        target js sync """return self_.shiftKey || false"""
+    shiftKey(): Bool {Js.binaryOperator("||", self.jsValue->shiftKey, False)?}
 
-    metaKey(): Bool {unsupported()}
-        target js sync """return self_.metaKey || false"""
+    metaKey(): Bool {Js.binaryOperator("||", self.jsValue->metaKey, False)?}
 
-    button(): Int {unsupported()}
-        target js sync """return self_.button || 0"""
+    button(): Int {Js.binaryOperator("||", self.jsValue->button, 0)?}
 
-    primaryButton(): Bool {unsupported()}
-        target js sync """return !!(self_.buttons & 1)"""
+    primaryButton(): Bool {Js.unaryOperator("!!", Js.binaryOperator("&", self.jsValue->buttons, 1))?}
         
-    secondaryButton(): Bool {unsupported()}
-        target js sync """return !!(self_.buttons & 2)"""
+    secondaryButton(): Bool {Js.unaryOperator("!!", Js.binaryOperator("&", self.jsValue->buttons, 2))?}
         
-    middleButton(): Bool {unsupported()}
-        target js sync """return !!(self_.buttons & 4)"""
+    middleButton(): Bool {Js.unaryOperator("!!", Js.binaryOperator("&", self.jsValue->buttons, 4))?}
         
-    clientX(): Float {unsupported()}
-        target js sync """return self_.clientX || 0"""
+    clientX(): Float {Js.binaryOperator("||", self.jsValue->clientX, 0)?}
 
-    clientY(): Float {unsupported()}
-        target js sync """return self_.clientY || 0"""
+    clientY(): Float {Js.binaryOperator("||", self.jsValue->clientY, 0)?}
 
-    movementX(): Float {unsupported()}
-        target js sync """return self_.movementX || 0"""
+    movementX(): Float {Js.binaryOperator("||", self.jsValue->movementX, 0)?}
 
-    movementY(): Float {unsupported()}
-        target js sync """return self_.movementY || 0"""
+    movementY(): Float {Js.binaryOperator("||", self.jsValue->movementY, 0)?}
 
-    offsetX(): Float {unsupported()}
-        target js sync """return self_.offsetX || 0"""
+    offsetX(): Float {Js.binaryOperator("||", self.jsValue->offsetX, 0)?}
 
-    offsetY(): Float {unsupported()}
-        target js sync """return self_.offsetY || 0"""
+    offsetY(): Float {Js.binaryOperator("||", self.jsValue->offsetY, 0)?}
 
-    pageX(): Float {unsupported()}
-        target js sync """return self_.opageX || 0"""
+    pageX(): Float {Js.binaryOperator("||", self.jsValue->pageX, 0)?}
 
-    pageY(): Float {unsupported()}
-        target js sync """return self_.pageY || 0"""
+    pageY(): Float {Js.binaryOperator("||", self.jsValue->pageY, 0)?}
 
-    screenX(): Float {unsupported()}
-        target js sync """return self_.screenX || 0"""
+    screenX(): Float {Js.binaryOperator("||", self.jsValue->screenX, 0)?}
 
-    screenY(): Float {unsupported()}
-        target js sync """return self_.screenY || 0"""
+    screenY(): Float {Js.binaryOperator("||", self.jsValue->screenY, 0)?}
 
-    key(): String {unsupported()}
-        target js sync """return self_.key || ''"""
+    key(): String {Js.binaryOperator("||", self.jsValue->key, "")?}
         
-    code(): String {unsupported()}
-        target js sync """return self_.code || ''"""
+    code(): String {Js.binaryOperator("||", self.jsValue->code, "")?}
         
-    repeat(): Bool {unsupported()}
-        target js sync """return !!self_.repeat"""
+    repeat(): Bool {Js.unaryOperator("!!", self.jsValue->repeat)?}
         
-    leftKeyLocation(): Bool {unsupported()}
-        target js sync """return self_.location === 1"""
+    leftKeyLocation(): Bool {self.jsValue->location === 1}
         
-    rightKeyLocation(): Bool {unsupported()}
-        target js sync """return self_.location === 2"""
+    rightKeyLocation(): Bool {self.jsValue->location === 2}
         
-    numpadKeyLocation(): Bool {unsupported()}
-        target js sync """return self_.location === 3"""
+    numpadKeyLocation(): Bool {self.jsValue->location === 3}
         
-    isComposing(): Bool {unsupported()}
-        target js sync """return !!self_.isComposing"""
+    isComposing(): Bool {Js.unaryOperator("!!", self.jsValue->isComposing)?}
         
-    data(): String {unsupported()}
-        target js sync """return self_.data || ''"""
+    data(): String {Js.binaryOperator("||", self.jsValue->data, "")?}
         
-    text(): String {unsupported()}
-        target js sync """return '' + (self_.target.value || '')"""
+    text(): String {"" + Js.binaryOperator("||", self.jsValue->target->value, "")?}
 
-    inputType(): String {unsupported()}
-        target js sync """return self_.inputType || ''"""
+    inputType(): String {Js.binaryOperator("||", self.jsValue->inputType, "")?}
 
-    dataTransfer(): JsValue {unsupported()}
-        target js sync """return self_.dataTransfer"""
+    dataTransfer(): JsValue {Js.binaryOperator("||", self.jsValue->dataTransfer, "")?}
 
-    getTargetRanges(): JsValue {unsupported()}
-        target js sync """return self_.getTargetRanges()"""
+    getTargetRanges(): JsValue {self.jsValue->getTargetRanges()}
         
 }
