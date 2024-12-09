@@ -118,30 +118,30 @@ let n_ = ff_core_Int.Int_toFloat(0xefc8249d);
 function mash_(data_) {
 for(let for_i = 0, for_e = ff_core_Buffer.Buffer_size(data_); for_i < for_e; for_i++) {
 const i_ = for_i;
-n_ = (n_ + ff_core_Int.Int_toFloat(ff_core_Buffer.Buffer_grabUint8(data_, i_)));
+n_ += ff_core_Int.Int_toFloat(ff_core_Buffer.Buffer_grabUint8(data_, i_));
 let h_ = (0.02519603282416938 * n_);
 n_ = (h_ >>> 0);
-h_ = (h_ - n_);
-h_ = (h_ * n_);
+h_ -= n_;
+h_ *= n_;
 n_ = (h_ >>> 0);
-h_ = (h_ - n_);
-n_ = (n_ + (h_ * 0x100000000))
+h_ -= n_;
+n_ += (h_ * 0x100000000)
 };
 return ((n_ >>> 0) * 2.3283064365386963e-10)
 }
 const space_ = (new DataView((new Uint8Array([32])).buffer));
 const r_ = ff_core_Random.Random(mash_(space_), mash_(space_), mash_(space_), 1.0, ff_core_Float.nan_());
-r_.s0_ = (r_.s0_ - mash_(buffer_));
+r_.s0_ -= mash_(buffer_);
 if((r_.s0_ < 0.0)) {
-r_.s0_ = (r_.s0_ + 1)
+r_.s0_ += 1.0
 };
-r_.s1_ = (r_.s1_ - mash_(buffer_));
+r_.s1_ -= mash_(buffer_);
 if((r_.s1_ < 0.0)) {
-r_.s1_ = (r_.s1_ + 1)
+r_.s1_ += 1.0
 };
-r_.s2_ = (r_.s2_ - mash_(buffer_));
+r_.s2_ -= mash_(buffer_);
 if((r_.s2_ < 0.0)) {
-r_.s2_ = (r_.s2_ + 1)
+r_.s2_ += 1.0
 };
 return r_
 }
@@ -165,30 +165,30 @@ let n_ = ff_core_Int.Int_toFloat(0xefc8249d);
 function mash_(data_) {
 for(let for_i = 0, for_e = ff_core_Buffer.Buffer_size(data_); for_i < for_e; for_i++) {
 const i_ = for_i;
-n_ = (n_ + ff_core_Int.Int_toFloat(ff_core_Buffer.Buffer_grabUint8(data_, i_)));
+n_ += ff_core_Int.Int_toFloat(ff_core_Buffer.Buffer_grabUint8(data_, i_));
 let h_ = (0.02519603282416938 * n_);
 n_ = (h_ >>> 0);
-h_ = (h_ - n_);
-h_ = (h_ * n_);
+h_ -= n_;
+h_ *= n_;
 n_ = (h_ >>> 0);
-h_ = (h_ - n_);
-n_ = (n_ + (h_ * 0x100000000))
+h_ -= n_;
+n_ += (h_ * 0x100000000)
 };
 return ((n_ >>> 0) * 2.3283064365386963e-10)
 }
 const space_ = (new DataView((new Uint8Array([32])).buffer));
 const r_ = ff_core_Random.Random(mash_(space_), mash_(space_), mash_(space_), 1.0, ff_core_Float.nan_());
-r_.s0_ = (r_.s0_ - mash_(buffer_));
+r_.s0_ -= mash_(buffer_);
 if((r_.s0_ < 0.0)) {
-r_.s0_ = (r_.s0_ + 1)
+r_.s0_ += 1.0
 };
-r_.s1_ = (r_.s1_ - mash_(buffer_));
+r_.s1_ -= mash_(buffer_);
 if((r_.s1_ < 0.0)) {
-r_.s1_ = (r_.s1_ + 1)
+r_.s1_ += 1.0
 };
-r_.s2_ = (r_.s2_ - mash_(buffer_));
+r_.s2_ -= mash_(buffer_);
 if((r_.s2_ < 0.0)) {
-r_.s2_ = (r_.s2_ + 1)
+r_.s2_ += 1.0
 };
 return r_
 }
@@ -240,7 +240,7 @@ let s_ = 0.5;
 while(true) {
 u_ = ((ff_core_Random.Random_nextFloat(self_, 0.0, 1.0) * 2) - 1);
 v_ = ((ff_core_Random.Random_nextFloat(self_, 0.0, 1.0) * 2) - 1);
-s_ = ((u_ * u_) + (v_ * v_))
+s_ = ((u_ * u_) + (v_ * v_));
 if(!((s_ >= 1.0) || (s_ === 0.0))) break
 };
 s_ = ff_core_Float.Float_sqrt((((-2.0) * ff_core_Float.Float_ln(s_)) / s_));
@@ -331,7 +331,7 @@ let s_ = 0.5;
 while(true) {
 u_ = ((ff_core_Random.Random_nextFloat(self_, 0.0, 1.0) * 2) - 1);
 v_ = ((ff_core_Random.Random_nextFloat(self_, 0.0, 1.0) * 2) - 1);
-s_ = ((u_ * u_) + (v_ * v_))
+s_ = ((u_ * u_) + (v_ * v_));
 if(!((s_ >= 1.0) || (s_ === 0.0))) break
 };
 s_ = ff_core_Float.Float_sqrt((((-2.0) * ff_core_Float.Float_ln(s_)) / s_));

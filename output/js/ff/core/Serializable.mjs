@@ -125,21 +125,23 @@ return result_
 }
 
 export function internalSetLatin1_(self_, byteOffset_, value_) {
-
-        for(let i = 0; i < value_.length; i++) {
-            let charCode = value_.charCodeAt(i)
-            if(charCode >= 256) return false
-            self_.setUint8(byteOffset_ + i, charCode)
-        }
-        return true
-    
+let result_ = true;
+for(let for_i = 0, for_e = value_.length; for_i < for_e; for_i++) {
+const i_ = for_i;
+const charCode_ = value_.charCodeAt(i_);
+if((charCode_ >= 256)) {
+result_ = false
+} else {
+self_.setUint8((byteOffset_ + i_), charCode_)
+};
+if(!result_) break
+};
+return result_
 }
 
 export function internalGrabLatin1_(self_, byteOffset_, size_) {
-
-        const codeUnits = new Uint8Array(self_.buffer, self_.byteOffset + byteOffset_, size_)
-        return String.fromCharCode.apply(null, codeUnits)
-    
+const codeUnits_ = (new Uint8Array(self_.buffer, (self_.byteOffset + byteOffset_), size_));
+return String.fromCharCode.apply(null, codeUnits_)
 }
 
 export async function serialize_$(value_, initialBufferSize_ = 1024, ff_core_Serializable_Serializable$T, $task) {
@@ -162,11 +164,23 @@ return result_
 }
 
 export async function internalSetLatin1_$(self_, byteOffset_, value_, $task) {
-throw new Error('Function internalSetLatin1 is missing on this target in async context.');
+let result_ = true;
+for(let for_i = 0, for_e = value_.length; for_i < for_e; for_i++) {
+const i_ = for_i;
+const charCode_ = value_.charCodeAt(i_);
+if((charCode_ >= 256)) {
+result_ = false
+} else {
+self_.setUint8((byteOffset_ + i_), charCode_)
+};
+if(!result_) break
+};
+return result_
 }
 
 export async function internalGrabLatin1_$(self_, byteOffset_, size_, $task) {
-throw new Error('Function internalGrabLatin1 is missing on this target in async context.');
+const codeUnits_ = (new Uint8Array(self_.buffer, (self_.byteOffset + byteOffset_), size_));
+return String.fromCharCode.apply(null, codeUnits_)
 }
 
 export function Serialization_autoResize(self_, minSpareCapacity_) {

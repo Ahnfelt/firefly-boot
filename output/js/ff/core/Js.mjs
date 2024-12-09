@@ -278,6 +278,10 @@ export function shortCircuitingOperator_(operator_, a1_, a2_, ff_core_JsValue_Is
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
+export function rawIdentifier_(operator_) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
 export function globalThis_() {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
@@ -594,6 +598,10 @@ return ff_core_Core.panic_("This call should have been eliminated by the compile
 }
 
 export async function shortCircuitingOperator_$(operator_, a1_, a2_, ff_core_JsValue_IsJsValue$T1, ff_core_JsValue_IsJsValue$T2, $task) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export async function rawIdentifier_$(operator_, $task) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 

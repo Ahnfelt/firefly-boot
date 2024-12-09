@@ -315,24 +315,24 @@ return
 }
 }));
 const json_ = `{
-            "name": "main",
-            "bin": {
-                "firefly-main": "Main.bundle.js"
-            },
-            "devDependencies": {
-                "pkg": "^5.8.0"
-            },
-            "pkg": {
-                "scripts": "Main.bundle.js",
-                "outputPath": "bin",
-                "assets": ["../assets/**/*"],
-                "targets": [
-                    "node18-linux-x64",
-                    "node18-macos-x64",
-                    "node18-win-x64"
-                ]
-            }
-        }`;
+        "name": "main",
+        "bin": {
+            "firefly-main": "Main.bundle.js"
+        },
+        "devDependencies": {
+            "pkg": "^5.8.0"
+        },
+        "pkg": {
+            "scripts": "Main.bundle.js",
+            "outputPath": "bin",
+            "assets": ["../assets/**/*"],
+            "targets": [
+                "node18-linux-x64",
+                "node18-macos-x64",
+                "node18-win-x64"
+            ]
+        }
+    }`;
 const packageFile_ = ff_core_Path.Path_slash(outputPath_, "executable/package.json");
 ff_core_Path.Path_writeText(packageFile_, json_);
 ff_compiler_Builder.internalCallPkg_(self_, packageFile_, outputPath_, targets_)
@@ -535,24 +535,24 @@ return
 }
 }), $task));
 const json_ = `{
-            "name": "main",
-            "bin": {
-                "firefly-main": "Main.bundle.js"
-            },
-            "devDependencies": {
-                "pkg": "^5.8.0"
-            },
-            "pkg": {
-                "scripts": "Main.bundle.js",
-                "outputPath": "bin",
-                "assets": ["../assets/**/*"],
-                "targets": [
-                    "node18-linux-x64",
-                    "node18-macos-x64",
-                    "node18-win-x64"
-                ]
-            }
-        }`;
+        "name": "main",
+        "bin": {
+            "firefly-main": "Main.bundle.js"
+        },
+        "devDependencies": {
+            "pkg": "^5.8.0"
+        },
+        "pkg": {
+            "scripts": "Main.bundle.js",
+            "outputPath": "bin",
+            "assets": ["../assets/**/*"],
+            "targets": [
+                "node18-linux-x64",
+                "node18-macos-x64",
+                "node18-win-x64"
+            ]
+        }
+    }`;
 const packageFile_ = (await ff_core_Path.Path_slash$(outputPath_, "executable/package.json", $task));
 (await ff_core_Path.Path_writeText$(packageFile_, json_, $task));
 (await ff_compiler_Builder.internalCallPkg_$(self_, packageFile_, outputPath_, targets_, $task))

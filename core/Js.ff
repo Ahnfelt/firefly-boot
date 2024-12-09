@@ -168,6 +168,10 @@ shortCircuitingOperator[T1: IsJsValue, T2: IsJsValue](operator: String, a1: T1, 
     panic("This call should have been eliminated by the compiler")
 }
 
+rawIdentifier(operator: String): JsValue {
+    panic("This call should have been eliminated by the compiler")
+}
+
 
 globalThis(): JsValue {
     panic("This call should have been eliminated by the compiler")

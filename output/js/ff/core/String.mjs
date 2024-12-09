@@ -328,6 +328,13 @@ return true
 return result_
 }
 
+export function String_indexOf(self_, needle_, position_ = 0) {
+const index_ = self_.indexOf(needle_, position_);
+if((index_ !== (-1))) {
+return ff_core_Option.Some(index_)
+} else return ff_core_Option.None()
+}
+
 export function String_indexWhere(self_, body_) {
 let i_ = (-1);
 let result_ = false;
@@ -581,6 +588,13 @@ return true
 }
 }), $task));
 return result_
+}
+
+export async function String_indexOf$(self_, needle_, position_ = 0, $task) {
+const index_ = self_.indexOf(needle_, position_);
+if((index_ !== (-1))) {
+return ff_core_Option.Some(index_)
+} else return ff_core_Option.None()
 }
 
 export async function String_indexWhere$(self_, body_, $task) {

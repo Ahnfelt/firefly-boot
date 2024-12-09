@@ -250,10 +250,10 @@ extend self: Lux {
     
     on(event: String, handler: LuxEvent => Unit) {
         if(self.dry.isEmpty()):
-        let jsHandler = unsafeAsyncFunction1ToJs(self) {jsEvent =>
+        let jsHandler = Js->{jsEvent =>
             self.renderLock.do {
-                handler(unsafeJsToValue(jsEvent))
-                processRenderQueue(self)
+                handler(LuxEvent(jsEvent))
+                processRenderQueue(self)!
             }
         }
         self.element.element->addEventListener(event, jsHandler)
@@ -422,24 +422,24 @@ removeCurrentChild(self: Lux): Bool {
 getStateOnElement[T /*: HasAnyTag*/](element: JsValue, depth: Int, fallback: T): T {
     let value = element.get("lux" + depth)
     if(value.isNullOrUndefined()) {fallback} else {
-        unsafeJsToValue(value)
+        value?
     }
 }
 
 setStateOnElement[T /*: HasAnyTag*/](element: JsValue, depth: Int, value: T): Unit {
-    element.set("lux" + depth, unsafeJsFromValue(value))
+    element.set("lux" + depth, value!)
 }
 
 
 getTaskOnElement(element: JsValue): Option[Task] {
     let value = element->luxTask
     if(value.isNullOrUndefined()) {None} else {
-        unsafeJsToValue(value)
+        value?
     }
 }
 
 setTaskOnElement(element: JsValue, task: Option[Task]): Unit {
-    element->luxTask = unsafeJsFromValue(task)
+    element->luxTask = task!
 }
 
 abortTasksOnElement(lux: Lux, element: JsValue, onlyChildren: Bool): Unit {
@@ -450,15 +450,6 @@ abortTasksOnElement(lux: Lux, element: JsValue, onlyChildren: Bool): Unit {
         abortTasksOnElement(lux, child, False)
     }
 }
-
-unsafeJsToValue[T](jsValue: JsValue): T
-    target js sync """return jsValue_"""
-
-unsafeJsFromValue[T](value: T): JsValue
-    target js sync """return value_"""
-
-unsafeAsyncFunction1ToJs[R](self: Lux, body: JsValue => R): JsValue
-    target js async "return async a1 => await body_(a1, $task)"
 
 forceAsyncAbort(self: Lux, task: Task): Unit {
     task.abort()

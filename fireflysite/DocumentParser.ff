@@ -225,7 +225,7 @@ extend self: InlineParser {
     
     parseEnclosed(left: String, right: String): Option[String] {
         if(self.startsWith(left)) {
-            indexOf(self.line, right, self.i + left.size()).map {end =>
+            self.line.indexOf(right, self.i + left.size()).map {end =>
                 let text = self.line.slice(self.i + left.size(), end)
                 self.i = end + right.size()
                 text
@@ -277,12 +277,6 @@ iterateLists[T](body: () => List[T]): List[T] {
     }
     array.drain()  
 }   
-
-indexOf(string: String, searchString: String, position: Int = 0): Option[Int]
-    target js sync """
-        const i = string_.indexOf(searchString_, position_);
-        return i == -1 ? ff_core_Option.None() : ff_core_Option.Some(i);
-    """
     
 printSections(system: NodeSystem, sections: List[Section]) {
     sections.each {

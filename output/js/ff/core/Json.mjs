@@ -156,8 +156,8 @@ if((a_.length !== b_.length)) {
 return false
 } else {
 let equal_ = true;
-for(let for_a = ff_core_Int.Int_until(0, a_.length), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
-const i_ = for_a[for_i];
+for(let for_i = 0, for_e = a_.length; for_i < for_e; for_i++) {
+const i_ = for_i;
 equal_ = ff_core_Json.internalEquals_(a_[i_], b_[i_]);
 if(!equal_) break
 };
@@ -251,8 +251,8 @@ return 1
 const aLength_ = a_.length;
 const bLength_ = b_.length;
 let result_ = 0;
-for(let for_a = ff_core_Int.Int_until(0, ff_core_Int.Int_min(aLength_, bLength_)), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
-const i_ = for_a[for_i];
+for(let for_i = 0, for_e = ff_core_Int.Int_min(aLength_, bLength_); for_i < for_e; for_i++) {
+const i_ = for_i;
 result_ = ff_core_Json.internalCompare_(a_[i_], b_[i_]);
 if(!(result_ === 0)) break
 };
@@ -345,8 +345,8 @@ if((a_.length !== b_.length)) {
 return false
 } else {
 let equal_ = true;
-for(let for_a = ff_core_Int.Int_until(0, a_.length), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
-const i_ = for_a[for_i];
+for(let for_i = 0, for_e = a_.length; for_i < for_e; for_i++) {
+const i_ = for_i;
 equal_ = ff_core_Json.internalEquals_(a_[i_], b_[i_]);
 if(!equal_) break
 };
@@ -440,8 +440,8 @@ return 1
 const aLength_ = a_.length;
 const bLength_ = b_.length;
 let result_ = 0;
-for(let for_a = ff_core_Int.Int_until(0, ff_core_Int.Int_min(aLength_, bLength_)), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
-const i_ = for_a[for_i];
+for(let for_i = 0, for_e = ff_core_Int.Int_min(aLength_, bLength_); for_i < for_e; for_i++) {
+const i_ = for_i;
 result_ = ff_core_Json.internalCompare_(a_[i_], b_[i_]);
 if(!(result_ === 0)) break
 };

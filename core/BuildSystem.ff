@@ -142,7 +142,7 @@ internalPath(buildSystem: BuildSystem, absoluteOrRelative: String): Path {
 
 internalCompile(buildSystem: BuildSystem, mainFile: Path, target: String): Unit {
     // Ported from the old FFI. It's quite fragile w.r.t. changes in code generation.
-    Js.await(Js->"$firefly_compiler"->"buildViaBuildSystem_$"(
+    Js.await(Js.rawIdentifier("$firefly_compiler")->"buildViaBuildSystem_$"(
         buildSystem! 
         internalPath(buildSystem, buildSystem!->"fireflyPath_"?)!
         mainFile.base()

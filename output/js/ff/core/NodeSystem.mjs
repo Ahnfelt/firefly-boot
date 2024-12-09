@@ -113,10 +113,6 @@ return {problem_};
 
 
 
-export function internalAssets_(system_) {
-throw new Error('Function internalAssets is missing on this target in sync context.');
-}
-
 export function internalListDirectoryWithoutOpendir_(system_, path_) {
 const fsPromises_ = import$0;
 const nodePath_ = import$1;
@@ -132,10 +128,6 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_NodeSy
 } catch(error_) {
 return error_
 }
-}
-
-export async function internalAssets_$(system_, $task) {
-return system_.assets_
 }
 
 export async function internalListDirectoryWithoutOpendir_$(system_, path_, $task) {
@@ -156,7 +148,7 @@ return error_
 }
 
 export function NodeSystem_arguments(self_) {
-throw new Error('Function NodeSystem_arguments is missing on this target in sync context.');
+return self_["array_"]
 }
 
 export function NodeSystem_assets(self_) {
@@ -175,7 +167,7 @@ return ff_core_Path.Path_readStream(file_)
 }
 return ff_core_AssetSystem.AssetSystem(ff_core_Stream.Stream_toMap(streams_(assetPkgSnapshotPath_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 } else {
-return ff_core_NodeSystem.internalAssets_(self_)
+return self_["assets_"]
 }
 }
 
@@ -190,23 +182,23 @@ return ff_core_Path.Path(nodeUrl_.fileURLToPath((new URL(url_))))
 }
 
 export function NodeSystem_httpClient(self_) {
-throw new Error('Function NodeSystem_httpClient is missing on this target in sync context.');
+return globalThis
 }
 
 export function NodeSystem_mainTask(self_) {
-throw new Error('Function NodeSystem_mainTask is missing on this target in sync context.');
+return self_["task_"]
 }
 
 export function NodeSystem_crypto(self_) {
-throw new Error('Function NodeSystem_crypto is missing on this target in sync context.');
+return globalThis.crypto
 }
 
 export function NodeSystem_js(self_) {
-throw new Error('Function NodeSystem_js is missing on this target in sync context.');
+return globalThis
 }
 
 export function NodeSystem_exit(self_, exitCode_ = 0) {
-throw new Error('Function NodeSystem_exit is missing on this target in sync context.');
+return process.exit(exitCode_)
 }
 
 export function NodeSystem_readStream(self_) {
@@ -216,7 +208,7 @@ return process.stdin
 }
 
 export function NodeSystem_writeBuffer(self_, buffer_) {
-throw new Error('Function NodeSystem_writeBuffer is missing on this target in sync context.');
+process.stdout.write((new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength)))
 }
 
 export function NodeSystem_writeStream(self_, stream_) {
@@ -234,7 +226,7 @@ ff_core_NodeSystem.NodeSystem_writeText(self_, (text_ + "\n"))
 }
 
 export function NodeSystem_writeErrorBuffer(self_, buffer_) {
-throw new Error('Function NodeSystem_writeErrorBuffer is missing on this target in sync context.');
+process.stderr.write((new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength)))
 }
 
 export function NodeSystem_writeErrorStream(self_, stream_) {
@@ -252,15 +244,81 @@ ff_core_NodeSystem.NodeSystem_writeErrorText(self_, (text_ + "\n"))
 }
 
 export function NodeSystem_environment(self_) {
-throw new Error('Function NodeSystem_environment is missing on this target in sync context.');
+let result_ = ff_core_Map.new_();
+ff_core_JsValue.JsValue_each(process.env, ((key_) => {
+result_ = ff_core_Map.Map_add(result_, key_, process.env[key_], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}));
+return result_
 }
 
 export function NodeSystem_execute(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, shell_ = false) {
-throw new Error('Function NodeSystem_execute is missing on this target in sync context.');
+const childProcess_ = import$3;
+const env_ = ff_core_Option.Option_else(ff_core_Option.Option_map(environment_, ((e_) => {
+const o_ = {};
+ff_core_Map.Map_each(e_, ((k_, v_) => {
+o_[k_] = v_
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+return o_
+})), (() => {
+return process.env
+}));
+return ff_core_Js.withSignal_(((signal_) => {
+return ff_core_Js.awaitCancellablePromise_(((resolve_, reject_, onSettle_) => {
+const newProcess_ = childProcess_.spawn(command_, arguments_, {cwd: ff_core_Option.Option_else(ff_core_Option.Option_map(directory_, ((_w1) => {
+return _w1.absolutePath_
+})), (() => {
+return (void 0)
+})), windowsHide: true, signal: signal_, killSignal: killSignal_, env: env_, shell: shell_});
+let size_ = 0;
+const out_ = ff_core_Array.new_();
+const err_ = ff_core_Array.new_();
+newProcess_.stdout.on("data", ((data_) => {
+if((size_ <= maxBuffer_)) {
+size_ += data_.byteLength;
+if((size_ > maxBuffer_)) {
+newProcess_.kill(killSignal_)
+} else {
+out_.array.push(data_)
+}
+}
+}));
+newProcess_.stderr.on("data", ((data_) => {
+if((size_ <= maxBuffer_)) {
+size_ += data_.byteLength;
+if((size_ > maxBuffer_)) {
+newProcess_.kill(killSignal_)
+} else {
+err_.array.push(data_)
+}
+}
+}));
+if((standardIn_.byteLength !== 0)) {
+newProcess_.stdin.write(standardIn_)
+};
+newProcess_.stdin.end();
+newProcess_.on("error", ((error_) => {
+if((size_ > maxBuffer_)) {
+return reject_(ff_core_NodeSystem.internalProcessError_("maxBuffer exceeded"))
+} else {
+reject_(ff_core_NodeSystem.internalProcessError_(error_.message))
+}
+}));
+newProcess_.on("close", ((code_) => {
+const o_ = Buffer.concat(ff_core_Array.Array_drain(out_));
+const e_ = Buffer.concat(ff_core_Array.Array_drain(err_));
+return resolve_(ff_core_NodeSystem.ProcessResult(code_, (new DataView(o_.buffer, o_.byteOffset, o_.byteLength)), (new DataView(e_.buffer, e_.byteOffset, e_.byteLength))))
+}));
+onSettle_(((fulfilled_) => {
+if((!fulfilled_)) {
+newProcess_.kill(killSignal_)
+}
+}))
+}))
+}))
 }
 
 export async function NodeSystem_arguments$(self_, $task) {
-return self_.array_
+return self_["array_"]
 }
 
 export async function NodeSystem_assets$(self_, $task) {
@@ -279,7 +337,7 @@ return (await ff_core_Path.Path_readStream$(file_, $task))
 }
 return ff_core_AssetSystem.AssetSystem((await ff_core_Stream.Stream_toMap$((await streams_$(assetPkgSnapshotPath_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, $task)))
 } else {
-return (await ff_core_NodeSystem.internalAssets_$(self_, $task))
+return self_["assets_"]
 }
 }
 
@@ -294,23 +352,23 @@ return ff_core_Path.Path(nodeUrl_.fileURLToPath((new URL(url_))))
 }
 
 export async function NodeSystem_httpClient$(self_, $task) {
-return typeof globalThis !== 'undefined' ? globalThis : window
+return globalThis
 }
 
 export async function NodeSystem_mainTask$(self_, $task) {
-return self_.task_
+return self_["task_"]
 }
 
 export async function NodeSystem_crypto$(self_, $task) {
-return (typeof globalThis !== 'undefined' ? globalThis : window).crypto
+return globalThis.crypto
 }
 
 export async function NodeSystem_js$(self_, $task) {
-return typeof globalThis !== 'undefined' ? globalThis : window
+return globalThis
 }
 
 export async function NodeSystem_exit$(self_, exitCode_ = 0, $task) {
-process.exit(exitCode_)
+return process.exit(exitCode_)
 }
 
 export async function NodeSystem_readStream$(self_, $task) {
@@ -320,7 +378,7 @@ return process.stdin
 }
 
 export async function NodeSystem_writeBuffer$(self_, buffer_, $task) {
-process.stdout.write(new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength))
+process.stdout.write((new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength)))
 }
 
 export async function NodeSystem_writeStream$(self_, stream_, $task) {
@@ -338,7 +396,7 @@ export async function NodeSystem_writeLine$(self_, text_, $task) {
 }
 
 export async function NodeSystem_writeErrorBuffer$(self_, buffer_, $task) {
-process.stderr.write(new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength))
+process.stderr.write((new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength)))
 }
 
 export async function NodeSystem_writeErrorStream$(self_, stream_, $task) {
@@ -356,76 +414,77 @@ export async function NodeSystem_writeErrorLine$(self_, text_, $task) {
 }
 
 export async function NodeSystem_environment$(self_, $task) {
-
-            const result = [];
-            for(const key in process.env) {
-                result.push(ff_core_Pair.Pair(key, process.env[key]));
-            }
-            return ff_core_List.List_toMap(result, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-        
+let result_ = ff_core_Map.new_();
+ff_core_JsValue.JsValue_each(process.env, ((key_) => {
+result_ = ff_core_Map.Map_add(result_, key_, process.env[key_], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}));
+return result_
 }
 
 export async function NodeSystem_execute$(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, shell_ = false, $task) {
-
-            const childProcess = import$3;
-            const environment = environment_.value_ !== void 0 ? {} : process.env;
-            if(environment_.value_ !== void 0) {
-                ff_core_Map.Map_each(
-                    environment_.value_, 
-                    (k, v) => environment[k] = v, 
-                    ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String
-                );
-            }
-            const newProcess = childProcess.spawn(command_, arguments_, {
-                cwd: directory_.value_ ? directory_.value_.absolutePath_ : void 0,
-                windowsHide: true,
-                signal: $task.controller_.signal,
-                killSignal: killSignal_,
-                env: environment,
-                shell: shell_
-            });
-            
-            let size = 0;
-            const out = [];
-            const err = [];
-            
-            newProcess.stdout.on('data', (data) => {
-                if(size > maxBuffer_) return;
-                size += data.byteLength;
-                if(size > maxBuffer_) newProcess.kill(killSignal_);
-                else out.push(data);
-            });
-
-            newProcess.stderr.on('data', (data) => {
-                if(size > maxBuffer_) return;
-                size += data.byteLength;
-                if(size > maxBuffer_) newProcess.kill(killSignal_);
-                else err.push(data);
-            });
-
-            return await new Promise((resolve, reject) => {
-                if(standardIn_.byteLength !== 0) {
-                    newProcess.stdin.write(standardIn_);
-                }
-                newProcess.stdin.end();
-                newProcess.on('error', error => {
-                    if(size > maxBuffer_) {
-                        reject(internalProcessError_("maxBuffer exceeded"));
-                    } else {
-                        reject(internalProcessError_(error.message));
-                    }
-                });
-                newProcess.on('close', code => {
-                    const o = Buffer.concat(out);
-                    const e = Buffer.concat(err);
-                    resolve(ProcessResult(
-                        code,
-                        new DataView(o.buffer, o.byteOffset, o.byteLength),
-                        new DataView(e.buffer, e.byteOffset, e.byteLength),
-                    ));
-                }); 
-            });
-        
+const childProcess_ = import$3;
+const env_ = ff_core_Option.Option_else(ff_core_Option.Option_map(environment_, ((e_) => {
+const o_ = {};
+ff_core_Map.Map_each(e_, ((k_, v_) => {
+o_[k_] = v_
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+return o_
+})), (() => {
+return process.env
+}));
+return (await ff_core_Js.withSignal_$((async (signal_, $task) => {
+return (await ff_core_Js.awaitCancellablePromise_$(((resolve_, reject_, onSettle_) => {
+const newProcess_ = childProcess_.spawn(command_, arguments_, {cwd: ff_core_Option.Option_else(ff_core_Option.Option_map(directory_, ((_w1) => {
+return _w1.absolutePath_
+})), (() => {
+return (void 0)
+})), windowsHide: true, signal: signal_, killSignal: killSignal_, env: env_, shell: shell_});
+let size_ = 0;
+const out_ = ff_core_Array.new_();
+const err_ = ff_core_Array.new_();
+newProcess_.stdout.on("data", ((data_) => {
+if((size_ <= maxBuffer_)) {
+size_ += data_.byteLength;
+if((size_ > maxBuffer_)) {
+newProcess_.kill(killSignal_)
+} else {
+out_.array.push(data_)
+}
+}
+}));
+newProcess_.stderr.on("data", ((data_) => {
+if((size_ <= maxBuffer_)) {
+size_ += data_.byteLength;
+if((size_ > maxBuffer_)) {
+newProcess_.kill(killSignal_)
+} else {
+err_.array.push(data_)
+}
+}
+}));
+if((standardIn_.byteLength !== 0)) {
+newProcess_.stdin.write(standardIn_)
+};
+newProcess_.stdin.end();
+newProcess_.on("error", ((error_) => {
+if((size_ > maxBuffer_)) {
+return reject_(ff_core_NodeSystem.internalProcessError_("maxBuffer exceeded"))
+} else {
+reject_(ff_core_NodeSystem.internalProcessError_(error_.message))
+}
+}));
+newProcess_.on("close", ((code_) => {
+const o_ = Buffer.concat(ff_core_Array.Array_drain(out_));
+const e_ = Buffer.concat(ff_core_Array.Array_drain(err_));
+return resolve_(ff_core_NodeSystem.ProcessResult(code_, (new DataView(o_.buffer, o_.byteOffset, o_.byteLength)), (new DataView(e_.buffer, e_.byteOffset, e_.byteLength))))
+}));
+onSettle_(((fulfilled_) => {
+if((!fulfilled_)) {
+newProcess_.kill(killSignal_)
+}
+}))
+}), $task))
+}), $task))
 }
 
 export const ff_core_Any_HasAnyTag$ff_core_NodeSystem_ProcessException = {

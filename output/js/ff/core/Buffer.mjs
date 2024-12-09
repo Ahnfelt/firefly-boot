@@ -537,8 +537,8 @@ i_ += 4
 if((!same_)) {
 return false
 } else {
-for(let for_a = ff_core_Int.Int_until(i_, ff_core_Buffer.Buffer_size(x_)), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
-const i_ = for_a[for_i];
+for(let for_i = i_, for_e = ff_core_Buffer.Buffer_size(x_); for_i < for_e; for_i++) {
+const i_ = for_i;
 same_ = (x_.getUint8(i_) === y_.getUint8(i_));
 if(!same_) break
 };
@@ -563,8 +563,8 @@ i_ += 4
 if((!same_)) {
 return false
 } else {
-for(let for_a = ff_core_Int.Int_until(i_, ff_core_Buffer.Buffer_size(x_)), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
-const i_ = for_a[for_i];
+for(let for_i = i_, for_e = ff_core_Buffer.Buffer_size(x_); for_i < for_e; for_i++) {
+const i_ = for_i;
 same_ = (x_.getUint8(i_) === y_.getUint8(i_));
 if(!same_) break
 };
@@ -582,11 +582,14 @@ return ff_core_Ordering.OrderingSame()
 } else {
 const minLength_ = ff_core_Int.Int_min(ff_core_Buffer.Buffer_size(x_), ff_core_Buffer.Buffer_size(y_));
 let ordering_ = ff_core_Ordering.OrderingSame();
-for(let for_a = ff_core_Int.Int_until(0, minLength_), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
-const i_ = for_a[for_i];
-if(!((x_.getUint8(i_) !== x_.getUint8(i_))
-? (ordering_ = ff_core_Ordering.fromInt_((x_.getUint8(i_) - y_.getUint8(i_))), false)
-: true)) break
+for(let for_i = 0, for_e = minLength_; for_i < for_e; for_i++) {
+const i_ = for_i;
+if((x_.getUint8(i_) !== x_.getUint8(i_))) {
+ordering_ = ff_core_Ordering.fromInt_((x_.getUint8(i_) - y_.getUint8(i_)));
+if(!false) break
+} else {
+if(!true) break
+}
 };
 if((ordering_ === ff_core_Ordering.OrderingSame())) {
 return ff_core_Ordering.fromInt_((ff_core_Buffer.Buffer_size(x_) - ff_core_Buffer.Buffer_size(y_)))
@@ -601,11 +604,14 @@ return ff_core_Ordering.OrderingSame()
 } else {
 const minLength_ = ff_core_Int.Int_min(ff_core_Buffer.Buffer_size(x_), ff_core_Buffer.Buffer_size(y_));
 let ordering_ = ff_core_Ordering.OrderingSame();
-for(let for_a = ff_core_Int.Int_until(0, minLength_), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
-const i_ = for_a[for_i];
-if(!((x_.getUint8(i_) !== x_.getUint8(i_))
-? (ordering_ = ff_core_Ordering.fromInt_((x_.getUint8(i_) - y_.getUint8(i_))), false)
-: true)) break
+for(let for_i = 0, for_e = minLength_; for_i < for_e; for_i++) {
+const i_ = for_i;
+if((x_.getUint8(i_) !== x_.getUint8(i_))) {
+ordering_ = ff_core_Ordering.fromInt_((x_.getUint8(i_) - y_.getUint8(i_)));
+if(!false) break
+} else {
+if(!true) break
+}
 };
 if((ordering_ === ff_core_Ordering.OrderingSame())) {
 return ff_core_Ordering.fromInt_((ff_core_Buffer.Buffer_size(x_) - ff_core_Buffer.Buffer_size(y_)))

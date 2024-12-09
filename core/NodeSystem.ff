@@ -5,8 +5,9 @@ data ProcessException(problem: String)
 
 extend self: NodeSystem {
 
-    arguments(): List[String]
-        target node async "return self_.array_"
+    arguments(): List[String] {
+        self!->"array_"?
+    }
 
     assets(): AssetSystem {
         let assetPkgSnapshotPath = self.path("/snapshot/output/assets")
@@ -23,7 +24,7 @@ extend self: NodeSystem {
             }
             AssetSystem(streams(assetPkgSnapshotPath).toMap())
         } else {
-            internalAssets(self)
+            self!->"assets_"?
         }
     }
 
@@ -37,27 +38,33 @@ extend self: NodeSystem {
         Path(nodeUrl->fileURLToPath(Js->URL->(url))?)
     }
 
-    httpClient(): HttpClient
-        target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
+    httpClient(): HttpClient {
+        Js.globalThis()?
+    }
 
-    mainTask(): Task
-        target js async "return self_.task_"
+    mainTask(): Task {
+        self!->"task_"?
+    }
 
-    crypto(): Crypto
-        target js async "return (typeof globalThis !== 'undefined' ? globalThis : window).crypto"
+    crypto(): Crypto {
+        Js.globalThis()->crypto?
+    }
 
-    js(): JsSystem
-        target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
+    js(): JsSystem {
+        Js.jsSystem()
+    }
 
-    exit[T](exitCode: Int = 0): T
-        target js async "process.exit(exitCode_)"
+    exit[T](exitCode: Int = 0): T {
+        Js->process->exit(exitCode)?
+    }
 
     readStream(): Stream[Buffer] {
         Path.internalReadStream {Js->process->stdin}
     }
 
-    writeBuffer(buffer: Buffer): Unit
-        target js async "process.stdout.write(new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength))"
+    writeBuffer(buffer: Buffer): Unit {
+        Js->process->stdout->write(Js->Uint8Array->(buffer!->buffer, buffer!->byteOffset, buffer!->byteLength))
+    }
 
     writeStream(stream: Stream[Buffer]): Unit {
         stream.each {self.writeBuffer(_)}
@@ -71,8 +78,9 @@ extend self: NodeSystem {
         self.writeText(text + "\n")
     }
 
-    writeErrorBuffer(buffer: Buffer): Unit
-        target js async "process.stderr.write(new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength))"
+    writeErrorBuffer(buffer: Buffer): Unit {
+        Js->process->stderr->write(Js->Uint8Array->(buffer!->buffer, buffer!->byteOffset, buffer!->byteLength))
+    }
 
     writeErrorStream(stream: Stream[Buffer]): Unit {
         stream.each {self.writeErrorBuffer(_)}
@@ -86,15 +94,14 @@ extend self: NodeSystem {
         self.writeErrorText(text + "\n")
     }
     
-    environment(): Map[String, String]
-        target node async """
-            const result = [];
-            for(const key in process.env) {
-                result.push(ff_core_Pair.Pair(key, process.env[key]));
-            }
-            return ff_core_List.List_toMap(result, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-        """
-    
+    environment(): Map[String, String] {
+        mutable result = Map.new()
+        Js->process->env.each {key =>
+            result = result.add(key?, Js->process->env.get(key)?)
+        }
+        result
+    }
+
     execute(
         command: String
         arguments: List[String]
@@ -104,72 +111,76 @@ extend self: NodeSystem {
         maxBuffer: Int = 16777216
         killSignal: Int = 9
         shell: Bool = False
-    ): ProcessResult
-        target node async """
-            import * as childProcess from 'node:child_process';
-            const environment = environment_.value_ !== void 0 ? {} : process.env;
-            if(environment_.value_ !== void 0) {
-                ff_core_Map.Map_each(
-                    environment_.value_, 
-                    (k, v) => environment[k] = v, 
-                    ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String
-                );
-            }
-            const newProcess = childProcess.spawn(command_, arguments_, {
-                cwd: directory_.value_ ? directory_.value_.absolutePath_ : void 0,
-                windowsHide: true,
-                signal: $task.controller_.signal,
-                killSignal: killSignal_,
-                env: environment,
-                shell: shell_
-            });
-            
-            let size = 0;
-            const out = [];
-            const err = [];
-            
-            newProcess.stdout.on('data', (data) => {
-                if(size > maxBuffer_) return;
-                size += data.byteLength;
-                if(size > maxBuffer_) newProcess.kill(killSignal_);
-                else out.push(data);
-            });
-
-            newProcess.stderr.on('data', (data) => {
-                if(size > maxBuffer_) return;
-                size += data.byteLength;
-                if(size > maxBuffer_) newProcess.kill(killSignal_);
-                else err.push(data);
-            });
-
-            return await new Promise((resolve, reject) => {
-                if(standardIn_.byteLength !== 0) {
-                    newProcess.stdin.write(standardIn_);
-                }
-                newProcess.stdin.end();
-                newProcess.on('error', error => {
-                    if(size > maxBuffer_) {
-                        reject(internalProcessError_("maxBuffer exceeded"));
+    ): ProcessResult {
+        let childProcess = Js.import("node:child_process")
+        let env = environment.map {e =>
+            let o = Js.object()
+            e.each {k, v => o.set(k, v)}
+            o
+        }.else {Js->process->env}
+        Js.withSignal {signal => Js.awaitCancellablePromise {resolve, reject, onSettle =>
+            let newProcess = childProcess->spawn(command, arguments, Js->(
+                cwd = directory.map {_.absolutePath!}.else {Js.undefined()}
+                windowsHide = True
+                signal = signal
+                killSignal = killSignal
+                env = env
+                shell = shell
+            ))
+            mutable size = 0
+            let out = Array.new()
+            let err = Array.new()
+            newProcess->stdout->on("data", Js->{data =>
+                if(size <= maxBuffer) {
+                    size += data->byteLength?
+                    if(size > maxBuffer) {
+                        newProcess->kill(killSignal)
                     } else {
-                        reject(internalProcessError_(error.message));
+                        out.push(data)
                     }
-                });
-                newProcess.on('close', code => {
-                    const o = Buffer.concat(out);
-                    const e = Buffer.concat(err);
-                    resolve(ProcessResult(
-                        code,
-                        new DataView(o.buffer, o.byteOffset, o.byteLength),
-                        new DataView(e.buffer, e.byteOffset, e.byteLength),
-                    ));
-                }); 
-            });
-        """
+                }
+                Unit
+            })
+            newProcess->stderr->on("data", Js->{data =>
+                if(size <= maxBuffer) {
+                    size += data->byteLength?
+                    if(size > maxBuffer) {
+                        newProcess->kill(killSignal)
+                    } else {
+                        err.push(data)
+                    }
+                }
+                Unit
+            })
+            if(standardIn!->byteLength !== 0) {
+                newProcess->stdin->write(standardIn!)
+            }
+            newProcess->stdin->end()
+            newProcess->on("error", Js->{error =>
+                if(size > maxBuffer) {
+                    reject(internalProcessError("maxBuffer exceeded"))
+                } else {
+                    reject(internalProcessError(error->message?))
+                }
+            })
+            newProcess->on("close", Js->{code =>
+                let o = Js->Buffer->concat(out.drain()!)
+                let e = Js->Buffer->concat(err.drain()!)
+                resolve(ProcessResult(
+                    code?
+                    Js->DataView->(o->buffer, o->byteOffset, o->byteLength)?
+                    Js->DataView->(e->buffer, e->byteOffset, e->byteLength)?
+                ))
+            })
+            onSettle {fulfilled =>
+                if(!fulfilled) {
+                    newProcess->kill(killSignal)
+                }
+            }
+        }}
+    }
 
 }
-
-internalAssets(system: NodeSystem): AssetSystem
-    target node async "return system_.assets_"
 
 internalListDirectoryWithoutOpendir(system: NodeSystem, path: Path): List[Path] {
     let fsPromises = Js.import("fs/promises")

@@ -27,14 +27,14 @@ newFromBuffer(buffer: Buffer): Random {
     mutable n: Float = (0xefc8249d).toFloat()
     function mash(data: Buffer): Float {
         0.until(data.size()).each {i =>
-            n = n + data.grabUint8(i).toFloat()
+            n += data.grabUint8(i).toFloat()
             mutable h = 0.02519603282416938 * n
             n = Js.binaryOperator(">>>", h, 0)?
-            h = h - n
-            h = h * n;
+            h -= n
+            h *= n
             n = Js.binaryOperator(">>>", h, 0)?
-            h = h - n
-            n = n + h * 0x100000000 // 2^32
+            h -=n
+            n += h * 0x100000000 // 2^32
         }
         Js.binaryOperator(">>>", n, 0)? * 2.3283064365386963e-10
     }
@@ -46,12 +46,12 @@ newFromBuffer(buffer: Buffer): Random {
         c = 1.0
         spareGauss = Float.nan()
     )
-    r.s0 = r.s0 - mash(buffer)
-    if(r.s0 < 0.0) {r.s0 = r.s0 + 1}
-    r.s1 = r.s1 - mash(buffer);
-    if(r.s1 < 0.0) {r.s1 = r.s1 + 1}
-    r.s2 = r.s2 - mash(buffer);
-    if(r.s2 < 0.0) {r.s2 = r.s2 + 1}
+    r.s0 -= mash(buffer)
+    if(r.s0 < 0.0) {r.s0 += 1.0}
+    r.s1 -= mash(buffer);
+    if(r.s1 < 0.0) {r.s1 +=1.0}
+    r.s2 -= mash(buffer);
+    if(r.s2 < 0.0) {r.s2 += 1.0}
     r
 }
 

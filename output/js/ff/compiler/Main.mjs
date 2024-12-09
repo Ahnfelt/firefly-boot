@@ -386,7 +386,19 @@ ff_core_BuildSystem.internalCallEsBuild_(browserCode_, mainJsFile_, file_, true,
 }
 
 export function importAndRun_(fireflyPath_, target_, packagePair_, mainFile_, arguments_) {
-throw new Error('Function importAndRun is missing on this target in sync context.');
+const process_ = import("process");
+const cwd_ = process_.cwd();
+const workingDirectory_ = ((cwd_.indexOf(":") === 1)
+? ("file:///" + cwd_)
+: cwd_);
+const packagePath_ = ((packagePair_.group_ + "/") + packagePair_.name_);
+const main_ = import((((((((workingDirectory_ + "/.firefly/output/") + target_) + "/") + packagePath_) + "/") + mainFile_) + ".mjs"));
+if(((typeof main_["$run$"]) !== "undefined")) {
+main_["$run$"](fireflyPath_.absolutePath_, arguments_);
+return true
+} else {
+return false
+}
 }
 
 export function prepareFireflyDirectory_(path_) {
@@ -641,19 +653,19 @@ return (await ff_core_Path.Path_readStream$((await ff_core_NodeSystem.NodeSystem
 }
 
 export async function importAndRun_$(fireflyPath_, target_, packagePair_, mainFile_, arguments_, $task) {
-
-        const process = await import('process');
-        const cwd = process.cwd();
-        const workingDirectory = cwd.indexOf(':') == 1 ? 'file:///' + cwd : cwd;
-        const packagePath = packagePair_.group_ + "/" + packagePair_.name_
-        const main = await import(workingDirectory + "/.firefly/output/" + target_ + "/" + packagePath + "/" + mainFile_ + ".mjs");
-        if(typeof main.$run$ !== 'undefined') {
-            await main.$run$(fireflyPath_.absolutePath_, arguments_);
-            return true;
-        } else {
-            return false;
-        }
-    
+const process_ = (await import("process"));
+const cwd_ = process_.cwd();
+const workingDirectory_ = ((cwd_.indexOf(":") === 1)
+? ("file:///" + cwd_)
+: cwd_);
+const packagePath_ = ((packagePair_.group_ + "/") + packagePair_.name_);
+const main_ = (await import((((((((workingDirectory_ + "/.firefly/output/") + target_) + "/") + packagePath_) + "/") + mainFile_) + ".mjs")));
+if(((typeof main_["$run$"]) !== "undefined")) {
+main_["$run$"](fireflyPath_.absolutePath_, arguments_);
+return true
+} else {
+return false
+}
 }
 
 export async function prepareFireflyDirectory_$(path_, $task) {

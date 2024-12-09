@@ -206,6 +206,14 @@ const LAssignMinus$ = {LAssignMinus: true};
 export function LAssignMinus() {
 return LAssignMinus$;
 }
+const LAssignMultiplication$ = {LAssignMultiplication: true};
+export function LAssignMultiplication() {
+return LAssignMultiplication$;
+}
+const LAssignDivision$ = {LAssignDivision: true};
+export function LAssignDivision() {
+return LAssignDivision$;
+}
 
 
 
@@ -390,6 +398,12 @@ return false
 if(_1.LAssignMinus) {
 return false
 }
+if(_1.LAssignMultiplication) {
+return false
+}
+if(_1.LAssignDivision) {
+return false
+}
 }
 }
 
@@ -472,6 +486,12 @@ if(_1.LAssignPlus) {
 return false
 }
 if(_1.LAssignMinus) {
+return false
+}
+if(_1.LAssignMultiplication) {
+return false
+}
+if(_1.LAssignDivision) {
 return false
 }
 }
@@ -558,6 +578,12 @@ return false
 if(_1.LAssignMinus) {
 return false
 }
+if(_1.LAssignMultiplication) {
+return false
+}
+if(_1.LAssignDivision) {
+return false
+}
 }
 }
 
@@ -640,6 +666,12 @@ if(_1.LAssignPlus) {
 return false
 }
 if(_1.LAssignMinus) {
+return false
+}
+if(_1.LAssignMultiplication) {
+return false
+}
+if(_1.LAssignDivision) {
 return false
 }
 }
@@ -726,6 +758,12 @@ return false
 if(_1.LAssignMinus) {
 return false
 }
+if(_1.LAssignMultiplication) {
+return false
+}
+if(_1.LAssignDivision) {
+return false
+}
 }
 }
 
@@ -808,6 +846,12 @@ if(_1.LAssignPlus) {
 return false
 }
 if(_1.LAssignMinus) {
+return false
+}
+if(_1.LAssignMultiplication) {
+return false
+}
+if(_1.LAssignDivision) {
 return false
 }
 }
@@ -955,6 +999,14 @@ if(value_a.LAssignMinus) {
 const z_ = value_a;
 return "LAssignMinus"
 }
+if(value_a.LAssignMultiplication) {
+const z_ = value_a;
+return "LAssignMultiplication"
+}
+if(value_a.LAssignDivision) {
+const z_ = value_a;
+return "LAssignDivision"
+}
 },
 async show_$(value_, $task) {
 const value_a = value_;
@@ -1061,6 +1113,14 @@ return "LAssignPlus"
 if(value_a.LAssignMinus) {
 const z_ = value_a;
 return "LAssignMinus"
+}
+if(value_a.LAssignMultiplication) {
+const z_ = value_a;
+return "LAssignMultiplication"
+}
+if(value_a.LAssignDivision) {
+const z_ = value_a;
+return "LAssignDivision"
 }
 }
 };
@@ -1314,6 +1374,12 @@ return 24
 if(z_a.LAssignMinus) {
 return 25
 }
+if(z_a.LAssignMultiplication) {
+return 26
+}
+if(z_a.LAssignDivision) {
+return 27
+}
 }
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 }
@@ -1404,6 +1470,12 @@ return 24
 }
 if(z_a.LAssignMinus) {
 return 25
+}
+if(z_a.LAssignMultiplication) {
+return 26
+}
+if(z_a.LAssignDivision) {
+return 27
 }
 }
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
@@ -1696,6 +1768,22 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2
 serialization_.offset_ += 1
 return
 }
+if(value_a.LAssignMultiplication) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 39), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 26);
+serialization_.offset_ += 1
+return
+}
+if(value_a.LAssignDivision) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 27);
+serialization_.offset_ += 1
+return
+}
 },
 deserializeUsing_(serialization_) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -1805,6 +1893,14 @@ return ff_compiler_Token.LAssignPlus()
 if(_1 === 25) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_Token.LAssignMinus()
+}
+if(_1 === 26) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 39), 0);
+return ff_compiler_Token.LAssignMultiplication()
+}
+if(_1 === 27) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
+return ff_compiler_Token.LAssignDivision()
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -2022,6 +2118,22 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2
 serialization_.offset_ += 1
 return
 }
+if(value_a.LAssignMultiplication) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 39), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 26);
+serialization_.offset_ += 1
+return
+}
+if(value_a.LAssignDivision) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 27);
+serialization_.offset_ += 1
+return
+}
 },
 async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
@@ -2131,6 +2243,14 @@ return ff_compiler_Token.LAssignPlus()
 if(_1 === 25) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_Token.LAssignMinus()
+}
+if(_1 === 26) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 39), 0);
+return ff_compiler_Token.LAssignMultiplication()
+}
+if(_1 === 27) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
+return ff_compiler_Token.LAssignDivision()
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
