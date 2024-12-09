@@ -1,0 +1,86 @@
+class Queue[T](items: IntMap[T], mutable nextKey: Int)
+newtype QueueKey(key: Int)
+
+new[T](): Queue[T] {
+    Queue(IntMap.new(), 0)
+}
+
+extend self[T]: Queue[T] {
+    
+    push(item: T): QueueKey {
+        self.nextKey += 1
+        self.items.set(self.nextKey, item)
+        QueueKey(self.nextKey)
+    }
+    
+    pop(): Option[T] {
+        if(self.items.size() == 0) {None} else:
+        let key = self.items!->keys()->next()->value?
+        let value = self.items.get(key)
+        self.items.remove(key)
+        value
+    }
+    
+    first(): Option[T] {
+        if(self.items.size() == 0) {None} else:
+        let key = self.items!->keys()->next()->value?
+        let value = self.items.get(key)
+        value
+    }
+
+    remove(key: QueueKey): Bool {
+        self.items.remove(key.key)
+    }
+    
+    has(key: QueueKey): Bool {
+        self.items.has(key.key)
+    }
+    
+    clear(): Unit {
+        self.items.clear()
+    }
+
+    size(): Int {
+        self.items.size()
+    }
+    
+    each(body: (QueueKey, T) => Unit): Unit {
+        self.items.each {k, v => body(QueueKey(k), v)}
+    }
+    
+    eachWhile(body: (QueueKey, T) => Bool): Unit {
+        self.items.eachWhile {k, v => body(QueueKey(k), v)}
+    }
+
+    toArray(): Array[T] {
+        let array = Array.new()
+        self.each {_, v => array.push(v)}
+        array
+    }
+
+    toList(): List[T] {
+        self.toArray().drain()
+    }
+
+    toStream(): Stream[T] {
+        self.toList().toStream()
+    }
+
+    keys(): List[QueueKey] {
+        let array = Array.new()
+        self.items.each {k, _ => array.push(QueueKey(k))}
+        array.drain()
+    }
+
+    values(): List[T] {
+        let array = Array.new()
+        self.items.each {_, v => array.push(v)}
+        array.drain()
+    }
+
+    copy(): Queue[T] {
+        Queue(self.items.copy(), self.nextKey)
+    }
+    
+}
+

@@ -221,6 +221,12 @@ extend self[T]: List[T] {
     toArray(): Array[T] {
         Js->(array = self!->slice())?
     }
+    
+    toQueue(): Queue[T] {
+        let queue = Queue.new()
+        self.each {v => queue.push(v)}
+        queue
+    }
 
     each(body: T => Unit): Unit {
         mutable i = 0

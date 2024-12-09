@@ -70,6 +70,8 @@ import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
 import * as ff_core_Path from "../../ff/core/Path.mjs"
 
+import * as ff_core_Queue from "../../ff/core/Queue.mjs"
+
 import * as ff_core_Random from "../../ff/core/Random.mjs"
 
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
@@ -368,6 +370,15 @@ return result_
 
 export function List_toArray(self_) {
 return {array: self_.slice()}
+}
+
+export function List_toQueue(self_) {
+const queue_ = ff_core_Queue.new_();
+for(let for_a = self_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const v_ = for_a[for_i];
+ff_core_Queue.Queue_push(queue_, v_)
+};
+return queue_
 }
 
 export function List_each(self_, body_) {
@@ -750,6 +761,15 @@ return result_
 
 export async function List_toArray$(self_, $task) {
 return {array: self_.slice()}
+}
+
+export async function List_toQueue$(self_, $task) {
+const queue_ = ff_core_Queue.new_();
+for(let for_a = self_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const v_ = for_a[for_i];
+ff_core_Queue.Queue_push(queue_, v_)
+};
+return queue_
 }
 
 export async function List_each$(self_, body_, $task) {

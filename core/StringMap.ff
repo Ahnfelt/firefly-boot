@@ -78,13 +78,13 @@ extend self[V]: StringMap[V] {
     keys(): List[String] {
         let array = Array.new()
         self.each {k, v => array.push(k)}
-        array.toList()
+        array.drain()
     }
 
     values(): List[V] {
         let array = Array.new()
         self.each {k, v => array.push(v)}
-        array.toList()
+        array.drain()
     }
 
     copy(): StringMap[V] {

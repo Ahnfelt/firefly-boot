@@ -70,6 +70,8 @@ import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
 import * as ff_core_Path from "../../ff/core/Path.mjs"
 
+import * as ff_core_Queue from "../../ff/core/Queue.mjs"
+
 import * as ff_core_Random from "../../ff/core/Random.mjs"
 
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
@@ -187,7 +189,7 @@ const array_ = ff_core_Array.new_();
 ff_core_StringMap.StringMap_each(self_, ((k_, v_) => {
 array_.array.push(k_)
 }));
-return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
+return ff_core_Array.Array_drain(array_)
 }
 
 export function StringMap_values(self_) {
@@ -195,7 +197,7 @@ const array_ = ff_core_Array.new_();
 ff_core_StringMap.StringMap_each(self_, ((k_, v_) => {
 array_.array.push(v_)
 }));
-return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
+return ff_core_Array.Array_drain(array_)
 }
 
 export function StringMap_copy(self_) {
@@ -291,7 +293,7 @@ const array_ = ff_core_Array.new_();
 ff_core_StringMap.StringMap_each(self_, ((k_, v_) => {
 array_.array.push(k_)
 }));
-return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
+return ff_core_Array.Array_drain(array_)
 }
 
 export async function StringMap_values$(self_, $task) {
@@ -299,7 +301,7 @@ const array_ = ff_core_Array.new_();
 ff_core_StringMap.StringMap_each(self_, ((k_, v_) => {
 array_.array.push(v_)
 }));
-return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
+return ff_core_Array.Array_drain(array_)
 }
 
 export async function StringMap_copy$(self_, $task) {
