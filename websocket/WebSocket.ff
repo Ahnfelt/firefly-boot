@@ -1,13 +1,40 @@
 capability WebSocket(
     jsValue: JsValue
-    mutable front: Array[JsValue] 
-    mutable back: Array[JsValue]
-    mutable listeners: Array[Bool => Unit]
-    task: Task
+    messages: Queue[JsValue]
+    listeners: Queue[Unit => Unit]
 )
 
 open(browserSystem: BrowserSystem, url: String): WebSocket {
-    internalOpenBrowserWebSocket(browserSystem, url)
+    let socket = if(
+        Js->location.typeof() != "undefined" && !url.contains("://") &&
+        !Js->location->href.isNullOrUndefined() && Js->location->href->startsWith("http")?
+    ) {
+        let href: String = Js->URL->(url, Js->location->href)->href?
+        Js->WebSocket-> ("ws" + href.dropFirst("http".size()))
+    } else {
+        Js->WebSocket->(url)
+    }
+    socket->binaryType = "arraybuffer"
+    let result = WebSocket(socket, Queue.new(), Queue.new())
+    Js.awaitCancellablePromise {resolve, reject, onSettle =>
+        onSettle {_ => socket->close()}
+        socket->onopen = Js->{resolve(result)}
+        socket->onclose = Js->{reject(_?)}
+    }
+    socket->onopen = Js.null()
+    socket->onclose = Js.null()
+    socket->addEventListener("close", Js->{
+        result.listeners.each {_, listener => listener(Unit)}
+    })
+    socket->addEventListener("message", Js->{m =>
+        result.messages.push(m)
+        result.listeners.each {_, listener => listener(Unit)}
+    })
+    socket->addEventListener("error", Js->{e =>
+        result.messages.push(e)
+        result.listeners.each {_, listener => listener(Unit)}
+    })
+    result
 }
 
 extend self: WebSocket {
@@ -23,23 +50,16 @@ extend self: WebSocket {
     readAny[T](fromText: String => T, fromBuffer: Buffer => T): Option[T] {
         Js.throwIfCancelled()
         doWhile {
-            if(self.front.size() != 0) {False} else:
-            while {self.back.size() != 0} {
-                self.front.push(self.back.pop().grab())
-            }
-            if(self.front.size() != 0) {False} else:
+            if(self.messages.size() != 0) {False} else:
             if(self.jsValue->readyState === 3) {False} else:
             Js.awaitCancellablePromise {resolve, reject, onSettle =>
-                self.listeners.push(resolve)
-                onSettle {fulfilled =>
-                    if(!fulfilled) {
-                        self.listeners = self.listeners.drain().filter {_! !== resolve!}.toArray()
-                    }
-                }
+                let key = self.listeners.push(resolve)
+                onSettle {_ => self.listeners.remove(key)}
             }
+            True
         }
         if(self.jsValue->readyState === 3) {None} else:
-        let message = self.front.pop().grab()
+        let message = self.messages.pop().grab()
         if(!(message.instanceof(Js->MessageEvent))) {Js.throw(Js->Error->("WebSocket error"))}
         let data = message->data
         if(data.typeof() == "string") {Some(Js.await(fromText(data?)!)?)} else:
@@ -78,46 +98,3 @@ extend self: WebSocket {
     }
 
 }
-
-internalOpenBrowserWebSocket(browserSystem: BrowserSystem, url: String): WebSocket
-    target browser async """
-        if(typeof location !== 'undefined' && !url_.includes("://")) {
-            if(location.href && location.href.startsWith("http")) {
-                url_ = new URL(url_, location.href).href.replace(/^http/, 'ws');
-            }
-        }
-        const socket = new WebSocket(url_);
-        socket.binaryType = "arraybuffer";
-        socket.ffFront = [];
-        socket.ffBack = [];
-        socket.ffListeners = [];
-        socket.ffTask = $task;
-        $task.controller_.signal.addEventListener('message', m => socket.ffBack.push(m));
-        const abort = () => socket.close();
-        try {
-            await new Promise((resolve, reject) => {
-                socket.onopen = resolve;
-                socket.onerror = reject;
-                $task.controller_.signal.addEventListener('abort', abort);
-            });
-        } finally {
-            socket.onopen = null;
-            socket.onerror = null;
-        }
-        socket.addEventListener('close', () => {
-            $task.controller_.signal.removeEventListener('abort', abort);
-            for(let i = 0; i < socket.ffListeners.length; i++) socket.ffListeners[i]();
-            socket.ffListeners.length = 0;
-        });
-        socket.addEventListener('message', m => {
-            socket.ffBack.push(m);
-            for(let i = 0; i < socket.ffListeners.length; i++) socket.ffListeners[i]();
-            socket.ffListeners.length = 0;
-        });
-        socket.addEventListener('error', e => {
-            socket.ffBack.push(e);
-            for(let i = 0; i < socket.ffListeners.length; i++) socket.ffListeners[i]();
-            socket.ffListeners.length = 0;
-        });
-        return socket;
-    """
