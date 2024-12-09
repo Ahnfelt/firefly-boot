@@ -343,7 +343,7 @@ internalReadStream(createReadStream: () => JsValue): Stream[Buffer] {
                 })
                 Js.await(promise)
             }
-            go()
+            tailcall go()
         }
         go()
     } {

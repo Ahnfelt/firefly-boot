@@ -140,6 +140,7 @@ return ff_core_Stream.Stream((() => {
 ;
 const jsStream_ = ff_core_Option.Option_else(readable_, open_);
 function go_() {
+_tailcall: for(;;) {
 const jsBuffer_ = jsStream_.read();
 if((!ff_core_JsValue.JsValue_isNullOrUndefined(jsBuffer_))) {
 const buffer_ = (new DataView(jsBuffer_.buffer, jsBuffer_.byteOffset, jsBuffer_.length));
@@ -172,9 +173,15 @@ return signal_.addEventListener("abort", jsDoReject_)
 })));
 return promise_
 }));
-return go_()
+{
+
+
+continue _tailcall
 }
 }
+}
+}
+return
 }
 }
 return go_()
@@ -247,6 +254,7 @@ return ff_core_Stream.Stream((async ($task) => {
 ff_core_Task.Task_throwIfAborted($task);
 const jsStream_ = (await ff_core_Option.Option_else$(readable_, open_, $task));
 async function go_$($task) {
+_tailcall: for(;;) {
 const jsBuffer_ = jsStream_.read();
 if((!ff_core_JsValue.JsValue_isNullOrUndefined(jsBuffer_))) {
 const buffer_ = (new DataView(jsBuffer_.buffer, jsBuffer_.byteOffset, jsBuffer_.length));
@@ -279,9 +287,15 @@ return signal_.addEventListener("abort", jsDoReject_)
 })));
 return (await promise_)
 }), $task));
-return (await go_$($task))
+{
+
+
+continue _tailcall
 }
 }
+}
+}
+return
 }
 }
 return (await go_$($task))
