@@ -142,6 +142,10 @@ export function StringMap_size(self_) {
 return self_.size
 }
 
+export function StringMap_isEmpty(self_) {
+return (ff_core_StringMap.StringMap_size(self_) === 0)
+}
+
 export function StringMap_each(self_, body_) {
 if(false) {
 const iterator_ = self_.entries();
@@ -244,6 +248,10 @@ self_.clear()
 
 export async function StringMap_size$(self_, $task) {
 return self_.size
+}
+
+export async function StringMap_isEmpty$(self_, $task) {
+return (ff_core_StringMap.StringMap_size(self_) === 0)
 }
 
 export async function StringMap_each$(self_, body_, $task) {

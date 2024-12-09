@@ -1,20 +1,18 @@
 capability Lock(
     mutable owner: JsValue
     mutable level: Int
-    mutable stack: Array[Pair[JsValue, Unit => Unit]]
-    mutable queue: Array[Pair[JsValue, Unit => Unit]]
+    mutable queue: Queue[Pair[JsValue, Unit => Unit]]
 )
 
 capability LockCondition(
     lock: Lock
-    mutable stack: Array[Pair[JsValue, Unit => Unit]]
-    mutable queue: Array[Pair[JsValue, Unit => Unit]]
+    mutable queue: Queue[Unit => Unit]
 )
 
 extend self: Lock {
 
     condition(): LockCondition {
-        LockCondition(self, Array.new(), Array.new())
+        LockCondition(self, Queue.new())
     }
     
     acquire(): Unit {
@@ -23,13 +21,8 @@ extend self: Lock {
             self.level += 1
         } else {
             Js.awaitCancellablePromise {resolve, reject, onSettle =>
-                self.queue.push(Pair(Js.currentTask()!, resolve))
-                onSettle {fulfilled =>
-                    if(!fulfilled) {
-                        self.queue = self.queue.drain().filter {_.first !== Js.currentTask()!}.toArray()
-                        self.stack = self.stack.drain().filter {_.first !== Js.currentTask()!}.toArray()
-                    }
-                }
+                let key = self.queue.push(Pair(Js.currentTask()!, resolve))
+                onSettle {_ => self.queue.remove(key)}
             }
         }
     }
@@ -42,14 +35,8 @@ extend self: Lock {
         } else {
             self.owner = Js.undefined()
             self.level = 0
-            if(self.stack.isEmpty()) {
-                let empty = self.stack
-                self.queue.reverse()
-                self.stack = self.queue
-                self.queue = empty
-            }
-            if(!self.stack.isEmpty()) {
-                let pending = self.stack.pop().grab()
+            if(!self.queue.isEmpty()) {
+                let pending = self.queue.pop().grab()
                 self.owner = pending.first
                 self.level = 1
                 pending.second(Unit)
@@ -80,13 +67,8 @@ extend self: LockCondition {
         self.lock.release()
         try {
             Js.awaitCancellablePromise {resolve, reject, onSettle =>
-                self.queue.push(Pair(Js.currentTask()!, resolve))
-                onSettle {fulfilled =>
-                    if(!fulfilled) {
-                        self.queue = self.queue.drain().filter {_.first !== Js.currentTask()!}.toArray()
-                        self.stack = self.stack.drain().filter {_.first !== Js.currentTask()!}.toArray()
-                    }
-                }
+                let key = self.queue.push(resolve)
+                onSettle {_ => self.queue.remove(key)}
             }
         } finally {
             mutable error = Js.undefined()
@@ -115,31 +97,12 @@ extend self: LockCondition {
     }
 
     wakeOne(): Unit {
-        if(self.stack.isEmpty()) {
-            let empty = self.stack
-            self.queue.reverse()
-            self.stack = self.queue
-            self.queue = empty
-        }
-        if(!self.stack.isEmpty()) {
-            let resolve = self.stack.pop().grab().second
-            resolve(Unit)
-        }
+        self.queue.pop().each {resolve => resolve(Unit)}
     }
 
     wakeAll(): Unit {
-        while {!self.stack.isEmpty()} {
-            let resolve = self.stack.pop().grab().second
-            resolve(Unit)
-        }
-        let empty = self.stack
-        self.queue.reverse()
-        self.stack = self.queue
-        self.queue = empty
-        while {!self.stack.isEmpty()} {
-            let resolve = self.stack.pop().grab().second
-            resolve(Unit)
-        }
+        self.queue.each {_, resolve => resolve(Unit)}
+        self.queue.clear()
     }
 
 }

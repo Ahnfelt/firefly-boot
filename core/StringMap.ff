@@ -36,6 +36,10 @@ extend self[V]: StringMap[V] {
     size(): Int {
         self!->size?
     }
+    
+    isEmpty(): Bool {
+        self.size() == 0
+    }
 
     each(body: (String, V) => Unit): Unit {
         if(Js.inAsync()) {

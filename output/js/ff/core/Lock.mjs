@@ -95,13 +95,13 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Lock
-export function Lock(owner_, level_, stack_, queue_) {
-return {owner_, level_, stack_, queue_};
+export function Lock(owner_, level_, queue_) {
+return {owner_, level_, queue_};
 }
 
 // type LockCondition
-export function LockCondition(lock_, stack_, queue_) {
-return {lock_, stack_, queue_};
+export function LockCondition(lock_, queue_) {
+return {lock_, queue_};
 }
 
 
@@ -111,7 +111,7 @@ return {lock_, stack_, queue_};
 
 
 export function Lock_condition(self_) {
-return ff_core_Lock.LockCondition(self_, ff_core_Array.new_(), ff_core_Array.new_())
+return ff_core_Lock.LockCondition(self_, ff_core_Queue.new_())
 }
 
 export function Lock_acquire(self_) {
@@ -120,16 +120,9 @@ self_.owner_ = $task;
 self_.level_ += 1
 } else {
 ff_core_Js.awaitCancellablePromise_(((resolve_, reject_, onSettle_) => {
-self_.queue_.array.push(ff_core_Pair.Pair($task, resolve_));
-onSettle_(((fulfilled_) => {
-if((!fulfilled_)) {
-self_.queue_ = ff_core_List.List_toArray(ff_core_List.List_filter(ff_core_Array.Array_drain(self_.queue_), ((_w1) => {
-return (_w1.first_ !== $task)
-})));
-self_.stack_ = ff_core_List.List_toArray(ff_core_List.List_filter(ff_core_Array.Array_drain(self_.stack_), ((_w1) => {
-return (_w1.first_ !== $task)
-})))
-}
+const key_ = ff_core_Queue.Queue_push(self_.queue_, ff_core_Pair.Pair($task, resolve_));
+onSettle_(((_) => {
+ff_core_Queue.Queue_remove(self_.queue_, key_)
 }))
 }))
 }
@@ -143,14 +136,8 @@ self_.level_ -= 1
 } else {
 self_.owner_ = (void 0);
 self_.level_ = 0;
-if(ff_core_Array.Array_isEmpty(self_.stack_)) {
-const empty_ = self_.stack_;
-ff_core_Array.Array_reverse(self_.queue_);
-self_.stack_ = self_.queue_;
-self_.queue_ = empty_
-};
-if((!ff_core_Array.Array_isEmpty(self_.stack_))) {
-const pending_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_));
+if((!ff_core_Queue.Queue_isEmpty(self_.queue_))) {
+const pending_ = ff_core_Option.Option_grab(ff_core_Queue.Queue_pop(self_.queue_));
 self_.owner_ = pending_.first_;
 self_.level_ = 1;
 pending_.second_((void 0))
@@ -168,7 +155,7 @@ ff_core_Lock.Lock_release(self_)
 }
 
 export async function Lock_condition$(self_, $task) {
-return ff_core_Lock.LockCondition(self_, ff_core_Array.new_(), ff_core_Array.new_())
+return ff_core_Lock.LockCondition(self_, ff_core_Queue.new_())
 }
 
 export async function Lock_acquire$(self_, $task) {
@@ -177,16 +164,9 @@ self_.owner_ = $task;
 self_.level_ += 1
 } else {
 (await ff_core_Js.awaitCancellablePromise_$((async (resolve_, reject_, onSettle_, $task) => {
-self_.queue_.array.push(ff_core_Pair.Pair($task, resolve_));
-(await onSettle_((async (fulfilled_, $task) => {
-if((!fulfilled_)) {
-self_.queue_ = ff_core_List.List_toArray(ff_core_List.List_filter(ff_core_Array.Array_drain(self_.queue_), ((_w1) => {
-return (_w1.first_ !== $task)
-})));
-self_.stack_ = ff_core_List.List_toArray(ff_core_List.List_filter(ff_core_Array.Array_drain(self_.stack_), ((_w1) => {
-return (_w1.first_ !== $task)
-})))
-}
+const key_ = ff_core_Queue.Queue_push(self_.queue_, ff_core_Pair.Pair($task, resolve_));
+(await onSettle_((async (_, $task) => {
+ff_core_Queue.Queue_remove(self_.queue_, key_)
 }), $task))
 }), $task))
 }
@@ -200,14 +180,8 @@ self_.level_ -= 1
 } else {
 self_.owner_ = (void 0);
 self_.level_ = 0;
-if(ff_core_Array.Array_isEmpty(self_.stack_)) {
-const empty_ = self_.stack_;
-ff_core_Array.Array_reverse(self_.queue_);
-self_.stack_ = self_.queue_;
-self_.queue_ = empty_
-};
-if((!ff_core_Array.Array_isEmpty(self_.stack_))) {
-const pending_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_));
+if((!ff_core_Queue.Queue_isEmpty(self_.queue_))) {
+const pending_ = ff_core_Option.Option_grab(ff_core_Queue.Queue_pop(self_.queue_));
 self_.owner_ = pending_.first_;
 self_.level_ = 1;
 (await pending_.second_((void 0), $task))
@@ -234,16 +208,9 @@ self_.lock_.level_ = 1;
 ff_core_Lock.Lock_release(self_.lock_);
 try {
 ff_core_Js.awaitCancellablePromise_(((resolve_, reject_, onSettle_) => {
-self_.queue_.array.push(ff_core_Pair.Pair($task, resolve_));
-onSettle_(((fulfilled_) => {
-if((!fulfilled_)) {
-self_.queue_ = ff_core_List.List_toArray(ff_core_List.List_filter(ff_core_Array.Array_drain(self_.queue_), ((_w1) => {
-return (_w1.first_ !== $task)
-})));
-self_.stack_ = ff_core_List.List_toArray(ff_core_List.List_filter(ff_core_Array.Array_drain(self_.stack_), ((_w1) => {
-return (_w1.first_ !== $task)
-})))
-}
+const key_ = ff_core_Queue.Queue_push(self_.queue_, resolve_);
+onSettle_(((_) => {
+ff_core_Queue.Queue_remove(self_.queue_, key_)
 }))
 }))
 } finally {
@@ -289,31 +256,18 @@ return
 }
 
 export function LockCondition_wakeOne(self_) {
-if(ff_core_Array.Array_isEmpty(self_.stack_)) {
-const empty_ = self_.stack_;
-ff_core_Array.Array_reverse(self_.queue_);
-self_.stack_ = self_.queue_;
-self_.queue_ = empty_
-};
-if((!ff_core_Array.Array_isEmpty(self_.stack_))) {
-const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_)).second_;
+for(const for_o = ff_core_Queue.Queue_pop(self_.queue_); for_o.Some;) {
+const resolve_ = for_o.value_;
 resolve_((void 0))
+break
 }
 }
 
 export function LockCondition_wakeAll(self_) {
-while((!ff_core_Array.Array_isEmpty(self_.stack_))) {
-const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_)).second_;
+ff_core_Queue.Queue_each(self_.queue_, ((_, resolve_) => {
 resolve_((void 0))
-};
-const empty_ = self_.stack_;
-ff_core_Array.Array_reverse(self_.queue_);
-self_.stack_ = self_.queue_;
-self_.queue_ = empty_;
-while((!ff_core_Array.Array_isEmpty(self_.stack_))) {
-const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_)).second_;
-resolve_((void 0))
-}
+}));
+ff_core_Queue.Queue_clear(self_.queue_)
 }
 
 export async function LockCondition_sleep$(self_, $task) {
@@ -326,16 +280,9 @@ self_.lock_.level_ = 1;
 (await ff_core_Lock.Lock_release$(self_.lock_, $task));
 try {
 (await ff_core_Js.awaitCancellablePromise_$((async (resolve_, reject_, onSettle_, $task) => {
-self_.queue_.array.push(ff_core_Pair.Pair($task, resolve_));
-(await onSettle_((async (fulfilled_, $task) => {
-if((!fulfilled_)) {
-self_.queue_ = ff_core_List.List_toArray(ff_core_List.List_filter(ff_core_Array.Array_drain(self_.queue_), ((_w1) => {
-return (_w1.first_ !== $task)
-})));
-self_.stack_ = ff_core_List.List_toArray(ff_core_List.List_filter(ff_core_Array.Array_drain(self_.stack_), ((_w1) => {
-return (_w1.first_ !== $task)
-})))
-}
+const key_ = ff_core_Queue.Queue_push(self_.queue_, resolve_);
+(await onSettle_((async (_, $task) => {
+ff_core_Queue.Queue_remove(self_.queue_, key_)
 }), $task))
 }), $task))
 } finally {
@@ -381,31 +328,18 @@ return
 }
 
 export async function LockCondition_wakeOne$(self_, $task) {
-if(ff_core_Array.Array_isEmpty(self_.stack_)) {
-const empty_ = self_.stack_;
-ff_core_Array.Array_reverse(self_.queue_);
-self_.stack_ = self_.queue_;
-self_.queue_ = empty_
-};
-if((!ff_core_Array.Array_isEmpty(self_.stack_))) {
-const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_)).second_;
+for(const for_o = ff_core_Queue.Queue_pop(self_.queue_); for_o.Some;) {
+const resolve_ = for_o.value_;
 (await resolve_((void 0), $task))
+break
 }
 }
 
 export async function LockCondition_wakeAll$(self_, $task) {
-while((!ff_core_Array.Array_isEmpty(self_.stack_))) {
-const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_)).second_;
+(await ff_core_Queue.Queue_each$(self_.queue_, (async (_, resolve_, $task) => {
 (await resolve_((void 0), $task))
-};
-const empty_ = self_.stack_;
-ff_core_Array.Array_reverse(self_.queue_);
-self_.stack_ = self_.queue_;
-self_.queue_ = empty_;
-while((!ff_core_Array.Array_isEmpty(self_.stack_))) {
-const resolve_ = ff_core_Option.Option_grab(ff_core_Array.Array_pop(self_.stack_)).second_;
-(await resolve_((void 0), $task))
-}
+}), $task));
+ff_core_Queue.Queue_clear(self_.queue_)
 }
 
 

@@ -154,6 +154,10 @@ export function Queue_size(self_) {
 return ff_core_IntMap.IntMap_size(self_.items_)
 }
 
+export function Queue_isEmpty(self_) {
+return (ff_core_Queue.Queue_size(self_) === 0)
+}
+
 export function Queue_each(self_, body_) {
 ff_core_IntMap.IntMap_each(self_.items_, ((k_, v_) => {
 body_(k_, v_)
@@ -243,6 +247,10 @@ ff_core_IntMap.IntMap_clear(self_.items_)
 
 export async function Queue_size$(self_, $task) {
 return ff_core_IntMap.IntMap_size(self_.items_)
+}
+
+export async function Queue_isEmpty$(self_, $task) {
+return (ff_core_Queue.Queue_size(self_) === 0)
 }
 
 export async function Queue_each$(self_, body_, $task) {

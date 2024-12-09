@@ -44,6 +44,10 @@ extend self[T]: Queue[T] {
         self.items.size()
     }
     
+    isEmpty(): Bool {
+        self.size() == 0
+    }
+    
     each(body: (QueueKey, T) => Unit): Unit {
         self.items.each {k, v => body(QueueKey(k), v)}
     }
