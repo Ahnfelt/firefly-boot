@@ -70,6 +70,8 @@ import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
 import * as ff_core_Path from "../../ff/core/Path.mjs"
 
+import * as ff_core_Queue from "../../ff/core/Queue.mjs"
+
 import * as ff_core_Random from "../../ff/core/Random.mjs"
 
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
@@ -143,7 +145,7 @@ return ff_core_Channel.Channel(capacity_, ff_core_Array.new_(), (new Set()), (ne
 }
 
 export function Task_lock(self_) {
-return ff_core_Lock.Lock((void 0), 0, ff_core_Array.new_(), ff_core_Array.new_())
+return ff_core_Lock.Lock((void 0), 0, ff_core_Queue.new_())
 }
 
 export function Task_now(self_) {
@@ -203,7 +205,7 @@ return ff_core_Channel.Channel(capacity_, ff_core_Array.new_(), (new Set()), (ne
 }
 
 export async function Task_lock$(self_, $task) {
-return ff_core_Lock.Lock((void 0), 0, ff_core_Array.new_(), ff_core_Array.new_())
+return ff_core_Lock.Lock((void 0), 0, ff_core_Queue.new_())
 }
 
 export async function Task_now$(self_, $task) {

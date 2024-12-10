@@ -36,6 +36,10 @@ extend self[V]: StringMap[V] {
     size(): Int {
         self!->size?
     }
+    
+    isEmpty(): Bool {
+        self.size() == 0
+    }
 
     each(body: (String, V) => Unit): Unit {
         if(Js.inAsync()) {
@@ -78,13 +82,13 @@ extend self[V]: StringMap[V] {
     keys(): List[String] {
         let array = Array.new()
         self.each {k, v => array.push(k)}
-        array.toList()
+        array.drain()
     }
 
     values(): List[V] {
         let array = Array.new()
         self.each {k, v => array.push(v)}
-        array.toList()
+        array.drain()
     }
 
     copy(): StringMap[V] {

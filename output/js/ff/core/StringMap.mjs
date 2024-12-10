@@ -70,6 +70,8 @@ import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
 import * as ff_core_Path from "../../ff/core/Path.mjs"
 
+import * as ff_core_Queue from "../../ff/core/Queue.mjs"
+
 import * as ff_core_Random from "../../ff/core/Random.mjs"
 
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
@@ -140,6 +142,10 @@ export function StringMap_size(self_) {
 return self_.size
 }
 
+export function StringMap_isEmpty(self_) {
+return (ff_core_StringMap.StringMap_size(self_) === 0)
+}
+
 export function StringMap_each(self_, body_) {
 if(false) {
 const iterator_ = self_.entries();
@@ -187,7 +193,7 @@ const array_ = ff_core_Array.new_();
 ff_core_StringMap.StringMap_each(self_, ((k_, v_) => {
 array_.array.push(k_)
 }));
-return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
+return ff_core_Array.Array_drain(array_)
 }
 
 export function StringMap_values(self_) {
@@ -195,7 +201,7 @@ const array_ = ff_core_Array.new_();
 ff_core_StringMap.StringMap_each(self_, ((k_, v_) => {
 array_.array.push(v_)
 }));
-return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
+return ff_core_Array.Array_drain(array_)
 }
 
 export function StringMap_copy(self_) {
@@ -242,6 +248,10 @@ self_.clear()
 
 export async function StringMap_size$(self_, $task) {
 return self_.size
+}
+
+export async function StringMap_isEmpty$(self_, $task) {
+return (ff_core_StringMap.StringMap_size(self_) === 0)
 }
 
 export async function StringMap_each$(self_, body_, $task) {
@@ -291,7 +301,7 @@ const array_ = ff_core_Array.new_();
 ff_core_StringMap.StringMap_each(self_, ((k_, v_) => {
 array_.array.push(k_)
 }));
-return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
+return ff_core_Array.Array_drain(array_)
 }
 
 export async function StringMap_values$(self_, $task) {
@@ -299,7 +309,7 @@ const array_ = ff_core_Array.new_();
 ff_core_StringMap.StringMap_each(self_, ((k_, v_) => {
 array_.array.push(v_)
 }));
-return ff_core_Array.Array_toList(array_, 0, 9007199254740991)
+return ff_core_Array.Array_drain(array_)
 }
 
 export async function StringMap_copy$(self_, $task) {

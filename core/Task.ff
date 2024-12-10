@@ -70,8 +70,7 @@ extend self: Task {
         Lock(
             owner = Js.undefined()
             level = 0
-            stack = Array.new()
-            queue = Array.new()
+            queue = Queue.new()
         )
     }
     

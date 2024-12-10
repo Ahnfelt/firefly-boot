@@ -76,6 +76,8 @@ import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
 import * as ff_core_Path from "../../ff/core/Path.mjs"
 
+import * as ff_core_Queue from "../../ff/core/Queue.mjs"
+
 import * as ff_core_Random from "../../ff/core/Random.mjs"
 
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"

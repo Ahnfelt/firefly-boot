@@ -89,6 +89,7 @@ coreImports: List[DImport] =
         "Ordering"
         "Pair"
         "Path"
+        "Queue"
         "Random"
         "Serializable"
         "Set"
