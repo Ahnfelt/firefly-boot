@@ -371,6 +371,18 @@ extend self: JsValue {
         // Special cased by the compiler
         self.instanceof(type)
     }
+    
+    truthy(): Bool {
+        Js.unaryOperator("!!", self)?
+    }
+    
+    falsy(): Bool {
+        Js.unaryOperator("!", self)?
+    }
+    
+    nullish(): Bool {
+        self.isNullOrUndefined() // TODO: Rename
+    }
 
     //toList(): List[JsValue] // TODO
     // TODO: JS operators
