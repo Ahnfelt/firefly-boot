@@ -1,12 +1,12 @@
 capability Lock(
     mutable owner: JsValue
     mutable level: Int
-    mutable queue: Queue[Pair[JsValue, Unit => Unit]]
+    queue: Queue[Pair[JsValue, Unit => Unit]]
 )
 
 capability LockCondition(
     lock: Lock
-    mutable queue: Queue[Unit => Unit]
+    queue: Queue[Unit => Unit]
 )
 
 extend self: Lock {

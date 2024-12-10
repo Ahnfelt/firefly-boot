@@ -458,6 +458,18 @@ export function JsValue_instanceof(self_, type_) {
 return (self_ instanceof type_)
 }
 
+export function JsValue_truthy(self_) {
+return (!!self_)
+}
+
+export function JsValue_falsy(self_) {
+return (!self_)
+}
+
+export function JsValue_nullish(self_) {
+return ff_core_JsValue.JsValue_isNullOrUndefined(self_)
+}
+
 export async function JsValue_grabString$(self_, $task) {
 if((!ff_core_JsValue.JsValue_isString(self_))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
@@ -811,6 +823,18 @@ return (typeof self_)
 
 export async function JsValue_instanceof$(self_, type_, $task) {
 return (self_ instanceof type_)
+}
+
+export async function JsValue_truthy$(self_, $task) {
+return (!!self_)
+}
+
+export async function JsValue_falsy$(self_, $task) {
+return (!self_)
+}
+
+export async function JsValue_nullish$(self_, $task) {
+return ff_core_JsValue.JsValue_isNullOrUndefined(self_)
 }
 
 export const ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue = {
