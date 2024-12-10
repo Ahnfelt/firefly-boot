@@ -16,7 +16,7 @@ class WebRequest[T](
     internalQuery: String
     internalHeaders: StringMap[String]
     internalJsResponse: JsValue
-    internalResponse: T
+    internalResponse: Option[T]
     internalResponseHeaders: StringMap[String]
     internalResponseChunks: Array[JsValue]
     mutable internalResponseStatus: String
@@ -98,6 +98,114 @@ extend self: WebServer {
         self.internalJsWildcard = object
     }
     
+    listenNew(handler: WebRequest[WebResponse] => Unit) {
+        let uws = Js.import("uWebSockets.js")
+        Js.awaitCancellablePromise {resolveServer, rejectServer, onSettleServer =>
+            self.internalJsApp = if(self.internalJsWildcard.isNullOrUndefined()) {
+                uws->SSLApp(self.internalJsWildcard)
+            } elseIf {self.internalJsHosts.any {h => h->"key_file_name".truthy()}} {
+                uws->SSLApp()
+            } else {
+                uws->App()
+            }
+            self.internalJsHosts.each {h => 
+                self.internalJsApp->addServerName(h->hostname, h)
+            }
+            let handleRequest = Js->{res, req, context => 
+                mutable abortedByUws = False
+                let method = req->getMethod()?
+                let path = req->getUrl()?
+                let query = req->getQuery().coalesce("")?
+                let headers = StringMap.new()
+                req->forEach(Js->{key, value => headers.set(key?, value?)})
+                let chunks = Array.new()
+                let task = Js.currentTask().spawn {task => 
+                    try {
+                        task.throwIfAborted()
+                        let webRequest = WebRequest(
+                            internalJsApp = self.internalJsApp
+                            internalJsContext = context
+                            internalMethod = method
+                            internalPath = path
+                            internalQuery = query
+                            internalHeaders = headers
+                            internalJsResponse = res
+                            internalResponse = None
+                            internalResponseHeaders = StringMap.new()
+                            internalResponseChunks = Array.new()
+                            internalResponseStatus = "200 OK"
+                            internalCloseConnection = False
+                            internalResolveFlush = Js.null()
+                            internalContentSize = -1
+                            internalResponded = False
+                        );
+                        handler(webRequest)
+                        task.throwIfAborted()
+                        if(context.isNullOrUndefined() && !webRequest.internalResponded && webRequest.internalContentSize >= 0) {
+                            webRequest.flush()
+                            task.throwIfAborted()
+                        }
+                        if(context.nullish() && !webRequest.internalResponded) {
+                            Js.awaitCancellablePromise {resolve, reject, onSettle => 
+                                res->cork(Js->{
+                                    try {
+                                        task.throwIfAborted()
+                                        if(webRequest.internalResolveFlush.nullish()) {
+                                            res->writeStatus(webRequest.internalResponseStatus)
+                                            webRequest.internalResponseHeaders.each {key, value => 
+                                                res->writeHeader(key, value)
+                                            }
+                                        }
+                                        let chunk = internalChunksToChunk(webRequest.internalResponseChunks)
+                                        res->end(chunk, webRequest.internalCloseConnection)
+                                        resolve(Unit)
+                                    } catchAny {e =>
+                                        reject(e)
+                                    }
+                                })
+                            }
+                        }
+                    } catchAny {e =>
+                        if(!abortedByUws) {Js->console->error(e)}
+                        if(!abortedByUws && context.nullish()) {
+                            res->cork(Js->{
+                                if(!abortedByUws) {res->writeStatus("500 Internal Server Error")}
+                                if(!abortedByUws) {res->end()}
+                            })
+                        }
+                    }
+                }
+                res->onAborted(Js->{
+                    abortedByUws = True
+                    task.abort()
+                })
+            }
+            self.internalJsApp->any("/*", handleRequest)
+            if(!self.internalJsWebSockets.nullish()) {
+                self.internalJsApp->ws("/*", self.internalJsWebSockets
+                    .with("upgrade", handleRequest)
+                    .with("open", Js->{ws => ws->getUserData()->onOpen(ws)})
+                    .with("message", Js->{ws, m, b => ws->getUserData()->onMessage(m, b)})
+                    .with("close", Js->{ws => ws->getUserData()->onClose()})
+                )
+            }
+            self.internalJsApp->listen(self.internalHost, self.internalPort, Js->{listenSocket =>
+                if(!listenSocket.nullish()) {
+                    mutable abort = Js->{}
+                    abort = Js->{
+                        Js.currentTask().controller->signal->removeEventListener("abort", abort)
+                        uws->"us_listen_socket_close"(listenSocket)
+                        self.internalJsApp->close()
+                    }
+                    Js.currentTask().controller->signal->addEventListener("abort", abort)
+                } else {
+                    rejectServer(Js->Error->("listenSocket was nullish")?)
+                }
+                Unit
+            })
+        }
+    }
+        
     listen(handler: WebRequest[WebResponse] => Unit)
         target node async """
             import * as uws from 'uWebSockets.js'
