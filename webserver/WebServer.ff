@@ -101,7 +101,7 @@ extend self: WebServer {
     listenNew(handler: WebRequest[WebResponse] => Unit) {
         let uws = Js.import("uWebSockets.js")
         Js.awaitCancellablePromise {resolveServer, rejectServer, onSettleServer =>
-            self.internalJsApp = if(self.internalJsWildcard.isNullOrUndefined()) {
+            self.internalJsApp = if(!self.internalJsWildcard.isNullOrUndefined()) {
                 uws->SSLApp(self.internalJsWildcard)
             } elseIf {self.internalJsHosts.any {h => h->"key_file_name".truthy()}} {
                 uws->SSLApp()
@@ -141,7 +141,7 @@ extend self: WebServer {
                         );
                         handler(webRequest)
                         task.throwIfAborted()
-                        if(context.isNullOrUndefined() && !webRequest.internalResponded && webRequest.internalContentSize >= 0) {
+                        if(context.nullish() && !webRequest.internalResponded && webRequest.internalContentSize >= 0) {
                             webRequest.flush()
                             task.throwIfAborted()
                         }
@@ -149,8 +149,8 @@ extend self: WebServer {
                             Js.awaitCancellablePromise {resolve, reject, onSettle => 
                                 res->cork(Js->{
                                     try {
-                                        task.throwIfAborted()
-                                        if(webRequest.internalResolveFlush.nullish()) {
+                                        // Js.throwIfCancelled() <- TODO ignored in sync context
+                                        if(webRequest.internalResolveFlush.falsy()) {
                                             res->writeStatus(webRequest.internalResponseStatus)
                                             webRequest.internalResponseHeaders.each {key, value => 
                                                 res->writeHeader(key, value)
