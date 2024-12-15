@@ -98,7 +98,7 @@ extend self: WebServer {
         self.internalJsWildcard = object
     }
     
-    listenNew(handler: WebRequest[WebResponse] => Unit) {
+    listen(handler: WebRequest[WebResponse] => Unit) {
         let uws = Js.import("uWebSockets.js")
         Js.awaitCancellablePromise {resolveServer, rejectServer, onSettleServer =>
             self.internalJsApp = if(!self.internalJsWildcard.isNullOrUndefined()) {
@@ -205,8 +205,8 @@ extend self: WebServer {
             })
         }
     }
-        
-    listen(handler: WebRequest[WebResponse] => Unit)
+
+    listenOld(handler: WebRequest[WebResponse] => Unit)
         target node async """
             import * as uws from 'uWebSockets.js'
             ff_core_Task.Task_throwIfAborted($task);
