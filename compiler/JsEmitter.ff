@@ -224,7 +224,7 @@ extend self: JsEmitter {
                     }.join("\n")
                     let body = self.emitTailCall {
                         let casesString = cases.map {
-                            self.emitCase(escapedArguments, _, [], [], True, True, async)
+                            self.emitCase(escapedArguments, _, [], [], True, True, False, async)
                         }.join("\n")
                         shadowingWorkaround + "\n" + casesString
                     }
@@ -316,7 +316,7 @@ extend self: JsEmitter {
         | EVariantIs(at, "ff:core/Unit.Unit", _) =>
             "function(_v) { return ff_core_Option.Some(_v); }"
         | EVariantIs(at, name, _) =>
-            let n = name.reverse().takeWhile { _ != '.' }.reverse()
+            let n = name.reverse().takeWhile {_ != '.'}.reverse()
             "(function(_v) { " +
             "return _v." + escapeResolved(n) + " ? ff_core_Option.Some(_v) : ff_core_Option.None();" +
             "})"
@@ -344,7 +344,7 @@ extend self: JsEmitter {
             Patterns.convertAndCheck(self.otherModules, cases)
             let arguments = cases.grab(0).patterns.pairs().map {"_" + (_.first + 1)}
             let escapedArguments = arguments.map(escapeKeyword) // emitCase arguments must be preescaped
-            let caseStrings = cases.map {self.emitCase(escapedArguments, _, [], [], True, True, newAsync)}
+            let caseStrings = cases.map {self.emitCase(escapedArguments, _, [], [], True, True, False, newAsync)}
             let prefix = if(newAsync) {"async "} else {""}
             "(" + prefix + "(" + [...escapedArguments, ...controller].join(", ") + ") => " +
             "{\n" + caseStrings.join("\n") + "\n})"
@@ -477,10 +477,10 @@ extend self: JsEmitter {
                 code
             | EPipe(at, value, _, ELambda(_, Lambda(_, _, cases))) =>
                 Patterns.convertAndCheck(self.otherModules, cases)
-                if(!last) {"do "}.else {""} +
+                if(!last && !break) {"do "}.else {""} +
                 "{\nconst _1 = " + self.emitTerm(value, async) + ";\n" +
-                cases.map {self.emitCase(["_1"], _, [], [], True, last, async)}.join("\n") +
-                "\n}" + if(!last) {" while(false)"}.else {""}
+                cases.map {self.emitCase(["_1"], _, [], [], True, last, break, async)}.join("\n") +
+                "\n}" + if(!last && !break) {" while(false)"}.else {""}
             | _ =>
                 detectIfElse(term).{
                     | [] =>
@@ -1000,10 +1000,10 @@ extend self: JsEmitter {
             let arguments = ["_exception.value_", "_error"]
             cases.{
                 | [case] =>
-                    self.emitCase(arguments, case, [], [], False, last, catchAsync)
+                    self.emitCase(arguments, case, [], [], False, last, False, catchAsync)
                 | cs =>
                     let caseStrings =
-                        cases.map {self.emitCase(arguments, _, [], [], True, last, catchAsync)}
+                        cases.map {self.emitCase(arguments, _, [], [], True, last, False, catchAsync)}
                     if(last) {caseStrings.join("\n")} else {"do {\n" + caseStrings.join("\n") + "\n} while(false)"}
             }
         }
@@ -1084,6 +1084,7 @@ extend self: JsEmitter {
         variables: List[String]
         jump: Bool
         last: Bool
+        break: Bool
         async: Bool
     ): String {
         function emitWrapper(code: String): String {
@@ -1105,24 +1106,25 @@ extend self: JsEmitter {
                     variables
                     jump
                     last
+                    break
                     async
                 )
             | Pair([], [MatchGuard(_, e, PVariant(_, "ff:core/Bool.True", _))]) {variables.isEmpty()} =>
                 let newCase = matchCase.MatchCase(patterns = [], guards = [])
-                self.emitCase([], newCase, [...conditions, self.emitTerm(e, async)], [], jump, last, async)
+                self.emitCase([], newCase, [...conditions, self.emitTerm(e, async)], [], jump, last, break, async)
             | Pair([], [MatchGuard(_, e, PVariant(_, "ff:core/Bool.True", _))]) =>
                 let newCase = matchCase.MatchCase(patterns = [], guards = [])
-                let code = self.emitCase([], newCase, [self.emitTerm(e, async)], [], jump, last, async)
+                let code = self.emitCase([], newCase, [self.emitTerm(e, async)], [], jump, last, break, async)
                 emitWrapper(code)
             | Pair([], [guard, ...guards]) =>
                 let guardName = "_guard" + (guards.size() + 1)
                 let newCase = matchCase.MatchCase(patterns = [guard.pattern], guards = guards)
                 let code = 
                     "const " + guardName + " = " + self.emitTerm(guard.term, async) + ";\n" +
-                    self.emitCase([guardName], newCase, [], [], jump, last, async)
+                    self.emitCase([guardName], newCase, [], [], jump, last, break, async)
                 emitWrapper(code)
             | Pair([], []) =>
-                let statementsCode = self.emitStatements(matchCase.body, last, False, async)
+                let statementsCode = self.emitStatements(matchCase.body, last, break, async)
                 let lastLine = statementsCode.reverse().takeWhile {_ != '\n'}.reverse()
                 let returns = 
                     lastLine.startsWith("return ") || 
@@ -1135,7 +1137,7 @@ extend self: JsEmitter {
                 let code = statementsCode + if(jump && last && !returns) {
                     "\nreturn"
                 } elseIf {jump && !returns} {
-                    "\nbreak"
+                    if(break) {"\ncontinue"} else {"\nbreak"}
                 } else {
                     ""
                 }
@@ -1152,30 +1154,31 @@ extend self: JsEmitter {
         variables: List[String]
         jump: Bool
         last: Bool
+        break: Bool
         async: Bool
     ): String {
         pattern.{
             | PString(_, value) =>
                 let newConditions = [...conditions, argument + " === " + value]
-                self.emitCase(arguments, matchCase, newConditions, variables, jump, last, async)
+                self.emitCase(arguments, matchCase, newConditions, variables, jump, last, break, async)
             | PInt(_, value) =>
                 let newConditions = [...conditions, argument + " === " + value]
-                self.emitCase(arguments, matchCase, newConditions, variables, jump, last, async)
+                self.emitCase(arguments, matchCase, newConditions, variables, jump, last, break, async)
             | PChar(_, value) =>
                 let newConditions = [...conditions, argument + " === " + charLiteralToNumber(value)]
-                self.emitCase(arguments, matchCase, newConditions, variables, jump, last, async)
+                self.emitCase(arguments, matchCase, newConditions, variables, jump, last, break, async)
             | PVariable(_, None) =>
-                self.emitCase(arguments, matchCase, conditions, variables, jump, last, async)
+                self.emitCase(arguments, matchCase, conditions, variables, jump, last, break, async)
             | PVariable(_, Some(name)) =>
                 let escaped = escapeKeyword(name)
                 let newVariables = if(escaped != argument) {
                     [...variables, "const " + escaped + " = " + argument + ";\n"]
                 } else {variables}
-                self.emitCase(arguments, matchCase, conditions, newVariables, jump, last, async)
+                self.emitCase(arguments, matchCase, conditions, newVariables, jump, last, break, async)
             | PVariant(_, "ff:core/Bool.False", []) =>
-                self.emitCase(arguments, matchCase, [...conditions, "!" + argument], variables, jump, last, async)
+                self.emitCase(arguments, matchCase, [...conditions, "!" + argument], variables, jump, last, break, async)
             | PVariant(_, "ff:core/Bool.True", []) =>
-                self.emitCase(arguments, matchCase, [...conditions, argument], variables, jump, last, async)
+                self.emitCase(arguments, matchCase, [...conditions, argument], variables, jump, last, break, async)
             | PVariant(_, emptyOrLink, _) {emptyOrLink == "List$Empty" || emptyOrLink == "List$Link"} =>
                 mutable restPattern = None
                 function listPatterns(matchPattern: MatchPattern): List[MatchPattern] {
@@ -1196,7 +1199,7 @@ extend self: JsEmitter {
                 )
                 let operator = restPattern.map {_ => ">="}.else {"==="}
                 let newConditions = [...conditions, argument + ".length " + operator + " " + patterns.size()]
-                self.emitCase(newArguments, newMatchCase, newConditions, variables, jump, last, async)
+                self.emitCase(newArguments, newMatchCase, newConditions, variables, jump, last, break, async)
             | PVariant(_, name, patterns) =>
                 let processed = self.processVariantCase(name, argument)
                 let newMatchCase = matchCase.MatchCase(patterns = [...patterns, ...matchCase.patterns])
@@ -1204,7 +1207,7 @@ extend self: JsEmitter {
                     [...conditions, argument + "." + processed.variantName]
                 }
                 let newArguments = [...processed.arguments, ...arguments]
-                self.emitCase(newArguments, newMatchCase, newConditions, variables, jump, last, async)
+                self.emitCase(newArguments, newMatchCase, newConditions, variables, jump, last, break, async)
             | PVariantAs(at, name, variableAt, variable) =>
                 let processed = self.processVariantCase(name, argument)
                 let newConditions = if(processed.loneVariant) {conditions} else {
@@ -1213,13 +1216,13 @@ extend self: JsEmitter {
                 let newVariables = variable.map(escapeKeyword).filter {_ != argument}.map {
                     [...variables, "const " + _ + " = " + argument + ";\n"]
                 }.else {[]}
-                self.emitCase(arguments, matchCase, newConditions, newVariables, jump, last, async)
+                self.emitCase(arguments, matchCase, newConditions, newVariables, jump, last, break, async)
             | PAlias(_, pattern, variable) =>
                 let escaped = escapeKeyword(variable)
                 let newVariables = if(escaped != argument) {
                     [...variables, "const " + escaped + " = " + argument + ";\n"]
                 } else {variables}
-                self.emitPattern(argument, pattern, arguments, matchCase, conditions, newVariables, jump, last, async)
+                self.emitPattern(argument, pattern, arguments, matchCase, conditions, newVariables, jump, last, break, async)
         }
     }
 

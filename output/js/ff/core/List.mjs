@@ -500,19 +500,19 @@ export function List_collectFirst(self_, body_) {
 let result_ = ff_core_Option.None();
 for(let for_a = self_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
-do {
+{
 const _1 = body_(x_);
 if(_1.None) {
-true
-break
+if(!true) break
+continue
 }
 {
 const o_ = _1;
 result_ = o_;
-false
-break
+if(!false) break
+continue
 }
-} while(false)
+}
 };
 return result_
 }
@@ -891,19 +891,19 @@ export async function List_collectFirst$(self_, body_, $task) {
 let result_ = ff_core_Option.None();
 for(let for_a = self_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const x_ = for_a[for_i];
-do {
+{
 const _1 = (await body_(x_, $task));
 if(_1.None) {
-true
-break
+if(!true) break
+continue
 }
 {
 const o_ = _1;
 result_ = o_;
-false
-break
+if(!false) break
+continue
 }
-} while(false)
+}
 };
 return result_
 }
