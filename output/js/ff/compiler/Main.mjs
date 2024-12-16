@@ -175,7 +175,7 @@ return "node"
 if(_1.EmitBrowser) {
 return "browser"
 }
-if(_1.EmitExecutable) {
+{
 return "executable"
 }
 }))(emitTarget_);
@@ -226,7 +226,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 }
 return
 }
-if(command_a.BootstrapCommand) {
+{
 const workingDirectory_ = ff_core_NodeSystem.NodeSystem_path(system_, ".");
 const fakeLocation_ = ff_compiler_Syntax.Location("<core>", 0, 0);
 ff_compiler_Builder.build_(system_, ff_compiler_JsEmitter.EmitNode(), ff_compiler_Syntax.PackagePair("ff", "compiler"), "Main", ff_compiler_Dependencies.ResolvedDependencies(ff_compiler_Syntax.PackagePair("ff", "compiler"), ff_core_List.List_toMap([ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.PackageInfo(ff_compiler_Syntax.DPackage(fakeLocation_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.Version(fakeLocation_, 0, 0, 0), ff_compiler_Syntax.TargetNames(true, false)), [], [ff_compiler_Syntax.DInclude(fakeLocation_, "node_modules")]))], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap([ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "compiler"), ff_core_Path.Path_slash(workingDirectory_, "compiler")), ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), ff_core_Path.Path_slash(workingDirectory_, "core"))], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)), ff_core_Option.None(), ff_core_Path.Path_slash(ff_core_Path.Path_slash(workingDirectory_, "output"), "temporary"), ff_core_Path.Path_slash(ff_core_Path.Path_slash(workingDirectory_, "output"), "js"), true, ff_compiler_ModuleCache.new_(0))
@@ -349,7 +349,7 @@ return ff_compiler_Main.CheckCommand(fileName_)
 if(_1.length >= 2) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to check." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 }
-if(_1.length === 0) {
+{
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) or directory as the argument to check." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 }
 }
@@ -364,7 +364,7 @@ return ff_compiler_Main.BootstrapCommand()
 if(arguments_a.length === 0) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a command or a main file to run." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 }
-if(arguments_a.length >= 1) {
+{
 const s_ = arguments_a[0];
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(((("Unknown command '" + s_) + "'") + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 }
@@ -442,7 +442,7 @@ return "node"
 if(_1.EmitBrowser) {
 return "browser"
 }
-if(_1.EmitExecutable) {
+{
 return "executable"
 }
 }))(emitTarget_);
@@ -493,7 +493,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 }
 return
 }
-if(command_a.BootstrapCommand) {
+{
 const workingDirectory_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task));
 const fakeLocation_ = ff_compiler_Syntax.Location("<core>", 0, 0);
 (await ff_compiler_Builder.build_$(system_, ff_compiler_JsEmitter.EmitNode(), ff_compiler_Syntax.PackagePair("ff", "compiler"), "Main", ff_compiler_Dependencies.ResolvedDependencies(ff_compiler_Syntax.PackagePair("ff", "compiler"), ff_core_List.List_toMap([ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.PackageInfo(ff_compiler_Syntax.DPackage(fakeLocation_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.Version(fakeLocation_, 0, 0, 0), ff_compiler_Syntax.TargetNames(true, false)), [], [ff_compiler_Syntax.DInclude(fakeLocation_, "node_modules")]))], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap([ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "compiler"), (await ff_core_Path.Path_slash$(workingDirectory_, "compiler", $task))), ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), (await ff_core_Path.Path_slash$(workingDirectory_, "core", $task)))], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)), ff_core_Option.None(), (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(workingDirectory_, "output", $task)), "temporary", $task)), (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(workingDirectory_, "output", $task)), "js", $task)), true, ff_compiler_ModuleCache.new_(0), $task))
@@ -616,7 +616,7 @@ return ff_compiler_Main.CheckCommand(fileName_)
 if(_1.length >= 2) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to check." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 }
-if(_1.length === 0) {
+{
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) or directory as the argument to check." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 }
 }
@@ -631,7 +631,7 @@ return ff_compiler_Main.BootstrapCommand()
 if(arguments_a.length === 0) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a command or a main file to run." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 }
-if(arguments_a.length >= 1) {
+{
 const s_ = arguments_a[0];
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(((("Unknown command '" + s_) + "'") + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 }
@@ -729,7 +729,7 @@ if(value_a.BuildCommand) {
 const z_ = value_a;
 return ((("BuildCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ")")
 }
-if(value_a.CheckCommand) {
+{
 const z_ = value_a;
 return ((("CheckCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.filePath_)) + ")")
 }
@@ -752,7 +752,7 @@ if(value_a.BuildCommand) {
 const z_ = value_a;
 return ((("BuildCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ")")
 }
-if(value_a.CheckCommand) {
+{
 const z_ = value_a;
 return ((("CheckCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.filePath_)) + ")")
 }
@@ -933,7 +933,7 @@ return 2
 if(z_a.BuildCommand) {
 return 3
 }
-if(z_a.CheckCommand) {
+{
 return 4
 }
 }
@@ -1010,7 +1010,7 @@ return 2
 if(z_a.BuildCommand) {
 return 3
 }
-if(z_a.CheckCommand) {
+{
 return 4
 }
 }
@@ -1094,7 +1094,7 @@ serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_)
 return
 }
-if(value_a.CheckCommand) {
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -1173,7 +1173,7 @@ serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_)
 return
 }
-if(value_a.CheckCommand) {
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);

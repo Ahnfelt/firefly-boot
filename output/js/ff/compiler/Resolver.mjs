@@ -199,7 +199,7 @@ const module_ = _1.value_;
 resolver_ = ff_compiler_Resolver.Resolver_processDefinitions(resolver_, module_, ff_core_Option.Some(import_.alias_))
 break
 }
-if(_1.None) {
+{
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("No such module: " + import_.file_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 } while(false)
@@ -221,7 +221,7 @@ if(unqualified_) {
 return [ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_core_Pair.Pair(name_, full_), ff_core_Pair.Pair(full_, full_)]
 }
 }
-if(_1.Some) {
+{
 const alias_ = _1.value_;
 return [ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_core_Pair.Pair(full_, full_)]
 }
@@ -739,7 +739,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 })), ff_compiler_Resolver.Resolver_resolveTerm(self_, value_, topLevel_, false))
 return
 }
-if(_1.EAssignField) {
+{
 const at_ = _1.at_;
 const operator_ = _1.operator_;
 const record_ = _1.record_;
@@ -757,7 +757,7 @@ const topLevel_a = topLevel_;
 if(type_a.TVariable) {
 return type_
 }
-if(type_a.TConstructor) {
+{
 const constructor_ = type_a;
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 const at_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.typeLocations_, constructor_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
@@ -960,7 +960,7 @@ return ff_core_Pair.Pair(x_, ff_compiler_Resolver.CaseVariable(variableAt_, x_, 
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
-if(pattern_a.PAlias) {
+{
 const at_ = pattern_a.at_;
 const pattern_ = pattern_a.pattern_;
 const variable_ = pattern_a.variable_;
@@ -1036,7 +1036,7 @@ return name_
 }));
 return ff_compiler_Syntax.PVariantAs(at_, newName_, variableAt_, variable_)
 }
-if(pattern_a.PAlias) {
+{
 const at_ = pattern_a.at_;
 const pattern_ = pattern_a.pattern_;
 const variable_ = pattern_a.variable_;
@@ -1051,7 +1051,7 @@ const type_a = type_;
 if(type_a.TVariable) {
 return false
 }
-if(type_a.TConstructor) {
+{
 const constructor_ = type_a;
 const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
 ? constructor_.name_
@@ -1144,7 +1144,7 @@ const module_ = _1.value_;
 resolver_ = ff_compiler_Resolver.Resolver_processDefinitions(resolver_, module_, ff_core_Option.Some(import_.alias_))
 break
 }
-if(_1.None) {
+{
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("No such module: " + import_.file_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 } while(false)
@@ -1166,7 +1166,7 @@ if(unqualified_) {
 return [ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_core_Pair.Pair(name_, full_), ff_core_Pair.Pair(full_, full_)]
 }
 }
-if(_1.Some) {
+{
 const alias_ = _1.value_;
 return [ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_core_Pair.Pair(full_, full_)]
 }
@@ -1684,7 +1684,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 })), ff_compiler_Resolver.Resolver_resolveTerm(self_, value_, topLevel_, false))
 return
 }
-if(_1.EAssignField) {
+{
 const at_ = _1.at_;
 const operator_ = _1.operator_;
 const record_ = _1.record_;
@@ -1702,7 +1702,7 @@ const topLevel_a = topLevel_;
 if(type_a.TVariable) {
 return type_
 }
-if(type_a.TConstructor) {
+{
 const constructor_ = type_a;
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 const at_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.typeLocations_, constructor_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
@@ -1905,7 +1905,7 @@ return ff_core_Pair.Pair(x_, ff_compiler_Resolver.CaseVariable(variableAt_, x_, 
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
-if(pattern_a.PAlias) {
+{
 const at_ = pattern_a.at_;
 const pattern_ = pattern_a.pattern_;
 const variable_ = pattern_a.variable_;
@@ -1981,7 +1981,7 @@ return name_
 }));
 return ff_compiler_Syntax.PVariantAs(at_, newName_, variableAt_, variable_)
 }
-if(pattern_a.PAlias) {
+{
 const at_ = pattern_a.at_;
 const pattern_ = pattern_a.pattern_;
 const variable_ = pattern_a.variable_;
@@ -1996,7 +1996,7 @@ const type_a = type_;
 if(type_a.TVariable) {
 return false
 }
-if(type_a.TConstructor) {
+{
 const constructor_ = type_a;
 const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
 ? constructor_.name_

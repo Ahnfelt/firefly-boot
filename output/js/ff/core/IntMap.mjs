@@ -330,7 +330,7 @@ if(_1.None) {
 ff_core_IntMap.IntMap_set(self_, key_, ff_core_List.List_toArray([value_]))
 return
 }
-if(_1.Some) {
+{
 const array_ = _1.value_;
 array_.array.push(value_)
 return
@@ -345,7 +345,7 @@ if(_1.None) {
 ff_core_IntMap.IntMap_set(self_, key_, ff_core_List.List_toArray([value_]))
 return
 }
-if(_1.Some) {
+{
 const array_ = _1.value_;
 array_.array.push(value_)
 return

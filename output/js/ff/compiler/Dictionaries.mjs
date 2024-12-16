@@ -124,7 +124,7 @@ if(_1.TConstructor) {
 const name_ = _1.name_;
 return name_
 }
-if(_1.TVariable) {
+{
 const i_ = _1.index_;
 return ff_compiler_Dictionaries.fail_(c_.at_, ("Unexpected unification variable: $" + i_))
 }
@@ -148,7 +148,7 @@ if(_1.TConstructor) {
 const name_ = _1.name_;
 return name_
 }
-if(_1.TVariable) {
+{
 const i_ = _1.index_;
 return ff_compiler_Dictionaries.fail_(c_.at_, ("Unexpected unification variable: $" + i_))
 }
@@ -441,7 +441,7 @@ return ff_compiler_Syntax.DynamicCall(ff_compiler_Dictionaries.Dictionaries_proc
 }
 return
 }
-if(_1.StaticCall) {
+{
 return e_.target_
 }
 }))(e_.target_);
@@ -499,7 +499,7 @@ return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, ff_compile
 }
 return
 }
-if(_1.EAssignField) {
+{
 const e_ = _1;
 {
 const _1 = e_;
@@ -551,7 +551,7 @@ return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, at_, instance
 }));
 return ff_compiler_Syntax.Dictionary(instance_.packagePair_, instance_.moduleName_, constraint_.name_, firstType_.name_, dictionaries_)
 }
-if(_1.TVariable) {
+{
 const t_ = _1;
 return ff_compiler_Dictionaries.fail_(t_.at_, " is still a unification variable")
 }
@@ -842,7 +842,7 @@ return ff_compiler_Syntax.DynamicCall(ff_compiler_Dictionaries.Dictionaries_proc
 }
 return
 }
-if(_1.StaticCall) {
+{
 return e_.target_
 }
 }))(e_.target_);
@@ -900,7 +900,7 @@ return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, ff_compile
 }
 return
 }
-if(_1.EAssignField) {
+{
 const e_ = _1;
 {
 const _1 = e_;
@@ -952,7 +952,7 @@ return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, at_, instance
 }));
 return ff_compiler_Syntax.Dictionary(instance_.packagePair_, instance_.moduleName_, constraint_.name_, firstType_.name_, dictionaries_)
 }
-if(_1.TVariable) {
+{
 const t_ = _1;
 return ff_compiler_Dictionaries.fail_(t_.at_, " is still a unification variable")
 }

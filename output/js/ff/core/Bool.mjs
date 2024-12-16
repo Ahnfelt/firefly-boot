@@ -116,7 +116,7 @@ const _1 = self_;
 if(!_1) {
 return 0
 }
-if(_1) {
+{
 return 1
 }
 }
@@ -128,7 +128,7 @@ const _1 = self_;
 if(!_1) {
 return 0
 }
-if(_1) {
+{
 return 1
 }
 }

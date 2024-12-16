@@ -110,7 +110,7 @@ const value_a = value_;
 if(!value_a) {
 return "False"
 }
-if(value_a) {
+{
 return "True"
 }
 },
@@ -119,7 +119,7 @@ const value_a = value_;
 if(!value_a) {
 return "False"
 }
-if(value_a) {
+{
 return "True"
 }
 }

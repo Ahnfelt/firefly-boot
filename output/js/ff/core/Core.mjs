@@ -108,7 +108,7 @@ const _1 = condition_;
 if(!_1) {
 return ff_core_Option.None()
 }
-if(_1) {
+{
 return ff_core_Option.Some(body_())
 }
 }
@@ -122,7 +122,7 @@ if(!_1) {
 
 return
 }
-if(_1) {
+{
 body_();
 {
 const condition_r_ = condition_;
@@ -152,7 +152,7 @@ if(_1.Some) {
 const v_ = _1.value_;
 return v_
 }
-if(_1.None) {
+{
 {
 const body_r_ = body_;
 body_ = body_r_
@@ -197,7 +197,7 @@ const _1 = condition_;
 if(!_1) {
 return ff_core_Option.None()
 }
-if(_1) {
+{
 return ff_core_Option.Some((await body_($task)))
 }
 }
@@ -211,7 +211,7 @@ if(!_1) {
 
 return
 }
-if(_1) {
+{
 (await body_($task));
 {
 const condition_r_ = condition_;
@@ -241,7 +241,7 @@ if(_1.Some) {
 const v_ = _1.value_;
 return v_
 }
-if(_1.None) {
+{
 {
 const body_r_ = body_;
 body_ = body_r_

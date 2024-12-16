@@ -136,7 +136,7 @@ return ff_core_Ordering.OrderingAfter()
 if(_1.OrderingSame) {
 return ff_core_Ordering.OrderingSame()
 }
-if(_1.OrderingAfter) {
+{
 return ff_core_Ordering.OrderingBefore()
 }
 }
@@ -226,7 +226,7 @@ return ff_core_Ordering.OrderingAfter()
 if(_1.OrderingSame) {
 return ff_core_Ordering.OrderingSame()
 }
-if(_1.OrderingAfter) {
+{
 return ff_core_Ordering.OrderingBefore()
 }
 }
@@ -299,7 +299,7 @@ return (-1)
 if(_1.OrderingSame) {
 return 0
 }
-if(_1.OrderingAfter) {
+{
 return 1
 }
 }
@@ -314,7 +314,7 @@ return ff_core_Ordering.OrderingAfter()
 if(_1.OrderingSame) {
 return ff_core_Ordering.OrderingSame()
 }
-if(_1.OrderingAfter) {
+{
 return ff_core_Ordering.OrderingBefore()
 }
 }
@@ -329,7 +329,7 @@ return (-1)
 if(_1.OrderingSame) {
 return 0
 }
-if(_1.OrderingAfter) {
+{
 return 1
 }
 }
@@ -344,7 +344,7 @@ return ff_core_Ordering.OrderingAfter()
 if(_1.OrderingSame) {
 return ff_core_Ordering.OrderingSame()
 }
-if(_1.OrderingAfter) {
+{
 return ff_core_Ordering.OrderingBefore()
 }
 }

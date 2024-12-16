@@ -337,7 +337,7 @@ const symbol_ = hook_a.symbol_;
 const explicitType_ = hook_a.explicitType_;
 return "ResolveTypeHook(...)"
 }
-if(hook_a.ResolveVariantFieldHook) {
+{
 const symbol_ = hook_a.symbol_;
 const type_ = hook_a.type_;
 const commonField_ = hook_a.commonField_;
@@ -473,7 +473,7 @@ const symbol_ = hook_a.symbol_;
 const explicitType_ = hook_a.explicitType_;
 return "ResolveTypeHook(...)"
 }
-if(hook_a.ResolveVariantFieldHook) {
+{
 const symbol_ = hook_a.symbol_;
 const type_ = hook_a.type_;
 const commonField_ = hook_a.commonField_;
@@ -591,7 +591,7 @@ if(value_a.SType) {
 const z_ = value_a;
 return "SType"
 }
-if(value_a.SParameter) {
+{
 const z_ = value_a;
 return "SParameter"
 }
@@ -630,7 +630,7 @@ if(value_a.SType) {
 const z_ = value_a;
 return "SType"
 }
-if(value_a.SParameter) {
+{
 const z_ = value_a;
 return "SParameter"
 }
@@ -814,7 +814,7 @@ return 6
 if(z_a.SType) {
 return 7
 }
-if(z_a.SParameter) {
+{
 return 8
 }
 }
@@ -876,7 +876,7 @@ return 6
 if(z_a.SType) {
 return 7
 }
-if(z_a.SParameter) {
+{
 return 8
 }
 }
@@ -1016,7 +1016,7 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 7
 serialization_.offset_ += 1
 return
 }
-if(value_a.SParameter) {
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -1140,7 +1140,7 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 7
 serialization_.offset_ += 1
 return
 }
-if(value_a.SParameter) {
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);

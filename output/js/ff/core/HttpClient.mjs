@@ -186,7 +186,7 @@ if(_1.RedirectFollow) {
 
 break
 }
-if(_1.RedirectManual) {
+{
 fetchOptions_.redirect = "manual"
 break
 }
@@ -270,7 +270,7 @@ if(_1.RedirectFollow) {
 
 break
 }
-if(_1.RedirectManual) {
+{
 fetchOptions_.redirect = "manual"
 break
 }

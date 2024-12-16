@@ -136,13 +136,13 @@ return ff_core_RbMap.balance_(ins_(a_), y_, yv_, b_, ff_core_Ordering_Order$K)
 if(_1.OrderingAfter) {
 return ff_core_RbMap.balance_(a_, y_, yv_, ins_(b_), ff_core_Ordering_Order$K)
 }
-if(_1.OrderingSame) {
+{
 return ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_)
 }
 }
 return
 }
-if(s_a.T && s_a.color_.R) {
+{
 const a_ = s_a.left_;
 const y_ = s_a.key_;
 const yv_ = s_a.value_;
@@ -155,7 +155,7 @@ return ff_core_RbMap.T(ff_core_RbMap.R(), ins_(a_), y_, yv_, b_)
 if(_1.OrderingAfter) {
 return ff_core_RbMap.T(ff_core_RbMap.R(), a_, y_, yv_, ins_(b_))
 }
-if(_1.OrderingSame) {
+{
 return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b_)
 }
 }
@@ -167,7 +167,7 @@ const _1 = ins_(s_);
 if(_1.E) {
 return ff_core_Core.panic_("Unexpected empty tree")
 }
-if(_1.T) {
+{
 const a_ = _1.left_;
 const z_ = _1.key_;
 const zv_ = _1.value_;
@@ -184,7 +184,7 @@ if(tree_a.E) {
 const x_ = key_a;
 return false
 }
-if(tree_a.T) {
+{
 const x_ = key_a;
 const a_ = tree_a.left_;
 const y_ = tree_a.key_;
@@ -197,7 +197,7 @@ return ff_core_RbMap.member_(x_, a_, ff_core_Ordering_Order$K)
 if(_1.OrderingAfter) {
 return ff_core_RbMap.member_(x_, b_, ff_core_Ordering_Order$K)
 }
-if(_1.OrderingSame) {
+{
 return true
 }
 }
@@ -290,7 +290,7 @@ const ss_a = ss_;
 if(ss_a.E) {
 return ff_core_RbMap.E()
 }
-if(ss_a.T) {
+{
 const a_ = ss_a.left_;
 const y_ = ss_a.key_;
 const yv_ = ss_a.value_;
@@ -303,7 +303,7 @@ return delformLeft_(a_, y_, yv_, b_)
 if(_1.OrderingAfter) {
 return delformRight_(a_, y_, yv_, b_)
 }
-if(_1.OrderingSame) {
+{
 return ff_core_RbMap.app_(a_, b_, ff_core_Ordering_Order$K)
 }
 }
@@ -532,7 +532,7 @@ const xv_ = tree2_a.value_;
 const c_ = tree2_a.right_;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.app_(a_, b_, ff_core_Ordering_Order$K), x_, xv_, c_)
 }
-if(tree1_a.T && tree1_a.color_.R) {
+{
 const a_ = tree1_a.left_;
 const x_ = tree1_a.key_;
 const xv_ = tree1_a.value_;
@@ -561,13 +561,13 @@ return ff_core_RbMap.balance_(ins_(a_), y_, yv_, b_, ff_core_Ordering_Order$K)
 if(_1.OrderingAfter) {
 return ff_core_RbMap.balance_(a_, y_, yv_, ins_(b_), ff_core_Ordering_Order$K)
 }
-if(_1.OrderingSame) {
+{
 return ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_)
 }
 }
 return
 }
-if(s_a.T && s_a.color_.R) {
+{
 const a_ = s_a.left_;
 const y_ = s_a.key_;
 const yv_ = s_a.value_;
@@ -580,7 +580,7 @@ return ff_core_RbMap.T(ff_core_RbMap.R(), ins_(a_), y_, yv_, b_)
 if(_1.OrderingAfter) {
 return ff_core_RbMap.T(ff_core_RbMap.R(), a_, y_, yv_, ins_(b_))
 }
-if(_1.OrderingSame) {
+{
 return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b_)
 }
 }
@@ -592,7 +592,7 @@ const _1 = ins_(s_);
 if(_1.E) {
 return ff_core_Core.panic_("Unexpected empty tree")
 }
-if(_1.T) {
+{
 const a_ = _1.left_;
 const z_ = _1.key_;
 const zv_ = _1.value_;
@@ -609,7 +609,7 @@ if(tree_a.E) {
 const x_ = key_a;
 return false
 }
-if(tree_a.T) {
+{
 const x_ = key_a;
 const a_ = tree_a.left_;
 const y_ = tree_a.key_;
@@ -622,7 +622,7 @@ return ff_core_RbMap.member_(x_, a_, ff_core_Ordering_Order$K)
 if(_1.OrderingAfter) {
 return ff_core_RbMap.member_(x_, b_, ff_core_Ordering_Order$K)
 }
-if(_1.OrderingSame) {
+{
 return true
 }
 }
@@ -715,7 +715,7 @@ const ss_a = ss_;
 if(ss_a.E) {
 return ff_core_RbMap.E()
 }
-if(ss_a.T) {
+{
 const a_ = ss_a.left_;
 const y_ = ss_a.key_;
 const yv_ = ss_a.value_;
@@ -728,7 +728,7 @@ return delformLeft_(a_, y_, yv_, b_)
 if(_1.OrderingAfter) {
 return delformRight_(a_, y_, yv_, b_)
 }
-if(_1.OrderingSame) {
+{
 return ff_core_RbMap.app_(a_, b_, ff_core_Ordering_Order$K)
 }
 }
@@ -957,7 +957,7 @@ const xv_ = tree2_a.value_;
 const c_ = tree2_a.right_;
 return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.app_(a_, b_, ff_core_Ordering_Order$K), x_, xv_, c_)
 }
-if(tree1_a.T && tree1_a.color_.R) {
+{
 const a_ = tree1_a.left_;
 const x_ = tree1_a.key_;
 const xv_ = tree1_a.value_;
@@ -973,7 +973,7 @@ const _1 = self_;
 if(_1.E) {
 return ff_core_Option.None()
 }
-if(_1.T) {
+{
 const a_ = _1.left_;
 const y_ = _1.key_;
 const yv_ = _1.value_;
@@ -986,7 +986,7 @@ return ff_core_RbMap.RB_get(a_, key_, ff_core_Ordering_Order$K)
 if(_1.OrderingAfter) {
 return ff_core_RbMap.RB_get(b_, key_, ff_core_Ordering_Order$K)
 }
-if(_1.OrderingSame) {
+{
 return ff_core_Option.Some(yv_)
 }
 }
@@ -1001,7 +1001,7 @@ const _1 = self_;
 if(_1.E) {
 return 0
 }
-if(_1.T) {
+{
 const l_ = _1.left_;
 const r_ = _1.right_;
 return ((ff_core_RbMap.RB_size(l_, ff_core_Ordering_Order$K) + 1) + ff_core_RbMap.RB_size(r_, ff_core_Ordering_Order$K))
@@ -1060,7 +1060,7 @@ const tail_ = _1.slice(1);
 array_ = tail_;
 return ff_core_Option.Some(ff_core_Pair.Pair(k_, v_))
 }
-if(_1.length >= 1 && _1[0].T) {
+{
 const l_ = _1[0].left_;
 const k_ = _1[0].key_;
 const v_ = _1[0].value_;
@@ -1092,7 +1092,7 @@ if(_1.E) {
 
 return
 }
-if(_1.T) {
+{
 const l_ = _1.left_;
 const k_ = _1.key_;
 const v_ = _1.value_;
@@ -1111,7 +1111,7 @@ const _1 = self_;
 if(_1.E) {
 return true
 }
-if(_1.T) {
+{
 const l_ = _1.left_;
 const k_ = _1.key_;
 const v_ = _1.value_;
@@ -1136,7 +1136,7 @@ const _1 = self_;
 if(_1.E) {
 return ff_core_RbMap.E()
 }
-if(_1.T) {
+{
 const c_ = _1.color_;
 const l_ = _1.left_;
 const k_ = _1.key_;
@@ -1166,7 +1166,7 @@ const _1 = self_;
 if(_1.E) {
 return ff_core_Option.None()
 }
-if(_1.T) {
+{
 const a_ = _1.left_;
 const y_ = _1.key_;
 const yv_ = _1.value_;
@@ -1179,7 +1179,7 @@ return ff_core_RbMap.RB_get(a_, key_, ff_core_Ordering_Order$K)
 if(_1.OrderingAfter) {
 return ff_core_RbMap.RB_get(b_, key_, ff_core_Ordering_Order$K)
 }
-if(_1.OrderingSame) {
+{
 return ff_core_Option.Some(yv_)
 }
 }
@@ -1194,7 +1194,7 @@ const _1 = self_;
 if(_1.E) {
 return 0
 }
-if(_1.T) {
+{
 const l_ = _1.left_;
 const r_ = _1.right_;
 return ((ff_core_RbMap.RB_size(l_, ff_core_Ordering_Order$K) + 1) + ff_core_RbMap.RB_size(r_, ff_core_Ordering_Order$K))
@@ -1253,7 +1253,7 @@ const tail_ = _1.slice(1);
 array_ = tail_;
 return ff_core_Option.Some(ff_core_Pair.Pair(k_, v_))
 }
-if(_1.length >= 1 && _1[0].T) {
+{
 const l_ = _1[0].left_;
 const k_ = _1[0].key_;
 const v_ = _1[0].value_;
@@ -1285,7 +1285,7 @@ if(_1.E) {
 
 return
 }
-if(_1.T) {
+{
 const l_ = _1.left_;
 const k_ = _1.key_;
 const v_ = _1.value_;
@@ -1304,7 +1304,7 @@ const _1 = self_;
 if(_1.E) {
 return true
 }
-if(_1.T) {
+{
 const l_ = _1.left_;
 const k_ = _1.key_;
 const v_ = _1.value_;
@@ -1329,7 +1329,7 @@ const _1 = self_;
 if(_1.E) {
 return ff_core_RbMap.E()
 }
-if(_1.T) {
+{
 const c_ = _1.color_;
 const l_ = _1.left_;
 const k_ = _1.key_;

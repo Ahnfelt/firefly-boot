@@ -174,7 +174,7 @@ if(_1.TVariable) {
 const t_ = _1;
 return ff_compiler_Environment.fail_(t_.at_, ("Unexpected type variable: $" + t_.index_))
 }
-if(_1.TConstructor) {
+{
 const t_ = _1;
 const prefix_ = (t_.name_ + "_");
 const selfParameter_ = ff_compiler_Syntax.Parameter(d_.at_, false, d_.name_, d_.type_, ff_core_Option.None());
@@ -285,7 +285,7 @@ if(_1.TVariable) {
 const t_ = _1;
 return ff_compiler_Environment.fail_(t_.at_, ("Unexpected type variable: $" + t_.index_))
 }
-if(_1.TConstructor) {
+{
 const t_ = _1;
 const prefix_ = (t_.name_ + "_");
 const selfParameter_ = ff_compiler_Syntax.Parameter(d_.at_, false, d_.name_, d_.type_, ff_core_Option.None());

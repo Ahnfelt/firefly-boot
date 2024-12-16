@@ -167,7 +167,7 @@ writer_.resolve();
 foundPromise_ = ff_core_Option.Some(action_.body_(writer_.message, $task))
 break
 }
-if(_1.None) {
+{
 
 break
 }
@@ -211,7 +211,7 @@ action_.channel_.writers_.delete(writer_)
 }))
 break
 }
-if(_1.None) {
+{
 const reader_ = {resolve: ((m_) => {
 return resolve_((() => {
 return action_.body_(m_, $task)
@@ -292,7 +292,7 @@ writer_.resolve();
 foundPromise_ = ff_core_Option.Some(action_.body_(writer_.message, $task))
 break
 }
-if(_1.None) {
+{
 
 break
 }
@@ -336,7 +336,7 @@ action_.channel_.writers_.delete(writer_)
 }))
 break
 }
-if(_1.None) {
+{
 const reader_ = {resolve: ((m_) => {
 return resolve_((async ($task) => {
 return action_.body_(m_, $task)

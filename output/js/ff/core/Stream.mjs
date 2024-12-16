@@ -199,14 +199,14 @@ const i_ = _1;
 result_ = ff_core_Option.Some(i_)
 break
 }
-if(_1.None) {
+{
 do {
 const _1 = self_.next_();
 if(_1.None) {
 result_ = ff_core_Option.Some(ff_core_Option.None())
 break
 }
-if(_1.Some) {
+{
 const o_ = _1.value_;
 inner_.close_();
 inner_ = body_(o_)
@@ -250,7 +250,7 @@ if(_1.Some) {
 
 break
 }
-if(_1.None) {
+{
 result_ = ff_core_Option.Some(ff_core_Option.None())
 break
 }
@@ -306,7 +306,7 @@ if(_1.None) {
 remaining_ = 0
 break
 }
-if(_1.Some) {
+{
 remaining_ -= 1
 break
 }
@@ -330,7 +330,7 @@ if(_1.None) {
 done_ = true;
 return ff_core_Option.None()
 }
-if(_1.Some) {
+{
 const o_ = _1;
 const x_ = _1.value_;
 done_ = (!body_(x_));
@@ -367,7 +367,7 @@ if(body_(x_)) {
 break
 }
 }
-if(_1.Some) {
+{
 const o_ = _1;
 const x_ = _1.value_;
 result_ = o_;
@@ -406,7 +406,7 @@ if(_1.None) {
 remaining_ = (-1);
 return ff_core_Option.None()
 }
-if(_1.Some) {
+{
 const x_ = _1.value_;
 let list_ = [x_];
 remaining_ -= 1;
@@ -418,7 +418,7 @@ if(_1.None) {
 remaining_ = (-1)
 break
 }
-if(_1.Some) {
+{
 const x_ = _1.value_;
 list_ = [x_, ...list_]
 break
@@ -455,7 +455,7 @@ if(_1.None) {
 done_ = true
 break
 }
-if(_1.Some) {
+{
 const x_ = _1.value_;
 body_(x_)
 break
@@ -477,7 +477,7 @@ if(_1.None) {
 done_ = true
 break
 }
-if(_1.Some) {
+{
 const x_ = _1.value_;
 done_ = (!body_(x_))
 break
@@ -526,7 +526,7 @@ if(_1.None) {
 done_ = true
 break
 }
-if(_1.Some) {
+{
 const o_ = _1;
 const x_ = _1.value_;
 result_ = o_
@@ -563,7 +563,7 @@ if(_1.None) {
 done_ = true
 break
 }
-if(_1.Some) {
+{
 const x_ = _1.value_;
 do {
 const _1 = body_(x_);
@@ -656,14 +656,14 @@ const i_ = _1;
 result_ = ff_core_Option.Some(i_)
 break
 }
-if(_1.None) {
+{
 do {
 const _1 = (await self_.next_($task));
 if(_1.None) {
 result_ = ff_core_Option.Some(ff_core_Option.None())
 break
 }
-if(_1.Some) {
+{
 const o_ = _1.value_;
 (await inner_.close_($task));
 inner_ = (await body_(o_, $task))
@@ -707,7 +707,7 @@ if(_1.Some) {
 
 break
 }
-if(_1.None) {
+{
 result_ = ff_core_Option.Some(ff_core_Option.None())
 break
 }
@@ -763,7 +763,7 @@ if(_1.None) {
 remaining_ = 0
 break
 }
-if(_1.Some) {
+{
 remaining_ -= 1
 break
 }
@@ -787,7 +787,7 @@ if(_1.None) {
 done_ = true;
 return ff_core_Option.None()
 }
-if(_1.Some) {
+{
 const o_ = _1;
 const x_ = _1.value_;
 done_ = (!(await body_(x_, $task)));
@@ -824,7 +824,7 @@ if((await body_(x_, $task))) {
 break
 }
 }
-if(_1.Some) {
+{
 const o_ = _1;
 const x_ = _1.value_;
 result_ = o_;
@@ -863,7 +863,7 @@ if(_1.None) {
 remaining_ = (-1);
 return ff_core_Option.None()
 }
-if(_1.Some) {
+{
 const x_ = _1.value_;
 let list_ = [x_];
 remaining_ -= 1;
@@ -875,7 +875,7 @@ if(_1.None) {
 remaining_ = (-1)
 break
 }
-if(_1.Some) {
+{
 const x_ = _1.value_;
 list_ = [x_, ...list_]
 break
@@ -912,7 +912,7 @@ if(_1.None) {
 done_ = true
 break
 }
-if(_1.Some) {
+{
 const x_ = _1.value_;
 (await body_(x_, $task))
 break
@@ -934,7 +934,7 @@ if(_1.None) {
 done_ = true
 break
 }
-if(_1.Some) {
+{
 const x_ = _1.value_;
 done_ = (!(await body_(x_, $task)))
 break
@@ -983,7 +983,7 @@ if(_1.None) {
 done_ = true
 break
 }
-if(_1.Some) {
+{
 const o_ = _1;
 const x_ = _1.value_;
 result_ = o_
@@ -1020,7 +1020,7 @@ if(_1.None) {
 done_ = true
 break
 }
-if(_1.Some) {
+{
 const x_ = _1.value_;
 do {
 const _1 = (await body_(x_, $task));

@@ -408,7 +408,7 @@ if(_1.None) {
 seenTypes_ = ff_core_Map.Map_add(seenTypes_, shortenedName_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 break
 }
-if(_1.Some) {
+{
 const qualified_ = _1.value_;
 if((name_ !== qualified_)) {
 seenTypes_ = ff_core_Map.Map_add(seenTypes_, shortenedName_, "", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
@@ -419,7 +419,7 @@ break
 shortenTypes_(typeArguments_)
 return
 }
-if(_1.TVariable) {
+{
 const index_ = _1.index_;
 if((!ff_core_Map.Map_contains(seenTypes_, ("$" + index_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
 seenTypes_ = ff_core_Map.Map_add(seenTypes_, ("$" + index_), ff_core_Option.Option_else(typeNames_.next_(), (() => {
@@ -508,7 +508,7 @@ return go_(_w1)
 }
 return
 }
-if(_1.TVariable) {
+{
 const at_ = _1.at_;
 const index_ = _1.index_;
 return ff_core_Map.Map_grab(seenTypes_, ("$" + index_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
@@ -540,7 +540,7 @@ if(_1.None) {
 seenTypes_ = ff_core_Map.Map_add(seenTypes_, shortenedName_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 break
 }
-if(_1.Some) {
+{
 const qualified_ = _1.value_;
 if((name_ !== qualified_)) {
 seenTypes_ = ff_core_Map.Map_add(seenTypes_, shortenedName_, "", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
@@ -551,7 +551,7 @@ break
 shortenTypes_(typeArguments_)
 return
 }
-if(_1.TVariable) {
+{
 const index_ = _1.index_;
 if((!ff_core_Map.Map_contains(seenTypes_, ("$" + index_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
 seenTypes_ = ff_core_Map.Map_add(seenTypes_, ("$" + index_), ff_core_Option.Option_else(typeNames_.next_(), (() => {
@@ -640,7 +640,7 @@ return go_(_w1)
 }
 return
 }
-if(_1.TVariable) {
+{
 const at_ = _1.at_;
 const index_ = _1.index_;
 return ff_core_Map.Map_grab(seenTypes_, ("$" + index_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
@@ -657,7 +657,7 @@ if(_1.FireflyTarget) {
 const lambda_ = _1.lambda_;
 return ff_compiler_Syntax.FireflyTarget(body_(lambda_))
 }
-if(_1.ForeignTarget) {
+{
 return self_
 }
 }
@@ -670,7 +670,7 @@ if(_1.FireflyTarget) {
 const lambda_ = _1.lambda_;
 return ff_compiler_Syntax.FireflyTarget((await body_(lambda_, $task)))
 }
-if(_1.ForeignTarget) {
+{
 return self_
 }
 }
@@ -1376,7 +1376,7 @@ if(value_a.EField) {
 const z_ = value_a;
 return ((((((((("EField" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.newtype_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.record_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.field_)) + ")")
 }
-if(value_a.EWildcard) {
+{
 const z_ = value_a;
 return ((((("EWildcard" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.index_)) + ")")
 }
@@ -1459,7 +1459,7 @@ if(value_a.EField) {
 const z_ = value_a;
 return ((((((((("EField" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.newtype_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.record_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.field_)) + ")")
 }
-if(value_a.EWildcard) {
+{
 const z_ = value_a;
 return ((((("EWildcard" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.index_)) + ")")
 }
@@ -1473,7 +1473,7 @@ if(value_a.DynamicCall) {
 const z_ = value_a;
 return ((((("DynamicCall" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.function_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.tailCall_)) + ")")
 }
-if(value_a.StaticCall) {
+{
 const z_ = value_a;
 return ((((((("StaticCall" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.tailCall_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.instanceCall_)) + ")")
 }
@@ -1484,7 +1484,7 @@ if(value_a.DynamicCall) {
 const z_ = value_a;
 return ((((("DynamicCall" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Term.show_(z_.function_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.tailCall_)) + ")")
 }
-if(value_a.StaticCall) {
+{
 const z_ = value_a;
 return ((((((("StaticCall" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.tailCall_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.instanceCall_)) + ")")
 }
@@ -1535,7 +1535,7 @@ if(value_a.PVariantAs) {
 const z_ = value_a;
 return ((((((((("PVariantAs" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.variableAt_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.variable_)) + ")")
 }
-if(value_a.PAlias) {
+{
 const z_ = value_a;
 return ((((((("PAlias" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_MatchPattern.show_(z_.pattern_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.variable_)) + ")")
 }
@@ -1566,7 +1566,7 @@ if(value_a.PVariantAs) {
 const z_ = value_a;
 return ((((((((("PVariantAs" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.variableAt_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.variable_)) + ")")
 }
-if(value_a.PAlias) {
+{
 const z_ = value_a;
 return ((((((("PAlias" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_MatchPattern.show_(z_.pattern_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.variable_)) + ")")
 }
@@ -1733,7 +1733,7 @@ if(value_a.FireflyTarget) {
 const z_ = value_a;
 return ((("FireflyTarget" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Lambda.show_(z_.lambda_)) + ")")
 }
-if(value_a.ForeignTarget) {
+{
 const z_ = value_a;
 return ((((("ForeignTarget" + "(") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.syncCode_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.asyncCode_)) + ")")
 }
@@ -1744,7 +1744,7 @@ if(value_a.FireflyTarget) {
 const z_ = value_a;
 return ((("FireflyTarget" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Lambda.show_(z_.lambda_)) + ")")
 }
-if(value_a.ForeignTarget) {
+{
 const z_ = value_a;
 return ((((("ForeignTarget" + "(") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.syncCode_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.asyncCode_)) + ")")
 }
@@ -1758,7 +1758,7 @@ if(value_a.TConstructor) {
 const z_ = value_a;
 return ((((((("TConstructor" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.generics_)) + ")")
 }
-if(value_a.TVariable) {
+{
 const z_ = value_a;
 return ((((("TVariable" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.index_)) + ")")
 }
@@ -1769,7 +1769,7 @@ if(value_a.TConstructor) {
 const z_ = value_a;
 return ((((((("TConstructor" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.generics_)) + ")")
 }
-if(value_a.TVariable) {
+{
 const z_ = value_a;
 return ((((("TVariable" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.index_)) + ")")
 }
@@ -1787,7 +1787,7 @@ if(value_a.Unsafe) {
 const z_ = value_a;
 return "Unsafe"
 }
-if(value_a.Trusted) {
+{
 const z_ = value_a;
 return "Trusted"
 }
@@ -1802,7 +1802,7 @@ if(value_a.Unsafe) {
 const z_ = value_a;
 return "Unsafe"
 }
-if(value_a.Trusted) {
+{
 const z_ = value_a;
 return "Trusted"
 }
@@ -4693,7 +4693,7 @@ return 17
 if(z_a.EField) {
 return 18
 }
-if(z_a.EWildcard) {
+{
 return 19
 }
 }
@@ -5211,7 +5211,7 @@ return 17
 if(z_a.EField) {
 return 18
 }
-if(z_a.EWildcard) {
+{
 return 19
 }
 }
@@ -5270,7 +5270,7 @@ const z_a = z_;
 if(z_a.DynamicCall) {
 return 0
 }
-if(z_a.StaticCall) {
+{
 return 1
 }
 }
@@ -5326,7 +5326,7 @@ const z_a = z_;
 if(z_a.DynamicCall) {
 return 0
 }
-if(z_a.StaticCall) {
+{
 return 1
 }
 }
@@ -5560,7 +5560,7 @@ return 4
 if(z_a.PVariantAs) {
 return 5
 }
-if(z_a.PAlias) {
+{
 return 6
 }
 }
@@ -5726,7 +5726,7 @@ return 4
 if(z_a.PVariantAs) {
 return 5
 }
-if(z_a.PAlias) {
+{
 return 6
 }
 }
@@ -6360,7 +6360,7 @@ const z_a = z_;
 if(z_a.FireflyTarget) {
 return 0
 }
-if(z_a.ForeignTarget) {
+{
 return 1
 }
 }
@@ -6406,7 +6406,7 @@ const z_a = z_;
 if(z_a.FireflyTarget) {
 return 0
 }
-if(z_a.ForeignTarget) {
+{
 return 1
 }
 }
@@ -6465,7 +6465,7 @@ const z_a = z_;
 if(z_a.TConstructor) {
 return 0
 }
-if(z_a.TVariable) {
+{
 return 1
 }
 }
@@ -6521,7 +6521,7 @@ const z_a = z_;
 if(z_a.TConstructor) {
 return 0
 }
-if(z_a.TVariable) {
+{
 return 1
 }
 }
@@ -6546,7 +6546,7 @@ return 0
 if(z_a.Unsafe) {
 return 1
 }
-if(z_a.Trusted) {
+{
 return 2
 }
 }
@@ -6568,7 +6568,7 @@ return 0
 if(z_a.Unsafe) {
 return 1
 }
-if(z_a.Trusted) {
+{
 return 2
 }
 }
@@ -8005,7 +8005,7 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.field_)
 return
 }
-if(value_a.EWildcard) {
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -8324,7 +8324,7 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.field_)
 return
 }
-if(value_a.EWildcard) {
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -8441,7 +8441,7 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.tailCall_)
 return
 }
-if(value_a.StaticCall) {
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -8484,7 +8484,7 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Term.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, v_.tailCall_)
 return
 }
-if(value_a.StaticCall) {
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -8646,7 +8646,7 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.variable_)
 return
 }
-if(value_a.PAlias) {
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -8762,7 +8762,7 @@ ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.variable_)
 return
 }
-if(value_a.PAlias) {
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9394,7 +9394,7 @@ serialization_.offset_ += 1;
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda.serializeUsing_(serialization_, v_.lambda_)
 return
 }
-if(value_a.ForeignTarget) {
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9435,7 +9435,7 @@ serialization_.offset_ += 1;
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda.serializeUsing_(serialization_, v_.lambda_)
 return
 }
-if(value_a.ForeignTarget) {
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9481,7 +9481,7 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).serializeUsing_(serialization_, v_.generics_)
 return
 }
-if(value_a.TVariable) {
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9524,7 +9524,7 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).serializeUsing_(serialization_, v_.generics_)
 return
 }
-if(value_a.TVariable) {
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9575,7 +9575,7 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-if(value_a.Trusted) {
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -9625,7 +9625,7 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-if(value_a.Trusted) {
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);

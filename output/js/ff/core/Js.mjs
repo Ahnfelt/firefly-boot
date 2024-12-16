@@ -358,7 +358,7 @@ const _1 = value_;
 if(_1.None) {
 return (void 0)
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 return v_
 }
@@ -681,7 +681,7 @@ const _1 = value_;
 if(_1.None) {
 return (void 0)
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 return v_
 }

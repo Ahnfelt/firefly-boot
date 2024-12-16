@@ -149,7 +149,7 @@ const cs_ = _1.second_.slice(1);
 ff_compiler_Patterns.check_(variants_, fs_, cs_, true, g_)
 return
 }
-if(_1.first_.length === 0 && _1.second_.length === 0) {
+{
 const remaining_ = ff_core_List.List_map(ff_core_List.List_filter(ff_core_Map.Map_pairs(variants_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
 return (ff_core_Set.Set_size(_w1.second_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) !== 0)
 })), ((_1) => {
@@ -232,7 +232,7 @@ if(pattern_a.PVariantAs) {
 const p_ = pattern_a;
 return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo(unqualifiedName_(p_.name_), otherVariants_(p_.name_), []))
 }
-if(pattern_a.PAlias) {
+{
 const p_ = pattern_a;
 return convertPattern_(p_.pattern_)
 }
@@ -319,7 +319,7 @@ const cs_ = _1.second_.slice(1);
 ff_compiler_Patterns.check_(variants_, fs_, cs_, true, g_)
 return
 }
-if(_1.first_.length === 0 && _1.second_.length === 0) {
+{
 const remaining_ = ff_core_List.List_map(ff_core_List.List_filter(ff_core_Map.Map_pairs(variants_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
 return (ff_core_Set.Set_size(_w1.second_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) !== 0)
 })), ((_1) => {
@@ -402,7 +402,7 @@ if(pattern_a.PVariantAs) {
 const p_ = pattern_a;
 return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo(unqualifiedName_(p_.name_), otherVariants_(p_.name_), []))
 }
-if(pattern_a.PAlias) {
+{
 const p_ = pattern_a;
 return convertPattern_(p_.pattern_)
 }

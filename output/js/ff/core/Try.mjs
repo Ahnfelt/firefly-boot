@@ -122,7 +122,7 @@ return body_(value_)
 }))
 return
 }
-if(_1.Failure) {
+{
 const error_ = _1.error_;
 return ff_core_Try.Failure(error_)
 }
@@ -173,7 +173,7 @@ const value_ = _1.value_;
 body_();
 return value_
 }
-if(_1.Failure) {
+{
 body_();
 return ff_core_Try.Try_grab(self_)
 }
@@ -229,7 +229,7 @@ return value_
 }))
 return
 }
-if(_1.Failure) {
+{
 {
 const _1 = ff_core_Core.try_((() => {
 return body_()
@@ -237,7 +237,7 @@ return body_()
 if(_1.Success) {
 return self_
 }
-if(_1.Failure) {
+{
 const error_ = _1.error_;
 return ff_core_Try.Failure(error_)
 }
@@ -254,7 +254,7 @@ if(_1.Success) {
 const value_ = _1.value_;
 return value_
 }
-if(_1.Failure) {
+{
 return body_()
 }
 }
@@ -267,7 +267,7 @@ if(_1.Success) {
 const value_ = _1.value_;
 return value_
 }
-if(_1.Failure) {
+{
 const error_ = _1.error_;
 return ff_core_Error.Error_rethrow(error_)
 }
@@ -281,7 +281,7 @@ if(_1.Success) {
 const value_ = _1.value_;
 return ff_core_Option.Some(value_)
 }
-if(_1.Failure) {
+{
 return ff_core_Option.None()
 }
 }
@@ -297,7 +297,7 @@ return (await body_(value_, $task))
 }), $task))
 return
 }
-if(_1.Failure) {
+{
 const error_ = _1.error_;
 return ff_core_Try.Failure(error_)
 }
@@ -348,7 +348,7 @@ const value_ = _1.value_;
 (await body_($task));
 return value_
 }
-if(_1.Failure) {
+{
 (await body_($task));
 return ff_core_Try.Try_grab(self_)
 }
@@ -404,7 +404,7 @@ return value_
 }), $task))
 return
 }
-if(_1.Failure) {
+{
 {
 const _1 = (await ff_core_Core.try_$((async ($task) => {
 return (await body_($task))
@@ -412,7 +412,7 @@ return (await body_($task))
 if(_1.Success) {
 return self_
 }
-if(_1.Failure) {
+{
 const error_ = _1.error_;
 return ff_core_Try.Failure(error_)
 }
@@ -429,7 +429,7 @@ if(_1.Success) {
 const value_ = _1.value_;
 return value_
 }
-if(_1.Failure) {
+{
 return (await body_($task))
 }
 }
@@ -442,7 +442,7 @@ if(_1.Success) {
 const value_ = _1.value_;
 return value_
 }
-if(_1.Failure) {
+{
 const error_ = _1.error_;
 return ff_core_Error.Error_rethrow(error_)
 }
@@ -456,7 +456,7 @@ if(_1.Success) {
 const value_ = _1.value_;
 return ff_core_Option.Some(value_)
 }
-if(_1.Failure) {
+{
 return ff_core_Option.None()
 }
 }
@@ -473,7 +473,7 @@ if(_1.Success && _1.value_.Failure) {
 const t_ = _1.value_;
 return t_
 }
-if(_1.Failure) {
+{
 const error_ = _1.error_;
 return ff_core_Try.Failure(error_)
 }
@@ -491,7 +491,7 @@ if(_1.Success && _1.value_.Failure) {
 const t_ = _1.value_;
 return t_
 }
-if(_1.Failure) {
+{
 const error_ = _1.error_;
 return ff_core_Try.Failure(error_)
 }

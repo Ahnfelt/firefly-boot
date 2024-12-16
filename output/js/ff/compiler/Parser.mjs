@@ -1578,7 +1578,7 @@ result_ = ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compil
 };
 return result_
 }
-if(_1.Some) {
+{
 const i_ = _1.value_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError((arguments_.first_[i_] ?? ff_core_List.List_grab(arguments_.first_, i_)).at_, "Unexpected named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
@@ -1809,7 +1809,7 @@ if(items_a.length === 1 && items_a[0].second_) {
 const p_ = items_a[0].first_;
 return p_
 }
-if(items_a.length >= 1 && items_a[0].second_) {
+{
 const p_ = items_a[0].first_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(p_.at_, "Invalid pattern: ... is only allowed for the last element in a list"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
@@ -3195,7 +3195,7 @@ result_ = ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compil
 };
 return result_
 }
-if(_1.Some) {
+{
 const i_ = _1.value_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError((arguments_.first_[i_] ?? ff_core_List.List_grab(arguments_.first_, i_)).at_, "Unexpected named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
@@ -3426,7 +3426,7 @@ if(items_a.length === 1 && items_a[0].second_) {
 const p_ = items_a[0].first_;
 return p_
 }
-if(items_a.length >= 1 && items_a[0].second_) {
+{
 const p_ = items_a[0].first_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(p_.at_, "Invalid pattern: ... is only allowed for the last element in a list"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }

@@ -132,7 +132,7 @@ if(_1.TConstructor) {
 const name_ = _1.name_;
 return name_
 }
-if(_1.TVariable) {
+{
 const at_ = _1.at_;
 const i_ = _1.index_;
 return ff_compiler_Inference.fail_(c_.at_, ("Unexpected unification variable: $" + i_))
@@ -161,7 +161,7 @@ if(_1.TConstructor) {
 const name_ = _1.name_;
 return name_
 }
-if(_1.TVariable) {
+{
 const at_ = _1.at_;
 const i_ = _1.index_;
 return ff_compiler_Inference.fail_(c_.at_, ("Unexpected unification variable: $" + i_))
@@ -560,7 +560,7 @@ return ff_compiler_Syntax.TConstructor(p_.at_, _c.name_, _c.generics_)
 }
 return
 }
-if(_1.TVariable) {
+{
 const t_ = _1;
 {
 const _1 = t_;
@@ -599,7 +599,7 @@ const headVariables_ = ff_compiler_Inference.Inference_inferPattern(self_, envir
 const tailVariables_ = ff_compiler_Inference.Inference_inferPattern(self_, environment_, listType_, tail_);
 return ff_core_Map.Map_addAll(headVariables_, tailVariables_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
-if(_1.PVariant) {
+{
 const at_ = _1.at_;
 const name_ = _1.name_;
 const patterns_ = _1.patterns_;
@@ -754,7 +754,7 @@ return ff_compiler_Syntax.EField(_c.at_, instantiated_.scheme_.isNewtype_, recor
 }
 return
 }
-if(_1.None) {
+{
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
@@ -763,7 +763,7 @@ return
 if(_1.TVariable && ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
 }
-if(_1.TVariable) {
+{
 const index_ = _1.index_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
@@ -1162,7 +1162,7 @@ tailCall_: call_.tailCall_
 }
 return
 }
-if(_1.StaticCall) {
+{
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in the Inference phase")
 }
 }))(e_.target_);
@@ -1188,7 +1188,7 @@ return ff_compiler_Inference.Inference_inferFunctionCall(self_, environment_, ex
 }
 return
 }
-if(_1.None) {
+{
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(variableAt_, ("No such function: " + x_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
@@ -1232,7 +1232,7 @@ if(_1.Some) {
 const instantiated_ = _1.value_;
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, e2_)
 }
-if(_1.None) {
+{
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
@@ -1241,7 +1241,7 @@ return
 if(_1.TVariable && ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, e2_)
 }
-if(_1.TVariable) {
+{
 const index_ = _1.index_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
@@ -1327,7 +1327,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 }))
 return
 }
-if(_1.EAssignField) {
+{
 const e_ = _1;
 const recordType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, e_.record_);
@@ -1366,7 +1366,7 @@ if(_1.Some) {
 const instantiated_ = _1.value_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("Can't assign an immutable field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
-if(_1.None) {
+{
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
@@ -1375,7 +1375,7 @@ return
 if(_1.TVariable && ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
 }
-if(_1.TVariable) {
+{
 const index_ = _1.index_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
@@ -1420,7 +1420,7 @@ if(_1.DynamicCall) {
 const call_ = _1;
 return call_.tailCall_
 }
-if(_1.StaticCall) {
+{
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferMethodCall")
 }
 }))(e_.target_);
@@ -1474,7 +1474,7 @@ break
 } while(false);
 return call_.tailCall_
 }
-if(_1.StaticCall) {
+{
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferFunctionCall")
 }
 }))(e_.target_);
@@ -1521,7 +1521,7 @@ return
 if(_1.DynamicCall) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Tailcalls not supported on lambda functions"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
-if(_1.StaticCall) {
+{
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferLambdaCall")
 }
 }))(e_.target_);
@@ -1830,7 +1830,7 @@ return
 if(_1.Some && _2.Some) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on these types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
-if(_1.None && _2.None) {
+{
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on unknown types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 });
@@ -1952,7 +1952,7 @@ const callAt_ = _1.at_;
 ff_compiler_Inference.fail_(callAt_, "Too many arguments")
 return
 }
-if(_1.name_.Some) {
+{
 const callAt_ = _1.at_;
 const n_ = _1.name_.value_;
 ff_compiler_Inference.fail_(callAt_, ("Unknown argument: " + n_))
@@ -2461,7 +2461,7 @@ return ff_compiler_Syntax.TConstructor(p_.at_, _c.name_, _c.generics_)
 }
 return
 }
-if(_1.TVariable) {
+{
 const t_ = _1;
 {
 const _1 = t_;
@@ -2500,7 +2500,7 @@ const headVariables_ = ff_compiler_Inference.Inference_inferPattern(self_, envir
 const tailVariables_ = ff_compiler_Inference.Inference_inferPattern(self_, environment_, listType_, tail_);
 return ff_core_Map.Map_addAll(headVariables_, tailVariables_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
-if(_1.PVariant) {
+{
 const at_ = _1.at_;
 const name_ = _1.name_;
 const patterns_ = _1.patterns_;
@@ -2655,7 +2655,7 @@ return ff_compiler_Syntax.EField(_c.at_, instantiated_.scheme_.isNewtype_, recor
 }
 return
 }
-if(_1.None) {
+{
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
@@ -2664,7 +2664,7 @@ return
 if(_1.TVariable && ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
 }
-if(_1.TVariable) {
+{
 const index_ = _1.index_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
@@ -3063,7 +3063,7 @@ tailCall_: call_.tailCall_
 }
 return
 }
-if(_1.StaticCall) {
+{
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in the Inference phase")
 }
 }))(e_.target_);
@@ -3089,7 +3089,7 @@ return ff_compiler_Inference.Inference_inferFunctionCall(self_, environment_, ex
 }
 return
 }
-if(_1.None) {
+{
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(variableAt_, ("No such function: " + x_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
@@ -3133,7 +3133,7 @@ if(_1.Some) {
 const instantiated_ = _1.value_;
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, e2_)
 }
-if(_1.None) {
+{
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
@@ -3142,7 +3142,7 @@ return
 if(_1.TVariable && ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, e2_)
 }
-if(_1.TVariable) {
+{
 const index_ = _1.index_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
@@ -3228,7 +3228,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 }))
 return
 }
-if(_1.EAssignField) {
+{
 const e_ = _1;
 const recordType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, e_.record_);
@@ -3267,7 +3267,7 @@ if(_1.Some) {
 const instantiated_ = _1.value_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("Can't assign an immutable field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
-if(_1.None) {
+{
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
@@ -3276,7 +3276,7 @@ return
 if(_1.TVariable && ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return term_
 }
-if(_1.TVariable) {
+{
 const index_ = _1.index_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
@@ -3321,7 +3321,7 @@ if(_1.DynamicCall) {
 const call_ = _1;
 return call_.tailCall_
 }
-if(_1.StaticCall) {
+{
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferMethodCall")
 }
 }))(e_.target_);
@@ -3375,7 +3375,7 @@ break
 } while(false);
 return call_.tailCall_
 }
-if(_1.StaticCall) {
+{
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferFunctionCall")
 }
 }))(e_.target_);
@@ -3422,7 +3422,7 @@ return
 if(_1.DynamicCall) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Tailcalls not supported on lambda functions"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
-if(_1.StaticCall) {
+{
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferLambdaCall")
 }
 }))(e_.target_);
@@ -3731,7 +3731,7 @@ return
 if(_1.Some && _2.Some) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on these types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
-if(_1.None && _2.None) {
+{
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on unknown types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 });
@@ -3853,7 +3853,7 @@ const callAt_ = _1.at_;
 ff_compiler_Inference.fail_(callAt_, "Too many arguments")
 return
 }
-if(_1.name_.Some) {
+{
 const callAt_ = _1.at_;
 const n_ = _1.name_.value_;
 ff_compiler_Inference.fail_(callAt_, ("Unknown argument: " + n_))

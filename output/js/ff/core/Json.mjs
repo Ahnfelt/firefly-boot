@@ -1045,7 +1045,7 @@ if(_1.None) {
 convertible_ = false
 break
 }
-if(_1.Some) {
+{
 const value_ = _1.value_;
 result_.array.push(value_)
 break
@@ -1075,7 +1075,7 @@ if(_1.None) {
 convertible_ = false
 break
 }
-if(_1.Some) {
+{
 const value_ = _1.value_;
 result_.array.push(value_)
 break
@@ -1110,7 +1110,7 @@ if(_1.None) {
 convertible_ = false
 break
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 ff_core_StringMap.StringMap_set(map_, key_, v_)
 break
@@ -1143,7 +1143,7 @@ if(_1.None) {
 convertible_ = false
 break
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 ff_core_StringMap.StringMap_set(map_, key_, v_)
 break

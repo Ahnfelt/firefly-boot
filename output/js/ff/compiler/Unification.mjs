@@ -135,7 +135,7 @@ if(_1.TConstructor) {
 const name_ = _1.name_;
 return name_
 }
-if(_1.TVariable) {
+{
 const i_ = _1.index_;
 return ff_compiler_Unification.fail_(definition_.at_, ("Unexpected unification variable: $" + i_))
 }
@@ -158,7 +158,7 @@ if(_1.TConstructor) {
 const name_ = _1.name_;
 return name_
 }
-if(_1.TVariable) {
+{
 const i_ = _1.index_;
 return ff_compiler_Unification.fail_(definition_.at_, ("Unexpected unification variable: $" + i_))
 }
@@ -197,7 +197,7 @@ if(_1.Some) {
 const t_ = _1.value_;
 return t_
 }
-if(_1.None) {
+{
 return type_
 }
 }
@@ -220,7 +220,7 @@ const t_ = _guard1.value_;
 return ff_compiler_Unification.Unification_instantiate(self_, instantiation_, t_)
 }
 }
-if(type_a.TVariable) {
+{
 const i_ = type_a.index_;
 return type_
 }
@@ -261,7 +261,7 @@ if(_1.None) {
 self_.constraints_ = ff_core_Map.Map_add(self_.constraints_, i_, ff_core_List.List_toMap([ff_core_Pair.Pair(constraintName_, ff_compiler_Unification.ConstraintGenerics(at_, generics_))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 return
 }
-if(_1.Some) {
+{
 const map_ = _1.value_;
 {
 const _1 = ff_core_Map.Map_get(map_, constraintName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -270,7 +270,7 @@ const newMap_ = ff_core_Map.Map_add(map_, constraintName_, ff_compiler_Unificati
 self_.constraints_ = ff_core_Map.Map_add(self_.constraints_, i_, newMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 return
 }
-if(_1.Some) {
+{
 const generics2_ = _1.value_.generics_;
 for(let for_a = generics_, for_i = 0, for_l = for_a.length, for_a2 = generics2_, for_i2 = 0, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
 const t1_ = for_a[for_i];
@@ -285,7 +285,7 @@ return
 }
 return
 }
-if(_1.TConstructor) {
+{
 const name_ = _1.name_;
 const generics2_ = _1.generics_;
 {
@@ -302,7 +302,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 }
 return
 }
-if(_1.Some) {
+{
 const definition_ = _1.value_;
 const unificationVariables_ = ff_core_List.List_map(definition_.generics_, ((_) => {
 return ff_compiler_Unification.Unification_freshUnificationVariable(self_, at_)
@@ -363,7 +363,7 @@ return ff_compiler_Unification.Unification_substitute(self_, t_)
 if(type_a.TVariable) {
 return type_
 }
-if(type_a.TConstructor) {
+{
 const t_ = type_a;
 {
 const _1 = t_;
@@ -420,7 +420,7 @@ const i_ = t2_a.index_;
 ff_compiler_Unification.Unification_bind(self_, at_, i_, t1_)
 return
 }
-if(t1_a.TConstructor && t2_a.TConstructor) {
+{
 const name1_ = t1_a.name_;
 const generics1_ = t1_a.generics_;
 const name2_ = t2_a.name_;
@@ -528,7 +528,7 @@ if(t_a.TVariable) {
 const i_ = t_a.index_;
 return (i_ === index_)
 }
-if(t_a.TConstructor) {
+{
 const generics_ = t_a.generics_;
 return ff_core_List.List_any(generics_, ((t_) => {
 return ff_compiler_Unification.Unification_occursIn(self_, index_, t_)
@@ -566,7 +566,7 @@ if(_1.Some) {
 const t_ = _1.value_;
 return t_
 }
-if(_1.None) {
+{
 return type_
 }
 }
@@ -589,7 +589,7 @@ const t_ = _guard1.value_;
 return ff_compiler_Unification.Unification_instantiate(self_, instantiation_, t_)
 }
 }
-if(type_a.TVariable) {
+{
 const i_ = type_a.index_;
 return type_
 }
@@ -630,7 +630,7 @@ if(_1.None) {
 self_.constraints_ = ff_core_Map.Map_add(self_.constraints_, i_, ff_core_List.List_toMap([ff_core_Pair.Pair(constraintName_, ff_compiler_Unification.ConstraintGenerics(at_, generics_))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 return
 }
-if(_1.Some) {
+{
 const map_ = _1.value_;
 {
 const _1 = ff_core_Map.Map_get(map_, constraintName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -639,7 +639,7 @@ const newMap_ = ff_core_Map.Map_add(map_, constraintName_, ff_compiler_Unificati
 self_.constraints_ = ff_core_Map.Map_add(self_.constraints_, i_, newMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 return
 }
-if(_1.Some) {
+{
 const generics2_ = _1.value_.generics_;
 for(let for_a = generics_, for_i = 0, for_l = for_a.length, for_a2 = generics2_, for_i2 = 0, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
 const t1_ = for_a[for_i];
@@ -654,7 +654,7 @@ return
 }
 return
 }
-if(_1.TConstructor) {
+{
 const name_ = _1.name_;
 const generics2_ = _1.generics_;
 {
@@ -671,7 +671,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 }
 return
 }
-if(_1.Some) {
+{
 const definition_ = _1.value_;
 const unificationVariables_ = ff_core_List.List_map(definition_.generics_, ((_) => {
 return ff_compiler_Unification.Unification_freshUnificationVariable(self_, at_)
@@ -732,7 +732,7 @@ return ff_compiler_Unification.Unification_substitute(self_, t_)
 if(type_a.TVariable) {
 return type_
 }
-if(type_a.TConstructor) {
+{
 const t_ = type_a;
 {
 const _1 = t_;
@@ -789,7 +789,7 @@ const i_ = t2_a.index_;
 ff_compiler_Unification.Unification_bind(self_, at_, i_, t1_)
 return
 }
-if(t1_a.TConstructor && t2_a.TConstructor) {
+{
 const name1_ = t1_a.name_;
 const generics1_ = t1_a.generics_;
 const name2_ = t2_a.name_;
@@ -897,7 +897,7 @@ if(t_a.TVariable) {
 const i_ = t_a.index_;
 return (i_ === index_)
 }
-if(t_a.TConstructor) {
+{
 const generics_ = t_a.generics_;
 return ff_core_List.List_any(generics_, ((t_) => {
 return ff_compiler_Unification.Unification_occursIn(self_, index_, t_)

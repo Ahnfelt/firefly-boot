@@ -239,7 +239,7 @@ if(_1.Some) {
 const value_ = _1.value_;
 return value_
 }
-if(_1.None) {
+{
 ff_core_Lock.LockCondition_sleep(self_);
 {
 const self_r_ = self_;
@@ -311,7 +311,7 @@ if(_1.Some) {
 const value_ = _1.value_;
 return value_
 }
-if(_1.None) {
+{
 (await ff_core_Lock.LockCondition_sleep$(self_, $task));
 {
 const self_r_ = self_;

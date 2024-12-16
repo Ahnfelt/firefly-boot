@@ -115,7 +115,7 @@ const _1 = self_;
 if(_1.None) {
 return body_()
 }
-if(_1.Some) {
+{
 const value_ = _1.value_;
 return value_
 }
@@ -131,13 +131,13 @@ const _1 = condition_();
 if(_1) {
 return ff_core_Option.Some(body_())
 }
-if(!_1) {
+{
 return ff_core_Option.None()
 }
 }
 return
 }
-if(_1.Some) {
+{
 return self_
 }
 }
@@ -149,7 +149,7 @@ const _1 = self_;
 if(_1.None) {
 return body_()
 }
-if(_1.Some) {
+{
 return self_
 }
 }
@@ -161,7 +161,7 @@ const _1 = self_;
 if(_1.None) {
 return noneBody_()
 }
-if(_1.Some) {
+{
 const value_ = _1.value_;
 return someBody_(value_)
 }
@@ -174,7 +174,7 @@ const _1 = self_;
 if(_1.None) {
 return true
 }
-if(_1.Some) {
+{
 return false
 }
 }
@@ -186,7 +186,7 @@ const _1 = self_;
 if(_1.None) {
 return []
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 return [v_]
 }
@@ -231,7 +231,7 @@ const _1 = self_;
 if(_1.None) {
 return ff_core_Option.None()
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 return ff_core_Option.Some(body_(v_))
 }
@@ -244,7 +244,7 @@ const _1 = self_;
 if(_1.None) {
 return ff_core_Option.None()
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 return body_(v_)
 }
@@ -258,7 +258,7 @@ if(_1.None) {
 
 return
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 body_(v_)
 return
@@ -272,7 +272,7 @@ const _1 = self_;
 if(_1.None) {
 return true
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 return body_(v_)
 }
@@ -285,7 +285,7 @@ const _1 = self_;
 if(_1.None) {
 return false
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 return body_(v_)
 }
@@ -298,7 +298,7 @@ const _1 = self_;
 if(_1.None) {
 return ff_core_Try.internalThrowGrabException_()
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 return v_
 }
@@ -311,7 +311,7 @@ const _1 = self_;
 if(_1.None) {
 return (await body_($task))
 }
-if(_1.Some) {
+{
 const value_ = _1.value_;
 return value_
 }
@@ -327,13 +327,13 @@ const _1 = (await condition_($task));
 if(_1) {
 return ff_core_Option.Some((await body_($task)))
 }
-if(!_1) {
+{
 return ff_core_Option.None()
 }
 }
 return
 }
-if(_1.Some) {
+{
 return self_
 }
 }
@@ -345,7 +345,7 @@ const _1 = self_;
 if(_1.None) {
 return (await body_($task))
 }
-if(_1.Some) {
+{
 return self_
 }
 }
@@ -357,7 +357,7 @@ const _1 = self_;
 if(_1.None) {
 return (await noneBody_($task))
 }
-if(_1.Some) {
+{
 const value_ = _1.value_;
 return (await someBody_(value_, $task))
 }
@@ -370,7 +370,7 @@ const _1 = self_;
 if(_1.None) {
 return true
 }
-if(_1.Some) {
+{
 return false
 }
 }
@@ -382,7 +382,7 @@ const _1 = self_;
 if(_1.None) {
 return []
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 return [v_]
 }
@@ -427,7 +427,7 @@ const _1 = self_;
 if(_1.None) {
 return ff_core_Option.None()
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 return ff_core_Option.Some((await body_(v_, $task)))
 }
@@ -440,7 +440,7 @@ const _1 = self_;
 if(_1.None) {
 return ff_core_Option.None()
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 return (await body_(v_, $task))
 }
@@ -454,7 +454,7 @@ if(_1.None) {
 
 return
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 (await body_(v_, $task))
 return
@@ -468,7 +468,7 @@ const _1 = self_;
 if(_1.None) {
 return true
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 return (await body_(v_, $task))
 }
@@ -481,7 +481,7 @@ const _1 = self_;
 if(_1.None) {
 return false
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 return (await body_(v_, $task))
 }
@@ -494,7 +494,7 @@ const _1 = self_;
 if(_1.None) {
 return ff_core_Try.internalThrowGrabException_()
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 return v_
 }
@@ -507,7 +507,7 @@ const _1 = self_;
 if(_1.None) {
 return false
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 return ff_core_Equal_Equal$T.equals_(v_, value_)
 }
@@ -520,7 +520,7 @@ const _1 = self_;
 if(_1.None) {
 return false
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 return ff_core_Equal_Equal$T.equals_(v_, value_)
 }
@@ -533,7 +533,7 @@ const _1 = self_;
 if(_1.None) {
 return ff_core_Option.None()
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 return v_
 }
@@ -546,7 +546,7 @@ const _1 = self_;
 if(_1.None) {
 return ff_core_Option.None()
 }
-if(_1.Some) {
+{
 const v_ = _1.value_;
 return v_
 }
@@ -569,7 +569,7 @@ if(value_a.None) {
 const z_ = value_a;
 return "None"
 }
-if(value_a.Some) {
+{
 const z_ = value_a;
 return ((("Some" + "(") + ff_core_Show_Show$T.show_(z_.value_)) + ")")
 }
@@ -580,7 +580,7 @@ if(value_a.None) {
 const z_ = value_a;
 return "None"
 }
-if(value_a.Some) {
+{
 const z_ = value_a;
 return ((("Some" + "(") + ff_core_Show_Show$T.show_(z_.value_)) + ")")
 }
@@ -644,7 +644,7 @@ const z_a = z_;
 if(z_a.None) {
 return 0
 }
-if(z_a.Some) {
+{
 return 1
 }
 }
@@ -674,7 +674,7 @@ const z_a = z_;
 if(z_a.None) {
 return 0
 }
-if(z_a.Some) {
+{
 return 1
 }
 }
@@ -695,7 +695,7 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1
 return
 }
-if(value_a.Some) {
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
@@ -734,7 +734,7 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1
 return
 }
-if(value_a.Some) {
+{
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);

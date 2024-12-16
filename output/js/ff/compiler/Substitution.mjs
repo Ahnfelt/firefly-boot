@@ -412,7 +412,7 @@ return ff_compiler_Syntax.DynamicCall(ff_compiler_Substitution.Substitution_subs
 }
 return
 }
-if(_1.StaticCall) {
+{
 return e_.target_
 }
 }))(e_.target_), ff_compiler_Substitution.Substitution_substituteType(self_, e_.effect_), ff_core_List.List_map(e_.typeArguments_, ((_w1) => {
@@ -464,7 +464,7 @@ return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, ff_compile
 }
 return
 }
-if(_1.EAssignField) {
+{
 const e_ = _1;
 {
 const _1 = e_;
@@ -511,7 +511,7 @@ return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Noth
 }
 return
 }
-if(type_a.TConstructor) {
+{
 const t_ = type_a;
 {
 const _1 = t_;
@@ -852,7 +852,7 @@ return ff_compiler_Syntax.DynamicCall(ff_compiler_Substitution.Substitution_subs
 }
 return
 }
-if(_1.StaticCall) {
+{
 return e_.target_
 }
 }))(e_.target_), ff_compiler_Substitution.Substitution_substituteType(self_, e_.effect_), ff_core_List.List_map(e_.typeArguments_, ((_w1) => {
@@ -904,7 +904,7 @@ return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, ff_compile
 }
 return
 }
-if(_1.EAssignField) {
+{
 const e_ = _1;
 {
 const _1 = e_;
@@ -951,7 +951,7 @@ return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Noth
 }
 return
 }
-if(type_a.TConstructor) {
+{
 const t_ = type_a;
 {
 const _1 = t_;

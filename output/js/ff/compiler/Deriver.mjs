@@ -296,7 +296,7 @@ const fields_a = fields_;
 if(fields_a.length === 0) {
 return orderingSame_
 }
-if(fields_a.length >= 1) {
+{
 const head_ = fields_a[0];
 const tail_ = fields_a.slice(1);
 const variableName_ = (head_.name_ + "Ordering");
@@ -378,7 +378,7 @@ if(fields_a.length === 1) {
 const head_ = fields_a[0];
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Equal.equals", [ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "x"), head_.name_), ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "y"), head_.name_)], [])
 }
-if(fields_a.length >= 1) {
+{
 const head_ = fields_a[0];
 const tail_ = fields_a.slice(1);
 const equalsTerm_ = ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Equal.equals", [ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "x"), head_.name_), ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "y"), head_.name_)], []);
@@ -698,7 +698,7 @@ const fields_a = fields_;
 if(fields_a.length === 0) {
 return orderingSame_
 }
-if(fields_a.length >= 1) {
+{
 const head_ = fields_a[0];
 const tail_ = fields_a.slice(1);
 const variableName_ = (head_.name_ + "Ordering");
@@ -780,7 +780,7 @@ if(fields_a.length === 1) {
 const head_ = fields_a[0];
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Equal.equals", [ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "x"), head_.name_), ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "y"), head_.name_)], [])
 }
-if(fields_a.length >= 1) {
+{
 const head_ = fields_a[0];
 const tail_ = fields_a.slice(1);
 const equalsTerm_ = ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Equal.equals", [ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "x"), head_.name_), ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "y"), head_.name_)], []);
