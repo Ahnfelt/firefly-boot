@@ -413,7 +413,6 @@ const qualified_ = _1.value_;
 if((name_ !== qualified_)) {
 seenTypes_ = ff_core_Map.Map_add(seenTypes_, shortenedName_, "", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
-break
 }
 } while(false);
 shortenTypes_(typeArguments_)
@@ -545,7 +544,6 @@ const qualified_ = _1.value_;
 if((name_ !== qualified_)) {
 seenTypes_ = ff_core_Map.Map_add(seenTypes_, shortenedName_, "", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
-break
 }
 } while(false);
 shortenTypes_(typeArguments_)

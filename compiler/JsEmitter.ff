@@ -1147,7 +1147,7 @@ extend self: JsEmitter {
                     lastLine.startsWith("throw ")
                 let code = statementsCode + if(jump && last && !returns) {
                     "\nreturn"
-                } elseIf {jump && !returns} {
+                } elseIf {jump && !returns && !lastCase} {
                     if(break) {"\ncontinue"} else {"\nbreak"}
                 } else {
                     ""

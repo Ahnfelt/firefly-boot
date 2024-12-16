@@ -510,7 +510,6 @@ continue
 const o_ = _1;
 result_ = o_;
 if(!false) break
-continue
 }
 }
 };
@@ -901,7 +900,6 @@ continue
 const o_ = _1;
 result_ = o_;
 if(!false) break
-continue
 }
 }
 };

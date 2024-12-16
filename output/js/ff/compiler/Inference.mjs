@@ -1003,7 +1003,6 @@ break
 }
 {
 
-break
 }
 } while(false);
 const lambda_ = ff_compiler_Inference.Inference_inferLambda(self_, environment_, expected_, l_);
@@ -1400,7 +1399,6 @@ break
 }
 {
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, t_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Int"), []))
-break
 }
 } while(false)
 } else if((operator_ !== "")) {
@@ -1469,7 +1467,6 @@ break
 }
 {
 
-break
 }
 } while(false);
 return call_.tailCall_
@@ -2904,7 +2901,6 @@ break
 }
 {
 
-break
 }
 } while(false);
 const lambda_ = ff_compiler_Inference.Inference_inferLambda(self_, environment_, expected_, l_);
@@ -3301,7 +3297,6 @@ break
 }
 {
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, t_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Int"), []))
-break
 }
 } while(false)
 } else if((operator_ !== "")) {
@@ -3370,7 +3365,6 @@ break
 }
 {
 
-break
 }
 } while(false);
 return call_.tailCall_

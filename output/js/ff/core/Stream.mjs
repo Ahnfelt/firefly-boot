@@ -210,10 +210,8 @@ break
 const o_ = _1.value_;
 inner_.close_();
 inner_ = body_(o_)
-break
 }
 } while(false)
-break
 }
 } while(false)
 };
@@ -252,7 +250,6 @@ break
 }
 {
 result_ = ff_core_Option.Some(ff_core_Option.None())
-break
 }
 } while(false)
 };
@@ -308,7 +305,6 @@ break
 }
 {
 remaining_ -= 1
-break
 }
 } while(false)
 };
@@ -372,7 +368,6 @@ const o_ = _1;
 const x_ = _1.value_;
 result_ = o_;
 done_ = true
-break
 }
 } while(false)
 };
@@ -421,7 +416,6 @@ break
 {
 const x_ = _1.value_;
 list_ = [x_, ...list_]
-break
 }
 } while(false)
 };
@@ -458,7 +452,6 @@ break
 {
 const x_ = _1.value_;
 body_(x_)
-break
 }
 } while(false)
 }
@@ -480,7 +473,6 @@ break
 {
 const x_ = _1.value_;
 done_ = (!body_(x_))
-break
 }
 } while(false)
 }
@@ -530,7 +522,6 @@ break
 const o_ = _1;
 const x_ = _1.value_;
 result_ = o_
-break
 }
 } while(false)
 };
@@ -575,10 +566,8 @@ break
 const o_ = _1;
 done_ = true;
 result_ = o_
-break
 }
 } while(false)
-break
 }
 } while(false)
 };
@@ -667,10 +656,8 @@ break
 const o_ = _1.value_;
 (await inner_.close_($task));
 inner_ = (await body_(o_, $task))
-break
 }
 } while(false)
-break
 }
 } while(false)
 };
@@ -709,7 +696,6 @@ break
 }
 {
 result_ = ff_core_Option.Some(ff_core_Option.None())
-break
 }
 } while(false)
 };
@@ -765,7 +751,6 @@ break
 }
 {
 remaining_ -= 1
-break
 }
 } while(false)
 };
@@ -829,7 +814,6 @@ const o_ = _1;
 const x_ = _1.value_;
 result_ = o_;
 done_ = true
-break
 }
 } while(false)
 };
@@ -878,7 +862,6 @@ break
 {
 const x_ = _1.value_;
 list_ = [x_, ...list_]
-break
 }
 } while(false)
 };
@@ -915,7 +898,6 @@ break
 {
 const x_ = _1.value_;
 (await body_(x_, $task))
-break
 }
 } while(false)
 }
@@ -937,7 +919,6 @@ break
 {
 const x_ = _1.value_;
 done_ = (!(await body_(x_, $task)))
-break
 }
 } while(false)
 }
@@ -987,7 +968,6 @@ break
 const o_ = _1;
 const x_ = _1.value_;
 result_ = o_
-break
 }
 } while(false)
 };
@@ -1032,10 +1012,8 @@ break
 const o_ = _1;
 done_ = true;
 result_ = o_
-break
 }
 } while(false)
-break
 }
 } while(false)
 };

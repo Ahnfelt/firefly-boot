@@ -188,7 +188,6 @@ break
 }
 {
 fetchOptions_.redirect = "manual"
-break
 }
 } while(false);
 for(const for_o = options_.referrer_; for_o.Some;) {
@@ -272,7 +271,6 @@ break
 }
 {
 fetchOptions_.redirect = "manual"
-break
 }
 } while(false);
 for(const for_o = options_.referrer_; for_o.Some;) {

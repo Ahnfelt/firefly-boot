@@ -1048,7 +1048,6 @@ break
 {
 const value_ = _1.value_;
 result_.array.push(value_)
-break
 }
 } while(false);
 if(!convertible_) break
@@ -1078,7 +1077,6 @@ break
 {
 const value_ = _1.value_;
 result_.array.push(value_)
-break
 }
 } while(false);
 if(!convertible_) break
@@ -1113,7 +1111,6 @@ break
 {
 const v_ = _1.value_;
 ff_core_StringMap.StringMap_set(map_, key_, v_)
-break
 }
 } while(false);
 return convertible_
@@ -1146,7 +1143,6 @@ break
 {
 const v_ = _1.value_;
 ff_core_StringMap.StringMap_set(map_, key_, v_)
-break
 }
 } while(false);
 return convertible_

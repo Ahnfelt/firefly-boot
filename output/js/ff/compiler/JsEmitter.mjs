@@ -2883,7 +2883,7 @@ return (_w1 !== 10)
 const returns_ = ((((((ff_core_String.String_startsWith(lastLine_, "return ", 0) || ff_core_String.String_startsWith(lastLine_, "break ", 0)) || ff_core_String.String_startsWith(lastLine_, "continue ", 0)) || ff_core_String.String_startsWith(lastLine_, "return;", 0)) || ff_core_String.String_startsWith(lastLine_, "break;", 0)) || ff_core_String.String_startsWith(lastLine_, "continue;", 0)) || ff_core_String.String_startsWith(lastLine_, "throw ", 0));
 const code_ = (statementsCode_ + (((jump_ && last_) && (!returns_))
 ? "\nreturn"
-: (jump_ && (!returns_))
+: ((jump_ && (!returns_)) && (!lastCase_))
 ? (break_
 ? "\ncontinue"
 : "\nbreak")
@@ -5380,7 +5380,7 @@ return (_w1 !== 10)
 const returns_ = ((((((ff_core_String.String_startsWith(lastLine_, "return ", 0) || ff_core_String.String_startsWith(lastLine_, "break ", 0)) || ff_core_String.String_startsWith(lastLine_, "continue ", 0)) || ff_core_String.String_startsWith(lastLine_, "return;", 0)) || ff_core_String.String_startsWith(lastLine_, "break;", 0)) || ff_core_String.String_startsWith(lastLine_, "continue;", 0)) || ff_core_String.String_startsWith(lastLine_, "throw ", 0));
 const code_ = (statementsCode_ + (((jump_ && last_) && (!returns_))
 ? "\nreturn"
-: (jump_ && (!returns_))
+: ((jump_ && (!returns_)) && (!lastCase_))
 ? (break_
 ? "\ncontinue"
 : "\nbreak")
