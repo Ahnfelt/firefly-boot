@@ -206,100 +206,17 @@ extend self: WebServer {
         }
     }
 
-    listenOld(handler: WebRequest[WebResponse] => Unit)
-        target node async """
-            import * as uws from 'uWebSockets.js'
-            ff_core_Task.Task_throwIfAborted($task);
-            await new Promise((resolveServer, rejectServer) => {
-                self_.internalJsApp_ = self_.internalJsWilcard_ ? uws.SSLApp(self_.internalJsWilcard_) 
-                    : self_.internalJsHosts_.array.some(h => h.key_file_name) ? uws.SSLApp() : uws.App();
-                self_.internalJsHosts_.array.forEach(h => self_.internalJsApp_.addServerName(h.hostname, h));
-                const handleRequest = (res, req, context) => {
-                    let abortedByUws = false;
-                    const method = req.getMethod();
-                    const path = req.getUrl();
-                    const query = req.getQuery() || '';
-                    const headers = new Map();
-                    req.forEach((key, value) => headers.set(key, value));
-                    const chunks = internalArray_();
-                    const task = ff_core_Task.Task_spawn($task, async task => {
-                        try {
-                            ff_core_Task.Task_throwIfAborted(task);
-                            const webRequest = WebRequest(
-                                self_.internalJsApp_, context, 
-                                method, path, query, headers, 
-                                res, null, 
-                                new Map(), internalArray_(), 
-                                "200 OK", false, null, -1, false
-                            );
-                            await handler_(webRequest, task);
-                            ff_core_Task.Task_throwIfAborted(task);
-                            if(context == null && !webRequest.internalResponded_ && webRequest.internalContentSize_ >= 0) {
-                                await WebRequest_flush$(webRequest, task);
-                                ff_core_Task.Task_throwIfAborted(task);
-                            }
-                            if(context == null && !webRequest.internalResponded_) await new Promise((resolve, reject) => {
-                                res.cork(() => {
-                                    try {
-                                        ff_core_Task.Task_throwIfAborted(task);
-                                        if(!webRequest.internalResolveFlush_) {
-                                            res.writeStatus(webRequest.internalResponseStatus_);
-                                            webRequest.internalResponseHeaders_.forEach((value, key) => res.writeHeader(key, value));
-                                        }
-                                        const chunk = internalChunksToChunk_(webRequest.internalResponseChunks_);
-                                        res.end(chunk, webRequest.internalCloseConnection_);
-                                        resolve();
-                                    } catch(e) {
-                                        reject(e);
-                                    }
-                                });
-                            });
-                        } catch(e) {
-                            if(!abortedByUws) console.error(e);
-                            if(!abortedByUws && context == null) res.cork(() => {
-                                if(!abortedByUws) res.writeStatus("500 Internal Server Error");
-                                if(!abortedByUws) res.end();
-                            });
-                        }
-                    });
-                    res.onAborted(() => {
-                        abortedByUws = true; 
-                        ff_core_Task.Task_abort(task);
-                    });
-                }
-                self_.internalJsApp_.any('/*', handleRequest);
-                if(self_.internalJsWebSockets_) self_.internalJsApp_.ws("/*", {
-                    ...self_.internalJsWebSockets_,
-                    upgrade: handleRequest,
-                    open: ws => ws.getUserData().onOpen(ws),
-                    message: (ws, m, b) => ws.getUserData().onMessage(m, b),
-                    close: ws => ws.getUserData().onClose(),
-                });
-                self_.internalJsApp_.listen(self_.internalHost_, self_.internalPort_, listenSocket => {
-                    if(listenSocket) {
-                        const abort = () => {
-                            $task.controller_.signal.removeEventListener('abort', abort);
-                            uws.us_listen_socket_close(listenSocket);
-                            self_.internalJsApp_.close();
-                        }
-                        $task.controller_.signal.addEventListener('abort', abort);
-                    } else {
-                        rejectServer();
-                    }
-                });
-            });
-        """
+    publishBuffer(topic: String, message: Buffer) { // Should this be corked?
+        if(!self.internalJsApp.nullish()) {
+            self.internalJsApp->publish(topic, message!->buffer, True)
+        }
+    }
     
-    publishBuffer(topic: String, message: Buffer) // Should this be corked?
-        target js async """
-            if(self_.internalJsApp_) self_.internalJsApp_.publish(topic_, message_.buffer, true);
-        """
-    
-    publishText(topic: String, message: String) // Should this be corked?
-        target js async """
-            if(self_.internalJsApp_) self_.internalJsApp_.publish(topic_, message_, false);
-        """
-    
+    publishText(topic: String, message: String) { // Should this be corked?
+        if(!self.internalJsApp.nullish()) {
+            self.internalJsApp->publish(topic, message, False)
+        }
+    }
 }
 
 extend self[T]: WebRequest[T] {
@@ -316,15 +233,14 @@ extend self[T]: WebRequest[T] {
         self.internalQuery
     }
 
-    readQuery(name: String): Option[String]
-        target node sync """
-            if(self_.internalQuery_.length === 0) return ff_core_Option.None();
-            const ps = self_.internalQuery_.split('&');
-            const n = name_ + '=';
-            const r = ps.find(p => p === name_ || p.startsWith(n));
-            if(r == null) return ff_core_Option.None();
-            return ff_core_Option.Some(decodeURIComponent(r.slice(name_.length + 1)));
-        """
+    readQuery(name: String): Option[String] {
+        if(self.internalQuery.size() == 0) {None} else:
+        let ps = self.internalQuery.split('&')
+        let n = name + "="
+        ps.find {p => p == name || p.startsWith(n)}.map {r => 
+            Js->decodeURIComponent(r.dropFirst(n.size()))?
+        }
+    }
     
     readHeader(lowerCaseName: String): Option[String] {
         self.internalHeaders.get(lowerCaseName)
@@ -372,16 +288,14 @@ extend self[T]: WebRequest[T] {
 
 extend self[T]: WebRequest[T] {
 
-    publishBuffer(topic: String, message: Buffer) // Should this be corked?
-        target js sync """
-            self_.internalJsApp_.publish(topic_, message_.buffer, true);
-        """
+    publishBuffer(topic: String, message: Buffer) { // Should this be corked?
+        self.internalJsApp->publish(topic, message!->buffer, True)
+    }
     
-    publishText(topic: String, message: String) // Should this be corked?
-        target js sync """
-            self_.internalJsApp_.publish(topic_, message_, false);
-        """
-    
+    publishText(topic: String, message: String) { // Should this be corked?
+        self.internalJsApp->publish(topic, message, False)
+    }
+
 }
 
 extend self[T]: WebRequest[T] {
@@ -390,74 +304,72 @@ extend self[T]: WebRequest[T] {
         self.internalCloseConnection = True
     }
     
-    readRemoteAddress(): String
-        target js sync """
-            return new TextDecoder().decode(self_.internalJsResponse_.getRemoteAddressAsText())
-        """
+    readRemoteAddress(): String {
+        Js->TextDecoder->()->decode(self.internalJsResponse->getRemoteAddressAsText())?
+    }
 
-    readProxiedRemoteAddress(): String
-        target js sync """
-            return new TextDecoder().decode(self_.internalJsResponse_.getProxiedRemoteAddressAsText())
-        """
+    readProxiedRemoteAddress(): String {
+        Js->TextDecoder->()->decode(self.internalJsResponse->getProxiedRemoteAddressAsText())?
+    }
 
 }
 
 extend self: WebRequest[WebResponse] {
 
-    flush()
-        target js async """
-            if(!self_.internalResolveFlush_) {
-                self_.internalResolveFlush_ = () => {};
-                self_.internalJsResponse_.cork(() => {
-                    self_.internalJsResponse_.writeStatus(self_.internalResponseStatus_);
-                    self_.internalResponseHeaders_.forEach((value, key) =>
-                        self_.internalJsResponse_.writeHeader(key, value)
-                    );
-                    self_.internalJsResponse_.onWritable(() => {
-                        self_.internalResolveFlush_();
-                        return true;
-                    });
-                });
-            }
-            while(self_.internalResponseChunks_.array.length !== 0) {
-                await new Promise((resolve, reject) => {
-                    self_.internalJsResponse_.cork(() => {
-                        let backpressure = false;
-                        let i = 0;
-                        for(i = 0; i < self_.internalResponseChunks_.array.length && !backpressure; i++) {
-                            let chunk = self_.internalResponseChunks_.array[i];
-                            if(chunk && (chunk.byteLength || chunk.length)) {
-                                if(typeof chunk !== 'string') {
-                                    chunk = new Uint8Array(chunk.buffer, chunk.byteOffset, chunk.byteLength);
-                                } else if(self_.internalContentSize_ >= 0) {
-                                    chunk = new TextEncoder().encode(chunk);
-                                }
-                                if(self_.internalContentSize_ >= 0) {
-                                    const lastOffset = self_.internalJsResponse_.getWriteOffset();
-                                    const [ok, responded] = self_.internalJsResponse_.tryEnd(chunk, self_.internalContentSize_);
-                                    if(responded) self_.internalResponded_ = true;
-                                    if(!ok) {
-                                        const written = self_.internalJsResponse_.getWriteOffset() - lastOffset;
-                                        backpressure = true;
-                                        self_.internalResponseChunks_.array[i] = 
-                                            new Uint8Array(chunk.buffer, chunk.byteOffset + written, chunk.byteLength - written);
-                                        i -= 1;
-                                    }
-                                } else {
-                                    backpressure = !self_.internalJsResponse_.write(chunk);
-                                }
-                            }
-                        }
-                        if(i > 0) self_.internalResponseChunks_.array.splice(0, i);
-                        if(!backpressure) {
-                            resolve();
+    flush() {
+        if(self.internalResolveFlush.nullish()) {
+            self.internalResolveFlush = Js->{}
+            self.internalJsResponse->cork(Js->{
+                self.internalJsResponse->writeStatus(self.internalResponseStatus)
+                self.internalResponseHeaders.each {key, value =>
+                    self.internalJsResponse->writeHeader(key, value)
+                }
+                self.internalJsResponse->onWritable(Js->{
+                    self.internalResolveFlush.callValue0()
+                    True
+                })
+            })
+        }
+        while {!self.internalResponseChunks.isEmpty()} {
+            Js.awaitCancellablePromise {resolve, reject, onSettle =>
+                self.internalJsResponse->cork(Js->{
+                    mutable backpressure = False
+                    mutable i = 0
+                    while {i < self.internalResponseChunks.size() && !backpressure} {
+                        let rawChunk = self.internalResponseChunks.grab(i)
+                        let chunk = if(rawChunk.typeof() != "string") {
+                            Js->Uint8Array->(rawChunk!->buffer, rawChunk!->byteOffset, rawChunk!->byteLength)
                         } else {
-                            self_.internalResolveFlush_ = resolve;
+                            Js->TextEncoder->()->encode(rawChunk)
                         }
-                    });
-                });
+                        if(self.internalContentSize >= 0) {
+                            let lastOffset = self.internalJsResponse->getWriteOffset()?
+                            let pair = self.internalJsResponse->tryEnd(chunk, self.internalContentSize)
+                            let ok = pair.get(0)
+                            let responded = pair.get(1)
+                            if(!ok?) {
+                                let written = self.internalJsResponse->getWriteOffset() - lastOffset
+                                backpressure = True
+                                self.internalResponseChunks.set(i, Js->Uint8Array->(chunk->buffer, chunk->byteOffset + written, chunk->byteLength - written))
+                                i -= 1
+                            }
+                        } else {
+                            backpressure = !self.internalJsResponse->write(chunk)?
+                        }
+                        i += 1
+                    }
+                    if(i > 0) {
+                        self.internalResponseChunks.delete(0, i)
+                    }
+                    if(!backpressure) {
+                        resolve(Unit)
+                    } else {
+                        self.internalResolveFlush = Js->{resolve(Unit)}
+                    }
+                })
             }
-        """
+        }
+    }
 
     flushText(data: String) {
         self.writeText(data)
