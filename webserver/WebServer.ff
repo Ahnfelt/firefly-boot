@@ -674,32 +674,28 @@ internalChunksToChunk(chunks: Array[JsValue]): JsValue
         return result;
     """
 
-parseMultipartFields(data: Buffer, contentType: String): Option[Array[MultipartField]]
-    target js sync """
-        const parts = getParts(data_, contentType_);
-        return parts == null ? ff_core_Option.None() : ff_core_Option.Some(parts);
-    """
+parseMultipartFields(data: Buffer, contentType: String): Option[Array[MultipartField]] {
+    let uws = Js.import("uWebSockets.js")
+    let parts = uws->getParts(data, contentType)
+    if(!parts.nullish()) {parts?}
+}
 
 extend self: MultipartField {
     
-    data(): Buffer
-        target js sync """
-            return new DataView(self_.data);
-        """
+    data(): Buffer {
+        Js->DataView->(self!->data)?
+    }
 
-    name(): String
-        target js sync """
-            return self_.name;
-        """
+    name(): String {
+        self!->name?
+    }
 
-    type(): Option[String]
-        target js sync """
-            return self_.type == null ? ff_core_Option.None() : ff_core_Option.Some(self_.type);
-        """
+    type(): Option[String] {
+        if(!self!->type.nullish()) {self!->type?}
+    }
 
-    filename(): Option[String]
-        target js sync """
-            return self_.filename == null ? ff_core_Option.None() : ff_core_Option.Some(self_.filename);
-        """
+    filename(): Option[String] {
+        if(!self!->filename.nullish()) {self!->filename?}
+    }
 
 }
