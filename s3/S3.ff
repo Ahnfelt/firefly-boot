@@ -78,16 +78,14 @@ makeS3AuthorizationHeader(
     algorithm + " Credential=" + accessKeyId + "/" + credentialScope + ",SignedHeaders=" + signedHeaders + ",Signature=" + signature
 }
 
-toIsoString(instant: Instant): String
-    target js sync """
-        const d = new Date(instant_ * 1000);
-        return d.toISOString().replaceAll(/[-:]|[.].../g, "");
-    """
+toIsoString(instant: Instant): String {
+    let d = Js->Date->(instant.since1970.seconds * 1000)
+    d->toISOString()->replaceAll(Js->RegExp->("[-:]|[.]...", "g"), "")?
+}
 
-encodeURIComponent(text: String): String 
-    target js sync """
-        return encodeURIComponent(text_);
-    """
+encodeURIComponent(text: String): String {
+    Js->encodeURIComponent(text)?
+}
     
 encode(text: String): String {
     text.split('/').map {encodeURIComponent(_)}.join("/")
