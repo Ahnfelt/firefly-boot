@@ -173,12 +173,14 @@ return ff_compiler_ModuleCache.ModuleCache_cacheParsedModule(self_.cache_, self_
 const packageName_ = ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":");
 return ff_compiler_Compiler.Compiler_measure(self_, "Parse", packagePair_, moduleName_, (() => {
 const code_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.virtualFiles_, ff_core_Path.Path_absolute(path_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-for(const for_o = importedAt_; for_o.Some;) {
-const at_ = for_o.value_;
+{
+const if_o = importedAt_
+if(if_o.Some) {
+const at_ = if_o.value_;
 if((!ff_core_Path.Path_exists(path_, false, false, false))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Imported module not found: " + packageName_) + "/") + moduleName_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
-break
+}
 };
 return ff_core_Path.Path_readText(path_)
 }));
@@ -308,12 +310,14 @@ return (await ff_compiler_ModuleCache.ModuleCache_cacheParsedModule$(self_.cache
 const packageName_ = ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":");
 return (await ff_compiler_Compiler.Compiler_measure$(self_, "Parse", packagePair_, moduleName_, (async ($task) => {
 const code_ = (await ff_core_Option.Option_else$(ff_core_Map.Map_get(self_.virtualFiles_, (await ff_core_Path.Path_absolute$(path_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async ($task) => {
-for(const for_o = importedAt_; for_o.Some;) {
-const at_ = for_o.value_;
+{
+const if_o = importedAt_
+if(if_o.Some) {
+const at_ = if_o.value_;
 if((!(await ff_core_Path.Path_exists$(path_, false, false, false, $task)))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Imported module not found: " + packageName_) + "/") + moduleName_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
-break
+}
 };
 return (await ff_core_Path.Path_readText$(path_, $task))
 }), $task));

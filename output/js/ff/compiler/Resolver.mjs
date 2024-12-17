@@ -869,12 +869,14 @@ return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, ["Q$", ...sign
 : (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, _c.generics_, _c.constraints_, _c.parameters_, _c.returnType_, ff_compiler_Resolver.Resolver_freshUnificationVariable(self_, signature_.at_))
 }))(signature_));
-for(const for_o = ff_core_List.List_find(newSignature_.generics_, ((name_) => {
+{
+const if_o = ff_core_List.List_find(newSignature_.generics_, ((name_) => {
 return ff_core_Set.Set_contains(self_.typeParameters_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
-})); for_o.Some;) {
-const name_ = for_o.value_;
+}))
+if(if_o.Some) {
+const name_ = if_o.value_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(signature_.at_, (("Type parameter " + name_) + " is already in scope")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-break
+}
 };
 const self2_ = ff_compiler_Resolver.Resolver_withSignature(self_, newSignature_);
 {
@@ -1814,12 +1816,14 @@ return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, ["Q$", ...sign
 : (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, _c.generics_, _c.constraints_, _c.parameters_, _c.returnType_, ff_compiler_Resolver.Resolver_freshUnificationVariable(self_, signature_.at_))
 }))(signature_));
-for(const for_o = ff_core_List.List_find(newSignature_.generics_, ((name_) => {
+{
+const if_o = ff_core_List.List_find(newSignature_.generics_, ((name_) => {
 return ff_core_Set.Set_contains(self_.typeParameters_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
-})); for_o.Some;) {
-const name_ = for_o.value_;
+}))
+if(if_o.Some) {
+const name_ = if_o.value_;
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(signature_.at_, (("Type parameter " + name_) + " is already in scope")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-break
+}
 };
 const self2_ = ff_compiler_Resolver.Resolver_withSignature(self_, newSignature_);
 {

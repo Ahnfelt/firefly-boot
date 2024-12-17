@@ -119,10 +119,12 @@ export function internalRunChannelAction_(action_, mode_) {
 const actions_ = ff_core_List.List_toArray([]);
 function findActions_(action_) {
 actions_.array.push(action_);
-for(const for_o = action_.previous_; for_o.Some;) {
-const _w1 = for_o.value_;
+{
+const if_o = action_.previous_
+if(if_o.Some) {
+const _w1 = if_o.value_;
 findActions_(_w1)
-break
+}
 }
 }
 findActions_(action_);
@@ -183,15 +185,17 @@ const makePromise_ = ff_core_Option.Option_grab(mode_).first_;
 return makePromise_()
 } else {
 const body_ = ff_core_Js.awaitCancellablePromise_(((resolve_, reject_, onSettled_) => {
-for(const for_o = mode_; for_o.Some;) {
-const m_ = for_o.value_;
+{
+const if_o = mode_
+if(if_o.Some) {
+const m_ = if_o.value_;
 const timeout_ = setTimeout((() => {
 return resolve_(m_.first_)
 }), (ff_core_Option.Option_grab(m_.second_) * 1000.0));
 onSettled_(((_) => {
 clearTimeout(timeout_)
 }))
-break
+}
 };
 for(let for_a = actions_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const action_ = for_a[for_i];
@@ -242,10 +246,12 @@ ff_core_Task.Task_throwIfAborted($task);
 const actions_ = ff_core_List.List_toArray([]);
 function findActions_(action_) {
 actions_.array.push(action_);
-for(const for_o = action_.previous_; for_o.Some;) {
-const _w1 = for_o.value_;
+{
+const if_o = action_.previous_
+if(if_o.Some) {
+const _w1 = if_o.value_;
 findActions_(_w1)
-break
+}
 }
 }
 findActions_(action_);
@@ -306,15 +312,17 @@ const makePromise_ = ff_core_Option.Option_grab(mode_).first_;
 return (await (await makePromise_($task)))
 } else {
 const body_ = (await ff_core_Js.awaitCancellablePromise_$(((resolve_, reject_, onSettled_) => {
-for(const for_o = mode_; for_o.Some;) {
-const m_ = for_o.value_;
+{
+const if_o = mode_
+if(if_o.Some) {
+const m_ = if_o.value_;
 const timeout_ = setTimeout((() => {
 return resolve_(m_.first_)
 }), (ff_core_Option.Option_grab(m_.second_) * 1000.0));
 onSettled_(((_) => {
 clearTimeout(timeout_)
 }))
-break
+}
 };
 for(let for_a = actions_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const action_ = for_a[for_i];

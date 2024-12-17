@@ -819,10 +819,10 @@ extend self: JsEmitter {
                 MatchCase(_, [PVariable(_, name)], [], body)
             ]))]} =>
                 Some(
-                    "for(const for_o = " + self.emitTerm(list, async) + "; for_o.Some;) {\n" +
-                        name.map {"const " + escapeKeyword(_) + " = for_o.value_;\n"}.else {""} +
+                    "{\nconst if_o = " + self.emitTerm(list, async) + "\nif(if_o.Some) {\n" +
+                        name.map {"const " + escapeKeyword(_) + " = if_o.value_;\n"}.else {""} +
                         self.emitStatements(body, last, False, async) +
-                    "\nbreak\n}"
+                    "\n}\n}"
                 )
             | n {n == "ff:core/List.List_each" || n == "ff:core/List.List_eachWhile"} {arguments | [
                 ECall(_, StaticCall(r, _, _), _, _, [start, end], _)

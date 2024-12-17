@@ -256,10 +256,12 @@ return
 }
 
 export function LockCondition_wakeOne(self_) {
-for(const for_o = ff_core_Queue.Queue_pop(self_.queue_); for_o.Some;) {
-const resolve_ = for_o.value_;
+{
+const if_o = ff_core_Queue.Queue_pop(self_.queue_)
+if(if_o.Some) {
+const resolve_ = if_o.value_;
 resolve_((void 0))
-break
+}
 }
 }
 
@@ -328,10 +330,12 @@ return
 }
 
 export async function LockCondition_wakeOne$(self_, $task) {
-for(const for_o = ff_core_Queue.Queue_pop(self_.queue_); for_o.Some;) {
-const resolve_ = for_o.value_;
+{
+const if_o = ff_core_Queue.Queue_pop(self_.queue_)
+if(if_o.Some) {
+const resolve_ = if_o.value_;
 (await resolve_((void 0), $task))
-break
+}
 }
 }
 
