@@ -2352,11 +2352,11 @@ if(_guard1.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.lengt
 const list_ = _guard1[0];
 const name_ = _guard1[1].lambda_.cases_[0].patterns_[0].name_;
 const body_ = _guard1[1].lambda_.cases_[0].body_;
-return ff_core_Option.Some(((((("for(const for_o = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_)) + "; for_o.Some;) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
-return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_o.value_;\n")
+return ff_core_Option.Some(((((("{\nconst if_o = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_)) + "\nif(if_o.Some) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = if_o.value_;\n")
 })), (() => {
 return ""
-}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, false, async_)) + "\nbreak\n}"))
+}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, false, async_)) + "\n}\n}"))
 return
 }
 }
@@ -4849,11 +4849,11 @@ if(_guard1.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.lengt
 const list_ = _guard1[0];
 const name_ = _guard1[1].lambda_.cases_[0].patterns_[0].name_;
 const body_ = _guard1[1].lambda_.cases_[0].body_;
-return ff_core_Option.Some(((((("for(const for_o = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_)) + "; for_o.Some;) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
-return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = for_o.value_;\n")
+return ff_core_Option.Some(((((("{\nconst if_o = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_)) + "\nif(if_o.Some) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = if_o.value_;\n")
 })), (() => {
 return ""
-}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, false, async_)) + "\nbreak\n}"))
+}))) + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, false, async_)) + "\n}\n}"))
 return
 }
 }

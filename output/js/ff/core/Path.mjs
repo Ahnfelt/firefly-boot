@@ -186,10 +186,12 @@ return
 }
 return go_()
 }), (() => {
-for(const for_o = readable_; for_o.Some;) {
-const _w1 = for_o.value_;
+{
+const if_o = readable_
+if(if_o.Some) {
+const _w1 = if_o.value_;
 _w1.destroy()
-break
+}
 }
 }))
 }
@@ -300,10 +302,12 @@ return
 }
 return (await go_$($task))
 }), (async ($task) => {
-for(const for_o = readable_; for_o.Some;) {
-const _w1 = for_o.value_;
+{
+const if_o = readable_
+if(if_o.Some) {
+const _w1 = if_o.value_;
 _w1.destroy()
-break
+}
 }
 }))
 }

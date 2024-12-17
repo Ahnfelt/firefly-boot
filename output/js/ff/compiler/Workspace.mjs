@@ -138,9 +138,11 @@ const rules_ = ff_core_List.List_collect(lines_, ((line_) => {
 const columns_ = ff_core_List.List_filter(ff_core_String.String_split(ff_core_String.String_replace(line_, "\t", " "), 32), ((_w1) => {
 return (_w1.length !== 0)
 }));
-for(const for_o = defaultLocation_; for_o.Some;) {
+{
+const if_o = defaultLocation_
+if(if_o.Some) {
 ff_core_Core.panic_(("Unexpected rule after the * rule: " + line_))
-break
+}
 };
 if((columns_.length !== 2)) {
 ff_core_Core.panic_(("Could not parse workspace rule: " + line_))
@@ -203,9 +205,11 @@ const rules_ = ff_core_List.List_collect(lines_, ((line_) => {
 const columns_ = ff_core_List.List_filter(ff_core_String.String_split(ff_core_String.String_replace(line_, "\t", " "), 32), ((_w1) => {
 return (_w1.length !== 0)
 }));
-for(const for_o = defaultLocation_; for_o.Some;) {
+{
+const if_o = defaultLocation_
+if(if_o.Some) {
 ff_core_Core.panic_(("Unexpected rule after the * rule: " + line_))
-break
+}
 };
 if((columns_.length !== 2)) {
 ff_core_Core.panic_(("Could not parse workspace rule: " + line_))

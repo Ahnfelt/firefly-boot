@@ -171,10 +171,12 @@ fetchOptions_.headers[k_] = v_
 return
 }
 }));
-for(const for_o = payload_; for_o.Some;) {
-const v_ = for_o.value_;
+{
+const if_o = payload_
+if(if_o.Some) {
+const v_ = if_o.value_;
 fetchOptions_.body = v_
-break
+}
 };
 do {
 const _1 = options_.redirect_;
@@ -190,30 +192,40 @@ break
 fetchOptions_.redirect = "manual"
 }
 } while(false);
-for(const for_o = options_.referrer_; for_o.Some;) {
-const v_ = for_o.value_;
+{
+const if_o = options_.referrer_
+if(if_o.Some) {
+const v_ = if_o.value_;
 fetchOptions_.referrer = v_
-break
+}
 };
-for(const for_o = options_.integrity_; for_o.Some;) {
-const v_ = for_o.value_;
+{
+const if_o = options_.integrity_
+if(if_o.Some) {
+const v_ = if_o.value_;
 fetchOptions_.integrity = v_
-break
+}
 };
-for(const for_o = options_.mode_; for_o.Some;) {
-const v_ = for_o.value_;
+{
+const if_o = options_.mode_
+if(if_o.Some) {
+const v_ = if_o.value_;
 fetchOptions_.mode = v_
-break
+}
 };
-for(const for_o = options_.credentials_; for_o.Some;) {
-const v_ = for_o.value_;
+{
+const if_o = options_.credentials_
+if(if_o.Some) {
+const v_ = if_o.value_;
 fetchOptions_.credentials = v_
-break
+}
 };
-for(const for_o = options_.cache_; for_o.Some;) {
-const v_ = for_o.value_;
+{
+const if_o = options_.cache_
+if(if_o.Some) {
+const v_ = if_o.value_;
 fetchOptions_.cache = v_
-break
+}
 };
 fetchResponse_.response = self_.fetch(url_, fetchOptions_);
 const result_ = body_(fetchResponse_);
@@ -254,10 +266,12 @@ fetchOptions_.headers[k_] = v_
 return
 }
 }));
-for(const for_o = payload_; for_o.Some;) {
-const v_ = for_o.value_;
+{
+const if_o = payload_
+if(if_o.Some) {
+const v_ = if_o.value_;
 fetchOptions_.body = v_
-break
+}
 };
 do {
 const _1 = options_.redirect_;
@@ -273,30 +287,40 @@ break
 fetchOptions_.redirect = "manual"
 }
 } while(false);
-for(const for_o = options_.referrer_; for_o.Some;) {
-const v_ = for_o.value_;
+{
+const if_o = options_.referrer_
+if(if_o.Some) {
+const v_ = if_o.value_;
 fetchOptions_.referrer = v_
-break
+}
 };
-for(const for_o = options_.integrity_; for_o.Some;) {
-const v_ = for_o.value_;
+{
+const if_o = options_.integrity_
+if(if_o.Some) {
+const v_ = if_o.value_;
 fetchOptions_.integrity = v_
-break
+}
 };
-for(const for_o = options_.mode_; for_o.Some;) {
-const v_ = for_o.value_;
+{
+const if_o = options_.mode_
+if(if_o.Some) {
+const v_ = if_o.value_;
 fetchOptions_.mode = v_
-break
+}
 };
-for(const for_o = options_.credentials_; for_o.Some;) {
-const v_ = for_o.value_;
+{
+const if_o = options_.credentials_
+if(if_o.Some) {
+const v_ = if_o.value_;
 fetchOptions_.credentials = v_
-break
+}
 };
-for(const for_o = options_.cache_; for_o.Some;) {
-const v_ = for_o.value_;
+{
+const if_o = options_.cache_
+if(if_o.Some) {
+const v_ = if_o.value_;
 fetchOptions_.cache = v_
-break
+}
 };
 fetchResponse_.response = (await self_.fetch(url_, fetchOptions_));
 const result_ = (await (await body_(fetchResponse_, $task)));
