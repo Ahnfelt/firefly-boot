@@ -636,6 +636,38 @@ internalBufferChunk(data: Buffer): JsValue
         return data_;
     """
 
+internalChunksToChunkNew(chunks: Array[JsValue]): JsValue {
+    if(chunks.size() == 0) {Js.undefined()} else:
+    let firstChunk = chunks.grabFirst()
+    let firstIsString = firstChunk.typeof() == "string"
+    if(firstIsString && chunks.size() == 1) {firstChunk} else:
+    if(firstIsString && chunks.all {c => c.typeof() == "string"}) {
+        let strings: Array[String] = chunks!?
+        strings.join()!
+    } else:
+    
+    mutable totalLength = 0
+    chunks.eachWithIndex {i, chunk => 
+        if(chunk.typeof() == "string") {
+            let uint8Array = Js->TextEncoder->()->encode(chunk)
+            chunks!.set(i, uint8Array)
+            totalLength += uint8Array->byteLength?
+        } else {
+            totalLength += chunk->byteLength?
+        }
+    }
+    
+    let result = Js->Uint8Array->(totalLength)
+    mutable offset = 0
+    chunks.eachWithIndex {i, chunk => 
+        let uint8Array = Js->Uint8Array->(chunk->buffer, chunk->byteOffset, chunk->byteLength)
+        result->set(uint8Array, offset);
+        offset += chunk->byteLength?
+    }
+    result
+}
+
+
 internalChunksToChunk(chunks: Array[JsValue]): JsValue
     target js sync """
         const chunks = chunks_.array;

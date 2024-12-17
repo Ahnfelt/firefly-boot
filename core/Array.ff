@@ -132,10 +132,26 @@ extend self[T]: Array[T] {
         }        
     }
 
+    mapInPlace[S](body: T => S): Unit {
+        mutable i = 0
+        while {i < self.size()} {
+            self!->array.set(i, body(self!->array.get(i)?)!)
+            i += 1
+        }
+    }
+    
     each(body: T => Unit): Unit {
         mutable i = 0
         while {i < self.size()} {
             body(self!->array.get(i)?)
+            i += 1
+        }
+    }
+    
+    eachWithIndex(body: (Int, T) => Unit): Unit {
+        mutable i = 0
+        while {i < self.size()} {
+            body(i, self!->array.get(i)?)
             i += 1
         }
     }
