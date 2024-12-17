@@ -650,7 +650,7 @@ internalChunksToChunkNew(chunks: Array[JsValue]): JsValue {
     chunks.eachWithIndex {i, chunk => 
         if(chunk.typeof() == "string") {
             let uint8Array = Js->TextEncoder->()->encode(chunk)
-            chunks!.set(i, uint8Array)
+            chunks!->array.set(i, uint8Array)
             totalLength += uint8Array->byteLength?
         } else {
             totalLength += chunk->byteLength?
