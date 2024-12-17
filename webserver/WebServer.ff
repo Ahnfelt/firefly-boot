@@ -397,60 +397,52 @@ extend self: WebRequest[WebResponse] {
         self.readStream(1073741823).toBuffer()
     }
     
-    readStream(maxPendingBytes: Int = 65536): Stream[Buffer]
-        target js async """
-            const front = [];
-            const back = [];
-            let pendingBytes = 0
-            let closed = false;
-            let callResolve = null;
-            let callReject = null;
-            self_.internalJsResponse_.onData((chunk, isLast) => {
-                if(closed) return;
-                if(isLast) closed = true; 
-                else chunk = cunk.slice();
-                pendingBytes += chunk.byteLength;
-                back.push(new DataView(chunk));
-                if(pendingBytes >= maxPendingBytes_) self_.internalJsResponse_.pause();
-                if(callResolve) callResolve();
-            });
-            const abort = () => {
-                $task.controller_.signal.removeEventListener('abort', abort);
-                if(callReject) callReject();
+    readStream(maxPendingBytes: Int = 65536): Stream[Buffer] {
+        let queue = Queue.new[Buffer]()
+        mutable pendingBytes = 0
+        mutable closed = False
+        mutable callResolve = {_ => }
+        self.internalJsResponse->onData(Js->{chunk, isLast =>
+            if(closed) {} else:
+            mutable newChunk = chunk
+            if(isLast.truthy()) {
+                closed = True
+            } else {
+                newChunk = chunk->slice()
             }
-            $task.controller_.signal.addEventListener('abort', abort);
-            return ff_core_Stream.Stream(
-                async () => {
-                    while(true) {
-                        ff_core_Task.Task_throwIfAborted($task);
-                        if(front.length === 0) {
-                            while(back.length !== 0) front.push(back.pop());
-                        }
-                        if(front.length !== 0) {
-                            const chunk = front.pop();
-                            const paused = pendingBytes >= maxPendingBytes_;
-                            pendingBytes -= chunk.byteLength;
-                            if(!closed && paused && pendingBytes < maxPendingBytes_) self_.internalJsResponse_.unpause();
-                            return ff_core_Option.Some(chunk);
-                        } else if(closed) {
-                            return ff_core_Option.None();
-                        } else {
-                            await new Promise((resolve, reject) => {
-                                callResolve = resolve;
-                                callReject = reject;
-                            });
-                            callResolve = null;
-                            callReject = null;
-                        }
+            pendingBytes += newChunk->byteLength?
+            queue.push(Js->DataView->(newChunk)?)
+            if(pendingBytes >= maxPendingBytes) {self.internalJsResponse->pause()}
+            callResolve(Unit)
+        })
+        Stream {
+            mutable result = None
+            doWhile {
+                Js.throwIfCancelled()
+                if(!queue.isEmpty()) {
+                    let chunk = queue.pop().grab()
+                    let paused = pendingBytes >= maxPendingBytes
+                    pendingBytes -= chunk.size()
+                    if(!closed && paused && pendingBytes < maxPendingBytes) {
+                        self.internalJsResponse->unpause()
                     }
-                },
-                async () => {
-                    closed = true;
-                    ff_core_Task.Task_throwIfAborted($task);
-                    if(callResolve) callResolve();
+                    result = Some(chunk)
+                    False
+                } elseIf {closed} {
+                    False
+                } else {
+                    Js.awaitCancellablePromise {resolve, reject, onSettle =>
+                        callResolve = resolve
+                    }
+                    True
                 }
-            )
-        """
+            }
+            result
+        } {
+            closed = True
+            callResolve(Unit)
+        }
+    }
     
 }
 
