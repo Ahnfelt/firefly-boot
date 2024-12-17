@@ -448,10 +448,9 @@ extend self: WebRequest[WebResponse] {
 
 extend self[T]: WebRequest[T] {
     
-    needsWebSocket(): Bool
-        target js sync """
-            return self_.internalJsContext_ != null;
-        """
+    needsWebSocket(): Bool {
+        !self.internalJsContext.nullish()
+    }
     
 }
 
