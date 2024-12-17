@@ -636,7 +636,7 @@ internalBufferChunk(data: Buffer): JsValue
         return data_;
     """
 
-internalChunksToChunkNew(chunks: Array[JsValue]): JsValue {
+internalChunksToChunk(chunks: Array[JsValue]): JsValue {
     if(chunks.size() == 0) {Js.undefined()} else:
     let firstChunk = chunks.grabFirst()
     let firstIsString = firstChunk.typeof() == "string"
@@ -659,43 +659,13 @@ internalChunksToChunkNew(chunks: Array[JsValue]): JsValue {
     
     let result = Js->Uint8Array->(totalLength)
     mutable offset = 0
-    chunks.eachWithIndex {i, chunk => 
+    chunks.each {chunk => 
         let uint8Array = Js->Uint8Array->(chunk->buffer, chunk->byteOffset, chunk->byteLength)
         result->set(uint8Array, offset);
         offset += chunk->byteLength?
     }
     result
 }
-
-
-internalChunksToChunk(chunks: Array[JsValue]): JsValue
-    target js sync """
-        const chunks = chunks_.array;
-        if(chunks.length === 0) return;
-        const firstIsString = typeof chunks[0] === 'string';
-        if(firstIsString && chunks.length === 1) return chunks[0];
-        if(firstIsString && chunks.every(c => typeof c === 'string')) {
-            let result = chunks[0];
-            for(let i = 1; i < chunks.length; i++) {
-                result += chunks[i];
-            }
-            return result;
-        }
-        let totalLength = 0;
-        for(let i = 0; i < chunks.length; i++) {
-            if(typeof chunks[i] === 'string') chunks[i] = new TextEncoder().encode(chunks[i]);
-            totalLength += chunks[i].byteLength;
-        }
-        const result = new Uint8Array(totalLength);
-        let offset = 0;
-        for(let i = 0; i < chunks.length; i++) {
-            const chunk = chunks[i];
-            const uint8Array = new Uint8Array(chunk.buffer, chunk.byteOffset, chunk.byteLength);
-            result.set(uint8Array, offset);
-            offset += chunk.byteLength;
-        }
-        return result;
-    """
 
 parseMultipartFields(data: Buffer, contentType: String): Option[Array[MultipartField]] {
     let uws = Js.import("uWebSockets.js")
