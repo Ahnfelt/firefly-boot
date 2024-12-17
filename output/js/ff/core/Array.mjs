@@ -306,10 +306,26 @@ self_.array[(start_ + i_)] = list_[i_]
 }
 }
 
+export function Array_mapInPlace(self_, body_) {
+let i_ = 0;
+while((i_ < self_.array.length)) {
+self_.array[i_] = body_(self_.array[i_]);
+i_ += 1
+}
+}
+
 export function Array_each(self_, body_) {
 let i_ = 0;
 while((i_ < self_.array.length)) {
 body_(self_.array[i_]);
+i_ += 1
+}
+}
+
+export function Array_eachWithIndex(self_, body_) {
+let i_ = 0;
+while((i_ < self_.array.length)) {
+body_(i_, self_.array[i_]);
 i_ += 1
 }
 }
@@ -526,10 +542,26 @@ self_.array[(start_ + i_)] = list_[i_]
 }
 }
 
+export async function Array_mapInPlace$(self_, body_, $task) {
+let i_ = 0;
+while((i_ < self_.array.length)) {
+self_.array[i_] = (await body_(self_.array[i_], $task));
+i_ += 1
+}
+}
+
 export async function Array_each$(self_, body_, $task) {
 let i_ = 0;
 while((i_ < self_.array.length)) {
 (await body_(self_.array[i_], $task));
+i_ += 1
+}
+}
+
+export async function Array_eachWithIndex$(self_, body_, $task) {
+let i_ = 0;
+while((i_ < self_.array.length)) {
+(await body_(i_, self_.array[i_], $task));
 i_ += 1
 }
 }
