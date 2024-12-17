@@ -269,7 +269,7 @@ extend self[T]: WebRequest[T] {
     }
 
     writeText(data: String) {
-        self.internalResponseChunks.push(internalTextChunk(data))
+        self.internalResponseChunks.push(data!)
     }
 
     writeLine(data: String) {
@@ -277,7 +277,7 @@ extend self[T]: WebRequest[T] {
     }
 
     writeBuffer(data: Buffer) {
-        self.internalResponseChunks.push(internalBufferChunk(data))
+        self.internalResponseChunks.push(data!)
     }
     
     writeStream(data: Stream[Buffer]) {
@@ -620,20 +620,6 @@ internalSend[T](self: WebSocketConnection, send: () => Bool): JsValue
                 $task.controller_.signal.removeEventListener('abort', abort);
             }
         }
-    """
-
-internalArray[T](): Array[T] {
-    Array.new()
-}
-
-internalTextChunk(data: String): JsValue
-    target js sync """
-        return data_;
-    """
-    
-internalBufferChunk(data: Buffer): JsValue
-    target js sync """
-        return data_;
     """
 
 internalChunksToChunk(chunks: Array[JsValue]): JsValue {
