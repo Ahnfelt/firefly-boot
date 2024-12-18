@@ -533,25 +533,21 @@ extend self: WebSocketConnection {
         Stream {self.readBuffer()} {self.close()}
     }
     
-    writeBuffer(message: Buffer)
-        target node async """
-            await internalSend_$(self_, () => self_.webSocket.send(message_.buffer, true) !== 2, $task);
-        """
+    writeBuffer(message: Buffer) {
+        internalSend(self) {self.webSocket->send(message!->buffer, True) !== 2}
+    }
     
-    writeText(message: String)
-        target node async """
-            await internalSend_$(self_, () => self_.webSocket.send(message_, false) !== 2, $task);
-        """
+    writeText(message: String) {
+        internalSend(self) {self.webSocket->send(message!, True) !== 2}
+    }
     
-    publishBuffer(topic: String, message: Buffer)
-        target node async """
-            await internalSend_$(self_, () => self_.webSocket.publish(topic_, message_.buffer, true), $task);
-        """
+    publishBuffer(topic: String, message: Buffer) {
+        internalSend(self) {self.webSocket->publish(topic, message!->buffer, True).truthy()}
+    }
     
-    publishText(topic: String, message: String)
-        target node async """
-            await internalSend_$(self_, () => self_.webSocket.publish(topic_, message_, false), $task);
-        """
+    publishText(topic: String, message: String) {
+        internalSend(self) {self.webSocket->publish(topic, message!, True).truthy()}
+    }
 
     subscribe(topic: String)
         target node async """
