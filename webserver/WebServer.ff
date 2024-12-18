@@ -30,7 +30,11 @@ capability WebResponse {}
 
 data MultipartField {}
 
-capability WebSocketConnection {}
+capability WebSocketConnection(
+    messages: Queue[JsValue]
+    listeners: Queue[() => Unit]
+    mutable webSocket: JsValue
+)
 
 new(
     system: NodeSystem
@@ -396,7 +400,7 @@ extend self: WebRequest[WebResponse] {
     readBuffer(): Buffer {
         self.readStream(1073741823).toBuffer()
     }
-    
+   
     readStream(maxPendingBytes: Int = 65536): Stream[Buffer] {
         let queue = Queue.new[Buffer]()
         mutable pendingBytes = 0
@@ -456,6 +460,46 @@ extend self[T]: WebRequest[T] {
 
 extend self: WebRequest[WebResponse] {
     
+    openWebSocketNew(): WebSocketConnection {
+        let connection = WebSocketConnection(
+            messages = Queue.new()
+            listeners = Queue.new()
+            webSocket = Js.null()
+        )
+        Js.awaitCancellablePromise {resolve, reject, onSettle => 
+            let userData = Js->(
+                onOpen = Js->{webSocket =>
+                    connection.webSocket = webSocket
+                    resolve(connection)
+                }
+                onClose = Js->{
+                    connection.webSocket = Js.null()
+                    reject(Js->Error->("WebSocket closed")?)
+                    connection.listeners.each {_, listener => listener()}
+                    connection.listeners.clear()
+                }
+                onMessage = Js->{message, isBinary =>
+                    connection.messages.push(if(isBinary.truthy()) {
+                        Js->DataView->(message)
+                    } else {
+                        Js->TextDecoder->()->decode(message)
+                    })
+                    connection.listeners.each {_, listener => listener()}
+                    connection.listeners.clear()
+                }
+            )
+            self.internalJsResponse->cork(Js->{
+                self.internalJsResponse->upgrade(
+                    userData
+                    self.internalHeaders.grab("sec-websocket-key")
+                    self.internalHeaders.grab("sec-websocket-protocol")
+                    self.internalHeaders.grab("sec-websocket-extensions")
+                    self.internalJsContext
+                )
+            })
+        }
+    }
+
     openWebSocket(): WebSocketConnection
         target js async """
             ff_core_Task.Task_throwIfAborted($task);
