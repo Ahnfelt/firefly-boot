@@ -549,37 +549,32 @@ extend self: WebSocketConnection {
         internalSend(self) {self.webSocket->publish(topic, message!, True).truthy()}
     }
 
-    subscribe(topic: String)
-        target node async """
-            if(self_.webSocket == null) throw new Error("WebSocket is closed");
-            self_.webSocket.subscribe(topic_);
-        """
+    subscribe(topic: String) {
+        if(self.webSocket.nullish()) {Js.throw(Js->Error->("WebSocket is closed"))}
+        self.webSocket->subscribe(topic)
+    }
 
-    unsubscribe(topic: String)
-        target node async """
-            if(self_.webSocket == null) throw new Error("WebSocket is closed");
-            self_.webSocket.unsubscribe(topic_);
-        """
+    unsubscribe(topic: String) {
+        if(self.webSocket.nullish()) {Js.throw(Js->Error->("WebSocket is closed"))}
+        self.webSocket->unsubscribe(topic)
+    }
 
-    isSubscribedTo(topic: String): Bool
-        target node async """
-            if(self_.webSocket == null) throw new Error("WebSocket is closed");
-            return self_.webSocket.isSubscribed(topic_);
-        """
+    isSubscribedTo(topic: String): Bool {
+        if(self.webSocket.nullish()) {Js.throw(Js->Error->("WebSocket is closed"))}
+        self.webSocket->isSubscribed(topic)?
+    }
         
-    subscriptions(): Array[String]
-        target node async """
-            if(self_.webSocket == null) throw new Error("WebSocket is closed");
-            return self_.webSocket.getTopics();
-        """
+    subscriptions(): List[String] {
+        if(self.webSocket.nullish()) {Js.throw(Js->Error->("WebSocket is closed"))}
+        self.webSocket->getTopics()?
+    }
 
-    close(): Unit
-        target node async """
-            if(self_.webSocket != null) {
-                self_.webSocket.close();
-                self_.webSocket = null;
-            }
-        """
+    close(): Unit {
+        if(!self.webSocket.nullish()) {
+            self.webSocket->close()
+            self.webSocket = Js.null()
+        }
+    }
 
 }
 
