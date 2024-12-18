@@ -149,15 +149,13 @@ extend self: Inference {
                 constraints = [...definition.constraints, ...method.signature.constraints]
                 parameters = [selfParameter, ...method.signature.parameters]
             )
-            let body = method.body.mapFirefly {lambda =>
-                lambda.Lambda(
-                    cases = lambda.cases.map {case =>
-                        case.MatchCase(
-                            patterns = [PVariable(method.at, None), ...case.patterns]
-                        )
-                    }
-                )
-            }
+            let body = method.body.Lambda(
+                cases = method.body.cases.map {case =>
+                    case.MatchCase(
+                        patterns = [PVariable(method.at, None), ...case.patterns]
+                    )
+                }
+            )
             let function = method.DFunction(
                 signature = signature
                 body = body
@@ -198,7 +196,7 @@ extend self: Inference {
         let instances = constraintsToInstances(definition.signature.constraints)
         self.unification.withLocalInstances(instances) {
             definition.DFunction(
-                body = definition.body.mapFirefly {self.inferLambda(environment2, functionType, _)}
+                body = self.inferLambda(environment2, functionType, definition.body)
             )
         }
     }

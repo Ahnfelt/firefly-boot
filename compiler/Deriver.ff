@@ -75,18 +75,16 @@ extend self: Deriver {
         }
         let strings =
             [EString(at, "\"[\""), ...typeArgumentStrings.separate([EString(at, "\",\"")]), EString(at, "\"]\"")]
-        let body = FireflyTarget(
-            Lambda(at, noEffect, [MatchCase(
-                at = at
-                patterns = []
-                guards = []
-                body = self.makeSimpleCall(at, "ff:core/Any.internalAnyTag", [
-                    strings.foldLeft(EString(at, "\"" + selfTypeName + "\"")) {a, b =>
-                        self.makeSimpleCall(at, "+", [a, b])
-                    }
-                ])
-            )])
-        )
+        let body = Lambda(at, noEffect, [MatchCase(
+            at = at
+            patterns = []
+            guards = []
+            body = self.makeSimpleCall(at, "ff:core/Any.internalAnyTag", [
+                strings.foldLeft(EString(at, "\"" + selfTypeName + "\"")) {a, b =>
+                    self.makeSimpleCall(at, "+", [a, b])
+                }
+            ])
+        )])
         let method = DFunction(at, signature, body)
         DInstance(
             at = at
@@ -130,9 +128,8 @@ extend self: Deriver {
             returnType = TConstructor(at, "ff:core/String.String", [])
             effect = noEffect
         )
-        let body = FireflyTarget(
+        let body = 
             Lambda(at, noEffect, self.makeShowCases(modulePrefix, declaration, selfType))
-        )
         let showMethod = DFunction(at, signature, body)
         DInstance(
             at = at
@@ -209,9 +206,8 @@ extend self: Deriver {
             returnType = TConstructor(at, "ff:core/Ordering.Ordering", [])
             effect = noEffect
         )
-        let body = FireflyTarget(
+        let body =
             Lambda(at, noEffect, self.makeOrderingCases(modulePrefix, declaration, selfType))
-        )
         let compareMethod = DFunction(at, signature, body)
         DInstance(
             at = at
@@ -275,12 +271,12 @@ extend self: Deriver {
                     )
                 }
                 let differentVariant = MatchCase(
-                    at = at,
+                    at = at
                     patterns = [wildcardPattern, wildcardPattern]
                     guards = []
                     body =
-                        EFunctions(at,
-                            [DFunction(at, numberSignature, FireflyTarget(Lambda(at, noEffect, numberCases)))],
+                        EFunctions(at
+                            [DFunction(at, numberSignature, Lambda(at, noEffect, numberCases))]
                             self.makeSimpleCall(at, "ff:core/Ordering.compare", [
                                 self.makeSimpleCall(at, "number", [EVariable(at, "x")])
                                 self.makeSimpleCall(at, "number", [EVariable(at, "y")])
@@ -350,9 +346,8 @@ extend self: Deriver {
             returnType = TConstructor(at, "ff:core/Bool.Bool", [])
             effect = noEffect
         )
-        let body = FireflyTarget(
+        let body =
             Lambda(at, noEffect, self.makeEqualsCases(modulePrefix, declaration, selfType))
-        )
         let equalsMethod = DFunction(at, signature, body)
         DInstance(
             at = at
@@ -484,17 +479,14 @@ extend self: Deriver {
             effect = noEffect
         )
         let wildcardPattern = PVariable(at, None)
-        let serializeBody = FireflyTarget(
+        let serializeBody = 
             Lambda(at, noEffect, self.makeSerializeBody(modulePrefix, declaration, selfType))
-        )
-        let deserializeBody = FireflyTarget(
-            Lambda(at, noEffect, [MatchCase(
-                at = at
-                patterns = [wildcardPattern]
-                guards = []
-                body = self.makeDeserializeBody(modulePrefix, declaration, selfType)
-            )])
-        )
+        let deserializeBody = Lambda(at, noEffect, [MatchCase(
+            at = at
+            patterns = [wildcardPattern]
+            guards = []
+            body = self.makeDeserializeBody(modulePrefix, declaration, selfType)
+        )])
         DInstance(
             at = at
             generics = declaration.generics

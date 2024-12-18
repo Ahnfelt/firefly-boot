@@ -53,7 +53,7 @@ extend self: Dictionaries {
         let instances = constraintsToInstances(definition.signature.constraints)
         let self2 = self.Dictionaries(instances = self.instances.addAll(instances))
         definition.DFunction(
-            body = definition.body.mapFirefly {self2.processLambda(functions, _)}
+            body = self2.processLambda(functions, definition.body)
         )
     }
 

@@ -76,7 +76,7 @@ data DImport(
 data DFunction(
     at: Location
     signature: Signature
-    body: Target
+    body: Lambda
 )
 data DLet(
     at: Location
@@ -211,11 +211,6 @@ data Field(at: Location, name: String, value: Term)
 
 data Constraint(at: Location, name: String, generics: List[Type])
 
-data Target {
-    FireflyTarget(lambda: Lambda)
-    ForeignTarget(syncCode: Option[String], asyncCode: Option[String])
-}
-
 data Type(at: Location) {
     TConstructor(name: String, generics: List[Type])
     TVariable(index: Int)
@@ -288,13 +283,3 @@ extend self: Type {
         go(self)
     }
 }
-
-extend self: Target {
-    mapFirefly(body: Lambda => Lambda): Target {
-        self.{
-             | FireflyTarget(lambda) => FireflyTarget(body(lambda))
-             | ForeignTarget(_, _) => self
-        }
-    }
-}
-

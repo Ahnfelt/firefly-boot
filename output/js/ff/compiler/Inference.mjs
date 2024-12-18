@@ -299,12 +299,8 @@ const functions_ = ff_core_List.List_map(definition_.methods_, ((method_) => {
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, [...definition_.generics_, ...method_.signature_.generics_], [...definition_.constraints_, ...method_.signature_.constraints_], [selfParameter_, ...method_.signature_.parameters_], _c.returnType_, _c.effect_)
 }))(method_.signature_);
-const body_ = ff_compiler_Syntax.Target_mapFirefly(method_.body_, ((lambda_) => {
-{
-const _1 = lambda_;
-{
-const _c = _1;
-return ff_compiler_Syntax.Lambda(_c.at_, _c.effect_, ff_core_List.List_map(lambda_.cases_, ((case_) => {
+const body_ = (((_c) => {
+return ff_compiler_Syntax.Lambda(_c.at_, _c.effect_, ff_core_List.List_map(method_.body_.cases_, ((case_) => {
 {
 const _1 = case_;
 {
@@ -313,10 +309,7 @@ return ff_compiler_Syntax.MatchCase(_c.at_, [ff_compiler_Syntax.PVariable(method
 }
 }
 })))
-return
-}
-}
-}));
+}))(method_.body_);
 const function_ = (((_c) => {
 return ff_compiler_Syntax.DFunction(_c.at_, signature_, body_)
 }))(method_);
@@ -359,10 +352,7 @@ return ff_compiler_Unification.Unification_withLocalInstances(self_.unification_
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DFunction(_c.at_, _c.signature_, ff_compiler_Syntax.Target_mapFirefly(definition_.body_, ((_w1) => {
-return ff_compiler_Inference.Inference_inferLambda(self_, environment2_, functionType_, _w1)
-})))
-return
+return ff_compiler_Syntax.DFunction(_c.at_, _c.signature_, ff_compiler_Inference.Inference_inferLambda(self_, environment2_, functionType_, definition_.body_))
 }
 }
 }))
@@ -2207,12 +2197,8 @@ const functions_ = ff_core_List.List_map(definition_.methods_, ((method_) => {
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, [...definition_.generics_, ...method_.signature_.generics_], [...definition_.constraints_, ...method_.signature_.constraints_], [selfParameter_, ...method_.signature_.parameters_], _c.returnType_, _c.effect_)
 }))(method_.signature_);
-const body_ = ff_compiler_Syntax.Target_mapFirefly(method_.body_, ((lambda_) => {
-{
-const _1 = lambda_;
-{
-const _c = _1;
-return ff_compiler_Syntax.Lambda(_c.at_, _c.effect_, ff_core_List.List_map(lambda_.cases_, ((case_) => {
+const body_ = (((_c) => {
+return ff_compiler_Syntax.Lambda(_c.at_, _c.effect_, ff_core_List.List_map(method_.body_.cases_, ((case_) => {
 {
 const _1 = case_;
 {
@@ -2221,10 +2207,7 @@ return ff_compiler_Syntax.MatchCase(_c.at_, [ff_compiler_Syntax.PVariable(method
 }
 }
 })))
-return
-}
-}
-}));
+}))(method_.body_);
 const function_ = (((_c) => {
 return ff_compiler_Syntax.DFunction(_c.at_, signature_, body_)
 }))(method_);
@@ -2267,10 +2250,7 @@ return ff_compiler_Unification.Unification_withLocalInstances(self_.unification_
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DFunction(_c.at_, _c.signature_, ff_compiler_Syntax.Target_mapFirefly(definition_.body_, ((_w1) => {
-return ff_compiler_Inference.Inference_inferLambda(self_, environment2_, functionType_, _w1)
-})))
-return
+return ff_compiler_Syntax.DFunction(_c.at_, _c.signature_, ff_compiler_Inference.Inference_inferLambda(self_, environment2_, functionType_, definition_.body_))
 }
 }
 }))

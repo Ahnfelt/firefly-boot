@@ -212,12 +212,9 @@ extend self: Resolver {
             methods = definition.methods.map {self2.resolveSignature(_, True, False)}
             methodDefaults = definition.methodDefaults.map {| Pair(name, lambda) =>
                 let signature = definition.methods.find {_.name == name}.grab()
-                let function1 = DFunction(signature.at, signature, FireflyTarget(lambda))
+                let function1 = DFunction(signature.at, signature, lambda)
                 let function2 = self2.resolveFunctionDefinition(function1, True, False)
-                Pair(name, function2.body.{
-                    | FireflyTarget(lambda) => lambda
-                    | _ => throw(CompileError(signature.at, "Internal error: Expected method default to be a lambda"))
-                })
+                Pair(name, function2.body)
             }
         )
     }
@@ -490,10 +487,10 @@ extend self: Resolver {
     resolveFunctionDefinition(definition: DFunction, topLevel: Bool, isInstanceMethod: Bool): DFunction {
         let signature = self.resolveSignature(definition.signature, topLevel, isInstanceMethod)
         let self2 = self.withSignature(signature)
-        let body = definition.body.mapFirefly {lambda => lambda.Lambda(
+        let body = definition.body.Lambda(
             effect = signature.effect
-            cases = lambda.cases.map {self2.resolveCase(_, False)}
-        )}
+            cases = definition.body.cases.map {self2.resolveCase(_, False)}
+        )
         DFunction(definition.at, signature, body)
     }
 

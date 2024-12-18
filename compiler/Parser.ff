@@ -17,18 +17,6 @@ class Parser(
 
 data Poly(generics: List[String], constraints: List[Constraint])
 
-data ParsedTargets(
-    js: Option[Lambda]
-    jsSync: Option[String]
-    jsAsync: Option[String]
-    browser: Option[Lambda]
-    browserSync: Option[String]
-    browserAsync: Option[String]
-    node: Option[Lambda]
-    nodeSync: Option[String]
-    nodeAsync: Option[String]
-)
-
 new(
     packagePair: PackagePair 
     file: String
@@ -245,13 +233,11 @@ extend self: Parser {
     parseFunctionDefinition(member: Bool): DFunction {
         if(self.lspHook.trackSymbols) {self.lspHook.emit(ParseSymbolBegin)}
         let signature = self.parseSignature(member)
-        let body = if(self.current().rawIs("{")) {self.parseLambda(signature.parameters.size())}
-        let targets = self.parseTargets(signature.parameters.size())
-        let bestTarget = findBestTarget(self.targetIsNode, body, targets)
+        let body = self.parseLambda(signature.parameters.size())
         let result = DFunction(
             signature.at
             signature
-            bestTarget
+            body
         )
         if(self.lspHook.trackSymbols) {
             self.lspHook.emit(ParseSymbolEnd(
@@ -264,66 +250,6 @@ extend self: Parser {
             ))
         }
         result
-    }
-
-    parseTargets(parameterCount: Int): ParsedTargets {
-        function processCode(code: String): String {
-            let dropCount = if(code.startsWith("\"\"\"")) {3} else {1}
-            code.dropFirst(dropCount).dropLast(dropCount)
-                .replace("\\\"", "\"")
-                .replace("\\r", "\r")
-                .replace("\\n", "\n")
-                .replace("\\t", "\t")
-                .replace("\\\\", "\\")
-        }
-        mutable targets = ParsedTargets(None, None, None, None, None, None, None, None, None)
-        while {self.currentIsSeparator(LSemicolon) && self.ahead().is(LKeyword) && self.ahead().rawIs("target")} {
-            self.skip(LSeparator)
-            let at = self.skip(LKeyword).at()
-            let target = if(self.current().is(LLower)) {self.skip(LLower).raw()} else {self.skip(LKeyword).raw()}
-            if(self.current().rawIs("{")) {
-                let lambda = self.parseLambda(parameterCount)
-                target.{
-                    | "js" =>
-                        if(targets.jsSync != None) {throw(CompileError(at, "Duplicate target definition"))}
-                        targets = targets.ParsedTargets(js = Some(lambda))
-                    | "browser" =>
-                        if(targets.browserSync != None) {throw(CompileError(at, "Duplicate target definition"))}
-                        targets = targets.ParsedTargets(browser = Some(lambda))
-                    | "node" =>
-                        if(targets.nodeAsync != None) {throw(CompileError(at, "Duplicate target definition"))}
-                        targets = targets.ParsedTargets(node = Some(lambda))
-                    | _ =>
-                        throw(CompileError(at, "Unknown target"))
-                }
-            } else {
-                let mode = self.skip(LKeyword).raw()
-                let code = processCode(self.skip(LString).raw())
-                Pair(target, mode).{
-                    | Pair("js", "sync") =>
-                        if(targets.jsSync != None) {throw(CompileError(at, "Duplicate target definition"))}
-                        targets = targets.ParsedTargets(jsSync = Some(code))
-                    | Pair("js", "async") =>
-                        if(targets.jsAsync != None) {throw(CompileError(at, "Duplicate target definition"))}
-                        targets = targets.ParsedTargets(jsAsync = Some(code))
-                    | Pair("browser", "sync") =>
-                        if(targets.browserSync != None) {throw(CompileError(at, "Duplicate target definition"))}
-                        targets = targets.ParsedTargets(browserSync = Some(code))
-                    | Pair("browser", "async") =>
-                        if(targets.browserAsync != None) {throw(CompileError(at, "Duplicate target definition"))}
-                        targets = targets.ParsedTargets(browserAsync = Some(code))
-                    | Pair("node", "sync") =>
-                        if(targets.nodeSync != None) {throw(CompileError(at, "Duplicate target definition"))}
-                        targets = targets.ParsedTargets(nodeSync = Some(code))
-                    | Pair("node", "async") =>
-                        if(targets.nodeAsync != None) {throw(CompileError(at, "Duplicate target definition"))}
-                        targets = targets.ParsedTargets(nodeAsync = Some(code))
-                    | Pair(_, _) =>
-                        throw(CompileError(at, "Unknown target or mode"))
-                }
-            }
-        }
-        targets
     }
 
     parseSignature(member: Bool): Signature {
@@ -1092,7 +1018,7 @@ extend self: Parser {
             } else {
                 self.parseLambda(defaultParameterCount = signature.parameters.size())
             }
-            functions.push(DFunction(signature.at, signature, FireflyTarget(body)))
+            functions.push(DFunction(signature.at, signature, body))
             if(self.lspHook.trackSymbols) {
                 self.lspHook.emit(ParseSymbolEnd(
                     name = signature.name
@@ -1471,22 +1397,3 @@ binaryOperators = [
     ["*", "/", "%"]
     ["^"]
 ]
-
-findBestTarget(targetIsNode: Bool, body: Option[Lambda], targets: ParsedTargets): Target {
-    let foreignTarget = if(targetIsNode) {
-        let sync = targets.nodeSync.orElse {targets.jsSync}
-        let async = targets.nodeAsync.orElse {targets.jsAsync}
-        ForeignTarget(sync, async)
-    } else {
-        let sync = targets.browserSync.orElse {targets.jsSync}
-        let async = targets.browserAsync.orElse {targets.jsAsync}
-        ForeignTarget(sync, async)
-    }
-    foreignTarget.{
-        | ForeignTarget(None, None) {targetIsNode} =>
-            targets.node.orElse {targets.js.orElse {body}}.map {FireflyTarget(_)}.else {foreignTarget}
-        | ForeignTarget(None, None) {!targetIsNode} =>
-            targets.browser.orElse {targets.js.orElse {body}}.map {FireflyTarget(_)}.else {foreignTarget}
-        | _ => foreignTarget
-    }
-}

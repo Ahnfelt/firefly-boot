@@ -224,10 +224,7 @@ return ff_compiler_Dictionaries.Dictionaries(ff_core_Map.Map_addAll(self_.instan
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DFunction(_c.at_, _c.signature_, ff_compiler_Syntax.Target_mapFirefly(definition_.body_, ((_w1) => {
-return ff_compiler_Dictionaries.Dictionaries_processLambda(self2_, functions_, _w1)
-})))
-return
+return ff_compiler_Syntax.DFunction(_c.at_, _c.signature_, ff_compiler_Dictionaries.Dictionaries_processLambda(self2_, functions_, definition_.body_))
 }
 }
 }
@@ -625,10 +622,7 @@ return ff_compiler_Dictionaries.Dictionaries(ff_core_Map.Map_addAll(self_.instan
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DFunction(_c.at_, _c.signature_, ff_compiler_Syntax.Target_mapFirefly(definition_.body_, ((_w1) => {
-return ff_compiler_Dictionaries.Dictionaries_processLambda(self2_, functions_, _w1)
-})))
-return
+return ff_compiler_Syntax.DFunction(_c.at_, _c.signature_, ff_compiler_Dictionaries.Dictionaries_processLambda(self2_, functions_, definition_.body_))
 }
 }
 }

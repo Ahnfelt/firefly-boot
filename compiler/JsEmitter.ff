@@ -198,39 +198,29 @@ extend self: JsEmitter {
 
     emitFunctionDefinition(definition: DFunction, async: Bool, suffix: String = ""): String {
         let signature = self.emitSignature(definition.signature, async, suffix)
-        Pair(async, definition.body).{
-            | Pair(False, ForeignTarget(None, _)) =>
-                signature + " {\nthrow new Error('Function " + definition.signature.name + " is missing on this target in sync context.');\n}"
-            | Pair(True, ForeignTarget(_, None)) =>
-                signature + " {\nthrow new Error('Function " + definition.signature.name + " is missing on this target in async context.');\n}"
-            | Pair(False, ForeignTarget(Some(code), _)) =>
-                signature + " {\n" + self.jsImporter.process(definition.at, code) + "\n}"
-            | Pair(True, ForeignTarget(_, Some(code))) =>
-                signature + " {\n" + self.jsImporter.process(definition.at, code) + "\n}"
-            | Pair(_, FireflyTarget(lambda)) => lambda.{
-                | Lambda(_, effect, [matchCase]) {
-                    matchCase.patterns.all {
-                        | PVariable(_, None) => True
-                        | _ => False
-                    }
-                } =>
-                    let body = self.emitTailCall {self.emitStatements(matchCase.body, True, False, async)}
-                    signature + " {\n" + body + "\n}"
-                | Lambda(_, effect, cases) =>
-                    Patterns.convertAndCheck(self.otherModules, cases)
-                    let escapedArguments = definition.signature.parameters.map {_.name + "_a"}
-                    let shadowingWorkaround = definition.signature.parameters.map {p =>
-                        "const " + p.name + "_a = " + escapeKeyword(p.name) + ";"
+        definition.body.{
+            | Lambda(_, effect, [matchCase]) {
+                matchCase.patterns.all {
+                    | PVariable(_, None) => True
+                    | _ => False
+                }
+            } =>
+                let body = self.emitTailCall {self.emitStatements(matchCase.body, True, False, async)}
+                signature + " {\n" + body + "\n}"
+            | Lambda(_, effect, cases) =>
+                Patterns.convertAndCheck(self.otherModules, cases)
+                let escapedArguments = definition.signature.parameters.map {_.name + "_a"}
+                let shadowingWorkaround = definition.signature.parameters.map {p =>
+                    "const " + p.name + "_a = " + escapeKeyword(p.name) + ";"
+                }.join("\n")
+                let body = self.emitTailCall {
+                    let casesString = cases.pairs().map {| Pair(i, c) =>
+                        let lastCase = i == cases.size() - 1
+                        self.emitCase(escapedArguments, c, [], [], True, True, False, lastCase, async)
                     }.join("\n")
-                    let body = self.emitTailCall {
-                        let casesString = cases.pairs().map {| Pair(i, c) =>
-                            let lastCase = i == cases.size() - 1
-                            self.emitCase(escapedArguments, c, [], [], True, True, False, lastCase, async)
-                        }.join("\n")
-                        shadowingWorkaround + "\n" + casesString
-                    }
-                    signature + " {\n" + body + "\n}"
-            }
+                    shadowingWorkaround + "\n" + casesString
+                }
+                signature + " {\n" + body + "\n}"
         }
     }
 

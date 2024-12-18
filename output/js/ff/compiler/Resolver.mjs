@@ -411,18 +411,9 @@ const lambda_ = _1.second_;
 const signature_ = ff_core_Option.Option_grab(ff_core_List.List_find(definition_.methods_, ((_w1) => {
 return (_w1.name_ === name_)
 })));
-const function1_ = ff_compiler_Syntax.DFunction(signature_.at_, signature_, ff_compiler_Syntax.FireflyTarget(lambda_));
+const function1_ = ff_compiler_Syntax.DFunction(signature_.at_, signature_, lambda_);
 const function2_ = ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, function1_, true, false);
-return ff_core_Pair.Pair(name_, (((_1) => {
-if(_1.FireflyTarget) {
-const lambda_ = _1.lambda_;
-return lambda_
-}
-{
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(signature_.at_, "Internal error: Expected method default to be a lambda"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
-}))(function2_.body_))
-return
+return ff_core_Pair.Pair(name_, function2_.body_)
 }
 })), _c.methodGenerators_)
 return
@@ -843,18 +834,11 @@ return
 export function Resolver_resolveFunctionDefinition(self_, definition_, topLevel_, isInstanceMethod_) {
 const signature_ = ff_compiler_Resolver.Resolver_resolveSignature(self_, definition_.signature_, topLevel_, isInstanceMethod_);
 const self2_ = ff_compiler_Resolver.Resolver_withSignature(self_, signature_);
-const body_ = ff_compiler_Syntax.Target_mapFirefly(definition_.body_, ((lambda_) => {
-{
-const _1 = lambda_;
-{
-const _c = _1;
-return ff_compiler_Syntax.Lambda(_c.at_, signature_.effect_, ff_core_List.List_map(lambda_.cases_, ((_w1) => {
+const body_ = (((_c) => {
+return ff_compiler_Syntax.Lambda(_c.at_, signature_.effect_, ff_core_List.List_map(definition_.body_.cases_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveCase(self2_, _w1, false)
 })))
-return
-}
-}
-}));
+}))(definition_.body_);
 return ff_compiler_Syntax.DFunction(definition_.at_, signature_, body_)
 }
 
@@ -1358,18 +1342,9 @@ const lambda_ = _1.second_;
 const signature_ = ff_core_Option.Option_grab(ff_core_List.List_find(definition_.methods_, ((_w1) => {
 return (_w1.name_ === name_)
 })));
-const function1_ = ff_compiler_Syntax.DFunction(signature_.at_, signature_, ff_compiler_Syntax.FireflyTarget(lambda_));
+const function1_ = ff_compiler_Syntax.DFunction(signature_.at_, signature_, lambda_);
 const function2_ = ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, function1_, true, false);
-return ff_core_Pair.Pair(name_, (((_1) => {
-if(_1.FireflyTarget) {
-const lambda_ = _1.lambda_;
-return lambda_
-}
-{
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(signature_.at_, "Internal error: Expected method default to be a lambda"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
-}))(function2_.body_))
-return
+return ff_core_Pair.Pair(name_, function2_.body_)
 }
 })), _c.methodGenerators_)
 return
@@ -1790,18 +1765,11 @@ return
 export async function Resolver_resolveFunctionDefinition$(self_, definition_, topLevel_, isInstanceMethod_, $task) {
 const signature_ = ff_compiler_Resolver.Resolver_resolveSignature(self_, definition_.signature_, topLevel_, isInstanceMethod_);
 const self2_ = ff_compiler_Resolver.Resolver_withSignature(self_, signature_);
-const body_ = ff_compiler_Syntax.Target_mapFirefly(definition_.body_, ((lambda_) => {
-{
-const _1 = lambda_;
-{
-const _c = _1;
-return ff_compiler_Syntax.Lambda(_c.at_, signature_.effect_, ff_core_List.List_map(lambda_.cases_, ((_w1) => {
+const body_ = (((_c) => {
+return ff_compiler_Syntax.Lambda(_c.at_, signature_.effect_, ff_core_List.List_map(definition_.body_.cases_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveCase(self2_, _w1, false)
 })))
-return
-}
-}
-}));
+}))(definition_.body_);
 return ff_compiler_Syntax.DFunction(definition_.at_, signature_, body_)
 }
 

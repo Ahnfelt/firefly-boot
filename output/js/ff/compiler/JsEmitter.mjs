@@ -814,25 +814,7 @@ return (((((("export function " + name_) + "(") + ff_core_List.List_join(diction
 export function JsEmitter_emitFunctionDefinition(self_, definition_, async_, suffix_ = "") {
 const signature_ = ff_compiler_JsEmitter.JsEmitter_emitSignature(self_, definition_.signature_, async_, suffix_);
 {
-const _1 = ff_core_Pair.Pair(async_, definition_.body_);
-if(!_1.first_ && _1.second_.ForeignTarget && _1.second_.syncCode_.None) {
-return (((signature_ + " {\nthrow new Error('Function ") + definition_.signature_.name_) + " is missing on this target in sync context.');\n}")
-}
-if(_1.first_ && _1.second_.ForeignTarget && _1.second_.asyncCode_.None) {
-return (((signature_ + " {\nthrow new Error('Function ") + definition_.signature_.name_) + " is missing on this target in async context.');\n}")
-}
-if(!_1.first_ && _1.second_.ForeignTarget && _1.second_.syncCode_.Some) {
-const code_ = _1.second_.syncCode_.value_;
-return (((signature_ + " {\n") + ff_compiler_JsImporter.JsImporter_process(self_.jsImporter_, definition_.at_, code_)) + "\n}")
-}
-if(_1.first_ && _1.second_.ForeignTarget && _1.second_.asyncCode_.Some) {
-const code_ = _1.second_.asyncCode_.value_;
-return (((signature_ + " {\n") + ff_compiler_JsImporter.JsImporter_process(self_.jsImporter_, definition_.at_, code_)) + "\n}")
-}
-{
-const lambda_ = _1.second_.lambda_;
-{
-const _1 = lambda_;
+const _1 = definition_.body_;
 if(_1.cases_.length === 1) {
 const effect_ = _1.effect_;
 const matchCase_ = _1.cases_[0];
@@ -872,9 +854,6 @@ return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, escapedArguments_, c_, []
 return ((shadowingWorkaround_ + "\n") + casesString_)
 }));
 return (((signature_ + " {\n") + body_) + "\n}")
-}
-}
-return
 }
 }
 }
@@ -3311,25 +3290,7 @@ return (((((("export function " + name_) + "(") + ff_core_List.List_join(diction
 export async function JsEmitter_emitFunctionDefinition$(self_, definition_, async_, suffix_ = "", $task) {
 const signature_ = ff_compiler_JsEmitter.JsEmitter_emitSignature(self_, definition_.signature_, async_, suffix_);
 {
-const _1 = ff_core_Pair.Pair(async_, definition_.body_);
-if(!_1.first_ && _1.second_.ForeignTarget && _1.second_.syncCode_.None) {
-return (((signature_ + " {\nthrow new Error('Function ") + definition_.signature_.name_) + " is missing on this target in sync context.');\n}")
-}
-if(_1.first_ && _1.second_.ForeignTarget && _1.second_.asyncCode_.None) {
-return (((signature_ + " {\nthrow new Error('Function ") + definition_.signature_.name_) + " is missing on this target in async context.');\n}")
-}
-if(!_1.first_ && _1.second_.ForeignTarget && _1.second_.syncCode_.Some) {
-const code_ = _1.second_.syncCode_.value_;
-return (((signature_ + " {\n") + ff_compiler_JsImporter.JsImporter_process(self_.jsImporter_, definition_.at_, code_)) + "\n}")
-}
-if(_1.first_ && _1.second_.ForeignTarget && _1.second_.asyncCode_.Some) {
-const code_ = _1.second_.asyncCode_.value_;
-return (((signature_ + " {\n") + ff_compiler_JsImporter.JsImporter_process(self_.jsImporter_, definition_.at_, code_)) + "\n}")
-}
-{
-const lambda_ = _1.second_.lambda_;
-{
-const _1 = lambda_;
+const _1 = definition_.body_;
 if(_1.cases_.length === 1) {
 const effect_ = _1.effect_;
 const matchCase_ = _1.cases_[0];
@@ -3369,9 +3330,6 @@ return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, escapedArguments_, c_, []
 return ((shadowingWorkaround_ + "\n") + casesString_)
 }));
 return (((signature_ + " {\n") + body_) + "\n}")
-}
-}
-return
 }
 }
 }
