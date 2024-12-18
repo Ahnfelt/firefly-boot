@@ -48,62 +48,125 @@ In addition, the `!` and `?` postfix operators can be used as shorthand for `Js.
 This module provides access to unsafe JavaScript features:
 
 ```firefly
-// Obtains the JsSystem without a capability
+// Returns a JsSystem.
 jsSystem(): JsSystem
 
-// Imports a JavaScript module (the import gets hoisted to a top level import)
+// A static JS import that works anywhere but the browser target.
 import(module: String): JsValue
 
-// Awaits an async function (only works in async context)
-await[T](body: () => T): T
+// A static JS import that works in the browser target.
+browserImport(module: String): JsValue
 
-// Throws TaskAbortedException if the current task has been aborted
-throwIfCancelled(): Unit
+// A dynamic JS import.
+dynamicImport(module: String): JsValue
 
-// Returns true if the current task has been aborted
-cancelled(): Bool
-
-// Returns true if the current target is async
+// Creates an async JS function. Goes up to 9.
+async0[R](body: () => JsValue): JsValue
+    
+// Returns True if the current target is async
 inAsync(): Bool
     
-// Returns true if the current target is browser
+// Returns True if the current target is browser
 inBrowser(): Bool
     
-// Returns true if the current target is node
+// Returns True if the current target is node
 inNode(): Bool
     
-// Returns true if the current target is build
+// Returns True if the current target is build
 inBuild(): Bool
 
-// Casts any Firefly value to a JavaScript value without conversion
+// Returns the current task.
+currentTask(): Task
+
+// Throws if the current task is cancelled.
+throwIfCancelled(): Unit
+
+// Returns True if the current task is cancelled.
+cancelled(): Bool
+
+// Returns the AbortController of the current task.
+controller(): JsValue {
+    currentTask().controller
+}
+
+// Sets the AbortController of the current task.
+setController(controller: JsValue)
+    
+// Gives access to the AbortSignal of the current task and resets it if needed after use.
+withSignal[T](body: JsValue => T): T
+
+// Awaits a JS promise.
+await(promise: JsValue): JsValue
+
+// Creates a promise and awaits it, while handling cancellation and cleanup. Used like:
+// awaitCancellablePromise {resolve, reject, onSettle => ... onSettle {fulfilled => cleanup()} ...}
+awaitCancellablePromise[T](body: (T => Unit, Error => Unit, (Bool => Unit) => Unit) => Unit): T
+
+// Casts a Firefly value to a JS value.
 value[T](value: T): JsValue
 
-// Casts any JavaScript value to a Firefly value without conversion
+// Casts a JS value to a Firefly value.
 fromValue[T](value: JsValue): T
+
+// Throw a JS value (preferably a JS Error).
+throw[T](value: JsValue): T
+
+// JS operators like !
+unaryOperator[T1: IsJsValue](operator: String, a1: T1): JsValue
+
+// JS operators like + - *
+binaryOperator[T1: IsJsValue, T2: IsJsValue](operator: String, a1: T1, a2: T2): JsValue
+
+// JS operators like || && ??
+shortCircuitingOperator[T1: IsJsValue, T2: IsJsValue](operator: String, a1: T1, a2: () => T2): JsValue
+
+// Access a raw JS identifier.
+rawIdentifier(operator: String): JsValue
+
+// Returns the JS globalThis object.
+globalThis(): JsValue
+
+// Gets the value of a JS variable.
+get(key: String): JsValue
+
+// Sets the value of a JS variable.
+set[V: IsJsValue](key: String, value: V): Unit
+
+// Increments the value of a JS variable.
+increment[V: IsJsValue](key: String, value: V): Unit
+
+// Decrements the value of a JS variable.
+decrement[V: IsJsValue](key: String, value: V): Unit
+
+// Calls a JS variable with zero arguments. Goes up to 9.
+call0(name: String): JsValue
+
+// Returns JS null
+null(): JsValue
+
+// Returns JS undefined
+undefined(): JsValue
+
+// Returns JS undefined if None, and casts the value otherwise
+orUndefined[T: IsJsValue](value: Option[T]): JsValue
+
+// Creates an empty JS object
+object(): JsValue
+
+// Same as Js.object()
+new0(): JsValue
+
+// Cast a List to a JsValue
+array(values: List[JsValue]): JsValue
+
+// Cast a Json value to a JsValue
+json(value: Json): JsValue
+
+// A JS function of 0 parameters. Goes up to 9.
+function0[R](body: () => R): JsValue
 ```
 
 In the future, it may be possible to provide a whitelist of dependencies that are allowed to use this module.
-
-
-# Internal FFI
-
-The `target` keyword allows writing almost raw JavaScript.
-
-```firefly
-alertHi(name: String)
-    target browser sync """
-        alert("Hi " + name_ + "!");
-    """
-```
-
-Multiple target keywords are allowed per function or method. 
-The target type is `js` or the more specific types `browser` or `node`, and then a mode that's either `sync` for when called synchronously, or `async` for when called asynchronously.
-
-Argument names are avaliable with a `_` suffix in the JavaScript code block.
-
-JavaScript module imports can be done in the beginning of a JavaScript code block with the specfic syntax `import * as foo from 'bar'`. The import statement will be hoisted to a top level import.
-
-In the future, the `target` keyword and its functionality may be removed from the language.
 
 
 # Emitted JavaScript
