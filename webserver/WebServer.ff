@@ -587,35 +587,16 @@ extend self: WebSocketConnection {
 
 }
 
-internalSend[T](self: WebSocketConnection, send: () => Bool): JsValue
-    target node async """
-        let abort = null;
-        try {
-            await new Promise((resolve, reject) => {
-                if(self_.webSocket == null) new Error("WebSocket is closed");
-                else self_.webSocket.cork(() => {
-                    if($task !== self_.task) {
-                        abort = () => {
-                            self_.listeners = self_.listeners.filter(l => l != resolve);
-                            reject();
-                        };
-                        $task.controller_.signal.addEventListener('abort', abort);
-                    }
-                    if(self_.webSocket == null) {
-                        reject(new Error("WebSocket is closed"));
-                    } else if(!send_()) {
-                        reject(new Error("Dropped message due to backpressure"));
-                    } else {
-                        resolve();
-                    }
-                })
-            });
-        } finally {
-            if($task !== self_.task) {
-                $task.controller_.signal.removeEventListener('abort', abort);
-            }
-        }
-    """
+internalSend[T](self: WebSocketConnection, send: () => Bool) {
+    Js.awaitCancellablePromise {resolve, reject, onSettle =>
+        if(self.webSocket.nullish()) {reject(Js->Error->("WebSocket is closed")?)} else:
+        self.webSocket->cork(Js->{
+            if(self.webSocket.nullish()) {reject(Js->Error->("WebSocket is closed")?)} else:
+            if(!send()) {reject(Js->Error->("Dropped message due to backpressure")?)} else:
+            resolve(Unit)
+        })
+    }
+}
 
 internalChunksToChunk(chunks: Array[JsValue]): JsValue {
     if(chunks.size() == 0) {Js.undefined()} else:
