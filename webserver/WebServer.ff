@@ -32,7 +32,7 @@ data MultipartField {}
 
 capability WebSocketConnection(
     messages: Queue[JsValue]
-    listeners: Queue[() => Unit]
+    listeners: Queue[Unit => Unit]
     mutable webSocket: JsValue
 )
 
@@ -460,7 +460,7 @@ extend self[T]: WebRequest[T] {
 
 extend self: WebRequest[WebResponse] {
     
-    openWebSocketNew(): WebSocketConnection {
+    openWebSocket(): WebSocketConnection {
         let connection = WebSocketConnection(
             messages = Queue.new()
             listeners = Queue.new()
@@ -475,7 +475,7 @@ extend self: WebRequest[WebResponse] {
                 onClose = Js->{
                     connection.webSocket = Js.null()
                     reject(Js->Error->("WebSocket closed")?)
-                    connection.listeners.each {_, listener => listener()}
+                    connection.listeners.each {_, listener => listener(Unit)}
                     connection.listeners.clear()
                 }
                 onMessage = Js->{message, isBinary =>
@@ -484,7 +484,7 @@ extend self: WebRequest[WebResponse] {
                     } else {
                         Js->TextDecoder->()->decode(message)
                     })
-                    connection.listeners.each {_, listener => listener()}
+                    connection.listeners.each {_, listener => listener(Unit)}
                     connection.listeners.clear()
                 }
             )
@@ -500,40 +500,6 @@ extend self: WebRequest[WebResponse] {
         }
     }
 
-    openWebSocket(): WebSocketConnection
-        target js async """
-            ff_core_Task.Task_throwIfAborted($task);
-            const userData = {};
-            const wrapper = {front: [], back: [], listeners: [], task: $task};
-            const promise = new Promise((resolve, reject) => {
-                const abort = () => {wrapper.webSocket = null; reject()};
-                userData.onOpen = ws => {wrapper.webSocket = ws; resolve(wrapper)};
-                userData.onClose = () => {
-                    $task.controller_.signal.removeEventListener('abort', abort);
-                    abort();
-                    for(let i = 0; i < wrapper.listeners.length; i++) wrapper.listeners[i]();
-                    wrapper.listeners.length = 0;
-                };
-                userData.onMessage = (message, isBinary) => {
-                    wrapper.back.push(isBinary ? new DataView(message) : new TextDecoder().decode(message));
-                    for(let i = 0; i < wrapper.listeners.length; i++) wrapper.listeners[i]();
-                    wrapper.listeners.length = 0;
-                };
-                $task.controller_.signal.addEventListener('abort', abort);
-            });
-            self_.internalJsResponse_.cork(() => {
-                ff_core_Task.Task_throwIfAborted($task);
-                self_.internalJsResponse_.upgrade(
-                    userData, 
-                    self_.internalHeaders_.get('sec-websocket-key'),
-                    self_.internalHeaders_.get('sec-websocket-protocol'),
-                    self_.internalHeaders_.get('sec-websocket-extensions'),
-                    self_.internalJsContext_
-                )
-            });
-            return await promise;
-        """
-
 }
 
 extend self: WebSocketConnection {
@@ -546,38 +512,23 @@ extend self: WebSocketConnection {
         self.readAny {_.toBuffer()} {_}
     }
     
-    readAny[T](fromText: String => T, fromBuffer: Buffer => T): Option[T]
-        target node async """
-            ff_core_Task.Task_throwIfAborted($task);
-            while(self_.front.length === 0) {
-                while(self_.back.length !== 0) {
-                    self_.front.push(self_.back.pop());
-                }
-                if(self_.front.length !== 0) break;
-                if(self_.webSocket == null) return ff_core_Option.None();
-                let abort = null;
-                try {
-                    await new Promise((resolve, reject) => {
-                        self_.listeners.push(resolve);
-                        if($task !== self_.task) {
-                            abort = () => {
-                                self_.listeners = self_.listeners.filter(l => l != resolve);
-                                reject();
-                            };
-                            $task.controller_.signal.addEventListener('abort', abort);
-                        }
-                    });
-                } finally {
-                    if($task !== self_.task) {
-                        $task.controller_.signal.removeEventListener('abort', abort);
-                    }
-                }
+    readAny[T](fromText: String => T, fromBuffer: Buffer => T): Option[T] {
+        Js.throwIfCancelled()
+        while {self.messages.isEmpty() && !self.webSocket.nullish()} {
+            Js.awaitCancellablePromise {resolve, reject, onSettle =>
+                let key = self.listeners.push(resolve)
+                onSettle {_ => self.listeners.remove(key)}
             }
-            const data = self_.front.pop();
-            if(typeof data === 'string') return ff_core_Option.Some(await fromText_(data));
-            return ff_core_Option.Some(await fromBuffer_(data));
-        """
-        
+        }
+        if(self.webSocket.nullish()) {None} else:
+        let data = self.messages.pop().grab()
+        if(data.typeof() == "string") {
+            Some(fromText(data?))
+        } else {
+            Some(fromBuffer(data?))
+        }
+    }
+
     readStream(): Stream[Buffer] {
         Stream {self.readBuffer()} {self.close()}
     }
