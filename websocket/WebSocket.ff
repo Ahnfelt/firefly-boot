@@ -10,14 +10,14 @@ open(browserSystem: BrowserSystem, url: String): WebSocket {
         !Js->location->href.isNullOrUndefined() && Js->location->href->startsWith("http")?
     ) {
         let href: String = Js->URL->(url, Js->location->href)->href?
-        Js->WebSocket-> ("ws" + href.dropFirst("http".size()))
+        // Using globalThis here to avoid colliding with the Firefly WebSocket data constructor
+        Js.globalThis()->WebSocket->("ws" + href.dropFirst("http".size()))
     } else {
-        Js->WebSocket->(url)
+        Js.globalThis()->WebSocket->(url)
     }
     socket->binaryType = "arraybuffer"
     let result = WebSocket(socket, Queue.new(), Queue.new())
     Js.awaitCancellablePromise {resolve, reject, onSettle =>
-        onSettle {_ => socket->close()}
         socket->onopen = Js->{resolve(result)}
         socket->onclose = Js->{reject(_?)}
     }
