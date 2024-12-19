@@ -491,9 +491,9 @@ extend self: WebRequest[WebResponse] {
             self.internalJsResponse->cork(Js->{
                 self.internalJsResponse->upgrade(
                     userData
-                    self.internalHeaders.grab("sec-websocket-key")
-                    self.internalHeaders.grab("sec-websocket-protocol")
-                    self.internalHeaders.grab("sec-websocket-extensions")
+                    Js.orUndefined(self.internalHeaders.get("sec-websocket-key"))
+                    Js.orUndefined(self.internalHeaders.get("sec-websocket-protocol"))
+                    Js.orUndefined(self.internalHeaders.get("sec-websocket-extensions"))
                     self.internalJsContext
                 )
             })
