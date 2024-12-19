@@ -36,6 +36,7 @@ release(
     releaseFireflyPackage(system, accessKeyId, secretAccessKey, "rpc")
     releaseFireflyPackage(system, accessKeyId, secretAccessKey, "s3")
     releaseFireflyPackage(system, accessKeyId, secretAccessKey, "webserver")
+    releaseFireflyPackage(system, accessKeyId, secretAccessKey, "websocket")
     runSuccessful(system, "git", ["commit", "-a", "-m", "Autorelease_v" + version], system.path(".."))
     runSuccessful(system, "git", ["push"], system.path(".."))
     runSuccessful(system, "npm", ["install", "-g", "firefly-compiler"], system.path(".."))
