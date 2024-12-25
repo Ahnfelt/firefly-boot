@@ -167,9 +167,12 @@ extend self: Compiler {
             }
             try {
                 self.parse(newPackagePair, newModuleName, Some(import.at))
-            } catch {| CompileError(_, _) @ e, error =>
+            } tryCatch {| CompileError(_, _) @ e, error =>
                 let newError = CompileError(import.at, "Parse error in imported module: " + import.package.groupName() + "/" + newModuleName)
                 throw(CompileErrors([e, newError]))
+            } catch {| CompileErrors(compileErrors), error =>
+                let newError = CompileError(import.at, "Parse errors in imported module: " + import.package.groupName() + "/" + newModuleName)
+                throw(CompileErrors([...compileErrors, newError]))
             }
         }
     }

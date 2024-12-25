@@ -933,7 +933,7 @@ const guards_ = ff_core_Array.new_();
 while(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")) {
 guards_.array.push(ff_compiler_Parser.Parser_parseCaseGuard(self_))
 };
-if(((!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) || (!ff_compiler_Token.Token_is2(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LPipe(), ff_compiler_Token.LBracketRight())))) {
+if(((!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) || ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick()))) {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LArrowThick())
 };
 const body_ = ff_compiler_Parser.Parser_parseStatements(self_);
@@ -1201,7 +1201,11 @@ return ff_compiler_Parser.Parser_parseBinary(self_, 0)
 
 export function Parser_parseBinary(self_, level_) {
 if((level_ >= ff_compiler_Parser.binaryOperators_.length)) {
+if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
+return ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "")
+} else {
 return ff_compiler_Parser.Parser_parseUnary(self_)
+}
 } else {
 const operators_ = (ff_compiler_Parser.binaryOperators_[level_] ?? ff_core_List.List_grab(ff_compiler_Parser.binaryOperators_, level_));
 let result_ = ff_compiler_Parser.Parser_parseBinary(self_, (level_ + 1));
@@ -2433,7 +2437,7 @@ const guards_ = ff_core_Array.new_();
 while(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")) {
 guards_.array.push(ff_compiler_Parser.Parser_parseCaseGuard(self_))
 };
-if(((!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) || (!ff_compiler_Token.Token_is2(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LPipe(), ff_compiler_Token.LBracketRight())))) {
+if(((!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) || ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick()))) {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LArrowThick())
 };
 const body_ = ff_compiler_Parser.Parser_parseStatements(self_);
@@ -2701,7 +2705,11 @@ return ff_compiler_Parser.Parser_parseBinary(self_, 0)
 
 export async function Parser_parseBinary$(self_, level_, $task) {
 if((level_ >= ff_compiler_Parser.binaryOperators_.length)) {
+if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
+return ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "")
+} else {
 return ff_compiler_Parser.Parser_parseUnary(self_)
+}
 } else {
 const operators_ = (ff_compiler_Parser.binaryOperators_[level_] ?? ff_core_List.List_grab(ff_compiler_Parser.binaryOperators_, level_));
 let result_ = ff_compiler_Parser.Parser_parseBinary(self_, (level_ + 1));

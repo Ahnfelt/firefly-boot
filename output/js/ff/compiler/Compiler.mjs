@@ -209,19 +209,23 @@ return (_w1 + "/")
 if((!ff_core_Map.Map_contains(self_.packagePaths_, newPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("Missing dependency declaration for: " + ff_compiler_Syntax.PackagePair_groupName(newPackagePair_, ":"))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
-try {
+return ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch(ff_core_Core.try_((() => {
 return ff_compiler_Compiler.Compiler_parse(self_, newPackagePair_, newModuleName_, ff_core_Option.Some(import_.at_))
-} catch(_error) {
-if(!_error.ffException) throw _error
-const _exception = ff_core_Any.fromAny_(_error.ffException, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)
-if(!_exception.Some) throw _error
+})), ((_1, _2) => {
 {
-const e_ = _exception.value_;
-const error_ = _error;
+const e_ = _1;
+const error_ = _2;
 const newError_ = ff_compiler_Syntax.CompileError(import_.at_, ((("Parse error in imported module: " + ff_compiler_Syntax.PackagePair_groupName(import_.package_, ":")) + "/") + newModuleName_));
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileErrors([e_, newError_]), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)})
 }
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
+{
+const compileErrors_ = _1.errors_;
+const error_ = _2;
+const newError_ = ff_compiler_Syntax.CompileError(import_.at_, ((("Parse errors in imported module: " + ff_compiler_Syntax.PackagePair_groupName(import_.package_, ":")) + "/") + newModuleName_));
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileErrors([...compileErrors_, newError_]), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)})
 }
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
 }))
 }
 
@@ -346,19 +350,23 @@ return (_w1 + "/")
 if((!ff_core_Map.Map_contains(self_.packagePaths_, newPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("Missing dependency declaration for: " + ff_compiler_Syntax.PackagePair_groupName(newPackagePair_, ":"))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
-try {
+return ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch((await ff_core_Core.try_$((async ($task) => {
 return (await ff_compiler_Compiler.Compiler_parse$(self_, newPackagePair_, newModuleName_, ff_core_Option.Some(import_.at_), $task))
-} catch(_error) {
-if(!_error.ffException) throw _error
-const _exception = ff_core_Any.fromAny_(_error.ffException, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)
-if(!_exception.Some) throw _error
+}), $task)), ((_1, _2) => {
 {
-const e_ = _exception.value_;
-const error_ = _error;
+const e_ = _1;
+const error_ = _2;
 const newError_ = ff_compiler_Syntax.CompileError(import_.at_, ((("Parse error in imported module: " + ff_compiler_Syntax.PackagePair_groupName(import_.package_, ":")) + "/") + newModuleName_));
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileErrors([e_, newError_]), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)})
 }
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
+{
+const compileErrors_ = _1.errors_;
+const error_ = _2;
+const newError_ = ff_compiler_Syntax.CompileError(import_.at_, ((("Parse errors in imported module: " + ff_compiler_Syntax.PackagePair_groupName(import_.package_, ":")) + "/") + newModuleName_));
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileErrors([...compileErrors_, newError_]), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)})
 }
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
 }), $task))
 }
 

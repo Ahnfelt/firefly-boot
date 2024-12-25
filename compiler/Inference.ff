@@ -31,11 +31,11 @@ extend self: Inference {
     inferModule(module: Module, otherModules: List[Module]): Module {
         let environment = Environment.new(module, otherModules, alreadyFlat = False)
 
-        let traits = module.traits.map {self.inferTraitDefinition(environment, _)}
-        let instances = module.instances.map {self.inferInstanceDefinition(environment, _)}
-        let lets = module.lets.map {self.inferLetDefinition(environment, _)}
-        let functions = module.functions.map {self.inferFunctionDefinition(environment, _)}
-        let extends = module.extends.map {self.inferExtendDefinition(environment, _)}
+        let traits = catchMany(module.traits) {self.inferTraitDefinition(environment, _)}
+        let instances = catchMany(module.instances) {self.inferInstanceDefinition(environment, _)}
+        let lets = catchMany(module.lets) {self.inferLetDefinition(environment, _)}
+        let functions = catchMany(module.functions) {self.inferFunctionDefinition(environment, _)}
+        let extends = catchMany(module.extends) {self.inferExtendDefinition(environment, _)}
         let result = module.Module(
             traits = traits
             instances = instances
@@ -143,7 +143,7 @@ extend self: Inference {
             valueType = definition.type
             default = None
         )
-        let functions = definition.methods.map {method =>
+        let functions = catchMany(definition.methods) {method =>
             let signature = method.signature.Signature(
                 generics = [...definition.generics, ...method.signature.generics]
                 constraints = [...definition.constraints, ...method.signature.constraints]
@@ -1215,4 +1215,26 @@ constraintsToInstances(constraints: List[Constraint]): Map[InstanceKey, Instance
             )
         )
     }.toMap()
+}
+
+catchMany[T](list: List[T], body: T => T): List[T] {
+    let errors = Array.new()
+    let result = list.map {x =>
+        try {
+            body(x)
+        } tryCatch {| CompileError(at, message), error =>
+            errors.push(Pair(CompileError(at, message), error))
+            x
+        } catch {| CompileErrors(compileErrors), error =>
+            compileErrors.each {compileError => 
+                errors.push(Pair(compileError, error))
+            }
+            x
+        }
+    }
+    errors.drain().{
+        | [] => result
+        | [Pair(_, error)] => error.rethrow()
+        | allErrors => throw(CompileErrors(allErrors.map {_.first}))
+    }
 }

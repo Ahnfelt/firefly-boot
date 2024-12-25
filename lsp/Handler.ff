@@ -279,6 +279,9 @@ extend self: Handler {
         } tryCatch {| CompileError(at, message), error =>
             Log.trace("handleDocumentSymbol parse error: " + message)
             []
+        } tryCatch {| CompileErrors(_), error =>
+            Log.trace("handleDocumentSymbol parse errors: ")
+            []
         } catch {| ReadSymbolsError e, _ => 
             Log.trace("handleDocumentSymbol ReadSymbolsError")
             []
@@ -402,8 +405,10 @@ extend self: Handler {
             let tokens = Tokenizer.tokenize(cursorAt.file, code, None, True)
             let parser = Parser.new(PackagePair("script", "script"), cursorAt.file, tokens, False, lspHook)
             parser.parseModuleWithPackageInfo()
-        } catch {| CompileError(at, message), error =>
+        } tryCatch {| CompileError(at, message), error =>
             Log.trace("handleSignatureHelp check error: " + message)
+        } catch {| CompileErrors(_), error =>
+            Log.trace("handleSignatureHelp check errors")
         }
         let o = lspHook.results().collectFirst {
             | ParseArgumentHook h {parameters.get("context") | Some(context)} {
