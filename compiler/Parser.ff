@@ -824,7 +824,7 @@ extend self: Parser {
         while {self.current().rawIs("{")} {
             guards.push(self.parseCaseGuard())
         }
-        if(!self.lspHook.isEnabled() || !self.current().is2(LPipe, LBracketRight)) {
+        if(!self.lspHook.isEnabled() || self.current().is(LArrowThick)) {
             self.skip(LArrowThick)
         }
         let body = self.parseStatements()
