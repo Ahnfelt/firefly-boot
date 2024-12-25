@@ -68,6 +68,11 @@ extend self: Resolver {
                 module.functions.map {self3.resolveFunctionDefinition(_, True, False)}
             ) {_.signature.name} {_.at}
         )
+        module2.extends.map {x => 
+            Pair(x.type.show([]).takeWhile {_.isAsciiLetterOrDigit()}, x.methods)
+        }.group().values().map {_.flatten()}.map {methods =>
+            checkDuplicates(methods) {_.signature.name} {_.at}
+        }
         module2.instances.each {_.typeArguments.each {self3.checkInstanceType(_)}}
         module2
     }
@@ -266,9 +271,7 @@ extend self: Resolver {
         definition.DExtend(
             constraints = definition.constraints.map {selfWithQ.resolveConstraint(_, True)}
             type = selfWithQ.resolveType(definition.type, True)
-            methods = checkDuplicates(
-                definition.methods.map {selfWithNoQ.resolveFunctionDefinition(_, True, False)}
-            ) {_.signature.name} {_.at}
+            methods = definition.methods.map {selfWithNoQ.resolveFunctionDefinition(_, True, False)}
         )
     }
 

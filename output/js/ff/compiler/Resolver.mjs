@@ -121,8 +121,32 @@ export function new_(packagePair_, moduleName_, lspHook_) {
 return ff_compiler_Resolver.Resolver(ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Resolver.ResolverState(2), lspHook_)
 }
 
+export function checkDuplicates_(items_, name_, at_) {
+let seen_ = ff_core_Map.new_();
+ff_core_List.List_map(items_, ((item_) => {
+const n_ = name_(item_);
+if(ff_core_Map.Map_contains(seen_, n_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_(item_), ("Duplicate definition: " + n_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+};
+seen_ = ff_core_Map.Map_add(seen_, n_, item_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}));
+return items_
+}
+
 export async function new_$(packagePair_, moduleName_, lspHook_, $task) {
 return ff_compiler_Resolver.Resolver(ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Resolver.ResolverState(2), lspHook_)
+}
+
+export async function checkDuplicates_$(items_, name_, at_, $task) {
+let seen_ = ff_core_Map.new_();
+(await ff_core_List.List_map$(items_, (async (item_, $task) => {
+const n_ = (await name_(item_, $task));
+if(ff_core_Map.Map_contains(seen_, n_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError((await at_(item_, $task)), ("Duplicate definition: " + n_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+};
+seen_ = ff_core_Map.Map_add(seen_, n_, item_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}), $task));
+return items_
 }
 
 export function Resolver_freshUnificationVariable(self_, at_) {
@@ -140,20 +164,49 @@ return (_w1 !== 46)
 const self2_ = ff_compiler_Resolver.Resolver_processImports(self_, module_.imports_, otherModules_);
 const self3_ = ff_compiler_Resolver.Resolver_processDefinitions(self2_, module_, ff_core_Option.None());
 const module2_ = (((_c) => {
-return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, ff_core_List.List_map(module_.types_, ((_w1) => {
+return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(module_.types_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTypeDefinition(self3_, _w1)
-})), ff_core_List.List_map(module_.traits_, ((_w1) => {
+})), ((_w1) => {
+return _w1.name_
+}), ((_w1) => {
+return _w1.at_
+})), ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(module_.traits_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTraitDefinition(self3_, _w1)
+})), ((_w1) => {
+return _w1.name_
+}), ((_w1) => {
+return _w1.at_
 })), ff_core_List.List_map(module_.instances_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveInstanceDefinition(self3_, _w1)
 })), ff_core_List.List_map(module_.extends_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveExtendDefinition(self3_, _w1)
-})), ff_core_List.List_map(module_.lets_, ((_w1) => {
+})), ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(module_.lets_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveLetDefinition(self3_, _w1, true)
-})), ff_core_List.List_map(module_.functions_, ((_w1) => {
+})), ((_w1) => {
+return _w1.name_
+}), ((_w1) => {
+return _w1.at_
+})), ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(module_.functions_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self3_, _w1, true, false)
+})), ((_w1) => {
+return _w1.signature_.name_
+}), ((_w1) => {
+return _w1.at_
 })))
 }))(module_);
+ff_core_List.List_map(ff_core_List.List_map(ff_core_Map.Map_values(ff_core_List.List_group(ff_core_List.List_map(module2_.extends_, ((x_) => {
+return ff_core_Pair.Pair(ff_core_String.String_takeWhile(ff_compiler_Syntax.Type_show(x_.type_, []), ((_w1) => {
+return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
+})), x_.methods_)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
+return ff_core_List.List_flatten(_w1)
+})), ((methods_) => {
+return ff_compiler_Resolver.checkDuplicates_(methods_, ((_w1) => {
+return _w1.signature_.name_
+}), ((_w1) => {
+return _w1.at_
+}))
+}));
 for(let for_a = module2_.instances_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const _w1 = for_a[for_i];
 for(let for_a = _w1.typeArguments_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
@@ -338,7 +391,7 @@ const _1 = definition_;
 const _c = _1;
 return ff_compiler_Syntax.DType(_c.at_, _c.newtype_, _c.data_, _c.name_, _c.generics_, ff_core_List.List_map(definition_.constraints_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveConstraint(self2_, _w1, true)
-})), ff_core_List.List_map(definition_.commonFields_, ((f_) => {
+})), ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(definition_.commonFields_, ((f_) => {
 const valueType_ = ff_compiler_Resolver.Resolver_resolveType(self2_, f_.valueType_, true);
 if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, f_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, f_.at_))) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveVariantFieldHook(ff_compiler_LspHook.SymbolHook(f_.name_, f_.at_, f_.at_), valueType_, true))
@@ -353,10 +406,19 @@ return ff_compiler_Resolver.Resolver_resolveTerm(self2_, _w1, true, false)
 return
 }
 }
-})), ff_core_List.List_map(definition_.variants_, ((v_) => {
+})), ((_w1) => {
+return _w1.name_
+}), ((_w1) => {
+return _w1.at_
+})), ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(definition_.variants_, ((v_) => {
 if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, v_.at_)) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(v_.name_, v_.at_, v_.at_), ff_core_Option.None(), true))
 };
+ff_compiler_Resolver.checkDuplicates_([...definition_.commonFields_, ...v_.fields_], ((_w1) => {
+return _w1.name_
+}), ((_w1) => {
+return _w1.at_
+}));
 {
 const _1 = v_;
 {
@@ -380,6 +442,10 @@ return
 return
 }
 }
+})), ((_w1) => {
+return _w1.name_
+}), ((_w1) => {
+return _w1.at_
 })))
 return
 }
@@ -402,8 +468,12 @@ const _1 = definition_;
 const _c = _1;
 return ff_compiler_Syntax.DTrait(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(definition_.constraints_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveConstraint(self2_, _w1, true)
-})), _c.generatorParameters_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
+})), _c.generatorParameters_, ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(definition_.methods_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveSignature(self2_, _w1, true, false)
+})), ((_w1) => {
+return _w1.name_
+}), ((_w1) => {
+return _w1.at_
 })), ff_core_List.List_map(definition_.methodDefaults_, ((_1) => {
 {
 const name_ = _1.first_;
@@ -1071,20 +1141,49 @@ return (_w1 !== 46)
 const self2_ = ff_compiler_Resolver.Resolver_processImports(self_, module_.imports_, otherModules_);
 const self3_ = ff_compiler_Resolver.Resolver_processDefinitions(self2_, module_, ff_core_Option.None());
 const module2_ = (((_c) => {
-return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, ff_core_List.List_map(module_.types_, ((_w1) => {
+return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(module_.types_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTypeDefinition(self3_, _w1)
-})), ff_core_List.List_map(module_.traits_, ((_w1) => {
+})), ((_w1) => {
+return _w1.name_
+}), ((_w1) => {
+return _w1.at_
+})), ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(module_.traits_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTraitDefinition(self3_, _w1)
+})), ((_w1) => {
+return _w1.name_
+}), ((_w1) => {
+return _w1.at_
 })), ff_core_List.List_map(module_.instances_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveInstanceDefinition(self3_, _w1)
 })), ff_core_List.List_map(module_.extends_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveExtendDefinition(self3_, _w1)
-})), ff_core_List.List_map(module_.lets_, ((_w1) => {
+})), ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(module_.lets_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveLetDefinition(self3_, _w1, true)
-})), ff_core_List.List_map(module_.functions_, ((_w1) => {
+})), ((_w1) => {
+return _w1.name_
+}), ((_w1) => {
+return _w1.at_
+})), ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(module_.functions_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self3_, _w1, true, false)
+})), ((_w1) => {
+return _w1.signature_.name_
+}), ((_w1) => {
+return _w1.at_
 })))
 }))(module_);
+ff_core_List.List_map(ff_core_List.List_map(ff_core_Map.Map_values(ff_core_List.List_group(ff_core_List.List_map(module2_.extends_, ((x_) => {
+return ff_core_Pair.Pair(ff_core_String.String_takeWhile(ff_compiler_Syntax.Type_show(x_.type_, []), ((_w1) => {
+return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
+})), x_.methods_)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
+return ff_core_List.List_flatten(_w1)
+})), ((methods_) => {
+return ff_compiler_Resolver.checkDuplicates_(methods_, ((_w1) => {
+return _w1.signature_.name_
+}), ((_w1) => {
+return _w1.at_
+}))
+}));
 for(let for_a = module2_.instances_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const _w1 = for_a[for_i];
 for(let for_a = _w1.typeArguments_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
@@ -1269,7 +1368,7 @@ const _1 = definition_;
 const _c = _1;
 return ff_compiler_Syntax.DType(_c.at_, _c.newtype_, _c.data_, _c.name_, _c.generics_, ff_core_List.List_map(definition_.constraints_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveConstraint(self2_, _w1, true)
-})), ff_core_List.List_map(definition_.commonFields_, ((f_) => {
+})), ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(definition_.commonFields_, ((f_) => {
 const valueType_ = ff_compiler_Resolver.Resolver_resolveType(self2_, f_.valueType_, true);
 if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, f_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, f_.at_))) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveVariantFieldHook(ff_compiler_LspHook.SymbolHook(f_.name_, f_.at_, f_.at_), valueType_, true))
@@ -1284,10 +1383,19 @@ return ff_compiler_Resolver.Resolver_resolveTerm(self2_, _w1, true, false)
 return
 }
 }
-})), ff_core_List.List_map(definition_.variants_, ((v_) => {
+})), ((_w1) => {
+return _w1.name_
+}), ((_w1) => {
+return _w1.at_
+})), ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(definition_.variants_, ((v_) => {
 if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, v_.at_)) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(v_.name_, v_.at_, v_.at_), ff_core_Option.None(), true))
 };
+ff_compiler_Resolver.checkDuplicates_([...definition_.commonFields_, ...v_.fields_], ((_w1) => {
+return _w1.name_
+}), ((_w1) => {
+return _w1.at_
+}));
 {
 const _1 = v_;
 {
@@ -1311,6 +1419,10 @@ return
 return
 }
 }
+})), ((_w1) => {
+return _w1.name_
+}), ((_w1) => {
+return _w1.at_
 })))
 return
 }
@@ -1333,8 +1445,12 @@ const _1 = definition_;
 const _c = _1;
 return ff_compiler_Syntax.DTrait(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(definition_.constraints_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveConstraint(self2_, _w1, true)
-})), _c.generatorParameters_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
+})), _c.generatorParameters_, ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(definition_.methods_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveSignature(self2_, _w1, true, false)
+})), ((_w1) => {
+return _w1.name_
+}), ((_w1) => {
+return _w1.at_
 })), ff_core_List.List_map(definition_.methodDefaults_, ((_1) => {
 {
 const name_ = _1.first_;
