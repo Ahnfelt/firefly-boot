@@ -68,9 +68,10 @@ extend self: Resolver {
                 module.functions.map {self3.resolveFunctionDefinition(_, True, False)}
             ) {_.signature.name} {_.at}
         )
-        module2.extends.map {x => 
+        let groupedExtendMethods = module2.extends.map {x => 
             Pair(x.type.show([]).takeWhile {_.isAsciiLetterOrDigit()}, x.methods)
-        }.group().values().map {_.flatten()}.map {methods =>
+        }.group()
+        groupedExtendMethods.values().map {_.flatten()}.map {methods =>
             checkDuplicates(methods) {_.signature.name} {_.at}
         }
         module2.instances.each {_.typeArguments.each {self3.checkInstanceType(_)}}
