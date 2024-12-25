@@ -1040,7 +1040,13 @@ extend self: Parser {
     }
 
     parseBinary(level: Int): Term {
-        if(level >= binaryOperators.size()) {self.parseUnary()} else:
+        if(level >= binaryOperators.size()) {
+            if(self.lspHook.isEnabled() && self.current().is(LBracketRight)) {
+                EVariable(self.current().at(), "")
+            } else {
+                self.parseUnary()
+            }
+        } else:
         let operators = binaryOperators.grab(level)
         mutable result = self.parseBinary(level + 1)
         if(self.current().is(LOperator)) {
