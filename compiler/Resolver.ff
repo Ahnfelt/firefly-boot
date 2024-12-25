@@ -62,7 +62,7 @@ extend self: Resolver {
             types = checkDuplicates(module.types.map {self3.resolveTypeDefinition(_)}) {_.name} {_.at}
             traits = checkDuplicates(module.traits.map {self3.resolveTraitDefinition(_)}) {_.name} {_.at}
             instances = module.instances.map {self3.resolveInstanceDefinition(_)}
-            extends = checkDuplicates(module.extends.map {self3.resolveExtendDefinition(_)}) {_.name} {_.at}
+            extends = module.extends.map {self3.resolveExtendDefinition(_)}
             lets = checkDuplicates(module.lets.map {self3.resolveLetDefinition(_, True)}) {_.name} {_.at}
             functions = checkDuplicates(
                 module.functions.map {self3.resolveFunctionDefinition(_, True, False)}
