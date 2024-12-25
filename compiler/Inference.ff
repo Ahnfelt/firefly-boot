@@ -31,11 +31,18 @@ extend self: Inference {
     inferModule(module: Module, otherModules: List[Module]): Module {
         let environment = Environment.new(module, otherModules, alreadyFlat = False)
 
-        let traits = catchMany(module.traits) {self.inferTraitDefinition(environment, _)}
-        let instances = catchMany(module.instances) {self.inferInstanceDefinition(environment, _)}
-        let lets = catchMany(module.lets) {self.inferLetDefinition(environment, _)}
-        let functions = catchMany(module.functions) {self.inferFunctionDefinition(environment, _)}
-        let extends = catchMany(module.extends) {self.inferExtendDefinition(environment, _)}
+        let errors = Array.new()
+        let traits = catchManyInto(errors, module.traits) {self.inferTraitDefinition(environment, _)}
+        let instances = catchManyInto(errors, module.instances) {self.inferInstanceDefinition(environment, _)}
+        let lets = catchManyInto(errors, module.lets) {self.inferLetDefinition(environment, _)}
+        let functions = catchManyInto(errors, module.functions) {self.inferFunctionDefinition(environment, _)}
+        let extends = catchManyInto(errors, module.extends) {self.inferExtendDefinition(environment, _)}
+        errors.drain().{
+            | [] =>
+            | [Pair(_, error)] => error.rethrow()
+            | allErrors => throw(CompileErrors(allErrors.map {_.first}))
+        }        
+        
         let result = module.Module(
             traits = traits
             instances = instances
@@ -1237,4 +1244,21 @@ catchMany[T](list: List[T], body: T => T): List[T] {
         | [Pair(_, error)] => error.rethrow()
         | allErrors => throw(CompileErrors(allErrors.map {_.first}))
     }
+}
+
+catchManyInto[T](errors: Array[Pair[CompileError, Error]], list: List[T], body: T => T): List[T] {
+    let result = list.map {x =>
+        try {
+            body(x)
+        } tryCatch {| CompileError(at, message), error =>
+            errors.push(Pair(CompileError(at, message), error))
+            x
+        } catch {| CompileErrors(compileErrors), error =>
+            compileErrors.each {compileError => 
+                errors.push(Pair(compileError, error))
+            }
+            x
+        }
+    }
+    if(errors.isEmpty()) {result} else {[]}
 }
