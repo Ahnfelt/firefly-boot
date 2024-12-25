@@ -27,7 +27,7 @@ core(name: String): String {
 }
 
 extend self: Inference {
-
+    
     inferModule(module: Module, otherModules: List[Module]): Module {
         let environment = Environment.new(module, otherModules, alreadyFlat = False)
 
@@ -96,7 +96,7 @@ extend self: Inference {
             }
             
             definition.DInstance(
-                methods = definition.methods.map {instanceFunction =>
+                methods = catchMany(definition.methods) {instanceFunction =>
                     let methodName = instanceFunction.signature.name
                     let traitMethodName = traitName.reverse().dropWhile {_ != '.'}.reverse() + methodName
                     let traitMethodScheme = environment.symbols.get(traitMethodName).else {

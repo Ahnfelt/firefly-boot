@@ -59,17 +59,19 @@ extend self: Resolver {
         let self2 = self.processImports(module.imports, otherModules)
         let self3 = self2.processDefinitions(module, None)
         let module2 = module.Module(
-            types = module.types.map {self3.resolveTypeDefinition(_)}
-            traits = module.traits.map {self3.resolveTraitDefinition(_)}
+            types = checkDuplicates(module.types.map {self3.resolveTypeDefinition(_)}) {_.name} {_.at}
+            traits = checkDuplicates(module.traits.map {self3.resolveTraitDefinition(_)}) {_.name} {_.at}
             instances = module.instances.map {self3.resolveInstanceDefinition(_)}
-            extends = module.extends.map {self3.resolveExtendDefinition(_)}
-            lets = module.lets.map {self3.resolveLetDefinition(_, True)}
-            functions = module.functions.map {self3.resolveFunctionDefinition(_, True, False)}
+            extends = checkDuplicates(module.extends.map {self3.resolveExtendDefinition(_)}) {_.name} {_.at}
+            lets = checkDuplicates(module.lets.map {self3.resolveLetDefinition(_, True)}) {_.name} {_.at}
+            functions = checkDuplicates(
+                module.functions.map {self3.resolveFunctionDefinition(_, True, False)}
+            ) {_.signature.name} {_.at}
         )
         module2.instances.each {_.typeArguments.each {self3.checkInstanceType(_)}}
         module2
     }
-
+    
     checkInstanceType(type: Type) {
         type.{
             | TConstructor(_, name, typeArguments) =>
@@ -159,7 +161,7 @@ extend self: Resolver {
         }
         definition.DType(
             constraints = definition.constraints.map {self2.resolveConstraint(_, True)}
-            commonFields = definition.commonFields.map {f =>
+            commonFields = checkDuplicates(definition.commonFields.map {f =>
                 let valueType = self2.resolveType(f.valueType, True)
                 if(self.lspHook.isAt(f.at) || self.lspHook.isDefinedAt(f.at)) {
                     self.lspHook.emit(
@@ -170,13 +172,14 @@ extend self: Resolver {
                     valueType = valueType
                     default = f.default.map {self2.resolveTerm(_, True)}
                 )
-            }
-            variants = definition.variants.map {v =>
+            }) {_.name} {_.at}
+            variants = checkDuplicates(definition.variants.map {v =>
                 if(self.lspHook.isAt(v.at)) {
                     self.lspHook.emit(
                         ResolveSymbolHook(SymbolHook(v.name, v.at, v.at), None, topLevel = True)
                     )
                 }
+                checkDuplicates([...definition.commonFields, ...v.fields]) {_.name} {_.at}
                 v.Variant(fields = v.fields.map {f =>
                     let valueType = self2.resolveType(f.valueType, True)
                     if(self.lspHook.isAt(f.at) || self.lspHook.isDefinedAt(f.at)) {
@@ -189,7 +192,7 @@ extend self: Resolver {
                         default = f.default.map {self2.resolveTerm(_, True) }
                     )
                 })
-            }
+            }) {_.name} {_.at}
         )
     }
 
@@ -209,7 +212,9 @@ extend self: Resolver {
         )
         definition.DTrait(
             constraints = definition.constraints.map {self2.resolveConstraint(_, True)}
-            methods = definition.methods.map {self2.resolveSignature(_, True, False)}
+            methods = checkDuplicates(
+                definition.methods.map {self2.resolveSignature(_, True, False)}
+            ) {_.name} {_.at}
             methodDefaults = definition.methodDefaults.map {| Pair(name, lambda) =>
                 let signature = definition.methods.find {_.name == name}.grab()
                 let function1 = DFunction(signature.at, signature, lambda)
@@ -261,7 +266,9 @@ extend self: Resolver {
         definition.DExtend(
             constraints = definition.constraints.map {selfWithQ.resolveConstraint(_, True)}
             type = selfWithQ.resolveType(definition.type, True)
-            methods = definition.methods.map {selfWithNoQ.resolveFunctionDefinition(_, True, False)}
+            methods = checkDuplicates(
+                definition.methods.map {selfWithNoQ.resolveFunctionDefinition(_, True, False)}
+            ) {_.signature.name} {_.at}
         )
     }
 
@@ -622,4 +629,16 @@ extend self: Resolver {
             constructor.generics.any {self.containsAsyncType(_)}
     }
 
+}
+
+checkDuplicates[T](items: List[T], name: T => String, at: T => Location): List[T] {
+    mutable seen = Map.new()
+    items.map {item =>
+        let n = name(item)
+        if(seen.contains(n)) {
+            throw(CompileError(at(item), "Duplicate definition: " + n))
+        }
+        seen = seen.add(n, item)
+    }
+    items
 }
