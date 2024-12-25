@@ -1226,19 +1226,7 @@ constraintsToInstances(constraints: List[Constraint]): Map[InstanceKey, Instance
 
 catchMany[T](list: List[T], body: T => T): List[T] {
     let errors = Array.new()
-    let result = list.map {x =>
-        try {
-            body(x)
-        } tryCatch {| CompileError(at, message), error =>
-            errors.push(Pair(CompileError(at, message), error))
-            x
-        } catch {| CompileErrors(compileErrors), error =>
-            compileErrors.each {compileError => 
-                errors.push(Pair(compileError, error))
-            }
-            x
-        }
-    }
+    let result = catchManyInto(errors, list, body)
     errors.drain().{
         | [] => result
         | [Pair(_, error)] => error.rethrow()
