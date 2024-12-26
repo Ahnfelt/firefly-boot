@@ -194,11 +194,12 @@ return _w1.signature_.name_
 return _w1.at_
 })))
 }))(module_);
-ff_core_List.List_map(ff_core_List.List_map(ff_core_Map.Map_values(ff_core_List.List_group(ff_core_List.List_map(module2_.extends_, ((x_) => {
+const groupedExtendMethods_ = ff_core_List.List_group(ff_core_List.List_map(module2_.extends_, ((x_) => {
 return ff_core_Pair.Pair(ff_core_String.String_takeWhile(ff_compiler_Syntax.Type_show(x_.type_, []), ((_w1) => {
 return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
 })), x_.methods_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+ff_core_List.List_map(ff_core_List.List_map(ff_core_Map.Map_values(groupedExtendMethods_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
 return ff_core_List.List_flatten(_w1)
 })), ((methods_) => {
 return ff_compiler_Resolver.checkDuplicates_(methods_, ((_w1) => {
@@ -1171,11 +1172,12 @@ return _w1.signature_.name_
 return _w1.at_
 })))
 }))(module_);
-ff_core_List.List_map(ff_core_List.List_map(ff_core_Map.Map_values(ff_core_List.List_group(ff_core_List.List_map(module2_.extends_, ((x_) => {
+const groupedExtendMethods_ = ff_core_List.List_group(ff_core_List.List_map(module2_.extends_, ((x_) => {
 return ff_core_Pair.Pair(ff_core_String.String_takeWhile(ff_compiler_Syntax.Type_show(x_.type_, []), ((_w1) => {
 return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
 })), x_.methods_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+ff_core_List.List_map(ff_core_List.List_map(ff_core_Map.Map_values(groupedExtendMethods_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
 return ff_core_List.List_flatten(_w1)
 })), ((methods_) => {
 return ff_compiler_Resolver.checkDuplicates_(methods_, ((_w1) => {
