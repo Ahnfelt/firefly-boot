@@ -32,11 +32,21 @@ extend self: Inference {
         let environment = Environment.new(module, otherModules, alreadyFlat = False)
 
         let errors = Array.new()
-        let traits = catchManyInto(errors, module.traits) {self.inferTraitDefinition(environment, _)}
-        let instances = catchManyInto(errors, module.instances) {self.inferInstanceDefinition(environment, _)}
-        let lets = catchManyInto(errors, module.lets) {self.inferLetDefinition(environment, _)}
-        let functions = catchManyInto(errors, module.functions) {self.inferFunctionDefinition(environment, _)}
-        let extends = catchManyInto(errors, module.extends) {self.inferExtendDefinition(environment, _)}
+        let traits = Syntax.catchManyInto(errors, module.traits) {
+            self.inferTraitDefinition(environment, _)
+        }
+        let instances = Syntax.catchManyInto(errors, module.instances) {
+            self.inferInstanceDefinition(environment, _)
+        }
+        let lets = Syntax.catchManyInto(errors, module.lets) {
+            self.inferLetDefinition(environment, _)
+        }
+        let functions = Syntax.catchManyInto(errors, module.functions) {
+            self.inferFunctionDefinition(environment, _)
+        }
+        let extends = Syntax.catchManyInto(errors, module.extends) {
+            self.inferExtendDefinition(environment, _)
+        }
         errors.drain().{
             | [] =>
             | [Pair(_, error)] => error.rethrow()
@@ -96,7 +106,7 @@ extend self: Inference {
             }
             
             definition.DInstance(
-                methods = catchMany(definition.methods) {instanceFunction =>
+                methods = Syntax.catchMany(definition.methods) {instanceFunction =>
                     let methodName = instanceFunction.signature.name
                     let traitMethodName = traitName.reverse().dropWhile {_ != '.'}.reverse() + methodName
                     let traitMethodScheme = environment.symbols.get(traitMethodName).else {
@@ -150,7 +160,7 @@ extend self: Inference {
             valueType = definition.type
             default = None
         )
-        let functions = catchMany(definition.methods) {method =>
+        let functions = Syntax.catchMany(definition.methods) {method =>
             let signature = method.signature.Signature(
                 generics = [...definition.generics, ...method.signature.generics]
                 constraints = [...definition.constraints, ...method.signature.constraints]
@@ -1222,31 +1232,4 @@ constraintsToInstances(constraints: List[Constraint]): Map[InstanceKey, Instance
             )
         )
     }.toMap()
-}
-
-catchMany[T](list: List[T], body: T => T): List[T] {
-    let errors = Array.new()
-    let result = catchManyInto(errors, list, body)
-    errors.drain().{
-        | [] => result
-        | [Pair(_, error)] => error.rethrow()
-        | allErrors => throw(CompileErrors(allErrors.map {_.first}))
-    }
-}
-
-catchManyInto[T](errors: Array[Pair[CompileError, Error]], list: List[T], body: T => T): List[T] {
-    let result = list.map {x =>
-        try {
-            body(x)
-        } tryCatch {| CompileError(at, message), error =>
-            errors.push(Pair(CompileError(at, message), error))
-            x
-        } catch {| CompileErrors(compileErrors), error =>
-            compileErrors.each {compileError => 
-                errors.push(Pair(compileError, error))
-            }
-            x
-        }
-    }
-    if(errors.isEmpty()) {result} else {[]}
 }
