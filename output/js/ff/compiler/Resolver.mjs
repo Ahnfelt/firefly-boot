@@ -163,37 +163,60 @@ return (_w1 !== 46)
 }));
 const self2_ = ff_compiler_Resolver.Resolver_processImports(self_, module_.imports_, otherModules_);
 const self3_ = ff_compiler_Resolver.Resolver_processDefinitions(self2_, module_, ff_core_Option.None());
+const errors_ = ff_core_Array.new_();
 const module2_ = (((_c) => {
-return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(module_.types_, ((_w1) => {
+return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, ff_compiler_Syntax.catchManyInto_(errors_, module_.types_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTypeDefinition(self3_, _w1)
-})), ((_w1) => {
-return _w1.name_
-}), ((_w1) => {
-return _w1.at_
-})), ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(module_.traits_, ((_w1) => {
+})), ff_compiler_Syntax.catchManyInto_(errors_, module_.traits_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTraitDefinition(self3_, _w1)
-})), ((_w1) => {
-return _w1.name_
-}), ((_w1) => {
-return _w1.at_
-})), ff_core_List.List_map(module_.instances_, ((_w1) => {
+})), ff_compiler_Syntax.catchManyInto_(errors_, module_.instances_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveInstanceDefinition(self3_, _w1)
-})), ff_core_List.List_map(module_.extends_, ((_w1) => {
+})), ff_compiler_Syntax.catchManyInto_(errors_, module_.extends_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveExtendDefinition(self3_, _w1)
-})), ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(module_.lets_, ((_w1) => {
+})), ff_compiler_Syntax.catchManyInto_(errors_, module_.lets_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveLetDefinition(self3_, _w1, true)
-})), ((_w1) => {
+})), ff_compiler_Syntax.catchManyInto_(errors_, module_.functions_, ((_w1) => {
+return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self3_, _w1, true, false)
+})))
+}))(module_);
+do {
+const _1 = ff_core_Array.Array_drain(errors_);
+if(_1.length === 0) {
+
+break
+}
+if(_1.length === 1) {
+const error_ = _1[0].second_;
+ff_core_Error.Error_rethrow(error_)
+break
+}
+{
+const allErrors_ = _1;
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileErrors(ff_core_List.List_map(allErrors_, ((_w1) => {
+return _w1.first_
+}))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)})
+}
+} while(false);
+ff_compiler_Resolver.checkDuplicates_(module2_.types_, ((_w1) => {
 return _w1.name_
 }), ((_w1) => {
 return _w1.at_
-})), ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(module_.functions_, ((_w1) => {
-return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self3_, _w1, true, false)
-})), ((_w1) => {
+}));
+ff_compiler_Resolver.checkDuplicates_(module2_.traits_, ((_w1) => {
+return _w1.name_
+}), ((_w1) => {
+return _w1.at_
+}));
+ff_compiler_Resolver.checkDuplicates_(module2_.lets_, ((_w1) => {
+return _w1.name_
+}), ((_w1) => {
+return _w1.at_
+}));
+ff_compiler_Resolver.checkDuplicates_(module2_.functions_, ((_w1) => {
 return _w1.signature_.name_
 }), ((_w1) => {
 return _w1.at_
-})))
-}))(module_);
+}));
 const groupedExtendMethods_ = ff_core_List.List_group(ff_core_List.List_map(module2_.extends_, ((x_) => {
 return ff_core_Pair.Pair(ff_core_String.String_takeWhile(ff_compiler_Syntax.Type_show(x_.type_, []), ((_w1) => {
 return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
@@ -1141,37 +1164,60 @@ return (_w1 !== 46)
 }));
 const self2_ = ff_compiler_Resolver.Resolver_processImports(self_, module_.imports_, otherModules_);
 const self3_ = ff_compiler_Resolver.Resolver_processDefinitions(self2_, module_, ff_core_Option.None());
+const errors_ = ff_core_Array.new_();
 const module2_ = (((_c) => {
-return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(module_.types_, ((_w1) => {
+return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, ff_compiler_Syntax.catchManyInto_(errors_, module_.types_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTypeDefinition(self3_, _w1)
-})), ((_w1) => {
-return _w1.name_
-}), ((_w1) => {
-return _w1.at_
-})), ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(module_.traits_, ((_w1) => {
+})), ff_compiler_Syntax.catchManyInto_(errors_, module_.traits_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTraitDefinition(self3_, _w1)
-})), ((_w1) => {
-return _w1.name_
-}), ((_w1) => {
-return _w1.at_
-})), ff_core_List.List_map(module_.instances_, ((_w1) => {
+})), ff_compiler_Syntax.catchManyInto_(errors_, module_.instances_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveInstanceDefinition(self3_, _w1)
-})), ff_core_List.List_map(module_.extends_, ((_w1) => {
+})), ff_compiler_Syntax.catchManyInto_(errors_, module_.extends_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveExtendDefinition(self3_, _w1)
-})), ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(module_.lets_, ((_w1) => {
+})), ff_compiler_Syntax.catchManyInto_(errors_, module_.lets_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveLetDefinition(self3_, _w1, true)
-})), ((_w1) => {
+})), ff_compiler_Syntax.catchManyInto_(errors_, module_.functions_, ((_w1) => {
+return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self3_, _w1, true, false)
+})))
+}))(module_);
+do {
+const _1 = ff_core_Array.Array_drain(errors_);
+if(_1.length === 0) {
+
+break
+}
+if(_1.length === 1) {
+const error_ = _1[0].second_;
+ff_core_Error.Error_rethrow(error_)
+break
+}
+{
+const allErrors_ = _1;
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileErrors(ff_core_List.List_map(allErrors_, ((_w1) => {
+return _w1.first_
+}))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)})
+}
+} while(false);
+ff_compiler_Resolver.checkDuplicates_(module2_.types_, ((_w1) => {
 return _w1.name_
 }), ((_w1) => {
 return _w1.at_
-})), ff_compiler_Resolver.checkDuplicates_(ff_core_List.List_map(module_.functions_, ((_w1) => {
-return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self3_, _w1, true, false)
-})), ((_w1) => {
+}));
+ff_compiler_Resolver.checkDuplicates_(module2_.traits_, ((_w1) => {
+return _w1.name_
+}), ((_w1) => {
+return _w1.at_
+}));
+ff_compiler_Resolver.checkDuplicates_(module2_.lets_, ((_w1) => {
+return _w1.name_
+}), ((_w1) => {
+return _w1.at_
+}));
+ff_compiler_Resolver.checkDuplicates_(module2_.functions_, ((_w1) => {
 return _w1.signature_.name_
 }), ((_w1) => {
 return _w1.at_
-})))
-}))(module_);
+}));
 const groupedExtendMethods_ = ff_core_List.List_group(ff_core_List.List_map(module2_.extends_, ((x_) => {
 return ff_core_Pair.Pair(ff_core_String.String_takeWhile(ff_compiler_Syntax.Type_show(x_.type_, []), ((_w1) => {
 return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)

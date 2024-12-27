@@ -142,59 +142,6 @@ return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
 
-export function catchMany_(list_, body_) {
-const errors_ = ff_core_Array.new_();
-const result_ = ff_compiler_Inference.catchManyInto_(errors_, list_, body_);
-{
-const _1 = ff_core_Array.Array_drain(errors_);
-if(_1.length === 0) {
-return result_
-}
-if(_1.length === 1) {
-const error_ = _1[0].second_;
-return ff_core_Error.Error_rethrow(error_)
-}
-{
-const allErrors_ = _1;
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileErrors(ff_core_List.List_map(allErrors_, ((_w1) => {
-return _w1.first_
-}))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)})
-return
-}
-}
-}
-
-export function catchManyInto_(errors_, list_, body_) {
-const result_ = ff_core_List.List_map(list_, ((x_) => {
-return ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch(ff_core_Core.try_((() => {
-return body_(x_)
-})), ((_1, _2) => {
-{
-const at_ = _1.at_;
-const message_ = _1.message_;
-const error_ = _2;
-errors_.array.push(ff_core_Pair.Pair(ff_compiler_Syntax.CompileError(at_, message_), error_));
-return x_
-}
-}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
-{
-const compileErrors_ = _1.errors_;
-const error_ = _2;
-for(let for_a = compileErrors_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
-const compileError_ = for_a[for_i];
-errors_.array.push(ff_core_Pair.Pair(compileError_, error_))
-};
-return x_
-}
-}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
-}));
-if(ff_core_Array.Array_isEmpty(errors_)) {
-return result_
-} else {
-return []
-}
-}
-
 export async function new_$(modules_, lspHook_, $task) {
 return ff_compiler_Inference.Inference(ff_compiler_Unification.new_(modules_, ff_compiler_LspHook.LspHook_isEnabled(lspHook_)), ff_core_StringMap.new_(), lspHook_)
 }
@@ -224,75 +171,22 @@ return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
 
-export async function catchMany_$(list_, body_, $task) {
-const errors_ = ff_core_Array.new_();
-const result_ = (await ff_compiler_Inference.catchManyInto_$(errors_, list_, body_, $task));
-{
-const _1 = ff_core_Array.Array_drain(errors_);
-if(_1.length === 0) {
-return result_
-}
-if(_1.length === 1) {
-const error_ = _1[0].second_;
-return ff_core_Error.Error_rethrow(error_)
-}
-{
-const allErrors_ = _1;
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileErrors(ff_core_List.List_map(allErrors_, ((_w1) => {
-return _w1.first_
-}))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)})
-return
-}
-}
-}
-
-export async function catchManyInto_$(errors_, list_, body_, $task) {
-const result_ = (await ff_core_List.List_map$(list_, (async (x_, $task) => {
-return ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch((await ff_core_Core.try_$((async ($task) => {
-return (await body_(x_, $task))
-}), $task)), ((_1, _2) => {
-{
-const at_ = _1.at_;
-const message_ = _1.message_;
-const error_ = _2;
-errors_.array.push(ff_core_Pair.Pair(ff_compiler_Syntax.CompileError(at_, message_), error_));
-return x_
-}
-}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
-{
-const compileErrors_ = _1.errors_;
-const error_ = _2;
-for(let for_a = compileErrors_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
-const compileError_ = for_a[for_i];
-errors_.array.push(ff_core_Pair.Pair(compileError_, error_))
-};
-return x_
-}
-}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
-}), $task));
-if(ff_core_Array.Array_isEmpty(errors_)) {
-return result_
-} else {
-return []
-}
-}
-
 export function Inference_inferModule(self_, module_, otherModules_) {
 const environment_ = ff_compiler_Environment.new_(module_, otherModules_, false);
 const errors_ = ff_core_Array.new_();
-const traits_ = ff_compiler_Inference.catchManyInto_(errors_, module_.traits_, ((_w1) => {
+const traits_ = ff_compiler_Syntax.catchManyInto_(errors_, module_.traits_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferTraitDefinition(self_, environment_, _w1)
 }));
-const instances_ = ff_compiler_Inference.catchManyInto_(errors_, module_.instances_, ((_w1) => {
+const instances_ = ff_compiler_Syntax.catchManyInto_(errors_, module_.instances_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferInstanceDefinition(self_, environment_, _w1)
 }));
-const lets_ = ff_compiler_Inference.catchManyInto_(errors_, module_.lets_, ((_w1) => {
+const lets_ = ff_compiler_Syntax.catchManyInto_(errors_, module_.lets_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferLetDefinition(self_, environment_, _w1)
 }));
-const functions_ = ff_compiler_Inference.catchManyInto_(errors_, module_.functions_, ((_w1) => {
+const functions_ = ff_compiler_Syntax.catchManyInto_(errors_, module_.functions_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environment_, _w1)
 }));
-const extends_ = ff_compiler_Inference.catchManyInto_(errors_, module_.extends_, ((_w1) => {
+const extends_ = ff_compiler_Syntax.catchManyInto_(errors_, module_.extends_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferExtendDefinition(self_, environment_, _w1)
 }));
 do {
@@ -361,7 +255,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, _c.constraints_, _c.traitName_, _c.typeArguments_, _c.generatorArguments_, ff_compiler_Inference.catchMany_(definition_.methods_, ((instanceFunction_) => {
+return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, _c.constraints_, _c.traitName_, _c.typeArguments_, _c.generatorArguments_, ff_compiler_Syntax.catchMany_(definition_.methods_, ((instanceFunction_) => {
 const methodName_ = instanceFunction_.signature_.name_;
 const traitMethodName_ = (ff_core_String.String_reverse(ff_core_String.String_dropWhile(ff_core_String.String_reverse(traitName_), ((_w1) => {
 return (_w1 !== 46)
@@ -420,7 +314,7 @@ return ff_compiler_Syntax.DLet(_c.at_, _c.name_, _c.variableType_, value_)
 
 export function Inference_inferExtendDefinition(self_, environment_, definition_) {
 const selfParameter_ = ff_compiler_Syntax.Parameter(definition_.at_, false, definition_.name_, definition_.type_, ff_core_Option.None());
-const functions_ = ff_compiler_Inference.catchMany_(definition_.methods_, ((method_) => {
+const functions_ = ff_compiler_Syntax.catchMany_(definition_.methods_, ((method_) => {
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, [...definition_.generics_, ...method_.signature_.generics_], [...definition_.constraints_, ...method_.signature_.constraints_], [selfParameter_, ...method_.signature_.parameters_], _c.returnType_, _c.effect_)
 }))(method_.signature_);
@@ -2197,19 +2091,19 @@ return instantiated_
 export async function Inference_inferModule$(self_, module_, otherModules_, $task) {
 const environment_ = ff_compiler_Environment.new_(module_, otherModules_, false);
 const errors_ = ff_core_Array.new_();
-const traits_ = ff_compiler_Inference.catchManyInto_(errors_, module_.traits_, ((_w1) => {
+const traits_ = ff_compiler_Syntax.catchManyInto_(errors_, module_.traits_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferTraitDefinition(self_, environment_, _w1)
 }));
-const instances_ = ff_compiler_Inference.catchManyInto_(errors_, module_.instances_, ((_w1) => {
+const instances_ = ff_compiler_Syntax.catchManyInto_(errors_, module_.instances_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferInstanceDefinition(self_, environment_, _w1)
 }));
-const lets_ = ff_compiler_Inference.catchManyInto_(errors_, module_.lets_, ((_w1) => {
+const lets_ = ff_compiler_Syntax.catchManyInto_(errors_, module_.lets_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferLetDefinition(self_, environment_, _w1)
 }));
-const functions_ = ff_compiler_Inference.catchManyInto_(errors_, module_.functions_, ((_w1) => {
+const functions_ = ff_compiler_Syntax.catchManyInto_(errors_, module_.functions_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environment_, _w1)
 }));
-const extends_ = ff_compiler_Inference.catchManyInto_(errors_, module_.extends_, ((_w1) => {
+const extends_ = ff_compiler_Syntax.catchManyInto_(errors_, module_.extends_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferExtendDefinition(self_, environment_, _w1)
 }));
 do {
@@ -2278,7 +2172,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, _c.constraints_, _c.traitName_, _c.typeArguments_, _c.generatorArguments_, ff_compiler_Inference.catchMany_(definition_.methods_, ((instanceFunction_) => {
+return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, _c.constraints_, _c.traitName_, _c.typeArguments_, _c.generatorArguments_, ff_compiler_Syntax.catchMany_(definition_.methods_, ((instanceFunction_) => {
 const methodName_ = instanceFunction_.signature_.name_;
 const traitMethodName_ = (ff_core_String.String_reverse(ff_core_String.String_dropWhile(ff_core_String.String_reverse(traitName_), ((_w1) => {
 return (_w1 !== 46)
@@ -2337,7 +2231,7 @@ return ff_compiler_Syntax.DLet(_c.at_, _c.name_, _c.variableType_, value_)
 
 export async function Inference_inferExtendDefinition$(self_, environment_, definition_, $task) {
 const selfParameter_ = ff_compiler_Syntax.Parameter(definition_.at_, false, definition_.name_, definition_.type_, ff_core_Option.None());
-const functions_ = ff_compiler_Inference.catchMany_(definition_.methods_, ((method_) => {
+const functions_ = ff_compiler_Syntax.catchMany_(definition_.methods_, ((method_) => {
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, [...definition_.generics_, ...method_.signature_.generics_], [...definition_.constraints_, ...method_.signature_.constraints_], [selfParameter_, ...method_.signature_.parameters_], _c.returnType_, _c.effect_)
 }))(method_.signature_);

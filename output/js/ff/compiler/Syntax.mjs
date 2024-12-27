@@ -358,9 +358,111 @@ return {at_, major_, minor_, patch_};
 
 
 
+export function catchMany_(list_, body_) {
+const errors_ = ff_core_Array.new_();
+const result_ = ff_compiler_Syntax.catchManyInto_(errors_, list_, body_);
+{
+const _1 = ff_core_Array.Array_drain(errors_);
+if(_1.length === 0) {
+return result_
+}
+if(_1.length === 1) {
+const error_ = _1[0].second_;
+return ff_core_Error.Error_rethrow(error_)
+}
+{
+const allErrors_ = _1;
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileErrors(ff_core_List.List_map(allErrors_, ((_w1) => {
+return _w1.first_
+}))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)})
+return
+}
+}
+}
 
+export function catchManyInto_(errors_, list_, body_) {
+const result_ = ff_core_List.List_map(list_, ((x_) => {
+return ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch(ff_core_Core.try_((() => {
+return body_(x_)
+})), ((_1, _2) => {
+{
+const at_ = _1.at_;
+const message_ = _1.message_;
+const error_ = _2;
+errors_.array.push(ff_core_Pair.Pair(ff_compiler_Syntax.CompileError(at_, message_), error_));
+return x_
+}
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
+{
+const compileErrors_ = _1.errors_;
+const error_ = _2;
+for(let for_a = compileErrors_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const compileError_ = for_a[for_i];
+errors_.array.push(ff_core_Pair.Pair(compileError_, error_))
+};
+return x_
+}
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
+}));
+if(ff_core_Array.Array_isEmpty(errors_)) {
+return result_
+} else {
+return []
+}
+}
 
+export async function catchMany_$(list_, body_, $task) {
+const errors_ = ff_core_Array.new_();
+const result_ = (await ff_compiler_Syntax.catchManyInto_$(errors_, list_, body_, $task));
+{
+const _1 = ff_core_Array.Array_drain(errors_);
+if(_1.length === 0) {
+return result_
+}
+if(_1.length === 1) {
+const error_ = _1[0].second_;
+return ff_core_Error.Error_rethrow(error_)
+}
+{
+const allErrors_ = _1;
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileErrors(ff_core_List.List_map(allErrors_, ((_w1) => {
+return _w1.first_
+}))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)})
+return
+}
+}
+}
 
+export async function catchManyInto_$(errors_, list_, body_, $task) {
+const result_ = (await ff_core_List.List_map$(list_, (async (x_, $task) => {
+return ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch((await ff_core_Core.try_$((async ($task) => {
+return (await body_(x_, $task))
+}), $task)), ((_1, _2) => {
+{
+const at_ = _1.at_;
+const message_ = _1.message_;
+const error_ = _2;
+errors_.array.push(ff_core_Pair.Pair(ff_compiler_Syntax.CompileError(at_, message_), error_));
+return x_
+}
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
+{
+const compileErrors_ = _1.errors_;
+const error_ = _2;
+for(let for_a = compileErrors_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const compileError_ = for_a[for_i];
+errors_.array.push(ff_core_Pair.Pair(compileError_, error_))
+};
+return x_
+}
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
+}), $task));
+if(ff_core_Array.Array_isEmpty(errors_)) {
+return result_
+} else {
+return []
+}
+}
 
 export function Location_show(self_) {
 return (((((("in " + self_.file_) + " ") + "at line ") + self_.line_) + ", column ") + self_.column_)
