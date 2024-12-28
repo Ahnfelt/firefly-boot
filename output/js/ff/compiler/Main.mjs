@@ -139,6 +139,9 @@ return {BuildCommand: true, mainPath_};
 export function CheckCommand(filePath_) {
 return {CheckCommand: true, filePath_};
 }
+export function SymbolsCommand(filePath_) {
+return {SymbolsCommand: true, filePath_};
+}
 
 // type CommandLineError
 export function CommandLineError(problem_) {
@@ -153,6 +156,7 @@ These are the commands:
    browser <main-file>                   Compile the main file for the browser
    build <main-file>                     Build the main file
    check <firefly-file>                  Check the firefly source file for errors
+   symbols <firefly-file>                Print a .tsv with the symbols of a firefly source file
    bootstrap                             Bootstrap the compiler
 `;
 
@@ -226,10 +230,24 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 }
 return
 }
-{
+if(command_a.BootstrapCommand) {
 const workingDirectory_ = ff_core_NodeSystem.NodeSystem_path(system_, ".");
 const fakeLocation_ = ff_compiler_Syntax.Location("<core>", 0, 0);
 ff_compiler_Builder.build_(system_, ff_compiler_JsEmitter.EmitNode(), ff_compiler_Syntax.PackagePair("ff", "compiler"), "Main", ff_compiler_Dependencies.ResolvedDependencies(ff_compiler_Syntax.PackagePair("ff", "compiler"), ff_core_List.List_toMap([ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.PackageInfo(ff_compiler_Syntax.DPackage(fakeLocation_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.Version(fakeLocation_, 0, 0, 0), ff_compiler_Syntax.TargetNames(true, false)), [], [ff_compiler_Syntax.DInclude(fakeLocation_, "node_modules")]))], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap([ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "compiler"), ff_core_Path.Path_slash(workingDirectory_, "compiler")), ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), ff_core_Path.Path_slash(workingDirectory_, "core"))], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)), ff_core_Option.None(), ff_core_Path.Path_slash(ff_core_Path.Path_slash(workingDirectory_, "output"), "temporary"), ff_core_Path.Path_slash(ff_core_Path.Path_slash(workingDirectory_, "output"), "js"), true, ff_compiler_ModuleCache.new_(0))
+return
+}
+{
+const filePath_ = command_a.filePath_;
+const path_ = ff_core_NodeSystem.NodeSystem_path(system_, filePath_);
+const code_ = ff_core_Path.Path_readText(path_);
+const packagePair_ = ff_compiler_Syntax.PackagePair("script", "script");
+const tokens_ = ff_compiler_Tokenizer.tokenize_(ff_core_Path.Path_absolute(path_), code_, ff_core_Option.None(), false);
+const parser_ = ff_compiler_Parser.new_(packagePair_, ff_core_Path.Path_base(path_), tokens_, true, ff_compiler_LspHook.disabled_());
+const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
+const tsv_ = ff_compiler_Main.makeSymbolsTsv_(module_);
+ff_core_NodeSystem.NodeSystem_writeLine(system_, ff_core_List.List_join(ff_core_List.List_map(tsv_, ((_w1) => {
+return ff_core_List.List_join(_w1, "\t")
+})), "\n"))
 return
 }
 }
@@ -355,6 +373,23 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Ma
 }
 return
 }
+if(arguments_a.length >= 1 && arguments_a[0] === "symbols") {
+const checkArguments_ = arguments_a.slice(1);
+{
+const _1 = checkArguments_;
+if(_1.length === 1) {
+const fileName_ = _1[0];
+return ff_compiler_Main.SymbolsCommand(fileName_)
+}
+if(_1.length >= 2) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to symbols." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
+}
+{
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) or directory as the argument to symbols." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
+}
+}
+return
+}
 if(arguments_a.length === 2 && arguments_a[0] === "bootstrap") {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("bootstrap takes no arguments" + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 }
@@ -421,6 +456,103 @@ throw (new Error(((("Expected module path to end with: " + suffix_) + ", but got
 } else {
 return ff_core_Path.Path(url_.fileURLToPath((new URL(moduleUrl_.slice(0, (-suffix_.length))))))
 }
+}
+
+export function makeSymbolsTsv_(module_) {
+function processSignature_(signature_) {
+const generics_ = (ff_core_List.List_isEmpty(signature_.generics_)
+? ""
+: (("[" + ff_core_List.List_join(signature_.generics_, ", ")) + "]"));
+const parameters_ = (("(" + ff_core_List.List_join(ff_core_List.List_map(signature_.parameters_, ((_w1) => {
+return _w1.name_
+})), ", ")) + ")");
+return ((signature_.name_ + generics_) + parameters_)
+}
+const traits_ = ff_core_List.List_map(module_.traits_, ((x_) => {
+const generics_ = ff_core_List.List_dropFirst(x_.generics_, 1);
+const g_ = ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_List.List_first(x_.generics_), ((_w1) => {
+return (_w1 + ": ")
+})), (() => {
+return ""
+}));
+return {
+generics_: generics_,
+name_: (g_ + x_.name_),
+symbols_: ff_core_List.List_map(x_.methods_, ((_w1) => {
+return processSignature_(_w1)
+}))
+}
+}));
+const types_ = ff_core_List.List_map(module_.types_, ((x_) => {
+const variants_ = ff_core_List.List_map(x_.variants_, ((variant_) => {
+const parameters_ = ((ff_core_List.List_isEmpty(variant_.fields_) && ff_core_List.List_isEmpty(x_.commonFields_))
+? ""
+: (("(" + ff_core_List.List_join(ff_core_List.List_map([...x_.commonFields_, ...variant_.fields_], ((_w1) => {
+return _w1.name_
+})), ", ")) + ")"));
+return (variant_.name_ + parameters_)
+}));
+const methods_ = ff_core_List.List_map(ff_core_List.List_map(ff_core_List.List_flatMap(ff_core_List.List_filter(module_.extends_, ((_w1) => {
+{
+const _1 = _w1.type_;
+if(_1.TConstructor) {
+const name_ = _1.name_;
+return (name_ === x_.name_)
+}
+{
+return false
+}
+}
+})), ((_w1) => {
+return _w1.methods_
+})), ((_w1) => {
+return _w1.signature_
+})), ((_w1) => {
+return processSignature_(_w1)
+}));
+return {
+generics_: x_.generics_,
+name_: x_.name_,
+symbols_: [...variants_, ...methods_]
+}
+}));
+const functions_ = (ff_core_List.List_isEmpty(module_.functions_)
+? []
+: [{
+generics_: [],
+name_: "functions",
+symbols_: ff_core_List.List_map(module_.functions_, ((_w1) => {
+return processSignature_(_w1.signature_)
+}))
+}]);
+const lets_ = (ff_core_List.List_isEmpty(module_.lets_)
+? []
+: [{
+generics_: [],
+name_: "constants",
+symbols_: ff_core_List.List_map(module_.lets_, ((_w1) => {
+return _w1.name_
+}))
+}]);
+const all_ = [...lets_, ...functions_, ...types_, ...traits_];
+const rowCount_ = ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_List.List_last(ff_core_List.List_sortBy(all_, ((_w1) => {
+return _w1.symbols_.length
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)), ((_w1) => {
+return (_w1.symbols_.length + 1)
+})), (() => {
+return 1
+}));
+const columns_ = ff_core_List.List_map(all_, ((r_) => {
+const generics_ = (ff_core_List.List_isEmpty(r_.generics_)
+? ""
+: (("[" + ff_core_List.List_join(r_.generics_, ", ")) + "]"));
+return [(r_.name_ + generics_), ...r_.symbols_, ...ff_core_List.fill_((rowCount_ - r_.symbols_.length), "")]
+}));
+return ff_core_List.List_map(ff_core_Int.Int_until(0, rowCount_), ((i_) => {
+return ff_core_List.List_map(columns_, ((_w1) => {
+return ff_core_List.List_grab(_w1, i_)
+}))
+}))
 }
 
 export async function main_$(system_, $task) {
@@ -493,10 +625,24 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 }
 return
 }
-{
+if(command_a.BootstrapCommand) {
 const workingDirectory_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task));
 const fakeLocation_ = ff_compiler_Syntax.Location("<core>", 0, 0);
 (await ff_compiler_Builder.build_$(system_, ff_compiler_JsEmitter.EmitNode(), ff_compiler_Syntax.PackagePair("ff", "compiler"), "Main", ff_compiler_Dependencies.ResolvedDependencies(ff_compiler_Syntax.PackagePair("ff", "compiler"), ff_core_List.List_toMap([ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.PackageInfo(ff_compiler_Syntax.DPackage(fakeLocation_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.Version(fakeLocation_, 0, 0, 0), ff_compiler_Syntax.TargetNames(true, false)), [], [ff_compiler_Syntax.DInclude(fakeLocation_, "node_modules")]))], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap([ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "compiler"), (await ff_core_Path.Path_slash$(workingDirectory_, "compiler", $task))), ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), (await ff_core_Path.Path_slash$(workingDirectory_, "core", $task)))], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)), ff_core_Option.None(), (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(workingDirectory_, "output", $task)), "temporary", $task)), (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(workingDirectory_, "output", $task)), "js", $task)), true, ff_compiler_ModuleCache.new_(0), $task))
+return
+}
+{
+const filePath_ = command_a.filePath_;
+const path_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, filePath_, $task));
+const code_ = (await ff_core_Path.Path_readText$(path_, $task));
+const packagePair_ = ff_compiler_Syntax.PackagePair("script", "script");
+const tokens_ = ff_compiler_Tokenizer.tokenize_((await ff_core_Path.Path_absolute$(path_, $task)), code_, ff_core_Option.None(), false);
+const parser_ = ff_compiler_Parser.new_(packagePair_, (await ff_core_Path.Path_base$(path_, $task)), tokens_, true, ff_compiler_LspHook.disabled_());
+const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
+const tsv_ = ff_compiler_Main.makeSymbolsTsv_(module_);
+(await ff_core_NodeSystem.NodeSystem_writeLine$(system_, ff_core_List.List_join(ff_core_List.List_map(tsv_, ((_w1) => {
+return ff_core_List.List_join(_w1, "\t")
+})), "\n"), $task))
 return
 }
 }
@@ -622,6 +768,23 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Ma
 }
 return
 }
+if(arguments_a.length >= 1 && arguments_a[0] === "symbols") {
+const checkArguments_ = arguments_a.slice(1);
+{
+const _1 = checkArguments_;
+if(_1.length === 1) {
+const fileName_ = _1[0];
+return ff_compiler_Main.SymbolsCommand(fileName_)
+}
+if(_1.length >= 2) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to symbols." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
+}
+{
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) or directory as the argument to symbols." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
+}
+}
+return
+}
 if(arguments_a.length === 2 && arguments_a[0] === "bootstrap") {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("bootstrap takes no arguments" + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 }
@@ -690,6 +853,103 @@ return ff_core_Path.Path(url_.fileURLToPath((new URL(moduleUrl_.slice(0, (-suffi
 }
 }
 
+export async function makeSymbolsTsv_$(module_, $task) {
+function processSignature_(signature_) {
+const generics_ = (ff_core_List.List_isEmpty(signature_.generics_)
+? ""
+: (("[" + ff_core_List.List_join(signature_.generics_, ", ")) + "]"));
+const parameters_ = (("(" + ff_core_List.List_join(ff_core_List.List_map(signature_.parameters_, ((_w1) => {
+return _w1.name_
+})), ", ")) + ")");
+return ((signature_.name_ + generics_) + parameters_)
+}
+const traits_ = ff_core_List.List_map(module_.traits_, ((x_) => {
+const generics_ = ff_core_List.List_dropFirst(x_.generics_, 1);
+const g_ = ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_List.List_first(x_.generics_), ((_w1) => {
+return (_w1 + ": ")
+})), (() => {
+return ""
+}));
+return {
+generics_: generics_,
+name_: (g_ + x_.name_),
+symbols_: ff_core_List.List_map(x_.methods_, ((_w1) => {
+return processSignature_(_w1)
+}))
+}
+}));
+const types_ = ff_core_List.List_map(module_.types_, ((x_) => {
+const variants_ = ff_core_List.List_map(x_.variants_, ((variant_) => {
+const parameters_ = ((ff_core_List.List_isEmpty(variant_.fields_) && ff_core_List.List_isEmpty(x_.commonFields_))
+? ""
+: (("(" + ff_core_List.List_join(ff_core_List.List_map([...x_.commonFields_, ...variant_.fields_], ((_w1) => {
+return _w1.name_
+})), ", ")) + ")"));
+return (variant_.name_ + parameters_)
+}));
+const methods_ = ff_core_List.List_map(ff_core_List.List_map(ff_core_List.List_flatMap(ff_core_List.List_filter(module_.extends_, ((_w1) => {
+{
+const _1 = _w1.type_;
+if(_1.TConstructor) {
+const name_ = _1.name_;
+return (name_ === x_.name_)
+}
+{
+return false
+}
+}
+})), ((_w1) => {
+return _w1.methods_
+})), ((_w1) => {
+return _w1.signature_
+})), ((_w1) => {
+return processSignature_(_w1)
+}));
+return {
+generics_: x_.generics_,
+name_: x_.name_,
+symbols_: [...variants_, ...methods_]
+}
+}));
+const functions_ = (ff_core_List.List_isEmpty(module_.functions_)
+? []
+: [{
+generics_: [],
+name_: "functions",
+symbols_: ff_core_List.List_map(module_.functions_, ((_w1) => {
+return processSignature_(_w1.signature_)
+}))
+}]);
+const lets_ = (ff_core_List.List_isEmpty(module_.lets_)
+? []
+: [{
+generics_: [],
+name_: "constants",
+symbols_: ff_core_List.List_map(module_.lets_, ((_w1) => {
+return _w1.name_
+}))
+}]);
+const all_ = [...lets_, ...functions_, ...types_, ...traits_];
+const rowCount_ = ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_List.List_last(ff_core_List.List_sortBy(all_, ((_w1) => {
+return _w1.symbols_.length
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)), ((_w1) => {
+return (_w1.symbols_.length + 1)
+})), (() => {
+return 1
+}));
+const columns_ = ff_core_List.List_map(all_, ((r_) => {
+const generics_ = (ff_core_List.List_isEmpty(r_.generics_)
+? ""
+: (("[" + ff_core_List.List_join(r_.generics_, ", ")) + "]"));
+return [(r_.name_ + generics_), ...r_.symbols_, ...ff_core_List.fill_((rowCount_ - r_.symbols_.length), "")]
+}));
+return ff_core_List.List_map(ff_core_Int.Int_until(0, rowCount_), ((i_) => {
+return ff_core_List.List_map(columns_, ((_w1) => {
+return ff_core_List.List_grab(_w1, i_)
+}))
+}))
+}
+
 
 
 export const ff_core_Any_HasAnyTag$ff_compiler_Main_MainCommand = {
@@ -729,9 +989,13 @@ if(value_a.BuildCommand) {
 const z_ = value_a;
 return ((("BuildCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ")")
 }
-{
+if(value_a.CheckCommand) {
 const z_ = value_a;
 return ((("CheckCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.filePath_)) + ")")
+}
+{
+const z_ = value_a;
+return ((("SymbolsCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.filePath_)) + ")")
 }
 },
 async show_$(value_, $task) {
@@ -752,9 +1016,13 @@ if(value_a.BuildCommand) {
 const z_ = value_a;
 return ((("BuildCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ")")
 }
-{
+if(value_a.CheckCommand) {
 const z_ = value_a;
 return ((("CheckCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.filePath_)) + ")")
+}
+{
+const z_ = value_a;
+return ((("SymbolsCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.filePath_)) + ")")
 }
 }
 };
@@ -803,6 +1071,11 @@ const x_ = x_a;
 const y_ = y_a;
 return (x_.filePath_ === y_.filePath_)
 }
+if(x_a.SymbolsCommand && y_a.SymbolsCommand) {
+const x_ = x_a;
+const y_ = y_a;
+return (x_.filePath_ === y_.filePath_)
+}
 {
 return false
 }
@@ -829,6 +1102,11 @@ const y_ = y_a;
 return (x_.mainPath_ === y_.mainPath_)
 }
 if(x_a.CheckCommand && y_a.CheckCommand) {
+const x_ = x_a;
+const y_ = y_a;
+return (x_.filePath_ === y_.filePath_)
+}
+if(x_a.SymbolsCommand && y_a.SymbolsCommand) {
 const x_ = x_a;
 const y_ = y_a;
 return (x_.filePath_ === y_.filePath_)
@@ -918,6 +1196,17 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
+if(x_a.SymbolsCommand && y_a.SymbolsCommand) {
+const x_ = x_a;
+const y_ = y_a;
+const filePathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.filePath_, y_.filePath_);
+if((filePathOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return filePathOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+return
+}
 {
 function number_(z_) {
 const z_a = z_;
@@ -933,8 +1222,11 @@ return 2
 if(z_a.BuildCommand) {
 return 3
 }
-{
+if(z_a.CheckCommand) {
 return 4
+}
+{
+return 5
 }
 }
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
@@ -995,6 +1287,17 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
+if(x_a.SymbolsCommand && y_a.SymbolsCommand) {
+const x_ = x_a;
+const y_ = y_a;
+const filePathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.filePath_, y_.filePath_);
+if((filePathOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return filePathOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+return
+}
 {
 function number_(z_) {
 const z_a = z_;
@@ -1010,8 +1313,11 @@ return 2
 if(z_a.BuildCommand) {
 return 3
 }
-{
+if(z_a.CheckCommand) {
 return 4
+}
+{
+return 5
 }
 }
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
@@ -1094,11 +1400,20 @@ serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_)
 return
 }
-{
+if(value_a.CheckCommand) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 4);
+serialization_.offset_ += 1;
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.filePath_)
+return
+}
+{
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 5);
 serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.filePath_)
 return
@@ -1128,6 +1443,10 @@ return ff_compiler_Main.BuildCommand(ff_core_Serializable.ff_core_Serializable_S
 if(_1 === 4) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Main.CheckCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+}
+if(_1 === 5) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
+return ff_compiler_Main.SymbolsCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -1173,11 +1492,20 @@ serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_)
 return
 }
-{
+if(value_a.CheckCommand) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 4);
+serialization_.offset_ += 1;
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.filePath_)
+return
+}
+{
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 5);
 serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.filePath_)
 return
@@ -1207,6 +1535,10 @@ return ff_compiler_Main.BuildCommand(ff_core_Serializable.ff_core_Serializable_S
 if(_1 === 4) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Main.CheckCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+}
+if(_1 === 5) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
+return ff_compiler_Main.SymbolsCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})

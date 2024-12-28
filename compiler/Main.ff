@@ -18,6 +18,7 @@ data MainCommand {
     BrowserCommand(mainPath: String)
     BuildCommand(mainPath: String)
     CheckCommand(filePath: String)
+    SymbolsCommand(filePath: String)
 }
 
 data CommandLineError(problem: String)
@@ -143,6 +144,17 @@ main(system: NodeSystem): Unit {
                 printMeasurements = True
                 moduleCache = ModuleCache.new(0)
             )
+            
+        | SymbolsCommand(filePath) =>
+            let path = system.path(filePath)
+            let code = path.readText()
+            let packagePair = PackagePair("script", "script")
+            let tokens = Tokenizer.tokenize(path.absolute(), code, None, False)
+            let parser = Parser.new(packagePair, path.base(), tokens, True, LspHook.disabled())
+            let module = parser.parseModuleWithPackageInfo().module
+            let tsv = makeSymbolsTsv(module)
+            system.writeLine(tsv.map {_.join("\t")}.join("\n"))
+            
     }
 
     try {
@@ -169,6 +181,7 @@ These are the commands:
    browser <main-file>                   Compile the main file for the browser
    build <main-file>                     Build the main file
    check <firefly-file>                  Check the firefly source file for errors
+   symbols <firefly-file>                Print a .tsv with the symbols of a firefly source file
    bootstrap                             Bootstrap the compiler
 """
 
@@ -214,6 +227,17 @@ parseCommandLine(arguments: List[String]): MainCommand {
             ))
             | [] => throw(CommandLineError(
                 "You must specify a Firefly file (.ff) or directory as the argument to check."  + usageString
+            ))
+        }
+    | ["symbols", ...checkArguments] =>
+        checkArguments.{
+            | [fileName] =>
+                SymbolsCommand(fileName)
+            | [_, _, ...] => throw(CommandLineError(
+                "You must only specify a single argument to symbols."  + usageString
+            ))
+            | [] => throw(CommandLineError(
+                "You must specify a Firefly file (.ff) or directory as the argument to symbols."  + usageString
             ))
         }
     | ["bootstrap", _] =>
@@ -283,4 +307,43 @@ detectFireflyPath(system: NodeSystem): Path {
     } else {
         Path(url->fileURLToPath(Js->URL->(moduleUrl->slice(0, -suffix.size())))?)
     }
+}
+
+makeSymbolsTsv(module: Module): List[List[String]] {
+    function processSignature(signature: Signature): String {
+        let generics = if(signature.generics.isEmpty()) {""} else {"[" + signature.generics.join(", ") + "]"}
+        let parameters = "(" + signature.parameters.map {_.name}.join(", ") + ")"
+        signature.name + generics + parameters
+    }
+    let traits = module.traits.map {x =>
+        let generics = x.generics.dropFirst()
+        let g = x.generics.first().map {_ + ": "}.else {""}
+        (name = g + x.name, generics = generics, symbols = x.methods.map {processSignature(_)})
+    }
+    let types = module.types.map {x =>
+        let variants = x.variants.map {variant =>
+            let parameters = if(variant.fields.isEmpty() && x.commonFields.isEmpty()) {""} else {
+                "(" + [...x.commonFields, ...variant.fields].map {_.name}.join(", ") + ")"
+            }
+            variant.name + parameters
+        }
+        let methods = module.extends.filter {_.type.{
+            | TConstructor(_, name, _) => name == x.name
+            | _ => False
+        }}.flatMap {_.methods}.map {_.signature}.map {processSignature(_)}
+        (name = x.name, generics = x.generics, symbols = [...variants, ...methods])
+    }
+    let functions = if(module.functions.isEmpty()) {[]} else {
+        [(name = "functions", generics = [], symbols = module.functions.map {processSignature(_.signature)})]
+    }
+    let lets = if(module.lets.isEmpty()) {[]} else {
+        [(name = "constants", generics = [], symbols = module.lets.map {_.name})]
+    }
+    let all = [...lets, ...functions, ...types, ...traits]
+    let rowCount = all.sortBy {_.symbols.size()}.last().map {_.symbols.size() + 1}.else {1}
+    let columns = all.map {r => 
+        let generics = if(r.generics.isEmpty()) {""} else {"[" + r.generics.join(", ") + "]"}
+        [r.name + generics, ...r.symbols, ...List.fill(rowCount - r.symbols.size(), "")]
+    }
+    0.until(rowCount).map {i => columns.map {_.grab(i)}}
 }
