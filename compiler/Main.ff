@@ -18,7 +18,7 @@ data MainCommand {
     BrowserCommand(mainPath: String)
     BuildCommand(mainPath: String)
     CheckCommand(filePath: String)
-    SymbolsCommand(filePath: String, outPath: Option[String])
+    SymbolsCommand(outPath: String, filePaths: List[String])
 }
 
 data CommandLineError(problem: String)
@@ -145,19 +145,19 @@ main(system: NodeSystem): Unit {
                 moduleCache = ModuleCache.new(0)
             )
             
-        | SymbolsCommand(filePath, outPath) =>
-            let path = system.path(filePath)
-            let code = path.readText()
-            let packagePair = PackagePair("script", "script")
-            let tokens = Tokenizer.tokenize(path.absolute(), code, None, False)
-            let parser = Parser.new(packagePair, path.base(), tokens, True, LspHook.disabled())
-            let module = parser.parseModuleWithPackageInfo().module
-            let tsv = makeSymbolsTsv(module)
-            let out = tsv.map {_.join("\t")}.join("\n")
-            outPath.{
-                | None => system.writeLine(out)
-                | Some(value) => system.path(value).writeText(out + "\n")
-            } 
+        | SymbolsCommand(outPath, filePaths) =>
+            let columns = filePaths.flatMap {filePath =>
+                let path = system.path(filePath)
+                let code = path.readText()
+                let packagePair = PackagePair("script", "script")
+                let tokens = Tokenizer.tokenize(path.absolute(), code, None, False)
+                let parser = Parser.new(packagePair, path.base(), tokens, True, LspHook.disabled())
+                let module = parser.parseModuleWithPackageInfo().module
+                makeSymbolColumns(module)
+            }
+            let rowCount = columns.sortBy {_.size()}.last().map {_.size()}.else {0}
+            let tsv = 0.until(rowCount).map {i => columns.map {_.get(i).else {""}}}
+            system.path(outPath).writeText(tsv.map {_.join("\t")}.join("\n") + "\n")
             
     }
 
@@ -197,7 +197,7 @@ parseCommandLine(arguments: List[String]): MainCommand {
             | [mainFile, ...mainArguments] {mainFile.removeLast(".ff") | Some(mainName)} =>
                 RunCommand(mainName, mainArguments)
             | _ => throw(CommandLineError(
-                "You must specify a Firefly file (.ff) as first argument to run."  + usageString
+                "You must specify a Firefly file (.ff) as first argument to run." + usageString
             ))
         }
     | ["browser", ...browserArguments] =>
@@ -205,10 +205,10 @@ parseCommandLine(arguments: List[String]): MainCommand {
             | [mainFile] {mainFile.removeLast(".ff") | Some(mainName)} =>
                 BrowserCommand(mainName)
             | [_, _, ...] => throw(CommandLineError(
-                "You must only specify a single argument to browser."  + usageString
+                "You must only specify a single argument to browser." + usageString
             ))
             | _ => throw(CommandLineError(
-                "You must specify a Firefly file (.ff) as the argument to browser."  + usageString
+                "You must specify a Firefly file (.ff) as the argument to browser." + usageString
             ))
         }
     | ["build", ...buildArguments] =>
@@ -216,10 +216,10 @@ parseCommandLine(arguments: List[String]): MainCommand {
             | [mainFile] {mainFile.removeLast(".ff") | Some(mainName)} =>
                 BuildCommand(mainName)
             | [_, _, ...] => throw(CommandLineError(
-                "You must only specify a single argument to build."  + usageString
+                "You must only specify a single argument to build." + usageString
             ))
             | _ => throw(CommandLineError(
-                "You must specify a Firefly file (.ff) as the argument to build."  + usageString
+                "You must specify a Firefly file (.ff) as the argument to build." + usageString
             ))
         }
     | ["check", ...checkArguments] =>
@@ -227,23 +227,18 @@ parseCommandLine(arguments: List[String]): MainCommand {
             | [fileName] =>
                 CheckCommand(fileName)
             | [_, _, ...] => throw(CommandLineError(
-                "You must only specify a single argument to check."  + usageString
+                "You must only specify a single argument to check." + usageString
             ))
             | [] => throw(CommandLineError(
-                "You must specify a Firefly file (.ff) or directory as the argument to check."  + usageString
+                "You must specify a Firefly file (.ff) or directory as the argument to check." + usageString
             ))
         }
     | ["symbols", ...checkArguments] =>
         checkArguments.{
-            | [fileName] =>
-                SymbolsCommand(fileName, None)
-            | [fileName, outName] =>
-                SymbolsCommand(fileName, Some(outName))
-            | [_, ...] => throw(CommandLineError(
-                "You must only specify a single input and output file to symbols."  + usageString
-            ))
-            | [] => throw(CommandLineError(
-                "You must specify a Firefly file (.ff) or directory as the argument to symbols."  + usageString
+            | [outName, fileName, ...fileNames] {outName.endsWith(".tsv")} =>
+                SymbolsCommand(outName, [fileName, ...fileNames])
+            | _ => throw(CommandLineError(
+                "You must specify a output file (.tsv) and 1+ Firefly files (.ff) to symbols." + usageString
             ))
         }
     | ["bootstrap", _] =>
@@ -315,7 +310,7 @@ detectFireflyPath(system: NodeSystem): Path {
     }
 }
 
-makeSymbolsTsv(module: Module): List[List[String]] {
+makeSymbolColumns(module: Module): List[List[String]] {
     function processSignature(signature: Signature): String {
         let generics = if(signature.generics.isEmpty()) {""} else {"[" + signature.generics.join(", ") + "]"}
         let parameters = "(" + signature.parameters.map {_.name}.join(", ") + ")"
@@ -339,17 +334,14 @@ makeSymbolsTsv(module: Module): List[List[String]] {
         }}.flatMap {_.methods}.map {_.signature}.map {processSignature(_)}
         (name = x.name, generics = x.generics, symbols = [...variants, ...methods])
     }
-    let functions = if(module.functions.isEmpty()) {[]} else {
-        [(name = "functions", generics = [], symbols = module.functions.map {processSignature(_.signature)})]
+    let toplevel = if(module.functions.isEmpty()) {[]} else {
+        let functions = module.functions.map {processSignature(_.signature)}
+        [(name = "", generics = [], symbols = [...module.lets.map {_.name}, ...functions])]
     }
-    let lets = if(module.lets.isEmpty()) {[]} else {
-        [(name = "constants", generics = [], symbols = module.lets.map {_.name})]
-    }
-    let all = [...lets, ...functions, ...types, ...traits]
-    let rowCount = all.sortBy {_.symbols.size()}.last().map {_.symbols.size() + 1}.else {1}
-    let columns = all.map {r => 
+    let all = [...toplevel, ...types, ...traits]
+    all.map {r => 
         let generics = if(r.generics.isEmpty()) {""} else {"[" + r.generics.join(", ") + "]"}
-        [r.name + generics, ...r.symbols.sort(), ...List.fill(rowCount - r.symbols.size(), "")]
+        let header = (module.file + " " + r.name + generics).trim()
+        [header, ...r.symbols.sort()]
     }
-    0.until(rowCount).map {i => columns.map {_.grab(i)}}
 }
