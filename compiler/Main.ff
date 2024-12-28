@@ -18,7 +18,7 @@ data MainCommand {
     BrowserCommand(mainPath: String)
     BuildCommand(mainPath: String)
     CheckCommand(filePath: String)
-    SymbolsCommand(filePath: String)
+    SymbolsCommand(filePath: String, outPath: Option[String])
 }
 
 data CommandLineError(problem: String)
@@ -145,7 +145,7 @@ main(system: NodeSystem): Unit {
                 moduleCache = ModuleCache.new(0)
             )
             
-        | SymbolsCommand(filePath) =>
+        | SymbolsCommand(filePath, outPath) =>
             let path = system.path(filePath)
             let code = path.readText()
             let packagePair = PackagePair("script", "script")
@@ -153,7 +153,11 @@ main(system: NodeSystem): Unit {
             let parser = Parser.new(packagePair, path.base(), tokens, True, LspHook.disabled())
             let module = parser.parseModuleWithPackageInfo().module
             let tsv = makeSymbolsTsv(module)
-            system.writeLine(tsv.map {_.join("\t")}.join("\n"))
+            let out = tsv.map {_.join("\t")}.join("\n")
+            outPath.{
+                | None => system.writeLine(out)
+                | Some(value) => system.path(value).writeText(out + "\n")
+            } 
             
     }
 
@@ -232,9 +236,11 @@ parseCommandLine(arguments: List[String]): MainCommand {
     | ["symbols", ...checkArguments] =>
         checkArguments.{
             | [fileName] =>
-                SymbolsCommand(fileName)
-            | [_, _, ...] => throw(CommandLineError(
-                "You must only specify a single argument to symbols."  + usageString
+                SymbolsCommand(fileName, None)
+            | [fileName, outName] =>
+                SymbolsCommand(fileName, Some(outName))
+            | [_, ...] => throw(CommandLineError(
+                "You must only specify a single input and output file to symbols."  + usageString
             ))
             | [] => throw(CommandLineError(
                 "You must specify a Firefly file (.ff) or directory as the argument to symbols."  + usageString
@@ -343,7 +349,7 @@ makeSymbolsTsv(module: Module): List[List[String]] {
     let rowCount = all.sortBy {_.symbols.size()}.last().map {_.symbols.size() + 1}.else {1}
     let columns = all.map {r => 
         let generics = if(r.generics.isEmpty()) {""} else {"[" + r.generics.join(", ") + "]"}
-        [r.name + generics, ...r.symbols, ...List.fill(rowCount - r.symbols.size(), "")]
+        [r.name + generics, ...r.symbols.sort(), ...List.fill(rowCount - r.symbols.size(), "")]
     }
     0.until(rowCount).map {i => columns.map {_.grab(i)}}
 }

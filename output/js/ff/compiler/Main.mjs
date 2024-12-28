@@ -139,8 +139,8 @@ return {BuildCommand: true, mainPath_};
 export function CheckCommand(filePath_) {
 return {CheckCommand: true, filePath_};
 }
-export function SymbolsCommand(filePath_) {
-return {SymbolsCommand: true, filePath_};
+export function SymbolsCommand(filePath_, outPath_) {
+return {SymbolsCommand: true, filePath_, outPath_};
 }
 
 // type CommandLineError
@@ -238,6 +238,7 @@ return
 }
 {
 const filePath_ = command_a.filePath_;
+const outPath_ = command_a.outPath_;
 const path_ = ff_core_NodeSystem.NodeSystem_path(system_, filePath_);
 const code_ = ff_core_Path.Path_readText(path_);
 const packagePair_ = ff_compiler_Syntax.PackagePair("script", "script");
@@ -245,9 +246,20 @@ const tokens_ = ff_compiler_Tokenizer.tokenize_(ff_core_Path.Path_absolute(path_
 const parser_ = ff_compiler_Parser.new_(packagePair_, ff_core_Path.Path_base(path_), tokens_, true, ff_compiler_LspHook.disabled_());
 const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
 const tsv_ = ff_compiler_Main.makeSymbolsTsv_(module_);
-ff_core_NodeSystem.NodeSystem_writeLine(system_, ff_core_List.List_join(ff_core_List.List_map(tsv_, ((_w1) => {
+const out_ = ff_core_List.List_join(ff_core_List.List_map(tsv_, ((_w1) => {
 return ff_core_List.List_join(_w1, "\t")
-})), "\n"))
+})), "\n");
+do {
+const _1 = outPath_;
+if(_1.None) {
+ff_core_NodeSystem.NodeSystem_writeLine(system_, out_)
+break
+}
+{
+const value_ = _1.value_;
+ff_core_Path.Path_writeText(ff_core_NodeSystem.NodeSystem_path(system_, value_), (out_ + "\n"))
+}
+} while(false)
 return
 }
 }
@@ -379,10 +391,15 @@ const checkArguments_ = arguments_a.slice(1);
 const _1 = checkArguments_;
 if(_1.length === 1) {
 const fileName_ = _1[0];
-return ff_compiler_Main.SymbolsCommand(fileName_)
+return ff_compiler_Main.SymbolsCommand(fileName_, ff_core_Option.None())
 }
-if(_1.length >= 2) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to symbols." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
+if(_1.length === 2) {
+const fileName_ = _1[0];
+const outName_ = _1[1];
+return ff_compiler_Main.SymbolsCommand(fileName_, ff_core_Option.Some(outName_))
+}
+if(_1.length >= 1) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single input and output file to symbols." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) or directory as the argument to symbols." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
@@ -546,7 +563,7 @@ const columns_ = ff_core_List.List_map(all_, ((r_) => {
 const generics_ = (ff_core_List.List_isEmpty(r_.generics_)
 ? ""
 : (("[" + ff_core_List.List_join(r_.generics_, ", ")) + "]"));
-return [(r_.name_ + generics_), ...r_.symbols_, ...ff_core_List.fill_((rowCount_ - r_.symbols_.length), "")]
+return [(r_.name_ + generics_), ...ff_core_List.List_sort(r_.symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ...ff_core_List.fill_((rowCount_ - r_.symbols_.length), "")]
 }));
 return ff_core_List.List_map(ff_core_Int.Int_until(0, rowCount_), ((i_) => {
 return ff_core_List.List_map(columns_, ((_w1) => {
@@ -633,6 +650,7 @@ return
 }
 {
 const filePath_ = command_a.filePath_;
+const outPath_ = command_a.outPath_;
 const path_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, filePath_, $task));
 const code_ = (await ff_core_Path.Path_readText$(path_, $task));
 const packagePair_ = ff_compiler_Syntax.PackagePair("script", "script");
@@ -640,9 +658,20 @@ const tokens_ = ff_compiler_Tokenizer.tokenize_((await ff_core_Path.Path_absolut
 const parser_ = ff_compiler_Parser.new_(packagePair_, (await ff_core_Path.Path_base$(path_, $task)), tokens_, true, ff_compiler_LspHook.disabled_());
 const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
 const tsv_ = ff_compiler_Main.makeSymbolsTsv_(module_);
-(await ff_core_NodeSystem.NodeSystem_writeLine$(system_, ff_core_List.List_join(ff_core_List.List_map(tsv_, ((_w1) => {
+const out_ = ff_core_List.List_join(ff_core_List.List_map(tsv_, ((_w1) => {
 return ff_core_List.List_join(_w1, "\t")
-})), "\n"), $task))
+})), "\n");
+do {
+const _1 = outPath_;
+if(_1.None) {
+(await ff_core_NodeSystem.NodeSystem_writeLine$(system_, out_, $task))
+break
+}
+{
+const value_ = _1.value_;
+(await ff_core_Path.Path_writeText$((await ff_core_NodeSystem.NodeSystem_path$(system_, value_, $task)), (out_ + "\n"), $task))
+}
+} while(false)
 return
 }
 }
@@ -774,10 +803,15 @@ const checkArguments_ = arguments_a.slice(1);
 const _1 = checkArguments_;
 if(_1.length === 1) {
 const fileName_ = _1[0];
-return ff_compiler_Main.SymbolsCommand(fileName_)
+return ff_compiler_Main.SymbolsCommand(fileName_, ff_core_Option.None())
 }
-if(_1.length >= 2) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to symbols." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
+if(_1.length === 2) {
+const fileName_ = _1[0];
+const outName_ = _1[1];
+return ff_compiler_Main.SymbolsCommand(fileName_, ff_core_Option.Some(outName_))
+}
+if(_1.length >= 1) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single input and output file to symbols." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) or directory as the argument to symbols." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
@@ -941,7 +975,7 @@ const columns_ = ff_core_List.List_map(all_, ((r_) => {
 const generics_ = (ff_core_List.List_isEmpty(r_.generics_)
 ? ""
 : (("[" + ff_core_List.List_join(r_.generics_, ", ")) + "]"));
-return [(r_.name_ + generics_), ...r_.symbols_, ...ff_core_List.fill_((rowCount_ - r_.symbols_.length), "")]
+return [(r_.name_ + generics_), ...ff_core_List.List_sort(r_.symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ...ff_core_List.fill_((rowCount_ - r_.symbols_.length), "")]
 }));
 return ff_core_List.List_map(ff_core_Int.Int_until(0, rowCount_), ((i_) => {
 return ff_core_List.List_map(columns_, ((_w1) => {
@@ -995,7 +1029,7 @@ return ((("CheckCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_
 }
 {
 const z_ = value_a;
-return ((("SymbolsCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.filePath_)) + ")")
+return ((((("SymbolsCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.filePath_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.outPath_)) + ")")
 }
 },
 async show_$(value_, $task) {
@@ -1022,7 +1056,7 @@ return ((("CheckCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_
 }
 {
 const z_ = value_a;
-return ((("SymbolsCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.filePath_)) + ")")
+return ((((("SymbolsCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.filePath_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.outPath_)) + ")")
 }
 }
 };
@@ -1074,7 +1108,7 @@ return (x_.filePath_ === y_.filePath_)
 if(x_a.SymbolsCommand && y_a.SymbolsCommand) {
 const x_ = x_a;
 const y_ = y_a;
-return (x_.filePath_ === y_.filePath_)
+return ((x_.filePath_ === y_.filePath_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.outPath_, y_.outPath_))
 }
 {
 return false
@@ -1109,7 +1143,7 @@ return (x_.filePath_ === y_.filePath_)
 if(x_a.SymbolsCommand && y_a.SymbolsCommand) {
 const x_ = x_a;
 const y_ = y_a;
-return (x_.filePath_ === y_.filePath_)
+return ((x_.filePath_ === y_.filePath_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.outPath_, y_.outPath_))
 }
 {
 return false
@@ -1203,7 +1237,12 @@ const filePathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String
 if((filePathOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return filePathOrdering_
 } else {
+const outPathOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.outPath_, y_.outPath_);
+if((outPathOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return outPathOrdering_
+} else {
 return ff_core_Ordering.OrderingSame()
+}
 }
 return
 }
@@ -1294,7 +1333,12 @@ const filePathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String
 if((filePathOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return filePathOrdering_
 } else {
+const outPathOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.outPath_, y_.outPath_);
+if((outPathOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return outPathOrdering_
+} else {
 return ff_core_Ordering.OrderingSame()
+}
 }
 return
 }
@@ -1415,7 +1459,8 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 5);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.filePath_)
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.filePath_);
+ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.outPath_)
 return
 }
 },
@@ -1446,7 +1491,7 @@ return ff_compiler_Main.CheckCommand(ff_core_Serializable.ff_core_Serializable_S
 }
 if(_1 === 5) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-return ff_compiler_Main.SymbolsCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+return ff_compiler_Main.SymbolsCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -1507,7 +1552,8 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 5);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.filePath_)
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.filePath_);
+ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.outPath_)
 return
 }
 },
@@ -1538,7 +1584,7 @@ return ff_compiler_Main.CheckCommand(ff_core_Serializable.ff_core_Serializable_S
 }
 if(_1 === 5) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-return ff_compiler_Main.SymbolsCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+return ff_compiler_Main.SymbolsCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
