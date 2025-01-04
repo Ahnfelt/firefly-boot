@@ -8,6 +8,6 @@ routes: List[PageRoute] = [
 
 handlers(): List[PageHandler] {
     [
-        ChatRoute.pageHandler()
+        PageHandler(ChatRoute.pageRoute.pattern, {ChatRoute.handle(_, _, _)})
     ]
 }
