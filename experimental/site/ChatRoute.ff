@@ -1,0 +1,26 @@
+import Lux from ff:lux
+import WebServer from ff:webserver
+import RouteTools
+
+data Chat(room: String)
+
+pageRoute = PageRoute("ChatRoute", "/chat/{roomId}")
+
+serve(context: Context, system: NodeSystem, request: WebRequest[WebResponse]) {
+    let pageData = Chat("42")
+    let title = "Chat"
+    RouteTools.renderAndServe(system, pageRoute, pageData, title, request, {render(_, pageData)})
+}
+
+browserMain(system: BrowserSystem) {
+    RouteTools.renderToMain(system, {render(_, _)})
+}
+
+render(lux: Lux, chat: Chat) {
+    lux.add("div") {
+        lux.add("h1") {
+            lux.text("Hello")
+        }
+    }
+}
+
