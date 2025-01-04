@@ -1,0 +1,13 @@
+import WebServer from ff:webserver
+import RouteTools
+import ChatRoute
+
+routes: List[PageRoute] = [
+    ChatRoute.pageRoute
+]
+
+handlers(): Map[String, (NodeSystem, WebRequest[WebResponse], Context) => Unit] {
+    [
+        ChatRoute.pageHandler()
+    ].map {h => Pair(h.pattern, h.handle)}.toMap()
+}
