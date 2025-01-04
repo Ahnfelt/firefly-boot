@@ -2,13 +2,9 @@ import WebServer from ff:webserver
 import Lux from ff:lux
 
 data PageRoute(page: String, pattern: String)
-data Context()
+capability PageHandler(pattern: String, handle: (NodeSystem, WebRequest[WebResponse], Context) => Unit)
 
-extend self: PageRoute {
-    jsPath(): String {
-        "/js/ff/site/" + self.page + ".mjs"
-    }
-}
+data Context()
 
 serveHtml(
     pageRoute: PageRoute
@@ -25,7 +21,7 @@ serveHtml(
     request.writeText("<title>" + title + "</title>")
     request.writeText("<meta name='viewport' content='width=device-width, initial-scale=1.0'>")
     request.writeText("<meta name='theme-color' content='#ecc45e'>")
-    request.writeText("<script type='module' src='" + pageRoute.jsPath() + "'></script>")
+    request.writeText("<script type='module' src='" + "/js/ff/site/" + pageRoute.page + ".mjs" + "'></script>")
     request.writeText("<script type='text/plain' id='data'>" + pageData.toBase64() + "</script>")
     request.writeText(styleTags)
     request.writeText("</head>")

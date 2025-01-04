@@ -6,6 +6,8 @@ data Chat(room: String)
 
 pageRoute = PageRoute("ChatRoute", "/chat/{roomId}")
 
+pageHandler(): PageHandler {PageHandler(pageRoute.pattern, {handle(_, _, _)})}
+
 handle(system: NodeSystem, request: WebRequest[WebResponse], context: Context) {
     let pageData = Chat("42")
     let title = "Chat"
