@@ -18,7 +18,7 @@ nodeMain(system: NodeSystem): Unit {
             | _ => 
                 // Very sketchy routing
                 let routeOption = Routes.routes.find {route =>
-                    let routeSegments = path.split('/').filter {s => s != "" && s != "." && s != ".."}
+                    let routeSegments = route.pattern.split('/').filter {s => s != "" && s != "." && s != ".."}
                     if(segments.size() != routeSegments.size()) {False} else:
                     segments.zip(routeSegments).all {| Pair(s, r) => s == r || r.startsWith("{")}
                 }
