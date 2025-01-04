@@ -27,7 +27,7 @@ nodeMain(system: NodeSystem): Unit {
                 }
                 routeOption.or {request.writeStatus("404 Not Found")}: route =>
                 let context = Context()
-                ChatRoute.serve(context, system, request) // TODO
+                ChatRoute.serve(system, request, context) // TODO
         }
     }    
 }
