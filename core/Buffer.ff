@@ -193,7 +193,7 @@ fromHex(hex: String): Buffer {
 
 fromBase64(base64: String): Buffer {
     let binaryString = Js->atob(base64)
-    let bytes = Js->Uint8Array->from(binaryString, Js->{char => char->CharCodeAt(0)})
+    let bytes = Js->Uint8Array->from(binaryString, Js->{char => char->charCodeAt(0)})
     Js->DataView->(bytes->buffer)?
 }
 

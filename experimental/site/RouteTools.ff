@@ -50,7 +50,7 @@ renderAndServe[T: Serializable](
 
 renderToMain[T: Serializable](system: BrowserSystem, render: (Lux, T) => Unit) {
     let base64 = system.js()->document->getElementById("data")->textContent.grabString()
-    let chat = Serializable.deserialize(base64.toBuffer())
+    let chat = Serializable.deserialize(Buffer.fromBase64(base64))
     Lux.renderById(system, "main") {lux =>
         render(lux, chat)
     }
