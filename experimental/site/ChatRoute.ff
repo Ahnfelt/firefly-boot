@@ -6,7 +6,7 @@ data Chat(room: String)
 
 pageRoute = PageRoute("ChatRoute", "/chat/{roomId}")
 
-serve(system: NodeSystem, request: WebRequest[WebResponse], context: Context) {
+handle(system: NodeSystem, request: WebRequest[WebResponse], context: Context) {
     let pageData = Chat("42")
     let title = "Chat"
     RouteTools.renderAndServe(system, pageRoute, pageData, title, request, {render(_, pageData)})

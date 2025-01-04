@@ -6,9 +6,16 @@ routes: List[PageRoute] = [
     ChatRoute.pageRoute
 ]
 
+routeHandlers(): Map[String, (NodeSystem, WebRequest[WebResponse], Context) => Unit] {
+    [
+        Pair(ChatRoute.pageRoute.pattern, {ChatRoute.handle(_, _, _)})
+    ].toMap()
+}
+
 nodeMain(system: NodeSystem): Unit {
     let host = system.arguments().grab(0)
     let port = system.arguments().grab(1).grabInt()
+    let handlers = routeHandlers()
     system.writeLine("Listening on " + host + ":" + port)
     WebServer.new(system, host, port).listen {request =>
         let path = request.readPath()
@@ -27,7 +34,8 @@ nodeMain(system: NodeSystem): Unit {
                 }
                 routeOption.or {request.writeStatus("404 Not Found")}: route =>
                 let context = Context()
-                ChatRoute.serve(system, request, context) // TODO
+                let handle = handlers.grab(route.pattern)
+                handle(system, request, context)
         }
     }    
 }
