@@ -6,8 +6,8 @@ routes: List[PageRoute] = [
     ChatRoute.pageRoute
 ]
 
-handlers(): Map[String, (NodeSystem, WebRequest[WebResponse], Context) => Unit] {
+handlers(): List[PageHandler] {
     [
         ChatRoute.pageHandler()
-    ].map {h => Pair(h.pattern, h.handle)}.toMap()
+    ]
 }

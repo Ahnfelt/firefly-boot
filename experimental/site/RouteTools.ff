@@ -51,3 +51,20 @@ renderToMain[T: Serializable](system: BrowserSystem, render: (Lux, T) => Unit) {
         render(lux, chat)
     }
 }
+
+checkRoutesAndHandlers(
+    routes: List[PageRoute]
+    handlers: List[PageHandler]
+): Map[String, (NodeSystem, WebRequest[WebResponse], Context) => Unit] {
+    let handlerMap = handlers.map {h => Pair(h.pattern, h.handle)}.toMap()
+    routes.each {r => 
+        if(!handlerMap.contains(r.pattern)) {
+            panic("Missing handler for " + r.pattern)
+        }
+    }
+    let missingPatterns = handlerMap.keys().removeAll(routes.map {_.pattern}.toSet())
+    missingPatterns.each {p =>
+        panic("Missing route for " + p)
+    }
+    handlerMap
+}

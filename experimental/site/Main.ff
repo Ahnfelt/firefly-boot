@@ -5,7 +5,7 @@ import Routes
 nodeMain(system: NodeSystem): Unit {
     let host = system.arguments().grab(0)
     let port = system.arguments().grab(1).grabInt()
-    let handlers = Routes.handlers()
+    let handlers = RouteTools.checkRoutesAndHandlers(Routes.routes, Routes.handlers())
     system.writeLine("Listening on " + host + ":" + port)
     WebServer.new(system, host, port).listen {request =>
         let path = request.readPath()
