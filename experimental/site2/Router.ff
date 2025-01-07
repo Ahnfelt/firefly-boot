@@ -10,7 +10,7 @@ chatRoomUserRoute: Route2[Int, Int] =
     Route.new2("/chat/{roomId}/users/{userId}")
 
 modulesWithBrowserMain: List[String] = [
-    ChatRoomRoute.moduleName
+    ChatRoomRoute.routeModule
 ]
 
 handlers(handler: RouteHandler[RouteContext]) {
