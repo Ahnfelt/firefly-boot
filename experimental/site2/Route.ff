@@ -7,13 +7,13 @@ trait P: RouteParameter {
 }
 
 instance String: RouteParameter {
-    toRouteParameter(text: String): Option[String] {Some(text)} // TODO
-    fromRouteParameter(value: String): String {value} // TODO
+    toRouteParameter(text: String): Option[String] {Some(text)} // TODO: Unescape
+    fromRouteParameter(value: String): String {value} // TODO: Escape
 }
 
 instance Int: RouteParameter {
-    toRouteParameter(text: String): Option[Int] {text.getInt()} // TODO
-    fromRouteParameter(value: Int): String {"" + value} // TODO
+    toRouteParameter(text: String): Option[Int] {text.getInt()}
+    fromRouteParameter(value: Int): String {"" + value}
 }
 
 data Route0(urlPattern: String, segments: List[String])
