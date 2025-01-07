@@ -16,28 +16,138 @@ instance Int: RouteParameter {
     fromRouteParameter(value: Int): String {"" + value} // TODO
 }
 
-data Route0(urlPattern: String)
-data Route1[P1: RouteParameter](urlPattern: String)
-data Route2[P1: RouteParameter, P2: RouteParameter](urlPattern: String)
+data Route0(urlPattern: String, segments: List[String])
+data Route1[P1](urlPattern: String, segments: List[String])
+data Route2[P1, P2](urlPattern: String, segments: List[String])
+
+new0(urlPattern: String): Route0 {
+    Route0(urlPattern, urlPattern.split('/').filter {s => s != ""})
+}
+
+new1[P1](urlPattern: String): Route1[P1] {
+    Route1(urlPattern, urlPattern.split('/').filter {s => s != ""})
+}
+
+new2[P1, P2](urlPattern: String): Route2[P1, P2] {
+    Route2(urlPattern, urlPattern.split('/').filter {s => s != ""})
+}
 
 extend self: Route0 {
-    toUrl(): String {self.urlPattern}
+    toUrl(): String {
+        self.urlPattern
+    }
 }
 
 extend self[P1: RouteParameter]: Route1[P1] {
-    toUrl(p1: P1): String {self.urlPattern + fromRouteParameter(p1)} // TODO
+    toUrl(p1: P1): String {
+        mutable result = ""
+        mutable parameter = 1
+        self.segments.each {r =>
+            result += "/"
+            if(r.startsWith("{")) {
+                if(parameter == 1) {result += fromRouteParameter(p1)}
+                parameter += 1
+            } else {
+                result += r
+            }
+        }
+        if(self.urlPattern.endsWith("/")) {result += "/"}
+        result
+    }
 }
 
 extend self[P1: RouteParameter, P2: RouteParameter]: Route2[P1, P2] {
-    toUrl(p1: P1, p2: P2): String {self.urlPattern + fromRouteParameter(p1) + fromRouteParameter(p2)} // TODO
+    toUrl(p1: P1, p2: P2): String {
+        mutable result = ""
+        mutable parameter = 0
+        self.segments.each {r =>
+            result += "/"
+            if(r.startsWith("{")) {
+                if(parameter == 1) {result += fromRouteParameter(p1)}
+                if(parameter == 2) {result += fromRouteParameter(p2)}
+                parameter += 1
+            } else {
+                result += r
+            }
+        }
+        if(self.urlPattern.endsWith("/")) {result += "/"}
+        result
+    }
 }
 
-class RouteHandler[C]()
+capability RouteHandler[C](handlers: Array[(WebRequest[WebResponse], List[String], C) => Bool])
 
 extend self[C]: RouteHandler[C] {
-    handle0(route: Route0, handle: (WebRequest[WebResponse], C) => Unit) {}
-    handle1[P1](route: Route1[P1], handle: (WebRequest[WebResponse], C, P1) => Unit) {}
-    handle2[P1, P2](route: Route2[P1, P2], handle: (WebRequest[WebResponse], C, P1, P2) => Unit) {}
+    
+    add0(route: Route0, handle: (WebRequest[WebResponse], C) => Unit) {
+        self.handlers.push {request, segments, context =>
+            if(segments != route.segments) {False} else:
+            handle(request, context)
+            True
+        }
+    }
+    
+    add1[P1: RouteParameter](route: Route1[P1], handle: (WebRequest[WebResponse], C, P1) => Unit) {
+        self.handlers.push {request, segments, context =>
+            if(segments.size() != route.segments.size()) {False} else:
+            let matching = True
+            mutable p1 = None
+            segments.zip(route.segments).eachWhile {| Pair(s, r) =>
+                if(r.startsWith("{")) {
+                    if(p1.isEmpty()) {
+                        p1 = toRouteParameter(s)
+                        !p1.isEmpty()
+                    } else {
+                        False
+                    }
+                } else {
+                    r == s
+                }
+            }
+            if(!matching) {False} else:
+            handle(request, context, p1.grab())
+            True
+        }
+    }
+    
+    add2[P1: RouteParameter, P2: RouteParameter](route: Route2[P1, P2], handle: (WebRequest[WebResponse], C, P1, P2) => Unit) {
+        self.handlers.push {request, segments, context =>
+            if(segments.size() != route.segments.size()) {False} else:
+            mutable p1 = None
+            mutable p2 = None
+            mutable matching = True
+            segments.zip(route.segments).eachWhile {| Pair(s, r) =>
+                matching = if(r.startsWith("{")) {
+                    if(p1.isEmpty()) {
+                        p1 = toRouteParameter(s)
+                        !p1.isEmpty()
+                    } elseIf {p2.isEmpty()} {
+                        p2 = toRouteParameter(s)
+                        !p2.isEmpty()
+                    } else {
+                        False
+                    }
+                } else {
+                    r == s
+                }
+                matching
+            }
+            if(!matching) {False} else:
+            handle(request, context, p1.grab(), p2.grab())
+            True
+        }
+    }
+    
+    handle(request: WebRequest[WebResponse], context: C): Bool {
+        let segments = request.readPath().split('/').filter {s => s != ""}
+        mutable handled = False
+        self.handlers.eachWhile {| handler =>
+            handled = handler(request, segments, context)
+            !handled
+        }
+        handled
+    }
+
 }
 
 serveHtml(

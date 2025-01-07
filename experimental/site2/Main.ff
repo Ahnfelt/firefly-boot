@@ -5,7 +5,9 @@ import Router
 nodeMain(system: NodeSystem): Unit {
     let host = system.arguments().grab(0)
     let port = system.arguments().grab(1).grabInt()
-    let handlers = RouteTools.checkRoutesAndHandlers(Routes.routes, Routes.handlers())
+    let context = RouteContext(system)
+    let handlers = RouteHandler(Array.new())
+    Router.handlers(handlers)
     system.writeLine("Listening on " + host + ":" + port)
     WebServer.new(system, host, port).listen {request =>
         let path = request.readPath()
@@ -15,17 +17,11 @@ nodeMain(system: NodeSystem): Unit {
                 let asset = segments.map {"/" + _}.join()
                 request.writeHeader("Content-Type", "text/javascript; charset=UTF-8")
                 request.writeStream(system.assets().readStream(asset))
-            | _ => 
-                // Very sketchy routing
-                let routeOption = Routes.routes.find {route =>
-                    let routeSegments = route.pattern.split('/').filter {s => s != "" && s != "." && s != ".."}
-                    if(segments.size() != routeSegments.size()) {False} else:
-                    segments.zip(routeSegments).all {| Pair(s, r) => s == r || r.startsWith("{")}
+            | _ =>
+                if(!handlers.handle(request, context)) {
+                    request.writeStatus("404 Not Found")
                 }
-                routeOption.or {request.writeStatus("404 Not Found")}: route =>
-                let context = Context()
-                let handle = handlers.grab(route.pattern)
-                handle(system, request, context)
+                Unit
         }
     }    
 }

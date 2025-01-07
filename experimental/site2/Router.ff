@@ -3,18 +3,18 @@ import Route
 import ChatRoomRoute
 
 chatRoomRoute: Route1[Int] = 
-    Route1("/chat/{roomId}")
+    Route.new1("/chat/{roomId}")
 chatRoomUsersRoute: Route1[Int] = 
-    Route1("/chat/{roomId}/users")
+    Route.new1("/chat/{roomId}/users")
 chatRoomUserRoute: Route2[Int, Int] = 
-    Route2("/chat/{roomId}/users/{userId}")
+    Route.new2("/chat/{roomId}/users/{userId}")
 
 modulesWithBrowserMain: List[String] = [
     ChatRoomRoute.moduleName
 ]
 
 handlers(handler: RouteHandler[RouteContext]) {
-    handler.handle1(chatRoomRoute, ChatRoomRoute.handle)
+    handler.add1(chatRoomRoute, ChatRoomRoute.handle)
 }
 
 capability RouteContext(system: NodeSystem)

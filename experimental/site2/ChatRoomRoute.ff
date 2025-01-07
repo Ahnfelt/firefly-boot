@@ -3,9 +3,9 @@ import WebServer from ff:webserver
 import Router
 import Route
 
-data Chat(room: String)
+moduleName = SourceLocation.here().module()
 
-moduleName = "ChatRoomRoute"
+data Chat(room: String)
 
 handle(request: WebRequest[WebResponse], context: RouteContext, roomId: Int) {
     let pageData = Chat("42")
