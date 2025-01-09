@@ -1,19 +1,22 @@
 import WebServer from ff:webserver
-import Route
+import WebRoute from ff:webserver
 import ChatRoomRoute
 
-chatRoomRoute: Route1[Int] = 
-    Route.new1("/chat/{roomId}")
-chatRoomUsersRoute: Route1[Int] = 
-    Route.new1("/chat/{roomId}/users")
-chatRoomUserRoute: Route2[Int, Int] = 
-    Route.new2("/chat/{roomId}/users/{userId}")
+chatRoomRoute: WebRoute1[Int] = WebRoute.new1(
+    "/chat/{roomId}"
+)
+chatRoomUsersRoute: WebRoute1[Int] = WebRoute.new1(
+    "/chat/{roomId}/users"
+)
+chatRoomUserRoute: WebRoute2[Int, Int] = WebRoute.new2(
+    "/chat/{roomId}/users/{userId}"
+)
 
 modulesWithBrowserMain: List[String] = [
     ChatRoomRoute.routeModule
 ]
 
-handlers(handler: RouteHandler[RouteContext]) {
+handlers(handler: WebRouteHandler[RouteContext]) {
     handler.add1(chatRoomRoute, ChatRoomRoute.handle)
 }
 

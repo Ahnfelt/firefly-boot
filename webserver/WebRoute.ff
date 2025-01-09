@@ -1,44 +1,43 @@
-import WebServer from ff:webserver
-import Lux from ff:lux
+import WebServer
 
-trait P: RouteParameter {
+trait P: WebParameter {
     toRouteParameter(text: String): Option[P]
     fromRouteParameter(value: P): String
 }
 
-instance String: RouteParameter {
+instance String: WebParameter {
     toRouteParameter(text: String): Option[String] {Some(text)} // TODO: Unescape
     fromRouteParameter(value: String): String {value} // TODO: Escape
 }
 
-instance Int: RouteParameter {
+instance Int: WebParameter {
     toRouteParameter(text: String): Option[Int] {text.getInt()}
     fromRouteParameter(value: Int): String {"" + value}
 }
 
-data Route0(urlPattern: String, segments: List[String])
-data Route1[P1](urlPattern: String, segments: List[String])
-data Route2[P1, P2](urlPattern: String, segments: List[String])
+data WebRoute0(urlPattern: String, segments: List[String])
+data WebRoute1[P1](urlPattern: String, segments: List[String])
+data WebRoute2[P1, P2](urlPattern: String, segments: List[String])
 
-new0(urlPattern: String): Route0 {
-    Route0(urlPattern, urlPattern.split('/').filter {s => s != ""})
+new0(urlPattern: String): WebRoute0 {
+    WebRoute0(urlPattern, urlPattern.split('/').filter {s => s != ""})
 }
 
-new1[P1](urlPattern: String): Route1[P1] {
-    Route1(urlPattern, urlPattern.split('/').filter {s => s != ""})
+new1[P1](urlPattern: String): WebRoute1[P1] {
+    WebRoute1(urlPattern, urlPattern.split('/').filter {s => s != ""})
 }
 
-new2[P1, P2](urlPattern: String): Route2[P1, P2] {
-    Route2(urlPattern, urlPattern.split('/').filter {s => s != ""})
+new2[P1, P2](urlPattern: String): WebRoute2[P1, P2] {
+    WebRoute2(urlPattern, urlPattern.split('/').filter {s => s != ""})
 }
 
-extend self: Route0 {
+extend self: WebRoute0 {
     toUrl(): String {
         self.urlPattern
     }
 }
 
-extend self[P1: RouteParameter]: Route1[P1] {
+extend self[P1: WebParameter]: WebRoute1[P1] {
     toUrl(p1: P1): String {
         mutable result = ""
         mutable parameter = 1
@@ -56,7 +55,7 @@ extend self[P1: RouteParameter]: Route1[P1] {
     }
 }
 
-extend self[P1: RouteParameter, P2: RouteParameter]: Route2[P1, P2] {
+extend self[P1: WebParameter, P2: WebParameter]: WebRoute2[P1, P2] {
     toUrl(p1: P1, p2: P2): String {
         mutable result = ""
         mutable parameter = 0
@@ -75,11 +74,11 @@ extend self[P1: RouteParameter, P2: RouteParameter]: Route2[P1, P2] {
     }
 }
 
-capability RouteHandler[C](handlers: Array[(WebRequest[WebResponse], List[String], C) => Bool])
+capability WebRouteHandler[C](handlers: Array[(WebRequest[WebResponse], List[String], C) => Bool])
 
-extend self[C]: RouteHandler[C] {
+extend self[C]: WebRouteHandler[C] {
     
-    add0(route: Route0, handle: (WebRequest[WebResponse], C) => Unit) {
+    add0(route: WebRoute0, handle: (WebRequest[WebResponse], C) => Unit) {
         self.handlers.push {request, segments, context =>
             if(segments != route.segments) {False} else:
             handle(request, context)
@@ -87,7 +86,7 @@ extend self[C]: RouteHandler[C] {
         }
     }
     
-    add1[P1: RouteParameter](route: Route1[P1], handle: (WebRequest[WebResponse], C, P1) => Unit) {
+    add1[P1: WebParameter](route: WebRoute1[P1], handle: (WebRequest[WebResponse], C, P1) => Unit) {
         self.handlers.push {request, segments, context =>
             if(segments.size() != route.segments.size()) {False} else:
             let matching = True
@@ -110,7 +109,7 @@ extend self[C]: RouteHandler[C] {
         }
     }
     
-    add2[P1: RouteParameter, P2: RouteParameter](route: Route2[P1, P2], handle: (WebRequest[WebResponse], C, P1, P2) => Unit) {
+    add2[P1: WebParameter, P2: WebParameter](route: WebRoute2[P1, P2], handle: (WebRequest[WebResponse], C, P1, P2) => Unit) {
         self.handlers.push {request, segments, context =>
             if(segments.size() != route.segments.size()) {False} else:
             mutable p1 = None
@@ -148,50 +147,4 @@ extend self[C]: RouteHandler[C] {
         handled
     }
 
-}
-
-serveHtml(
-    moduleName: String
-    title: String
-    pageData: Buffer
-    contentHtml: String
-    styleTags: String
-    request: WebRequest[WebResponse]
-): Unit {
-    request.writeHeader("Content-Type", "text/html; charset=UTF-8")
-    request.writeText("<!doctype html>")
-    request.writeText("<html lang='en' style='background-color: #ffffff; color: #333333; width: 100%; height: 100%; color-scheme: light;'>")
-    request.writeText("<head>")
-    request.writeText("<title>" + title + "</title>")
-    request.writeText("<meta name='viewport' content='width=device-width, initial-scale=1.0'>")
-    request.writeText("<meta name='theme-color' content='#ecc45e'>")
-    request.writeText("<script type='module' src='" + "/js/ff/site2/" + moduleName + ".mjs" + "'></script>")
-    request.writeText("<script type='text/plain' id='data'>" + pageData.toBase64() + "</script>")
-    request.writeText(styleTags)
-    request.writeText("</head>")
-    request.writeText("<body style='margin: 0; padding: 0; width: 100%; height: 100%; touch-action: manipulation;'>")
-    request.writeText("<div id='main'>" + contentHtml + "</div>")
-    request.writeText("</body>")
-    request.writeText("</html>")
-}
-
-renderAndServe[T: Serializable](
-    system: NodeSystem
-    moduleName: String
-    pageData: T
-    title: String
-    request: WebRequest[WebResponse]
-    render: Lux => Unit
-) {
-    let serialized = Serializable.serialize(pageData)
-    let htmlAndCss = Lux.renderToString(system, render)
-    serveHtml(moduleName, title, serialized, htmlAndCss.first, htmlAndCss.second, request)
-}
-
-renderToMain[T: Serializable](system: BrowserSystem, render: (Lux, T) => Unit) {
-    let base64 = system.js()->document->getElementById("data")->textContent.grabString()
-    let chat = Serializable.deserialize(Buffer.fromBase64(base64))
-    Lux.renderById(system, "main") {lux =>
-        render(lux, chat)
-    }
 }

@@ -1,7 +1,7 @@
 import Lux from ff:lux
 import WebServer from ff:webserver
 import Router
-import Route
+import Html
 
 routeModule = SourceLocation.here().module()
 
@@ -10,11 +10,11 @@ data Chat(room: String)
 handle(request: WebRequest[WebResponse], context: RouteContext, roomId: Int) {
     let pageData = Chat("42")
     let title = "Chat"
-    Route.renderAndServe(context.system, routeModule, pageData, title, request, {render(_, pageData)})
+    Html.renderAndServe(context.system, routeModule, pageData, title, request, {render(_, pageData)})
 }
 
 browserMain(system: BrowserSystem) {
-    Route.renderToMain(system, {render(_, _)})
+    Html.renderToMain(system, {render(_, _)})
 }
 
 render(lux: Lux, chat: Chat) {

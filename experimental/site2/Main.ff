@@ -1,12 +1,13 @@
 import WebServer from ff:webserver
-import Route
+import WebRoute from ff:webserver
+import Html
 import Router
 
 nodeMain(system: NodeSystem): Unit {
     let host = system.arguments().grab(0)
     let port = system.arguments().grab(1).grabInt()
     let context = RouteContext(system)
-    let handlers = RouteHandler(Array.new())
+    let handlers = WebRouteHandler(Array.new())
     Router.handlers(handlers)
     system.writeLine("Listening on " + host + ":" + port)
     WebServer.new(system, host, port).listen {request =>
