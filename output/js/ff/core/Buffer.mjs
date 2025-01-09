@@ -140,7 +140,7 @@ return (new DataView(arrayBuffer_))
 export function fromBase64_(base64_) {
 const binaryString_ = atob(base64_);
 const bytes_ = Uint8Array.from(binaryString_, ((char_) => {
-return char_.CharCodeAt(0)
+return char_.charCodeAt(0)
 }));
 return (new DataView(bytes_.buffer))
 }
@@ -186,7 +186,7 @@ return (new DataView(arrayBuffer_))
 export async function fromBase64_$(base64_, $task) {
 const binaryString_ = atob(base64_);
 const bytes_ = Uint8Array.from(binaryString_, ((char_) => {
-return char_.CharCodeAt(0)
+return char_.charCodeAt(0)
 }));
 return (new DataView(bytes_.buffer))
 }
