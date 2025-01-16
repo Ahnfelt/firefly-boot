@@ -117,6 +117,9 @@ taskGroup[K: Order, R](
 parseRequest(system: NodeSystem, input: Stream[Buffer]): Pair[Request, Stream[Buffer]] {
     let headersPair = parseRequestHeaders(input)
     let headers = headersPair.first
+    if(!headers.contains("content-length")) {
+        system.writeErrorLine(Show.show(headers.toList()))
+    }
     let contentLength = headers
         .get("content-length").else {throw(BadRequestException("'content-length' header is missing"))}
         .trim().getInt().else {throw(BadRequestException("Value for 'content-length' is not an integer"))}
