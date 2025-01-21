@@ -17,6 +17,8 @@ extend self[T: Order]: Set[T] {
     remove(value: T): Set[T] {Set(self.map.remove(value))}
     removeAll(that: Set[T]): Set[T] {Set(self.map.removeAll(that.map))}
     contains(value: T): Bool {self.map.contains(value)}
+    lastBefore(key: T): Option[T] {self.map.lastBefore(key).map {_.first}}
+    firstAfter(key: T): Option[T] {self.map.firstAfter(key).map {_.first}}
     size(): Int {self.map.size()}
     toList(): List[T] {self.map.toList().map {_.first}}
     toStream(cycle: Bool = False): Stream[T] {self.map.toStream(cycle).map {_.first }}

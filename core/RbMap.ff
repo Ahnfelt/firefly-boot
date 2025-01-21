@@ -123,6 +123,22 @@ extend self[K: Order, V]: RB[K, V] {
             }
         }
     }
+    
+    lastBefore(key: K): Option[Pair[K, V]] {
+        self.{
+            | E => None
+            | T(_, l, k, v, r) {k >= key} => l.lastBefore(key)
+            | T(_, l, k, v, r) => r.lastBefore(key).orElse {Some(Pair(k, v))}
+        }
+    }
+    
+    firstAfter(key: K): Option[Pair[K, V]] {
+        self.{
+            | E => None
+            | T(_, l, k, v, r) {k <= key} => r.firstAfter(key)
+            | T(_, l, k, v, r) => l.firstAfter(key).orElse {Some(Pair(k, v))}
+        }
+    }
 
     size(): Int {
         self.{

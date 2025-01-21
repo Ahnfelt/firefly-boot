@@ -29,6 +29,14 @@ extend self[K: Order, V]: Map[K, V] {
     get(key: K): Option[V] {
         self.redBlack.get(key)
     }
+    
+    lastBefore(key: K): Option[Pair[K, V]] {
+        self.redBlack.lastBefore(key)
+    }
+    
+    firstAfter(key: K): Option[Pair[K, V]] {
+        self.redBlack.firstAfter(key)
+    }
 
     remove(key: K): Map[K, V] {
         Map(RbMap.delete(key, self.redBlack))
