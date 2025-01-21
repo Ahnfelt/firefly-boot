@@ -136,7 +136,15 @@ check(
 
     packages.filter {!_.files.isEmpty()}.each {package => 
         let firstFile = package.files.grabFirst()
-        let resolvedDependencies = Dependencies.process(system.httpClient(), dependencyLock, firstFile)
+        try {
+            Some(Dependencies.process(system.httpClient(), dependencyLock, firstFile))
+        } tryCatch {| CompileError(_, _) @ c, error =>
+            errors.push(c)
+            None
+        } catch {| CompileErrors(compileErrors), error =>
+            errors.pushList(compileErrors)
+            None
+        }.each: resolvedDependencies => 
         let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
             resolvedDependencies.packagePaths
         } else {

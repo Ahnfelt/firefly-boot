@@ -24,7 +24,7 @@ extend self: Dependencies {
     loadPackageInfo(
         packagePair: PackagePair
         path: Path
-    ): PackageInfo {
+    ): Option[PackageInfo] {
         let packageDirectory = if(path.extension() == ".ff") {path.parent().grab()} else {path}
         let sharedPackageFile = packageDirectory.slash(".firefly").slash("package.ff")
         let packageFile = if(sharedPackageFile.exists()) {
@@ -33,8 +33,8 @@ extend self: Dependencies {
             self.singleFilePackages = self.singleFilePackages.add(packagePair)
             path
         }
-        let code = packageFile.readText()
-        self.parsePackageFile(packagePair, packageFile.relativeTo(path), code)
+        try {packageFile.readText()}.toOption().map: code =>
+        self.parsePackageFile(packagePair, packageFile.absolute(), code)
     }
     
     parsePackageFile(
@@ -93,7 +93,7 @@ extend self: Dependencies {
                             Log.trace("Fetching " + location)
                             let buffer = httpClient.get(location, []) {response =>
                                 if(!response.ok()) {
-                                    panic("Could not download dependency: " + location)
+                                    throw(CompileError(dependency.at, "Could not download dependency: " + location))
                                 }
                                 response.readBuffer()
                             }
@@ -109,7 +109,7 @@ extend self: Dependencies {
                 }
                 dependencyPath
             } else {
-                panic("Loading packages by this protocol is not supported: " + location)
+                throw(CompileError(dependency.at, "Loading packages by this protocol is not supported: " + location))
             }
         } else {
             path.path(location)
@@ -126,7 +126,9 @@ extend self: Dependencies {
         let packageInfos = dependencies.map {dependency =>
             let dependencyPath = self.fetchDependency(path, httpClient, dependencyLock, dependency)
             self.packagePaths = self.packagePaths.add(dependency.packagePair, dependencyPath)
-            let packageInfo = self.loadPackageInfo(dependency.packagePair, dependencyPath)
+            let packageInfo = self.loadPackageInfo(dependency.packagePair, dependencyPath).else {
+                throw(CompileError(dependency.at, "Dependency not found: " + dependencyPath.absolute()))
+            }
             checkPackagePairs(dependency.packagePair, packageInfo.package.packagePair)
             packageInfo
         }
@@ -141,7 +143,9 @@ extend self: Dependencies {
 process(fetch: HttpClient, dependencyLock: DependencyLock, path: Path): ResolvedDependencies {
     let workspace = Workspace.loadWorkspace(path)
     let self = Dependencies(workspace, [].toMap(), [].toMap(), [].toSet())
-    let packageInfo = self.loadPackageInfo(PackagePair("script", "script"), path)
+    let packageInfo = self.loadPackageInfo(PackagePair("script", "script"), path).else {
+        panic("Not a main file: " + path.absolute())
+    }
     let newDependencies = self.processPackageInfo(packageInfo)
     self.processDependencies(path, fetch, dependencyLock, newDependencies)
     let packagePaths = self.packagePaths.add(packageInfo.package.packagePair, findScriptPackageLocation(path))
