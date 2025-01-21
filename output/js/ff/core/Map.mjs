@@ -137,6 +137,14 @@ export function Map_get(self_, key_, ff_core_Ordering_Order$K) {
 return ff_core_RbMap.RB_get(self_, key_, ff_core_Ordering_Order$K)
 }
 
+export function Map_lastBefore(self_, key_, ff_core_Ordering_Order$K) {
+return ff_core_RbMap.RB_lastBefore(self_, key_, ff_core_Ordering_Order$K)
+}
+
+export function Map_firstAfter(self_, key_, ff_core_Ordering_Order$K) {
+return ff_core_RbMap.RB_firstAfter(self_, key_, ff_core_Ordering_Order$K)
+}
+
 export function Map_remove(self_, key_, ff_core_Ordering_Order$K) {
 return ff_core_RbMap.delete_(key_, self_, ff_core_Ordering_Order$K)
 }
@@ -254,6 +262,14 @@ return result_
 
 export async function Map_get$(self_, key_, ff_core_Ordering_Order$K, $task) {
 return ff_core_RbMap.RB_get(self_, key_, ff_core_Ordering_Order$K)
+}
+
+export async function Map_lastBefore$(self_, key_, ff_core_Ordering_Order$K, $task) {
+return ff_core_RbMap.RB_lastBefore(self_, key_, ff_core_Ordering_Order$K)
+}
+
+export async function Map_firstAfter$(self_, key_, ff_core_Ordering_Order$K, $task) {
+return ff_core_RbMap.RB_firstAfter(self_, key_, ff_core_Ordering_Order$K)
 }
 
 export async function Map_remove$(self_, key_, ff_core_Ordering_Order$K, $task) {

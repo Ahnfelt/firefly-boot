@@ -217,7 +217,26 @@ return (!ff_core_List.List_isEmpty(_w1.files_))
 })), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const package_ = for_a[for_i];
 const firstFile_ = ff_core_List.List_grabFirst(package_.files_);
-const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), dependencyLock_, firstFile_);
+{
+const if_o = ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch(ff_core_Core.try_((() => {
+return ff_core_Option.Some(ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), dependencyLock_, firstFile_))
+})), ((_1, _2) => {
+{
+const c_ = _1;
+const error_ = _2;
+errors_.array.push(c_);
+return ff_core_Option.None()
+}
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
+{
+const compileErrors_ = _1.errors_;
+const error_ = _2;
+ff_core_Array.Array_pushList(errors_, compileErrors_);
+return ff_core_Option.None()
+}
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
+if(if_o.Some) {
+const resolvedDependencies_ = if_o.value_;
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
 : ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_core_Path.Path_slash(fireflyPath_, "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
@@ -257,6 +276,8 @@ return
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
 };
 ff_compiler_ModuleCache.ModuleCache_mergeVersions(cache_, compiler_.cache_)
+}
+}
 };
 return ff_core_Array.Array_drain(errors_)
 }
@@ -439,7 +460,26 @@ return (!ff_core_List.List_isEmpty(_w1.files_))
 })), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const package_ = for_a[for_i];
 const firstFile_ = ff_core_List.List_grabFirst(package_.files_);
-const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), dependencyLock_, firstFile_, $task));
+{
+const if_o = ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch((await ff_core_Core.try_$((async ($task) => {
+return ff_core_Option.Some((await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), dependencyLock_, firstFile_, $task)))
+}), $task)), ((_1, _2) => {
+{
+const c_ = _1;
+const error_ = _2;
+errors_.array.push(c_);
+return ff_core_Option.None()
+}
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
+{
+const compileErrors_ = _1.errors_;
+const error_ = _2;
+ff_core_Array.Array_pushList(errors_, compileErrors_);
+return ff_core_Option.None()
+}
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
+if(if_o.Some) {
+const resolvedDependencies_ = if_o.value_;
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
 : ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (await ff_core_Path.Path_slash$(fireflyPath_, "core", $task)), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
@@ -479,6 +519,8 @@ return
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
 };
 ff_compiler_ModuleCache.ModuleCache_mergeVersions(cache_, compiler_.cache_)
+}
+}
 };
 return ff_core_Array.Array_drain(errors_)
 }

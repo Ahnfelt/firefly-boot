@@ -135,6 +135,18 @@ export function Set_contains(self_, value_, ff_core_Ordering_Order$T) {
 return ff_core_Map.Map_contains(self_, value_, ff_core_Ordering_Order$T)
 }
 
+export function Set_lastBefore(self_, key_, ff_core_Ordering_Order$T) {
+return ff_core_Option.Option_map(ff_core_Map.Map_lastBefore(self_, key_, ff_core_Ordering_Order$T), ((_w1) => {
+return _w1.first_
+}))
+}
+
+export function Set_firstAfter(self_, key_, ff_core_Ordering_Order$T) {
+return ff_core_Option.Option_map(ff_core_Map.Map_firstAfter(self_, key_, ff_core_Ordering_Order$T), ((_w1) => {
+return _w1.first_
+}))
+}
+
 export function Set_size(self_, ff_core_Ordering_Order$T) {
 return ff_core_Map.Map_size(self_, ff_core_Ordering_Order$T)
 }
@@ -198,6 +210,18 @@ return ff_core_Map.Map_removeAll(self_, that_, ff_core_Ordering_Order$T)
 
 export async function Set_contains$(self_, value_, ff_core_Ordering_Order$T, $task) {
 return ff_core_Map.Map_contains(self_, value_, ff_core_Ordering_Order$T)
+}
+
+export async function Set_lastBefore$(self_, key_, ff_core_Ordering_Order$T, $task) {
+return ff_core_Option.Option_map(ff_core_Map.Map_lastBefore(self_, key_, ff_core_Ordering_Order$T), ((_w1) => {
+return _w1.first_
+}))
+}
+
+export async function Set_firstAfter$(self_, key_, ff_core_Ordering_Order$T, $task) {
+return ff_core_Option.Option_map(ff_core_Map.Map_firstAfter(self_, key_, ff_core_Ordering_Order$T), ((_w1) => {
+return _w1.first_
+}))
 }
 
 export async function Set_size$(self_, ff_core_Ordering_Order$T, $task) {

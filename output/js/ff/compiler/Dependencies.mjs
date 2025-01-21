@@ -123,7 +123,9 @@ return {mainPackagePair_, packages_, packagePaths_, singleFilePackages_};
 export function process_(fetch_, dependencyLock_, path_) {
 const workspace_ = ff_compiler_Workspace.loadWorkspace_(path_);
 const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, ff_compiler_Syntax.PackagePair("script", "script"), path_);
+const packageInfo_ = ff_core_Option.Option_else(ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, ff_compiler_Syntax.PackagePair("script", "script"), path_), (() => {
+return ff_core_Core.panic_(("Not a main file: " + ff_core_Path.Path_absolute(path_)))
+}));
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
 ff_compiler_Dependencies.Dependencies_processDependencies(self_, path_, fetch_, dependencyLock_, newDependencies_);
 const packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, packageInfo_.package_.packagePair_, ff_compiler_Dependencies.findScriptPackageLocation_(path_), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
@@ -161,7 +163,9 @@ tar_.extract({file: tarGzPath_.absolutePath_, cwd: path_.absolutePath_, strict: 
 export async function process_$(fetch_, dependencyLock_, path_, $task) {
 const workspace_ = (await ff_compiler_Workspace.loadWorkspace_$(path_, $task));
 const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, ff_compiler_Syntax.PackagePair("script", "script"), path_, $task));
+const packageInfo_ = (await ff_core_Option.Option_else$((await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, ff_compiler_Syntax.PackagePair("script", "script"), path_, $task)), (async ($task) => {
+return ff_core_Core.panic_(("Not a main file: " + (await ff_core_Path.Path_absolute$(path_, $task))))
+}), $task));
 const newDependencies_ = (await ff_compiler_Dependencies.Dependencies_processPackageInfo$(self_, packageInfo_, $task));
 (await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, path_, fetch_, dependencyLock_, newDependencies_, $task));
 const packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, packageInfo_.package_.packagePair_, (await ff_compiler_Dependencies.findScriptPackageLocation_$(path_, $task)), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
@@ -204,8 +208,11 @@ const sharedPackageFile_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(packa
 const packageFile_ = (ff_core_Path.Path_exists(sharedPackageFile_, false, false, false)
 ? sharedPackageFile_
 : (self_.singleFilePackages_ = ff_core_Set.Set_add(self_.singleFilePackages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), path_));
-const code_ = ff_core_Path.Path_readText(packageFile_);
-return ff_compiler_Dependencies.Dependencies_parsePackageFile(self_, packagePair_, ff_core_Path.Path_relativeTo(packageFile_, path_), code_)
+return ff_core_Option.Option_map(ff_core_Try.Try_toOption(ff_core_Core.try_((() => {
+return ff_core_Path.Path_readText(packageFile_)
+}))), ((code_) => {
+return ff_compiler_Dependencies.Dependencies_parsePackageFile(self_, packagePair_, ff_core_Path.Path_absolute(packageFile_), code_)
+}))
 }
 
 export function Dependencies_parsePackageFile(self_, packagePair_, fileName_, code_) {
@@ -258,7 +265,7 @@ return ff_core_Option.Some((function() {
 ff_core_Log.trace_(("Fetching " + location_));
 const buffer_ = ff_core_HttpClient.HttpClient_get(httpClient_, location_, [], ((response_) => {
 if((!ff_core_HttpClient.FetchResponse_ok(response_))) {
-ff_core_Core.panic_(("Could not download dependency: " + location_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(dependency_.at_, ("Could not download dependency: " + location_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 return ff_core_HttpClient.FetchResponse_readBuffer(response_)
 }));
@@ -275,7 +282,7 @@ return ff_core_Path.Path_renameTo(tarGzPath_, donePath_)
 };
 return dependencyPath_
 } else {
-return ff_core_Core.panic_(("Loading packages by this protocol is not supported: " + location_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(dependency_.at_, ("Loading packages by this protocol is not supported: " + location_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 } else {
 return ff_core_Path.Path_path(path_, location_)
@@ -286,7 +293,9 @@ export function Dependencies_processDependencies(self_, path_, httpClient_, depe
 const packageInfos_ = ff_core_List.List_map(dependencies_, ((dependency_) => {
 const dependencyPath_ = ff_compiler_Dependencies.Dependencies_fetchDependency(self_, path_, httpClient_, dependencyLock_, dependency_);
 self_.packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, dependency_.packagePair_, dependencyPath_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
-const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, dependency_.packagePair_, dependencyPath_);
+const packageInfo_ = ff_core_Option.Option_else(ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, dependency_.packagePair_, dependencyPath_), (() => {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(dependency_.at_, ("Dependency not found: " + ff_core_Path.Path_absolute(dependencyPath_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}));
 ff_compiler_Dependencies.checkPackagePairs_(dependency_.packagePair_, packageInfo_.package_.packagePair_);
 return packageInfo_
 }));
@@ -306,8 +315,11 @@ const sharedPackageFile_ = (await ff_core_Path.Path_slash$((await ff_core_Path.P
 const packageFile_ = ((await ff_core_Path.Path_exists$(sharedPackageFile_, false, false, false, $task))
 ? sharedPackageFile_
 : (self_.singleFilePackages_ = ff_core_Set.Set_add(self_.singleFilePackages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), path_));
-const code_ = (await ff_core_Path.Path_readText$(packageFile_, $task));
-return (await ff_compiler_Dependencies.Dependencies_parsePackageFile$(self_, packagePair_, (await ff_core_Path.Path_relativeTo$(packageFile_, path_, $task)), code_, $task))
+return (await ff_core_Option.Option_map$(ff_core_Try.Try_toOption((await ff_core_Core.try_$((async ($task) => {
+return (await ff_core_Path.Path_readText$(packageFile_, $task))
+}), $task))), (async (code_, $task) => {
+return (await ff_compiler_Dependencies.Dependencies_parsePackageFile$(self_, packagePair_, (await ff_core_Path.Path_absolute$(packageFile_, $task)), code_, $task))
+}), $task))
 }
 
 export async function Dependencies_parsePackageFile$(self_, packagePair_, fileName_, code_, $task) {
@@ -360,7 +372,7 @@ return ff_core_Option.Some((await (async function() {
 ff_core_Log.trace_(("Fetching " + location_));
 const buffer_ = (await ff_core_HttpClient.HttpClient_get$(httpClient_, location_, [], (async (response_, $task) => {
 if((!(await ff_core_HttpClient.FetchResponse_ok$(response_, $task)))) {
-ff_core_Core.panic_(("Could not download dependency: " + location_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(dependency_.at_, ("Could not download dependency: " + location_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 return (await ff_core_HttpClient.FetchResponse_readBuffer$(response_, $task))
 }), $task));
@@ -377,7 +389,7 @@ return (await ff_core_Path.Path_renameTo$(tarGzPath_, donePath_, $task))
 };
 return dependencyPath_
 } else {
-return ff_core_Core.panic_(("Loading packages by this protocol is not supported: " + location_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(dependency_.at_, ("Loading packages by this protocol is not supported: " + location_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 } else {
 return (await ff_core_Path.Path_path$(path_, location_, $task))
@@ -388,7 +400,9 @@ export async function Dependencies_processDependencies$(self_, path_, httpClient
 const packageInfos_ = (await ff_core_List.List_map$(dependencies_, (async (dependency_, $task) => {
 const dependencyPath_ = (await ff_compiler_Dependencies.Dependencies_fetchDependency$(self_, path_, httpClient_, dependencyLock_, dependency_, $task));
 self_.packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, dependency_.packagePair_, dependencyPath_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
-const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, dependency_.packagePair_, dependencyPath_, $task));
+const packageInfo_ = (await ff_core_Option.Option_else$((await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, dependency_.packagePair_, dependencyPath_, $task)), (async ($task) => {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(dependency_.at_, ("Dependency not found: " + (await ff_core_Path.Path_absolute$(dependencyPath_, $task)))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}), $task));
 ff_compiler_Dependencies.checkPackagePairs_(dependency_.packagePair_, packageInfo_.package_.packagePair_);
 return packageInfo_
 }), $task));

@@ -995,6 +995,62 @@ return
 }
 }
 
+export function RB_lastBefore(self_, key_, ff_core_Ordering_Order$K) {
+{
+const _1 = self_;
+if(_1.E) {
+return ff_core_Option.None()
+}
+if(_1.T) {
+const l_ = _1.left_;
+const k_ = _1.key_;
+const v_ = _1.value_;
+const r_ = _1.right_;
+if(ff_core_Ordering.notBefore_(k_, key_, ff_core_Ordering_Order$K)) {
+return ff_core_RbMap.RB_lastBefore(l_, key_, ff_core_Ordering_Order$K)
+}
+}
+{
+const l_ = _1.left_;
+const k_ = _1.key_;
+const v_ = _1.value_;
+const r_ = _1.right_;
+return ff_core_Option.Option_orElse(ff_core_RbMap.RB_lastBefore(r_, key_, ff_core_Ordering_Order$K), (() => {
+return ff_core_Option.Some(ff_core_Pair.Pair(k_, v_))
+}))
+return
+}
+}
+}
+
+export function RB_firstAfter(self_, key_, ff_core_Ordering_Order$K) {
+{
+const _1 = self_;
+if(_1.E) {
+return ff_core_Option.None()
+}
+if(_1.T) {
+const l_ = _1.left_;
+const k_ = _1.key_;
+const v_ = _1.value_;
+const r_ = _1.right_;
+if(ff_core_Ordering.notAfter_(k_, key_, ff_core_Ordering_Order$K)) {
+return ff_core_RbMap.RB_firstAfter(r_, key_, ff_core_Ordering_Order$K)
+}
+}
+{
+const l_ = _1.left_;
+const k_ = _1.key_;
+const v_ = _1.value_;
+const r_ = _1.right_;
+return ff_core_Option.Option_orElse(ff_core_RbMap.RB_firstAfter(l_, key_, ff_core_Ordering_Order$K), (() => {
+return ff_core_Option.Some(ff_core_Pair.Pair(k_, v_))
+}))
+return
+}
+}
+}
+
 export function RB_size(self_, ff_core_Ordering_Order$K) {
 {
 const _1 = self_;
@@ -1183,6 +1239,62 @@ return ff_core_RbMap.RB_get(b_, key_, ff_core_Ordering_Order$K)
 return ff_core_Option.Some(yv_)
 }
 }
+return
+}
+}
+}
+
+export async function RB_lastBefore$(self_, key_, ff_core_Ordering_Order$K, $task) {
+{
+const _1 = self_;
+if(_1.E) {
+return ff_core_Option.None()
+}
+if(_1.T) {
+const l_ = _1.left_;
+const k_ = _1.key_;
+const v_ = _1.value_;
+const r_ = _1.right_;
+if(ff_core_Ordering.notBefore_(k_, key_, ff_core_Ordering_Order$K)) {
+return ff_core_RbMap.RB_lastBefore(l_, key_, ff_core_Ordering_Order$K)
+}
+}
+{
+const l_ = _1.left_;
+const k_ = _1.key_;
+const v_ = _1.value_;
+const r_ = _1.right_;
+return ff_core_Option.Option_orElse(ff_core_RbMap.RB_lastBefore(r_, key_, ff_core_Ordering_Order$K), (() => {
+return ff_core_Option.Some(ff_core_Pair.Pair(k_, v_))
+}))
+return
+}
+}
+}
+
+export async function RB_firstAfter$(self_, key_, ff_core_Ordering_Order$K, $task) {
+{
+const _1 = self_;
+if(_1.E) {
+return ff_core_Option.None()
+}
+if(_1.T) {
+const l_ = _1.left_;
+const k_ = _1.key_;
+const v_ = _1.value_;
+const r_ = _1.right_;
+if(ff_core_Ordering.notAfter_(k_, key_, ff_core_Ordering_Order$K)) {
+return ff_core_RbMap.RB_firstAfter(r_, key_, ff_core_Ordering_Order$K)
+}
+}
+{
+const l_ = _1.left_;
+const k_ = _1.key_;
+const v_ = _1.value_;
+const r_ = _1.right_;
+return ff_core_Option.Option_orElse(ff_core_RbMap.RB_firstAfter(l_, key_, ff_core_Ordering_Order$K), (() => {
+return ff_core_Option.Some(ff_core_Pair.Pair(k_, v_))
+}))
 return
 }
 }
