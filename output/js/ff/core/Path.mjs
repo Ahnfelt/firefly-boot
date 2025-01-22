@@ -428,10 +428,7 @@ dir_ = fsPromises_.opendir(self_.absolutePath_, {bufferSize: 128})
 };
 const entry_ = dir_.read();
 if((!ff_core_JsValue.JsValue_isNull(entry_))) {
-return ff_core_Option.Some((function() {
-entry_.ffPath = self_.absolutePath_;
-return entry_
-})())
+return ff_core_Option.Some((entry_.ffPath = self_.absolutePath_, entry_))
 } else return ff_core_Option.None()
 }), (() => {
 if((!ff_core_JsValue.JsValue_isNull(dir_))) {
@@ -729,10 +726,7 @@ dir_ = (await fsPromises_.opendir(self_.absolutePath_, {bufferSize: 128}))
 };
 const entry_ = (await dir_.read());
 if((!ff_core_JsValue.JsValue_isNull(entry_))) {
-return ff_core_Option.Some((await (async function() {
-entry_.ffPath = self_.absolutePath_;
-return entry_
-})()))
+return ff_core_Option.Some((entry_.ffPath = self_.absolutePath_, entry_))
 } else return ff_core_Option.None()
 }), (async ($task) => {
 if((!ff_core_JsValue.JsValue_isNull(dir_))) {

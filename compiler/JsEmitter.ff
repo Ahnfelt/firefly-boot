@@ -279,7 +279,7 @@ extend self: JsEmitter {
         }
     }
 
-    emitTerm(term: Term, async: Bool): String {term.{
+    emitTerm(term: Term, async: Bool, ignored: Bool = False): String {term.{
         | EString(at, value) {value.startsWith("\"\"\"")} =>
             "`" + value.dropFirst(3).dropLast(3).replace("`", "\\`") + "`" // TODO: Fix escaping
         | EString(at, value) => value
@@ -347,6 +347,8 @@ extend self: JsEmitter {
             let c = if(await) {", $task"} else {""}
             let call = "(" + self.emitTerm(function, async) + ")(" + self.emitTerm(value, async) + c + ")"
             if(await) {"(await " + call + ")"} else {call}
+        | _ {self.emitAssignment(term, async) | Some(code)} =>
+            if(ignored) {code} else {"(" + code + ", void 0)"}
         | ECall(at, StaticCall(name, _, _), _, _, arguments, dictionaries) {
             self.emitSpecialCall(term, async, name, arguments.map {_.value}, dictionaries) | Some(code)
         } =>
@@ -379,14 +381,14 @@ extend self: JsEmitter {
                     let call = functionCode + "(" + [...emittedArguments, ...ds, ...controller].join(", ") + ")"
                     if(await) {"(await " + call + ")"} else {call}
                 | [Pair(EVariant(_, "ff:core/Bool.True", _, _), elseBody), ...list] =>
-                    "(" + list.foldLeft(self.emitComma(elseBody, async)) {| otherwise, Pair(condition, body) =>
-                        self.emitComma(condition, async) +
-                        "\n? " + self.emitComma(body, async) + "\n: " + otherwise
+                    "(" + list.foldLeft(self.emitTerm(elseBody, async)) {| otherwise, Pair(condition, body) =>
+                        self.emitTerm(condition, async) +
+                        "\n? " + self.emitTerm(body, async) + "\n: " + otherwise
                     } + ")"
                 | list =>
                     "(" + list.foldLeft("ff_core_Option.None()") {| otherwise, Pair(condition, body) =>
-                        self.emitComma(condition, async) +
-                        "\n? ff_core_Option.Some(" + self.emitComma(body, async) + ")\n: " + otherwise
+                        self.emitTerm(condition, async) +
+                        "\n? ff_core_Option.Some(" + self.emitTerm(body, async) + ")\n: " + otherwise
                     } + ")"
             }
         | ECall(at, DynamicCall(function, _), effect, typeArguments, arguments, dictionaries) =>
@@ -405,6 +407,24 @@ extend self: JsEmitter {
         | EWildcard(at, index) =>
             if(index == 0) {fail(at, "Unbound wildcard")}
             "_w" + index
+        | ESequential(_, ESequential(_, ESequential(_, before1, before2), before3), after) {
+            safeCommable(before1) && safeCommable(before2) && safeCommable(before3) && safeCommable(after)
+        } =>
+            "(" + self.emitTerm(before1, async, ignored = True) + ", " + 
+            self.emitTerm(before2, async, ignored = True) + ", " + 
+            self.emitTerm(before3, async, ignored = True) + ", " + 
+            self.emitTerm(after, async, ignored) + ")"
+        | ESequential(_, ESequential(_, before1, before2), after) {
+            safeCommable(before1) && safeCommable(before2) && safeCommable(after)
+        } =>
+            "(" + self.emitTerm(before1, async, ignored = True) + ", " + 
+            self.emitTerm(before2, async, ignored = True) + ", " + 
+            self.emitTerm(after, async, ignored) + ")"
+        | ESequential(_, before, after) {
+            safeCommable(before) && safeCommable(after)
+        } =>
+            "(" + self.emitTerm(before, async, ignored = True) + ", " + 
+            self.emitTerm(after, async, ignored) + ")"
         | _ {async} =>
             "(await (async function() {\n" + self.emitStatements(term, True, False, async) + "\n})())"
         | _ =>
@@ -450,11 +470,6 @@ extend self: JsEmitter {
             | ESequential(at, before, after) =>
                 self.emitStatements(before, False, False, async) + ";\n" + 
                 self.emitStatements(after, last, break, async)
-            | EAssign(at, operator, name, value) =>
-                escapeKeyword(name) + " " + operator + "= " + self.emitTerm(value, async)
-            | EAssignField(at, operator, record, field, value) =>
-                self.emitTerm(record, async) + "." + escapeKeyword(field) + " " + operator + "= " +
-                self.emitTerm(value, async)
             | ECall(at, StaticCall(name, True, instanceCall), effect, _, arguments, _) =>
                 if(instanceCall) {throw(CompileError(at, "Not yet implemented: Tail calls on trait methods."))}
                 self.tailCallUsed = True
@@ -478,15 +493,17 @@ extend self: JsEmitter {
                     self.emitCase(["_1"], c, [], [], True, last, break, lastCase, async)
                 }.join("\n") +
                 "\n}" + if(!last && !break) {" while(false)"}.else {""}
+            | _ {self.emitAssignment(term, async) | Some(code)} =>
+                code
             | _ =>
                 detectIfElse(term).{
                     | [] =>
                         if(break) {
-                            "if(!" + self.emitComma(term, async) + ") break"
+                            "if(!" + self.emitTerm(term, async) + ") break"
                         } elseIf {last} {
                             "return " + self.emitTerm(term, async)
                         } else {
-                            self.emitTerm(term, async)
+                            self.emitTerm(term, async, ignored = True)
                         }
                     | [Pair(EVariant(_, "ff:core/Bool.True", _, _), elseBody), ...list] =>
                         let initial = "{\n" + self.emitStatements(elseBody, last, break, async) + "\n}"
@@ -506,6 +523,49 @@ extend self: JsEmitter {
                         }
                 }
         }
+    }
+    
+    emitAssignment(
+        term: Term
+        async: Bool
+    ): Option[String] {
+        | ECall(at, StaticCall(name, _, _), _, _, arguments, dictionaries), _ =>
+            name.{
+                | "ff:core/JsValue.JsValue_set" {arguments.map {_.value} | [e1, e2, e3]} =>
+                    Some(self.emitTerm(e1, async) + self.emitField(e2, async) + " = " + self.emitTerm(e3, async))
+                | "ff:core/JsValue.JsValue_increment" {arguments.map {_.value} | [e1, e2, e3]} =>
+                    Some(self.emitTerm(e1, async) + self.emitField(e2, async) + " += " + self.emitTerm(e3, async))
+                | "ff:core/JsValue.JsValue_decrement" {arguments.map {_.value} | [e1, e2, e3]} =>
+                    Some(self.emitTerm(e1, async) + self.emitField(e2, async) + " -= " + self.emitTerm(e3, async))
+                | "ff:core/JsSystem.JsSystem_set" {arguments.map {_.value} | [e1, EString(_, q), e3]} {
+                    noSideEffects(e1)} {safeBare(q) | Some(s)
+                } =>
+                    Some(s + " = " + self.emitTerm(e3, async))
+                | "ff:core/JsSystem.JsSystem_increment" {arguments.map {_.value} | [e1, EString(_, q), e3]} {
+                    noSideEffects(e1)} {safeBare(q) | Some(s)
+                } =>
+                    Some(s + " += " + self.emitTerm(e3, async))
+                | "ff:core/JsSystem.JsSystem_decrement" {arguments.map {_.value} | [e1, EString(_, q), e3]} {
+                    noSideEffects(e1)} {safeBare(q) | Some(s)
+                } =>
+                    Some(s + " -= " + self.emitTerm(e3, async))
+                | "ff:core/Js.set" {arguments.map {_.value} | [EString(_, q), e2]} {safeBare(q) | Some(s)} =>
+                    Some(s + " = " + self.emitTerm(e2, async))
+                | "ff:core/Js.increment" {arguments.map {_.value} | [EString(_, q), e2]} {safeBare(q) | Some(s)} =>
+                    Some(s + " += " + self.emitTerm(e2, async))
+                | "ff:core/Js.decrement" {arguments.map {_.value} | [EString(_, q), e2]} {safeBare(q) | Some(s)} =>
+                    Some(s + " -= " + self.emitTerm(e2, async))
+                | _ => None
+            }
+        | EAssign(at, operator, name, value), _ =>
+            Some(escapeKeyword(name) + " " + operator + "= " + self.emitTerm(value, async))
+        | EAssignField(at, operator, record, field, value), _ =>
+            Some(
+                self.emitTerm(record, async) + "." + escapeKeyword(field) + " " + operator + "= " +
+                self.emitTerm(value, async)
+            )
+        | _, _ =>
+            None
     }
     
     emitSpecialCall(
@@ -794,7 +854,7 @@ extend self: JsEmitter {
         name.{
             | "ff:core/Core.while" {arguments | [condition, body]} =>
                 Some(
-                    "while(" + self.emitComma(invokeImmediately(condition), async) + ") {\n" +
+                    "while(" + self.emitTerm(invokeImmediately(condition), async) + ") {\n" +
                     self.emitStatements(invokeImmediately(body), False, False, async) + "\n}"
                 )
             | "ff:core/Core.doWhile" {arguments | [doWhileBody]} {
@@ -906,7 +966,7 @@ extend self: JsEmitter {
                 Some(self.emitTerm(array, async) + ".array.push(" + self.emitTerm(value, async) + ")")
             | "ff:core/Core.if" {arguments | [condition, body]} =>
                 Some(
-                    "if(" + self.emitComma(condition, async) + ") {\n" +
+                    "if(" + self.emitTerm(condition, async) + ") {\n" +
                     if(last) {
                         "return ff_core_Option.Some(" + self.emitTerm(invokeImmediately(body), async) +
                         ")\n} else return ff_core_Option.None()"
@@ -928,24 +988,6 @@ extend self: JsEmitter {
                 Some(if(async) {"ff_core_Task.Task_throwIfAborted($task)"} else {""})
             | "ff:core/Js.throw" {term | ECall c} {c.arguments | [argument]} =>
                 Some("throw " + self.emitTerm(argument.value, async))
-            | "ff:core/JsValue.JsValue_set" {arguments | [e1, e2, e3]} =>
-                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + " = " + self.emitTerm(e3, async))
-            | "ff:core/JsValue.JsValue_increment" {arguments | [e1, e2, e3]} =>
-                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + " += " + self.emitTerm(e3, async))
-            | "ff:core/JsValue.JsValue_decrement" {arguments | [e1, e2, e3]} =>
-                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + " -= " + self.emitTerm(e3, async))
-            | "ff:core/JsSystem.JsSystem_set" {arguments | [e1, EString(_, q), e3]} {noSideEffects(e1)} {safeBare(q) | Some(s)} =>
-                Some(s + " = " + self.emitTerm(e3, async))
-            | "ff:core/JsSystem.JsSystem_increment" {arguments | [e1, EString(_, q), e3]} {noSideEffects(e1)} {safeBare(q) | Some(s)} =>
-                Some(s + " += " + self.emitTerm(e3, async))
-            | "ff:core/JsSystem.JsSystem_decrement" {arguments | [e1, EString(_, q), e3]} {noSideEffects(e1)} {safeBare(q) | Some(s)} =>
-                Some(s + " -= " + self.emitTerm(e3, async))
-            | "ff:core/Js.set" {arguments | [EString(_, q), e2]} {safeBare(q) | Some(s)} =>
-                Some(s + " = " + self.emitTerm(e2, async))
-            | "ff:core/Js.increment" {arguments | [EString(_, q), e2]} {safeBare(q) | Some(s)} =>
-                Some(s + " += " + self.emitTerm(e2, async))
-            | "ff:core/Js.decrement" {arguments | [EString(_, q), e2]} {safeBare(q) | Some(s)} =>
-                Some(s + " -= " + self.emitTerm(e2, async))
             | _ =>
                 None
         }
@@ -1280,31 +1322,6 @@ extend self: JsEmitter {
         }
     }
     
-    emitComma(term: Term, async: Bool): String {
-        term.{
-            | ESequential(_, ESequential(_, ESequential(_, before1, before2), before3), after) {
-                safeCommable(before1) && safeCommable(before2) && safeCommable(before3) && safeCommable(after)
-            } =>
-                "(" + self.emitStatements(before1, False, False, async) + ", " + 
-                self.emitStatements(before2, False, False, async) + ", " + 
-                self.emitStatements(before3, False, False, async) + ", " + 
-                self.emitTerm(after, async) + ")"
-            | ESequential(_, ESequential(_, before1, before2), after) {
-                safeCommable(before1) && safeCommable(before2) && safeCommable(after)
-            } =>
-                "(" + self.emitStatements(before1, False, False, async) + ", " + 
-                self.emitStatements(before2, False, False, async) + ", " + 
-                self.emitTerm(after, async) + ")"
-            | ESequential(_, before, after) {
-                safeCommable(before) && safeCommable(after)
-            } =>
-                "(" + self.emitStatements(before, False, False, async) + ", " + 
-                self.emitTerm(after, async) + ")"
-            | _ =>
-                self.emitTerm(term, async)
-        }
-    }
-
 }
 
 data ProcessedVariantCase(

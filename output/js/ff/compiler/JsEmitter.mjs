@@ -747,7 +747,7 @@ export function JsEmitter_emitLetDefinition(self_, definition_, mutable_, async_
 const mutability_ = (mutable_
 ? "let"
 : "const");
-const valueCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, definition_.value_, async_);
+const valueCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, definition_.value_, async_, false);
 const assignmentCode_ = (((!mutable_) || (valueCode_ !== "(void 0)"))
 ? (" = " + valueCode_)
 : "");
@@ -893,7 +893,7 @@ return (((((prefix_ + "function ") + ff_compiler_JsEmitter.escapeKeyword_(signat
 
 export function JsEmitter_emitParameter(self_, parameter_, async_) {
 const defaultValue_ = ff_core_Option.Option_else(ff_core_Option.Option_map(parameter_.default_, ((_w1) => {
-return (" = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_))
+return (" = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_, false))
 })), (() => {
 return ""
 }));
@@ -924,7 +924,7 @@ return (((((((((("export function " + definition_.name_) + "(") + fields_) + ") 
 }
 }
 
-export function JsEmitter_emitTerm(self_, term_, async_) {
+export function JsEmitter_emitTerm(self_, term_, async_, ignored_ = false) {
 {
 const _1 = term_;
 if(_1.EString) {
@@ -1017,9 +1017,9 @@ const name_ = _1.name_;
 const record_ = _1.record_;
 const fields_ = _1.arguments_;
 const fieldCode_ = ff_core_List.List_join(ff_core_List.List_map(fields_, ((f_) => {
-return ((ff_compiler_JsEmitter.escapeKeyword_(f_.name_) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, f_.value_, async_))
+return ((ff_compiler_JsEmitter.escapeKeyword_(f_.name_) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, f_.value_, async_, false))
 })), ", ");
-return (((("{..." + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_, async_)) + ", ") + fieldCode_) + "}")
+return (((("{..." + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_, async_, false)) + ", ") + fieldCode_) + "}")
 }
 if(_1.EField) {
 const at_ = _1.at_;
@@ -1027,9 +1027,9 @@ const newtype_ = _1.newtype_;
 const record_ = _1.record_;
 const field_ = _1.field_;
 if(newtype_) {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_, async_, false)
 } else {
-return ((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_, async_) + ".") + ff_compiler_JsEmitter.escapeKeyword_(field_))
+return ((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_, async_, false) + ".") + ff_compiler_JsEmitter.escapeKeyword_(field_))
 }
 return
 }
@@ -1108,13 +1108,25 @@ const await_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
 const c_ = (await_
 ? ", $task"
 : "");
-const call_ = ((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_, async_)) + ")(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)) + c_) + ")");
+const call_ = ((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_, async_, false)) + ")(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_, false)) + c_) + ")");
 if(await_) {
 return (("(await " + call_) + ")")
 } else {
 return call_
 }
 return
+}
+{
+const _guard1 = ff_compiler_JsEmitter.JsEmitter_emitAssignment(self_, term_, async_);
+if(_guard1.Some) {
+const code_ = _guard1.value_;
+if(ignored_) {
+return code_
+} else {
+return (("(" + code_) + ", void 0)")
+}
+return
+}
 }
 if(_1.ECall && _1.target_.StaticCall) {
 const at_ = _1.at_;
@@ -1204,12 +1216,12 @@ return
 if(_1.length >= 1 && _1[0].first_.EVariant && _1[0].first_.name_ === "ff:core/Bool.True") {
 const elseBody_ = _1[0].second_;
 const list_ = _1.slice(1);
-return (("(" + ff_core_List.List_foldLeft(list_, ff_compiler_JsEmitter.JsEmitter_emitComma(self_, elseBody_, async_), ((_1, _2) => {
+return (("(" + ff_core_List.List_foldLeft(list_, ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, elseBody_, async_, false), ((_1, _2) => {
 {
 const otherwise_ = _1;
 const condition_ = _2.first_;
 const body_ = _2.second_;
-return ((((ff_compiler_JsEmitter.JsEmitter_emitComma(self_, condition_, async_) + "\n? ") + ff_compiler_JsEmitter.JsEmitter_emitComma(self_, body_, async_)) + "\n: ") + otherwise_)
+return ((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_, false) + "\n? ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_, false)) + "\n: ") + otherwise_)
 }
 }))) + ")")
 return
@@ -1221,7 +1233,7 @@ return (("(" + ff_core_List.List_foldLeft(list_, "ff_core_Option.None()", ((_1, 
 const otherwise_ = _1;
 const condition_ = _2.first_;
 const body_ = _2.second_;
-return ((((ff_compiler_JsEmitter.JsEmitter_emitComma(self_, condition_, async_) + "\n? ff_core_Option.Some(") + ff_compiler_JsEmitter.JsEmitter_emitComma(self_, body_, async_)) + ")\n: ") + otherwise_)
+return ((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_, false) + "\n? ff_core_Option.Some(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_, false)) + ")\n: ") + otherwise_)
 }
 }))) + ")")
 return
@@ -1240,7 +1252,7 @@ const await_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
 if((!ff_core_List.List_isEmpty(dictionaries_))) {
 ff_compiler_JsEmitter.fail_(at_, "Internal error: Dictionaries in lambda call")
 };
-const functionCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_, async_);
+const functionCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_, async_, false);
 const emittedArguments_ = ff_core_List.List_map(arguments_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, at_, _w1, async_)
 }));
@@ -1262,7 +1274,7 @@ if(ff_core_List.List_isEmpty(fields_)) {
 return "{}"
 } else {
 const list_ = ff_core_List.List_map(fields_, ((f_) => {
-return ((ff_compiler_JsEmitter.escapeKeyword_(f_.name_) + ": ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, f_.value_, async_))
+return ((ff_compiler_JsEmitter.escapeKeyword_(f_.name_) + ": ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, f_.value_, async_, false))
 }));
 return (("{\n" + ff_core_List.List_join(list_, ",\n")) + "\n}")
 }
@@ -1275,6 +1287,30 @@ if((index_ === 0)) {
 ff_compiler_JsEmitter.fail_(at_, "Unbound wildcard")
 };
 return ("_w" + index_)
+}
+if(_1.ESequential && _1.before_.ESequential && _1.before_.before_.ESequential) {
+const before1_ = _1.before_.before_.before_;
+const before2_ = _1.before_.before_.after_;
+const before3_ = _1.before_.after_;
+const after_ = _1.after_;
+if((((ff_compiler_JsEmitter.safeCommable_(before1_) && ff_compiler_JsEmitter.safeCommable_(before2_)) && ff_compiler_JsEmitter.safeCommable_(before3_)) && ff_compiler_JsEmitter.safeCommable_(after_))) {
+return (((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, before1_, async_, true)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, before2_, async_, true)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, before3_, async_, true)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, after_, async_, ignored_)) + ")")
+}
+}
+if(_1.ESequential && _1.before_.ESequential) {
+const before1_ = _1.before_.before_;
+const before2_ = _1.before_.after_;
+const after_ = _1.after_;
+if(((ff_compiler_JsEmitter.safeCommable_(before1_) && ff_compiler_JsEmitter.safeCommable_(before2_)) && ff_compiler_JsEmitter.safeCommable_(after_))) {
+return (((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, before1_, async_, true)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, before2_, async_, true)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, after_, async_, ignored_)) + ")")
+}
+}
+if(_1.ESequential) {
+const before_ = _1.before_;
+const after_ = _1.after_;
+if((ff_compiler_JsEmitter.safeCommable_(before_) && ff_compiler_JsEmitter.safeCommable_(after_))) {
+return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, before_, async_, true)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, after_, async_, ignored_)) + ")")
+}
 }
 if(async_) {
 return (("(await (async function() {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, term_, true, false, async_)) + "\n})())")
@@ -1297,7 +1333,7 @@ return (dot_ + s_)
 }
 }
 {
-return (("[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, term_, async_)) + "]")
+return (("[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, term_, async_, false)) + "]")
 }
 }
 }
@@ -1356,21 +1392,6 @@ const before_ = _1.before_;
 const after_ = _1.after_;
 return ((ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before_, false, false, async_) + ";\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, after_, last_, break_, async_))
 }
-if(_1.EAssign) {
-const at_ = _1.at_;
-const operator_ = _1.operator_;
-const name_ = _1.variable_;
-const value_ = _1.value_;
-return ((((ff_compiler_JsEmitter.escapeKeyword_(name_) + " ") + operator_) + "= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_))
-}
-if(_1.EAssignField) {
-const at_ = _1.at_;
-const operator_ = _1.operator_;
-const record_ = _1.record_;
-const field_ = _1.field_;
-const value_ = _1.value_;
-return ((((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_, async_) + ".") + ff_compiler_JsEmitter.escapeKeyword_(field_)) + " ") + operator_) + "= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_))
-}
 if(_1.ECall && _1.target_.StaticCall && _1.target_.tailCall_) {
 const at_ = _1.at_;
 const name_ = _1.target_.name_;
@@ -1382,7 +1403,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 };
 self_.tailCallUsed_ = true;
 const pair_ = ff_core_List.List_unzip(ff_core_List.List_collect(ff_core_List.List_map(arguments_, ((a_) => {
-return ff_core_Option.Some(ff_core_Pair.Pair((((("const " + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_grab(a_.name_) + "_r"))) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_.value_, async_)) + ";"), ((ff_compiler_JsEmitter.escapeKeyword_(ff_core_Option.Option_grab(a_.name_)) + " = ") + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_grab(a_.name_) + "_r")))))
+return ff_core_Option.Some(ff_core_Pair.Pair((((("const " + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_grab(a_.name_) + "_r"))) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_.value_, async_, false)) + ";"), ((ff_compiler_JsEmitter.escapeKeyword_(ff_core_Option.Option_grab(a_.name_)) + " = ") + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_grab(a_.name_) + "_r")))))
 })), ((_w1) => {
 return _w1
 })));
@@ -1408,7 +1429,7 @@ const cases_ = _1.function_.lambda_.cases_;
 ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
 return (((((((((!last_) && (!break_))
 ? "do "
-: "") + "{\nconst _1 = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)) + ";\n") + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_pairs(cases_), ((_1) => {
+: "") + "{\nconst _1 = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_, false)) + ";\n") + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_pairs(cases_), ((_1) => {
 {
 const i_ = _1.first_;
 const c_ = _1.second_;
@@ -1421,15 +1442,22 @@ return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ["_1"], c_, [], [], true,
 return
 }
 {
+const _guard1 = ff_compiler_JsEmitter.JsEmitter_emitAssignment(self_, term_, async_);
+if(_guard1.Some) {
+const code_ = _guard1.value_;
+return code_
+}
+}
+{
 {
 const _1 = ff_compiler_JsEmitter.detectIfElse_(term_);
 if(_1.length === 0) {
 if(break_) {
-return (("if(!" + ff_compiler_JsEmitter.JsEmitter_emitComma(self_, term_, async_)) + ") break")
+return (("if(!" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, term_, async_, false)) + ") break")
 } else if(last_) {
-return ("return " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, term_, async_))
+return ("return " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, term_, async_, false))
 } else {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, term_, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, term_, async_, true)
 }
 return
 }
@@ -1442,7 +1470,7 @@ return ff_core_List.List_foldLeft(list_, initial_, ((_1, _2) => {
 const otherwise_ = _1;
 const condition_ = _2.first_;
 const body_ = _2.second_;
-return ((((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, break_, async_)) + "\n} else ") + otherwise_)
+return ((((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_, false)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, break_, async_)) + "\n} else ") + otherwise_)
 }
 }))
 return
@@ -1455,7 +1483,7 @@ return ff_core_List.List_foldLeft(list_, "{}", ((_1, _2) => {
 const otherwise_ = _1;
 const condition_ = _2.first_;
 const body_ = _2.second_;
-return ((((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, break_, async_)) + "\n} else ") + otherwise_)
+return ((((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_, false)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, break_, async_)) + "\n} else ") + otherwise_)
 }
 }))
 return
@@ -1468,7 +1496,7 @@ return ff_core_List.List_foldLeft(list_, "return ff_core_Option.None()", ((_1, _
 const otherwise_ = _1;
 const condition_ = _2.first_;
 const body_ = _2.second_;
-return (((((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_)) + ") {\n") + "return ff_core_Option.Some(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_)) + ")\n} else ") + otherwise_)
+return (((((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_, false)) + ") {\n") + "return ff_core_Option.Some(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_, false)) + ")\n} else ") + otherwise_)
 }
 }))
 return
@@ -1476,6 +1504,172 @@ return
 }
 return
 }
+}
+}
+
+export function JsEmitter_emitAssignment(self_, term_, async_) {
+const self_a = self_;
+const term_a = term_;
+const async_a = async_;
+if(term_a.ECall && term_a.target_.StaticCall) {
+const at_ = term_a.at_;
+const name_ = term_a.target_.name_;
+const arguments_ = term_a.arguments_;
+const dictionaries_ = term_a.dictionaries_;
+{
+const _1 = name_;
+if(_1 === "ff:core/JsValue.JsValue_set") {
+const _guard1 = ff_core_List.List_map(arguments_, ((_w1) => {
+return _w1.value_
+}));
+if(_guard1.length === 3) {
+const e1_ = _guard1[0];
+const e2_ = _guard1[1];
+const e3_ = _guard1[2];
+return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_, false)))
+}
+}
+if(_1 === "ff:core/JsValue.JsValue_increment") {
+const _guard1 = ff_core_List.List_map(arguments_, ((_w1) => {
+return _w1.value_
+}));
+if(_guard1.length === 3) {
+const e1_ = _guard1[0];
+const e2_ = _guard1[1];
+const e3_ = _guard1[2];
+return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + " += ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_, false)))
+}
+}
+if(_1 === "ff:core/JsValue.JsValue_decrement") {
+const _guard1 = ff_core_List.List_map(arguments_, ((_w1) => {
+return _w1.value_
+}));
+if(_guard1.length === 3) {
+const e1_ = _guard1[0];
+const e2_ = _guard1[1];
+const e3_ = _guard1[2];
+return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_, false)))
+}
+}
+if(_1 === "ff:core/JsSystem.JsSystem_set") {
+const _guard3 = ff_core_List.List_map(arguments_, ((_w1) => {
+return _w1.value_
+}));
+if(_guard3.length === 3 && _guard3[1].EString) {
+const e1_ = _guard3[0];
+const q_ = _guard3[1].value_;
+const e3_ = _guard3[2];
+const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
+if(_guard2) {
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_, false)))
+}
+}
+}
+}
+if(_1 === "ff:core/JsSystem.JsSystem_increment") {
+const _guard3 = ff_core_List.List_map(arguments_, ((_w1) => {
+return _w1.value_
+}));
+if(_guard3.length === 3 && _guard3[1].EString) {
+const e1_ = _guard3[0];
+const q_ = _guard3[1].value_;
+const e3_ = _guard3[2];
+const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
+if(_guard2) {
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " += ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_, false)))
+}
+}
+}
+}
+if(_1 === "ff:core/JsSystem.JsSystem_decrement") {
+const _guard3 = ff_core_List.List_map(arguments_, ((_w1) => {
+return _w1.value_
+}));
+if(_guard3.length === 3 && _guard3[1].EString) {
+const e1_ = _guard3[0];
+const q_ = _guard3[1].value_;
+const e3_ = _guard3[2];
+const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
+if(_guard2) {
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_, false)))
+}
+}
+}
+}
+if(_1 === "ff:core/Js.set") {
+const _guard2 = ff_core_List.List_map(arguments_, ((_w1) => {
+return _w1.value_
+}));
+if(_guard2.length === 2 && _guard2[0].EString) {
+const q_ = _guard2[0].value_;
+const e2_ = _guard2[1];
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)))
+}
+}
+}
+if(_1 === "ff:core/Js.increment") {
+const _guard2 = ff_core_List.List_map(arguments_, ((_w1) => {
+return _w1.value_
+}));
+if(_guard2.length === 2 && _guard2[0].EString) {
+const q_ = _guard2[0].value_;
+const e2_ = _guard2[1];
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " += ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)))
+}
+}
+}
+if(_1 === "ff:core/Js.decrement") {
+const _guard2 = ff_core_List.List_map(arguments_, ((_w1) => {
+return _w1.value_
+}));
+if(_guard2.length === 2 && _guard2[0].EString) {
+const q_ = _guard2[0].value_;
+const e2_ = _guard2[1];
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)))
+}
+}
+}
+{
+return ff_core_Option.None()
+}
+}
+return
+}
+if(term_a.EAssign) {
+const at_ = term_a.at_;
+const operator_ = term_a.operator_;
+const name_ = term_a.variable_;
+const value_ = term_a.value_;
+return ff_core_Option.Some(((((ff_compiler_JsEmitter.escapeKeyword_(name_) + " ") + operator_) + "= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_, false)))
+}
+if(term_a.EAssignField) {
+const at_ = term_a.at_;
+const operator_ = term_a.operator_;
+const record_ = term_a.record_;
+const field_ = term_a.field_;
+const value_ = term_a.value_;
+return ff_core_Option.Some(((((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_, async_, false) + ".") + ff_compiler_JsEmitter.escapeKeyword_(field_)) + " ") + operator_) + "= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_, false)))
+}
+{
+return ff_core_Option.None()
 }
 }
 
@@ -1489,7 +1683,7 @@ if(_guard2) {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const value_ = _guard1[0];
-return ff_core_Option.Some(((("(" + operator_) + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)) + ")"))
+return ff_core_Option.Some(((("(" + operator_) + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_, false)) + ")"))
 }
 }
 }
@@ -1501,7 +1695,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const left_ = _guard1[0];
 const right_ = _guard1[1];
-return ff_core_Option.Some((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_)) + " ") + operator_) + " ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_)) + ")"))
+return ff_core_Option.Some((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_, false)) + " ") + operator_) + " ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_, false)) + ")"))
 }
 }
 }
@@ -1511,8 +1705,8 @@ if(_guard2.length === 2) {
 const e1_ = _guard2[0];
 const e2_ = _guard2[1];
 if((ff_compiler_JsEmitter.noSideEffects_(e1_) && ff_compiler_JsEmitter.noSideEffects_(e2_))) {
-const code1_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_);
-const code2_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_);
+const code1_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false);
+const code2_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false);
 return ff_core_Option.Some(((((((((("(" + code1_) + "[") + code2_) + "] ?? ") + "ff_core_List.List_grab(") + code1_) + ", ") + code2_) + "))"))
 }
 }
@@ -1523,8 +1717,8 @@ if(_guard2.length === 2) {
 const e1_ = _guard2[0];
 const e2_ = _guard2[1];
 if((ff_compiler_JsEmitter.noSideEffects_(e1_) && ff_compiler_JsEmitter.noSideEffects_(e2_))) {
-const code1_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_);
-const code2_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_);
+const code1_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false);
+const code2_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false);
 return ff_core_Option.Some(((((((((("(" + code1_) + ".array[") + code2_) + "] ?? ") + "ff_core_Array.Array_grab(") + code1_) + ", ") + code2_) + "))"))
 }
 }
@@ -1533,21 +1727,21 @@ if(_1 === "ff:core/List.List_size") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_) + ".length"))
+return ff_core_Option.Some((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false) + ".length"))
 }
 }
 if(_1 === "ff:core/Array.Array_size") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_) + ".array.length"))
+return ff_core_Option.Some((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false) + ".array.length"))
 }
 }
 if(_1 === "ff:core/String.String_size") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_) + ".length"))
+return ff_core_Option.Some((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false) + ".length"))
 }
 }
 if(_1 === "ff:core/Equal.equals") {
@@ -1559,7 +1753,7 @@ const _guard2 = dictionaries_;
 if(_guard2.length === 1 && _guard2[0].dictionaries_.length === 0) {
 const typeName_ = _guard2[0].typeName_;
 if((ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) || (typeName_ === "ff:core/Ordering.Ordering"))) {
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_)) + " === ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_, false)) + " === ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_, false)) + ")"))
 }
 }
 }
@@ -1573,7 +1767,7 @@ const _guard2 = dictionaries_;
 if(_guard2.length === 1 && _guard2[0].dictionaries_.length === 0) {
 const typeName_ = _guard2[0].typeName_;
 if((ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) || (typeName_ === "ff:core/Ordering.Ordering"))) {
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_)) + " !== ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_, false)) + " !== ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_, false)) + ")"))
 }
 }
 }
@@ -1587,7 +1781,7 @@ const _guard2 = dictionaries_;
 if(_guard2.length === 1 && _guard2[0].dictionaries_.length === 0) {
 const typeName_ = _guard2[0].typeName_;
 if(ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_)) + " < ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_, false)) + " < ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_, false)) + ")"))
 }
 }
 }
@@ -1601,7 +1795,7 @@ const _guard2 = dictionaries_;
 if(_guard2.length === 1 && _guard2[0].dictionaries_.length === 0) {
 const typeName_ = _guard2[0].typeName_;
 if(ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_)) + " >= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_, false)) + " >= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_, false)) + ")"))
 }
 }
 }
@@ -1615,7 +1809,7 @@ const _guard2 = dictionaries_;
 if(_guard2.length === 1 && _guard2[0].dictionaries_.length === 0) {
 const typeName_ = _guard2[0].typeName_;
 if(ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_)) + " > ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_, false)) + " > ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_, false)) + ")"))
 }
 }
 }
@@ -1629,7 +1823,7 @@ const _guard2 = dictionaries_;
 if(_guard2.length === 1 && _guard2[0].dictionaries_.length === 0) {
 const typeName_ = _guard2[0].typeName_;
 if(ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_)) + " <= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_, false)) + " <= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_, false)) + ")"))
 }
 }
 }
@@ -1656,7 +1850,7 @@ const newAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsy
 const await_ = (newAsync_
 ? "await "
 : "");
-return ff_core_Option.Some(((((((((((((((((((await_ + "((() => {\n") + "const size = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, size_, async_)) + ";\n") + "const result = [];\n") + "for(let ") + n_) + " = 0; ") + n_) + " < size; ") + n_) + "++) {\n") + "result.push(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, newAsync_)) + ");\n") + "}\n") + "return result;\n") + "})())"))
+return ff_core_Option.Some(((((((((((((((((((await_ + "((() => {\n") + "const size = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, size_, async_, false)) + ";\n") + "const result = [];\n") + "for(let ") + n_) + " = 0; ") + n_) + " < size; ") + n_) + "++) {\n") + "result.push(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, newAsync_, false)) + ");\n") + "}\n") + "return result;\n") + "})())"))
 }
 }
 }
@@ -1697,7 +1891,7 @@ if(_1 === "ff:core/Js.dynamicImport") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const url_ = _guard1[0];
-return ff_core_Option.Some((("import(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, url_, async_)) + ")"))
+return ff_core_Option.Some((("import(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, url_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/Js.await") {
@@ -1705,9 +1899,9 @@ const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const body_ = _guard1[0];
 if(async_) {
-return ff_core_Option.Some((("(await " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_)) + ")"))
+return ff_core_Option.Some((("(await " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_, false)) + ")"))
 } else {
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_, false))
 }
 return
 }
@@ -1783,7 +1977,7 @@ if(_1 === "ff:core/Js.setController") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const a_ = _guard1[0];
-return ff_core_Option.Some((("($task.controller_ = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_, async_)) + ")"))
+return ff_core_Option.Some((("($task.controller_ = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/Js.inAsync") {
@@ -1814,14 +2008,14 @@ if(_1 === "ff:core/Js.value") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false))
 }
 }
 if(_1 === "ff:core/Js.fromValue") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false))
 }
 }
 if(_1 === "ff:core/Js.rawIdentifier") {
@@ -1836,7 +2030,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2 && _guard1[0].EString) {
 const op_ = _guard1[0].value_;
 const a1_ = _guard1[1];
-return ff_core_Option.Some(((("(" + ff_core_String.String_replace(op_, "\"", "")) + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_, async_)) + ")"))
+return ff_core_Option.Some(((("(" + ff_core_String.String_replace(op_, "\"", "")) + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/Js.binaryOperator") {
@@ -1845,7 +2039,7 @@ if(_guard1.length === 3 && _guard1[0].EString) {
 const op_ = _guard1[0].value_;
 const a1_ = _guard1[1];
 const a2_ = _guard1[2];
-return ff_core_Option.Some((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_, async_)) + " ") + ff_core_String.String_replace(op_, "\"", "")) + " ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_, async_)) + ")"))
+return ff_core_Option.Some((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_, async_, false)) + " ") + ff_core_String.String_replace(op_, "\"", "")) + " ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/Js.shortCircuitingOperator") {
@@ -1854,21 +2048,21 @@ if(_guard1.length === 3 && _guard1[0].EString) {
 const op_ = _guard1[0].value_;
 const a1_ = _guard1[1];
 const a2_ = _guard1[2];
-return ff_core_Option.Some((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_, async_)) + " ") + ff_core_String.String_replace(op_, "\"", "")) + " ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(a2_), async_)) + ")"))
+return ff_core_Option.Some((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_, async_, false)) + " ") + ff_core_String.String_replace(op_, "\"", "")) + " ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(a2_), async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/JsValue.JsValue_spreadToArray") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e1_ = _guard1[0];
-return ff_core_Option.Some((("[..." + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + "]"))
+return ff_core_Option.Some((("[..." + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + "]"))
 }
 }
 if(_1 === "ff:core/JsValue.JsValue_typeof") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some((("(typeof " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_)) + ")"))
+return ff_core_Option.Some((("(typeof " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/JsValue.JsValue_instanceof") {
@@ -1876,7 +2070,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " instanceof ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + " instanceof ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/JsValue.JsValue_get") {
@@ -1884,7 +2078,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
-return ff_core_Option.Some((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")))
+return ff_core_Option.Some((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")))
 }
 }
 if(_1 === "ff:core/JsValue.JsValue_equals") {
@@ -1892,7 +2086,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " === ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + " === ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/JsValue.JsValue_notEquals") {
@@ -1900,7 +2094,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " !== ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + " !== ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/Int.Int_bitAnd") {
@@ -1908,7 +2102,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " & ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + " & ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/Int.Int_bitRightUnsigned") {
@@ -1916,7 +2110,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " >>> ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + " >>> ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/Int.Int_bitRight") {
@@ -1924,7 +2118,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " >> ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + " >> ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)) + ")"))
 }
 }
 {
@@ -1942,9 +2136,9 @@ const e1_ = _guard1[0];
 const e2_ = _guard1[1];
 const es_ = _guard1.slice(2);
 const argumentCode_ = ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_, false)
 })), ", ");
-return ff_core_Option.Some(((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + "(") + argumentCode_) + ")"))
+return ff_core_Option.Some(((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + "(") + argumentCode_) + ")"))
 }
 }
 }
@@ -1963,9 +2157,9 @@ if(_guard1.length >= 1) {
 const e1_ = _guard1[0];
 const es_ = _guard1.slice(1);
 const argumentCode_ = ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_, false)
 })), ", ");
-return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + "(") + argumentCode_) + ")"))
+return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false) + "(") + argumentCode_) + ")"))
 }
 }
 }
@@ -1984,9 +2178,9 @@ if(_guard1.length >= 1) {
 const e1_ = _guard1[0];
 const es_ = _guard1.slice(1);
 const argumentCode_ = ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_, false)
 })), ", ");
-return ff_core_Option.Some(((((("(new " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + "(") + argumentCode_) + ")") + ")"))
+return ff_core_Option.Some(((((("(new " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + "(") + argumentCode_) + ")") + ")"))
 }
 }
 }
@@ -2014,14 +2208,14 @@ if(_guard2 && ff_core_List.List_all(as_, ((_w1) => {
 return ff_compiler_JsEmitter.noSideEffects_(_w1.value_)
 }))) {
 return (("{" + ff_core_List.List_join(ff_core_List.List_map(fields_, ((p_) => {
-return ((ff_compiler_JsEmitter.JsEmitter_emitField(self_, p_.first_, async_, "") + ": ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, p_.second_, async_))
+return ((ff_compiler_JsEmitter.JsEmitter_emitField(self_, p_.first_, async_, "") + ": ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, p_.second_, async_, false))
 })), ", ")) + "}")
 return
 }
 }
 {
-return (((("{..." + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_)) + ", ") + ff_core_List.List_join(ff_core_List.List_map(fields_, ((p_) => {
-return ((ff_compiler_JsEmitter.JsEmitter_emitField(self_, p_.first_, async_, "") + ": ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, p_.second_, async_))
+return (((("{..." + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false)) + ", ") + ff_core_List.List_join(ff_core_List.List_map(fields_, ((p_) => {
+return ((ff_compiler_JsEmitter.JsEmitter_emitField(self_, p_.first_, async_, "") + ": ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, p_.second_, async_, false))
 })), ", ")) + "}")
 return
 }
@@ -2047,10 +2241,10 @@ const q_ = _guard2[1].value_;
 const es_ = _guard2.slice(2);
 if(ff_compiler_JsEmitter.noSideEffects_(e1_)) {
 const argumentCode_ = ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_, false)
 })), ", ");
 return ff_core_Option.Some((((ff_core_Option.Option_else(ff_compiler_JsEmitter.safeBare_(q_), (() => {
-return (("globalThis[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + "]")
+return (("globalThis[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)) + "]")
 })) + "(") + argumentCode_) + ")"))
 return
 }
@@ -2077,7 +2271,7 @@ const _guard2 = term_;
 if(_guard2.ECall) {
 const call_ = _guard2;
 if((!ff_compiler_JsEmitter.effectTypeIsAsync_(call_.effect_))) {
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false))
 }
 }
 }
@@ -2093,7 +2287,7 @@ const e2_ = _guard2[1];
 const q_ = _guard2[1].value_;
 if(ff_compiler_JsEmitter.noSideEffects_(e1_)) {
 return ff_core_Option.Some(ff_core_Option.Option_else(ff_compiler_JsEmitter.safeBare_(q_), (() => {
-return (("globalThis[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + "]")
+return (("globalThis[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)) + "]")
 })))
 return
 }
@@ -2150,10 +2344,10 @@ const e1_ = _guard1[0];
 const q_ = _guard1[0].value_;
 const es_ = _guard1.slice(1);
 const argumentCode_ = ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_, false)
 })), ", ");
 return ff_core_Option.Some((((ff_core_Option.Option_else(ff_compiler_JsEmitter.safeBare_(q_), (() => {
-return (("globalThis[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + "]")
+return (("globalThis[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + "]")
 })) + "(") + argumentCode_) + ")"))
 return
 }
@@ -2182,9 +2376,9 @@ return ("a_" + _w1)
 const taskCode_ = ((argumentCode_ === "")
 ? "$task"
 : ", $task");
-return ff_core_Option.Some(((((((("(async (" + argumentCode_) + ") => await ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + "(") + argumentCode_) + taskCode_) + "))"))
+return ff_core_Option.Some(((((((("(async (" + argumentCode_) + ") => await ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + "(") + argumentCode_) + taskCode_) + "))"))
 } else {
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false))
 }
 return
 }
@@ -2198,7 +2392,7 @@ if(_guard1.length === 1 && _guard1[0].EString) {
 const e1_ = _guard1[0];
 const q_ = _guard1[0].value_;
 return ff_core_Option.Some(ff_core_Option.Option_else(ff_compiler_JsEmitter.safeBare_(q_), (() => {
-return (("globalThis[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + "]")
+return (("globalThis[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + "]")
 })))
 return
 }
@@ -2252,35 +2446,35 @@ if(_1 === "ff:core/Json.string") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false))
 }
 }
 if(_1 === "ff:core/Json.int") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false))
 }
 }
 if(_1 === "ff:core/Json.float") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false))
 }
 }
 if(_1 === "ff:core/Json.bool") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false))
 }
 }
 if(_1 === "ff:core/Json.array") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false))
 }
 }
 if(_1 === "ff:core/Json.null") {
@@ -2311,7 +2505,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const condition_ = _guard1[0];
 const body_ = _guard1[1];
-return ff_core_Option.Some((((("while(" + ff_compiler_JsEmitter.JsEmitter_emitComma(self_, ff_compiler_JsEmitter.invokeImmediately_(condition_), async_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), false, false, async_)) + "\n}"))
+return ff_core_Option.Some((((("while(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(condition_), async_, false)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), false, false, async_)) + "\n}"))
 }
 }
 if(_1 === "ff:core/Core.doWhile") {
@@ -2331,7 +2525,7 @@ if(_guard1.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.lengt
 const list_ = _guard1[0];
 const name_ = _guard1[1].lambda_.cases_[0].patterns_[0].name_;
 const body_ = _guard1[1].lambda_.cases_[0].body_;
-return ff_core_Option.Some(((((("{\nconst if_o = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_)) + "\nif(if_o.Some) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+return ff_core_Option.Some(((((("{\nconst if_o = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_, false)) + "\nif(if_o.Some) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = if_o.value_;\n")
 })), (() => {
 return ""
@@ -2351,8 +2545,8 @@ const end_ = _guard2[0].arguments_[1];
 const name_ = _guard2[1].lambda_.cases_[0].patterns_[0].name_;
 const body_ = _guard2[1].lambda_.cases_[0].body_;
 if(((r_ === "ff:core/Int.Int_until") || (r_ === "ff:core/Int.Int_to"))) {
-const startCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, start_.value_, async_);
-const endCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, end_.value_, async_);
+const startCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, start_.value_, async_, false);
+const endCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, end_.value_, async_, false);
 const op_ = ((r_ === "ff:core/Int.Int_until")
 ? "<"
 : "<=");
@@ -2378,8 +2572,8 @@ const end_ = _guard2[0].arguments_[0].value_.arguments_[1];
 const name_ = _guard2[1].lambda_.cases_[0].patterns_[0].name_;
 const body_ = _guard2[1].lambda_.cases_[0].body_;
 if(((r_ === "ff:core/Int.Int_until") || (r_ === "ff:core/Int.Int_to"))) {
-const startCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, start_.value_, async_);
-const endCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, end_.value_, async_);
+const startCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, start_.value_, async_, false);
+const endCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, end_.value_, async_, false);
 const delta_ = ((r_ === "ff:core/Int.Int_until")
 ? " - 1"
 : "");
@@ -2481,7 +2675,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const array_ = _guard1[0];
 const value_ = _guard1[1];
-return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, array_, async_) + ".array.push(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)) + ")"))
+return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, array_, async_, false) + ".array.push(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/Core.if") {
@@ -2489,8 +2683,8 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const condition_ = _guard1[0];
 const body_ = _guard1[1];
-return ff_core_Option.Some(((("if(" + ff_compiler_JsEmitter.JsEmitter_emitComma(self_, condition_, async_)) + ") {\n") + (last_
-? (("return ff_core_Option.Some(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), async_)) + ")\n} else return ff_core_Option.None()")
+return ff_core_Option.Some(((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_, false)) + ") {\n") + (last_
+? (("return ff_core_Option.Some(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), async_, false)) + ")\n} else return ff_core_Option.None()")
 : (ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), false, false, async_) + "\n}"))))
 return
 }
@@ -2546,118 +2740,7 @@ const c_ = _guard2;
 const _guard1 = c_.arguments_;
 if(_guard1.length === 1) {
 const argument_ = _guard1[0];
-return ff_core_Option.Some(("throw " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, argument_.value_, async_)))
-}
-}
-}
-if(_1 === "ff:core/JsValue.JsValue_set") {
-const _guard1 = arguments_;
-if(_guard1.length === 3) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const e3_ = _guard1[2];
-return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
-}
-}
-if(_1 === "ff:core/JsValue.JsValue_increment") {
-const _guard1 = arguments_;
-if(_guard1.length === 3) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const e3_ = _guard1[2];
-return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + " += ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
-}
-}
-if(_1 === "ff:core/JsValue.JsValue_decrement") {
-const _guard1 = arguments_;
-if(_guard1.length === 3) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const e3_ = _guard1[2];
-return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
-}
-}
-if(_1 === "ff:core/JsSystem.JsSystem_set") {
-const _guard3 = arguments_;
-if(_guard3.length === 3 && _guard3[1].EString) {
-const e1_ = _guard3[0];
-const q_ = _guard3[1].value_;
-const e3_ = _guard3[2];
-const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
-if(_guard2) {
-const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
-if(_guard1.Some) {
-const s_ = _guard1.value_;
-return ff_core_Option.Some(((s_ + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
-}
-}
-}
-}
-if(_1 === "ff:core/JsSystem.JsSystem_increment") {
-const _guard3 = arguments_;
-if(_guard3.length === 3 && _guard3[1].EString) {
-const e1_ = _guard3[0];
-const q_ = _guard3[1].value_;
-const e3_ = _guard3[2];
-const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
-if(_guard2) {
-const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
-if(_guard1.Some) {
-const s_ = _guard1.value_;
-return ff_core_Option.Some(((s_ + " += ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
-}
-}
-}
-}
-if(_1 === "ff:core/JsSystem.JsSystem_decrement") {
-const _guard3 = arguments_;
-if(_guard3.length === 3 && _guard3[1].EString) {
-const e1_ = _guard3[0];
-const q_ = _guard3[1].value_;
-const e3_ = _guard3[2];
-const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
-if(_guard2) {
-const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
-if(_guard1.Some) {
-const s_ = _guard1.value_;
-return ff_core_Option.Some(((s_ + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
-}
-}
-}
-}
-if(_1 === "ff:core/Js.set") {
-const _guard2 = arguments_;
-if(_guard2.length === 2 && _guard2[0].EString) {
-const q_ = _guard2[0].value_;
-const e2_ = _guard2[1];
-const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
-if(_guard1.Some) {
-const s_ = _guard1.value_;
-return ff_core_Option.Some(((s_ + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)))
-}
-}
-}
-if(_1 === "ff:core/Js.increment") {
-const _guard2 = arguments_;
-if(_guard2.length === 2 && _guard2[0].EString) {
-const q_ = _guard2[0].value_;
-const e2_ = _guard2[1];
-const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
-if(_guard1.Some) {
-const s_ = _guard1.value_;
-return ff_core_Option.Some(((s_ + " += ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)))
-}
-}
-}
-if(_1 === "ff:core/Js.decrement") {
-const _guard2 = arguments_;
-if(_guard2.length === 2 && _guard2[0].EString) {
-const q_ = _guard2[0].value_;
-const e2_ = _guard2[1];
-const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
-if(_guard1.Some) {
-const s_ = _guard1.value_;
-return ff_core_Option.Some(((s_ + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)))
+return ff_core_Option.Some(("throw " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, argument_.value_, async_, false)))
 }
 }
 }
@@ -2674,18 +2757,18 @@ const listCode_ = (((_1) => {
 if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_dropFirst" && _1.arguments_.length === 2) {
 const a1_ = _1.arguments_[0];
 const a2_ = _1.arguments_[1];
-start_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_);
+start_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_, false);
 if((!ff_core_String.String_all(start_, ((_w1) => {
 return ff_core_Char.Char_isAsciiDigit(_w1)
 })))) {
 start_ = (("Math.max(" + start_) + ", 0)")
 };
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_, false)
 }
 if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_dropLast" && _1.arguments_.length === 2) {
 const a1_ = _1.arguments_[0];
 const a2_ = _1.arguments_[1];
-const count_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_);
+const count_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_, false);
 if((!ff_core_String.String_all(count_, ((_w1) => {
 return ff_core_Char.Char_isAsciiDigit(_w1)
 })))) {
@@ -2693,24 +2776,24 @@ end_ = (((end_ + " - Math.max(") + count_) + ", 0)")
 } else {
 end_ = ((end_ + " - ") + count_)
 };
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_, false)
 }
 if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_takeFirst" && _1.arguments_.length === 2) {
 const a1_ = _1.arguments_[0];
 const a2_ = _1.arguments_[1];
-end_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_);
+end_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_, false);
 if((!ff_core_String.String_all(end_, ((_w1) => {
 return ff_core_Char.Char_isAsciiDigit(_w1)
 })))) {
 end_ = (("Math.max(" + end_) + ", 0)")
 };
 end_ = (((("Math.min(" + end_) + ", ") + listName_) + ".length)");
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_, false)
 }
 if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_takeLast" && _1.arguments_.length === 2) {
 const a1_ = _1.arguments_[0];
 const a2_ = _1.arguments_[1];
-const count_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_);
+const count_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_, false);
 if((!ff_core_String.String_all(count_, ((_w1) => {
 return ff_core_Char.Char_isAsciiDigit(_w1)
 })))) {
@@ -2718,10 +2801,10 @@ start_ = (((("Math.max(" + listName_) + ".length - Math.max(") + count_) + ", 0)
 } else {
 start_ = (((("Math.max(" + listName_) + ".length - ") + count_) + ", 0)")
 };
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_, false)
 }
 {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_, false)
 }
 }))(list_);
 return ff_core_Pair.Pair(listCode_, ff_core_Pair.Pair(start_, end_))
@@ -2833,7 +2916,7 @@ if(ff_core_List.List_isEmpty(variables_)) {
 const newCase_ = (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, [], [], _c.body_)
 }))(matchCase_);
-return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, [], newCase_, [...conditions_, ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_)], [], jump_, last_, break_, lastCase_, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, [], newCase_, [...conditions_, ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false)], [], jump_, last_, break_, lastCase_, async_)
 }
 }
 if(_1.first_.length === 0 && _1.second_.length === 1 && _1.second_[0].pattern_.PVariant && _1.second_[0].pattern_.name_ === "ff:core/Bool.True") {
@@ -2841,7 +2924,7 @@ const e_ = _1.second_[0].term_;
 const newCase_ = (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, [], [], _c.body_)
 }))(matchCase_);
-const code_ = ff_compiler_JsEmitter.JsEmitter_emitCase(self_, [], newCase_, [ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_)], [], jump_, last_, break_, lastCase_, async_);
+const code_ = ff_compiler_JsEmitter.JsEmitter_emitCase(self_, [], newCase_, [ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false)], [], jump_, last_, break_, lastCase_, async_);
 return emitWrapper_(code_)
 }
 if(_1.first_.length === 0 && _1.second_.length >= 1) {
@@ -2851,7 +2934,7 @@ const guardName_ = ("_guard" + (guards_.length + 1));
 const newCase_ = (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, [guard_.pattern_], guards_, _c.body_)
 }))(matchCase_);
-const code_ = ((((("const " + guardName_) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, guard_.term_, async_)) + ";\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, [guardName_], newCase_, [], [], jump_, last_, break_, lastCase_, async_));
+const code_ = ((((("const " + guardName_) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, guard_.term_, async_, false)) + ";\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, [guardName_], newCase_, [], [], jump_, last_, break_, lastCase_, async_));
 return emitWrapper_(code_)
 }
 {
@@ -3006,11 +3089,11 @@ export function JsEmitter_emitList(self_, items_, async_) {
 return (("[" + ff_core_List.List_join(ff_core_List.List_map(items_, ((_1) => {
 if(!_1.second_) {
 const item_ = _1.first_;
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, item_, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, item_, async_, false)
 }
 {
 const item_ = _1.first_;
-return ("..." + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, item_, async_))
+return ("..." + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, item_, async_, false))
 }
 })), ", ")) + "]")
 }
@@ -3076,40 +3159,7 @@ return (((((((((("\"" + self_.moduleName_) + ":") + callAt_.line_) + ":") + call
 }
 {
 const value_ = _1;
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)
-}
-}
-}
-
-export function JsEmitter_emitComma(self_, term_, async_) {
-{
-const _1 = term_;
-if(_1.ESequential && _1.before_.ESequential && _1.before_.before_.ESequential) {
-const before1_ = _1.before_.before_.before_;
-const before2_ = _1.before_.before_.after_;
-const before3_ = _1.before_.after_;
-const after_ = _1.after_;
-if((((ff_compiler_JsEmitter.safeCommable_(before1_) && ff_compiler_JsEmitter.safeCommable_(before2_)) && ff_compiler_JsEmitter.safeCommable_(before3_)) && ff_compiler_JsEmitter.safeCommable_(after_))) {
-return (((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before1_, false, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before2_, false, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before3_, false, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, after_, async_)) + ")")
-}
-}
-if(_1.ESequential && _1.before_.ESequential) {
-const before1_ = _1.before_.before_;
-const before2_ = _1.before_.after_;
-const after_ = _1.after_;
-if(((ff_compiler_JsEmitter.safeCommable_(before1_) && ff_compiler_JsEmitter.safeCommable_(before2_)) && ff_compiler_JsEmitter.safeCommable_(after_))) {
-return (((((("(" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before1_, false, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before2_, false, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, after_, async_)) + ")")
-}
-}
-if(_1.ESequential) {
-const before_ = _1.before_;
-const after_ = _1.after_;
-if((ff_compiler_JsEmitter.safeCommable_(before_) && ff_compiler_JsEmitter.safeCommable_(after_))) {
-return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before_, false, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, after_, async_)) + ")")
-}
-}
-{
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, term_, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_, false)
 }
 }
 }
@@ -3223,7 +3273,7 @@ export async function JsEmitter_emitLetDefinition$(self_, definition_, mutable_,
 const mutability_ = (mutable_
 ? "let"
 : "const");
-const valueCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, definition_.value_, async_);
+const valueCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, definition_.value_, async_, false);
 const assignmentCode_ = (((!mutable_) || (valueCode_ !== "(void 0)"))
 ? (" = " + valueCode_)
 : "");
@@ -3369,7 +3419,7 @@ return (((((prefix_ + "function ") + ff_compiler_JsEmitter.escapeKeyword_(signat
 
 export async function JsEmitter_emitParameter$(self_, parameter_, async_, $task) {
 const defaultValue_ = ff_core_Option.Option_else(ff_core_Option.Option_map(parameter_.default_, ((_w1) => {
-return (" = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_))
+return (" = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_, false))
 })), (() => {
 return ""
 }));
@@ -3400,7 +3450,7 @@ return (((((((((("export function " + definition_.name_) + "(") + fields_) + ") 
 }
 }
 
-export async function JsEmitter_emitTerm$(self_, term_, async_, $task) {
+export async function JsEmitter_emitTerm$(self_, term_, async_, ignored_ = false, $task) {
 {
 const _1 = term_;
 if(_1.EString) {
@@ -3493,9 +3543,9 @@ const name_ = _1.name_;
 const record_ = _1.record_;
 const fields_ = _1.arguments_;
 const fieldCode_ = ff_core_List.List_join(ff_core_List.List_map(fields_, ((f_) => {
-return ((ff_compiler_JsEmitter.escapeKeyword_(f_.name_) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, f_.value_, async_))
+return ((ff_compiler_JsEmitter.escapeKeyword_(f_.name_) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, f_.value_, async_, false))
 })), ", ");
-return (((("{..." + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_, async_)) + ", ") + fieldCode_) + "}")
+return (((("{..." + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_, async_, false)) + ", ") + fieldCode_) + "}")
 }
 if(_1.EField) {
 const at_ = _1.at_;
@@ -3503,9 +3553,9 @@ const newtype_ = _1.newtype_;
 const record_ = _1.record_;
 const field_ = _1.field_;
 if(newtype_) {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_, async_, false)
 } else {
-return ((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_, async_) + ".") + ff_compiler_JsEmitter.escapeKeyword_(field_))
+return ((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_, async_, false) + ".") + ff_compiler_JsEmitter.escapeKeyword_(field_))
 }
 return
 }
@@ -3584,13 +3634,25 @@ const await_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
 const c_ = (await_
 ? ", $task"
 : "");
-const call_ = ((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_, async_)) + ")(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)) + c_) + ")");
+const call_ = ((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_, async_, false)) + ")(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_, false)) + c_) + ")");
 if(await_) {
 return (("(await " + call_) + ")")
 } else {
 return call_
 }
 return
+}
+{
+const _guard1 = ff_compiler_JsEmitter.JsEmitter_emitAssignment(self_, term_, async_);
+if(_guard1.Some) {
+const code_ = _guard1.value_;
+if(ignored_) {
+return code_
+} else {
+return (("(" + code_) + ", void 0)")
+}
+return
+}
 }
 if(_1.ECall && _1.target_.StaticCall) {
 const at_ = _1.at_;
@@ -3680,12 +3742,12 @@ return
 if(_1.length >= 1 && _1[0].first_.EVariant && _1[0].first_.name_ === "ff:core/Bool.True") {
 const elseBody_ = _1[0].second_;
 const list_ = _1.slice(1);
-return (("(" + ff_core_List.List_foldLeft(list_, ff_compiler_JsEmitter.JsEmitter_emitComma(self_, elseBody_, async_), ((_1, _2) => {
+return (("(" + ff_core_List.List_foldLeft(list_, ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, elseBody_, async_, false), ((_1, _2) => {
 {
 const otherwise_ = _1;
 const condition_ = _2.first_;
 const body_ = _2.second_;
-return ((((ff_compiler_JsEmitter.JsEmitter_emitComma(self_, condition_, async_) + "\n? ") + ff_compiler_JsEmitter.JsEmitter_emitComma(self_, body_, async_)) + "\n: ") + otherwise_)
+return ((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_, false) + "\n? ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_, false)) + "\n: ") + otherwise_)
 }
 }))) + ")")
 return
@@ -3697,7 +3759,7 @@ return (("(" + ff_core_List.List_foldLeft(list_, "ff_core_Option.None()", ((_1, 
 const otherwise_ = _1;
 const condition_ = _2.first_;
 const body_ = _2.second_;
-return ((((ff_compiler_JsEmitter.JsEmitter_emitComma(self_, condition_, async_) + "\n? ff_core_Option.Some(") + ff_compiler_JsEmitter.JsEmitter_emitComma(self_, body_, async_)) + ")\n: ") + otherwise_)
+return ((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_, false) + "\n? ff_core_Option.Some(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_, false)) + ")\n: ") + otherwise_)
 }
 }))) + ")")
 return
@@ -3716,7 +3778,7 @@ const await_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
 if((!ff_core_List.List_isEmpty(dictionaries_))) {
 ff_compiler_JsEmitter.fail_(at_, "Internal error: Dictionaries in lambda call")
 };
-const functionCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_, async_);
+const functionCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_, async_, false);
 const emittedArguments_ = ff_core_List.List_map(arguments_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, at_, _w1, async_)
 }));
@@ -3738,7 +3800,7 @@ if(ff_core_List.List_isEmpty(fields_)) {
 return "{}"
 } else {
 const list_ = ff_core_List.List_map(fields_, ((f_) => {
-return ((ff_compiler_JsEmitter.escapeKeyword_(f_.name_) + ": ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, f_.value_, async_))
+return ((ff_compiler_JsEmitter.escapeKeyword_(f_.name_) + ": ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, f_.value_, async_, false))
 }));
 return (("{\n" + ff_core_List.List_join(list_, ",\n")) + "\n}")
 }
@@ -3751,6 +3813,30 @@ if((index_ === 0)) {
 ff_compiler_JsEmitter.fail_(at_, "Unbound wildcard")
 };
 return ("_w" + index_)
+}
+if(_1.ESequential && _1.before_.ESequential && _1.before_.before_.ESequential) {
+const before1_ = _1.before_.before_.before_;
+const before2_ = _1.before_.before_.after_;
+const before3_ = _1.before_.after_;
+const after_ = _1.after_;
+if((((ff_compiler_JsEmitter.safeCommable_(before1_) && ff_compiler_JsEmitter.safeCommable_(before2_)) && ff_compiler_JsEmitter.safeCommable_(before3_)) && ff_compiler_JsEmitter.safeCommable_(after_))) {
+return (((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, before1_, async_, true)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, before2_, async_, true)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, before3_, async_, true)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, after_, async_, ignored_)) + ")")
+}
+}
+if(_1.ESequential && _1.before_.ESequential) {
+const before1_ = _1.before_.before_;
+const before2_ = _1.before_.after_;
+const after_ = _1.after_;
+if(((ff_compiler_JsEmitter.safeCommable_(before1_) && ff_compiler_JsEmitter.safeCommable_(before2_)) && ff_compiler_JsEmitter.safeCommable_(after_))) {
+return (((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, before1_, async_, true)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, before2_, async_, true)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, after_, async_, ignored_)) + ")")
+}
+}
+if(_1.ESequential) {
+const before_ = _1.before_;
+const after_ = _1.after_;
+if((ff_compiler_JsEmitter.safeCommable_(before_) && ff_compiler_JsEmitter.safeCommable_(after_))) {
+return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, before_, async_, true)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, after_, async_, ignored_)) + ")")
+}
 }
 if(async_) {
 return (("(await (async function() {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, term_, true, false, async_)) + "\n})())")
@@ -3773,7 +3859,7 @@ return (dot_ + s_)
 }
 }
 {
-return (("[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, term_, async_)) + "]")
+return (("[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, term_, async_, false)) + "]")
 }
 }
 }
@@ -3832,21 +3918,6 @@ const before_ = _1.before_;
 const after_ = _1.after_;
 return ((ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before_, false, false, async_) + ";\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, after_, last_, break_, async_))
 }
-if(_1.EAssign) {
-const at_ = _1.at_;
-const operator_ = _1.operator_;
-const name_ = _1.variable_;
-const value_ = _1.value_;
-return ((((ff_compiler_JsEmitter.escapeKeyword_(name_) + " ") + operator_) + "= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_))
-}
-if(_1.EAssignField) {
-const at_ = _1.at_;
-const operator_ = _1.operator_;
-const record_ = _1.record_;
-const field_ = _1.field_;
-const value_ = _1.value_;
-return ((((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_, async_) + ".") + ff_compiler_JsEmitter.escapeKeyword_(field_)) + " ") + operator_) + "= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_))
-}
 if(_1.ECall && _1.target_.StaticCall && _1.target_.tailCall_) {
 const at_ = _1.at_;
 const name_ = _1.target_.name_;
@@ -3858,7 +3929,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 };
 self_.tailCallUsed_ = true;
 const pair_ = ff_core_List.List_unzip(ff_core_List.List_collect(ff_core_List.List_map(arguments_, ((a_) => {
-return ff_core_Option.Some(ff_core_Pair.Pair((((("const " + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_grab(a_.name_) + "_r"))) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_.value_, async_)) + ";"), ((ff_compiler_JsEmitter.escapeKeyword_(ff_core_Option.Option_grab(a_.name_)) + " = ") + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_grab(a_.name_) + "_r")))))
+return ff_core_Option.Some(ff_core_Pair.Pair((((("const " + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_grab(a_.name_) + "_r"))) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_.value_, async_, false)) + ";"), ((ff_compiler_JsEmitter.escapeKeyword_(ff_core_Option.Option_grab(a_.name_)) + " = ") + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_grab(a_.name_) + "_r")))))
 })), ((_w1) => {
 return _w1
 })));
@@ -3884,7 +3955,7 @@ const cases_ = _1.function_.lambda_.cases_;
 ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
 return (((((((((!last_) && (!break_))
 ? "do "
-: "") + "{\nconst _1 = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)) + ";\n") + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_pairs(cases_), ((_1) => {
+: "") + "{\nconst _1 = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_, false)) + ";\n") + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_pairs(cases_), ((_1) => {
 {
 const i_ = _1.first_;
 const c_ = _1.second_;
@@ -3897,15 +3968,22 @@ return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ["_1"], c_, [], [], true,
 return
 }
 {
+const _guard1 = ff_compiler_JsEmitter.JsEmitter_emitAssignment(self_, term_, async_);
+if(_guard1.Some) {
+const code_ = _guard1.value_;
+return code_
+}
+}
+{
 {
 const _1 = ff_compiler_JsEmitter.detectIfElse_(term_);
 if(_1.length === 0) {
 if(break_) {
-return (("if(!" + ff_compiler_JsEmitter.JsEmitter_emitComma(self_, term_, async_)) + ") break")
+return (("if(!" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, term_, async_, false)) + ") break")
 } else if(last_) {
-return ("return " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, term_, async_))
+return ("return " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, term_, async_, false))
 } else {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, term_, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, term_, async_, true)
 }
 return
 }
@@ -3918,7 +3996,7 @@ return ff_core_List.List_foldLeft(list_, initial_, ((_1, _2) => {
 const otherwise_ = _1;
 const condition_ = _2.first_;
 const body_ = _2.second_;
-return ((((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, break_, async_)) + "\n} else ") + otherwise_)
+return ((((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_, false)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, break_, async_)) + "\n} else ") + otherwise_)
 }
 }))
 return
@@ -3931,7 +4009,7 @@ return ff_core_List.List_foldLeft(list_, "{}", ((_1, _2) => {
 const otherwise_ = _1;
 const condition_ = _2.first_;
 const body_ = _2.second_;
-return ((((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, break_, async_)) + "\n} else ") + otherwise_)
+return ((((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_, false)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, break_, async_)) + "\n} else ") + otherwise_)
 }
 }))
 return
@@ -3944,7 +4022,7 @@ return ff_core_List.List_foldLeft(list_, "return ff_core_Option.None()", ((_1, _
 const otherwise_ = _1;
 const condition_ = _2.first_;
 const body_ = _2.second_;
-return (((((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_)) + ") {\n") + "return ff_core_Option.Some(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_)) + ")\n} else ") + otherwise_)
+return (((((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_, false)) + ") {\n") + "return ff_core_Option.Some(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_, false)) + ")\n} else ") + otherwise_)
 }
 }))
 return
@@ -3952,6 +4030,172 @@ return
 }
 return
 }
+}
+}
+
+export async function JsEmitter_emitAssignment$(self_, term_, async_, $task) {
+const self_a = self_;
+const term_a = term_;
+const async_a = async_;
+if(term_a.ECall && term_a.target_.StaticCall) {
+const at_ = term_a.at_;
+const name_ = term_a.target_.name_;
+const arguments_ = term_a.arguments_;
+const dictionaries_ = term_a.dictionaries_;
+{
+const _1 = name_;
+if(_1 === "ff:core/JsValue.JsValue_set") {
+const _guard1 = ff_core_List.List_map(arguments_, ((_w1) => {
+return _w1.value_
+}));
+if(_guard1.length === 3) {
+const e1_ = _guard1[0];
+const e2_ = _guard1[1];
+const e3_ = _guard1[2];
+return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_, false)))
+}
+}
+if(_1 === "ff:core/JsValue.JsValue_increment") {
+const _guard1 = ff_core_List.List_map(arguments_, ((_w1) => {
+return _w1.value_
+}));
+if(_guard1.length === 3) {
+const e1_ = _guard1[0];
+const e2_ = _guard1[1];
+const e3_ = _guard1[2];
+return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + " += ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_, false)))
+}
+}
+if(_1 === "ff:core/JsValue.JsValue_decrement") {
+const _guard1 = ff_core_List.List_map(arguments_, ((_w1) => {
+return _w1.value_
+}));
+if(_guard1.length === 3) {
+const e1_ = _guard1[0];
+const e2_ = _guard1[1];
+const e3_ = _guard1[2];
+return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_, false)))
+}
+}
+if(_1 === "ff:core/JsSystem.JsSystem_set") {
+const _guard3 = ff_core_List.List_map(arguments_, ((_w1) => {
+return _w1.value_
+}));
+if(_guard3.length === 3 && _guard3[1].EString) {
+const e1_ = _guard3[0];
+const q_ = _guard3[1].value_;
+const e3_ = _guard3[2];
+const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
+if(_guard2) {
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_, false)))
+}
+}
+}
+}
+if(_1 === "ff:core/JsSystem.JsSystem_increment") {
+const _guard3 = ff_core_List.List_map(arguments_, ((_w1) => {
+return _w1.value_
+}));
+if(_guard3.length === 3 && _guard3[1].EString) {
+const e1_ = _guard3[0];
+const q_ = _guard3[1].value_;
+const e3_ = _guard3[2];
+const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
+if(_guard2) {
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " += ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_, false)))
+}
+}
+}
+}
+if(_1 === "ff:core/JsSystem.JsSystem_decrement") {
+const _guard3 = ff_core_List.List_map(arguments_, ((_w1) => {
+return _w1.value_
+}));
+if(_guard3.length === 3 && _guard3[1].EString) {
+const e1_ = _guard3[0];
+const q_ = _guard3[1].value_;
+const e3_ = _guard3[2];
+const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
+if(_guard2) {
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_, false)))
+}
+}
+}
+}
+if(_1 === "ff:core/Js.set") {
+const _guard2 = ff_core_List.List_map(arguments_, ((_w1) => {
+return _w1.value_
+}));
+if(_guard2.length === 2 && _guard2[0].EString) {
+const q_ = _guard2[0].value_;
+const e2_ = _guard2[1];
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)))
+}
+}
+}
+if(_1 === "ff:core/Js.increment") {
+const _guard2 = ff_core_List.List_map(arguments_, ((_w1) => {
+return _w1.value_
+}));
+if(_guard2.length === 2 && _guard2[0].EString) {
+const q_ = _guard2[0].value_;
+const e2_ = _guard2[1];
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " += ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)))
+}
+}
+}
+if(_1 === "ff:core/Js.decrement") {
+const _guard2 = ff_core_List.List_map(arguments_, ((_w1) => {
+return _w1.value_
+}));
+if(_guard2.length === 2 && _guard2[0].EString) {
+const q_ = _guard2[0].value_;
+const e2_ = _guard2[1];
+const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
+if(_guard1.Some) {
+const s_ = _guard1.value_;
+return ff_core_Option.Some(((s_ + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)))
+}
+}
+}
+{
+return ff_core_Option.None()
+}
+}
+return
+}
+if(term_a.EAssign) {
+const at_ = term_a.at_;
+const operator_ = term_a.operator_;
+const name_ = term_a.variable_;
+const value_ = term_a.value_;
+return ff_core_Option.Some(((((ff_compiler_JsEmitter.escapeKeyword_(name_) + " ") + operator_) + "= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_, false)))
+}
+if(term_a.EAssignField) {
+const at_ = term_a.at_;
+const operator_ = term_a.operator_;
+const record_ = term_a.record_;
+const field_ = term_a.field_;
+const value_ = term_a.value_;
+return ff_core_Option.Some(((((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_, async_, false) + ".") + ff_compiler_JsEmitter.escapeKeyword_(field_)) + " ") + operator_) + "= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_, false)))
+}
+{
+return ff_core_Option.None()
 }
 }
 
@@ -3965,7 +4209,7 @@ if(_guard2) {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const value_ = _guard1[0];
-return ff_core_Option.Some(((("(" + operator_) + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)) + ")"))
+return ff_core_Option.Some(((("(" + operator_) + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_, false)) + ")"))
 }
 }
 }
@@ -3977,7 +4221,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const left_ = _guard1[0];
 const right_ = _guard1[1];
-return ff_core_Option.Some((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_)) + " ") + operator_) + " ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_)) + ")"))
+return ff_core_Option.Some((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_, false)) + " ") + operator_) + " ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_, false)) + ")"))
 }
 }
 }
@@ -3987,8 +4231,8 @@ if(_guard2.length === 2) {
 const e1_ = _guard2[0];
 const e2_ = _guard2[1];
 if((ff_compiler_JsEmitter.noSideEffects_(e1_) && ff_compiler_JsEmitter.noSideEffects_(e2_))) {
-const code1_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_);
-const code2_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_);
+const code1_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false);
+const code2_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false);
 return ff_core_Option.Some(((((((((("(" + code1_) + "[") + code2_) + "] ?? ") + "ff_core_List.List_grab(") + code1_) + ", ") + code2_) + "))"))
 }
 }
@@ -3999,8 +4243,8 @@ if(_guard2.length === 2) {
 const e1_ = _guard2[0];
 const e2_ = _guard2[1];
 if((ff_compiler_JsEmitter.noSideEffects_(e1_) && ff_compiler_JsEmitter.noSideEffects_(e2_))) {
-const code1_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_);
-const code2_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_);
+const code1_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false);
+const code2_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false);
 return ff_core_Option.Some(((((((((("(" + code1_) + ".array[") + code2_) + "] ?? ") + "ff_core_Array.Array_grab(") + code1_) + ", ") + code2_) + "))"))
 }
 }
@@ -4009,21 +4253,21 @@ if(_1 === "ff:core/List.List_size") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_) + ".length"))
+return ff_core_Option.Some((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false) + ".length"))
 }
 }
 if(_1 === "ff:core/Array.Array_size") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_) + ".array.length"))
+return ff_core_Option.Some((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false) + ".array.length"))
 }
 }
 if(_1 === "ff:core/String.String_size") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_) + ".length"))
+return ff_core_Option.Some((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false) + ".length"))
 }
 }
 if(_1 === "ff:core/Equal.equals") {
@@ -4035,7 +4279,7 @@ const _guard2 = dictionaries_;
 if(_guard2.length === 1 && _guard2[0].dictionaries_.length === 0) {
 const typeName_ = _guard2[0].typeName_;
 if((ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) || (typeName_ === "ff:core/Ordering.Ordering"))) {
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_)) + " === ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_, false)) + " === ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_, false)) + ")"))
 }
 }
 }
@@ -4049,7 +4293,7 @@ const _guard2 = dictionaries_;
 if(_guard2.length === 1 && _guard2[0].dictionaries_.length === 0) {
 const typeName_ = _guard2[0].typeName_;
 if((ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) || (typeName_ === "ff:core/Ordering.Ordering"))) {
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_)) + " !== ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_, false)) + " !== ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_, false)) + ")"))
 }
 }
 }
@@ -4063,7 +4307,7 @@ const _guard2 = dictionaries_;
 if(_guard2.length === 1 && _guard2[0].dictionaries_.length === 0) {
 const typeName_ = _guard2[0].typeName_;
 if(ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_)) + " < ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_, false)) + " < ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_, false)) + ")"))
 }
 }
 }
@@ -4077,7 +4321,7 @@ const _guard2 = dictionaries_;
 if(_guard2.length === 1 && _guard2[0].dictionaries_.length === 0) {
 const typeName_ = _guard2[0].typeName_;
 if(ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_)) + " >= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_, false)) + " >= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_, false)) + ")"))
 }
 }
 }
@@ -4091,7 +4335,7 @@ const _guard2 = dictionaries_;
 if(_guard2.length === 1 && _guard2[0].dictionaries_.length === 0) {
 const typeName_ = _guard2[0].typeName_;
 if(ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_)) + " > ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_, false)) + " > ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_, false)) + ")"))
 }
 }
 }
@@ -4105,7 +4349,7 @@ const _guard2 = dictionaries_;
 if(_guard2.length === 1 && _guard2[0].dictionaries_.length === 0) {
 const typeName_ = _guard2[0].typeName_;
 if(ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_)) + " <= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, left_, async_, false)) + " <= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, right_, async_, false)) + ")"))
 }
 }
 }
@@ -4132,7 +4376,7 @@ const newAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsy
 const await_ = (newAsync_
 ? "await "
 : "");
-return ff_core_Option.Some(((((((((((((((((((await_ + "((() => {\n") + "const size = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, size_, async_)) + ";\n") + "const result = [];\n") + "for(let ") + n_) + " = 0; ") + n_) + " < size; ") + n_) + "++) {\n") + "result.push(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, newAsync_)) + ");\n") + "}\n") + "return result;\n") + "})())"))
+return ff_core_Option.Some(((((((((((((((((((await_ + "((() => {\n") + "const size = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, size_, async_, false)) + ";\n") + "const result = [];\n") + "for(let ") + n_) + " = 0; ") + n_) + " < size; ") + n_) + "++) {\n") + "result.push(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, newAsync_, false)) + ");\n") + "}\n") + "return result;\n") + "})())"))
 }
 }
 }
@@ -4173,7 +4417,7 @@ if(_1 === "ff:core/Js.dynamicImport") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const url_ = _guard1[0];
-return ff_core_Option.Some((("import(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, url_, async_)) + ")"))
+return ff_core_Option.Some((("import(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, url_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/Js.await") {
@@ -4181,9 +4425,9 @@ const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const body_ = _guard1[0];
 if(async_) {
-return ff_core_Option.Some((("(await " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_)) + ")"))
+return ff_core_Option.Some((("(await " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_, false)) + ")"))
 } else {
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_, false))
 }
 return
 }
@@ -4259,7 +4503,7 @@ if(_1 === "ff:core/Js.setController") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const a_ = _guard1[0];
-return ff_core_Option.Some((("($task.controller_ = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_, async_)) + ")"))
+return ff_core_Option.Some((("($task.controller_ = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/Js.inAsync") {
@@ -4290,14 +4534,14 @@ if(_1 === "ff:core/Js.value") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false))
 }
 }
 if(_1 === "ff:core/Js.fromValue") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false))
 }
 }
 if(_1 === "ff:core/Js.rawIdentifier") {
@@ -4312,7 +4556,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2 && _guard1[0].EString) {
 const op_ = _guard1[0].value_;
 const a1_ = _guard1[1];
-return ff_core_Option.Some(((("(" + ff_core_String.String_replace(op_, "\"", "")) + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_, async_)) + ")"))
+return ff_core_Option.Some(((("(" + ff_core_String.String_replace(op_, "\"", "")) + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/Js.binaryOperator") {
@@ -4321,7 +4565,7 @@ if(_guard1.length === 3 && _guard1[0].EString) {
 const op_ = _guard1[0].value_;
 const a1_ = _guard1[1];
 const a2_ = _guard1[2];
-return ff_core_Option.Some((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_, async_)) + " ") + ff_core_String.String_replace(op_, "\"", "")) + " ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_, async_)) + ")"))
+return ff_core_Option.Some((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_, async_, false)) + " ") + ff_core_String.String_replace(op_, "\"", "")) + " ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/Js.shortCircuitingOperator") {
@@ -4330,21 +4574,21 @@ if(_guard1.length === 3 && _guard1[0].EString) {
 const op_ = _guard1[0].value_;
 const a1_ = _guard1[1];
 const a2_ = _guard1[2];
-return ff_core_Option.Some((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_, async_)) + " ") + ff_core_String.String_replace(op_, "\"", "")) + " ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(a2_), async_)) + ")"))
+return ff_core_Option.Some((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_, async_, false)) + " ") + ff_core_String.String_replace(op_, "\"", "")) + " ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(a2_), async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/JsValue.JsValue_spreadToArray") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e1_ = _guard1[0];
-return ff_core_Option.Some((("[..." + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + "]"))
+return ff_core_Option.Some((("[..." + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + "]"))
 }
 }
 if(_1 === "ff:core/JsValue.JsValue_typeof") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some((("(typeof " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_)) + ")"))
+return ff_core_Option.Some((("(typeof " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/JsValue.JsValue_instanceof") {
@@ -4352,7 +4596,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " instanceof ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + " instanceof ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/JsValue.JsValue_get") {
@@ -4360,7 +4604,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
-return ff_core_Option.Some((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")))
+return ff_core_Option.Some((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")))
 }
 }
 if(_1 === "ff:core/JsValue.JsValue_equals") {
@@ -4368,7 +4612,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " === ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + " === ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/JsValue.JsValue_notEquals") {
@@ -4376,7 +4620,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " !== ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + " !== ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/Int.Int_bitAnd") {
@@ -4384,7 +4628,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " & ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + " & ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/Int.Int_bitRightUnsigned") {
@@ -4392,7 +4636,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " >>> ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + " >>> ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/Int.Int_bitRight") {
@@ -4400,7 +4644,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const e1_ = _guard1[0];
 const e2_ = _guard1[1];
-return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + " >> ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + ")"))
+return ff_core_Option.Some((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + " >> ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)) + ")"))
 }
 }
 {
@@ -4418,9 +4662,9 @@ const e1_ = _guard1[0];
 const e2_ = _guard1[1];
 const es_ = _guard1.slice(2);
 const argumentCode_ = ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_, false)
 })), ", ");
-return ff_core_Option.Some(((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + "(") + argumentCode_) + ")"))
+return ff_core_Option.Some(((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + "(") + argumentCode_) + ")"))
 }
 }
 }
@@ -4439,9 +4683,9 @@ if(_guard1.length >= 1) {
 const e1_ = _guard1[0];
 const es_ = _guard1.slice(1);
 const argumentCode_ = ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_, false)
 })), ", ");
-return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + "(") + argumentCode_) + ")"))
+return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false) + "(") + argumentCode_) + ")"))
 }
 }
 }
@@ -4460,9 +4704,9 @@ if(_guard1.length >= 1) {
 const e1_ = _guard1[0];
 const es_ = _guard1.slice(1);
 const argumentCode_ = ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_, false)
 })), ", ");
-return ff_core_Option.Some(((((("(new " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + "(") + argumentCode_) + ")") + ")"))
+return ff_core_Option.Some(((((("(new " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + "(") + argumentCode_) + ")") + ")"))
 }
 }
 }
@@ -4490,14 +4734,14 @@ if(_guard2 && ff_core_List.List_all(as_, ((_w1) => {
 return ff_compiler_JsEmitter.noSideEffects_(_w1.value_)
 }))) {
 return (("{" + ff_core_List.List_join(ff_core_List.List_map(fields_, ((p_) => {
-return ((ff_compiler_JsEmitter.JsEmitter_emitField(self_, p_.first_, async_, "") + ": ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, p_.second_, async_))
+return ((ff_compiler_JsEmitter.JsEmitter_emitField(self_, p_.first_, async_, "") + ": ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, p_.second_, async_, false))
 })), ", ")) + "}")
 return
 }
 }
 {
-return (((("{..." + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_)) + ", ") + ff_core_List.List_join(ff_core_List.List_map(fields_, ((p_) => {
-return ((ff_compiler_JsEmitter.JsEmitter_emitField(self_, p_.first_, async_, "") + ": ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, p_.second_, async_))
+return (((("{..." + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false)) + ", ") + ff_core_List.List_join(ff_core_List.List_map(fields_, ((p_) => {
+return ((ff_compiler_JsEmitter.JsEmitter_emitField(self_, p_.first_, async_, "") + ": ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, p_.second_, async_, false))
 })), ", ")) + "}")
 return
 }
@@ -4523,10 +4767,10 @@ const q_ = _guard2[1].value_;
 const es_ = _guard2.slice(2);
 if(ff_compiler_JsEmitter.noSideEffects_(e1_)) {
 const argumentCode_ = ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_, false)
 })), ", ");
 return ff_core_Option.Some((((ff_core_Option.Option_else(ff_compiler_JsEmitter.safeBare_(q_), (() => {
-return (("globalThis[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + "]")
+return (("globalThis[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)) + "]")
 })) + "(") + argumentCode_) + ")"))
 return
 }
@@ -4553,7 +4797,7 @@ const _guard2 = term_;
 if(_guard2.ECall) {
 const call_ = _guard2;
 if((!ff_compiler_JsEmitter.effectTypeIsAsync_(call_.effect_))) {
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false))
 }
 }
 }
@@ -4569,7 +4813,7 @@ const e2_ = _guard2[1];
 const q_ = _guard2[1].value_;
 if(ff_compiler_JsEmitter.noSideEffects_(e1_)) {
 return ff_core_Option.Some(ff_core_Option.Option_else(ff_compiler_JsEmitter.safeBare_(q_), (() => {
-return (("globalThis[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)) + "]")
+return (("globalThis[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_, false)) + "]")
 })))
 return
 }
@@ -4626,10 +4870,10 @@ const e1_ = _guard1[0];
 const q_ = _guard1[0].value_;
 const es_ = _guard1.slice(1);
 const argumentCode_ = ff_core_List.List_join(ff_core_List.List_map(es_, ((_w1) => {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_, false)
 })), ", ");
 return ff_core_Option.Some((((ff_core_Option.Option_else(ff_compiler_JsEmitter.safeBare_(q_), (() => {
-return (("globalThis[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + "]")
+return (("globalThis[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + "]")
 })) + "(") + argumentCode_) + ")"))
 return
 }
@@ -4658,9 +4902,9 @@ return ("a_" + _w1)
 const taskCode_ = ((argumentCode_ === "")
 ? "$task"
 : ", $task");
-return ff_core_Option.Some(((((((("(async (" + argumentCode_) + ") => await ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + "(") + argumentCode_) + taskCode_) + "))"))
+return ff_core_Option.Some(((((((("(async (" + argumentCode_) + ") => await ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + "(") + argumentCode_) + taskCode_) + "))"))
 } else {
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false))
 }
 return
 }
@@ -4674,7 +4918,7 @@ if(_guard1.length === 1 && _guard1[0].EString) {
 const e1_ = _guard1[0];
 const q_ = _guard1[0].value_;
 return ff_core_Option.Some(ff_core_Option.Option_else(ff_compiler_JsEmitter.safeBare_(q_), (() => {
-return (("globalThis[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_)) + "]")
+return (("globalThis[" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_, false)) + "]")
 })))
 return
 }
@@ -4728,35 +4972,35 @@ if(_1 === "ff:core/Json.string") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false))
 }
 }
 if(_1 === "ff:core/Json.int") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false))
 }
 }
 if(_1 === "ff:core/Json.float") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false))
 }
 }
 if(_1 === "ff:core/Json.bool") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false))
 }
 }
 if(_1 === "ff:core/Json.array") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
 const e_ = _guard1[0];
-return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_))
+return ff_core_Option.Some(ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false))
 }
 }
 if(_1 === "ff:core/Json.null") {
@@ -4787,7 +5031,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const condition_ = _guard1[0];
 const body_ = _guard1[1];
-return ff_core_Option.Some((((("while(" + ff_compiler_JsEmitter.JsEmitter_emitComma(self_, ff_compiler_JsEmitter.invokeImmediately_(condition_), async_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), false, false, async_)) + "\n}"))
+return ff_core_Option.Some((((("while(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(condition_), async_, false)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), false, false, async_)) + "\n}"))
 }
 }
 if(_1 === "ff:core/Core.doWhile") {
@@ -4807,7 +5051,7 @@ if(_guard1.length === 2 && _guard1[1].ELambda && _guard1[1].lambda_.cases_.lengt
 const list_ = _guard1[0];
 const name_ = _guard1[1].lambda_.cases_[0].patterns_[0].name_;
 const body_ = _guard1[1].lambda_.cases_[0].body_;
-return ff_core_Option.Some(((((("{\nconst if_o = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_)) + "\nif(if_o.Some) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+return ff_core_Option.Some(((((("{\nconst if_o = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_, false)) + "\nif(if_o.Some) {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
 return (("const " + ff_compiler_JsEmitter.escapeKeyword_(_w1)) + " = if_o.value_;\n")
 })), (() => {
 return ""
@@ -4827,8 +5071,8 @@ const end_ = _guard2[0].arguments_[1];
 const name_ = _guard2[1].lambda_.cases_[0].patterns_[0].name_;
 const body_ = _guard2[1].lambda_.cases_[0].body_;
 if(((r_ === "ff:core/Int.Int_until") || (r_ === "ff:core/Int.Int_to"))) {
-const startCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, start_.value_, async_);
-const endCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, end_.value_, async_);
+const startCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, start_.value_, async_, false);
+const endCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, end_.value_, async_, false);
 const op_ = ((r_ === "ff:core/Int.Int_until")
 ? "<"
 : "<=");
@@ -4854,8 +5098,8 @@ const end_ = _guard2[0].arguments_[0].value_.arguments_[1];
 const name_ = _guard2[1].lambda_.cases_[0].patterns_[0].name_;
 const body_ = _guard2[1].lambda_.cases_[0].body_;
 if(((r_ === "ff:core/Int.Int_until") || (r_ === "ff:core/Int.Int_to"))) {
-const startCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, start_.value_, async_);
-const endCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, end_.value_, async_);
+const startCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, start_.value_, async_, false);
+const endCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, end_.value_, async_, false);
 const delta_ = ((r_ === "ff:core/Int.Int_until")
 ? " - 1"
 : "");
@@ -4957,7 +5201,7 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const array_ = _guard1[0];
 const value_ = _guard1[1];
-return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, array_, async_) + ".array.push(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)) + ")"))
+return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, array_, async_, false) + ".array.push(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_, false)) + ")"))
 }
 }
 if(_1 === "ff:core/Core.if") {
@@ -4965,8 +5209,8 @@ const _guard1 = arguments_;
 if(_guard1.length === 2) {
 const condition_ = _guard1[0];
 const body_ = _guard1[1];
-return ff_core_Option.Some(((("if(" + ff_compiler_JsEmitter.JsEmitter_emitComma(self_, condition_, async_)) + ") {\n") + (last_
-? (("return ff_core_Option.Some(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), async_)) + ")\n} else return ff_core_Option.None()")
+return ff_core_Option.Some(((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_, false)) + ") {\n") + (last_
+? (("return ff_core_Option.Some(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), async_, false)) + ")\n} else return ff_core_Option.None()")
 : (ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, ff_compiler_JsEmitter.invokeImmediately_(body_), false, false, async_) + "\n}"))))
 return
 }
@@ -5022,118 +5266,7 @@ const c_ = _guard2;
 const _guard1 = c_.arguments_;
 if(_guard1.length === 1) {
 const argument_ = _guard1[0];
-return ff_core_Option.Some(("throw " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, argument_.value_, async_)))
-}
-}
-}
-if(_1 === "ff:core/JsValue.JsValue_set") {
-const _guard1 = arguments_;
-if(_guard1.length === 3) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const e3_ = _guard1[2];
-return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
-}
-}
-if(_1 === "ff:core/JsValue.JsValue_increment") {
-const _guard1 = arguments_;
-if(_guard1.length === 3) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const e3_ = _guard1[2];
-return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + " += ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
-}
-}
-if(_1 === "ff:core/JsValue.JsValue_decrement") {
-const _guard1 = arguments_;
-if(_guard1.length === 3) {
-const e1_ = _guard1[0];
-const e2_ = _guard1[1];
-const e3_ = _guard1[2];
-return ff_core_Option.Some((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e1_, async_) + ff_compiler_JsEmitter.JsEmitter_emitField(self_, e2_, async_, ".")) + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
-}
-}
-if(_1 === "ff:core/JsSystem.JsSystem_set") {
-const _guard3 = arguments_;
-if(_guard3.length === 3 && _guard3[1].EString) {
-const e1_ = _guard3[0];
-const q_ = _guard3[1].value_;
-const e3_ = _guard3[2];
-const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
-if(_guard2) {
-const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
-if(_guard1.Some) {
-const s_ = _guard1.value_;
-return ff_core_Option.Some(((s_ + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
-}
-}
-}
-}
-if(_1 === "ff:core/JsSystem.JsSystem_increment") {
-const _guard3 = arguments_;
-if(_guard3.length === 3 && _guard3[1].EString) {
-const e1_ = _guard3[0];
-const q_ = _guard3[1].value_;
-const e3_ = _guard3[2];
-const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
-if(_guard2) {
-const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
-if(_guard1.Some) {
-const s_ = _guard1.value_;
-return ff_core_Option.Some(((s_ + " += ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
-}
-}
-}
-}
-if(_1 === "ff:core/JsSystem.JsSystem_decrement") {
-const _guard3 = arguments_;
-if(_guard3.length === 3 && _guard3[1].EString) {
-const e1_ = _guard3[0];
-const q_ = _guard3[1].value_;
-const e3_ = _guard3[2];
-const _guard2 = ff_compiler_JsEmitter.noSideEffects_(e1_);
-if(_guard2) {
-const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
-if(_guard1.Some) {
-const s_ = _guard1.value_;
-return ff_core_Option.Some(((s_ + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e3_, async_)))
-}
-}
-}
-}
-if(_1 === "ff:core/Js.set") {
-const _guard2 = arguments_;
-if(_guard2.length === 2 && _guard2[0].EString) {
-const q_ = _guard2[0].value_;
-const e2_ = _guard2[1];
-const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
-if(_guard1.Some) {
-const s_ = _guard1.value_;
-return ff_core_Option.Some(((s_ + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)))
-}
-}
-}
-if(_1 === "ff:core/Js.increment") {
-const _guard2 = arguments_;
-if(_guard2.length === 2 && _guard2[0].EString) {
-const q_ = _guard2[0].value_;
-const e2_ = _guard2[1];
-const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
-if(_guard1.Some) {
-const s_ = _guard1.value_;
-return ff_core_Option.Some(((s_ + " += ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)))
-}
-}
-}
-if(_1 === "ff:core/Js.decrement") {
-const _guard2 = arguments_;
-if(_guard2.length === 2 && _guard2[0].EString) {
-const q_ = _guard2[0].value_;
-const e2_ = _guard2[1];
-const _guard1 = ff_compiler_JsEmitter.safeBare_(q_);
-if(_guard1.Some) {
-const s_ = _guard1.value_;
-return ff_core_Option.Some(((s_ + " -= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e2_, async_)))
+return ff_core_Option.Some(("throw " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, argument_.value_, async_, false)))
 }
 }
 }
@@ -5150,18 +5283,18 @@ const listCode_ = (((_1) => {
 if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_dropFirst" && _1.arguments_.length === 2) {
 const a1_ = _1.arguments_[0];
 const a2_ = _1.arguments_[1];
-start_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_);
+start_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_, false);
 if((!ff_core_String.String_all(start_, ((_w1) => {
 return ff_core_Char.Char_isAsciiDigit(_w1)
 })))) {
 start_ = (("Math.max(" + start_) + ", 0)")
 };
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_, false)
 }
 if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_dropLast" && _1.arguments_.length === 2) {
 const a1_ = _1.arguments_[0];
 const a2_ = _1.arguments_[1];
-const count_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_);
+const count_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_, false);
 if((!ff_core_String.String_all(count_, ((_w1) => {
 return ff_core_Char.Char_isAsciiDigit(_w1)
 })))) {
@@ -5169,24 +5302,24 @@ end_ = (((end_ + " - Math.max(") + count_) + ", 0)")
 } else {
 end_ = ((end_ + " - ") + count_)
 };
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_, false)
 }
 if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_takeFirst" && _1.arguments_.length === 2) {
 const a1_ = _1.arguments_[0];
 const a2_ = _1.arguments_[1];
-end_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_);
+end_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_, false);
 if((!ff_core_String.String_all(end_, ((_w1) => {
 return ff_core_Char.Char_isAsciiDigit(_w1)
 })))) {
 end_ = (("Math.max(" + end_) + ", 0)")
 };
 end_ = (((("Math.min(" + end_) + ", ") + listName_) + ".length)");
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_, false)
 }
 if(_1.ECall && _1.target_.StaticCall && _1.target_.name_ === "ff:core/List.List_takeLast" && _1.arguments_.length === 2) {
 const a1_ = _1.arguments_[0];
 const a2_ = _1.arguments_[1];
-const count_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_);
+const count_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a2_.value_, async_, false);
 if((!ff_core_String.String_all(count_, ((_w1) => {
 return ff_core_Char.Char_isAsciiDigit(_w1)
 })))) {
@@ -5194,10 +5327,10 @@ start_ = (((("Math.max(" + listName_) + ".length - Math.max(") + count_) + ", 0)
 } else {
 start_ = (((("Math.max(" + listName_) + ".length - ") + count_) + ", 0)")
 };
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a1_.value_, async_, false)
 }
 {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, list_, async_, false)
 }
 }))(list_);
 return ff_core_Pair.Pair(listCode_, ff_core_Pair.Pair(start_, end_))
@@ -5309,7 +5442,7 @@ if(ff_core_List.List_isEmpty(variables_)) {
 const newCase_ = (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, [], [], _c.body_)
 }))(matchCase_);
-return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, [], newCase_, [...conditions_, ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_)], [], jump_, last_, break_, lastCase_, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, [], newCase_, [...conditions_, ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false)], [], jump_, last_, break_, lastCase_, async_)
 }
 }
 if(_1.first_.length === 0 && _1.second_.length === 1 && _1.second_[0].pattern_.PVariant && _1.second_[0].pattern_.name_ === "ff:core/Bool.True") {
@@ -5317,7 +5450,7 @@ const e_ = _1.second_[0].term_;
 const newCase_ = (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, [], [], _c.body_)
 }))(matchCase_);
-const code_ = ff_compiler_JsEmitter.JsEmitter_emitCase(self_, [], newCase_, [ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_)], [], jump_, last_, break_, lastCase_, async_);
+const code_ = ff_compiler_JsEmitter.JsEmitter_emitCase(self_, [], newCase_, [ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_, async_, false)], [], jump_, last_, break_, lastCase_, async_);
 return emitWrapper_(code_)
 }
 if(_1.first_.length === 0 && _1.second_.length >= 1) {
@@ -5327,7 +5460,7 @@ const guardName_ = ("_guard" + (guards_.length + 1));
 const newCase_ = (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, [guard_.pattern_], guards_, _c.body_)
 }))(matchCase_);
-const code_ = ((((("const " + guardName_) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, guard_.term_, async_)) + ";\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, [guardName_], newCase_, [], [], jump_, last_, break_, lastCase_, async_));
+const code_ = ((((("const " + guardName_) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, guard_.term_, async_, false)) + ";\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, [guardName_], newCase_, [], [], jump_, last_, break_, lastCase_, async_));
 return emitWrapper_(code_)
 }
 {
@@ -5482,11 +5615,11 @@ export async function JsEmitter_emitList$(self_, items_, async_, $task) {
 return (("[" + ff_core_List.List_join(ff_core_List.List_map(items_, ((_1) => {
 if(!_1.second_) {
 const item_ = _1.first_;
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, item_, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, item_, async_, false)
 }
 {
 const item_ = _1.first_;
-return ("..." + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, item_, async_))
+return ("..." + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, item_, async_, false))
 }
 })), ", ")) + "]")
 }
@@ -5552,40 +5685,7 @@ return (((((((((("\"" + self_.moduleName_) + ":") + callAt_.line_) + ":") + call
 }
 {
 const value_ = _1;
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)
-}
-}
-}
-
-export async function JsEmitter_emitComma$(self_, term_, async_, $task) {
-{
-const _1 = term_;
-if(_1.ESequential && _1.before_.ESequential && _1.before_.before_.ESequential) {
-const before1_ = _1.before_.before_.before_;
-const before2_ = _1.before_.before_.after_;
-const before3_ = _1.before_.after_;
-const after_ = _1.after_;
-if((((ff_compiler_JsEmitter.safeCommable_(before1_) && ff_compiler_JsEmitter.safeCommable_(before2_)) && ff_compiler_JsEmitter.safeCommable_(before3_)) && ff_compiler_JsEmitter.safeCommable_(after_))) {
-return (((((((("(" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before1_, false, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before2_, false, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before3_, false, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, after_, async_)) + ")")
-}
-}
-if(_1.ESequential && _1.before_.ESequential) {
-const before1_ = _1.before_.before_;
-const before2_ = _1.before_.after_;
-const after_ = _1.after_;
-if(((ff_compiler_JsEmitter.safeCommable_(before1_) && ff_compiler_JsEmitter.safeCommable_(before2_)) && ff_compiler_JsEmitter.safeCommable_(after_))) {
-return (((((("(" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before1_, false, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before2_, false, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, after_, async_)) + ")")
-}
-}
-if(_1.ESequential) {
-const before_ = _1.before_;
-const after_ = _1.after_;
-if((ff_compiler_JsEmitter.safeCommable_(before_) && ff_compiler_JsEmitter.safeCommable_(after_))) {
-return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before_, false, false, async_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, after_, async_)) + ")")
-}
-}
-{
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, term_, async_)
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_, false)
 }
 }
 }
