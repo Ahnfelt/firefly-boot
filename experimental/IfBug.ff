@@ -1,8 +1,0 @@
-nodeMain(system: NodeSystem) {
-    let r = if(42 == 1) {
-        if(42 == 11) {
-            Log.debug("11")
-        }
-        Log.debug("1")
-    }
-}
