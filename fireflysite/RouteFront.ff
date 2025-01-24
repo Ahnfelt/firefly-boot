@@ -17,7 +17,6 @@ handle(request: WebRequest[WebResponse], context: RouteContext) {
 }
 
 browserMain(system: BrowserSystem) {
-    system.js()->alert("Hello!!!")
     Html.renderToMain(system, {render(_, _)})
 }
 
