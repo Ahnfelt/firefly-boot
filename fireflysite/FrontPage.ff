@@ -3,7 +3,11 @@ import CountingButtonDemo
 import MatchingPasswordsDemo
 
 new(): Document {
-    ReadyDocument([
+    ReadyDocument(sections())
+}
+
+sections(): List[Section] {
+    [
         Section("The full-stack programming language", [
             Paragraph([
                 Text("Firefly code runs in the browser and on the server, or even at build time. ")
@@ -340,5 +344,5 @@ new(): Document {
                 ]
             ])
         ])
-    ])
+    ]    
 }

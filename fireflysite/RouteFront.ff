@@ -1,15 +1,17 @@
 import Lux from ff:lux
 import WebServer from ff:webserver
 import Router
+import Guide
+import ExamplesOverview
+import FrontPage
 import Html
 
 routeModule = SourceLocation.here().module()
 
-data PageData(markdown: String)
-
+data PageData(sections: List[Section])
 
 handle(request: WebRequest[WebResponse], context: RouteContext) {
-    let pageData = PageData("Hello world!")
+    let pageData = PageData(FrontPage.sections())
     let title = "It's the front"
     Html.renderAndServe(context.system, routeModule, pageData, title, request, {render(_, pageData)})
 }
@@ -19,11 +21,6 @@ browserMain(system: BrowserSystem) {
     Html.renderToMain(system, {render(_, _)})
 }
 
-render(lux: Lux, chat: PageData) {
-    lux.add("div") {
-        lux.add("h1") {
-            lux.text("Hello")
-        }
-    }
+render(lux: Lux, data: PageData) {
+    Guide.renderSections(lux, data.sections, ExamplesOverview.demos())
 }
-

@@ -4,7 +4,7 @@ import RouteFront
 
 capability RouteContext(system: NodeSystem)
 
-chatRoomRoute: WebRoute0 = WebRoute.new0(
+frontRoute: WebRoute0 = WebRoute.new0(
     "/"
 )
 
@@ -15,5 +15,5 @@ modulesWithBrowserMain(): List[String] {
 }
 
 handlers(handler: WebRouteHandler[RouteContext]) {
-    handler.add0(chatRoomRoute, RouteFront.handle)
+    handler.add0(frontRoute, RouteFront.handle)
 }
