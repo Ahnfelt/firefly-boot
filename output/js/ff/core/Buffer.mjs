@@ -348,7 +348,9 @@ return hex_
 
 export function Buffer_toBase64(self_) {
 const view_ = (new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength));
-const binaryString_ = (new TextDecoder("latin1")).decode(view_);
+const binaryString_ = Array.from(view_, ((byte_) => {
+return String.fromCharCode(byte_)
+})).join(39);
 return btoa(binaryString_)
 }
 
@@ -509,7 +511,9 @@ return hex_
 
 export async function Buffer_toBase64$(self_, $task) {
 const view_ = (new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength));
-const binaryString_ = (new TextDecoder("latin1")).decode(view_);
+const binaryString_ = Array.from(view_, ((byte_) => {
+return String.fromCharCode(byte_)
+})).join(39);
 return btoa(binaryString_)
 }
 

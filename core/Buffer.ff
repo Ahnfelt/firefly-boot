@@ -158,7 +158,8 @@ extend self: Buffer {
     
     toBase64(): String {
         let view = Js->Uint8Array->(self!->buffer, self!->byteOffset, self!->byteLength)
-        let binaryString = Js->TextDecoder->("latin1")->decode(view)
+        //let binaryString = Js->TextDecoder->("latin1")->decode(view)
+        let binaryString = Js->Array->from(view, Js->{byte => Js->String->fromCharCode(byte)})->join('');
         Js->btoa(binaryString)?
     }
 
