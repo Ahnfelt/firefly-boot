@@ -30,6 +30,14 @@ extend self[K: Order, V]: Map[K, V] {
         self.redBlack.get(key)
     }
     
+    first(): Option[Pair[K, V]] {
+        self.redBlack.first()
+    }
+
+    last(): Option[Pair[K, V]] {
+        self.redBlack.last()
+    }
+
     lastBefore(key: K): Option[Pair[K, V]] {
         self.redBlack.lastBefore(key)
     }
