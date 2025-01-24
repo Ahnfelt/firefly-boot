@@ -1,4 +1,5 @@
 import WebServer from ff:webserver
+import WebRoute from ff:webserver
 import Lux from ff:lux
 import Css from ff:lux
 import Guide
@@ -9,10 +10,14 @@ import PackagesOverview
 import CommunityOverview
 import FrontPage
 import Styles
+import Router
 
 nodeMain(system: NodeSystem): Unit {
     let host = system.arguments().grab(0)
     let port = system.arguments().grab(1).grabInt()
+    let context = RouteContext(system)
+    let handlers = WebRouteHandler(Array.new())
+    Router.handlers(handlers)
     let cacheSalt = system.crypto().randomBuffer(16)
     system.writeLine("Listening on " + host + ":" + port)
     WebServer.new(system, host, port).listen {request =>
@@ -42,6 +47,7 @@ nodeMain(system: NodeSystem): Unit {
             | ["assets", "font", "firefly-sans.woff2"] => 
                 serveAsset(system, cacheSalt, request, "font/woff2", "/assets/font/gf-nunito-sans-latin.woff2")
             | ["assets", ...rest] => serveAssets(system, cacheSalt, request, rest)
+            | _ {handlers.handle(request, context)} =>
             | _ {serveGuide(system, request)} => 
             | _ =>
                 request.writeText("404 Not Found")
@@ -94,10 +100,14 @@ isGuidePath(path: String, prefix: String): Bool {
 }
 
 buildMain(system: BuildSystem) {
-    let browser = system.compileForBrowser("Main.ff") // .bundle()
-    let assets = AssetSystem.create()
-        .addAssets("/js/", browser.assets())
-        .addAssets("/assets/", system.packageAssets().assets("/assets/"))
+    mutable assets = AssetSystem.create()
+    Router.modulesWithBrowserMain().each {moduleName =>
+        let browser = system.compileForBrowser(moduleName + ".ff") // .bundle()
+        assets = assets.addAssets("/js/", browser.assets())
+    }
+    //let browser = system.compileForBrowser("Main.ff") // .bundle()
+    //assets = assets.addAssets("/js/", browser.assets())
+    assets = assets.addAssets("/assets/", system.packageAssets().assets("/assets/"))
     system.setAssets(assets)
 }
 

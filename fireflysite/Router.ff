@@ -1,0 +1,19 @@
+import WebServer from ff:webserver
+import WebRoute from ff:webserver
+import RouteFront
+
+capability RouteContext(system: NodeSystem)
+
+chatRoomRoute: WebRoute0 = WebRoute.new0(
+    "/"
+)
+
+modulesWithBrowserMain(): List[String] {
+    [
+        RouteFront.routeModule
+    ]
+}
+
+handlers(handler: WebRouteHandler[RouteContext]) {
+    handler.add0(chatRoomRoute, RouteFront.handle)
+}

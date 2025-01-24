@@ -1,0 +1,29 @@
+import Lux from ff:lux
+import WebServer from ff:webserver
+import Router
+import Html
+
+routeModule = SourceLocation.here().module()
+
+data PageData(markdown: String)
+
+
+handle(request: WebRequest[WebResponse], context: RouteContext) {
+    let pageData = PageData("Hello world!")
+    let title = "It's the front"
+    Html.renderAndServe(context.system, routeModule, pageData, title, request, {render(_, pageData)})
+}
+
+browserMain(system: BrowserSystem) {
+    system.js()->alert("Hello!!!")
+    Html.renderToMain(system, {render(_, _)})
+}
+
+render(lux: Lux, chat: PageData) {
+    lux.add("div") {
+        lux.add("h1") {
+            lux.text("Hello")
+        }
+    }
+}
+
