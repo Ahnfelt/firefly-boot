@@ -140,7 +140,7 @@ return (new DataView(arrayBuffer_))
 export function fromBase64_(base64_) {
 const binaryString_ = atob(base64_);
 const bytes_ = Uint8Array.from(binaryString_, ((char_) => {
-return char_.charCodeAt(0)
+return char_.codePointAt(0)
 }));
 return (new DataView(bytes_.buffer))
 }
@@ -186,7 +186,7 @@ return (new DataView(arrayBuffer_))
 export async function fromBase64_$(base64_, $task) {
 const binaryString_ = atob(base64_);
 const bytes_ = Uint8Array.from(binaryString_, ((char_) => {
-return char_.charCodeAt(0)
+return char_.codePointAt(0)
 }));
 return (new DataView(bytes_.buffer))
 }
@@ -349,7 +349,7 @@ return hex_
 export function Buffer_toBase64(self_) {
 const view_ = (new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength));
 const binaryString_ = Array.from(view_, ((byte_) => {
-return String.fromCharCode(byte_)
+return String.fromCodePoint(byte_)
 })).join(39);
 return btoa(binaryString_)
 }
@@ -512,7 +512,7 @@ return hex_
 export async function Buffer_toBase64$(self_, $task) {
 const view_ = (new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength));
 const binaryString_ = Array.from(view_, ((byte_) => {
-return String.fromCharCode(byte_)
+return String.fromCodePoint(byte_)
 })).join(39);
 return btoa(binaryString_)
 }
