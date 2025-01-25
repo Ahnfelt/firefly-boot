@@ -1,0 +1,31 @@
+toAscii(buffer: Buffer): String {
+    let result = Buffer.new(buffer.size().bitLeft(1))
+    0.until(buffer.size()).each {i =>
+        let b = buffer.grabUint8(i)
+        result.setUint16(i.bitLeft(1), (b.bitRightUnsigned(4).bitAnd(0xf) + 0x68).bitOr(
+            (b.bitAnd(0xf) + 0x68).bitLeft(8)
+        ), littleEndian = True)
+    }
+    result.toString()
+}
+
+fromAscii(ascii: String): Buffer {
+    let buffer = Buffer.new(ascii.size().bitRightUnsigned(1))
+    0.until(buffer.size()).each {i =>
+        buffer.setUint8(i, (ascii.grab(i.bitLeft(1)).codeUnit.bitAnd(0x1f) - 0x8).bitLeft(4).bitOr(
+            ascii.grab(i.bitLeft(1).bitOr(1)).codeUnit.bitAnd(0x1f) - 0x8
+        ))
+    }
+    buffer
+}
+
+nodeMain(system: NodeSystem) {
+    let x = Buffer.fromByteList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 100, 101, 102, 103, 104, 105])
+    let a = toAscii(x)
+    let b = fromAscii(a.upper())
+    Log.debug(x.toByteArray().map {Show.show(_)}.join(" "))
+    Log.debug(a)
+    Log.debug(b.toByteArray().map {Show.show(_)}.join(" "))
+    Log.debug(Show.show((16.bitAnd(0x0f) + 0x68)))
+    Log.debug(Show.show((16.bitRightUnsigned(4).bitAnd(0x0f) + 0x68).bitLeft(8)))
+}
