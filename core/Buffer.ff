@@ -162,11 +162,22 @@ extend self: Buffer {
         let binaryString = Js->Array->from(view, Js->{byte => Js->String->fromCodePoint(byte)})->join('');
         Js->btoa(binaryString)?
     }
+    
+    toLetter16(): String {
+        let result = Buffer.new(self.size().bitLeft(1))
+        0.until(self.size()).each {i =>
+            let b = self.grabUint8(i)
+            result.setUint16(i.bitLeft(1), (b.bitRightUnsigned(4).bitAnd(0xf) + 0x68).bitOr(
+                (b.bitAnd(0xf) + 0x68).bitLeft(8)
+            ), littleEndian = True)
+        }
+        result.toString()
+    }
 
 }
 
 fromByteList(array: List[Int]): Buffer {
-    Js->DataView->(Js->Uint8Array(array)->buffer)?
+    Js->DataView->(Js->Uint8Array->(array)->buffer)?
 }
 
 fromBufferList(array: List[Buffer]): Buffer {
@@ -196,6 +207,16 @@ fromBase64(base64: String): Buffer {
     let binaryString = Js->atob(base64)
     let bytes = Js->Uint8Array->from(binaryString, Js->{char => char->codePointAt(0)})
     Js->DataView->(bytes->buffer)?
+}
+
+fromLetter16(letters: String): Buffer {
+    let buffer = Buffer.new(letters.size().bitRightUnsigned(1))
+    0.until(buffer.size()).each {i =>
+        buffer.setUint8(i, (letters.grab(i.bitLeft(1)).codeUnit.bitAnd(0x1f) - 0x8).bitLeft(4).bitOr(
+            letters.grab(i.bitLeft(1).bitOr(1)).codeUnit.bitAnd(0x1f) - 0x8
+        ))
+    }
+    buffer
 }
 
 instance Buffer: Show {
