@@ -144,7 +144,7 @@ extend self: Buffer {
         Js->TextDecoder->()->decode(self!)?
     }
 
-    toByteArray(): List[Int] {
+    toByteList(): List[Int] {
         Js->Uint8Array->(self!->buffer, self!->byteOffset, self!->byteLength).spreadToArray()!?
     }
     
