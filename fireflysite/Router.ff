@@ -1,19 +1,25 @@
 import WebServer from ff:webserver
 import WebRoute from ff:webserver
 import RouteFront
+import RouteReference
 
 capability RouteContext(system: NodeSystem)
 
 frontRoute: WebRoute0 = WebRoute.new0(
     "/"
 )
+referenceRoute: WebRoute1[String] = WebRoute.new1(
+    "/ref/{name}"
+)
 
 modulesWithBrowserMain(): List[String] {
     [
         RouteFront.routeModule
+        RouteReference.routeModule
     ]
 }
 
 handlers(handler: WebRouteHandler[RouteContext]) {
     handler.add0(frontRoute, RouteFront.handle)
+    handler.add1(referenceRoute, RouteReference.handle)
 }

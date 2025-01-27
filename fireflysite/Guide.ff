@@ -121,7 +121,7 @@ render(lux: Lux, httpClient: HttpClient, prefix: String, kebab: String, guides: 
                     setMenu(False)
                 }
             }
-            renderSidebar(lux, guides, guide, document.heading(), menu)
+            renderSidebar(lux, guides, guide.prefix, document.heading(), menu)
         }
     }
 }
@@ -150,7 +150,7 @@ renderTopbar(lux: Lux, menu: Bool, setMenu: Bool => Unit) {
     }
 }
 
-renderSidebar(lux: Lux, guides: List[Guide], selectedGuide: Guide, selectedHeading: String, menu: Bool) {
+renderSidebar(lux: Lux, guides: List[Guide], selectedGuidePrefix: String, selectedHeading: String, menu: Bool) {
     lux.add("nav") {
         lux.cssClass(Styles.guideSidebarCss)
         if(menu) {lux.cssClass(Styles.guideSidebarOpenCss)}
@@ -180,7 +180,7 @@ renderSidebar(lux: Lux, guides: List[Guide], selectedGuide: Guide, selectedHeadi
                     lux.add("a") {
                         lux.cssClass(Styles.whiteLinkCss)
                         let heading = guide.documents.grabFirst().heading()
-                        if(selectedGuide.prefix == guide.prefix && heading == selectedHeading) {
+                        if(selectedGuidePrefix == guide.prefix && heading == selectedHeading) {
                             lux.set("aria-current", "page")
                         }
                         lux.set("href", guide.prefix)
@@ -195,7 +195,7 @@ renderSidebar(lux: Lux, guides: List[Guide], selectedGuide: Guide, selectedHeadi
                                 lux.add("a") {
                                     lux.cssClass(Styles.whiteLinkCss)
                                     let heading = document.heading()
-                                    if(selectedGuide.prefix == guide.prefix && heading == selectedHeading) {
+                                    if(selectedGuidePrefix == guide.prefix && heading == selectedHeading) {
                                         lux.set("aria-current", "page")
                                     }
                                     lux.set("href", guide.prefix + kebabCase(heading))

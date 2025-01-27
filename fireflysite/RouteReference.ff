@@ -1,0 +1,34 @@
+import Lux from ff:lux
+import WebServer from ff:webserver
+import Router
+import Guide
+import ExamplesOverview
+import FrontPage
+import DocumentParser
+import Html
+
+routeModule = SourceLocation.here().module()
+
+data PageData(sections: List[Section])
+
+handle(request: WebRequest[WebResponse], context: RouteContext, name: String) {
+    let asset = "/assets/markdown/reference/" + name
+    try {context.system.assets().readText(asset)}.toOption().or {
+        Log.trace("Asset not found: " + asset)
+        request.writeText("404 Not Found")
+        request.writeStatus("404 Not Found")
+    }: markdown =>
+    let parser = DocumentParser(name, markdown.split('\n'), 0)
+    let sections = parser.parseDocument()
+    let pageData = PageData(sections)
+    let title = name
+    Html.renderAndServe(context.system, routeModule, pageData, title, request, {render(_, pageData)})
+}
+
+browserMain(system: BrowserSystem) {
+    Html.renderToMain(system, {render(_, _)})
+}
+
+render(lux: Lux, data: PageData) {
+    Guide.renderSections(lux, data.sections, ExamplesOverview.demos())
+}
