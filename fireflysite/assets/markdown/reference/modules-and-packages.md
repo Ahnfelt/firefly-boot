@@ -160,3 +160,5 @@ There's no global state in Firefly, and to enforce this, the type of a named con
 Named constants that occur on the right hand side must not directly or indirecly refer to the named constant being defined.
 
 Neither of the requirements are enforced currently, but this is likely to change in the future.
+
+[Next](base-types)

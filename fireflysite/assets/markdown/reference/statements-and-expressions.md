@@ -84,3 +84,4 @@ Binary operators are left associative and the operator precedence is as follows,
 
 Unary operators `!` and `-` have higher precedence than `^` and lower precedence than `f()`.
 
+[Next](functions-and-methods)

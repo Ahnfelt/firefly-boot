@@ -98,3 +98,5 @@ trait T: HasAnyTag {
     anyTag(): AnyTag[T]
 }
 ```
+
+[Next](exceptions)

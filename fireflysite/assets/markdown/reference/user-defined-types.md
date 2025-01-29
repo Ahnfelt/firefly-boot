@@ -182,3 +182,5 @@ color.red       // Returns an Int
 color.green     // Returns an Int
 color.blue      // Returns an Int
 ```
+
+[Next](statements-and-expressions)
