@@ -1,0 +1,63 @@
+/*nodeMain(system: NodeSystem) {
+    let result = tarjan([1]) {
+        | 1, f => f(2); f(3); f(4)
+        | 2, f => f(5)
+        | 5, f => f(2)
+        | 3, f => f(6); f(7)
+        | 4, f => f(8)
+        | 8, f => f(9); f(10)
+        | 9, f => f(11); f(10)
+        | 10, f => f(8); f(9)
+        | _, f => 
+    }
+    Log.show(result)
+}*/
+
+tarjan(roots: List[Int], eachEdge: (Int, Int => Unit) => Unit): List[List[Int]] {
+    mutable index = 0
+    mutable stack = Array.new[Int]()
+    mutable onStack = IntMap.new[Bool]()
+    mutable indices = IntMap.new[Int]()
+    mutable lowlink = IntMap.new[Int]()
+    mutable sccs = Array.new[List[Int]]()
+
+    function strongConnect(v: Int) {
+        indices.set(v, index)
+        lowlink.set(v, index)
+        index += 1
+
+        stack.push(v)
+        onStack.set(v, True)
+
+        eachEdge(v) {w =>
+            if(!indices.has(w)) {
+                strongConnect(w)
+                lowlink.set(v, lowlink.grab(v).min(lowlink.grab(w)))
+            } elseIf {onStack.grab(w)} {
+                lowlink.set(v, lowlink.grab(v).min(indices.grab(w)))
+            }
+        }
+
+        if(lowlink.grab(v) == indices.grab(v)) {
+            let scc = Array.new[Int]()
+            mutable done = False
+            while {!done} {
+                let w = stack.pop().grab()
+                onStack.set(w, False)
+                scc.push(w)
+                if(w == v) {
+                    done = True
+                }
+            }
+            sccs.push(scc.drain())
+        }
+    }
+
+    roots.each {v =>
+        if(!indices.has(v)) {
+            strongConnect(v)
+        }
+    }
+
+    sccs.drain()
+}
