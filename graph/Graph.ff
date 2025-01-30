@@ -13,6 +13,22 @@
     Log.show(result)
 }*/
 
+breadthFirst(roots: List[Int], eachEdge: (Int, Int => Unit) => Unit): Unit {
+    mutable seen = IntMap.new()
+    let queue = Array.new()
+    queue.pushList(roots)
+    mutable i = 0
+    while {i < queue.size()} {
+        eachEdge(queue.grab(i)) {v =>
+            if(!seen.has(v)) {
+                seen.set(v, v)
+                queue.push(v)
+            }
+        }
+        i += 1
+    }
+}
+
 tarjan(roots: List[Int], eachEdge: (Int, Int => Unit) => Unit): List[List[Int]] {
     mutable index = 0
     mutable stack = Array.new[Int]()
@@ -21,7 +37,7 @@ tarjan(roots: List[Int], eachEdge: (Int, Int => Unit) => Unit): List[List[Int]] 
     mutable lowlink = IntMap.new[Int]()
     mutable sccs = Array.new[List[Int]]()
 
-    function strongConnect(v: Int) {
+    function go(v: Int) {
         indices.set(v, index)
         lowlink.set(v, index)
         index += 1
@@ -31,7 +47,7 @@ tarjan(roots: List[Int], eachEdge: (Int, Int => Unit) => Unit): List[List[Int]] 
 
         eachEdge(v) {w =>
             if(!indices.has(w)) {
-                strongConnect(w)
+                go(w)
                 lowlink.set(v, lowlink.grab(v).min(lowlink.grab(w)))
             } elseIf {onStack.grab(w)} {
                 lowlink.set(v, lowlink.grab(v).min(indices.grab(w)))
@@ -55,7 +71,7 @@ tarjan(roots: List[Int], eachEdge: (Int, Int => Unit) => Unit): List[List[Int]] 
 
     roots.each {v =>
         if(!indices.has(v)) {
-            strongConnect(v)
+            go(v)
         }
     }
 
