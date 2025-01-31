@@ -1,7 +1,9 @@
+import Time
+
 // Temporal.ZonedDateTime but with consistent equals/compare
 newtype Date(jsValue: JsValue)
 
-new(rfc9557: String): Date {
+newRfc9557(rfc9557: String): Date {
     Date(Js->Temporal->ZonedDateTime->from(rfc9557))
 }
 
@@ -129,56 +131,54 @@ extend self: Date {
         self.jsValue->yearOfWeek?
     }
     
-    add(
-        years: Int = 0
-        months: Int = 0
-        weeks: Int = 0
-        days: Int = 0
-        hours: Int = 0
-        minutes: Int = 0
-        seconds: Int = 0
-        milliseconds: Int = 0
-        microseconds: Int = 0
-        nanoseconds: Int = 0
-    ): Date {
-        Date(self.jsValue->add(Js->Temporal->Duration->from(Js->(
-            years = years
-            months = months
-            weeks = weeks
-            days = days
-            hours = hours
-            minutes = minutes
-            seconds = seconds
-            milliseconds = milliseconds
-            microseconds = microseconds
-            nanoseconds = nanoseconds
-        ))))
+    add(time: Time): Date {
+        Date(self.jsValue->add(time.jsValue))
     }
     
-    subtract(
-        years: Int = 0
-        months: Int = 0
-        weeks: Int = 0
-        days: Int = 0
-        hours: Int = 0
-        minutes: Int = 0
-        seconds: Int = 0
-        milliseconds: Int = 0
-        microseconds: Int = 0
-        nanoseconds: Int = 0
-    ): Date {
-        Date(self.jsValue->subtract(Js->Temporal->Duration->from(Js->(
-            years = years
-            months = months
-            weeks = weeks
-            days = days
-            hours = hours
-            minutes = minutes
-            seconds = seconds
-            milliseconds = milliseconds
-            microseconds = microseconds
-            nanoseconds = nanoseconds
-        ))))
+    subtract(time: Time): Date {
+        Date(self.jsValue->subtract(time.jsValue))
+    }
+    
+    since(that: Date): Time {
+        Time(self.jsValue->since(that.jsValue))
+    }
+    
+    until(that: Date): Time {
+        Time(self.jsValue->until(that.jsValue))
+    }
+    
+    getTimeZoneTransition(): Date {
+        Date(self.jsValue->getTimeZoneTransition())
+    }
+    
+    round(smallestUnit: String = "day", increment: Int = 1, mode: String = "halfExpand"): Date {
+        Date(self.jsValue->round(Js->(
+            smallestUnit = smallestUnit
+            roundingIncrement = increment
+            oundingMode = mode
+        )))
+    }
+    
+    startOfDay(): Date {
+        Date(self.jsValue->startOfDay())
+    }
+
+    toRfc9557(
+        calendarName: String = "auto"
+        fractionalSecondDigits: Option[Int] = None
+        roundingMode: String = "trunc"
+        smallestUnit: Option[String] = None
+        timeZoneName: String = "auto"
+        offset: String = "auto"
+    ): String {
+        self.jsValue->toString(Js->(
+            calendarName = calendarName
+            fractionalSecondDigits = fractionalSecondDigits.map {_!}.else {"auto"!}
+            roundingMode = roundingMode
+            smallestUnit = smallestUnit.map {_!}.else {Js.undefined()}
+            timeZoneName = timeZoneName
+            offset = offset
+        ))?
     }
 
 }

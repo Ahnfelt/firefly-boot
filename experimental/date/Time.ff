@@ -1,0 +1,23 @@
+// Temporal.Duration
+newtype Time(jsValue: JsValue)
+
+new(
+    years: Int = 0
+    months: Int = 0
+    weeks: Int = 0
+    days: Int = 0
+    hours: Int = 0
+    minutes: Int = 0
+    seconds: Int = 0
+    milliseconds: Int = 0
+    microseconds: Int = 0
+    nanoseconds: Int = 0
+): Time {
+    Time(Js->Temporal->Duration->(
+        years, months, weeks, days, hours, minutes, seconds, milliseconds, microseconds, nanoseconds
+    ))
+}
+
+newIso8601(iso8601: String): Time {
+    Time(Js->Temporal->Duration->from(iso8601))
+}

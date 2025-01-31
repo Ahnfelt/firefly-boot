@@ -333,6 +333,11 @@ extend self: JsValue {
         self->(a1, a2, a3, a4, a5, a6, a7, a8, a9)
     }
 
+    new10[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue, A9: IsJsValue, A10: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8, a9: A9, a10: A10): JsValue {
+        // Special cased by the compiler
+        self->(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+    }
+
 
     grabPairs(): List[Pair[String, JsValue]] {
         if(!self.isObject()) {throw(GrabException)}
