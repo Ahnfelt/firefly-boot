@@ -180,5 +180,61 @@ extend self: Date {
             offset = offset
         ))?
     }
+    
+    withCalendar(calendarId: String): Date {
+        Date(self.jsValue->withCalendar(calendarId))
+    }
+    
+    withTimeZone(timeZoneId: String): Date {
+        Date(self.jsValue->withTimeZone(timeZoneId))
+    }
+    
+    withOffset(offset: Int, offsetDisambiguation: String = "prefer"): Date {
+        Date(self.jsValue->with(Js->(offset = offset), Js->(offset = offsetDisambiguation)))
+    }
+    
+    withEra(era: String, eraYear: Int, disambiguation: String = "compatible"): Date {
+        Date(self.jsValue->with(Js->(era = era, eraYear = eraYear), Js->(disambiguation = disambiguation)))
+    }
+    
+    withYear(year: Int, disambiguation: String = "compatible"): Date {
+        Date(self.jsValue->with(Js->(year = year), Js->(disambiguation = disambiguation)))
+    }
 
+    withMonth(month: Int, disambiguation: String = "compatible"): Date {
+        Date(self.jsValue->with(Js->(month = month), Js->(disambiguation = disambiguation)))
+    }
+
+    withWeek(week: Int, disambiguation: String = "compatible"): Date {
+        Date(self.jsValue->with(Js->(week = week), Js->(disambiguation = disambiguation)))
+    }
+    
+    withDay(day: Int, disambiguation: String = "compatible"): Date {
+        Date(self.jsValue->with(Js->(day = day), Js->(disambiguation = disambiguation)))
+    }
+    
+    withHour(hour: Int, disambiguation: String = "compatible"): Date {
+        Date(self.jsValue->with(Js->(hour = hour), Js->(disambiguation = disambiguation)))
+    }
+    
+    withMinute(minute: Int, disambiguation: String = "compatible"): Date {
+        Date(self.jsValue->with(Js->(minute = minute), Js->(disambiguation = disambiguation)))
+    }
+    
+    withSecond(second: Int, disambiguation: String = "compatible"): Date {
+        Date(self.jsValue->with(Js->(second = second), Js->(disambiguation = disambiguation)))
+    }
+    
+    withMillisecond(millisecond: Int, disambiguation: String = "compatible"): Date {
+        Date(self.jsValue->with(Js->(millisecond = millisecond), Js->(disambiguation = disambiguation)))
+    }
+    
+    withMicrosecond(microsecond: Int, disambiguation: String = "compatible"): Date {
+        Date(self.jsValue->with(Js->(microsecond = microsecond), Js->(disambiguation = disambiguation)))
+    }
+    
+    withNanosecond(nanosecond: Int, disambiguation: String = "compatible"): Date {
+        Date(self.jsValue->with(Js->(nanosecond = nanosecond), Js->(disambiguation = disambiguation)))
+    }
+    
 }
