@@ -1,0 +1,184 @@
+// Temporal.ZonedDateTime but with consistent equals/compare
+newtype Date(jsValue: JsValue)
+
+new(rfc9557: String): Date {
+    Date(Js->Temporal->ZonedDateTime->from(rfc9557))
+}
+
+instance Date: Equal {
+    equals(x: Date, y: Date): Bool {
+        x.jsValue->equals(y.jsValue)?
+    }    
+}
+
+instance Date: Order {
+    compare(x: Date, y: Date): Ordering {
+        let instant: Int = Js->Temporal->ZonedDateTime->compare(x.jsValue, y.jsValue)?
+        if(instant != 0) {Ordering.fromInt(instant)} else:
+        let timeZone = Ordering.compare(x.timeZoneId(), y.timeZoneId())
+        if(timeZone != OrderingSame) {timeZone} else:
+        Ordering.compare(x.calendarId(), y.calendarId())
+    }
+}
+
+extend self: Date {
+    
+    timeZoneId(): String {
+        self.jsValue->timeZoneId?
+    }
+    
+    calendarId(): String {
+        self.jsValue->calendarId?
+    }
+    
+    day(): Int {
+        self.jsValue->day?
+    }
+    
+    dayOfWeek(): Int {
+        self.jsValue->dayOfWeek?
+    }
+    
+    dayOfYear(): Int {
+        self.jsValue->dayOfYear?
+    }
+    
+    daysInMonth(): Int {
+        self.jsValue->daysInMonth?
+    }
+    
+    daysInYear(): Int {
+        self.jsValue->daysInYear?
+    }
+    
+    epochMilliseconds(): Int {
+        self.jsValue->epochMilliseconds?
+    }
+    
+    era(): Option[String] {
+        let era = self.jsValue->era
+        if(!era.isNullOrUndefined()) {era?}
+    }
+    
+    eraYear(): Option[Int] {
+        let eraYear = self.jsValue->eraYear
+        if(!eraYear.isNullOrUndefined()) {eraYear?}
+    }
+    
+    hour(): Int {
+        self.jsValue->hour?
+    }
+    
+    hoursInDay(): Int {
+        self.jsValue->hoursInDay?
+    }
+
+    inLeapYear(): Bool {
+        self.jsValue->inLeapYear?
+    }
+
+    microsecond(): Int {
+        self.jsValue->microsecond?
+    }
+
+    millisecond(): Int {
+        self.jsValue->millisecond?
+    }
+
+    minute(): Int {
+        self.jsValue->minute?
+    }
+
+    month(): Int {
+        self.jsValue->month?
+    }
+
+    monthCode(): String {
+        self.jsValue->monthCode?
+    }
+
+    monthsInYear(): Int {
+        self.jsValue->monthsInYear?
+    }
+
+    nanosecond(): Int {
+        self.jsValue->nanosecond?
+    }
+
+    offset(): String {
+        self.jsValue->offset?
+    }
+
+    offsetNanoseconds(): Int {
+        self.jsValue->offsetNanoseconds?
+    }
+
+    second(): Int {
+        self.jsValue->second?
+    }
+
+    weekOfYear(): Int {
+        self.jsValue->weekOfYear?
+    }
+
+    year(): Int {
+        self.jsValue->year?
+    }
+
+    yearOfWeek(): Int {
+        self.jsValue->yearOfWeek?
+    }
+    
+    add(
+        years: Int = 0
+        months: Int = 0
+        weeks: Int = 0
+        days: Int = 0
+        hours: Int = 0
+        minutes: Int = 0
+        seconds: Int = 0
+        milliseconds: Int = 0
+        microseconds: Int = 0
+        nanoseconds: Int = 0
+    ): Date {
+        Date(self.jsValue->add(Js->Temporal->Duration->from(Js->(
+            years = years
+            months = months
+            weeks = weeks
+            days = days
+            hours = hours
+            minutes = minutes
+            seconds = seconds
+            milliseconds = milliseconds
+            microseconds = microseconds
+            nanoseconds = nanoseconds
+        ))))
+    }
+    
+    subtract(
+        years: Int = 0
+        months: Int = 0
+        weeks: Int = 0
+        days: Int = 0
+        hours: Int = 0
+        minutes: Int = 0
+        seconds: Int = 0
+        milliseconds: Int = 0
+        microseconds: Int = 0
+        nanoseconds: Int = 0
+    ): Date {
+        Date(self.jsValue->subtract(Js->Temporal->Duration->from(Js->(
+            years = years
+            months = months
+            weeks = weeks
+            days = days
+            hours = hours
+            minutes = minutes
+            seconds = seconds
+            milliseconds = milliseconds
+            microseconds = microseconds
+            nanoseconds = nanoseconds
+        ))))
+    }
+
+}
