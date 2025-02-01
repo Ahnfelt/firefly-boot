@@ -569,6 +569,8 @@ extend self: DateGap {
     
 }
 
+utc: String = "UTC"
+
 monday: Int = 1
 tuesday: Int = 2
 wednesday: Int = 3
