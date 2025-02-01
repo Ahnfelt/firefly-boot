@@ -527,7 +527,7 @@ extend self: Date {
         duration->total(Js->(unit = "nanoseconds", relativeTo = that.jsValue))?
     }
     
-    toStream(next: Date => Date = {date.add(days = 1).startOfDay()}): Stream[Date] {
+    toStream(next: Date => Date = {_.add(days = 1).startOfDay()}): Stream[Date] {
         mutable date = self
         Stream.new {
             date = next(date)
