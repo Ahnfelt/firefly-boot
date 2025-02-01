@@ -527,18 +527,10 @@ extend self: Date {
         duration->total(Js->(unit = "nanoseconds", relativeTo = that.jsValue))?
     }
     
-    futureDays(): Stream[Date] {
+    toStream(next: Date => Date = {date.add(days = 1).startOfDay()}): Stream[Date] {
         mutable date = self
         Stream.new {
-            date = date.add(days = 1).startOfDay()
-            Some(date)
-        }
-    }
-    
-    pastDays(): Stream[Date] {
-        mutable date = self
-        Stream.new {
-            date = date.subtract(days = 1).startOfDay()
+            date = next(date)
             Some(date)
         }
     }
@@ -589,6 +581,6 @@ internalDisambiguation(earlier: Bool, later: Bool): JsValue {
 
 nodeMain(system: NodeSystem) {
     mutable now = new("Europe/Copenhagen", 2025, 2, 1)
-    let tuesdays = now.futureDays().filter {_.dayOfWeek() == 2}
+    let tuesdays = now.toStream().filter {_.dayOfWeek() == 2}
     let meetups = tuesdays.filter {d => d.add(weeks = 1).month() > d.month()}
 }
