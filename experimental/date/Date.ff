@@ -1,6 +1,17 @@
 // Temporal.ZonedDateTime but with consistent equals/compare
 newtype Date(jsValue: JsValue)
-newtype DateGap(jsValue: JsValue)
+newtype DateGap(
+    years: Int = 0
+    months: Int = 0
+    weeks: Int = 0
+    days: Int = 0
+    hours: Int = 0
+    minutes: Int = 0
+    seconds: Int = 0
+    milliseconds: Int = 0
+    microseconds: Int = 0
+    nanoseconds: Int = 0
+)
 
 new(
     timeZoneId: String
@@ -72,27 +83,21 @@ newRfc9557(rfc9557: String): Date {
     Date(Js->Temporal->ZonedDateTime->from(rfc9557))
 }
 
-gap(
-    years: Int = 0
-    months: Int = 0
-    weeks: Int = 0
-    days: Int = 0
-    hours: Int = 0
-    minutes: Int = 0
-    seconds: Int = 0
-    milliseconds: Int = 0
-    microseconds: Int = 0
-    nanoseconds: Int = 0
-): DateGap {
-    DateGap(Js->Temporal->Duration->(
-        years, months, weeks, days, hours, minutes, seconds, milliseconds, microseconds, nanoseconds
-    ))
+gap(iso8601: String): DateGap {
+    let duration = Js->Temporal->Duration->from(iso8601)
+    DateGap(
+        years = duration->years?
+        months = duration->months?
+        weeks = duration->weeks?
+        days = duration->days?
+        hours = duration->hours?
+        minutes = duration->minutes?
+        seconds = duration->seconds?
+        milliseconds = duration->milliseconds?
+        microseconds = duration->microseconds?
+        nanoseconds = duration->nanoseconds?
+    )
 }
-
-gapIso8601(iso8601: String): DateGap {
-    DateGap(Js->Temporal->Duration->from(iso8601))
-}
-
 
 instance Date: Equal {
     equals(x: Date, y: Date): Bool {
@@ -303,22 +308,67 @@ extend self: Date {
     withNanosecond(nanosecond: Int, earlier: Bool = True, later: Bool = True): Date {
         Date(self.jsValue->with(Js->(nanosecond = nanosecond), internalDisambiguation(earlier, later)))
     }
-
     
     add(gap: DateGap): Date {
-        Date(self.jsValue->add(gap.jsValue))
+        Date(self.jsValue->add(Js->(
+            years = gap.years
+            months = gap.months
+            weeks = gap.weeks
+            days = gap.days
+            hours = gap.hours
+            minutes = gap.minutes
+            seconds = gap.seconds
+            milliseconds = gap.milliseconds
+            microseconds = gap.microseconds
+            nanoseconds = gap.nanoseconds
+        )))
     }
     
     subtract(gap: DateGap): Date {
-        Date(self.jsValue->subtract(gap.jsValue))
+        Date(self.jsValue->add(Js->(
+            years = gap.years
+            months = gap.months
+            weeks = gap.weeks
+            days = gap.days
+            hours = gap.hours
+            minutes = gap.minutes
+            seconds = gap.seconds
+            milliseconds = gap.milliseconds
+            microseconds = gap.microseconds
+            nanoseconds = gap.nanoseconds
+        )))
     }
     
     since(that: Date): DateGap {
-        DateGap(self.jsValue->since(that.jsValue))
+        let duration = self.jsValue->since(that.jsValue)
+        DateGap(
+            years = duration->years?
+            months = duration->months?
+            weeks = duration->weeks?
+            days = duration->days?
+            hours = duration->hours?
+            minutes = duration->minutes?
+            seconds = duration->seconds?
+            milliseconds = duration->milliseconds?
+            microseconds = duration->microseconds?
+            nanoseconds = duration->nanoseconds?
+        )
     }
     
     until(that: Date): DateGap {
-        DateGap(self.jsValue->until(that.jsValue))
+        let duration = self.jsValue->until(that.jsValue)
+        DateGap(
+            years = duration->years?
+            months = duration->months?
+            weeks = duration->weeks?
+            days = duration->days?
+            hours = duration->hours?
+            minutes = duration->minutes?
+            seconds = duration->seconds?
+            milliseconds = duration->milliseconds?
+            microseconds = duration->microseconds?
+            nanoseconds = duration->nanoseconds?
+        )
     }
     
     yearsSince(that: Date): Float {
@@ -369,98 +419,6 @@ extend self: Date {
     nanosecondsSince(that: Date): Float {
         let duration = self.jsValue->since(that.jsValue)
         duration->total(Js->(unit = "nanoseconds", relativeTo = that.jsValue))?
-    }
-    
-}
-
-extend self: DateGap {
-    
-    years(): Int {
-        self.jsValue->years?
-    }
-    
-    months(): Int {
-        self.jsValue->months?
-    }
-    
-    weeks(): Int {
-        self.jsValue->weeks?
-    }
-    
-    days(): Int {
-        self.jsValue->days?
-    }
-    
-    hours(): Int {
-        self.jsValue->hours?
-    }
-    
-    minutes(): Int {
-        self.jsValue->minutes?
-    }
-    
-    seconds(): Int {
-        self.jsValue->seconds?
-    }
-    
-    milliseconds(): Int {
-        self.jsValue->milliseconds?
-    }
-    
-    microseconds(): Int {
-        self.jsValue->microseconds?
-    }
-    
-    nanoseconds(): Int {
-        self.jsValue->nanoseconds?
-    }
-    
-    withYears(years: Int): DateGap {
-        DateGap(self.jsValue->with(Js->(years = years)))
-    }
-    
-    withMonths(months: Int): DateGap {
-        DateGap(self.jsValue->with(Js->(months = months)))
-    }
-    
-    withWeeks(weeks: Int): DateGap {
-        DateGap(self.jsValue->with(Js->(weeks = weeks)))
-    }
-    
-    withDays(days: Int): DateGap {
-        DateGap(self.jsValue->with(Js->(days = days)))
-    }
-    
-    withHours(hours: Int): DateGap {
-        DateGap(self.jsValue->with(Js->(hours = hours)))
-    }
-    
-    withMinutes(minutes: Int): DateGap {
-        DateGap(self.jsValue->with(Js->(minutes = minutes)))
-    }
-    
-    withSeconds(seconds: Int): DateGap {
-        DateGap(self.jsValue->with(Js->(seconds = seconds)))
-    }
-    
-    withMilliseconds(milliseconds: Int): DateGap {
-        DateGap(self.jsValue->with(Js->(milliseconds = milliseconds)))
-    }
-    
-    withMicroseconds(microseconds: Int): DateGap {
-        DateGap(self.jsValue->with(Js->(microseconds = microseconds)))
-    }
-    
-    withNanoseconds(nanoseconds: Int): DateGap {
-        DateGap(self.jsValue->with(Js->(nanoseconds = nanoseconds)))
-    }
-    
-    sign(): Int {
-        self.jsValue->sign?
-    }
-    
-    negate(): DateGap {
-        DateGap(self.jsValue->negate())
     }
     
 }
