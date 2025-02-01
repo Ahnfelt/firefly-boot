@@ -527,6 +527,22 @@ extend self: Date {
         duration->total(Js->(unit = "nanoseconds", relativeTo = that.jsValue))?
     }
     
+    futureDays(): Stream[Date] {
+        mutable date = self
+        Stream.new {
+            date = date.add(days = 1).startOfDay()
+            Some(date)
+        }
+    }
+    
+    pastDays(): Stream[Date] {
+        mutable date = self
+        Stream.new {
+            date = date.subtract(days = 1).startOfDay()
+            Some(date)
+        }
+    }
+    
 }
 
 extend self: DateGap {
@@ -569,4 +585,10 @@ internalDisambiguation(earlier: Bool, later: Bool): JsValue {
             "reject"
         }
     )    
+}
+
+nodeMain(system: NodeSystem) {
+    mutable now = new("Europe/Copenhagen", 2025, 2, 1)
+    let tuesdays = now.futureDays().filter {_.dayOfWeek() == 2}
+    let meetups = tuesdays.filter {d => d.add(weeks = 1).month() > d.month()}
 }
