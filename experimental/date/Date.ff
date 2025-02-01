@@ -565,6 +565,27 @@ extend self: DateGap {
     
 }
 
+monday: Int = 1
+tuesday: Int = 2
+wednesday: Int = 3
+thursday: Int = 4
+friday: Int = 5
+saturday: Int = 6
+sunday: Int = 7
+
+january: Int = 1
+february: Int = 2
+march: Int = 3
+april: Int = 4
+may: Int = 5
+june: Int = 6
+july: Int = 7
+august: Int = 8
+september: Int = 9
+october: Int = 10
+november: Int = 11
+december: Int = 12
+
 internalDisambiguation(earlier: Bool, later: Bool): JsValue {
     Js->(
         disambiguation = if(earlier && later) {
