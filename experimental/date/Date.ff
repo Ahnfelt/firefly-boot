@@ -327,44 +327,34 @@ extend self: Date {
         Date(self.jsValue->with(Js->(era = era, eraYear = eraYear), internalDisambiguation(earlier, later)))
     }
     
-    withYear(year: Int, earlier: Bool = True, later: Bool = True): Date {
-        Date(self.jsValue->with(Js->(year = year), internalDisambiguation(earlier, later)))
-    }
-
-    withMonth(month: Int, earlier: Bool = True, later: Bool = True): Date {
-        Date(self.jsValue->with(Js->(month = month), internalDisambiguation(earlier, later)))
-    }
-
-    withWeek(week: Int, earlier: Bool = True, later: Bool = True): Date {
-        Date(self.jsValue->with(Js->(week = week), internalDisambiguation(earlier, later)))
-    }
-    
-    withDay(day: Int, earlier: Bool = True, later: Bool = True): Date {
-        Date(self.jsValue->with(Js->(day = day), internalDisambiguation(earlier, later)))
-    }
-    
-    withHour(hour: Int, earlier: Bool = True, later: Bool = True): Date {
-        Date(self.jsValue->with(Js->(hour = hour), internalDisambiguation(earlier, later)))
-    }
-    
-    withMinute(minute: Int, earlier: Bool = True, later: Bool = True): Date {
-        Date(self.jsValue->with(Js->(minute = minute), internalDisambiguation(earlier, later)))
-    }
-    
-    withSecond(second: Int, earlier: Bool = True, later: Bool = True): Date {
-        Date(self.jsValue->with(Js->(second = second), internalDisambiguation(earlier, later)))
-    }
-    
-    withMillisecond(millisecond: Int, earlier: Bool = True, later: Bool = True): Date {
-        Date(self.jsValue->with(Js->(millisecond = millisecond), internalDisambiguation(earlier, later)))
-    }
-    
-    withMicrosecond(microsecond: Int, earlier: Bool = True, later: Bool = True): Date {
-        Date(self.jsValue->with(Js->(microsecond = microsecond), internalDisambiguation(earlier, later)))
-    }
-    
-    withNanosecond(nanosecond: Int, earlier: Bool = True, later: Bool = True): Date {
-        Date(self.jsValue->with(Js->(nanosecond = nanosecond), internalDisambiguation(earlier, later)))
+    with(
+        year: Option[Int] = None
+        month: Option[Int] = None
+        week: Option[Int] = None
+        day: Option[Int] = None
+        hour: Option[Int] = None
+        minute: Option[Int] = None
+        second: Option[Int] = None
+        millisecond: Option[Int] = None
+        microsecond: Option[Int] = None
+        nanosecond: Option[Int] = None
+        offset: Option[String] = None
+        earlier: Bool = True
+        later: Bool = True
+    ): Date {
+        Date(self.jsValue->with(Js->(
+            year = year.map {_!}.else {Js.undefined()} 
+            month = month.map {_!}.else {Js.undefined()} 
+            week = week.map {_!}.else {Js.undefined()} 
+            day = day.map {_!}.else {Js.undefined()} 
+            hour = hour.map {_!}.else {Js.undefined()} 
+            minute = minute.map {_!}.else {Js.undefined()} 
+            second = second.map {_!}.else {Js.undefined()} 
+            millisecond = millisecond.map {_!}.else {Js.undefined()} 
+            microsecond = microsecond.map {_!}.else {Js.undefined()} 
+            nanosecond = nanosecond.map {_!}.else {Js.undefined()}
+            offset = offset.map {_!}.else {Js.undefined()}
+        ), internalDisambiguation(earlier, later)))
     }
     
     add(
