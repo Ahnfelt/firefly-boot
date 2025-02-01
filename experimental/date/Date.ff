@@ -3,6 +3,92 @@ import Time
 // Temporal.ZonedDateTime but with consistent equals/compare
 newtype Date(jsValue: JsValue)
 
+new(
+    timeZoneId: String
+    year: Int
+    month: Int
+    day: Int
+    hour: Int = 0
+    minute: Int = 0
+    second: Int = 0
+    millisecond: Int = 0
+    microsecond: Int = 0
+    nanosecond: Int = 0
+    calendarId: String = "iso8601"
+    offset: Option[String] = None
+    earlier: Bool = True
+    later: Bool = True
+): Date {
+    Date(Js->Temporal->ZonedDateTime->from(Js->(
+        timeZone = timeZoneId
+        year = year
+        month = month
+        day = day
+        hour = hour
+        minute = minute
+        second = second
+        millisecond = millisecond
+        microsecond = microsecond
+        nanosecond = nanosecond
+        calendar = calendarId
+        offset = offset.map {_!}.else {Js.undefined()}
+    ), Js->(
+        disambiguation = if(earlier && later) {
+            "compatible"
+        } elseIf {earlier} {
+            "earlier"
+        } elseIf {later} {
+            "later"
+        } else {
+            "reject"
+        }
+    )))
+}
+
+newEra(
+    calendarId: String
+    timeZoneId: String
+    era: String
+    eraYear: Int
+    month: Int
+    day: Int
+    hour: Int = 0
+    minute: Int = 0
+    second: Int = 0
+    millisecond: Int = 0
+    microsecond: Int = 0
+    nanosecond: Int = 0
+    offset: Option[String] = None
+    earlier: Bool = True
+    later: Bool = True
+): Date {
+    Date(Js->Temporal->ZonedDateTime->from(Js->(
+        timeZone = timeZoneId
+        era = era
+        eraYear = eraYear
+        month = month
+        day = day
+        hour = hour
+        minute = minute
+        second = second
+        millisecond = millisecond
+        microsecond = microsecond
+        nanosecond = nanosecond
+        calendar = calendarId
+        offset = offset.map {_!}.else {Js.undefined()}
+    ), Js->(
+        disambiguation = if(earlier && later) {
+            "compatible"
+        } elseIf {earlier} {
+            "earlier"
+        } elseIf {later} {
+            "later"
+        } else {
+            "reject"
+        }
+    )))
+}
+
 newRfc9557(rfc9557: String): Date {
     Date(Js->Temporal->ZonedDateTime->from(rfc9557))
 }
