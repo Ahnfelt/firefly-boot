@@ -248,22 +248,38 @@ extend self: Date {
         self.jsValue->yearOfWeek?
     }
     
-    timeZoneTransition(next: Bool = True): Date {
-        Date(self.jsValue->getTimeZoneTransition(if(next) {"next"} else {"previous"}))
+    nextTimeZoneTransition(): Date {
+        Date(self.jsValue->getTimeZoneTransition("next"))
     }
     
-    round(smallestUnit: String = "day", increment: Int = 1, mode: String = "halfExpand"): Date {
-        Date(self.jsValue->round(Js->(
-            smallestUnit = smallestUnit
-            roundingIncrement = increment
-            roundingMode = mode
-        )))
+    previousTimeZoneTransition(): Date {
+        Date(self.jsValue->getTimeZoneTransition("previous"))
     }
     
     startOfDay(): Date {
         Date(self.jsValue->startOfDay())
     }
 
+    startOfHour(): Date {
+        Date(self.jsValue->round(Js->(smallestUnit = "hour", roundingMode = "floor")))
+    }
+    
+    startOfMinute(): Date {
+        Date(self.jsValue->round(Js->(smallestUnit = "minute", roundingMode = "floor")))
+    }
+    
+    startOfSecond(): Date {
+        Date(self.jsValue->round(Js->(smallestUnit = "second", roundingMode = "floor")))
+    }
+    
+    startOfMillisecond(): Date {
+        Date(self.jsValue->round(Js->(smallestUnit = "millisecond", roundingMode = "floor")))
+    }
+    
+    startOfMicrosecond(): Date {
+        Date(self.jsValue->round(Js->(smallestUnit = "microsecond", roundingMode = "floor")))
+    }
+    
     toRfc9557(
         smallestUnit: Option[String] = None
         fractionalSecondDigits: Option[Int] = None
