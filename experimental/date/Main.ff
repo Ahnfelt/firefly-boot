@@ -3,9 +3,9 @@ import WebServer from ff:webserver
 import Date
 
 browserMain(system: BrowserSystem) {
-    let now = Date.new("Europe/Copenhagen", 2025, 2, 1)
+    let now = Date.new("Europe/Copenhagen", 2025, 2, 1, 18, 0, 0)
     let firstTuesday = now.toStream {_.add(days = 1)}.find {_.dayOfWeek() == Date.tuesday}
-    let tuesdays = firstTuesday.grab().toStream {_.add(weeks = 1)}.map {_.startOfDay()}
+    let tuesdays = firstTuesday.grab().toStream {_.add(weeks = 1)}
     let meetups = tuesdays.filter {d => d.add(weeks = 1).month() > d.month()}
     meetups.takeWhile {_.year() == 2025}.each {meetup =>
         Log.debug("Meetup: " + meetup.toRfc9557())
