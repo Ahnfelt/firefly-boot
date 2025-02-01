@@ -162,6 +162,10 @@ extend self: Date {
         self.jsValue->dayOfYear?
     }
     
+    daysInWeek(): Int {
+        self.jsValue->daysInWeek?
+    }
+    
     daysInMonth(): Int {
         self.jsValue->daysInMonth?
     }
@@ -265,7 +269,7 @@ extend self: Date {
     }
     
     startOfWeek(firstDayOfWeek: Int = 1): Date {
-        let offset = ((self.dayOfWeek() - firstDayOfWeek) + 7) % 7
+        let offset = ((self.dayOfWeek() - firstDayOfWeek) + self.daysInWeek()) % self.daysInWeek()
         Date(self.jsValue->subtract(Js->(day = offset))->startOfDay())
     }
     
