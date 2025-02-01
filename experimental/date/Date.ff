@@ -32,17 +32,7 @@ new(
         nanosecond = nanosecond
         calendar = calendarId
         offset = offset.map {_!}.else {Js.undefined()}
-    ), Js->(
-        disambiguation = if(earlier && later) {
-            "compatible"
-        } elseIf {earlier} {
-            "earlier"
-        } elseIf {later} {
-            "later"
-        } else {
-            "reject"
-        }
-    )))
+    ), internalDisambiguation(earlier, later)))
 }
 
 newEra(
@@ -76,17 +66,7 @@ newEra(
         nanosecond = nanosecond
         calendar = calendarId
         offset = offset.map {_!}.else {Js.undefined()}
-    ), Js->(
-        disambiguation = if(earlier && later) {
-            "compatible"
-        } elseIf {earlier} {
-            "earlier"
-        } elseIf {later} {
-            "later"
-        } else {
-            "reject"
-        }
-    )))
+    ), internalDisambiguation(earlier, later)))
 }
 
 newRfc9557(rfc9557: String): Date {
@@ -241,7 +221,7 @@ extend self: Date {
         Date(self.jsValue->round(Js->(
             smallestUnit = smallestUnit
             roundingIncrement = increment
-            oundingMode = mode
+            roundingMode = mode
         )))
     }
     
@@ -250,12 +230,12 @@ extend self: Date {
     }
 
     toRfc9557(
-        calendarName: String = "auto"
+        smallestUnit: Option[String] = None
         fractionalSecondDigits: Option[Int] = None
         roundingMode: String = "trunc"
-        smallestUnit: Option[String] = None
         timeZoneName: String = "auto"
         offset: String = "auto"
+        calendarName: String = "auto"
     ): String {
         self.jsValue->toString(Js->(
             calendarName = calendarName
@@ -275,52 +255,62 @@ extend self: Date {
         Date(self.jsValue->withTimeZone(timeZoneId))
     }
     
-    withOffset(offset: Int, offsetDisambiguation: String = "prefer"): Date {
-        Date(self.jsValue->with(Js->(offset = offset), Js->(offset = offsetDisambiguation)))
+    withEra(era: String, eraYear: Int, earlier: Bool = True, later: Bool = True): Date {
+        Date(self.jsValue->with(Js->(era = era, eraYear = eraYear), internalDisambiguation(earlier, later)))
     }
     
-    withEra(era: String, eraYear: Int, disambiguation: String = "compatible"): Date {
-        Date(self.jsValue->with(Js->(era = era, eraYear = eraYear), Js->(disambiguation = disambiguation)))
-    }
-    
-    withYear(year: Int, disambiguation: String = "compatible"): Date {
-        Date(self.jsValue->with(Js->(year = year), Js->(disambiguation = disambiguation)))
+    withYear(year: Int, earlier: Bool = True, later: Bool = True): Date {
+        Date(self.jsValue->with(Js->(year = year), internalDisambiguation(earlier, later)))
     }
 
-    withMonth(month: Int, disambiguation: String = "compatible"): Date {
-        Date(self.jsValue->with(Js->(month = month), Js->(disambiguation = disambiguation)))
+    withMonth(month: Int, earlier: Bool = True, later: Bool = True): Date {
+        Date(self.jsValue->with(Js->(month = month), internalDisambiguation(earlier, later)))
     }
 
-    withWeek(week: Int, disambiguation: String = "compatible"): Date {
-        Date(self.jsValue->with(Js->(week = week), Js->(disambiguation = disambiguation)))
+    withWeek(week: Int, earlier: Bool = True, later: Bool = True): Date {
+        Date(self.jsValue->with(Js->(week = week), internalDisambiguation(earlier, later)))
     }
     
-    withDay(day: Int, disambiguation: String = "compatible"): Date {
-        Date(self.jsValue->with(Js->(day = day), Js->(disambiguation = disambiguation)))
+    withDay(day: Int, earlier: Bool = True, later: Bool = True): Date {
+        Date(self.jsValue->with(Js->(day = day), internalDisambiguation(earlier, later)))
     }
     
-    withHour(hour: Int, disambiguation: String = "compatible"): Date {
-        Date(self.jsValue->with(Js->(hour = hour), Js->(disambiguation = disambiguation)))
+    withHour(hour: Int, earlier: Bool = True, later: Bool = True): Date {
+        Date(self.jsValue->with(Js->(hour = hour), internalDisambiguation(earlier, later)))
     }
     
-    withMinute(minute: Int, disambiguation: String = "compatible"): Date {
-        Date(self.jsValue->with(Js->(minute = minute), Js->(disambiguation = disambiguation)))
+    withMinute(minute: Int, earlier: Bool = True, later: Bool = True): Date {
+        Date(self.jsValue->with(Js->(minute = minute), internalDisambiguation(earlier, later)))
     }
     
-    withSecond(second: Int, disambiguation: String = "compatible"): Date {
-        Date(self.jsValue->with(Js->(second = second), Js->(disambiguation = disambiguation)))
+    withSecond(second: Int, earlier: Bool = True, later: Bool = True): Date {
+        Date(self.jsValue->with(Js->(second = second), internalDisambiguation(earlier, later)))
     }
     
-    withMillisecond(millisecond: Int, disambiguation: String = "compatible"): Date {
-        Date(self.jsValue->with(Js->(millisecond = millisecond), Js->(disambiguation = disambiguation)))
+    withMillisecond(millisecond: Int, earlier: Bool = True, later: Bool = True): Date {
+        Date(self.jsValue->with(Js->(millisecond = millisecond), internalDisambiguation(earlier, later)))
     }
     
-    withMicrosecond(microsecond: Int, disambiguation: String = "compatible"): Date {
-        Date(self.jsValue->with(Js->(microsecond = microsecond), Js->(disambiguation = disambiguation)))
+    withMicrosecond(microsecond: Int, earlier: Bool = True, later: Bool = True): Date {
+        Date(self.jsValue->with(Js->(microsecond = microsecond), internalDisambiguation(earlier, later)))
     }
     
-    withNanosecond(nanosecond: Int, disambiguation: String = "compatible"): Date {
-        Date(self.jsValue->with(Js->(nanosecond = nanosecond), Js->(disambiguation = disambiguation)))
+    withNanosecond(nanosecond: Int, earlier: Bool = True, later: Bool = True): Date {
+        Date(self.jsValue->with(Js->(nanosecond = nanosecond), internalDisambiguation(earlier, later)))
     }
     
+}
+
+internalDisambiguation(earlier: Bool, later: Bool): JsValue {
+    Js->(
+        disambiguation = if(earlier && later) {
+            "compatible"
+        } elseIf {earlier} {
+            "earlier"
+        } elseIf {later} {
+            "later"
+        } else {
+            "reject"
+        }
+    )    
 }
