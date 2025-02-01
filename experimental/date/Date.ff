@@ -570,7 +570,7 @@ extend self: DateGap {
 }
 
 utc: String = "UTC"
-iso8601: String = "iso8601"
+iso: String = "iso8601"
 
 monday: Int = 1
 tuesday: Int = 2
