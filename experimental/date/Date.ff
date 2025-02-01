@@ -1,6 +1,6 @@
 // Temporal.ZonedDateTime but with consistent equals/compare
 newtype Date(jsValue: JsValue)
-newtype DateGap(
+data DateGap(
     years: Int = 0
     months: Int = 0
     weeks: Int = 0
