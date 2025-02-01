@@ -116,6 +116,30 @@ instance Date: Order {
     }
 }
 
+instance Date: HasAnyTag {
+    anyTag(): AnyTag[Date] {
+        Any.internalAnyTag("ff:core/Date.Date[]")
+    }
+}
+
+instance Date: Show {
+    show(value: Date): String {
+        value.toRfc9557()
+    }
+}
+
+instance Date: Serializable {
+    
+    serializeUsing(serialization: Serialization, value: Date): Unit {
+        Serializable.serializeUsing(serialization, value.toRfc9557())
+    }
+    
+    deserializeUsing(serialization: Serialization): Date {
+        newRfc9557(Serializable.deserializeUsing(serialization))
+    }
+    
+}
+
 extend self: Date {
     
     timeZoneId(): String {
