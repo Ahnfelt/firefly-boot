@@ -521,11 +521,12 @@ extend self: Date {
         duration->total(Js->(unit = "nanoseconds", relativeTo = that.jsValue))?
     }
     
-    toStream(next: Date => Date = {_.add(days = 1).startOfDay()}): Stream[Date] {
+    toStream(next: Date => Date = {_.add(days = 1)}): Stream[Date] {
         mutable date = self
         Stream.new {
+            let current = date
             date = next(date)
-            Some(date)
+            Some(current)
         }
     }
     
