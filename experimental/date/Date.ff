@@ -578,9 +578,3 @@ internalDisambiguation(earlier: Bool, later: Bool): JsValue {
         }
     )    
 }
-
-nodeMain(system: NodeSystem) {
-    mutable now = new("Europe/Copenhagen", 2025, 2, 1)
-    let tuesdays = now.toStream().filter {_.dayOfWeek() == 2}
-    let meetups = tuesdays.filter {d => d.add(weeks = 1).month() > d.month()}
-}
