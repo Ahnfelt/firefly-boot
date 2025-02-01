@@ -569,8 +569,8 @@ extend self: DateGap {
     
 }
 
-utc: String = "UTC"
-iso: String = "iso8601"
+utcTimeZoneId: String = "UTC"
+isoCalendarId: String = "iso8601"
 
 monday: Int = 1
 tuesday: Int = 2
