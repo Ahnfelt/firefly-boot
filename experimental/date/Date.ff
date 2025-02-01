@@ -1,5 +1,6 @@
 // Temporal.ZonedDateTime but with consistent equals/compare
 newtype Date(jsValue: JsValue)
+
 data DateGap(
     years: Int = 0
     months: Int = 0
@@ -419,6 +420,34 @@ extend self: Date {
     nanosecondsSince(that: Date): Float {
         let duration = self.jsValue->since(that.jsValue)
         duration->total(Js->(unit = "nanoseconds", relativeTo = that.jsValue))?
+    }
+    
+}
+
+extend self: DateGap {
+
+    toIso8601(
+        smallestUnit: Option[String] = None
+        fractionalSecondDigits: Option[Int] = None
+        roundingMode: String = "trunc"
+    ): String {
+        let duration = Js->Temporal->Duration->from(Js->(
+            years = self.years
+            months = self.months
+            weeks = self.weeks
+            days = self.days
+            hours = self.hours
+            minutes = self.minutes
+            seconds = self.seconds
+            milliseconds = self.milliseconds
+            microseconds = self.microseconds
+            nanoseconds = self.nanoseconds
+        ))
+        duration->toString(Js->(
+            smallestUnit = smallestUnit.map {_!}.else {Js.undefined()}
+            fractionalSecondDigits = fractionalSecondDigits.map {_!}.else {"auto"!}
+            roundingMode = roundingMode
+        ))?
     }
     
 }
