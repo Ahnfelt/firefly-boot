@@ -248,8 +248,8 @@ extend self: Date {
         self.jsValue->yearOfWeek?
     }
     
-    getTimeZoneTransition(): Date {
-        Date(self.jsValue->getTimeZoneTransition())
+    timeZoneTransition(next: Bool = True): Date {
+        Date(self.jsValue->getTimeZoneTransition(if(next) {"next"} else {"previous"}))
     }
     
     round(smallestUnit: String = "day", increment: Int = 1, mode: String = "halfExpand"): Date {
