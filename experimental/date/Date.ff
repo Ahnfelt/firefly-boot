@@ -256,6 +256,19 @@ extend self: Date {
         Date(self.jsValue->getTimeZoneTransition("previous"))
     }
     
+    startOfYear(): Date {
+        Date(self.jsValue->with(Js->(year = self.year(), month = 1, day = 1))->startOfDay())
+    }
+
+    startOfMonth(): Date {
+        Date(self.jsValue->with(Js->(year = self.year(), month = self.month(), day = 1))->startOfDay())
+    }
+    
+    startOfWeek(firstDayOfWeek: Int = 1): Date {
+        let offset = ((self.dayOfWeek() - firstDayOfWeek) + 7) % 7
+        Date(self.jsValue->subtract(Js->(day = offset))->startOfDay())
+    }
+    
     startOfDay(): Date {
         Date(self.jsValue->startOfDay())
     }
@@ -350,7 +363,59 @@ extend self: Date {
         Date(self.jsValue->with(Js->(nanosecond = nanosecond), internalDisambiguation(earlier, later)))
     }
     
-    add(gap: DateGap): Date {
+    add(
+        years: Int = 0
+        months: Int = 0
+        weeks: Int = 0
+        days: Int = 0
+        hours: Int = 0
+        minutes: Int = 0
+        seconds: Int = 0
+        milliseconds: Int = 0
+        microseconds: Int = 0
+        nanoseconds: Int = 0
+    ): Date {
+        Date(self.jsValue->add(Js->(
+            years = years
+            months = months
+            weeks = weeks
+            days = days
+            hours = hours
+            minutes = minutes
+            seconds = seconds
+            milliseconds = milliseconds
+            microseconds = microseconds
+            nanoseconds = nanoseconds
+        )))
+    }
+    
+    subtract(
+        years: Int = 0
+        months: Int = 0
+        weeks: Int = 0
+        days: Int = 0
+        hours: Int = 0
+        minutes: Int = 0
+        seconds: Int = 0
+        milliseconds: Int = 0
+        microseconds: Int = 0
+        nanoseconds: Int = 0
+    ): Date {
+        Date(self.jsValue->subtract(Js->(
+            years = years
+            months = months
+            weeks = weeks
+            days = days
+            hours = hours
+            minutes = minutes
+            seconds = seconds
+            milliseconds = milliseconds
+            microseconds = microseconds
+            nanoseconds = nanoseconds
+        )))
+    }
+    
+    addGap(gap: DateGap): Date {
         Date(self.jsValue->add(Js->(
             years = gap.years
             months = gap.months
@@ -365,7 +430,7 @@ extend self: Date {
         )))
     }
     
-    subtract(gap: DateGap): Date {
+    subtractGap(gap: DateGap): Date {
         Date(self.jsValue->add(Js->(
             years = gap.years
             months = gap.months
