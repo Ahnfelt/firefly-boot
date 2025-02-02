@@ -80,6 +80,11 @@ newEra(
     ), internalDisambiguation(earlier, later)))
 }
 
+newEpochMilliseconds(timeZoneId: String, epochMilliseconds: Int, calendarId: String = "iso8601"): Date {
+    let zoned = Js->Temporal->Instant->fromEpochMilliseconds(epochMilliseconds)->toZonedDateTimeISO(timeZoneId)
+    if(calendarId != "iso8601") {Date(zoned->withCalendar(calendarId))} else {Date(zoned)}
+}
+
 newRfc9557(rfc9557: String): Date {
     Date(Js->Temporal->ZonedDateTime->from(rfc9557))
 }
