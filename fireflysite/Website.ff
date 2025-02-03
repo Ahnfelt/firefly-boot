@@ -4,9 +4,9 @@ import Css from ff:lux
 import Styles
 import Menu
 
-renderMenuPage(
+renderContentWithNext(
     lux: Lux
-    title: String
+    menuItem: MenuItem
     content: Lux => Unit
 ) {
     lux.add("div") {
@@ -16,7 +16,12 @@ renderMenuPage(
             lux.cssClass(Styles.guideCss)
             lux.add("main") {
                 lux.cssClass(Styles.guideMainCss)
-                content(lux)
+
+                lux.add("article") {
+                    lux.cssClass(Styles.guideDocumentCss)
+                    content(lux)
+                    renderNext(lux, menuItem.next)
+                }
             }
             renderTopbar(lux, showMenu, setMenu)
             lux.add("div") {
@@ -27,7 +32,20 @@ renderMenuPage(
                     setMenu(False)
                 }
             }
-            renderSidebar(lux, selectedPath, showMenu)
+            renderSidebar(lux, menuItem.path, showMenu)
+        }
+    }
+}
+
+renderNext(lux: Lux, nextItem: Option[MenuItem]) {
+    nextItem.each {next => 
+        lux.div {
+            lux.cssClass(Styles.guideNextButtonCss)
+            lux.add("a") {
+                lux.cssClass(Styles.guideButtonCss)
+                lux.set("href", "/" + next.path.join("/"))
+                lux.text("Next: " + next.name)
+            }
         }
     }
 }
@@ -101,7 +119,7 @@ renderSidebar(lux: Lux, selectedPath: List[String], showMenu: Bool) {
                                 lux.add("a") {
                                     lux.cssClass(Styles.whiteLinkCss)
                                     let heading = subItem.name
-                                    if(path == [item.path, subItem.path]) {
+                                    if(selectedPath == [item.path, subItem.path]) {
                                         lux.set("aria-current", "page")
                                     }
                                     lux.set("href", "/" + item.path + "/" + subItem.path)

@@ -7,12 +7,15 @@ import FrontPage
 import DocumentParser
 import Html
 import Main
+import Website
+import Menu
 
 routeModule = SourceLocation.here().module()
 
-data PageData(guides: List[Guide], kebab: String)
+data PageData(path: List[String], sections: List[Section])
 
 handle(request: WebRequest[WebResponse], context: RouteContext, kebab: String) {
+    let path = ["reference", kebab]
     let asset = "/assets/markdown/reference/" + kebab + ".md"
     try {context.system.assets().readText(asset)}.toOption().or {
         Log.trace("Asset not found: " + asset)
@@ -21,7 +24,7 @@ handle(request: WebRequest[WebResponse], context: RouteContext, kebab: String) {
     }: markdown =>
     let parser = DocumentParser(kebab, markdown.split('\n'), 0)
     let sections = parser.parseDocument()
-    let pageData = PageData(Main.guides, kebab)
+    let pageData = PageData(path, sections)
     let title = kebab
     Html.renderAndServe(context.system, routeModule, pageData, title, request, {render(_, pageData)})
 }
@@ -31,5 +34,8 @@ browserMain(system: BrowserSystem) {
 }
 
 render(lux: Lux, data: PageData) {
-    Guide.render(lux, "/reference/", data.kebab, data.guides, ExamplesOverview.demos())
+    let menuItem = Menu.findItem(Menu.menu, data.path).grab()
+    Website.renderContentWithNext(lux, menuItem) {lux =>
+        Guide.renderSections(lux, data.sections, ExamplesOverview.demos())
+    }
 }

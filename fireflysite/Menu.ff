@@ -4,6 +4,12 @@ data Menu(
     menu: List[Menu]
 )
 
+data MenuItem(
+    path: List[String]
+    name: String
+    next: Option[MenuItem]
+)
+
 menu: List[Menu] = [
     Menu("getting-started", "Getting started", [])
     Menu("examples", "Examples", [
@@ -12,9 +18,6 @@ menu: List[Menu] = [
         Menu("connecting-to-postgresql", "Connecting to PostgreSQL", [])
     ])
     Menu("reference", "Reference", [
-        Menu("counting-button", "Counting button", [])
-        Menu("matching-passwords", "Matching passwords", [])
-        Menu("connecting-to-postgresql", "Connecting to PostgreSQL", [])
         Menu("modules-and-packages", "Modules and packages", [])
         Menu("base-types", "Base types", [])
         Menu("user-defined-types", "User defined types", [])
@@ -31,6 +34,12 @@ menu: List[Menu] = [
     Menu("community", "Community", [])
 ]
 
-extend self: Menu {
-    
+findItem(items: List[Menu], path: List[String]): Option[MenuItem] {
+    path.{
+        | [p1, p2] => 
+            let m1 = items.find {_.path == p1}.grab()
+            let m2 = m1.menu.find {_.path == p2}.grab()
+            Some(MenuItem(path, m2.name, None))
+        | _ => None
+    }
 }
