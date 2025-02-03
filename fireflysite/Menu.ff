@@ -1,0 +1,36 @@
+data Menu(
+    path: String
+    name: String
+    menu: List[Menu]
+)
+
+menu: List[Menu] = [
+    Menu("getting-started", "Getting started", [])
+    Menu("examples", "Examples", [
+        Menu("counting-button", "Counting button", [])
+        Menu("matching-passwords", "Matching passwords", [])
+        Menu("connecting-to-postgresql", "Connecting to PostgreSQL", [])
+    ])
+    Menu("reference", "Reference", [
+        Menu("counting-button", "Counting button", [])
+        Menu("matching-passwords", "Matching passwords", [])
+        Menu("connecting-to-postgresql", "Connecting to PostgreSQL", [])
+        Menu("modules-and-packages", "Modules and packages", [])
+        Menu("base-types", "Base types", [])
+        Menu("user-defined-types", "User defined types", [])
+        Menu("statements-and-expressions", "Statements and expressions", [])
+        Menu("functions-and-methods", "Functions and methods", [])
+        Menu("pattern-matching", "Pattern matching", [])
+        Menu("traits-and-instances", "Traits and instances", [])
+        Menu("exceptions", "Exceptions", [])
+        Menu("structured-concurrency", "Structured concurrency", [])
+        Menu("javascript-interop", "JavaScript interop", [])
+        
+    ])
+    Menu("packages", "Packages", [])
+    Menu("community", "Community", [])
+]
+
+extend self: Menu {
+    
+}

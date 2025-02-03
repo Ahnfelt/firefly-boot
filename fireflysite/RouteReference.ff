@@ -31,5 +31,5 @@ browserMain(system: BrowserSystem) {
 }
 
 render(lux: Lux, data: PageData) {
-    Guide.render(lux, "reference", data.kebab, data.guides, ExamplesOverview.demos())
+    Guide.render(lux, "/reference/", data.kebab, data.guides, ExamplesOverview.demos())
 }
