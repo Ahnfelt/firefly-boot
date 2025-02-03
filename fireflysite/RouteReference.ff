@@ -6,22 +6,23 @@ import ExamplesOverview
 import FrontPage
 import DocumentParser
 import Html
+import Main
 
 routeModule = SourceLocation.here().module()
 
-data PageData(sections: List[Section])
+data PageData(guides: List[Guide], kebab: String)
 
-handle(request: WebRequest[WebResponse], context: RouteContext, name: String) {
-    let asset = "/assets/markdown/reference/" + name
+handle(request: WebRequest[WebResponse], context: RouteContext, kebab: String) {
+    let asset = "/assets/markdown/reference/" + kebab + ".md"
     try {context.system.assets().readText(asset)}.toOption().or {
         Log.trace("Asset not found: " + asset)
         request.writeText("404 Not Found")
         request.writeStatus("404 Not Found")
     }: markdown =>
-    let parser = DocumentParser(name, markdown.split('\n'), 0)
+    let parser = DocumentParser(kebab, markdown.split('\n'), 0)
     let sections = parser.parseDocument()
-    let pageData = PageData(sections)
-    let title = name
+    let pageData = PageData(Main.guides, kebab)
+    let title = kebab
     Html.renderAndServe(context.system, routeModule, pageData, title, request, {render(_, pageData)})
 }
 
@@ -30,5 +31,5 @@ browserMain(system: BrowserSystem) {
 }
 
 render(lux: Lux, data: PageData) {
-    Guide.renderSections(lux, data.sections, ExamplesOverview.demos())
+    Guide.render(lux, "reference", data.kebab, data.guides, ExamplesOverview.demos())
 }

@@ -92,7 +92,7 @@ data GuideDocument(
     document: Document
 )
 
-render(lux: Lux, httpClient: HttpClient, prefix: String, kebab: String, guides: List[Guide], demos: List[Demo]) {
+render(lux: Lux, prefix: String, kebab: String, guides: List[Guide], demos: List[Demo]) {
     let guide = guides.find {_.prefix == prefix}.else {guides.grabFirst()}
     let document = guide.documents.find {d => 
         kebabCase(d.heading()) == kebab
@@ -110,7 +110,7 @@ render(lux: Lux, httpClient: HttpClient, prefix: String, kebab: String, guides: 
             lux.cssClass(Styles.guideCss)
             lux.add("main") {
                 lux.cssClass(Styles.guideMainCss)
-                renderDocument(lux, httpClient, prefix, document, demos, nextDocument)
+                renderDocument(lux, prefix, document, demos, nextDocument)
             }
             renderTopbar(lux, menu, setMenu)
             lux.add("div") {
@@ -212,7 +212,6 @@ renderSidebar(lux: Lux, guides: List[Guide], selectedGuidePrefix: String, select
 
 renderDocument(
     lux: Lux
-    http: HttpClient
     prefix: String
     document: Document
     demos: List[Demo] 
@@ -226,17 +225,7 @@ renderDocument(
                 renderNext(lux, nextDocument)
             | UnfetchedDocument(header) => 
                 lux.div {
-                    lux.useSuspense {lux.div {lux.text("Loading document...")}}: lux =>
-                    let firstName = document.heading().split(' ').map {w => 
-                        let word = w.trim().lower()
-                        word.slice(0, 1).upper() + word.dropFirst()
-                    }.join()
-                    let asset = "/assets/markdown" + prefix + firstName + ".md"
-                    let markdown = http.get(asset, []) {_.readText()}
-                    let parser = DocumentParser(asset, markdown.split('\n'), 0)
-                    let sections = parser.parseDocument()
-                    renderSections(lux, sections, demos)
-                    renderNext(lux, nextDocument)
+                    lux.text("Unexpected UnfetchedDocument")
                 }
         }
     }

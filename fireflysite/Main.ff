@@ -72,7 +72,7 @@ serveGuide(system: NodeSystem, request: WebRequest[WebResponse]): Bool {
         if(isGuidePath(request.readPath(), guide.prefix)):
         let kebab = request.readPath().dropFirst(guide.prefix.size())
         let htmlAndCss = Lux.renderToString(system) {lux =>
-            Guide.render(lux, system.httpClient(), guide.prefix, kebab, guides, demos)
+            Guide.render(lux, guide.prefix, kebab, guides, demos)
         }
         let title = guide.documents.find {d => 
             Guide.kebabCase(d.heading()) == kebab
@@ -89,7 +89,7 @@ browserMain(system: BrowserSystem): Unit {
         if(isGuidePath(system.urlPath(), guide.prefix)):
         Lux.renderById(system, "main") {lux => 
             let kebab = system.urlPath().dropFirst(guide.prefix.size())
-            Guide.render(lux, system.httpClient(), guide.prefix, kebab, guides, demos)
+            Guide.render(lux, guide.prefix, kebab, guides, demos)
         }
     }
 }

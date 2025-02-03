@@ -9,7 +9,7 @@ frontRoute: WebRoute0 = WebRoute.new0(
     "/"
 )
 referenceRoute: WebRoute1[String] = WebRoute.new1(
-    "/ref/{name}"
+    "/reference/{name}"
 )
 
 modulesWithBrowserMain(): List[String] {
