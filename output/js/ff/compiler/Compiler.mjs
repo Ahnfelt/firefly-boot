@@ -48,6 +48,8 @@ import * as ff_core_Core from "../../ff/core/Core.mjs"
 
 import * as ff_core_Crypto from "../../ff/core/Crypto.mjs"
 
+import * as ff_core_Date from "../../ff/core/Date.mjs"
+
 import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
 import * as ff_core_Equal from "../../ff/core/Equal.mjs"
@@ -59,8 +61,6 @@ import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 import * as ff_core_Float from "../../ff/core/Float.mjs"
 
 import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
-
-import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
@@ -123,7 +123,7 @@ export function Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_,
 return {emitTarget_, task_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, cache_, lspHook_, phaseDurationDelta_, phaseDurations_};
 }
 
-export const coreImports_ = ff_core_List.List_map(["Any", "Array", "AssetSystem", "Atomic", "Bool", "BrowserSystem", "Buffer", "BuildSystem", "Channel", "Char", "Core", "Crypto", "Duration", "Equal", "Error", "FileHandle", "Float", "HttpClient", "Instant", "Int", "IntMap", "Json", "JsValue", "JsSystem", "List", "Lock", "Log", "Map", "NodeSystem", "Nothing", "Option", "Ordering", "Pair", "Path", "Queue", "Random", "Serializable", "Set", "Show", "SourceLocation", "Stream", "String", "StringMap", "Task", "Try", "Unit", "Js"], ((moduleName_) => {
+export const coreImports_ = ff_core_List.List_map(["Any", "Array", "AssetSystem", "Atomic", "Bool", "BrowserSystem", "Buffer", "BuildSystem", "Channel", "Char", "Core", "Crypto", "Date", "Duration", "Equal", "Error", "FileHandle", "Float", "HttpClient", "Int", "IntMap", "Json", "JsValue", "JsSystem", "List", "Lock", "Log", "Map", "NodeSystem", "Nothing", "Option", "Ordering", "Pair", "Path", "Queue", "Random", "Serializable", "Set", "Show", "SourceLocation", "Stream", "String", "StringMap", "Task", "Try", "Unit", "Js"], ((moduleName_) => {
 return ff_compiler_Syntax.DImport(ff_compiler_Syntax.Location("<prelude>", 1, 1), moduleName_, ff_compiler_Syntax.PackagePair("ff", "core"), [], moduleName_)
 }));
 

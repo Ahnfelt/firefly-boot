@@ -24,6 +24,8 @@ import * as ff_core_Core from "../../ff/core/Core.mjs"
 
 import * as ff_core_Crypto from "../../ff/core/Crypto.mjs"
 
+import * as ff_core_Date from "../../ff/core/Date.mjs"
+
 import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
 import * as ff_core_Equal from "../../ff/core/Equal.mjs"
@@ -35,8 +37,6 @@ import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 import * as ff_core_Float from "../../ff/core/Float.mjs"
 
 import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
-
-import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
@@ -135,6 +135,14 @@ return result_
 
 export function Map_get(self_, key_, ff_core_Ordering_Order$K) {
 return ff_core_RbMap.RB_get(self_, key_, ff_core_Ordering_Order$K)
+}
+
+export function Map_first(self_, ff_core_Ordering_Order$K) {
+return ff_core_RbMap.RB_first(self_, ff_core_Ordering_Order$K)
+}
+
+export function Map_last(self_, ff_core_Ordering_Order$K) {
+return ff_core_RbMap.RB_last(self_, ff_core_Ordering_Order$K)
 }
 
 export function Map_lastBefore(self_, key_, ff_core_Ordering_Order$K) {
@@ -262,6 +270,14 @@ return result_
 
 export async function Map_get$(self_, key_, ff_core_Ordering_Order$K, $task) {
 return ff_core_RbMap.RB_get(self_, key_, ff_core_Ordering_Order$K)
+}
+
+export async function Map_first$(self_, ff_core_Ordering_Order$K, $task) {
+return ff_core_RbMap.RB_first(self_, ff_core_Ordering_Order$K)
+}
+
+export async function Map_last$(self_, ff_core_Ordering_Order$K, $task) {
+return ff_core_RbMap.RB_last(self_, ff_core_Ordering_Order$K)
 }
 
 export async function Map_lastBefore$(self_, key_, ff_core_Ordering_Order$K, $task) {

@@ -24,6 +24,8 @@ import * as ff_core_Core from "../../ff/core/Core.mjs"
 
 import * as ff_core_Crypto from "../../ff/core/Crypto.mjs"
 
+import * as ff_core_Date from "../../ff/core/Date.mjs"
+
 import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
 import * as ff_core_Equal from "../../ff/core/Equal.mjs"
@@ -35,8 +37,6 @@ import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 import * as ff_core_Float from "../../ff/core/Float.mjs"
 
 import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
-
-import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
@@ -148,8 +148,22 @@ export function Task_lock(self_) {
 return ff_core_Lock.Lock((void 0), 0, ff_core_Queue.new_())
 }
 
-export function Task_now(self_) {
-return (Date.now() * 0.001)
+export function Task_date(self_, timeZoneId_ = ff_core_Date.utcTimeZoneId_, calendarId_ = ff_core_Date.isoCalendarId_) {
+const date_ = Temporal.Now.zonedDateTimeISO(timeZoneId_);
+if((calendarId_ === ff_core_Date.isoCalendarId_)) {
+return date_
+} else {
+return ff_core_Date.Date_withCalendar(date_, calendarId_)
+}
+}
+
+export function Task_localDate(self_, calendarId_ = ff_core_Date.isoCalendarId_) {
+const date_ = Temporal.Now.zonedDateTimeISO();
+if((calendarId_ === ff_core_Date.isoCalendarId_)) {
+return date_
+} else {
+return ff_core_Date.Date_withCalendar(date_, calendarId_)
+}
 }
 
 export function Task_elapsed(self_) {
@@ -208,8 +222,22 @@ export async function Task_lock$(self_, $task) {
 return ff_core_Lock.Lock((void 0), 0, ff_core_Queue.new_())
 }
 
-export async function Task_now$(self_, $task) {
-return (Date.now() * 0.001)
+export async function Task_date$(self_, timeZoneId_ = ff_core_Date.utcTimeZoneId_, calendarId_ = ff_core_Date.isoCalendarId_, $task) {
+const date_ = Temporal.Now.zonedDateTimeISO(timeZoneId_);
+if((calendarId_ === ff_core_Date.isoCalendarId_)) {
+return date_
+} else {
+return ff_core_Date.Date_withCalendar(date_, calendarId_)
+}
+}
+
+export async function Task_localDate$(self_, calendarId_ = ff_core_Date.isoCalendarId_, $task) {
+const date_ = Temporal.Now.zonedDateTimeISO();
+if((calendarId_ === ff_core_Date.isoCalendarId_)) {
+return date_
+} else {
+return ff_core_Date.Date_withCalendar(date_, calendarId_)
+}
 }
 
 export async function Task_elapsed$(self_, $task) {

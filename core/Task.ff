@@ -74,10 +74,16 @@ extend self: Task {
         )
     }
     
-    now(): Instant {
-        Instant(Duration(Js->Date->now()? * 0.001))
+    date(timeZoneId: String = Date.utcTimeZoneId, calendarId: String = Date.isoCalendarId): Date {
+        let date = Date(Js->Temporal->Now->zonedDateTimeISO(timeZoneId))
+        if(calendarId == Date.isoCalendarId) {date} else {date.withCalendar(calendarId)}
     }
     
+    localDate(calendarId: String = Date.isoCalendarId): Date {
+        let date = Date(Js->Temporal->Now->zonedDateTimeISO())
+        if(calendarId == Date.isoCalendarId) {date} else {date.withCalendar(calendarId)}
+    }
+
     elapsed(): Duration {
         let now = Js->performance->now()? * 0.001
         Duration(now - self.started.seconds)

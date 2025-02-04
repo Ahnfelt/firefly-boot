@@ -19,10 +19,6 @@ newFromFloat(seed: Float): Random {
     newFromBuffer(buffer)
 }
 
-newFromInstant(seed: Instant): Random {
-    newFromFloat(seed.since1970.seconds)
-}
-
 newFromBuffer(buffer: Buffer): Random {
     mutable n: Float = (0xefc8249d).toFloat()
     function mash(data: Buffer): Float {
