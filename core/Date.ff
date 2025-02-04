@@ -1,0 +1,627 @@
+// Temporal.ZonedDateTime but with consistent equals/compare
+newtype Date(jsValue: JsValue)
+
+data DateGap(
+    years: Int = 0
+    months: Int = 0
+    weeks: Int = 0
+    days: Int = 0
+    hours: Int = 0
+    minutes: Int = 0
+    seconds: Int = 0
+    milliseconds: Int = 0
+    microseconds: Int = 0
+    nanoseconds: Int = 0
+)
+
+new(
+    timeZoneId: String
+    year: Int
+    month: Int
+    day: Int
+    hour: Int = 0
+    minute: Int = 0
+    second: Int = 0
+    millisecond: Int = 0
+    microsecond: Int = 0
+    nanosecond: Int = 0
+    calendarId: String = "iso8601"
+    offset: Option[String] = None
+    earlier: Bool = True
+    later: Bool = True
+): Date {
+    Date(Js->Temporal->ZonedDateTime->from(Js->(
+        timeZone = timeZoneId
+        year = year
+        month = month
+        day = day
+        hour = hour
+        minute = minute
+        second = second
+        millisecond = millisecond
+        microsecond = microsecond
+        nanosecond = nanosecond
+        calendar = calendarId
+        offset = offset.map {_!}.else {Js.undefined()}
+    ), internalDisambiguation(earlier, later)))
+}
+
+newEra(
+    calendarId: String
+    timeZoneId: String
+    era: String
+    eraYear: Int
+    month: Int
+    day: Int
+    hour: Int = 0
+    minute: Int = 0
+    second: Int = 0
+    millisecond: Int = 0
+    microsecond: Int = 0
+    nanosecond: Int = 0
+    offset: Option[String] = None
+    earlier: Bool = True
+    later: Bool = True
+): Date {
+    Date(Js->Temporal->ZonedDateTime->from(Js->(
+        timeZone = timeZoneId
+        era = era
+        eraYear = eraYear
+        month = month
+        day = day
+        hour = hour
+        minute = minute
+        second = second
+        millisecond = millisecond
+        microsecond = microsecond
+        nanosecond = nanosecond
+        calendar = calendarId
+        offset = offset.map {_!}.else {Js.undefined()}
+    ), internalDisambiguation(earlier, later)))
+}
+
+newEpochMilliseconds(timeZoneId: String, epochMilliseconds: Int, calendarId: String = "iso8601"): Date {
+    let zoned = Js->Temporal->Instant->fromEpochMilliseconds(epochMilliseconds)->toZonedDateTimeISO(timeZoneId)
+    if(calendarId != "iso8601") {Date(zoned->withCalendar(calendarId))} else {Date(zoned)}
+}
+
+newRfc9557(rfc9557: String): Date {
+    Date(Js->Temporal->ZonedDateTime->from(rfc9557))
+}
+
+gap(iso8601: String): DateGap {
+    let duration = Js->Temporal->Duration->from(iso8601)
+    DateGap(
+        years = duration->years?
+        months = duration->months?
+        weeks = duration->weeks?
+        days = duration->days?
+        hours = duration->hours?
+        minutes = duration->minutes?
+        seconds = duration->seconds?
+        milliseconds = duration->milliseconds?
+        microseconds = duration->microseconds?
+        nanoseconds = duration->nanoseconds?
+    )
+}
+
+instance Date: Equal {
+    equals(x: Date, y: Date): Bool {
+        x.jsValue->equals(y.jsValue)?
+    }    
+}
+
+instance Date: Order {
+    compare(x: Date, y: Date): Ordering {
+        let instant: Int = Js->Temporal->ZonedDateTime->compare(x.jsValue, y.jsValue)?
+        if(instant != 0) {Ordering.fromInt(instant)} else:
+        let timeZone = Ordering.compare(x.timeZoneId(), y.timeZoneId())
+        if(timeZone != OrderingSame) {timeZone} else:
+        Ordering.compare(x.calendarId(), y.calendarId())
+    }
+}
+
+instance Date: HasAnyTag {
+    anyTag(): AnyTag[Date] {
+        Any.internalAnyTag("ff:core/Date.Date[]")
+    }
+}
+
+instance Date: Show {
+    show(value: Date): String {
+        value.toRfc9557()
+    }
+}
+
+instance Date: Serializable {
+    
+    serializeUsing(serialization: Serialization, value: Date): Unit {
+        Serializable.serializeUsing(serialization, value.toRfc9557())
+    }
+    
+    deserializeUsing(serialization: Serialization): Date {
+        newRfc9557(Serializable.deserializeUsing(serialization))
+    }
+    
+}
+
+extend self: Date {
+    
+    timeZoneId(): String {
+        self.jsValue->timeZoneId?
+    }
+    
+    calendarId(): String {
+        self.jsValue->calendarId?
+    }
+    
+    day(): Int {
+        self.jsValue->day?
+    }
+    
+    dayOfWeek(): Int {
+        self.jsValue->dayOfWeek?
+    }
+    
+    dayOfYear(): Int {
+        self.jsValue->dayOfYear?
+    }
+    
+    daysInWeek(): Int {
+        self.jsValue->daysInWeek?
+    }
+    
+    daysInMonth(): Int {
+        self.jsValue->daysInMonth?
+    }
+    
+    daysInYear(): Int {
+        self.jsValue->daysInYear?
+    }
+    
+    epochMilliseconds(): Int {
+        self.jsValue->epochMilliseconds?
+    }
+    
+    era(): Option[String] {
+        let era = self.jsValue->era
+        if(!era.isNullOrUndefined()) {era?}
+    }
+    
+    eraYear(): Option[Int] {
+        let eraYear = self.jsValue->eraYear
+        if(!eraYear.isNullOrUndefined()) {eraYear?}
+    }
+    
+    hour(): Int {
+        self.jsValue->hour?
+    }
+    
+    hoursInDay(): Int {
+        self.jsValue->hoursInDay?
+    }
+
+    inLeapYear(): Bool {
+        self.jsValue->inLeapYear?
+    }
+
+    microsecond(): Int {
+        self.jsValue->microsecond?
+    }
+
+    millisecond(): Int {
+        self.jsValue->millisecond?
+    }
+
+    minute(): Int {
+        self.jsValue->minute?
+    }
+
+    month(): Int {
+        self.jsValue->month?
+    }
+
+    monthCode(): String {
+        self.jsValue->monthCode?
+    }
+
+    monthsInYear(): Int {
+        self.jsValue->monthsInYear?
+    }
+
+    nanosecond(): Int {
+        self.jsValue->nanosecond?
+    }
+
+    offset(): String {
+        self.jsValue->offset?
+    }
+
+    offsetNanoseconds(): Int {
+        self.jsValue->offsetNanoseconds?
+    }
+
+    second(): Int {
+        self.jsValue->second?
+    }
+
+    weekOfYear(): Int {
+        self.jsValue->weekOfYear?
+    }
+
+    year(): Int {
+        self.jsValue->year?
+    }
+
+    yearOfWeek(): Int {
+        self.jsValue->yearOfWeek?
+    }
+    
+    nextTimeZoneTransition(): Date {
+        Date(self.jsValue->getTimeZoneTransition("next"))
+    }
+    
+    previousTimeZoneTransition(): Date {
+        Date(self.jsValue->getTimeZoneTransition("previous"))
+    }
+    
+    startOfYear(): Date {
+        Date(self.jsValue->with(Js->(year = self.year(), month = 1, day = 1))->startOfDay())
+    }
+
+    startOfMonth(): Date {
+        Date(self.jsValue->with(Js->(year = self.year(), month = self.month(), day = 1))->startOfDay())
+    }
+    
+    startOfWeek(firstDayOfWeek: Int = 1): Date {
+        let offset = ((self.dayOfWeek() - firstDayOfWeek) + self.daysInWeek()) % self.daysInWeek()
+        Date(self.jsValue->subtract(Js->(day = offset))->startOfDay())
+    }
+    
+    startOfDay(): Date {
+        Date(self.jsValue->startOfDay())
+    }
+
+    startOfHour(): Date {
+        Date(self.jsValue->round(Js->(smallestUnit = "hour", roundingMode = "floor")))
+    }
+    
+    startOfMinute(): Date {
+        Date(self.jsValue->round(Js->(smallestUnit = "minute", roundingMode = "floor")))
+    }
+    
+    startOfSecond(): Date {
+        Date(self.jsValue->round(Js->(smallestUnit = "second", roundingMode = "floor")))
+    }
+    
+    startOfMillisecond(): Date {
+        Date(self.jsValue->round(Js->(smallestUnit = "millisecond", roundingMode = "floor")))
+    }
+    
+    startOfMicrosecond(): Date {
+        Date(self.jsValue->round(Js->(smallestUnit = "microsecond", roundingMode = "floor")))
+    }
+    
+    toRfc9557(
+        smallestUnit: Option[String] = None
+        fractionalSecondDigits: Option[Int] = None
+        roundingMode: String = "trunc"
+        timeZoneName: String = "auto"
+        offset: String = "auto"
+        calendarName: String = "auto"
+    ): String {
+        self.jsValue->toString(Js->(
+            calendarName = calendarName
+            fractionalSecondDigits = fractionalSecondDigits.map {_!}.else {"auto"!}
+            roundingMode = roundingMode
+            smallestUnit = smallestUnit.map {_!}.else {Js.undefined()}
+            timeZoneName = timeZoneName
+            offset = offset
+        ))?
+    }
+    
+    withCalendar(calendarId: String): Date {
+        Date(self.jsValue->withCalendar(calendarId))
+    }
+    
+    withTimeZone(timeZoneId: String): Date {
+        Date(self.jsValue->withTimeZone(timeZoneId))
+    }
+    
+    withEra(
+        era: String
+        eraYear: Int
+        monthCode: Option[String] = None
+        day: Option[Int] = None
+        earlier: Bool = True
+        later: Bool = True
+    ): Date {
+        Date(self.jsValue->with(Js->(
+            era = era
+            eraYear = eraYear
+            monthCode = monthCode.map {_!}.else {Js.undefined()} 
+            day = day.map {_!}.else {Js.undefined()} 
+        ), internalDisambiguation(earlier, later)))
+    }
+    
+    withMonthCode(
+        monthCode: String
+        day: Option[Int] = None
+        earlier: Bool = True
+        later: Bool = True
+    ): Date {
+        Date(self.jsValue->with(Js->(
+            monthCode = monthCode
+            day = day.map {_!}.else {Js.undefined()} 
+        ), internalDisambiguation(earlier, later)))
+    }
+    
+    with(
+        year: Option[Int] = None
+        month: Option[Int] = None
+        week: Option[Int] = None
+        day: Option[Int] = None
+        hour: Option[Int] = None
+        minute: Option[Int] = None
+        second: Option[Int] = None
+        millisecond: Option[Int] = None
+        microsecond: Option[Int] = None
+        nanosecond: Option[Int] = None
+        offset: Option[String] = None
+        earlier: Bool = True
+        later: Bool = True
+    ): Date {
+        Date(self.jsValue->with(Js->(
+            year = year.map {_!}.else {Js.undefined()} 
+            month = month.map {_!}.else {Js.undefined()} 
+            week = week.map {_!}.else {Js.undefined()} 
+            day = day.map {_!}.else {Js.undefined()} 
+            hour = hour.map {_!}.else {Js.undefined()} 
+            minute = minute.map {_!}.else {Js.undefined()} 
+            second = second.map {_!}.else {Js.undefined()} 
+            millisecond = millisecond.map {_!}.else {Js.undefined()} 
+            microsecond = microsecond.map {_!}.else {Js.undefined()} 
+            nanosecond = nanosecond.map {_!}.else {Js.undefined()}
+            offset = offset.map {_!}.else {Js.undefined()}
+        ), internalDisambiguation(earlier, later)))
+    }
+    
+    add(
+        years: Int = 0
+        months: Int = 0
+        weeks: Int = 0
+        days: Int = 0
+        hours: Int = 0
+        minutes: Int = 0
+        seconds: Int = 0
+        milliseconds: Int = 0
+        microseconds: Int = 0
+        nanoseconds: Int = 0
+    ): Date {
+        Date(self.jsValue->add(Js->(
+            years = years
+            months = months
+            weeks = weeks
+            days = days
+            hours = hours
+            minutes = minutes
+            seconds = seconds
+            milliseconds = milliseconds
+            microseconds = microseconds
+            nanoseconds = nanoseconds
+        )))
+    }
+    
+    subtract(
+        years: Int = 0
+        months: Int = 0
+        weeks: Int = 0
+        days: Int = 0
+        hours: Int = 0
+        minutes: Int = 0
+        seconds: Int = 0
+        milliseconds: Int = 0
+        microseconds: Int = 0
+        nanoseconds: Int = 0
+    ): Date {
+        Date(self.jsValue->subtract(Js->(
+            years = years
+            months = months
+            weeks = weeks
+            days = days
+            hours = hours
+            minutes = minutes
+            seconds = seconds
+            milliseconds = milliseconds
+            microseconds = microseconds
+            nanoseconds = nanoseconds
+        )))
+    }
+    
+    addGap(gap: DateGap): Date {
+        Date(self.jsValue->add(Js->(
+            years = gap.years
+            months = gap.months
+            weeks = gap.weeks
+            days = gap.days
+            hours = gap.hours
+            minutes = gap.minutes
+            seconds = gap.seconds
+            milliseconds = gap.milliseconds
+            microseconds = gap.microseconds
+            nanoseconds = gap.nanoseconds
+        )))
+    }
+    
+    subtractGap(gap: DateGap): Date {
+        Date(self.jsValue->add(Js->(
+            years = gap.years
+            months = gap.months
+            weeks = gap.weeks
+            days = gap.days
+            hours = gap.hours
+            minutes = gap.minutes
+            seconds = gap.seconds
+            milliseconds = gap.milliseconds
+            microseconds = gap.microseconds
+            nanoseconds = gap.nanoseconds
+        )))
+    }
+    
+    since(that: Date): DateGap {
+        let duration = self.jsValue->since(that.jsValue)
+        DateGap(
+            years = duration->years?
+            months = duration->months?
+            weeks = duration->weeks?
+            days = duration->days?
+            hours = duration->hours?
+            minutes = duration->minutes?
+            seconds = duration->seconds?
+            milliseconds = duration->milliseconds?
+            microseconds = duration->microseconds?
+            nanoseconds = duration->nanoseconds?
+        )
+    }
+    
+    until(that: Date): DateGap {
+        let duration = self.jsValue->until(that.jsValue)
+        DateGap(
+            years = duration->years?
+            months = duration->months?
+            weeks = duration->weeks?
+            days = duration->days?
+            hours = duration->hours?
+            minutes = duration->minutes?
+            seconds = duration->seconds?
+            milliseconds = duration->milliseconds?
+            microseconds = duration->microseconds?
+            nanoseconds = duration->nanoseconds?
+        )
+    }
+    
+    yearsSince(that: Date): Float {
+        let duration = self.jsValue->since(that.jsValue)
+        duration->total(Js->(unit = "years", relativeTo = that.jsValue))?
+    }
+    
+    monthsSince(that: Date): Float {
+        let duration = self.jsValue->since(that.jsValue)
+        duration->total(Js->(unit = "months", relativeTo = that.jsValue))?
+    }
+    
+    weeksSince(that: Date): Float {
+        let duration = self.jsValue->since(that.jsValue)
+        duration->total(Js->(unit = "weeks", relativeTo = that.jsValue))?
+    }
+    
+    daysSince(that: Date): Float {
+        let duration = self.jsValue->since(that.jsValue)
+        duration->total(Js->(unit = "days", relativeTo = that.jsValue))?
+    }
+    
+    hoursSince(that: Date): Float {
+        let duration = self.jsValue->since(that.jsValue)
+        duration->total(Js->(unit = "hours", relativeTo = that.jsValue))?
+    }
+    
+    minutesSince(that: Date): Float {
+        let duration = self.jsValue->since(that.jsValue)
+        duration->total(Js->(unit = "minutes", relativeTo = that.jsValue))?
+    }
+    
+    secondsSince(that: Date): Float {
+        let duration = self.jsValue->since(that.jsValue)
+        duration->total(Js->(unit = "seconds", relativeTo = that.jsValue))?
+    }
+    
+    millisecondsSince(that: Date): Float {
+        let duration = self.jsValue->since(that.jsValue)
+        duration->total(Js->(unit = "milliseconds", relativeTo = that.jsValue))?
+    }
+    
+    microsecondsSince(that: Date): Float {
+        let duration = self.jsValue->since(that.jsValue)
+        duration->total(Js->(unit = "microseconds", relativeTo = that.jsValue))?
+    }
+    
+    nanosecondsSince(that: Date): Float {
+        let duration = self.jsValue->since(that.jsValue)
+        duration->total(Js->(unit = "nanoseconds", relativeTo = that.jsValue))?
+    }
+    
+    schedule(nextDate: Date => Date): Stream[Date] {
+        mutable current = self
+        [self].toStream().addAll(Stream.new {
+            current = nextDate(current)
+            Some(current)
+        })
+    }
+    
+}
+
+extend self: DateGap {
+
+    toIso8601(
+        smallestUnit: Option[String] = None
+        fractionalSecondDigits: Option[Int] = None
+        roundingMode: String = "trunc"
+    ): String {
+        let duration = Js->Temporal->Duration->from(Js->(
+            years = self.years
+            months = self.months
+            weeks = self.weeks
+            days = self.days
+            hours = self.hours
+            minutes = self.minutes
+            seconds = self.seconds
+            milliseconds = self.milliseconds
+            microseconds = self.microseconds
+            nanoseconds = self.nanoseconds
+        ))
+        duration->toString(Js->(
+            smallestUnit = smallestUnit.map {_!}.else {Js.undefined()}
+            fractionalSecondDigits = fractionalSecondDigits.map {_!}.else {"auto"!}
+            roundingMode = roundingMode
+        ))?
+    }
+    
+}
+
+utcTimeZoneId: String = "UTC"
+isoCalendarId: String = "iso8601"
+
+monday: Int = 1
+tuesday: Int = 2
+wednesday: Int = 3
+thursday: Int = 4
+friday: Int = 5
+saturday: Int = 6
+sunday: Int = 7
+
+january: Int = 1
+february: Int = 2
+march: Int = 3
+april: Int = 4
+may: Int = 5
+june: Int = 6
+july: Int = 7
+august: Int = 8
+september: Int = 9
+october: Int = 10
+november: Int = 11
+december: Int = 12
+
+internalDisambiguation(earlier: Bool, later: Bool): JsValue {
+    Js->(
+        disambiguation = if(earlier && later) {
+            "compatible"
+        } elseIf {earlier} {
+            "earlier"
+        } elseIf {later} {
+            "later"
+        } else {
+            "reject"
+        }
+    )    
+}
