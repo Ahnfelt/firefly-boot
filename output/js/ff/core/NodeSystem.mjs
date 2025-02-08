@@ -199,6 +199,19 @@ export function NodeSystem_js(self_) {
 return globalThis
 }
 
+export function NodeSystem_date(self_, timeZoneId_ = ff_core_Option.None(), calendarId_ = ff_core_Date.isoCalendarId_) {
+const date_ = Temporal.Now.zonedDateTimeISO(ff_core_Option.Option_else(ff_core_Option.Option_map(timeZoneId_, ((_w1) => {
+return _w1
+})), (() => {
+return (void 0)
+})));
+if((calendarId_ === ff_core_Date.isoCalendarId_)) {
+return date_
+} else {
+return ff_core_Date.Date_withCalendar(date_, calendarId_)
+}
+}
+
 export function NodeSystem_exit(self_, exitCode_ = 0) {
 return process.exit(exitCode_)
 }
@@ -367,6 +380,19 @@ return globalThis.crypto
 
 export async function NodeSystem_js$(self_, $task) {
 return globalThis
+}
+
+export async function NodeSystem_date$(self_, timeZoneId_ = ff_core_Option.None(), calendarId_ = ff_core_Date.isoCalendarId_, $task) {
+const date_ = Temporal.Now.zonedDateTimeISO(ff_core_Option.Option_else(ff_core_Option.Option_map(timeZoneId_, ((_w1) => {
+return _w1
+})), (() => {
+return (void 0)
+})));
+if((calendarId_ === ff_core_Date.isoCalendarId_)) {
+return date_
+} else {
+return ff_core_Date.Date_withCalendar(date_, calendarId_)
+}
 }
 
 export async function NodeSystem_exit$(self_, exitCode_ = 0, $task) {

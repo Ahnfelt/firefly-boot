@@ -119,6 +119,19 @@ export function BrowserSystem_js(self_) {
 return globalThis
 }
 
+export function BrowserSystem_date(self_, timeZoneId_ = ff_core_Option.None(), calendarId_ = ff_core_Date.isoCalendarId_) {
+const date_ = Temporal.Now.zonedDateTimeISO(ff_core_Option.Option_else(ff_core_Option.Option_map(timeZoneId_, ((_w1) => {
+return _w1
+})), (() => {
+return (void 0)
+})));
+if((calendarId_ === ff_core_Date.isoCalendarId_)) {
+return date_
+} else {
+return ff_core_Date.Date_withCalendar(date_, calendarId_)
+}
+}
+
 export function BrowserSystem_url(self_) {
 return location.href
 }
@@ -158,6 +171,19 @@ return crypto
 
 export async function BrowserSystem_js$(self_, $task) {
 return globalThis
+}
+
+export async function BrowserSystem_date$(self_, timeZoneId_ = ff_core_Option.None(), calendarId_ = ff_core_Date.isoCalendarId_, $task) {
+const date_ = Temporal.Now.zonedDateTimeISO(ff_core_Option.Option_else(ff_core_Option.Option_map(timeZoneId_, ((_w1) => {
+return _w1
+})), (() => {
+return (void 0)
+})));
+if((calendarId_ === ff_core_Date.isoCalendarId_)) {
+return date_
+} else {
+return ff_core_Date.Date_withCalendar(date_, calendarId_)
+}
 }
 
 export async function BrowserSystem_url$(self_, $task) {

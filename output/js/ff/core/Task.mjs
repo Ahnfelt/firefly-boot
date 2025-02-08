@@ -148,24 +148,6 @@ export function Task_lock(self_) {
 return ff_core_Lock.Lock((void 0), 0, ff_core_Queue.new_())
 }
 
-export function Task_date(self_, timeZoneId_ = ff_core_Date.utcTimeZoneId_, calendarId_ = ff_core_Date.isoCalendarId_) {
-const date_ = Temporal.Now.zonedDateTimeISO(timeZoneId_);
-if((calendarId_ === ff_core_Date.isoCalendarId_)) {
-return date_
-} else {
-return ff_core_Date.Date_withCalendar(date_, calendarId_)
-}
-}
-
-export function Task_localDate(self_, calendarId_ = ff_core_Date.isoCalendarId_) {
-const date_ = Temporal.Now.zonedDateTimeISO();
-if((calendarId_ === ff_core_Date.isoCalendarId_)) {
-return date_
-} else {
-return ff_core_Date.Date_withCalendar(date_, calendarId_)
-}
-}
-
 export function Task_elapsed(self_) {
 const now_ = (performance.now() * 0.001);
 return (now_ - self_.started_)
@@ -220,24 +202,6 @@ return ff_core_Channel.Channel(capacity_, ff_core_Array.new_(), (new Set()), (ne
 
 export async function Task_lock$(self_, $task) {
 return ff_core_Lock.Lock((void 0), 0, ff_core_Queue.new_())
-}
-
-export async function Task_date$(self_, timeZoneId_ = ff_core_Date.utcTimeZoneId_, calendarId_ = ff_core_Date.isoCalendarId_, $task) {
-const date_ = Temporal.Now.zonedDateTimeISO(timeZoneId_);
-if((calendarId_ === ff_core_Date.isoCalendarId_)) {
-return date_
-} else {
-return ff_core_Date.Date_withCalendar(date_, calendarId_)
-}
-}
-
-export async function Task_localDate$(self_, calendarId_ = ff_core_Date.isoCalendarId_, $task) {
-const date_ = Temporal.Now.zonedDateTimeISO();
-if((calendarId_ === ff_core_Date.isoCalendarId_)) {
-return date_
-} else {
-return ff_core_Date.Date_withCalendar(date_, calendarId_)
-}
 }
 
 export async function Task_elapsed$(self_, $task) {

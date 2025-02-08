@@ -54,6 +54,11 @@ extend self: NodeSystem {
         Js.jsSystem()
     }
 
+    date(timeZoneId: Option[String] = None, calendarId: String = Date.isoCalendarId): Date {
+        let date = Date(Js->Temporal->Now->zonedDateTimeISO(timeZoneId.map {_!}.else {Js.undefined()}))
+        if(calendarId == Date.isoCalendarId) {date} else {date.withCalendar(calendarId)}
+    }
+
     exit[T](exitCode: Int = 0): T {
         Js->process->exit(exitCode)?
     }
