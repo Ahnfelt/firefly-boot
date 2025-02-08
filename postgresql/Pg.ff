@@ -294,10 +294,6 @@ extend self: PgRow {
         internalGet(self, name, lower) {"" + _.grabString()}
     }
 
-    getInstant(name: String, lower: Bool = True): Option[Instant] {
-        internalGet(self, name, lower) {Instant(Duration(_.call0("getTime").grabInt() * 0.001))}
-    }
-
     getBuffer(name: String, lower: Bool = True): Option[Buffer] {
         internalGet(self, name, lower) {_.grabBuffer()}
     }
@@ -316,10 +312,6 @@ extend self: PgRow {
 
     getStringArray(name: String, lower: Bool = True): Option[List[String]] {
         internalGet(self, name, lower) {_.grabArray().map {"" + _.grabString()}}
-    }
-
-    getInstantArray(name: String, lower: Bool = True): Option[List[Instant]] {
-        internalGet(self, name, lower) {_.grabArray().map {Instant(Duration(_.call0("getTime").grabInt() * 0.001))}}
     }
 
     getBufferArray(name: String, lower: Bool = True): Option[List[Buffer]] {
