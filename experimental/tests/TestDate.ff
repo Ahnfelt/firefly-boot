@@ -1,0 +1,10 @@
+nodeMain(system: NodeSystem) {
+    let now = system.date()
+    let tuesday = now.schedule {_.add(days = 1)}.find {_.dayOfWeek() == Date.tuesday}.grab()
+    let tuesdayAtSix = tuesday.startOfDay().with(hour = Some(18))
+    let tuesdaysAtSix = tuesdayAtSix.schedule {_.add(weeks = 1)}
+    let meetups = tuesdaysAtSix.filter {d => d.month() < d.add(weeks = 1).month()}
+    meetups.takeFirst(12).each {meetup =>
+        Log.debug("Meetup: " + meetup.toRfc9557())
+    }
+}
