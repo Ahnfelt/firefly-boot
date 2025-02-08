@@ -8,7 +8,7 @@ put(
     body: Buffer
     headers: List[Pair[String, String]]
 ): Unit {
-    let now = system.mainTask().now()
+    let now = system.date()
     let amzDate = toIsoString(now)
     let contentHash = system.crypto().sha256(body).toHex()
     let host = bucket + ".s3.amazonaws.com"
@@ -78,9 +78,9 @@ makeS3AuthorizationHeader(
     algorithm + " Credential=" + accessKeyId + "/" + credentialScope + ",SignedHeaders=" + signedHeaders + ",Signature=" + signature
 }
 
-toIsoString(instant: Instant): String {
-    let d = Js->Date->(instant.since1970.seconds * 1000)
-    d->toISOString()->replaceAll(Js->RegExp->("[-:]|[.]...", "g"), "")?
+toIsoString(date: Date): String {
+    let rfc9557 = date.withTimeZone(Date.utcTimeZoneId).toRfc9557()
+    rfc9557.takeWhile {c => c != '.' && c != '['}.filter {c => c != '-' && c != ':'} + "Z"
 }
 
 encodeURIComponent(text: String): String {
