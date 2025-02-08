@@ -185,22 +185,6 @@ extend self: PgStatement {
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withInstant(name: String, value: Instant): PgStatement {
-        function toJsDate(instant: Instant): JsValue {
-            Js->Date->(instant.since1970.seconds * 1000.0)
-        }
-        let p = toJsDate(value)
-        self.PgStatement(parameters = self.parameters.add(name, p))
-    }
-
-    withNullableInstant(name: String, value: Option[Instant]): PgStatement {
-        function toJsDate(instant: Instant): JsValue {
-            Js->Date->(instant.since1970.seconds * 1000.0)
-        }
-        let p = value.map(toJsDate).else {Js.null()}
-        self.PgStatement(parameters = self.parameters.add(name, p))
-    }
-
     withBuffer(name: String, value: Buffer): PgStatement {
         let p = Js.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
@@ -248,22 +232,6 @@ extend self: PgStatement {
 
     withNullableStringArray(name: String, value: Option[List[String]]): PgStatement {
         let p = value.map(Js.jsSystem().value).else {Js.null()}
-        self.PgStatement(parameters = self.parameters.add(name, p))
-    }
-
-    withInstantArray(name: String, value: List[Instant]): PgStatement {
-        function toJsDate(instant: Instant): JsValue {
-            Js->Date->(instant.since1970.seconds * 1000.0)
-        }
-        let p = Js.jsSystem().value(value.map(toJsDate))
-        self.PgStatement(parameters = self.parameters.add(name, p))
-    }
-
-    withNullableInstantArray(name: String, value: Option[List[Instant]]): PgStatement {
-        function toJsDate(instant: Instant): JsValue {
-            Js->Date->(instant.since1970.seconds * 1000.0)
-        }
-        let p = value.map {_.map(toJsDate)}.map(Js.jsSystem().value).else {Js.null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
