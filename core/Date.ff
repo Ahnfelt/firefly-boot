@@ -563,7 +563,6 @@ extend self: DateGap {
     toIso8601(
         smallestUnit: Option[String] = None
         fractionalSecondDigits: Option[Int] = None
-        roundingMode: String = "trunc"
     ): String {
         let duration = Js->Temporal->Duration->from(Js->(
             years = self.years
@@ -580,7 +579,6 @@ extend self: DateGap {
         duration->toString(Js->(
             smallestUnit = smallestUnit.map {_!}.else {Js.undefined()}
             fractionalSecondDigits = fractionalSecondDigits.map {_!}.else {"auto"!}
-            roundingMode = roundingMode
         ))?
     }
     
