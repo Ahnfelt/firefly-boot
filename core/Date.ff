@@ -305,18 +305,16 @@ extend self: Date {
     toRfc9557(
         smallestUnit: Option[String] = None
         fractionalSecondDigits: Option[Int] = None
-        roundingMode: String = "trunc"
-        timeZoneName: String = "auto"
-        offset: String = "auto"
-        calendarName: String = "auto"
+        timeZone: Bool = True
+        offset: Bool = True
+        calendar: Bool = True
     ): String {
         self.jsValue->toString(Js->(
-            calendarName = calendarName
+            calendarName = if(calendar) {"auto"} else {"never"}
             fractionalSecondDigits = fractionalSecondDigits.map {_!}.else {"auto"!}
-            roundingMode = roundingMode
             smallestUnit = smallestUnit.map {_!}.else {Js.undefined()}
-            timeZoneName = timeZoneName
-            offset = offset
+            timeZoneName = if(timeZone) {"auto"} else {"never"}
+            offset = if(offset) {"auto"} else {"never"}
         ))?
     }
     
