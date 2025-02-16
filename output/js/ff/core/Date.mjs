@@ -390,16 +390,22 @@ export function Date_startOfMicrosecond(self_) {
 return self_.round({smallestUnit: "microsecond", roundingMode: "floor"})
 }
 
-export function Date_toRfc9557(self_, smallestUnit_ = ff_core_Option.None(), fractionalSecondDigits_ = ff_core_Option.None(), roundingMode_ = "trunc", timeZoneName_ = "auto", offset_ = "auto", calendarName_ = "auto") {
-return self_.toString({calendarName: calendarName_, fractionalSecondDigits: ff_core_Option.Option_else(ff_core_Option.Option_map(fractionalSecondDigits_, ((_w1) => {
+export function Date_toRfc9557(self_, smallestUnit_ = ff_core_Option.None(), fractionalSecondDigits_ = ff_core_Option.None(), timeZone_ = true, offset_ = true, calendar_ = true) {
+return self_.toString({calendarName: (calendar_
+? "auto"
+: "never"), fractionalSecondDigits: ff_core_Option.Option_else(ff_core_Option.Option_map(fractionalSecondDigits_, ((_w1) => {
 return _w1
 })), (() => {
 return "auto"
-})), roundingMode: roundingMode_, smallestUnit: ff_core_Option.Option_else(ff_core_Option.Option_map(smallestUnit_, ((_w1) => {
+})), smallestUnit: ff_core_Option.Option_else(ff_core_Option.Option_map(smallestUnit_, ((_w1) => {
 return _w1
 })), (() => {
 return (void 0)
-})), timeZoneName: timeZoneName_, offset: offset_})
+})), timeZoneName: (timeZone_
+? "auto"
+: "never"), offset: (offset_
+? "auto"
+: "never")})
 }
 
 export function Date_withCalendar(self_, calendarId_) {
@@ -723,16 +729,22 @@ export async function Date_startOfMicrosecond$(self_, $task) {
 return self_.round({smallestUnit: "microsecond", roundingMode: "floor"})
 }
 
-export async function Date_toRfc9557$(self_, smallestUnit_ = ff_core_Option.None(), fractionalSecondDigits_ = ff_core_Option.None(), roundingMode_ = "trunc", timeZoneName_ = "auto", offset_ = "auto", calendarName_ = "auto", $task) {
-return self_.toString({calendarName: calendarName_, fractionalSecondDigits: ff_core_Option.Option_else(ff_core_Option.Option_map(fractionalSecondDigits_, ((_w1) => {
+export async function Date_toRfc9557$(self_, smallestUnit_ = ff_core_Option.None(), fractionalSecondDigits_ = ff_core_Option.None(), timeZone_ = true, offset_ = true, calendar_ = true, $task) {
+return self_.toString({calendarName: (calendar_
+? "auto"
+: "never"), fractionalSecondDigits: ff_core_Option.Option_else(ff_core_Option.Option_map(fractionalSecondDigits_, ((_w1) => {
 return _w1
 })), (() => {
 return "auto"
-})), roundingMode: roundingMode_, smallestUnit: ff_core_Option.Option_else(ff_core_Option.Option_map(smallestUnit_, ((_w1) => {
+})), smallestUnit: ff_core_Option.Option_else(ff_core_Option.Option_map(smallestUnit_, ((_w1) => {
 return _w1
 })), (() => {
 return (void 0)
-})), timeZoneName: timeZoneName_, offset: offset_})
+})), timeZoneName: (timeZone_
+? "auto"
+: "never"), offset: (offset_
+? "auto"
+: "never")})
 }
 
 export async function Date_withCalendar$(self_, calendarId_, $task) {
@@ -897,7 +909,7 @@ return ff_core_Option.Some(current_)
 }), $task)), $task))
 }
 
-export function DateGap_toIso8601(self_, smallestUnit_ = ff_core_Option.None(), fractionalSecondDigits_ = ff_core_Option.None(), roundingMode_ = "trunc") {
+export function DateGap_toIso8601(self_, smallestUnit_ = ff_core_Option.None(), fractionalSecondDigits_ = ff_core_Option.None()) {
 const duration_ = Temporal.Duration.from({years: self_.years_, months: self_.months_, weeks: self_.weeks_, days: self_.days_, hours: self_.hours_, minutes: self_.minutes_, seconds: self_.seconds_, milliseconds: self_.milliseconds_, microseconds: self_.microseconds_, nanoseconds: self_.nanoseconds_});
 return duration_.toString({smallestUnit: ff_core_Option.Option_else(ff_core_Option.Option_map(smallestUnit_, ((_w1) => {
 return _w1
@@ -907,10 +919,10 @@ return (void 0)
 return _w1
 })), (() => {
 return "auto"
-})), roundingMode: roundingMode_})
+}))})
 }
 
-export async function DateGap_toIso8601$(self_, smallestUnit_ = ff_core_Option.None(), fractionalSecondDigits_ = ff_core_Option.None(), roundingMode_ = "trunc", $task) {
+export async function DateGap_toIso8601$(self_, smallestUnit_ = ff_core_Option.None(), fractionalSecondDigits_ = ff_core_Option.None(), $task) {
 const duration_ = Temporal.Duration.from({years: self_.years_, months: self_.months_, weeks: self_.weeks_, days: self_.days_, hours: self_.hours_, minutes: self_.minutes_, seconds: self_.seconds_, milliseconds: self_.milliseconds_, microseconds: self_.microseconds_, nanoseconds: self_.nanoseconds_});
 return duration_.toString({smallestUnit: ff_core_Option.Option_else(ff_core_Option.Option_map(smallestUnit_, ((_w1) => {
 return _w1
@@ -920,7 +932,7 @@ return (void 0)
 return _w1
 })), (() => {
 return "auto"
-})), roundingMode: roundingMode_})
+}))})
 }
 
 export const ff_core_Equal_Equal$ff_core_Date_Date = {
@@ -972,22 +984,22 @@ return ff_core_Any.internalAnyTag_("ff:core/Date.Date[]")
 
 export const ff_core_Show_Show$ff_core_Date_Date = {
 show_(value_) {
-return ff_core_Date.Date_toRfc9557(value_, ff_core_Option.None(), ff_core_Option.None(), "trunc", "auto", "auto", "auto")
+return ff_core_Date.Date_toRfc9557(value_, ff_core_Option.None(), ff_core_Option.None(), true, true, true)
 },
 async show_$(value_, $task) {
-return ff_core_Date.Date_toRfc9557(value_, ff_core_Option.None(), ff_core_Option.None(), "trunc", "auto", "auto", "auto")
+return ff_core_Date.Date_toRfc9557(value_, ff_core_Option.None(), ff_core_Option.None(), true, true, true)
 }
 };
 
 export const ff_core_Serializable_Serializable$ff_core_Date_Date = {
 serializeUsing_(serialization_, value_) {
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, ff_core_Date.Date_toRfc9557(value_, ff_core_Option.None(), ff_core_Option.None(), "trunc", "auto", "auto", "auto"))
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, ff_core_Date.Date_toRfc9557(value_, ff_core_Option.None(), ff_core_Option.None(), true, true, true))
 },
 deserializeUsing_(serialization_) {
 return ff_core_Date.newRfc9557_(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 },
 async serializeUsing_$(serialization_, value_, $task) {
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, ff_core_Date.Date_toRfc9557(value_, ff_core_Option.None(), ff_core_Option.None(), "trunc", "auto", "auto", "auto"))
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, ff_core_Date.Date_toRfc9557(value_, ff_core_Option.None(), ff_core_Option.None(), true, true, true))
 },
 async deserializeUsing_$(serialization_, $task) {
 return ff_core_Date.newRfc9557_(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
