@@ -18,6 +18,11 @@ extend self: BrowserSystem {
         Js.globalThis()?
     }
         
+    date(timeZoneId: Option[String] = None, calendarId: String = Date.isoCalendarId): Date {
+        let date = Date(Js->Temporal->Now->zonedDateTimeISO(timeZoneId.map {_!}.else {Js.undefined()}))
+        if(calendarId == Date.isoCalendarId) {date} else {date.withCalendar(calendarId)}
+    }
+
     url(): String {
         Js->location->href?
     }

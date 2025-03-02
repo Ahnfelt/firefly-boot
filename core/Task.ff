@@ -74,10 +74,6 @@ extend self: Task {
         )
     }
     
-    now(): Instant {
-        Instant(Duration(Js->Date->now()? * 0.001))
-    }
-    
     elapsed(): Duration {
         let now = Js->performance->now()? * 0.001
         Duration(now - self.started.seconds)

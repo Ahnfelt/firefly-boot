@@ -24,6 +24,8 @@ import * as ff_core_Core from "../../ff/core/Core.mjs"
 
 import * as ff_core_Crypto from "../../ff/core/Crypto.mjs"
 
+import * as ff_core_Date from "../../ff/core/Date.mjs"
+
 import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
 import * as ff_core_Equal from "../../ff/core/Equal.mjs"
@@ -35,8 +37,6 @@ import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 import * as ff_core_Float from "../../ff/core/Float.mjs"
 
 import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
-
-import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
@@ -111,10 +111,6 @@ ff_core_Buffer.Buffer_setFloat64(buffer_, 0, seed_, true);
 return ff_core_Random.newFromBuffer_(buffer_)
 }
 
-export function newFromInstant_(seed_) {
-return ff_core_Random.newFromFloat_(seed_)
-}
-
 export function newFromBuffer_(buffer_) {
 let n_ = ff_core_Int.Int_toFloat(0xefc8249d);
 function mash_(data_) {
@@ -156,10 +152,6 @@ export async function newFromFloat_$(seed_, $task) {
 const buffer_ = ff_core_Buffer.new_(8, false);
 ff_core_Buffer.Buffer_setFloat64(buffer_, 0, seed_, true);
 return ff_core_Random.newFromBuffer_(buffer_)
-}
-
-export async function newFromInstant_$(seed_, $task) {
-return ff_core_Random.newFromFloat_(seed_)
 }
 
 export async function newFromBuffer_$(buffer_, $task) {

@@ -72,9 +72,9 @@ extend self: Path {
         Js.await(fs->promises->stat(self.absolutePath))?
     }
         
-    modified(): Instant {
+    modified(): Date {
         let fs = Js.import("fs")
-        (Js.await(fs->promises->stat(self.absolutePath))->mtimeMs * 0.001!)?
+        Date.newEpochMilliseconds("UTC", Js.await(fs->promises->stat(self.absolutePath))->mtimeMs?)
     }
 
     entries(): Stream[PathEntry] {

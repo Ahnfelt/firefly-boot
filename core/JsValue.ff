@@ -405,7 +405,7 @@ instance List[T: IsJsValue]: IsJsValue {}
 instance IntMap[T: IsJsValue]: IsJsValue {}
 instance StringMap[T: IsJsValue]: IsJsValue {}
 instance Error: IsJsValue {}
-instance Instant: IsJsValue {}
+instance Date: IsJsValue {}
 instance Duration: IsJsValue {}
 instance Buffer: IsJsValue {}
 instance Nothing: IsJsValue {}

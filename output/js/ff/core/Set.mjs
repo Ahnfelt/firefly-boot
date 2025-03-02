@@ -24,6 +24,8 @@ import * as ff_core_Core from "../../ff/core/Core.mjs"
 
 import * as ff_core_Crypto from "../../ff/core/Crypto.mjs"
 
+import * as ff_core_Date from "../../ff/core/Date.mjs"
+
 import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
 import * as ff_core_Equal from "../../ff/core/Equal.mjs"
@@ -35,8 +37,6 @@ import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 import * as ff_core_Float from "../../ff/core/Float.mjs"
 
 import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
-
-import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
@@ -135,6 +135,18 @@ export function Set_contains(self_, value_, ff_core_Ordering_Order$T) {
 return ff_core_Map.Map_contains(self_, value_, ff_core_Ordering_Order$T)
 }
 
+export function Set_first(self_, ff_core_Ordering_Order$T) {
+return ff_core_Option.Option_map(ff_core_Map.Map_first(self_, ff_core_Ordering_Order$T), ((_w1) => {
+return _w1.first_
+}))
+}
+
+export function Set_last(self_, ff_core_Ordering_Order$T) {
+return ff_core_Option.Option_map(ff_core_Map.Map_last(self_, ff_core_Ordering_Order$T), ((_w1) => {
+return _w1.first_
+}))
+}
+
 export function Set_lastBefore(self_, key_, ff_core_Ordering_Order$T) {
 return ff_core_Option.Option_map(ff_core_Map.Map_lastBefore(self_, key_, ff_core_Ordering_Order$T), ((_w1) => {
 return _w1.first_
@@ -210,6 +222,18 @@ return ff_core_Map.Map_removeAll(self_, that_, ff_core_Ordering_Order$T)
 
 export async function Set_contains$(self_, value_, ff_core_Ordering_Order$T, $task) {
 return ff_core_Map.Map_contains(self_, value_, ff_core_Ordering_Order$T)
+}
+
+export async function Set_first$(self_, ff_core_Ordering_Order$T, $task) {
+return ff_core_Option.Option_map(ff_core_Map.Map_first(self_, ff_core_Ordering_Order$T), ((_w1) => {
+return _w1.first_
+}))
+}
+
+export async function Set_last$(self_, ff_core_Ordering_Order$T, $task) {
+return ff_core_Option.Option_map(ff_core_Map.Map_last(self_, ff_core_Ordering_Order$T), ((_w1) => {
+return _w1.first_
+}))
 }
 
 export async function Set_lastBefore$(self_, key_, ff_core_Ordering_Order$T, $task) {

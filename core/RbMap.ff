@@ -124,6 +124,22 @@ extend self[K: Order, V]: RB[K, V] {
         }
     }
     
+    first(): Option[Pair[K, V]] {
+        self.{
+            | E => None
+            | T(_, E, k, v, _) => Some(Pair(k, v))
+            | T(_, l, _, _, _) => l.first()
+        }
+    }
+    
+    last(): Option[Pair[K, V]] {
+        self.{
+            | E => None
+            | T(_, _, k, v, E) => Some(Pair(k, v))
+            | T(_, _, _, _, r) => r.last()
+        }
+    }
+
     lastBefore(key: K): Option[Pair[K, V]] {
         self.{
             | E => None

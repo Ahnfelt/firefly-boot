@@ -17,6 +17,8 @@ extend self[T: Order]: Set[T] {
     remove(value: T): Set[T] {Set(self.map.remove(value))}
     removeAll(that: Set[T]): Set[T] {Set(self.map.removeAll(that.map))}
     contains(value: T): Bool {self.map.contains(value)}
+    first(): Option[T] {self.map.first().map {_.first}}
+    last(): Option[T] {self.map.last().map {_.first}}
     lastBefore(key: T): Option[T] {self.map.lastBefore(key).map {_.first}}
     firstAfter(key: T): Option[T] {self.map.firstAfter(key).map {_.first}}
     size(): Int {self.map.size()}

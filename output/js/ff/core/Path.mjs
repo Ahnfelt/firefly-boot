@@ -30,6 +30,8 @@ import * as ff_core_Core from "../../ff/core/Core.mjs"
 
 import * as ff_core_Crypto from "../../ff/core/Crypto.mjs"
 
+import * as ff_core_Date from "../../ff/core/Date.mjs"
+
 import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
 import * as ff_core_Equal from "../../ff/core/Equal.mjs"
@@ -41,8 +43,6 @@ import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 import * as ff_core_Float from "../../ff/core/Float.mjs"
 
 import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
-
-import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
@@ -416,7 +416,7 @@ return fs_.promises.stat(self_.absolutePath_)
 
 export function Path_modified(self_) {
 const fs_ = import$0;
-return (fs_.promises.stat(self_.absolutePath_).mtimeMs * 0.001)
+return ff_core_Date.newEpochMilliseconds_("UTC", fs_.promises.stat(self_.absolutePath_).mtimeMs, "iso8601")
 }
 
 export function Path_entries(self_) {
@@ -714,7 +714,7 @@ return (await fs_.promises.stat(self_.absolutePath_))
 
 export async function Path_modified$(self_, $task) {
 const fs_ = import$0;
-return ((await fs_.promises.stat(self_.absolutePath_)).mtimeMs * 0.001)
+return ff_core_Date.newEpochMilliseconds_("UTC", (await fs_.promises.stat(self_.absolutePath_)).mtimeMs, "iso8601")
 }
 
 export async function Path_entries$(self_, $task) {

@@ -1,2 +1,2 @@
-#!/usr/bin/env node
+#!/usr/bin/env node --harmony-temporal
 import * as firefly from '../output/js/ff/compiler/Main.mjs';
