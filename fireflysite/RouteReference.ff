@@ -14,18 +14,18 @@ routeModule = SourceLocation.here().module()
 
 data PageData(path: List[String], sections: List[Section])
 
-handle(request: WebRequest[WebResponse], context: RouteContext, kebab: String) {
-    let path = ["reference", kebab]
-    let asset = "/assets/markdown/reference/" + kebab + ".md"
+handle(request: WebRequest[WebResponse], context: RouteContext, kebab: Option[String]) {
+    let path = ["reference", ...kebab.toList()]
+    let asset = "/assets/markdown/" + path.join("/") + ".md"
     try {context.system.assets().readText(asset)}.toOption().or {
         Log.trace("Asset not found: " + asset)
         request.writeText("404 Not Found")
         request.writeStatus("404 Not Found")
     }: markdown =>
-    let parser = DocumentParser(kebab, markdown.split('\n'), 0)
+    let parser = DocumentParser(path.last().grab(), markdown.split('\n'), 0)
     let sections = parser.parseDocument()
     let pageData = PageData(path, sections)
-    let title = kebab
+    let title = path.last().grab()
     Html.renderAndServe(context.system, routeModule, pageData, title, request, {render(_, pageData)})
 }
 

@@ -8,8 +8,8 @@ capability RouteContext(system: NodeSystem)
 frontRoute: WebRoute0 = WebRoute.new0(
     "/"
 )
-referenceRoute: WebRoute1[String] = WebRoute.new1(
-    "/reference/{name}"
+referenceRoute: WebRoute1[Option[String]] = WebRoute.new1(
+    "/reference/{name?}"
 )
 
 modulesWithBrowserMain(): List[String] {

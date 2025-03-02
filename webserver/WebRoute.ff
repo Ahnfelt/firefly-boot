@@ -15,6 +15,19 @@ instance Int: WebParameter {
     fromRouteParameter(value: Int): String {"" + value}
 }
 
+instance Option[T: WebParameter]: WebParameter {
+    toRouteParameter(text: String): Option[Option[T]] {
+        if(text != "") {
+            toRouteParameter(text).map {Some(_)}
+        } else {
+            Some(None)
+        }
+    }
+    fromRouteParameter(value: Option[T]): String {
+        value.map {fromRouteParameter(_)}.else {""}
+    }
+}
+
 data WebRoute0(urlPattern: String, segments: List[String])
 data WebRoute1[P1](urlPattern: String, segments: List[String])
 data WebRoute2[P1, P2](urlPattern: String, segments: List[String])
@@ -88,10 +101,11 @@ extend self[C]: WebRouteHandler[C] {
     
     add1[P1: WebParameter](route: WebRoute1[P1], handle: (WebRequest[WebResponse], C, P1) => Unit) {
         self.handlers.push {request, segments, context =>
-            if(segments.size() != route.segments.size()) {False} else:
+            let paddedSegments = internalCheckSegments(segments, route.segments)
+            if(paddedSegments.isEmpty()) {False} else:
             let matching = True
             mutable p1 = None
-            segments.zip(route.segments).eachWhile {| Pair(s, r) =>
+            paddedSegments.zip(route.segments).eachWhile {| Pair(s, r) =>
                 if(r.startsWith("{")) {
                     if(p1.isEmpty()) {
                         p1 = toRouteParameter(s)
@@ -111,11 +125,12 @@ extend self[C]: WebRouteHandler[C] {
     
     add2[P1: WebParameter, P2: WebParameter](route: WebRoute2[P1, P2], handle: (WebRequest[WebResponse], C, P1, P2) => Unit) {
         self.handlers.push {request, segments, context =>
-            if(segments.size() != route.segments.size()) {False} else:
+            let paddedSegments = internalCheckSegments(segments, route.segments)
+            if(paddedSegments.isEmpty()) {False} else:
             mutable p1 = None
             mutable p2 = None
             mutable matching = True
-            segments.zip(route.segments).eachWhile {| Pair(s, r) =>
+            paddedSegments.zip(route.segments).eachWhile {| Pair(s, r) =>
                 matching = if(r.startsWith("{")) {
                     if(p1.isEmpty()) {
                         p1 = toRouteParameter(s)
@@ -139,12 +154,19 @@ extend self[C]: WebRouteHandler[C] {
     
     handle(request: WebRequest[WebResponse], context: C): Bool {
         let segments = request.readPath().split('/').filter {s => s != ""}
+        let trimmedSegments = if(segments.last().contains("")) {segments.dropLast()} else {segments}
         mutable handled = False
         self.handlers.eachWhile {| handler =>
-            handled = handler(request, segments, context)
+            handled = handler(request, trimmedSegments, context)
             !handled
         }
         handled
     }
 
+}
+
+internalCheckSegments(segments: List[String], patterns: List[String]): List[String] {
+    if(segments.size() == patterns.size()) {segments} else:
+    if(segments.size() == patterns.size() - 1 && patterns.last().any {_.endsWith("?}")}) {[...segments, ""]} else:
+    []
 }
