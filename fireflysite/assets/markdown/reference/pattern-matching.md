@@ -222,5 +222,3 @@ numbers.{
 ```
 
 In patterns, the spread syntax `...` matches the rest of a list.
-
-[Next](traits-and-instances)

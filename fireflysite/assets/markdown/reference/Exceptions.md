@@ -99,6 +99,3 @@ try {
 ```
 
 The last method in the chain here is `finally`. If it was `tryFinally`, a value of type `Try[T]` would be returned.
-
-
-[Next](structured-concurrency)

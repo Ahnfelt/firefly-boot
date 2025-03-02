@@ -207,5 +207,3 @@ data Unit {
 ```
 
 If you omit the return type, the `Unit` type is assumed. If you don't end a function with an expression, the `Unit` value is returned.
-
-[Next](user-defined-types)

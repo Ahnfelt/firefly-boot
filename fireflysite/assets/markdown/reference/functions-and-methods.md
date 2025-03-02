@@ -363,5 +363,3 @@ Some(1).map {_ + 1} // Some(2)
 # Trait functions
  
 Trait functions are covered in the section about [traits and instances](traits-and-instances)
-
-[Next](pattern-matching)
