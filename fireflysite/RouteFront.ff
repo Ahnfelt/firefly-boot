@@ -5,6 +5,8 @@ import Guide
 import ExamplesOverview
 import FrontPage
 import Html
+import Website
+import Menu
 
 routeModule = SourceLocation.here().module()
 
@@ -21,5 +23,8 @@ browserMain(system: BrowserSystem) {
 }
 
 render(lux: Lux, data: PageData) {
-    Guide.renderSections(lux, data.sections, ExamplesOverview.demos())
+    let next = None // TODO MenuItem(["getting-started"], Menu.menu.grabFirst().name, None)
+    Website.renderContentWithNext(lux, [], next) {lux =>
+        Guide.renderSections(lux, data.sections, ExamplesOverview.demos())
+    }
 }

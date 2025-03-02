@@ -35,7 +35,7 @@ browserMain(system: BrowserSystem) {
 
 render(lux: Lux, data: PageData) {
     let menuItem = Menu.findItem(Menu.menu, data.path).grab()
-    Website.renderContentWithNext(lux, menuItem) {lux =>
+    Website.renderContentWithNext(lux, menuItem.path, menuItem.next) {lux =>
         Guide.renderSections(lux, data.sections, ExamplesOverview.demos())
     }
 }

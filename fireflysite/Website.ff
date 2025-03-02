@@ -6,7 +6,8 @@ import Menu
 
 renderContentWithNext(
     lux: Lux
-    menuItem: MenuItem
+    path: List[String]
+    next: Option[MenuItem]
     content: Lux => Unit
 ) {
     lux.add("div") {
@@ -16,11 +17,10 @@ renderContentWithNext(
             lux.cssClass(Styles.guideCss)
             lux.add("main") {
                 lux.cssClass(Styles.guideMainCss)
-
                 lux.add("article") {
                     lux.cssClass(Styles.guideDocumentCss)
                     content(lux)
-                    renderNext(lux, menuItem.next)
+                    renderNext(lux, next)
                 }
             }
             renderTopbar(lux, showMenu, setMenu)
@@ -32,7 +32,7 @@ renderContentWithNext(
                     setMenu(False)
                 }
             }
-            renderSidebar(lux, menuItem.path, showMenu)
+            renderSidebar(lux, path, showMenu)
         }
     }
 }
