@@ -40,6 +40,9 @@ findItem(items: List[Menu], path: List[String]): Option[MenuItem] {
             let m1 = items.find {_.path == p1}.grab()
             let m2 = m1.menu.find {_.path == p2}.grab()
             Some(MenuItem(path, m2.name, None))
+        | [p1] => 
+            let m1 = items.find {_.path == p1}.grab()
+            Some(MenuItem(path, m1.name, None))
         | _ => None
     }
 }
