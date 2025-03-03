@@ -55,12 +55,16 @@ extend self[P1: WebParameter]: WebRoute1[P1] {
         mutable result = ""
         mutable parameter = 1
         self.segments.each {r =>
-            result += "/"
             if(r.startsWith("{")) {
-                if(parameter == 1) {result += fromRouteParameter(p1)}
+                let p = if(parameter == 1) {
+                    fromRouteParameter(p1)
+                } else {
+                    ""
+                }
+                if(p != "" || !r.endsWith("?}")) {result += "/" + p}
                 parameter += 1
             } else {
-                result += r
+                result += "/" + r
             }
         }
         if(self.urlPattern.endsWith("/")) {result += "/"}
@@ -73,13 +77,18 @@ extend self[P1: WebParameter, P2: WebParameter]: WebRoute2[P1, P2] {
         mutable result = ""
         mutable parameter = 0
         self.segments.each {r =>
-            result += "/"
             if(r.startsWith("{")) {
-                if(parameter == 1) {result += fromRouteParameter(p1)}
-                if(parameter == 2) {result += fromRouteParameter(p2)}
+                let p = if(parameter == 1) {
+                    fromRouteParameter(p1)
+                } elseIf {parameter == 2} {
+                    fromRouteParameter(p2)
+                } else {
+                    ""
+                }
+                if(p != "" || !r.endsWith("?}")) {result += "/" + p}
                 parameter += 1
             } else {
-                result += r
+                result += "/" + r
             }
         }
         if(self.urlPattern.endsWith("/")) {result += "/"}
@@ -166,7 +175,12 @@ extend self[C]: WebRouteHandler[C] {
 }
 
 internalCheckSegments(segments: List[String], patterns: List[String]): List[String] {
-    if(segments.size() == patterns.size()) {segments} else:
-    if(segments.size() == patterns.size() - 1 && patterns.last().any {_.endsWith("?}")}) {[...segments, ""]} else:
-    []
+    segments.{
+        | _ {segments.size() == patterns.size()} => 
+            segments
+        | _ {segments.size() == patterns.size() - 1} {patterns.indexWhere {_.endsWith("?}")} | Some(i)} =>
+            [...segments.takeFirst(i), "", ...segments.dropFirst(i)]
+        | _ => 
+            []
+    }
 }
