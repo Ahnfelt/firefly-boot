@@ -10,8 +10,8 @@ demos(): List[Demo] {
     ]
 }
 
-new(): Document {
-    ReadyDocument([
+sections(): List[Section] {
+    [
         Section("Examples", [
             Paragraph([
                 Text("Here you'll find examples that demonstrate what you can do with Firefly.")
@@ -27,5 +27,5 @@ new(): Document {
                 Text("Check the list here for examples and demos.")
             ])
         ])
-    ])
+    ]
 }

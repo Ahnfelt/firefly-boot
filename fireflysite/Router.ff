@@ -2,7 +2,7 @@ import WebServer from ff:webserver
 import WebRoute from ff:webserver
 import RouteFront
 import RouteReference
-import RouteGettingStarted
+import RouteNonMarkdown
 
 capability RouteContext(system: NodeSystem)
 
@@ -21,13 +21,13 @@ nonMarkdownRoute: WebRoute2[String, Option[String]] = WebRoute.new2(
 modulesWithBrowserMain(): List[String] {
     [
         RouteFront.routeModule
-        RouteGettingStarted.routeModule
         RouteReference.routeModule
+        RouteNonMarkdown.routeModule
     ]
 }
 
 handlers(handler: WebRouteHandler[RouteContext]) {
     handler.add0(frontRoute, RouteFront.handle)
     handler.add1(referenceRoute, RouteReference.handle)
-    handler.add2(nonMarkdownRoute, RouteGettingStarted.handle)
+    handler.add2(nonMarkdownRoute, RouteNonMarkdown.handle)
 }

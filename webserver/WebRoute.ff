@@ -112,10 +112,10 @@ extend self[C]: WebRouteHandler[C] {
         self.handlers.push {request, segments, context =>
             let paddedSegments = internalCheckSegments(segments, route.segments)
             if(paddedSegments.isEmpty()) {False} else:
-            let matching = True
+            mutable matching = True
             mutable p1 = None
             paddedSegments.zip(route.segments).eachWhile {| Pair(s, r) =>
-                if(r.startsWith("{")) {
+                matching = if(r.startsWith("{")) {
                     if(p1.isEmpty()) {
                         p1 = toRouteParameter(s)
                         !p1.isEmpty()
@@ -125,6 +125,7 @@ extend self[C]: WebRouteHandler[C] {
                 } else {
                     r == s
                 }
+                matching
             }
             if(!matching) {False} else:
             handle(request, context, p1.grab())
