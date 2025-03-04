@@ -58,8 +58,8 @@ nodeMain(system: NodeSystem): Unit {
 
 guides = [
     Guide("/front/", [FrontPage.new()])
-    Guide("/getting-started/", [GettingStarted.new()])
-    Guide("/examples/", ExamplesOverview.mock())
+    //Guide("/getting-started/", [GettingStarted.new()])
+    //Guide("/examples/", ExamplesOverview.mock())
     Guide("/reference/", ReferenceAll.mock())
     Guide("/packages/", [PackagesOverview.new()])
     Guide("/community/", [CommunityOverview.new()])

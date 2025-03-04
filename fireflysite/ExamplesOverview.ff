@@ -3,15 +3,6 @@ import CountingButtonDemo
 import MatchingPasswordsDemo
 import PostgresqlDemo
 
-mock(): List[Document] {
-    [
-        new()
-        CountingButtonDemo.newDocument()
-        MatchingPasswordsDemo.newDocument()
-        PostgresqlDemo.newDocument()
-    ]
-}
-
 demos(): List[Demo] {
     [
         CountingButtonDemo.new()

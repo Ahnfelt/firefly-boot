@@ -24,8 +24,8 @@ render(lux: Lux): Unit {
     }
 }
 
-newDocument(): Document {
-    ReadyDocument([
+sections(): List[Section] {
+    [
         Section(name, [
             Paragraph([Text("A button that counts how many times it's been clicked.")])
         ])
@@ -54,5 +54,5 @@ newDocument(): Document {
                 }
             """, firefly = True)
         ])
-    ])
+    ]
 }

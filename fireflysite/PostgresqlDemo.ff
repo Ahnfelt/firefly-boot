@@ -4,8 +4,8 @@ import LuxEvent from ff:lux
 
 name = "Connecting to PostgreSQL"
 
-newDocument(): Document {
-    ReadyDocument([
+sections(): List[Section] {
+    [
         Section(name, [
             Paragraph([Text("Connect to a PostgreSQL database and run a query.")])
             Paragraph([Text("Add a dependency on "), Code("ff:postgresql"), Text(":")])
@@ -30,5 +30,5 @@ newDocument(): Document {
             """, firefly = True)
             Paragraph([Text("Note that"), Code(".map", firefly = True), Text("here runs for each row of the result.")])
         ])
-    ])
+    ]
 }

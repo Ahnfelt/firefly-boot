@@ -1,7 +1,7 @@
 import Guide
 
-new(): Document {
-    ReadyDocument([
+sections(): List[Section] {
+    [
         Section("Getting started", [
             Paragraph([
                 Text("Firefly comes with a compiler, a build system and a package manager.")
@@ -41,5 +41,5 @@ new(): Document {
                 Text("If you'd like to make an extension for a different editor, the language server is available, as well as the source code for the VSCode extension.")
             ])
         ])
-    ])
+    ]
 }
