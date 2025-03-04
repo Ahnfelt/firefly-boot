@@ -14,7 +14,7 @@ data PageData(sections: List[Section])
 
 handle(request: WebRequest[WebResponse], context: RouteContext) {
     let pageData = PageData(FrontPage.sections())
-    let title = "It's the front"
+    let title = "Firefly"
     Html.renderAndServe(context.system, routeModule, pageData, title, request, {render(_, pageData)})
 }
 

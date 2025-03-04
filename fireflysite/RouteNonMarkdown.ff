@@ -30,7 +30,7 @@ handle(request: WebRequest[WebResponse], context: RouteContext, directory: Strin
         request.writeStatus("404 Not Found")
     } else:
     let pageData = PageData(sections)
-    let title = "Getting Started"
+    let title = sections.grabFirst().heading
     Html.renderAndServe(context.system, routeModule, pageData, title, request, {render(_, pageData)})
 }
 

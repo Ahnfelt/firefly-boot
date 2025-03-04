@@ -25,7 +25,7 @@ handle(request: WebRequest[WebResponse], context: RouteContext, kebab: Option[St
     let parser = DocumentParser(path.last().grab(), markdown.split('\n'), 0)
     let sections = parser.parseDocument()
     let pageData = PageData(path, sections)
-    let title = path.last().grab()
+    let title = sections.grabFirst().heading
     Html.renderAndServe(context.system, routeModule, pageData, title, request, {render(_, pageData)})
 }
 
