@@ -47,7 +47,6 @@ renderAndServe[T: Serializable](
 
 renderToMain[T: Serializable](system: BrowserSystem, render: (Lux, T) => Unit) {
     let letter16 = system.js()->document->getElementById("data")->textContent.grabString()
-    //Log.debug(Buffer.fromLetter16(letter16).toByteList().map {_ + ""}.join(", "))
     let chat = Serializable.deserialize(Buffer.fromLetter16(letter16))
     Lux.renderById(system, "main") {lux =>
         render(lux, chat)

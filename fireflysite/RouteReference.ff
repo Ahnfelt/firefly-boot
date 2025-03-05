@@ -26,7 +26,6 @@ handle(request: WebRequest[WebResponse], context: RouteContext, kebab: Option[St
     let sections = parser.parseDocument()
     let pageData = PageData(path, sections)
     let title = sections.grabFirst().heading
-    //Log.debug(Show.show(pageData))
     Html.renderAndServe(context.system, routeModule, pageData, title, request, {render(_, pageData)})
 }
 
