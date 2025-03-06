@@ -220,18 +220,29 @@ extend self: Compiler {
         }
 
         let allModules = [module, ...otherModules]
-        let js = JsEmitter.new(
+        let emitter = JsEmitter.new(
             otherModules = allModules
             emitTarget = self.emitTarget
             isMainModule = isMainModule
             compilerModuleFileUrl = self.compilerModulePath.map {_.url()}
             packagePair = packagePair
             moduleName = moduleName
-        ).emitModule(packagePair, module)
+        )
+        let js = emitter.emitModule(packagePair, module)
         let jsPath = self.jsOutputPath.slash(packagePair.group).slash(packagePair.name)
         let jsFile = jsPath.slash(moduleName + ".mjs")
         jsPath.createDirectory(createParentDirectories = True)
         jsFile.writeText(js)
+        if(isMainModule) {
+            let runJs = emitter.emitRun(
+                moduleName
+                module.functions
+                packagePair
+                packagePair.group == "ff" && packagePair.name == "compiler"
+            )
+            let jsRunFile = jsPath.slash(moduleName + "_run.mjs")
+            jsRunFile.writeText(runJs.map {_ + "\n"}.join())
+        }
     }
 
 }

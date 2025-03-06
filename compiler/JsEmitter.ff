@@ -67,9 +67,6 @@ extend self: JsEmitter {
             self.withEmittingAsync {module.functions.map {"export " + self.emitFunctionDefinition(_, True)}}
             module.extends.map {self.emitExtendsDefinition(_)}
             module.instances.map {self.emitInstanceDefinition(_)}
-            if(self.isMainModule) {
-                self.emitRun(module.functions, packagePair, packagePair.group == "ff" && packagePair.name == "compiler")
-            } else {[]}
         ]
         let ignoreJsImports = if(
             self.emitTarget == EmitExecutable &&
@@ -89,7 +86,7 @@ extend self: JsEmitter {
         }
     }
 
-    emitRun(functions: List[DFunction], mainPackagePair: PackagePair, bootstrapping: Bool): List[String] {
+    emitRun(moduleName: String, functions: List[DFunction], mainPackagePair: PackagePair, bootstrapping: Bool): List[String] {
         let buildMainFunction = functions.find {_.signature.name == "buildMain"}.filter {_ =>
             self.emitTarget != EmitBrowser && self.emitTarget != EmitExecutable
         }
@@ -98,7 +95,11 @@ extend self: JsEmitter {
         let mainFunction =
             functions.find {_.signature.name == targetMain}.orElse {functions.find {_.signature.name == "main"}}
         mainFunction.map {_.signature.name}.map {mainName => [[
-            "export async function $run$(fireflyPath_, arguments_) {"
+            ...buildMainFunction.map {buildMain =>
+                "import {" + escapeKeyword(buildMain.signature.name) + "_$} from '" + moduleName + ".mjs'"
+            }.toList()
+            "import {" + escapeKeyword(targetMain) + "_$} from '" + moduleName + ".mjs'"
+            "async function $run$(fireflyPath_, arguments_) {"
             "Error.stackTraceLimit = 50"
             "const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}"
             ...if(self.emitTarget != EmitBrowser) {[
