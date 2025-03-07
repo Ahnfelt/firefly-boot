@@ -99,7 +99,7 @@ extend self: JsEmitter {
                 "import {" + escapeKeyword(buildMain.signature.name) + "$} from './" + moduleName + ".mjs'"
             }.toList()
             "import {" + escapeKeyword(mainName) + "$} from './" + moduleName + ".mjs'"
-            "async function $run$(fireflyPath_, arguments_) {"
+            "export async function $run$(fireflyPath_, arguments_) {"
             "Error.stackTraceLimit = 50"
             "const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}"
             ...if(self.emitTarget != EmitBrowser) {[

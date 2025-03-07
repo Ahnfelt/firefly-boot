@@ -1,5 +1,5 @@
 import {main_$} from './Main.mjs'
-async function $run$(fireflyPath_, arguments_) {
+export async function $run$(fireflyPath_, arguments_) {
 Error.stackTraceLimit = 50
 const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}
 let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)
