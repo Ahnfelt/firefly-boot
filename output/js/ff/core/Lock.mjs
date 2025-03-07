@@ -347,5 +347,3 @@ ff_core_Queue.Queue_clear(self_.queue_)
 }
 
 
-
-

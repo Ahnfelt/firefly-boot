@@ -96,9 +96,9 @@ extend self: JsEmitter {
             functions.find {_.signature.name == targetMain}.orElse {functions.find {_.signature.name == "main"}}
         mainFunction.map {_.signature.name}.map {mainName => [[
             ...buildMainFunction.map {buildMain =>
-                "import {" + escapeKeyword(buildMain.signature.name) + "_$} from '" + moduleName + ".mjs'"
+                "import {" + escapeKeyword(buildMain.signature.name) + "$} from './" + moduleName + ".mjs'"
             }.toList()
-            "import {" + escapeKeyword(targetMain) + "_$} from '" + moduleName + ".mjs'"
+            "import {" + escapeKeyword(mainName) + "$} from './" + moduleName + ".mjs'"
             "async function $run$(fireflyPath_, arguments_) {"
             "Error.stackTraceLimit = 50"
             "const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}"
@@ -125,7 +125,7 @@ extend self: JsEmitter {
             ]} else {[]}
             "} finally {"
             ...if(self.emitTarget != EmitBrowser) {[
-                "ff_core_Task.Task_abort$($task)"
+                "$task.controller_.abort()"
                 "clearInterval(interval)"
             ]} else {[]}
             "}"

@@ -526,5 +526,3 @@ return false
 }
 }
 };
-
-

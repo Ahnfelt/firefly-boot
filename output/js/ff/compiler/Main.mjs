@@ -194,9 +194,9 @@ const mainFile_ = command_a.mainPath_;
 const arguments_ = command_a.argument_;
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), ff_compiler_DependencyLock.new_(ff_core_NodeSystem.NodeSystem_mainTask(system_)), ff_core_NodeSystem.NodeSystem_path(system_, (mainFile_ + ".ff")));
 ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_path(system_, "."));
-const localMainFile_ = ff_core_Path.Path_base(ff_core_NodeSystem.NodeSystem_path(system_, mainFile_));
+const localMainFile_ = (ff_core_Path.Path_base(ff_core_NodeSystem.NodeSystem_path(system_, mainFile_)) + "_run");
 buildScript_(localMainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_);
-if((!ff_compiler_Main.importAndRun_(fireflyPath_, "node", resolvedDependencies_.mainPackagePair_, localMainFile_, arguments_))) {
+if((!ff_compiler_Main.importAndRun_(system_, fireflyPath_, "node", resolvedDependencies_.mainPackagePair_, localMainFile_, arguments_))) {
 const at_ = ff_compiler_Syntax.Location(ff_core_Path.Path_absolute(ff_core_NodeSystem.NodeSystem_path(system_, (mainFile_ + ".ff"))), 1, 1);
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "This module does not contain a 'nodeMain' function"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
@@ -206,7 +206,7 @@ if(command_a.BrowserCommand) {
 const mainFile_ = command_a.mainPath_;
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), ff_compiler_DependencyLock.new_(ff_core_NodeSystem.NodeSystem_mainTask(system_)), ff_core_NodeSystem.NodeSystem_path(system_, (mainFile_ + ".ff")));
 ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_path(system_, "."));
-const localMainFile_ = ff_core_Path.Path_base(ff_core_NodeSystem.NodeSystem_path(system_, mainFile_));
+const localMainFile_ = (ff_core_Path.Path_base(ff_core_NodeSystem.NodeSystem_path(system_, mainFile_)) + "_run");
 buildScript_(mainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBrowser(), resolvedDependencies_);
 ff_compiler_Main.bundleForBrowser_(system_, resolvedDependencies_.mainPackagePair_, localMainFile_)
 return
@@ -219,7 +219,7 @@ const localMainFile_ = ff_core_Path.Path_base(ff_core_NodeSystem.NodeSystem_path
 buildScript_(localMainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBuild(), resolvedDependencies_);
 buildScript_(localMainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitExecutable(), resolvedDependencies_);
 ff_compiler_Main.bundleForPkg_(system_, resolvedDependencies_.mainPackagePair_, localMainFile_);
-ff_compiler_Main.importAndRun_(fireflyPath_, "build", resolvedDependencies_.mainPackagePair_, localMainFile_, [])
+ff_compiler_Main.importAndRun_(system_, fireflyPath_, "build", resolvedDependencies_.mainPackagePair_, localMainFile_, [])
 return
 }
 if(command_a.CheckCommand) {
@@ -440,15 +440,16 @@ return ff_core_Path.Path_readStream(ff_core_NodeSystem.NodeSystem_path(system_, 
 ff_core_BuildSystem.internalCallEsBuild_(browserCode_, mainJsFile_, file_, true, true)
 }
 
-export function importAndRun_(fireflyPath_, target_, packagePair_, mainFile_, arguments_) {
+export function importAndRun_(system_, fireflyPath_, target_, packagePair_, mainFile_, arguments_) {
 const process_ = import("process");
 const cwd_ = process_.cwd();
 const workingDirectory_ = ((cwd_.indexOf(":") === 1)
 ? ("file:///" + cwd_)
 : cwd_);
 const packagePath_ = ((packagePair_.group_ + "/") + packagePair_.name_);
-const main_ = import((((((((workingDirectory_ + "/.firefly/output/") + target_) + "/") + packagePath_) + "/") + mainFile_) + ".mjs"));
-if(((typeof main_["$run$"]) !== "undefined")) {
+const runFile_ = (((((((workingDirectory_ + "/.firefly/output/") + target_) + "/") + packagePath_) + "/") + mainFile_) + "_run.mjs");
+if(ff_core_Path.Path_exists(ff_core_NodeSystem.NodeSystem_path(system_, runFile_), false, false, false)) {
+const main_ = import(runFile_);
 main_["$run$"](fireflyPath_.absolutePath_, arguments_);
 return true
 } else {
@@ -592,9 +593,9 @@ const mainFile_ = command_a.mainPath_;
 const arguments_ = command_a.argument_;
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (await ff_compiler_DependencyLock.new_$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task)), (await ff_core_NodeSystem.NodeSystem_path$(system_, (mainFile_ + ".ff"), $task)), $task));
 (await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
-const localMainFile_ = (await ff_core_Path.Path_base$((await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task));
+const localMainFile_ = ((await ff_core_Path.Path_base$((await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task)) + "_run");
 (await buildScript_$(localMainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, $task));
-if((!(await ff_compiler_Main.importAndRun_$(fireflyPath_, "node", resolvedDependencies_.mainPackagePair_, localMainFile_, arguments_, $task)))) {
+if((!(await ff_compiler_Main.importAndRun_$(system_, fireflyPath_, "node", resolvedDependencies_.mainPackagePair_, localMainFile_, arguments_, $task)))) {
 const at_ = ff_compiler_Syntax.Location((await ff_core_Path.Path_absolute$((await ff_core_NodeSystem.NodeSystem_path$(system_, (mainFile_ + ".ff"), $task)), $task)), 1, 1);
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "This module does not contain a 'nodeMain' function"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
@@ -604,7 +605,7 @@ if(command_a.BrowserCommand) {
 const mainFile_ = command_a.mainPath_;
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (await ff_compiler_DependencyLock.new_$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task)), (await ff_core_NodeSystem.NodeSystem_path$(system_, (mainFile_ + ".ff"), $task)), $task));
 (await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
-const localMainFile_ = (await ff_core_Path.Path_base$((await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task));
+const localMainFile_ = ((await ff_core_Path.Path_base$((await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task)) + "_run");
 (await buildScript_$(mainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBrowser(), resolvedDependencies_, $task));
 (await ff_compiler_Main.bundleForBrowser_$(system_, resolvedDependencies_.mainPackagePair_, localMainFile_, $task))
 return
@@ -617,7 +618,7 @@ const localMainFile_ = (await ff_core_Path.Path_base$((await ff_core_NodeSystem.
 (await buildScript_$(localMainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBuild(), resolvedDependencies_, $task));
 (await buildScript_$(localMainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitExecutable(), resolvedDependencies_, $task));
 (await ff_compiler_Main.bundleForPkg_$(system_, resolvedDependencies_.mainPackagePair_, localMainFile_, $task));
-(await ff_compiler_Main.importAndRun_$(fireflyPath_, "build", resolvedDependencies_.mainPackagePair_, localMainFile_, [], $task))
+(await ff_compiler_Main.importAndRun_$(system_, fireflyPath_, "build", resolvedDependencies_.mainPackagePair_, localMainFile_, [], $task))
 return
 }
 if(command_a.CheckCommand) {
@@ -838,15 +839,16 @@ return (await ff_core_Path.Path_readStream$((await ff_core_NodeSystem.NodeSystem
 (await ff_core_BuildSystem.internalCallEsBuild_$(browserCode_, mainJsFile_, file_, true, true, $task))
 }
 
-export async function importAndRun_$(fireflyPath_, target_, packagePair_, mainFile_, arguments_, $task) {
+export async function importAndRun_$(system_, fireflyPath_, target_, packagePair_, mainFile_, arguments_, $task) {
 const process_ = (await import("process"));
 const cwd_ = process_.cwd();
 const workingDirectory_ = ((cwd_.indexOf(":") === 1)
 ? ("file:///" + cwd_)
 : cwd_);
 const packagePath_ = ((packagePair_.group_ + "/") + packagePair_.name_);
-const main_ = (await import((((((((workingDirectory_ + "/.firefly/output/") + target_) + "/") + packagePath_) + "/") + mainFile_) + ".mjs")));
-if(((typeof main_["$run$"]) !== "undefined")) {
+const runFile_ = (((((((workingDirectory_ + "/.firefly/output/") + target_) + "/") + packagePath_) + "/") + mainFile_) + "_run.mjs");
+if((await ff_core_Path.Path_exists$((await ff_core_NodeSystem.NodeSystem_path$(system_, runFile_, $task)), false, false, false, $task))) {
+const main_ = (await import(runFile_));
 main_["$run$"](fireflyPath_.absolutePath_, arguments_);
 return true
 } else {
@@ -1621,28 +1623,3 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serial
 }
 }
 };
-
-export async function $run$(fireflyPath_, arguments_) {
-Error.stackTraceLimit = 50
-const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}
-let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)
-let system = {
-task_: $task,
-array_: arguments_,
-fireflyPath_: fireflyPath_,
-mainPackagePair_: {group_: "ff", name_: "compiler"},
-executableMode_: false,
-buildMode_: false
-}
-try {
-await main_$(system, $task)
-} finally {
-ff_core_Task.Task_abort$($task)
-clearInterval(interval)
-}
-}
-import * as path from 'node:path'
-queueMicrotask(async () => {
-let fireflyPath_ = path.dirname(path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))))
-await $run$(fireflyPath_, process.argv.slice(2))
-})

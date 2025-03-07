@@ -314,5 +314,3 @@ return self_.assetSystem_
 }
 
 
-
-

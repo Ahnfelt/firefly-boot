@@ -151,5 +151,3 @@ return String.fromCharCode(self_)
 }
 
 
-
-

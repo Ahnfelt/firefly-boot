@@ -1538,5 +1538,3 @@ return result_
 }
 
 
-
-

@@ -106,7 +106,7 @@ return (new DataView((shared_
 }
 
 export function fromByteList_(array_) {
-return (new DataView(Uint8Array(array_).buffer))
+return (new DataView((new Uint8Array(array_)).buffer))
 }
 
 export function fromBufferList_(array_) {
@@ -145,6 +145,15 @@ return char_.codePointAt(0)
 return (new DataView(bytes_.buffer))
 }
 
+export function fromLetter16_(letters_) {
+const buffer_ = ff_core_Buffer.new_((letters_.length >>> 1), false);
+for(let for_i = 0, for_e = ff_core_Buffer.Buffer_size(buffer_); for_i < for_e; for_i++) {
+const i_ = for_i;
+ff_core_Buffer.Buffer_setUint8(buffer_, i_, ff_core_Int.Int_bitOr(ff_core_Int.Int_bitLeft(((ff_core_String.String_grab(letters_, ff_core_Int.Int_bitLeft(i_, 1)) & 0x1f) - 0x8), 4), ((ff_core_String.String_grab(letters_, ff_core_Int.Int_bitOr(ff_core_Int.Int_bitLeft(i_, 1), 1)) & 0x1f) - 0x8)))
+};
+return buffer_
+}
+
 export async function new_$(size_, shared_ = false, $task) {
 return (new DataView((shared_
 ? (new SharedArrayBuffer(size_))
@@ -152,7 +161,7 @@ return (new DataView((shared_
 }
 
 export async function fromByteList_$(array_, $task) {
-return (new DataView(Uint8Array(array_).buffer))
+return (new DataView((new Uint8Array(array_)).buffer))
 }
 
 export async function fromBufferList_$(array_, $task) {
@@ -189,6 +198,15 @@ const bytes_ = Uint8Array.from(binaryString_, ((char_) => {
 return char_.codePointAt(0)
 }));
 return (new DataView(bytes_.buffer))
+}
+
+export async function fromLetter16_$(letters_, $task) {
+const buffer_ = ff_core_Buffer.new_((letters_.length >>> 1), false);
+for(let for_i = 0, for_e = ff_core_Buffer.Buffer_size(buffer_); for_i < for_e; for_i++) {
+const i_ = for_i;
+ff_core_Buffer.Buffer_setUint8(buffer_, i_, ff_core_Int.Int_bitOr(ff_core_Int.Int_bitLeft(((ff_core_String.String_grab(letters_, ff_core_Int.Int_bitLeft(i_, 1)) & 0x1f) - 0x8), 4), ((ff_core_String.String_grab(letters_, ff_core_Int.Int_bitOr(ff_core_Int.Int_bitLeft(i_, 1), 1)) & 0x1f) - 0x8)))
+};
+return buffer_
 }
 
 export function Buffer_grabUint64(self_, byteOffset_, littleEndian_ = true) {
@@ -333,7 +351,7 @@ TextDecoder.ffSingleton.decode(self_)
 return (new TextDecoder()).decode(self_)
 }
 
-export function Buffer_toByteArray(self_) {
+export function Buffer_toByteList(self_) {
 return [...(new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength))]
 }
 
@@ -350,8 +368,18 @@ export function Buffer_toBase64(self_) {
 const view_ = (new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength));
 const binaryString_ = Array.from(view_, ((byte_) => {
 return String.fromCodePoint(byte_)
-})).join(39);
+})).join("");
 return btoa(binaryString_)
+}
+
+export function Buffer_toLetter16(self_) {
+const result_ = ff_core_Buffer.new_(ff_core_Int.Int_bitLeft(ff_core_Buffer.Buffer_size(self_), 1), false);
+for(let for_i = 0, for_e = ff_core_Buffer.Buffer_size(self_); for_i < for_e; for_i++) {
+const i_ = for_i;
+const b_ = ff_core_Buffer.Buffer_grabUint8(self_, i_);
+ff_core_Buffer.Buffer_setUint16(result_, ff_core_Int.Int_bitLeft(i_, 1), ff_core_Int.Int_bitOr((((b_ >>> 4) & 0xf) + 0x68), ff_core_Int.Int_bitLeft(((b_ & 0xf) + 0x68), 8)), true)
+};
+return ff_core_Buffer.Buffer_toString(result_, "utf8")
 }
 
 export async function Buffer_grabUint64$(self_, byteOffset_, littleEndian_ = true, $task) {
@@ -496,7 +524,7 @@ TextDecoder.ffSingleton.decode(self_)
 return (new TextDecoder()).decode(self_)
 }
 
-export async function Buffer_toByteArray$(self_, $task) {
+export async function Buffer_toByteList$(self_, $task) {
 return [...(new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength))]
 }
 
@@ -513,8 +541,18 @@ export async function Buffer_toBase64$(self_, $task) {
 const view_ = (new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength));
 const binaryString_ = Array.from(view_, ((byte_) => {
 return String.fromCodePoint(byte_)
-})).join(39);
+})).join("");
 return btoa(binaryString_)
+}
+
+export async function Buffer_toLetter16$(self_, $task) {
+const result_ = ff_core_Buffer.new_(ff_core_Int.Int_bitLeft(ff_core_Buffer.Buffer_size(self_), 1), false);
+for(let for_i = 0, for_e = ff_core_Buffer.Buffer_size(self_); for_i < for_e; for_i++) {
+const i_ = for_i;
+const b_ = ff_core_Buffer.Buffer_grabUint8(self_, i_);
+ff_core_Buffer.Buffer_setUint16(result_, ff_core_Int.Int_bitLeft(i_, 1), ff_core_Int.Int_bitOr((((b_ >>> 4) & 0xf) + 0x68), ff_core_Int.Int_bitLeft(((b_ & 0xf) + 0x68), 8)), true)
+};
+return ff_core_Buffer.Buffer_toString(result_, "utf8")
 }
 
 export const ff_core_Show_Show$ff_core_Buffer_Buffer = {
@@ -627,5 +665,3 @@ return ordering_
 }
 }
 };
-
-

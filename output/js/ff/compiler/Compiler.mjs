@@ -273,13 +273,23 @@ ff_compiler_Compiler.Compiler_emit(self_, i_.packagePair_, newModuleName_, false
 return ff_compiler_Compiler.Compiler_infer(self_, i_.packagePair_, newModuleName_)
 }));
 const allModules_ = [module_, ...otherModules_];
-const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMainModule_, ff_core_Option.Option_map(self_.compilerModulePath_, ((_w1) => {
+const emitter_ = ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMainModule_, ff_core_Option.Option_map(self_.compilerModulePath_, ((_w1) => {
 return ff_core_Path.Path_url(_w1)
-})), packagePair_, moduleName_), packagePair_, module_);
+})), packagePair_, moduleName_);
+const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(emitter_, packagePair_, module_);
 const jsPath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(self_.jsOutputPath_, packagePair_.group_), packagePair_.name_);
 const jsFile_ = ff_core_Path.Path_slash(jsPath_, (moduleName_ + ".mjs"));
 ff_core_Path.Path_createDirectory(jsPath_, true);
-return ff_core_Path.Path_writeText(jsFile_, js_)
+ff_core_Path.Path_writeText(jsFile_, js_);
+if(isMainModule_) {
+return ff_core_Option.Some((function() {
+const runJs_ = ff_compiler_JsEmitter.JsEmitter_emitRun(emitter_, moduleName_, module_.functions_, packagePair_, ((packagePair_.group_ === "ff") && (packagePair_.name_ === "compiler")));
+const jsRunFile_ = ff_core_Path.Path_slash(jsPath_, (moduleName_ + "_run.mjs"));
+return ff_core_Path.Path_writeText(jsRunFile_, ff_core_List.List_join(ff_core_List.List_map(runJs_, ((_w1) => {
+return (_w1 + "\n")
+})), ""))
+})())
+} else return ff_core_Option.None()
 }))
 }))
 }
@@ -414,17 +424,25 @@ const newModuleName_ = ff_core_String.String_dropLast(i_.file_, ".ff".length);
 return (await ff_compiler_Compiler.Compiler_infer$(self_, i_.packagePair_, newModuleName_, $task))
 }), $task));
 const allModules_ = [module_, ...otherModules_];
-const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMainModule_, (await ff_core_Option.Option_map$(self_.compilerModulePath_, (async (_w1, $task) => {
+const emitter_ = ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMainModule_, (await ff_core_Option.Option_map$(self_.compilerModulePath_, (async (_w1, $task) => {
 return (await ff_core_Path.Path_url$(_w1, $task))
-}), $task)), packagePair_, moduleName_), packagePair_, module_);
+}), $task)), packagePair_, moduleName_);
+const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(emitter_, packagePair_, module_);
 const jsPath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(self_.jsOutputPath_, packagePair_.group_, $task)), packagePair_.name_, $task));
 const jsFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleName_ + ".mjs"), $task));
 (await ff_core_Path.Path_createDirectory$(jsPath_, true, $task));
-return (await ff_core_Path.Path_writeText$(jsFile_, js_, $task))
+(await ff_core_Path.Path_writeText$(jsFile_, js_, $task));
+if(isMainModule_) {
+return ff_core_Option.Some((await (async function() {
+const runJs_ = ff_compiler_JsEmitter.JsEmitter_emitRun(emitter_, moduleName_, module_.functions_, packagePair_, ((packagePair_.group_ === "ff") && (packagePair_.name_ === "compiler")));
+const jsRunFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleName_ + "_run.mjs"), $task));
+return (await ff_core_Path.Path_writeText$(jsRunFile_, ff_core_List.List_join(ff_core_List.List_map(runJs_, ((_w1) => {
+return (_w1 + "\n")
+})), ""), $task))
+})()))
+} else return ff_core_Option.None()
 }), $task))
 }), $task))
 }
-
-
 
 

@@ -415,5 +415,3 @@ return (new DataView((await self_.response.arrayBuffer())))
 }
 
 
-
-

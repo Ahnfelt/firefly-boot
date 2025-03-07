@@ -665,9 +665,7 @@ return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_
 return ff_compiler_JsEmitter.JsEmitter_emitExtendsDefinition(self_, _w1)
 })), ff_core_List.List_map(module_.instances_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitInstanceDefinition(self_, _w1)
-})), (self_.isMainModule_
-? ff_compiler_JsEmitter.JsEmitter_emitRun(self_, module_.functions_, packagePair_, ((packagePair_.group_ === "ff") && (packagePair_.name_ === "compiler")))
-: [])];
+}))];
 const ignoreJsImports_ = (((ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable()) && (packagePair_.group_ === "ff")) && (packagePair_.name_ === "core"))
 ? ["esbuild"]
 : []);
@@ -686,7 +684,7 @@ self_.emittingAsync_ = false
 }
 }
 
-export function JsEmitter_emitRun(self_, functions_, mainPackagePair_, bootstrapping_) {
+export function JsEmitter_emitRun(self_, moduleName_, functions_, mainPackagePair_, bootstrapping_) {
 const buildMainFunction_ = ff_core_Option.Option_filter(ff_core_List.List_find(functions_, ((_w1) => {
 return (_w1.signature_.name_ === "buildMain")
 })), ((_) => {
@@ -706,7 +704,9 @@ return (_w1.signature_.name_ === "main")
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(mainFunction_, ((_w1) => {
 return _w1.signature_.name_
 })), ((mainName_) => {
-return [ff_core_List.List_join(["export async function $run$(fireflyPath_, arguments_) {", "Error.stackTraceLimit = 50", "const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}", ...(ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
+return [ff_core_List.List_join([...ff_core_Option.Option_toList(ff_core_Option.Option_map(buildMainFunction_, ((buildMain_) => {
+return (((("import {" + ff_compiler_JsEmitter.escapeKeyword_(buildMain_.signature_.name_)) + "$} from './") + moduleName_) + ".mjs'")
+}))), (((("import {" + ff_compiler_JsEmitter.escapeKeyword_(mainName_)) + "$} from './") + moduleName_) + ".mjs'"), "async function $run$(fireflyPath_, arguments_) {", "Error.stackTraceLimit = 50", "const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}", ...(ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
 ? ["let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)"]
 : []), "let system = {", "task_: $task,", "array_: arguments_,", "fireflyPath_: fireflyPath_,", (((("mainPackagePair_: {group_: \"" + mainPackagePair_.group_) + "\", name_: \"") + mainPackagePair_.name_) + "\"},"), (("executableMode_: " + (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable())
 ? "true"
@@ -719,7 +719,7 @@ return [ff_core_List.List_join(["export async function $run$(fireflyPath_, argum
 : []), ...(ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild())
 ? ["await $firefly_compiler.internalCreateExecutable_$(system, '.firefly/output/executable/Main.bundle.js', '.firefly/output', ['host'], system.assets_, $task)"]
 : []), "} finally {", ...(ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
-? ["ff_core_Task.Task_abort$($task)", "clearInterval(interval)"]
+? ["$task.controller_.abort()", "clearInterval(interval)"]
 : []), "}", "}", ...(((_1) => {
 if(_1.EmitBrowser) {
 return ["queueMicrotask(async () => {", "await $run$(null, [])", "})"]
@@ -3191,9 +3191,7 @@ return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_
 return ff_compiler_JsEmitter.JsEmitter_emitExtendsDefinition(self_, _w1)
 })), ff_core_List.List_map(module_.instances_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitInstanceDefinition(self_, _w1)
-})), (self_.isMainModule_
-? ff_compiler_JsEmitter.JsEmitter_emitRun(self_, module_.functions_, packagePair_, ((packagePair_.group_ === "ff") && (packagePair_.name_ === "compiler")))
-: [])];
+}))];
 const ignoreJsImports_ = (((ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable()) && (packagePair_.group_ === "ff")) && (packagePair_.name_ === "core"))
 ? ["esbuild"]
 : []);
@@ -3212,7 +3210,7 @@ self_.emittingAsync_ = false
 }
 }
 
-export async function JsEmitter_emitRun$(self_, functions_, mainPackagePair_, bootstrapping_, $task) {
+export async function JsEmitter_emitRun$(self_, moduleName_, functions_, mainPackagePair_, bootstrapping_, $task) {
 const buildMainFunction_ = ff_core_Option.Option_filter(ff_core_List.List_find(functions_, ((_w1) => {
 return (_w1.signature_.name_ === "buildMain")
 })), ((_) => {
@@ -3232,7 +3230,9 @@ return (_w1.signature_.name_ === "main")
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(mainFunction_, ((_w1) => {
 return _w1.signature_.name_
 })), ((mainName_) => {
-return [ff_core_List.List_join(["export async function $run$(fireflyPath_, arguments_) {", "Error.stackTraceLimit = 50", "const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}", ...(ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
+return [ff_core_List.List_join([...ff_core_Option.Option_toList(ff_core_Option.Option_map(buildMainFunction_, ((buildMain_) => {
+return (((("import {" + ff_compiler_JsEmitter.escapeKeyword_(buildMain_.signature_.name_)) + "$} from './") + moduleName_) + ".mjs'")
+}))), (((("import {" + ff_compiler_JsEmitter.escapeKeyword_(mainName_)) + "$} from './") + moduleName_) + ".mjs'"), "async function $run$(fireflyPath_, arguments_) {", "Error.stackTraceLimit = 50", "const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}", ...(ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
 ? ["let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)"]
 : []), "let system = {", "task_: $task,", "array_: arguments_,", "fireflyPath_: fireflyPath_,", (((("mainPackagePair_: {group_: \"" + mainPackagePair_.group_) + "\", name_: \"") + mainPackagePair_.name_) + "\"},"), (("executableMode_: " + (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable())
 ? "true"
@@ -3245,7 +3245,7 @@ return [ff_core_List.List_join(["export async function $run$(fireflyPath_, argum
 : []), ...(ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild())
 ? ["await $firefly_compiler.internalCreateExecutable_$(system, '.firefly/output/executable/Main.bundle.js', '.firefly/output', ['host'], system.assets_, $task)"]
 : []), "} finally {", ...(ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
-? ["ff_core_Task.Task_abort$($task)", "clearInterval(interval)"]
+? ["$task.controller_.abort()", "clearInterval(interval)"]
 : []), "}", "}", ...(((_1) => {
 if(_1.EmitBrowser) {
 return ["queueMicrotask(async () => {", "await $run$(null, [])", "})"]
@@ -6119,5 +6119,3 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serial
 }
 }
 };
-
-

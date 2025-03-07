@@ -22,9 +22,9 @@ release(
     }
     requireNpmLoggedIn(system, system.path(".."))
     requireVsceLoggedIn(system, system.path("../vscode"))
-    runSuccessful(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
-    runSuccessful(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
-    runSuccessful(system, "node", ["output/js/ff/compiler/Main.mjs", "bootstrap"], system.path(".."))
+    runSuccessful(system, "node", ["output/js/ff/compiler/Main_run.mjs", "bootstrap"], system.path(".."))
+    runSuccessful(system, "node", ["output/js/ff/compiler/Main_run.mjs", "bootstrap"], system.path(".."))
+    runSuccessful(system, "node", ["output/js/ff/compiler/Main_run.mjs", "bootstrap"], system.path(".."))
     let version = bumpMinorVersion(system, system.path("../package.json"))
     bumpMinorVersion(system, system.path("../vscode/package.json"))
     runSuccessful(system, "npm", ["publish"], system.path(".."))

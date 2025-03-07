@@ -988,5 +988,3 @@ return ff_core_Map.Map_contains(self_.substitution_, index_, ff_core_Ordering.ff
 }
 
 
-
-

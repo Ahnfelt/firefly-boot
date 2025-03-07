@@ -411,6 +411,10 @@ export function JsValue_new9(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_,
 return (new self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_))
 }
 
+export function JsValue_new10(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, a10_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, ff_core_JsValue_IsJsValue$A9, ff_core_JsValue_IsJsValue$A10) {
+return (new self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, a10_))
+}
+
 export function JsValue_grabPairs(self_) {
 if((!ff_core_JsValue.JsValue_isObject(self_))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
@@ -778,6 +782,10 @@ export async function JsValue_new9$(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8
 return (new self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_))
 }
 
+export async function JsValue_new10$(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, a10_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, ff_core_JsValue_IsJsValue$A9, ff_core_JsValue_IsJsValue$A10, $task) {
+return (new self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, a10_))
+}
+
 export async function JsValue_grabPairs$(self_, $task) {
 if((!ff_core_JsValue.JsValue_isObject(self_))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
@@ -892,5 +900,3 @@ export const ff_core_JsValue_IsJsValue$ff_core_Buffer_Buffer = {
 export const ff_core_JsValue_IsJsValue$ff_core_Nothing_Nothing = {
 
 };
-
-

@@ -148,5 +148,3 @@ return ff_core_Option.Some(self_.ffException)
 }
 
 
-
-

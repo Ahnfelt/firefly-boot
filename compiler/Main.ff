@@ -71,7 +71,7 @@ main(system: NodeSystem): Unit {
             prepareFireflyDirectory(system.path("."))
             let localMainFile = system.path(mainFile).base()
             buildScript(localMainFile, resolvedDependencies.mainPackagePair, EmitNode, resolvedDependencies)
-            if(!importAndRun(fireflyPath, "node", resolvedDependencies.mainPackagePair, localMainFile, arguments)) {
+            if(!importAndRun(system, fireflyPath, "node", resolvedDependencies.mainPackagePair, localMainFile, arguments)) {
                 let at = Location(system.path(mainFile + ".ff").absolute(), 1, 1)
                 throw(CompileError(at, "This module does not contain a 'nodeMain' function"))
             }
@@ -98,7 +98,7 @@ main(system: NodeSystem): Unit {
             buildScript(localMainFile, resolvedDependencies.mainPackagePair, EmitBuild, resolvedDependencies)
             buildScript(localMainFile, resolvedDependencies.mainPackagePair, EmitExecutable, resolvedDependencies)
             bundleForPkg(system, resolvedDependencies.mainPackagePair, localMainFile)
-            importAndRun(fireflyPath, "build", resolvedDependencies.mainPackagePair, localMainFile, [])
+            importAndRun(system, fireflyPath, "build", resolvedDependencies.mainPackagePair, localMainFile, [])
 
         | CheckCommand(filePath) => 
             let errors = Builder.check(
@@ -269,6 +269,7 @@ bundleForBrowser(system: NodeSystem, packagePair: PackagePair, mainFile: String)
 }
 
 importAndRun(
+    system: NodeSystem
     fireflyPath: Path
     target: String
     packagePair: PackagePair
@@ -279,10 +280,9 @@ importAndRun(
     let cwd = process->cwd()
     let workingDirectory = if(cwd->indexOf(":") === 1) {"file:///" + cwd?} else {cwd?}
     let packagePath = packagePair.group + "/" + packagePair.name
-    let main = Js.await(Js.dynamicImport(
-        workingDirectory + "/.firefly/output/" + target + "/" + packagePath + "/" + mainFile + ".mjs"
-    ))
-    if(main->"$run$".typeof() != "undefined") {
+    let runFile = workingDirectory + "/.firefly/output/" + target + "/" + packagePath + "/" + mainFile + "_run.mjs"
+    if(system.path(runFile).exists()) {
+        let main = Js.await(Js.dynamicImport(runFile))
         main->"$run$"(fireflyPath.absolutePath, arguments)
         True
     } else {
