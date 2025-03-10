@@ -281,7 +281,7 @@ importAndRun(
     let workingDirectory = if(cwd->indexOf(":") === 1) {"file:///" + cwd?} else {cwd?}
     let packagePath = packagePair.group + "/" + packagePair.name
     let runFile = workingDirectory + "/.firefly/output/" + target + "/" + packagePath + "/" + mainFile + "_run.mjs"
-    if(system.path(runFile).exists()) {
+    if(system.pathFromUrl(runFile).exists()) {
         let main = Js.await(Js.dynamicImport(runFile))
         main->"$run$"(fireflyPath.absolutePath, arguments)
         True
