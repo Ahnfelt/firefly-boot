@@ -51,7 +51,7 @@ main(system: NodeSystem): Unit {
             system = system
             emitTarget = emitTarget
             mainPackage = mainPackagePair
-            mainModule = mainFile
+            mainModules = [mainFile]
             resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
             compilerModulePath = compilerModulePath
             tempPath = system.path(".firefly").slash("temporary")
@@ -124,7 +124,7 @@ main(system: NodeSystem): Unit {
                 system = system
                 emitTarget = EmitNode
                 mainPackage = PackagePair("ff", "compiler")
-                mainModule = "Main"
+                mainModules = ["Main"]
                 resolvedDependencies = ResolvedDependencies(
                     mainPackagePair = PackagePair("ff", "compiler")
                     packages = [Pair(
@@ -262,7 +262,7 @@ bundleForBrowser(system: NodeSystem, packagePair: PackagePair, mainFile: String)
     let browserCode = BrowserCode(
         packageGroup = packagePair.group
         packageName = packagePair.name
-        mainFile = system.path(mainFile)
+        mainFiles = [system.path(mainFile)]
         assetSystem = AssetSystem([Pair("/", {system.path(".").readStream()})].toMap())
     ) // TODO
     BuildSystem.internalCallEsBuild(browserCode, mainJsFile, outputPath = file, minify = True, sourceMap = True)

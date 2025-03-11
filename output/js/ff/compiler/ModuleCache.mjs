@@ -313,9 +313,9 @@ return result_
 }))
 }
 
-export function ModuleCache_cacheEmittedModule(self_, packagePaths_, packagePair_, moduleName_, body_) {
+export function ModuleCache_cacheEmittedModule(self_, packagePaths_, packagePair_, moduleName_, isMainModule_, body_) {
 const path_ = ff_compiler_ModuleCache.modulePath_(packagePaths_, packagePair_, moduleName_);
-if((!ff_core_Map.Map_contains(self_.emittedModules_, ff_core_Path.Path_absolute(path_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
+if((isMainModule_ || (!ff_core_Map.Map_contains(self_.emittedModules_, ff_core_Path.Path_absolute(path_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))) {
 self_.emittedModules_ = ff_core_Map.Map_add(self_.emittedModules_, ff_core_Path.Path_absolute(path_), self_.version_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 try {
 body_(path_)
@@ -486,9 +486,9 @@ return result_
 }), $task))
 }
 
-export async function ModuleCache_cacheEmittedModule$(self_, packagePaths_, packagePair_, moduleName_, body_, $task) {
+export async function ModuleCache_cacheEmittedModule$(self_, packagePaths_, packagePair_, moduleName_, isMainModule_, body_, $task) {
 const path_ = (await ff_compiler_ModuleCache.modulePath_$(packagePaths_, packagePair_, moduleName_, $task));
-if((!ff_core_Map.Map_contains(self_.emittedModules_, (await ff_core_Path.Path_absolute$(path_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
+if((isMainModule_ || (!ff_core_Map.Map_contains(self_.emittedModules_, (await ff_core_Path.Path_absolute$(path_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))) {
 self_.emittedModules_ = ff_core_Map.Map_add(self_.emittedModules_, (await ff_core_Path.Path_absolute$(path_, $task)), self_.version_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 try {
 (await body_(path_, $task))

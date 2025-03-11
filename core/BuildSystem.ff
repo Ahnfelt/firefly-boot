@@ -1,18 +1,18 @@
 capability BuildSystem {}
-capability BrowserCode(packageGroup: String, packageName: String, mainFile: Path, assetSystem: AssetSystem)
+capability BrowserCode(packageGroup: String, packageName: String, mainFiles: List[Path], assetSystem: AssetSystem)
 capability BrowserBundle(assetSystem: AssetSystem)
 
 extend self: BuildSystem {
 
-    compileForBrowser(mainFile: String): BrowserCode {
+    compileForBrowser(mainFiles: List[String]): BrowserCode {
         // TODO: Check that the mainFile is in the current package directory
-        internalCompile(self, internalPath(self, mainFile), "browser")
+        internalCompile(self, mainFiles.map {internalPath(self, _)}, "browser")
         let streams = internalListDirectory(internalPath(self, ".firefly/output/browser"))
         let mainPackagePair = internalMainPackagePair(self)
         BrowserCode(
             packageGroup = mainPackagePair.first
             packageName = mainPackagePair.second
-            mainFile = internalPath(self, mainFile)
+            mainFiles = mainFiles.map {internalPath(self, _)}
             assetSystem = AssetSystem(streams.toMap())
         )
     }
@@ -55,10 +55,11 @@ extend self: BrowserCode {
     }
 
     bundle(minify: Bool = True, sourceMap: Bool = False): BrowserBundle {
+        // TODO: Support multiple main files
         let prefix = ".firefly/output/browser"
-        let mainJsBaseFile = self.mainFile.base().removeLast(".ff").grab() + ".mjs"
+        let mainJsBaseFile = self.mainFiles.grabFirst().base().removeLast(".ff").grab() + ".mjs"
         let mainJsFile = prefix + "/" + self.packageGroup + "/" + self.packageName + "/" + mainJsBaseFile
-        let mainDirectory = self.mainFile.parent().grab()
+        let mainDirectory = self.mainFiles.grabFirst().parent().grab()
         let file = prefix + "/Main.bundle.js"
         internalCallEsBuild(self, mainJsFile = mainJsFile, outputPath = file, minify = minify, sourceMap = sourceMap)
         let assets = AssetSystem([
@@ -140,12 +141,12 @@ internalPath(buildSystem: BuildSystem, absoluteOrRelative: String): Path {
     Path(nodePath->resolve(absoluteOrRelative)?)
 }
 
-internalCompile(buildSystem: BuildSystem, mainFile: Path, target: String): Unit {
+internalCompile(buildSystem: BuildSystem, mainFiles: List[Path], target: String): Unit {
     // Ported from the old FFI. It's quite fragile w.r.t. changes in code generation.
     Js.await(Js.rawIdentifier("$firefly_compiler")->"buildViaBuildSystem_$"(
         buildSystem! 
         internalPath(buildSystem, buildSystem!->"fireflyPath_"?)!
-        mainFile.base()
+        mainFiles.map {_.base()}
         target
         Js.currentTask()!
     ))

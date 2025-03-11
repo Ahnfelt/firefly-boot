@@ -140,10 +140,11 @@ extend self: ModuleCache {
         packagePaths: Map[PackagePair, Path]
         packagePair: PackagePair
         moduleName: String
+        isMainModule: Bool
         body: Path => Unit
     ): Unit {
         let path = modulePath(packagePaths, packagePair, moduleName)
-        if(!self.emittedModules.contains(path.absolute())):
+        if(isMainModule || !self.emittedModules.contains(path.absolute())):
         self.emittedModules = self.emittedModules.add(path.absolute(), self.version)
         try {
             body(path)

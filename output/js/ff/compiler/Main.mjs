@@ -183,7 +183,7 @@ return "browser"
 return "executable"
 }
 }))(emitTarget_);
-ff_compiler_Builder.build_(system_, emitTarget_, mainPackagePair_, mainFile_, (((_c) => {
+ff_compiler_Builder.build_(system_, emitTarget_, mainPackagePair_, [mainFile_], (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_), compilerModulePath_, ff_core_Path.Path_slash(ff_core_NodeSystem.NodeSystem_path(system_, ".firefly"), "temporary"), ff_core_Path.Path_path(ff_core_Path.Path_path(ff_core_NodeSystem.NodeSystem_path(system_, ".firefly"), "output"), targetName_), false, ff_compiler_ModuleCache.new_(0))
 }
@@ -233,7 +233,7 @@ return
 if(command_a.BootstrapCommand) {
 const workingDirectory_ = ff_core_NodeSystem.NodeSystem_path(system_, ".");
 const fakeLocation_ = ff_compiler_Syntax.Location("<core>", 0, 0);
-ff_compiler_Builder.build_(system_, ff_compiler_JsEmitter.EmitNode(), ff_compiler_Syntax.PackagePair("ff", "compiler"), "Main", ff_compiler_Dependencies.ResolvedDependencies(ff_compiler_Syntax.PackagePair("ff", "compiler"), ff_core_List.List_toMap([ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.PackageInfo(ff_compiler_Syntax.DPackage(fakeLocation_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.Version(fakeLocation_, 0, 0, 0), ff_compiler_Syntax.TargetNames(true, false)), [], [ff_compiler_Syntax.DInclude(fakeLocation_, "node_modules")]))], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap([ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "compiler"), ff_core_Path.Path_slash(workingDirectory_, "compiler")), ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), ff_core_Path.Path_slash(workingDirectory_, "core"))], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)), ff_core_Option.None(), ff_core_Path.Path_slash(ff_core_Path.Path_slash(workingDirectory_, "output"), "temporary"), ff_core_Path.Path_slash(ff_core_Path.Path_slash(workingDirectory_, "output"), "js"), true, ff_compiler_ModuleCache.new_(0))
+ff_compiler_Builder.build_(system_, ff_compiler_JsEmitter.EmitNode(), ff_compiler_Syntax.PackagePair("ff", "compiler"), ["Main"], ff_compiler_Dependencies.ResolvedDependencies(ff_compiler_Syntax.PackagePair("ff", "compiler"), ff_core_List.List_toMap([ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.PackageInfo(ff_compiler_Syntax.DPackage(fakeLocation_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.Version(fakeLocation_, 0, 0, 0), ff_compiler_Syntax.TargetNames(true, false)), [], [ff_compiler_Syntax.DInclude(fakeLocation_, "node_modules")]))], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap([ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "compiler"), ff_core_Path.Path_slash(workingDirectory_, "compiler")), ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), ff_core_Path.Path_slash(workingDirectory_, "core"))], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)), ff_core_Option.None(), ff_core_Path.Path_slash(ff_core_Path.Path_slash(workingDirectory_, "output"), "temporary"), ff_core_Path.Path_slash(ff_core_Path.Path_slash(workingDirectory_, "output"), "js"), true, ff_compiler_ModuleCache.new_(0))
 return
 }
 {
@@ -434,7 +434,7 @@ export function bundleForBrowser_(system_, packagePair_, mainFile_) {
 const prefix_ = ".firefly/output/browser/";
 const mainJsFile_ = ((((prefix_ + ff_compiler_Syntax.PackagePair_groupName(packagePair_, "/")) + "/") + mainFile_) + ".mjs");
 const file_ = (prefix_ + "Main.bundle.js");
-const browserCode_ = ff_core_BuildSystem.BrowserCode(packagePair_.group_, packagePair_.name_, ff_core_NodeSystem.NodeSystem_path(system_, mainFile_), ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap([ff_core_Pair.Pair("/", (() => {
+const browserCode_ = ff_core_BuildSystem.BrowserCode(packagePair_.group_, packagePair_.name_, [ff_core_NodeSystem.NodeSystem_path(system_, mainFile_)], ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap([ff_core_Pair.Pair("/", (() => {
 return ff_core_Path.Path_readStream(ff_core_NodeSystem.NodeSystem_path(system_, "."))
 }))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)));
 ff_core_BuildSystem.internalCallEsBuild_(browserCode_, mainJsFile_, file_, true, true)
@@ -582,7 +582,7 @@ return "browser"
 return "executable"
 }
 }))(emitTarget_);
-(await ff_compiler_Builder.build_$(system_, emitTarget_, mainPackagePair_, mainFile_, (((_c) => {
+(await ff_compiler_Builder.build_$(system_, emitTarget_, mainPackagePair_, [mainFile_], (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_), compilerModulePath_, (await ff_core_Path.Path_slash$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".firefly", $task)), "temporary", $task)), (await ff_core_Path.Path_path$((await ff_core_Path.Path_path$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".firefly", $task)), "output", $task)), targetName_, $task)), false, ff_compiler_ModuleCache.new_(0), $task))
 }
@@ -632,7 +632,7 @@ return
 if(command_a.BootstrapCommand) {
 const workingDirectory_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task));
 const fakeLocation_ = ff_compiler_Syntax.Location("<core>", 0, 0);
-(await ff_compiler_Builder.build_$(system_, ff_compiler_JsEmitter.EmitNode(), ff_compiler_Syntax.PackagePair("ff", "compiler"), "Main", ff_compiler_Dependencies.ResolvedDependencies(ff_compiler_Syntax.PackagePair("ff", "compiler"), ff_core_List.List_toMap([ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.PackageInfo(ff_compiler_Syntax.DPackage(fakeLocation_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.Version(fakeLocation_, 0, 0, 0), ff_compiler_Syntax.TargetNames(true, false)), [], [ff_compiler_Syntax.DInclude(fakeLocation_, "node_modules")]))], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap([ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "compiler"), (await ff_core_Path.Path_slash$(workingDirectory_, "compiler", $task))), ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), (await ff_core_Path.Path_slash$(workingDirectory_, "core", $task)))], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)), ff_core_Option.None(), (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(workingDirectory_, "output", $task)), "temporary", $task)), (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(workingDirectory_, "output", $task)), "js", $task)), true, ff_compiler_ModuleCache.new_(0), $task))
+(await ff_compiler_Builder.build_$(system_, ff_compiler_JsEmitter.EmitNode(), ff_compiler_Syntax.PackagePair("ff", "compiler"), ["Main"], ff_compiler_Dependencies.ResolvedDependencies(ff_compiler_Syntax.PackagePair("ff", "compiler"), ff_core_List.List_toMap([ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.PackageInfo(ff_compiler_Syntax.DPackage(fakeLocation_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.Version(fakeLocation_, 0, 0, 0), ff_compiler_Syntax.TargetNames(true, false)), [], [ff_compiler_Syntax.DInclude(fakeLocation_, "node_modules")]))], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap([ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "compiler"), (await ff_core_Path.Path_slash$(workingDirectory_, "compiler", $task))), ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), (await ff_core_Path.Path_slash$(workingDirectory_, "core", $task)))], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)), ff_core_Option.None(), (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(workingDirectory_, "output", $task)), "temporary", $task)), (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(workingDirectory_, "output", $task)), "js", $task)), true, ff_compiler_ModuleCache.new_(0), $task))
 return
 }
 {
@@ -833,7 +833,7 @@ export async function bundleForBrowser_$(system_, packagePair_, mainFile_, $task
 const prefix_ = ".firefly/output/browser/";
 const mainJsFile_ = ((((prefix_ + ff_compiler_Syntax.PackagePair_groupName(packagePair_, "/")) + "/") + mainFile_) + ".mjs");
 const file_ = (prefix_ + "Main.bundle.js");
-const browserCode_ = ff_core_BuildSystem.BrowserCode(packagePair_.group_, packagePair_.name_, (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap([ff_core_Pair.Pair("/", (async ($task) => {
+const browserCode_ = ff_core_BuildSystem.BrowserCode(packagePair_.group_, packagePair_.name_, [(await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task))], ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap([ff_core_Pair.Pair("/", (async ($task) => {
 return (await ff_core_Path.Path_readStream$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task))
 }))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)));
 (await ff_core_BuildSystem.internalCallEsBuild_$(browserCode_, mainJsFile_, file_, true, true, $task))
