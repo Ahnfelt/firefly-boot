@@ -259,13 +259,7 @@ bundleForBrowser(system: NodeSystem, packagePair: PackagePair, mainFile: String)
     let prefix = ".firefly/output/browser/"
     let mainJsFile = prefix + packagePair.groupName("/") + "/" + mainFile + ".mjs"
     let file = prefix + "Main.bundle.js"
-    let browserCode = BrowserCode(
-        packageGroup = packagePair.group
-        packageName = packagePair.name
-        mainFiles = [system.path(mainFile)]
-        assetSystem = AssetSystem([Pair("/", {system.path(".").readStream()})].toMap())
-    ) // TODO
-    BuildSystem.internalCallEsBuild(browserCode, mainJsFile, outputPath = file, minify = True, sourceMap = True)
+    BuildSystem.internalCallEsBuild(system, mainJsFile, outputPath = file, minify = True, sourceMap = True)
 }
 
 importAndRun(

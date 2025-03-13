@@ -99,16 +99,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 // type BuildSystem
 
 
-// type BrowserCode
-export function BrowserCode(packageGroup_, packageName_, mainFiles_, assetSystem_) {
-return {packageGroup_, packageName_, mainFiles_, assetSystem_};
-}
-
-// type BrowserBundle
-export function BrowserBundle(assetSystem_) {
-return {assetSystem_};
-}
-
 
 
 export function internalCallEsBuild_(self_, mainJsFile_, outputPath_, minify_, sourceMap_) {
@@ -231,9 +221,7 @@ return ff_core_BuildSystem.internalPath_(self_, _w1)
 })), "browser");
 const streams_ = ff_core_BuildSystem.internalListDirectory_(ff_core_BuildSystem.internalPath_(self_, ".firefly/output/browser"));
 const mainPackagePair_ = ff_core_BuildSystem.internalMainPackagePair_(self_);
-return ff_core_BuildSystem.BrowserCode(mainPackagePair_.first_, mainPackagePair_.second_, ff_core_List.List_map(mainFiles_, ((_w1) => {
-return ff_core_BuildSystem.internalPath_(self_, _w1)
-})), ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
+return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
 export function BuildSystem_bundleForBrowser(self_, mainFiles_, minify_ = true, sourceMaps_ = false) {
@@ -293,9 +281,7 @@ return (await ff_core_BuildSystem.internalPath_$(self_, _w1, $task))
 }), $task)), "browser", $task));
 const streams_ = (await ff_core_BuildSystem.internalListDirectory_$((await ff_core_BuildSystem.internalPath_$(self_, ".firefly/output/browser", $task)), $task));
 const mainPackagePair_ = (await ff_core_BuildSystem.internalMainPackagePair_$(self_, $task));
-return ff_core_BuildSystem.BrowserCode(mainPackagePair_.first_, mainPackagePair_.second_, (await ff_core_List.List_map$(mainFiles_, (async (_w1, $task) => {
-return (await ff_core_BuildSystem.internalPath_$(self_, _w1, $task))
-}), $task)), ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
+return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
 export async function BuildSystem_bundleForBrowser$(self_, mainFiles_, minify_ = true, sourceMaps_ = false, $task) {
@@ -347,56 +333,6 @@ return self_["task_"]
 
 export async function BuildSystem_crypto$(self_, $task) {
 return crypto
-}
-
-export function BrowserCode_assets(self_) {
-return self_.assetSystem_
-}
-
-export function BrowserCode_bundle(self_, minify_ = true, sourceMap_ = false) {
-const prefix_ = ".firefly/output/browser";
-const mainJsBaseFile_ = (ff_core_Option.Option_grab(ff_core_String.String_removeLast(ff_core_Path.Path_base(ff_core_List.List_grabFirst(self_.mainFiles_)), ".ff")) + ".mjs");
-const mainJsFile_ = ((((((prefix_ + "/") + self_.packageGroup_) + "/") + self_.packageName_) + "/") + mainJsBaseFile_);
-const mainDirectory_ = ff_core_Option.Option_grab(ff_core_Path.Path_parent(ff_core_List.List_grabFirst(self_.mainFiles_)));
-const file_ = (prefix_ + "/Main.bundle.js");
-ff_core_BuildSystem.internalCallEsBuild_(self_, mainJsFile_, file_, minify_, sourceMap_);
-const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap([ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, prefix_.length), (() => {
-return ff_core_Path.Path_readStream(ff_core_Path.Path_path(mainDirectory_, file_))
-})), ...(sourceMap_
-? [ff_core_Pair.Pair((ff_core_String.String_dropFirst(file_, prefix_.length) + ".map"), (() => {
-return ff_core_Path.Path_readStream(ff_core_Path.Path_path(mainDirectory_, (file_ + ".map")))
-}))]
-: [])], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
-return ff_core_BuildSystem.BrowserBundle(assets_)
-}
-
-export async function BrowserCode_assets$(self_, $task) {
-return self_.assetSystem_
-}
-
-export async function BrowserCode_bundle$(self_, minify_ = true, sourceMap_ = false, $task) {
-const prefix_ = ".firefly/output/browser";
-const mainJsBaseFile_ = (ff_core_Option.Option_grab(ff_core_String.String_removeLast((await ff_core_Path.Path_base$(ff_core_List.List_grabFirst(self_.mainFiles_), $task)), ".ff")) + ".mjs");
-const mainJsFile_ = ((((((prefix_ + "/") + self_.packageGroup_) + "/") + self_.packageName_) + "/") + mainJsBaseFile_);
-const mainDirectory_ = ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(ff_core_List.List_grabFirst(self_.mainFiles_), $task)));
-const file_ = (prefix_ + "/Main.bundle.js");
-(await ff_core_BuildSystem.internalCallEsBuild_$(self_, mainJsFile_, file_, minify_, sourceMap_, $task));
-const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap([ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, prefix_.length), (async ($task) => {
-return (await ff_core_Path.Path_readStream$((await ff_core_Path.Path_path$(mainDirectory_, file_, $task)), $task))
-})), ...(sourceMap_
-? [ff_core_Pair.Pair((ff_core_String.String_dropFirst(file_, prefix_.length) + ".map"), (async ($task) => {
-return (await ff_core_Path.Path_readStream$((await ff_core_Path.Path_path$(mainDirectory_, (file_ + ".map"), $task)), $task))
-}))]
-: [])], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
-return ff_core_BuildSystem.BrowserBundle(assets_)
-}
-
-export function BrowserBundle_assets(self_) {
-return self_.assetSystem_
-}
-
-export async function BrowserBundle_assets$(self_, $task) {
-return self_.assetSystem_
 }
 
 

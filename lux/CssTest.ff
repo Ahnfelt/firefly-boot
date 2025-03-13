@@ -42,7 +42,7 @@ nodeMain(system: NodeSystem) {
 }
 
 buildMain(system: BuildSystem) {
-    let browser = system.compileForBrowser("CssTest.ff")
-    let assets = AssetSystem.create().addAssets("/js", browser.assets())
+    let browserAssets = system.compileForBrowser(["CssTest.ff"])
+    let assets = AssetSystem.create().addAssets("/js", browserAssets)
     system.setAssets(assets)
 }

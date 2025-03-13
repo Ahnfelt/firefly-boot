@@ -125,8 +125,8 @@ nodeMain(system: NodeSystem): Unit {
 }
 
 buildMain(system: BuildSystem) {
-    let browser = system.compileForBrowser("Main2.ff")
-    let assets = AssetSystem.create().addAssets("/js", browser.assets())
+    let browserAssets = system.compileForBrowser(["Main2.ff"])
+    let assets = AssetSystem.create().addAssets("/js", browserAssets)
     system.setAssets(assets)
 }
 

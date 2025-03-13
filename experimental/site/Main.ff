@@ -33,8 +33,8 @@ nodeMain(system: NodeSystem): Unit {
 buildMain(system: BuildSystem) {
     mutable assets = AssetSystem.create()
     Routes.routes.each {route =>
-        let browser = system.compileForBrowser(route.page + ".ff") // .bundle()
-        assets = assets.addAssets("/js/", browser.assets())
+        let browser = system.compileForBrowser([route.page + ".ff"])
+        assets = assets.addAssets("/js/", browser)
     }
     system.setAssets(assets)
 }

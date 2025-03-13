@@ -13,7 +13,7 @@ browserMain(system: BrowserSystem) {
 }
 
 buildMain(system: BuildSystem) {
-    let jsAssets = system.compileForBrowser("Main.ff").assets()
+    let jsAssets = system.compileForBrowser(["Main.ff"])
     Log.debug(jsAssets.list("/").join(" "))
     let assets = AssetSystem.create().addAssets("/js", jsAssets)
     Log.debug(assets.files.keys().toList().join(" "))

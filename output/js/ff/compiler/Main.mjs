@@ -434,10 +434,7 @@ export function bundleForBrowser_(system_, packagePair_, mainFile_) {
 const prefix_ = ".firefly/output/browser/";
 const mainJsFile_ = ((((prefix_ + ff_compiler_Syntax.PackagePair_groupName(packagePair_, "/")) + "/") + mainFile_) + ".mjs");
 const file_ = (prefix_ + "Main.bundle.js");
-const browserCode_ = ff_core_BuildSystem.BrowserCode(packagePair_.group_, packagePair_.name_, [ff_core_NodeSystem.NodeSystem_path(system_, mainFile_)], ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap([ff_core_Pair.Pair("/", (() => {
-return ff_core_Path.Path_readStream(ff_core_NodeSystem.NodeSystem_path(system_, "."))
-}))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)));
-ff_core_BuildSystem.internalCallEsBuild_(browserCode_, mainJsFile_, file_, true, true)
+ff_core_BuildSystem.internalCallEsBuild_(system_, mainJsFile_, file_, true, true)
 }
 
 export function importAndRun_(system_, fireflyPath_, target_, packagePair_, mainFile_, arguments_) {
@@ -836,10 +833,7 @@ export async function bundleForBrowser_$(system_, packagePair_, mainFile_, $task
 const prefix_ = ".firefly/output/browser/";
 const mainJsFile_ = ((((prefix_ + ff_compiler_Syntax.PackagePair_groupName(packagePair_, "/")) + "/") + mainFile_) + ".mjs");
 const file_ = (prefix_ + "Main.bundle.js");
-const browserCode_ = ff_core_BuildSystem.BrowserCode(packagePair_.group_, packagePair_.name_, [(await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task))], ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap([ff_core_Pair.Pair("/", (async ($task) => {
-return (await ff_core_Path.Path_readStream$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task))
-}))], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)));
-(await ff_core_BuildSystem.internalCallEsBuild_$(browserCode_, mainJsFile_, file_, true, true, $task))
+(await ff_core_BuildSystem.internalCallEsBuild_$(system_, mainJsFile_, file_, true, true, $task))
 }
 
 export async function importAndRun_$(system_, fireflyPath_, target_, packagePair_, mainFile_, arguments_, $task) {

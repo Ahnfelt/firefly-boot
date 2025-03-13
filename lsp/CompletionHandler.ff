@@ -792,8 +792,8 @@ toplevelCompletion(lspHook: LspHook): List[CompletionInfo] {
                 "}"
                 ""
                 "buildMain(system: BuildSystem) {"
-                "    let browser = system.compileForBrowser(\"$TM_FILENAME_BASE.ff\")"
-                "    let assets = AssetSystem.create().addAssets(\"/js\", browser.assets())"
+                "    let browserAssets = system.compileForBrowser([\"$TM_FILENAME_BASE.ff\"])"
+                "    let assets = AssetSystem.create().addAssets(\"/js\", browserAssets)"
                 "    system.setAssets(assets)"
                 "}"
             ].join("\n"), 

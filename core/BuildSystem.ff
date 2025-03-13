@@ -1,20 +1,13 @@
 capability BuildSystem {}
-capability BrowserCode(packageGroup: String, packageName: String, mainFiles: List[Path], assetSystem: AssetSystem)
-capability BrowserBundle(assetSystem: AssetSystem)
 
 extend self: BuildSystem {
 
-    compileForBrowser(mainFiles: List[String]): BrowserCode {
+    compileForBrowser(mainFiles: List[String]): AssetSystem {
         // TODO: Check that the mainFile is in the current package directory
         internalCompile(self, mainFiles.map {internalPath(self, _)}, "browser")
         let streams = internalListDirectory(internalPath(self, ".firefly/output/browser"))
         let mainPackagePair = internalMainPackagePair(self)
-        BrowserCode(
-            packageGroup = mainPackagePair.first
-            packageName = mainPackagePair.second
-            mainFiles = mainFiles.map {internalPath(self, _)}
-            assetSystem = AssetSystem(streams.toMap())
-        )
+        AssetSystem(streams.toMap())
     }
 
     bundleForBrowser(mainFiles: List[String], minify: Bool = True, sourceMaps: Bool = False): AssetSystem {
@@ -60,42 +53,9 @@ extend self: BuildSystem {
         
 }
 
-extend self: BrowserCode {
-
-    assets(): AssetSystem {
-        self.assetSystem
-    }
-
-    bundle(minify: Bool = True, sourceMap: Bool = False): BrowserBundle {
-        // TODO: Support multiple main files
-        let prefix = ".firefly/output/browser"
-        let mainJsBaseFile = self.mainFiles.grabFirst().base().removeLast(".ff").grab() + ".mjs"
-        let mainJsFile = prefix + "/" + self.packageGroup + "/" + self.packageName + "/" + mainJsBaseFile
-        let mainDirectory = self.mainFiles.grabFirst().parent().grab()
-        let file = prefix + "/Main.bundle.js"
-        internalCallEsBuild(self, mainJsFile = mainJsFile, outputPath = file, minify = minify, sourceMap = sourceMap)
-        let assets = AssetSystem([
-            Pair(file.dropFirst(prefix.size()), {mainDirectory.path(file).readStream()})
-            ...if(sourceMap) {[
-                Pair(file.dropFirst(prefix.size()) + ".map", {mainDirectory.path(file + ".map").readStream()})
-            ]} else {[]}
-        ].toMap())
-        BrowserBundle(assets)
-    }
-
-}
-
-extend self: BrowserBundle {
-
-    assets(): AssetSystem {
-        self.assetSystem
-    }
-
-}
-
-
+// TODO: Remove
 internalCallEsBuild(
-    self: BrowserCode
+    self: NodeSystem
     mainJsFile: String
     outputPath: String
     minify: Bool
