@@ -45,55 +45,11 @@ nodeMain(system: NodeSystem): Unit {
                 serveAsset(system, cacheSalt, request, "font/woff2", "/assets/font/gf-nunito-sans-latin.woff2")
             | ["assets", ...rest] => serveAssets(system, cacheSalt, request, rest)
             | _ {handlers.handle(request, context)} =>
-            | _ {serveGuide(system, request)} => 
             | _ =>
                 request.writeText("404 Not Found")
                 request.writeStatus("404 Not Found")
         }
     }    
-}
-
-guides = [
-    Guide("/front/", [FrontPage.new()])
-    //Guide("/getting-started/", [GettingStarted.new()])
-    //Guide("/examples/", ExamplesOverview.mock())
-    Guide("/reference/", ReferenceAll.mock())
-    Guide("/packages/", [PackagesOverview.new()])
-    Guide("/community/", [CommunityOverview.new()])
-]
-
-serveGuide(system: NodeSystem, request: WebRequest[WebResponse]): Bool {
-    let demos = ExamplesOverview.demos()
-    mutable served = False
-    guides.each {guide =>
-        if(isGuidePath(request.readPath(), guide.prefix)):
-        let kebab = request.readPath().dropFirst(guide.prefix.size())
-        let htmlAndCss = Lux.renderToString(system) {lux =>
-            Guide.render(lux, guide.prefix, kebab, guides, demos)
-        }
-        let title = guide.documents.find {d => 
-            Guide.kebabCase(d.heading()) == kebab
-        }.map {_.title(guide)}.else {guide.title()}
-        serveGuideHtml(title, htmlAndCss.first, htmlAndCss.second, request)
-        served = True
-    }
-    served
-}
-
-browserMain(system: BrowserSystem): Unit {
-    let demos = ExamplesOverview.demos()
-    guides.collect {guide => 
-        if(isGuidePath(system.urlPath(), guide.prefix)):
-        Lux.renderById(system, "main") {lux => 
-            let kebab = system.urlPath().dropFirst(guide.prefix.size())
-            Guide.render(lux, guide.prefix, kebab, guides, demos)
-        }
-    }
-}
-
-isGuidePath(path: String, prefix: String): Bool {
-    //Log.debug(path + " vs. " + prefix)
-    path.startsWith(prefix) || (prefix == "/front/" && (path == "/" || path == "/index.html")) // Why is index.html requested
 }
 
 buildMain(system: BuildSystem) {
@@ -141,26 +97,4 @@ serveAsset(system: NodeSystem, salt: Buffer, request: WebRequest[WebResponse], c
     } else {
         request.writeStream(system.assets().readStream(asset))
     }
-}
-
-serveGuideHtml(title: String, contentHtml: String, styleTags: String, request: WebRequest[WebResponse]): Unit {
-    request.writeHeader("Content-Type", "text/html; charset=UTF-8")
-    request.writeText("<!doctype html>")
-    request.writeText("<html lang='en' style='background-color: #ffffff; color: #333333; width: 100%; height: 100%; color-scheme: light;'>")
-    request.writeText("<head>")
-    request.writeText("<title>" + title + "</title>")
-    request.writeText("<meta name='viewport' content='width=device-width, initial-scale=1.0'>")
-    request.writeText("<meta name='theme-color' content='#ecc45e'>")
-    request.writeText("<script type='module' src='/js/ff/fireflysite/Main.mjs'></script>")
-    request.writeText("<link rel='preload' href='/assets/font/firefly-mono.woff2' as='font' crossorigin='anonymous'>")
-    request.writeText("<link rel='preload' href='/assets/font/firefly-sans.woff2' as='font' crossorigin='anonymous'>")
-    request.writeText("<link rel='preload' href='/assets/image/firefly-logo-yellow.webp' as='image'>")
-    request.writeText("<style>@font-face { font-family: 'Firefly Mono'; font-display: fallback; src: url('/assets/font/firefly-mono.woff2'); }</style>")
-    request.writeText("<style>@font-face { font-family: 'Firefly Sans'; font-display: fallback; src: url('/assets/font/firefly-sans.woff2'); }</style>")
-    request.writeText(styleTags)
-    request.writeText("</head>")
-    request.writeText("<body style='margin: 0; padding: 0; width: 100%; height: 100%; touch-action: manipulation;'>")
-    request.writeText("<div id='main'>" + contentHtml + "</div>")
-    request.writeText("</body>")
-    request.writeText("</html>")
 }
