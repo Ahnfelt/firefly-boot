@@ -448,7 +448,10 @@ const workingDirectory_ = ((cwd_.indexOf(":") === 1)
 : cwd_);
 const packagePath_ = ((packagePair_.group_ + "/") + packagePair_.name_);
 const runFile_ = (((((((workingDirectory_ + "/.firefly/output/") + target_) + "/") + packagePath_) + "/") + mainFile_) + "_run.mjs");
-if(ff_core_Path.Path_exists(ff_core_NodeSystem.NodeSystem_path(system_, runFile_), false, false, false)) {
+const runFilePath_ = (ff_core_String.String_contains(runFile_, "://")
+? ff_core_NodeSystem.NodeSystem_pathFromUrl(system_, runFile_)
+: ff_core_NodeSystem.NodeSystem_path(system_, runFile_));
+if(ff_core_Path.Path_exists(runFilePath_, false, false, false)) {
 const main_ = import(runFile_);
 main_["$run$"](fireflyPath_.absolutePath_, arguments_);
 return true
@@ -847,7 +850,10 @@ const workingDirectory_ = ((cwd_.indexOf(":") === 1)
 : cwd_);
 const packagePath_ = ((packagePair_.group_ + "/") + packagePair_.name_);
 const runFile_ = (((((((workingDirectory_ + "/.firefly/output/") + target_) + "/") + packagePath_) + "/") + mainFile_) + "_run.mjs");
-if((await ff_core_Path.Path_exists$((await ff_core_NodeSystem.NodeSystem_path$(system_, runFile_, $task)), false, false, false, $task))) {
+const runFilePath_ = (ff_core_String.String_contains(runFile_, "://")
+? (await ff_core_NodeSystem.NodeSystem_pathFromUrl$(system_, runFile_, $task))
+: (await ff_core_NodeSystem.NodeSystem_path$(system_, runFile_, $task)));
+if((await ff_core_Path.Path_exists$(runFilePath_, false, false, false, $task))) {
 const main_ = (await import(runFile_));
 main_["$run$"](fireflyPath_.absolutePath_, arguments_);
 return true
