@@ -34,11 +34,8 @@ nodeMain(system: NodeSystem): Unit {
                 request.writeHeader("Location", "https://www.firefly-lang.org" + path + parameters)
                 request.writeStatus("302 Found")
             | ["js", ...] => 
-                let asset = if(path == "/js/ff/fireflysite/Main.mjs" && system.assets().exists("/js/Main.bundle.js")) {
-                    "/js/Main.bundle.js"
-                } else {
-                    path
-                }
+                let asset = path.removeLast(".run.mjs").map {_ + ".run.bundle.js"}
+                    .filter {system.assets().exists(_)}.else {path}
                 serveAsset(system, cacheSalt, request, "text/javascript; charset=UTF-8", asset)
             | ["favicon.ico"] =>
                 serveAsset(system, cacheSalt, request, "image/png", "/assets/image/firefly-logo-notext.png")

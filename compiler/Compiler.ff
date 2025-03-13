@@ -240,7 +240,7 @@ extend self: Compiler {
                 packagePair
                 packagePair.group == "ff" && packagePair.name == "compiler"
             )
-            let jsRunFile = jsPath.slash(moduleName + "_run.mjs")
+            let jsRunFile = jsPath.slash(moduleName + ".run.mjs")
             jsRunFile.writeText(runJs.map {_ + "\n"}.join())
         }
     }

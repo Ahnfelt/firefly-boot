@@ -284,7 +284,7 @@ ff_core_Path.Path_writeText(jsFile_, js_);
 if(isMainModule_) {
 return ff_core_Option.Some((function() {
 const runJs_ = ff_compiler_JsEmitter.JsEmitter_emitRun(emitter_, moduleName_, module_.functions_, packagePair_, ((packagePair_.group_ === "ff") && (packagePair_.name_ === "compiler")));
-const jsRunFile_ = ff_core_Path.Path_slash(jsPath_, (moduleName_ + "_run.mjs"));
+const jsRunFile_ = ff_core_Path.Path_slash(jsPath_, (moduleName_ + ".run.mjs"));
 return ff_core_Path.Path_writeText(jsRunFile_, ff_core_List.List_join(ff_core_List.List_map(runJs_, ((_w1) => {
 return (_w1 + "\n")
 })), ""))
@@ -435,7 +435,7 @@ const jsFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleName_ + ".mjs"),
 if(isMainModule_) {
 return ff_core_Option.Some((await (async function() {
 const runJs_ = ff_compiler_JsEmitter.JsEmitter_emitRun(emitter_, moduleName_, module_.functions_, packagePair_, ((packagePair_.group_ === "ff") && (packagePair_.name_ === "compiler")));
-const jsRunFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleName_ + "_run.mjs"), $task));
+const jsRunFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleName_ + ".run.mjs"), $task));
 return (await ff_core_Path.Path_writeText$(jsRunFile_, ff_core_List.List_join(ff_core_List.List_map(runJs_, ((_w1) => {
 return (_w1 + "\n")
 })), ""), $task))

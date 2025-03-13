@@ -20,11 +20,13 @@ extend self: BuildSystem {
     bundleForBrowser(mainFiles: List[String], minify: Bool = True, sourceMaps: Bool = False): AssetSystem {
         internalCompile(self, mainFiles.map {internalPath(self, _)}, "browser")
         let browserOutputPath = internalPath(self, ".firefly/output/browser")
-        let runPaths = internalListPath(browserOutputPath).filter {_.base().endsWith("_run.mjs")}.toList()
+        let runPaths = internalListPath(browserOutputPath).filter {_.base().endsWith(".run.mjs")}.toList()
         let outputPath = runPaths.grabFirst().parent().grab()
-        internalBrowserCallEsBuild(runPaths.map {_.absolute()}, outputPath.absolute(), minify, sourceMaps)
+        internalBrowserCallEsBuild(self, runPaths.map {_.absolute()}, outputPath.absolute(), minify, sourceMaps)
         let bundlePaths = internalListPath(browserOutputPath).filter {_.base().endsWith(".bundle.js")}.toList()
-        AssetSystem(bundlePaths.map {p => Pair(p.relativeTo(browserOutputPath), {p.readStream()})}.toMap())
+        AssetSystem(bundlePaths.map {p => 
+            Pair("/" + p.relativeTo(browserOutputPath).replace("\\", "/"), {p.readStream()})
+        }.toMap())
     }
 
     buildMode(): Bool {
@@ -113,13 +115,14 @@ internalCallEsBuild(
 }
 
 internalBrowserCallEsBuild(
+    self: BuildSystem
     mainJsFiles: List[String]
     outputPath: String
     minify: Bool
     sourceMap: Bool
 ): Unit {
     let esbuild = Js.import("esbuild")
-    esbuild->build(Js->(
+    Js.await(esbuild->build(Js->(
         entryPoints = mainJsFiles
         bundle = True
         minify = minify
@@ -128,7 +131,7 @@ internalBrowserCallEsBuild(
         target = "es2017"
         outdir = outputPath
         outExtension = Js.object().with(".js", ".bundle.js")
-    ))
+    )))
 }
 
 internalNodeCallEsBuild(

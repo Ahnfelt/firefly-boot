@@ -447,7 +447,7 @@ const workingDirectory_ = ((cwd_.indexOf(":") === 1)
 ? ("file:///" + cwd_)
 : cwd_);
 const packagePath_ = ((packagePair_.group_ + "/") + packagePair_.name_);
-const runFile_ = (((((((workingDirectory_ + "/.firefly/output/") + target_) + "/") + packagePath_) + "/") + mainFile_) + "_run.mjs");
+const runFile_ = (((((((workingDirectory_ + "/.firefly/output/") + target_) + "/") + packagePath_) + "/") + mainFile_) + ".run.mjs");
 const runFilePath_ = (ff_core_String.String_contains(runFile_, "://")
 ? ff_core_NodeSystem.NodeSystem_pathFromUrl(system_, runFile_)
 : ff_core_NodeSystem.NodeSystem_path(system_, runFile_));
@@ -849,7 +849,7 @@ const workingDirectory_ = ((cwd_.indexOf(":") === 1)
 ? ("file:///" + cwd_)
 : cwd_);
 const packagePath_ = ((packagePair_.group_ + "/") + packagePair_.name_);
-const runFile_ = (((((((workingDirectory_ + "/.firefly/output/") + target_) + "/") + packagePath_) + "/") + mainFile_) + "_run.mjs");
+const runFile_ = (((((((workingDirectory_ + "/.firefly/output/") + target_) + "/") + packagePath_) + "/") + mainFile_) + ".run.mjs");
 const runFilePath_ = (ff_core_String.String_contains(runFile_, "://")
 ? (await ff_core_NodeSystem.NodeSystem_pathFromUrl$(system_, runFile_, $task))
 : (await ff_core_NodeSystem.NodeSystem_path$(system_, runFile_, $task)));
