@@ -101,10 +101,8 @@ isGuidePath(path: String, prefix: String): Bool {
 
 buildMain(system: BuildSystem) {
     mutable assets = AssetSystem.create()
-    let browser = system.compileForBrowser(Router.modulesWithBrowserMain().map {_ + ".ff"}) // .bundle()
-    assets = assets.addAssets("/js/", browser.assets())
-    //let browser = system.compileForBrowser("Main.ff") // .bundle()
-    //assets = assets.addAssets("/js/", browser.assets())
+    let browserAssets = system.bundleForBrowser(Router.modulesWithBrowserMain().map {_ + ".ff"})
+    assets = assets.addAssets("/js/", browserAssets)
     assets = assets.addAssets("/assets/", system.packageAssets().assets("/assets/"))
     system.setAssets(assets)
 }

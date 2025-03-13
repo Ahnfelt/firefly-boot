@@ -1181,14 +1181,6 @@ const effect_ = _1.effect_;
 const typeArguments_ = _1.typeArguments_;
 const arguments_ = _1.arguments_;
 const dictionaries_ = _1.dictionaries_;
-if(ff_core_String.String_contains(name_, "bundleForBrowser")) {
-if((!ff_core_Option.Option_contains((arguments_[0] ?? ff_core_List.List_grab(arguments_, 0)).name_, "system", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
-ff_core_Log.debug_(("Wrong arguments for bundleForBrowser: " + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String)).show_(ff_core_List.List_map(arguments_, ((_w1) => {
-return _w1.name_
-})))));
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
-};
 {
 const _1 = ff_compiler_JsEmitter.detectIfElse_(term_);
 if(_1.length === 0) {
@@ -3707,14 +3699,6 @@ const effect_ = _1.effect_;
 const typeArguments_ = _1.typeArguments_;
 const arguments_ = _1.arguments_;
 const dictionaries_ = _1.dictionaries_;
-if(ff_core_String.String_contains(name_, "bundleForBrowser")) {
-if((!ff_core_Option.Option_contains((arguments_[0] ?? ff_core_List.List_grab(arguments_, 0)).name_, "system", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
-ff_core_Log.debug_(("Wrong arguments for bundleForBrowser: " + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String)).show_(ff_core_List.List_map(arguments_, ((_w1) => {
-return _w1.name_
-})))));
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
-};
 {
 const _1 = ff_compiler_JsEmitter.detectIfElse_(term_);
 if(_1.length === 0) {

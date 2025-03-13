@@ -17,6 +17,16 @@ extend self: BuildSystem {
         )
     }
 
+    bundleForBrowser(mainFiles: List[String], minify: Bool = True, sourceMaps: Bool = False): AssetSystem {
+        internalCompile(self, mainFiles.map {internalPath(self, _)}, "browser")
+        let browserOutputPath = internalPath(self, ".firefly/output/browser")
+        let runPaths = internalListPath(browserOutputPath).filter {_.base().endsWith("_run.mjs")}.toList()
+        let outputPath = runPaths.grabFirst().parent().grab()
+        internalBrowserCallEsBuild(runPaths.map {_.absolute()}, outputPath.absolute(), minify, sourceMaps)
+        let bundlePaths = internalListPath(browserOutputPath).filter {_.base().endsWith(".bundle.js")}.toList()
+        AssetSystem(bundlePaths.map {p => Pair(p.relativeTo(browserOutputPath), {p.readStream()})}.toMap())
+    }
+
     buildMode(): Bool {
         !!self!->"buildMode_"?
     }
@@ -102,6 +112,25 @@ internalCallEsBuild(
     ))
 }
 
+internalBrowserCallEsBuild(
+    mainJsFiles: List[String]
+    outputPath: String
+    minify: Bool
+    sourceMap: Bool
+): Unit {
+    let esbuild = Js.import("esbuild")
+    esbuild->build(Js->(
+        entryPoints = mainJsFiles
+        bundle = True
+        minify = minify
+        sourcemap = sourceMap
+        platform = "browser"
+        target = "es2017"
+        outdir = outputPath
+        outExtension = Js.object().with(".js", ".bundle.js")
+    ))
+}
+
 internalNodeCallEsBuild(
     self: NodeSystem
     mainJsFile: String
@@ -134,6 +163,16 @@ internalListDirectory(path: Path): List[Pair[String, () => Stream[Buffer]]] {
     go(path).map {file =>
         Pair("/" + file.relativeTo(path).replace("\\", "/"), {file.readStream()})
     }.toList()
+}
+
+internalListPath(path: Path): Stream[Path] {
+    path.entries().flatMap {file =>
+        if(file.isDirectory()) {
+            internalListPath(file.path())
+        } else {
+            [file.path()].toStream()
+        }
+    }
 }
 
 internalPath(buildSystem: BuildSystem, absoluteOrRelative: String): Path {
