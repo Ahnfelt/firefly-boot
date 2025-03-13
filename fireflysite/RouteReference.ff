@@ -6,7 +6,6 @@ import ExamplesOverview
 import FrontPage
 import DocumentParser
 import Html
-import Main
 import Website
 import Menu
 
