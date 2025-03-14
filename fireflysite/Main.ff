@@ -86,7 +86,7 @@ guessContentType(path: String): Option[String] {
 serveAsset(system: NodeSystem, salt: Buffer, request: WebRequest[WebResponse], contentType: String, asset: String): Unit {
     let etag = "\"" + system.crypto().hmacSha256(salt, asset.toBuffer()).toHex() + "\""
     request.writeHeader("Content-Type", contentType)
-    if(request.readHeader("host") == Some("localhost:8080")) {
+    if(request.readHeader("host") == Some("localhost:8080") && False) {
         request.writeHeader("Cache-Control", "no-cache")
     } else {
         request.writeHeader("Cache-Control", "public, max-age=60, must-revalidate")

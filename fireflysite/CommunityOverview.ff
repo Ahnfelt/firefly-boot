@@ -2,8 +2,8 @@ import Guide
 import CountingButtonDemo
 import MatchingPasswordsDemo
 
-new(): Document {
-    ReadyDocument([
+sections(): List[Section] {
+    [
         Section("Community", [
             Paragraph([
                 Text("The developers of Firefly hang out in")
@@ -16,5 +16,5 @@ new(): Document {
                 Text("If you're interested in Firefly, that's the best way to be part of the community for now.")
             ])
         ])
-    ])
+    ]
 }

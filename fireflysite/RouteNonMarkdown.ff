@@ -10,6 +10,8 @@ import PostgresqlDemo
 import Html
 import Website
 import Menu
+import PackagesOverview
+import CommunityOverview
 
 routeModule = SourceLocation.here().module()
 
@@ -23,6 +25,8 @@ handle(request: WebRequest[WebResponse], context: RouteContext, directory: Strin
         | ["examples", "counting-button"] => CountingButtonDemo.sections()
         | ["examples", "matching-passwords"] => MatchingPasswordsDemo.sections()
         | ["examples", "connecting-to-postgresql"] => PostgresqlDemo.sections()
+        | ["packages"] => PackagesOverview.sections()
+        | ["community"] => CommunityOverview.sections()
         | _ => []
     }
     if(sections.isEmpty()) {

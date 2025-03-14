@@ -2,8 +2,8 @@ import Guide
 import CountingButtonDemo
 import MatchingPasswordsDemo
 
-new(): Document {
-    ReadyDocument([
+sections(): List[Section] {
+    [
         Section("Packages", [
             Paragraph([
                 Text("Here you'll eventually find the package index.")
@@ -45,5 +45,5 @@ new(): Document {
                 Text("A FFI package for JavaScript.")
             ])
         ])
-    ])
+    ]
 }
