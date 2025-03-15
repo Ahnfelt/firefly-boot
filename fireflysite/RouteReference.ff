@@ -11,20 +11,21 @@ import Menu
 
 routeModule = SourceLocation.here().module()
 
-data PageData(path: List[String], sections: List[Section])
+data PageData(menuEntry: MenuItem, sections: List[Section])
 
 handle(request: WebRequest[WebResponse], context: RouteContext, kebab: Option[String]) {
     let path = ["reference", ...kebab.toList()]
+    Menu.findItem(path).or {Html.serve404(request)}: menuEntry => 
+    
     let asset = "/assets/markdown/" + path.join("/") + ".md"
     try {context.system.assets().readText(asset)}.toOption().or {
         Log.trace("Asset not found: " + asset)
-        request.writeText("404 Not Found")
-        request.writeStatus("404 Not Found")
+        Html.serve404(request)
     }: markdown =>
     let parser = DocumentParser(path.last().grab(), markdown.split('\n'), 0)
     let sections = parser.parseDocument()
-    let pageData = PageData(path, sections)
-    let title = sections.grabFirst().heading
+    let pageData = PageData(menuEntry, sections)
+    let title = Html.title(menuEntry)
     Html.renderAndServe(context.system, routeModule, pageData, title, request, {render(_, pageData)})
 }
 
@@ -33,8 +34,7 @@ browserMain(system: BrowserSystem) {
 }
 
 render(lux: Lux, data: PageData) {
-    let menuItem = Menu.findItem(data.path).grab()
-    Website.renderContentWithNext(lux, menuItem.path, menuItem.next) {lux =>
+    Website.renderContentWithNext(lux, data.menuEntry.path, data.menuEntry.next) {lux =>
         Guide.renderSections(lux, data.sections, ExamplesOverview.demos())
     }
 }

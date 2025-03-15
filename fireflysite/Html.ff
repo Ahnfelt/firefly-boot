@@ -1,6 +1,7 @@
 import WebServer from ff:webserver
 import WebRoute from ff:webserver
 import Lux from ff:lux
+import Menu
 
 serveHtml(
     moduleName: String
@@ -30,6 +31,17 @@ serveHtml(
     request.writeText("<div id='main'>" + contentHtml + "</div>")
     request.writeText("</body>")
     request.writeText("</html>")
+}
+
+serve404(
+    request: WebRequest[WebResponse]
+): Unit {
+    request.writeText("404 Not Found")
+    request.writeStatus("404 Not Found")    
+}
+
+title(menuEntry: MenuItem): String {
+    "Firefly · " + menuEntry.name
 }
 
 renderAndServe[T: Serializable](

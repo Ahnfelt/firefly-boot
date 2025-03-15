@@ -15,10 +15,12 @@ import CommunityOverview
 
 routeModule = SourceLocation.here().module()
 
-data PageData(path: List[String], sections: List[Section])
+data PageData(menuEntry: MenuItem, sections: List[Section])
 
 handle(request: WebRequest[WebResponse], context: RouteContext, directory: String, name: Option[String]) {
     let path = [directory, ...name.toList()]
+    Menu.findItem(path).or {Html.serve404(request)}: menuEntry => 
+    
     let sections = path.{
         | ["getting-started"] => GettingStarted.sections()
         | ["examples"] => ExamplesOverview.sections()
@@ -29,12 +31,9 @@ handle(request: WebRequest[WebResponse], context: RouteContext, directory: Strin
         | ["community"] => CommunityOverview.sections()
         | _ => []
     }
-    if(sections.isEmpty()) {
-        request.writeText("404 Not Found")
-        request.writeStatus("404 Not Found")
-    } else:
-    let pageData = PageData(path, sections)
-    let title = sections.grabFirst().heading
+    if(sections.isEmpty()) {Html.serve404(request)} else:
+    let pageData = PageData(menuEntry, sections)
+    let title = Html.title(menuEntry)
     Html.renderAndServe(context.system, routeModule, pageData, title, request, {render(_, pageData)})
 }
 
@@ -43,8 +42,7 @@ browserMain(system: BrowserSystem) {
 }
 
 render(lux: Lux, data: PageData) {
-    let menuItem = Menu.findItem(data.path).grab()
-    Website.renderContentWithNext(lux, [], menuItem.next) {lux =>
+    Website.renderContentWithNext(lux, data.menuEntry.path, data.menuEntry.next) {lux =>
         Guide.renderSections(lux, data.sections, ExamplesOverview.demos())
     }
 }
