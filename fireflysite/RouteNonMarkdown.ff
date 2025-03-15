@@ -15,7 +15,7 @@ import CommunityOverview
 
 routeModule = SourceLocation.here().module()
 
-data PageData(sections: List[Section])
+data PageData(path: List[String], sections: List[Section])
 
 handle(request: WebRequest[WebResponse], context: RouteContext, directory: String, name: Option[String]) {
     let path = [directory, ...name.toList()]
@@ -33,7 +33,7 @@ handle(request: WebRequest[WebResponse], context: RouteContext, directory: Strin
         request.writeText("404 Not Found")
         request.writeStatus("404 Not Found")
     } else:
-    let pageData = PageData(sections)
+    let pageData = PageData(path, sections)
     let title = sections.grabFirst().heading
     Html.renderAndServe(context.system, routeModule, pageData, title, request, {render(_, pageData)})
 }
@@ -43,8 +43,8 @@ browserMain(system: BrowserSystem) {
 }
 
 render(lux: Lux, data: PageData) {
-    let next = None
-    Website.renderContentWithNext(lux, [], next) {lux =>
+    let menuItem = Menu.findItem(data.path).grab()
+    Website.renderContentWithNext(lux, [], menuItem.next) {lux =>
         Guide.renderSections(lux, data.sections, ExamplesOverview.demos())
     }
 }

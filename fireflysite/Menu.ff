@@ -34,15 +34,26 @@ menu: List[Menu] = [
     Menu("community", "Community", [])
 ]
 
-findItem(items: List[Menu], path: List[String]): Option[MenuItem] {
-    path.{
-        | [p1, p2] => 
-            let m1 = items.find {_.path == p1}.grab()
-            let m2 = m1.menu.find {_.path == p2}.grab()
-            Some(MenuItem(path, m2.name, None))
-        | [p1] => 
-            let m1 = items.find {_.path == p1}.grab()
-            Some(MenuItem(path, m1.name, None))
-        | _ => None
-    }
+menuItems = flattenMenus(menu)
+
+findItem(path: List[String]): Option[MenuItem] {
+    menuItems.find {_.path == path}
 }
+
+flattenMenus(menus: List[Menu]): List[MenuItem] {
+    let result = Array.new()
+    function go(menus: List[Menu], prefix: List[String]) {
+        menus.each {menu => 
+            let currentPath = [...prefix, menu.path]
+            let item = MenuItem(currentPath, menu.name, None)
+            result.last().map {previous =>
+                result.set(result.size() - 1, previous.MenuItem(next = Some(item)))
+            }
+            result.push(item)
+            go(menu.menu, currentPath)
+        }
+    }
+    go(menus, [])
+    result.toList()
+}
+
