@@ -103,12 +103,11 @@ renderSidebar(lux: Lux, selectedPath: List[String], showMenu: Bool) {
                     lux.cssClass(Styles.guideSidebarLi1Css)
                     lux.add("a") {
                         lux.cssClass(Styles.whiteLinkCss)
-                        let heading = item.name
                         if(selectedPath == [item.path]) {
                             lux.set("aria-current", "page")
                         }
                         lux.set("href", "/" + item.path)
-                        lux.text(heading)
+                        lux.text(item.name)
                     }
                     if(item.menu.size() > 1):
                     lux.add("ul") {
@@ -118,12 +117,11 @@ renderSidebar(lux: Lux, selectedPath: List[String], showMenu: Bool) {
                                 lux.cssClass(Styles.guideSidebarLi2Css)
                                 lux.add("a") {
                                     lux.cssClass(Styles.whiteLinkCss)
-                                    let heading = subItem.name
                                     if(selectedPath == [item.path, subItem.path]) {
                                         lux.set("aria-current", "page")
                                     }
                                     lux.set("href", "/" + item.path + "/" + subItem.path)
-                                    lux.text(heading)
+                                    lux.text(subItem.name)
                                 }
                             }
                         }
