@@ -17,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
         ? path.join(context.extensionPath, 'firefly')
         : path.join(context.extensionPath, '..')
         
-    const fireflyCompiler = fireflyPath + '/output/js/ff/compiler/Main.mjs';
+    const fireflyCompiler = fireflyPath + '/output/js/ff/compiler/Main.run.mjs';
 
     context.subscriptions.push(vscode.commands.registerCommand('extension.firefly-lang.getFireflyPath', config => {
         return fireflyPath;
