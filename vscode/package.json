@@ -4,7 +4,7 @@
     "description": "Firefly language support",
     "author": "Firefly team",
     "license": "MIT",
-    "version": "0.5.62",
+    "version": "0.5.63",
     "repository": {
         "type": "git",
         "url": "https://github.com/Ahnfelt/firefly-boot"
@@ -157,7 +157,7 @@
         ]
     },
     "scripts": {
-        "vscode:prepublish": "node ../output/js/ff/compiler/Main.mjs Prepublish.ff && npm run compile",
+        "vscode:prepublish": "node ../output/js/ff/compiler/Main.run.mjs Prepublish.ff && npm run compile",
         "compile": "tsc -b",
         "watch": "tsc -b -w",
         "postinstall": "cd client && npm install && cd .."
