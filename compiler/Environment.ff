@@ -30,14 +30,14 @@ new(module: Module, otherModules: List[Module], alreadyFlat: Bool): Environment 
         symbols = processed.symbols.addAll(otherProcessed.map {_.symbols}.foldLeft(Map.new()) {_.addAll(_)})
         traits = processed.traits.addAll(otherProcessed.map {_.traits}.foldLeft(Map.new()) {_.addAll(_)})
         imports = module.imports.map {i => Pair(i.alias, i)}.toMap()
-        effect = TConstructor(Location(module.file, 0, 0), "ff:core/Nothing.Nothing", [])
+        effect = TConstructor(Location(module.moduleKey.pathInPackage(), 0, 0), "ff:core/Nothing.Nothing", [])
         selfVariable = None
     )
 }
 
 fullName(module: Module, name: String): String {
     module.packagePair.groupName() + "/" +
-    module.file.dropLast(3) + "." + name
+    module.moduleKey.importName() + "." + name
 }
 
 fail[T](at: Location, message: String): T {
@@ -155,7 +155,7 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
             Pair(fullName(module, d.name), d)
         }
 
-    let effect = TConstructor(Location(module.file, 0, 0), "ff:core/Nothing.Nothing", [])
+    let effect = TConstructor(Location(module.moduleKey.pathInPackage(), 0, 0), "ff:core/Nothing.Nothing", [])
     Environment(
         modulePrefix = ""
         symbols = [...functions, ...lets, ...fields, ...extends, ...variants, ...traitMethods].toMap()

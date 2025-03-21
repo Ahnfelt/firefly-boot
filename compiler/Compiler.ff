@@ -107,8 +107,7 @@ coreImports: List[DImport] =
             at = Location("<prelude>", 1, 1)
             alias = moduleName
             package = PackagePair("ff", "core")
-            directory = []
-            file = moduleName
+            moduleKey = ModuleKey([], moduleName)
         )
     }
 

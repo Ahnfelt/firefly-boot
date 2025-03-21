@@ -5,7 +5,7 @@ import LspHook
 
 class Parser(
     packagePair: PackagePair
-    file: String
+    moduleKey: ModuleKey
     tokens: List[Token]
     end: Token
     targetIsNode: Bool
@@ -19,14 +19,14 @@ data Poly(generics: List[String], constraints: List[Constraint])
 
 new(
     packagePair: PackagePair 
-    file: String
+    moduleKey: ModuleKey
     tokens: List[Token]
     targetIsNode: Bool
     lspHook: LspHook
 ): Parser {
     Parser(
         packagePair = packagePair
-        file = file
+        moduleKey = moduleKey
         tokens = tokens
         end = tokens.grabLast()
         targetIsNode = targetIsNode
@@ -195,7 +195,7 @@ extend self: Parser {
         }
 
         Module(
-            file = self.file
+            moduleKey = self.moduleKey
             packagePair = self.packagePair
             imports = imports.toList()
             lets = lets.toList()
@@ -527,7 +527,7 @@ extend self: Parser {
         } else {
             currentPackagePair
         }
-        DImport(fileToken.at(), alias, packagePair, path.toList(), fileToken.raw())
+        DImport(fileToken.at(), alias, packagePair, ModuleKey(path.toList(), fileToken.raw()))
     }
 
     parsePackageDefinition(): DPackage {

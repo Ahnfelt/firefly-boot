@@ -23,7 +23,7 @@ data PackageInfo(
 )
 
 data Module(
-    file: String
+    moduleKey: ModuleKey
     packagePair: PackagePair
     imports: List[DImport]
     types: List[DType]
@@ -42,6 +42,20 @@ data PackagePair(
 extend self: PackagePair {
     groupName(delimiter: String = ":"): String {
         self.group + delimiter + self.name
+    }
+}
+
+data ModuleKey(
+    path: List[String]
+    name: String
+)
+
+extend self: ModuleKey {
+    importName(): String {
+        self.path.map {_ + "."}.join() + self.name
+    }
+    pathInPackage(): String {
+        self.path.map {_ + "/"}.join() + self.name + ".ff"
     }
 }
 
@@ -70,8 +84,7 @@ data DImport(
     at: Location
     alias: String
     package: PackagePair
-    directory: List[String]
-    file: String
+    moduleKey: ModuleKey
 )
 data DFunction(
     at: Location

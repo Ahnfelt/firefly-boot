@@ -150,8 +150,9 @@ main(system: NodeSystem): Unit {
                 let path = system.path(filePath)
                 let code = path.readText()
                 let packagePair = PackagePair("script", "script")
+                let moduleKey = ModuleKey([], path.base().removeLast(".ff").grab())
                 let tokens = Tokenizer.tokenize(path.absolute(), code, None, False)
-                let parser = Parser.new(packagePair, path.base(), tokens, True, LspHook.disabled())
+                let parser = Parser.new(packagePair, moduleKey, tokens, True, LspHook.disabled())
                 let module = parser.parseModuleWithPackageInfo().module
                 makeSymbolColumns(module)
             }
@@ -336,7 +337,7 @@ makeSymbolColumns(module: Module): List[List[String]] {
     let all = [...toplevel, ...types, ...traits]
     all.map {r => 
         let generics = if(r.generics.isEmpty()) {""} else {"[" + r.generics.join(", ") + "]"}
-        let header = (module.file + " " + r.name + generics).trim()
+        let header = (module.moduleKey.importName() + " " + r.name + generics).trim()
         [header, ...r.symbols.sort()]
     }
 }
