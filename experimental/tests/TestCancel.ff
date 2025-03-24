@@ -1,0 +1,19 @@
+nodeMain(system: NodeSystem) {
+
+    let task1 = system.mainTask().spawn {task =>
+        Log.debug("Starting task 1")
+        try {
+            while {True} {
+                task.sleep(Duration(0.1))
+            }
+        } catchAny {error =>
+            Log.debug(error.name())
+        }
+    }
+    
+    Log.debug("Aborting task 1")
+    task1.abort()
+    Log.debug("Aborted task 1")
+
+}
+

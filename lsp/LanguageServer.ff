@@ -63,18 +63,19 @@ main(system: NodeSystem) {
                 let message = parseRequestMessage(request.object)
                 logDirectory.each {logMessage(_, "request", request.object, message.method)}
                 spawn(message.id) {_ =>
-                    if(message.method == "$/cancelRequest") {
-                        abort(Some(parseMessageId(message.parameters.grab("id"))))
-                    }
                     try {
+                        if(message.method == "$/cancelRequest") {
+                            abort(Some(parseMessageId(message.parameters.grab("id"))))
+                        }
                         handleRequestMessage(system, handler, message, version).each {body =>
                             responseChannel.write(Pair(body, message.method))
                         }
                     } catchAny {error =>
                         let problem = if(error.name() == "AbortError") {
+                            Log.trace("LS ABORT")
                             Error(-32800, "Request cancelled")
                         } else {
-                            Log.trace("ERROR: " + error.message())
+                            Log.trace("LS ERROR " + error.name() + ": " + error.message())
                             Log.trace(error.stack())
                             Error(-32603, "Internal error")
                         }
