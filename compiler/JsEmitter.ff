@@ -48,10 +48,10 @@ fail[T](at: Location, message: String): T {
 extend self: JsEmitter {
 
     emitModule(module: Module): String {
-        let selfImport = emitImport(self.moduleKey)
+        let selfImport = self.emitImport(self.moduleKey)
         let imports = [
             self.compilerModuleFileUrl.map {"import * as $firefly_compiler from '" + _ + "'"}.toList()
-            module.imports.sortBy {_.moduleKey}.map {emitImport(_.moduleKey)}
+            module.imports.sortBy {_.moduleKey}.map {self.emitImport(_.moduleKey)}
         ].flatten()
         let parts = [
             if(imports.any {_ == selfImport}) {imports} else {[selfImport, ...imports]}
@@ -71,6 +71,15 @@ extend self: JsEmitter {
         [jsImports, ...parts].map {_.join("\n\n")}.join("\n\n") + "\n"
     }
 
+    emitImport(moduleKey: ModuleKey): String {
+        let dots = "../".repeat(self.moduleKey.folders.size() + 2)
+        let jsImportName = moduleKey.packagePair.groupName("_") + "_" + 
+            moduleKey.folders.map {_ + "_"}.join() + moduleKey.name
+        let jsImportFrom = dots + moduleKey.packagePair.groupName("/") + "/" + 
+            moduleKey.folders.map {_ + "/"}.join() + moduleKey.name + ".mjs"
+        "import * as " + jsImportName + " from \"" + jsImportFrom + "\""
+    }
+    
     withEmittingAsync[T](body: () => T): T {
         try {
             self.emittingAsync = True
@@ -1317,14 +1326,6 @@ data ProcessedVariantCase(
     loneVariant: Bool
     arguments: List[String]
 )
-
-emitImport(moduleKey: ModuleKey): String {
-    let jsImportName = moduleKey.packagePair.groupName("_") + "_" + 
-        moduleKey.folders.map {_ + "_"}.join() + moduleKey.name
-    let jsImportFrom = "../../" + moduleKey.packagePair.groupName("/") + "/" + 
-        moduleKey.folders.map {_ + "/"}.join() + moduleKey.name + ".mjs"
-    "import * as " + jsImportName + " from \"" + jsImportFrom + "\""
-}
 
 detectIfElse(term: Term): List[Pair[Term, Term]] {
     | ECall(at, StaticCall("ff:core/Core.if", _, _), _, _, [condition, body], _) =>

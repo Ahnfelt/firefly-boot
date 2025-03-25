@@ -1,6 +1,4 @@
 import Guide
-import CountingButtonDemo
-import MatchingPasswordsDemo
 
 sections(): List[Section] {
     [

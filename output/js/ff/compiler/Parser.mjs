@@ -577,7 +577,7 @@ const importToken_ = ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.
 const path_ = ff_core_Array.new_();
 while(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower())) {
 path_.array.push(ff_compiler_Parser.Parser_parseDashedName(self_));
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LDot())
+ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LOperator(), "/")
 };
 const fileToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper());
 const alias_ = (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "as")
@@ -2081,7 +2081,7 @@ const importToken_ = ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.
 const path_ = ff_core_Array.new_();
 while(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower())) {
 path_.array.push(ff_compiler_Parser.Parser_parseDashedName(self_));
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LDot())
+ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LOperator(), "/")
 };
 const fileToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper());
 const alias_ = (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "as")

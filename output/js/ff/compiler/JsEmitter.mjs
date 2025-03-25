@@ -142,16 +142,6 @@ export function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export function emitImport_(moduleKey_) {
-const jsImportName_ = (((ff_compiler_Syntax.PackagePair_groupName(moduleKey_.packagePair_, "_") + "_") + ff_core_List.List_join(ff_core_List.List_map(moduleKey_.folders_, ((_w1) => {
-return (_w1 + "_")
-})), "")) + moduleKey_.name_);
-const jsImportFrom_ = ((((("../../" + ff_compiler_Syntax.PackagePair_groupName(moduleKey_.packagePair_, "/")) + "/") + ff_core_List.List_join(ff_core_List.List_map(moduleKey_.folders_, ((_w1) => {
-return (_w1 + "/")
-})), "")) + moduleKey_.name_) + ".mjs");
-return (((("import * as " + jsImportName_) + " from \"") + jsImportFrom_) + "\"")
-}
-
 export function detectIfElse_(term_) {
 const term_a = term_;
 if(term_a.ECall && term_a.target_.StaticCall && term_a.target_.name_ === "ff:core/Core.if" && term_a.arguments_.length === 2) {
@@ -404,16 +394,6 @@ export async function fail_$(at_, message_, $task) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function emitImport_$(moduleKey_, $task) {
-const jsImportName_ = (((ff_compiler_Syntax.PackagePair_groupName(moduleKey_.packagePair_, "_") + "_") + ff_core_List.List_join(ff_core_List.List_map(moduleKey_.folders_, ((_w1) => {
-return (_w1 + "_")
-})), "")) + moduleKey_.name_);
-const jsImportFrom_ = ((((("../../" + ff_compiler_Syntax.PackagePair_groupName(moduleKey_.packagePair_, "/")) + "/") + ff_core_List.List_join(ff_core_List.List_map(moduleKey_.folders_, ((_w1) => {
-return (_w1 + "/")
-})), "")) + moduleKey_.name_) + ".mjs");
-return (((("import * as " + jsImportName_) + " from \"") + jsImportFrom_) + "\"")
-}
-
 export async function detectIfElse_$(term_, $task) {
 const term_a = term_;
 if(term_a.ECall && term_a.target_.StaticCall && term_a.target_.name_ === "ff:core/Core.if" && term_a.arguments_.length === 2) {
@@ -657,13 +637,13 @@ return false
 }
 
 export function JsEmitter_emitModule(self_, module_) {
-const selfImport_ = ff_compiler_JsEmitter.emitImport_(self_.moduleKey_);
+const selfImport_ = ff_compiler_JsEmitter.JsEmitter_emitImport(self_, self_.moduleKey_);
 const imports_ = ff_core_List.List_flatten([ff_core_Option.Option_toList(ff_core_Option.Option_map(self_.compilerModuleFileUrl_, ((_w1) => {
 return (("import * as $firefly_compiler from '" + _w1) + "'")
 }))), ff_core_List.List_map(ff_core_List.List_sortBy(module_.imports_, ((_w1) => {
 return _w1.moduleKey_
 }), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_ModuleKey), ((_w1) => {
-return ff_compiler_JsEmitter.emitImport_(_w1.moduleKey_)
+return ff_compiler_JsEmitter.JsEmitter_emitImport(self_, _w1.moduleKey_)
 }))]);
 const parts_ = [(ff_core_List.List_any(imports_, ((_w1) => {
 return (_w1 === selfImport_)
@@ -691,6 +671,17 @@ const jsImports_ = ff_compiler_JsImporter.JsImporter_generateImports(self_.jsImp
 return (ff_core_List.List_join(ff_core_List.List_map([jsImports_, ...parts_], ((_w1) => {
 return ff_core_List.List_join(_w1, "\n\n")
 })), "\n\n") + "\n")
+}
+
+export function JsEmitter_emitImport(self_, moduleKey_) {
+const dots_ = ff_core_String.String_repeat("../", (self_.moduleKey_.folders_.length + 2));
+const jsImportName_ = (((ff_compiler_Syntax.PackagePair_groupName(moduleKey_.packagePair_, "_") + "_") + ff_core_List.List_join(ff_core_List.List_map(moduleKey_.folders_, ((_w1) => {
+return (_w1 + "_")
+})), "")) + moduleKey_.name_);
+const jsImportFrom_ = (((((dots_ + ff_compiler_Syntax.PackagePair_groupName(moduleKey_.packagePair_, "/")) + "/") + ff_core_List.List_join(ff_core_List.List_map(moduleKey_.folders_, ((_w1) => {
+return (_w1 + "/")
+})), "")) + moduleKey_.name_) + ".mjs");
+return (((("import * as " + jsImportName_) + " from \"") + jsImportFrom_) + "\"")
 }
 
 export function JsEmitter_withEmittingAsync(self_, body_) {
@@ -3176,13 +3167,13 @@ return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_, false)
 }
 
 export async function JsEmitter_emitModule$(self_, module_, $task) {
-const selfImport_ = ff_compiler_JsEmitter.emitImport_(self_.moduleKey_);
+const selfImport_ = ff_compiler_JsEmitter.JsEmitter_emitImport(self_, self_.moduleKey_);
 const imports_ = ff_core_List.List_flatten([ff_core_Option.Option_toList(ff_core_Option.Option_map(self_.compilerModuleFileUrl_, ((_w1) => {
 return (("import * as $firefly_compiler from '" + _w1) + "'")
 }))), ff_core_List.List_map(ff_core_List.List_sortBy(module_.imports_, ((_w1) => {
 return _w1.moduleKey_
 }), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_ModuleKey), ((_w1) => {
-return ff_compiler_JsEmitter.emitImport_(_w1.moduleKey_)
+return ff_compiler_JsEmitter.JsEmitter_emitImport(self_, _w1.moduleKey_)
 }))]);
 const parts_ = [(ff_core_List.List_any(imports_, ((_w1) => {
 return (_w1 === selfImport_)
@@ -3210,6 +3201,17 @@ const jsImports_ = ff_compiler_JsImporter.JsImporter_generateImports(self_.jsImp
 return (ff_core_List.List_join(ff_core_List.List_map([jsImports_, ...parts_], ((_w1) => {
 return ff_core_List.List_join(_w1, "\n\n")
 })), "\n\n") + "\n")
+}
+
+export async function JsEmitter_emitImport$(self_, moduleKey_, $task) {
+const dots_ = ff_core_String.String_repeat("../", (self_.moduleKey_.folders_.length + 2));
+const jsImportName_ = (((ff_compiler_Syntax.PackagePair_groupName(moduleKey_.packagePair_, "_") + "_") + ff_core_List.List_join(ff_core_List.List_map(moduleKey_.folders_, ((_w1) => {
+return (_w1 + "_")
+})), "")) + moduleKey_.name_);
+const jsImportFrom_ = (((((dots_ + ff_compiler_Syntax.PackagePair_groupName(moduleKey_.packagePair_, "/")) + "/") + ff_core_List.List_join(ff_core_List.List_map(moduleKey_.folders_, ((_w1) => {
+return (_w1 + "/")
+})), "")) + moduleKey_.name_) + ".mjs");
+return (((("import * as " + jsImportName_) + " from \"") + jsImportFrom_) + "\"")
 }
 
 export async function JsEmitter_withEmittingAsync$(self_, body_, $task) {

@@ -4,9 +4,9 @@ import Router
 import Guide
 import ExamplesOverview
 import GettingStarted
-import CountingButtonDemo
-import MatchingPasswordsDemo
-import PostgresqlDemo
+import demos/CountingButtonDemo
+import demos/MatchingPasswordsDemo
+import demos/PostgresqlDemo
 import Html
 import Website
 import Menu
