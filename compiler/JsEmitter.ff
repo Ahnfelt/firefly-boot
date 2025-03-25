@@ -8,8 +8,7 @@ class JsEmitter(
     emitTarget: EmitTarget
     isMainModule: Bool
     compilerModuleFileUrl: Option[String]
-    packagePair: PackagePair
-    moduleName: String
+    moduleKey: ModuleKey
     mutable emittingAsync: Bool
     mutable tailCallUsed: Bool
 )
@@ -26,20 +25,17 @@ new(
     emitTarget: EmitTarget
     isMainModule: Bool
     compilerModuleFileUrl: Option[String]
-    packagePair: PackagePair
-    moduleName: String
+    moduleKey: ModuleKey
 ): JsEmitter {
     JsEmitter(
         otherModules = otherModules.map {m =>
-            let moduleName = m.packagePair.groupName() + "/" + m.file.dropLast(3)
-            Pair(moduleName, m)
+            Pair(m.moduleKey.qualifiedName(), m)
         }.toMap()
         jsImporter = JsImporter.new()
         emitTarget = emitTarget
         isMainModule = isMainModule
         compilerModuleFileUrl = compilerModuleFileUrl
-        packagePair = packagePair
-        moduleName = moduleName
+        moduleKey = moduleKey
         emittingAsync = False
         tailCallUsed = False
     )
@@ -51,13 +47,11 @@ fail[T](at: Location, message: String): T {
 
 extend self: JsEmitter {
 
-    emitModule(packagePair: PackagePair, module: Module): String {
-        let selfImport =
-            "import * as " + packagePair.groupName("_") + "_" + module.file.dropLast(3) + " " +
-            "from \"../../" + packagePair.groupName("/") + "/" + module.file.dropLast(3) + ".mjs\""
+    emitModule(module: Module): String {
+        let selfImport = emitImport(self.moduleKey)
         let imports = [
             self.compilerModuleFileUrl.map {"import * as $firefly_compiler from '" + _ + "'"}.toList()
-            module.imports.sortBy {i => Pair(i.package, i.file) }.map {self.emitImportDefinition(_)}
+            module.imports.sortBy {_.moduleKey}.map {emitImport(_.moduleKey)}
         ].flatten()
         let parts = [
             if(imports.any {_ == selfImport}) {imports} else {[selfImport, ...imports]}
@@ -68,11 +62,11 @@ extend self: JsEmitter {
             module.extends.map {self.emitExtendsDefinition(_)}
             module.instances.map {self.emitInstanceDefinition(_)}
         ]
-        let ignoreJsImports = if(
-            self.emitTarget == EmitExecutable &&
-            packagePair.group == "ff" &&
-            packagePair.name == "core"
-        ) {["esbuild"]} else {[]}
+        let ignoreJsImports = if(self.emitTarget == EmitExecutable && self.moduleKey.packagePair.isCore()) {
+            ["esbuild"]
+        } else {
+            []
+        }
         let jsImports = self.jsImporter.generateImports(ignoreJsImports.toSet())
         [jsImports, ...parts].map {_.join("\n\n")}.join("\n\n") + "\n"
     }
@@ -151,11 +145,6 @@ extend self: JsEmitter {
                 | _ => []
             }
         ].join("\n")]}.else {[]}
-    }
-
-    emitImportDefinition(definition: DImport): String {
-        "import * as " + definition.package.group + "_" + definition.package.name + "_" + definition.file + " " +
-        "from \"../../" + definition.package.group + "/" + definition.package.name + "/" + definition.file + ".mjs\""
     }
 
     emitLetDefinition(definition: DLet, mutable: Bool, async: Bool): String {
@@ -434,8 +423,10 @@ extend self: JsEmitter {
     }
 
     emitDictionary(d: Dictionary): String {
-        let m = if(d.moduleName != "") {
-            d.packagePair.groupName("_") + "_" + d.moduleName.replace("/", "_") + "."
+        let m = if(d.moduleKey.name != "") {
+            d.moduleKey.packagePair.groupName("_") + "_" + 
+            d.moduleKey.folders.map {_ + "_"}.join() + 
+            d.moduleKey.name + "."
         } else {""}
         let c = m + makeDictionaryName(d.traitName, d.typeName)
         if(d.dictionaries.isEmpty()) {
@@ -601,27 +592,27 @@ extend self: JsEmitter {
                 Some(
                     self.emitTerm(e, async) + ".length"
                 )
-            | "ff:core/Equal.equals" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, _, typeName, [])]} {
+            | "ff:core/Equal.equals" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, typeName, [])]} {
                 primitiveTypes.contains(typeName) || typeName == "ff:core/Ordering.Ordering"
             } =>
                 Some("(" + self.emitTerm(left, async) + " === " + self.emitTerm(right, async) + ")")
-            | "ff:core/Equal.notEquals" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, _, typeName, [])]} {
+            | "ff:core/Equal.notEquals" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, typeName, [])]} {
                 primitiveTypes.contains(typeName) || typeName == "ff:core/Ordering.Ordering"
             } =>
                 Some("(" + self.emitTerm(left, async) + " !== " + self.emitTerm(right, async) + ")")
-            | "ff:core/Ordering.before" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, _, typeName, [])]} {
+            | "ff:core/Ordering.before" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, typeName, [])]} {
                 primitiveTypes.contains(typeName)
             } =>
                 Some("(" + self.emitTerm(left, async) + " < " + self.emitTerm(right, async) + ")")
-            | "ff:core/Ordering.notBefore" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, _, typeName, [])]} {
+            | "ff:core/Ordering.notBefore" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, typeName, [])]} {
                 primitiveTypes.contains(typeName)
             } =>
                 Some("(" + self.emitTerm(left, async) + " >= " + self.emitTerm(right, async) + ")")
-            | "ff:core/Ordering.after" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, _, typeName, [])]} {
+            | "ff:core/Ordering.after" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, typeName, [])]} {
                 primitiveTypes.contains(typeName)
             } =>
                 Some("(" + self.emitTerm(left, async) + " > " + self.emitTerm(right, async) + ")")
-            | "ff:core/Ordering.notAfter" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, _, typeName, [])]} {
+            | "ff:core/Ordering.notAfter" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, typeName, [])]} {
                 primitiveTypes.contains(typeName)
             } =>
                 Some("(" + self.emitTerm(left, async) + " <= " + self.emitTerm(right, async) + ")")
@@ -1310,8 +1301,9 @@ extend self: JsEmitter {
     emitArgument(callAt: Location, argument: Argument, async: Bool): String {
         argument.value.{
             | ECall(_, StaticCall("ff:core/SourceLocation.callSite", _, _), _, _, _, _) => 
-                "\"" + self.moduleName + ":" + callAt.line + ":" + callAt.column + 
-                "," + self.packagePair.group + "," + self.packagePair.name + "\""
+                "\"" + self.moduleKey.folders.map {_ + "/"}.join() + self.moduleKey.name + 
+                ":" + callAt.line + ":" + callAt.column + 
+                "," + self.moduleKey.packagePair.group + "," + self.moduleKey.packagePair.name + "\""
             | value =>
                 self.emitTerm(value, async)
         }
@@ -1325,6 +1317,14 @@ data ProcessedVariantCase(
     loneVariant: Bool
     arguments: List[String]
 )
+
+emitImport(moduleKey: ModuleKey): String {
+    let jsImportName = moduleKey.packagePair.groupName("_") + "_" + 
+        moduleKey.folders.map {_ + "_"}.join() + moduleKey.name
+    let jsImportFrom = "../../" + moduleKey.packagePair.groupName("/") + "/" + 
+        moduleKey.folders.map {_ + "/"}.join() + moduleKey.name + ".mjs"
+    "import * as " + jsImportName + " from \"" + jsImportFrom + "\""
+}
 
 detectIfElse(term: Term): List[Pair[Term, Term]] {
     | ECall(at, StaticCall("ff:core/Core.if", _, _), _, _, [condition, body], _) =>

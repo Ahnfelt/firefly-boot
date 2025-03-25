@@ -17,7 +17,6 @@ data InstanceKey(traitName: String, typeName: String)
 data InstanceValue(
     generics: List[String]
     constraints: List[Constraint]
-    packagePair: PackagePair
     moduleKey: ModuleKey
     traitName: String
     typeArguments: List[Type]
@@ -44,7 +43,6 @@ new(modules: List[Module], attemptFixes: Bool): Unification {
                     InstanceValue(
                         generics = definition.generics
                         constraints = definition.constraints
-                        packagePair = module.packagePair
                         moduleKey = module.moduleKey
                         traitName = definition.traitName
                         typeArguments = definition.typeArguments

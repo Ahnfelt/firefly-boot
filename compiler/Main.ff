@@ -150,9 +150,9 @@ main(system: NodeSystem): Unit {
                 let path = system.path(filePath)
                 let code = path.readText()
                 let packagePair = PackagePair("script", "script")
-                let moduleKey = ModuleKey([], path.base().removeLast(".ff").grab())
+                let moduleKey = ModuleKey(packagePair, [], path.base().removeLast(".ff").grab())
                 let tokens = Tokenizer.tokenize(path.absolute(), code, None, False)
-                let parser = Parser.new(packagePair, moduleKey, tokens, True, LspHook.disabled())
+                let parser = Parser.new(moduleKey, tokens, True, LspHook.disabled())
                 let module = parser.parseModuleWithPackageInfo().module
                 makeSymbolColumns(module)
             }

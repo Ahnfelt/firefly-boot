@@ -43,7 +43,8 @@ extend self: Dependencies {
         code: String
     ): PackageInfo {
         let tokens = Tokenizer.tokenize(fileName, code, None, True)
-        let parser = Parser.new(packagePair, fileName, tokens, False, LspHook.disabled())
+        let moduleKey = ModuleKey(packagePair, [], "<package>")
+        let parser = Parser.new(moduleKey, tokens, False, LspHook.disabled())
         let info = parser.parsePackageInfo()
         self.addCoreDependencyIfMissing(info)
     }

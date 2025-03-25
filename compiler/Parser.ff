@@ -4,7 +4,6 @@ import Syntax
 import LspHook
 
 class Parser(
-    packagePair: PackagePair
     moduleKey: ModuleKey
     tokens: List[Token]
     end: Token
@@ -18,14 +17,12 @@ class Parser(
 data Poly(generics: List[String], constraints: List[Constraint])
 
 new(
-    packagePair: PackagePair 
     moduleKey: ModuleKey
     tokens: List[Token]
     targetIsNode: Bool
     lspHook: LspHook
 ): Parser {
     Parser(
-        packagePair = packagePair
         moduleKey = moduleKey
         tokens = tokens
         end = tokens.grabLast()
@@ -128,7 +125,7 @@ extend self: Parser {
         } else {
             DPackage(
                 location
-                self.packagePair
+                self.moduleKey.packagePair
                 Version(location, 0, 0, 0)
                 TargetNames(node = self.targetIsNode, browser = !self.targetIsNode)
             )
@@ -175,7 +172,7 @@ extend self: Parser {
             } elseIf {self.current().is(LKeyword) && self.current().rawIs4("data", "class", "capability", "newtype")} {
                 types.push(self.parseTypeDefinition())
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("import")} {
-                imports.push(self.parseImportDefinition(self.packagePair))
+                imports.push(self.parseImportDefinition(self.moduleKey.packagePair))
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("include")} {
                 throw(CompileError(self.current().at()
                     "Includes must be at the top of the file or below 'package'"
@@ -196,7 +193,6 @@ extend self: Parser {
 
         Module(
             moduleKey = self.moduleKey
-            packagePair = self.packagePair
             imports = imports.toList()
             lets = lets.toList()
             functions = functions.toList()
@@ -527,7 +523,7 @@ extend self: Parser {
         } else {
             currentPackagePair
         }
-        DImport(fileToken.at(), alias, packagePair, ModuleKey(path.toList(), fileToken.raw()))
+        DImport(fileToken.at(), alias, ModuleKey(packagePair, path.toList(), fileToken.raw()))
     }
 
     parsePackageDefinition(): DPackage {

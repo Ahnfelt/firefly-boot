@@ -22,18 +22,7 @@ data PackageInfo(
     includes: List[DInclude]
 )
 
-data Module(
-    moduleKey: ModuleKey
-    packagePair: PackagePair
-    imports: List[DImport]
-    types: List[DType]
-    traits: List[DTrait]
-    instances: List[DInstance]
-    extends: List[DExtend]
-    lets: List[DLet]
-    functions: List[DFunction]
-)
-
+// TODO rename to PackageKey
 data PackagePair(
     group: String
     name: String
@@ -43,21 +32,48 @@ extend self: PackagePair {
     groupName(delimiter: String = ":"): String {
         self.group + delimiter + self.name
     }
+    isCore(): Bool {
+        self.group == "ff" &&
+        self.name == "core"
+    }
 }
 
 data ModuleKey(
-    path: List[String]
+    packagePair: PackagePair
+    folders: List[String]
     name: String
 )
 
 extend self: ModuleKey {
+    // "folder/Module" as in: import folder/Module from group:package
     importName(): String {
-        self.path.map {_ + "."}.join() + self.name
+        self.folders.map {_ + "/"}.join() + self.name
     }
-    pathInPackage(): String {
-        self.path.map {_ + "/"}.join() + self.name + ".ff"
+    // "C:\myProject\folder\Module.ff"
+    path(packagePath: Path): Path {
+        let parent = self.folders.foldLeft(packagePath) {p, f => p.slash(f)}
+        parent.slash(self.name + ".ff")
+    }
+    // "group:package/folder/Module"
+    qualifiedName(): String {
+        self.packagePair.groupName() + "/" + self.importName()
+    }
+    // "ff:core/List.List_map"
+    qualifiedSymbol(symbol: String): String {
+        self.qualifiedName() + "." + symbol
     }
 }
+
+data Module(
+    moduleKey: ModuleKey
+    imports: List[DImport]
+    types: List[DType]
+    traits: List[DTrait]
+    instances: List[DInstance]
+    extends: List[DExtend]
+    lets: List[DLet]
+    functions: List[DFunction]
+)
 
 data DPackage(
     at: Location
@@ -83,7 +99,6 @@ data TargetNames(
 data DImport(
     at: Location
     alias: String
-    package: PackagePair
     moduleKey: ModuleKey
 )
 data DFunction(
@@ -194,8 +209,7 @@ data MatchGuard(
 )
 
 data Dictionary(
-    packagePair: PackagePair
-    moduleName: String
+    moduleKey: ModuleKey
     traitName: String
     typeName: String
     dictionaries: List[Dictionary]

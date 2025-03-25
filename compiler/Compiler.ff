@@ -106,20 +106,19 @@ coreImports: List[DImport] =
         DImport(
             at = Location("<prelude>", 1, 1)
             alias = moduleName
-            package = PackagePair("ff", "core")
-            moduleKey = ModuleKey([], moduleName)
+            moduleKey = ModuleKey(PackagePair("ff", "core"), [], moduleName)
         )
     }
 
 extend self: Compiler {
 
-    measure[T](phase: String, packagePair: PackagePair, moduleName: String, body: () => T): T {
+    measure[T](phase: String, moduleKey: ModuleKey, body: () => T): T {
         let start = Duration(self.task.elapsed().seconds - self.phaseDurationDelta.seconds)
         let result = body()
         let stop = Duration(self.task.elapsed().seconds - self.phaseDurationDelta.seconds)
         let duration = Duration(stop.seconds - start.seconds)
         self.phaseDurationDelta = Duration(self.phaseDurationDelta.seconds + duration.seconds)
-        let text = phase + " " + packagePair.groupName() + "/" + moduleName
+        let text = phase + " " + moduleKey.qualifiedName()
         self.phaseDurations.push(Pair(text, duration))
         result
     }
@@ -133,20 +132,19 @@ extend self: Compiler {
         }
     }
 
-    parse(packagePair: PackagePair, moduleName: String, importedAt: Option[Location]): Module {
-        self.cache.cacheParsedModule(self.packagePaths, packagePair, moduleName): path => 
-        let packageName = packagePair.groupName()
-        self.measure("Parse", packagePair, moduleName):
+    parse(moduleKey: ModuleKey, importedAt: Option[Location]): Module {
+        self.cache.cacheParsedModule(self.packagePaths, moduleKey): path => 
+        self.measure("Parse", moduleKey):
         let code = self.virtualFiles.get(path.absolute()).else {
             importedAt.each {at => if(!path.exists()) {
-                throw(CompileError(at, "Imported module not found: " + packageName + "/" + moduleName))
+                throw(CompileError(at, "Imported module not found: " + moduleKey.importName()))
             }}
             path.readText()
         }
         let completionAt = if(self.lspHook.isEnabled() && self.lspHook.insertIdentifier) {self.lspHook.at}
         let tokens = Tokenizer.tokenize(path.absolute(), code, completionAt, self.lspHook.isEnabled())
-        let parser = Parser.new(packagePair, path.base(), tokens, self.emitTarget != EmitBrowser, self.lspHook)
-        let module = if(self.singleFilePackages.contains(packagePair)) {
+        let parser = Parser.new(moduleKey, tokens, self.emitTarget != EmitBrowser, self.lspHook)
+        let module = if(self.singleFilePackages.contains(moduleKey.packagePair)) {
             parser.parseModuleWithPackageInfo().module
         } else {
             parser.parseModuleWithoutPackageInfo()
@@ -159,63 +157,61 @@ extend self: Compiler {
 
     imports(module: Module): List[Module] {
         module.imports.map {import =>
-            let newPackagePair = import.package
-            let newModuleName = import.directory.map {_ + "/"}.join("") + import.file
+            let newPackagePair = import.moduleKey.packagePair
             if(!self.packagePaths.contains(newPackagePair)) {
                 throw(CompileError(import.at, "Missing dependency declaration for: " + newPackagePair.groupName()))
             }
             try {
-                self.parse(newPackagePair, newModuleName, Some(import.at))
+                self.parse(import.moduleKey, Some(import.at))
             } tryCatch {| CompileError(_, _) @ e, error =>
-                let newError = CompileError(import.at, "Parse error in imported module: " + import.package.groupName() + "/" + newModuleName)
+                let newError = CompileError(import.at, "Parse error in imported module: " + import.moduleKey.importName())
                 throw(CompileErrors([e, newError]))
             } catch {| CompileErrors(compileErrors), error =>
-                let newError = CompileError(import.at, "Parse errors in imported module: " + import.package.groupName() + "/" + newModuleName)
+                let newError = CompileError(import.at, "Parse errors in imported module: " + import.moduleKey.importName())
                 throw(CompileErrors([...compileErrors, newError]))
             }
         }
     }
 
-    resolve(packagePair: PackagePair, moduleName: String): Module {
-        self.cache.cacheResolvedModule(self.packagePaths, packagePair, moduleName): path => 
-        self.measure("Resolve", packagePair, moduleName):
+    resolve(moduleKey: ModuleKey): Module {
+        self.cache.cacheResolvedModule(self.packagePaths, moduleKey): path => 
+        self.measure("Resolve", moduleKey):
 
-        let module = self.parse(packagePair, moduleName, None)
+        let module = self.parse(moduleKey, None)
         let otherModules = self.imports(module)
-        let resolver = Resolver.new(packagePair, moduleName, self.lspHook)
+        let resolver = Resolver.new(self.lspHook)
         resolver.resolveModule(module, otherModules)
     }
 
-    derive(packagePair: PackagePair, moduleName: String): Module {
-        self.cache.cacheDerivedModule(self.packagePaths, packagePair, moduleName): path => 
-        self.measure("Derive", packagePair, moduleName):
+    derive(moduleKey: ModuleKey): Module {
+        self.cache.cacheDerivedModule(self.packagePaths, moduleKey): path => 
+        self.measure("Derive", moduleKey):
 
-        let module = self.resolve(packagePair, moduleName)
+        let module = self.resolve(moduleKey)
         Deriver.new().deriveModule(module)
     }
 
-    infer(packagePair: PackagePair, moduleName: String): Module {
-        self.cache.cacheInferredModule(self.packagePaths, packagePair, moduleName): path => 
-        self.measure("Infer", packagePair, moduleName):
+    infer(moduleKey: ModuleKey): Module {
+        self.cache.cacheInferredModule(self.packagePaths, moduleKey): path => 
+        self.measure("Infer", moduleKey):
 
-        let module = self.derive(packagePair, moduleName)
+        let module = self.derive(moduleKey)
         let otherModules = self.imports(module).map {i =>
-            self.derive(i.packagePair, i.file.dropLast(".ff".size()))
+            self.derive(i.moduleKey)
         }
         let inference = Inference.new([module, ...otherModules], self.lspHook)
         let inferredModule = inference.inferModule(module, otherModules)
         Dictionaries.new([module, ...otherModules]).processModule(inferredModule, otherModules)
     }
 
-    emit(packagePair: PackagePair, moduleName: String, isMainModule: Bool): Unit {
-        self.cache.cacheEmittedModule(self.packagePaths, packagePair, moduleName, isMainModule): path => 
-        self.measure("Emit", packagePair, moduleName):
+    emit(moduleKey: ModuleKey, isMainModule: Bool): Unit {
+        self.cache.cacheEmittedModule(self.packagePaths, moduleKey, isMainModule): path => 
+        self.measure("Emit", moduleKey):
 
-        let module = self.infer(packagePair, moduleName)
+        let module = self.infer(moduleKey)
         let otherModules = self.imports(module).map {i =>
-            let newModuleName = i.file.dropLast(".ff".size())
-            self.emit(i.packagePair, newModuleName, isMainModule = False)
-            self.infer(i.packagePair, newModuleName)
+            self.emit(i.moduleKey, isMainModule = False)
+            self.infer(i.moduleKey)
         }
 
         let allModules = [module, ...otherModules]
@@ -224,22 +220,22 @@ extend self: Compiler {
             emitTarget = self.emitTarget
             isMainModule = isMainModule
             compilerModuleFileUrl = self.compilerModulePath.map {_.url()}
-            packagePair = packagePair
-            moduleName = moduleName
+            moduleKey = moduleKey
         )
-        let js = emitter.emitModule(packagePair, module)
-        let jsPath = self.jsOutputPath.slash(packagePair.group).slash(packagePair.name)
-        let jsFile = jsPath.slash(moduleName + ".mjs")
+        let js = emitter.emitModule(module)
+        let packagePath = self.jsOutputPath.slash(moduleKey.packagePair.group).slash(moduleKey.packagePair.name)
+        let jsPath = moduleKey.folders.foldLeft(packagePath) {p, f => p.slash(f)}
+        let jsFile = jsPath.slash(moduleKey.name + ".mjs")
         jsPath.createDirectory(createParentDirectories = True)
         jsFile.writeText(js)
         if(isMainModule) {
             let runJs = emitter.emitRun(
-                moduleName
+                moduleKey.name
                 module.functions
-                packagePair
-                packagePair.group == "ff" && packagePair.name == "compiler"
+                moduleKey.packagePair
+                moduleKey.packagePair.group == "ff" && moduleKey.packagePair.name == "compiler"
             )
-            let jsRunFile = jsPath.slash(moduleName + ".run.mjs")
+            let jsRunFile = jsPath.slash(moduleKey.name + ".run.mjs")
             jsRunFile.writeText(runJs.map {_ + "\n"}.join())
         }
     }

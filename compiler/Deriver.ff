@@ -14,7 +14,7 @@ extend self: Deriver {
 
     deriveModule(module: Module): Module {
 
-        let modulePrefix = module.packagePair.groupName() + "/" + module.file.dropLast(3)
+        let modulePrefix = module.moduleKey.qualifiedName()
 
         module.Module(
             instances = [
@@ -620,7 +620,7 @@ extend self: Deriver {
         }.toSet()
 
         module.types.filter {t =>
-            (module.packagePair.groupName() != "ff:core" || coreWhitelist.contains(modulePrefix + "." + t.name)) &&
+            (!module.moduleKey.packagePair.isCore() || coreWhitelist.contains(modulePrefix + "." + t.name)) &&
             !t.generics.first().any {_ == "Q$"} &&
             (allowGenerics || t.generics.isEmpty()) &&
             t.data && !t.newtype &&
