@@ -4,7 +4,7 @@ import Lux from ff:lux
 import Css from ff:lux
 import Guide
 import GettingStarted
-import ExamplesOverview
+import demos/ExamplesOverview
 import PackagesOverview
 import CommunityOverview
 import FrontPage

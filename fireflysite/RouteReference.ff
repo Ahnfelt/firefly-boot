@@ -2,7 +2,6 @@ import Lux from ff:lux
 import WebServer from ff:webserver
 import Router
 import Guide
-import ExamplesOverview
 import FrontPage
 import DocumentParser
 import Html
@@ -35,6 +34,6 @@ browserMain(system: BrowserSystem) {
 
 render(lux: Lux, data: PageData) {
     Website.renderContentWithNext(lux, data.menuEntry.path, data.menuEntry.next) {lux =>
-        Guide.renderSections(lux, data.sections, ExamplesOverview.demos())
+        Guide.renderSections(lux, data.sections, [])
     }
 }

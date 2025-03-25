@@ -507,7 +507,7 @@ extend self: Parser {
         let path = Array.new[String]()
         while {self.current().is(LLower)} {
             path.push(self.parseDashedName())
-            self.rawSkip(LOperator, "/")
+            self.skip(LDot)
         }
         let fileToken = self.skip(LUpper)
         let alias = if(self.current().rawIs("as")) {

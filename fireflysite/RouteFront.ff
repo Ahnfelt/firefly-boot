@@ -2,7 +2,6 @@ import Lux from ff:lux
 import WebServer from ff:webserver
 import Router
 import Guide
-import ExamplesOverview
 import FrontPage
 import Html
 import Website
@@ -25,6 +24,6 @@ browserMain(system: BrowserSystem) {
 render(lux: Lux, data: PageData) {
     let next = None // TODO MenuItem(["getting-started"], Menu.menu.grabFirst().name, None)
     Website.renderContentWithNext(lux, [], next) {lux =>
-        Guide.renderSections(lux, data.sections, ExamplesOverview.demos())
+        Guide.renderSections(lux, data.sections, [])
     }
 }
