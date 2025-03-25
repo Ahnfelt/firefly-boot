@@ -273,7 +273,8 @@ extend self: Handler {
             let lspHook = LspHook.new(at = None, definedAt = None, insertIdentifier = False, trackSymbols = True)
             let code = self.virtualFiles.get(path.absolute()).else {path.readText()}
             let tokens = Tokenizer.tokenize(path.absolute(), code, None, True)
-            let parser = Parser.new(PackagePair("script", "script"), path.absolute(), tokens, False, lspHook)
+            let dummyModuleKey = ModuleKey(PackagePair("script", "script"), [], path.base())
+            let parser = Parser.new(dummyModuleKey, tokens, False, lspHook)
             parser.parseModuleWithPackageInfo()
             SymbolHandler.readAllSymbols(lspHook.results())
         } tryCatch {| CompileError(at, message), error =>
@@ -403,7 +404,8 @@ extend self: Handler {
         try {
             let code = self.virtualFiles.get(cursorAt.file).else {system.path(cursorAt.file).readText()}
             let tokens = Tokenizer.tokenize(cursorAt.file, code, None, True)
-            let parser = Parser.new(PackagePair("script", "script"), cursorAt.file, tokens, False, lspHook)
+            let dummyModuleKey = ModuleKey(PackagePair("script", "script"), [], "<LSP>")
+            let parser = Parser.new(dummyModuleKey, tokens, False, lspHook)
             parser.parseModuleWithPackageInfo()
         } tryCatch {| CompileError(at, message), error =>
             Log.trace("handleSignatureHelp check error: " + message)
@@ -521,14 +523,14 @@ extend self: Handler {
             qualifiedName.split('.').grabLast().split('_').grabLast()
         }
 
-        function extractModuleName(qualifiedName: String): String {
-            qualifiedName.split('/').grabLast().takeWhile {c => c != '.' || c == '_'}
-        }
-
-        function extractPackagePair(qualifiedName: String): PackagePair {
+        function extractModuleKey(qualifiedName: String): ModuleKey {
             let group = qualifiedName.split(':').grabFirst()
             let name = qualifiedName.split(':').grabLast().takeWhile {_ != '/'}
-            PackagePair(group, name)
+            let packagePair = PackagePair(group, name)
+            let moduleParts = qualifiedName.split('/').dropFirst()
+            let moduleFolders = moduleParts.dropLast()
+            let moduleName = moduleParts.grabLast().takeWhile {c => c != '.' || c == '_'}
+            ModuleKey(packagePair, moduleFolders, moduleName)
         }
 
         definedAtList.first().{
@@ -541,11 +543,11 @@ extend self: Handler {
                 mustContain.each {Log.trace("mustContain: " + _)}
                 
                 let skipFiles = if(definition.name.contains(":")) {
-                    let list = self.moduleCache.filesNotImporting(extractPackagePair(definition.name), extractModuleName(definition.name))
+                    let list = self.moduleCache.filesNotImporting(extractModuleKey(definition.name))
                     list.toSet()
                 } else {
                     self.moduleCache.parsedModules.get(definition.at.file).map {| Pair(module, _) =>
-                        let list = self.moduleCache.filesNotImporting(module.packagePair, module.file.dropLast(3))
+                        let list = self.moduleCache.filesNotImporting(module.moduleKey)
                         list.toSet()
                     }.else {
                         Log.trace("No skip list due to unqualified definition.name: " + definition.name)
