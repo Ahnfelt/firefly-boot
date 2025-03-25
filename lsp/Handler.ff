@@ -366,9 +366,12 @@ extend self: Handler {
     }
 
     handleHover(system: NodeSystem, targetAt: Location, goToDefinition: Bool, version: Int): ResultOrError {
+        Log.trace("targetAt: " + Show.show(targetAt))
         let lspHook = LspHook.new(at = Some(targetAt), definedAt = None, insertIdentifier = False, trackSymbols = False)
         let path = system.path(targetAt.file)
+        Log.trace("path: " + Show.show(path.absolutePath))
         let errors = self.check(system, self.fireflyPath, path, None, Set.new(), self.virtualFiles, version, lspHook, True)
+        Log.trace("errors: " + Show.show(errors))
         errors.each {| CompileError(at, message) => 
             Log.trace("handleHover check error: " + message)
         }

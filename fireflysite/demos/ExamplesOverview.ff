@@ -1,7 +1,7 @@
 import Guide
-import demos/CountingButtonDemo
-import demos/MatchingPasswordsDemo
-import demos/PostgresqlDemo
+import demos.CountingButtonDemo
+import demos.MatchingPasswordsDemo
+import demos.PostgresqlDemo
 
 demos(): List[Demo] {
     [
