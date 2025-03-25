@@ -148,7 +148,7 @@ internalCompile(buildSystem: BuildSystem, mainFiles: List[Path], target: String)
     Js.await(Js.rawIdentifier("$firefly_compiler")->"buildViaBuildSystem_$"(
         buildSystem! 
         internalPath(buildSystem, buildSystem!->"fireflyPath_"?)!
-        mainFiles.map {_.base()}
+        mainFiles.map {_.base()} // TODO: Support folders here
         target
         Js.currentTask()!
     ))

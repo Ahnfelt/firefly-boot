@@ -217,7 +217,8 @@ return ff_compiler_Dependencies.Dependencies_parsePackageFile(self_, packagePair
 
 export function Dependencies_parsePackageFile(self_, packagePair_, fileName_, code_) {
 const tokens_ = ff_compiler_Tokenizer.tokenize_(fileName_, code_, ff_core_Option.None(), true);
-const parser_ = ff_compiler_Parser.new_(packagePair_, fileName_, tokens_, false, ff_compiler_LspHook.disabled_());
+const moduleKey_ = ff_compiler_Syntax.ModuleKey(packagePair_, [], "<package>");
+const parser_ = ff_compiler_Parser.new_(moduleKey_, tokens_, false, ff_compiler_LspHook.disabled_());
 const info_ = ff_compiler_Parser.Parser_parsePackageInfo(parser_);
 return ff_compiler_Dependencies.Dependencies_addCoreDependencyIfMissing(self_, info_)
 }
@@ -324,7 +325,8 @@ return (await ff_compiler_Dependencies.Dependencies_parsePackageFile$(self_, pac
 
 export async function Dependencies_parsePackageFile$(self_, packagePair_, fileName_, code_, $task) {
 const tokens_ = ff_compiler_Tokenizer.tokenize_(fileName_, code_, ff_core_Option.None(), true);
-const parser_ = ff_compiler_Parser.new_(packagePair_, fileName_, tokens_, false, ff_compiler_LspHook.disabled_());
+const moduleKey_ = ff_compiler_Syntax.ModuleKey(packagePair_, [], "<package>");
+const parser_ = ff_compiler_Parser.new_(moduleKey_, tokens_, false, ff_compiler_LspHook.disabled_());
 const info_ = ff_compiler_Parser.Parser_parsePackageInfo(parser_);
 return (await ff_compiler_Dependencies.Dependencies_addCoreDependencyIfMissing$(self_, info_, $task))
 }

@@ -23,17 +23,17 @@ extend self: Dictionaries {
             | _ => None
         }.toMap()
 
-        let lets = module.lets.map { self.processLetDefinition(functionSignatures, _) }
-        let functions = module.functions.map { self.processFunctionDefinition(functionSignatures, _) }
-        let extends = module.extends.map { self.processExtendDefinition(functionSignatures, _) }
-        //let traits = module.traits.map { self.processTraitDefinition(functionSignatures, _) }
-        let instances = module.instances.map { self.processInstanceDefinition(functionSignatures, _) }
+        let lets = module.lets.map {self.processLetDefinition(functionSignatures, _)}
+        let functions = module.functions.map {self.processFunctionDefinition(functionSignatures, _)}
+        let extends = module.extends.map {self.processExtendDefinition(functionSignatures, _)}
+        //let traits = module.traits.map {self.processTraitDefinition(functionSignatures, _)}
+        let instances = module.instances.map {self.processInstanceDefinition(functionSignatures, _)}
         module.Module(
             //traits = traits,
-            instances = instances,
-            extends = extends,
-            lets = lets,
-            functions = functions,
+            instances = instances
+            extends = extends
+            lets = lets
+            functions = functions
         )
     }
 
@@ -177,7 +177,7 @@ extend self: Dictionaries {
                 let dictionaries = instance.constraints.map {c =>
                     self.makeDictionary(at, instance.generics, firstType.generics, c)
                 }
-                Dictionary(instance.packagePair, instance.moduleName, constraint.name, firstType.name, dictionaries)
+                Dictionary(instance.moduleKey, constraint.name, firstType.name, dictionaries)
             | TVariable t => fail(t.at, " is still a unification variable")
         }
     }
@@ -195,8 +195,7 @@ constraintsToInstances(constraints: List[Constraint]): Map[InstanceKey, Instance
             InstanceValue(
                 generics = []
                 constraints = []
-                packagePair = PackagePair("", "")
-                moduleName = ""
+                moduleKey = ModuleKey(PackagePair("", ""), [], "")
                 traitName = c.name
                 typeArguments = c.generics
             )

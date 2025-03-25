@@ -117,7 +117,7 @@ return {at_, name_, asBound_};
 
 
 
-export function new_(packagePair_, moduleName_, lspHook_) {
+export function new_(lspHook_) {
 return ff_compiler_Resolver.Resolver(ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Resolver.ResolverState(2), lspHook_)
 }
 
@@ -133,7 +133,7 @@ seen_ = ff_core_Map.Map_add(seen_, n_, item_, ff_core_Ordering.ff_core_Ordering_
 return items_
 }
 
-export async function new_$(packagePair_, moduleName_, lspHook_, $task) {
+export async function new_$(lspHook_, $task) {
 return ff_compiler_Resolver.Resolver(ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Resolver.ResolverState(2), lspHook_)
 }
 
@@ -156,16 +156,11 @@ return result_
 }
 
 export function Resolver_resolveModule(self_, module_, otherModules_) {
-const moduleNamespace_ = ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_core_String.String_replace(module_.file_, "\\", "/")), ((_w1) => {
-return (_w1 !== 47)
-}))), ((_w1) => {
-return (_w1 !== 46)
-}));
 const self2_ = ff_compiler_Resolver.Resolver_processImports(self_, module_.imports_, otherModules_);
 const self3_ = ff_compiler_Resolver.Resolver_processDefinitions(self2_, module_, ff_core_Option.None());
 const errors_ = ff_core_Array.new_();
 const module2_ = (((_c) => {
-return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, ff_compiler_Syntax.catchManyInto_(errors_, module_.types_, ((_w1) => {
+return ff_compiler_Syntax.Module(_c.moduleKey_, _c.imports_, ff_compiler_Syntax.catchManyInto_(errors_, module_.types_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTypeDefinition(self3_, _w1)
 })), ff_compiler_Syntax.catchManyInto_(errors_, module_.traits_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTraitDefinition(self3_, _w1)
@@ -269,7 +264,7 @@ for(let for_a = imports_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i+
 const import_ = for_a[for_i];
 do {
 const _1 = ff_core_List.List_find(modules_, ((_w1) => {
-return (ff_core_String.String_dropLast(_w1.file_, 3) === import_.file_)
+return ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_ModuleKey.equals_(_w1.moduleKey_, import_.moduleKey_)
 }));
 if(_1.Some) {
 const module_ = _1.value_;
@@ -277,7 +272,7 @@ resolver_ = ff_compiler_Resolver.Resolver_processDefinitions(resolver_, module_,
 break
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("No such module: " + import_.file_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("No such module: " + ff_compiler_Syntax.ModuleKey_importName(import_.moduleKey_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 } while(false)
 };
@@ -286,7 +281,7 @@ return resolver_
 
 export function Resolver_processDefinitions(self_, module_, importAlias_) {
 function entry_(name_, unqualified_) {
-const full_ = ((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_);
+const full_ = ff_compiler_Syntax.ModuleKey_qualifiedSymbol(module_.moduleKey_, name_);
 {
 const _1 = importAlias_;
 if(_1.None) {
@@ -304,7 +299,7 @@ return [ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_core_Pair.Pair(fu
 }
 }
 }
-const isCore_ = (((module_.packagePair_.group_ === "ff") && (module_.packagePair_.name_ === "core")) && (module_.file_ === "Core.ff"));
+const isCore_ = ((((module_.moduleKey_.packagePair_.group_ === "ff") && (module_.moduleKey_.packagePair_.name_ === "core")) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(module_.moduleKey_.folders_, [])) && (module_.moduleKey_.name_ === "Core"));
 const lets_ = ff_core_List.List_toMap(ff_core_List.List_flatMap(module_.lets_, ((_w1) => {
 return entry_(_w1.name_, isCore_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -1157,16 +1152,11 @@ return result_
 }
 
 export async function Resolver_resolveModule$(self_, module_, otherModules_, $task) {
-const moduleNamespace_ = ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_core_String.String_replace(module_.file_, "\\", "/")), ((_w1) => {
-return (_w1 !== 47)
-}))), ((_w1) => {
-return (_w1 !== 46)
-}));
 const self2_ = ff_compiler_Resolver.Resolver_processImports(self_, module_.imports_, otherModules_);
 const self3_ = ff_compiler_Resolver.Resolver_processDefinitions(self2_, module_, ff_core_Option.None());
 const errors_ = ff_core_Array.new_();
 const module2_ = (((_c) => {
-return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, ff_compiler_Syntax.catchManyInto_(errors_, module_.types_, ((_w1) => {
+return ff_compiler_Syntax.Module(_c.moduleKey_, _c.imports_, ff_compiler_Syntax.catchManyInto_(errors_, module_.types_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTypeDefinition(self3_, _w1)
 })), ff_compiler_Syntax.catchManyInto_(errors_, module_.traits_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTraitDefinition(self3_, _w1)
@@ -1270,7 +1260,7 @@ for(let for_a = imports_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i+
 const import_ = for_a[for_i];
 do {
 const _1 = ff_core_List.List_find(modules_, ((_w1) => {
-return (ff_core_String.String_dropLast(_w1.file_, 3) === import_.file_)
+return ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_ModuleKey.equals_(_w1.moduleKey_, import_.moduleKey_)
 }));
 if(_1.Some) {
 const module_ = _1.value_;
@@ -1278,7 +1268,7 @@ resolver_ = ff_compiler_Resolver.Resolver_processDefinitions(resolver_, module_,
 break
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("No such module: " + import_.file_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("No such module: " + ff_compiler_Syntax.ModuleKey_importName(import_.moduleKey_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 } while(false)
 };
@@ -1287,7 +1277,7 @@ return resolver_
 
 export async function Resolver_processDefinitions$(self_, module_, importAlias_, $task) {
 function entry_(name_, unqualified_) {
-const full_ = ((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_);
+const full_ = ff_compiler_Syntax.ModuleKey_qualifiedSymbol(module_.moduleKey_, name_);
 {
 const _1 = importAlias_;
 if(_1.None) {
@@ -1305,7 +1295,7 @@ return [ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_core_Pair.Pair(fu
 }
 }
 }
-const isCore_ = (((module_.packagePair_.group_ === "ff") && (module_.packagePair_.name_ === "core")) && (module_.file_ === "Core.ff"));
+const isCore_ = ((((module_.moduleKey_.packagePair_.group_ === "ff") && (module_.moduleKey_.packagePair_.name_ === "core")) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(module_.moduleKey_.folders_, [])) && (module_.moduleKey_.name_ === "Core"));
 const lets_ = ff_core_List.List_toMap(ff_core_List.List_flatMap(module_.lets_, ((_w1) => {
 return entry_(_w1.name_, isCore_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);

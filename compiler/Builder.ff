@@ -13,8 +13,7 @@ import DependencyLock
 build(
     system: NodeSystem
     emitTarget: EmitTarget
-    mainPackage: PackagePair
-    mainModules: List[String]
+    mainModules: List[ModuleKey]
     resolvedDependencies: ResolvedDependencies
     compilerModulePath: Option[Path]
     tempPath: Path
@@ -40,9 +39,7 @@ build(
             moduleCache
             lspHook = LspHook.disabled()
         )
-        mainModules.each {mainModule =>
-            compiler.emit(mainPackage, mainModule, isMainModule = True)
-        }
+        mainModules.each {moduleKey => compiler.emit(moduleKey, isMainModule = True)}
         if(printMeasurements) {compiler.printMeasurements()}
         resolvedDependencies.packagePaths.each {packagePair, packagePath =>
             resolvedDependencies.packages.get(packagePair).each {packageInfo =>
@@ -105,11 +102,13 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: Path, mainFiles: List[Strin
     if(target != "browser") {
         panic("buildViaBuildSystem is currently limited to browser target only - the restriction can be lifted")
     }
+    let mainModuleKeys = mainFiles.map {_.dropLast(".ff".size())}.map {
+        ModuleKey(resolvedDependencies.mainPackagePair, [], _) //  TODO: Support folders here
+    }
     build(
         system = system
         emitTarget = EmitBrowser
-        mainPackage = resolvedDependencies.mainPackagePair
-        mainModules = mainFiles.map {_.dropLast(".ff".size())}
+        mainModules = mainModuleKeys
         resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
         compilerModulePath = None
         tempPath = system.path(".firefly/temporary")
@@ -172,12 +171,13 @@ check(
             package.files.filter {!_.contains([".firefly", "dependencies"])}
         }
         files.each {file =>
-            let localFile = file.base()
+            let localFile = file.base() // TODO: Support folders here
+            let moduleKey = ModuleKey(resolvedDependencies.mainPackagePair, [], localFile.dropLast(".ff".size()))
             try {
                 if(infer) {
-                    compiler.infer(resolvedDependencies.mainPackagePair, localFile.dropLast(".ff".size()))
+                    compiler.infer(moduleKey)
                 } else {
-                    compiler.resolve(resolvedDependencies.mainPackagePair, localFile.dropLast(".ff".size()))
+                    compiler.resolve(moduleKey)
                 }
             } tryCatch {| CompileError(_, _) @ c, error =>
                 errors.push(c)

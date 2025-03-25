@@ -138,7 +138,7 @@ const i_ = _1.index_;
 return ff_compiler_Inference.fail_(c_.at_, ("Unexpected unification variable: $" + i_))
 }
 }))(ff_core_List.List_grabFirst(c_.generics_));
-return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue([], [], ff_compiler_Syntax.PackagePair("", ""), "", c_.name_, c_.generics_))
+return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue([], [], ff_compiler_Syntax.ModuleKey(ff_compiler_Syntax.PackagePair("", ""), [], ""), c_.name_, c_.generics_))
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
 
@@ -167,7 +167,7 @@ const i_ = _1.index_;
 return ff_compiler_Inference.fail_(c_.at_, ("Unexpected unification variable: $" + i_))
 }
 }))(ff_core_List.List_grabFirst(c_.generics_));
-return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue([], [], ff_compiler_Syntax.PackagePair("", ""), "", c_.name_, c_.generics_))
+return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue([], [], ff_compiler_Syntax.ModuleKey(ff_compiler_Syntax.PackagePair("", ""), [], ""), c_.name_, c_.generics_))
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
 
@@ -208,7 +208,7 @@ return _w1.first_
 }
 } while(false);
 const result_ = (((_c) => {
-return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, traits_, instances_, extends_, lets_, functions_)
+return ff_compiler_Syntax.Module(_c.moduleKey_, _c.imports_, _c.types_, traits_, instances_, extends_, lets_, functions_)
 }))(module_);
 const subsititution_ = ff_compiler_Substitution.Substitution(self_.unification_.substitution_);
 return ff_compiler_Substitution.Substitution_substituteModule(subsititution_, result_)
@@ -2125,7 +2125,7 @@ return _w1.first_
 }
 } while(false);
 const result_ = (((_c) => {
-return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, traits_, instances_, extends_, lets_, functions_)
+return ff_compiler_Syntax.Module(_c.moduleKey_, _c.imports_, _c.types_, traits_, instances_, extends_, lets_, functions_)
 }))(module_);
 const subsititution_ = ff_compiler_Substitution.Substitution(self_.unification_.substitution_);
 return ff_compiler_Substitution.Substitution_substituteModule(subsititution_, result_)

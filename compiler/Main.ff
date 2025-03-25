@@ -50,8 +50,7 @@ main(system: NodeSystem): Unit {
         Builder.build(
             system = system
             emitTarget = emitTarget
-            mainPackage = mainPackagePair
-            mainModules = [mainFile]
+            mainModules = [ModuleKey(mainPackagePair, [], mainFile)] // TODO: Support folders here
             resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
             compilerModulePath = compilerModulePath
             tempPath = system.path(".firefly").slash("temporary")
@@ -123,8 +122,7 @@ main(system: NodeSystem): Unit {
             Builder.build(
                 system = system
                 emitTarget = EmitNode
-                mainPackage = PackagePair("ff", "compiler")
-                mainModules = ["Main"]
+                mainModules = [ModuleKey(PackagePair("ff", "compiler"), [], "Main")]
                 resolvedDependencies = ResolvedDependencies(
                     mainPackagePair = PackagePair("ff", "compiler")
                     packages = [Pair(

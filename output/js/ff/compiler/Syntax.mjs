@@ -121,14 +121,19 @@ export function PackageInfo(package_, dependencies_, includes_) {
 return {package_, dependencies_, includes_};
 }
 
-// type Module
-export function Module(file_, packagePair_, imports_, types_, traits_, instances_, extends_, lets_, functions_) {
-return {file_, packagePair_, imports_, types_, traits_, instances_, extends_, lets_, functions_};
-}
-
 // type PackagePair
 export function PackagePair(group_, name_) {
 return {group_, name_};
+}
+
+// type ModuleKey
+export function ModuleKey(packagePair_, folders_, name_) {
+return {packagePair_, folders_, name_};
+}
+
+// type Module
+export function Module(moduleKey_, imports_, types_, traits_, instances_, extends_, lets_, functions_) {
+return {moduleKey_, imports_, types_, traits_, instances_, extends_, lets_, functions_};
 }
 
 // type DPackage
@@ -152,8 +157,8 @@ return {node_, browser_};
 }
 
 // type DImport
-export function DImport(at_, alias_, package_, directory_, file_) {
-return {at_, alias_, package_, directory_, file_};
+export function DImport(at_, alias_, moduleKey_) {
+return {at_, alias_, moduleKey_};
 }
 
 // type DFunction
@@ -290,8 +295,8 @@ return {at_, term_, pattern_};
 }
 
 // type Dictionary
-export function Dictionary(packagePair_, moduleName_, traitName_, typeName_, dictionaries_) {
-return {packagePair_, moduleName_, traitName_, typeName_, dictionaries_};
+export function Dictionary(moduleKey_, traitName_, typeName_, dictionaries_) {
+return {moduleKey_, traitName_, typeName_, dictionaries_};
 }
 
 // type Signature
@@ -476,8 +481,58 @@ export function PackagePair_groupName(self_, delimiter_ = ":") {
 return ((self_.group_ + delimiter_) + self_.name_)
 }
 
+export function PackagePair_isCore(self_) {
+return ((self_.group_ === "ff") && (self_.name_ === "core"))
+}
+
 export async function PackagePair_groupName$(self_, delimiter_ = ":", $task) {
 return ((self_.group_ + delimiter_) + self_.name_)
+}
+
+export async function PackagePair_isCore$(self_, $task) {
+return ((self_.group_ === "ff") && (self_.name_ === "core"))
+}
+
+export function ModuleKey_importName(self_) {
+return (ff_core_List.List_join(ff_core_List.List_map(self_.folders_, ((_w1) => {
+return (_w1 + "/")
+})), "") + self_.name_)
+}
+
+export function ModuleKey_path(self_, packagePath_) {
+const parent_ = ff_core_List.List_foldLeft(self_.folders_, packagePath_, ((p_, f_) => {
+return ff_core_Path.Path_slash(p_, f_)
+}));
+return ff_core_Path.Path_slash(parent_, (self_.name_ + ".ff"))
+}
+
+export function ModuleKey_qualifiedName(self_) {
+return ((ff_compiler_Syntax.PackagePair_groupName(self_.packagePair_, ":") + "/") + ff_compiler_Syntax.ModuleKey_importName(self_))
+}
+
+export function ModuleKey_qualifiedSymbol(self_, symbol_) {
+return ((ff_compiler_Syntax.ModuleKey_qualifiedName(self_) + ".") + symbol_)
+}
+
+export async function ModuleKey_importName$(self_, $task) {
+return (ff_core_List.List_join(ff_core_List.List_map(self_.folders_, ((_w1) => {
+return (_w1 + "/")
+})), "") + self_.name_)
+}
+
+export async function ModuleKey_path$(self_, packagePath_, $task) {
+const parent_ = (await ff_core_List.List_foldLeft$(self_.folders_, packagePath_, (async (p_, f_, $task) => {
+return (await ff_core_Path.Path_slash$(p_, f_, $task))
+}), $task));
+return (await ff_core_Path.Path_slash$(parent_, (self_.name_ + ".ff"), $task))
+}
+
+export async function ModuleKey_qualifiedName$(self_, $task) {
+return ((ff_compiler_Syntax.PackagePair_groupName(self_.packagePair_, ":") + "/") + ff_compiler_Syntax.ModuleKey_importName(self_))
+}
+
+export async function ModuleKey_qualifiedSymbol$(self_, symbol_, $task) {
+return ((ff_compiler_Syntax.ModuleKey_qualifiedName(self_) + ".") + symbol_)
 }
 
 export function Type_show(self_, shownTypes_) {
@@ -787,21 +842,30 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Syntax.PackageInfo" + "[") + "
 }
 };
 
-export const ff_core_Any_HasAnyTag$ff_compiler_Syntax_Module = {
-anyTag_() {
-return ff_core_Any.internalAnyTag_((("ff:compiler/Syntax.Module" + "[") + "]"))
-},
-async anyTag_$($task) {
-return ff_core_Any.internalAnyTag_((("ff:compiler/Syntax.Module" + "[") + "]"))
-}
-};
-
 export const ff_core_Any_HasAnyTag$ff_compiler_Syntax_PackagePair = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Syntax.PackagePair" + "[") + "]"))
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Syntax.PackagePair" + "[") + "]"))
+}
+};
+
+export const ff_core_Any_HasAnyTag$ff_compiler_Syntax_ModuleKey = {
+anyTag_() {
+return ff_core_Any.internalAnyTag_((("ff:compiler/Syntax.ModuleKey" + "[") + "]"))
+},
+async anyTag_$($task) {
+return ff_core_Any.internalAnyTag_((("ff:compiler/Syntax.ModuleKey" + "[") + "]"))
+}
+};
+
+export const ff_core_Any_HasAnyTag$ff_compiler_Syntax_Module = {
+anyTag_() {
+return ff_core_Any.internalAnyTag_((("ff:compiler/Syntax.Module" + "[") + "]"))
+},
+async anyTag_$($task) {
+return ff_core_Any.internalAnyTag_((("ff:compiler/Syntax.Module" + "[") + "]"))
 }
 };
 
@@ -1133,23 +1197,6 @@ return ((((((("PackageInfo" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_com
 }
 };
 
-export const ff_core_Show_Show$ff_compiler_Syntax_Module = {
-show_(value_) {
-const value_a = value_;
-{
-const z_ = value_a;
-return ((((((((((((((((((("Module" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.packagePair_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DImport).show_(z_.imports_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DType).show_(z_.types_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DTrait).show_(z_.traits_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DInstance).show_(z_.instances_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DExtend).show_(z_.extends_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DLet).show_(z_.lets_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DFunction).show_(z_.functions_)) + ")")
-}
-},
-async show_$(value_, $task) {
-const value_a = value_;
-{
-const z_ = value_a;
-return ((((((((((((((((((("Module" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.packagePair_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DImport).show_(z_.imports_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DType).show_(z_.types_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DTrait).show_(z_.traits_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DInstance).show_(z_.instances_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DExtend).show_(z_.extends_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DLet).show_(z_.lets_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DFunction).show_(z_.functions_)) + ")")
-}
-}
-};
-
 export const ff_core_Show_Show$ff_compiler_Syntax_PackagePair = {
 show_(value_) {
 const value_a = value_;
@@ -1163,6 +1210,40 @@ const value_a = value_;
 {
 const z_ = value_a;
 return ((((("PackagePair" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.group_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ")")
+}
+}
+};
+
+export const ff_core_Show_Show$ff_compiler_Syntax_ModuleKey = {
+show_(value_) {
+const value_a = value_;
+{
+const z_ = value_a;
+return ((((((("ModuleKey" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.packagePair_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.folders_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ")")
+}
+},
+async show_$(value_, $task) {
+const value_a = value_;
+{
+const z_ = value_a;
+return ((((((("ModuleKey" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.packagePair_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.folders_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ")")
+}
+}
+};
+
+export const ff_core_Show_Show$ff_compiler_Syntax_Module = {
+show_(value_) {
+const value_a = value_;
+{
+const z_ = value_a;
+return ((((((((((((((((("Module" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_ModuleKey.show_(z_.moduleKey_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DImport).show_(z_.imports_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DType).show_(z_.types_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DTrait).show_(z_.traits_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DInstance).show_(z_.instances_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DExtend).show_(z_.extends_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DLet).show_(z_.lets_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DFunction).show_(z_.functions_)) + ")")
+}
+},
+async show_$(value_, $task) {
+const value_a = value_;
+{
+const z_ = value_a;
+return ((((((((((((((((("Module" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_ModuleKey.show_(z_.moduleKey_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DImport).show_(z_.imports_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DType).show_(z_.types_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DTrait).show_(z_.traits_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DInstance).show_(z_.instances_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DExtend).show_(z_.extends_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DLet).show_(z_.lets_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DFunction).show_(z_.functions_)) + ")")
 }
 }
 };
@@ -1240,14 +1321,14 @@ show_(value_) {
 const value_a = value_;
 {
 const z_ = value_a;
-return ((((((((((("DImport" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.alias_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.package_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.directory_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ")")
+return ((((((("DImport" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.alias_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_ModuleKey.show_(z_.moduleKey_)) + ")")
 }
 },
 async show_$(value_, $task) {
 const value_a = value_;
 {
 const z_ = value_a;
-return ((((((((((("DImport" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.alias_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.package_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.directory_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ")")
+return ((((((("DImport" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.alias_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_ModuleKey.show_(z_.moduleKey_)) + ")")
 }
 }
 };
@@ -1652,14 +1733,14 @@ show_(value_) {
 const value_a = value_;
 {
 const z_ = value_a;
-return ((((((((((("Dictionary" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.packagePair_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.moduleName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.traitName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.typeName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Dictionary).show_(z_.dictionaries_)) + ")")
+return ((((((((("Dictionary" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_ModuleKey.show_(z_.moduleKey_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.traitName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.typeName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Dictionary).show_(z_.dictionaries_)) + ")")
 }
 },
 async show_$(value_, $task) {
 const value_a = value_;
 {
 const z_ = value_a;
-return ((((((((((("Dictionary" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.packagePair_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.moduleName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.traitName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.typeName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Dictionary).show_(z_.dictionaries_)) + ")")
+return ((((((((("Dictionary" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_ModuleKey.show_(z_.moduleKey_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.traitName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.typeName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Dictionary).show_(z_.dictionaries_)) + ")")
 }
 }
 };
@@ -1973,29 +2054,6 @@ return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DPackage.equal
 }
 };
 
-export const ff_core_Equal_Equal$ff_compiler_Syntax_Module = {
-equals_(x_, y_) {
-const x_a = x_;
-const y_a = y_;
-if((x_ === y_)) {
-return true
-}
-{
-return ((x_.file_ === y_.file_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DImport).equals_(x_.imports_, y_.imports_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DType).equals_(x_.types_, y_.types_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DTrait).equals_(x_.traits_, y_.traits_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DInstance).equals_(x_.instances_, y_.instances_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DExtend).equals_(x_.extends_, y_.extends_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DLet).equals_(x_.lets_, y_.lets_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DFunction).equals_(x_.functions_, y_.functions_)))))))))
-}
-},
-async equals_$(x_, y_, $task) {
-const x_a = x_;
-const y_a = y_;
-if((x_ === y_)) {
-return true
-}
-{
-return ((x_.file_ === y_.file_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DImport).equals_(x_.imports_, y_.imports_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DType).equals_(x_.types_, y_.types_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DTrait).equals_(x_.traits_, y_.traits_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DInstance).equals_(x_.instances_, y_.instances_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DExtend).equals_(x_.extends_, y_.extends_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DLet).equals_(x_.lets_, y_.lets_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DFunction).equals_(x_.functions_, y_.functions_)))))))))
-}
-}
-};
-
 export const ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair = {
 equals_(x_, y_) {
 const x_a = x_;
@@ -2015,6 +2073,52 @@ return true
 }
 {
 return ((x_.group_ === y_.group_) && (x_.name_ === y_.name_))
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_ModuleKey = {
+equals_(x_, y_) {
+const x_a = x_;
+const y_a = y_;
+if((x_ === y_)) {
+return true
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.folders_, y_.folders_) && (x_.name_ === y_.name_)))
+}
+},
+async equals_$(x_, y_, $task) {
+const x_a = x_;
+const y_a = y_;
+if((x_ === y_)) {
+return true
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.folders_, y_.folders_) && (x_.name_ === y_.name_)))
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_Module = {
+equals_(x_, y_) {
+const x_a = x_;
+const y_a = y_;
+if((x_ === y_)) {
+return true
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_ModuleKey.equals_(x_.moduleKey_, y_.moduleKey_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DImport).equals_(x_.imports_, y_.imports_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DType).equals_(x_.types_, y_.types_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DTrait).equals_(x_.traits_, y_.traits_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DInstance).equals_(x_.instances_, y_.instances_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DExtend).equals_(x_.extends_, y_.extends_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DLet).equals_(x_.lets_, y_.lets_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DFunction).equals_(x_.functions_, y_.functions_))))))))
+}
+},
+async equals_$(x_, y_, $task) {
+const x_a = x_;
+const y_a = y_;
+if((x_ === y_)) {
+return true
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_ModuleKey.equals_(x_.moduleKey_, y_.moduleKey_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DImport).equals_(x_.imports_, y_.imports_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DType).equals_(x_.types_, y_.types_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DTrait).equals_(x_.traits_, y_.traits_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DInstance).equals_(x_.instances_, y_.instances_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DExtend).equals_(x_.extends_, y_.extends_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DLet).equals_(x_.lets_, y_.lets_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DFunction).equals_(x_.functions_, y_.functions_))))))))
 }
 }
 };
@@ -2119,7 +2223,7 @@ if((x_ === y_)) {
 return true
 }
 {
-return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.alias_ === y_.alias_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.package_, y_.package_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.directory_, y_.directory_) && (x_.file_ === y_.file_)))))
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.alias_ === y_.alias_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_ModuleKey.equals_(x_.moduleKey_, y_.moduleKey_)))
 }
 },
 async equals_$(x_, y_, $task) {
@@ -2129,7 +2233,7 @@ if((x_ === y_)) {
 return true
 }
 {
-return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.alias_ === y_.alias_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.package_, y_.package_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.directory_, y_.directory_) && (x_.file_ === y_.file_)))))
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.alias_ === y_.alias_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_ModuleKey.equals_(x_.moduleKey_, y_.moduleKey_)))
 }
 }
 };
@@ -2685,7 +2789,7 @@ if((x_ === y_)) {
 return true
 }
 {
-return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && ((x_.moduleName_ === y_.moduleName_) && ((x_.traitName_ === y_.traitName_) && ((x_.typeName_ === y_.typeName_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Dictionary).equals_(x_.dictionaries_, y_.dictionaries_)))))
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_ModuleKey.equals_(x_.moduleKey_, y_.moduleKey_) && ((x_.traitName_ === y_.traitName_) && ((x_.typeName_ === y_.typeName_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Dictionary).equals_(x_.dictionaries_, y_.dictionaries_))))
 }
 },
 async equals_$(x_, y_, $task) {
@@ -2695,7 +2799,7 @@ if((x_ === y_)) {
 return true
 }
 {
-return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && ((x_.moduleName_ === y_.moduleName_) && ((x_.traitName_ === y_.traitName_) && ((x_.typeName_ === y_.typeName_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Dictionary).equals_(x_.dictionaries_, y_.dictionaries_)))))
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_ModuleKey.equals_(x_.moduleKey_, y_.moduleKey_) && ((x_.traitName_ === y_.traitName_) && ((x_.typeName_ === y_.typeName_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Dictionary).equals_(x_.dictionaries_, y_.dictionaries_))))
 }
 }
 };
@@ -3185,121 +3289,6 @@ return
 }
 };
 
-export const ff_core_Ordering_Order$ff_compiler_Syntax_Module = {
-compare_(x_, y_) {
-const x_a = x_;
-const y_a = y_;
-if((x_ === y_)) {
-return ff_core_Ordering.OrderingSame()
-}
-{
-const fileOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.file_, y_.file_);
-if((fileOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return fileOrdering_
-} else {
-const packagePairOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair.compare_(x_.packagePair_, y_.packagePair_);
-if((packagePairOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return packagePairOrdering_
-} else {
-const importsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DImport).compare_(x_.imports_, y_.imports_);
-if((importsOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return importsOrdering_
-} else {
-const typesOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DType).compare_(x_.types_, y_.types_);
-if((typesOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return typesOrdering_
-} else {
-const traitsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DTrait).compare_(x_.traits_, y_.traits_);
-if((traitsOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return traitsOrdering_
-} else {
-const instancesOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DInstance).compare_(x_.instances_, y_.instances_);
-if((instancesOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return instancesOrdering_
-} else {
-const extendsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DExtend).compare_(x_.extends_, y_.extends_);
-if((extendsOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return extendsOrdering_
-} else {
-const letsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DLet).compare_(x_.lets_, y_.lets_);
-if((letsOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return letsOrdering_
-} else {
-const functionsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DFunction).compare_(x_.functions_, y_.functions_);
-if((functionsOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return functionsOrdering_
-} else {
-return ff_core_Ordering.OrderingSame()
-}
-}
-}
-}
-}
-}
-}
-}
-}
-return
-}
-},
-async compare_$(x_, y_, $task) {
-const x_a = x_;
-const y_a = y_;
-if((x_ === y_)) {
-return ff_core_Ordering.OrderingSame()
-}
-{
-const fileOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.file_, y_.file_);
-if((fileOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return fileOrdering_
-} else {
-const packagePairOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair.compare_(x_.packagePair_, y_.packagePair_);
-if((packagePairOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return packagePairOrdering_
-} else {
-const importsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DImport).compare_(x_.imports_, y_.imports_);
-if((importsOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return importsOrdering_
-} else {
-const typesOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DType).compare_(x_.types_, y_.types_);
-if((typesOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return typesOrdering_
-} else {
-const traitsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DTrait).compare_(x_.traits_, y_.traits_);
-if((traitsOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return traitsOrdering_
-} else {
-const instancesOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DInstance).compare_(x_.instances_, y_.instances_);
-if((instancesOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return instancesOrdering_
-} else {
-const extendsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DExtend).compare_(x_.extends_, y_.extends_);
-if((extendsOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return extendsOrdering_
-} else {
-const letsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DLet).compare_(x_.lets_, y_.lets_);
-if((letsOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return letsOrdering_
-} else {
-const functionsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DFunction).compare_(x_.functions_, y_.functions_);
-if((functionsOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return functionsOrdering_
-} else {
-return ff_core_Ordering.OrderingSame()
-}
-}
-}
-}
-}
-}
-}
-}
-}
-return
-}
-}
-};
-
 export const ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair = {
 compare_(x_, y_) {
 const x_a = x_;
@@ -3338,6 +3327,166 @@ if((nameOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return nameOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
+}
+return
+}
+}
+};
+
+export const ff_core_Ordering_Order$ff_compiler_Syntax_ModuleKey = {
+compare_(x_, y_) {
+const x_a = x_;
+const y_a = y_;
+if((x_ === y_)) {
+return ff_core_Ordering.OrderingSame()
+}
+{
+const packagePairOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair.compare_(x_.packagePair_, y_.packagePair_);
+if((packagePairOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return packagePairOrdering_
+} else {
+const foldersOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.folders_, y_.folders_);
+if((foldersOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return foldersOrdering_
+} else {
+const nameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.name_, y_.name_);
+if((nameOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return nameOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+}
+return
+}
+},
+async compare_$(x_, y_, $task) {
+const x_a = x_;
+const y_a = y_;
+if((x_ === y_)) {
+return ff_core_Ordering.OrderingSame()
+}
+{
+const packagePairOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair.compare_(x_.packagePair_, y_.packagePair_);
+if((packagePairOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return packagePairOrdering_
+} else {
+const foldersOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.folders_, y_.folders_);
+if((foldersOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return foldersOrdering_
+} else {
+const nameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.name_, y_.name_);
+if((nameOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return nameOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+}
+return
+}
+}
+};
+
+export const ff_core_Ordering_Order$ff_compiler_Syntax_Module = {
+compare_(x_, y_) {
+const x_a = x_;
+const y_a = y_;
+if((x_ === y_)) {
+return ff_core_Ordering.OrderingSame()
+}
+{
+const moduleKeyOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_ModuleKey.compare_(x_.moduleKey_, y_.moduleKey_);
+if((moduleKeyOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return moduleKeyOrdering_
+} else {
+const importsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DImport).compare_(x_.imports_, y_.imports_);
+if((importsOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return importsOrdering_
+} else {
+const typesOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DType).compare_(x_.types_, y_.types_);
+if((typesOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return typesOrdering_
+} else {
+const traitsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DTrait).compare_(x_.traits_, y_.traits_);
+if((traitsOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return traitsOrdering_
+} else {
+const instancesOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DInstance).compare_(x_.instances_, y_.instances_);
+if((instancesOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return instancesOrdering_
+} else {
+const extendsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DExtend).compare_(x_.extends_, y_.extends_);
+if((extendsOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return extendsOrdering_
+} else {
+const letsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DLet).compare_(x_.lets_, y_.lets_);
+if((letsOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return letsOrdering_
+} else {
+const functionsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DFunction).compare_(x_.functions_, y_.functions_);
+if((functionsOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return functionsOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+}
+}
+}
+}
+}
+}
+return
+}
+},
+async compare_$(x_, y_, $task) {
+const x_a = x_;
+const y_a = y_;
+if((x_ === y_)) {
+return ff_core_Ordering.OrderingSame()
+}
+{
+const moduleKeyOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_ModuleKey.compare_(x_.moduleKey_, y_.moduleKey_);
+if((moduleKeyOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return moduleKeyOrdering_
+} else {
+const importsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DImport).compare_(x_.imports_, y_.imports_);
+if((importsOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return importsOrdering_
+} else {
+const typesOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DType).compare_(x_.types_, y_.types_);
+if((typesOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return typesOrdering_
+} else {
+const traitsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DTrait).compare_(x_.traits_, y_.traits_);
+if((traitsOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return traitsOrdering_
+} else {
+const instancesOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DInstance).compare_(x_.instances_, y_.instances_);
+if((instancesOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return instancesOrdering_
+} else {
+const extendsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DExtend).compare_(x_.extends_, y_.extends_);
+if((extendsOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return extendsOrdering_
+} else {
+const letsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DLet).compare_(x_.lets_, y_.lets_);
+if((letsOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return letsOrdering_
+} else {
+const functionsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_DFunction).compare_(x_.functions_, y_.functions_);
+if((functionsOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return functionsOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+}
+}
+}
+}
 }
 }
 return
@@ -3591,21 +3740,11 @@ const aliasOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_St
 if((aliasOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return aliasOrdering_
 } else {
-const packageOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair.compare_(x_.package_, y_.package_);
-if((packageOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return packageOrdering_
-} else {
-const directoryOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.directory_, y_.directory_);
-if((directoryOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return directoryOrdering_
-} else {
-const fileOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.file_, y_.file_);
-if((fileOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return fileOrdering_
+const moduleKeyOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_ModuleKey.compare_(x_.moduleKey_, y_.moduleKey_);
+if((moduleKeyOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return moduleKeyOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
-}
-}
 }
 }
 }
@@ -3627,21 +3766,11 @@ const aliasOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_St
 if((aliasOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return aliasOrdering_
 } else {
-const packageOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair.compare_(x_.package_, y_.package_);
-if((packageOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return packageOrdering_
-} else {
-const directoryOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.directory_, y_.directory_);
-if((directoryOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return directoryOrdering_
-} else {
-const fileOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.file_, y_.file_);
-if((fileOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return fileOrdering_
+const moduleKeyOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_ModuleKey.compare_(x_.moduleKey_, y_.moduleKey_);
+if((moduleKeyOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return moduleKeyOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
-}
-}
 }
 }
 }
@@ -5787,13 +5916,9 @@ if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 }
 {
-const packagePairOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair.compare_(x_.packagePair_, y_.packagePair_);
-if((packagePairOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return packagePairOrdering_
-} else {
-const moduleNameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.moduleName_, y_.moduleName_);
-if((moduleNameOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return moduleNameOrdering_
+const moduleKeyOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_ModuleKey.compare_(x_.moduleKey_, y_.moduleKey_);
+if((moduleKeyOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return moduleKeyOrdering_
 } else {
 const traitNameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.traitName_, y_.traitName_);
 if((traitNameOrdering_ !== ff_core_Ordering.OrderingSame())) {
@@ -5808,7 +5933,6 @@ if((dictionariesOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return dictionariesOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
-}
 }
 }
 }
@@ -5823,13 +5947,9 @@ if((x_ === y_)) {
 return ff_core_Ordering.OrderingSame()
 }
 {
-const packagePairOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair.compare_(x_.packagePair_, y_.packagePair_);
-if((packagePairOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return packagePairOrdering_
-} else {
-const moduleNameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.moduleName_, y_.moduleName_);
-if((moduleNameOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return moduleNameOrdering_
+const moduleKeyOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_ModuleKey.compare_(x_.moduleKey_, y_.moduleKey_);
+if((moduleKeyOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return moduleKeyOrdering_
 } else {
 const traitNameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.traitName_, y_.traitName_);
 if((traitNameOrdering_ !== ff_core_Ordering.OrderingSame())) {
@@ -5844,7 +5964,6 @@ if((dictionariesOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return dictionariesOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
-}
 }
 }
 }
@@ -6833,79 +6952,6 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serial
 }
 };
 
-export const ff_core_Serializable_Serializable$ff_compiler_Syntax_Module = {
-serializeUsing_(serialization_, value_) {
-const serialization_a = serialization_;
-const value_a = value_;
-{
-const v_ = value_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
-ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
-serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.file_);
-ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.serializeUsing_(serialization_, v_.packagePair_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DImport).serializeUsing_(serialization_, v_.imports_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DType).serializeUsing_(serialization_, v_.types_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DTrait).serializeUsing_(serialization_, v_.traits_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DInstance).serializeUsing_(serialization_, v_.instances_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DExtend).serializeUsing_(serialization_, v_.extends_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DLet).serializeUsing_(serialization_, v_.lets_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DFunction).serializeUsing_(serialization_, v_.functions_)
-return
-}
-},
-deserializeUsing_(serialization_) {
-const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
-serialization_.offset_ += 1;
-{
-const _1 = variantIndex_;
-if(_1 === 0) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
-return ff_compiler_Syntax.Module(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DImport).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DType).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DTrait).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DInstance).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DExtend).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DLet).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DFunction).deserializeUsing_(serialization_))
-}
-{
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-}
-}
-},
-async serializeUsing_$(serialization_, value_, $task) {
-const serialization_a = serialization_;
-const value_a = value_;
-{
-const v_ = value_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
-ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
-serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.file_);
-ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.serializeUsing_(serialization_, v_.packagePair_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DImport).serializeUsing_(serialization_, v_.imports_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DType).serializeUsing_(serialization_, v_.types_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DTrait).serializeUsing_(serialization_, v_.traits_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DInstance).serializeUsing_(serialization_, v_.instances_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DExtend).serializeUsing_(serialization_, v_.extends_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DLet).serializeUsing_(serialization_, v_.lets_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DFunction).serializeUsing_(serialization_, v_.functions_)
-return
-}
-},
-async deserializeUsing_$(serialization_, $task) {
-const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
-serialization_.offset_ += 1;
-{
-const _1 = variantIndex_;
-if(_1 === 0) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
-return ff_compiler_Syntax.Module(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DImport).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DType).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DTrait).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DInstance).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DExtend).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DLet).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DFunction).deserializeUsing_(serialization_))
-}
-{
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-}
-}
-}
-};
-
 export const ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair = {
 serializeUsing_(serialization_, value_) {
 const serialization_a = serialization_;
@@ -6957,6 +7003,138 @@ const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 return ff_compiler_Syntax.PackagePair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+}
+{
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
+}
+}
+}
+};
+
+export const ff_core_Serializable_Serializable$ff_compiler_Syntax_ModuleKey = {
+serializeUsing_(serialization_, value_) {
+const serialization_a = serialization_;
+const value_a = value_;
+{
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
+serialization_.offset_ += 1;
+ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.serializeUsing_(serialization_, v_.packagePair_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.folders_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.name_)
+return
+}
+},
+deserializeUsing_(serialization_) {
+const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
+serialization_.offset_ += 1;
+{
+const _1 = variantIndex_;
+if(_1 === 0) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
+return ff_compiler_Syntax.ModuleKey(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+}
+{
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
+}
+}
+},
+async serializeUsing_$(serialization_, value_, $task) {
+const serialization_a = serialization_;
+const value_a = value_;
+{
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
+serialization_.offset_ += 1;
+ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.serializeUsing_(serialization_, v_.packagePair_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.folders_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.name_)
+return
+}
+},
+async deserializeUsing_$(serialization_, $task) {
+const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
+serialization_.offset_ += 1;
+{
+const _1 = variantIndex_;
+if(_1 === 0) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
+return ff_compiler_Syntax.ModuleKey(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+}
+{
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
+}
+}
+}
+};
+
+export const ff_core_Serializable_Serializable$ff_compiler_Syntax_Module = {
+serializeUsing_(serialization_, value_) {
+const serialization_a = serialization_;
+const value_a = value_;
+{
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
+serialization_.offset_ += 1;
+ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_ModuleKey.serializeUsing_(serialization_, v_.moduleKey_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DImport).serializeUsing_(serialization_, v_.imports_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DType).serializeUsing_(serialization_, v_.types_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DTrait).serializeUsing_(serialization_, v_.traits_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DInstance).serializeUsing_(serialization_, v_.instances_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DExtend).serializeUsing_(serialization_, v_.extends_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DLet).serializeUsing_(serialization_, v_.lets_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DFunction).serializeUsing_(serialization_, v_.functions_)
+return
+}
+},
+deserializeUsing_(serialization_) {
+const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
+serialization_.offset_ += 1;
+{
+const _1 = variantIndex_;
+if(_1 === 0) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
+return ff_compiler_Syntax.Module(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_ModuleKey.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DImport).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DType).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DTrait).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DInstance).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DExtend).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DLet).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DFunction).deserializeUsing_(serialization_))
+}
+{
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
+}
+}
+},
+async serializeUsing_$(serialization_, value_, $task) {
+const serialization_a = serialization_;
+const value_a = value_;
+{
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
+serialization_.offset_ += 1;
+ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_ModuleKey.serializeUsing_(serialization_, v_.moduleKey_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DImport).serializeUsing_(serialization_, v_.imports_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DType).serializeUsing_(serialization_, v_.types_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DTrait).serializeUsing_(serialization_, v_.traits_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DInstance).serializeUsing_(serialization_, v_.instances_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DExtend).serializeUsing_(serialization_, v_.extends_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DLet).serializeUsing_(serialization_, v_.lets_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DFunction).serializeUsing_(serialization_, v_.functions_)
+return
+}
+},
+async deserializeUsing_$(serialization_, $task) {
+const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
+serialization_.offset_ += 1;
+{
+const _1 = variantIndex_;
+if(_1 === 0) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
+return ff_compiler_Syntax.Module(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_ModuleKey.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DImport).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DType).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DTrait).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DInstance).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DExtend).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DLet).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DFunction).deserializeUsing_(serialization_))
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -7223,9 +7401,7 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1;
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, v_.at_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.alias_);
-ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.serializeUsing_(serialization_, v_.package_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.directory_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.file_)
+ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_ModuleKey.serializeUsing_(serialization_, v_.moduleKey_)
 return
 }
 },
@@ -7236,7 +7412,7 @@ serialization_.offset_ += 1;
 const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
-return ff_compiler_Syntax.DImport(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+return ff_compiler_Syntax.DImport(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_ModuleKey.deserializeUsing_(serialization_))
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -7254,9 +7430,7 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1;
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, v_.at_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.alias_);
-ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.serializeUsing_(serialization_, v_.package_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.directory_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.file_)
+ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_ModuleKey.serializeUsing_(serialization_, v_.moduleKey_)
 return
 }
 },
@@ -7267,7 +7441,7 @@ serialization_.offset_ += 1;
 const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
-return ff_compiler_Syntax.DImport(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+return ff_compiler_Syntax.DImport(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_ModuleKey.deserializeUsing_(serialization_))
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -8779,8 +8953,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.serializeUsing_(serialization_, v_.packagePair_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.moduleName_);
+ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_ModuleKey.serializeUsing_(serialization_, v_.moduleKey_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.traitName_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.typeName_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Dictionary).serializeUsing_(serialization_, v_.dictionaries_)
@@ -8794,7 +8967,7 @@ serialization_.offset_ += 1;
 const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
-return ff_compiler_Syntax.Dictionary(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Dictionary).deserializeUsing_(serialization_))
+return ff_compiler_Syntax.Dictionary(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_ModuleKey.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Dictionary).deserializeUsing_(serialization_))
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
@@ -8810,8 +8983,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.serializeUsing_(serialization_, v_.packagePair_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.moduleName_);
+ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_ModuleKey.serializeUsing_(serialization_, v_.moduleKey_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.traitName_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.typeName_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Dictionary).serializeUsing_(serialization_, v_.dictionaries_)
@@ -8825,7 +8997,7 @@ serialization_.offset_ += 1;
 const _1 = variantIndex_;
 if(_1 === 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
-return ff_compiler_Syntax.Dictionary(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Dictionary).deserializeUsing_(serialization_))
+return ff_compiler_Syntax.Dictionary(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_ModuleKey.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Dictionary).deserializeUsing_(serialization_))
 }
 {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})

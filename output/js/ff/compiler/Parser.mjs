@@ -105,8 +105,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Parser
-export function Parser(packagePair_, file_, tokens_, end_, targetIsNode_, lspHook_, lspEmittedArgumentHook_, offset_, nextUnificationVariableIndex_) {
-return {packagePair_, file_, tokens_, end_, targetIsNode_, lspHook_, lspEmittedArgumentHook_, offset_, nextUnificationVariableIndex_};
+export function Parser(moduleKey_, tokens_, end_, targetIsNode_, lspHook_, lspEmittedArgumentHook_, offset_, nextUnificationVariableIndex_) {
+return {moduleKey_, tokens_, end_, targetIsNode_, lspHook_, lspEmittedArgumentHook_, offset_, nextUnificationVariableIndex_};
 }
 
 // type Poly
@@ -116,12 +116,12 @@ return {generics_, constraints_};
 
 export const binaryOperators_ = [["||"], ["&&"], ["!=", "==", "!==", "==="], ["<=", ">=", "<", ">"], ["+", "-"], ["*", "/", "%"], ["^"]];
 
-export function new_(packagePair_, file_, tokens_, targetIsNode_, lspHook_) {
-return ff_compiler_Parser.Parser(packagePair_, file_, tokens_, ff_core_List.List_grabLast(tokens_), targetIsNode_, lspHook_, false, 0, 1)
+export function new_(moduleKey_, tokens_, targetIsNode_, lspHook_) {
+return ff_compiler_Parser.Parser(moduleKey_, tokens_, ff_core_List.List_grabLast(tokens_), targetIsNode_, lspHook_, false, 0, 1)
 }
 
-export async function new_$(packagePair_, file_, tokens_, targetIsNode_, lspHook_, $task) {
-return ff_compiler_Parser.Parser(packagePair_, file_, tokens_, ff_core_List.List_grabLast(tokens_), targetIsNode_, lspHook_, false, 0, 1)
+export async function new_$(moduleKey_, tokens_, targetIsNode_, lspHook_, $task) {
+return ff_compiler_Parser.Parser(moduleKey_, tokens_, ff_core_List.List_grabLast(tokens_), targetIsNode_, lspHook_, false, 0, 1)
 }
 
 export function Parser_fail(self_, at_, message_) {
@@ -245,7 +245,7 @@ ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 };
 return p_
 })()
-: ff_compiler_Syntax.DPackage(location_, self_.packagePair_, ff_compiler_Syntax.Version(location_, 0, 0, 0), ff_compiler_Syntax.TargetNames(self_.targetIsNode_, (!self_.targetIsNode_))));
+: ff_compiler_Syntax.DPackage(location_, self_.moduleKey_.packagePair_, ff_compiler_Syntax.Version(location_, 0, 0, 0), ff_compiler_Syntax.TargetNames(self_.targetIsNode_, (!self_.targetIsNode_))));
 if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "package"))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Duplicate package definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
@@ -288,7 +288,7 @@ instances_.array.push(ff_compiler_Parser.Parser_parseInstanceDefinition(self_))
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs4(ff_compiler_Parser.Parser_current(self_), "data", "class", "capability", "newtype"))) {
 types_.array.push(ff_compiler_Parser.Parser_parseTypeDefinition(self_))
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "import"))) {
-imports_.array.push(ff_compiler_Parser.Parser_parseImportDefinition(self_, self_.packagePair_))
+imports_.array.push(ff_compiler_Parser.Parser_parseImportDefinition(self_, self_.moduleKey_.packagePair_))
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "include"))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Includes must be at the top of the file or below 'package'"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "dependency"))) {
@@ -302,7 +302,7 @@ if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_com
 ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 }
 };
-return ff_compiler_Syntax.Module(self_.file_, self_.packagePair_, ff_core_Array.Array_toList(imports_, 0, 9007199254740991), ff_core_Array.Array_toList(types_, 0, 9007199254740991), ff_core_Array.Array_toList(traits_, 0, 9007199254740991), ff_core_Array.Array_toList(instances_, 0, 9007199254740991), ff_core_Array.Array_toList(extends_, 0, 9007199254740991), ff_core_Array.Array_toList(lets_, 0, 9007199254740991), ff_core_Array.Array_toList(functions_, 0, 9007199254740991))
+return ff_compiler_Syntax.Module(self_.moduleKey_, ff_core_Array.Array_toList(imports_, 0, 9007199254740991), ff_core_Array.Array_toList(types_, 0, 9007199254740991), ff_core_Array.Array_toList(traits_, 0, 9007199254740991), ff_core_Array.Array_toList(instances_, 0, 9007199254740991), ff_core_Array.Array_toList(extends_, 0, 9007199254740991), ff_core_Array.Array_toList(lets_, 0, 9007199254740991), ff_core_Array.Array_toList(functions_, 0, 9007199254740991))
 }
 
 export function Parser_parseLetDefinition(self_) {
@@ -592,7 +592,7 @@ const packageName_ = ff_compiler_Parser.Parser_parseDashedName(self_);
 return ff_compiler_Syntax.PackagePair(userName_, packageName_)
 })()
 : currentPackagePair_);
-return ff_compiler_Syntax.DImport(ff_compiler_Token.Token_at(fileToken_), alias_, packagePair_, ff_core_Array.Array_toList(path_, 0, 9007199254740991), ff_compiler_Token.Token_raw(fileToken_))
+return ff_compiler_Syntax.DImport(ff_compiler_Token.Token_at(fileToken_), alias_, ff_compiler_Syntax.ModuleKey(packagePair_, ff_core_Array.Array_toList(path_, 0, 9007199254740991), ff_compiler_Token.Token_raw(fileToken_)))
 }
 
 export function Parser_parsePackageDefinition(self_) {
@@ -1749,7 +1749,7 @@ ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 };
 return p_
 })())
-: ff_compiler_Syntax.DPackage(location_, self_.packagePair_, ff_compiler_Syntax.Version(location_, 0, 0, 0), ff_compiler_Syntax.TargetNames(self_.targetIsNode_, (!self_.targetIsNode_))));
+: ff_compiler_Syntax.DPackage(location_, self_.moduleKey_.packagePair_, ff_compiler_Syntax.Version(location_, 0, 0, 0), ff_compiler_Syntax.TargetNames(self_.targetIsNode_, (!self_.targetIsNode_))));
 if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "package"))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Duplicate package definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
@@ -1792,7 +1792,7 @@ instances_.array.push(ff_compiler_Parser.Parser_parseInstanceDefinition(self_))
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs4(ff_compiler_Parser.Parser_current(self_), "data", "class", "capability", "newtype"))) {
 types_.array.push(ff_compiler_Parser.Parser_parseTypeDefinition(self_))
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "import"))) {
-imports_.array.push(ff_compiler_Parser.Parser_parseImportDefinition(self_, self_.packagePair_))
+imports_.array.push(ff_compiler_Parser.Parser_parseImportDefinition(self_, self_.moduleKey_.packagePair_))
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "include"))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Includes must be at the top of the file or below 'package'"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "dependency"))) {
@@ -1806,7 +1806,7 @@ if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_com
 ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 }
 };
-return ff_compiler_Syntax.Module(self_.file_, self_.packagePair_, ff_core_Array.Array_toList(imports_, 0, 9007199254740991), ff_core_Array.Array_toList(types_, 0, 9007199254740991), ff_core_Array.Array_toList(traits_, 0, 9007199254740991), ff_core_Array.Array_toList(instances_, 0, 9007199254740991), ff_core_Array.Array_toList(extends_, 0, 9007199254740991), ff_core_Array.Array_toList(lets_, 0, 9007199254740991), ff_core_Array.Array_toList(functions_, 0, 9007199254740991))
+return ff_compiler_Syntax.Module(self_.moduleKey_, ff_core_Array.Array_toList(imports_, 0, 9007199254740991), ff_core_Array.Array_toList(types_, 0, 9007199254740991), ff_core_Array.Array_toList(traits_, 0, 9007199254740991), ff_core_Array.Array_toList(instances_, 0, 9007199254740991), ff_core_Array.Array_toList(extends_, 0, 9007199254740991), ff_core_Array.Array_toList(lets_, 0, 9007199254740991), ff_core_Array.Array_toList(functions_, 0, 9007199254740991))
 }
 
 export async function Parser_parseLetDefinition$(self_, $task) {
@@ -2096,7 +2096,7 @@ const packageName_ = ff_compiler_Parser.Parser_parseDashedName(self_);
 return ff_compiler_Syntax.PackagePair(userName_, packageName_)
 })())
 : currentPackagePair_);
-return ff_compiler_Syntax.DImport(ff_compiler_Token.Token_at(fileToken_), alias_, packagePair_, ff_core_Array.Array_toList(path_, 0, 9007199254740991), ff_compiler_Token.Token_raw(fileToken_))
+return ff_compiler_Syntax.DImport(ff_compiler_Token.Token_at(fileToken_), alias_, ff_compiler_Syntax.ModuleKey(packagePair_, ff_core_Array.Array_toList(path_, 0, 9007199254740991), ff_compiler_Token.Token_raw(fileToken_)))
 }
 
 export async function Parser_parsePackageDefinition$(self_, $task) {
