@@ -133,14 +133,16 @@ check(
     checkDependencies: Bool
 ): List[CompileError] {
     let packages = path.isDirectory().{
-        | True => findPackageFiles(path, mustContain, skipFiles)
         | False {path.endsWith([".firefly", "package.ff"])} => [PackageFiles(path.parent().grab(), Some(path), [])]
-        | False => [PackageFiles(path.parent().grab(), None, [path])]
+        | True => findPackageFilesForDirectory(path, mustContain, skipFiles)
+        | False => findPackageFilesForFile(path, mustContain, skipFiles).toList()
     }
     let errors = Array.new()
 
-    packages.filter {!_.files.isEmpty()}.each {package => 
-        let firstFile = package.files.grabFirst()
+    let filteredPackages = packages.filter {checkDependencies || !_.root.contains([".firefly", "dependencies"])}
+    filteredPackages.filter {!_.moduleKeys.isEmpty()}.each {package => 
+        let firstKey = package.moduleKeys.grabFirst()
+        let firstFile = firstKey.path(package.root)
         try {
             Some(Dependencies.process(system.httpClient(), dependencyLock, firstFile))
         } tryCatch {| CompileError(_, _) @ c, error =>
@@ -167,12 +169,7 @@ check(
             newCache
             lspHook
         )
-        let files = if(checkDependencies) {package.files} else {
-            package.files.filter {!_.contains([".firefly", "dependencies"])}
-        }
-        files.each {file =>
-            let localFile = file.base() // TODO: Support folders here
-            let moduleKey = ModuleKey(resolvedDependencies.mainPackagePair, [], localFile.dropLast(".ff".size()))
+        package.moduleKeys.each {moduleKey =>
             try {
                 if(infer) {
                     compiler.infer(moduleKey)
@@ -194,16 +191,24 @@ check(
 capability PackageFiles(
     root: Path
     packageFile: Option[Path]
-    files: List[Path]
+    moduleKeys: List[ModuleKey]
 )
 
 
-findPackageFiles(
-    path: Path
+findPackageFilesForFile(
+    file: Path
+    mustContain: Option[String]
+    skipFiles: Set[String]
+): Option[PackageFiles] {
+    None // TODO
+}
+
+findPackageFilesForDirectory(
+    directory: Path
     mustContain: Option[String]
     skipFiles: Set[String]
 ): List[PackageFiles] {
-    let files = findFireflyFiles(path, mustContain, skipFiles)
+    let files = findFireflyFiles(directory, mustContain, skipFiles)
     let split = files.partition {_.endsWith([".firefly", "package.ff"])}
     let packageFiles = split.first
     mutable singleFiles = split.second

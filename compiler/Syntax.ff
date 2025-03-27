@@ -50,8 +50,8 @@ extend self: ModuleKey {
         self.folders.map {_ + "/"}.join() + self.name
     }
     // "C:\myProject\folder\Module.ff"
-    path(packagePath: Path): Path {
-        let parent = self.folders.foldLeft(packagePath) {p, f => p.slash(f)}
+    path(packageRoot: Path): Path {
+        let parent = self.folders.foldLeft(packageRoot) {p, f => p.slash(f)}
         parent.slash(self.name + ".ff")
     }
     // "group:package/folder/Module"
