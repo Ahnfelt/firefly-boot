@@ -499,8 +499,8 @@ return (_w1 + "/")
 })), "") + self_.name_)
 }
 
-export function ModuleKey_path(self_, packagePath_) {
-const parent_ = ff_core_List.List_foldLeft(self_.folders_, packagePath_, ((p_, f_) => {
+export function ModuleKey_path(self_, packageRoot_) {
+const parent_ = ff_core_List.List_foldLeft(self_.folders_, packageRoot_, ((p_, f_) => {
 return ff_core_Path.Path_slash(p_, f_)
 }));
 return ff_core_Path.Path_slash(parent_, (self_.name_ + ".ff"))
@@ -520,8 +520,8 @@ return (_w1 + "/")
 })), "") + self_.name_)
 }
 
-export async function ModuleKey_path$(self_, packagePath_, $task) {
-const parent_ = (await ff_core_List.List_foldLeft$(self_.folders_, packagePath_, (async (p_, f_, $task) => {
+export async function ModuleKey_path$(self_, packageRoot_, $task) {
+const parent_ = (await ff_core_List.List_foldLeft$(self_.folders_, packageRoot_, (async (p_, f_, $task) => {
 return (await ff_core_Path.Path_slash$(p_, f_, $task))
 }), $task));
 return (await ff_core_Path.Path_slash$(parent_, (self_.name_ + ".ff"), $task))

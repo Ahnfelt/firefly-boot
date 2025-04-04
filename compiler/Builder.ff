@@ -130,19 +130,17 @@ check(
     newVersion: Int
     lspHook: LspHook
     infer: Bool
-    checkDependencies: Bool
 ): List[CompileError] {
     let packages = path.isDirectory().{
         | False {path.endsWith([".firefly", "package.ff"])} => [PackageFiles(path.parent().grab(), Some(path), [])]
         | True => findPackageFilesForDirectory(path, mustContain, skipFiles)
-        | False => findPackageFilesForFile(path, mustContain, skipFiles).toList()
+        | False => findPackageFilesForFile(path).toList()
     }
     let errors = Array.new()
 
-    let filteredPackages = packages.filter {checkDependencies || !_.root.contains([".firefly", "dependencies"])}
-    filteredPackages.filter {!_.moduleKeys.isEmpty()}.each {package => 
-        let firstKey = package.moduleKeys.grabFirst()
-        let firstFile = firstKey.path(package.root)
+    let filteredPackages = packages.filter {!_.root.contains([".firefly", "dependencies"])}
+    filteredPackages.filter {!_.files.isEmpty()}.each {package => 
+        let firstFile = package.files.grabFirst()
         try {
             Some(Dependencies.process(system.httpClient(), dependencyLock, firstFile))
         } tryCatch {| CompileError(_, _) @ c, error =>
@@ -169,7 +167,11 @@ check(
             newCache
             lspHook
         )
-        package.moduleKeys.each {moduleKey =>
+        package.files.each {file =>
+            let packagePair = resolvedDependencies.mainPackagePair
+            let folders = file.parent().grab().relativeTo(package.root).split('/') // TODO
+            let name = file.base().dropLast(3)
+            let moduleKey = ModuleKey(packagePair, folders, name)
             try {
                 if(infer) {
                     compiler.infer(moduleKey)
@@ -191,16 +193,20 @@ check(
 capability PackageFiles(
     root: Path
     packageFile: Option[Path]
-    moduleKeys: List[ModuleKey]
+    files: List[Path]
 )
 
 
-findPackageFilesForFile(
-    file: Path
-    mustContain: Option[String]
-    skipFiles: Set[String]
-): Option[PackageFiles] {
-    None // TODO
+findPackageFilesForFile(file: Path): Option[PackageFiles] {
+    if(file.extension() == ".ff"):
+    mutable packageFile = None
+    mutable currentDirectory = file.parent()
+    while {!currentDirectory.isEmpty() && packageFile.isEmpty()} {
+        packageFile = currentDirectory.map {_.slash(".firefly").slash("package.ff")}.filter {_.exists()}
+        currentDirectory = currentDirectory.grab().parent()
+    }
+    let projectRoot = packageFile.map {_.parent().grab().parent().grab()}.else {file.parent().grab()}
+    PackageFiles(projectRoot, packageFile, [file])
 }
 
 findPackageFilesForDirectory(
@@ -216,7 +222,8 @@ findPackageFilesForDirectory(
         let projectRoot = packageFile.parent().grab().parent().grab()
         let files = singleFiles.partition {_.isInsideOf(projectRoot)}
         singleFiles = files.second
-        PackageFiles(projectRoot, Some(packageFile), files.first)
+        let packageFiles = files.first
+        PackageFiles(projectRoot, Some(packageFile), packageFiles)
     }
     let singleFileProjects = singleFiles.map {file => 
         let projectRoot = file.parent().grab()
@@ -231,15 +238,17 @@ findFireflyFiles(
     skipFiles: Set[String]
 ): List[Path] {
     let split = path.entries().toList().partition {_.isDirectory()}
-    let directories = split.first.map {_.path()}.filter {_.base().all {c => 
+    let directories = split.first
+    let files = split.second
+    let relevantDirectories = directories.map {_.path()}.filter {_.base().all {c => 
         c == '.' || c.isAsciiLower() || c.isAsciiDigit()
     }}
-    let fireflyFiles = split.second.map {_.path()}.filter {file => 
+    let fireflyFiles = files.map {_.path()}.filter {file => 
         file.extension() == ".ff" && !skipFiles.contains(file.absolute()) && mustContain.all {s => 
             file.readText().contains(s)
         }
     }
-    [...fireflyFiles, ...directories.flatMap {findFireflyFiles(_, mustContain, skipFiles)}]
+    [...fireflyFiles, ...relevantDirectories.flatMap {findFireflyFiles(_, mustContain, skipFiles)}]
 }
 
 internalCreateExecutable(

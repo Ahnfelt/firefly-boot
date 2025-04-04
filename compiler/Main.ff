@@ -112,7 +112,6 @@ main(system: NodeSystem): Unit {
                 newVersion = 0
                 lspHook = LspHook.disabled() 
                 infer = True
-                checkDependencies = False
             )
             if(!errors.isEmpty()) {throw(CompileErrors(errors.distinct()))}
 

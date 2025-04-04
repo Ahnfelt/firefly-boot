@@ -219,20 +219,23 @@ return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.pac
 }))(resolvedDependencies_), ff_core_Option.None(), ff_core_NodeSystem.NodeSystem_path(system_, ".firefly/temporary"), ff_core_Path.Path_slash(ff_core_NodeSystem.NodeSystem_path(system_, ".firefly/output"), target_), false, ff_compiler_ModuleCache.new_(0))
 }
 
-export function check_(system_, fireflyPath_, path_, mustContain_, skipFiles_, virtualFiles_, cache_, dependencyLock_, newVersion_, lspHook_, infer_, checkDependencies_) {
+export function check_(system_, fireflyPath_, path_, mustContain_, skipFiles_, virtualFiles_, cache_, dependencyLock_, newVersion_, lspHook_, infer_) {
 const packages_ = (((_1) => {
-if(_1) {
-return ff_compiler_Builder.findPackageFiles_(path_, mustContain_, skipFiles_)
-}
 if(!_1 && ff_core_Path.Path_endsWith(path_, [".firefly", "package.ff"])) {
 return [ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab(ff_core_Path.Path_parent(path_)), ff_core_Option.Some(path_), [])]
 }
+if(_1) {
+return ff_compiler_Builder.findPackageFilesForDirectory_(path_, mustContain_, skipFiles_)
+}
 {
-return [ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab(ff_core_Path.Path_parent(path_)), ff_core_Option.None(), [path_])]
+return ff_core_Option.Option_toList(ff_compiler_Builder.findPackageFilesForFile_(path_))
 }
 }))(ff_core_Path.Path_isDirectory(path_));
 const errors_ = ff_core_Array.new_();
-for(let for_a = ff_core_List.List_filter(packages_, ((_w1) => {
+const filteredPackages_ = ff_core_List.List_filter(packages_, ((_w1) => {
+return (!ff_core_Path.Path_contains(_w1.root_, [".firefly", "dependencies"]))
+}));
+for(let for_a = ff_core_List.List_filter(filteredPackages_, ((_w1) => {
 return (!ff_core_List.List_isEmpty(_w1.files_))
 })), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const package_ = for_a[for_i];
@@ -265,15 +268,12 @@ return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.pac
 }))(resolvedDependencies_);
 const newCache_ = ff_compiler_ModuleCache.ModuleCache_without(cache_, newVersion_, path_);
 const compiler_ = ff_compiler_Compiler.new_(ff_compiler_JsEmitter.EmitBuild(), ff_core_NodeSystem.NodeSystem_mainTask(system_), ff_core_Option.None(), ff_core_Path.Path_slash(ff_core_Path.Path_slash(package_.root_, ".firefly"), "temporary"), fixedResolvedDependencies_, virtualFiles_, newCache_, lspHook_);
-const files_ = (checkDependencies_
-? package_.files_
-: ff_core_List.List_filter(package_.files_, ((_w1) => {
-return (!ff_core_Path.Path_contains(_w1, [".firefly", "dependencies"]))
-})));
-for(let for_a = files_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = package_.files_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const file_ = for_a[for_i];
-const localFile_ = ff_core_Path.Path_base(file_);
-const moduleKey_ = ff_compiler_Syntax.ModuleKey(resolvedDependencies_.mainPackagePair_, [], ff_core_String.String_dropLast(localFile_, ".ff".length));
+const packagePair_ = resolvedDependencies_.mainPackagePair_;
+const folders_ = ff_core_String.String_split(ff_core_Path.Path_relativeTo(ff_core_Option.Option_grab(ff_core_Path.Path_parent(file_)), package_.root_), 47);
+const name_ = ff_core_String.String_dropLast(ff_core_Path.Path_base(file_), 3);
+const moduleKey_ = ff_compiler_Syntax.ModuleKey(packagePair_, folders_, name_);
 ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch(ff_core_Core.try_((() => {
 if(infer_) {
 ff_compiler_Compiler.Compiler_infer(compiler_, moduleKey_)
@@ -303,8 +303,31 @@ ff_compiler_ModuleCache.ModuleCache_mergeVersions(cache_, compiler_.cache_)
 return ff_core_Array.Array_drain(errors_)
 }
 
-export function findPackageFiles_(path_, mustContain_, skipFiles_) {
-const files_ = ff_compiler_Builder.findFireflyFiles_(path_, mustContain_, skipFiles_);
+export function findPackageFilesForFile_(file_) {
+if((ff_core_Path.Path_extension(file_) === ".ff")) {
+return ff_core_Option.Some((function() {
+let packageFile_ = ff_core_Option.None();
+let currentDirectory_ = ff_core_Path.Path_parent(file_);
+while(((!ff_core_Option.Option_isEmpty(currentDirectory_)) && ff_core_Option.Option_isEmpty(packageFile_))) {
+packageFile_ = ff_core_Option.Option_filter(ff_core_Option.Option_map(currentDirectory_, ((_w1) => {
+return ff_core_Path.Path_slash(ff_core_Path.Path_slash(_w1, ".firefly"), "package.ff")
+})), ((_w1) => {
+return ff_core_Path.Path_exists(_w1, false, false, false)
+}));
+currentDirectory_ = ff_core_Path.Path_parent(ff_core_Option.Option_grab(currentDirectory_))
+};
+const projectRoot_ = ff_core_Option.Option_else(ff_core_Option.Option_map(packageFile_, ((_w1) => {
+return ff_core_Option.Option_grab(ff_core_Path.Path_parent(ff_core_Option.Option_grab(ff_core_Path.Path_parent(_w1))))
+})), (() => {
+return ff_core_Option.Option_grab(ff_core_Path.Path_parent(file_))
+}));
+return ff_compiler_Builder.PackageFiles(projectRoot_, packageFile_, [file_])
+})())
+} else return ff_core_Option.None()
+}
+
+export function findPackageFilesForDirectory_(directory_, mustContain_, skipFiles_) {
+const files_ = ff_compiler_Builder.findFireflyFiles_(directory_, mustContain_, skipFiles_);
 const split_ = ff_core_List.List_partition(files_, ((_w1) => {
 return ff_core_Path.Path_endsWith(_w1, [".firefly", "package.ff"])
 }));
@@ -316,7 +339,8 @@ const files_ = ff_core_List.List_partition(singleFiles_, ((_w1) => {
 return ff_core_Path.Path_isInsideOf(_w1, projectRoot_)
 }));
 singleFiles_ = files_.second_;
-return ff_compiler_Builder.PackageFiles(projectRoot_, ff_core_Option.Some(packageFile_), files_.first_)
+const packageFiles_ = files_.first_;
+return ff_compiler_Builder.PackageFiles(projectRoot_, ff_core_Option.Some(packageFile_), packageFiles_)
 }));
 const singleFileProjects_ = ff_core_List.List_map(singleFiles_, ((file_) => {
 const projectRoot_ = ff_core_Option.Option_grab(ff_core_Path.Path_parent(file_));
@@ -329,21 +353,23 @@ export function findFireflyFiles_(path_, mustContain_, skipFiles_) {
 const split_ = ff_core_List.List_partition(ff_core_Stream.Stream_toList(ff_core_Path.Path_entries(path_)), ((_w1) => {
 return ff_core_Path.PathEntry_isDirectory(_w1)
 }));
-const directories_ = ff_core_List.List_filter(ff_core_List.List_map(split_.first_, ((_w1) => {
+const directories_ = split_.first_;
+const files_ = split_.second_;
+const relevantDirectories_ = ff_core_List.List_filter(ff_core_List.List_map(directories_, ((_w1) => {
 return ff_core_Path.PathEntry_path(_w1)
 })), ((_w1) => {
 return ff_core_String.String_all(ff_core_Path.Path_base(_w1), ((c_) => {
 return (((c_ === 46) || ff_core_Char.Char_isAsciiLower(c_)) || ff_core_Char.Char_isAsciiDigit(c_))
 }))
 }));
-const fireflyFiles_ = ff_core_List.List_filter(ff_core_List.List_map(split_.second_, ((_w1) => {
+const fireflyFiles_ = ff_core_List.List_filter(ff_core_List.List_map(files_, ((_w1) => {
 return ff_core_Path.PathEntry_path(_w1)
 })), ((file_) => {
 return (((ff_core_Path.Path_extension(file_) === ".ff") && (!ff_core_Set.Set_contains(skipFiles_, ff_core_Path.Path_absolute(file_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) && ff_core_Option.Option_all(mustContain_, ((s_) => {
 return ff_core_String.String_contains(ff_core_Path.Path_readText(file_), s_)
 })))
 }));
-return [...fireflyFiles_, ...ff_core_List.List_flatMap(directories_, ((_w1) => {
+return [...fireflyFiles_, ...ff_core_List.List_flatMap(relevantDirectories_, ((_w1) => {
 return ff_compiler_Builder.findFireflyFiles_(_w1, mustContain_, skipFiles_)
 }))]
 }
@@ -483,20 +509,23 @@ return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.pac
 }))(resolvedDependencies_), ff_core_Option.None(), (await ff_core_NodeSystem.NodeSystem_path$(system_, ".firefly/temporary", $task)), (await ff_core_Path.Path_slash$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".firefly/output", $task)), target_, $task)), false, ff_compiler_ModuleCache.new_(0), $task))
 }
 
-export async function check_$(system_, fireflyPath_, path_, mustContain_, skipFiles_, virtualFiles_, cache_, dependencyLock_, newVersion_, lspHook_, infer_, checkDependencies_, $task) {
+export async function check_$(system_, fireflyPath_, path_, mustContain_, skipFiles_, virtualFiles_, cache_, dependencyLock_, newVersion_, lspHook_, infer_, $task) {
 const packages_ = (await ((async (_1, $task) => {
-if(_1) {
-return (await ff_compiler_Builder.findPackageFiles_$(path_, mustContain_, skipFiles_, $task))
-}
 if(!_1 && (await ff_core_Path.Path_endsWith$(path_, [".firefly", "package.ff"], $task))) {
 return [ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(path_, $task))), ff_core_Option.Some(path_), [])]
 }
+if(_1) {
+return (await ff_compiler_Builder.findPackageFilesForDirectory_$(path_, mustContain_, skipFiles_, $task))
+}
 {
-return [ff_compiler_Builder.PackageFiles(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(path_, $task))), ff_core_Option.None(), [path_])]
+return ff_core_Option.Option_toList((await ff_compiler_Builder.findPackageFilesForFile_$(path_, $task)))
 }
 }))((await ff_core_Path.Path_isDirectory$(path_, $task)), $task));
 const errors_ = ff_core_Array.new_();
-for(let for_a = ff_core_List.List_filter(packages_, ((_w1) => {
+const filteredPackages_ = (await ff_core_List.List_filter$(packages_, (async (_w1, $task) => {
+return (!(await ff_core_Path.Path_contains$(_w1.root_, [".firefly", "dependencies"], $task)))
+}), $task));
+for(let for_a = ff_core_List.List_filter(filteredPackages_, ((_w1) => {
 return (!ff_core_List.List_isEmpty(_w1.files_))
 })), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const package_ = for_a[for_i];
@@ -529,15 +558,12 @@ return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.pac
 }))(resolvedDependencies_);
 const newCache_ = (await ff_compiler_ModuleCache.ModuleCache_without$(cache_, newVersion_, path_, $task));
 const compiler_ = (await ff_compiler_Compiler.new_$(ff_compiler_JsEmitter.EmitBuild(), (await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), ff_core_Option.None(), (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(package_.root_, ".firefly", $task)), "temporary", $task)), fixedResolvedDependencies_, virtualFiles_, newCache_, lspHook_, $task));
-const files_ = (checkDependencies_
-? package_.files_
-: (await ff_core_List.List_filter$(package_.files_, (async (_w1, $task) => {
-return (!(await ff_core_Path.Path_contains$(_w1, [".firefly", "dependencies"], $task)))
-}), $task)));
-for(let for_a = files_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+for(let for_a = package_.files_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const file_ = for_a[for_i];
-const localFile_ = (await ff_core_Path.Path_base$(file_, $task));
-const moduleKey_ = ff_compiler_Syntax.ModuleKey(resolvedDependencies_.mainPackagePair_, [], ff_core_String.String_dropLast(localFile_, ".ff".length));
+const packagePair_ = resolvedDependencies_.mainPackagePair_;
+const folders_ = ff_core_String.String_split((await ff_core_Path.Path_relativeTo$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(file_, $task))), package_.root_, $task)), 47);
+const name_ = ff_core_String.String_dropLast((await ff_core_Path.Path_base$(file_, $task)), 3);
+const moduleKey_ = ff_compiler_Syntax.ModuleKey(packagePair_, folders_, name_);
 ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch((await ff_core_Core.try_$((async ($task) => {
 if(infer_) {
 (await ff_compiler_Compiler.Compiler_infer$(compiler_, moduleKey_, $task))
@@ -567,8 +593,31 @@ ff_compiler_ModuleCache.ModuleCache_mergeVersions(cache_, compiler_.cache_)
 return ff_core_Array.Array_drain(errors_)
 }
 
-export async function findPackageFiles_$(path_, mustContain_, skipFiles_, $task) {
-const files_ = (await ff_compiler_Builder.findFireflyFiles_$(path_, mustContain_, skipFiles_, $task));
+export async function findPackageFilesForFile_$(file_, $task) {
+if(((await ff_core_Path.Path_extension$(file_, $task)) === ".ff")) {
+return ff_core_Option.Some((await (async function() {
+let packageFile_ = ff_core_Option.None();
+let currentDirectory_ = (await ff_core_Path.Path_parent$(file_, $task));
+while(((!ff_core_Option.Option_isEmpty(currentDirectory_)) && ff_core_Option.Option_isEmpty(packageFile_))) {
+packageFile_ = (await ff_core_Option.Option_filter$((await ff_core_Option.Option_map$(currentDirectory_, (async (_w1, $task) => {
+return (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(_w1, ".firefly", $task)), "package.ff", $task))
+}), $task)), (async (_w1, $task) => {
+return (await ff_core_Path.Path_exists$(_w1, false, false, false, $task))
+}), $task));
+currentDirectory_ = (await ff_core_Path.Path_parent$(ff_core_Option.Option_grab(currentDirectory_), $task))
+};
+const projectRoot_ = (await ff_core_Option.Option_else$((await ff_core_Option.Option_map$(packageFile_, (async (_w1, $task) => {
+return ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(_w1, $task))), $task)))
+}), $task)), (async ($task) => {
+return ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(file_, $task)))
+}), $task));
+return ff_compiler_Builder.PackageFiles(projectRoot_, packageFile_, [file_])
+})()))
+} else return ff_core_Option.None()
+}
+
+export async function findPackageFilesForDirectory_$(directory_, mustContain_, skipFiles_, $task) {
+const files_ = (await ff_compiler_Builder.findFireflyFiles_$(directory_, mustContain_, skipFiles_, $task));
 const split_ = (await ff_core_List.List_partition$(files_, (async (_w1, $task) => {
 return (await ff_core_Path.Path_endsWith$(_w1, [".firefly", "package.ff"], $task))
 }), $task));
@@ -580,7 +629,8 @@ const files_ = (await ff_core_List.List_partition$(singleFiles_, (async (_w1, $t
 return (await ff_core_Path.Path_isInsideOf$(_w1, projectRoot_, $task))
 }), $task));
 singleFiles_ = files_.second_;
-return ff_compiler_Builder.PackageFiles(projectRoot_, ff_core_Option.Some(packageFile_), files_.first_)
+const packageFiles_ = files_.first_;
+return ff_compiler_Builder.PackageFiles(projectRoot_, ff_core_Option.Some(packageFile_), packageFiles_)
 }), $task));
 const singleFileProjects_ = (await ff_core_List.List_map$(singleFiles_, (async (file_, $task) => {
 const projectRoot_ = ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(file_, $task)));
@@ -593,21 +643,23 @@ export async function findFireflyFiles_$(path_, mustContain_, skipFiles_, $task)
 const split_ = (await ff_core_List.List_partition$((await ff_core_Stream.Stream_toList$((await ff_core_Path.Path_entries$(path_, $task)), $task)), (async (_w1, $task) => {
 return (await ff_core_Path.PathEntry_isDirectory$(_w1, $task))
 }), $task));
-const directories_ = (await ff_core_List.List_filter$((await ff_core_List.List_map$(split_.first_, (async (_w1, $task) => {
+const directories_ = split_.first_;
+const files_ = split_.second_;
+const relevantDirectories_ = (await ff_core_List.List_filter$((await ff_core_List.List_map$(directories_, (async (_w1, $task) => {
 return (await ff_core_Path.PathEntry_path$(_w1, $task))
 }), $task)), (async (_w1, $task) => {
 return ff_core_String.String_all((await ff_core_Path.Path_base$(_w1, $task)), ((c_) => {
 return (((c_ === 46) || ff_core_Char.Char_isAsciiLower(c_)) || ff_core_Char.Char_isAsciiDigit(c_))
 }))
 }), $task));
-const fireflyFiles_ = (await ff_core_List.List_filter$((await ff_core_List.List_map$(split_.second_, (async (_w1, $task) => {
+const fireflyFiles_ = (await ff_core_List.List_filter$((await ff_core_List.List_map$(files_, (async (_w1, $task) => {
 return (await ff_core_Path.PathEntry_path$(_w1, $task))
 }), $task)), (async (file_, $task) => {
 return ((((await ff_core_Path.Path_extension$(file_, $task)) === ".ff") && (!ff_core_Set.Set_contains(skipFiles_, (await ff_core_Path.Path_absolute$(file_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) && (await ff_core_Option.Option_all$(mustContain_, (async (s_, $task) => {
 return ff_core_String.String_contains((await ff_core_Path.Path_readText$(file_, $task)), s_)
 }), $task)))
 }), $task));
-return [...fireflyFiles_, ...(await ff_core_List.List_flatMap$(directories_, (async (_w1, $task) => {
+return [...fireflyFiles_, ...(await ff_core_List.List_flatMap$(relevantDirectories_, (async (_w1, $task) => {
 return (await ff_compiler_Builder.findFireflyFiles_$(_w1, mustContain_, skipFiles_, $task))
 }), $task))]
 }
