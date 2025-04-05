@@ -169,8 +169,8 @@ check(
         )
         package.files.each {file =>
             let packagePair = resolvedDependencies.mainPackagePair
-            let folders = file.parent().grab().relativeTo(package.root).split('/') // TODO
-            let name = file.base().dropLast(3)
+            let folders = file.parent().grab().relativeTo(package.root).split('/').filter {_ != ""} // TODO
+            let name = file.base().removeLast(".ff").grab()
             let moduleKey = ModuleKey(packagePair, folders, name)
             try {
                 if(infer) {

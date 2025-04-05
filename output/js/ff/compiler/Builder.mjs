@@ -271,8 +271,10 @@ const compiler_ = ff_compiler_Compiler.new_(ff_compiler_JsEmitter.EmitBuild(), f
 for(let for_a = package_.files_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const file_ = for_a[for_i];
 const packagePair_ = resolvedDependencies_.mainPackagePair_;
-const folders_ = ff_core_String.String_split(ff_core_Path.Path_relativeTo(ff_core_Option.Option_grab(ff_core_Path.Path_parent(file_)), package_.root_), 47);
-const name_ = ff_core_String.String_dropLast(ff_core_Path.Path_base(file_), 3);
+const folders_ = ff_core_List.List_filter(ff_core_String.String_split(ff_core_Path.Path_relativeTo(ff_core_Option.Option_grab(ff_core_Path.Path_parent(file_)), package_.root_), 47), ((_w1) => {
+return (_w1 !== "")
+}));
+const name_ = ff_core_Option.Option_grab(ff_core_String.String_removeLast(ff_core_Path.Path_base(file_), ".ff"));
 const moduleKey_ = ff_compiler_Syntax.ModuleKey(packagePair_, folders_, name_);
 ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch(ff_core_Core.try_((() => {
 if(infer_) {
@@ -561,8 +563,10 @@ const compiler_ = (await ff_compiler_Compiler.new_$(ff_compiler_JsEmitter.EmitBu
 for(let for_a = package_.files_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const file_ = for_a[for_i];
 const packagePair_ = resolvedDependencies_.mainPackagePair_;
-const folders_ = ff_core_String.String_split((await ff_core_Path.Path_relativeTo$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(file_, $task))), package_.root_, $task)), 47);
-const name_ = ff_core_String.String_dropLast((await ff_core_Path.Path_base$(file_, $task)), 3);
+const folders_ = ff_core_List.List_filter(ff_core_String.String_split((await ff_core_Path.Path_relativeTo$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(file_, $task))), package_.root_, $task)), 47), ((_w1) => {
+return (_w1 !== "")
+}));
+const name_ = ff_core_Option.Option_grab(ff_core_String.String_removeLast((await ff_core_Path.Path_base$(file_, $task)), ".ff"));
 const moduleKey_ = ff_compiler_Syntax.ModuleKey(packagePair_, folders_, name_);
 ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch((await ff_core_Core.try_$((async ($task) => {
 if(infer_) {
