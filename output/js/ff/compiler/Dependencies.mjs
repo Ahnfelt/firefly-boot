@@ -201,9 +201,7 @@ const tar_ = import$0;
 }
 
 export function Dependencies_loadPackageInfo(self_, packagePair_, path_) {
-const packageDirectory_ = ((ff_core_Path.Path_extension(path_) === ".ff")
-? ff_core_Option.Option_grab(ff_core_Path.Path_parent(path_))
-: path_);
+const packageDirectory_ = ff_compiler_Dependencies.findScriptPackageLocation_(path_);
 const sharedPackageFile_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(packageDirectory_, ".firefly"), "package.ff");
 const packageFile_ = (ff_core_Path.Path_exists(sharedPackageFile_, false, false, false)
 ? sharedPackageFile_
@@ -309,9 +307,7 @@ ff_compiler_Dependencies.Dependencies_processDependencies(self_, path_, httpClie
 }
 
 export async function Dependencies_loadPackageInfo$(self_, packagePair_, path_, $task) {
-const packageDirectory_ = (((await ff_core_Path.Path_extension$(path_, $task)) === ".ff")
-? ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(path_, $task)))
-: path_);
+const packageDirectory_ = (await ff_compiler_Dependencies.findScriptPackageLocation_$(path_, $task));
 const sharedPackageFile_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(packageDirectory_, ".firefly", $task)), "package.ff", $task));
 const packageFile_ = ((await ff_core_Path.Path_exists$(sharedPackageFile_, false, false, false, $task))
 ? sharedPackageFile_

@@ -25,7 +25,8 @@ extend self: Dependencies {
         packagePair: PackagePair
         path: Path
     ): Option[PackageInfo] {
-        let packageDirectory = if(path.extension() == ".ff") {path.parent().grab()} else {path}
+        //let packageDirectory = if(path.extension() == ".ff") {path.parent().grab()} else {path}
+        let packageDirectory = findScriptPackageLocation(path)
         let sharedPackageFile = packageDirectory.slash(".firefly").slash("package.ff")
         let packageFile = if(sharedPackageFile.exists()) {
             sharedPackageFile
