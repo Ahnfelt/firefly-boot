@@ -28,7 +28,7 @@ main(system: NodeSystem): Unit {
     let fireflyPath = detectFireflyPath(system)
 
     function buildScript(
-        mainFile: String
+        mainPath: Path
         mainPackagePair: PackagePair
         emitTarget: EmitTarget
         resolvedDependencies: ResolvedDependencies
@@ -47,10 +47,13 @@ main(system: NodeSystem): Unit {
             | EmitBrowser => "browser"
             | EmitExecutable => "executable"
         }
+        let relative = mainPath.parent().grab().relativeTo(fixedPackagePaths.grab(mainPackagePair))
+        let folders = relative.split('/').flatMap {_.split('\\')}.filter {_ != ""}
+        let name = mainPath.base().removeLast(".ff").grab()
         Builder.build(
             system = system
             emitTarget = emitTarget
-            mainModules = [ModuleKey(mainPackagePair, [], mainFile)] // TODO: Support folders here
+            mainModules = [ModuleKey(mainPackagePair, folders, name)] // TODO: Support folders here
             resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
             compilerModulePath = compilerModulePath
             tempPath = system.path(".firefly").slash("temporary")
@@ -65,13 +68,14 @@ main(system: NodeSystem): Unit {
             let resolvedDependencies = Dependencies.process(
                 system.httpClient()
                 DependencyLock.new(system.mainTask())
-                system.path(mainFile + ".ff")
+                system.path(mainFile)
             )
             prepareFireflyDirectory(system.path("."))
-            let localMainFile = system.path(mainFile).base()
-            buildScript(localMainFile, resolvedDependencies.mainPackagePair, EmitNode, resolvedDependencies)
+            let mainPath = system.path(mainFile)
+            buildScript(mainPath, resolvedDependencies.mainPackagePair, EmitNode, resolvedDependencies)
+            let localMainFile = mainPath.relativeTo(system.path(".")).removeLast(".ff").grab()
             if(!importAndRun(system, fireflyPath, "node", resolvedDependencies.mainPackagePair, localMainFile, arguments)) {
-                let at = Location(system.path(mainFile + ".ff").absolute(), 1, 1)
+                let at = Location(system.path(mainFile).absolute(), 1, 1)
                 throw(CompileError(at, "This module does not contain a 'nodeMain' function"))
             }
 
@@ -79,12 +83,12 @@ main(system: NodeSystem): Unit {
             let resolvedDependencies = Dependencies.process(
                 system.httpClient()
                 DependencyLock.new(system.mainTask())
-                system.path(mainFile + ".ff")
+                system.path(mainFile)
             )
             prepareFireflyDirectory(system.path("."))
-            let localMainFile = system.path(mainFile).base()
-            buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitBrowser, resolvedDependencies)
-            bundleForBrowser(system, resolvedDependencies.mainPackagePair, localMainFile)
+            let mainPath = system.path(mainFile)
+            buildScript(mainPath, resolvedDependencies.mainPackagePair, EmitBrowser, resolvedDependencies)
+            bundleForBrowser(system, resolvedDependencies.mainPackagePair, mainPath.base())
 
         | BuildCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(
@@ -93,11 +97,11 @@ main(system: NodeSystem): Unit {
                 system.path(mainFile + ".ff")
             )
             prepareFireflyDirectory(system.path("."))
-            let localMainFile = system.path(mainFile).base()
-            buildScript(localMainFile, resolvedDependencies.mainPackagePair, EmitBuild, resolvedDependencies)
-            buildScript(localMainFile, resolvedDependencies.mainPackagePair, EmitExecutable, resolvedDependencies)
-            bundleForPkg(system, resolvedDependencies.mainPackagePair, localMainFile)
-            importAndRun(system, fireflyPath, "build", resolvedDependencies.mainPackagePair, localMainFile, [])
+            let mainPath = system.path(mainFile)
+            buildScript(mainPath, resolvedDependencies.mainPackagePair, EmitBuild, resolvedDependencies)
+            buildScript(mainPath, resolvedDependencies.mainPackagePair, EmitExecutable, resolvedDependencies)
+            bundleForPkg(system, resolvedDependencies.mainPackagePair, mainPath.base())
+            importAndRun(system, fireflyPath, "build", resolvedDependencies.mainPackagePair, mainPath.base(), [])
 
         | CheckCommand(filePath) => 
             let errors = Builder.check(
@@ -189,11 +193,11 @@ These are the commands:
 
 parseCommandLine(arguments: List[String]): MainCommand {
     | [mainFile, ...mainArguments] {mainFile.removeLast(".ff") | Some(mainName)} =>
-        RunCommand(mainName, mainArguments)
+        RunCommand(mainFile, mainArguments)
     | ["run", ...runArguments] =>
         runArguments.{
             | [mainFile, ...mainArguments] {mainFile.removeLast(".ff") | Some(mainName)} =>
-                RunCommand(mainName, mainArguments)
+                RunCommand(mainFile, mainArguments)
             | _ => throw(CommandLineError(
                 "You must specify a Firefly file (.ff) as first argument to run." + usageString
             ))
@@ -201,7 +205,7 @@ parseCommandLine(arguments: List[String]): MainCommand {
     | ["browser", ...browserArguments] =>
         browserArguments.{
             | [mainFile] {mainFile.removeLast(".ff") | Some(mainName)} =>
-                BrowserCommand(mainName)
+                BrowserCommand(mainFile)
             | [_, _, ...] => throw(CommandLineError(
                 "You must only specify a single argument to browser." + usageString
             ))
@@ -212,7 +216,7 @@ parseCommandLine(arguments: List[String]): MainCommand {
     | ["build", ...buildArguments] =>
         buildArguments.{
             | [mainFile] {mainFile.removeLast(".ff") | Some(mainName)} =>
-                BuildCommand(mainName)
+                BuildCommand(mainFile)
             | [_, _, ...] => throw(CommandLineError(
                 "You must only specify a single argument to build." + usageString
             ))
