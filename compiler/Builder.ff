@@ -84,15 +84,21 @@ processNodeModules(system: NodeSystem, jsPathFile: Path, packagePath: Path, info
     }
 }
 
-buildViaBuildSystem(system: NodeSystem, fireflyPath: Path, mainFiles: List[String], target: String) {
-    let mainPaths = mainFiles.map {system.path(_).parent().grab().absolute()}
-    mainPaths.find {_ != mainPaths.grabFirst()}.each {path =>
-        panic("Can't build multiple main files in different directories: " + path + " vs. " + mainPaths.grabFirst())
+buildViaBuildSystem(system: NodeSystem, fireflyPath: Path, mainFiles: List[Path], target: String) {
+    let packagePaths = mainFiles.map {file => 
+        Dependencies.findScriptPackageLocation(file)
+    }
+    let packagePath = packagePaths.grabFirst()
+    packagePaths.find {_.absolute() != packagePath.absolute()}.each {path =>
+        panic(
+            "Can't build multiple main files in different directories: " + 
+            path.absolute() + " vs. " + packagePath.absolute()
+        )
     }
     let resolvedDependencies = Dependencies.process(
         system.httpClient()
         DependencyLock.new(system.mainTask())
-        system.path(mainFiles.grabFirst())
+        mainFiles.grabFirst()
     )
     let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
         resolvedDependencies.packagePaths
