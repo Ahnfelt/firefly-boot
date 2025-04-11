@@ -26,7 +26,7 @@ data CaseVariable(
     asBound: Option[String]
 )
 
-new(packagePair: PackagePair, moduleName: String, lspHook: LspHook): Resolver {
+new(lspHook: LspHook): Resolver {
     Resolver(
         variables = [].toMap()
         variableLocations = [].toMap()
@@ -54,8 +54,6 @@ extend self: Resolver {
     }
 
     resolveModule(module: Module, otherModules: List[Module]): Module {
-        let moduleNamespace =
-            module.file.replace("\\", "/").reverse().takeWhile {_ != '/'}.reverse().takeWhile {_ != '.'}
         let self2 = self.processImports(module.imports, otherModules)
         let self3 = self2.processDefinitions(module, None)
         
@@ -103,11 +101,11 @@ extend self: Resolver {
     processImports(imports: List[DImport], modules: List[Module]): Resolver {
         mutable resolver = self
         imports.each {import =>
-            modules.find {_.file.dropLast(3) == import.file}.{
+            modules.find {_.moduleKey == import.moduleKey}.{
                 | Some(module) =>
                     resolver = resolver.processDefinitions(module, Some(import.alias))
                 | None =>
-                    throw(CompileError(import.at, "No such module: " + import.file))
+                    throw(CompileError(import.at, "No such module: " + import.moduleKey.importName()))
             }
         }
         resolver
@@ -115,9 +113,7 @@ extend self: Resolver {
 
     processDefinitions(module: Module, importAlias: Option[String]): Resolver {
         function entry(name: String, unqualified: Bool): List[Pair[String, String]] {
-            let full =
-                module.packagePair.groupName() + "/" +
-                module.file.dropLast(3) + "." + name
+            let full = module.moduleKey.qualifiedSymbol(name)
             importAlias.{
                 | None => [Pair(name, full), Pair(full, full)]
                 | Some(alias) {unqualified} => [Pair(alias + "." + name, full), Pair(name, full), Pair(full, full)]
@@ -125,9 +121,10 @@ extend self: Resolver {
             }
         }
         let isCore = // TODO: Extend imports to list unqualified symbols instead of this
-            module.packagePair.group == "ff" &&
-            module.packagePair.name == "core" &&
-            module.file == "Core.ff"
+            module.moduleKey.packagePair.group == "ff" &&
+            module.moduleKey.packagePair.name == "core" &&
+            module.moduleKey.folders == [] &&
+            module.moduleKey.name == "Core"
         let lets = module.lets.flatMap {entry(_.name, isCore)}.toMap()
         let letLocations = module.lets.flatMap {d => entry(d.name, True).map {_.mapSecond {_ => d.at}}}.toMap()
         let functions = module.functions.flatMap {entry(_.signature.name, isCore)}.toMap()

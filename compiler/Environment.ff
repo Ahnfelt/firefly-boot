@@ -25,19 +25,19 @@ data Instantiated(
 new(module: Module, otherModules: List[Module], alreadyFlat: Bool): Environment {
     let processed = processModule(module, True, alreadyFlat)
     let otherProcessed = otherModules.map {processModule(_, False, False)}
+    let modulePath = module.moduleKey.importName() + ".ff" // TODO
     Environment(
         modulePrefix = fullName(module, "")
         symbols = processed.symbols.addAll(otherProcessed.map {_.symbols}.foldLeft(Map.new()) {_.addAll(_)})
         traits = processed.traits.addAll(otherProcessed.map {_.traits}.foldLeft(Map.new()) {_.addAll(_)})
         imports = module.imports.map {i => Pair(i.alias, i)}.toMap()
-        effect = TConstructor(Location(module.file, 0, 0), "ff:core/Nothing.Nothing", [])
+        effect = TConstructor(Location(modulePath, 0, 0), "ff:core/Nothing.Nothing", [])
         selfVariable = None
     )
 }
 
 fullName(module: Module, name: String): String {
-    module.packagePair.groupName() + "/" +
-    module.file.dropLast(3) + "." + name
+    module.moduleKey.qualifiedSymbol(name)
 }
 
 fail[T](at: Location, message: String): T {
@@ -154,8 +154,8 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
         module.traits.map {d =>
             Pair(fullName(module, d.name), d)
         }
-
-    let effect = TConstructor(Location(module.file, 0, 0), "ff:core/Nothing.Nothing", [])
+    let modulePath = module.moduleKey.importName() + ".ff" // TODO
+    let effect = TConstructor(Location(modulePath, 0, 0), "ff:core/Nothing.Nothing", [])
     Environment(
         modulePrefix = ""
         symbols = [...functions, ...lets, ...fields, ...extends, ...variants, ...traitMethods].toMap()

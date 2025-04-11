@@ -34,19 +34,18 @@ extend self: ModuleCache {
     invalidate(key: String) {
         //Log.trace("Invalidate: " + uri)
         self.parsedModules.get(key).each: | Pair(module, _) =>
-        let moduleName = module.file.dropLast(3)
         self.remove([key])
         self.parsedModules.each {| k, Pair(m, _) =>
-            if(m.imports.any {i => i.package == module.packagePair && i.file == moduleName}) {
+            if(m.imports.any {i => i.moduleKey == module.moduleKey}) {
                 //Log.trace("Invalidating due to import of invalidated module: " + m.packagePair.groupName() + "/" + m.file)
                 self.remove([k])
             }
         }
     }
     
-    filesNotImporting(packagePair: PackagePair, moduleName: String): List[String] {
+    filesNotImporting(moduleKey: ModuleKey): List[String] {
         self.parsedModules.toList().collect {| Pair(k, Pair(m, _)) =>
-            if(!m.imports.any {i => i.package == packagePair && i.file == moduleName}): k
+            if(!m.imports.any {i => i.moduleKey == moduleKey}): k
         }
     }
     
@@ -86,11 +85,10 @@ extend self: ModuleCache {
     
     cacheParsedModule(
         packagePaths: Map[PackagePair, Path]
-        packagePair: PackagePair
-        moduleName: String
+        moduleKey: ModuleKey
         body: Path => Module
     ): Module {
-        let path = modulePath(packagePaths, packagePair, moduleName)
+        let path = modulePath(packagePaths, moduleKey)
         self.parsedModules.get(path.absolute()).map {_.first}.else:
         let result = body(path)
         self.parsedModules = self.parsedModules.add(path.absolute(), Pair(result, self.version))
@@ -99,11 +97,10 @@ extend self: ModuleCache {
     
     cacheResolvedModule(
         packagePaths: Map[PackagePair, Path]
-        packagePair: PackagePair
-        moduleName: String
+        moduleKey: ModuleKey
         body: Path => Module
     ): Module {
-        let path = modulePath(packagePaths, packagePair, moduleName)
+        let path = modulePath(packagePaths, moduleKey)
         self.resolvedModules.get(path.absolute()).map {_.first}.else:
         let result = body(path)
         self.resolvedModules = self.resolvedModules.add(path.absolute(), Pair(result, self.version))
@@ -112,11 +109,10 @@ extend self: ModuleCache {
 
     cacheDerivedModule(
         packagePaths: Map[PackagePair, Path]
-        packagePair: PackagePair
-        moduleName: String
+        moduleKey: ModuleKey
         body: Path => Module
     ): Module {
-        let path = modulePath(packagePaths, packagePair, moduleName)
+        let path = modulePath(packagePaths, moduleKey)
         self.derivedModules.get(path.absolute()).map {_.first}.else:
         let result = body(path)
         self.derivedModules = self.derivedModules.add(path.absolute(), Pair(result, self.version))
@@ -125,11 +121,10 @@ extend self: ModuleCache {
         
     cacheInferredModule(
         packagePaths: Map[PackagePair, Path]
-        packagePair: PackagePair
-        moduleName: String
+        moduleKey: ModuleKey
         body: Path => Module
     ): Module {
-        let path = modulePath(packagePaths, packagePair, moduleName)
+        let path = modulePath(packagePaths, moduleKey)
         self.inferredModules.get(path.absolute()).map {_.first}.else:
         let result = body(path)
         self.inferredModules = self.inferredModules.add(path.absolute(), Pair(result, self.version))
@@ -138,12 +133,11 @@ extend self: ModuleCache {
  
     cacheEmittedModule(
         packagePaths: Map[PackagePair, Path]
-        packagePair: PackagePair
-        moduleName: String
+        moduleKey: ModuleKey
         isMainModule: Bool
         body: Path => Unit
     ): Unit {
-        let path = modulePath(packagePaths, packagePair, moduleName)
+        let path = modulePath(packagePaths, moduleKey)
         if(isMainModule || !self.emittedModules.contains(path.absolute())):
         self.emittedModules = self.emittedModules.add(path.absolute(), self.version)
         try {
@@ -168,12 +162,10 @@ mergeVersionedMap[T](oldMap: Map[String, T], newMap: Map[String, T], getVersion:
 
 modulePath(
     packagePaths: Map[PackagePair, Path]
-    packagePair: PackagePair
-    moduleName: String
+    moduleKey: ModuleKey
 ): Path {
-    let packagePath = packagePaths.get(packagePair).else {
-        panic("Internal error - package path missing: " + packagePair.groupName())
+    let packagePath = packagePaths.get(moduleKey.packagePair).else {
+        panic("Internal error - package path missing: " + moduleKey.packagePair.groupName())
     }
-    let file = moduleName + ".ff"
-    packagePath.slash(file)
+    moduleKey.path(packagePath)
 }

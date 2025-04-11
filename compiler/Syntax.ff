@@ -22,18 +22,7 @@ data PackageInfo(
     includes: List[DInclude]
 )
 
-data Module(
-    file: String
-    packagePair: PackagePair
-    imports: List[DImport]
-    types: List[DType]
-    traits: List[DTrait]
-    instances: List[DInstance]
-    extends: List[DExtend]
-    lets: List[DLet]
-    functions: List[DFunction]
-)
-
+// TODO rename to PackageKey
 data PackagePair(
     group: String
     name: String
@@ -43,7 +32,57 @@ extend self: PackagePair {
     groupName(delimiter: String = ":"): String {
         self.group + delimiter + self.name
     }
+    isCore(): Bool {
+        self.group == "ff" &&
+        self.name == "core"
+    }
+    moduleKey(packageRoot: Path, modulePath: Path): Option[ModuleKey] {
+        let parts = modulePath.relativeListTo(packageRoot)
+        let folders = parts.dropLast()
+        parts.last().flatMap {_.removeLast(".ff")}.filter {_ =>
+            folders.all {_.first().any {_.isAsciiLower()}} &&
+            folders.all {_.all {c => c.isAsciiLower() || c.isAsciiDigit()}}
+        }.map: name =>
+        ModuleKey(self, folders, name)
+    }
 }
+
+data ModuleKey(
+    packagePair: PackagePair
+    folders: List[String]
+    name: String
+)
+
+extend self: ModuleKey {
+    // "folder/Module" as in: import folder/Module from group:package
+    importName(): String {
+        self.folders.map {_ + "/"}.join() + self.name
+    }
+    // "C:\myProject\folder\Module.ff"
+    path(packageRoot: Path): Path {
+        let parent = self.folders.foldLeft(packageRoot) {p, f => p.slash(f)}
+        parent.slash(self.name + ".ff")
+    }
+    // "group:package/folder/Module"
+    qualifiedName(): String {
+        self.packagePair.groupName() + "/" + self.importName()
+    }
+    // "ff:core/List.List_map"
+    qualifiedSymbol(symbol: String): String {
+        self.qualifiedName() + "." + symbol
+    }
+}
+
+data Module(
+    moduleKey: ModuleKey
+    imports: List[DImport]
+    types: List[DType]
+    traits: List[DTrait]
+    instances: List[DInstance]
+    extends: List[DExtend]
+    lets: List[DLet]
+    functions: List[DFunction]
+)
 
 data DPackage(
     at: Location
@@ -69,9 +108,7 @@ data TargetNames(
 data DImport(
     at: Location
     alias: String
-    package: PackagePair
-    directory: List[String]
-    file: String
+    moduleKey: ModuleKey
 )
 data DFunction(
     at: Location
@@ -181,8 +218,7 @@ data MatchGuard(
 )
 
 data Dictionary(
-    packagePair: PackagePair
-    moduleName: String
+    moduleKey: ModuleKey
     traitName: String
     typeName: String
     dictionaries: List[Dictionary]

@@ -1,0 +1,3 @@
+nodeMain(system: NodeSystem) {
+    Log.trace("Hello from a/MainA")
+}

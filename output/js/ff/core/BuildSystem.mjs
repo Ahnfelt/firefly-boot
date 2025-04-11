@@ -149,9 +149,7 @@ return ff_core_Path.Path(nodePath_.resolve(absoluteOrRelative_))
 }
 
 export function internalCompile_(buildSystem_, mainFiles_, target_) {
-$firefly_compiler["buildViaBuildSystem_$"](buildSystem_, ff_core_BuildSystem.internalPath_(buildSystem_, buildSystem_["fireflyPath_"]), ff_core_List.List_map(mainFiles_, ((_w1) => {
-return ff_core_Path.Path_base(_w1)
-})), target_, $task)
+$firefly_compiler["buildViaBuildSystem_$"](buildSystem_, ff_core_BuildSystem.internalPath_(buildSystem_, buildSystem_["fireflyPath_"]), mainFiles_, target_, $task)
 }
 
 export function internalMainPackagePair_(buildSystem_) {
@@ -206,9 +204,7 @@ return ff_core_Path.Path(nodePath_.resolve(absoluteOrRelative_))
 }
 
 export async function internalCompile_$(buildSystem_, mainFiles_, target_, $task) {
-(await $firefly_compiler["buildViaBuildSystem_$"](buildSystem_, (await ff_core_BuildSystem.internalPath_$(buildSystem_, buildSystem_["fireflyPath_"], $task)), (await ff_core_List.List_map$(mainFiles_, (async (_w1, $task) => {
-return (await ff_core_Path.Path_base$(_w1, $task))
-}), $task)), target_, $task))
+(await $firefly_compiler["buildViaBuildSystem_$"](buildSystem_, (await ff_core_BuildSystem.internalPath_$(buildSystem_, buildSystem_["fireflyPath_"], $task)), mainFiles_, target_, $task))
 }
 
 export async function internalMainPackagePair_$(buildSystem_, $task) {

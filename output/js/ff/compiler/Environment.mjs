@@ -120,6 +120,7 @@ const processed_ = ff_compiler_Environment.processModule_(module_, true, already
 const otherProcessed_ = ff_core_List.List_map(otherModules_, ((_w1) => {
 return ff_compiler_Environment.processModule_(_w1, false, false)
 }));
+const modulePath_ = (ff_compiler_Syntax.ModuleKey_importName(module_.moduleKey_) + ".ff");
 return ff_compiler_Environment.Environment(ff_compiler_Environment.fullName_(module_, ""), ff_core_Map.Map_addAll(processed_.symbols_, ff_core_List.List_foldLeft(ff_core_List.List_map(otherProcessed_, ((_w1) => {
 return _w1.symbols_
 })), ff_core_Map.new_(), ((_w1, _w2) => {
@@ -130,11 +131,11 @@ return _w1.traits_
 return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(ff_core_List.List_map(module_.imports_, ((i_) => {
 return ff_core_Pair.Pair(i_.alias_, i_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(module_.file_, 0, 0), "ff:core/Nothing.Nothing", []), ff_core_Option.None())
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(modulePath_, 0, 0), "ff:core/Nothing.Nothing", []), ff_core_Option.None())
 }
 
 export function fullName_(module_, name_) {
-return ((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_)
+return ff_compiler_Syntax.ModuleKey_qualifiedSymbol(module_.moduleKey_, name_)
 }
 
 export function fail_(at_, message_) {
@@ -222,7 +223,8 @@ return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, variant_.nam
 const traits_ = ff_core_List.List_map(module_.traits_, ((d_) => {
 return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, d_.name_), d_)
 }));
-const effect_ = ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(module_.file_, 0, 0), "ff:core/Nothing.Nothing", []);
+const modulePath_ = (ff_compiler_Syntax.ModuleKey_importName(module_.moduleKey_) + ".ff");
+const effect_ = ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(modulePath_, 0, 0), "ff:core/Nothing.Nothing", []);
 return ff_compiler_Environment.Environment("", ff_core_List.List_toMap([...functions_, ...lets_, ...fields_, ...extends_, ...variants_, ...traitMethods_], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(traits_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), effect_, ff_core_Option.None())
 }
 
@@ -231,6 +233,7 @@ const processed_ = ff_compiler_Environment.processModule_(module_, true, already
 const otherProcessed_ = ff_core_List.List_map(otherModules_, ((_w1) => {
 return ff_compiler_Environment.processModule_(_w1, false, false)
 }));
+const modulePath_ = (ff_compiler_Syntax.ModuleKey_importName(module_.moduleKey_) + ".ff");
 return ff_compiler_Environment.Environment(ff_compiler_Environment.fullName_(module_, ""), ff_core_Map.Map_addAll(processed_.symbols_, ff_core_List.List_foldLeft(ff_core_List.List_map(otherProcessed_, ((_w1) => {
 return _w1.symbols_
 })), ff_core_Map.new_(), ((_w1, _w2) => {
@@ -241,11 +244,11 @@ return _w1.traits_
 return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(ff_core_List.List_map(module_.imports_, ((i_) => {
 return ff_core_Pair.Pair(i_.alias_, i_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(module_.file_, 0, 0), "ff:core/Nothing.Nothing", []), ff_core_Option.None())
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(modulePath_, 0, 0), "ff:core/Nothing.Nothing", []), ff_core_Option.None())
 }
 
 export async function fullName_$(module_, name_, $task) {
-return ((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_)
+return ff_compiler_Syntax.ModuleKey_qualifiedSymbol(module_.moduleKey_, name_)
 }
 
 export async function fail_$(at_, message_, $task) {
@@ -333,7 +336,8 @@ return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, variant_.nam
 const traits_ = ff_core_List.List_map(module_.traits_, ((d_) => {
 return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, d_.name_), d_)
 }));
-const effect_ = ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(module_.file_, 0, 0), "ff:core/Nothing.Nothing", []);
+const modulePath_ = (ff_compiler_Syntax.ModuleKey_importName(module_.moduleKey_) + ".ff");
+const effect_ = ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(modulePath_, 0, 0), "ff:core/Nothing.Nothing", []);
 return ff_compiler_Environment.Environment("", ff_core_List.List_toMap([...functions_, ...lets_, ...fields_, ...extends_, ...variants_, ...traitMethods_], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(traits_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), effect_, ff_core_Option.None())
 }
 

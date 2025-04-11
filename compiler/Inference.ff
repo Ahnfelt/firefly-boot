@@ -1225,8 +1225,7 @@ constraintsToInstances(constraints: List[Constraint]): Map[InstanceKey, Instance
             InstanceValue(
                 generics = []
                 constraints = []
-                packagePair = PackagePair("", "")
-                moduleName = ""
+                moduleKey = ModuleKey(PackagePair("", ""), [], "")
                 traitName = c.name
                 typeArguments = c.generics
             )

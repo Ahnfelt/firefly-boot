@@ -17,8 +17,7 @@ data InstanceKey(traitName: String, typeName: String)
 data InstanceValue(
     generics: List[String]
     constraints: List[Constraint]
-    packagePair: PackagePair
-    moduleName: String
+    moduleKey: ModuleKey
     traitName: String
     typeArguments: List[Type]
 )
@@ -34,7 +33,6 @@ new(modules: List[Module], attemptFixes: Bool): Unification {
         Map.new()
         3 // To avoid collision with the parser and resolver
         modules.flatMap {module =>
-            let moduleName = module.file.dropLast(".ff".size())
             module.instances.map {definition =>
                 let typeName = definition.typeArguments.grabFirst().{
                     | TConstructor(_, name, _) => name
@@ -45,8 +43,7 @@ new(modules: List[Module], attemptFixes: Bool): Unification {
                     InstanceValue(
                         generics = definition.generics
                         constraints = definition.constraints
-                        packagePair = module.packagePair
-                        moduleName = moduleName
+                        moduleKey = module.moduleKey
                         traitName = definition.traitName
                         typeArguments = definition.typeArguments
                     )

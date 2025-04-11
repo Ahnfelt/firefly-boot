@@ -1,0 +1,10 @@
+import a.A
+
+nodeMain(system: NodeSystem) {
+    Log.trace("Hello Root")
+    A.functionA()
+}
+
+functionRoot() {
+    Log.trace("function Root")
+}

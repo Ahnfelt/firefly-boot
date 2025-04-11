@@ -148,6 +148,12 @@ return (_w1 !== 47)
 })))
 }
 
+export function SourceLocation_directoryAndModule(self_) {
+return ff_core_String.String_reverse(ff_core_String.String_reverse(ff_core_String.String_takeWhile(self_, ((_w1) => {
+return (_w1 !== 58)
+}))))
+}
+
 export function SourceLocation_line(self_) {
 return ff_core_String.String_grabInt(ff_core_String.String_takeWhile(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(self_, ((_w1) => {
 return (_w1 !== 58)
@@ -204,6 +210,12 @@ return (_w1 !== 58)
 }))), ((_w1) => {
 return (_w1 !== 47)
 })))
+}
+
+export async function SourceLocation_directoryAndModule$(self_, $task) {
+return ff_core_String.String_reverse(ff_core_String.String_reverse(ff_core_String.String_takeWhile(self_, ((_w1) => {
+return (_w1 !== 58)
+}))))
 }
 
 export async function SourceLocation_line$(self_, $task) {

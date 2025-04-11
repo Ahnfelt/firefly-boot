@@ -2,18 +2,18 @@ import Lux from ff:lux
 import WebServer from ff:webserver
 import Router
 import Guide
-import ExamplesOverview
+import demos.ExamplesOverview
 import GettingStarted
-import CountingButtonDemo
-import MatchingPasswordsDemo
-import PostgresqlDemo
+import demos.CountingButtonDemo
+import demos.MatchingPasswordsDemo
+import demos.PostgresqlDemo
 import Html
 import Website
 import Menu
 import PackagesOverview
 import CommunityOverview
 
-routeModule = SourceLocation.here().module()
+routeModule = SourceLocation.here().directoryAndModule()
 
 data PageData(menuEntry: MenuItem, sections: List[Section])
 

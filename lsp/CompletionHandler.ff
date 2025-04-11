@@ -250,10 +250,10 @@ completion(
                 } else {
                     let module = name.dropLast(shorter.size() + 1)
                     let alias = environment.imports.find {_, i =>
-                        module == i.package.groupName() + "/" + i.directory.map {_ + "/"}.join() + i.file
+                        module == i.moduleKey.qualifiedName()
                     }
                     alias.map {| Pair(alias, i) =>
-                        Pair(alias + short.dropFirst(i.file.size()), scheme)
+                        Pair(alias + "." + shorter, scheme)
                     }
                 }
             | _ =>

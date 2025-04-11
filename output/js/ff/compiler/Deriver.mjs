@@ -123,12 +123,12 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 }
 
 export function Deriver_deriveModule(self_, module_) {
-const modulePrefix_ = ((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(module_.file_, 3));
+const modulePrefix_ = ff_compiler_Syntax.ModuleKey_qualifiedName(module_.moduleKey_);
 {
 const _1 = module_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, _c.traits_, [...module_.instances_, ...ff_compiler_Deriver.Deriver_makeHasAnyTagInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeShowInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeEqualInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeOrderingInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeSerializableInstances(self_, modulePrefix_, module_)], _c.extends_, _c.lets_, _c.functions_)
+return ff_compiler_Syntax.Module(_c.moduleKey_, _c.imports_, _c.types_, _c.traits_, [...module_.instances_, ...ff_compiler_Deriver.Deriver_makeHasAnyTagInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeShowInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeEqualInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeOrderingInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeSerializableInstances(self_, modulePrefix_, module_)], _c.extends_, _c.lets_, _c.functions_)
 }
 }
 }
@@ -495,7 +495,7 @@ return ff_core_Option.None()
 }
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return ff_core_List.List_filter(module_.types_, ((t_) => {
-return (((((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") !== "ff:core") || ff_core_Set.Set_contains(coreWhitelist_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) && (!ff_core_Option.Option_any(ff_core_List.List_first(t_.generics_), ((_w1) => {
+return (((((((!ff_compiler_Syntax.PackagePair_isCore(module_.moduleKey_.packagePair_)) || ff_core_Set.Set_contains(coreWhitelist_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) && (!ff_core_Option.Option_any(ff_core_List.List_first(t_.generics_), ((_w1) => {
 return (_w1 === "Q$")
 })))) && (allowGenerics_ || ff_core_List.List_isEmpty(t_.generics_))) && t_.data_) && (!t_.newtype_)) && (!ff_core_Set.Set_contains(typesWithInstance_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
 }))
@@ -525,12 +525,12 @@ return ff_compiler_Syntax.ECall(at_, ff_compiler_Syntax.DynamicCall(ff_compiler_
 }
 
 export async function Deriver_deriveModule$(self_, module_, $task) {
-const modulePrefix_ = ((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(module_.file_, 3));
+const modulePrefix_ = ff_compiler_Syntax.ModuleKey_qualifiedName(module_.moduleKey_);
 {
 const _1 = module_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, _c.traits_, [...module_.instances_, ...ff_compiler_Deriver.Deriver_makeHasAnyTagInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeShowInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeEqualInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeOrderingInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeSerializableInstances(self_, modulePrefix_, module_)], _c.extends_, _c.lets_, _c.functions_)
+return ff_compiler_Syntax.Module(_c.moduleKey_, _c.imports_, _c.types_, _c.traits_, [...module_.instances_, ...ff_compiler_Deriver.Deriver_makeHasAnyTagInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeShowInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeEqualInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeOrderingInstances(self_, modulePrefix_, module_), ...ff_compiler_Deriver.Deriver_makeSerializableInstances(self_, modulePrefix_, module_)], _c.extends_, _c.lets_, _c.functions_)
 }
 }
 }
@@ -897,7 +897,7 @@ return ff_core_Option.None()
 }
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return ff_core_List.List_filter(module_.types_, ((t_) => {
-return (((((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") !== "ff:core") || ff_core_Set.Set_contains(coreWhitelist_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) && (!ff_core_Option.Option_any(ff_core_List.List_first(t_.generics_), ((_w1) => {
+return (((((((!ff_compiler_Syntax.PackagePair_isCore(module_.moduleKey_.packagePair_)) || ff_core_Set.Set_contains(coreWhitelist_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) && (!ff_core_Option.Option_any(ff_core_List.List_first(t_.generics_), ((_w1) => {
 return (_w1 === "Q$")
 })))) && (allowGenerics_ || ff_core_List.List_isEmpty(t_.generics_))) && t_.data_) && (!t_.newtype_)) && (!ff_core_Set.Set_contains(typesWithInstance_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
 }))

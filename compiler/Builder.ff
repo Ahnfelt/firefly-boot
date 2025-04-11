@@ -13,8 +13,7 @@ import DependencyLock
 build(
     system: NodeSystem
     emitTarget: EmitTarget
-    mainPackage: PackagePair
-    mainModules: List[String]
+    mainModules: List[ModuleKey]
     resolvedDependencies: ResolvedDependencies
     compilerModulePath: Option[Path]
     tempPath: Path
@@ -40,9 +39,7 @@ build(
             moduleCache
             lspHook = LspHook.disabled()
         )
-        mainModules.each {mainModule =>
-            compiler.emit(mainPackage, mainModule, isMainModule = True)
-        }
+        mainModules.each {moduleKey => compiler.emit(moduleKey, isMainModule = True)}
         if(printMeasurements) {compiler.printMeasurements()}
         resolvedDependencies.packagePaths.each {packagePair, packagePath =>
             resolvedDependencies.packages.get(packagePair).each {packageInfo =>
@@ -87,20 +84,25 @@ processNodeModules(system: NodeSystem, jsPathFile: Path, packagePath: Path, info
     }
 }
 
-buildViaBuildSystem(system: NodeSystem, fireflyPath: Path, mainFiles: List[String], target: String) {
-    let mainPaths = mainFiles.map {system.path(_).parent().grab().absolute()}
-    mainPaths.find {_ != mainPaths.grabFirst()}.each {path =>
-        panic("Can't build multiple main files in different directories: " + path + " vs. " + mainPaths.grabFirst())
-    }
+buildViaBuildSystem(system: NodeSystem, fireflyPath: Path, mainFiles: List[Path], target: String) {
     let resolvedDependencies = Dependencies.process(
         system.httpClient()
         DependencyLock.new(system.mainTask())
-        system.path(mainFiles.grabFirst())
+        mainFiles.grabFirst()
     )
     let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
         resolvedDependencies.packagePaths
     } else {
         resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath.slash("core"))
+    }
+    let packageRoot = resolvedDependencies.packagePaths.grab(resolvedDependencies.mainPackagePair)
+    let mainModuleKeys = mainFiles.map {mainFile =>
+        resolvedDependencies.mainPackagePair.moduleKey(packageRoot, mainFile).else {
+            panic(
+                "Can't build multiple main files in different packages: " + 
+                mainFile.absolute() + " isn't part of " + packageRoot.absolute()
+            )
+        }
     }
     if(target != "browser") {
         panic("buildViaBuildSystem is currently limited to browser target only - the restriction can be lifted")
@@ -108,8 +110,7 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: Path, mainFiles: List[Strin
     build(
         system = system
         emitTarget = EmitBrowser
-        mainPackage = resolvedDependencies.mainPackagePair
-        mainModules = mainFiles.map {_.dropLast(".ff".size())}
+        mainModules = mainModuleKeys
         resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
         compilerModulePath = None
         tempPath = system.path(".firefly/temporary")
@@ -131,16 +132,16 @@ check(
     newVersion: Int
     lspHook: LspHook
     infer: Bool
-    checkDependencies: Bool
 ): List[CompileError] {
     let packages = path.isDirectory().{
-        | True => findPackageFiles(path, mustContain, skipFiles)
         | False {path.endsWith([".firefly", "package.ff"])} => [PackageFiles(path.parent().grab(), Some(path), [])]
-        | False => [PackageFiles(path.parent().grab(), None, [path])]
+        | True => findPackageFilesForDirectory(path, mustContain, skipFiles)
+        | False => findPackageFilesForFile(path).toList()
     }
     let errors = Array.new()
 
-    packages.filter {!_.files.isEmpty()}.each {package => 
+    let filteredPackages = packages.filter {!_.root.contains([".firefly", "dependencies"])}
+    filteredPackages.filter {!_.files.isEmpty()}.each {package => 
         let firstFile = package.files.grabFirst()
         try {
             Some(Dependencies.process(system.httpClient(), dependencyLock, firstFile))
@@ -168,16 +169,16 @@ check(
             newCache
             lspHook
         )
-        let files = if(checkDependencies) {package.files} else {
-            package.files.filter {!_.contains([".firefly", "dependencies"])}
-        }
-        files.each {file =>
-            let localFile = file.base()
+        package.files.each {file =>
+            let packagePair = resolvedDependencies.mainPackagePair
+            let folders = file.parent().grab().relativeListTo(package.root)
+            let name = file.base().removeLast(".ff").grab()
+            let moduleKey = ModuleKey(packagePair, folders, name)
             try {
                 if(infer) {
-                    compiler.infer(resolvedDependencies.mainPackagePair, localFile.dropLast(".ff".size()))
+                    compiler.infer(moduleKey)
                 } else {
-                    compiler.resolve(resolvedDependencies.mainPackagePair, localFile.dropLast(".ff".size()))
+                    compiler.resolve(moduleKey)
                 }
             } tryCatch {| CompileError(_, _) @ c, error =>
                 errors.push(c)
@@ -198,12 +199,24 @@ capability PackageFiles(
 )
 
 
-findPackageFiles(
-    path: Path
+findPackageFilesForFile(file: Path): Option[PackageFiles] {
+    if(file.extension() == ".ff"):
+    mutable packageFile = None
+    mutable currentDirectory = file.parent()
+    while {!currentDirectory.isEmpty() && packageFile.isEmpty()} {
+        packageFile = currentDirectory.map {_.slash(".firefly").slash("package.ff")}.filter {_.exists()}
+        currentDirectory = currentDirectory.grab().parent()
+    }
+    let projectRoot = packageFile.map {_.parent().grab().parent().grab()}.else {file.parent().grab()}
+    PackageFiles(projectRoot, packageFile, [file])
+}
+
+findPackageFilesForDirectory(
+    directory: Path
     mustContain: Option[String]
     skipFiles: Set[String]
 ): List[PackageFiles] {
-    let files = findFireflyFiles(path, mustContain, skipFiles)
+    let files = findFireflyFiles(directory, mustContain, skipFiles)
     let split = files.partition {_.endsWith([".firefly", "package.ff"])}
     let packageFiles = split.first
     mutable singleFiles = split.second
@@ -211,7 +224,8 @@ findPackageFiles(
         let projectRoot = packageFile.parent().grab().parent().grab()
         let files = singleFiles.partition {_.isInsideOf(projectRoot)}
         singleFiles = files.second
-        PackageFiles(projectRoot, Some(packageFile), files.first)
+        let packageFiles = files.first
+        PackageFiles(projectRoot, Some(packageFile), packageFiles)
     }
     let singleFileProjects = singleFiles.map {file => 
         let projectRoot = file.parent().grab()
@@ -226,15 +240,17 @@ findFireflyFiles(
     skipFiles: Set[String]
 ): List[Path] {
     let split = path.entries().toList().partition {_.isDirectory()}
-    let directories = split.first.map {_.path()}.filter {_.base().all {c => 
+    let directories = split.first
+    let files = split.second
+    let relevantDirectories = directories.map {_.path()}.filter {_.base().all {c => 
         c == '.' || c.isAsciiLower() || c.isAsciiDigit()
     }}
-    let fireflyFiles = split.second.map {_.path()}.filter {file => 
+    let fireflyFiles = files.map {_.path()}.filter {file => 
         file.extension() == ".ff" && !skipFiles.contains(file.absolute()) && mustContain.all {s => 
             file.readText().contains(s)
         }
     }
-    [...fireflyFiles, ...directories.flatMap {findFireflyFiles(_, mustContain, skipFiles)}]
+    [...fireflyFiles, ...relevantDirectories.flatMap {findFireflyFiles(_, mustContain, skipFiles)}]
 }
 
 internalCreateExecutable(

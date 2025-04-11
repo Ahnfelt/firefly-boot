@@ -129,7 +129,7 @@ const i_ = _1.index_;
 return ff_compiler_Dictionaries.fail_(c_.at_, ("Unexpected unification variable: $" + i_))
 }
 }))(ff_core_List.List_grabFirst(c_.generics_));
-return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue([], [], ff_compiler_Syntax.PackagePair("", ""), "", c_.name_, c_.generics_))
+return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue([], [], ff_compiler_Syntax.ModuleKey(ff_compiler_Syntax.PackagePair("", ""), [], ""), c_.name_, c_.generics_))
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
 
@@ -153,7 +153,7 @@ const i_ = _1.index_;
 return ff_compiler_Dictionaries.fail_(c_.at_, ("Unexpected unification variable: $" + i_))
 }
 }))(ff_core_List.List_grabFirst(c_.generics_));
-return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue([], [], ff_compiler_Syntax.PackagePair("", ""), "", c_.name_, c_.generics_))
+return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue([], [], ff_compiler_Syntax.ModuleKey(ff_compiler_Syntax.PackagePair("", ""), [], ""), c_.name_, c_.generics_))
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
 
@@ -187,7 +187,7 @@ return ff_compiler_Dictionaries.Dictionaries_processInstanceDefinition(self_, fu
 const _1 = module_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, _c.traits_, instances_, extends_, lets_, functions_)
+return ff_compiler_Syntax.Module(_c.moduleKey_, _c.imports_, _c.types_, _c.traits_, instances_, extends_, lets_, functions_)
 }
 }
 }
@@ -546,7 +546,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 const dictionaries_ = ff_core_List.List_map(instance_.constraints_, ((c_) => {
 return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, at_, instance_.generics_, firstType_.generics_, c_)
 }));
-return ff_compiler_Syntax.Dictionary(instance_.packagePair_, instance_.moduleName_, constraint_.name_, firstType_.name_, dictionaries_)
+return ff_compiler_Syntax.Dictionary(instance_.moduleKey_, constraint_.name_, firstType_.name_, dictionaries_)
 }
 {
 const t_ = _1;
@@ -585,7 +585,7 @@ return ff_compiler_Dictionaries.Dictionaries_processInstanceDefinition(self_, fu
 const _1 = module_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, _c.traits_, instances_, extends_, lets_, functions_)
+return ff_compiler_Syntax.Module(_c.moduleKey_, _c.imports_, _c.types_, _c.traits_, instances_, extends_, lets_, functions_)
 }
 }
 }
@@ -944,7 +944,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 const dictionaries_ = ff_core_List.List_map(instance_.constraints_, ((c_) => {
 return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, at_, instance_.generics_, firstType_.generics_, c_)
 }));
-return ff_compiler_Syntax.Dictionary(instance_.packagePair_, instance_.moduleName_, constraint_.name_, firstType_.name_, dictionaries_)
+return ff_compiler_Syntax.Dictionary(instance_.moduleKey_, constraint_.name_, firstType_.name_, dictionaries_)
 }
 {
 const t_ = _1;

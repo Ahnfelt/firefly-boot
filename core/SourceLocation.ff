@@ -26,6 +26,10 @@ extend self: SourceLocation {
         self.location.takeWhile {_ != ':'}.reverse().takeWhile {_ != '/'}.reverse()
     }
     
+    directoryAndModule(): String {
+        self.location.takeWhile {_ != ':'}.reverse().reverse()
+    }
+
     line(): Int {
         self.location.dropWhile {_ != ':'}.dropFirst().takeWhile {_ != ':'}.grabInt()
     }

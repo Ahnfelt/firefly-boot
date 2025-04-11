@@ -446,6 +446,22 @@ const nodePath_ = import$2;
 return nodePath_.relative(path_.absolutePath_, self_.absolutePath_)
 }
 
+export function Path_relativeListTo(self_, path_) {
+const nodePath_ = import$2;
+const relative_ = ff_core_Path.Path_relativeTo(self_, path_);
+if((nodePath_.sep === "\\")) {
+return ff_core_List.List_filter(ff_core_List.List_flatMap(ff_core_String.String_split(relative_, 47), ((_w1) => {
+return ff_core_String.String_split(_w1, 92)
+})), ((_w1) => {
+return (_w1 !== "")
+}))
+} else {
+return ff_core_List.List_filter(ff_core_String.String_split(relative_, 47), ((_w1) => {
+return (_w1 !== "")
+}))
+}
+}
+
 export function Path_endsWith(self_, parts_) {
 function go_(pathOption_, reversed_) {
 const pathOption_a = pathOption_;
@@ -742,6 +758,22 @@ return self_.absolutePath_
 export async function Path_relativeTo$(self_, path_, $task) {
 const nodePath_ = import$2;
 return nodePath_.relative(path_.absolutePath_, self_.absolutePath_)
+}
+
+export async function Path_relativeListTo$(self_, path_, $task) {
+const nodePath_ = import$2;
+const relative_ = (await ff_core_Path.Path_relativeTo$(self_, path_, $task));
+if((nodePath_.sep === "\\")) {
+return ff_core_List.List_filter(ff_core_List.List_flatMap(ff_core_String.String_split(relative_, 47), ((_w1) => {
+return ff_core_String.String_split(_w1, 92)
+})), ((_w1) => {
+return (_w1 !== "")
+}))
+} else {
+return ff_core_List.List_filter(ff_core_String.String_split(relative_, 47), ((_w1) => {
+return (_w1 !== "")
+}))
+}
 }
 
 export async function Path_endsWith$(self_, parts_, $task) {

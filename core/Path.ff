@@ -101,8 +101,18 @@ extend self: Path {
     }
 
     relativeTo(path: Path): String {
-        let nodePath = Js.import("path")        
+        let nodePath = Js.import("path")
         nodePath->relative(path.absolutePath, self.absolutePath)?
+    }
+    
+    relativeListTo(path: Path): List[String] {
+        let nodePath = Js.import("path")
+        let relative = self.relativeTo(path)
+        if(nodePath->sep === "\\") {
+            relative.split('/').flatMap {_.split('\\')}.filter {_ != ""}
+        } else {
+            relative.split('/').filter {_ != ""}
+        }
     }
     
     endsWith(parts: List[String]): Bool {
