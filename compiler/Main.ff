@@ -47,8 +47,7 @@ main(system: NodeSystem): Unit {
             | EmitBrowser => "browser"
             | EmitExecutable => "executable"
         }
-        let relative = mainPath.parent().grab().relativeTo(fixedPackagePaths.grab(mainPackagePair))
-        let folders = relative.split('/').flatMap {_.split('\\')}.filter {_ != ""}
+        let folders = mainPath.parent().grab().relativeListTo(fixedPackagePaths.grab(mainPackagePair))
         let name = mainPath.base().removeLast(".ff").grab()
         let moduleKey = ModuleKey(mainPackagePair, folders, name)
         Builder.build(

@@ -8,7 +8,7 @@ import Html
 import Website
 import Menu
 
-routeModule = SourceLocation.here().module()
+routeModule = SourceLocation.here().directoryAndModule()
 
 data PageData(menuEntry: MenuItem, sections: List[Section])
 

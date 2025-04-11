@@ -36,6 +36,15 @@ extend self: PackagePair {
         self.group == "ff" &&
         self.name == "core"
     }
+    moduleKey(packageRoot: Path, modulePath: Path): Option[ModuleKey] {
+        let parts = modulePath.relativeListTo(packageRoot)
+        let folders = parts.dropLast()
+        parts.last().flatMap {_.removeLast(".ff")}.filter {_ =>
+            folders.all {_.first().any {_.isAsciiLower()}} &&
+            folders.all {_.all {c => c.isAsciiLower() || c.isAsciiDigit()}}
+        }.map: name =>
+        ModuleKey(self, folders, name)
+    }
 }
 
 data ModuleKey(

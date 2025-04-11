@@ -183,12 +183,7 @@ return "browser"
 return "executable"
 }
 }))(emitTarget_);
-const relative_ = ff_core_Path.Path_relativeTo(ff_core_Option.Option_grab(ff_core_Path.Path_parent(mainPath_)), ff_core_Map.Map_grab(fixedPackagePaths_, mainPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-const folders_ = ff_core_List.List_filter(ff_core_List.List_flatMap(ff_core_String.String_split(relative_, 47), ((_w1) => {
-return ff_core_String.String_split(_w1, 92)
-})), ((_w1) => {
-return (_w1 !== "")
-}));
+const folders_ = ff_core_Path.Path_relativeListTo(ff_core_Option.Option_grab(ff_core_Path.Path_parent(mainPath_)), ff_core_Map.Map_grab(fixedPackagePaths_, mainPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
 const name_ = ff_core_Option.Option_grab(ff_core_String.String_removeLast(ff_core_Path.Path_base(mainPath_), ".ff"));
 const moduleKey_ = ff_compiler_Syntax.ModuleKey(mainPackagePair_, folders_, name_);
 ff_compiler_Builder.build_(system_, emitTarget_, [moduleKey_], (((_c) => {
@@ -592,12 +587,7 @@ return "browser"
 return "executable"
 }
 }))(emitTarget_);
-const relative_ = (await ff_core_Path.Path_relativeTo$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(mainPath_, $task))), ff_core_Map.Map_grab(fixedPackagePaths_, mainPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), $task));
-const folders_ = ff_core_List.List_filter(ff_core_List.List_flatMap(ff_core_String.String_split(relative_, 47), ((_w1) => {
-return ff_core_String.String_split(_w1, 92)
-})), ((_w1) => {
-return (_w1 !== "")
-}));
+const folders_ = (await ff_core_Path.Path_relativeListTo$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(mainPath_, $task))), ff_core_Map.Map_grab(fixedPackagePaths_, mainPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), $task));
 const name_ = ff_core_Option.Option_grab(ff_core_String.String_removeLast((await ff_core_Path.Path_base$(mainPath_, $task)), ".ff"));
 const moduleKey_ = ff_compiler_Syntax.ModuleKey(mainPackagePair_, folders_, name_);
 (await ff_compiler_Builder.build_$(system_, emitTarget_, [moduleKey_], (((_c) => {

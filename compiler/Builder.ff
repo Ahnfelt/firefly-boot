@@ -85,16 +85,6 @@ processNodeModules(system: NodeSystem, jsPathFile: Path, packagePath: Path, info
 }
 
 buildViaBuildSystem(system: NodeSystem, fireflyPath: Path, mainFiles: List[Path], target: String) {
-    let packagePaths = mainFiles.map {file => 
-        Dependencies.findScriptPackageLocation(file)
-    }
-    let packagePath = packagePaths.grabFirst()
-    packagePaths.find {_.absolute() != packagePath.absolute()}.each {path =>
-        panic(
-            "Can't build multiple main files in different directories: " + 
-            path.absolute() + " vs. " + packagePath.absolute()
-        )
-    }
     let resolvedDependencies = Dependencies.process(
         system.httpClient()
         DependencyLock.new(system.mainTask())
@@ -105,11 +95,17 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: Path, mainFiles: List[Path]
     } else {
         resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath.slash("core"))
     }
+    let packageRoot = resolvedDependencies.packagePaths.grab(resolvedDependencies.mainPackagePair)
+    let mainModuleKeys = mainFiles.map {mainFile =>
+        resolvedDependencies.mainPackagePair.moduleKey(packageRoot, mainFile).else {
+            panic(
+                "Can't build multiple main files in different packages: " + 
+                mainFile.absolute() + " isn't part of " + packageRoot.absolute()
+            )
+        }
+    }
     if(target != "browser") {
         panic("buildViaBuildSystem is currently limited to browser target only - the restriction can be lifted")
-    }
-    let mainModuleKeys = mainFiles.map {_.dropLast(".ff".size())}.map {
-        ModuleKey(resolvedDependencies.mainPackagePair, [], _) //  TODO: Support folders here
     }
     build(
         system = system
@@ -175,8 +171,7 @@ check(
         )
         package.files.each {file =>
             let packagePair = resolvedDependencies.mainPackagePair
-            let relative = file.parent().grab().relativeTo(package.root)
-            let folders = relative.split('/').flatMap {_.split('\\')}.filter {_ != ""}
+            let folders = file.parent().grab().relativeListTo(package.root)
             let name = file.base().removeLast(".ff").grab()
             let moduleKey = ModuleKey(packagePair, folders, name)
             try {

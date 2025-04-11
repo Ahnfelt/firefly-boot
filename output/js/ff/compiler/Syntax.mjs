@@ -485,12 +485,52 @@ export function PackagePair_isCore(self_) {
 return ((self_.group_ === "ff") && (self_.name_ === "core"))
 }
 
+export function PackagePair_moduleKey(self_, packageRoot_, modulePath_) {
+const parts_ = ff_core_Path.Path_relativeListTo(modulePath_, packageRoot_);
+const folders_ = ff_core_List.List_dropLast(parts_, 1);
+return ff_core_Option.Option_map(ff_core_Option.Option_filter(ff_core_Option.Option_flatMap(ff_core_List.List_last(parts_), ((_w1) => {
+return ff_core_String.String_removeLast(_w1, ".ff")
+})), ((_) => {
+return (ff_core_List.List_all(folders_, ((_w1) => {
+return ff_core_Option.Option_any(ff_core_String.String_first(_w1), ((_w1) => {
+return ff_core_Char.Char_isAsciiLower(_w1)
+}))
+})) && ff_core_List.List_all(folders_, ((_w1) => {
+return ff_core_String.String_all(_w1, ((c_) => {
+return (ff_core_Char.Char_isAsciiLower(c_) || ff_core_Char.Char_isAsciiDigit(c_))
+}))
+})))
+})), ((name_) => {
+return ff_compiler_Syntax.ModuleKey(self_, folders_, name_)
+}))
+}
+
 export async function PackagePair_groupName$(self_, delimiter_ = ":", $task) {
 return ((self_.group_ + delimiter_) + self_.name_)
 }
 
 export async function PackagePair_isCore$(self_, $task) {
 return ((self_.group_ === "ff") && (self_.name_ === "core"))
+}
+
+export async function PackagePair_moduleKey$(self_, packageRoot_, modulePath_, $task) {
+const parts_ = (await ff_core_Path.Path_relativeListTo$(modulePath_, packageRoot_, $task));
+const folders_ = ff_core_List.List_dropLast(parts_, 1);
+return ff_core_Option.Option_map(ff_core_Option.Option_filter(ff_core_Option.Option_flatMap(ff_core_List.List_last(parts_), ((_w1) => {
+return ff_core_String.String_removeLast(_w1, ".ff")
+})), ((_) => {
+return (ff_core_List.List_all(folders_, ((_w1) => {
+return ff_core_Option.Option_any(ff_core_String.String_first(_w1), ((_w1) => {
+return ff_core_Char.Char_isAsciiLower(_w1)
+}))
+})) && ff_core_List.List_all(folders_, ((_w1) => {
+return ff_core_String.String_all(_w1, ((c_) => {
+return (ff_core_Char.Char_isAsciiLower(c_) || ff_core_Char.Char_isAsciiDigit(c_))
+}))
+})))
+})), ((name_) => {
+return ff_compiler_Syntax.ModuleKey(self_, folders_, name_)
+}))
 }
 
 export function ModuleKey_importName(self_) {
