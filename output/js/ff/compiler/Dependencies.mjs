@@ -124,7 +124,11 @@ export function process_(fetch_, dependencyLock_, path_) {
 const workspace_ = ff_compiler_Workspace.loadWorkspace_(path_);
 const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
 const packageInfo_ = ff_core_Option.Option_else(ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, ff_compiler_Syntax.PackagePair("script", "script"), path_), (() => {
-return ff_core_Core.panic_(("Not a main file: " + ff_core_Path.Path_absolute(path_)))
+if((!ff_core_Path.Path_exists(path_, false, false, false))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(ff_core_Path.Path_absolute(path_), 1, 1), "File not found"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+} else {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(ff_core_Path.Path_absolute(path_), 1, 1), "Could not load package info"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 }));
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
 ff_compiler_Dependencies.Dependencies_processDependencies(self_, path_, fetch_, dependencyLock_, newDependencies_);
@@ -164,7 +168,11 @@ export async function process_$(fetch_, dependencyLock_, path_, $task) {
 const workspace_ = (await ff_compiler_Workspace.loadWorkspace_$(path_, $task));
 const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
 const packageInfo_ = (await ff_core_Option.Option_else$((await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, ff_compiler_Syntax.PackagePair("script", "script"), path_, $task)), (async ($task) => {
-return ff_core_Core.panic_(("Not a main file: " + (await ff_core_Path.Path_absolute$(path_, $task))))
+if((!(await ff_core_Path.Path_exists$(path_, false, false, false, $task)))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location((await ff_core_Path.Path_absolute$(path_, $task)), 1, 1), "File not found"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+} else {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location((await ff_core_Path.Path_absolute$(path_, $task)), 1, 1), "Could not load package info"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 }), $task));
 const newDependencies_ = (await ff_compiler_Dependencies.Dependencies_processPackageInfo$(self_, packageInfo_, $task));
 (await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, path_, fetch_, dependencyLock_, newDependencies_, $task));

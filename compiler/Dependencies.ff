@@ -146,7 +146,11 @@ process(fetch: HttpClient, dependencyLock: DependencyLock, path: Path): Resolved
     let workspace = Workspace.loadWorkspace(path)
     let self = Dependencies(workspace, [].toMap(), [].toMap(), [].toSet())
     let packageInfo = self.loadPackageInfo(PackagePair("script", "script"), path).else {
-        panic("Not a main file: " + path.absolute())
+        if(!path.exists()) {
+            throw(CompileError(Location(path.absolute(), 1, 1), "File not found"))
+        } else {
+            throw(CompileError(Location(path.absolute(), 1, 1), "Could not load package info"))
+        }
     }
     let newDependencies = self.processPackageInfo(packageInfo)
     self.processDependencies(path, fetch, dependencyLock, newDependencies)
