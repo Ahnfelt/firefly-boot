@@ -394,7 +394,7 @@ extend self: Handler {
         let toplevelToken = self.findToken(system, location.Location(column = 1), insertToken = False)
         let moduleSymbols = if(toplevelToken.raw == "import" && location.column >= 8) {
             CompletionHandler.findModulesToImport(system, system.path(location.file))
-        } else {Map.new()}
+        } else {[]}
         let completionAt = Location(
             file = location.file
             line = token.startLine

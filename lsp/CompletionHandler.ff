@@ -21,11 +21,18 @@ data CompletionInfo(
     secondarySort: Int = 5
 )
 
+data ModuleSymbolInfo(
+    moduleKey: ModuleKey
+    typeNames: List[String]
+    variantNames: List[String]
+    traitNames: List[String]
+)
+
 handleCompletion(
     lspHook: LspHook
     toplevel: Bool
     followedByOpenBracket: Bool
-    moduleSymbols: Map[ModuleKey, List[String]]
+    moduleSymbols: List[ModuleSymbolInfo]
 ): Json {
     let topLevelCompletions = if(!toplevel) {[]} else {toplevelCompletion(lspHook)}
     let patternCompletions = lspHook.results().collectFirst {
@@ -167,7 +174,7 @@ handleCompletion(
             } else {c}
         }
     }
-    let importCompletions = importCompletion(moduleSymbols.keys().toList())
+    let importCompletions = importCompletion(moduleSymbols.map {_.moduleKey})
     completionsToJson([...fixedCompletions, ...fixedTypeCompletions, ...topLevelCompletions, ...importCompletions])
 }
 
@@ -861,24 +868,31 @@ showCompletionParameter(indentation: String, parameter: Parameter): String {
     }.map {" = " + _}.else {""}
 }
 
-findModulesToImport(system: NodeSystem, directory: Path): Map[ModuleKey, List[String]] {
+findModulesToImport(system: NodeSystem, modulePath: Path): List[ModuleSymbolInfo] {
     let dependencies = 
-        Dependencies.process(system.httpClient(), DependencyLock.new(system.mainTask()), directory)
+        Dependencies.process(system.httpClient(), DependencyLock.new(system.mainTask()), modulePath)
     let nonCore = dependencies.packagePaths.toList().filter {!_.first.isCore()}
+    function parseModule(packagePair: PackagePair, path: Path, exclude: Set[ModuleKey]): Option[Module] {
+        dependencies.packagePaths.get(packagePair).flatMap: packagePath =>
+        packagePair.moduleKey(packagePath, path).filter {!exclude.contains(_)}.flatMap: moduleKey =>
+        try {
+            let code = path.readText()
+            let tokens = Tokenizer.tokenize(path.absolute(), code, None, True)
+            let parser = Parser.new(moduleKey, tokens, True, LspHook.disabled())            
+            parser.parseModuleWithPackageInfo().module
+        }.toOption()
+    }
+    let imports = parseModule(dependencies.mainPackagePair, modulePath, Set.new()).toList().flatMap {
+        _.imports.map {_.moduleKey}
+    }.toSet()
     nonCore.flatMap {| Pair(packagePair, packagePath) =>
         let packageFiles = Builder.findPackageFilesForDirectory(packagePath, None, Set.new())
         packageFiles.flatMap {_.files.collect {file => 
-            packagePair.moduleKey(packagePath, file).flatMap: moduleKey =>
-            try {
-                let code = file.readText()
-                let tokens = Tokenizer.tokenize(file.absolute(), code, None, True)
-                let parser = Parser.new(moduleKey, tokens, True, LspHook.disabled())            
-                let module = parser.parseModuleWithPackageInfo().module
-                let typeNames = module.types.map {_.name}
-                let variantNames = module.types.flatMap {_.variants.map {_.name}}
-                let traitNames = module.traits.map {_.name}
-                Pair(moduleKey, [moduleKey.name, ...typeNames, ...variantNames, ...traitNames].distinct())
-            }.toOption()
+            parseModule(packagePair, file, imports).map: module =>
+            let typeNames = module.types.map {_.name}
+            let variantNames = module.types.flatMap {_.variants.map {_.name}}
+            let traitNames = module.traits.map {_.name}
+            ModuleSymbolInfo(module.moduleKey, typeNames, variantNames, traitNames)
         }}
-    }.toMap()
+    }
 }
