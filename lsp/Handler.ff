@@ -392,9 +392,9 @@ extend self: Handler {
         let location = self.findLocationFromParameters(system, parameters)
         let token = self.findToken(system, location, insertToken = True)
         let toplevelToken = self.findToken(system, location.Location(column = 1), insertToken = False)
-        let moduleKeys = if(toplevelToken.raw == "import" && location.column >= 8) {
+        let moduleSymbols = if(toplevelToken.raw == "import" && location.column >= 8) {
             CompletionHandler.findModulesToImport(system, system.path(location.file))
-        } else {[]}
+        } else {Map.new()}
         let completionAt = Location(
             file = location.file
             line = token.startLine
@@ -406,7 +406,12 @@ extend self: Handler {
         errors.each {| CompileError(at, message) => 
             Log.trace("handleCompletion check error: " + message)
         }        
-        let o = CompletionHandler.handleCompletion(lspHook, completionAt.column == 1, token.followedByLeftBracket, moduleKeys)
+        let o = CompletionHandler.handleCompletion(
+            lspHook = lspHook
+            toplevel = completionAt.column == 1
+            followedByOpenBracket = token.followedByLeftBracket
+            moduleSymbols = moduleSymbols
+        )
         Result(o.write())
     }
 

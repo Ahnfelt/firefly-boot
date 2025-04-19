@@ -21,7 +21,12 @@ data CompletionInfo(
     secondarySort: Int = 5
 )
 
-handleCompletion(lspHook: LspHook, toplevel: Bool, followedByOpenBracket: Bool, moduleKeys: List[ModuleKey]): Json {
+handleCompletion(
+    lspHook: LspHook
+    toplevel: Bool
+    followedByOpenBracket: Bool
+    moduleSymbols: Map[ModuleKey, List[String]]
+): Json {
     let topLevelCompletions = if(!toplevel) {[]} else {toplevelCompletion(lspHook)}
     let patternCompletions = lspHook.results().collectFirst {
         | InferPatternHook h =>
@@ -162,7 +167,7 @@ handleCompletion(lspHook: LspHook, toplevel: Bool, followedByOpenBracket: Bool, 
             } else {c}
         }
     }
-    let importCompletions = importCompletion(moduleKeys) 
+    let importCompletions = importCompletion(moduleSymbols.keys().toList())
     completionsToJson([...fixedCompletions, ...fixedTypeCompletions, ...topLevelCompletions, ...importCompletions])
 }
 
@@ -856,17 +861,24 @@ showCompletionParameter(indentation: String, parameter: Parameter): String {
     }.map {" = " + _}.else {""}
 }
 
-findModulesToImport(system: NodeSystem, directory: Path): List[ModuleKey] {
+findModulesToImport(system: NodeSystem, directory: Path): Map[ModuleKey, List[String]] {
     let dependencies = 
         Dependencies.process(system.httpClient(), DependencyLock.new(system.mainTask()), directory)
     let nonCore = dependencies.packagePaths.toList().filter {!_.first.isCore()}
     nonCore.flatMap {| Pair(packagePair, packagePath) =>
         let packageFiles = Builder.findPackageFilesForDirectory(packagePath, None, Set.new())
-        /*let code = packageFile.readText()
-        let tokens = Tokenizer.tokenize(packageFile.absolute(), code, None, True)
-        let moduleKey = ModuleKey(PackagePair("script", "script"), [], "<package>")
-        let parser = Parser.new(moduleKey, tokens, True, LspHook.disabled())
-        let packageInfo = parser.parsePackageInfo()*/
-        packageFiles.flatMap {_.files.collect {f => packagePair.moduleKey(packagePath, f)}}
-    }
+        packageFiles.flatMap {_.files.collect {file => 
+            packagePair.moduleKey(packagePath, file).flatMap: moduleKey =>
+            try {
+                let code = file.readText()
+                let tokens = Tokenizer.tokenize(file.absolute(), code, None, True)
+                let parser = Parser.new(moduleKey, tokens, True, LspHook.disabled())            
+                let module = parser.parseModuleWithPackageInfo().module
+                let typeNames = module.types.map {_.name}
+                let variantNames = module.types.flatMap {_.variants.map {_.name}}
+                let traitNames = module.traits.map {_.name}
+                Pair(moduleKey, [moduleKey.name, ...typeNames, ...variantNames, ...traitNames].distinct())
+            }.toOption()
+        }}
+    }.toMap()
 }
