@@ -392,7 +392,7 @@ extend self: Handler {
         let location = self.findLocationFromParameters(system, parameters)
         let token = self.findToken(system, location, insertToken = True)
         let toplevelToken = self.findToken(system, location.Location(column = 1), insertToken = False)
-        // TODO: In findModulesToImport, use virtual files and parser cache
+        // TODO: In findModulesToImport, use virtual files and parser cache. Only compute it on focus.
         let moduleSymbols = CompletionHandler.findModulesToImport(system, system.path(location.file))
         let completionAt = Location(
             file = location.file
