@@ -411,8 +411,11 @@ extend self: Handler {
             lspHook = lspHook
             toplevel = completionAt.column == 1
             followedByOpenBracket = token.followedByLeftBracket
-            import = toplevelToken.raw == "import" && location.column >= 8
-            importSymbols = importSymbols
+            importSymbols = ImportSymbolsInfo(
+                import = toplevelToken.raw == "import" && location.column >= 8
+                importSymbols = importSymbols.first
+                importLine = importSymbols.second
+            )
         )
         Result(o.write())
     }
@@ -611,7 +614,7 @@ extend self: Handler {
         }
     }
     
-    findModulesToImport(system: NodeSystem, modulePath: Path, lspHook: LspHook): List[ImportSymbolInfo] {
+    findModulesToImport(system: NodeSystem, modulePath: Path, lspHook: LspHook): Pair[List[ImportSymbolInfo], Int] {
         let importSymbols = if(self.importSymbolsCache.first == modulePath.absolute()) {
             self.importSymbolsCache.second
         } else {
@@ -642,17 +645,21 @@ extend self: Handler {
             self.importSymbolsCache = Pair(modulePath.absolute(), symbols)
             symbols
         }
-        let imports = self.moduleCache.parsedModules.get(modulePath.absolute()).map {_.first}.orElse {
-            try {
-                let code = self.virtualFiles.get(modulePath.absolute()).else {modulePath.readText()}
-                let tokens = Tokenizer.tokenize(modulePath.absolute(), code, Some(lspHook.at), True)
-                let parser = Parser.new(ModuleKey(PackagePair("", ""), [], ""), tokens, True, lspHook)
-                parser.parseModuleWithPackageInfo().module
-            }.toOption()
-        }.toList().flatMap {
+        mutable importLine = 1
+        let imports = try {
+            let code = self.virtualFiles.get(modulePath.absolute()).else {modulePath.readText()}
+            let tokens = Tokenizer.tokenize(modulePath.absolute(), code, Some(lspHook.at), True)
+            let parser = Parser.new(ModuleKey(PackagePair("", ""), [], ""), tokens, True, lspHook)
+            tokens.each {token => 
+                if(token.is(LKeyword) && token.rawIs4("import", "include", "package", "dependency")) {
+                    importLine = token.startLine + 1
+                }
+            }
+            parser.parseModuleWithPackageInfo().module
+        }.toOption().toList().flatMap {
             _.imports.map {_.moduleKey}
         }.toSet()
-        importSymbols.filter {!imports.contains(_.moduleKey)}
+        Pair(importSymbols.filter {!imports.contains(_.moduleKey)}, importLine)
     }
     
     makeNotificationMessage(method: String, params: Json): Json {

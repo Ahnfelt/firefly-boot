@@ -14,6 +14,13 @@ data CompletionInfo(
     documentation: String
     expectedType: Option[Type]
     secondarySort: Int = 5
+    insertion: Option[Pair[Int, String]] = None
+)
+
+data ImportSymbolsInfo(
+    import: Bool
+    importSymbols: List[ImportSymbolInfo]
+    importLine: Int
 )
 
 data ImportSymbolInfo(
@@ -27,8 +34,7 @@ handleCompletion(
     lspHook: LspHook
     toplevel: Bool
     followedByOpenBracket: Bool
-    import: Bool
-    importSymbols: List[ImportSymbolInfo]
+    importSymbols: ImportSymbolsInfo
 ): Json {
     let topLevelCompletions = if(!toplevel) {[]} else {toplevelCompletion(lspHook)}
     let patternCompletions = lspHook.results().collectFirst {
@@ -72,7 +78,8 @@ handleCompletion(
                 } {
                     scheme.signature.returnType | TConstructor(_, selfTypeName, _)
                 } => 
-                    let otherCompletions = completion(h.unification, h.environment, "", None, expected, importSymbols)
+                    let otherCompletions = 
+                        completion(h.unification, h.environment, "", None, expected, importSymbols)
                     let selfCompletions = h.environment.symbols.get(selfName).toList().flatMap {scheme =>
                         let prefix = selfTypeName + "_"
                         completion(h.unification, h.environment, prefix, None, expected, importSymbols).filter {
@@ -170,7 +177,8 @@ handleCompletion(
             } else {c}
         }
     }
-    let importCompletions = importCompletion(importSymbols.filter {_ => import}.map {_.moduleKey})
+    let importCompletions = 
+        importCompletion(importSymbols.importSymbols.filter {_ => importSymbols.import}.map {_.moduleKey})
     completionsToJson([...fixedCompletions, ...fixedTypeCompletions, ...topLevelCompletions, ...importCompletions])
 }
 
@@ -219,6 +227,13 @@ completionsToJson(completions: List[CompletionInfo]): Json {
                     .with("kind", "markdown")
                     .with("value", "```\n" + i.documentation + "\n```")
                 )
+                .with("additionalTextEdits", i.insertion.toList().map {| Pair(line, text) => Json.object()
+                    .with("range", Json->(
+                        start = Json->(line = line - 1, character = 0)
+                        end = Json->(line = line - 1, character = 0)
+                    ))
+                    .with("newText", text)
+                })
         })
 }
 
@@ -264,7 +279,7 @@ completion(
     prefix: String
     qualifiedByAlias: Option[String]
     expected: Type
-    importSymbols: List[ImportSymbolInfo]
+    importSymbols: ImportSymbolsInfo
 ): List[CompletionInfo] {
 
     let member = prefix.contains("_")
@@ -340,7 +355,7 @@ completion(
     }
     
     if(prefix == "") {
-        importSymbols.each {| info =>
+        importSymbols.importSymbols.each {| info =>
             [info.moduleKey.name, ...info.variantNames].distinct().each: name =>
             let moduleName = info.moduleKey.folders.map {_ + "."}.join() + info.moduleKey.name
             let fromName = if(
@@ -362,6 +377,7 @@ completion(
                 documentation = "// Will import the following module:\nimport " + importName
                 expectedType = None
                 secondarySort = 9
+                insertion = Some(Pair(importSymbols.importLine, "import " + importName + "\n"))
             ))
         }
     }
