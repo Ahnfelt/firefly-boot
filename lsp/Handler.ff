@@ -317,7 +317,7 @@ extend self: Handler {
             if(query == "") {
                 workspaceSymbols.filter {_.kind == SType}
             } else {
-                workspaceSymbols.filter {SymbolHandler.symbolFilter(_, query)}
+                workspaceSymbols.filter {SymbolHandler.symbolFilter(_.name, query)}
             }
         }
         let limitedSymbols = symbols.sortBy {_.name.size()}.takeFirst(100)
@@ -384,6 +384,7 @@ extend self: Handler {
     handleCompletion(system: NodeSystem, parameters: Map[String, Json], version: Int): ResultOrError {
         let location = self.findLocationFromParameters(system, parameters)
         let token = self.findToken(system, location, insertToken = True)
+        Log.show("handleCompletion token = " + Show.show(token))
         let completionAt = Location(
             file = location.file
             line = token.startLine
@@ -395,8 +396,36 @@ extend self: Handler {
         errors.each {| CompileError(at, message) => 
             Log.trace("handleCompletion check error: " + message)
         }        
-        let o = CompletionHandler.handleCompletion(lspHook, completionAt.column == 1, token.followedByLeftBracket)
+        let importableSymbols = self.importableCompletions(system, token.raw, path)
+        let o = CompletionHandler.handleCompletion(
+            lspHook, completionAt.column == 1, token.followedByLeftBracket, importableSymbols
+        )
         Result(o.write())
+    }
+    
+    importableCompletions(system: NodeSystem, tokenName: String, file: Path): List[DocumentSymbol] {
+        let couldByTypeOrConstructor = 
+            tokenName.first().all {_.isAsciiUpper()} &&
+            tokenName.dropFirst().all {_.isAsciiLetterOrDigit()}
+        if(!couldByTypeOrConstructor) {[]} else:
+        
+        // TODO Do not use workspace. Use files from dependency packages as defined in this files project.
+        self.rootPath.or {[]}: rootPath => 
+        let files = if(rootPath.isFile()) {
+            []
+        } else {
+            Builder.findFireflyFiles(rootPath, None, Set.new()).filter {f =>
+                f.absolutePath != file.absolutePath
+            }
+        }
+        let symbols = files.flatMap {file => 
+            let documentSymbols = self.getDocumentSymbolsWithCache(system, file)
+            documentSymbols.filter {s => 
+                s.name.startsWith(tokenName) && s.kind == SType
+            }
+        }
+        // TODO include module names
+        symbols
     }
 
     handleSignatureHelp(system: NodeSystem, parameters: Map[String, Json], version: Int): ResultOrError {

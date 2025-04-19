@@ -1,5 +1,5 @@
 {
     "editor.suggest.showWords": false,
-    "firefly.trace.server": "verbose",
+    "firefly.trace.server": "messages",
     "editor.trimAutoWhitespace": false
 }

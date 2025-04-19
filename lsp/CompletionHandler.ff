@@ -3,6 +3,7 @@ import Unification from ff:compiler
 import Environment from ff:compiler
 import Syntax from ff:compiler
 import Handler
+import SymbolHandler
 
 data CompletionInfo(
     label: String
@@ -14,9 +15,15 @@ data CompletionInfo(
     documentation: String
     expectedType: Option[Type]
     secondarySort: Int = 5
+    included: Bool = True
 )
 
-handleCompletion(lspHook: LspHook, toplevel: Bool, followedByOpenBracket: Bool): Json {
+handleCompletion(
+    lspHook: LspHook
+    toplevel: Bool
+    followedByOpenBracket: Bool
+    importableSymbols: List[DocumentSymbol]
+): Json {
     let topLevelCompletions = if(!toplevel) {[]} else {toplevelCompletion(lspHook)}
     let patternCompletions = lspHook.results().collectFirst {
         | InferPatternHook h =>
@@ -157,7 +164,13 @@ handleCompletion(lspHook: LspHook, toplevel: Bool, followedByOpenBracket: Bool):
             } else {c}
         }
     }
-    completionsToJson([...fixedCompletions, ...fixedTypeCompletions, ...topLevelCompletions])
+    let importableCompletions = importableSymbols.map {s =>
+        // TODO sort these completions last
+        CompletionInfo(
+            s.name, "", "", "", False, TConstructor(s.start, s.name, []), "Importable", None, 42, included = False
+        )
+    }
+    completionsToJson([...fixedCompletions, ...fixedTypeCompletions, ...topLevelCompletions, ...importableCompletions])
 }
 
 completionsToJson(completions: List[CompletionInfo]): Json {
@@ -172,7 +185,7 @@ completionsToJson(completions: List[CompletionInfo]): Json {
             let isVariable = isLower && !i.extra.contains("(") && !i.extra.contains("{")
             let isDefinition = ["let ", "mutable ", "function "].any {i.snippet.startsWith(_)}
             let isParameter = i.snippet.endsWith(" = ")
-            let sortText = if(isParameter || isDefinition) {0} else {9 - (
+            let sortText = if(i.included) {"A"} else {"B"} + if(isParameter || isDefinition) {0} else {9 - (
                 isVariable.toInt() + isUnqualified.toInt() +
                 isAlpha.toInt() + isLower.toInt() + isMember.toInt()
             )} + if(isMember) {"1"} else {"0"} + i.secondarySort + i.label.lower()

@@ -139,8 +139,8 @@ locationsToLspRange(start: Location, end: Location): Json {
         )
 }
 
-symbolFilter(symbol: WorkspaceSymbol, query: String): Bool {
-    let symbolWords = splitCamelCased(symbol.name.takeWhile {_.isAsciiLetterOrDigit()})
+symbolFilter(symbolName: String, query: String): Bool {
+    let symbolWords = splitCamelCased(symbolName.takeWhile {_.isAsciiLetterOrDigit()})
     matchSymbol(symbolWords, query)
 }
 
