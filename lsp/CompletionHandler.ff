@@ -2,6 +2,11 @@ import LspHook from ff:compiler
 import Unification from ff:compiler
 import Environment from ff:compiler
 import Syntax from ff:compiler
+import Builder from ff:compiler
+import Tokenizer from ff:compiler
+import Parser from ff:compiler
+import Dependencies from ff:compiler
+import DependencyLock from ff:compiler
 import Handler
 
 data CompletionInfo(
@@ -16,7 +21,7 @@ data CompletionInfo(
     secondarySort: Int = 5
 )
 
-handleCompletion(lspHook: LspHook, toplevel: Bool, followedByOpenBracket: Bool): Json {
+handleCompletion(lspHook: LspHook, toplevel: Bool, followedByOpenBracket: Bool, moduleKeys: List[ModuleKey]): Json {
     let topLevelCompletions = if(!toplevel) {[]} else {toplevelCompletion(lspHook)}
     let patternCompletions = lspHook.results().collectFirst {
         | InferPatternHook h =>
@@ -157,7 +162,8 @@ handleCompletion(lspHook: LspHook, toplevel: Bool, followedByOpenBracket: Bool):
             } else {c}
         }
     }
-    completionsToJson([...fixedCompletions, ...fixedTypeCompletions, ...topLevelCompletions])
+    let importCompletions = importCompletion(moduleKeys) 
+    completionsToJson([...fixedCompletions, ...fixedTypeCompletions, ...topLevelCompletions, ...importCompletions])
 }
 
 completionsToJson(completions: List[CompletionInfo]): Json {
@@ -172,7 +178,8 @@ completionsToJson(completions: List[CompletionInfo]): Json {
             let isVariable = isLower && !i.extra.contains("(") && !i.extra.contains("{")
             let isDefinition = ["let ", "mutable ", "function "].any {i.snippet.startsWith(_)}
             let isParameter = i.snippet.endsWith(" = ")
-            let sortText = if(isParameter || isDefinition) {0} else {9 - (
+            let isImport = i.documentation == "// Imports this module"
+            let sortText = if(isParameter || isDefinition || isImport) {0} else {9 - (
                 isVariable.toInt() + isUnqualified.toInt() +
                 isAlpha.toInt() + isLower.toInt() + isMember.toInt()
             )} + if(isMember) {"1"} else {"0"} + i.secondarySort + i.label.lower()
@@ -183,6 +190,7 @@ completionsToJson(completions: List[CompletionInfo]): Json {
             Json.object()
                 // Namespace or Property or Constructor or EnumMember or Constructor or Method/Function or Field/Variable
                 .with("kind"
+                    if(isImport) {2} else:
                     if(shownType == "") {3} else:
                     if(isParameter) {10} else:
                     if(i.type.{| TConstructor(_, "type", _) => True | _ => False}) {9} else:
@@ -204,6 +212,28 @@ completionsToJson(completions: List[CompletionInfo]): Json {
                     .with("value", "```\n" + i.documentation + "\n```")
                 )
         })
+}
+
+importCompletion(moduleKeys: List[ModuleKey]): List[CompletionInfo] {
+    moduleKeys.map {moduleKey =>
+        let label = moduleKey.folders.map {_ + "."}.join() + moduleKey.name
+        let extra = if(moduleKey.packagePair.name == "script" && moduleKey.packagePair.group == "script") {
+            ""
+        } else {
+            " from " + moduleKey.packagePair.groupName(":")
+        }
+        CompletionInfo(
+            label = label
+            extra = extra
+            more = ""
+            snippet = label + extra
+            member = False
+            type = TConstructor(Location("", 0, 0), "", [])
+            documentation = "// Imports this module", 
+            expectedType = None
+            secondarySort = if(extra == "") {1} else {2}
+        )
+    }
 }
 
 typeCompletion(types: Map[String, String], typeGenerics: Map[String, List[String]]): List[CompletionInfo] {
@@ -824,4 +854,19 @@ showCompletionParameter(indentation: String, parameter: Parameter): String {
         | EList(_, _, _) => "[...]"
         | _ => "..."
     }.map {" = " + _}.else {""}
+}
+
+findModulesToImport(system: NodeSystem, directory: Path): List[ModuleKey] {
+    let dependencies = 
+        Dependencies.process(system.httpClient(), DependencyLock.new(system.mainTask()), directory)
+    let nonCore = dependencies.packagePaths.toList().filter {!_.first.isCore()}
+    nonCore.flatMap {| Pair(packagePair, packagePath) =>
+        let packageFiles = Builder.findPackageFilesForDirectory(packagePath, None, Set.new())
+        /*let code = packageFile.readText()
+        let tokens = Tokenizer.tokenize(packageFile.absolute(), code, None, True)
+        let moduleKey = ModuleKey(PackagePair("script", "script"), [], "<package>")
+        let parser = Parser.new(moduleKey, tokens, True, LspHook.disabled())
+        let packageInfo = parser.parsePackageInfo()*/
+        packageFiles.flatMap {_.files.collect {f => packagePair.moduleKey(packagePath, f)}}
+    }
 }

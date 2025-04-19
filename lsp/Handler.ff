@@ -93,11 +93,15 @@ extend self: Handler {
 
     handleRequest(system: NodeSystem, method: String, parameters: Map[String, Json], version: Int): ResultOrError {
         method.{
-            | "initialize" => self.handleInitialize(system, parameters)
+            | "initialize" => 
+                self.handleInitialize(system, parameters)
             //| "textDocument/diagnostic" => self.handleDiagnostic(system, parameters)
-            | "textDocument/documentSymbol" => self.handleDocumentSymbol(system, parameters)
-            | "textDocument/completion" => self.handleCompletion(system, parameters, version)
-            | "textDocument/signatureHelp" => self.handleSignatureHelp(system, parameters, version)
+            | "textDocument/documentSymbol" => 
+                self.handleDocumentSymbol(system, parameters)
+            | "textDocument/completion" => 
+                self.handleCompletion(system, parameters, version)
+            | "textDocument/signatureHelp" => 
+                self.handleSignatureHelp(system, parameters, version)
             | "textDocument/hover" => 
                 self.handleTokenRequestWithCache(system, method, parameters) {key => 
                     self.handleHover(system, key.targetAt, goToDefinition = False, version)
@@ -110,7 +114,8 @@ extend self: Handler {
                 self.handleTokenRequestWithCache(system, method, parameters) {key => 
                     self.handleReferences(system, key.targetAt, key.includeDeclaration, local = False, version)
                 }
-            | "textDocument/rename" => self.handleRename(system, parameters, version)
+            | "textDocument/rename" => 
+                self.handleRename(system, parameters, version)
             | "textDocument/documentHighlight" => 
                 self.handleTokenRequestWithCache(system, method, parameters) {key => 
                     self.handleReferences(system, key.targetAt, includeDeclaration = True, local = True, version)
@@ -119,8 +124,10 @@ extend self: Handler {
                 self.printTime(system.mainTask(), "handleWorkspaceSymbol") {
                     self.handleWorkspaceSymbol(system, parameters)
                 }
-            | "shutdown" => Result(Json.null().write())
-            | _ => self.handleUnsupported()
+            | "shutdown" => 
+                Result(Json.null().write())
+            | _ => 
+                self.handleUnsupported()
         }
     }
 
@@ -384,6 +391,10 @@ extend self: Handler {
     handleCompletion(system: NodeSystem, parameters: Map[String, Json], version: Int): ResultOrError {
         let location = self.findLocationFromParameters(system, parameters)
         let token = self.findToken(system, location, insertToken = True)
+        let toplevelToken = self.findToken(system, location.Location(column = 1), insertToken = False)
+        let moduleKeys = if(toplevelToken.raw == "import" && location.column >= 8) {
+            CompletionHandler.findModulesToImport(system, system.path(location.file))
+        } else {[]}
         let completionAt = Location(
             file = location.file
             line = token.startLine
@@ -395,7 +406,7 @@ extend self: Handler {
         errors.each {| CompileError(at, message) => 
             Log.trace("handleCompletion check error: " + message)
         }        
-        let o = CompletionHandler.handleCompletion(lspHook, completionAt.column == 1, token.followedByLeftBracket)
+        let o = CompletionHandler.handleCompletion(lspHook, completionAt.column == 1, token.followedByLeftBracket, moduleKeys)
         Result(o.write())
     }
 
