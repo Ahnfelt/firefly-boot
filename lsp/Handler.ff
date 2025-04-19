@@ -406,7 +406,9 @@ extend self: Handler {
         errors.each {| CompileError(at, message) => 
             Log.trace("handleCompletion check error: " + message)
         }        
-        let importSymbols = self.findModulesToImport(system, path, lspHook)
+        let importSymbols = self.printTime(system.mainTask(), "findModulesToImport") {
+            self.findModulesToImport(system, path, lspHook)
+        }
         let o = CompletionHandler.handleCompletion(
             lspHook = lspHook
             toplevel = completionAt.column == 1
