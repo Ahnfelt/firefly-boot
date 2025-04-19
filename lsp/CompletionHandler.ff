@@ -2,11 +2,6 @@ import LspHook from ff:compiler
 import Unification from ff:compiler
 import Environment from ff:compiler
 import Syntax from ff:compiler
-import Builder from ff:compiler
-import Tokenizer from ff:compiler
-import Parser from ff:compiler
-import Dependencies from ff:compiler
-import DependencyLock from ff:compiler
 import Handler
 
 data CompletionInfo(
@@ -21,7 +16,7 @@ data CompletionInfo(
     secondarySort: Int = 5
 )
 
-data ModuleSymbolInfo(
+data ImportSymbolInfo(
     moduleKey: ModuleKey
     typeNames: List[String]
     variantNames: List[String]
@@ -33,7 +28,7 @@ handleCompletion(
     toplevel: Bool
     followedByOpenBracket: Bool
     import: Bool
-    moduleSymbols: List[ModuleSymbolInfo]
+    importSymbols: List[ImportSymbolInfo]
 ): Json {
     let topLevelCompletions = if(!toplevel) {[]} else {toplevelCompletion(lspHook)}
     let patternCompletions = lspHook.results().collectFirst {
@@ -77,10 +72,10 @@ handleCompletion(
                 } {
                     scheme.signature.returnType | TConstructor(_, selfTypeName, _)
                 } => 
-                    let otherCompletions = completion(h.unification, h.environment, "", None, expected, moduleSymbols)
+                    let otherCompletions = completion(h.unification, h.environment, "", None, expected, importSymbols)
                     let selfCompletions = h.environment.symbols.get(selfName).toList().flatMap {scheme =>
                         let prefix = selfTypeName + "_"
-                        completion(h.unification, h.environment, prefix, None, expected, moduleSymbols).filter {
+                        completion(h.unification, h.environment, prefix, None, expected, importSymbols).filter {
                             _.label.first().any {_.isAsciiLower()}
                         }.map {c =>
                             c.CompletionInfo(label = selfName + "." + c.label, snippet = selfName + "." + c.snippet)
@@ -88,7 +83,7 @@ handleCompletion(
                     }
                     [...otherCompletions, ...selfCompletions]
                 | _ => 
-                    completion(h.unification, h.environment, typePrefix, qualifiedByAlias, expected, moduleSymbols)
+                    completion(h.unification, h.environment, typePrefix, qualifiedByAlias, expected, importSymbols)
             }
         | InferRecordFieldHook h {h.unification.substitute(h.recordType) | TConstructor(_, n, ts)} =>
             let fieldNames = n.split('$').dropFirst(1)
@@ -96,7 +91,7 @@ handleCompletion(
                 let t2 = h.unification.substitute(t)
                 CompletionInfo(name, "", "", name, True, t2, "(...)." + name + ": " + t2.show([]), Some(h.expected))
             }
-            [...fieldCompletions, ...completion(h.unification, h.environment, n, None, h.expected, moduleSymbols)]
+            [...fieldCompletions, ...completion(h.unification, h.environment, n, None, h.expected, importSymbols)]
         | InferArgumentHook h {
             ![ // Avoids named argument suggestions for operators that become trait method calls, such as ==
                 "ff:core/Equal.equals", "ff:core/Equal.notEquals"
@@ -175,7 +170,7 @@ handleCompletion(
             } else {c}
         }
     }
-    let importCompletions = importCompletion(moduleSymbols.filter {_ => import}.map {_.moduleKey})
+    let importCompletions = importCompletion(importSymbols.filter {_ => import}.map {_.moduleKey})
     completionsToJson([...fixedCompletions, ...fixedTypeCompletions, ...topLevelCompletions, ...importCompletions])
 }
 
@@ -269,7 +264,7 @@ completion(
     prefix: String
     qualifiedByAlias: Option[String]
     expected: Type
-    moduleSymbols: List[ModuleSymbolInfo]
+    importSymbols: List[ImportSymbolInfo]
 ): List[CompletionInfo] {
 
     let member = prefix.contains("_")
@@ -345,7 +340,7 @@ completion(
     }
     
     if(prefix == "") {
-        moduleSymbols.each {| info =>
+        importSymbols.each {| info =>
             [info.moduleKey.name, ...info.variantNames].distinct().each: name =>
             let moduleName = info.moduleKey.folders.map {_ + "."}.join() + info.moduleKey.name
             let fromName = if(
@@ -366,6 +361,7 @@ completion(
                 type = TConstructor(Location("", 0, 0), "", [])
                 documentation = "// Will import the following module:\nimport " + importName
                 expectedType = None
+                secondarySort = 9
             ))
         }
     }
@@ -895,33 +891,4 @@ showCompletionParameter(indentation: String, parameter: Parameter): String {
         | EList(_, _, _) => "[...]"
         | _ => "..."
     }.map {" = " + _}.else {""}
-}
-
-findModulesToImport(system: NodeSystem, modulePath: Path): List[ModuleSymbolInfo] {
-    let dependencies = 
-        Dependencies.process(system.httpClient(), DependencyLock.new(system.mainTask()), modulePath)
-    let nonCore = dependencies.packagePaths.toList().filter {!_.first.isCore()}
-    function parseModule(packagePair: PackagePair, path: Path, exclude: Set[ModuleKey]): Option[Module] {
-        dependencies.packagePaths.get(packagePair).flatMap: packagePath =>
-        packagePair.moduleKey(packagePath, path).filter {!exclude.contains(_)}.flatMap: moduleKey =>
-        try {
-            let code = path.readText()
-            let tokens = Tokenizer.tokenize(path.absolute(), code, None, True)
-            let parser = Parser.new(moduleKey, tokens, True, LspHook.disabled())            
-            parser.parseModuleWithPackageInfo().module
-        }.toOption()
-    }
-    let imports = parseModule(dependencies.mainPackagePair, modulePath, Set.new()).toList().flatMap {
-        _.imports.map {_.moduleKey}
-    }.toSet()
-    nonCore.flatMap {| Pair(packagePair, packagePath) =>
-        let packageFiles = Builder.findPackageFilesForDirectory(packagePath, None, Set.new())
-        packageFiles.flatMap {_.files.collect {file => 
-            parseModule(packagePair, file, imports).map: module =>
-            let typeNames = module.types.map {_.name}
-            let variantNames = module.types.flatMap {_.variants.map {_.name}}
-            let traitNames = module.traits.map {_.name}
-            ModuleSymbolInfo(module.moduleKey, typeNames, variantNames, traitNames)
-        }}
-    }
 }

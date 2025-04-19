@@ -172,7 +172,12 @@ extend self: Parser {
             } elseIf {self.current().is(LKeyword) && self.current().rawIs4("data", "class", "capability", "newtype")} {
                 types.push(self.parseTypeDefinition())
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("import")} {
-                imports.push(self.parseImportDefinition(self.moduleKey.packagePair))
+                if(self.lspHook.isEnabled() && self.ahead().is(LLower) && !self.aheadAhead().is(LDot)) {
+                    self.skip(LKeyword)
+                    self.skip(LLower)
+                } else {
+                    imports.push(self.parseImportDefinition(self.moduleKey.packagePair))
+                }
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("include")} {
                 throw(CompileError(self.current().at()
                     "Includes must be at the top of the file or below 'package'"

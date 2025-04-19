@@ -38,6 +38,7 @@ main(system: NodeSystem) {
         cancelledRequests = [].toSet()
         responseCache = Map.new()
         fileSymbolsCache = Map.new()
+        importSymbolsCache = Pair("", [])
         moduleCache = cache
         dependencyLock = DependencyLock.new(system.mainTask())
     )

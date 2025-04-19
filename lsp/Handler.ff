@@ -1,5 +1,6 @@
 import JsEmitter from ff:compiler
 import Builder from ff:compiler
+import Dependencies from ff:compiler
 import Syntax from ff:compiler
 import Tokenizer from ff:compiler
 import Parser from ff:compiler
@@ -21,6 +22,7 @@ capability Handler(
     mutable cancelledRequests: Set[MessageId]
     mutable responseCache: Map[TokenRequestCacheKey, ResultOrError]
     mutable fileSymbolsCache: Map[String, List[DocumentSymbol]]
+    mutable importSymbolsCache: Pair[String, List[ImportSymbolInfo]]
     moduleCache: ModuleCache
     dependencyLock: DependencyLock
 )
@@ -238,6 +240,7 @@ extend self: Handler {
     }*/
 
     handleFocusDiagnostic(system: NodeSystem, parameters: Map[String, Json], version: Int): Json {
+        self.importSymbolsCache = Pair("", [])
         let js = system.js()
         let uri = parameters.grab("textDocument").field("uri").grabString()
         let path = system.pathFromUrl(uri)
@@ -392,8 +395,6 @@ extend self: Handler {
         let location = self.findLocationFromParameters(system, parameters)
         let token = self.findToken(system, location, insertToken = True)
         let toplevelToken = self.findToken(system, location.Location(column = 1), insertToken = False)
-        // TODO: In findModulesToImport, use virtual files and parser cache. Only compute it on focus.
-        let moduleSymbols = CompletionHandler.findModulesToImport(system, system.path(location.file))
         let completionAt = Location(
             file = location.file
             line = token.startLine
@@ -405,12 +406,13 @@ extend self: Handler {
         errors.each {| CompileError(at, message) => 
             Log.trace("handleCompletion check error: " + message)
         }        
+        let importSymbols = self.findModulesToImport(system, path, lspHook)
         let o = CompletionHandler.handleCompletion(
             lspHook = lspHook
             toplevel = completionAt.column == 1
             followedByOpenBracket = token.followedByLeftBracket
             import = toplevelToken.raw == "import" && location.column >= 8
-            moduleSymbols = moduleSymbols
+            importSymbols = importSymbols
         )
         Result(o.write())
     }
@@ -608,7 +610,51 @@ extend self: Handler {
                 None
         }
     }
-
+    
+    findModulesToImport(system: NodeSystem, modulePath: Path, lspHook: LspHook): List[ImportSymbolInfo] {
+        let importSymbols = if(self.importSymbolsCache.first == modulePath.absolute()) {
+            self.importSymbolsCache.second
+        } else {
+            let dependencies = 
+                Dependencies.process(system.httpClient(), DependencyLock.new(system.mainTask()), modulePath)
+            let nonCore = dependencies.packagePaths.toList().filter {!_.first.isCore()}
+            function parseModule(packagePair: PackagePair, path: Path): Option[Module] {
+                dependencies.packagePaths.get(packagePair).flatMap: packagePath =>
+                packagePair.moduleKey(packagePath, path).flatMap: moduleKey =>
+                self.moduleCache.parsedModules.get(path.absolute()).map {_.first}.orElse:
+                try {
+                    let code = self.virtualFiles.get(path.absolute()).else {path.readText()}
+                    let tokens = Tokenizer.tokenize(path.absolute(), code, None, True)
+                    let parser = Parser.new(moduleKey, tokens, True, LspHook.disabled())
+                    parser.parseModuleWithPackageInfo().module
+                }.toOption()
+            }
+            let symbols = nonCore.flatMap {| Pair(packagePair, packagePath) =>
+                let packageFiles = Builder.findPackageFilesForDirectory(packagePath, None, Set.new())
+                packageFiles.flatMap {_.files.collect {file => 
+                    parseModule(packagePair, file).map: module =>
+                    let typeNames = module.types.map {_.name}
+                    let variantNames = module.types.flatMap {_.variants.map {_.name}}
+                    let traitNames = module.traits.map {_.name}
+                    ImportSymbolInfo(module.moduleKey, typeNames, variantNames, traitNames)
+                }}
+            }
+            self.importSymbolsCache = Pair(modulePath.absolute(), symbols)
+            symbols
+        }
+        let imports = self.moduleCache.parsedModules.get(modulePath.absolute()).map {_.first}.orElse {
+            try {
+                let code = self.virtualFiles.get(modulePath.absolute()).else {modulePath.readText()}
+                let tokens = Tokenizer.tokenize(modulePath.absolute(), code, Some(lspHook.at), True)
+                let parser = Parser.new(ModuleKey(PackagePair("", ""), [], ""), tokens, True, lspHook)
+                parser.parseModuleWithPackageInfo().module
+            }.toOption()
+        }.toList().flatMap {
+            _.imports.map {_.moduleKey}
+        }.toSet()
+        importSymbols.filter {!imports.contains(_.moduleKey)}
+    }
+    
     makeNotificationMessage(method: String, params: Json): Json {
         Json.object()
             .with("jsonrpc", "2.0")
