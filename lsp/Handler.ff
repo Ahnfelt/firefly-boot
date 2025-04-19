@@ -392,9 +392,8 @@ extend self: Handler {
         let location = self.findLocationFromParameters(system, parameters)
         let token = self.findToken(system, location, insertToken = True)
         let toplevelToken = self.findToken(system, location.Location(column = 1), insertToken = False)
-        let moduleSymbols = if(toplevelToken.raw == "import" && location.column >= 8) {
-            CompletionHandler.findModulesToImport(system, system.path(location.file))
-        } else {[]}
+        // TODO: In findModulesToImport, use virtual files and parser cache
+        let moduleSymbols = CompletionHandler.findModulesToImport(system, system.path(location.file))
         let completionAt = Location(
             file = location.file
             line = token.startLine
@@ -410,6 +409,7 @@ extend self: Handler {
             lspHook = lspHook
             toplevel = completionAt.column == 1
             followedByOpenBracket = token.followedByLeftBracket
+            import = toplevelToken.raw == "import" && location.column >= 8
             moduleSymbols = moduleSymbols
         )
         Result(o.write())

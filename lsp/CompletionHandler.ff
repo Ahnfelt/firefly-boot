@@ -32,6 +32,7 @@ handleCompletion(
     lspHook: LspHook
     toplevel: Bool
     followedByOpenBracket: Bool
+    import: Bool
     moduleSymbols: List[ModuleSymbolInfo]
 ): Json {
     let topLevelCompletions = if(!toplevel) {[]} else {toplevelCompletion(lspHook)}
@@ -76,10 +77,10 @@ handleCompletion(
                 } {
                     scheme.signature.returnType | TConstructor(_, selfTypeName, _)
                 } => 
-                    let otherCompletions = completion(h.unification, h.environment, "", None, expected)
+                    let otherCompletions = completion(h.unification, h.environment, "", None, expected, moduleSymbols)
                     let selfCompletions = h.environment.symbols.get(selfName).toList().flatMap {scheme =>
                         let prefix = selfTypeName + "_"
-                        completion(h.unification, h.environment, prefix, None, expected).filter {
+                        completion(h.unification, h.environment, prefix, None, expected, moduleSymbols).filter {
                             _.label.first().any {_.isAsciiLower()}
                         }.map {c =>
                             c.CompletionInfo(label = selfName + "." + c.label, snippet = selfName + "." + c.snippet)
@@ -87,7 +88,7 @@ handleCompletion(
                     }
                     [...otherCompletions, ...selfCompletions]
                 | _ => 
-                    completion(h.unification, h.environment, typePrefix, qualifiedByAlias, expected)
+                    completion(h.unification, h.environment, typePrefix, qualifiedByAlias, expected, moduleSymbols)
             }
         | InferRecordFieldHook h {h.unification.substitute(h.recordType) | TConstructor(_, n, ts)} =>
             let fieldNames = n.split('$').dropFirst(1)
@@ -95,7 +96,7 @@ handleCompletion(
                 let t2 = h.unification.substitute(t)
                 CompletionInfo(name, "", "", name, True, t2, "(...)." + name + ": " + t2.show([]), Some(h.expected))
             }
-            [...fieldCompletions, ...completion(h.unification, h.environment, n, None, h.expected)]
+            [...fieldCompletions, ...completion(h.unification, h.environment, n, None, h.expected, moduleSymbols)]
         | InferArgumentHook h {
             ![ // Avoids named argument suggestions for operators that become trait method calls, such as ==
                 "ff:core/Equal.equals", "ff:core/Equal.notEquals"
@@ -174,7 +175,7 @@ handleCompletion(
             } else {c}
         }
     }
-    let importCompletions = importCompletion(moduleSymbols.map {_.moduleKey})
+    let importCompletions = importCompletion(moduleSymbols.filter {_ => import}.map {_.moduleKey})
     completionsToJson([...fixedCompletions, ...fixedTypeCompletions, ...topLevelCompletions, ...importCompletions])
 }
 
@@ -268,6 +269,7 @@ completion(
     prefix: String
     qualifiedByAlias: Option[String]
     expected: Type
+    moduleSymbols: List[ModuleSymbolInfo]
 ): List[CompletionInfo] {
 
     let member = prefix.contains("_")
@@ -341,6 +343,33 @@ completion(
             members.push(makeCompletion(unification, expected, prefix, memberName, memberScheme, False, member))
         }
     }
+    
+    if(prefix == "") {
+        moduleSymbols.each {| info =>
+            [info.moduleKey.name, ...info.variantNames].distinct().each: name =>
+            let moduleName = info.moduleKey.folders.map {_ + "."}.join() + info.moduleKey.name
+            let fromName = if(
+                info.moduleKey.packagePair.name == "script" && info.moduleKey.packagePair.group == "script"
+            ) {
+                ""
+            } else {
+                info.moduleKey.packagePair.groupName(":")
+            }
+            let importName = if(fromName == "") {moduleName} else {moduleName + " from " + fromName}
+            // TODO: Add edit that inserts the import
+            members.push(CompletionInfo(
+                label = name
+                extra = ""
+                more = if(fromName == "") {moduleName} else {fromName + "/" + moduleName}
+                snippet = name
+                member = False
+                type = TConstructor(Location("", 0, 0), "", [])
+                documentation = "// Will import the following module:\nimport " + importName
+                expectedType = None
+            ))
+        }
+    }
+    
     members.toList()
 }
 
