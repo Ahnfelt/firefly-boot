@@ -76,6 +76,7 @@ extend self: Handler {
                 let diagnostics = self.handleFocusDiagnostic(system, parameters, version)
                 [Pair("textDocument/publishDiagnostics", diagnostics)]
             | "custom/focusDocument" => 
+                self.importSymbolsCache = Pair("", [])
                 let diagnostics = self.handleFocusDiagnostic(system, parameters, version)
                 [Pair("textDocument/publishDiagnostics", diagnostics)]
             | "workspace/didRenameFiles" =>
@@ -240,7 +241,6 @@ extend self: Handler {
     }*/
 
     handleFocusDiagnostic(system: NodeSystem, parameters: Map[String, Json], version: Int): Json {
-        self.importSymbolsCache = Pair("", [])
         let js = system.js()
         let uri = parameters.grab("textDocument").field("uri").grabString()
         let path = system.pathFromUrl(uri)
