@@ -154,8 +154,8 @@ return ff_core_Option.None()
 } else {
 ff_core_Js.withSignal_(((signal_) => {
 const promise_ = (new Promise(((resolve_, reject_) => {
-const jsDoReject_ = ((_w1) => {
-return doReject_(_w1)
+const jsDoReject_ = ((_) => {
+return doReject_(signal_.reason)
 });
 doResolve_ = (() => {
 signal_.removeEventListener("abort", jsDoReject_);
@@ -204,9 +204,12 @@ ff_core_Stream.Stream_each(stream_, ((buffer_) => {
 if((!writable_.write((new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength))))) {
 ff_core_Js.withSignal_(((signal_) => {
 return (new Promise(((resolve_, reject_) => {
-signal_.addEventListener("abort", reject_);
+const jsDoReject_ = ((_) => {
+return reject_.callValue1(signal_.reason)
+});
+signal_.addEventListener("abort", jsDoReject_);
 return writable_.once("drain", (() => {
-signal_.removeEventListener("abort", reject_);
+signal_.removeEventListener("abort", jsDoReject_);
 return resolve_()
 }))
 })))
@@ -270,8 +273,8 @@ return ff_core_Option.None()
 } else {
 (await ff_core_Js.withSignal_$((async (signal_, $task) => {
 const promise_ = (new Promise(((resolve_, reject_) => {
-const jsDoReject_ = ((_w1) => {
-return doReject_(_w1)
+const jsDoReject_ = ((_) => {
+return doReject_(signal_.reason)
 });
 doResolve_ = (() => {
 signal_.removeEventListener("abort", jsDoReject_);
@@ -320,9 +323,12 @@ try {
 if((!writable_.write((new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength))))) {
 (await ff_core_Js.withSignal_$((async (signal_, $task) => {
 return (await (new Promise(((resolve_, reject_) => {
-signal_.addEventListener("abort", reject_);
+const jsDoReject_ = ((_) => {
+return reject_.callValue1(signal_.reason)
+});
+signal_.addEventListener("abort", jsDoReject_);
 return writable_.once("drain", (() => {
-signal_.removeEventListener("abort", reject_);
+signal_.removeEventListener("abort", jsDoReject_);
 return resolve_()
 }))
 }))))

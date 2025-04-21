@@ -242,13 +242,13 @@ reject_(e_)
 }
 }
 });
-const jsReject_ = ((e_) => {
-return doReject_(e_)
-});
 const controller_ = $task.controller_;
-controller_.signal.addEventListener("abort", jsReject_);
+const jsDoReject_ = ((_) => {
+return doReject_(controller_.signal.reason)
+});
+controller_.signal.addEventListener("abort", jsDoReject_);
 cleanups_.array.push(((_) => {
-controller_.signal.removeEventListener("abort", jsReject_)
+controller_.signal.removeEventListener("abort", jsDoReject_)
 }));
 return body_(doResolve_, doReject_, ((cleanup_) => {
 cleanups_.array.push(cleanup_)
@@ -565,13 +565,13 @@ reject_(e_)
 }
 }
 });
-const jsReject_ = (async (a_1) => await (async (e_, $task) => {
-return (await doReject_(e_, $task))
-})(a_1, $task));
 const controller_ = $task.controller_;
-controller_.signal.addEventListener("abort", jsReject_);
+const jsDoReject_ = (async (a_1) => await (async (_, $task) => {
+return (await doReject_(controller_.signal.reason, $task))
+})(a_1, $task));
+controller_.signal.addEventListener("abort", jsDoReject_);
 cleanups_.array.push((async (_, $task) => {
-controller_.signal.removeEventListener("abort", jsReject_)
+controller_.signal.removeEventListener("abort", jsDoReject_)
 }));
 return (await body_(doResolve_, doReject_, (async (cleanup_, $task) => {
 cleanups_.array.push(cleanup_)
