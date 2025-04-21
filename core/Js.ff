@@ -136,10 +136,10 @@ awaitCancellablePromise[T](body: (T => Unit, Error => Unit, (Bool => Unit) => Un
                 }            
             }
         }
-        let jsReject = Js->{e => doReject(e?)}
         let controller = Js.controller()
-        controller->signal->addEventListener("abort", jsReject)
-        cleanups.push({_ => controller->signal->removeEventListener("abort", jsReject)})
+        let jsDoReject = Js->{_ => doReject(controller->signal->reason?)}
+        controller->signal->addEventListener("abort", jsDoReject)
+        cleanups.push({_ => controller->signal->removeEventListener("abort", jsDoReject)})
         body(doResolve, doReject, {cleanup => cleanups.push(cleanup)})
     }))?
 }

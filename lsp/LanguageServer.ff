@@ -73,13 +73,11 @@ main(system: NodeSystem) {
                             responseChannel.write(Pair(body, message.method))
                         }
                     } catchAny {error =>
-                        // TODO: Sometimes the "Error" is an "Event" instead of type "abort" - why?
-                        let problem = if(error.name() == "AbortError" || error!->type === "abort") {
+                        let problem = if(error.name() == "AbortError") {
                             Log.trace("LS ABORT")
                             Error(-32800, "Request cancelled")
                         } else {
                             Log.trace("LS ERROR " + error.name() + ": " + error.message())
-                            // Log.trace("LS ERROR MORE: " + error!->type?)
                             Log.trace("BEGIN LS ERROR STACK TRACE")
                             Log.trace(error.stack())
                             Log.trace("END LS ERROR STACK TRACE")

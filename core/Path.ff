@@ -336,7 +336,7 @@ internalReadStream(createReadStream: () => JsValue): Stream[Buffer] {
             if(jsStream->destroyed?) {None} else:
             Js.withSignal {signal =>
                 let promise = Js->Promise->(Js->{resolve, reject =>
-                    let jsDoReject = Js->{doReject(_)}
+                    let jsDoReject = Js->{_ => doReject(signal->reason?)}
                     doResolve = {
                         signal->removeEventListener("abort", jsDoReject)
                         doResolve = emptyResolve
@@ -369,9 +369,10 @@ internalWriteStream(path: Path, stream: Stream[Buffer], flags: String) {
             if(!writable->write(Js->Uint8Array->(buffer!->buffer, buffer!->byteOffset, buffer!->byteLength))?) {
                 Js.withSignal {signal =>
                     Js.await(Js->Promise->(Js->{resolve, reject =>
-                        signal->addEventListener("abort", reject)
+                        let jsDoReject = Js->{_ => reject->callValue1(signal->reason?)}
+                        signal->addEventListener("abort", jsDoReject)
                         writable->once("drain", Js->{
-                            signal->removeEventListener("abort", reject)
+                            signal->removeEventListener("abort", jsDoReject)
                             resolve.callValue0()
                         })
                     }))
