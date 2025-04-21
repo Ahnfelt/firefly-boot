@@ -63,12 +63,13 @@ main(system: NodeSystem) {
                 let request = requestPair.first
                 let message = parseRequestMessage(request.object)
                 logDirectory.each {logMessage(_, "request", request.object, message.method)}
-                spawn(message.id) {_ =>
+                spawn(message.id) {task =>
                     try {
                         if(message.method == "$/cancelRequest") {
                             abort(Some(parseMessageId(message.parameters.grab("id"))))
                         }
                         handleRequestMessage(system, handler, message, version).each {body =>
+                            //task.sleep(Duration(1.0))
                             responseChannel.write(Pair(body, message.method))
                         }
                     } catchAny {error =>
@@ -77,7 +78,9 @@ main(system: NodeSystem) {
                             Error(-32800, "Request cancelled")
                         } else {
                             Log.trace("LS ERROR " + error.name() + ": " + error.message())
+                            Log.trace("BEGIN LS ERROR STACK TRACE")
                             Log.trace(error.stack())
+                            Log.trace("END LS ERROR STACK TRACE")
                             Error(-32603, "Internal error")
                         }
                         message.id.each {id => 
