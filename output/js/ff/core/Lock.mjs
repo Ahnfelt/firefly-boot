@@ -225,7 +225,7 @@ acquired_ = true
 error_ = e_
 }
 };
-if(ff_core_JsValue.JsValue_isUndefined(error_)) {
+if((!ff_core_JsValue.JsValue_isUndefined(error_))) {
 throw error_
 }
 }
@@ -299,7 +299,7 @@ acquired_ = true
 error_ = e_
 }
 };
-if(ff_core_JsValue.JsValue_isUndefined(error_)) {
+if((!ff_core_JsValue.JsValue_isUndefined(error_))) {
 throw error_
 }
 }
