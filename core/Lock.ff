@@ -82,7 +82,7 @@ extend self: LockCondition {
                     error = e!
                 }
             }
-            if(error.isUndefined()) {Js.throw(error)}
+            if(!error.isUndefined()) {Js.throw(error)}
         }
     }
 

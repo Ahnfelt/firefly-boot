@@ -73,11 +73,13 @@ main(system: NodeSystem) {
                             responseChannel.write(Pair(body, message.method))
                         }
                     } catchAny {error =>
-                        let problem = if(error.name() == "AbortError") {
+                        // TODO: Sometimes the "Error" is an "Event" instead of type "abort" - why?
+                        let problem = if(error.name() == "AbortError" || error!->type === "abort") {
                             Log.trace("LS ABORT")
                             Error(-32800, "Request cancelled")
                         } else {
                             Log.trace("LS ERROR " + error.name() + ": " + error.message())
+                            // Log.trace("LS ERROR MORE: " + error!->type?)
                             Log.trace("BEGIN LS ERROR STACK TRACE")
                             Log.trace(error.stack())
                             Log.trace("END LS ERROR STACK TRACE")
@@ -85,7 +87,16 @@ main(system: NodeSystem) {
                         }
                         message.id.each {id => 
                             let body = makeResponseMessage(id, problem)
-                            responseChannel.write(Pair(body, message.method))
+                            try {
+                                responseChannel.write(Pair(body, message.method))
+                            } catchAny {error =>
+                                if(error.name() == "AbortError") {
+                                    Log.trace("LS ABORT WRITE")
+                                    let writeProblem = Error(-32800, "Request cancelled")
+                                    let writeMessage = makeResponseMessage(id, problem)
+                                    responseChannel.write(Pair(writeMessage, message.method))
+                                }
+                            }
                         }
                     }
                 }
