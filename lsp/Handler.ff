@@ -76,7 +76,6 @@ extend self: Handler {
                 let diagnostics = self.handleFocusDiagnostic(system, parameters, version)
                 [Pair("textDocument/publishDiagnostics", diagnostics)]
             | "custom/focusDocument" => 
-                self.importSymbolsCache = Pair("", [])
                 let diagnostics = self.handleFocusDiagnostic(system, parameters, version)
                 [Pair("textDocument/publishDiagnostics", diagnostics)]
             | "workspace/didRenameFiles" =>
@@ -339,9 +338,14 @@ extend self: Handler {
         let creates = parameters.grab("changes").grabArray().filter {_.field("type").grabInt() == 1}
         let changes = parameters.grab("changes").grabArray().filter {_.field("type").grabInt() == 2}
         let deletes = parameters.grab("changes").grabArray().filter {_.field("type").grabInt() == 3}
-        creates.map {_.field("uri").grabString()}.each {self.moduleCache.invalidate(system.pathFromUrl(_).absolute())}
-        changes.map {_.field("uri").grabString()}.each {self.moduleCache.invalidate(system.pathFromUrl(_).absolute())}
-        deletes.map {_.field("uri").grabString()}.each {self.moduleCache.invalidate(system.pathFromUrl(_).absolute())}
+        function invalidate(url: String) {
+            let path = system.pathFromUrl(url)
+            if(self.importSymbolsCache.first != path.absolute()) {self.importSymbolsCache = Pair("", [])}
+            self.moduleCache.invalidate(path.absolute())
+        }
+        creates.map {_.field("uri").grabString()}.each {invalidate(_)}
+        changes.map {_.field("uri").grabString()}.each {invalidate(_)}
+        deletes.map {_.field("uri").grabString()}.each {invalidate(_)}
         let diagnostics = self.handleClearDiagnostic(system, [Pair("files", Json.array(deletes))].toMap())
         diagnostics.map {Pair("textDocument/publishDiagnostics", _)}
     }
@@ -358,6 +362,7 @@ extend self: Handler {
     handleDidChange(system: NodeSystem, parameters: Map[String, Json]): Unit {
         let uri = parameters.grab("textDocument").field("uri").grabString()
         let path = system.pathFromUrl(uri)
+        if(self.importSymbolsCache.first != path.absolute()) {self.importSymbolsCache = Pair("", [])}
         self.responseCache = Map.new()
         self.fileSymbolsCache = self.fileSymbolsCache.remove(path.absolute())
         self.moduleCache.invalidate(path.absolute())
