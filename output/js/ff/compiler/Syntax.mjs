@@ -361,7 +361,7 @@ export function Version(at_, major_, minor_, patch_) {
 return {at_, major_, minor_, patch_};
 }
 
-
+export const scriptPackagePair_ = ff_compiler_Syntax.PackagePair("script", "script");
 
 export function catchMany_(list_, body_) {
 const errors_ = ff_core_Array.new_();

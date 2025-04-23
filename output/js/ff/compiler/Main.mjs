@@ -246,7 +246,7 @@ const filePaths_ = command_a.filePaths_;
 const columns_ = ff_core_List.List_flatMap(filePaths_, ((filePath_) => {
 const path_ = ff_core_NodeSystem.NodeSystem_path(system_, filePath_);
 const code_ = ff_core_Path.Path_readText(path_);
-const packagePair_ = ff_compiler_Syntax.PackagePair("script", "script");
+const packagePair_ = ff_compiler_Syntax.scriptPackagePair_;
 const moduleKey_ = ff_compiler_Syntax.ModuleKey(packagePair_, [], ff_core_Option.Option_grab(ff_core_String.String_removeLast(ff_core_Path.Path_base(path_), ".ff")));
 const tokens_ = ff_compiler_Tokenizer.tokenize_(ff_core_Path.Path_absolute(path_), code_, ff_core_Option.None(), false);
 const parser_ = ff_compiler_Parser.new_(moduleKey_, tokens_, true, ff_compiler_LspHook.disabled_());
@@ -650,7 +650,7 @@ const filePaths_ = command_a.filePaths_;
 const columns_ = (await ff_core_List.List_flatMap$(filePaths_, (async (filePath_, $task) => {
 const path_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, filePath_, $task));
 const code_ = (await ff_core_Path.Path_readText$(path_, $task));
-const packagePair_ = ff_compiler_Syntax.PackagePair("script", "script");
+const packagePair_ = ff_compiler_Syntax.scriptPackagePair_;
 const moduleKey_ = ff_compiler_Syntax.ModuleKey(packagePair_, [], ff_core_Option.Option_grab(ff_core_String.String_removeLast((await ff_core_Path.Path_base$(path_, $task)), ".ff")));
 const tokens_ = ff_compiler_Tokenizer.tokenize_((await ff_core_Path.Path_absolute$(path_, $task)), code_, ff_core_Option.None(), false);
 const parser_ = ff_compiler_Parser.new_(moduleKey_, tokens_, true, ff_compiler_LspHook.disabled_());
