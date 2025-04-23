@@ -240,7 +240,7 @@ completionsToJson(completions: List[CompletionInfo]): Json {
 importCompletion(moduleKeys: List[ModuleKey]): List[CompletionInfo] {
     moduleKeys.map {moduleKey =>
         let label = moduleKey.folders.map {_ + "."}.join() + moduleKey.name
-        let extra = if(moduleKey.packagePair.name == "script" && moduleKey.packagePair.group == "script") {
+        let extra = if(moduleKey.packagePair == Syntax.scriptPackagePair) {
             ""
         } else {
             " from " + moduleKey.packagePair.groupName(":")
@@ -374,9 +374,7 @@ completion(
 
 makeAutoimportCompletion(info: ImportSymbolInfo, importLine: Int, name: String, isType: Bool): CompletionInfo {
     let moduleName = info.moduleKey.folders.map {_ + "."}.join() + info.moduleKey.name
-    let fromName = if(
-        info.moduleKey.packagePair.name == "script" && info.moduleKey.packagePair.group == "script"
-    ) {
+    let fromName = if(info.moduleKey.packagePair == Syntax.scriptPackagePair) {
         ""
     } else {
         info.moduleKey.packagePair.groupName(":")

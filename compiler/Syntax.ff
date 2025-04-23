@@ -47,6 +47,8 @@ extend self: PackagePair {
     }
 }
 
+scriptPackagePair: PackagePair = PackagePair("script", "script")
+
 data ModuleKey(
     packagePair: PackagePair
     folders: List[String]

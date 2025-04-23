@@ -150,7 +150,7 @@ main(system: NodeSystem): Unit {
             let columns = filePaths.flatMap {filePath =>
                 let path = system.path(filePath)
                 let code = path.readText()
-                let packagePair = PackagePair("script", "script")
+                let packagePair = Syntax.scriptPackagePair
                 let moduleKey = ModuleKey(packagePair, [], path.base().removeLast(".ff").grab())
                 let tokens = Tokenizer.tokenize(path.absolute(), code, None, False)
                 let parser = Parser.new(moduleKey, tokens, True, LspHook.disabled())

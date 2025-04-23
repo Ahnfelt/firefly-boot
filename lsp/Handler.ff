@@ -283,7 +283,7 @@ extend self: Handler {
             let lspHook = LspHook.new(at = None, definedAt = None, insertIdentifier = False, trackSymbols = True)
             let code = self.virtualFiles.get(path.absolute()).else {path.readText()}
             let tokens = Tokenizer.tokenize(path.absolute(), code, None, True)
-            let dummyModuleKey = ModuleKey(PackagePair("script", "script"), [], path.base())
+            let dummyModuleKey = ModuleKey(Syntax.scriptPackagePair, [], path.base())
             let parser = Parser.new(dummyModuleKey, tokens, False, lspHook)
             parser.parseModuleWithPackageInfo()
             SymbolHandler.readAllSymbols(lspHook.results())
@@ -428,7 +428,7 @@ extend self: Handler {
         try {
             let code = self.virtualFiles.get(cursorAt.file).else {system.path(cursorAt.file).readText()}
             let tokens = Tokenizer.tokenize(cursorAt.file, code, None, True)
-            let dummyModuleKey = ModuleKey(PackagePair("script", "script"), [], "<LSP>")
+            let dummyModuleKey = ModuleKey(Syntax.scriptPackagePair, [], "<LSP>")
             let parser = Parser.new(dummyModuleKey, tokens, False, lspHook)
             parser.parseModuleWithPackageInfo()
         } tryCatch {| CompileError(at, message), error =>
@@ -651,7 +651,7 @@ extend self: Handler {
         let imports = try {
             let code = self.virtualFiles.get(modulePath.absolute()).else {modulePath.readText()}
             let tokens = Tokenizer.tokenize(modulePath.absolute(), code, Some(lspHook.at), True)
-            let parser = Parser.new(ModuleKey(PackagePair("", ""), [], ""), tokens, True, lspHook)
+            let parser = Parser.new(ModuleKey(Syntax.scriptPackagePair, [], ""), tokens, True, lspHook)
             tokens.each {token => 
                 if(token.is(LKeyword) && token.rawIs4("import", "include", "package", "dependency")) {
                     importLine = token.startLine + 1

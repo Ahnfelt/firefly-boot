@@ -145,7 +145,7 @@ extend self: Dependencies {
 process(fetch: HttpClient, dependencyLock: DependencyLock, path: Path): ResolvedDependencies {
     let workspace = Workspace.loadWorkspace(path)
     let self = Dependencies(workspace, [].toMap(), [].toMap(), [].toSet())
-    let packageInfo = self.loadPackageInfo(PackagePair("script", "script"), path).else {
+    let packageInfo = self.loadPackageInfo(Syntax.scriptPackagePair, path).else {
         if(!path.exists()) {
             throw(CompileError(Location(path.absolute(), 1, 1), "File not found"))
         } else {
