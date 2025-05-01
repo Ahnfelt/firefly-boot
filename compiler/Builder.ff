@@ -135,7 +135,7 @@ check(
 ): List[CompileError] {
     let packages = path.isDirectory().{
         | False {path.endsWith([".firefly", "package.ff"])} => [PackageFiles(path.parent().grab(), Some(path), [])]
-        | True => findPackageFilesForDirectory(path, mustContain, skipFiles)
+        | True => findPackageFilesForDirectory(path, virtualFiles, mustContain, skipFiles)
         | False => findPackageFilesForFile(path).toList()
     }
     let errors = Array.new()
@@ -213,10 +213,11 @@ findPackageFilesForFile(file: Path): Option[PackageFiles] {
 
 findPackageFilesForDirectory(
     directory: Path
+    virtualFiles: Map[String, String]
     mustContain: Option[String]
     skipFiles: Set[String]
 ): List[PackageFiles] {
-    let files = findFireflyFiles(directory, mustContain, skipFiles)
+    let files = findFireflyFiles(directory, virtualFiles, mustContain, skipFiles)
     let split = files.partition {_.endsWith([".firefly", "package.ff"])}
     let packageFiles = split.first
     mutable singleFiles = split.second
@@ -236,6 +237,7 @@ findPackageFilesForDirectory(
 
 findFireflyFiles(
     path: Path
+    virtualFiles: Map[String, String]
     mustContain: Option[String]
     skipFiles: Set[String]
 ): List[Path] {
@@ -247,10 +249,12 @@ findFireflyFiles(
     }}
     let fireflyFiles = files.map {_.path()}.filter {file => 
         file.extension() == ".ff" && !skipFiles.contains(file.absolute()) && mustContain.all {s => 
-            file.readText().contains(s)
+            //Log.trace("findFireflyFiles: " + file.absolute() + " contains '" + s + "'?")
+            let code = virtualFiles.get(file.absolute()).else {file.readText()}
+            code.contains(s)
         }
     }
-    [...fireflyFiles, ...relevantDirectories.flatMap {findFireflyFiles(_, mustContain, skipFiles)}]
+    [...fireflyFiles, ...relevantDirectories.flatMap {findFireflyFiles(_, virtualFiles, mustContain, skipFiles)}]
 }
 
 internalCreateExecutable(

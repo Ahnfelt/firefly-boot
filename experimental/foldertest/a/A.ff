@@ -1,3 +1,0 @@
-functionA() {
-    Log.trace("function A")
-}

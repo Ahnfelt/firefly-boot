@@ -316,7 +316,9 @@ extend self: Handler {
         let files = if(rootPath.isFile()) {
             [rootPath]
         } else {
-            self.printTime(system.mainTask(), "findFireflyFiles") {Builder.findFireflyFiles(rootPath, None, Set.new())}
+            self.printTime(system.mainTask(), "findFireflyFiles") {
+                Builder.findFireflyFiles(rootPath, self.virtualFiles, None, Set.new())
+            }
         }
         let root = if(rootPath.isFile()) {rootPath.parent().grab()} else {rootPath}
         let query = parameters.grab("query").grabString()
@@ -548,6 +550,9 @@ extend self: Handler {
             | h => None
         }.filter {pair => !pair.at.file.endsWith(">")}
             
+        Log.trace("findReferences("+Show.show(targetAt)+")")
+        Log.trace("definedAtList: " + Show.show(definedAtList))
+            
         function unqualify(qualifiedName: String): String {
             qualifiedName.split('.').grabLast().split('_').grabLast()
         }
@@ -640,7 +645,7 @@ extend self: Handler {
                 }.toOption()
             }
             let symbols = nonCore.flatMap {| Pair(packagePair, packagePath) =>
-                let packageFiles = Builder.findPackageFilesForDirectory(packagePath, None, Set.new())
+                let packageFiles = Builder.findPackageFilesForDirectory(packagePath, self.virtualFiles, None, Set.new())
                 packageFiles.flatMap {_.files.collect {file => 
                     parseModule(packagePair, file).map: module =>
                     let typeNames = module.types.map {_.name}
@@ -793,4 +798,8 @@ extend self: Handler {
         )
     }
 
+}
+
+foo(bb: Int): Int {
+    bb
 }
