@@ -249,7 +249,6 @@ findFireflyFiles(
     }}
     let fireflyFiles = files.map {_.path()}.filter {file => 
         file.extension() == ".ff" && !skipFiles.contains(file.absolute()) && mustContain.all {s => 
-            //Log.trace("findFireflyFiles: " + file.absolute() + " contains '" + s + "'?")
             let code = virtualFiles.get(file.absolute()).else {file.readText()}
             code.contains(s)
         }

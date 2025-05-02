@@ -491,7 +491,6 @@ extend self: Handler {
             | Some([]) => Result(Json.null().write())
             | Some([first, ...] @ tokens) =>
                 let oldName = first.raw
-                Log.trace("Rename '" + oldName + "' to '" + newName + "'")
 
                 // TODO findReferences returns some bad tokens
                 let goodTokens = tokens.filter {_.raw == oldName}
@@ -521,8 +520,8 @@ extend self: Handler {
         version: Int
     ): Option[List[TokenLocation]] {
         let temporaryLspHook = LspHook.new(at = Some(targetAt), definedAt = None, insertIdentifier = False, trackSymbols = False)
-        let path = system.path(targetAt.file)
-        let errors = self.check(system, self.fireflyPath, path, None, Set.new(), self.virtualFiles, version, temporaryLspHook, True)
+        let targetPath = system.path(targetAt.file)
+        let errors = self.check(system, self.fireflyPath, targetPath, None, Set.new(), self.virtualFiles, version, temporaryLspHook, True)
         errors.each {| CompileError(at, message) => 
             Log.trace("findReferences first check error: " + message + " in " + at.file + ":" + at.line + ":" + at.column)
         }  
@@ -571,10 +570,8 @@ extend self: Handler {
             | Some(definition) =>
                 let lspHook = LspHook.new(at = None, definedAt = Some(definition.at), insertIdentifier = False, trackSymbols = False)
                 let localCheck = local || definition.local
-                let path = if(localCheck) {system.path(targetAt.file)} else {self.rootPath.else {system.path(targetAt.file)}}
+                let checkPath = if(localCheck) {targetPath} else {self.rootPath.else {targetPath}}
                 let mustContain = Some(definition.name).filter {_ => !localCheck}.map(unqualify)
-                Log.trace("findReferences definition: " + Show.show(definition))
-                mustContain.each {Log.trace("mustContain: " + _)}
                 
                 let skipFiles = if(definition.name.contains(":")) {
                     let list = self.moduleCache.filesNotImporting(extractModuleKey(definition.name))
@@ -587,8 +584,8 @@ extend self: Handler {
                         Log.trace("No skip list due to unqualified definition.name: " + definition.name)
                         Set.new()
                     }
-                }
-                let errors = self.check(system, self.fireflyPath, path, mustContain, skipFiles, self.virtualFiles, version, lspHook, True)
+                }.remove(targetPath.absolute())
+                let errors = self.check(system, self.fireflyPath, checkPath, mustContain, skipFiles, self.virtualFiles, version, lspHook, True)
                 errors.each {| CompileError(at, message) => 
                     Log.trace("findReferences second check error: " + message + " in " + at.file + ":" + at.line + ":" + at.column)
                 }
@@ -609,8 +606,6 @@ extend self: Handler {
                     !at.file.endsWith(">") &&
                     (includeDeclaration || at != definition.at)
                 }
-                
-                //referencesResult.each {Log.trace(Show.show(_))}
 
                 let clientLocations = referencesResult.addAll(
                     if(includeDeclaration) {[definition.at]} else {[]}
