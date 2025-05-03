@@ -150,8 +150,8 @@ extend self: String {
         self!->startsWith(prefix, offset)?
     }
 
-    endsWith(prefix: String): Bool {
-        self!->endsWith(prefix)?
+    endsWith(suffix: String): Bool {
+        self!->endsWith(suffix)?
     }
 
     removeFirst(prefix: String): Option[String] {

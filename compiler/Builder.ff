@@ -248,10 +248,12 @@ findFireflyFiles(
         c == '.' || c.isAsciiLower() || c.isAsciiDigit()
     }}
     let fireflyFiles = files.map {_.path()}.filter {file => 
-        file.extension() == ".ff" && !skipFiles.contains(file.absolute()) && mustContain.all {s => 
-            let code = virtualFiles.get(file.absolute()).else {file.readText()}
-            code.contains(s)
-        }
+        file.extension() == ".ff" && !skipFiles.contains(file.absolute()) && (
+            file.endsWith([".firefly", "package.ff"]) || mustContain.all {s => 
+                let code = virtualFiles.get(file.absolute()).else {file.readText()}
+                code.contains(s)
+            }
+        )
     }
     [...fireflyFiles, ...relevantDirectories.flatMap {findFireflyFiles(_, virtualFiles, mustContain, skipFiles)}]
 }
