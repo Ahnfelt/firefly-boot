@@ -252,8 +252,8 @@ export function String_startsWith(self_, prefix_, offset_ = 0) {
 return self_.startsWith(prefix_, offset_)
 }
 
-export function String_endsWith(self_, prefix_) {
-return self_.endsWith(prefix_)
+export function String_endsWith(self_, suffix_) {
+return self_.endsWith(suffix_)
 }
 
 export function String_removeFirst(self_, prefix_) {
@@ -514,8 +514,8 @@ export async function String_startsWith$(self_, prefix_, offset_ = 0, $task) {
 return self_.startsWith(prefix_, offset_)
 }
 
-export async function String_endsWith$(self_, prefix_, $task) {
-return self_.endsWith(prefix_)
+export async function String_endsWith$(self_, suffix_, $task) {
+return self_.endsWith(suffix_)
 }
 
 export async function String_removeFirst$(self_, prefix_, $task) {
