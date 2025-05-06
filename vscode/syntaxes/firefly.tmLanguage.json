@@ -31,7 +31,7 @@
         ]},
         "keyword": {
             "name": "keyword.declaration.firefly",
-            "match": "\\b(data|class|capability|import|from|dependency|package|include|extend|tailcall|function|let|mutable|firefly|trait|instance|newtype|private|safe|unsafe|trust|target)\\b(?=[ ]*[A-Za-z0-9\"'])"
+            "match": "\\b(data|class|capability|import|from|dependency|package|include|extend|tailcall|function|let|mutable|firefly|trait|instance|newtype|safe|unsafe|trust|target|private|protected|public|export|local|internal|opaque)\\b(?=[ ]*[A-Za-z0-9\"'])"
         },
         "spread": {
             "name": "punctuation.spread.firefly",
