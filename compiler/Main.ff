@@ -87,8 +87,9 @@ main(system: NodeSystem): Unit {
             )
             prepareFireflyDirectory(system.path("."))
             let mainPath = system.path(mainFile)
-            buildScript(mainPath, resolvedDependencies.mainPackagePair, EmitBrowser, resolvedDependencies)
-            bundleForBrowser(system, resolvedDependencies.mainPackagePair, mainPath.base())
+            let moduleKey = 
+                buildScript(mainPath, resolvedDependencies.mainPackagePair, EmitBrowser, resolvedDependencies)
+            bundleForBrowser(system, resolvedDependencies.mainPackagePair, moduleKey)
 
         | BuildCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(
@@ -257,11 +258,17 @@ bundleForPkg(system: NodeSystem, packagePair: PackagePair, mainFile: String) {
     BuildSystem.internalNodeCallEsBuild(system, mainJsFile, outputPath = file, minify = False)
 }
 
-bundleForBrowser(system: NodeSystem, packagePair: PackagePair, mainFile: String) {
-    let prefix = ".firefly/output/browser/"
-    let mainJsFile = prefix + packagePair.groupName("/") + "/" + mainFile + ".mjs"
-    let file = prefix + "Main.bundle.js"
-    BuildSystem.internalCallEsBuild(system, mainJsFile, outputPath = file, minify = True, sourceMap = True)
+bundleForBrowser(system: NodeSystem, packagePair: PackagePair, moduleKey: ModuleKey) {
+    let packagePath = moduleKey.packagePair.groupName("/")
+    let outputPath = system.path(".firefly/output/browser/" + packagePath + "/")
+    let runFile = outputPath.slash(moduleKey.importName() + ".run.mjs")
+    BuildSystem.internalBrowserCallEsBuild(
+        system!? 
+        [runFile.absolute()]
+        outputPath.absolute()
+        minify = True
+        sourceMap = True
+    )
 }
 
 importAndRun(

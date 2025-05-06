@@ -211,8 +211,8 @@ const mainFile_ = command_a.mainPath_;
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), ff_compiler_DependencyLock.new_(ff_core_NodeSystem.NodeSystem_mainTask(system_)), ff_core_NodeSystem.NodeSystem_path(system_, mainFile_));
 ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_path(system_, "."));
 const mainPath_ = ff_core_NodeSystem.NodeSystem_path(system_, mainFile_);
-buildScript_(mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBrowser(), resolvedDependencies_);
-ff_compiler_Main.bundleForBrowser_(system_, resolvedDependencies_.mainPackagePair_, ff_core_Path.Path_base(mainPath_))
+const moduleKey_ = buildScript_(mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBrowser(), resolvedDependencies_);
+ff_compiler_Main.bundleForBrowser_(system_, resolvedDependencies_.mainPackagePair_, moduleKey_)
 return
 }
 if(command_a.BuildCommand) {
@@ -435,11 +435,11 @@ const file_ = (prefix_ + "Main.bundle.js");
 ff_core_BuildSystem.internalNodeCallEsBuild_(system_, mainJsFile_, file_, false)
 }
 
-export function bundleForBrowser_(system_, packagePair_, mainFile_) {
-const prefix_ = ".firefly/output/browser/";
-const mainJsFile_ = ((((prefix_ + ff_compiler_Syntax.PackagePair_groupName(packagePair_, "/")) + "/") + mainFile_) + ".mjs");
-const file_ = (prefix_ + "Main.bundle.js");
-ff_core_BuildSystem.internalCallEsBuild_(system_, mainJsFile_, file_, true, true)
+export function bundleForBrowser_(system_, packagePair_, moduleKey_) {
+const packagePath_ = ff_compiler_Syntax.PackagePair_groupName(moduleKey_.packagePair_, "/");
+const outputPath_ = ff_core_NodeSystem.NodeSystem_path(system_, ((".firefly/output/browser/" + packagePath_) + "/"));
+const runFile_ = ff_core_Path.Path_slash(outputPath_, (ff_compiler_Syntax.ModuleKey_importName(moduleKey_) + ".run.mjs"));
+ff_core_BuildSystem.internalBrowserCallEsBuild_(system_, [ff_core_Path.Path_absolute(runFile_)], ff_core_Path.Path_absolute(outputPath_), true, true)
 }
 
 export function importAndRun_(system_, fireflyPath_, target_, moduleKey_, arguments_) {
@@ -615,8 +615,8 @@ const mainFile_ = command_a.mainPath_;
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (await ff_compiler_DependencyLock.new_$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task)), (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task));
 (await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
 const mainPath_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task));
-(await buildScript_$(mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBrowser(), resolvedDependencies_, $task));
-(await ff_compiler_Main.bundleForBrowser_$(system_, resolvedDependencies_.mainPackagePair_, (await ff_core_Path.Path_base$(mainPath_, $task)), $task))
+const moduleKey_ = (await buildScript_$(mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBrowser(), resolvedDependencies_, $task));
+(await ff_compiler_Main.bundleForBrowser_$(system_, resolvedDependencies_.mainPackagePair_, moduleKey_, $task))
 return
 }
 if(command_a.BuildCommand) {
@@ -839,11 +839,11 @@ const file_ = (prefix_ + "Main.bundle.js");
 (await ff_core_BuildSystem.internalNodeCallEsBuild_$(system_, mainJsFile_, file_, false, $task))
 }
 
-export async function bundleForBrowser_$(system_, packagePair_, mainFile_, $task) {
-const prefix_ = ".firefly/output/browser/";
-const mainJsFile_ = ((((prefix_ + ff_compiler_Syntax.PackagePair_groupName(packagePair_, "/")) + "/") + mainFile_) + ".mjs");
-const file_ = (prefix_ + "Main.bundle.js");
-(await ff_core_BuildSystem.internalCallEsBuild_$(system_, mainJsFile_, file_, true, true, $task))
+export async function bundleForBrowser_$(system_, packagePair_, moduleKey_, $task) {
+const packagePath_ = ff_compiler_Syntax.PackagePair_groupName(moduleKey_.packagePair_, "/");
+const outputPath_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, ((".firefly/output/browser/" + packagePath_) + "/"), $task));
+const runFile_ = (await ff_core_Path.Path_slash$(outputPath_, (ff_compiler_Syntax.ModuleKey_importName(moduleKey_) + ".run.mjs"), $task));
+ff_core_BuildSystem.internalBrowserCallEsBuild_(system_, [(await ff_core_Path.Path_absolute$(runFile_, $task))], (await ff_core_Path.Path_absolute$(outputPath_, $task)), true, true)
 }
 
 export async function importAndRun_$(system_, fireflyPath_, target_, moduleKey_, arguments_, $task) {
