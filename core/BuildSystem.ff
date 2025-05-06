@@ -53,27 +53,6 @@ extend self: BuildSystem {
         
 }
 
-// TODO: Remove
-internalCallEsBuild(
-    self: NodeSystem
-    mainJsFile: String
-    outputPath: String
-    minify: Bool
-    sourceMap: Bool
-): Unit {
-    let esbuild = Js.import("esbuild")
-    esbuild->build(Js->(
-        stdin = Js->(contents = "import {$run$} from './" + mainJsFile + "';", resolveDir = ".")
-        bundle = True
-        minify = minify
-        sourcemap = sourceMap
-        platform = "browser"
-        target = "es2017"
-        external = ["../../../node_modules/*"] // TODO
-        outfile = outputPath
-    ))
-}
-
 internalBrowserCallEsBuild(
     self: BuildSystem
     mainJsFiles: List[String]
