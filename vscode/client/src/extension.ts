@@ -94,6 +94,19 @@ export function activate(context: vscode.ExtensionContext) {
             });
         }
     }));
+
+    const decorationProvider: vscode.FileDecorationProvider = {
+        provideFileDecoration(uri: vscode.Uri): vscode.FileDecoration | undefined {
+            if(fs.existsSync(path.join(uri.fsPath, '.firefly/package.ff'))) {
+                return {
+                    tooltip: 'Firefly package folder',
+                    color: new vscode.ThemeColor('charts.blue'),
+                };
+            }
+        }
+    };
+
+    context.subscriptions.push(vscode.window.registerFileDecorationProvider(decorationProvider));
 }
 
 export function deactivate(): Thenable<void> | undefined {
