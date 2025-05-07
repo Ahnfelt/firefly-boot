@@ -101,11 +101,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function internalCallEsBuild_(self_, mainJsFile_, outputPath_, minify_, sourceMap_) {
-const esbuild_ = import$0;
-esbuild_.build({stdin: {contents: (("import {$run$} from './" + mainJsFile_) + "';"), resolveDir: "."}, bundle: true, minify: minify_, sourcemap: sourceMap_, platform: "browser", target: "es2017", external: ["../../../node_modules/*"], outfile: outputPath_})
-}
-
 export function internalBrowserCallEsBuild_(self_, mainJsFiles_, outputPath_, minify_, sourceMap_) {
 const esbuild_ = import$0;
 esbuild_.build({entryPoints: mainJsFiles_, bundle: true, minify: minify_, sourcemap: sourceMap_, platform: "browser", target: "es2017", outdir: outputPath_, outExtension: {[".js"]: ".bundle.js"}})
@@ -154,11 +149,6 @@ $firefly_compiler["buildViaBuildSystem_$"](buildSystem_, ff_core_BuildSystem.int
 
 export function internalMainPackagePair_(buildSystem_) {
 return ff_core_Pair.Pair(buildSystem_["mainPackagePair_"]["group_"], buildSystem_["mainPackagePair_"]["name_"])
-}
-
-export async function internalCallEsBuild_$(self_, mainJsFile_, outputPath_, minify_, sourceMap_, $task) {
-const esbuild_ = import$0;
-esbuild_.build({stdin: {contents: (("import {$run$} from './" + mainJsFile_) + "';"), resolveDir: "."}, bundle: true, minify: minify_, sourcemap: sourceMap_, platform: "browser", target: "es2017", external: ["../../../node_modules/*"], outfile: outputPath_})
 }
 
 export async function internalBrowserCallEsBuild_$(self_, mainJsFiles_, outputPath_, minify_, sourceMap_, $task) {
