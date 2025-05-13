@@ -4,7 +4,7 @@
     "description": "Firefly language support",
     "author": "Firefly team",
     "license": "MIT",
-    "version": "0.5.74",
+    "version": "0.5.75",
     "repository": {
         "type": "git",
         "url": "https://github.com/Ahnfelt/firefly-boot"
@@ -128,6 +128,11 @@
                     ],
                     "default": "verbose",
                     "description": "Traces the communication between VS Code and the language server."
+                },
+                "firefly.packageFolderColor": {
+                    "type": "string",
+                    "default": "charts.blue",
+                    "description": "The color used for Firefly folder decorations."
                 }
             }
         },

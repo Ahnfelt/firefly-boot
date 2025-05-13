@@ -95,18 +95,35 @@ export function activate(context: vscode.ExtensionContext) {
         }
     }));
 
-    const decorationProvider: vscode.FileDecorationProvider = {
+    class FireflyDecorationProvider implements vscode.FileDecorationProvider {
+        private _onDidChangeFileDecorations = new vscode.EventEmitter<vscode.Uri | vscode.Uri[]>();
+        readonly onDidChangeFileDecorations = this._onDidChangeFileDecorations.event;
+    
         provideFileDecoration(uri: vscode.Uri): vscode.FileDecoration | undefined {
             if(fs.existsSync(path.join(uri.fsPath, '.firefly/package.ff'))) {
+                const config = vscode.workspace.getConfiguration('firefly');
+                const decorationColor = config.get<string>('packageFolderColor', 'charts.blue'); // Default to 'charts.blue'
                 return {
-                    tooltip: 'Firefly package folder',
-                    color: new vscode.ThemeColor('charts.blue'),
+                    tooltip: 'Contains .firefly folder',
+                    color: new vscode.ThemeColor(decorationColor),
                 };
             }
+            return undefined;
         }
-    };
-
+    
+        refresh(uri: vscode.Uri): void {
+            this._onDidChangeFileDecorations.fire(uri);
+        }
+    }
+    
+    const decorationProvider = new FireflyDecorationProvider();
     context.subscriptions.push(vscode.window.registerFileDecorationProvider(decorationProvider));
+    
+    const watcher = vscode.workspace.createFileSystemWatcher('**/.firefly/package.ff');
+    watcher.onDidCreate(uri => decorationProvider.refresh(vscode.Uri.file(path.dirname(path.dirname(uri.fsPath)))));
+    watcher.onDidDelete(uri => decorationProvider.refresh(vscode.Uri.file(path.dirname(path.dirname(uri.fsPath)))));
+    watcher.onDidChange(uri => decorationProvider.refresh(vscode.Uri.file(path.dirname(path.dirname(uri.fsPath)))));
+    context.subscriptions.push(watcher);
 }
 
 export function deactivate(): Thenable<void> | undefined {
