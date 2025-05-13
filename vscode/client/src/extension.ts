@@ -102,9 +102,9 @@ export function activate(context: vscode.ExtensionContext) {
         provideFileDecoration(uri: vscode.Uri): vscode.FileDecoration | undefined {
             if(fs.existsSync(path.join(uri.fsPath, '.firefly/package.ff'))) {
                 const config = vscode.workspace.getConfiguration('firefly');
-                const decorationColor = config.get<string>('packageFolderColor', 'charts.blue'); // Default to 'charts.blue'
+                const decorationColor = config.get<string>('packageFolderColor', 'charts.blue');
                 return {
-                    tooltip: 'Contains .firefly folder',
+                    tooltip: 'Firefly package folder',
                     color: new vscode.ThemeColor(decorationColor),
                 };
             }
