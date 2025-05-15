@@ -130,7 +130,7 @@ ff_core_Queue.Queue_remove(self_.queue_, key_)
 
 export function Lock_release(self_) {
 if((self_.owner_ !== $task)) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 } else if((self_.level_ > 1)) {
 self_.level_ -= 1
 } else {
@@ -174,7 +174,7 @@ ff_core_Queue.Queue_remove(self_.queue_, key_)
 
 export async function Lock_release$(self_, $task) {
 if((self_.owner_ !== $task)) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 } else if((self_.level_ > 1)) {
 self_.level_ -= 1
 } else {
@@ -200,7 +200,7 @@ return (await body_($task))
 
 export function LockCondition_sleep(self_) {
 if((self_.lock_.owner_ !== $task)) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 ;
 const level_ = self_.lock_.level_;
@@ -274,7 +274,7 @@ ff_core_Queue.Queue_clear(self_.queue_)
 
 export async function LockCondition_sleep$(self_, $task) {
 if((self_.lock_.owner_ !== $task)) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 ff_core_Task.Task_throwIfAborted($task);
 const level_ = self_.lock_.level_;

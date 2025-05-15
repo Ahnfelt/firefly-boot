@@ -179,7 +179,7 @@ return ff_core_Option.None()
 
 export function List_grab(self_, index_) {
 if(((index_ < 0) || (index_ >= self_.length))) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_[index_]
 }
@@ -304,7 +304,7 @@ return value_
 
 export function List_modify(self_, index_, body_) {
 if(((index_ < 0) || (index_ >= self_.length))) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 const result_ = self_.slice();
 result_[index_] = body_(result_[index_]);
@@ -571,7 +571,7 @@ return ff_core_Option.None()
 
 export async function List_grab$(self_, index_, $task) {
 if(((index_ < 0) || (index_ >= self_.length))) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_[index_]
 }
@@ -696,7 +696,7 @@ return value_
 
 export async function List_modify$(self_, index_, body_, $task) {
 if(((index_ < 0) || (index_ >= self_.length))) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 const result_ = self_.slice();
 result_[index_] = (await body_(result_[index_], $task));

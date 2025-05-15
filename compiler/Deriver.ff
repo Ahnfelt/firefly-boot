@@ -102,6 +102,9 @@ extend self: Deriver {
     makeShowInstances(modulePrefix: String, module: Module): List[DInstance] {
         let coreWhitelist = [
             "ff:core/Option.Option"
+            "ff:core/Serializable.DeserializationChecksumException"
+            "ff:core/Core.GrabException"
+            "ff:core/NodeSystem.ProcessException"
         ].toSet()
         let missingInstance =
             self.findTypesThatNeedInstances("ff:core/Show.Show", modulePrefix, coreWhitelist, True, module)

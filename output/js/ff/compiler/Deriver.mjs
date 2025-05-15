@@ -167,7 +167,7 @@ return ff_compiler_Syntax.DInstance(at_, declaration_.generics_, constraints_, "
 }
 
 export function Deriver_makeShowInstances(self_, modulePrefix_, module_) {
-const coreWhitelist_ = ff_core_List.List_toSet(["ff:core/Option.Option"], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const coreWhitelist_ = ff_core_List.List_toSet(["ff:core/Option.Option", "ff:core/Serializable.DeserializationChecksumException", "ff:core/Core.GrabException", "ff:core/NodeSystem.ProcessException"], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Show.Show", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
 return ff_compiler_Deriver.Deriver_makeShowInstance(self_, modulePrefix_, _w1)
@@ -569,7 +569,7 @@ return ff_compiler_Syntax.DInstance(at_, declaration_.generics_, constraints_, "
 }
 
 export async function Deriver_makeShowInstances$(self_, modulePrefix_, module_, $task) {
-const coreWhitelist_ = ff_core_List.List_toSet(["ff:core/Option.Option"], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const coreWhitelist_ = ff_core_List.List_toSet(["ff:core/Option.Option", "ff:core/Serializable.DeserializationChecksumException", "ff:core/Core.GrabException", "ff:core/NodeSystem.ProcessException"], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Show.Show", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
 return ff_compiler_Deriver.Deriver_makeShowInstance(self_, modulePrefix_, _w1)
@@ -1021,7 +1021,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Deriver.Deriver()
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
+return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },
@@ -1047,7 +1047,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Deriver.Deriver()
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
+return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 }

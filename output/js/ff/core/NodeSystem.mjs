@@ -126,7 +126,7 @@ return ff_core_Path.Path(nodePath_.join(path_.absolutePath_, file_))
 
 export function internalProcessError_(problem_) {
 try {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_NodeSystem.ProcessException(problem_), ff_core_NodeSystem.ff_core_Any_HasAnyTag$ff_core_NodeSystem_ProcessException)})
+return ff_core_Core.throw_(ff_core_NodeSystem.ProcessException(problem_), ff_core_NodeSystem.ff_core_Any_HasAnyTag$ff_core_NodeSystem_ProcessException, ff_core_NodeSystem.ff_core_Show_Show$ff_core_NodeSystem_ProcessException)
 } catch(error_) {
 return error_
 }
@@ -143,7 +143,7 @@ return ff_core_Path.Path(nodePath_.join(path_.absolutePath_, file_))
 
 export async function internalProcessError_$(problem_, $task) {
 try {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_NodeSystem.ProcessException(problem_), ff_core_NodeSystem.ff_core_Any_HasAnyTag$ff_core_NodeSystem_ProcessException)})
+return ff_core_Core.throw_(ff_core_NodeSystem.ProcessException(problem_), ff_core_NodeSystem.ff_core_Any_HasAnyTag$ff_core_NodeSystem_ProcessException, ff_core_NodeSystem.ff_core_Show_Show$ff_core_NodeSystem_ProcessException)
 } catch(error_) {
 return error_
 }
@@ -521,5 +521,22 @@ return ff_core_Any.internalAnyTag_((("ff:core/NodeSystem.ProcessException" + "["
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:core/NodeSystem.ProcessException" + "[") + "]"))
+}
+};
+
+export const ff_core_Show_Show$ff_core_NodeSystem_ProcessException = {
+show_(value_) {
+const value_a = value_;
+{
+const z_ = value_a;
+return ((("ProcessException" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.problem_)) + ")")
+}
+},
+async show_$(value_, $task) {
+const value_a = value_;
+{
+const z_ = value_a;
+return ((("ProcessException" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.problem_)) + ")")
+}
 }
 };

@@ -22,7 +22,7 @@ warn(value: String): Unit {
     Js->console->warn(value)
 }
 
-error(value: String): Unit {
+error(value: Error): Unit {
     Js->console->error(value)
 }
 

@@ -177,13 +177,13 @@ return ff_core_Try.Failure(e_)
 }
 }
 
-export function throw_(exception_, ff_core_Any_HasAnyTag$E) {
-return ff_core_Core.throwAny_(ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyTag$E))
+export function throw_(exception_, ff_core_Any_HasAnyTag$E, ff_core_Show_Show$E) {
+return ff_core_Core.throwWithMessage_(exception_, ff_core_Show_Show$E.show_(exception_), ff_core_Any_HasAnyTag$E)
 }
 
-export function throwAny_(exception_) {
-const e_ = (new Error());
-e_.ffException = exception_;
+export function throwWithMessage_(exception_, message_, ff_core_Any_HasAnyTag$E) {
+const e_ = (new Error(message_));
+e_.ffException = ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyTag$E);
 throw e_
 }
 
@@ -266,13 +266,13 @@ return ff_core_Try.Failure(e_)
 }
 }
 
-export async function throw_$(exception_, ff_core_Any_HasAnyTag$E, $task) {
-return ff_core_Core.throwAny_(ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyTag$E))
+export async function throw_$(exception_, ff_core_Any_HasAnyTag$E, ff_core_Show_Show$E, $task) {
+return ff_core_Core.throwWithMessage_(exception_, ff_core_Show_Show$E.show_(exception_), ff_core_Any_HasAnyTag$E)
 }
 
-export async function throwAny_$(exception_, $task) {
-const e_ = (new Error());
-e_.ffException = exception_;
+export async function throwWithMessage_$(exception_, message_, ff_core_Any_HasAnyTag$E, $task) {
+const e_ = (new Error(message_));
+e_.ffException = ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyTag$E);
 throw e_
 }
 
@@ -288,5 +288,22 @@ return ff_core_Any.internalAnyTag_((("ff:core/Core.GrabException" + "[") + "]"))
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:core/Core.GrabException" + "[") + "]"))
+}
+};
+
+export const ff_core_Show_Show$ff_core_Core_GrabException = {
+show_(value_) {
+const value_a = value_;
+{
+const z_ = value_a;
+return "GrabException"
+}
+},
+async show_$(value_, $task) {
+const value_a = value_;
+{
+const z_ = value_a;
+return "GrabException"
+}
 }
 };

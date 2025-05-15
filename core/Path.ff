@@ -331,7 +331,7 @@ internalReadStream(createReadStream: () => JsValue): Stream[Buffer] {
                 Some(buffer)
             } else:
             if(!seenError.isNullOrUndefined()) {
-                throwAny(seenError?)
+                Js.throw(seenError?)
             } else:
             if(jsStream->destroyed?) {None} else:
             Js.withSignal {signal =>

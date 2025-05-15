@@ -147,7 +147,7 @@ const buffer_ = (new DataView(jsBuffer_.buffer, jsBuffer_.byteOffset, jsBuffer_.
 return ff_core_Option.Some(buffer_)
 } else {
 if((!ff_core_JsValue.JsValue_isNullOrUndefined(seenError_))) {
-return ff_core_Core.throwAny_(seenError_)
+throw seenError_
 } else {
 if(jsStream_.destroyed) {
 return ff_core_Option.None()
@@ -266,7 +266,7 @@ const buffer_ = (new DataView(jsBuffer_.buffer, jsBuffer_.byteOffset, jsBuffer_.
 return ff_core_Option.Some(buffer_)
 } else {
 if((!ff_core_JsValue.JsValue_isNullOrUndefined(seenError_))) {
-return ff_core_Core.throwAny_(seenError_)
+throw seenError_
 } else {
 if(jsStream_.destroyed) {
 return ff_core_Option.None()
