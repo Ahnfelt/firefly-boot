@@ -44,7 +44,9 @@ build(
         resolvedDependencies.packagePaths.each {packagePair, packagePath =>
             resolvedDependencies.packages.get(packagePair).each {packageInfo =>
                 processNodeModules(system, jsPathFile, packagePath, packageInfo)
-                processIncludes(jsPathFile, packagePath, packageInfo)
+                if(emitTarget != EmitBrowser) {
+                    processIncludes(jsPathFile, packagePath, packageInfo)
+                }
             }
         }
         True

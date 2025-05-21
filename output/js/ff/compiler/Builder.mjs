@@ -147,7 +147,9 @@ const if_o = ff_core_Map.Map_get(resolvedDependencies_.packages_, packagePair_, 
 if(if_o.Some) {
 const packageInfo_ = if_o.value_;
 ff_compiler_Builder.processNodeModules_(system_, jsPathFile_, packagePath_, packageInfo_);
+if(ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)) {
 ff_compiler_Builder.processIncludes_(jsPathFile_, packagePath_, packageInfo_)
+}
 }
 }
 }), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
@@ -429,7 +431,9 @@ const if_o = ff_core_Map.Map_get(resolvedDependencies_.packages_, packagePair_, 
 if(if_o.Some) {
 const packageInfo_ = if_o.value_;
 (await ff_compiler_Builder.processNodeModules_$(system_, jsPathFile_, packagePath_, packageInfo_, $task));
+if(ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)) {
 (await ff_compiler_Builder.processIncludes_$(jsPathFile_, packagePath_, packageInfo_, $task))
+}
 }
 }
 }), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, $task));
