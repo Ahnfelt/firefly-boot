@@ -49,17 +49,6 @@ fail[T](at: Location, message: String): T {
 
 extend self: JsEmitter {
     
-    write(body: () => Unit): String {
-        let oldArray = self.written
-        self.written = Array.new()
-        try {
-            body()
-            self.written.join()
-        } finally {
-            self.written = oldArray
-        }
-    }
-    
     writeUnmapped(text: String) {
         self.written.push(text)
     }
@@ -70,6 +59,17 @@ extend self: JsEmitter {
 
     writeNamed(name: String, at: Location, text: String) {
         self.written.push(text)
+    }
+    
+    write(body: () => Unit): String { // TODO: Remove this method when done porting
+        let oldArray = self.written
+        self.written = Array.new()
+        try {
+            body()
+            self.written.join()
+        } finally {
+            self.written = oldArray
+        }
     }
     
     writeEmitted(text: String) { // TODO: Remove this method when done porting
