@@ -72,7 +72,7 @@ extend self: JsEmitter {
         self.written.push(text)
     }
     
-    writeEmitted(text: String) {
+    writeEmitted(text: String) { // TODO: Remove this method when done porting
         self.written.push(text)
     }
 
