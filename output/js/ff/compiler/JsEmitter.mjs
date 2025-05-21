@@ -103,8 +103,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type JsEmitter
-export function JsEmitter(otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_, emittingAsync_, tailCallUsed_) {
-return {otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_, emittingAsync_, tailCallUsed_};
+export function JsEmitter(otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_, written_, emittingAsync_, tailCallUsed_) {
+return {otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_, written_, emittingAsync_, tailCallUsed_};
 }
 
 // type EmitTarget
@@ -135,7 +135,7 @@ export const primitiveTypes_ = ff_core_List.List_toSet(["ff:core/Bool.Bool", "ff
 export function new_(otherModules_, emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 return ff_core_Pair.Pair(ff_compiler_Syntax.ModuleKey_qualifiedName(m_.moduleKey_), m_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.new_(), emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_, false, false)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.new_(), emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_, ff_core_Array.new_(), false, false)
 }
 
 export function fail_(at_, message_) {
@@ -387,7 +387,7 @@ return false
 export async function new_$(otherModules_, emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_, $task) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 return ff_core_Pair.Pair(ff_compiler_Syntax.ModuleKey_qualifiedName(m_.moduleKey_), m_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.new_(), emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_, false, false)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.new_(), emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_, ff_core_Array.new_(), false, false)
 }
 
 export async function fail_$(at_, message_, $task) {
@@ -636,6 +636,29 @@ return false
 }
 }
 
+export function JsEmitter_write(self_, body_) {
+const oldArray_ = self_.written_;
+self_.written_ = ff_core_Array.new_();
+try {
+body_();
+return ff_core_Array.Array_join(self_.written_, "")
+} finally {
+self_.written_ = oldArray_
+}
+}
+
+export function JsEmitter_writeUnmapped(self_, text_) {
+self_.written_.array.push(text_)
+}
+
+export function JsEmitter_writeMapped(self_, at_, text_) {
+self_.written_.array.push(text_)
+}
+
+export function JsEmitter_writeNamed(self_, name_, at_, text_) {
+self_.written_.array.push(text_)
+}
+
 export function JsEmitter_emitModule(self_, module_) {
 const selfImport_ = ff_compiler_JsEmitter.JsEmitter_emitImport(self_, self_.moduleKey_);
 const imports_ = ff_core_List.List_flatten([ff_core_Option.Option_toList(ff_core_Option.Option_map(self_.compilerModuleFileUrl_, ((_w1) => {
@@ -749,14 +772,15 @@ return []
 }
 
 export function JsEmitter_emitLetDefinition(self_, definition_, mutable_, async_) {
-const mutability_ = (mutable_
-? "let"
-: "const");
-const valueCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, definition_.value_, async_, false);
-const assignmentCode_ = (((!mutable_) || (valueCode_ !== "(void 0)"))
-? (" = " + valueCode_)
-: "");
-return ((((mutability_ + " ") + ff_compiler_JsEmitter.escapeKeyword_(definition_.name_)) + assignmentCode_) + ";")
+return ff_compiler_JsEmitter.JsEmitter_write(self_, (() => {
+ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, (mutable_
+? "let "
+: "const "));
+ff_compiler_JsEmitter.JsEmitter_writeNamed(self_, definition_.name_, definition_.at_, ff_compiler_JsEmitter.escapeKeyword_(definition_.name_));
+ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, " = ");
+ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, definition_.value_, async_, false));
+ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, ";")
+}))
 }
 
 export function JsEmitter_emitExtendsDefinition(self_, definition_) {
@@ -3166,6 +3190,29 @@ return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_, false)
 }
 }
 
+export async function JsEmitter_write$(self_, body_, $task) {
+const oldArray_ = self_.written_;
+self_.written_ = ff_core_Array.new_();
+try {
+(await body_($task));
+return ff_core_Array.Array_join(self_.written_, "")
+} finally {
+self_.written_ = oldArray_
+}
+}
+
+export async function JsEmitter_writeUnmapped$(self_, text_, $task) {
+self_.written_.array.push(text_)
+}
+
+export async function JsEmitter_writeMapped$(self_, at_, text_, $task) {
+self_.written_.array.push(text_)
+}
+
+export async function JsEmitter_writeNamed$(self_, name_, at_, text_, $task) {
+self_.written_.array.push(text_)
+}
+
 export async function JsEmitter_emitModule$(self_, module_, $task) {
 const selfImport_ = ff_compiler_JsEmitter.JsEmitter_emitImport(self_, self_.moduleKey_);
 const imports_ = ff_core_List.List_flatten([ff_core_Option.Option_toList(ff_core_Option.Option_map(self_.compilerModuleFileUrl_, ((_w1) => {
@@ -3279,14 +3326,15 @@ return []
 }
 
 export async function JsEmitter_emitLetDefinition$(self_, definition_, mutable_, async_, $task) {
-const mutability_ = (mutable_
-? "let"
-: "const");
-const valueCode_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, definition_.value_, async_, false);
-const assignmentCode_ = (((!mutable_) || (valueCode_ !== "(void 0)"))
-? (" = " + valueCode_)
-: "");
-return ((((mutability_ + " ") + ff_compiler_JsEmitter.escapeKeyword_(definition_.name_)) + assignmentCode_) + ";")
+return ff_compiler_JsEmitter.JsEmitter_write(self_, (() => {
+ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, (mutable_
+? "let "
+: "const "));
+ff_compiler_JsEmitter.JsEmitter_writeNamed(self_, definition_.name_, definition_.at_, ff_compiler_JsEmitter.escapeKeyword_(definition_.name_));
+ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, " = ");
+ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, definition_.value_, async_, false));
+ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, ";")
+}))
 }
 
 export async function JsEmitter_emitExtendsDefinition$(self_, definition_, $task) {

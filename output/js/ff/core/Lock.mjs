@@ -214,7 +214,7 @@ ff_core_Queue.Queue_remove(self_.queue_, key_)
 }))
 }))
 } finally {
-let error_;
+let error_ = (void 0);
 let acquired_ = false;
 while((!acquired_)) {
 try {
@@ -288,7 +288,7 @@ ff_core_Queue.Queue_remove(self_.queue_, key_)
 }), $task))
 }), $task))
 } finally {
-let error_;
+let error_ = (void 0);
 let acquired_ = false;
 while((!acquired_)) {
 try {
