@@ -189,7 +189,7 @@ extend self: JsEmitter {
         self.write {
             self.writeUnmapped(if(mutable) {"let "} else {"const "})
             self.writeNamed(definition.name, definition.at, escapeKeyword(definition.name))
-            self.writeUnmapped(" = ")
+            self.writeUnmapped(" = ") // TODO: No = value when the right hand side would be (void 0)
             self.writeEmitted(self.emitTerm(definition.value, async))
             self.writeUnmapped(";")
         }
