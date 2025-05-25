@@ -1,4 +1,4 @@
-toMappings(lines: List[List[List[Int]]]) {
+toMappings(lines: List[List[List[Int]]]): String {
     mutable result = ""
     mutable firstLine = True
     lines.each {line =>
