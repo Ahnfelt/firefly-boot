@@ -1,3 +1,27 @@
+toMappings(lines: List[List[List[Int]]]) {
+    mutable result = ""
+    mutable firstLine = True
+    lines.each {line =>
+        if(firstLine) {
+            firstLine = False
+        } else {
+            result += ";"
+        }
+        mutable firstSegment = True
+        line.each {segment =>
+            if(firstSegment) {
+                firstSegment = False
+            } else {
+                result += ","
+            }
+            segment.each {field =>
+                result += toBase64Vlq(field)
+            }
+        }
+    }
+    result
+}
+
 toBase64Vlq(value: Int): String {
     let vlq = internalToVlq(value)
     let result = Buffer.new(vlq.size())
