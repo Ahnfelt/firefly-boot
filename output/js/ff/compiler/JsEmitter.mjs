@@ -636,6 +636,18 @@ return false
 }
 }
 
+export function JsEmitter_writeUnmapped(self_, text_) {
+self_.written_.array.push(text_)
+}
+
+export function JsEmitter_writeMapped(self_, at_, text_) {
+self_.written_.array.push(text_)
+}
+
+export function JsEmitter_writeNamed(self_, name_, at_, text_) {
+self_.written_.array.push(text_)
+}
+
 export function JsEmitter_write(self_, body_) {
 const oldArray_ = self_.written_;
 self_.written_ = ff_core_Array.new_();
@@ -647,15 +659,7 @@ self_.written_ = oldArray_
 }
 }
 
-export function JsEmitter_writeUnmapped(self_, text_) {
-self_.written_.array.push(text_)
-}
-
-export function JsEmitter_writeMapped(self_, at_, text_) {
-self_.written_.array.push(text_)
-}
-
-export function JsEmitter_writeNamed(self_, name_, at_, text_) {
+export function JsEmitter_writeEmitted(self_, text_) {
 self_.written_.array.push(text_)
 }
 
@@ -778,7 +782,7 @@ ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, (mutable_
 : "const "));
 ff_compiler_JsEmitter.JsEmitter_writeNamed(self_, definition_.name_, definition_.at_, ff_compiler_JsEmitter.escapeKeyword_(definition_.name_));
 ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, " = ");
-ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, definition_.value_, async_, false));
+ff_compiler_JsEmitter.JsEmitter_writeEmitted(self_, ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, definition_.value_, async_, false));
 ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, ";")
 }))
 }
@@ -3190,6 +3194,18 @@ return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_, false)
 }
 }
 
+export async function JsEmitter_writeUnmapped$(self_, text_, $task) {
+self_.written_.array.push(text_)
+}
+
+export async function JsEmitter_writeMapped$(self_, at_, text_, $task) {
+self_.written_.array.push(text_)
+}
+
+export async function JsEmitter_writeNamed$(self_, name_, at_, text_, $task) {
+self_.written_.array.push(text_)
+}
+
 export async function JsEmitter_write$(self_, body_, $task) {
 const oldArray_ = self_.written_;
 self_.written_ = ff_core_Array.new_();
@@ -3201,15 +3217,7 @@ self_.written_ = oldArray_
 }
 }
 
-export async function JsEmitter_writeUnmapped$(self_, text_, $task) {
-self_.written_.array.push(text_)
-}
-
-export async function JsEmitter_writeMapped$(self_, at_, text_, $task) {
-self_.written_.array.push(text_)
-}
-
-export async function JsEmitter_writeNamed$(self_, name_, at_, text_, $task) {
+export async function JsEmitter_writeEmitted$(self_, text_, $task) {
 self_.written_.array.push(text_)
 }
 
@@ -3332,7 +3340,7 @@ ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, (mutable_
 : "const "));
 ff_compiler_JsEmitter.JsEmitter_writeNamed(self_, definition_.name_, definition_.at_, ff_compiler_JsEmitter.escapeKeyword_(definition_.name_));
 ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, " = ");
-ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, definition_.value_, async_, false));
+ff_compiler_JsEmitter.JsEmitter_writeEmitted(self_, ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, definition_.value_, async_, false));
 ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, ";")
 }))
 }

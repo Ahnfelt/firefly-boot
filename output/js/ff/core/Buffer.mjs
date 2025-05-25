@@ -346,9 +346,10 @@ if((encoding_ === "utf8")) {
 if(((typeof TextDecoder.ffSingleton) === "undefined")) {
 TextDecoder.ffSingleton = (new TextDecoder())
 };
-TextDecoder.ffSingleton.decode(self_)
-};
+return TextDecoder.ffSingleton.decode(self_)
+} else {
 return (new TextDecoder()).decode(self_)
+}
 }
 
 export function Buffer_toByteList(self_) {
@@ -519,9 +520,10 @@ if((encoding_ === "utf8")) {
 if(((typeof TextDecoder.ffSingleton) === "undefined")) {
 TextDecoder.ffSingleton = (new TextDecoder())
 };
-TextDecoder.ffSingleton.decode(self_)
-};
+return TextDecoder.ffSingleton.decode(self_)
+} else {
 return (new TextDecoder()).decode(self_)
+}
 }
 
 export async function Buffer_toByteList$(self_, $task) {

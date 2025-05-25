@@ -1,3 +1,7 @@
+nodeMain(system: NodeSystem) {
+    system.writeLine(toBase64Vlq(17))
+}
+
 toBase64Vlq(value: Int): String {
     let vlq = internalToVlq(value)
     let result = Buffer.new(vlq.size())
