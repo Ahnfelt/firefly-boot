@@ -188,7 +188,7 @@ These are the commands:
    browser <main-file>                   Compile the main file for the browser
    build <main-file>                     Build the main file
    check <firefly-file>                  Check the firefly source file for errors
-   symbols <firefly-file>                Print a .tsv with the symbols of a firefly source file
+   symbols <out-file> <firefly-file>     Print a .tsv with the symbols of a firefly source file
    bootstrap                             Bootstrap the compiler
 """
 
