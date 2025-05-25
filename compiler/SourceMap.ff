@@ -1,0 +1,38 @@
+toBase64Vlq(value: Int): String {
+    let vlq = internalToVlq(value)
+    let result = Buffer.new(vlq.size())
+
+    0.until(vlq.size()).each {i =>
+        result.setUint8(i, base64Characters.grab(vlq.grab(i)).codeUnit)
+    }
+
+    result.toString()
+}
+
+internalToVlq(value: Int): List[Int] {
+    let vlq = Array.new()
+    mutable digit = 0
+    mutable v = value
+
+    if(v < 0) {
+        v = v.abs().bitLeft(1).bitOr(1)
+    } else {
+        v = v.bitLeft(1)
+    }
+
+    doWhile {
+        digit = v.bitAnd(vlqBaseMask)
+        v = v.bitRightUnsigned(vlqBaseShift)
+        if(v > 0) {
+            digit = digit.bitOr(vlqContinuationBit)
+        }
+        vlq.push(digit)
+        v > 0
+    }
+    vlq.drain()
+}
+
+vlqBaseShift = 5
+vlqBaseMask = (1.bitLeft(vlqBaseShift)).bitNot()
+vlqContinuationBit = 1.bitLeft(vlqBaseShift)
+base64Characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
