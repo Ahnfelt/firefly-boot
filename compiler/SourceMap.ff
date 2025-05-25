@@ -1,3 +1,19 @@
+sourceMap(
+    file: String
+    sources: List[String]
+    names: List[String]
+    lines: List[List[List[Int]]]
+): Json {
+    Json->(
+        version = 3
+        file = file
+        sources = sources
+        sourcesContent = [Json.null()]
+        names = names
+        mappings = toMappings(lines)
+    )
+}
+
 toMappings(lines: List[List[List[Int]]]): String {
     mutable result = ""
     mutable firstLine = True
