@@ -116,8 +116,8 @@ extend self: JsEmitter {
         }
         let jsImports = self.jsImporter.generateImports(ignoreJsImports.toSet())
         jsImports.each {import =>
+            liner.writeLines()
             self.writeUnmapped(import) // TODO: Move to top
-            self.writeLine()
         }
     }
 
