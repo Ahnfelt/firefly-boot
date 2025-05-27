@@ -966,95 +966,171 @@ extend self: JsEmitter {
     ): Bool {
         name.{
             | operator {!operator.grabFirst().isAsciiLetter()} {arguments | [value]} =>
-                Some("(" + operator + self.emitTerm(value, async) + ")")
+                self.writeUnmapped("(")
+                self.writeUnmapped(operator)
+                self.emitTerm(value, async)
+                self.writeUnmapped(")")
+                True
             | operator {!operator.grabFirst().isAsciiLetter()} {arguments | [left, right]}  =>
-                Some("(" + self.emitTerm(left, async) + " " + operator + " " + self.emitTerm(right, async) + ")")
+                self.writeUnmapped("(")
+                self.emitTerm(left, async) 
+                self.writeUnmapped(" ")
+                self.writeUnmapped(operator)
+                self.writeUnmapped(" ")
+                self.emitTerm(right, async)
+                self.writeUnmapped(")")
+                True
             | "ff:core/List.List_grab" {arguments | [e1, e2]} {noSideEffects(e1) && noSideEffects(e2)} =>
-                let code1 = self.emitTerm(e1, async)
-                let code2 = self.emitTerm(e2, async)
-                Some(
-                    "(" + code1 + "[" + code2 + "] ?? " + 
-                    "ff_core_List.List_grab(" + code1 + ", " + code2 + "))"
-                )
+                self.writeUnmapped("(")
+                self.emitTerm(e1, async)
+                self.writeUnmapped("[")
+                self.emitTerm(e2, async)
+                self.writeUnmapped("] ?? ff_core_List.List_grab(")
+                self.emitTerm(e1, async)
+                self.writeUnmapped(", ")
+                self.emitTerm(e2, async)
+                self.writeUnmapped("))")
+                True
             | "ff:core/Array.Array_grab" {arguments | [e1, e2]} {noSideEffects(e1) && noSideEffects(e2)} =>
-                let code1 = self.emitTerm(e1, async)
-                let code2 = self.emitTerm(e2, async)
-                Some(
-                    "(" + code1 + ".array[" + code2 + "] ?? " + 
-                    "ff_core_Array.Array_grab(" + code1 + ", " + code2 + "))"
-                )
+                self.writeUnmapped("(")
+                self.emitTerm(e1, async)
+                self.writeUnmapped(".array[")
+                self.emitTerm(e2, async)
+                self.writeUnmapped("] ?? ff_core_Array.Array_grab(")
+                self.emitTerm(e1, async)
+                self.writeUnmapped(", ")
+                self.emitTerm(e2, async)
+                self.writeUnmapped("))")
+                True
             | "ff:core/List.List_size" {arguments | [e]} =>
-                Some(
-                    self.emitTerm(e, async) + ".length"
-                )
+                self.emitTerm(e, async)
+                self.writeUnmapped(".length")
+                True
             | "ff:core/Array.Array_size" {arguments | [e]} =>
-                Some(
-                    self.emitTerm(e, async) + ".array.length"
-                )
+                self.emitTerm(e, async)
+                self.writeUnmapped(".array.length")
+                True
             | "ff:core/String.String_size" {arguments | [e]} =>
-                Some(
-                    self.emitTerm(e, async) + ".length"
-                )
+                self.emitTerm(e, async)
+                self.writeUnmapped(".length")
+                True
             | "ff:core/Equal.equals" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, typeName, [])]} {
                 primitiveTypes.contains(typeName) || typeName == "ff:core/Ordering.Ordering"
             } =>
-                Some("(" + self.emitTerm(left, async) + " === " + self.emitTerm(right, async) + ")")
+                self.writeUnmapped("(")
+                self.emitTerm(left, async)
+                self.writeUnmapped(" === ")
+                self.emitTerm(right, async)
+                self.writeUnmapped(")")
+                True
             | "ff:core/Equal.notEquals" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, typeName, [])]} {
                 primitiveTypes.contains(typeName) || typeName == "ff:core/Ordering.Ordering"
             } =>
-                Some("(" + self.emitTerm(left, async) + " !== " + self.emitTerm(right, async) + ")")
+                self.writeUnmapped("(")
+                self.emitTerm(left, async)
+                self.writeUnmapped(" !== ")
+                self.emitTerm(right, async)
+                self.writeUnmapped(")")
+                True
             | "ff:core/Ordering.before" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, typeName, [])]} {
                 primitiveTypes.contains(typeName)
             } =>
-                Some("(" + self.emitTerm(left, async) + " < " + self.emitTerm(right, async) + ")")
+                self.writeUnmapped("(")
+                self.emitTerm(left, async)
+                self.writeUnmapped(" < ")
+                self.emitTerm(right, async)
+                self.writeUnmapped(")")
+                True
             | "ff:core/Ordering.notBefore" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, typeName, [])]} {
                 primitiveTypes.contains(typeName)
             } =>
-                Some("(" + self.emitTerm(left, async) + " >= " + self.emitTerm(right, async) + ")")
+                self.writeUnmapped("(")
+                self.emitTerm(left, async)
+                self.writeUnmapped(" >= ")
+                self.emitTerm(right, async)
+                self.writeUnmapped(")")
+                True
             | "ff:core/Ordering.after" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, typeName, [])]} {
                 primitiveTypes.contains(typeName)
             } =>
-                Some("(" + self.emitTerm(left, async) + " > " + self.emitTerm(right, async) + ")")
+                self.writeUnmapped("(")
+                self.emitTerm(left, async)
+                self.writeUnmapped(" > ")
+                self.emitTerm(right, async)
+                self.writeUnmapped(")")
+                True
             | "ff:core/Ordering.notAfter" {arguments | [left, right]} {dictionaries | [Dictionary(_, _, typeName, [])]} {
                 primitiveTypes.contains(typeName)
             } =>
-                Some("(" + self.emitTerm(left, async) + " <= " + self.emitTerm(right, async) + ")")
+                self.writeUnmapped("(")
+                self.emitTerm(left, async)
+                self.writeUnmapped(" <= ")
+                self.emitTerm(right, async)
+                self.writeUnmapped(")")
+                True
             | "ff:core/List.fillBy" {term | ECall call} {arguments | [size, ELambda(at,
-                Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], body)@c])@l
+                Lambda(_, _, [MatchCase(_, [PVariable(variableAt, name)], [], body)@c])@l
             )]} {
                 !effectTypeIsAsync(call.effect)
             } =>
                 let n = name.map {escapeResolved(_)}.else {"i"}
                 let newAsync = self.emittingAsync && effectTypeIsAsync(call.effect)
-                let await = if(newAsync) {"await "} else {""}
-                Some(
-                    await + "((() => {\n" +
-                    "const size = " + self.emitTerm(size, async) + ";\n" + // Not correct if async and body isn't
-                    "const result = [];\n" +
-                    "for(let " + n + " = 0; " + n + " < size; " + n + "++) {\n" +
-                    "result.push(" + self.emitTerm(body, newAsync) + ");\n" +
-                    "}\n" +
-                    "return result;\n" +
-                    "})())"
-                )
-            | "ff:core/Js.import" {arguments | [EString(_, url)]} =>
+                if(newAsync) {self.writeUnmapped("await ")}
+                self.writeUnmapped("((() => {")
+                self.writeLine()
+                self.writeUnmapped("const size = ")
+                self.emitTerm(size, async) // Not correct if async and body isn't
+                self.writeUnmapped(";")
+                self.writeLine()
+                self.writeUnmapped("const result = [];")
+                self.writeUnmapped("for(let ")
+                self.writeNamed(name.else {"_"}, variableAt, n)
+                self.writeUnmapped(" = 0; ")
+                self.writeNamed(name.else {"_"}, variableAt, n)
+                self.writeUnmapped(" < size; ")
+                self.writeNamed(name.else {"_"}, variableAt, n)
+                self.writeUnmapped("++) {")
+                self.writeLine()
+                self.writeUnmapped("result.push(")
+                self.emitTerm(body, newAsync)
+                self.writeUnmapped(");")
+                self.writeLine()
+                self.writeUnmapped("}")
+                self.writeLine()
+                self.writeUnmapped("return result;")
+                self.writeLine()
+                self.writeUnmapped("})())")
+                True
+            | "ff:core/Js.import" {arguments | [EString(at, url)]} =>
                 self.emitTarget.{
-                    | EmitBrowser => Some("(() => {throw new Error('Node.js imports are not supported in the browser')})()")
-                    | _ => Some(self.jsImporter.add(url.replace("\"", "")))
+                    | EmitBrowser => 
+                        self.writeMapped(at, "(() => {throw new Error('Node.js imports are not supported in the browser')})()")
+                    | _ => 
+                        self.writeMapped(at, self.jsImporter.add(url.replace("\"", "")))
                 }
-            | "ff:core/Js.browserImport" {arguments | [EString(_, url)]} =>
+                True
+            | "ff:core/Js.browserImport" {arguments | [EString(at, url)]} =>
                 self.emitTarget.{
-                    | EmitBrowser => Some(self.jsImporter.add(url.replace("\"", "")))
-                    | _ => Some("(() => {throw new Error('Browser imports are not supported in Node.js')})()")
+                    | EmitBrowser => 
+                        self.writeMapped(at, self.jsImporter.add(url.replace("\"", "")))
+                    | _ => 
+                        self.writeMapped(at, "(() => {throw new Error('Browser imports are not supported in Node.js')})()")
                 }
+                True
             | "ff:core/Js.dynamicImport" {arguments | [url]} =>
-                Some("import(" + self.emitTerm(url, async) + ")")
+                self.writeMapped(term.at, "import(")
+                self.emitTerm(url, async)
+                self.writeUnmapped(")")
+                True
             | "ff:core/Js.await" {arguments | [body]} =>
                 if(async) {
-                    Some("(await " + self.emitTerm(body, async) + ")")
+                    self.writeMapped(term.at, "(await ")
+                    self.emitTerm(body, async)
+                    self.writeUnmapped(")")
                 } else {
-                    Some(self.emitTerm(body, async))
+                    self.emitTerm(body, async)
                 }
+                True
             | name {name.removeFirst("ff:core/Js.async") | Some(n)} {n.all {_.isAsciiDigit()}} {
                 arguments | [ELambda(at, Lambda(_, effect, [MatchCase(_, patterns, [], body)]))]
             } {
@@ -1064,78 +1140,172 @@ extend self: JsEmitter {
                     | PVariable p => p.name.map(escapeKeyword).else {"_"}
                     | _ => panic("!")
                 }
-                Some(
-                    "async (" + patternParameters.join(", ") + ") => {\n" + 
-                    self.emitStatements(body, True, False, False) + 
-                    "\n}"
-                )
+                self.writeUnmapped("async (" + patternParameters.join(", ") + ") => {")
+                self.writeLine()
+                self.emitStatements(body, True, False, False)
+                self.writeLine()
+                self.writeUnmapped("}")
+                True
             | name {name.startsWith("ff:core/Js.async")} =>
                 throw(CompileError(term.at, "JS async functions must take a simple parameter list"))
             | "ff:core/Js.cancelled" =>
-                Some(if(async) {"$task.controller_.signal.aborted"} else {"false"})
+                self.writeUnmapped(if(async) {"$task.controller_.signal.aborted"} else {"false"})
+                True
             | "ff:core/Js.throwIfCancelled" =>
-                Some(if(async) {"((() => ff_core_Task.Task_throwIfAborted($task))())"} else {""})
+                if(async) {self.writeUnmapped("((() => ff_core_Task.Task_throwIfAborted($task))())")}
+                True
             | "ff:core/Js.currentTask" =>
-                Some("$task")
+                self.writeUnmapped("$task")
+                True
             | "ff:core/Js.controller" =>
-                Some("$task.controller_")
+                self.writeUnmapped("$task.controller_")
+                True
             | "ff:core/Js.setController" {arguments | [a]} =>
-                Some("($task.controller_ = " + self.emitTerm(a, async) + ")")
+                self.writeUnmapped("($task.controller_ = ")
+                self.emitTerm(a, async)
+                self.writeUnmapped(")")
+                True
             | "ff:core/Js.inAsync" =>
-                Some(if(self.emittingAsync) {"true"} else {"false"})
+                self.writeUnmapped(if(self.emittingAsync) {"true"} else {"false"})
+                True
             | "ff:core/Js.inBrowser" =>
-                Some(if(self.emitTarget == EmitBrowser) {"true"} else {"false"})
+                self.writeUnmapped(if(self.emitTarget == EmitBrowser) {"true"} else {"false"})
+                True
             | "ff:core/Js.inNode" =>
-                Some(if(self.emitTarget == EmitNode) {"true"} else {"false"})
+                self.writeUnmapped(if(self.emitTarget == EmitNode) {"true"} else {"false"})
+                True
             | "ff:core/Js.inBuild" =>
-                Some(if(self.emitTarget == EmitBuild) {"true"} else {"false"})
+                self.writeUnmapped(if(self.emitTarget == EmitBuild) {"true"} else {"false"})
+                True
             | "ff:core/Js.value" {arguments | [e]} =>
-                Some(self.emitTerm(e, async))
+                self.emitTerm(e, async)
+                True
             | "ff:core/Js.fromValue" {arguments | [e]} =>
-                Some(self.emitTerm(e, async))
-            | "ff:core/Js.rawIdentifier" {arguments | [EString(_, op)]} =>
-                Some(op.replace("\"", ""))
-            | "ff:core/Js.unaryOperator" {arguments | [EString(_, op), a1]} =>
-                Some("(" + op.replace("\"", "") + self.emitTerm(a1, async) + ")")
-            | "ff:core/Js.binaryOperator" {arguments | [EString(_, op), a1, a2]} =>
-                Some("(" + self.emitTerm(a1, async) + " " + op.replace("\"", "") + " " + self.emitTerm(a2, async) + ")")
-            | "ff:core/Js.shortCircuitingOperator" {arguments | [EString(_, op), a1, a2]} =>
-                Some("(" + self.emitTerm(a1, async) + " " + op.replace("\"", "") + " " + self.emitTerm(invokeImmediately(a2), async) + ")")
+                self.emitTerm(e, async)
+                True
+            | "ff:core/Js.rawIdentifier" {arguments | [EString(at, op)]} =>
+                self.writeMapped(at, op.replace("\"", ""))
+                True
+            | "ff:core/Js.unaryOperator" {arguments | [EString(at, op), a1]} =>
+                self.writeUnmapped("(")
+                self.writeMapped(at, op.replace("\"", ""))
+                self.emitTerm(a1, async)
+                self.writeUnmapped(")")
+                True
+            | "ff:core/Js.binaryOperator" {arguments | [EString(at, op), a1, a2]} =>
+                self.writeUnmapped("(")
+                self.emitTerm(a1, async)
+                self.writeUnmapped(" ")
+                self.writeMapped(at, op.replace("\"", ""))
+                self.writeUnmapped(" ")
+                self.emitTerm(a2, async)
+                self.writeUnmapped(")")
+                True
+            | "ff:core/Js.shortCircuitingOperator" {arguments | [EString(at, op), a1, a2]} =>
+                self.writeUnmapped("(")
+                self.emitTerm(a1, async)
+                self.writeUnmapped(" ")
+                self.writeMapped(at, op.replace("\"", ""))
+                self.writeUnmapped(" ")
+                self.emitTerm(invokeImmediately(a2), async)
+                self.writeUnmapped(")")
+                True
             | "ff:core/JsValue.JsValue_spreadToArray" {arguments | [e1]} =>
-                Some("[..." + self.emitTerm(e1, async) + "]")
+                self.writeUnmapped("[...")
+                self.emitTerm(e1, async)
+                self.writeUnmapped("]")
+                True
             | "ff:core/JsValue.JsValue_typeof" {arguments | [e]} =>
-                Some("(typeof " + self.emitTerm(e, async) + ")")
+                self.writeUnmapped("(typeof ")
+                self.emitTerm(e, async)
+                self.writeUnmapped(")")
+                True
             | "ff:core/JsValue.JsValue_instanceof" {arguments | [e1, e2]} =>
-                Some("(" + self.emitTerm(e1, async) + " instanceof " + self.emitTerm(e2, async) + ")")
+                self.writeUnmapped("(")
+                self.emitTerm(e1, async)
+                self.writeUnmapped(" instanceof ")
+                self.emitTerm(e2, async)
+                self.writeUnmapped(")")
+                True
             | "ff:core/JsValue.JsValue_get" {arguments | [e1, e2]} =>
-                Some(self.emitTerm(e1, async) + self.emitField(e2, async))
+                self.emitTerm(e1, async)
+                self.emitField(e2, async)
+                True
             | "ff:core/JsValue.JsValue_equals" {arguments | [e1, e2]} =>
-                Some("(" + self.emitTerm(e1, async) + " === " + self.emitTerm(e2, async) + ")")
+                self.writeUnmapped("(")
+                self.emitTerm(e1, async)
+                self.writeUnmapped(" === ")
+                self.emitTerm(e2, async)
+                self.writeUnmapped(")")
+                True                
             | "ff:core/JsValue.JsValue_notEquals" {arguments | [e1, e2]} =>
-                Some("(" + self.emitTerm(e1, async) + " !== " + self.emitTerm(e2, async) + ")")
+                self.writeUnmapped("(")
+                self.emitTerm(e1, async)
+                self.writeUnmapped(" !== ")
+                self.emitTerm(e2, async)
+                self.writeUnmapped(")")
+                True                
             | "ff:core/Int.Int_bitAnd" {arguments | [e1, e2]} =>
-                Some("(" + self.emitTerm(e1, async) + " & " + self.emitTerm(e2, async) + ")")
+                self.writeUnmapped("(")
+                self.emitTerm(e1, async)
+                self.writeUnmapped(" & ")
+                self.emitTerm(e2, async)
+                self.writeUnmapped(")")
+                True                
             | "ff:core/Int.Int_bitRightUnsigned" {arguments | [e1, e2]} =>
-                Some("(" + self.emitTerm(e1, async) + " >>> " + self.emitTerm(e2, async) + ")")
+                self.writeUnmapped("(")
+                self.emitTerm(e1, async)
+                self.writeUnmapped(" >>> ")
+                self.emitTerm(e2, async)
+                self.writeUnmapped(")")
+                True                
             | "ff:core/Int.Int_bitRight" {arguments | [e1, e2]} =>
-                Some("(" + self.emitTerm(e1, async) + " >> " + self.emitTerm(e2, async) + ")")
+                self.writeUnmapped("(")
+                self.emitTerm(e1, async)
+                self.writeUnmapped(" >> ")
+                self.emitTerm(e2, async)
+                self.writeUnmapped(")")
+                True                
             | name {name.removeFirst("ff:core/JsValue.JsValue_call") | Some(n)} {n.all {_.isAsciiDigit()}} {
                 arguments | [e1, e2, ...es]
             } =>
-                let argumentCode = es.map {self.emitTerm(_, async)}.join(", ")
-                Some(self.emitTerm(e1, async) + self.emitField(e2, async) + "(" + argumentCode + ")")
+                self.emitTerm(e1, async)
+                self.emitField(e2, async)
+                self.writeUnmapped("(")
+                let comma = Comma(self)
+                es.each {
+                    comma.writeComma()
+                    self.emitTerm(_, async)
+                }
+                self.writeUnmapped(")")
+                True
             | name {name.removeFirst("ff:core/JsValue.JsValue_callValue") | Some(n)} {n.all {_.isAsciiDigit()}} {
                 arguments | [e1, ...es]
             } =>
-                let argumentCode = es.map {self.emitTerm(_, async)}.join(", ")
-                Some(self.emitTerm(e1, async) + "(" + argumentCode + ")")
+                self.emitTerm(e1, async)
+                self.writeUnmapped("(")
+                let comma = Comma(self)
+                es.each {
+                    comma.writeComma()
+                    self.emitTerm(_, async)
+                }
+                self.writeUnmapped(")")
+                True
             | name {name.removeFirst("ff:core/JsValue.JsValue_new") | Some(n)} {n.all {_.isAsciiDigit()}} {
                 arguments | [e1, ...es]
             } =>
-                let argumentCode = es.map {self.emitTerm(_, async)}.join(", ")
-                Some("(new " + self.emitTerm(e1, async) + "(" + argumentCode + ")" + ")")
+                self.writeUnmapped("(new ")
+                self.emitTerm(e1, async)
+                self.writeUnmapped("(")
+                let comma = Comma(self)
+                es.each {
+                    comma.writeComma()
+                    self.emitTerm(_, async)
+                }
+                self.writeUnmapped("))")
+                True
             | name {name == "ff:core/JsValue.JsValue_with" || name == "ff:core/Json.Json_with"} =>
-                function go(e: Term, fields: List[Pair[Term, Term]]): String {
+                function go(e: Term, fields: List[Pair[Term, Term]]) {
                     e.{
                         | ECall(_, StaticCall(n, _, _), _, _, [a1, a2, a3], _) {n == name} =>
                             go(a1.value, [Pair(a2.value, a3.value), ...fields])
@@ -1149,86 +1319,163 @@ extend self: JsEmitter {
                         } {
                             as.all {noSideEffects(_.value)}
                         } =>
-                            "{" + fields.map {p =>
-                                self.emitField(p.first, async, dot = "") + ": " + self.emitTerm(p.second, async)
-                            }.join(", ") + "}"
+                            self.writeUnmapped("{")
+                            let comma = Comma(self)
+                            fields.each {p =>
+                                comma.writeComma()
+                                self.emitField(p.first, async, dot = "")
+                                self.writeUnmapped(": ")
+                                self.emitTerm(p.second, async)
+                            }
+                            self.writeUnmapped("}")
                         | _ =>
-                            "{..." + self.emitTerm(e, async) + ", " + fields.map {p =>
-                                self.emitField(p.first, async, dot = "") + ": " + self.emitTerm(p.second, async)
-                            }.join(", ") + "}"
+                            self.writeUnmapped("{...")
+                            self.emitTerm(e, async)
+                            fields.each {p =>
+                                self.writeUnmapped(", ")
+                                self.emitField(p.first, async, dot = "")
+                                self.writeUnmapped(": ")
+                                self.emitTerm(p.second, async)
+                            }
+                            self.writeUnmapped("}")
                     }
                 }
-                Some(go(term, []))
+                go(term, [])
+                True
             | name {name.removeFirst("ff:core/JsSystem.JsSystem_call") | Some(n)} {n.all {_.isAsciiDigit()}} {
-                arguments | [e1, EString(_, q)@e2, ...es]
+                arguments | [e1, EString(at, q)@e2, ...es]
             } {noSideEffects(e1)} =>
-                let argumentCode = es.map {self.emitTerm(_, async)}.join(", ")
-                Some(safeBare(q).else {"globalThis[" + self.emitTerm(e2, async) + "]"} + "(" + argumentCode + ")")
+                safeBare(q).{
+                    | Some(bare) => self.writeNamed(q, at, bare)
+                    | None => 
+                        self.writeMapped(term.at, "globalThis[")
+                        self.emitTerm(e2, async)
+                        self.writeUnmapped("]")
+                }
+                self.writeUnmapped("(")
+                let comma = Comma(self)
+                es.each {
+                    comma.writeComma()
+                    self.emitTerm(_, async)
+                }
+                self.writeUnmapped(")")
+                True
             | name {name.removeFirst("ff:core/JsSystem.JsSystem_function") | Some(n)} {n.all {_.isAsciiDigit()}} {
                 arguments | [e1, e2]
             } {noSideEffects(e1)} {term | ECall call} {!effectTypeIsAsync(call.effect)} =>
-                Some(self.emitTerm(e2, async))
-            | "ff:core/JsSystem.JsSystem_get" {arguments | [e1, EString(_, q)@e2]} {noSideEffects(e1)} =>
-                Some(safeBare(q).else {"globalThis[" + self.emitTerm(e2, async) + "]"})
+                self.emitTerm(e2, async)
+                True
+            | "ff:core/JsSystem.JsSystem_get" {arguments | [e1, EString(at, q)@e2]} {noSideEffects(e1)} =>
+                safeBare(q).{
+                    | Some(bare) => self.writeNamed(q, at, bare)
+                    | None => 
+                        self.writeMapped(term.at, "globalThis[")
+                        self.emitTerm(e2, async)
+                        self.writeUnmapped("]")
+                }
+                True
             | "ff:core/JsSystem.JsSystem_object" {arguments | [e]} {noSideEffects(e)} =>
-                Some("{}")
+                self.writeUnmapped("{}")
+                True
             | "ff:core/JsSystem.JsSystem_new0" {arguments | [e]} {noSideEffects(e)} =>
-                Some("{}")
+                self.writeUnmapped("{}")
+                True
             | "ff:core/JsSystem.JsSystem_null" {arguments | [e]} {noSideEffects(e)} =>
-                Some("null")
+                self.writeUnmapped("null")
+                True
             | "ff:core/JsSystem.JsSystem_undefined" {arguments | [e]} {noSideEffects(e)} =>
-                Some("(void 0)")
+                self.writeUnmapped("(void 0)")
+                True
             | name {name.removeFirst("ff:core/Js.call") | Some(n)} {n.all {_.isAsciiDigit()}} {
-                arguments | [EString(_, q)@e1, ...es]
+                arguments | [EString(at, q)@e1, ...es]
             } =>
-                let argumentCode = es.map {self.emitTerm(_, async)}.join(", ")
-                Some(safeBare(q).else {"globalThis[" + self.emitTerm(e1, async) + "]"} + "(" + argumentCode + ")")
+                safeBare(q).{
+                    | Some(bare) => self.writeNamed(q, at, bare)
+                    | None => 
+                        self.writeMapped(term.at, "globalThis[")
+                        self.emitTerm(e1, async)
+                        self.writeUnmapped("]")
+                }
+                self.writeUnmapped("(")
+                let comma = Comma(self)
+                es.each {
+                    comma.writeComma()
+                    self.emitTerm(_, async)
+                }
+                self.writeUnmapped(")")
+                True
             | name {name.removeFirst("ff:core/Js.function") | Some(n)} {n.all {_.isAsciiDigit()}} {
                 arguments | [e1]
             } {term | ECall call} =>
                 if(self.emittingAsync && effectTypeIsAsync(call.effect)) {
                     let argumentCode = 1.to(n.grabInt()).map {"a_" + _}.join(", ")
                     let taskCode = if(argumentCode == "") {"$task"} else {", $task"}
-                    Some("(async (" + argumentCode + ") => await " + self.emitTerm(e1, async) + "(" + argumentCode + taskCode + "))")
+                    self.writeUnmapped("(async (" + argumentCode + ") => await ")
+                    self.emitTerm(e1, async)
+                    self.writeUnmapped("(" + argumentCode + taskCode + "))")
                 } else {
-                    Some(self.emitTerm(e1, async))
+                    self.emitTerm(e1, async)
                 }
-            | "ff:core/Js.get" {arguments | [EString(_, q)@e1]} =>
-                Some(safeBare(q).else {"globalThis[" + self.emitTerm(e1, async) + "]"})
+                True
+            | "ff:core/Js.get" {arguments | [EString(at, q)@e1]} =>
+                safeBare(q).{
+                    | Some(bare) => self.writeNamed(q, at, bare)
+                    | None => 
+                        self.writeMapped(term.at, "globalThis[")
+                        self.emitTerm(e1, async)
+                        self.writeUnmapped("]")
+                }
+                True
             | "ff:core/Js.object" =>
-                Some("{}")
+                self.writeMapped(term.at, "{}")
+                True
             | "ff:core/Js.new0" =>
-                Some("{}")
+                self.writeMapped(term.at, "{}")
+                True
             | "ff:core/Js.null" =>
-                Some("null")
+                self.writeMapped(term.at, "null")
+                True
             | "ff:core/Js.undefined" =>
-                Some("(void 0)")
+                self.writeMapped(term.at, "(void 0)")
+                True
             | "ff:core/Js.globalThis" =>
-                Some("globalThis")
+                self.writeMapped(term.at, "globalThis")
+                True
             | "ff:core/BrowserSystem.BrowserSystem_js" {arguments | [e]} {noSideEffects(e)} => 
-                Some("globalThis")
+                self.writeMapped(term.at, "globalThis")
+                True
             | "ff:core/BuildSystem.BuildSystem_js" {arguments | [e]} {noSideEffects(e)} => 
-                Some("globalThis")
+                self.writeMapped(term.at, "globalThis")
+                True
             | "ff:core/NodeSystem.NodeSystem_js" {arguments | [e]} {noSideEffects(e)} => 
-                Some("globalThis")
+                self.writeMapped(term.at, "globalThis")
+                True
             | "ff:core/Js.jsSystem" =>
-                Some("globalThis")
+                self.writeMapped(term.at, "globalThis")
+                True
             | "ff:core/Json.string" {arguments | [e]} =>
-                Some(self.emitTerm(e, async))
+                self.emitTerm(e, async)
+                True
             | "ff:core/Json.int" {arguments | [e]} =>
-                Some(self.emitTerm(e, async))
+                self.emitTerm(e, async)
+                True
             | "ff:core/Json.float" {arguments | [e]} =>
-                Some(self.emitTerm(e, async))
+                self.emitTerm(e, async)
+                True
             | "ff:core/Json.bool" {arguments | [e]} =>
-                Some(self.emitTerm(e, async))
+                self.emitTerm(e, async)
+                True
             | "ff:core/Json.array" {arguments | [e]} =>
-                Some(self.emitTerm(e, async))
+                self.emitTerm(e, async)
+                True
             | "ff:core/Json.null" {arguments | [e]} =>
-                Some("null")
+                self.writeMapped(term.at, "null")
+                True
             | "ff:core/Json.object" {arguments | [e]} =>
-                Some("{}")
+                self.writeMapped(term.at, "{}")
+                True
             | _ =>
-                None
+                False
         }
     }
     
