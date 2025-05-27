@@ -332,28 +332,52 @@ extend self: JsEmitter {
         }
     }
 
-    emitSignature(signature: Signature, async: Bool, suffix: String = "", asMethod: Bool = False): String {
-        let parameterStrings = signature.parameters.map {self.emitParameter(_, async)}
-        let dictionaryStrings = signature.constraints.map {c =>
-            makeDictionaryName(c.name, firstTypeName(c.generics))
-        }
-        let controller = if(async) {["$task"]} else {[]}
-        let parameters = "(" + [...parameterStrings, ...dictionaryStrings, ...controller].join(", ") + ")"
+    emitSignature(signature: Signature, async: Bool, suffix: String = "", asMethod: Bool = False): Unit {
         let prefix = if(async) {"async "} else {""}
         let asyncSuffix = if(async) {"$"} else {""}
         let fullPrefix = prefix + if(asMethod) {""} else {"function "}
-        fullPrefix + escapeKeyword(signature.name) + suffix + asyncSuffix + parameters
+        self.writeUnmapped(fullPrefix)
+        self.writeNamed(signature.name, signature.at, escapeKeyword(signature.name) + suffix + asyncSuffix)
+
+        self.writeUnmapped("(")
+        let comma = Comma(self)
+        
+        signature.parameters.each {
+            comma.writeComma()
+            self.emitParameter(_, async)
+        }
+        signature.constraints.each {c =>
+            comma.writeComma()
+            self.writeUnmapped(makeDictionaryName(c.name, firstTypeName(c.generics)))
+        }
+        if(async) {
+            comma.writeComma()
+            self.writeUnmapped("$task")
+        }
+
+        self.writeUnmapped(")")
     }
 
-    emitParameter(parameter: Parameter, async: Bool): String {
-        let defaultValue = parameter.default.map {" = " + self.emitTerm(_, async) }.else {""}
-        escapeKeyword(parameter.name) + defaultValue
+    emitParameter(parameter: Parameter, async: Bool) {
+        self.writeNamed(parameter.name, parameter.at, escapeKeyword(parameter.name))
+        parameter.default.each {e => 
+            self.writeUnmapped(" = ")
+            self.emitTerm(e, async) 
+        }
     }
 
-    emitTypeDefinition(definition: DType): String {
-        if(definition.newtype) {"// newtype " + definition.name} else:
-        "// type " + definition.name + "\n" +
-        definition.variants.map {self.emitVariantDefinition(definition, _)}.join("\n")
+    emitTypeDefinition(definition: DType) {
+        if(definition.newtype) {
+            self.writeUnmapped("// newtype " + definition.name)
+        } else {
+            self.writeUnmapped("// type " + definition.name)
+            self.writeLine()
+            let liner = Liner(self, double = False)
+            definition.variants.each {
+                liner.writeLines()
+                self.emitVariantDefinition(definition, _)
+            }
+        }
     }
 
     emitVariantDefinition(typeDefinition: DType, definition: Variant): String {
@@ -1555,6 +1579,18 @@ extend self: Liner {
         } else {
             self.emitter.writeLine()
             if(self.double) {self.emitter.writeLine()}
+        }
+    }
+}
+
+class Comma(emitter: JsEmitter, mutable first: Bool = True)
+
+extend self: Comma {
+    writeComma() {
+        if(self.first) {
+            self.first = False
+        } else {
+            self.emitter.writeUnmapped(", ")
         }
     }
 }
