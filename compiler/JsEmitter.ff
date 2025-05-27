@@ -236,26 +236,44 @@ extend self: JsEmitter {
         }}
     }
 
-    emitInstanceDefinition(definition: DInstance): String {
+    emitInstanceDefinition(definition: DInstance) {
         let name = makeDictionaryName(definition.traitName, firstTypeName(definition.typeArguments))
-        let methods = definition.methods.map {self.emitFunctionDefinition(_, False)}.map {_.dropFirst("function ".size())} // TODO
-        let asyncMethods = self.withEmittingAsync {
-            definition.methods.map {self.emitFunctionDefinition(_, True)}.map {"async " + _.dropFirst("async function ".size())} // TODO
-        }
-        let body = "{\n" + [...methods, ...asyncMethods].join(",\n") + "\n}"
         definition.constraints.{
             | [] =>
-                "export const " + name + " = " + body + ";"
+                self.writeUnmapped("export const ")
+                self.writeNamed(name, definition.at, name)
+                self.writeUnmapped(" = ")
             | constraints =>
                 let dictionaries = constraints.map {c =>
                     makeDictionaryName(c.name, firstTypeName(c.generics))
                 }
-                "export function " + name + "(" + dictionaries.join(", ") + ") { return " + body + "}"
+                self.writeUnmapped("export function ")
+                self.writeNamed(name, definition.at, name)
+                self.writeUnmapped("(" + dictionaries.join(", ") + ") { return ")
+        }
+        self.writeUnmapped("{")
+        self.writeLine()
+        definition.methods.each {
+            self.emitFunctionDefinition(_, False, asMethod = True)
+            self.writeUnmapped(",")
+            self.writeLine()
+        }
+        self.withEmittingAsync {
+            definition.methods.map {
+                self.emitFunctionDefinition(_, True, asMethod = True)
+                self.writeUnmapped(",")
+                self.writeLine()
+            }
+        }
+        self.writeUnmapped("}")
+        definition.constraints.{
+            | [] => self.writeUnmapped(";")
+            | _ => self.writeUnmapped("}")
         }
     }
 
-    emitFunctionDefinition(definition: DFunction, async: Bool, suffix: String = ""): String {
-        let signature = self.emitSignature(definition.signature, async, suffix)
+    emitFunctionDefinition(definition: DFunction, async: Bool, suffix: String = "", asMethod: Bool = False): String {
+        let signature = self.emitSignature(definition.signature, async, suffix, asMethod)
         definition.body.{
             | Lambda(_, effect, [matchCase]) {
                 matchCase.patterns.all {
@@ -295,7 +313,7 @@ extend self: JsEmitter {
         }
     }
 
-    emitSignature(signature: Signature, async: Bool, suffix: String = ""): String {
+    emitSignature(signature: Signature, async: Bool, suffix: String = "", asMethod: Bool = False): String {
         let parameterStrings = signature.parameters.map {self.emitParameter(_, async)}
         let dictionaryStrings = signature.constraints.map {c =>
             makeDictionaryName(c.name, firstTypeName(c.generics))
@@ -304,7 +322,8 @@ extend self: JsEmitter {
         let parameters = "(" + [...parameterStrings, ...dictionaryStrings, ...controller].join(", ") + ")"
         let prefix = if(async) {"async "} else {""}
         let asyncSuffix = if(async) {"$"} else {""}
-        prefix + "function " + escapeKeyword(signature.name) + suffix + asyncSuffix + parameters
+        let fullPrefix = prefix + if(asMethod) {""} else {"function "}
+        fullPrefix + escapeKeyword(signature.name) + suffix + asyncSuffix + parameters
     }
 
     emitParameter(parameter: Parameter, async: Bool): String {
