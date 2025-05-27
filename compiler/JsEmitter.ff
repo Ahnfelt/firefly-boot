@@ -65,6 +65,14 @@ extend self: JsEmitter {
         
     }
     
+    writeAnchor(): Int {
+        0
+    }
+    
+    writeAnchorLines(anchor: Int, lines: List[String]) {
+        
+    }
+    
     emitModule(module: Module) {
         let selfImport = self.emitImport(self.moduleKey)
         let imports = [
@@ -80,6 +88,7 @@ extend self: JsEmitter {
             liner.writeLines()
             self.writeUnmapped(selfImport)
         }
+        let anchor = self.writeAnchor()
         module.types.each {
             liner.writeLines()
             self.emitTypeDefinition(_)
@@ -115,9 +124,8 @@ extend self: JsEmitter {
             []
         }
         let jsImports = self.jsImporter.generateImports(ignoreJsImports.toSet())
-        jsImports.each {import =>
-            liner.writeLines()
-            self.writeUnmapped(import) // TODO: Move to top
+        if(!jsImports.isEmpty()) {
+            self.writeAnchorLines(anchor, jsImports)
         }
     }
 
@@ -272,8 +280,10 @@ extend self: JsEmitter {
         }
     }
 
-    emitFunctionDefinition(definition: DFunction, async: Bool, suffix: String = "", asMethod: Bool = False): String {
-        let signature = self.emitSignature(definition.signature, async, suffix, asMethod)
+    emitFunctionDefinition(definition: DFunction, async: Bool, suffix: String = "", asMethod: Bool = False): Unit {
+        self.emitSignature(definition.signature, async, suffix, asMethod)
+        self.writeUnmapped(" {")
+        self.writeLine()
         definition.body.{
             | Lambda(_, effect, [matchCase]) {
                 matchCase.patterns.all {
@@ -281,35 +291,44 @@ extend self: JsEmitter {
                     | _ => False
                 }
             } =>
-                let body = self.emitTailCall {self.emitStatements(matchCase.body, True, False, async)}
-                signature + " {\n" + body + "\n}"
+                self.emitTailCall {self.emitStatements(matchCase.body, True, False, async)}
             | Lambda(_, effect, cases) =>
-                Patterns.convertAndCheck(self.otherModules, cases)
-                let escapedArguments = definition.signature.parameters.map {_.name + "_a"}
-                let shadowingWorkaround = definition.signature.parameters.map {p =>
-                    "const " + p.name + "_a = " + escapeKeyword(p.name) + ";"
-                }.join("\n")
-                let body = self.emitTailCall {
-                    let casesString = cases.pairs().map {| Pair(i, c) =>
+                Patterns.convertAndCheck(self.otherModules, cases) // TODO no type errors in emitter
+                self.emitTailCall {
+                    let liner = Liner(self, False)
+                    definition.signature.parameters.each {p =>
+                        liner.writeLines()
+                        self.writeUnmapped("const ")
+                        self.writeNamed(p.name, p.at, p.name + "_a")
+                        self.writeUnmapped(" = ")
+                        self.writeNamed(p.name, p.at, escapeKeyword(p.name))
+                        self.writeUnmapped(";")
+                    }
+                    let escapedArguments = definition.signature.parameters.map {_.name + "_a"}
+                    cases.pairs().each {| Pair(i, c) =>
+                        liner.writeLines()
                         let lastCase = i == cases.size() - 1
                         self.emitCase(escapedArguments, c, [], [], True, True, False, lastCase, async)
-                    }.join("\n")
-                    shadowingWorkaround + "\n" + casesString
+                    }
                 }
-                signature + " {\n" + body + "\n}"
         }
+        self.writeLine()
+        self.writeUnmapped("}")
     }
 
-    emitTailCall(body: () => String): String {
+    emitTailCall(body: () => Unit) {
         let outerTailCallUsed = self.tailCallUsed
         self.tailCallUsed = False
-        let result = body()
+        let anchor = self.writeAnchor()
+        body()
         let tailCallUsed = self.tailCallUsed
         self.tailCallUsed = outerTailCallUsed
         if(tailCallUsed) {
-            "_tailcall: for(;;) {\n" + result + "\nreturn\n}"
-        } else {
-            result
+            self.writeAnchorLines(anchor, ["_tailcall: for(;;) {"])
+            self.writeLine()
+            self.writeUnmapped("return")
+            self.writeLine()
+            self.writeUnmapped("}")
         }
     }
 
