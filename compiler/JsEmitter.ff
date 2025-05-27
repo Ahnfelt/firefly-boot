@@ -380,22 +380,52 @@ extend self: JsEmitter {
         }
     }
 
-    emitVariantDefinition(typeDefinition: DType, definition: Variant): String {
+    emitVariantDefinition(typeDefinition: DType, definition: Variant) {
         let allFields = [...typeDefinition.commonFields, ...definition.fields]
-        let fields = allFields.map {escapeKeyword(_.name)}.join(", ")
+        function emitFields() {
+            let comma = Comma(self)
+            allFields.each {f => 
+                comma.writeComma()
+                self.writeNamed(f.name, f.at, escapeKeyword(f.name))
+            }
+        }
+        function emitConstructor() {
+            self.writeUnmapped("export function ")
+            self.writeNamed(definition.name, definition.at, definition.name)
+            self.writeUnmapped("(")
+            emitFields()
+            self.writeUnmapped(") {")
+            self.writeLine()
+        }
         if(allFields.isEmpty()) {
-            "const " + definition.name + "$ = {" + definition.name + ": true};\n" +
-            "export function " + definition.name + "(" + fields + ") {\n" +
-            "return " + definition.name + "$;\n" +
-            "}"
+            self.writeUnmapped("const ")
+            self.writeNamed(definition.name, definition.at, definition.name + "$")
+            self.writeUnmapped(" = {")
+            self.writeNamed(definition.name, definition.at, definition.name)
+            self.writeUnmapped(": true};")
+            self.writeLine()
+            emitConstructor()
+            self.writeUnmapped("return ")
+            self.writeNamed(definition.name, definition.at, definition.name + "$")
+            self.writeUnmapped(";")
+            self.writeLine()
+            self.writeUnmapped("}")
         } elseIf {typeDefinition.variants.size() == 1} {
-            "export function " + definition.name + "(" + fields + ") {\n" +
-            "return {" + fields + "};\n" +
-            "}"
+            emitConstructor()
+            self.writeUnmapped("return {")
+            emitFields()
+            self.writeUnmapped("};")
+            self.writeLine()
+            self.writeUnmapped("}")
         } else {
-            "export function " + definition.name + "(" + fields + ") {\n" +
-            "return {" + definition.name + ": true, " + fields + "};\n" +
-            "}"
+            emitConstructor()
+            self.writeUnmapped("return {")
+            self.writeNamed(definition.name, definition.at, definition.name)
+            self.writeUnmapped(": true, ")
+            emitFields()
+            self.writeUnmapped("};")
+            self.writeLine()
+            self.writeUnmapped("}")
         }
     }
 
