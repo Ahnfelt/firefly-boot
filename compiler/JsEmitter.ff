@@ -44,7 +44,7 @@ new(
 }
 
 fail[T](at: Location, message: String): T {
-    panic(message + " " + at.show())
+    throw(CompileError(at, message))
 }
 
 extend self: JsEmitter {
@@ -429,160 +429,309 @@ extend self: JsEmitter {
         }
     }
 
-    emitTerm(term: Term, async: Bool, ignored: Bool = False): String {term.{
+    emitTerm(term: Term, async: Bool, ignored: Bool = False) {term.{
         | EString(at, value) {value.startsWith("\"\"\"")} =>
-            "`" + value.dropFirst(3).dropLast(3).replace("`", "\\`") + "`" // TODO: Fix escaping
-        | EString(at, value) => value
-        | EChar(at, value) => charLiteralToNumber(value)
-        | EInt(at, value) => value
-        | EFloat(at, value) => value
-        | EVariable(at, name) => escapeResolved(name)
+            self.writeMapped(at, "`" + value.dropFirst(3).dropLast(3).replace("`", "\\`") + "`") // TODO: Fix escaping
+        | EString(at, value) => 
+            self.writeMapped(at, value)
+        | EChar(at, value) => 
+            self.writeMapped(at, charLiteralToNumber(value))
+        | EInt(at, value) => 
+            self.writeMapped(at, value)
+        | EFloat(at, value) =>
+            self.writeMapped(at, value)
+        | EVariable(at, name) => 
+            self.writeNamed(name, at, escapeResolved(name))
         | EList(at, _, items) =>
             self.emitList(items, async)
         | EVariant(at, "ff:core/Bool.False", _, _) =>
-            "false"
+            self.writeMapped(at, "false")
         | EVariant(at, "ff:core/Bool.True", _, _) =>
-            "true"
+            self.writeMapped(at, "true")
         | EVariant(at, "ff:core/Unit.Unit", _, _) =>
-            "(void 0)"
+            self.writeMapped(at, "(void 0)")
         | EVariant(at, name, _, arguments) =>
-            let argumentsString = arguments.toList().flatten().map {self.emitArgument(at, _, async)}.join(", ")
             let newtype = self.processVariant(name)
-            if(newtype) {argumentsString} else:
-            escapeResolved(name) + "(" + argumentsString + ")"
+            if(newtype) {
+                self.emitArgument(at, arguments.grab().grabFirst(), async)
+            } else {
+                self.writeNamed(name, at, escapeResolved(name))
+                self.writeUnmapped("(")
+                let comma = Comma(self)
+                arguments.toList().flatten().each {
+                    comma.writeComma()
+                    self.emitArgument(at, _, async)
+                }
+                self.writeUnmapped(")")
+            }
         | EVariantIs(at, "ff:core/Bool.False", _) =>
-            "function(_v) { return !_v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
+            self.writeMapped(at, "function(_v) { return !_v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }")
         | EVariantIs(at, "ff:core/Bool.True", _) =>
-            "function(_v) { return _v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
+            self.writeMapped(at, "function(_v) { return _v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }")
         | EVariantIs(at, "ff:core/Unit.Unit", _) =>
-            "function(_v) { return ff_core_Option.Some(_v); }"
+            self.writeMapped(at, "function(_v) { return ff_core_Option.Some(_v); }")
         | EVariantIs(at, name, _) =>
             let n = name.reverse().takeWhile {_ != '.'}.reverse()
-            "(function(_v) { " +
-            "return _v." + escapeResolved(n) + " ? ff_core_Option.Some(_v) : ff_core_Option.None();" +
-            "})"
+            self.writeMapped(at, "(function(_v) { return _v.")
+            self.writeNamed(n, at, escapeResolved(n))
+            self.writeMapped(at, " ? ff_core_Option.Some(_v) : ff_core_Option.None();})")
         | ECopy(at, name, record, fields) =>
-            let fieldCode = fields.map {f => escapeKeyword(f.name) + " = " + self.emitTerm(f.value, async)}.join(", ")
-            "{..." + self.emitTerm(record, async) + ", " + fieldCode + "}"
+            self.writeMapped(at, "{...")
+            let comma = Comma(self)
+            comma.writeComma()
+            self.emitTerm(record, async)
+            fields.each {f => 
+                comma.writeComma()
+                self.writeNamed(f.name, at, escapeKeyword(f.name))
+                self.writeMapped(at, " = ")
+                self.emitTerm(f.value, async)
+            }
+            self.writeMapped(at, "}")
         | EField(at, newtype, record, field) =>
             if(newtype) {self.emitTerm(record, async)} else:
-            self.emitTerm(record, async) + "." + escapeKeyword(field)
+            self.emitTerm(record, async)
+            self.writeMapped(at, ".")
+            self.writeNamed(field, at, escapeKeyword(field))
         | ELambda(at, Lambda(_, effect, [MatchCase(_, patterns, [], body)])) {
             patterns.all {| PVariable _ => True | _ => False }
         } =>
             let newAsync = self.emittingAsync && effectTypeIsAsync(effect)
-            let patternParameters = patterns.map {
-                | PVariable p => p.name.map(escapeKeyword).else {"_"}
-                | _ => panic("!")
+            self.writeUnmapped("(")
+            if(newAsync) {self.writeUnmapped("async ")}
+            self.writeUnmapped("(")
+            let comma = Comma(self)
+            patterns.each {
+                | PVariable(patternAt, Some(name)) => 
+                    comma.writeComma()
+                    self.writeNamed(name, patternAt, escapeKeyword(name))
+                | PVariable(patternAt, None) => 
+                    comma.writeComma()
+                    self.writeMapped(patternAt, "_")
+                | _ => 
+                    throw(CompileError(at, "Internal compiler error"))
             }
-            let controller = if(newAsync) {["$task"]} else {[]}
-            let parameters = [...patternParameters, ...controller].join(", ")
-            let prefix = if(newAsync) {"async "} else {""}
-            "(" + prefix + "(" + parameters + ") => {\n" + self.emitStatements(body, True, False, newAsync) + "\n})"
+            if(newAsync) {
+                comma.writeComma()
+                self.writeUnmapped("$task")
+            }
+            self.writeUnmapped(") => {")
+            self.writeLine()
+            self.emitStatements(body, True, False, newAsync)
+            self.writeLine()
+            self.writeUnmapped("})")
         | ELambda(at, Lambda(_, effect, cases)) =>
-            let newAsync = self.emittingAsync && effectTypeIsAsync(effect)
-            let controller = if(newAsync) {["$task"]} else {[]}
             Patterns.convertAndCheck(self.otherModules, cases)
             let arguments = cases.grab(0).patterns.pairs().map {"_" + (_.first + 1)}
             let escapedArguments = arguments.map(escapeKeyword) // emitCase arguments must be preescaped
-            let caseStrings = cases.pairs().map {| Pair(i, c) =>
+            let newAsync = self.emittingAsync && effectTypeIsAsync(effect)
+
+            self.writeUnmapped("(")
+            if(newAsync) {self.writeUnmapped("async ")}
+            self.writeUnmapped("(")
+            let comma = Comma(self)
+            escapedArguments.each {a => 
+                comma.writeComma()
+                self.writeUnmapped(a)
+            }
+            if(newAsync) {
+                comma.writeComma()
+                self.writeUnmapped("$task")
+            }
+            self.writeUnmapped(") => {")
+            self.writeLine()
+            let liner = Liner(self, double = False)
+            cases.pairs().each {| Pair(i, c) =>
+                liner.writeLines()
                 let lastCase = i == cases.size() - 1
                 self.emitCase(escapedArguments, c, [], [], True, True, False, lastCase, newAsync)
             }
-            let prefix = if(newAsync) {"async "} else {""}
-            "(" + prefix + "(" + [...escapedArguments, ...controller].join(", ") + ") => " +
-            "{\n" + caseStrings.join("\n") + "\n})"
+            self.writeLine()
+            self.writeUnmapped("})")
         | EPipe(at, value, effect, function) =>
             let await = async && effectTypeIsAsync(effect)
-            let c = if(await) {", $task"} else {""}
-            let call = "(" + self.emitTerm(function, async) + ")(" + self.emitTerm(value, async) + c + ")"
-            if(await) {"(await " + call + ")"} else {call}
-        | _ {self.emitAssignment(term, async) | Some(code)} =>
-            if(ignored) {code} else {"(" + code + ", void 0)"}
+            if(await) {self.writeUnmapped("(await ")}
+            self.writeUnmapped("(")
+            self.emitTerm(function, async)
+            self.writeUnmapped(")")
+            self.writeUnmapped("(")
+            self.emitTerm(value, async)
+            if(await) {self.writeUnmapped(", $task")}
+            self.writeUnmapped(")")
+            if(await) {self.writeUnmapped(")")}
+        | _ {self.emitAssignment(term, async, ignored)} =>
         | ECall(at, StaticCall(name, _, _), _, _, arguments, dictionaries) {
-            self.emitSpecialCall(term, async, name, arguments.map {_.value}, dictionaries) | Some(code)
+            self.emitSpecialCall(term, async, name, arguments.map {_.value}, dictionaries)
         } =>
-            code
         | ECall(at, StaticCall(name, _, True), effect, typeArguments, arguments, dictionaries) =>
             let await = async && effectTypeIsAsync(effect)
-            let dictionaryStrings = dictionaries.map {self.emitDictionary(_)}
+            let dictionaryStrings = dictionaries.map {self.makeDictionary(_)}
             let ds = dictionaryStrings.dropFirst()
             let d = dictionaryStrings.grabFirst()
             let asyncSuffix = if(await) {"$"} else {""}
-            let n = escapeKeyword(name.reverse().takeWhile {_ != '.'}.reverse()) + asyncSuffix
-            let emittedArguments = arguments.map {self.emitArgument(at, _, async)}
-            let controller = if(await) {["$task"]} else {[]}
-            let call = d + "." + n + "(" + [...emittedArguments, ...ds, ...controller].join(", ") + ")"
-            if(await) {"(await " + call + ")"} else {call}
+            if(await) {self.writeUnmapped("(await ")}
+            self.writeUnmapped(d)
+            self.writeUnmapped(".")
+            self.writeNamed(name, at, escapeKeyword(name.reverse().takeWhile {_ != '.'}.reverse()) + asyncSuffix)
+            self.writeUnmapped("(")
+            let comma = Comma(self)
+            arguments.each {
+                comma.writeComma()
+                self.emitArgument(at, _, async)
+            }
+            ds.each {
+                comma.writeComma()
+                self.writeUnmapped(_)
+            }
+            if(await) {
+                comma.writeComma()
+                self.writeUnmapped("$task")
+            }
+            self.writeUnmapped(")")
+            if(await) {self.writeUnmapped(")")}
         | ECall(at, StaticCall(name, _, _), effect, typeArguments, arguments, dictionaries) =>
             detectIfElse(term).{
                 | [] =>
                     let await = async && effectTypeIsAsync(effect)
-                    let ds = dictionaries.map {self.emitDictionary(_)}
-                    let functionCode = escapeResolved(name) + if(await) {"$"} else {""}
-                    let emittedArguments = arguments.map {self.emitArgument(at, _, async)}
-                    let controller = if(await) {["$task"]} else {[]}
-                    let call = functionCode + "(" + [...emittedArguments, ...ds, ...controller].join(", ") + ")"
-                    if(await) {"(await " + call + ")"} else {call}
+                    let dictionaryStrings = dictionaries.map {self.makeDictionary(_)}
+                    let asyncSuffix = if(await) {"$"} else {""}
+                    if(await) {self.writeUnmapped("(await ")}
+                    self.writeNamed(name, at, escapeKeyword(name.reverse().takeWhile {_ != '.'}.reverse()) + asyncSuffix)
+                    self.writeUnmapped("(")
+                    let comma = Comma(self)
+                    arguments.each {
+                        comma.writeComma()
+                        self.emitArgument(at, _, async)
+                    }
+                    dictionaryStrings.each {
+                        comma.writeComma()
+                        self.writeUnmapped(_)
+                    }
+                    if(await) {
+                        comma.writeComma()
+                        self.writeUnmapped("$task")
+                    }
+                    self.writeUnmapped(")")
+                    if(await) {self.writeUnmapped(")")}
                 | [Pair(EVariant(_, "ff:core/Bool.True", _, _), elseBody), ...list] =>
-                    "(" + list.foldLeft(self.emitTerm(elseBody, async)) {| otherwise, Pair(condition, body) =>
-                        self.emitTerm(condition, async) +
-                        "\n? " + self.emitTerm(body, async) + "\n: " + otherwise
-                    } + ")"
+                    self.writeUnmapped("(")
+                    list.reverse().each {| Pair(condition, body) =>
+                        self.emitTerm(condition, async)
+                        self.writeLine()
+                        self.writeUnmapped("? ")
+                        self.emitTerm(body, async)
+                        self.writeLine()
+                        self.writeUnmapped(": ")
+                    }
+                    self.emitTerm(elseBody, async)
+                    self.writeUnmapped(")")
                 | list =>
-                    "(" + list.foldLeft("ff_core_Option.None()") {| otherwise, Pair(condition, body) =>
-                        self.emitTerm(condition, async) +
-                        "\n? ff_core_Option.Some(" + self.emitTerm(body, async) + ")\n: " + otherwise
-                    } + ")"
+                    self.writeUnmapped("(")
+                    list.reverse().each {| Pair(condition, body) =>
+                        self.emitTerm(condition, async)
+                        self.writeLine()
+                        self.writeUnmapped("? ff_core_Option.Some(")
+                        self.emitTerm(body, async)
+                        self.writeUnmapped(")")
+                        self.writeLine()
+                        self.writeUnmapped(": ")
+                    }
+                    self.writeUnmapped("ff_core_Option.None())")
             }
         | ECall(at, DynamicCall(function, _), effect, typeArguments, arguments, dictionaries) =>
             let await = async && effectTypeIsAsync(effect)
             if(!dictionaries.isEmpty()) {fail(at, "Internal error: Dictionaries in lambda call")}
-            let functionCode = self.emitTerm(function, async)
-            let emittedArguments = arguments.map {self.emitArgument(at, _, async)}
-            let controller = if(await) {["$task"]} else {[]}
-            let call = functionCode + "(" + [...emittedArguments, ...controller].join(", ") + ")"
-            if(await) {"(await " + call + ")"} else {call}
+            if(await) {self.writeUnmapped("(await ")}
+            self.emitTerm(function, async)
+            self.writeUnmapped("(")
+            let comma = Comma(self)
+            arguments.each {
+                comma.writeComma()
+                self.emitArgument(at, _, async)
+            }
+            if(await) {
+                comma.writeComma()
+                self.writeUnmapped("$task")
+            }
+            self.writeUnmapped(")")
+            if(await) {self.writeUnmapped(")")}
         | ERecord(at, fields) =>
-            if(fields.isEmpty()) {"{}"} else {
-                let list = fields.map {f => escapeKeyword(f.name) + ": " + self.emitTerm(f.value, async)}
-                "{\n" + list.join(",\n") + "\n}"
+            if(fields.isEmpty()) {
+                self.writeUnmapped("{}")
+            } else {
+                self.writeUnmapped("{")
+                self.writeLine()
+                let comma = Comma(self)
+                let liner = Liner(self, double = False)
+                fields.each {f => 
+                    comma.writeComma()
+                    liner.writeLines()
+                    self.writeNamed(f.name, f.at, escapeKeyword(f.name))
+                    self.writeUnmapped(": ")
+                    self.emitTerm(f.value, async)
+                }
+                self.writeLine()
+                self.writeUnmapped("}")
             }
         | EWildcard(at, index) =>
             if(index == 0) {fail(at, "Unbound wildcard")}
-            "_w" + index
+            self.writeMapped(at, "_w" + index)
         | ESequential(_, ESequential(_, ESequential(_, before1, before2), before3), after) {
             safeCommable(before1) && safeCommable(before2) && safeCommable(before3) && safeCommable(after)
         } =>
-            "(" + self.emitTerm(before1, async, ignored = True) + ", " + 
-            self.emitTerm(before2, async, ignored = True) + ", " + 
-            self.emitTerm(before3, async, ignored = True) + ", " + 
-            self.emitTerm(after, async, ignored) + ")"
+            self.writeUnmapped("(")
+            self.emitTerm(before1, async, ignored = True)
+            self.writeUnmapped(", ")
+            self.emitTerm(before2, async, ignored = True)
+            self.writeUnmapped(", ")
+            self.emitTerm(before3, async, ignored = True)
+            self.writeUnmapped(", ")
+            self.emitTerm(after, async, ignored)
+            self.writeUnmapped(")")
         | ESequential(_, ESequential(_, before1, before2), after) {
             safeCommable(before1) && safeCommable(before2) && safeCommable(after)
         } =>
-            "(" + self.emitTerm(before1, async, ignored = True) + ", " + 
-            self.emitTerm(before2, async, ignored = True) + ", " + 
-            self.emitTerm(after, async, ignored) + ")"
+            self.writeUnmapped("(")
+            self.emitTerm(before1, async, ignored = True)
+            self.writeUnmapped(", ")
+            self.emitTerm(before2, async, ignored = True)
+            self.writeUnmapped(", ")
+            self.emitTerm(after, async, ignored)
+            self.writeUnmapped(")")
         | ESequential(_, before, after) {
             safeCommable(before) && safeCommable(after)
         } =>
-            "(" + self.emitTerm(before, async, ignored = True) + ", " + 
-            self.emitTerm(after, async, ignored) + ")"
+            self.writeUnmapped("(")
+            self.emitTerm(before, async, ignored = True)
+            self.writeUnmapped(", ")
+            self.emitTerm(after, async, ignored)
+            self.writeUnmapped(")")
         | _ {async} =>
-            "(await (async function() {\n" + self.emitStatements(term, True, False, async) + "\n})())"
+            self.writeUnmapped("(await (async function() {")
+            self.writeLine()
+            self.emitStatements(term, True, False, async)
+            self.writeLine()
+            self.writeUnmapped("})())")
         | _ =>
-            "(function() {\n" + self.emitStatements(term, True, False, async) + "\n})()"
+            self.writeUnmapped("(function() {")
+            self.writeLine()
+            self.emitStatements(term, True, False, async)
+            self.writeLine()
+            self.writeUnmapped("})()")
     }}
     
-    emitField(term: Term, async: Bool, dot: String = "."): String {
+    emitField(term: Term, async: Bool, dot: String = ".") {
         term.{
-            | EString(_, q) {safeBare(q) | Some(s)} => dot + s
-            | _ => "[" + self.emitTerm(term, async) + "]"
+            | EString(at, q) {safeBare(q) | Some(s)} => 
+                self.writeUnmapped(dot)
+                self.writeNamed(s, at, s)
+            | _ => 
+                self.writeUnmapped("[")
+                self.emitTerm(term, async)
+                self.writeUnmapped("]")
         }
     }
 
-    emitDictionary(d: Dictionary): String {
+    makeDictionary(d: Dictionary): String {
         let m = if(d.moduleKey.name != "") {
             d.moduleKey.packagePair.groupName("_") + "_" + 
             d.moduleKey.folders.map {_ + "_"}.join() + 
@@ -592,81 +741,130 @@ extend self: JsEmitter {
         if(d.dictionaries.isEmpty()) {
             c
         } else {
-            c + "(" + d.dictionaries.map {self.emitDictionary(_)}.join(", ") + ")"
+            c + "(" + d.dictionaries.map {self.makeDictionary(_)}.join(", ") + ")"
         }
     }
 
-    emitStatements(term: Term, last: Bool, break: Bool, async: Bool): String {
+    emitStatements(term: Term, last: Bool, break: Bool, async: Bool) {
         term.{
             | EFunctions(at, functions, body) =>
-                let functionStrings = functions.map {f =>
+                let liner = Liner(self, double = False)
+                functions.each {f =>
+                    liner.writeLines()
                     let newAsync = self.emittingAsync && effectTypeIsAsync(f.signature.effect)
                     self.emitFunctionDefinition(f, newAsync)
                 }
-                functionStrings.join("\n") + "\n" + self.emitStatements(body, last, break, async)
+                liner.writeLines()
+                self.emitStatements(body, last, break, async)
             | ELet(at, mutable, name, valueType, value, body) =>
-                self.emitLetDefinition(DLet(at, name, valueType, value), mutable, async) + "\n" +
+                self.emitLetDefinition(DLet(at, name, valueType, value), mutable, async)
+                self.writeLine()
                 self.emitStatements(body, last, break, async)
             | EVariant(at, "ff:core/Unit.Unit", _, _) =>
-                ""
             | ESequential(_, EVariant(_, "ff:core/Unit.Unit", _, _), after) =>
                 self.emitStatements(after, last, break, async)
             | ESequential(_, before, EVariant(_, "ff:core/Unit.Unit", _, _)) =>
                 self.emitStatements(before, False, break, async)
             | ESequential(at, before, after) =>
-                self.emitStatements(before, False, False, async) + ";\n" + 
+                self.emitStatements(before, False, False, async)
+                self.writeUnmapped(";")
+                self.writeLine()
                 self.emitStatements(after, last, break, async)
             | ECall(at, StaticCall(name, True, instanceCall), effect, _, arguments, _) =>
                 if(instanceCall) {throw(CompileError(at, "Not yet implemented: Tail calls on trait methods."))}
                 self.tailCallUsed = True
-                let pair = arguments.map {a =>
-                    Some(Pair(
-                        "const " + escapeKeyword(a.name.grab() + "_r") + " = " + self.emitTerm(a.value, async) + ";"
-                        escapeKeyword(a.name.grab()) + " = " + escapeKeyword(a.name.grab() + "_r")
-                    ))
-                }.collect {_}.unzip()
-                "{\n" + pair.first.join("\n") + "\n" + pair.second.join("\n") + "\ncontinue _tailcall\n}"
+                self.writeUnmapped("{")
+                arguments.each {a =>
+                    self.writeLine()
+                    self.writeUnmapped("const ")
+                    self.writeNamed(a.name.grab(), a.at, escapeKeyword(a.name.grab() + "_r"))
+                    self.writeUnmapped(" = ")
+                    self.emitTerm(a.value, async)
+                    self.writeUnmapped(";")
+                }
+                arguments.each {a =>
+                    self.writeLine()
+                    self.writeNamed(a.name.grab(), a.at, escapeKeyword(a.name.grab()))
+                    self.writeUnmapped(" = ")
+                    self.writeNamed(a.name.grab(), a.at, escapeKeyword(a.name.grab() + "_r"))
+                }
+                self.writeLine()
+                self.writeUnmapped("continue _tailcall")
+                self.writeLine()
+                self.writeUnmapped("}")
             | ECall(at, StaticCall(name, _, _), _, _, arguments, dictionaries) {
-                self.emitSpecialStatement(term, last, async, name, arguments.map {_.value}, dictionaries) | Some(code)
+                self.emitSpecialStatement(term, last, async, name, arguments.map {_.value}, dictionaries)
             } =>
-                code
             | EPipe(at, value, _, ELambda(_, Lambda(_, _, cases))) =>
                 Patterns.convertAndCheck(self.otherModules, cases)
-                if(!last && !break) {"do "}.else {""} +
-                "{\nconst _1 = " + self.emitTerm(value, async) + ";\n" +
-                cases.pairs().map {| Pair(i, c) =>
+                if(!last && !break) {self.writeUnmapped("do ")}
+                self.writeUnmapped("{")
+                self.writeLine()
+                self.writeUnmapped("const _1 = ")
+                self.emitTerm(value, async)
+                self.writeUnmapped(";")
+                cases.pairs().each {| Pair(i, c) => 
+                    self.writeLine()
                     let lastCase = i == cases.size() - 1
                     self.emitCase(["_1"], c, [], [], True, last, break, lastCase, async)
-                }.join("\n") +
-                "\n}" + if(!last && !break) {" while(false)"}.else {""}
-            | _ {self.emitAssignment(term, async) | Some(code)} =>
-                code
+                }
+                self.writeLine()
+                self.writeUnmapped("}")
+                if(!last && !break) {self.writeUnmapped(" while(false)")}
+            | _ {self.emitAssignment(term, async, True)} =>
             | _ =>
                 detectIfElse(term).{
                     | [] =>
                         if(break) {
-                            "if(!" + self.emitTerm(term, async) + ") break"
+                            self.writeUnmapped("if(!")
+                            self.emitTerm(term, async)
+                            self.writeUnmapped(") break")
                         } elseIf {last} {
-                            "return " + self.emitTerm(term, async)
+                            self.writeUnmapped("return ")
+                            self.emitTerm(term, async)
                         } else {
                             self.emitTerm(term, async, ignored = True)
                         }
                     | [Pair(EVariant(_, "ff:core/Bool.True", _, _), elseBody), ...list] =>
-                        let initial = "{\n" + self.emitStatements(elseBody, last, break, async) + "\n}"
-                        list.foldLeft(initial) {| otherwise, Pair(condition, body) =>
-                            "if(" + self.emitTerm(condition, async) + ") {\n" +
-                            self.emitStatements(body, last, break, async) + "\n} else " + otherwise
+                        list.reverse().each {| Pair(condition, body) =>
+                            self.writeUnmapped("if(")
+                            self.emitTerm(condition, async)
+                            self.writeUnmapped(") {")
+                            self.writeLine()
+                            self.emitStatements(body, last, break, async)
+                            self.writeLine()
+                            self.writeUnmapped("} else ")
                         }
+                        self.writeUnmapped("{")
+                        self.writeLine()
+                        self.emitStatements(elseBody, last, break, async)
+                        self.writeLine()
+                        self.writeUnmapped("}")
                     | list {!last} =>
-                        list.foldLeft("{}") {| otherwise, Pair(condition, body) =>
-                            "if(" + self.emitTerm(condition, async) + ") {\n" +
-                            self.emitStatements(body, last, break, async) + "\n} else " + otherwise
+                        list.reverse().each {| Pair(condition, body) =>
+                            self.writeUnmapped("if(")
+                            self.emitTerm(condition, async)
+                            self.writeUnmapped(") {")
+                            self.writeLine()
+                            self.emitStatements(body, last, break, async)
+                            self.writeLine()
+                            self.writeUnmapped("} else ")
                         }
+                        self.writeUnmapped("{}")
                     | list =>
-                        list.foldLeft("return ff_core_Option.None()") {| otherwise, Pair(condition, body) =>
-                            "if(" + self.emitTerm(condition, async) + ") {\n" +
-                            "return ff_core_Option.Some(" + self.emitTerm(body, async) + ")\n} else " + otherwise
+                        list.reverse().each {| Pair(condition, body) =>
+                            self.writeUnmapped("if(")
+                            self.emitTerm(condition, async)
+                            self.writeUnmapped(") {")
+                            self.writeLine()
+                            self.writeUnmapped("return ff_core_Option.Some(")
+                            self.emitTerm(body, async)
+                            self.writeUnmapped(")")
+                            self.writeLine()
+                            self.writeUnmapped("} else ")
                         }
+                        self.writeUnmapped("ff_core_Option.None()")
+                        
                 }
         }
     }
@@ -674,44 +872,89 @@ extend self: JsEmitter {
     emitAssignment(
         term: Term
         async: Bool
-    ): Option[String] {
-        | ECall(at, StaticCall(name, _, _), _, _, arguments, dictionaries), _ =>
-            name.{
-                | "ff:core/JsValue.JsValue_set" {arguments.map {_.value} | [e1, e2, e3]} =>
-                    Some(self.emitTerm(e1, async) + self.emitField(e2, async) + " = " + self.emitTerm(e3, async))
-                | "ff:core/JsValue.JsValue_increment" {arguments.map {_.value} | [e1, e2, e3]} =>
-                    Some(self.emitTerm(e1, async) + self.emitField(e2, async) + " += " + self.emitTerm(e3, async))
-                | "ff:core/JsValue.JsValue_decrement" {arguments.map {_.value} | [e1, e2, e3]} =>
-                    Some(self.emitTerm(e1, async) + self.emitField(e2, async) + " -= " + self.emitTerm(e3, async))
-                | "ff:core/JsSystem.JsSystem_set" {arguments.map {_.value} | [e1, EString(_, q), e3]} {
-                    noSideEffects(e1)} {safeBare(q) | Some(s)
-                } =>
-                    Some(s + " = " + self.emitTerm(e3, async))
-                | "ff:core/JsSystem.JsSystem_increment" {arguments.map {_.value} | [e1, EString(_, q), e3]} {
-                    noSideEffects(e1)} {safeBare(q) | Some(s)
-                } =>
-                    Some(s + " += " + self.emitTerm(e3, async))
-                | "ff:core/JsSystem.JsSystem_decrement" {arguments.map {_.value} | [e1, EString(_, q), e3]} {
-                    noSideEffects(e1)} {safeBare(q) | Some(s)
-                } =>
-                    Some(s + " -= " + self.emitTerm(e3, async))
-                | "ff:core/Js.set" {arguments.map {_.value} | [EString(_, q), e2]} {safeBare(q) | Some(s)} =>
-                    Some(s + " = " + self.emitTerm(e2, async))
-                | "ff:core/Js.increment" {arguments.map {_.value} | [EString(_, q), e2]} {safeBare(q) | Some(s)} =>
-                    Some(s + " += " + self.emitTerm(e2, async))
-                | "ff:core/Js.decrement" {arguments.map {_.value} | [EString(_, q), e2]} {safeBare(q) | Some(s)} =>
-                    Some(s + " -= " + self.emitTerm(e2, async))
-                | _ => None
-            }
-        | EAssign(at, operator, name, value), _ =>
-            Some(escapeKeyword(name) + " " + operator + "= " + self.emitTerm(value, async))
-        | EAssignField(at, operator, record, field, value), _ =>
-            Some(
-                self.emitTerm(record, async) + "." + escapeKeyword(field) + " " + operator + "= " +
+        ignored: Bool
+    ): Bool {
+        let anchor = self.writeAnchor()
+        let emitted = term.{
+            | ECall(at, StaticCall(name, _, _), _, _, arguments, dictionaries) =>
+                name.{
+                    | "ff:core/JsValue.JsValue_set" {arguments.map {_.value} | [e1, e2, e3]} =>
+                        self.emitTerm(e1, async)
+                        self.emitField(e2, async)
+                        self.writeUnmapped(" = ")
+                        self.emitTerm(e3, async)
+                        True
+                    | "ff:core/JsValue.JsValue_increment" {arguments.map {_.value} | [e1, e2, e3]} =>
+                        self.emitTerm(e1, async)
+                        self.emitField(e2, async)
+                        self.writeUnmapped(" += ")
+                        self.emitTerm(e3, async)
+                        True
+                    | "ff:core/JsValue.JsValue_decrement" {arguments.map {_.value} | [e1, e2, e3]} =>
+                        self.emitTerm(e1, async)
+                        self.emitField(e2, async)
+                        self.writeUnmapped(" -= ")
+                        self.emitTerm(e3, async)
+                        True
+                    | "ff:core/JsSystem.JsSystem_set" {arguments.map {_.value} | [e1, EString(at, q), e3]} {
+                        noSideEffects(e1)} {safeBare(q) | Some(s)
+                    } =>
+                        self.writeNamed(s, at, s)
+                        self.writeUnmapped(" = ")
+                        self.emitTerm(e3, async)
+                        True
+                    | "ff:core/JsSystem.JsSystem_increment" {arguments.map {_.value} | [e1, EString(at, q), e3]} {
+                        noSideEffects(e1)} {safeBare(q) | Some(s)
+                    } =>
+                        self.writeNamed(s, at, s)
+                        self.writeUnmapped(" += ")
+                        self.emitTerm(e3, async)
+                        True
+                    | "ff:core/JsSystem.JsSystem_decrement" {arguments.map {_.value} | [e1, EString(at, q), e3]} {
+                        noSideEffects(e1)} {safeBare(q) | Some(s)
+                    } =>
+                        self.writeNamed(s, at, s)
+                        self.writeUnmapped(" -= ")
+                        self.emitTerm(e3, async)
+                        True
+                    | "ff:core/Js.set" {arguments.map {_.value} | [EString(at, q), e2]} {safeBare(q) | Some(s)} =>
+                        self.writeNamed(s, at, s)
+                        self.writeUnmapped(" = ")
+                        self.emitTerm(e2, async)
+                        True
+                    | "ff:core/Js.increment" {arguments.map {_.value} | [EString(at, q), e2]} {safeBare(q) | Some(s)} =>
+                        self.writeNamed(s, at, s)
+                        self.writeUnmapped(" += ")
+                        self.emitTerm(e2, async)
+                        True
+                    | "ff:core/Js.decrement" {arguments.map {_.value} | [EString(at, q), e2]} {safeBare(q) | Some(s)} =>
+                        self.writeNamed(s, at, s)
+                        self.writeUnmapped(" -= ")
+                        self.emitTerm(e2, async)
+                        True
+                    | _ => 
+                        False
+                }
+            | EAssign(at, operator, name, value) =>
+                self.writeNamed(name, at, escapeKeyword(name))
+                self.writeUnmapped(" " + operator + "= ")
                 self.emitTerm(value, async)
-            )
-        | _, _ =>
-            None
+                True
+            | EAssignField(at, operator, record, field, value) =>
+                self.emitTerm(record, async)
+                self.writeUnmapped(".")
+                self.writeNamed(field, at, escapeKeyword(field))
+                self.writeUnmapped(" " + operator + "= ")
+                self.emitTerm(value, async)
+                True
+            | _ =>
+                False
+        }
+        if(!ignored && emitted) {
+            self.writeAnchorLines(anchor, ["("])
+            self.writeUnmapped(", void 0)")
+        }
+        emitted
     }
     
     emitSpecialCall(
@@ -720,7 +963,7 @@ extend self: JsEmitter {
         name: String
         arguments: List[Term]
         dictionaries: List[Dictionary]
-    ): Option[String] {
+    ): Bool {
         name.{
             | operator {!operator.grabFirst().isAsciiLetter()} {arguments | [value]} =>
                 Some("(" + operator + self.emitTerm(value, async) + ")")
@@ -1121,7 +1364,7 @@ extend self: JsEmitter {
                     }
                 )
             | "ff:core/Core.throw" {term | ECall c} {c.arguments | [argument]} {dictionaries | [dictionary]} =>
-                let d = self.emitDictionary(dictionary)
+                let d = self.makeDictionary(dictionary)
                 let a = self.emitArgument(term.at, argument, async)
                 Some("throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(" + a + ", " + d + ")})")
             | "ff:core/Try.Try_catch" {self.emitTryCatchFinally(term, last, async) | Some(code)} =>
@@ -1228,7 +1471,7 @@ extend self: JsEmitter {
                 Argument(_, _, ELambda(_, Lambda(_, catchEffect, cases)))
             ], [dictionary]) =>
                 let tryAsync = self.emittingAsync && effectTypeIsAsync(tryEffect)
-                let d = self.emitDictionary(dictionary)
+                let d = self.makeDictionary(dictionary)
                 Some(
                     "try {\n" + self.emitStatements(tryBody, last, False, tryAsync) +
                     "\n} catch(_error) {\n" +
@@ -1249,7 +1492,7 @@ extend self: JsEmitter {
             ], _) =>
                 let tryAsync = self.emittingAsync && effectTypeIsAsync(tryEffect)
                 let finallyAsync = self.emittingAsync && effectTypeIsAsync(finallyEffect)
-                let d = self.emitDictionary(dictionary)
+                let d = self.makeDictionary(dictionary)
                 Some(
                     "try {\n" + self.emitStatements(tryBody, last, False, tryAsync) +
                     "\n} catch(_error) {\n" +
@@ -1450,7 +1693,7 @@ extend self: JsEmitter {
         let moduleName = name.dropLast(variantNameUnqualified.size() + 1)
         let variantModule = self.otherModules.grab(moduleName)
         mutable newtype = False
-        let newArguments = variantModule.types.collectFirst {definition =>
+        variantModule.types.collectFirst {definition =>
             definition.variants.find {_.name == variantName}.map {variant =>
                 newtype = definition.newtype
             }
