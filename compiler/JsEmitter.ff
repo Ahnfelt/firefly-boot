@@ -124,14 +124,14 @@ extend self: JsEmitter {
                 lastOutputColumn = newOutputColumn
                 if(segment.size() > 1) {
                     relative.push(0)
-                    let newLine = segment.grab(2)
+                    let newLine = segment.grab(1)
                     relative.push(newLine - lastLine)
                     lastLine = newLine
-                    let newColumn = segment.grab(3)
+                    let newColumn = segment.grab(2)
                     relative.push(newColumn - lastColumn)
                     lastColumn = newColumn
-                    if(segment.size() == 5) {
-                        let newName = segment.grab(4)
+                    if(segment.size() == 4) {
+                        let newName = segment.grab(3)
                         relative.push(newName - lastName)
                         lastName = newName
                     }
