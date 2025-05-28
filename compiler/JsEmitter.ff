@@ -1559,60 +1559,94 @@ extend self: JsEmitter {
         name: String
         arguments: List[Term]
         dictionaries: List[Dictionary]
-    ): Option[String] {
+    ): Bool {
         name.{
             | "ff:core/Core.while" {arguments | [condition, body]} =>
-                Some(
-                    "while(" + self.emitTerm(invokeImmediately(condition), async) + ") {\n" +
-                    self.emitStatements(invokeImmediately(body), False, False, async) + "\n}"
-                )
+                self.writeMapped(term.at, "while")
+                self.writeUnmapped("(")
+                self.emitTerm(invokeImmediately(condition), async)
+                self.writeUnmapped(") {")
+                self.writeLine()
+                self.emitStatements(invokeImmediately(body), False, False, async)
+                self.writeLine()
+                self.writeUnmapped("}")
+                True
             | "ff:core/Core.doWhile" {arguments | [doWhileBody]} {
                 invokeImmediately(doWhileBody) | body
             } =>
-                Some(
-                    "while(true) {\n" +
-                    self.emitStatements(body, False, True, async) +
-                    "\n}"
-                )
+                self.writeMapped(term.at, "while")
+                self.writeUnmapped("(true) {")
+                self.writeLine()
+                self.emitStatements(body, False, True, async)
+                self.writeLine()
+                self.writeUnmapped("}")
+                True
             | "ff:core/Option.Option_each" {arguments | [list, ELambda(_, Lambda(_, _, [
-                MatchCase(_, [PVariable(_, name)], [], body)
+                MatchCase(_, [PVariable(nameAt, name)], [], body)
             ]))]} =>
-                Some(
-                    "{\nconst if_o = " + self.emitTerm(list, async) + "\nif(if_o.Some) {\n" +
-                        name.map {"const " + escapeKeyword(_) + " = if_o.value_;\n"}.else {""} +
-                        self.emitStatements(body, last, False, async) +
-                    "\n}\n}"
-                )
+                self.writeMapped(term.at, "{")
+                self.writeLine()
+                self.writeUnmapped("const if_o = ")
+                self.emitTerm(list, async)
+                self.writeLine()
+                self.writeUnmapped("if(if_o.Some) {")
+                self.writeLine()
+                name.each {n => 
+                    self.writeUnmapped("const ")
+                    self.writeNamed(n, nameAt, escapeKeyword(n))
+                    self.writeUnmapped(" = if_o.value_;")
+                    self.writeLine()
+                }
+                self.emitStatements(body, last, False, async) +
+                self.writeLine()
+                self.writeUnmapped("}")
+                self.writeLine()
+                self.writeUnmapped("}")
+                True
             | n {n == "ff:core/List.List_each" || n == "ff:core/List.List_eachWhile"} {arguments | [
                 ECall(_, StaticCall(r, _, _), _, _, [start, end], _)
-                ELambda(_, Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], body)]))
+                ELambda(_, Lambda(_, _, [MatchCase(_, [PVariable(nameAt, name)], [], body)]))
             ]} {r == "ff:core/Int.Int_until" || r == "ff:core/Int.Int_to"} =>
-                let startCode = self.emitTerm(start.value, async)
-                let endCode = self.emitTerm(end.value, async)
+                self.writeMapped(term.at, "for")
+                self.writeUnmapped("(let for_i = ")
+                self.emitTerm(start.value, async)
+                self.writeUnmapped(", for_e = ")
+                self.emitTerm(end.value, async)
                 let op = if(r == "ff:core/Int.Int_until") {"<"} else {"<="}
-                Some(
-                    "for(let " +
-                    "for_i = " + startCode + ", for_e = " + endCode + "; for_i " + op + " for_e; for_i++) {\n" +
-                        name.map {"const " + escapeKeyword(_) + " = for_i;\n"}.else {""} +
-                        self.emitStatements(body, last, n.endsWith("eachWhile"), async) +
-                    "\n}"
-                )
+                self.writeUnmapped("; for_i " + op + " for_e; for_i++) {")
+                self.writeLine()
+                name.each {n => 
+                    self.writeUnmapped("const ")
+                    self.writeNamed(n, nameAt, escapeKeyword(n))
+                    self.writeUnmapped(" = for_i;")
+                    self.writeLine()
+                }
+                self.emitStatements(body, last, n.endsWith("eachWhile"), async)
+                self.writeLine()
+                self.writeUnmapped("}")
             | n {n == "ff:core/List.List_each" || n == "ff:core/List.List_eachWhile"} {arguments | [
                 ECall(_, StaticCall("ff:core/List.List_reverse", _, _), _, _, [
                     Argument(_, _, ECall(_, StaticCall(r, _, _), _, _, [start, end], _))
                 ], _)
                 ELambda(_, Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], body)]))
             ]} {r == "ff:core/Int.Int_until" || r == "ff:core/Int.Int_to"} =>
-                let startCode = self.emitTerm(start.value, async)
-                let endCode = self.emitTerm(end.value, async)
-                let delta = if(r == "ff:core/Int.Int_until") {" - 1"} else {""}
-                Some(
-                    "for(let " +
-                    "for_e = " + startCode + ", for_i = " + endCode + delta + "; for_i >= for_e; for_i--) {\n" +
-                        name.map {"const " + escapeKeyword(_) + " = for_i;\n"}.else {""} +
-                        self.emitStatements(body, last, n.endsWith("eachWhile"), async) +
-                    "\n}"
-                )
+                self.writeMapped(term.at, "for")
+                self.writeUnmapped("(let for_e = ")
+                self.emitTerm(start.value, async)
+                self.writeUnmapped(", for_i = ")
+                self.emitTerm(end.value, async)
+                if(r == "ff:core/Int.Int_until") {self.writeUnmapped(" - 1")}
+                self.writeUnmapped("; for_i >= for_e; for_i--) {")
+                self.writeLine()
+                name.each {n => 
+                    self.writeUnmapped("const ")
+                    self.writeNamed(n, nameAt, escapeKeyword(n))
+                    self.writeUnmapped(" = for_i;")
+                    self.writeLine()
+                }
+                self.emitStatements(body, last, n.endsWith("eachWhile"), async)
+                self.writeLine()
+                self.writeUnmapped("}")
             | n {n == "ff:core/List.List_each" || n == "ff:core/List.List_eachWhile"} {arguments | [
                 ECall(_, StaticCall("ff:core/List.List_zip", _, _), _, _, [list1, list2], _)
                 ELambda(_, Lambda(_, _, [MatchCase(_, [
