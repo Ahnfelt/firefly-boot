@@ -69,7 +69,7 @@ extend self: JsEmitter {
     writeMapped(at: Location, text: String) {
         self.writtenStrings.grabLast().push(text)
         self.writtenSegments.grabLast().push(
-            [self.writtenColumn, at.line - 1, at.column - 1].toArray()
+            [self.writtenColumn, 0, at.line - 1, at.column - 1].toArray()
         )
         self.writtenColumn += text.size()
     }
@@ -78,7 +78,7 @@ extend self: JsEmitter {
         let nameIndex = self.writtenNames.getOrSet(name) {self.writtenNames.size()}
         self.writtenStrings.grabLast().push(text)
         self.writtenSegments.grabLast().push(
-            [self.writtenColumn, at.line - 1, at.column - 1, nameIndex].toArray()
+            [self.writtenColumn, 0, at.line - 1, at.column - 1, nameIndex].toArray()
         )
         self.writtenColumn += text.size()
     }
@@ -101,49 +101,11 @@ extend self: JsEmitter {
         }
     }
     
-    makeOutput(fireflyFile: String, javascriptFile: String): Pair[String, Json] {
-        let lines = Array.new()
-        let output = Array.new()
-        mutable index = 0
-        mutable lastLine = 0
-        mutable lastColumn = 0
-        mutable lastName = 0
-        self.writtenStrings.drain().zip(self.writtenSegments.drain()).each {| Pair(strings, segments) =>
-            self.writtenAnchors.get(index).each {anchorLines =>
-                anchorLines.each {l =>
-                    lines.push([])
-                    output.push(l)
-                }
-            }
-            mutable lastOutputColumn = 0
-            let line = Array.new()
-            segments.each {segment =>
-                let relative = Array.new()
-                let newOutputColumn = segment.grab(0)
-                relative.push(newOutputColumn - lastOutputColumn)
-                lastOutputColumn = newOutputColumn
-                if(segment.size() > 1) {
-                    relative.push(0)
-                    let newLine = segment.grab(1)
-                    relative.push(newLine - lastLine)
-                    lastLine = newLine
-                    let newColumn = segment.grab(2)
-                    relative.push(newColumn - lastColumn)
-                    lastColumn = newColumn
-                    if(segment.size() == 4) {
-                        let newName = segment.grab(3)
-                        relative.push(newName - lastName)
-                        lastName = newName
-                    }
-                }
-                line.push(relative.drain())
-            }
-            lines.push(line.drain())
-            output.push(strings.join())
-            index += 1
-        }
-        let sourceMap = SourceMap.sourceMap(javascriptFile, [fireflyFile], self.writtenNames.keys(), lines.drain())
-        Pair(output.join("\n"), sourceMap)
+    makeSourceMap(fireflyFile: String, javascriptFile: String): Pair[String, Json] {
+        SourceMap.fromWritten(
+            fireflyFile, javascriptFile
+            self.writtenStrings, self.writtenSegments, self.writtenAnchors, self.writtenNames
+        )
     }
     
     emitModule(module: Module) {
