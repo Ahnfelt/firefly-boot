@@ -102,16 +102,9 @@ extend self: JsEmitter {
     }
     
     makeOutput(): String {
-        let output = Array.new()
-        self.writtenStrings.drain().pairs().each {| Pair(index, strings) =>
-            self.writtenAnchors.get(index).each {anchorLines =>
-                anchorLines.each {l =>
-                    output.push(l)
-                }
-            }
-            output.push(strings.join())
-        }
-        output.join("\n")
+        SourceMap.makeOutput(
+            self.writtenStrings, self.writtenAnchors
+        )
     }
     
     makeOutputAndSourceMap(fireflyFile: String): Pair[String, Json] {

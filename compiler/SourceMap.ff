@@ -1,4 +1,4 @@
-fromWritten(
+makeOutputAndSourceMap(
     fireflyFile: String
     writtenStrings: Array[Array[String]]
     writtenSegments: Array[Array[List[Int]]]
@@ -50,6 +50,22 @@ fromWritten(
     }
     let sourceMap = sourceMap([fireflyFile], writtenNames.keys(), lines.drain())
     Pair(output.join("\n"), sourceMap)
+}
+
+makeOutput(
+    writtenStrings: Array[Array[String]]
+    writtenAnchors: IntMap[List[String]]
+): String {
+    let output = Array.new()
+    writtenStrings.drain().pairs().each {| Pair(index, strings) =>
+        writtenAnchors.get(index).each {anchorLines =>
+            anchorLines.each {l =>
+                output.push(l)
+            }
+        }
+        output.push(strings.join())
+    }
+    output.join("\n")
 }
 
 sourceMap(
