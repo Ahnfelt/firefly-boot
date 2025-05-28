@@ -2,7 +2,7 @@ fromWritten(
     javascriptFile: String
     fireflyFile: String
     writtenStrings: Array[Array[String]]
-    writtenSegments: Array[Array[Array[Int]]]
+    writtenSegments: Array[Array[List[Int]]]
     writtenAnchors: IntMap[List[String]]
     writtenNames: StringMap[Int]
 ): Pair[String, Json] {

@@ -14,7 +14,7 @@ class JsEmitter(
     mutable tailCallUsed: Bool
     mutable writtenColumn: Int
     writtenStrings: Array[Array[String]]
-    writtenSegments: Array[Array[Array[Int]]]
+    writtenSegments: Array[Array[List[Int]]]
     writtenAnchors: IntMap[List[String]]
     writtenNames: StringMap[Int]
 )
@@ -61,7 +61,7 @@ extend self: JsEmitter {
     writeUnmapped(text: String) {
         self.writtenStrings.grabLast().push(text)
         self.writtenSegments.grabLast().push(
-            [self.writtenColumn].toArray()
+            [self.writtenColumn]
         )
         self.writtenColumn += text.size()
     }
@@ -69,7 +69,7 @@ extend self: JsEmitter {
     writeMapped(at: Location, text: String) {
         self.writtenStrings.grabLast().push(text)
         self.writtenSegments.grabLast().push(
-            [self.writtenColumn, 0, at.line - 1, at.column - 1].toArray()
+            [self.writtenColumn, 0, at.line - 1, at.column - 1]
         )
         self.writtenColumn += text.size()
     }
@@ -78,7 +78,7 @@ extend self: JsEmitter {
         let nameIndex = self.writtenNames.getOrSet(name) {self.writtenNames.size()}
         self.writtenStrings.grabLast().push(text)
         self.writtenSegments.grabLast().push(
-            [self.writtenColumn, 0, at.line - 1, at.column - 1, nameIndex].toArray()
+            [self.writtenColumn, 0, at.line - 1, at.column - 1, nameIndex]
         )
         self.writtenColumn += text.size()
     }
