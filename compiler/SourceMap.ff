@@ -31,14 +31,14 @@ fromWritten(
                 let newSource = segment.grab(1)
                 relative.push(newSource - lastSource)
                 lastSource = newSource
-                let newLine = segment.grab(1)
+                let newLine = segment.grab(2)
                 relative.push(newLine - lastLine)
                 lastLine = newLine
-                let newColumn = segment.grab(2)
+                let newColumn = segment.grab(3)
                 relative.push(newColumn - lastColumn)
                 lastColumn = newColumn
-                if(segment.size() == 4) {
-                    let newName = segment.grab(3)
+                if(segment.size() == 5) {
+                    let newName = segment.grab(4)
                     relative.push(newName - lastName)
                     lastName = newName
                 }
