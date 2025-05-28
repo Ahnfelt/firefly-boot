@@ -109,13 +109,13 @@ extend self: JsEmitter {
         mutable lastColumn = 0
         mutable lastName = 0
         self.writtenStrings.drain().zip(self.writtenSegments.drain()).each {| Pair(strings, segments) =>
-            mutable lastOutputColumn = 0
             self.writtenAnchors.get(index).each {anchorLines =>
                 anchorLines.each {l =>
                     lines.push([])
                     output.push(l)
                 }
             }
+            mutable lastOutputColumn = 0
             let line = Array.new()
             segments.each {segment =>
                 let relative = Array.new()
