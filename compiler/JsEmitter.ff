@@ -108,7 +108,7 @@ extend self: JsEmitter {
     }
     
     makeOutputAndSourceMap(fireflyFile: String): Pair[String, Json] {
-        SourceMap.fromWritten(
+        SourceMap.makeOutputAndSourceMap(
             fireflyFile, self.writtenStrings, self.writtenSegments, self.writtenAnchors, self.writtenNames
         )
     }
