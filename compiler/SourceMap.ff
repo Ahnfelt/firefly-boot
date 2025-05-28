@@ -1,5 +1,4 @@
 fromWritten(
-    javascriptFile: String
     fireflyFile: String
     writtenStrings: Array[Array[String]]
     writtenSegments: Array[Array[List[Int]]]
@@ -49,19 +48,17 @@ fromWritten(
         output.push(strings.join())
         index += 1
     }
-    let sourceMap = sourceMap(javascriptFile, [fireflyFile], writtenNames.keys(), lines.drain())
+    let sourceMap = sourceMap([fireflyFile], writtenNames.keys(), lines.drain())
     Pair(output.join("\n"), sourceMap)
 }
 
 sourceMap(
-    file: String
     sources: List[String]
     names: List[String]
     lines: List[List[List[Int]]]
 ): Json {
     Json->(
         version = 3
-        file = file
         sources = sources
         sourcesContent = [Json.null()]
         names = names
