@@ -1787,7 +1787,7 @@ extend self: JsEmitter {
     }
 
     emitTryCatchFinally(term: Term, last: Bool, async: Bool): Bool {
-        function emitCatch(catchEffect: Type, cases: List[MatchCase]): String {
+        function emitCatch(catchEffect: Type, cases: List[MatchCase]) {
             let catchAsync = self.emittingAsync && effectTypeIsAsync(catchEffect)
             Patterns.convertAndCheck(self.otherModules, cases)
             let arguments = ["_exception.value_", "_error"]
@@ -1795,11 +1795,20 @@ extend self: JsEmitter {
                 | [case] =>
                     self.emitCase(arguments, case, [], [], False, last, False, True, catchAsync)
                 | cs =>
-                    let caseStrings = cases.pairs().map {| Pair(i, c) =>
+                    if(last) {
+                        self.writeMapped(term.at, "do {")
+                        self.writeLine()
+                    }
+                    let liner = Liner(self, double = False)
+                    cases.pairs().each {| Pair(i, c) =>
+                        liner.writeLines()
                         let lastCase = i == cases.size() - 1
                         self.emitCase(arguments, c, [], [], True, last, False, lastCase, catchAsync)
                     }
-                    if(last) {caseStrings.join("\n")} else {"do {\n" + caseStrings.join("\n") + "\n} while(false)"}
+                    if(last) {
+                        self.writeLine()
+                        self.writeMapped(term.at, "} while(false)")
+                    } else {}
             }
         }
         term.{
@@ -1811,24 +1820,41 @@ extend self: JsEmitter {
             ], _) =>
                 let tryAsync = self.emittingAsync && effectTypeIsAsync(tryEffect)
                 let finallyAsync = self.emittingAsync && effectTypeIsAsync(finallyEffect)
-                Some(
-                    "try {\n" + self.emitStatements(tryBody, last, False, tryAsync) +
-                    "\n} finally {\n" + self.emitStatements(finallyBody, last, False, finallyAsync) + "\n}"
-                )
+                self.writeMapped(term.at, "try {")
+                self.writeLine()
+                self.emitStatements(tryBody, last, False, tryAsync)
+                self.writeLine()
+                self.writeMapped(term.at, "} finally {")
+                self.writeLine()
+                self.emitStatements(finallyBody, last, False, finallyAsync)
+                self.writeLine()
+                self.writeMapped(term.at, "}")
+                True
             | ECall(_, StaticCall("ff:core/Try.Try_catchAny", _, _), _, _, [
                 Argument(_, _, ECall(_, StaticCall("ff:core/Core.try", _, _), _, _, [
                     Argument(_, _, ELambda(_, Lambda(_, tryEffect, [MatchCase(_, [], [], tryBody)])))
                 ], _))
-                Argument(_, _, ELambda(_, Lambda(_, catchEffect, [MatchCase(_, [PVariable(_, name)], [], catchBody)])))
+                Argument(_, _, ELambda(_, Lambda(_, catchEffect, [
+                    MatchCase(_, [PVariable(nameAt, name)], [], catchBody)
+                ])))
             ], _) =>
                 let tryAsync = self.emittingAsync && effectTypeIsAsync(tryEffect)
-                Some(
-                    "try {\n" + 
-                        self.emitStatements(tryBody, last, False, tryAsync) +
-                    "\n} catch" + name.map {"(" + escapeKeyword(_) + ")"}.else {""} + " {\n" +
-                        self.emitStatements(catchBody, last, False, tryAsync) +
-                    "\n}"
-                )
+                self.writeMapped(term.at, "try {")
+                self.writeLine()
+                self.emitStatements(tryBody, last, False, tryAsync)
+                self.writeLine()
+                self.writeMapped(term.at, "} catch")
+                name.each {n =>
+                    self.writeMapped(nameAt, "(")
+                    self.writeNamed(n, nameAt, escapeKeyword(n))
+                    self.writeMapped(nameAt, ")")
+                }
+                self.writeMapped(term.at, " {")
+                self.writeLine()
+                self.emitStatements(catchBody, last, False, tryAsync)
+                self.writeLine()
+                self.writeMapped(term.at, "}")
+                True
             | ECall(_, StaticCall("ff:core/Try.Try_catch", _, _), _, _, [
                 Argument(_, _, ECall(_, StaticCall("ff:core/Core.try", _, _), _, _, [
                     Argument(_, _, ELambda(_, Lambda(_, tryEffect, [MatchCase(_, [], [], tryBody)])))
@@ -1837,15 +1863,24 @@ extend self: JsEmitter {
             ], [dictionary]) =>
                 let tryAsync = self.emittingAsync && effectTypeIsAsync(tryEffect)
                 let d = self.makeDictionary(dictionary)
-                Some(
-                    "try {\n" + self.emitStatements(tryBody, last, False, tryAsync) +
-                    "\n} catch(_error) {\n" +
-                        "if(!_error.ffException) throw _error\n" +
-                        "const _exception = ff_core_Any.fromAny_(_error.ffException, " + d + ")\n" +
-                        "if(!_exception.Some) throw _error\n" +
-                        emitCatch(catchEffect, cases) +
-                    "\n}"
-                )
+                self.writeMapped(term.at, "try {")
+                self.writeLine()
+                self.emitStatements(tryBody, last, False, tryAsync)
+                self.writeLine()
+                self.writeMapped(term.at, "} catch(_error) {")
+                self.writeLine()
+                self.writeMapped(term.at, "if(!_error.ffException) throw _error")
+                self.writeLine()
+                self.writeMapped(term.at, "const _exception = ff_core_Any.fromAny_(_error.ffException, ")
+                self.writeMapped(term.at, d)
+                self.writeMapped(term.at, ")")
+                self.writeLine()
+                self.writeMapped(term.at, "if(!_exception.Some) throw _error")
+                self.writeLine()
+                emitCatch(catchEffect, cases)
+                self.writeLine()
+                self.writeMapped(term.at, "}")
+                True
             | ECall(_, StaticCall("ff:core/Try.Try_finally", _, _), _, _, [
                 Argument(_, _, ECall(_, StaticCall("ff:core/Try.Try_catch", _, _), _, _, [
                     Argument(_, _, ECall(_, StaticCall("ff:core/Core.try", _, _), _, _, [
@@ -1858,17 +1893,30 @@ extend self: JsEmitter {
                 let tryAsync = self.emittingAsync && effectTypeIsAsync(tryEffect)
                 let finallyAsync = self.emittingAsync && effectTypeIsAsync(finallyEffect)
                 let d = self.makeDictionary(dictionary)
-                Some(
-                    "try {\n" + self.emitStatements(tryBody, last, False, tryAsync) +
-                    "\n} catch(_error) {\n" +
-                        "if(!_error.ffException) throw _error\n" +
-                        "const _exception = ff_core_Any.fromAny_(_error.ffException, " + d + ")\n" +
-                        "if(!_exception.Some) throw _error\n" +
-                        emitCatch(catchEffect, cases) +
-                    "\n} finally {\n" + self.emitStatements(finallyBody, last, False, finallyAsync) + "\n}"
-                )
+                self.writeMapped(term.at, "try {")
+                self.writeLine()
+                self.emitStatements(tryBody, last, False, tryAsync)
+                self.writeLine()
+                self.writeMapped(term.at, "} catch(_error) {")
+                self.writeLine()
+                self.writeMapped(term.at, "if(!_error.ffException) throw _error")
+                self.writeLine()
+                self.writeMapped(term.at, "const _exception = ff_core_Any.fromAny_(_error.ffException, ")
+                self.writeMapped(term.at, d)
+                self.writeMapped(term.at, ")")
+                self.writeLine()
+                self.writeMapped(term.at, "if(!_exception.Some) throw _error")
+                self.writeLine()
+                emitCatch(catchEffect, cases)
+                self.writeLine()
+                self.writeMapped(term.at, "} finally {")
+                self.writeLine()
+                self.emitStatements(finallyBody, last, False, finallyAsync)
+                self.writeLine()
+                self.writeMapped(term.at, "}")
+                True
             | _ =>
-                None
+                False
         }
     }
 
@@ -1882,7 +1930,7 @@ extend self: JsEmitter {
         break: Bool
         lastCase: Bool
         async: Bool
-    ): String {
+    ) {
         function emitWrapper(code: String): String {
             if(conditions.isEmpty()) {"{\n"} else {
                 "if(" + conditions.join(" && ") + ") {\n"
