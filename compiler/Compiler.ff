@@ -223,12 +223,14 @@ extend self: Compiler {
             moduleKey = moduleKey
         )
         emitter.emitModule(module)
-        let js = emitter.makeOutput()
+        let jsAndSourceMap = emitter.makeOutputAndSourceMap(path.base())
         let packagePath = self.jsOutputPath.slash(moduleKey.packagePair.group).slash(moduleKey.packagePair.name)
         let jsPath = moduleKey.folders.foldLeft(packagePath) {p, f => p.slash(f)}
         let jsFile = jsPath.slash(moduleKey.name + ".mjs")
         jsPath.createDirectory(createParentDirectories = True)
-        jsFile.writeText(js)
+        jsFile.writeText(jsAndSourceMap.first)
+        let sourceMapFile = jsPath.slash(moduleKey.name + ".mjs.map")
+        sourceMapFile.writeText(jsAndSourceMap.second.write(Some("    ")))
         if(isMainModule) {
             let runJs = emitter.makeRun(
                 moduleKey.name
