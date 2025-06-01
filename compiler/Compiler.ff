@@ -22,7 +22,6 @@ capability Compiler(
     lspHook: LspHook
     mutable phaseDurationDelta: Duration
     phaseDurations: Array[Pair[String, Duration]]
-    sourceMaps: Bool
 )
 
 new(
@@ -34,7 +33,6 @@ new(
     virtualFiles: Map[String, String]
     cache: ModuleCache
     lspHook: LspHook
-    sourceMaps: Bool = True
 ): Compiler {
     Compiler(
         emitTarget = emitTarget
@@ -48,7 +46,6 @@ new(
         lspHook = lspHook
         phaseDurationDelta = Duration(0.0)
         phaseDurations = [].toArray()
-        sourceMaps = sourceMaps
     )
 }
 
