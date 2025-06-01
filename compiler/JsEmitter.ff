@@ -187,7 +187,7 @@ extend self: JsEmitter {
         }
     }
 
-    emitRun(moduleName: String, functions: List[DFunction], mainPackagePair: PackagePair, bootstrapping: Bool): List[String] {
+    makeRun(moduleName: String, functions: List[DFunction], mainPackagePair: PackagePair, bootstrapping: Bool): List[String] {
         let buildMainFunction = functions.find {_.signature.name == "buildMain"}.filter {_ =>
             self.emitTarget != EmitBrowser && self.emitTarget != EmitExecutable
         }
