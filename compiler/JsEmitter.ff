@@ -1931,14 +1931,23 @@ extend self: JsEmitter {
         lastCase: Bool
         async: Bool
     ) {
-        function emitWrapper(code: String): String {
-            if(conditions.isEmpty()) {"{\n"} else {
-                "if(" + conditions.join(" && ") + ") {\n"
-            } +
-            variables.join() +
-            code +
-            "\n}"
+        function emitWrapperStart() {
+            if(conditions.isEmpty()) {
+                self.writeMapped(matchCase.at, "{")
+            } else {
+                self.writeMapped(matchCase.at, "if(")
+                self.writeMapped(matchCase.at, conditions.join(" && "))
+                self.writeMapped(matchCase.at, ") {")
+            }
+            self.writeLine()
+            self.writeMapped(matchCase.at, variables.join())
         }
+
+        function emitWrapperEnd() {
+            self.writeLine()
+            self.writeMapped(matchCase.at, "}")
+        }
+
         Pair(matchCase.patterns, matchCase.guards).{
             | Pair([p, ...ps], _) =>
                 self.emitPattern(
@@ -1959,34 +1968,41 @@ extend self: JsEmitter {
                 self.emitCase([], newCase, [...conditions, self.emitTerm(e, async)], [], jump, last, break, lastCase, async)
             | Pair([], [MatchGuard(_, e, PVariant(_, "ff:core/Bool.True", _))]) =>
                 let newCase = matchCase.MatchCase(patterns = [], guards = [])
-                let code = self.emitCase([], newCase, [self.emitTerm(e, async)], [], jump, last, break, lastCase, async)
-                emitWrapper(code)
+                emitWrapperStart()
+                self.emitCase([], newCase, [self.emitTerm(e, async)], [], jump, last, break, lastCase, async)
+                emitWrapperEnd()
             | Pair([], [guard, ...guards]) =>
                 let guardName = "_guard" + (guards.size() + 1)
                 let newCase = matchCase.MatchCase(patterns = [guard.pattern], guards = guards)
-                let code = 
-                    "const " + guardName + " = " + self.emitTerm(guard.term, async) + ";\n" +
-                    self.emitCase([guardName], newCase, [], [], jump, last, break, lastCase, async)
-                emitWrapper(code)
+                emitWrapperStart()
+                self.writeMapped(guard.at, "const " + guardName + " = ")
+                self.emitTerm(guard.term, async)
+                self.writeMapped(guard.at, ";")
+                self.writeLine()
+                self.emitCase([guardName], newCase, [], [], jump, last, break, lastCase, async)
+                emitWrapperEnd()
             | Pair([], []) =>
+                emitWrapperStart()
                 let statementsCode = self.emitStatements(matchCase.body, last, break, async)
-                let lastLine = statementsCode.reverse().takeWhile {_ != '\n'}.reverse()
-                let returns = 
-                    lastLine.startsWith("return ") || 
-                    lastLine.startsWith("break ") ||
-                    lastLine.startsWith("continue ") ||
-                    lastLine.startsWith("return;") || 
-                    lastLine.startsWith("break;") ||
-                    lastLine.startsWith("continue;") ||
-                    lastLine.startsWith("throw ")
-                let code = statementsCode + if(jump && last && !returns) {
-                    "\nreturn"
-                } elseIf {jump && !returns && !lastCase} {
-                    if(break) {"\ncontinue"} else {"\nbreak"}
-                } else {
-                    ""
+                let returns = self.writtenStrings.last().any {line => 
+                    line.first().any {part => 
+                        part.startsWith("return ") || 
+                        part.startsWith("break ") ||
+                        part.startsWith("continue ") ||
+                        part.startsWith("return;") || 
+                        part.startsWith("break;") ||
+                        part.startsWith("continue;") ||
+                        part.startsWith("throw ")
+                    }
                 }
-                emitWrapper(code)
+                statementsCode + if(jump && last && !returns) {
+                    self.writeLine()
+                    self.writeMapped(matchCase.at, "return")
+                } elseIf {jump && !returns && !lastCase} {
+                    self.writeLine()
+                    self.writeMapped(matchCase.at, if(break) {"continue"} else {"break"})
+                }
+                emitWrapperEnd()
         }
     }
 
@@ -2002,7 +2018,7 @@ extend self: JsEmitter {
         break: Bool
         lastCase: Bool
         async: Bool
-    ): String {
+    ) {
         function addCondition(condition: String): List[String] {
             if(lastCase) {conditions} else {[...conditions, condition]}
         }
