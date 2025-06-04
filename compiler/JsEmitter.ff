@@ -2,6 +2,7 @@ import Syntax
 import Patterns
 import JsImporter
 import SourceMap from ff:compiler
+import Syntax from ff:compiler
 
 class JsEmitter(
     otherModules: Map[String, Module]
@@ -1921,9 +1922,9 @@ extend self: JsEmitter {
     }
 
     emitCase(
-        arguments: List[String]
+        arguments: List[Term]
         matchCase: MatchCase
-        conditions: List[String]
+        conditions: List[Term]
         variables: List[String]
         jump: Bool
         last: Bool
@@ -1936,7 +1937,12 @@ extend self: JsEmitter {
                 self.writeMapped(matchCase.at, "{")
             } else {
                 self.writeMapped(matchCase.at, "if(")
-                self.writeMapped(matchCase.at, conditions.join(" && "))
+                conditions.pairs().each {| Pair(i, c) => 
+                    self.emitTerm(c, async)
+                    if(i < conditions.size() - 1) {
+                        self.writeMapped(matchCase.at, " && ")
+                    }
+                }
                 self.writeMapped(matchCase.at, ") {")
             }
             self.writeLine()
@@ -1965,11 +1971,11 @@ extend self: JsEmitter {
                 )
             | Pair([], [MatchGuard(_, e, PVariant(_, "ff:core/Bool.True", _))]) {variables.isEmpty()} =>
                 let newCase = matchCase.MatchCase(patterns = [], guards = [])
-                self.emitCase([], newCase, [...conditions, self.emitTerm(e, async)], [], jump, last, break, lastCase, async)
+                self.emitCase([], newCase, [...conditions, e], [], jump, last, break, lastCase, async)
             | Pair([], [MatchGuard(_, e, PVariant(_, "ff:core/Bool.True", _))]) =>
                 let newCase = matchCase.MatchCase(patterns = [], guards = [])
                 emitWrapperStart()
-                self.emitCase([], newCase, [self.emitTerm(e, async)], [], jump, last, break, lastCase, async)
+                self.emitCase([], newCase, [e], [], jump, last, break, lastCase, async)
                 emitWrapperEnd()
             | Pair([], [guard, ...guards]) =>
                 let guardName = "_guard" + (guards.size() + 1)
@@ -2007,11 +2013,11 @@ extend self: JsEmitter {
     }
 
     emitPattern(
-        argument: String
+        argument: Term
         pattern: MatchPattern
-        arguments: List[String]
+        arguments: List[Term]
         matchCase: MatchCase
-        conditions: List[String]
+        conditions: List[Term]
         variables: List[String]
         jump: Bool
         last: Bool
@@ -2019,18 +2025,36 @@ extend self: JsEmitter {
         lastCase: Bool
         async: Bool
     ) {
-        function addCondition(condition: String): List[String] {
+        function addUneryCondition(operator: String, right: Term): List[Term] {
+            if(lastCase) {conditions} else {
+                let noEffect = TConstructor(pattern.at, "ff:core/Nothing.Nothing", [])
+                let e: Term = ECall(pattern.at, StaticCall(operator, False, False), noEffect, [], [
+                    Argument(right.at, None, right)
+                ], [])
+                [...conditions, e]
+            }
+        }
+        function addBinaryCondition(operator: String, left: Term, right: Term): List[Term] {
+            if(lastCase) {conditions} else {
+                let noEffect = TConstructor(pattern.at, "ff:core/Nothing.Nothing", [])
+                let e: Term = ECall(pattern.at, StaticCall(operator, False, False), noEffect, [], [
+                    Argument(left.at, None, left), Argument(right.at, None, right)
+                ], [])
+                [...conditions, e]
+            }
+        }
+        function addCondition(condition: Term): List[Term] {
             if(lastCase) {conditions} else {[...conditions, condition]}
         }
         pattern.{
             | PString(_, value) =>
-                let newConditions = addCondition(argument + " === " + value)
+                let newConditions = addBinaryCondition("===", argument, EString(pattern.at, value))
                 self.emitCase(arguments, matchCase, newConditions, variables, jump, last, break, lastCase, async)
             | PInt(_, value) =>
-                let newConditions = addCondition(argument + " === " + value)
+                let newConditions = addBinaryCondition("===", argument, EInt(pattern.at, value))
                 self.emitCase(arguments, matchCase, newConditions, variables, jump, last, break, lastCase, async)
             | PChar(_, value) =>
-                let newConditions = addCondition(argument + " === " + charLiteralToNumber(value))
+                let newConditions = addBinaryCondition("===", argument, EChar(pattern.at, value))
                 self.emitCase(arguments, matchCase, newConditions, variables, jump, last, break, lastCase, async)
             | PVariable(_, None) =>
                 self.emitCase(arguments, matchCase, conditions, variables, jump, last, break, lastCase, async)
@@ -2041,7 +2065,7 @@ extend self: JsEmitter {
                 } else {variables}
                 self.emitCase(arguments, matchCase, conditions, newVariables, jump, last, break, lastCase, async)
             | PVariant(_, "ff:core/Bool.False", []) =>
-                self.emitCase(arguments, matchCase, addCondition("!" + argument), variables, jump, last, break, lastCase, async)
+                self.emitCase(arguments, matchCase, addUneryCondition("!", argument), variables, jump, last, break, lastCase, async)
             | PVariant(_, "ff:core/Bool.True", []) =>
                 self.emitCase(arguments, matchCase, addCondition(argument), variables, jump, last, break, lastCase, async)
             | PVariant(_, emptyOrLink, _) {emptyOrLink == "List$Empty" || emptyOrLink == "List$Link"} =>
@@ -2063,7 +2087,10 @@ extend self: JsEmitter {
                     patterns = [...patterns, ...restPattern.toList(), ...matchCase.patterns]
                 )
                 let operator = restPattern.map {_ => ">="}.else {"==="}
-                let newConditions = addCondition(argument + ".length " + operator + " " + patterns.size())
+                let newConditions = addBinaryCondition(operator 
+                    EField(pattern.at, False, argument, "length")
+                    EInt(pattern.at, patterns.size())
+                )
                 self.emitCase(newArguments, newMatchCase, newConditions, variables, jump, last, break, lastCase, async)
             | PVariant(_, name, patterns) =>
                 let processed = self.processVariantCase(name, argument)
@@ -2147,7 +2174,7 @@ data ProcessedVariantCase(
     variantName: String
     newtype: Bool
     loneVariant: Bool
-    arguments: List[String]
+    arguments: List[Term]
 )
 
 detectIfElse(term: Term): List[Pair[Term, Term]] {
