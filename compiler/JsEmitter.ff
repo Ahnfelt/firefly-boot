@@ -345,7 +345,7 @@ extend self: JsEmitter {
                         self.writeNamed(p.name, p.at, escapeKeyword(p.name))
                         self.writeUnmapped(";")
                     }
-                    let escapedArguments = definition.signature.parameters.map {_.name + "_a"}
+                    let escapedArguments = definition.signature.parameters.map {p => EVariable(p.at, p.name + "_a")}
                     cases.pairs().each {| Pair(i, c) =>
                         liner.writeLines()
                         let lastCase = i == cases.size() - 1
@@ -562,8 +562,9 @@ extend self: JsEmitter {
             self.writeUnmapped("})")
         | ELambda(at, Lambda(_, effect, cases)) =>
             Patterns.convertAndCheck(self.otherModules, cases)
-            let arguments = cases.grab(0).patterns.pairs().map {"_" + (_.first + 1)}
-            let escapedArguments = arguments.map(escapeKeyword) // emitCase arguments must be preescaped
+            let arguments = cases.grab(0).patterns.pairs().map {| Pair(i, p) => Pair(p.at, "_" + (i + 1))}
+            //let arguments = cases.grab(0).patterns.pairs().map {"_" + (_.first + 1)}
+            let escapedArguments = arguments.map {escapeKeyword(_.second)} // emitCase arguments must be preescaped
             let newAsync = self.emittingAsync && effectTypeIsAsync(effect)
 
             self.writeUnmapped("(")
@@ -574,6 +575,7 @@ extend self: JsEmitter {
                 comma.writeComma()
                 self.writeUnmapped(a)
             }
+            let argumentTerms =  arguments.map {| Pair(at, n) => EVariable(at, n)}
             if(newAsync) {
                 comma.writeComma()
                 self.writeUnmapped("$task")
@@ -584,7 +586,7 @@ extend self: JsEmitter {
             cases.pairs().each {| Pair(i, c) =>
                 liner.writeLines()
                 let lastCase = i == cases.size() - 1
-                self.emitCase(escapedArguments, c, [], [], True, True, False, lastCase, newAsync)
+                self.emitCase(argumentTerms, c, [], [], True, True, False, lastCase, newAsync)
             }
             self.writeLine()
             self.writeUnmapped("})")
@@ -847,7 +849,7 @@ extend self: JsEmitter {
                 cases.pairs().each {| Pair(i, c) => 
                     self.writeLine()
                     let lastCase = i == cases.size() - 1
-                    self.emitCase(["_1"], c, [], [], True, last, break, lastCase, async)
+                    self.emitCase([EVariable(c.at, "_1")], c, [], [], True, last, break, lastCase, async)
                 }
                 self.writeLine()
                 self.writeUnmapped("}")
@@ -1791,7 +1793,7 @@ extend self: JsEmitter {
         function emitCatch(catchEffect: Type, cases: List[MatchCase]) {
             let catchAsync = self.emittingAsync && effectTypeIsAsync(catchEffect)
             Patterns.convertAndCheck(self.otherModules, cases)
-            let arguments = ["_exception.value_", "_error"]
+            let arguments = [rawJs(term.at, "_exception.value_"), rawJs(term.at, "_error")]
             cases.{
                 | [case] =>
                     self.emitCase(arguments, case, [], [], False, last, False, True, catchAsync)
@@ -1985,11 +1987,11 @@ extend self: JsEmitter {
                 self.emitTerm(guard.term, async)
                 self.writeMapped(guard.at, ";")
                 self.writeLine()
-                self.emitCase([guardName], newCase, [], [], jump, last, break, lastCase, async)
+                self.emitCase([rawJs(guard.at, guardName)], newCase, [], [], jump, last, break, lastCase, async)
                 emitWrapperEnd()
             | Pair([], []) =>
                 emitWrapperStart()
-                let statementsCode = self.emitStatements(matchCase.body, last, break, async)
+                self.emitStatements(matchCase.body, last, break, async)
                 let returns = self.writtenStrings.last().any {line => 
                     line.first().any {part => 
                         part.startsWith("return ") || 
@@ -2001,7 +2003,7 @@ extend self: JsEmitter {
                         part.startsWith("throw ")
                     }
                 }
-                statementsCode + if(jump && last && !returns) {
+                if(jump && last && !returns) {
                     self.writeLine()
                     self.writeMapped(matchCase.at, "return")
                 } elseIf {jump && !returns && !lastCase} {
@@ -2060,9 +2062,14 @@ extend self: JsEmitter {
                 self.emitCase(arguments, matchCase, conditions, variables, jump, last, break, lastCase, async)
             | PVariable(_, Some(name)) =>
                 let escaped = escapeKeyword(name)
-                let newVariables = if(escaped != argument) {
-                    [...variables, "const " + escaped + " = " + argument + ";\n"]
-                } else {variables}
+                let newVariables = argument.{
+                    | EVariable(_, a) {escaped != a} => 
+                        [...variables, "const " + escaped + " = " + a + ";\n"]
+                    | _ => variables
+                }
+                //let newVariables = if(escaped != argument) {
+                //    [...variables, "const " + escaped + " = " + argument + ";\n"]
+                //} else {variables}
                 self.emitCase(arguments, matchCase, conditions, newVariables, jump, last, break, lastCase, async)
             | PVariant(_, "ff:core/Bool.False", []) =>
                 self.emitCase(arguments, matchCase, addUneryCondition("!", argument), variables, jump, last, break, lastCase, async)
@@ -2176,6 +2183,13 @@ data ProcessedVariantCase(
     loneVariant: Bool
     arguments: List[Term]
 )
+
+rawJs(at: Location, jsCode: String): Term {
+    let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
+    ECall(at, StaticCall("ff:core/Js.rawIdentifier", False, False), noEffect, [], [
+        Argument(at, None, EString(at, jsCode))
+    ], [])
+}
 
 detectIfElse(term: Term): List[Pair[Term, Term]] {
     | ECall(at, StaticCall("ff:core/Core.if", _, _), _, _, [condition, body], _) =>
@@ -2312,14 +2326,14 @@ extend self: Liner {
     }
 }
 
-class Comma(emitter: JsEmitter, mutable first: Bool = True)
+class Comma(emitter: JsEmitter, mutable first: Bool = True, delimiter: String = ", ")
 
 extend self: Comma {
     writeComma() {
         if(self.first) {
             self.first = False
         } else {
-            self.emitter.writeUnmapped(", ")
+            self.emitter.writeUnmapped(self.delimiter)
         }
     }
 }
