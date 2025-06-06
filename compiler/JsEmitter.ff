@@ -2058,22 +2058,21 @@ extend self: JsEmitter {
                 self.emitCase(arguments, matchCase, newConditions, variables, jump, last, break, lastCase, async)
             | PVariable(_, None) =>
                 self.emitCase(arguments, matchCase, conditions, variables, jump, last, break, lastCase, async)
-            | PVariable(_, Some(name)) =>
-                let escaped = escapeKeyword(name)
-                let newVariables = argument.{
-                    | EVariable(_, a) {escaped != a} => 
-                        [...variables, "const " + escaped + " = " + a + ";\n"]
-                    | _ => variables
-                }
-                //let newVariables = if(escaped != argument) {
-                //    [...variables, "const " + escaped + " = " + argument + ";\n"]
-                //} else {variables}
-                self.emitCase(arguments, matchCase, conditions, newVariables, jump, last, break, lastCase, async)
-            | PVariant(_, "ff:core/Bool.False", []) =>
-                self.emitCase(arguments, matchCase, addUnaryCondition("!", argument), variables, jump, last, break, lastCase, async)
+            | PVariable(at, Some(name)) =>
+                let newVariables = [...variables, {
+                    self.writeMapped(at, "const ")
+                    self.writeNamed(name, at, escapeKeyword(name))
+                    self.writeMapped(at, " = ")
+                    argument()
+                    self.writeMapped(at, ";")
+                    self.writeLine()
+                }]
+                self.emitCase(arguments, matchCase, conditions, variables, jump, last, break, lastCase, async)
+            | PVariant(at, "ff:core/Bool.False", []) =>
+                self.emitCase(arguments, matchCase, addUnaryCondition(at, "!", argument), variables, jump, last, break, lastCase, async)
             | PVariant(_, "ff:core/Bool.True", []) =>
                 self.emitCase(arguments, matchCase, addCondition(argument), variables, jump, last, break, lastCase, async)
-            | PVariant(_, emptyOrLink, _) {emptyOrLink == "List$Empty" || emptyOrLink == "List$Link"} =>
+            | PVariant(at, emptyOrLink, _) {emptyOrLink == "List$Empty" || emptyOrLink == "List$Link"} =>
                 mutable restPattern = None
                 function listPatterns(matchPattern: MatchPattern): List[MatchPattern] {
                     | PVariant(_, "List$Empty", []) => 
@@ -2085,16 +2084,27 @@ extend self: JsEmitter {
                         []
                 }
                 let patterns = listPatterns(pattern)
-                let itemArguments = patterns.pairs().map {| Pair(i, _) => argument + "[" + i + "]"}
-                let restArgument = restPattern.map {_ => argument + ".slice(" + patterns.size() + ")"}
+                let itemArguments = patterns.pairs().map {| Pair(i, _) => {
+                    argument()
+                    self.writeMapped(at, "[" + i + "]")
+                }}
+                let restArgument = restPattern.map {_ => {
+                    argument()
+                    self.writeMapped(at, ".slice(" + patterns.size() + ")")
+                }}
                 let newArguments = [...itemArguments, ...restArgument.toList(), ...arguments]
                 let newMatchCase = matchCase.MatchCase(
                     patterns = [...patterns, ...restPattern.toList(), ...matchCase.patterns]
                 )
                 let operator = restPattern.map {_ => ">="}.else {"==="}
-                let newConditions = addBinaryCondition(operator 
-                    EField(pattern.at, False, argument, "length")
-                    EInt(pattern.at, patterns.size())
+                let newConditions = addBinaryCondition(at, operator
+                    {
+                        argument()
+                        self.writeMapped(at, ".length")
+                    }
+                    {
+                        self.writeMapped(at, "" + patterns.size())
+                    }
                 )
                 self.emitCase(newArguments, newMatchCase, newConditions, variables, jump, last, break, lastCase, async)
             | PVariant(_, name, patterns) =>
@@ -2130,7 +2140,7 @@ extend self: JsEmitter {
         }.join(", ") + "]"
     }
 
-    processVariantCase(name: String, argument: String): ProcessedVariantCase {
+    processVariantCase(name: String, argument: () => Unit): ProcessedVariantCase {
         let variantNameUnqualified = name.reverse().takeWhile {_ != '.'}.reverse()
         let variantName = escapeKeyword(variantNameUnqualified)
         let moduleName = name.dropLast(variantNameUnqualified.size() + 1)
@@ -2143,7 +2153,10 @@ extend self: JsEmitter {
                 loneVariant = definition.variants.size() == 1
                 [...definition.commonFields.map {_.name}, ...variant.fields.map {_.name}]
             }
-        }.grab().map {field => if(newtype) {argument} else {argument + "." + escapeKeyword(field)}}
+        }.grab().map {field => if(newtype) {argument} else {{
+            argument()
+            self.writeUnmapped("." + escapeKeyword(field))
+        }}}
         ProcessedVariantCase(variantName, newtype, loneVariant, newArguments)
     }
 
@@ -2175,11 +2188,11 @@ extend self: JsEmitter {
     
 }
 
-data ProcessedVariantCase(
+capability ProcessedVariantCase(
     variantName: String
     newtype: Bool
     loneVariant: Bool
-    arguments: List[Term]
+    arguments: List[() => Unit]
 )
 
 rawJs(at: Location, rawIdentifier: String): Term {
