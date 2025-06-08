@@ -102,7 +102,7 @@ export const vlqContinuationBit_ = ff_core_Int.Int_bitLeft(1, ff_compiler_Source
 
 export const base64Characters_ = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-export function makeOutputAndSourceMap_(fireflyFile_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_) {
+export function makeOutputAndSourceMap_(fireflyFile_, fireflySource_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_) {
 const lines_ = ff_core_Array.new_();
 const output_ = ff_core_Array.new_();
 let index_ = 0;
@@ -154,7 +154,7 @@ lines_.array.push(ff_core_Array.Array_drain(line_));
 output_.array.push(ff_core_Array.Array_join(strings_, ""));
 index_ += 1
 };
-const sourceMap_ = ff_compiler_SourceMap.sourceMap_([fireflyFile_], ff_core_StringMap.StringMap_keys(writtenNames_), ff_core_Array.Array_drain(lines_));
+const sourceMap_ = ff_compiler_SourceMap.sourceMap_([fireflyFile_], [fireflySource_], ff_core_StringMap.StringMap_keys(writtenNames_), ff_core_Array.Array_drain(lines_));
 return ff_core_Pair.Pair(ff_core_Array.Array_join(output_, "\n"), sourceMap_)
 }
 
@@ -178,8 +178,14 @@ output_.array.push(ff_core_Array.Array_join(strings_, ""))
 return ff_core_Array.Array_join(output_, "\n")
 }
 
-export function sourceMap_(sources_, names_, lines_) {
-return {...ff_core_Json.object_(), version: 3, sources: sources_, sourcesContent: [ff_core_Json.null_()], names: names_, mappings: ff_compiler_SourceMap.toMappings_(lines_)}
+export function sourceMap_(sources_, contents_, names_, lines_) {
+return {...ff_core_Json.object_(), version: 3, sources: sources_, sourcesContent: ff_core_List.List_map(contents_, ((_w1) => {
+return ff_core_Option.Option_else(ff_core_Option.Option_map(_w1, ((_w1) => {
+return _w1
+})), (() => {
+return ff_core_Json.null_()
+}))
+})), names: names_, mappings: ff_compiler_SourceMap.toMappings_(lines_)}
 }
 
 export function toMappings_(lines_) {
@@ -240,7 +246,7 @@ if(!(v_ > 0)) break
 return ff_core_Array.Array_drain(vlq_)
 }
 
-export async function makeOutputAndSourceMap_$(fireflyFile_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_, $task) {
+export async function makeOutputAndSourceMap_$(fireflyFile_, fireflySource_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_, $task) {
 const lines_ = ff_core_Array.new_();
 const output_ = ff_core_Array.new_();
 let index_ = 0;
@@ -292,7 +298,7 @@ lines_.array.push(ff_core_Array.Array_drain(line_));
 output_.array.push(ff_core_Array.Array_join(strings_, ""));
 index_ += 1
 };
-const sourceMap_ = ff_compiler_SourceMap.sourceMap_([fireflyFile_], ff_core_StringMap.StringMap_keys(writtenNames_), ff_core_Array.Array_drain(lines_));
+const sourceMap_ = ff_compiler_SourceMap.sourceMap_([fireflyFile_], [fireflySource_], ff_core_StringMap.StringMap_keys(writtenNames_), ff_core_Array.Array_drain(lines_));
 return ff_core_Pair.Pair(ff_core_Array.Array_join(output_, "\n"), sourceMap_)
 }
 
@@ -316,8 +322,14 @@ output_.array.push(ff_core_Array.Array_join(strings_, ""))
 return ff_core_Array.Array_join(output_, "\n")
 }
 
-export async function sourceMap_$(sources_, names_, lines_, $task) {
-return {...ff_core_Json.object_(), version: 3, sources: sources_, sourcesContent: [ff_core_Json.null_()], names: names_, mappings: ff_compiler_SourceMap.toMappings_(lines_)}
+export async function sourceMap_$(sources_, contents_, names_, lines_, $task) {
+return {...ff_core_Json.object_(), version: 3, sources: sources_, sourcesContent: ff_core_List.List_map(contents_, ((_w1) => {
+return ff_core_Option.Option_else(ff_core_Option.Option_map(_w1, ((_w1) => {
+return _w1
+})), (() => {
+return ff_core_Json.null_()
+}))
+})), names: names_, mappings: ff_compiler_SourceMap.toMappings_(lines_)}
 }
 
 export async function toMappings_$(lines_, $task) {

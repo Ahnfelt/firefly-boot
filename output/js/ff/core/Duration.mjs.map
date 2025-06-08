@@ -4,7 +4,7 @@
         "../../../../core/Duration.ff"
     ],
     "sourcesContent": [
-        null
+        "newtype Duration(seconds: Float)\r\n\r\nextend self: Duration {\r\n\r\n    show(digits: Int = 3): String {\r\n        self.seconds.toFixed(digits) + \" s\"\r\n    }\r\n\r\n}\r\n\r\ninstance Duration: Show {\r\n    show(value: Duration): String {\r\n        value.show()\r\n    }\r\n}\r\n"
     ],
     "names": [
         "show",

@@ -1,5 +1,6 @@
 makeOutputAndSourceMap(
     fireflyFile: String
+    fireflySource: Option[String]
     writtenStrings: Array[Array[String]]
     writtenSegments: Array[Array[List[Int]]]
     writtenAnchors: IntMap[List[String]]
@@ -48,7 +49,7 @@ makeOutputAndSourceMap(
         output.push(strings.join())
         index += 1
     }
-    let sourceMap = sourceMap([fireflyFile], writtenNames.keys(), lines.drain())
+    let sourceMap = sourceMap([fireflyFile], [fireflySource], writtenNames.keys(), lines.drain())
     Pair(output.join("\n"), sourceMap)
 }
 
@@ -70,13 +71,14 @@ makeOutput(
 
 sourceMap(
     sources: List[String]
+    contents: List[Option[String]]
     names: List[String]
     lines: List[List[List[Int]]]
 ): Json {
     Json->(
         version = 3
         sources = sources
-        sourcesContent = [Json.null()]
+        sourcesContent = contents.map {_.map {Json.string(_)}.else {Json.null()}}
         names = names
         mappings = toMappings(lines)
     )

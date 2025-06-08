@@ -4,7 +4,7 @@
         "../../../../core/Unit.ff"
     ],
     "sourcesContent": [
-        null
+        "data Unit {\r\n    Unit\r\n}\r\n"
     ],
     "names": [
         "Unit",

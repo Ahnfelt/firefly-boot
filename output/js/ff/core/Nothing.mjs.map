@@ -4,7 +4,7 @@
         "../../../../core/Nothing.ff"
     ],
     "sourcesContent": [
-        null
+        "data Nothing {}\r\n"
     ],
     "names": [],
     "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;AAAK;"

@@ -277,7 +277,8 @@ return ff_core_Path.Path_slash(p_, f_)
 const jsFile_ = ff_core_Path.Path_slash(jsPath_, (moduleKey_.name_ + ".mjs"));
 const sourceMapFile_ = ff_core_Path.Path_slash(jsPath_, (moduleKey_.name_ + ".mjs.map"));
 const temporaryWorkaround_ = ff_core_Option.Option_grab(ff_core_Path.Path_parent(jsPath_));
-const jsAndSourceMap_ = ff_compiler_JsEmitter.JsEmitter_makeOutputAndSourceMap(emitter_, ff_core_List.List_join(ff_core_Path.Path_relativeListTo(path_, temporaryWorkaround_), "/"));
+const source_ = ff_core_Option.Some(ff_core_Path.Path_readText(path_));
+const jsAndSourceMap_ = ff_compiler_JsEmitter.JsEmitter_makeOutputAndSourceMap(emitter_, ff_core_List.List_join(ff_core_Path.Path_relativeListTo(path_, temporaryWorkaround_), "/"), source_);
 ff_core_Path.Path_createDirectory(jsPath_, true);
 ff_core_Path.Path_writeText(jsFile_, ((jsAndSourceMap_.first_ + "\n\n//# sourceMappingURL=") + ff_core_Path.Path_base(sourceMapFile_)));
 ff_core_Path.Path_writeText(sourceMapFile_, ff_core_Json.Json_write(jsAndSourceMap_.second_, ff_core_Option.Some("    ")));
@@ -430,7 +431,8 @@ return (await ff_core_Path.Path_slash$(p_, f_, $task))
 const jsFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleKey_.name_ + ".mjs"), $task));
 const sourceMapFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleKey_.name_ + ".mjs.map"), $task));
 const temporaryWorkaround_ = ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(jsPath_, $task)));
-const jsAndSourceMap_ = ff_compiler_JsEmitter.JsEmitter_makeOutputAndSourceMap(emitter_, ff_core_List.List_join((await ff_core_Path.Path_relativeListTo$(path_, temporaryWorkaround_, $task)), "/"));
+const source_ = ff_core_Option.Some((await ff_core_Path.Path_readText$(path_, $task)));
+const jsAndSourceMap_ = ff_compiler_JsEmitter.JsEmitter_makeOutputAndSourceMap(emitter_, ff_core_List.List_join((await ff_core_Path.Path_relativeListTo$(path_, temporaryWorkaround_, $task)), "/"), source_);
 (await ff_core_Path.Path_createDirectory$(jsPath_, true, $task));
 (await ff_core_Path.Path_writeText$(jsFile_, ((jsAndSourceMap_.first_ + "\n\n//# sourceMappingURL=") + (await ff_core_Path.Path_base$(sourceMapFile_, $task))), $task));
 (await ff_core_Path.Path_writeText$(sourceMapFile_, ff_core_Json.Json_write(jsAndSourceMap_.second_, ff_core_Option.Some("    ")), $task));

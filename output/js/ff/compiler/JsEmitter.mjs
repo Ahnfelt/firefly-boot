@@ -702,8 +702,8 @@ export function JsEmitter_makeOutput(self_) {
 return ff_compiler_SourceMap.makeOutput_(self_.writtenStrings_, self_.writtenAnchors_)
 }
 
-export function JsEmitter_makeOutputAndSourceMap(self_, fireflyFile_) {
-return ff_compiler_SourceMap.makeOutputAndSourceMap_(fireflyFile_, self_.writtenStrings_, self_.writtenSegments_, self_.writtenAnchors_, self_.writtenNames_)
+export function JsEmitter_makeOutputAndSourceMap(self_, fireflyFile_, fireflySource_) {
+return ff_compiler_SourceMap.makeOutputAndSourceMap_(fireflyFile_, fireflySource_, self_.writtenStrings_, self_.writtenSegments_, self_.writtenAnchors_, self_.writtenNames_)
 }
 
 export function JsEmitter_emitModule(self_, module_) {
@@ -4289,8 +4289,8 @@ export async function JsEmitter_makeOutput$(self_, $task) {
 return ff_compiler_SourceMap.makeOutput_(self_.writtenStrings_, self_.writtenAnchors_)
 }
 
-export async function JsEmitter_makeOutputAndSourceMap$(self_, fireflyFile_, $task) {
-return ff_compiler_SourceMap.makeOutputAndSourceMap_(fireflyFile_, self_.writtenStrings_, self_.writtenSegments_, self_.writtenAnchors_, self_.writtenNames_)
+export async function JsEmitter_makeOutputAndSourceMap$(self_, fireflyFile_, fireflySource_, $task) {
+return ff_compiler_SourceMap.makeOutputAndSourceMap_(fireflyFile_, fireflySource_, self_.writtenStrings_, self_.writtenSegments_, self_.writtenAnchors_, self_.writtenNames_)
 }
 
 export async function JsEmitter_emitModule$(self_, module_, $task) {
