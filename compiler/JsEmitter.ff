@@ -2,7 +2,6 @@ import Syntax
 import Patterns
 import JsImporter
 import SourceMap from ff:compiler
-import Syntax from ff:compiler
 
 class JsEmitter(
     otherModules: Map[String, Module]
