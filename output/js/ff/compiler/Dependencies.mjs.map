@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "../../../../../compiler/Dependencies.ff"
+        "../../../../compiler/Dependencies.ff"
     ],
     "sourcesContent": [
         null

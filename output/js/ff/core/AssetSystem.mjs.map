@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "../../../../../core/AssetSystem.ff"
+        "../../../../core/AssetSystem.ff"
     ],
     "sourcesContent": [
         null

@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "../../../../../compiler/Inference.ff"
+        "../../../../compiler/Inference.ff"
     ],
     "sourcesContent": [
         null

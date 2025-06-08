@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "../../../../../compiler/Dictionaries.ff"
+        "../../../../compiler/Dictionaries.ff"
     ],
     "sourcesContent": [
         null

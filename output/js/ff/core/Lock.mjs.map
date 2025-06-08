@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "../../../../../core/Lock.ff"
+        "../../../../core/Lock.ff"
     ],
     "sourcesContent": [
         null
