@@ -7,14 +7,12 @@
         null
     ],
     "names": [
-        "Duration_show",
+        "show",
         "self",
         "digits",
-        "ff:core/Float.Float_toFixed",
-        "ff_core_Show_Show$ff_core_Duration_Duration",
-        "show",
-        "value",
-        "ff:core/Duration.Duration_show"
+        "toFixed",
+        "Duration",
+        "value"
     ],
-    "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A,O,SAIIA,a,CAFGC,K,EAEEC,O,GAAc,C,C;A,O,CACFC,2B,CAAbF,K,EAAqBC,O,C,C,C,CAAU,I;A;;A,O,eADnCF,c,CAFGC,K,EAEEC,O,GAAc,C,E,K,C;A,O,CACFC,2B,CAAbF,K,EAAqBC,O,C,C,C,CAAU,I;A;;A,aAKpBE,2C,G;A,AACfC,K,CAAKC,M,C;A,OACKC,8B,CAAND,M,EARe,C;A,C;A,MAOnBD,M,CAAKC,M,E,K,C;A,OACKC,8B,CAAND,M,EARe,C;A,C;A,C"
+    "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A,O,SAIIA,a,CAFGC,K,EAEEC,O,GAAc,C,C;A,O,CACFC,2B,CAAbF,K,EAAqBC,O,C,C,C,CAAU,I;A;;A,O,eADnCF,c,CAFGC,K,EAEEC,O,GAAc,C,E,K,C;A,O,CACFC,2B,CAAbF,K,EAAqBC,O,C,C,C,CAAU,I;A;;A,aAKpBE,2C,G;A,AACfJ,K,CAAKK,M,C;A,OACKL,8B,CAANK,M,EARe,C;A,C;A,MAOnBL,M,CAAKK,M,E,K,C;A,OACKL,8B,CAANK,M,EARe,C;A,C;A,C"
 }

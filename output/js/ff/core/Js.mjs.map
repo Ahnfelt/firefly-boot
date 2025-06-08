@@ -8,7 +8,7 @@
     ],
     "names": [
         "jsSystem",
-        "ff:core/Core.panic",
+        "panic",
         "import",
         "module",
         "browserImport",
@@ -45,7 +45,7 @@
         "reject",
         "settled",
         "cleanups",
-        "ff:core/Array.new",
+        "new",
         "doResolve",
         "v",
         "c",

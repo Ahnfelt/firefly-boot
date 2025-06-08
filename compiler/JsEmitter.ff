@@ -75,7 +75,8 @@ extend self: JsEmitter {
     }
 
     writeNamed(name: String, at: Location, text: String) {
-        let nameIndex = self.writtenNames.getOrSet(name) {self.writtenNames.size()}
+        let unqualified = name.reverse().takeWhile {c => c != '.' && c != '_'}.reverse()
+        let nameIndex = self.writtenNames.getOrSet(unqualified) {self.writtenNames.size()}
         self.writtenStrings.grabLast().push(text)
         self.writtenSegments.grabLast().push(
             [self.writtenColumn, 0, at.line - 1, at.column - 1, nameIndex]

@@ -11,16 +11,12 @@
         "doneLocks",
         "task",
         "new",
-        "ff:compiler/DependencyLock.DependencyLock",
-        "ff:core/StringMap.new",
-        "DependencyLock_do",
+        "do",
         "self",
         "doneFile",
         "body",
         "lock",
-        "ff:core/StringMap.StringMap_getOrSet",
-        "ff:core/Task.Task_lock",
-        "ff:core/Lock.Lock_do"
+        "getOrSet"
     ],
-    "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;A,gBAAWA,c,CACPC,U,EACAC,K;A,QADAD,U,EACAC,K;A;;A,O,SAGJC,I,CAAID,K,C;A,OACAE,yC,CAAyBC,sB,C,C,EAAOH,K;A;;A,O,eADpCC,K,CAAID,K,E,K,C;A,OACAE,yC,CAAyBC,sB,C,C,EAAOH,K;A;;A,O,SAIhCI,iB,CADGC,K,EACGC,S,EAAkBC,K,C;A,MAChBC,K,GAAsBC,oC,CAAfJ,KAAK,CAAAN,U,EAAmBO,S,E,C,C;A,OAAqBI,sB,CAAVL,KAAK,CAAAL,K;A,E,C;A,OAC9CW,oB,CAALH,K,E,C,C;A,OACID,K,C;A,E;A;;A,O,eAHRH,kB,CADGC,K,EACGC,S,EAAkBC,K,E,K,C;A,MAChBC,K,G,OAAsBC,qC,CAAfJ,KAAK,CAAAN,U,EAAmBO,S,E,C,M,C,K;A,O,OAAqBI,uB,CAAVL,KAAK,CAAAL,K,E,K,C;A,E,E,K,C,C;A,O,OAC9CW,qB,CAALH,K,E,C,M,C,K;A,O,OACID,K,C,K,C;A,E,E,K,C;A"
+    "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;A,gBAAWA,c,CACPC,U,EACAC,K;A,QADAD,U,EACAC,K;A;;A,O,SAGJC,I,CAAID,K,C;A,OACAF,yC,CAAyBG,sB,C,C,EAAOD,K;A;;A,O,eADpCC,K,CAAID,K,E,K,C;A,OACAF,yC,CAAyBG,sB,C,C,EAAOD,K;A;;A,O,SAIhCE,iB,CADGC,K,EACGC,S,EAAkBC,K,C;A,MAChBC,K,GAAsBC,oC,CAAfJ,KAAK,CAAAJ,U,EAAmBK,S,E,C,C;A,OAAqBE,sB,CAAVH,KAAK,CAAAH,K;A,E,C;A,OAC9CE,oB,CAALI,K,E,C,C;A,OACID,K,C;A,E;A;;A,O,eAHRH,kB,CADGC,K,EACGC,S,EAAkBC,K,E,K,C;A,MAChBC,K,G,OAAsBC,qC,CAAfJ,KAAK,CAAAJ,U,EAAmBK,S,E,C,M,C,K;A,O,OAAqBE,uB,CAAVH,KAAK,CAAAH,K,E,K,C;A,E,E,K,C,C;A,O,OAC9CE,qB,CAALI,K,E,C,M,C,K;A,O,OACID,K,C,K,C;A,E,E,K,C;A"
 }

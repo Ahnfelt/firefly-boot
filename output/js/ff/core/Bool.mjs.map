@@ -9,11 +9,11 @@
     "names": [
         "False",
         "True",
-        "Bool_toInt",
+        "toInt",
         "self",
-        "ff_core_Any_HasAnyTag$ff_core_Bool_Bool",
+        "Bool",
         "anyTag",
-        "ff:core/Any.internalAnyTag"
+        "internalAnyTag"
     ],
     "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;A,MACIA,M,IAAAA,K;A,gBAAAA,K,C;A,OAAAA,M;A;A,MACAC,K,IAAAA,I;A,gBAAAA,I,C;A,OAAAA,K;A;;A,O,SAIAC,U,CADGC,K,C;A;A,WAECA,K;AACI,GAAE,CAAF,EAAA;A,OAAW;AAAX;AACA;A,OAAU;AAAV;A;A;;A,O,eAHRD,W,CADGC,K,E,K,C;A;A,WAECA,K;AACI,GAAE,CAAF,EAAA;A,OAAW;AAAX;AACA;A,OAAU;AAAV;A;A;;A,aATPC,uC,G;A,AAAAC,O,C,C;A,OAAAC,2B,C,C,CAAA,mB,C,C,CAAA,G,C,C,C,CAAA,G,C;A,C;A,MAAAD,Q,C,K,C;A,OAAAC,2B,C,C,CAAA,mB,C,C,CAAA,G,C,C,C,CAAA,G,C;A,C;A,C"
 }

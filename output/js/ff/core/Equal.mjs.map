@@ -10,14 +10,13 @@
         "notEquals",
         "x",
         "y",
-        "ff:core/Equal.equals",
-        "ff_core_Equal_Equal$ff_core_Nothing_Nothing",
         "equals",
-        "ff_core_Equal_Equal$ff_core_Bool_Bool",
-        "ff_core_Equal_Equal$ff_core_Char_Char",
-        "ff_core_Equal_Equal$ff_core_Int_Int",
-        "ff_core_Equal_Equal$ff_core_Float_Float",
-        "ff_core_Equal_Equal$ff_core_String_String"
+        "Nothing",
+        "Bool",
+        "Char",
+        "Int",
+        "Float",
+        "String"
     ],
-    "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A,O,SAIAA,U,CAAoBC,E,EAAMC,E,E,qB,C;A,O,C,C,qB,CACrBC,O,CAAOF,E,EAAGC,E,C;A;;A,O,eADfF,W,CAAoBC,E,EAAMC,E,E,qB,E,K,C;A,O,C,C,qB,CACrBC,O,CAAOF,E,EAAGC,E,C;A;;A,aAGGE,2C,G;A,AACdC,O,CAAOJ,E,EAAYC,E,C;A,OAAmB;A,C;A,MAAtCG,Q,CAAOJ,E,EAAYC,E,E,K,C;A,OAAmB;A,C;A,C;;A,aAG3BI,qC,G;A,AACXD,O,CAAOJ,E,EAASC,E,C;A,O,CACZD,E,KAAUC,E;A,C;A,MADdG,Q,CAAOJ,E,EAASC,E,E,K,C;A,O,CACZD,E,KAAUC,E;A,C;A,C;;A,aAIHK,qC,G;A,AACXF,O,CAAOJ,E,EAASC,E,C;A,O,CACZD,E,KAAUC,E;A,C;A,MADdG,Q,CAAOJ,E,EAASC,E,E,K,C;A,O,CACZD,E,KAAUC,E;A,C;A,C;;A,aAIJM,mC,G;A,AACVH,O,CAAOJ,E,EAAQC,E,C;A,O,CACXD,E,KAAUC,E;A,C;A,MADdG,Q,CAAOJ,E,EAAQC,E,E,K,C;A,O,CACXD,E,KAAUC,E;A,C;A,C;;A,aAIFO,uC,G;A,AACZJ,O,CAAOJ,E,EAAUC,E,C;A,O,CACbD,E,KAAUC,E;A,C;A,MADdG,Q,CAAOJ,E,EAAUC,E,E,K,C;A,O,CACbD,E,KAAUC,E;A,C;A,C;;A,aAIDQ,yC,G;A,AACbL,O,CAAOJ,E,EAAWC,E,C;A,O,CACdD,E,KAAUC,E;A,C;A,MADdG,Q,CAAOJ,E,EAAWC,E,E,K,C;A,O,CACdD,E,KAAUC,E;A,C;A,C"
+    "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A,O,SAIAA,U,CAAoBC,E,EAAMC,E,E,qB,C;A,O,C,C,qB,CACrBC,O,CAAOF,E,EAAGC,E,C;A;;A,O,eADfF,W,CAAoBC,E,EAAMC,E,E,qB,E,K,C;A,O,C,C,qB,CACrBC,O,CAAOF,E,EAAGC,E,C;A;;A,aAGGE,2C,G;A,AACdD,O,CAAOF,E,EAAYC,E,C;A,OAAmB;A,C;A,MAAtCC,Q,CAAOF,E,EAAYC,E,E,K,C;A,OAAmB;A,C;A,C;;A,aAG3BG,qC,G;A,AACXF,O,CAAOF,E,EAASC,E,C;A,O,CACZD,E,KAAUC,E;A,C;A,MADdC,Q,CAAOF,E,EAASC,E,E,K,C;A,O,CACZD,E,KAAUC,E;A,C;A,C;;A,aAIHI,qC,G;A,AACXH,O,CAAOF,E,EAASC,E,C;A,O,CACZD,E,KAAUC,E;A,C;A,MADdC,Q,CAAOF,E,EAASC,E,E,K,C;A,O,CACZD,E,KAAUC,E;A,C;A,C;;A,aAIJK,mC,G;A,AACVJ,O,CAAOF,E,EAAQC,E,C;A,O,CACXD,E,KAAUC,E;A,C;A,MADdC,Q,CAAOF,E,EAAQC,E,E,K,C;A,O,CACXD,E,KAAUC,E;A,C;A,C;;A,aAIFM,uC,G;A,AACZL,O,CAAOF,E,EAAUC,E,C;A,O,CACbD,E,KAAUC,E;A,C;A,MADdC,Q,CAAOF,E,EAAUC,E,E,K,C;A,O,CACbD,E,KAAUC,E;A,C;A,C;;A,aAIDO,yC,G;A,AACbN,O,CAAOF,E,EAAWC,E,C;A,O,CACdD,E,KAAUC,E;A,C;A,MADdC,Q,CAAOF,E,EAAWC,E,E,K,C;A,O,CACdD,E,KAAUC,E;A,C;A,C"
 }

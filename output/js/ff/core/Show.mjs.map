@@ -7,24 +7,23 @@
         null
     ],
     "names": [
-        "ff_core_Show_Show$ff_core_Bool_Bool",
+        "Bool",
         "show",
         "value",
-        "ff_core_Show_Show$ff_core_Nothing_Nothing",
-        "ff_core_Show_Show$ff_core_Char_Char",
-        "ff:core/Char.Char_toString",
-        "ff_core_Show_Show$ff_core_Int_Int",
-        "ff_core_Show_Show$ff_core_Float_Float",
-        "ff_core_Show_Show$ff_core_String_String",
+        "Nothing",
+        "Char",
+        "toString",
+        "Int",
+        "Float",
+        "String",
         "\"JSON\"",
         "stringify",
-        "ff_core_Show_Show$ff_core_List_List",
-        "ff:core/List.List_join",
-        "ff:core/List.List_map",
-        "ff:core/Show.show",
-        "ff_core_Show_Show$ff_core_Pair_Pair",
+        "List",
+        "join",
+        "map",
+        "Pair",
         "first",
         "second"
     ],
-    "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A,aAIeA,mC,G;A,AACXC,K,CAAKC,M,C;A,MAAAA,O,GAAAA,M;AACD,GAAE,CADDA,OACD;A,OAAW;AAAX;AACA;A,OAAU;AAAV;A,C;A,MAFJD,M,CAAKC,M,E,K,C;A,MAAAA,O,GAAAA,M;AACD,GAAE,CADDA,OACD;A,OAAW;AAAX;AACA;A,OAAU;AAAV;A,C;A,C;;A,aAIUC,yC,G;A,AACdF,K,CAAKC,M,C;A,OAAyB;A,C;A,MAA9BD,M,CAAKC,M,E,K,C;A,OAAyB;A,C;A,C;;A,aAGnBE,mC,G;A,AACXH,K,CAAKC,M,C;A,OAA4BG,0B,CAANH,M;A,C;A,MAA3BD,M,CAAKC,M,E,K,C;A,OAA4BG,0B,CAANH,M;A,C;A,C;;A,aAGjBI,iC,G;A,AACVL,K,CAAKC,M,C;A,O,CAAqB,E,C,C,CAAKA,M;A,C;A,MAA/BD,M,CAAKC,M,E,K,C;A,O,CAAqB,E,C,C,CAAKA,M;A,C;A,C;;A,aAGnBK,qC,G;A,AACZN,K,CAAKC,M,C;A,O,CAAuB,E,C,C,CAAKA,M;A,C;A,MAAjCD,M,CAAKC,M,E,K,C;A,O,CAAuB,E,C,C,CAAKA,M;A,C;A,C;;A,aAGpBM,uC,G;A,AACbP,K,CAAKC,M,C;A,OACGO,I,CAAMC,S,CAAUR,M;A,C;A,MADxBD,M,CAAKC,M,E,K,C;A,OACGO,I,CAAMC,S,CAAUR,M;A,C;A,C;;A,gBAIJS,mC,+B;A,AACpBV,K,CAAKC,M,C;A,O,C,CACD,G,C,C,CAAsBU,sB,CAAVC,qB,CAANX,M,E,C,CAAUA,M;A,O,mB,CAAAY,K,CAAAZ,M;A,E,C,EAAW,I,C,C,C,C,CAAQ,G;A,C;A,MADvCD,M,CAAKC,M,E,K,C;A,O,C,CACD,G,C,C,CAAsBU,sB,CAAVC,qB,CAANX,M,E,C,CAAUA,M;A,O,mB,CAAAY,K,CAAAZ,M;A,E,C,EAAW,I,C,C,C,C,CAAQ,G;A,C;A,C;;A,gBAIVa,mC,oD;A,AAC7Bd,K,CAAKC,M,C;A,O,C,C,C,CACD,O,C,C,C,mB,CAAUY,K,CAAKZ,MAAM,CAAAc,M,C,C,C,C,CAAS,I,C,C,C,C,mB,CAAOF,K,CAAKZ,MAAM,CAAAe,O,C,C,C,C,CAAU,G;A,C;A,MAD9DhB,M,CAAKC,M,E,K,C;A,O,C,C,C,CACD,O,C,C,C,mB,CAAUY,K,CAAKZ,MAAM,CAAAc,M,C,C,C,C,CAAS,I,C,C,C,C,mB,CAAOF,K,CAAKZ,MAAM,CAAAe,O,C,C,C,C,CAAU,G;A,C;A,C"
+    "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A,aAIeA,mC,G;A,AACXC,K,CAAKC,M,C;A,MAAAA,O,GAAAA,M;AACD,GAAE,CADDA,OACD;A,OAAW;AAAX;AACA;A,OAAU;AAAV;A,C;A,MAFJD,M,CAAKC,M,E,K,C;A,MAAAA,O,GAAAA,M;AACD,GAAE,CADDA,OACD;A,OAAW;AAAX;AACA;A,OAAU;AAAV;A,C;A,C;;A,aAIUC,yC,G;A,AACdF,K,CAAKC,M,C;A,OAAyB;A,C;A,MAA9BD,M,CAAKC,M,E,K,C;A,OAAyB;A,C;A,C;;A,aAGnBE,mC,G;A,AACXH,K,CAAKC,M,C;A,OAA4BG,0B,CAANH,M;A,C;A,MAA3BD,M,CAAKC,M,E,K,C;A,OAA4BG,0B,CAANH,M;A,C;A,C;;A,aAGjBI,iC,G;A,AACVL,K,CAAKC,M,C;A,O,CAAqB,E,C,C,CAAKA,M;A,C;A,MAA/BD,M,CAAKC,M,E,K,C;A,O,CAAqB,E,C,C,CAAKA,M;A,C;A,C;;A,aAGnBK,qC,G;A,AACZN,K,CAAKC,M,C;A,O,CAAuB,E,C,C,CAAKA,M;A,C;A,MAAjCD,M,CAAKC,M,E,K,C;A,O,CAAuB,E,C,C,CAAKA,M;A,C;A,C;;A,aAGpBM,uC,G;A,AACbP,K,CAAKC,M,C;A,OACGO,I,CAAMC,S,CAAUR,M;A,C;A,MADxBD,M,CAAKC,M,E,K,C;A,OACGO,I,CAAMC,S,CAAUR,M;A,C;A,C;;A,gBAIJS,mC,+B;A,AACpBV,K,CAAKC,M,C;A,O,C,CACD,G,C,C,CAAsBU,sB,CAAVC,qB,CAANX,M,E,C,CAAUA,M;A,O,mB,CAAAD,K,CAAAC,M;A,E,C,EAAW,I,C,C,C,C,CAAQ,G;A,C;A,MADvCD,M,CAAKC,M,E,K,C;A,O,C,CACD,G,C,C,CAAsBU,sB,CAAVC,qB,CAANX,M,E,C,CAAUA,M;A,O,mB,CAAAD,K,CAAAC,M;A,E,C,EAAW,I,C,C,C,C,CAAQ,G;A,C;A,C;;A,gBAIVY,mC,oD;A,AAC7Bb,K,CAAKC,M,C;A,O,C,C,C,CACD,O,C,C,C,mB,CAAUD,K,CAAKC,MAAM,CAAAa,M,C,C,C,C,CAAS,I,C,C,C,C,mB,CAAOd,K,CAAKC,MAAM,CAAAc,O,C,C,C,C,CAAU,G;A,C;A,MAD9Df,M,CAAKC,M,E,K,C;A,O,C,C,C,CACD,O,C,C,C,mB,CAAUD,K,CAAKC,MAAM,CAAAa,M,C,C,C,C,CAAS,I,C,C,C,C,mB,CAAOd,K,CAAKC,MAAM,CAAAc,O,C,C,C,C,CAAU,G;A,C;A,C"
 }

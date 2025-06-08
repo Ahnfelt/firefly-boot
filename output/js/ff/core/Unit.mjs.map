@@ -8,13 +8,11 @@
     ],
     "names": [
         "Unit",
-        "ff_core_Any_HasAnyTag$ff_core_Unit_Unit",
         "anyTag",
-        "ff:core/Any.internalAnyTag",
-        "ff_core_Equal_Equal$ff_core_Unit_Unit",
+        "internalAnyTag",
         "equals",
         "x",
         "y"
     ],
-    "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;A,MACIA,K,IAAAA,I;A,gBAAAA,I,C;A,OAAAA,K;A;;A,aADCC,uC,G;A,AAAAC,O,C,C;A,OAAAC,2B,C,C,CAAA,mB,C,C,CAAA,G,C,C,C,CAAA,G,C;A,C;A,MAAAD,Q,C,K,C;A,OAAAC,2B,C,C,CAAA,mB,C,C,CAAA,G,C,C,C,CAAA,G,C;A,C;A,C;;A,aAAAC,qC,G;A,AAAAC,O,CAAAC,E,EAAAC,E,C;A,MAAAD,G,GAAAA,E;A,MAAAC,G,GAAAA,E;AAAA,G,CAAAD,E,C,G,CAAAC,E,CAAA;A,OAAA;AAAA;AAAA;A,OAAA;AAAA;A,C;A,MAAAF,Q,CAAAC,E,EAAAC,E,E,K,C;A,MAAAD,G,GAAAA,E;A,MAAAC,G,GAAAA,E;AAAA,G,CAAAD,E,C,G,CAAAC,E,CAAA;A,OAAA;AAAA;AAAA;A,OAAA;AAAA;A,C;A,C"
+    "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;A,MACIA,K,IAAAA,I;A,gBAAAA,I,C;A,OAAAA,K;A;;A,aADCA,uC,G;A,AAAAC,O,C,C;A,OAAAC,2B,C,C,CAAA,mB,C,C,CAAA,G,C,C,C,CAAA,G,C;A,C;A,MAAAD,Q,C,K,C;A,OAAAC,2B,C,C,CAAA,mB,C,C,CAAA,G,C,C,C,CAAA,G,C;A,C;A,C;;A,aAAAF,qC,G;A,AAAAG,O,CAAAC,E,EAAAC,E,C;A,MAAAD,G,GAAAA,E;A,MAAAC,G,GAAAA,E;AAAA,G,CAAAD,E,C,G,CAAAC,E,CAAA;A,OAAA;AAAA;AAAA;A,OAAA;AAAA;A,C;A,MAAAF,Q,CAAAC,E,EAAAC,E,E,K,C;A,MAAAD,G,GAAAA,E;A,MAAAC,G,GAAAA,E;AAAA,G,CAAAD,E,C,G,CAAAC,E,CAAA;A,OAAA;AAAA;AAAA;A,OAAA;AAAA;A,C;A,C"
 }

@@ -669,7 +669,10 @@ self_.writtenColumn_ += text_.length
 }
 
 export function JsEmitter_writeNamed(self_, name_, at_, text_) {
-const nameIndex_ = ff_core_StringMap.StringMap_getOrSet(self_.writtenNames_, name_, (() => {
+const unqualified_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((c_) => {
+return ((c_ !== 46) && (c_ !== 95))
+})));
+const nameIndex_ = ff_core_StringMap.StringMap_getOrSet(self_.writtenNames_, unqualified_, (() => {
 return ff_core_StringMap.StringMap_size(self_.writtenNames_)
 }));
 ff_core_Array.Array_grabLast(self_.writtenStrings_).array.push(text_);
@@ -4253,7 +4256,10 @@ self_.writtenColumn_ += text_.length
 }
 
 export async function JsEmitter_writeNamed$(self_, name_, at_, text_, $task) {
-const nameIndex_ = ff_core_StringMap.StringMap_getOrSet(self_.writtenNames_, name_, (() => {
+const unqualified_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((c_) => {
+return ((c_ !== 46) && (c_ !== 95))
+})));
+const nameIndex_ = ff_core_StringMap.StringMap_getOrSet(self_.writtenNames_, unqualified_, (() => {
 return ff_core_StringMap.StringMap_size(self_.writtenNames_)
 }));
 ff_core_Array.Array_grabLast(self_.writtenStrings_).array.push(text_);

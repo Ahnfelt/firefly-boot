@@ -7,19 +7,15 @@
         null
     ],
     "names": [
-        "Char_isAsciiLetter",
+        "isAsciiLetter",
         "self",
-        "ff:core/Char.Char_isAsciiUpper",
-        "ff:core/Char.Char_isAsciiLower",
-        "Char_isAsciiLetterOrDigit",
-        "ff:core/Char.Char_isAsciiLetter",
-        "ff:core/Char.Char_isAsciiDigit",
-        "Char_isAsciiUpper",
-        "Char_isAsciiLower",
-        "Char_isAsciiDigit",
-        "Char_toString",
+        "isAsciiUpper",
+        "isAsciiLower",
+        "isAsciiLetterOrDigit",
+        "isAsciiDigit",
+        "toString",
         "\"String\"",
         "fromCharCode"
     ],
-    "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A,O,SAIIA,kB,CAFGC,K,C;A,O,CAEyBC,8B,CAALD,K,C,C,E,CAA4BE,8B,CAALF,K,C;A;;A,O,SAE9CG,yB,CAJGH,K,C;A,O,CAIgCI,+B,CAALJ,K,C,C,E,CAA6BK,8B,CAALL,K,C;A;;A,O,SAEtDM,iB,CANGN,K,C;A,O,C,CAMmBA,K,IAAQ,E,C,C,E,C,CAAOA,K,IAAQ,E,C;A;;A,O,SAE7CO,iB,CARGP,K,C;A,O,C,CAQmBA,K,IAAQ,E,C,C,E,C,CAAOA,K,IAAQ,G,C;A;;A,O,SAE7CQ,iB,CAVGR,K,C;A,O,C,CAUmBA,K,IAAQ,E,C,C,E,C,CAAOA,K,IAAQ,E,C;A;;A,O,SAE7CS,a,CAZGT,K,C;A,OAaKU,M,CAAQC,Y,CAAaX,K;A;;A,O,eAX7BD,mB,CAFGC,K,E,K,C;A,O,CAEyBC,8B,CAALD,K,C,C,E,CAA4BE,8B,CAALF,K,C;A;;A,O,eAE9CG,0B,CAJGH,K,E,K,C;A,O,CAIgCI,+B,CAALJ,K,C,C,E,CAA6BK,8B,CAALL,K,C;A;;A,O,eAEtDM,kB,CANGN,K,E,K,C;A,O,C,CAMmBA,K,IAAQ,E,C,C,E,C,CAAOA,K,IAAQ,E,C;A;;A,O,eAE7CO,kB,CARGP,K,E,K,C;A,O,C,CAQmBA,K,IAAQ,E,C,C,E,C,CAAOA,K,IAAQ,G,C;A;;A,O,eAE7CQ,kB,CAVGR,K,E,K,C;A,O,C,CAUmBA,K,IAAQ,E,C,C,E,C,CAAOA,K,IAAQ,E,C;A;;A,O,eAE7CS,c,CAZGT,K,E,K,C;A,OAaKU,M,CAAQC,Y,CAAaX,K;A"
+    "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A,O,SAIIA,kB,CAFGC,K,C;A,O,CAEyBC,8B,CAALD,K,C,C,E,CAA4BE,8B,CAALF,K,C;A;;A,O,SAE9CG,yB,CAJGH,K,C;A,O,CAIgCD,+B,CAALC,K,C,C,E,CAA6BI,8B,CAALJ,K,C;A;;A,O,SAEtDC,iB,CANGD,K,C;A,O,C,CAMmBA,K,IAAQ,E,C,C,E,C,CAAOA,K,IAAQ,E,C;A;;A,O,SAE7CE,iB,CARGF,K,C;A,O,C,CAQmBA,K,IAAQ,E,C,C,E,C,CAAOA,K,IAAQ,G,C;A;;A,O,SAE7CI,iB,CAVGJ,K,C;A,O,C,CAUmBA,K,IAAQ,E,C,C,E,C,CAAOA,K,IAAQ,E,C;A;;A,O,SAE7CK,a,CAZGL,K,C;A,OAaKM,M,CAAQC,Y,CAAaP,K;A;;A,O,eAX7BD,mB,CAFGC,K,E,K,C;A,O,CAEyBC,8B,CAALD,K,C,C,E,CAA4BE,8B,CAALF,K,C;A;;A,O,eAE9CG,0B,CAJGH,K,E,K,C;A,O,CAIgCD,+B,CAALC,K,C,C,E,CAA6BI,8B,CAALJ,K,C;A;;A,O,eAEtDC,kB,CANGD,K,E,K,C;A,O,C,CAMmBA,K,IAAQ,E,C,C,E,C,CAAOA,K,IAAQ,E,C;A;;A,O,eAE7CE,kB,CARGF,K,E,K,C;A,O,C,CAQmBA,K,IAAQ,E,C,C,E,C,CAAOA,K,IAAQ,G,C;A;;A,O,eAE7CI,kB,CAVGJ,K,E,K,C;A,O,C,CAUmBA,K,IAAQ,E,C,C,E,C,CAAOA,K,IAAQ,E,C;A;;A,O,eAE7CK,c,CAZGL,K,E,K,C;A,OAaKM,M,CAAQC,Y,CAAaP,K;A"
 }
