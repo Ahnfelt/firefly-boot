@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "Workspace.ff"
+        "../../../../../../compiler/Workspace.ff"
     ],
     "sourcesContent": [
         null

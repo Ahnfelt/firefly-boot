@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "Environment.ff"
+        "../../../../../../compiler/Environment.ff"
     ],
     "sourcesContent": [
         null

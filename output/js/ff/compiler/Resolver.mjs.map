@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "Resolver.ff"
+        "../../../../../../compiler/Resolver.ff"
     ],
     "sourcesContent": [
         null

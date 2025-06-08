@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "Deriver.ff"
+        "../../../../../../compiler/Deriver.ff"
     ],
     "sourcesContent": [
         null

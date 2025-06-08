@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "Stream.ff"
+        "../../../../../../core/Stream.ff"
     ],
     "sourcesContent": [
         null

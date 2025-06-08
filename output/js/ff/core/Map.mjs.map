@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "Map.ff"
+        "../../../../../../core/Map.ff"
     ],
     "sourcesContent": [
         null

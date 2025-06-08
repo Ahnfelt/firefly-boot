@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "Ordering.ff"
+        "../../../../../../core/Ordering.ff"
     ],
     "sourcesContent": [
         null

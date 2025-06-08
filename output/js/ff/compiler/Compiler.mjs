@@ -270,14 +270,14 @@ const emitter_ = ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMa
 return ff_core_Path.Path_url(_w1)
 })), moduleKey_);
 ff_compiler_JsEmitter.JsEmitter_emitModule(emitter_, module_);
-const jsAndSourceMap_ = ff_compiler_JsEmitter.JsEmitter_makeOutputAndSourceMap(emitter_, ff_core_Path.Path_base(path_));
 const packagePath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(self_.jsOutputPath_, moduleKey_.packagePair_.group_), moduleKey_.packagePair_.name_);
 const jsPath_ = ff_core_List.List_foldLeft(moduleKey_.folders_, packagePath_, ((p_, f_) => {
 return ff_core_Path.Path_slash(p_, f_)
 }));
 const jsFile_ = ff_core_Path.Path_slash(jsPath_, (moduleKey_.name_ + ".mjs"));
-ff_core_Path.Path_createDirectory(jsPath_, true);
 const sourceMapFile_ = ff_core_Path.Path_slash(jsPath_, (moduleKey_.name_ + ".mjs.map"));
+const jsAndSourceMap_ = ff_compiler_JsEmitter.JsEmitter_makeOutputAndSourceMap(emitter_, ff_core_List.List_join(ff_core_Path.Path_relativeListTo(path_, sourceMapFile_), "/"));
+ff_core_Path.Path_createDirectory(jsPath_, true);
 ff_core_Path.Path_writeText(jsFile_, ((jsAndSourceMap_.first_ + "\n\n//# sourceMappingURL=") + ff_core_Path.Path_base(sourceMapFile_)));
 ff_core_Path.Path_writeText(sourceMapFile_, ff_core_Json.Json_write(jsAndSourceMap_.second_, ff_core_Option.Some("    ")));
 if(isMainModule_) {
@@ -422,14 +422,14 @@ const emitter_ = ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMa
 return (await ff_core_Path.Path_url$(_w1, $task))
 }), $task)), moduleKey_);
 ff_compiler_JsEmitter.JsEmitter_emitModule(emitter_, module_);
-const jsAndSourceMap_ = ff_compiler_JsEmitter.JsEmitter_makeOutputAndSourceMap(emitter_, (await ff_core_Path.Path_base$(path_, $task)));
 const packagePath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(self_.jsOutputPath_, moduleKey_.packagePair_.group_, $task)), moduleKey_.packagePair_.name_, $task));
 const jsPath_ = (await ff_core_List.List_foldLeft$(moduleKey_.folders_, packagePath_, (async (p_, f_, $task) => {
 return (await ff_core_Path.Path_slash$(p_, f_, $task))
 }), $task));
 const jsFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleKey_.name_ + ".mjs"), $task));
-(await ff_core_Path.Path_createDirectory$(jsPath_, true, $task));
 const sourceMapFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleKey_.name_ + ".mjs.map"), $task));
+const jsAndSourceMap_ = ff_compiler_JsEmitter.JsEmitter_makeOutputAndSourceMap(emitter_, ff_core_List.List_join((await ff_core_Path.Path_relativeListTo$(path_, sourceMapFile_, $task)), "/"));
+(await ff_core_Path.Path_createDirectory$(jsPath_, true, $task));
 (await ff_core_Path.Path_writeText$(jsFile_, ((jsAndSourceMap_.first_ + "\n\n//# sourceMappingURL=") + (await ff_core_Path.Path_base$(sourceMapFile_, $task))), $task));
 (await ff_core_Path.Path_writeText$(sourceMapFile_, ff_core_Json.Json_write(jsAndSourceMap_.second_, ff_core_Option.Some("    ")), $task));
 if(isMainModule_) {

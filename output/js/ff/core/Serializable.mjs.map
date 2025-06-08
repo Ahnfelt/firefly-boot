@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "Serializable.ff"
+        "../../../../../../core/Serializable.ff"
     ],
     "sourcesContent": [
         null

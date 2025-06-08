@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "Random.ff"
+        "../../../../../../core/Random.ff"
     ],
     "sourcesContent": [
         null

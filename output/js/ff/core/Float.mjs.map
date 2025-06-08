@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "Float.ff"
+        "../../../../../../core/Float.ff"
     ],
     "sourcesContent": [
         null

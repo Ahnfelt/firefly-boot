@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "Option.ff"
+        "../../../../../../core/Option.ff"
     ],
     "sourcesContent": [
         null

@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "Core.ff"
+        "../../../../../../core/Core.ff"
     ],
     "sourcesContent": [
         null

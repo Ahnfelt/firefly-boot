@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "Equal.ff"
+        "../../../../../../core/Equal.ff"
     ],
     "sourcesContent": [
         null

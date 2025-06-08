@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "Token.ff"
+        "../../../../../../compiler/Token.ff"
     ],
     "sourcesContent": [
         null
