@@ -48,6 +48,7 @@ makeOutputAndSourceMap(
         output.push(strings.join())
         index += 1
     }
+    throw(GrabException)
     let sourceMap = sourceMap([fireflyFile], writtenNames.keys(), lines.drain())
     Pair(output.join("\n"), sourceMap)
 }
