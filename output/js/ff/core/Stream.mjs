@@ -1140,3 +1140,5 @@ remainder_ = ff_core_Option.Some(ff_core_Buffer.Buffer_view(buffer_, needed_, ff
 return ff_core_Pair.Pair(ff_core_Array.Array_drain(buffers_), (await ff_core_Stream.Stream_addAll$((await ff_core_Option.Option_toStream$(remainder_, false, $task)), self_, $task)))
 }
 }
+
+//# sourceMappingURL=Stream.mjs.map

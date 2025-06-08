@@ -141,6 +141,6 @@ internalToVlq(value: Int): List[Int] {
 }
 
 vlqBaseShift = 5
-vlqBaseMask = (1.bitLeft(vlqBaseShift)).bitNot()
+vlqBaseMask = 1.bitLeft(vlqBaseShift) - 1
 vlqContinuationBit = 1.bitLeft(vlqBaseShift)
 base64Characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"

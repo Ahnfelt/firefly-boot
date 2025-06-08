@@ -450,3 +450,5 @@ return "DeserializationChecksumException"
 }
 },
 };
+
+//# sourceMappingURL=Serializable.mjs.map

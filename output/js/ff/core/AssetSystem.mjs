@@ -260,3 +260,5 @@ return (await makeStream_($task))
 export async function AssetSystem_readText$(self_, file_, $task) {
 return (await ff_core_Stream.Stream_toString$((await ff_core_AssetSystem.AssetSystem_readStream$(self_, file_, $task)), "utf8", $task))
 }
+
+//# sourceMappingURL=AssetSystem.mjs.map

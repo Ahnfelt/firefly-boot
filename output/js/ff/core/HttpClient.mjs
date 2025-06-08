@@ -409,3 +409,5 @@ export async function FetchResponse_readBuffer$(self_, $task) {
 (await ff_core_HttpClient.internalCheck_$(self_, $task));
 return (new DataView((await self_.response.arrayBuffer())))
 }
+
+//# sourceMappingURL=HttpClient.mjs.map

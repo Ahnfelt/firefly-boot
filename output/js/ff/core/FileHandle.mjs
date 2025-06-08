@@ -208,3 +208,5 @@ if(dataOnly_) {
 (await self_.sync())
 }
 }
+
+//# sourceMappingURL=FileHandle.mjs.map

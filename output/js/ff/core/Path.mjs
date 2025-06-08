@@ -999,3 +999,5 @@ return self_.isFile()
 export async function PathEntry_isSymbolicLink$(self_, $task) {
 return self_.isSymbolicLink()
 }
+
+//# sourceMappingURL=Path.mjs.map

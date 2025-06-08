@@ -419,3 +419,5 @@ return (await ff_core_Channel.internalRunChannelAction_$(self_, ff_core_Option.S
 export async function ChannelAction_immediately$(self_, body_, $task) {
 return (await ff_core_Channel.internalRunChannelAction_$(self_, ff_core_Option.Some(ff_core_Pair.Pair(body_, ff_core_Option.None())), $task))
 }
+
+//# sourceMappingURL=Channel.mjs.map

@@ -364,3 +364,5 @@ return ff_core_Array.Array_grab(array_, ff_core_Random.Random_nextInt(self_, 0, 
 export async function Random_grabList$(self_, list_, $task) {
 return ff_core_List.List_grab(list_, ff_core_Random.Random_nextInt(self_, 0, list_.length))
 }
+
+//# sourceMappingURL=Random.mjs.map

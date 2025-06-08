@@ -96,7 +96,7 @@ import * as ff_compiler_SourceMap from "../../ff/compiler/SourceMap.mjs"
 
 export const vlqBaseShift_ = 5;
 
-export const vlqBaseMask_ = ff_core_Int.Int_bitNot(ff_core_Int.Int_bitLeft(1, ff_compiler_SourceMap.vlqBaseShift_));
+export const vlqBaseMask_ = (ff_core_Int.Int_bitLeft(1, ff_compiler_SourceMap.vlqBaseShift_) - 1);
 
 export const vlqContinuationBit_ = ff_core_Int.Int_bitLeft(1, ff_compiler_SourceMap.vlqBaseShift_);
 
@@ -377,3 +377,5 @@ if(!(v_ > 0)) break
 };
 return ff_core_Array.Array_drain(vlq_)
 }
+
+//# sourceMappingURL=SourceMap.mjs.map
