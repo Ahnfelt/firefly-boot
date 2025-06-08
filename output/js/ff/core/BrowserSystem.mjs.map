@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "../../../../core/BrowserSystem.ff"
+        "../../../../../core/BrowserSystem.ff"
     ],
     "sourcesContent": [
         "capability BrowserSystem {}\r\n\r\nextend self: BrowserSystem {\r\n\r\n    httpClient(): HttpClient {\r\n        Js.globalThis()?\r\n    }\r\n    \r\n    mainTask(): Task {\r\n        self!->\"task_\"?\r\n    }\r\n\r\n    crypto(): Crypto {\r\n        Js->crypto?\r\n    }\r\n        \r\n    js(): JsSystem {\r\n        Js.globalThis()?\r\n    }\r\n        \r\n    date(timeZoneId: Option[String] = None, calendarId: String = Date.isoCalendarId): Date {\r\n        let date = Date(Js->Temporal->Now->zonedDateTimeISO(timeZoneId.map {_!}.else {Js.undefined()}))\r\n        if(calendarId == Date.isoCalendarId) {date} else {date.withCalendar(calendarId)}\r\n    }\r\n\r\n    url(): String {\r\n        Js->location->href?\r\n    }\r\n    \r\n    urlPath(): String {\r\n        Js->location->pathname?\r\n    }\r\n\r\n    urlQuery(name: String): Option[String] {\r\n        let param = Js->URLSearchParams->(Js->location->search)->get(name)\r\n        if(param.isNullOrUndefined()) {None} else:\r\n        Some(param?)\r\n    }\r\n\r\n    urlFragment(): Option[String] {\r\n        if(!Js->location->hash->startsWith(\"#\")?) {None} else:\r\n        Some(Js->location->hash->slice(1)?)\r\n    }\r\n                 \r\n}\r\n"

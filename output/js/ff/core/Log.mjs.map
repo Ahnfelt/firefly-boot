@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "../../../../core/Log.ff"
+        "../../../../../core/Log.ff"
     ],
     "sourcesContent": [
         "show[T: Show](value: T): Unit {\r\n    trace(Show.show(value))\r\n}\r\n\r\ndebugDynamic[T](value: T): Unit {\r\n    Js->console->debug(value!)\r\n}\r\n\r\ndebug(value: String): Unit {\r\n    Js->console->debug(value)\r\n}\r\n\r\nverbose(value: String): Unit {\r\n    Js->console->log(value)\r\n}\r\n\r\ninfo(value: String): Unit {\r\n    Js->console->info(value)\r\n}\r\n\r\nwarn(value: String): Unit {\r\n    Js->console->warn(value)\r\n}\r\n\r\nerror(value: Error): Unit {\r\n    Js->console->error(value)\r\n}\r\n\r\ntrace(value: String): Unit {\r\n    if(Js.inBrowser()) {\r\n        Js->console->debug(value)\r\n    } else {\r\n        Js->process->stderr->write(value + \"\\n\")\r\n    }\r\n}\r\n"

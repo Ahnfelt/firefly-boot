@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "../../../../core/Bool.ff"
+        "../../../../../core/Bool.ff"
     ],
     "sourcesContent": [
         "data Bool {\r\n    False\r\n    True\r\n}\r\n\r\nextend self: Bool {\r\n    toInt(): Int {\r\n        self.{\r\n            | False => 0\r\n            | True => 1\r\n        }\r\n    }\r\n}\r\n"

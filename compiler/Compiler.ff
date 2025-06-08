@@ -227,9 +227,8 @@ extend self: Compiler {
         let jsPath = moduleKey.folders.foldLeft(packagePath) {p, f => p.slash(f)}
         let jsFile = jsPath.slash(moduleKey.name + ".mjs")
         let sourceMapFile = jsPath.slash(moduleKey.name + ".mjs.map")
-        let temporaryWorkaround = jsPath.parent().grab() // Workaround for temporary/ directory
         let source = Some(path.readText())
-        let jsAndSourceMap = emitter.makeOutputAndSourceMap(path.relativeListTo(temporaryWorkaround).join("/"), source)
+        let jsAndSourceMap = emitter.makeOutputAndSourceMap(path.relativeListTo(jsPath).join("/"), source)
         jsPath.createDirectory(createParentDirectories = True)
         jsFile.writeText(jsAndSourceMap.first + "\n\n//# sourceMappingURL=" + sourceMapFile.base())
         sourceMapFile.writeText(jsAndSourceMap.second.write(Some("    ")))

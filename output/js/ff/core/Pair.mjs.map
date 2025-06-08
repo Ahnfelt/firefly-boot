@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "../../../../core/Pair.ff"
+        "../../../../../core/Pair.ff"
     ],
     "sourcesContent": [
         "data Pair[A, B](first: A, second: B) {\r\n    Pair()\r\n}\r\n\r\nextend self[A, B]: Pair[A, B] {\r\n\r\n    mapFirst[C](body: A => C): Pair[C, B] {\r\n        self.Pair(first = body(self.first))\r\n    }\r\n\r\n    mapSecond[C](body: B => C): Pair[A, C] {\r\n        self.Pair(second = body(self.second))\r\n    }\r\n\r\n    swap(): Pair[B, A] {\r\n        Pair(self.second, self.first)\r\n    }\r\n\r\n}\r\n\r\nextend self[A, A]: Pair[A, A] {\r\n\r\n    mapBoth[C](body: A => C): Pair[C, C] {\r\n        self.Pair(first = body(self.first), second = body(self.second))\r\n    }\r\n\r\n    toList(): List[A] {\r\n        [self.first, self.second]\r\n    }\r\n\r\n    toArray(): Array[A] {\r\n        self.toList().toArray()\r\n    }\r\n\r\n}\r\n\r\nextend self[A: Order]: Pair[A, A] {\r\n\r\n    toSet(): Set[A] {\r\n        self.toList().toSet()\r\n    }\r\n\r\n}\r\n\r\nextend self[A: Order, B]: Pair[A, B] {\r\n\r\n    toMap(): Map[A, B] {\r\n        [self].toMap()\r\n    }\r\n\r\n}\r\n\r\n\r\nextend self: Pair[String, String] {\r\n\r\n    join(separator: String = \"\"): String {\r\n        self.first + separator + self.second\r\n    }\r\n\r\n}\r\n"

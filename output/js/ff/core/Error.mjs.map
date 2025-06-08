@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "../../../../core/Error.ff"
+        "../../../../../core/Error.ff"
     ],
     "sourcesContent": [
         "data Error {}\r\n\r\nextend self: Error {\r\n\r\n    rethrow[T](): T {\r\n        Js.throw(self!)\r\n    }\r\n\r\n    name(): String {\r\n        self!->name.coalesce(\"\")?\r\n    }\r\n\r\n    message(): String {\r\n        self!->message.coalesce(\"\")?\r\n    }\r\n\r\n    stack(): String {\r\n        self!->stack.coalesce(\"\")?\r\n    }\r\n\r\n    exception(): Option[Any] {\r\n        if(!self!->ffException.isNullOrUndefined()) {self!->ffException?}\r\n    }\r\n    \r\n}\r\n"
