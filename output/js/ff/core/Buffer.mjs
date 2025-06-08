@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -95,8 +93,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Buffer
-
-
 
 
 export function new_(size_, shared_ = false) {
@@ -563,7 +559,7 @@ return ((`Buffer.fromHex("` + ff_core_Buffer.Buffer_toHex(value_)) + `")`)
 },
 async show_$(value_, $task) {
 return ((`Buffer.fromHex("` + ff_core_Buffer.Buffer_toHex(value_)) + `")`)
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_core_Buffer_Buffer = {
@@ -618,7 +614,7 @@ return same_
 }
 }
 }
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_core_Buffer_Buffer = {
@@ -665,5 +661,5 @@ return ff_core_Ordering.fromInt_((ff_core_Buffer.Buffer_size(x_) - ff_core_Buffe
 return ordering_
 }
 }
-}
+},
 };

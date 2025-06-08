@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -99,8 +97,6 @@ const GrabException$ = {GrabException: true};
 export function GrabException() {
 return GrabException$;
 }
-
-
 
 export function if_(condition_, body_) {
 {
@@ -280,15 +276,13 @@ export async function panic_$(message_, $task) {
 throw (new Error(message_))
 }
 
-
-
 export const ff_core_Any_HasAnyTag$ff_core_Core_GrabException = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:core/Core.GrabException" + "[") + "]"))
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:core/Core.GrabException" + "[") + "]"))
-}
+},
 };
 
 export const ff_core_Show_Show$ff_core_Core_GrabException = {
@@ -305,5 +299,5 @@ const value_a = value_;
 const z_ = value_a;
 return "GrabException"
 }
-}
+},
 };

@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -100,8 +98,6 @@ return {items_, nextKey_};
 }
 
 // newtype QueueKey
-
-
 
 export function new_() {
 return ff_core_Queue.Queue(ff_core_IntMap.new_(), 0)
@@ -300,5 +296,3 @@ return ff_core_Array.Array_drain(array_)
 export async function Queue_copy$(self_, $task) {
 return ff_core_Queue.Queue(ff_core_IntMap.IntMap_copy(self_.items_), self_.nextKey_)
 }
-
-

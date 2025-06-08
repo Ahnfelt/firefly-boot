@@ -1,7 +1,3 @@
-
-
-import * as ff_compiler_Workspace from "../../ff/compiler/Workspace.mjs"
-
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
@@ -97,6 +93,8 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
+
+import * as ff_compiler_Workspace from "../../ff/compiler/Workspace.mjs"
 
 // type Workspace
 export function Workspace(rules_, defaultLocation_, packageDirectory_) {
@@ -288,7 +286,7 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Workspace.Workspace" + "[") + 
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Workspace.Workspace" + "[") + "]"))
-}
+},
 };
 
 export const ff_core_Any_HasAnyTag$ff_compiler_Workspace_WorkspaceRule = {
@@ -297,7 +295,7 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Workspace.WorkspaceRule" + "["
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Workspace.WorkspaceRule" + "[") + "]"))
-}
+},
 };
 
 export const ff_core_Show_Show$ff_compiler_Workspace_Workspace = {
@@ -314,7 +312,7 @@ const value_a = value_;
 const z_ = value_a;
 return ((((((("Workspace" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Workspace.ff_core_Show_Show$ff_compiler_Workspace_WorkspaceRule).show_(z_.rules_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.defaultLocation_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.packageDirectory_)) + ")")
 }
-}
+},
 };
 
 export const ff_core_Show_Show$ff_compiler_Workspace_WorkspaceRule = {
@@ -331,7 +329,7 @@ const value_a = value_;
 const z_ = value_a;
 return ((((((("WorkspaceRule" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.packageGroup_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.packageName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.location_)) + ")")
 }
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Workspace_Workspace = {
@@ -354,7 +352,7 @@ return true
 {
 return (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Workspace.ff_core_Equal_Equal$ff_compiler_Workspace_WorkspaceRule).equals_(x_.rules_, y_.rules_) && ((x_.defaultLocation_ === y_.defaultLocation_) && (x_.packageDirectory_ === y_.packageDirectory_)))
 }
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Workspace_WorkspaceRule = {
@@ -377,7 +375,7 @@ return true
 {
 return ((x_.packageGroup_ === y_.packageGroup_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.packageName_, y_.packageName_) && (x_.location_ === y_.location_)))
 }
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Workspace_Workspace = {
@@ -432,7 +430,7 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Workspace_WorkspaceRule = {
@@ -487,7 +485,7 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Workspace_Workspace = {
@@ -548,7 +546,7 @@ return ff_compiler_Workspace.Workspace(ff_core_Serializable.ff_core_Serializable
 return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Workspace_WorkspaceRule = {
@@ -609,5 +607,5 @@ return ff_compiler_Workspace.WorkspaceRule(ff_core_Serializable.ff_core_Serializ
 return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
-}
+},
 };

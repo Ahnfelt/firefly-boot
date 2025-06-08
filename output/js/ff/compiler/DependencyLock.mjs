@@ -1,7 +1,3 @@
-
-
-import * as ff_compiler_DependencyLock from "../../ff/compiler/DependencyLock.mjs"
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -96,12 +92,12 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_compiler_DependencyLock from "../../ff/compiler/DependencyLock.mjs"
+
 // type DependencyLock
 export function DependencyLock(doneLocks_, task_) {
 return {doneLocks_, task_};
 }
-
-
 
 export function new_(task_) {
 return ff_compiler_DependencyLock.DependencyLock(ff_core_StringMap.new_(), task_)
@@ -128,5 +124,3 @@ return (await ff_core_Lock.Lock_do$(lock_, (async ($task) => {
 return (await body_($task))
 }), $task))
 }
-
-

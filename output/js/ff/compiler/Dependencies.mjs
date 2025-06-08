@@ -1,7 +1,3 @@
-import * as import$0 from 'tar';
-
-import * as ff_compiler_Dependencies from "../../ff/compiler/Dependencies.mjs"
-
 import * as ff_compiler_DependencyLock from "../../ff/compiler/DependencyLock.mjs"
 
 import * as ff_compiler_LspHook from "../../ff/compiler/LspHook.mjs"
@@ -108,6 +104,9 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as import$0 from 'tar';
+import * as ff_compiler_Dependencies from "../../ff/compiler/Dependencies.mjs"
+
 // type Dependencies
 export function Dependencies(workspace_, packages_, packagePaths_, singleFilePackages_) {
 return {workspace_, packages_, packagePaths_, singleFilePackages_};
@@ -117,8 +116,6 @@ return {workspace_, packages_, packagePaths_, singleFilePackages_};
 export function ResolvedDependencies(mainPackagePair_, packages_, packagePaths_, singleFilePackages_) {
 return {mainPackagePair_, packages_, packagePaths_, singleFilePackages_};
 }
-
-
 
 export function process_(fetch_, dependencyLock_, path_) {
 const workspace_ = ff_compiler_Workspace.loadWorkspace_(path_);
@@ -419,5 +416,3 @@ if(ff_core_Equal.notEquals_(newDependencies_, [], ff_core_List.ff_core_Equal_Equ
 (await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, path_, httpClient_, dependencyLock_, newDependencies_, $task))
 }
 }
-
-

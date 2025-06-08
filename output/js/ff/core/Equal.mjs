@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -94,10 +92,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-
-
-
-
 export function notEquals_(x_, y_, ff_core_Equal_Equal$T) {
 return (!ff_core_Equal_Equal$T.equals_(x_, y_))
 }
@@ -106,15 +100,13 @@ export async function notEquals_$(x_, y_, ff_core_Equal_Equal$T, $task) {
 return (!ff_core_Equal_Equal$T.equals_(x_, y_))
 }
 
-
-
 export const ff_core_Equal_Equal$ff_core_Nothing_Nothing = {
 equals_(x_, y_) {
 return true
 },
 async equals_$(x_, y_, $task) {
 return true
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_core_Bool_Bool = {
@@ -123,7 +115,7 @@ return (x_ === y_)
 },
 async equals_$(x_, y_, $task) {
 return (x_ === y_)
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_core_Char_Char = {
@@ -132,7 +124,7 @@ return (x_ === y_)
 },
 async equals_$(x_, y_, $task) {
 return (x_ === y_)
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_core_Int_Int = {
@@ -141,7 +133,7 @@ return (x_ === y_)
 },
 async equals_$(x_, y_, $task) {
 return (x_ === y_)
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_core_Float_Float = {
@@ -150,7 +142,7 @@ return (x_ === y_)
 },
 async equals_$(x_, y_, $task) {
 return (x_ === y_)
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_core_String_String = {
@@ -159,5 +151,5 @@ return (x_ === y_)
 },
 async equals_$(x_, y_, $task) {
 return (x_ === y_)
-}
+},
 };

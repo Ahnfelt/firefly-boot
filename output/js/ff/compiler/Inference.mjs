@@ -1,7 +1,3 @@
-
-
-import * as ff_compiler_Inference from "../../ff/compiler/Inference.mjs"
-
 import * as ff_compiler_Environment from "../../ff/compiler/Environment.mjs"
 
 import * as ff_compiler_LspHook from "../../ff/compiler/LspHook.mjs"
@@ -106,12 +102,12 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_compiler_Inference from "../../ff/compiler/Inference.mjs"
+
 // type Inference
 export function Inference(unification_, missing_, lspHook_) {
 return {unification_, missing_, lspHook_};
 }
-
-
 
 export function new_(modules_, lspHook_) {
 return ff_compiler_Inference.Inference(ff_compiler_Unification.new_(modules_, ff_compiler_LspHook.LspHook_isEnabled(lspHook_)), ff_core_StringMap.new_(), lspHook_)
@@ -1168,7 +1164,7 @@ const call_ = (((_1) => {
 if(_1.DynamicCall) {
 const call_ = _1;
 return {
-function_: call_.function_,
+function_: call_.function_, 
 tailCall_: call_.tailCall_
 }
 return
@@ -1523,7 +1519,7 @@ if(_1.DynamicCall) {
 const call_ = _1;
 if((!call_.tailCall_)) {
 return {
-function_: call_.function_,
+function_: call_.function_, 
 tailCall_: call_.tailCall_
 }
 return
@@ -3088,7 +3084,7 @@ const call_ = (((_1) => {
 if(_1.DynamicCall) {
 const call_ = _1;
 return {
-function_: call_.function_,
+function_: call_.function_, 
 tailCall_: call_.tailCall_
 }
 return
@@ -3443,7 +3439,7 @@ if(_1.DynamicCall) {
 const call_ = _1;
 if((!call_.tailCall_)) {
 return {
-function_: call_.function_,
+function_: call_.function_, 
 tailCall_: call_.tailCall_
 }
 return
@@ -4010,5 +4006,3 @@ return h_
 return instantiated_
 }))
 }
-
-

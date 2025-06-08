@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -95,8 +93,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Array
-
-
 
 
 export function new_() {
@@ -705,5 +701,5 @@ array_.array.push(ff_core_Show_Show$T.show_(x_))
 };
 array_.array.push("].toArray()");
 return ff_core_Array.Array_join(array_, "")
-}
+},
 }}

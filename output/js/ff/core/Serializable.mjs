@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -104,8 +102,6 @@ return DeserializationChecksumException$;
 export function Serialization(buffer_, offset_, checksum_) {
 return {buffer_, offset_, checksum_};
 }
-
-
 
 export function serialize_(value_, initialBufferSize_ = 1024, ff_core_Serializable_Serializable$T) {
 const serialization_ = ff_core_Serializable.Serialization(ff_core_Buffer.new_(initialBufferSize_, false), 0, 0);
@@ -223,7 +219,7 @@ async deserializeUsing_$(serialization_, $task) {
 const result_ = ff_core_Buffer.Buffer_grabInt64(serialization_.buffer_, serialization_.offset_, true);
 serialization_.offset_ += 8;
 return result_
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_core_Bool_Bool = {
@@ -250,7 +246,7 @@ async deserializeUsing_$(serialization_, $task) {
 const result_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 return (result_ === 1)
-}
+},
 };
 
 export function ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable_Serializable$T) { return {
@@ -278,8 +274,7 @@ if((smallSize_ !== 255)) {
 serialization_.offset_ += 1;
 return ((() => {
 const size = smallSize_;
-const result = [];
-for(let i = 0; i < size; i++) {
+const result = [];for(let i = 0; i < size; i++) {
 result.push(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_));
 }
 return result;
@@ -289,8 +284,7 @@ const size_ = ff_core_Buffer.Buffer_grabUint32(serialization_.buffer_, (serializ
 serialization_.offset_ += (1 + 4);
 return ((() => {
 const size = size_;
-const result = [];
-for(let i = 0; i < size; i++) {
+const result = [];for(let i = 0; i < size; i++) {
 result.push(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_));
 }
 return result;
@@ -321,8 +315,7 @@ if((smallSize_ !== 255)) {
 serialization_.offset_ += 1;
 return ((() => {
 const size = smallSize_;
-const result = [];
-for(let i = 0; i < size; i++) {
+const result = [];for(let i = 0; i < size; i++) {
 result.push(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_));
 }
 return result;
@@ -332,14 +325,13 @@ const size_ = ff_core_Buffer.Buffer_grabUint32(serialization_.buffer_, (serializ
 serialization_.offset_ += (1 + 4);
 return ((() => {
 const size = size_;
-const result = [];
-for(let i = 0; i < size; i++) {
+const result = [];for(let i = 0; i < size; i++) {
 result.push(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_));
 }
 return result;
 })())
 }
-}
+},
 }}
 
 export function ff_core_Serializable_Serializable$ff_core_Set_Set(ff_core_Serializable_Serializable$T, ff_core_Ordering_Order$T) { return {
@@ -354,7 +346,7 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core
 },
 async deserializeUsing_$(serialization_, $task) {
 return ff_core_List.List_toSet(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable_Serializable$T).deserializeUsing_(serialization_), ff_core_Ordering_Order$T)
-}
+},
 }}
 
 export function ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable_Serializable$K, ff_core_Ordering_Order$K, ff_core_Serializable_Serializable$V) { return {
@@ -369,7 +361,7 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core
 },
 async deserializeUsing_$(serialization_, $task) {
 return ff_core_List.List_toMap(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$K, ff_core_Serializable_Serializable$V)).deserializeUsing_(serialization_), ff_core_Ordering_Order$K)
-}
+},
 }}
 
 export const ff_core_Serializable_Serializable$ff_core_String_String = {
@@ -430,7 +422,7 @@ const stringBuffer_ = ff_core_Buffer.Buffer_view(serialization_.buffer_, (serial
 serialization_.offset_ += (5 + size_);
 return ff_core_Buffer.Buffer_toString(stringBuffer_, "utf8")
 }
-}
+},
 };
 
 export const ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException = {
@@ -439,7 +431,7 @@ return ff_core_Any.internalAnyTag_((("ff:core/Serializable.DeserializationChecks
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:core/Serializable.DeserializationChecksumException" + "[") + "]"))
-}
+},
 };
 
 export const ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException = {
@@ -456,5 +448,5 @@ const value_a = value_;
 const z_ = value_a;
 return "DeserializationChecksumException"
 }
-}
+},
 };

@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -95,8 +93,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type List
-
-
 
 
 export function new_() {
@@ -362,7 +358,7 @@ const result_ = (self_[0] ?? ff_core_List.List_grab(self_, 0));
 index_ = 1;
 return result_
 })())
-} else return ff_core_Option.None()
+} else ff_core_Option.None()
 }), (() => {
 
 }))
@@ -754,7 +750,7 @@ const result_ = (self_[0] ?? ff_core_List.List_grab(self_, 0));
 index_ = 1;
 return result_
 })()))
-} else return ff_core_Option.None()
+} else ff_core_Option.None()
 }), (async ($task) => {
 
 }), $task))
@@ -1131,7 +1127,7 @@ array_.array.push(ff_core_Show_Show$T.show_(x_))
 };
 array_.array.push("]");
 return ff_core_Array.Array_join(array_, "")
-}
+},
 }}
 
 export function ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal_Equal$T) { return {
@@ -1164,7 +1160,7 @@ return ff_core_Equal_Equal$T.equals_(l_, (y_[i_] ?? ff_core_List.List_grab(y_, i
 }))
 }
 }
-}
+},
 }}
 
 export function ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering_Order$T) { return {
@@ -1203,7 +1199,7 @@ return ordering_
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.length, y_.length)
 }
 }
-}
+},
 }}
 
 export function ff_core_Any_HasAnyTag$ff_core_List_List(ff_core_Any_HasAnyTag$T) { return {
@@ -1212,5 +1208,5 @@ return ff_core_Any.internalAnyTag_(((("ff:core/List.List" + "[") + ff_core_Any.A
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_(((("ff:core/List.List" + "[") + ff_core_Any.AnyTag_show(ff_core_Any_HasAnyTag$T.anyTag_())) + "]"))
-}
+},
 }}

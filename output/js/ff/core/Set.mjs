@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -95,8 +93,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // newtype Set
-
-
 
 export function new_() {
 return ff_core_Map.new_()
@@ -290,7 +286,7 @@ return ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal_Equal$A)
 },
 async equals_$(x_, y_, $task) {
 return ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal_Equal$A).equals_(ff_core_Set.Set_toList(x_, ff_core_Ordering_Order$A), ff_core_Set.Set_toList(y_, ff_core_Ordering_Order$A))
-}
+},
 }}
 
 export function ff_core_Ordering_Order$ff_core_Set_Set(ff_core_Ordering_Order$A) { return {
@@ -299,7 +295,7 @@ return ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Orderin
 },
 async compare_$(x_, y_, $task) {
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering_Order$A).compare_(ff_core_Set.Set_toList(x_, ff_core_Ordering_Order$A), ff_core_Set.Set_toList(y_, ff_core_Ordering_Order$A))
-}
+},
 }}
 
 export function ff_core_Show_Show$ff_core_Set_Set(ff_core_Show_Show$A, ff_core_Ordering_Order$A) { return {
@@ -308,5 +304,5 @@ return (ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show_Show$A).sh
 },
 async show_$(value_, $task) {
 return (ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show_Show$A).show_(ff_core_Set.Set_toList(value_, ff_core_Ordering_Order$A)) + ".toSet()")
-}
+},
 }}

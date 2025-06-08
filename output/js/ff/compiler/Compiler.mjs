@@ -1,7 +1,3 @@
-
-
-import * as ff_compiler_Compiler from "../../ff/compiler/Compiler.mjs"
-
 import * as ff_compiler_Dependencies from "../../ff/compiler/Dependencies.mjs"
 
 import * as ff_compiler_Deriver from "../../ff/compiler/Deriver.mjs"
@@ -117,6 +113,8 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
+
+import * as ff_compiler_Compiler from "../../ff/compiler/Compiler.mjs"
 
 // type Compiler
 export function Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, cache_, lspHook_, phaseDurationDelta_, phaseDurations_) {
@@ -271,17 +269,19 @@ const allModules_ = [module_, ...otherModules_];
 const emitter_ = ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMainModule_, ff_core_Option.Option_map(self_.compilerModulePath_, ((_w1) => {
 return ff_core_Path.Path_url(_w1)
 })), moduleKey_);
-const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(emitter_, module_);
+ff_compiler_JsEmitter.JsEmitter_emitModule(emitter_, module_);
+const js_ = ff_compiler_JsEmitter.JsEmitter_makeOutput(emitter_);
 const packagePath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(self_.jsOutputPath_, moduleKey_.packagePair_.group_), moduleKey_.packagePair_.name_);
 const jsPath_ = ff_core_List.List_foldLeft(moduleKey_.folders_, packagePath_, ((p_, f_) => {
 return ff_core_Path.Path_slash(p_, f_)
 }));
 const jsFile_ = ff_core_Path.Path_slash(jsPath_, (moduleKey_.name_ + ".mjs"));
 ff_core_Path.Path_createDirectory(jsPath_, true);
+const sourceMapFile_ = ff_core_Path.Path_slash(jsPath_, (moduleKey_.name_ + ".mjs.map"));
 ff_core_Path.Path_writeText(jsFile_, js_);
 if(isMainModule_) {
 return ff_core_Option.Some((function() {
-const runJs_ = ff_compiler_JsEmitter.JsEmitter_emitRun(emitter_, moduleKey_.name_, module_.functions_, moduleKey_.packagePair_, ((moduleKey_.packagePair_.group_ === "ff") && (moduleKey_.packagePair_.name_ === "compiler")));
+const runJs_ = ff_compiler_JsEmitter.JsEmitter_makeRun(emitter_, moduleKey_.name_, module_.functions_, moduleKey_.packagePair_, ((moduleKey_.packagePair_.group_ === "ff") && (moduleKey_.packagePair_.name_ === "compiler")));
 const jsRunFile_ = ff_core_Path.Path_slash(jsPath_, (moduleKey_.name_ + ".run.mjs"));
 return ff_core_Path.Path_writeText(jsRunFile_, ff_core_List.List_join(ff_core_List.List_map(runJs_, ((_w1) => {
 return (_w1 + "\n")
@@ -420,17 +420,19 @@ const allModules_ = [module_, ...otherModules_];
 const emitter_ = ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMainModule_, (await ff_core_Option.Option_map$(self_.compilerModulePath_, (async (_w1, $task) => {
 return (await ff_core_Path.Path_url$(_w1, $task))
 }), $task)), moduleKey_);
-const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(emitter_, module_);
+ff_compiler_JsEmitter.JsEmitter_emitModule(emitter_, module_);
+const js_ = ff_compiler_JsEmitter.JsEmitter_makeOutput(emitter_);
 const packagePath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(self_.jsOutputPath_, moduleKey_.packagePair_.group_, $task)), moduleKey_.packagePair_.name_, $task));
 const jsPath_ = (await ff_core_List.List_foldLeft$(moduleKey_.folders_, packagePath_, (async (p_, f_, $task) => {
 return (await ff_core_Path.Path_slash$(p_, f_, $task))
 }), $task));
 const jsFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleKey_.name_ + ".mjs"), $task));
 (await ff_core_Path.Path_createDirectory$(jsPath_, true, $task));
+const sourceMapFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleKey_.name_ + ".mjs.map"), $task));
 (await ff_core_Path.Path_writeText$(jsFile_, js_, $task));
 if(isMainModule_) {
 return ff_core_Option.Some((await (async function() {
-const runJs_ = ff_compiler_JsEmitter.JsEmitter_emitRun(emitter_, moduleKey_.name_, module_.functions_, moduleKey_.packagePair_, ((moduleKey_.packagePair_.group_ === "ff") && (moduleKey_.packagePair_.name_ === "compiler")));
+const runJs_ = ff_compiler_JsEmitter.JsEmitter_makeRun(emitter_, moduleKey_.name_, module_.functions_, moduleKey_.packagePair_, ((moduleKey_.packagePair_.group_ === "ff") && (moduleKey_.packagePair_.name_ === "compiler")));
 const jsRunFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleKey_.name_ + ".run.mjs"), $task));
 return (await ff_core_Path.Path_writeText$(jsRunFile_, ff_core_List.List_join(ff_core_List.List_map(runJs_, ((_w1) => {
 return (_w1 + "\n")
@@ -440,5 +442,3 @@ return (_w1 + "\n")
 }), $task))
 }), $task))
 }
-
-

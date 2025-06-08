@@ -1,7 +1,3 @@
-
-
-import * as ff_compiler_Parser from "../../ff/compiler/Parser.mjs"
-
 import * as ff_compiler_LspHook from "../../ff/compiler/LspHook.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
@@ -103,6 +99,8 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
+
+import * as ff_compiler_Parser from "../../ff/compiler/Parser.mjs"
 
 // type Parser
 export function Parser(moduleKey_, tokens_, end_, targetIsNode_, lspHook_, lspEmittedArgumentHook_, offset_, nextUnificationVariableIndex_) {
@@ -3152,7 +3150,7 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Parser.Poly" + "[") + "]"))
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Parser.Poly" + "[") + "]"))
-}
+},
 };
 
 export const ff_core_Show_Show$ff_compiler_Parser_Poly = {
@@ -3169,7 +3167,7 @@ const value_a = value_;
 const z_ = value_a;
 return ((((("Poly" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.generics_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Constraint).show_(z_.constraints_)) + ")")
 }
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Parser_Poly = {
@@ -3192,7 +3190,7 @@ return true
 {
 return (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_))
 }
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Parser_Poly = {
@@ -3237,7 +3235,7 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Parser_Poly = {
@@ -3296,5 +3294,5 @@ return ff_compiler_Parser.Poly(ff_core_Serializable.ff_core_Serializable_Seriali
 return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
-}
+},
 };

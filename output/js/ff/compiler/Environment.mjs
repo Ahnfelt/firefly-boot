@@ -1,7 +1,3 @@
-
-
-import * as ff_compiler_Environment from "../../ff/compiler/Environment.mjs"
-
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
@@ -98,6 +94,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_compiler_Environment from "../../ff/compiler/Environment.mjs"
+
 // type Environment
 export function Environment(modulePrefix_, symbols_, traits_, imports_, effect_, selfVariable_) {
 return {modulePrefix_, symbols_, traits_, imports_, effect_, selfVariable_};
@@ -112,8 +110,6 @@ return {isVariable_, isMutable_, isNewtype_, isTraitMethod_, signature_};
 export function Instantiated(typeArguments_, scheme_) {
 return {typeArguments_, scheme_};
 }
-
-
 
 export function new_(module_, otherModules_, alreadyFlat_) {
 const processed_ = ff_compiler_Environment.processModule_(module_, true, alreadyFlat_);
@@ -341,15 +337,13 @@ const effect_ = ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(modu
 return ff_compiler_Environment.Environment("", ff_core_List.List_toMap([...functions_, ...lets_, ...fields_, ...extends_, ...variants_, ...traitMethods_], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(traits_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), effect_, ff_core_Option.None())
 }
 
-
-
 export const ff_core_Any_HasAnyTag$ff_compiler_Environment_Environment = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Environment.Environment" + "[") + "]"))
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Environment.Environment" + "[") + "]"))
-}
+},
 };
 
 export const ff_core_Any_HasAnyTag$ff_compiler_Environment_Scheme = {
@@ -358,7 +352,7 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Environment.Scheme" + "[") + "
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Environment.Scheme" + "[") + "]"))
-}
+},
 };
 
 export const ff_core_Any_HasAnyTag$ff_compiler_Environment_Instantiated = {
@@ -367,7 +361,7 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Environment.Instantiated" + "[
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Environment.Instantiated" + "[") + "]"))
-}
+},
 };
 
 export const ff_core_Show_Show$ff_compiler_Environment_Environment = {
@@ -384,7 +378,7 @@ const value_a = value_;
 const z_ = value_a;
 return ((((((((((((("Environment" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.modulePrefix_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Show_Show$ff_compiler_Environment_Scheme).show_(z_.symbols_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DTrait).show_(z_.traits_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DImport).show_(z_.imports_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.effect_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.selfVariable_)) + ")")
 }
-}
+},
 };
 
 export const ff_core_Show_Show$ff_compiler_Environment_Scheme = {
@@ -401,7 +395,7 @@ const value_a = value_;
 const z_ = value_a;
 return ((((((((((("Scheme" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.isVariable_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.isMutable_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.isNewtype_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.isTraitMethod_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Signature.show_(z_.signature_)) + ")")
 }
-}
+},
 };
 
 export const ff_core_Show_Show$ff_compiler_Environment_Instantiated = {
@@ -418,7 +412,7 @@ const value_a = value_;
 const z_ = value_a;
 return ((((("Instantiated" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type)).show_(z_.typeArguments_)) + ", ") + ff_compiler_Environment.ff_core_Show_Show$ff_compiler_Environment_Scheme.show_(z_.scheme_)) + ")")
 }
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Environment_Environment = {
@@ -441,7 +435,7 @@ return true
 {
 return ((x_.modulePrefix_ === y_.modulePrefix_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Equal_Equal$ff_compiler_Environment_Scheme).equals_(x_.symbols_, y_.symbols_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DTrait).equals_(x_.traits_, y_.traits_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DImport).equals_(x_.imports_, y_.imports_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.effect_, y_.effect_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.selfVariable_, y_.selfVariable_))))))
 }
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Environment_Scheme = {
@@ -464,7 +458,7 @@ return true
 {
 return ((x_.isVariable_ === y_.isVariable_) && ((x_.isMutable_ === y_.isMutable_) && ((x_.isNewtype_ === y_.isNewtype_) && ((x_.isTraitMethod_ === y_.isTraitMethod_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Signature.equals_(x_.signature_, y_.signature_)))))
 }
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Environment_Instantiated = {
@@ -487,7 +481,7 @@ return true
 {
 return (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type)).equals_(x_.typeArguments_, y_.typeArguments_) && ff_compiler_Environment.ff_core_Equal_Equal$ff_compiler_Environment_Scheme.equals_(x_.scheme_, y_.scheme_))
 }
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Environment_Environment = {
@@ -572,7 +566,7 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Environment_Scheme = {
@@ -647,7 +641,7 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Environment_Instantiated = {
@@ -692,7 +686,7 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Environment_Environment = {
@@ -759,7 +753,7 @@ return ff_compiler_Environment.Environment(ff_core_Serializable.ff_core_Serializ
 return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Environment_Scheme = {
@@ -824,7 +818,7 @@ return ff_compiler_Environment.Scheme(ff_core_Serializable.ff_core_Serializable_
 return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Environment_Instantiated = {
@@ -883,5 +877,5 @@ return ff_compiler_Environment.Instantiated(ff_core_Serializable.ff_core_Seriali
 return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
-}
+},
 };

@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -98,8 +96,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 export function Random(s0_, s1_, s2_, c_, spareGauss_) {
 return {s0_, s1_, s2_, c_, spareGauss_};
 }
-
-
 
 export function newFromInt_(seed_) {
 return ff_core_Random.newFromFloat_(ff_core_Int.Int_toFloat(seed_))
@@ -368,5 +364,3 @@ return ff_core_Array.Array_grab(array_, ff_core_Random.Random_nextInt(self_, 0, 
 export async function Random_grabList$(self_, list_, $task) {
 return ff_core_List.List_grab(list_, ff_core_Random.Random_nextInt(self_, 0, list_.length))
 }
-
-

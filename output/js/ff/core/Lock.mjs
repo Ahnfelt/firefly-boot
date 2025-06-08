@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -103,12 +101,6 @@ return {owner_, level_, queue_};
 export function LockCondition(lock_, queue_) {
 return {lock_, queue_};
 }
-
-
-
-
-
-
 
 export function Lock_condition(self_) {
 return ff_core_Lock.LockCondition(self_, ff_core_Queue.new_())
@@ -345,5 +337,3 @@ export async function LockCondition_wakeAll$(self_, $task) {
 }), $task));
 ff_core_Queue.Queue_clear(self_.queue_)
 }
-
-

@@ -1,7 +1,3 @@
-
-
-import * as ff_compiler_Token from "../../ff/compiler/Token.mjs"
-
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
@@ -97,6 +93,8 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
+
+import * as ff_compiler_Token from "../../ff/compiler/Token.mjs"
 
 // type Token
 export function Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, stopLine_, stopLineOffset_, stopOffset_) {
@@ -216,12 +214,6 @@ const LAssignDivision$ = {LAssignDivision: true};
 export function LAssignDivision() {
 return LAssignDivision$;
 }
-
-
-
-
-
-
 
 export function Token_at(token_) {
 return ff_compiler_Syntax.Location(token_.file_, token_.startLine_, ((token_.startOffset_ - token_.startLineOffset_) + 1))
@@ -865,7 +857,7 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Token.Token" + "[") + "]"))
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Token.Token" + "[") + "]"))
-}
+},
 };
 
 export const ff_core_Any_HasAnyTag$ff_compiler_Token_TokenKind = {
@@ -874,7 +866,7 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Token.TokenKind" + "[") + "]")
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Token.TokenKind" + "[") + "]"))
-}
+},
 };
 
 export const ff_core_Show_Show$ff_compiler_Token_Token = {
@@ -891,7 +883,7 @@ const value_a = value_;
 const z_ = value_a;
 return ((((((((((((((((((("Token" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.code_)) + ", ") + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(z_.kind_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startLine_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startLineOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopLine_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopLineOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopOffset_)) + ")")
 }
-}
+},
 };
 
 export const ff_core_Show_Show$ff_compiler_Token_TokenKind = {
@@ -1124,7 +1116,7 @@ return "LAssignMultiplication"
 const z_ = value_a;
 return "LAssignDivision"
 }
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Token_Token = {
@@ -1147,7 +1139,7 @@ return true
 {
 return ((x_.file_ === y_.file_) && ((x_.code_ === y_.code_) && (ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(x_.kind_, y_.kind_) && ((x_.startLine_ === y_.startLine_) && ((x_.startLineOffset_ === y_.startLineOffset_) && ((x_.startOffset_ === y_.startOffset_) && ((x_.stopLine_ === y_.stopLine_) && ((x_.stopLineOffset_ === y_.stopLineOffset_) && (x_.stopOffset_ === y_.stopOffset_)))))))))
 }
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Token_TokenKind = {
@@ -1170,7 +1162,7 @@ return true
 {
 return false
 }
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Token_Token = {
@@ -1285,7 +1277,7 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Token_TokenKind = {
@@ -1482,7 +1474,7 @@ return 27
 }
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 }
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Token_Token = {
@@ -1555,7 +1547,7 @@ return ff_compiler_Token.Token(ff_core_Serializable.ff_core_Serializable_Seriali
 return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Token_TokenKind = {
@@ -2258,5 +2250,5 @@ return ff_compiler_Token.LAssignDivision()
 return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
-}
+},
 };

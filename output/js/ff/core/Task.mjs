@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -98,12 +96,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 export function Task(controller_, subtasks_, promise_, started_) {
 return {controller_, subtasks_, promise_, started_};
 }
-
-
-
-
-
-
 
 export function Task_spawn(self_, body_) {
 ff_core_Task.Task_throwIfAborted(self_);
@@ -390,5 +382,3 @@ const _w1 = for_a[for_i];
 }
 }
 }
-
-

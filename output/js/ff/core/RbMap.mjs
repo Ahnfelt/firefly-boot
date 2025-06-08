@@ -1,7 +1,3 @@
-
-
-import * as ff_core_RbMap from "../../ff/core/RbMap.mjs"
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -96,6 +92,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_RbMap from "../../ff/core/RbMap.mjs"
+
 // type Color
 const R$ = {R: true};
 export function R() {
@@ -114,8 +112,6 @@ return E$;
 export function T(color_, left_, key_, value_, right_) {
 return {T: true, color_, left_, key_, value_, right_};
 }
-
-
 
 export function insert_(x_, xv_, s_, ff_core_Ordering_Order$K) {
 function ins_(s_) {
@@ -1126,8 +1122,6 @@ return true
 }))(self_))) {
 array_ = [self_];
 {
-
-
 continue _tailcall
 }
 } else {
@@ -1139,8 +1133,6 @@ if(_1.length >= 1 && _1[0].E) {
 const tail_ = _1.slice(1);
 array_ = tail_;
 {
-
-
 continue _tailcall
 }
 return
@@ -1160,8 +1152,6 @@ const r_ = _1[0].right_;
 const tail_ = _1.slice(1);
 array_ = [l_, ff_core_RbMap.T(ff_core_RbMap.B(), ff_core_RbMap.E(), k_, v_, ff_core_RbMap.E()), r_, ...tail_];
 {
-
-
 continue _tailcall
 }
 return
@@ -1411,8 +1401,6 @@ return true
 }))(self_))) {
 array_ = [self_];
 {
-
-
 continue _tailcall
 }
 } else {
@@ -1424,8 +1412,6 @@ if(_1.length >= 1 && _1[0].E) {
 const tail_ = _1.slice(1);
 array_ = tail_;
 {
-
-
 continue _tailcall
 }
 return
@@ -1445,8 +1431,6 @@ const r_ = _1[0].right_;
 const tail_ = _1.slice(1);
 array_ = [l_, ff_core_RbMap.T(ff_core_RbMap.B(), ff_core_RbMap.E(), k_, v_, ff_core_RbMap.E()), r_, ...tail_];
 {
-
-
 continue _tailcall
 }
 return
@@ -1536,5 +1520,3 @@ return true
 }), ff_core_Ordering_Order$K, $task));
 return result_
 }
-
-

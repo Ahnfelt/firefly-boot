@@ -1,7 +1,3 @@
-
-
-import * as ff_compiler_JsImporter from "../../ff/compiler/JsImporter.mjs"
-
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
@@ -98,12 +94,12 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_compiler_JsImporter from "../../ff/compiler/JsImporter.mjs"
+
 // type JsImporter
 export function JsImporter(imports_) {
 return {imports_};
 }
-
-
 
 export function new_() {
 return ff_compiler_JsImporter.JsImporter(ff_core_Map.new_())
@@ -254,5 +250,3 @@ return
 }
 }))
 }
-
-

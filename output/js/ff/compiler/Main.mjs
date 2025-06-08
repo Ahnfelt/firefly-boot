@@ -1,7 +1,3 @@
-import * as import$0 from 'url';
-
-import * as ff_compiler_Main from "../../ff/compiler/Main.mjs"
-
 import * as ff_compiler_Builder from "../../ff/compiler/Builder.mjs"
 
 import * as ff_compiler_Compiler from "../../ff/compiler/Compiler.mjs"
@@ -121,6 +117,9 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
+
+import * as import$0 from 'url';
+import * as ff_compiler_Main from "../../ff/compiler/Main.mjs"
 
 // type MainCommand
 const BootstrapCommand$ = {BootstrapCommand: true};
@@ -500,8 +499,8 @@ return (_w1 + ": ")
 return ""
 }));
 return {
-generics_: generics_,
-name_: (g_ + x_.name_),
+generics_: generics_, 
+name_: (g_ + x_.name_), 
 symbols_: ff_core_List.List_map(x_.methods_, ((_w1) => {
 return processSignature_(_w1)
 }))
@@ -535,8 +534,8 @@ return _w1.signature_
 return processSignature_(_w1)
 }));
 return {
-generics_: x_.generics_,
-name_: x_.name_,
+generics_: x_.generics_, 
+name_: x_.name_, 
 symbols_: [...variants_, ...methods_]
 }
 }));
@@ -547,8 +546,8 @@ const functions_ = ff_core_List.List_map(module_.functions_, ((_w1) => {
 return processSignature_(_w1.signature_)
 }));
 return [{
-generics_: [],
-name_: "",
+generics_: [], 
+name_: "", 
 symbols_: [...ff_core_List.List_map(module_.lets_, ((_w1) => {
 return _w1.name_
 })), ...functions_]
@@ -904,8 +903,8 @@ return (_w1 + ": ")
 return ""
 }));
 return {
-generics_: generics_,
-name_: (g_ + x_.name_),
+generics_: generics_, 
+name_: (g_ + x_.name_), 
 symbols_: ff_core_List.List_map(x_.methods_, ((_w1) => {
 return processSignature_(_w1)
 }))
@@ -939,8 +938,8 @@ return _w1.signature_
 return processSignature_(_w1)
 }));
 return {
-generics_: x_.generics_,
-name_: x_.name_,
+generics_: x_.generics_, 
+name_: x_.name_, 
 symbols_: [...variants_, ...methods_]
 }
 }));
@@ -951,8 +950,8 @@ const functions_ = ff_core_List.List_map(module_.functions_, ((_w1) => {
 return processSignature_(_w1.signature_)
 }));
 return [{
-generics_: [],
-name_: "",
+generics_: [], 
+name_: "", 
 symbols_: [...ff_core_List.List_map(module_.lets_, ((_w1) => {
 return _w1.name_
 })), ...functions_]
@@ -968,15 +967,13 @@ return [header_, ...ff_core_List.List_sort(r_.symbols_, ff_core_Ordering.ff_core
 }))
 }
 
-
-
 export const ff_core_Any_HasAnyTag$ff_compiler_Main_MainCommand = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Main.MainCommand" + "[") + "]"))
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Main.MainCommand" + "[") + "]"))
-}
+},
 };
 
 export const ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError = {
@@ -985,7 +982,7 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Main.CommandLineError" + "[") 
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Main.CommandLineError" + "[") + "]"))
-}
+},
 };
 
 export const ff_core_Show_Show$ff_compiler_Main_MainCommand = {
@@ -1042,7 +1039,7 @@ return ((("CheckCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_
 const z_ = value_a;
 return ((((("SymbolsCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.outPath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.filePaths_)) + ")")
 }
-}
+},
 };
 
 export const ff_core_Show_Show$ff_compiler_Main_CommandLineError = {
@@ -1059,7 +1056,7 @@ const value_a = value_;
 const z_ = value_a;
 return ((("CommandLineError" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.problem_)) + ")")
 }
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Main_MainCommand = {
@@ -1132,7 +1129,7 @@ return ((x_.outPath_ === y_.outPath_) && ff_core_List.ff_core_Equal_Equal$ff_cor
 {
 return false
 }
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Main_CommandLineError = {
@@ -1155,7 +1152,7 @@ return true
 {
 return (x_.problem_ === y_.problem_)
 }
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Main_MainCommand = {
@@ -1350,7 +1347,7 @@ return 5
 }
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 }
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Main_CommandLineError = {
@@ -1385,7 +1382,7 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Main_MainCommand = {
@@ -1574,7 +1571,7 @@ return ff_compiler_Main.SymbolsCommand(ff_core_Serializable.ff_core_Serializable
 return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Main_CommandLineError = {
@@ -1631,5 +1628,5 @@ return ff_compiler_Main.CommandLineError(ff_core_Serializable.ff_core_Serializab
 return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
-}
+},
 };

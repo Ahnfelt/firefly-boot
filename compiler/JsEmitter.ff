@@ -1758,7 +1758,7 @@ extend self: JsEmitter {
                 if(isArray) {self.writeMapped(list.at, ".array")}
                 self.writeMapped(list.at, ", for_i" + suffix + " = 0")
                 self.writeMapped(list.at, ", for_l" + suffix + " = ")
-                self.writeMapped(list.at, "for_a" + suffix + ".length -")
+                self.writeMapped(list.at, "for_a" + suffix + ".length - ")
                 wrapUnlessInt(a2.value, "Math.max(", ", 0)")
             | ECall(_, StaticCall("ff:core/List.List_takeFirst", _, _), _, _, [a1, a2], _) =>
                 self.writeMapped(list.at, "for_a" + suffix + " = ")
@@ -1766,7 +1766,7 @@ extend self: JsEmitter {
                 if(isArray) {self.writeMapped(list.at, ".array")}
                 self.writeMapped(list.at, ", for_i" + suffix + " = 0")
                 self.writeMapped(list.at, ", for_l" + suffix + " = ")
-                self.writeMapped(list.at, "for_a" + suffix + ".length - Math.min(")
+                self.writeMapped(list.at, "Math.min(")
                 wrapUnlessInt(a2.value, "Math.max(", ", 0)")
                 self.writeMapped(list.at, ", for_a" + suffix + ".length)")
             | ECall(_, StaticCall("ff:core/List.List_takeLast", _, _), _, _, [a1, a2], _) =>
@@ -2066,7 +2066,7 @@ extend self: JsEmitter {
                     self.writeMapped(at, ";")
                     self.writeLine()
                 }]
-                self.emitCase(arguments, matchCase, conditions, variables, jump, last, break, lastCase, async)
+                self.emitCase(arguments, matchCase, conditions, newVariables, jump, last, break, lastCase, async)
             | PVariant(at, "ff:core/Bool.False", []) =>
                 self.emitCase(arguments, matchCase, addUnaryCondition(at, "!", argument), variables, jump, last, break, lastCase, async)
             | PVariant(_, "ff:core/Bool.True", []) =>
@@ -2136,7 +2136,7 @@ extend self: JsEmitter {
                         self.writeMapped(at, ";")
                         self.writeLine()
                     }]
-                }.else {[]}
+                }.else {variables}
                 self.emitCase(arguments, matchCase, newConditions, newVariables, jump, last, break, lastCase, async)
             | PAlias(at, pattern, variable) =>
                 let newVariables = [...variables, {

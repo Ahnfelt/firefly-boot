@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -103,8 +101,6 @@ return {capacity_, buffer_, readers_, writers_};
 export function ChannelAction(channel_, body_, message_, previous_) {
 return {channel_, body_, message_, previous_};
 }
-
-
 
 export function readOr_(channel_, body_) {
 return ff_core_Channel.ChannelAction(channel_, body_, ff_core_Option.None(), ff_core_Option.None())
@@ -423,5 +419,3 @@ return (await ff_core_Channel.internalRunChannelAction_$(self_, ff_core_Option.S
 export async function ChannelAction_immediately$(self_, body_, $task) {
 return (await ff_core_Channel.internalRunChannelAction_$(self_, ff_core_Option.Some(ff_core_Pair.Pair(body_, ff_core_Option.None())), $task))
 }
-
-

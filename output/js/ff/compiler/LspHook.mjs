@@ -1,7 +1,3 @@
-
-
-import * as ff_compiler_LspHook from "../../ff/compiler/LspHook.mjs"
-
 import * as ff_compiler_Environment from "../../ff/compiler/Environment.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
@@ -101,6 +97,8 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
+
+import * as ff_compiler_LspHook from "../../ff/compiler/LspHook.mjs"
 
 // type LspHook
 export function LspHook(at_, definedAt_, insertIdentifier_, trackSymbols_, arrayOfResults_) {
@@ -206,8 +204,6 @@ return {InferLookupHook: true, unification_, environment_, expected_, selfVariab
 export function InferRecordFieldHook(usageAt_, unification_, environment_, expected_, recordType_, fieldName_) {
 return {InferRecordFieldHook: true, usageAt_, unification_, environment_, expected_, recordType_, fieldName_};
 }
-
-
 
 export function disabled_() {
 return ff_compiler_LspHook.new_(ff_core_Option.None(), ff_core_Option.None(), false, false)
@@ -527,7 +523,7 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/LspHook.SymbolHook" + "[") + "
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/LspHook.SymbolHook" + "[") + "]"))
-}
+},
 };
 
 export const ff_core_Any_HasAnyTag$ff_compiler_LspHook_DocumentSymbolKind = {
@@ -536,7 +532,7 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/LspHook.DocumentSymbolKind" + 
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/LspHook.DocumentSymbolKind" + "[") + "]"))
-}
+},
 };
 
 export const ff_core_Show_Show$ff_compiler_LspHook_SymbolHook = {
@@ -553,7 +549,7 @@ const value_a = value_;
 const z_ = value_a;
 return ((((((("SymbolHook" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.qualifiedName_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.usageAt_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.definedAt_)) + ")")
 }
-}
+},
 };
 
 export const ff_core_Show_Show$ff_compiler_LspHook_DocumentSymbolKind = {
@@ -634,7 +630,7 @@ return "SType"
 const z_ = value_a;
 return "SParameter"
 }
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_compiler_LspHook_SymbolHook = {
@@ -657,7 +653,7 @@ return true
 {
 return ((x_.qualifiedName_ === y_.qualifiedName_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.usageAt_, y_.usageAt_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.definedAt_, y_.definedAt_)))
 }
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_compiler_LspHook_DocumentSymbolKind = {
@@ -700,7 +696,7 @@ return (x_.member_ === y_.member_)
 {
 return false
 }
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_compiler_LspHook_SymbolHook = {
@@ -755,7 +751,7 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_compiler_LspHook_DocumentSymbolKind = {
@@ -882,7 +878,7 @@ return 8
 }
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 }
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_LspHook_SymbolHook = {
@@ -943,7 +939,7 @@ return ff_compiler_LspHook.SymbolHook(ff_core_Serializable.ff_core_Serializable_
 return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_LspHook_DocumentSymbolKind = {
@@ -1194,5 +1190,5 @@ return ff_compiler_LspHook.SParameter()
 return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
-}
+},
 };

@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -97,12 +95,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 // type Error
 
 
-
-
-
-
-
-
 export function Error_rethrow(self_) {
 throw self_
 }
@@ -146,5 +138,3 @@ if((!ff_core_JsValue.JsValue_isNullOrUndefined(self_.ffException))) {
 return ff_core_Option.Some(self_.ffException)
 } else return ff_core_Option.None()
 }
-
-

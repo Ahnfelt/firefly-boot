@@ -1,7 +1,3 @@
-
-
-import * as ff_compiler_Dictionaries from "../../ff/compiler/Dictionaries.mjs"
-
 import * as ff_compiler_Environment from "../../ff/compiler/Environment.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
@@ -102,12 +98,12 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_compiler_Dictionaries from "../../ff/compiler/Dictionaries.mjs"
+
 // type Dictionaries
 export function Dictionaries(instances_) {
 return {instances_};
 }
-
-
 
 export function new_(modules_) {
 return ff_compiler_Dictionaries.Dictionaries(ff_compiler_Unification.new_(modules_, false).instances_)
@@ -959,7 +955,7 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Dictionaries.Dictionaries" + "
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Dictionaries.Dictionaries" + "[") + "]"))
-}
+},
 };
 
 export const ff_core_Show_Show$ff_compiler_Dictionaries_Dictionaries = {
@@ -976,7 +972,7 @@ const value_a = value_;
 const z_ = value_a;
 return ((("Dictionaries" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_InstanceValue).show_(z_.instances_)) + ")")
 }
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Dictionaries_Dictionaries = {
@@ -999,7 +995,7 @@ return true
 {
 return ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_InstanceValue).equals_(x_.instances_, y_.instances_)
 }
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Dictionaries_Dictionaries = {
@@ -1034,7 +1030,7 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Dictionaries_Dictionaries = {
@@ -1091,5 +1087,5 @@ return ff_compiler_Dictionaries.Dictionaries(ff_core_Serializable.ff_core_Serial
 return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
-}
+},
 };

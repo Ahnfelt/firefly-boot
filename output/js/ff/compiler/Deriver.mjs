@@ -1,7 +1,3 @@
-
-
-import * as ff_compiler_Deriver from "../../ff/compiler/Deriver.mjs"
-
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
@@ -98,13 +94,13 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_compiler_Deriver from "../../ff/compiler/Deriver.mjs"
+
 // type Deriver
 const Deriver$ = {Deriver: true};
 export function Deriver() {
 return Deriver$;
 }
-
-
 
 export function new_() {
 return ff_compiler_Deriver.Deriver()
@@ -932,7 +928,7 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Deriver.Deriver" + "[") + "]")
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Deriver.Deriver" + "[") + "]"))
-}
+},
 };
 
 export const ff_core_Show_Show$ff_compiler_Deriver_Deriver = {
@@ -949,7 +945,7 @@ const value_a = value_;
 const z_ = value_a;
 return "Deriver"
 }
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Deriver_Deriver = {
@@ -972,7 +968,7 @@ return true
 {
 return true
 }
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Deriver_Deriver = {
@@ -995,7 +991,7 @@ return ff_core_Ordering.OrderingSame()
 {
 return ff_core_Ordering.OrderingSame()
 }
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Deriver_Deriver = {
@@ -1050,5 +1046,5 @@ return ff_compiler_Deriver.Deriver()
 return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
-}
+},
 };

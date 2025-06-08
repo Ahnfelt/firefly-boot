@@ -1,7 +1,3 @@
-
-
-import * as ff_compiler_Resolver from "../../ff/compiler/Resolver.mjs"
-
 import * as ff_compiler_LspHook from "../../ff/compiler/LspHook.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
@@ -100,6 +96,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_compiler_Resolver from "../../ff/compiler/Resolver.mjs"
+
 // type Resolver
 export function Resolver(variables_, variableLocations_, variants_, types_, typeGenerics_, typeLocations_, asyncTypes_, typeParameters_, traits_, traitLocations_, state_, lspHook_) {
 return {variables_, variableLocations_, variants_, types_, typeGenerics_, typeLocations_, asyncTypes_, typeParameters_, traits_, traitLocations_, state_, lspHook_};
@@ -114,8 +112,6 @@ return {nextUnificationVariableIndex_};
 export function CaseVariable(at_, name_, asBound_) {
 return {at_, name_, asBound_};
 }
-
-
 
 export function new_(lspHook_) {
 return ff_compiler_Resolver.Resolver(ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Resolver.ResolverState(2), lspHook_)
@@ -732,6 +728,7 @@ return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Resolver.Resolv
 return
 }
 if(_1.ECall && _1.target_.StaticCall) {
+const at_ = _1.at_;
 return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, "Internal error: Static calls not expected in the Resolver phase"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 if(_1.ERecord) {
@@ -1728,6 +1725,7 @@ return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Resolver.Resolv
 return
 }
 if(_1.ECall && _1.target_.StaticCall) {
+const at_ = _1.at_;
 return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, "Internal error: Static calls not expected in the Resolver phase"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 if(_1.ERecord) {
@@ -2147,7 +2145,7 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Resolver.CaseVariable" + "[") 
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Resolver.CaseVariable" + "[") + "]"))
-}
+},
 };
 
 export const ff_core_Show_Show$ff_compiler_Resolver_CaseVariable = {
@@ -2164,7 +2162,7 @@ const value_a = value_;
 const z_ = value_a;
 return ((((((("CaseVariable" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.name_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.asBound_)) + ")")
 }
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Resolver_CaseVariable = {
@@ -2187,7 +2185,7 @@ return true
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ((x_.name_ === y_.name_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.asBound_, y_.asBound_)))
 }
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Resolver_CaseVariable = {
@@ -2242,7 +2240,7 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Resolver_CaseVariable = {
@@ -2303,5 +2301,5 @@ return ff_compiler_Resolver.CaseVariable(ff_compiler_Syntax.ff_core_Serializable
 return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
-}
+},
 };

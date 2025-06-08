@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -95,12 +93,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type JsValue
-
-
-
-
-
-
 
 
 export function JsValue_grabString(self_) {
@@ -846,57 +838,43 @@ return ff_core_JsValue.JsValue_isNullOrUndefined(self_)
 }
 
 export const ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue = {
-
 };
 
 export const ff_core_JsValue_IsJsValue$ff_core_String_String = {
-
 };
 
 export const ff_core_JsValue_IsJsValue$ff_core_Char_Char = {
-
 };
 
 export const ff_core_JsValue_IsJsValue$ff_core_Int_Int = {
-
 };
 
 export const ff_core_JsValue_IsJsValue$ff_core_Float_Float = {
-
 };
 
 export const ff_core_JsValue_IsJsValue$ff_core_Bool_Bool = {
-
 };
 
 export function ff_core_JsValue_IsJsValue$ff_core_List_List(ff_core_JsValue_IsJsValue$T) { return {
-
 }}
 
 export function ff_core_JsValue_IsJsValue$ff_core_IntMap_IntMap(ff_core_JsValue_IsJsValue$T) { return {
-
 }}
 
 export function ff_core_JsValue_IsJsValue$ff_core_StringMap_StringMap(ff_core_JsValue_IsJsValue$T) { return {
-
 }}
 
 export const ff_core_JsValue_IsJsValue$ff_core_Error_Error = {
-
 };
 
 export const ff_core_JsValue_IsJsValue$ff_core_Date_Date = {
-
 };
 
 export const ff_core_JsValue_IsJsValue$ff_core_Duration_Duration = {
-
 };
 
 export const ff_core_JsValue_IsJsValue$ff_core_Buffer_Buffer = {
-
 };
 
 export const ff_core_JsValue_IsJsValue$ff_core_Nothing_Nothing = {
-
 };

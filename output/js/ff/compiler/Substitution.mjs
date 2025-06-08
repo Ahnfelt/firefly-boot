@@ -1,7 +1,3 @@
-
-
-import * as ff_compiler_Substitution from "../../ff/compiler/Substitution.mjs"
-
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
@@ -98,12 +94,12 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_compiler_Substitution from "../../ff/compiler/Substitution.mjs"
+
 // type Substitution
 export function Substitution(substitution_) {
 return {substitution_};
 }
-
-
 
 export function core_(name_) {
 return ((("ff:core/" + name_) + ".") + name_)
@@ -986,5 +982,3 @@ return t_
 export async function Substitution_has$(self_, index_, $task) {
 return ff_core_Map.Map_contains(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }
-
-

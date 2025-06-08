@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -941,7 +939,7 @@ return x_.equals(y_)
 },
 async equals_$(x_, y_, $task) {
 return x_.equals(y_)
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_core_Date_Date = {
@@ -970,7 +968,7 @@ return timeZone_
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(ff_core_Date.Date_calendarId(x_), ff_core_Date.Date_calendarId(y_))
 }
 }
-}
+},
 };
 
 export const ff_core_Any_HasAnyTag$ff_core_Date_Date = {
@@ -979,7 +977,7 @@ return ff_core_Any.internalAnyTag_("ff:core/Date.Date[]")
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_("ff:core/Date.Date[]")
-}
+},
 };
 
 export const ff_core_Show_Show$ff_core_Date_Date = {
@@ -988,7 +986,7 @@ return ff_core_Date.Date_toRfc9557(value_, ff_core_Option.None(), ff_core_Option
 },
 async show_$(value_, $task) {
 return ff_core_Date.Date_toRfc9557(value_, ff_core_Option.None(), ff_core_Option.None(), true, true, true)
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_core_Date_Date = {
@@ -1003,5 +1001,5 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 },
 async deserializeUsing_$(serialization_, $task) {
 return ff_core_Date.newRfc9557_(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
-}
+},
 };

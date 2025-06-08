@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -102,12 +100,6 @@ return None$;
 export function Some(value_) {
 return {Some: true, value_};
 }
-
-
-
-
-
-
 
 export function Option_else(self_, body_) {
 {
@@ -559,7 +551,7 @@ return ff_core_Any.internalAnyTag_(((("ff:core/Option.Option" + "[") + ff_core_A
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_(((("ff:core/Option.Option" + "[") + ff_core_Any.AnyTag_show(ff_core_Any_HasAnyTag$T.anyTag_())) + "]"))
-}
+},
 }}
 
 export function ff_core_Show_Show$ff_core_Option_Option(ff_core_Show_Show$T) { return {
@@ -584,7 +576,7 @@ return "None"
 const z_ = value_a;
 return ((("Some" + "(") + ff_core_Show_Show$T.show_(z_.value_)) + ")")
 }
-}
+},
 }}
 
 export function ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal_Equal$T) { return {
@@ -617,7 +609,7 @@ return ff_core_Equal_Equal$T.equals_(x_.value_, y_.value_)
 {
 return false
 }
-}
+},
 }}
 
 export function ff_core_Ordering_Order$ff_core_Option_Option(ff_core_Ordering_Order$T) { return {
@@ -680,7 +672,7 @@ return 1
 }
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
 }
-}
+},
 }}
 
 export function ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable_Serializable$T) { return {
@@ -761,5 +753,5 @@ return ff_core_Option.Some(ff_core_Serializable_Serializable$T.deserializeUsing_
 return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
-}
+},
 }}

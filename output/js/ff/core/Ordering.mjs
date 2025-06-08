@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -107,8 +105,6 @@ const OrderingAfter$ = {OrderingAfter: true};
 export function OrderingAfter() {
 return OrderingAfter$;
 }
-
-
 
 export function before_(x_, y_, ff_core_Ordering_Order$T) {
 return (ff_core_Ordering_Order$T.compare_(x_, y_) === ff_core_Ordering.OrderingBefore())
@@ -356,7 +352,7 @@ return ff_core_Ordering.OrderingSame()
 },
 async compare_$(x_, y_, $task) {
 return ff_core_Ordering.OrderingSame()
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_core_Bool_Bool = {
@@ -385,7 +381,7 @@ return ff_core_Ordering.OrderingAfter()
 {
 return ff_core_Ordering.OrderingSame()
 }
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_core_Char_Char = {
@@ -394,7 +390,7 @@ return ff_core_Ordering.fromInt_((x_ - y_))
 },
 async compare_$(x_, y_, $task) {
 return ff_core_Ordering.fromInt_((x_ - y_))
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_core_Int_Int = {
@@ -403,7 +399,7 @@ return ff_core_Ordering.fromInt_((x_ - y_))
 },
 async compare_$(x_, y_, $task) {
 return ff_core_Ordering.fromInt_((x_ - y_))
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_core_Float_Float = {
@@ -412,7 +408,7 @@ return ff_core_Ordering.fromFloat_((x_ - y_))
 },
 async compare_$(x_, y_, $task) {
 return ff_core_Ordering.fromFloat_((x_ - y_))
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_core_String_String = {
@@ -433,7 +429,7 @@ return ff_core_Ordering.OrderingAfter()
 } else {
 return ff_core_Ordering.OrderingSame()
 }
-}
+},
 };
 
 export function ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering_Order$A, ff_core_Ordering_Order$B) { return {
@@ -460,7 +456,7 @@ const o_ = _1;
 return o_
 }
 }
-}
+},
 }}
 
 export function ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering_Order$T) { return {
@@ -489,7 +485,7 @@ return ff_core_Ordering.fromInt_((x_.length - y_.length))
 } else {
 return ordering_
 }
-}
+},
 }}
 
 export const ff_core_Equal_Equal$ff_core_Ordering_Ordering = {
@@ -524,5 +520,5 @@ return true
 {
 return false
 }
-}
+},
 };

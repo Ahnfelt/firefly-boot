@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -98,8 +96,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 export function Stream(next_, close_) {
 return {next_, close_};
 }
-
-
 
 export function new_(next_, close_ = (() => {
 
@@ -1144,5 +1140,3 @@ remainder_ = ff_core_Option.Some(ff_core_Buffer.Buffer_view(buffer_, needed_, ff
 return ff_core_Pair.Pair(ff_core_Array.Array_drain(buffers_), (await ff_core_Stream.Stream_addAll$((await ff_core_Option.Option_toStream$(remainder_, false, $task)), self_, $task)))
 }
 }
-
-

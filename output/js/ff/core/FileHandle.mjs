@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -95,12 +93,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type FileHandle
-
-
-
-
-
-
 
 
 export function FileHandle_close(self_) {
@@ -216,5 +208,3 @@ if(dataOnly_) {
 (await self_.sync())
 }
 }
-
-

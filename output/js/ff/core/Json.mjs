@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -95,8 +93,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // newtype Json
-
-
 
 export function read_(json_) {
 try {
@@ -932,7 +928,7 @@ return value_
 },
 async fromJson_$(json_, $task) {
 return ff_core_Option.Some(json_)
-}
+},
 };
 
 export const ff_core_Json_JsonLike$ff_core_String_String = {
@@ -955,7 +951,7 @@ const json_a = json_;
 const _w1 = json_a;
 return ff_core_Json.Json_getString(_w1)
 }
-}
+},
 };
 
 export const ff_core_Json_JsonLike$ff_core_Int_Int = {
@@ -978,7 +974,7 @@ const json_a = json_;
 const _w1 = json_a;
 return ff_core_Json.Json_getInt(_w1)
 }
-}
+},
 };
 
 export const ff_core_Json_JsonLike$ff_core_Float_Float = {
@@ -1001,7 +997,7 @@ const json_a = json_;
 const _w1 = json_a;
 return ff_core_Json.Json_getFloat(_w1)
 }
-}
+},
 };
 
 export const ff_core_Json_JsonLike$ff_core_Bool_Bool = {
@@ -1024,7 +1020,7 @@ const json_a = json_;
 const _w1 = json_a;
 return ff_core_Json.Json_getBool(_w1)
 }
-}
+},
 };
 
 export function ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json_JsonLike$T) { return {
@@ -1085,7 +1081,7 @@ if(convertible_) {
 return ff_core_Option.Some(ff_core_Array.Array_drain(result_))
 } else return ff_core_Option.None()
 }))
-}
+},
 }}
 
 export function ff_core_Json_JsonLike$ff_core_StringMap_StringMap(ff_core_Json_JsonLike$T) { return {
@@ -1152,7 +1148,7 @@ return ff_core_Option.Some(map_)
 } else return ff_core_Option.None()
 })()))
 : ff_core_Option.None()))
-}
+},
 }}
 
 export const ff_core_Any_HasAnyTag$ff_core_Json_Json = {
@@ -1161,7 +1157,7 @@ return ff_core_Any.internalAnyTag_("ff:core/Json.Json[]")
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_("ff:core/Json.Json[]")
-}
+},
 };
 
 export const ff_core_Show_Show$ff_core_Json_Json = {
@@ -1170,7 +1166,7 @@ return ff_core_Json.Json_write(value_, ff_core_Option.Some("    "))
 },
 async show_$(value_, $task) {
 return ff_core_Json.Json_write(value_, ff_core_Option.Some("    "))
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_core_Json_Json = {
@@ -1179,7 +1175,7 @@ return ff_core_Json.internalEquals_(a_, b_)
 },
 async equals_$(a_, b_, $task) {
 return ff_core_Json.internalEquals_(a_, b_)
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_core_Json_Json = {
@@ -1188,7 +1184,7 @@ return ff_core_Ordering.fromInt_(ff_core_Json.internalCompare_(a_, b_))
 },
 async compare_$(a_, b_, $task) {
 return ff_core_Ordering.fromInt_(ff_core_Json.internalCompare_(a_, b_))
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_core_Json_Json = {
@@ -1203,5 +1199,5 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 },
 async deserializeUsing_$(serialization_, $task) {
 return ff_core_Option.Option_grab(ff_core_Json.read_(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_)))
-}
+},
 };
