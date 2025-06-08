@@ -637,7 +637,7 @@ extend self: JsEmitter {
                     let dictionaryStrings = dictionaries.map {self.makeDictionary(_)}
                     let asyncSuffix = if(await) {"$"} else {""}
                     if(await) {self.writeUnmapped("(await ")}
-                    self.writeNamed(name, at, escapeKeyword(name.reverse().takeWhile {_ != '.'}.reverse()) + asyncSuffix)
+                    self.writeNamed(name, at, escapeResolved(name) + asyncSuffix)
                     self.writeUnmapped("(")
                     let comma = Comma(self)
                     arguments.each {
