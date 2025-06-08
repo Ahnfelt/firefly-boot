@@ -1,0 +1,38 @@
+{
+    "version": 3,
+    "sources": [
+        "FileHandle.ff"
+    ],
+    "sourcesContent": [
+        null
+    ],
+    "names": [
+        "FileHandle_close",
+        "self",
+        "close",
+        "FileHandle_read",
+        "buffer",
+        "offset",
+        "length",
+        "ff:core/Option.None",
+        "position",
+        "read",
+        "ff:core/Option.Option_else",
+        "ff:core/Option.Option_map",
+        "_w1",
+        "FileHandle_write",
+        "write",
+        "FileHandle_writeText",
+        "text",
+        "encoding",
+        "FileHandle_writeLine",
+        "ff:core/FileHandle.FileHandle_writeText",
+        "FileHandle_truncate",
+        "truncate",
+        "FileHandle_sync",
+        "dataOnly",
+        "datasync",
+        "sync"
+    ],
+    "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;;A,O,SAIIA,gB,CAFGC,K,C;AAGUA,K,CAAOC,K,C;A;;A,O,SAGpBC,e,CANGF,K,EAMEG,O,EAAgBC,O,GAAc,C,EAAGC,O,GAAsBC,mB,C,C,EAAMC,S,GAAwBD,mB,C,C,C;A;AAE7EN,K,CAAOQ,I,CAAKL,O,E,C,AACjBC,M,EAASA,O,E,AACTC,M,EAAyBI,0B,CAATC,yB,CAAPL,O,E,C,CAAWM,G;A,OAAC;A,E,C,E,C,C;A,OAAa;A,E,C,E,AAClCJ,Q,EAA6BE,0B,CAATC,yB,CAATH,S,E,C,CAAaI,G;A,OAAC;A,E,C,E,C,C;A,OAAa;A,E,C,C;A;;A,O,SAI9CC,gB,CAfGZ,K,EAeGG,O,EAAgBC,O,GAAc,C,EAAGC,O,GAAsBC,mB,C,C,EAAMC,S,GAAwBD,mB,C,C,C;A;AAE9EN,K,CAAOa,K,CACZV,O,EACAC,O,EACgBK,0B,CAATC,yB,CAAPL,O,E,C,CAAWM,G;A,OAAC;A,E,C,E,C,C;A,OAAa;A,E,C,EACPF,0B,CAATC,yB,CAATH,S,E,C,CAAaI,G;A,OAAC;A,E,C,E,C,C;A,OAAa;A,E,C;A;;A,O,SAInCG,oB,CAzBGd,K,EAyBOe,K,EAAcR,S,GAAwBD,mB,C,C,EAAMU,S,GAAmB,M,C;A;AAE5DhB,K,CAAOa,K,CACZE,K,EACkBN,0B,CAATC,yB,CAATH,S,E,C,CAAaI,G;A,OAAC;A,E,C,E,C,C;A,OAAa;A,E,C,EAC3BK,S;A;;A,O,SAIRC,oB,CAlCGjB,K,EAkCOe,K,EAAcR,S,GAAwBD,mB,C,C,EAAMU,S,GAAmB,M,C;AAChEE,uC,CAALlB,K,E,CAAee,K,C,C,CAAO,I,C,EAAMR,S,EAAUS,S;A;;A,O,SAG1CG,mB,CAtCGnB,K,EAsCMK,O,GAAc,C,C;A;AAEVL,K,CAAOoB,Q,CAASf,O;A;;A,O,SAG7BgB,e,CA3CGrB,K,EA2CEsB,S,GAAiB,K,C;A;A,GAEfA,S;AACUtB,K,CAAOuB,Q,C;A,O;AAEPvB,K,CAAOwB,I,C;A;A;;A,O,eA9CxBzB,iB,CAFGC,K,E,K,C;AAGI,OAAMA,K,CAAOC,K,C,C;A;;A,O,eAGpBC,gB,CANGF,K,EAMEG,O,EAAgBC,O,GAAc,C,EAAGC,O,GAAsBC,mB,C,C,EAAMC,S,GAAwBD,mB,C,C,E,K,C;AACnF,uC;AACA,OAAMN,K,CAAOQ,I,CAAKL,O,E,C,AACjBC,M,EAASA,O,E,AACTC,M,EAAyBI,0B,CAATC,yB,CAAPL,O,E,C,CAAWM,G;A,OAAC;A,E,C,E,C,C;A,OAAa;A,E,C,E,AAClCJ,Q,EAA6BE,0B,CAATC,yB,CAATH,S,E,C,CAAaI,G;A,OAAC;A,E,C,E,C,C;A,OAAa;A,E,C,C,C;A;;A,O,eAI9CC,iB,CAfGZ,K,EAeGG,O,EAAgBC,O,GAAc,C,EAAGC,O,GAAsBC,mB,C,C,EAAMC,S,GAAwBD,mB,C,C,E,K,C;AACpF,uC;AACA,OAAMN,K,CAAOa,K,CACZV,O,EACAC,O,EACgBK,0B,CAATC,yB,CAAPL,O,E,C,CAAWM,G;A,OAAC;A,E,C,E,C,C;A,OAAa;A,E,C,EACPF,0B,CAATC,yB,CAATH,S,E,C,CAAaI,G;A,OAAC;A,E,C,E,C,C;A,OAAa;A,E,C,C;A;;A,O,eAInCG,qB,CAzBGd,K,EAyBOe,K,EAAcR,S,GAAwBD,mB,C,C,EAAMU,S,GAAmB,M,E,K,C;AAClE,uC;AACA,OAAMhB,K,CAAOa,K,CACZE,K,EACkBN,0B,CAATC,yB,CAATH,S,E,C,CAAaI,G;A,OAAC;A,E,C,E,C,C;A,OAAa;A,E,C,EAC3BK,S,C;A;;A,O,eAIRC,qB,CAlCGjB,K,EAkCOe,K,EAAcR,S,GAAwBD,mB,C,C,EAAMU,S,GAAmB,M,E,K,C;A,OAChEE,wC,CAALlB,K,E,CAAee,K,C,C,CAAO,I,C,EAAMR,S,EAAUS,S,E,K,C;A;;A,O,eAG1CG,oB,CAtCGnB,K,EAsCMK,O,GAAc,C,E,K,C;AAChB,uC;AACA,OAAML,K,CAAOoB,Q,CAASf,O,C;A;;A,O,eAG7BgB,gB,CA3CGrB,K,EA2CEsB,S,GAAiB,K,E,K,C;AACf,uC;A,GACAA,S;AACI,OAAMtB,K,CAAOuB,Q,C,C;A,O;AAEb,OAAMvB,K,CAAOwB,I,C,C;A;A"
+}

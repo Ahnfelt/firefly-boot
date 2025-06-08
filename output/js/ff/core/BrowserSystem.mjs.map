@@ -1,0 +1,48 @@
+{
+    "version": 3,
+    "sources": [
+        "BrowserSystem.ff"
+    ],
+    "sourcesContent": [
+        null
+    ],
+    "names": [
+        "BrowserSystem_httpClient",
+        "self",
+        "BrowserSystem_mainTask",
+        "BrowserSystem_crypto",
+        "\"crypto\"",
+        "BrowserSystem_js",
+        "BrowserSystem_date",
+        "timeZoneId",
+        "ff:core/Option.None",
+        "calendarId",
+        "ff:core/Date.isoCalendarId",
+        "date",
+        "\"Temporal\"",
+        "Now",
+        "zonedDateTimeISO",
+        "ff:core/Option.Option_else",
+        "ff:core/Option.Option_map",
+        "_w1",
+        "ff:core/Date.Date_withCalendar",
+        "BrowserSystem_url",
+        "\"location\"",
+        "href",
+        "BrowserSystem_urlPath",
+        "pathname",
+        "BrowserSystem_urlQuery",
+        "name",
+        "param",
+        "\"URLSearchParams\"",
+        "search",
+        "get",
+        "ff:core/JsValue.JsValue_isNullOrUndefined",
+        "ff:core/Option.Some",
+        "BrowserSystem_urlFragment",
+        "hash",
+        "startsWith",
+        "slice"
+    ],
+    "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;;A,O,SAIIA,wB,CAFGC,K,C;A,OAGI;A;;A,O,SAGPC,sB,CANGD,K,C;A,OAOCA,K,CAAO,O;A;;A,O,SAGXE,oB,CAVGF,K,C;A,OAWKG;A;;A,O,SAGRC,gB,CAdGJ,K,C;A,OAeI;A;;A,O,SAGPK,kB,CAlBGL,K,EAkBEM,W,GAA6BC,mB,C,C,EAAMC,W,GAA0BC,2B,C;A,MAC1DC,K,GAAgBC,Q,CAAUC,G,CAAKC,gB,CAAqCC,0B,CAATC,yB,CAAXT,W,E,C,CAAeU,G;A,OAAC;A,E,C,E,C,C;A,OAAa;A,E,C,C;A,G,CAC9ER,W,KAAmBC,2B,C;A,OAAgBC;A,O;A,OAAiBO,8B,CAALP,K,EAAkBF,W;A;A;;A,O,SAGxEU,iB,CAvBGlB,K,C;A,OAwBKmB,Q,CAAUC;A;;A,O,SAGlBC,qB,CA3BGrB,K,C;A,OA4BKmB,Q,CAAUG;A;;A,O,SAGlBC,sB,CA/BGvB,K,EA+BMwB,K,C;A,MACDC,M,G,KAAYC,e,CAAsBP,Q,CAAUQ,M,E,CAASC,G,CAAIJ,K,C;A,GACpDK,yC,CAANJ,M,C;A,OAA4BlB,mB,C;A,O;A,OAC/BuB,mB,CAAKL,M;A;A;;A,O,SAGTM,yB,CArCG/B,K,C;A,G,C,CAsCSmB,Q,CAAUa,I,CAAMC,U,CAAW,G,C,C;A,OAAQ1B,mB,C;A,O;A,OAC3CuB,mB,CAASX,Q,CAAUa,I,CAAME,K,CAAM,C,C;A;A;;A,O,eArCnCnC,yB,CAFGC,K,E,K,C;A,OAGI;A;;A,O,eAGPC,uB,CANGD,K,E,K,C;A,OAOCA,K,CAAO,O;A;;A,O,eAGXE,qB,CAVGF,K,E,K,C;A,OAWKG;A;;A,O,eAGRC,iB,CAdGJ,K,E,K,C;A,OAeI;A;;A,O,eAGPK,mB,CAlBGL,K,EAkBEM,W,GAA6BC,mB,C,C,EAAMC,W,GAA0BC,2B,E,K,C;A,MAC1DC,K,GAAgBC,Q,CAAUC,G,CAAKC,gB,CAAqCC,0B,CAATC,yB,CAAXT,W,E,C,CAAeU,G;A,OAAC;A,E,C,E,C,C;A,OAAa;A,E,C,C;A,G,CAC9ER,W,KAAmBC,2B,C;A,OAAgBC;A,O;A,OAAiBO,8B,CAALP,K,EAAkBF,W;A;A;;A,O,eAGxEU,kB,CAvBGlB,K,E,K,C;A,OAwBKmB,Q,CAAUC;A;;A,O,eAGlBC,sB,CA3BGrB,K,E,K,C;A,OA4BKmB,Q,CAAUG;A;;A,O,eAGlBC,uB,CA/BGvB,K,EA+BMwB,K,E,K,C;A,MACDC,M,G,KAAYC,e,CAAsBP,Q,CAAUQ,M,E,CAASC,G,CAAIJ,K,C;A,GACpDK,yC,CAANJ,M,C;A,OAA4BlB,mB,C;A,O;A,OAC/BuB,mB,CAAKL,M;A;A;;A,O,eAGTM,0B,CArCG/B,K,E,K,C;A,G,C,CAsCSmB,Q,CAAUa,I,CAAMC,U,CAAW,G,C,C;A,OAAQ1B,mB,C;A,O;A,OAC3CuB,mB,CAASX,Q,CAAUa,I,CAAME,K,CAAM,C,C;A;A"
+}

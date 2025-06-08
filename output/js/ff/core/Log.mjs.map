@@ -1,0 +1,28 @@
+{
+    "version": 3,
+    "sources": [
+        "Log.ff"
+    ],
+    "sourcesContent": [
+        null
+    ],
+    "names": [
+        "show",
+        "value",
+        "ff:core/Log.trace",
+        "ff:core/Show.show",
+        "debugDynamic",
+        "\"console\"",
+        "debug",
+        "verbose",
+        "log",
+        "info",
+        "warn",
+        "error",
+        "trace",
+        "\"process\"",
+        "stderr",
+        "write"
+    ],
+    "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A,O,SAAAA,K,CAAcC,M,E,mB,C;AACVC,kB,C,mB,CAAWC,K,CAAKF,M,C;A;;A,O,SAGpBG,a,CAAgBH,M,C;AACRI,O,CAASC,K,CAAML,M;A;;A,O,SAGvBK,M,CAAML,M,C;AACEI,O,CAASC,K,CAAML,M;A;;A,O,SAGvBM,Q,CAAQN,M,C;AACAI,O,CAASG,G,CAAIP,M;A;;A,O,SAGrBQ,K,CAAKR,M,C;AACGI,O,CAASI,I,CAAKR,M;A;;A,O,SAGtBS,K,CAAKT,M,C;AACGI,O,CAASK,I,CAAKT,M;A;;A,O,SAGtBU,M,CAAMV,M,C;AACEI,O,CAASM,K,CAAMV,M;A;;A,O,SAGvBW,M,CAAMX,M,C;A,G,K;AAEMI,O,CAASC,K,CAAML,M;A,O;AAEfY,O,CAASC,M,CAAQC,K,C,CAAMd,M,C,C,CAAQ,I,C;A;A;;A,O,eAhC3CD,M,CAAcC,M,E,mB,E,K,C;AACVC,kB,C,mB,CAAWC,K,CAAKF,M,C;A;;A,O,eAGpBG,c,CAAgBH,M,E,K,C;AACRI,O,CAASC,K,CAAML,M;A;;A,O,eAGvBK,O,CAAML,M,E,K,C;AACEI,O,CAASC,K,CAAML,M;A;;A,O,eAGvBM,S,CAAQN,M,E,K,C;AACAI,O,CAASG,G,CAAIP,M;A;;A,O,eAGrBQ,M,CAAKR,M,E,K,C;AACGI,O,CAASI,I,CAAKR,M;A;;A,O,eAGtBS,M,CAAKT,M,E,K,C;AACGI,O,CAASK,I,CAAKT,M;A;;A,O,eAGtBU,O,CAAMV,M,E,K,C;AACEI,O,CAASM,K,CAAMV,M;A;;A,O,eAGvBW,O,CAAMX,M,E,K,C;A,G,K;AAEMI,O,CAASC,K,CAAML,M;A,O;AAEfY,O,CAASC,M,CAAQC,K,C,CAAMd,M,C,C,CAAQ,I,C;A;A"
+}
