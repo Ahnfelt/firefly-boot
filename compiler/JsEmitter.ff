@@ -2108,7 +2108,7 @@ extend self: JsEmitter {
                 )
                 self.emitCase(newArguments, newMatchCase, newConditions, variables, jump, last, break, lastCase, async)
             | PVariant(at, name, patterns) =>
-                let processed = self.processVariantCase(name, argument)
+                let processed = self.processVariantCase(at, name, argument)
                 let newMatchCase = matchCase.MatchCase(patterns = [...patterns, ...matchCase.patterns])
                 let newConditions = if(processed.loneVariant || lastCase) {conditions} else {
                     [...conditions, {
@@ -2120,7 +2120,7 @@ extend self: JsEmitter {
                 let newArguments = [...processed.arguments, ...arguments]
                 self.emitCase(newArguments, newMatchCase, newConditions, variables, jump, last, break, lastCase, async)
             | PVariantAs(at, name, variableAt, variable) =>
-                let processed = self.processVariantCase(name, argument)
+                let processed = self.processVariantCase(at, name, argument)
                 let newConditions = if(processed.loneVariant || lastCase) {conditions} else {
                     [...conditions, {
                         argument()
