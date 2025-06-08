@@ -486,7 +486,7 @@ extend self: JsEmitter {
         | EVariable(at, name) => 
             self.writeNamed(name, at, escapeResolved(name))
         | EList(at, _, items) =>
-            self.emitList(items, async)
+            self.emitList(at, items, async)
         | EVariant(at, "ff:core/Bool.False", _, _) =>
             self.writeMapped(at, "false")
         | EVariant(at, "ff:core/Bool.True", _, _) =>
@@ -2107,37 +2107,64 @@ extend self: JsEmitter {
                     }
                 )
                 self.emitCase(newArguments, newMatchCase, newConditions, variables, jump, last, break, lastCase, async)
-            | PVariant(_, name, patterns) =>
+            | PVariant(at, name, patterns) =>
                 let processed = self.processVariantCase(name, argument)
                 let newMatchCase = matchCase.MatchCase(patterns = [...patterns, ...matchCase.patterns])
                 let newConditions = if(processed.loneVariant || lastCase) {conditions} else {
-                    [...conditions, argument + "." + processed.variantName]
+                    [...conditions, {
+                        argument()
+                        self.writeMapped(at, ".")
+                        self.writeNamed(processed.variantName, at, processed.variantName)
+                    }]
                 }
                 let newArguments = [...processed.arguments, ...arguments]
                 self.emitCase(newArguments, newMatchCase, newConditions, variables, jump, last, break, lastCase, async)
             | PVariantAs(at, name, variableAt, variable) =>
                 let processed = self.processVariantCase(name, argument)
                 let newConditions = if(processed.loneVariant || lastCase) {conditions} else {
-                    [...conditions, argument + "." + processed.variantName]
+                    [...conditions, {
+                        argument()
+                        self.writeMapped(at, ".")
+                        self.writeNamed(processed.variantName, at, processed.variantName)
+                    }]
                 }
-                let newVariables = variable.map(escapeKeyword).filter {_ != argument}.map {
-                    [...variables, "const " + _ + " = " + argument + ";\n"]
+                let newVariables = variable.map {x =>
+                    [...variables, {
+                        self.writeMapped(at, "const ")
+                        self.writeNamed(x, at, escapeKeyword(x))
+                        self.writeMapped(at, " = ")
+                        argument()
+                        self.writeMapped(at, ";")
+                        self.writeLine()
+                    }]
                 }.else {[]}
                 self.emitCase(arguments, matchCase, newConditions, newVariables, jump, last, break, lastCase, async)
-            | PAlias(_, pattern, variable) =>
-                let escaped = escapeKeyword(variable)
-                let newVariables = if(escaped != argument) {
-                    [...variables, "const " + escaped + " = " + argument + ";\n"]
-                } else {variables}
+            | PAlias(at, pattern, variable) =>
+                let newVariables = [...variables, {
+                    self.writeMapped(at, "const ")
+                    self.writeNamed(variable, at, escapeKeyword(variable))
+                    self.writeMapped(at, " = ")
+                    argument()
+                    self.writeMapped(at, ";")
+                    self.writeLine()                    
+                }]
                 self.emitPattern(argument, pattern, arguments, matchCase, conditions, newVariables, jump, last, break, lastCase, async)
         }
     }
 
-    emitList(items: List[Pair[Term, Bool]], async: Bool): String {
-        "[" + items.map {
-            | Pair(item, False) => self.emitTerm(item, async)
-            | Pair(item, True) => "..." + self.emitTerm(item, async)
-        }.join(", ") + "]"
+    emitList(at: Location, items: List[Pair[Term, Bool]], async: Bool) {
+        self.writeMapped(at, "[")
+        let comma = Comma(self)
+        items.each {
+            | Pair(item, False) => 
+                comma.writeComma()
+                self.emitTerm(item, async)
+            | Pair(item, True) => 
+                comma.writeComma()
+                self.writeMapped(item.at, "...")
+                self.emitTerm(item, async)
+        }
+        self.writeMapped(at, "]")
     }
 
     processVariantCase(name: String, argument: () => Unit): ProcessedVariantCase {
@@ -2175,12 +2202,17 @@ extend self: JsEmitter {
         newtype
     }
 
-    emitArgument(callAt: Location, argument: Argument, async: Bool): String {
+    emitArgument(callAt: Location, argument: Argument, async: Bool) {
         argument.value.{
-            | ECall(_, StaticCall("ff:core/SourceLocation.callSite", _, _), _, _, _, _) => 
-                "\"" + self.moduleKey.folders.map {_ + "/"}.join() + self.moduleKey.name + 
-                ":" + callAt.line + ":" + callAt.column + 
-                "," + self.moduleKey.packagePair.group + "," + self.moduleKey.packagePair.name + "\""
+            | ECall(at, StaticCall("ff:core/SourceLocation.callSite", _, _), _, _, _, _) => 
+                self.writeMapped(at, "\"")
+                self.moduleKey.folders.each {
+                    self.writeMapped(at, _ + "/")
+                }
+                self.writeMapped(at, self.moduleKey.name)
+                self.writeMapped(at, ":" + callAt.line + ":" + callAt.column)
+                self.writeMapped(at, "," + self.moduleKey.packagePair.group + "," + self.moduleKey.packagePair.name)
+                self.writeMapped(at, "\"")
             | value =>
                 self.emitTerm(value, async)
         }
