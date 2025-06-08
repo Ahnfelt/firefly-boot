@@ -154,7 +154,6 @@ lines_.array.push(ff_core_Array.Array_drain(line_));
 output_.array.push(ff_core_Array.Array_join(strings_, ""));
 index_ += 1
 };
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException);
 const sourceMap_ = ff_compiler_SourceMap.sourceMap_([fireflyFile_], ff_core_StringMap.StringMap_keys(writtenNames_), ff_core_Array.Array_drain(lines_));
 return ff_core_Pair.Pair(ff_core_Array.Array_join(output_, "\n"), sourceMap_)
 }
