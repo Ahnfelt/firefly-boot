@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "../../../../../../compiler/Unification.ff"
+        "../../../../../compiler/Unification.ff"
     ],
     "sourcesContent": [
         null

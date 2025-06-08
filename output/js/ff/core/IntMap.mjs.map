@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "../../../../../../core/IntMap.ff"
+        "../../../../../core/IntMap.ff"
     ],
     "sourcesContent": [
         null

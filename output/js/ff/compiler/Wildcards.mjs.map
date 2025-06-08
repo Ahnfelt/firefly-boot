@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "../../../../../../compiler/Wildcards.ff"
+        "../../../../../compiler/Wildcards.ff"
     ],
     "sourcesContent": [
         null
