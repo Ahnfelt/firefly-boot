@@ -93,14 +93,14 @@ toMappings(lines: List[List[List[Int]]]): String {
         if(firstLine) {
             firstLine = False
         } else {
-            vlq.push(';'.codeUnit)
+            vlq.push(semicolonIndex)
         }
         mutable firstSegment = True
         line.each {segment =>
             if(firstSegment) {
                 firstSegment = False
             } else {
-                vlq.push(','.codeUnit)
+                vlq.push(commaIndex)
             }
             segment.each {field =>
                 internalToVlq(vlq, field)
@@ -144,4 +144,6 @@ internalToVlq(vlq: Array[Int], value: Int) {
 vlqBaseShift = 5
 vlqBaseMask = 1.bitLeft(vlqBaseShift) - 1
 vlqContinuationBit = 1.bitLeft(vlqBaseShift)
-base64Characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+base64Characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/;,"
+semicolonIndex = base64Characters.indexOf(";").grab()
+commaIndex = base64Characters.indexOf(",").grab()

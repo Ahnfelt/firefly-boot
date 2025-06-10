@@ -100,7 +100,11 @@ export const vlqBaseMask_ = (ff_core_Int.Int_bitLeft(1, ff_compiler_SourceMap.vl
 
 export const vlqContinuationBit_ = ff_core_Int.Int_bitLeft(1, ff_compiler_SourceMap.vlqBaseShift_);
 
-export const base64Characters_ = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+export const base64Characters_ = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/;,";
+
+export const semicolonIndex_ = ff_core_Option.Option_grab(ff_core_String.String_indexOf(ff_compiler_SourceMap.base64Characters_, ";", 0));
+
+export const commaIndex_ = ff_core_Option.Option_grab(ff_core_String.String_indexOf(ff_compiler_SourceMap.base64Characters_, ",", 0));
 
 export function makeOutputAndSourceMap_(fireflyFile_, fireflySource_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_) {
 const lines_ = ff_core_Array.new_();
@@ -201,7 +205,7 @@ const line_ = for_a[for_i];
 if(firstLine_) {
 firstLine_ = false
 } else {
-vlq_.array.push(59)
+vlq_.array.push(ff_compiler_SourceMap.semicolonIndex_)
 };
 let firstSegment_ = true;
 for(let for_a = line_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
@@ -209,7 +213,7 @@ const segment_ = for_a[for_i];
 if(firstSegment_) {
 firstSegment_ = false
 } else {
-vlq_.array.push(44)
+vlq_.array.push(ff_compiler_SourceMap.commaIndex_)
 };
 for(let for_a = segment_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const field_ = for_a[for_i];
@@ -347,7 +351,7 @@ const line_ = for_a[for_i];
 if(firstLine_) {
 firstLine_ = false
 } else {
-vlq_.array.push(59)
+vlq_.array.push(ff_compiler_SourceMap.semicolonIndex_)
 };
 let firstSegment_ = true;
 for(let for_a = line_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
@@ -355,7 +359,7 @@ const segment_ = for_a[for_i];
 if(firstSegment_) {
 firstSegment_ = false
 } else {
-vlq_.array.push(44)
+vlq_.array.push(ff_compiler_SourceMap.commaIndex_)
 };
 for(let for_a = segment_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const field_ = for_a[for_i];
