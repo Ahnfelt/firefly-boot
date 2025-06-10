@@ -102,7 +102,8 @@ export const vlqContinuationBit_ = ff_core_Int.Int_bitLeft(1, ff_compiler_Source
 
 export const base64Characters_ = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-export function makeOutputAndSourceMap_(fireflyFile_, fireflySource_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_) {
+export function makeOutputAndSourceMap_(task_, fireflyFile_, fireflySource_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_) {
+const start_ = ff_core_Task.Task_elapsed(task_);
 const lines_ = ff_core_Array.new_();
 const output_ = ff_core_Array.new_();
 let index_ = 0;
@@ -154,8 +155,16 @@ lines_.array.push(ff_core_Array.Array_drain(line_));
 output_.array.push(ff_core_Array.Array_join(strings_, ""));
 index_ += 1
 };
-const sourceMap_ = ff_compiler_SourceMap.sourceMap_([fireflyFile_], [fireflySource_], ff_core_StringMap.StringMap_keys(writtenNames_), ff_core_Array.Array_drain(lines_));
-return ff_core_Pair.Pair(ff_core_Array.Array_join(output_, "\n"), sourceMap_)
+const mapLines_ = ff_core_Array.Array_drain(lines_);
+const sourceMapStart_ = ff_core_Task.Task_elapsed(task_);
+const sourceMap_ = ff_compiler_SourceMap.sourceMap_([fireflyFile_], [fireflySource_], ff_core_StringMap.StringMap_keys(writtenNames_), mapLines_);
+const sourceMapStop_ = ff_core_Task.Task_elapsed(task_);
+const sourceMapDuration_ = (sourceMapStop_ - sourceMapStart_);
+const result_ = ff_core_Pair.Pair(ff_core_Array.Array_join(output_, "\n"), sourceMap_);
+const stop_ = ff_core_Task.Task_elapsed(task_);
+const duration_ = (stop_ - start_);
+ff_core_Log.debug_((((("" + duration_) + "s ") + "makeOutputAndSourceMap ") + fireflyFile_));
+return result_
 }
 
 export function makeOutput_(writtenStrings_, writtenAnchors_) {
@@ -189,14 +198,14 @@ return ff_core_Json.null_()
 }
 
 export function toMappings_(lines_) {
-let result_ = "";
+const vlq_ = ff_core_Array.new_();
 let firstLine_ = true;
 for(let for_a = lines_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const line_ = for_a[for_i];
 if(firstLine_) {
 firstLine_ = false
 } else {
-result_ += ";"
+vlq_.array.push(59)
 };
 let firstSegment_ = true;
 for(let for_a = line_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
@@ -204,19 +213,18 @@ const segment_ = for_a[for_i];
 if(firstSegment_) {
 firstSegment_ = false
 } else {
-result_ += ","
+vlq_.array.push(44)
 };
 for(let for_a = segment_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const field_ = for_a[for_i];
-result_ += ff_compiler_SourceMap.toBase64Vlq_(field_)
+ff_compiler_SourceMap.internalToVlq_(vlq_, field_)
 }
 }
 };
-return result_
+return ff_compiler_SourceMap.toBase64Vlq_(ff_core_Array.Array_drain(vlq_))
 }
 
-export function toBase64Vlq_(value_) {
-const vlq_ = ff_compiler_SourceMap.internalToVlq_(value_);
+export function toBase64Vlq_(vlq_) {
 const result_ = ff_core_Buffer.new_(vlq_.length, false);
 for(let for_i = 0, for_e = vlq_.length; for_i < for_e; for_i++) {
 const i_ = for_i;
@@ -225,8 +233,7 @@ ff_core_Buffer.Buffer_setUint8(result_, i_, ff_core_String.String_grab(ff_compil
 return ff_core_Buffer.Buffer_toString(result_, "utf8")
 }
 
-export function internalToVlq_(value_) {
-const vlq_ = ff_core_Array.new_();
+export function internalToVlq_(vlq_, value_) {
 let digit_ = 0;
 let v_ = value_;
 if((v_ < 0)) {
@@ -242,11 +249,11 @@ digit_ = ff_core_Int.Int_bitOr(digit_, ff_compiler_SourceMap.vlqContinuationBit_
 };
 vlq_.array.push(digit_);
 if(!(v_ > 0)) break
-};
-return ff_core_Array.Array_drain(vlq_)
+}
 }
 
-export async function makeOutputAndSourceMap_$(fireflyFile_, fireflySource_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_, $task) {
+export async function makeOutputAndSourceMap_$(task_, fireflyFile_, fireflySource_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_, $task) {
+const start_ = (await ff_core_Task.Task_elapsed$(task_, $task));
 const lines_ = ff_core_Array.new_();
 const output_ = ff_core_Array.new_();
 let index_ = 0;
@@ -298,8 +305,16 @@ lines_.array.push(ff_core_Array.Array_drain(line_));
 output_.array.push(ff_core_Array.Array_join(strings_, ""));
 index_ += 1
 };
-const sourceMap_ = ff_compiler_SourceMap.sourceMap_([fireflyFile_], [fireflySource_], ff_core_StringMap.StringMap_keys(writtenNames_), ff_core_Array.Array_drain(lines_));
-return ff_core_Pair.Pair(ff_core_Array.Array_join(output_, "\n"), sourceMap_)
+const mapLines_ = ff_core_Array.Array_drain(lines_);
+const sourceMapStart_ = (await ff_core_Task.Task_elapsed$(task_, $task));
+const sourceMap_ = ff_compiler_SourceMap.sourceMap_([fireflyFile_], [fireflySource_], ff_core_StringMap.StringMap_keys(writtenNames_), mapLines_);
+const sourceMapStop_ = (await ff_core_Task.Task_elapsed$(task_, $task));
+const sourceMapDuration_ = (sourceMapStop_ - sourceMapStart_);
+const result_ = ff_core_Pair.Pair(ff_core_Array.Array_join(output_, "\n"), sourceMap_);
+const stop_ = (await ff_core_Task.Task_elapsed$(task_, $task));
+const duration_ = (stop_ - start_);
+ff_core_Log.debug_((((("" + duration_) + "s ") + "makeOutputAndSourceMap ") + fireflyFile_));
+return result_
 }
 
 export async function makeOutput_$(writtenStrings_, writtenAnchors_, $task) {
@@ -333,14 +348,14 @@ return ff_core_Json.null_()
 }
 
 export async function toMappings_$(lines_, $task) {
-let result_ = "";
+const vlq_ = ff_core_Array.new_();
 let firstLine_ = true;
 for(let for_a = lines_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const line_ = for_a[for_i];
 if(firstLine_) {
 firstLine_ = false
 } else {
-result_ += ";"
+vlq_.array.push(59)
 };
 let firstSegment_ = true;
 for(let for_a = line_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
@@ -348,19 +363,18 @@ const segment_ = for_a[for_i];
 if(firstSegment_) {
 firstSegment_ = false
 } else {
-result_ += ","
+vlq_.array.push(44)
 };
 for(let for_a = segment_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const field_ = for_a[for_i];
-result_ += ff_compiler_SourceMap.toBase64Vlq_(field_)
+ff_compiler_SourceMap.internalToVlq_(vlq_, field_)
 }
 }
 };
-return result_
+return ff_compiler_SourceMap.toBase64Vlq_(ff_core_Array.Array_drain(vlq_))
 }
 
-export async function toBase64Vlq_$(value_, $task) {
-const vlq_ = ff_compiler_SourceMap.internalToVlq_(value_);
+export async function toBase64Vlq_$(vlq_, $task) {
 const result_ = ff_core_Buffer.new_(vlq_.length, false);
 for(let for_i = 0, for_e = vlq_.length; for_i < for_e; for_i++) {
 const i_ = for_i;
@@ -369,8 +383,7 @@ ff_core_Buffer.Buffer_setUint8(result_, i_, ff_core_String.String_grab(ff_compil
 return ff_core_Buffer.Buffer_toString(result_, "utf8")
 }
 
-export async function internalToVlq_$(value_, $task) {
-const vlq_ = ff_core_Array.new_();
+export async function internalToVlq_$(vlq_, value_, $task) {
 let digit_ = 0;
 let v_ = value_;
 if((v_ < 0)) {
@@ -386,8 +399,7 @@ digit_ = ff_core_Int.Int_bitOr(digit_, ff_compiler_SourceMap.vlqContinuationBit_
 };
 vlq_.array.push(digit_);
 if(!(v_ > 0)) break
-};
-return ff_core_Array.Array_drain(vlq_)
+}
 }
 
 //# sourceMappingURL=SourceMap.mjs.map
