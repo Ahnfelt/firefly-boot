@@ -139,4 +139,5 @@ return ff_core_Option.Some(self_.ffException)
 } else return ff_core_Option.None()
 }
 
+
 //# sourceMappingURL=Error.mjs.map

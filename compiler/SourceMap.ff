@@ -20,6 +20,7 @@ makeOutputAndSourceMap(
             anchorLines.each {l =>
                 lines.push([])
                 output.push(l)
+                output.push("\n")
             }
         }
         mutable lastOutputColumn = 0
@@ -48,7 +49,8 @@ makeOutputAndSourceMap(
             line.push(relative.drain())
         }
         lines.push(line.drain())
-        output.push(strings.join())
+        strings.each {output.push(_)}
+        output.push("\n")
         index += 1
     }
     let mapLines = lines.drain()
@@ -58,10 +60,10 @@ makeOutputAndSourceMap(
     let sourceMapStop = task.elapsed()
     let sourceMapDuration = sourceMapStop.seconds - sourceMapStart.seconds
     //Log.debug("" + sourceMapDuration + "s " + "sourceMap " + fireflyFile)
-    let result = Pair(output.join("\n"), sourceMap)
+    let result = Pair(output.join(), sourceMap)
     let stop = task.elapsed()
     let duration = stop.seconds - start.seconds
-    Log.debug("" + duration + "s " + "makeOutputAndSourceMap " + fireflyFile)
+    //Log.debug("" + duration + "s " + "makeOutputAndSourceMap " + fireflyFile)
     
     result
 }

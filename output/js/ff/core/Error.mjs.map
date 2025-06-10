@@ -4,7 +4,7 @@
         "../../../../../core/Error.ff"
     ],
     "sourcesContent": [
-        "data Error {}\n\nextend self: Error {\n\n    rethrow[T](): T {\n        Js.throw(self!)\n    }\n\n    name(): String {\n        self!->name.coalesce(\"\")?\n    }\n\n    message(): String {\n        self!->message.coalesce(\"\")?\n    }\n\n    stack(): String {\n        self!->stack.coalesce(\"\")?\n    }\n\n    exception(): Option[Any] {\n        if(!self!->ffException.isNullOrUndefined()) {self!->ffException?}\n    }\n    \n}\n"
+        "data Error {}\r\n\r\nextend self: Error {\r\n\r\n    rethrow[T](): T {\r\n        Js.throw(self!)\r\n    }\r\n\r\n    name(): String {\r\n        self!->name.coalesce(\"\")?\r\n    }\r\n\r\n    message(): String {\r\n        self!->message.coalesce(\"\")?\r\n    }\r\n\r\n    stack(): String {\r\n        self!->stack.coalesce(\"\")?\r\n    }\r\n\r\n    exception(): Option[Any] {\r\n        if(!self!->ffException.isNullOrUndefined()) {self!->ffException?}\r\n    }\r\n    \r\n}\r\n"
     ],
     "names": [
         "rethrow",

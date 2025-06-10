@@ -121,7 +121,8 @@ const anchorLines_ = if_o.value_;
 for(let for_a = anchorLines_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const l_ = for_a[for_i];
 lines_.array.push([]);
-output_.array.push(l_)
+output_.array.push(l_);
+output_.array.push("\n")
 }
 }
 };
@@ -152,7 +153,11 @@ lastName_ = newName_
 line_.array.push(ff_core_Array.Array_drain(relative_))
 };
 lines_.array.push(ff_core_Array.Array_drain(line_));
-output_.array.push(ff_core_Array.Array_join(strings_, ""));
+for(let for_a = strings_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const _w1 = for_a[for_i];
+output_.array.push(_w1)
+};
+output_.array.push("\n");
 index_ += 1
 };
 const mapLines_ = ff_core_Array.Array_drain(lines_);
@@ -160,7 +165,7 @@ const sourceMapStart_ = ff_core_Task.Task_elapsed(task_);
 const sourceMap_ = ff_compiler_SourceMap.sourceMap_([fireflyFile_], [fireflySource_], ff_core_StringMap.StringMap_keys(writtenNames_), mapLines_);
 const sourceMapStop_ = ff_core_Task.Task_elapsed(task_);
 const sourceMapDuration_ = (sourceMapStop_ - sourceMapStart_);
-const result_ = ff_core_Pair.Pair(ff_core_Array.Array_join(output_, "\n"), sourceMap_);
+const result_ = ff_core_Pair.Pair(ff_core_Array.Array_join(output_, ""), sourceMap_);
 const stop_ = ff_core_Task.Task_elapsed(task_);
 const duration_ = (stop_ - start_);
 ff_core_Log.debug_((((("" + duration_) + "s ") + "makeOutputAndSourceMap ") + fireflyFile_));
@@ -271,7 +276,8 @@ const anchorLines_ = if_o.value_;
 for(let for_a = anchorLines_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const l_ = for_a[for_i];
 lines_.array.push([]);
-output_.array.push(l_)
+output_.array.push(l_);
+output_.array.push("\n")
 }
 }
 };
@@ -302,7 +308,11 @@ lastName_ = newName_
 line_.array.push(ff_core_Array.Array_drain(relative_))
 };
 lines_.array.push(ff_core_Array.Array_drain(line_));
-output_.array.push(ff_core_Array.Array_join(strings_, ""));
+for(let for_a = strings_.array, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const _w1 = for_a[for_i];
+output_.array.push(_w1)
+};
+output_.array.push("\n");
 index_ += 1
 };
 const mapLines_ = ff_core_Array.Array_drain(lines_);
@@ -310,7 +320,7 @@ const sourceMapStart_ = (await ff_core_Task.Task_elapsed$(task_, $task));
 const sourceMap_ = ff_compiler_SourceMap.sourceMap_([fireflyFile_], [fireflySource_], ff_core_StringMap.StringMap_keys(writtenNames_), mapLines_);
 const sourceMapStop_ = (await ff_core_Task.Task_elapsed$(task_, $task));
 const sourceMapDuration_ = (sourceMapStop_ - sourceMapStart_);
-const result_ = ff_core_Pair.Pair(ff_core_Array.Array_join(output_, "\n"), sourceMap_);
+const result_ = ff_core_Pair.Pair(ff_core_Array.Array_join(output_, ""), sourceMap_);
 const stop_ = (await ff_core_Task.Task_elapsed$(task_, $task));
 const duration_ = (stop_ - start_);
 ff_core_Log.debug_((((("" + duration_) + "s ") + "makeOutputAndSourceMap ") + fireflyFile_));
@@ -401,5 +411,6 @@ vlq_.array.push(digit_);
 if(!(v_ > 0)) break
 }
 }
+
 
 //# sourceMappingURL=SourceMap.mjs.map

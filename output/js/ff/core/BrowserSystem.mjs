@@ -203,4 +203,5 @@ return ff_core_Option.Some(location.hash.slice(1))
 }
 }
 
+
 //# sourceMappingURL=BrowserSystem.mjs.map
