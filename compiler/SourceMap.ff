@@ -1,5 +1,4 @@
 makeOutputAndSourceMap(
-    task: Task
     fireflyFile: String
     fireflySource: Option[String]
     writtenStrings: Array[Array[String]]
@@ -7,7 +6,6 @@ makeOutputAndSourceMap(
     writtenAnchors: IntMap[List[String]]
     writtenNames: StringMap[Int]
 ): Pair[String, Json] {
-    let start = task.elapsed()
     let lines = Array.new()
     let output = Array.new()
     mutable index = 0
@@ -53,19 +51,8 @@ makeOutputAndSourceMap(
         output.push("\n")
         index += 1
     }
-    let mapLines = lines.drain()
-    //Log.debug("Souce map values: " + mapLines.flatten().flatten().size())
-    let sourceMapStart = task.elapsed()
-    let sourceMap = sourceMap([fireflyFile], [fireflySource], writtenNames.keys(), mapLines)
-    let sourceMapStop = task.elapsed()
-    let sourceMapDuration = sourceMapStop.seconds - sourceMapStart.seconds
-    //Log.debug("" + sourceMapDuration + "s " + "sourceMap " + fireflyFile)
-    let result = Pair(output.join(), sourceMap)
-    let stop = task.elapsed()
-    let duration = stop.seconds - start.seconds
-    //Log.debug("" + duration + "s " + "makeOutputAndSourceMap " + fireflyFile)
-    
-    result
+    let sourceMap = sourceMap([fireflyFile], [fireflySource], writtenNames.keys(), lines.drain())
+    Pair(output.join(), sourceMap)
 }
 
 makeOutput(

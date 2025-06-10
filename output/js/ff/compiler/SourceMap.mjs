@@ -102,8 +102,7 @@ export const vlqContinuationBit_ = ff_core_Int.Int_bitLeft(1, ff_compiler_Source
 
 export const base64Characters_ = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-export function makeOutputAndSourceMap_(task_, fireflyFile_, fireflySource_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_) {
-const start_ = ff_core_Task.Task_elapsed(task_);
+export function makeOutputAndSourceMap_(fireflyFile_, fireflySource_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_) {
 const lines_ = ff_core_Array.new_();
 const output_ = ff_core_Array.new_();
 let index_ = 0;
@@ -160,16 +159,8 @@ output_.array.push(_w1)
 output_.array.push("\n");
 index_ += 1
 };
-const mapLines_ = ff_core_Array.Array_drain(lines_);
-const sourceMapStart_ = ff_core_Task.Task_elapsed(task_);
-const sourceMap_ = ff_compiler_SourceMap.sourceMap_([fireflyFile_], [fireflySource_], ff_core_StringMap.StringMap_keys(writtenNames_), mapLines_);
-const sourceMapStop_ = ff_core_Task.Task_elapsed(task_);
-const sourceMapDuration_ = (sourceMapStop_ - sourceMapStart_);
-const result_ = ff_core_Pair.Pair(ff_core_Array.Array_join(output_, ""), sourceMap_);
-const stop_ = ff_core_Task.Task_elapsed(task_);
-const duration_ = (stop_ - start_);
-ff_core_Log.debug_((((("" + duration_) + "s ") + "makeOutputAndSourceMap ") + fireflyFile_));
-return result_
+const sourceMap_ = ff_compiler_SourceMap.sourceMap_([fireflyFile_], [fireflySource_], ff_core_StringMap.StringMap_keys(writtenNames_), ff_core_Array.Array_drain(lines_));
+return ff_core_Pair.Pair(ff_core_Array.Array_join(output_, ""), sourceMap_)
 }
 
 export function makeOutput_(writtenStrings_, writtenAnchors_) {
@@ -257,8 +248,7 @@ if(!(v_ > 0)) break
 }
 }
 
-export async function makeOutputAndSourceMap_$(task_, fireflyFile_, fireflySource_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_, $task) {
-const start_ = (await ff_core_Task.Task_elapsed$(task_, $task));
+export async function makeOutputAndSourceMap_$(fireflyFile_, fireflySource_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_, $task) {
 const lines_ = ff_core_Array.new_();
 const output_ = ff_core_Array.new_();
 let index_ = 0;
@@ -315,16 +305,8 @@ output_.array.push(_w1)
 output_.array.push("\n");
 index_ += 1
 };
-const mapLines_ = ff_core_Array.Array_drain(lines_);
-const sourceMapStart_ = (await ff_core_Task.Task_elapsed$(task_, $task));
-const sourceMap_ = ff_compiler_SourceMap.sourceMap_([fireflyFile_], [fireflySource_], ff_core_StringMap.StringMap_keys(writtenNames_), mapLines_);
-const sourceMapStop_ = (await ff_core_Task.Task_elapsed$(task_, $task));
-const sourceMapDuration_ = (sourceMapStop_ - sourceMapStart_);
-const result_ = ff_core_Pair.Pair(ff_core_Array.Array_join(output_, ""), sourceMap_);
-const stop_ = (await ff_core_Task.Task_elapsed$(task_, $task));
-const duration_ = (stop_ - start_);
-ff_core_Log.debug_((((("" + duration_) + "s ") + "makeOutputAndSourceMap ") + fireflyFile_));
-return result_
+const sourceMap_ = ff_compiler_SourceMap.sourceMap_([fireflyFile_], [fireflySource_], ff_core_StringMap.StringMap_keys(writtenNames_), ff_core_Array.Array_drain(lines_));
+return ff_core_Pair.Pair(ff_core_Array.Array_join(output_, ""), sourceMap_)
 }
 
 export async function makeOutput_$(writtenStrings_, writtenAnchors_, $task) {
