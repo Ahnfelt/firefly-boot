@@ -126,13 +126,13 @@ extend self: JsEmitter {
             module.imports.sortBy {_.moduleKey}.map {self.emitImport(_.moduleKey)}
         ].flatten()
         let liner = Liner(self, True)
-        imports.each {import =>
-            liner.writeLines()
-            self.writeUnmapped(import)
-        }
         if(!imports.any {_ == selfImport}) {
             liner.writeLines()
             self.writeUnmapped(selfImport)
+        }
+        imports.each {import =>
+            liner.writeLines()
+            self.writeUnmapped(import)
         }
         let anchor = self.writeAnchor()
         module.types.each {
