@@ -911,7 +911,7 @@ extend self: JsEmitter {
                             self.writeLine()
                             self.writeMapped(condition.at, "} else ")
                         }
-                        self.writeMapped(term.at, "ff_core_Option.None()")
+                        self.writeMapped(term.at, "return ff_core_Option.None()")
                         
                 }
         }
