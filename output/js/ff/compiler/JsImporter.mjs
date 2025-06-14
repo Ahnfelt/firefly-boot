@@ -1,3 +1,5 @@
+import * as ff_compiler_JsImporter from "../../ff/compiler/JsImporter.mjs"
+
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
@@ -93,8 +95,6 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-import * as ff_compiler_JsImporter from "../../ff/compiler/JsImporter.mjs"
 
 // type JsImporter
 export function JsImporter(imports_) {

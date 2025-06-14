@@ -1,3 +1,5 @@
+import * as ff_compiler_Parser from "../../ff/compiler/Parser.mjs"
+
 import * as ff_compiler_LspHook from "../../ff/compiler/LspHook.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
@@ -99,8 +101,6 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-import * as ff_compiler_Parser from "../../ff/compiler/Parser.mjs"
 
 // type Parser
 export function Parser(moduleKey_, tokens_, end_, targetIsNode_, lspHook_, lspEmittedArgumentHook_, offset_, nextUnificationVariableIndex_) {

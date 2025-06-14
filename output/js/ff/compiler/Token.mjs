@@ -1,3 +1,5 @@
+import * as ff_compiler_Token from "../../ff/compiler/Token.mjs"
+
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
@@ -93,8 +95,6 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-import * as ff_compiler_Token from "../../ff/compiler/Token.mjs"
 
 // type Token
 export function Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, stopLine_, stopLineOffset_, stopOffset_) {

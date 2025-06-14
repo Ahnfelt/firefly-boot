@@ -1,3 +1,5 @@
+import * as ff_compiler_Unification from "../../ff/compiler/Unification.mjs"
+
 import * as ff_compiler_Inference from "../../ff/compiler/Inference.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
@@ -95,8 +97,6 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-import * as ff_compiler_Unification from "../../ff/compiler/Unification.mjs"
 
 // type Unification
 export function Unification(substitution_, constraints_, nextUnificationVariableIndex_, instances_, affects_, attemptFixes_) {

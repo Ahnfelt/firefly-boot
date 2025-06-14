@@ -1,3 +1,5 @@
+import * as ff_compiler_JsEmitter from "../../ff/compiler/JsEmitter.mjs"
+
 import * as ff_compiler_JsImporter from "../../ff/compiler/JsImporter.mjs"
 
 import * as ff_compiler_Patterns from "../../ff/compiler/Patterns.mjs"
@@ -99,8 +101,6 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-import * as ff_compiler_JsEmitter from "../../ff/compiler/JsEmitter.mjs"
 
 // type JsEmitter
 export function JsEmitter(otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_, emittingAsync_, tailCallUsed_, writtenColumn_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_) {
@@ -716,16 +716,16 @@ return _w1.moduleKey_
 return ff_compiler_JsEmitter.JsEmitter_emitImport(self_, _w1.moduleKey_)
 }))]);
 const liner_ = ff_compiler_JsEmitter.Liner(self_, true, true);
-for(let for_a = imports_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
-const import_ = for_a[for_i];
-ff_compiler_JsEmitter.Liner_writeLines(liner_);
-ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, import_)
-};
 if((!ff_core_List.List_any(imports_, ((_w1) => {
 return (_w1 === selfImport_)
 })))) {
 ff_compiler_JsEmitter.Liner_writeLines(liner_);
 ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, selfImport_)
+};
+for(let for_a = imports_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const import_ = for_a[for_i];
+ff_compiler_JsEmitter.Liner_writeLines(liner_);
+ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, import_)
 };
 const anchor_ = ff_compiler_JsEmitter.JsEmitter_writeAnchor(self_);
 for(let for_a = module_.types_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
@@ -1914,7 +1914,7 @@ ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, condition_.at_, "} else ")
 return
 }
 }));
-ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, "ff_core_Option.None()")
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, "return ff_core_Option.None()")
 return
 }
 }
@@ -4303,16 +4303,16 @@ return _w1.moduleKey_
 return ff_compiler_JsEmitter.JsEmitter_emitImport(self_, _w1.moduleKey_)
 }))]);
 const liner_ = ff_compiler_JsEmitter.Liner(self_, true, true);
-for(let for_a = imports_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
-const import_ = for_a[for_i];
-ff_compiler_JsEmitter.Liner_writeLines(liner_);
-ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, import_)
-};
 if((!ff_core_List.List_any(imports_, ((_w1) => {
 return (_w1 === selfImport_)
 })))) {
 ff_compiler_JsEmitter.Liner_writeLines(liner_);
 ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, selfImport_)
+};
+for(let for_a = imports_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
+const import_ = for_a[for_i];
+ff_compiler_JsEmitter.Liner_writeLines(liner_);
+ff_compiler_JsEmitter.JsEmitter_writeUnmapped(self_, import_)
 };
 const anchor_ = ff_compiler_JsEmitter.JsEmitter_writeAnchor(self_);
 for(let for_a = module_.types_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
@@ -5501,7 +5501,7 @@ ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, condition_.at_, "} else ")
 return
 }
 }));
-ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, "ff_core_Option.None()")
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, "return ff_core_Option.None()")
 return
 }
 }

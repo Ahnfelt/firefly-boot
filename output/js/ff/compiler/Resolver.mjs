@@ -1,3 +1,5 @@
+import * as ff_compiler_Resolver from "../../ff/compiler/Resolver.mjs"
+
 import * as ff_compiler_LspHook from "../../ff/compiler/LspHook.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
@@ -95,8 +97,6 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-import * as ff_compiler_Resolver from "../../ff/compiler/Resolver.mjs"
 
 // type Resolver
 export function Resolver(variables_, variableLocations_, variants_, types_, typeGenerics_, typeLocations_, asyncTypes_, typeParameters_, traits_, traitLocations_, state_, lspHook_) {

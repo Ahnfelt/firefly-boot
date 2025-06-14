@@ -1,3 +1,5 @@
+import * as ff_compiler_Tokenizer from "../../ff/compiler/Tokenizer.mjs"
+
 import * as ff_compiler_LspHook from "../../ff/compiler/LspHook.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
@@ -97,8 +99,6 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-import * as ff_compiler_Tokenizer from "../../ff/compiler/Tokenizer.mjs"
 
 export function tokenize_(file_, code_, completionAt_, attemptFixes_) {
 const completionLine_ = ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_filter(completionAt_, ((_w1) => {

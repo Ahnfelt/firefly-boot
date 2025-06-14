@@ -1,3 +1,5 @@
+import * as ff_compiler_Inference from "../../ff/compiler/Inference.mjs"
+
 import * as ff_compiler_Environment from "../../ff/compiler/Environment.mjs"
 
 import * as ff_compiler_LspHook from "../../ff/compiler/LspHook.mjs"
@@ -101,8 +103,6 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-import * as ff_compiler_Inference from "../../ff/compiler/Inference.mjs"
 
 // type Inference
 export function Inference(unification_, missing_, lspHook_) {

@@ -1,3 +1,5 @@
+import * as ff_compiler_Environment from "../../ff/compiler/Environment.mjs"
+
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
@@ -93,8 +95,6 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-import * as ff_compiler_Environment from "../../ff/compiler/Environment.mjs"
 
 // type Environment
 export function Environment(modulePrefix_, symbols_, traits_, imports_, effect_, selfVariable_) {

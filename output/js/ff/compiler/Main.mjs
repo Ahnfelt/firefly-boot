@@ -1,3 +1,5 @@
+import * as ff_compiler_Main from "../../ff/compiler/Main.mjs"
+
 import * as ff_compiler_Builder from "../../ff/compiler/Builder.mjs"
 
 import * as ff_compiler_Compiler from "../../ff/compiler/Compiler.mjs"
@@ -116,10 +118,8 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
-import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
 import * as import$0 from 'url';
-import * as ff_compiler_Main from "../../ff/compiler/Main.mjs"
+import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type MainCommand
 const BootstrapCommand$ = {BootstrapCommand: true};

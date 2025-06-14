@@ -358,7 +358,7 @@ const result_ = (self_[0] ?? ff_core_List.List_grab(self_, 0));
 index_ = 1;
 return result_
 })())
-} else ff_core_Option.None()
+} else return ff_core_Option.None()
 }), (() => {
 
 }))
@@ -750,7 +750,7 @@ const result_ = (self_[0] ?? ff_core_List.List_grab(self_, 0));
 index_ = 1;
 return result_
 })()))
-} else ff_core_Option.None()
+} else return ff_core_Option.None()
 }), (async ($task) => {
 
 }), $task))

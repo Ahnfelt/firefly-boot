@@ -1,3 +1,5 @@
+import * as ff_compiler_Dependencies from "../../ff/compiler/Dependencies.mjs"
+
 import * as ff_compiler_DependencyLock from "../../ff/compiler/DependencyLock.mjs"
 
 import * as ff_compiler_LspHook from "../../ff/compiler/LspHook.mjs"
@@ -102,10 +104,8 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
-import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
 import * as import$0 from 'tar';
-import * as ff_compiler_Dependencies from "../../ff/compiler/Dependencies.mjs"
+import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Dependencies
 export function Dependencies(workspace_, packages_, packagePaths_, singleFilePackages_) {

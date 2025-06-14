@@ -1,3 +1,5 @@
+import * as ff_compiler_LspHook from "../../ff/compiler/LspHook.mjs"
+
 import * as ff_compiler_Environment from "../../ff/compiler/Environment.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
@@ -97,8 +99,6 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-import * as ff_compiler_LspHook from "../../ff/compiler/LspHook.mjs"
 
 // type LspHook
 export function LspHook(at_, definedAt_, insertIdentifier_, trackSymbols_, arrayOfResults_) {
