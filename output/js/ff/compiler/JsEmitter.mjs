@@ -1126,7 +1126,7 @@ if(_1.EString) {
 const at_ = _1.at_;
 const value_ = _1.value_;
 if(ff_core_String.String_startsWith(value_, "\"\"\"", 0)) {
-ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, at_, (("`" + ff_core_String.String_replace(ff_core_String.String_dropLast(ff_core_String.String_dropFirst(value_, 3), 3), "`", "\\`")) + "`"))
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, at_, (("\"" + ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_dropLast(ff_core_String.String_dropFirst(value_, 3), 3), "\r", "\\r"), "\n", "\\n"), "\"", "\\\"")) + "\""))
 return
 }
 }
@@ -4713,7 +4713,7 @@ if(_1.EString) {
 const at_ = _1.at_;
 const value_ = _1.value_;
 if(ff_core_String.String_startsWith(value_, "\"\"\"", 0)) {
-ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, at_, (("`" + ff_core_String.String_replace(ff_core_String.String_dropLast(ff_core_String.String_dropFirst(value_, 3), 3), "`", "\\`")) + "`"))
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, at_, (("\"" + ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_dropLast(ff_core_String.String_dropFirst(value_, 3), 3), "\r", "\\r"), "\n", "\\n"), "\"", "\\\"")) + "\""))
 return
 }
 }

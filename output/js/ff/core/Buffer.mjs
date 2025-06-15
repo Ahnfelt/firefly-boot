@@ -555,10 +555,10 @@ return ff_core_Buffer.Buffer_toString(result_, "utf8")
 
 export const ff_core_Show_Show$ff_core_Buffer_Buffer = {
 show_(value_) {
-return ((`Buffer.fromHex("` + ff_core_Buffer.Buffer_toHex(value_)) + `")`)
+return (("Buffer.fromHex(\"" + ff_core_Buffer.Buffer_toHex(value_)) + "\")")
 },
 async show_$(value_, $task) {
-return ((`Buffer.fromHex("` + ff_core_Buffer.Buffer_toHex(value_)) + `")`)
+return (("Buffer.fromHex(\"" + ff_core_Buffer.Buffer_toHex(value_)) + "\")")
 },
 };
 

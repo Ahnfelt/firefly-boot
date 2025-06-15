@@ -218,8 +218,8 @@ const outputPath_ = ff_core_Option.Option_grab(ff_core_Path.Path_parent(ff_core_
 ff_core_BuildSystem.internalBrowserCallEsBuild_(self_, ff_core_List.List_map(runPaths_, ((_w1) => {
 return ff_core_Path.Path_absolute(_w1)
 })), ff_core_Path.Path_absolute(outputPath_), minify_, sourceMaps_);
-const bundlePaths_ = ff_core_Stream.Stream_toList(ff_core_Stream.Stream_filter(ff_core_BuildSystem.internalListPath_(browserOutputPath_), ((_w1) => {
-return ff_core_String.String_endsWith(ff_core_Path.Path_base(_w1), ".bundle.js")
+const bundlePaths_ = ff_core_Stream.Stream_toList(ff_core_Stream.Stream_filter(ff_core_BuildSystem.internalListPath_(browserOutputPath_), ((p_) => {
+return (ff_core_String.String_endsWith(ff_core_Path.Path_base(p_), ".bundle.js") || ff_core_String.String_endsWith(ff_core_Path.Path_base(p_), ".bundle.js.map"))
 })));
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.List_map(bundlePaths_, ((p_) => {
 return ff_core_Pair.Pair(("/" + ff_core_String.String_replace(ff_core_Path.Path_relativeTo(p_, browserOutputPath_), "\\", "/")), (() => {
@@ -278,8 +278,8 @@ const outputPath_ = ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(
 (await ff_core_BuildSystem.internalBrowserCallEsBuild_$(self_, (await ff_core_List.List_map$(runPaths_, (async (_w1, $task) => {
 return (await ff_core_Path.Path_absolute$(_w1, $task))
 }), $task)), (await ff_core_Path.Path_absolute$(outputPath_, $task)), minify_, sourceMaps_, $task));
-const bundlePaths_ = (await ff_core_Stream.Stream_toList$((await ff_core_Stream.Stream_filter$((await ff_core_BuildSystem.internalListPath_$(browserOutputPath_, $task)), (async (_w1, $task) => {
-return ff_core_String.String_endsWith((await ff_core_Path.Path_base$(_w1, $task)), ".bundle.js")
+const bundlePaths_ = (await ff_core_Stream.Stream_toList$((await ff_core_Stream.Stream_filter$((await ff_core_BuildSystem.internalListPath_$(browserOutputPath_, $task)), (async (p_, $task) => {
+return (ff_core_String.String_endsWith((await ff_core_Path.Path_base$(p_, $task)), ".bundle.js") || ff_core_String.String_endsWith((await ff_core_Path.Path_base$(p_, $task)), ".bundle.js.map"))
 }), $task)), $task));
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap((await ff_core_List.List_map$(bundlePaths_, (async (p_, $task) => {
 return ff_core_Pair.Pair(("/" + ff_core_String.String_replace((await ff_core_Path.Path_relativeTo$(p_, browserOutputPath_, $task)), "\\", "/")), (async ($task) => {

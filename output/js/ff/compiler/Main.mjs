@@ -147,17 +147,7 @@ export function CommandLineError(problem_) {
 return {problem_};
 }
 
-export const usageString_ = `
-usage: firefly <main-file> [<main-arguments>] | <command> [<command-arguments>]
-
-These are the commands:
-   run <main-file> [<main-arguments>]    Run the main file with the provided arguments
-   browser <main-file>                   Compile the main file for the browser
-   build <main-file>                     Build the main file
-   check <firefly-file>                  Check the firefly source file for errors
-   symbols <out-file> <firefly-file>     Print a .tsv with the symbols of a firefly source file
-   bootstrap                             Bootstrap the compiler
-`;
+export const usageString_ = "\r\nusage: firefly <main-file> [<main-arguments>] | <command> [<command-arguments>]\r\n\r\nThese are the commands:\r\n   run <main-file> [<main-arguments>]    Run the main file with the provided arguments\r\n   browser <main-file>                   Compile the main file for the browser\r\n   build <main-file>                     Build the main file\r\n   check <firefly-file>                  Check the firefly source file for errors\r\n   symbols <out-file> <firefly-file>     Print a .tsv with the symbols of a firefly source file\r\n   bootstrap                             Bootstrap the compiler\r\n";
 
 export function main_(system_) {
 const fireflyPath_ = ff_compiler_Main.detectFireflyPath_(system_);
