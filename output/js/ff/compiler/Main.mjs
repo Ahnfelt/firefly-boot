@@ -191,10 +191,7 @@ const mainPath_ = ff_core_NodeSystem.NodeSystem_path(system_, mainFile_);
 const moduleKey_ = buildScript_(mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_);
 if((!ff_compiler_Main.importAndRun_(system_, fireflyPath_, "node", moduleKey_, arguments_))) {
 const at_ = ff_compiler_Syntax.Location(ff_core_Path.Path_absolute(ff_core_NodeSystem.NodeSystem_path(system_, mainFile_)), 1, 1);
-{
-const _exception = ff_compiler_Syntax.CompileError(at_, "This module does not contain a 'nodeMain' function"); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, "This module does not contain a 'nodeMain' function"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 return
 }
@@ -222,10 +219,7 @@ if(command_a.CheckCommand) {
 const filePath_ = command_a.filePath_;
 const errors_ = ff_compiler_Builder.check_(system_, fireflyPath_, ff_core_NodeSystem.NodeSystem_path(system_, filePath_), ff_core_Option.None(), ff_core_Set.new_(), ff_core_Map.new_(), ff_compiler_ModuleCache.new_(1), ff_compiler_DependencyLock.new_(ff_core_NodeSystem.NodeSystem_mainTask(system_)), 0, ff_compiler_LspHook.disabled_(), true);
 if((!ff_core_List.List_isEmpty(errors_))) {
-{
-const _exception = ff_compiler_Syntax.CompileErrors(ff_core_List.List_distinct(errors_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_CompileError)); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileErrors(ff_core_List.List_distinct(errors_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_CompileError)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
 }
 return
 }
@@ -326,11 +320,7 @@ return ff_compiler_Main.RunCommand(mainFile_, mainArguments_)
 }
 }
 {
-{
-const _exception = ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as first argument to run." + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as first argument to run." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 }
 return
@@ -348,18 +338,10 @@ return ff_compiler_Main.BrowserCommand(mainFile_)
 }
 }
 if(_1.length >= 2) {
-{
-const _exception = ff_compiler_Main.CommandLineError(("You must only specify a single argument to browser." + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(("You must only specify a single argument to browser." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 {
-{
-const _exception = ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as the argument to browser." + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as the argument to browser." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 }
 return
@@ -377,18 +359,10 @@ return ff_compiler_Main.BuildCommand(mainFile_)
 }
 }
 if(_1.length >= 2) {
-{
-const _exception = ff_compiler_Main.CommandLineError(("You must only specify a single argument to build." + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(("You must only specify a single argument to build." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 {
-{
-const _exception = ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as the argument to build." + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as the argument to build." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 }
 return
@@ -402,18 +376,10 @@ const fileName_ = _1[0];
 return ff_compiler_Main.CheckCommand(fileName_)
 }
 if(_1.length >= 2) {
-{
-const _exception = ff_compiler_Main.CommandLineError(("You must only specify a single argument to check." + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(("You must only specify a single argument to check." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 {
-{
-const _exception = ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) or directory as the argument to check." + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) or directory as the argument to check." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 }
 return
@@ -431,39 +397,23 @@ return ff_compiler_Main.SymbolsCommand(outName_, [fileName_, ...fileNames_])
 }
 }
 {
-{
-const _exception = ff_compiler_Main.CommandLineError(("You must specify a output file (.tsv) and 1+ Firefly files (.ff) to symbols." + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(("You must specify a output file (.tsv) and 1+ Firefly files (.ff) to symbols." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 }
 return
 }
 if(arguments_a.length === 2 && arguments_a[0] === "bootstrap") {
-{
-const _exception = ff_compiler_Main.CommandLineError(("bootstrap takes no arguments" + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(("bootstrap takes no arguments" + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 if(arguments_a.length === 1 && arguments_a[0] === "bootstrap") {
 return ff_compiler_Main.BootstrapCommand()
 }
 if(arguments_a.length === 0) {
-{
-const _exception = ff_compiler_Main.CommandLineError(("You must specify a command or a main file to run." + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(("You must specify a command or a main file to run." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 {
 const s_ = arguments_a[0];
-{
-const _exception = ff_compiler_Main.CommandLineError(((("Unknown command '" + s_) + "'") + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(((("Unknown command '" + s_) + "'") + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 }
 
@@ -645,10 +595,7 @@ const mainPath_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_,
 const moduleKey_ = (await buildScript_$(mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, $task));
 if((!(await ff_compiler_Main.importAndRun_$(system_, fireflyPath_, "node", moduleKey_, arguments_, $task)))) {
 const at_ = ff_compiler_Syntax.Location((await ff_core_Path.Path_absolute$((await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task)), 1, 1);
-{
-const _exception = ff_compiler_Syntax.CompileError(at_, "This module does not contain a 'nodeMain' function"); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, "This module does not contain a 'nodeMain' function"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 return
 }
@@ -676,10 +623,7 @@ if(command_a.CheckCommand) {
 const filePath_ = command_a.filePath_;
 const errors_ = (await ff_compiler_Builder.check_$(system_, fireflyPath_, (await ff_core_NodeSystem.NodeSystem_path$(system_, filePath_, $task)), ff_core_Option.None(), ff_core_Set.new_(), ff_core_Map.new_(), ff_compiler_ModuleCache.new_(1), (await ff_compiler_DependencyLock.new_$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task)), 0, ff_compiler_LspHook.disabled_(), true, $task));
 if((!ff_core_List.List_isEmpty(errors_))) {
-{
-const _exception = ff_compiler_Syntax.CompileErrors(ff_core_List.List_distinct(errors_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_CompileError)); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileErrors(ff_core_List.List_distinct(errors_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_CompileError)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
 }
 return
 }
@@ -780,11 +724,7 @@ return ff_compiler_Main.RunCommand(mainFile_, mainArguments_)
 }
 }
 {
-{
-const _exception = ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as first argument to run." + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as first argument to run." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 }
 return
@@ -802,18 +742,10 @@ return ff_compiler_Main.BrowserCommand(mainFile_)
 }
 }
 if(_1.length >= 2) {
-{
-const _exception = ff_compiler_Main.CommandLineError(("You must only specify a single argument to browser." + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(("You must only specify a single argument to browser." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 {
-{
-const _exception = ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as the argument to browser." + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as the argument to browser." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 }
 return
@@ -831,18 +763,10 @@ return ff_compiler_Main.BuildCommand(mainFile_)
 }
 }
 if(_1.length >= 2) {
-{
-const _exception = ff_compiler_Main.CommandLineError(("You must only specify a single argument to build." + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(("You must only specify a single argument to build." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 {
-{
-const _exception = ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as the argument to build." + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as the argument to build." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 }
 return
@@ -856,18 +780,10 @@ const fileName_ = _1[0];
 return ff_compiler_Main.CheckCommand(fileName_)
 }
 if(_1.length >= 2) {
-{
-const _exception = ff_compiler_Main.CommandLineError(("You must only specify a single argument to check." + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(("You must only specify a single argument to check." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 {
-{
-const _exception = ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) or directory as the argument to check." + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) or directory as the argument to check." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 }
 return
@@ -885,39 +801,23 @@ return ff_compiler_Main.SymbolsCommand(outName_, [fileName_, ...fileNames_])
 }
 }
 {
-{
-const _exception = ff_compiler_Main.CommandLineError(("You must specify a output file (.tsv) and 1+ Firefly files (.ff) to symbols." + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(("You must specify a output file (.tsv) and 1+ Firefly files (.ff) to symbols." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 }
 return
 }
 if(arguments_a.length === 2 && arguments_a[0] === "bootstrap") {
-{
-const _exception = ff_compiler_Main.CommandLineError(("bootstrap takes no arguments" + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(("bootstrap takes no arguments" + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 if(arguments_a.length === 1 && arguments_a[0] === "bootstrap") {
 return ff_compiler_Main.BootstrapCommand()
 }
 if(arguments_a.length === 0) {
-{
-const _exception = ff_compiler_Main.CommandLineError(("You must specify a command or a main file to run." + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(("You must specify a command or a main file to run." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 {
 const s_ = arguments_a[0];
-{
-const _exception = ff_compiler_Main.CommandLineError(((("Unknown command '" + s_) + "'") + ff_compiler_Main.usageString_)); 
-throw Object.assign(new Error(ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Main.CommandLineError(((("Unknown command '" + s_) + "'") + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 }
 
@@ -1565,11 +1465,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Main.SymbolsCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 }
 {
-{
-const _exception = ff_core_Serializable.DeserializationChecksumException(); 
-throw Object.assign(new Error(ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },
@@ -1662,11 +1558,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Main.SymbolsCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 }
 {
-{
-const _exception = ff_core_Serializable.DeserializationChecksumException(); 
-throw Object.assign(new Error(ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },
@@ -1696,11 +1588,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Main.CommandLineError(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 }
 {
-{
-const _exception = ff_core_Serializable.DeserializationChecksumException(); 
-throw Object.assign(new Error(ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },
@@ -1727,11 +1615,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Main.CommandLineError(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 }
 {
-{
-const _exception = ff_core_Serializable.DeserializationChecksumException(); 
-throw Object.assign(new Error(ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },

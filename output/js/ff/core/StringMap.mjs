@@ -113,10 +113,7 @@ return ff_core_Option.Some(result_)
 export function StringMap_grab(self_, key_) {
 const result_ = self_.get(key_);
 if((ff_core_JsValue.JsValue_isUndefined(result_) && (!ff_core_StringMap.StringMap_has(self_, key_)))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return result_
 }
@@ -224,10 +221,7 @@ return ff_core_Option.Some(result_)
 export async function StringMap_grab$(self_, key_, $task) {
 const result_ = self_.get(key_);
 if((ff_core_JsValue.JsValue_isUndefined(result_) && (!ff_core_StringMap.StringMap_has(self_, key_)))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return result_
 }

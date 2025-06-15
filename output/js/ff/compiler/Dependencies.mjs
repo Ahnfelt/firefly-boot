@@ -122,15 +122,9 @@ const workspace_ = ff_compiler_Workspace.loadWorkspace_(path_);
 const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
 const packageInfo_ = ff_core_Option.Option_else(ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, ff_compiler_Syntax.scriptPackagePair_, path_), (() => {
 if((!ff_core_Path.Path_exists(path_, false, false, false))) {
-{
-const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(ff_core_Path.Path_absolute(path_), 1, 1), "File not found"); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(ff_core_Path.Path_absolute(path_), 1, 1), "File not found"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 } else {
-{
-const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(ff_core_Path.Path_absolute(path_), 1, 1), "Could not load package info"); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(ff_core_Path.Path_absolute(path_), 1, 1), "Could not load package info"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }));
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
@@ -172,15 +166,9 @@ const workspace_ = (await ff_compiler_Workspace.loadWorkspace_$(path_, $task));
 const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet([], ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
 const packageInfo_ = (await ff_core_Option.Option_else$((await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, ff_compiler_Syntax.scriptPackagePair_, path_, $task)), (async ($task) => {
 if((!(await ff_core_Path.Path_exists$(path_, false, false, false, $task)))) {
-{
-const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location((await ff_core_Path.Path_absolute$(path_, $task)), 1, 1), "File not found"); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location((await ff_core_Path.Path_absolute$(path_, $task)), 1, 1), "File not found"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 } else {
-{
-const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location((await ff_core_Path.Path_absolute$(path_, $task)), 1, 1), "Could not load package info"); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location((await ff_core_Path.Path_absolute$(path_, $task)), 1, 1), "Could not load package info"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }), $task));
 const newDependencies_ = (await ff_compiler_Dependencies.Dependencies_processPackageInfo$(self_, packageInfo_, $task));
@@ -281,10 +269,7 @@ return ff_core_Option.Some((function() {
 ff_core_Log.trace_(("Fetching " + location_));
 const buffer_ = ff_core_HttpClient.HttpClient_get(httpClient_, location_, [], ((response_) => {
 if((!ff_core_HttpClient.FetchResponse_ok(response_))) {
-{
-const _exception = ff_compiler_Syntax.CompileError(dependency_.at_, ("Could not download dependency: " + location_)); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(dependency_.at_, ("Could not download dependency: " + location_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 return ff_core_HttpClient.FetchResponse_readBuffer(response_)
 }));
@@ -301,10 +286,7 @@ return ff_core_Path.Path_renameTo(tarGzPath_, donePath_)
 };
 return dependencyPath_
 } else {
-{
-const _exception = ff_compiler_Syntax.CompileError(dependency_.at_, ("Loading packages by this protocol is not supported: " + location_)); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(dependency_.at_, ("Loading packages by this protocol is not supported: " + location_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 } else {
 return ff_core_Path.Path_path(path_, location_)
@@ -316,10 +298,7 @@ const packageInfos_ = ff_core_List.List_map(dependencies_, ((dependency_) => {
 const dependencyPath_ = ff_compiler_Dependencies.Dependencies_fetchDependency(self_, path_, httpClient_, dependencyLock_, dependency_);
 self_.packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, dependency_.packagePair_, dependencyPath_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 const packageInfo_ = ff_core_Option.Option_else(ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, dependency_.packagePair_, dependencyPath_), (() => {
-{
-const _exception = ff_compiler_Syntax.CompileError(dependency_.at_, ("Dependency not found: " + ff_core_Path.Path_absolute(dependencyPath_))); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(dependency_.at_, ("Dependency not found: " + ff_core_Path.Path_absolute(dependencyPath_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }));
 ff_compiler_Dependencies.checkPackagePairs_(dependency_.packagePair_, packageInfo_.package_.packagePair_);
 return packageInfo_
@@ -396,10 +375,7 @@ return ff_core_Option.Some((await (async function() {
 ff_core_Log.trace_(("Fetching " + location_));
 const buffer_ = (await ff_core_HttpClient.HttpClient_get$(httpClient_, location_, [], (async (response_, $task) => {
 if((!(await ff_core_HttpClient.FetchResponse_ok$(response_, $task)))) {
-{
-const _exception = ff_compiler_Syntax.CompileError(dependency_.at_, ("Could not download dependency: " + location_)); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(dependency_.at_, ("Could not download dependency: " + location_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 return (await ff_core_HttpClient.FetchResponse_readBuffer$(response_, $task))
 }), $task));
@@ -416,10 +392,7 @@ return (await ff_core_Path.Path_renameTo$(tarGzPath_, donePath_, $task))
 };
 return dependencyPath_
 } else {
-{
-const _exception = ff_compiler_Syntax.CompileError(dependency_.at_, ("Loading packages by this protocol is not supported: " + location_)); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(dependency_.at_, ("Loading packages by this protocol is not supported: " + location_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 } else {
 return (await ff_core_Path.Path_path$(path_, location_, $task))
@@ -431,10 +404,7 @@ const packageInfos_ = (await ff_core_List.List_map$(dependencies_, (async (depen
 const dependencyPath_ = (await ff_compiler_Dependencies.Dependencies_fetchDependency$(self_, path_, httpClient_, dependencyLock_, dependency_, $task));
 self_.packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, dependency_.packagePair_, dependencyPath_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 const packageInfo_ = (await ff_core_Option.Option_else$((await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, dependency_.packagePair_, dependencyPath_, $task)), (async ($task) => {
-{
-const _exception = ff_compiler_Syntax.CompileError(dependency_.at_, ("Dependency not found: " + (await ff_core_Path.Path_absolute$(dependencyPath_, $task)))); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(dependency_.at_, ("Dependency not found: " + (await ff_core_Path.Path_absolute$(dependencyPath_, $task)))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }), $task));
 ff_compiler_Dependencies.checkPackagePairs_(dependency_.packagePair_, packageInfo_.package_.packagePair_);
 return packageInfo_

@@ -644,28 +644,19 @@ return ff_core_Option.Some(Object.keys(self_))
 
 export function Json_grabField(self_, key_) {
 return ff_core_Option.Option_else(ff_core_Json.Json_getField(self_, key_), (() => {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 }))
 }
 
 export function Json_grabIndex(self_, key_) {
 return ff_core_Option.Option_else(ff_core_Json.Json_getIndex(self_, key_), (() => {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 }))
 }
 
 export function Json_grabFields(self_) {
 return ff_core_Option.Option_else(ff_core_Json.Json_getFields(self_), (() => {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 }))
 }
 
@@ -687,10 +678,7 @@ return ff_core_Array.Array_drain(array_)
 
 export function Json_each(self_, body_) {
 if((!ff_core_Json.Json_isObject(self_))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 ff_core_JsValue.JsValue_each(Object.entries(self_), ((p_) => {
 body_(p_[0], p_[1])
@@ -699,10 +687,7 @@ body_(p_[0], p_[1])
 
 export function Json_eachWhile(self_, body_) {
 if((!ff_core_Json.Json_isObject(self_))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 ff_core_JsValue.JsValue_eachWhile(Object.entries(self_), ((p_) => {
 return body_(p_[0], p_[1])
@@ -881,28 +866,19 @@ return ff_core_Option.Some(Object.keys(self_))
 
 export async function Json_grabField$(self_, key_, $task) {
 return ff_core_Option.Option_else(ff_core_Json.Json_getField(self_, key_), (() => {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 }))
 }
 
 export async function Json_grabIndex$(self_, key_, $task) {
 return ff_core_Option.Option_else(ff_core_Json.Json_getIndex(self_, key_), (() => {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 }))
 }
 
 export async function Json_grabFields$(self_, $task) {
 return ff_core_Option.Option_else(ff_core_Json.Json_getFields(self_), (() => {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 }))
 }
 
@@ -924,10 +900,7 @@ return ff_core_Array.Array_drain(array_)
 
 export async function Json_each$(self_, body_, $task) {
 if((!ff_core_Json.Json_isObject(self_))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 (await ff_core_JsValue.JsValue_each$(Object.entries(self_), (async (p_, $task) => {
 (await body_(p_[0], p_[1], $task))
@@ -936,10 +909,7 @@ throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabEx
 
 export async function Json_eachWhile$(self_, body_, $task) {
 if((!ff_core_Json.Json_isObject(self_))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 (await ff_core_JsValue.JsValue_eachWhile$(Object.entries(self_), (async (p_, $task) => {
 return (await body_(p_[0], p_[1], $task))

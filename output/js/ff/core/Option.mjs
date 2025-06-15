@@ -711,11 +711,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_core_Option.Some(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_))
 }
 {
-{
-const _exception = ff_core_Serializable.DeserializationChecksumException(); 
-throw Object.assign(new Error(ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },
@@ -754,11 +750,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_core_Option.Some(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_))
 }
 {
-{
-const _exception = ff_core_Serializable.DeserializationChecksumException(); 
-throw Object.assign(new Error(ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },

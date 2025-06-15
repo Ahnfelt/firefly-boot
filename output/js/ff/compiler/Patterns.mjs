@@ -268,10 +268,7 @@ const converted_ = ff_compiler_Patterns.convert_(modules_, cases_);
 ff_core_Try.Try_else(ff_core_Core.try_((() => {
 ff_compiler_Patterns.check_(ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), [], converted_, false, false)
 })), (() => {
-{
-const _exception = ff_compiler_Syntax.CompileError((cases_[0] ?? ff_core_List.List_grab(cases_, 0)).at_, "Unexhaustive match"); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError((cases_[0] ?? ff_core_List.List_grab(cases_, 0)).at_, "Unexhaustive match"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }))
 }
 
@@ -441,10 +438,7 @@ const converted_ = ff_compiler_Patterns.convert_(modules_, cases_);
 ff_core_Try.Try_else(ff_core_Core.try_((() => {
 ff_compiler_Patterns.check_(ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), [], converted_, false, false)
 })), (() => {
-{
-const _exception = ff_compiler_Syntax.CompileError((cases_[0] ?? ff_core_List.List_grab(cases_, 0)).at_, "Unexhaustive match"); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError((cases_[0] ?? ff_core_List.List_grab(cases_, 0)).at_, "Unexhaustive match"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }))
 }
 
@@ -676,11 +670,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Patterns.PatternInfo(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Set_Set(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Patterns.ff_core_Serializable_Serializable$ff_compiler_Patterns_PatternInfo)).deserializeUsing_(serialization_))
 }
 {
-{
-const _exception = ff_core_Serializable.DeserializationChecksumException(); 
-throw Object.assign(new Error(ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },
@@ -709,11 +699,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Patterns.PatternInfo(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Set_Set(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Patterns.ff_core_Serializable_Serializable$ff_compiler_Patterns_PatternInfo)).deserializeUsing_(serialization_))
 }
 {
-{
-const _exception = ff_core_Serializable.DeserializationChecksumException(); 
-throw Object.assign(new Error(ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },
@@ -744,11 +730,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Patterns.PatternCaseInfo(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Patterns.ff_core_Serializable_Serializable$ff_compiler_Patterns_PatternInfo)).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
 }
 {
-{
-const _exception = ff_core_Serializable.DeserializationChecksumException(); 
-throw Object.assign(new Error(ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },
@@ -776,11 +758,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Patterns.PatternCaseInfo(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Patterns.ff_core_Serializable_Serializable$ff_compiler_Patterns_PatternInfo)).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
 }
 {
-{
-const _exception = ff_core_Serializable.DeserializationChecksumException(); 
-throw Object.assign(new Error(ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },

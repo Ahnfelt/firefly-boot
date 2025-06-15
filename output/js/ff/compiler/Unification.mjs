@@ -119,10 +119,7 @@ return {generics_, constraints_, moduleKey_, traitName_, typeArguments_};
 }
 
 export function fail_(at_, message_) {
-{
-const _exception = ff_compiler_Syntax.CompileError(at_, message_); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 
 export function new_(modules_, attemptFixes_) {
@@ -144,10 +141,7 @@ return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(definition_.traitNa
 }
 
 export async function fail_$(at_, message_, $task) {
-{
-const _exception = ff_compiler_Syntax.CompileError(at_, message_); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 
 export async function new_$(modules_, attemptFixes_, $task) {
@@ -298,10 +292,7 @@ const g2_ = (ff_core_List.List_isEmpty(generics2_)
 ? ""
 : "[...]");
 if((!self_.attemptFixes_)) {
-{
-const _exception = ff_compiler_Syntax.CompileError(at_, ((((("No such instance: " + name_) + g2_) + ": ") + constraintName_) + g1_)); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ((((("No such instance: " + name_) + g2_) + ": ") + constraintName_) + g1_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 return
 }
@@ -431,10 +422,7 @@ if(((name1_ !== name2_) || (generics1_.length !== generics2_.length))) {
 if((!self_.attemptFixes_)) {
 const t3_ = ff_compiler_Unification.Unification_substitute(self_, t1_);
 const t4_ = ff_compiler_Unification.Unification_substitute(self_, t2_);
-{
-const _exception = ff_compiler_Syntax.CompileError(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(t3_, [t3_, t4_])) + " vs. ") + ff_compiler_Syntax.Type_show(t4_, [t3_, t4_]))); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(t3_, [t3_, t4_])) + " vs. ") + ff_compiler_Syntax.Type_show(t4_, [t3_, t4_]))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 } else if((ff_core_String.String_startsWith(name1_, "Function$", 0) && ff_core_String.String_startsWith(name2_, "Function$", 0))) {
 for(let for_a = generics1_, for_i = 0, for_l = for_a.length - 1, for_a2 = generics2_, for_i2 = 0, for_l2 = for_a2.length - 1; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
 const t3_ = for_a[for_i];
@@ -461,10 +449,7 @@ return
 export function Unification_bind(self_, at_, index_, type_) {
 if(ff_compiler_Unification.Unification_occursIn(self_, index_, type_)) {
 const t_ = ff_compiler_Unification.Unification_substitute(self_, type_);
-{
-const _exception = ff_compiler_Syntax.CompileError(at_, ((("Infinite type: " + ff_compiler_Syntax.Type_show(ff_compiler_Syntax.TVariable(at_, index_), [t_])) + " = ") + ff_compiler_Syntax.Type_show(t_, []))); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ((("Infinite type: " + ff_compiler_Syntax.Type_show(ff_compiler_Syntax.TVariable(at_, index_), [t_])) + " = ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, type_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 {
@@ -679,10 +664,7 @@ const g2_ = (ff_core_List.List_isEmpty(generics2_)
 ? ""
 : "[...]");
 if((!self_.attemptFixes_)) {
-{
-const _exception = ff_compiler_Syntax.CompileError(at_, ((((("No such instance: " + name_) + g2_) + ": ") + constraintName_) + g1_)); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ((((("No such instance: " + name_) + g2_) + ": ") + constraintName_) + g1_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 return
 }
@@ -812,10 +794,7 @@ if(((name1_ !== name2_) || (generics1_.length !== generics2_.length))) {
 if((!self_.attemptFixes_)) {
 const t3_ = ff_compiler_Unification.Unification_substitute(self_, t1_);
 const t4_ = ff_compiler_Unification.Unification_substitute(self_, t2_);
-{
-const _exception = ff_compiler_Syntax.CompileError(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(t3_, [t3_, t4_])) + " vs. ") + ff_compiler_Syntax.Type_show(t4_, [t3_, t4_]))); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(t3_, [t3_, t4_])) + " vs. ") + ff_compiler_Syntax.Type_show(t4_, [t3_, t4_]))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 } else if((ff_core_String.String_startsWith(name1_, "Function$", 0) && ff_core_String.String_startsWith(name2_, "Function$", 0))) {
 for(let for_a = generics1_, for_i = 0, for_l = for_a.length - 1, for_a2 = generics2_, for_i2 = 0, for_l2 = for_a2.length - 1; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
 const t3_ = for_a[for_i];
@@ -842,10 +821,7 @@ return
 export async function Unification_bind$(self_, at_, index_, type_, $task) {
 if(ff_compiler_Unification.Unification_occursIn(self_, index_, type_)) {
 const t_ = ff_compiler_Unification.Unification_substitute(self_, type_);
-{
-const _exception = ff_compiler_Syntax.CompileError(at_, ((("Infinite type: " + ff_compiler_Syntax.Type_show(ff_compiler_Syntax.TVariable(at_, index_), [t_])) + " = ") + ff_compiler_Syntax.Type_show(t_, []))); 
-throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ((("Infinite type: " + ff_compiler_Syntax.Type_show(ff_compiler_Syntax.TVariable(at_, index_), [t_])) + " = ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, type_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 {
@@ -1267,11 +1243,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Unification.ConstraintGenerics(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).deserializeUsing_(serialization_))
 }
 {
-{
-const _exception = ff_core_Serializable.DeserializationChecksumException(); 
-throw Object.assign(new Error(ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },
@@ -1299,11 +1271,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Unification.ConstraintGenerics(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).deserializeUsing_(serialization_))
 }
 {
-{
-const _exception = ff_core_Serializable.DeserializationChecksumException(); 
-throw Object.assign(new Error(ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },
@@ -1334,11 +1302,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Unification.InstanceKey(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 }
 {
-{
-const _exception = ff_core_Serializable.DeserializationChecksumException(); 
-throw Object.assign(new Error(ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },
@@ -1366,11 +1330,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Unification.InstanceKey(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 }
 {
-{
-const _exception = ff_core_Serializable.DeserializationChecksumException(); 
-throw Object.assign(new Error(ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },
@@ -1404,11 +1364,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Unification.InstanceValue(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Constraint).deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_ModuleKey.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).deserializeUsing_(serialization_))
 }
 {
-{
-const _exception = ff_core_Serializable.DeserializationChecksumException(); 
-throw Object.assign(new Error(ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },
@@ -1439,11 +1395,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Unification.InstanceValue(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Constraint).deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_ModuleKey.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).deserializeUsing_(serialization_))
 }
 {
-{
-const _exception = ff_core_Serializable.DeserializationChecksumException(); 
-throw Object.assign(new Error(ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-}
-return
+throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },

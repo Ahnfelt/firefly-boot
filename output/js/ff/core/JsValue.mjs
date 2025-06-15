@@ -97,70 +97,49 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 export function JsValue_grabString(self_) {
 if((!ff_core_JsValue.JsValue_isString(self_))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_
 }
 
 export function JsValue_grabChar(self_) {
 if((!ff_core_JsValue.JsValue_isChar(self_))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_
 }
 
 export function JsValue_grabInt(self_) {
 if((!ff_core_JsValue.JsValue_isInt(self_))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_
 }
 
 export function JsValue_grabFloat(self_) {
 if((!ff_core_JsValue.JsValue_isFloat(self_))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_
 }
 
 export function JsValue_grabBool(self_) {
 if((!ff_core_JsValue.JsValue_isBool(self_))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_
 }
 
 export function JsValue_grabArray(self_) {
 if((!ff_core_JsValue.JsValue_isArray(self_))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_
 }
 
 export function JsValue_grabBuffer(self_) {
 if((!ff_core_JsValue.JsValue_isBuffer(self_))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_
 }
@@ -430,10 +409,7 @@ return (new self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, a10_))
 
 export function JsValue_grabPairs(self_) {
 if((!ff_core_JsValue.JsValue_isObject(self_))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return Object.getOwnPropertyNames(self_).map(((name_, i_) => {
 return ff_core_Pair.Pair(name_, self_[name_])
@@ -446,20 +422,14 @@ return ff_core_List.List_toMap(ff_core_JsValue.JsValue_grabPairs(self_), ff_core
 
 export function JsValue_grabIntMap(self_) {
 if((!(self_ instanceof Map))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_
 }
 
 export function JsValue_grabStringMap(self_) {
 if((!(self_ instanceof Map))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_
 }
@@ -498,70 +468,49 @@ return ff_core_JsValue.JsValue_isNullOrUndefined(self_)
 
 export async function JsValue_grabString$(self_, $task) {
 if((!ff_core_JsValue.JsValue_isString(self_))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_
 }
 
 export async function JsValue_grabChar$(self_, $task) {
 if((!ff_core_JsValue.JsValue_isChar(self_))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_
 }
 
 export async function JsValue_grabInt$(self_, $task) {
 if((!ff_core_JsValue.JsValue_isInt(self_))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_
 }
 
 export async function JsValue_grabFloat$(self_, $task) {
 if((!ff_core_JsValue.JsValue_isFloat(self_))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_
 }
 
 export async function JsValue_grabBool$(self_, $task) {
 if((!ff_core_JsValue.JsValue_isBool(self_))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_
 }
 
 export async function JsValue_grabArray$(self_, $task) {
 if((!ff_core_JsValue.JsValue_isArray(self_))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_
 }
 
 export async function JsValue_grabBuffer$(self_, $task) {
 if((!ff_core_JsValue.JsValue_isBuffer(self_))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_
 }
@@ -831,10 +780,7 @@ return (new self_(a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, a10_))
 
 export async function JsValue_grabPairs$(self_, $task) {
 if((!ff_core_JsValue.JsValue_isObject(self_))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return Object.getOwnPropertyNames(self_).map(((name_, i_) => {
 return ff_core_Pair.Pair(name_, self_[name_])
@@ -847,20 +793,14 @@ return ff_core_List.List_toMap(ff_core_JsValue.JsValue_grabPairs(self_), ff_core
 
 export async function JsValue_grabIntMap$(self_, $task) {
 if((!(self_ instanceof Map))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_
 }
 
 export async function JsValue_grabStringMap$(self_, $task) {
 if((!(self_ instanceof Map))) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_
 }

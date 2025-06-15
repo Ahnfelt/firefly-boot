@@ -101,17 +101,11 @@ return {Failure: true, error_};
 }
 
 export function internalThrowGrabException_() {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 }
 
 export async function internalThrowGrabException_$($task) {
-{
-const _exception = ff_core_Core.GrabException(); 
-throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
-}
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 }
 
 export function Try_map(self_, body_) {

@@ -262,6 +262,12 @@ export function throw_(value_) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
+export function initializeError_(error_, exception_, ff_core_Any_HasAnyTag$E, ff_core_Show_Show$E) {
+error_.message = ff_core_Show_Show$E.show_(exception_);
+error_.ffException = ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyTag$E);
+return error_
+}
+
 export function unaryOperator_(operator_, a1_, ff_core_JsValue_IsJsValue$T1) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
@@ -583,6 +589,12 @@ return ff_core_Core.panic_("This call should have been eliminated by the compile
 
 export async function throw_$(value_, $task) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export async function initializeError_$(error_, exception_, ff_core_Any_HasAnyTag$E, ff_core_Show_Show$E, $task) {
+error_.message = ff_core_Show_Show$E.show_(exception_);
+error_.ffException = ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyTag$E);
+return error_
 }
 
 export async function unaryOperator_$(operator_, a1_, ff_core_JsValue_IsJsValue$T1, $task) {
