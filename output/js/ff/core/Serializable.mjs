@@ -117,7 +117,10 @@ const serialization_ = ff_core_Serializable.Serialization(buffer_, 0, 0);
 const result_ = ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_);
 const checksum_ = ff_core_Buffer.Buffer_grabInt32(serialization_.buffer_, serialization_.offset_, true);
 if((checksum_ !== serialization_.checksum_)) {
-ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
+{
+const _exception = ff_core_Serializable.DeserializationChecksumException(); 
+throw Object.assign(new Error(ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
+}
 };
 return result_
 }
@@ -156,7 +159,10 @@ const serialization_ = ff_core_Serializable.Serialization(buffer_, 0, 0);
 const result_ = ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_);
 const checksum_ = ff_core_Buffer.Buffer_grabInt32(serialization_.buffer_, serialization_.offset_, true);
 if((checksum_ !== serialization_.checksum_)) {
-ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
+{
+const _exception = ff_core_Serializable.DeserializationChecksumException(); 
+throw Object.assign(new Error(ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
+}
 };
 return result_
 }

@@ -152,7 +152,10 @@ tokens_.array.push(ff_compiler_Token.Token(file_, code_, kind_, startLine_, star
 let i_ = 0;
 function throwError_(message_) {
 const column_ = ((i_ - startLineOffset_) + 1);
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, column_), message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, column_), message_); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 }
 try {
 while((i_ < code_.length)) {
@@ -353,7 +356,10 @@ if(!_exception.Some) throw _error
 {
 const e_ = _exception.value_;
 const error_ = _error;
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (i_ - lineOffset_)), "Unexpected end of file"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (i_ - lineOffset_)), "Unexpected end of file"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 }
 };
 for(let for_a = ff_core_List.range_(5), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
@@ -414,7 +420,10 @@ tokens_.array.push(ff_compiler_Token.Token(file_, code_, kind_, startLine_, star
 let i_ = 0;
 function throwError_(message_) {
 const column_ = ((i_ - startLineOffset_) + 1);
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, column_), message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, column_), message_); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 }
 try {
 while((i_ < code_.length)) {
@@ -615,7 +624,10 @@ if(!_exception.Some) throw _error
 {
 const e_ = _exception.value_;
 const error_ = _error;
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (i_ - lineOffset_)), "Unexpected end of file"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (i_ - lineOffset_)), "Unexpected end of file"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 }
 };
 for(let for_a = ff_core_List.range_(5), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {

@@ -101,7 +101,10 @@ return self_.length
 
 export function String_grab(self_, index_) {
 if(((index_ < 0) || (index_ >= self_.length))) {
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+{
+const _exception = ff_core_Core.GrabException(); 
+throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+}
 };
 return self_.charCodeAt(index_)
 }
@@ -202,13 +205,19 @@ return ff_core_Option.Some(result_)
 
 export function String_grabInt(self_) {
 return ff_core_Option.Option_else(ff_core_String.String_getInt(self_), (() => {
-return ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+{
+const _exception = ff_core_Core.GrabException(); 
+throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+}
 }))
 }
 
 export function String_grabFloat(self_) {
 return ff_core_Option.Option_else(ff_core_String.String_getFloat(self_), (() => {
-return ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+{
+const _exception = ff_core_Core.GrabException(); 
+throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+}
 }))
 }
 
@@ -226,13 +235,19 @@ return ff_core_Option.Some(self_.charCodeAt((self_.length - 1)))
 
 export function String_grabFirst(self_) {
 return ff_core_Option.Option_else(ff_core_String.String_first(self_), (() => {
-return ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+{
+const _exception = ff_core_Core.GrabException(); 
+throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+}
 }))
 }
 
 export function String_grabLast(self_) {
 return ff_core_Option.Option_else(ff_core_String.String_last(self_), (() => {
-return ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+{
+const _exception = ff_core_Core.GrabException(); 
+throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+}
 }))
 }
 
@@ -363,7 +378,10 @@ return self_.length
 
 export async function String_grab$(self_, index_, $task) {
 if(((index_ < 0) || (index_ >= self_.length))) {
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+{
+const _exception = ff_core_Core.GrabException(); 
+throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+}
 };
 return self_.charCodeAt(index_)
 }
@@ -464,13 +482,19 @@ return ff_core_Option.Some(result_)
 
 export async function String_grabInt$(self_, $task) {
 return ff_core_Option.Option_else(ff_core_String.String_getInt(self_), (() => {
-return ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+{
+const _exception = ff_core_Core.GrabException(); 
+throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+}
 }))
 }
 
 export async function String_grabFloat$(self_, $task) {
 return ff_core_Option.Option_else(ff_core_String.String_getFloat(self_), (() => {
-return ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+{
+const _exception = ff_core_Core.GrabException(); 
+throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+}
 }))
 }
 
@@ -488,13 +512,19 @@ return ff_core_Option.Some(self_.charCodeAt((self_.length - 1)))
 
 export async function String_grabFirst$(self_, $task) {
 return ff_core_Option.Option_else(ff_core_String.String_first(self_), (() => {
-return ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+{
+const _exception = ff_core_Core.GrabException(); 
+throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+}
 }))
 }
 
 export async function String_grabLast$(self_, $task) {
 return ff_core_Option.Option_else(ff_core_String.String_last(self_), (() => {
-return ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+{
+const _exception = ff_core_Core.GrabException(); 
+throw Object.assign(new Error(ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+}
 }))
 }
 

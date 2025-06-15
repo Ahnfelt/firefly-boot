@@ -120,7 +120,10 @@ return ff_core_Path.Path(nodePath_.join(path_.absolutePath_, file_))
 
 export function internalProcessError_(problem_) {
 try {
-return ff_core_Core.throw_(ff_core_NodeSystem.ProcessException(problem_), ff_core_NodeSystem.ff_core_Any_HasAnyTag$ff_core_NodeSystem_ProcessException, ff_core_NodeSystem.ff_core_Show_Show$ff_core_NodeSystem_ProcessException)
+{
+const _exception = ff_core_NodeSystem.ProcessException(problem_); 
+throw Object.assign(new Error(ff_core_NodeSystem.ff_core_Show_Show$ff_core_NodeSystem_ProcessException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_NodeSystem.ff_core_Any_HasAnyTag$ff_core_NodeSystem_ProcessException)})
+}
 } catch(error_) {
 return error_
 }
@@ -137,7 +140,10 @@ return ff_core_Path.Path(nodePath_.join(path_.absolutePath_, file_))
 
 export async function internalProcessError_$(problem_, $task) {
 try {
-return ff_core_Core.throw_(ff_core_NodeSystem.ProcessException(problem_), ff_core_NodeSystem.ff_core_Any_HasAnyTag$ff_core_NodeSystem_ProcessException, ff_core_NodeSystem.ff_core_Show_Show$ff_core_NodeSystem_ProcessException)
+{
+const _exception = ff_core_NodeSystem.ProcessException(problem_); 
+throw Object.assign(new Error(ff_core_NodeSystem.ff_core_Show_Show$ff_core_NodeSystem_ProcessException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_NodeSystem.ff_core_Any_HasAnyTag$ff_core_NodeSystem_ProcessException)})
+}
 } catch(error_) {
 return error_
 }

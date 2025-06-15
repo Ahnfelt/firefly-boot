@@ -168,7 +168,10 @@ if(ff_core_Equal.notEquals_(c_.kind_, kind_, ff_compiler_Token.ff_core_Equal_Equ
 if(((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(kind_, ff_compiler_Token.LUpper())) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(c_.kind_, ff_compiler_Token.LLower()))) {
 
 } else {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + ", got ") + ff_compiler_Token.Token_raw(c_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + ", got ") + ff_compiler_Token.Token_raw(c_))); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 }
 };
 self_.offset_ += 1;
@@ -181,14 +184,20 @@ if(ff_core_Equal.notEquals_(c_.kind_, kind_, ff_compiler_Token.ff_core_Equal_Equ
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (((value_ === ")") || (value_ === "]")) || (value_ === "}")))) {
 
 } else {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + " ") + value_) + ", got ") + ff_compiler_Token.Token_raw(c_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + " ") + value_) + ", got ") + ff_compiler_Token.Token_raw(c_))); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 }
 };
 if((!ff_compiler_Token.Token_rawIs(c_, value_))) {
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (((value_ === ")") || (value_ === "]")) || (value_ === "}")))) {
 self_.offset_ -= 1
 } else {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((("Expected " + value_) + " got ") + ff_compiler_Token.Token_raw(c_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((("Expected " + value_) + " got ") + ff_compiler_Token.Token_raw(c_))); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 }
 };
 self_.offset_ += 1;
@@ -219,7 +228,10 @@ const moduleWithPackageInfo_ = ff_compiler_Parser.Parser_parseModuleWithPackageI
 const if_o = moduleWithPackageInfo_.packageInfo_
 if(if_o.Some) {
 const info_ = if_o.value_;
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(info_.package_.at_, "Package and dependencies already declared in package.ff"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(info_.package_.at_, "Package and dependencies already declared in package.ff"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 }
 };
 return moduleWithPackageInfo_.module_
@@ -245,7 +257,10 @@ return p_
 })()
 : ff_compiler_Syntax.DPackage(location_, self_.moduleKey_.packagePair_, ff_compiler_Syntax.Version(location_, 0, 0, 0), ff_compiler_Syntax.TargetNames(self_.targetIsNode_, (!self_.targetIsNode_))));
 if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "package"))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Duplicate package definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Duplicate package definition"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 };
 const dependencies_ = ff_core_Array.new_();
 while((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "dependency"))) {
@@ -293,11 +308,20 @@ ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower())
 imports_.array.push(ff_compiler_Parser.Parser_parseImportDefinition(self_, self_.moduleKey_.packagePair_))
 }
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "include"))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Includes must be at the top of the file or below 'package'"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Includes must be at the top of the file or below 'package'"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "dependency"))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Dependencies must be at the top of the file or below 'package'"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Dependencies must be at the top of the file or below 'package'"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "package"))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Package definition must be at the top of the file"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Package definition must be at the top of the file"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 } else {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LEnd())
 };
@@ -541,9 +565,12 @@ const variantFields_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parse
 if(((!allowMutable_) && ff_core_List.List_any(variantFields_, ((_w1) => {
 return _w1.mutable_
 })))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_core_Option.Option_grab(ff_core_List.List_find(variantFields_, ((_w1) => {
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_core_Option.Option_grab(ff_core_List.List_find(variantFields_, ((_w1) => {
 return _w1.mutable_
-}))).at_, "Only classes can have mutable fields"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+}))).at_, "Only classes can have mutable fields"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 };
 variantsBuilder_.array.push(ff_compiler_Syntax.Variant(ff_compiler_Token.Token_at(variantNameToken_), ff_compiler_Token.Token_raw(variantNameToken_), variantFields_));
 if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
@@ -558,14 +585,20 @@ return ff_core_Array.Array_toList(variantsBuilder_, 0, 9007199254740991)
 })());
 if((newtype_ && (commonFields_.length !== 1))) {
 ff_core_Log.show_(commonFields_, ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Parameter));
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(nameToken_), "Newtypes must have exactly one field"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(nameToken_), "Newtypes must have exactly one field"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 };
 if(((!allowMutable_) && ff_core_List.List_any(commonFields_, ((_w1) => {
 return _w1.mutable_
 })))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_core_Option.Option_grab(ff_core_List.List_find(commonFields_, ((_w1) => {
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_core_Option.Option_grab(ff_core_List.List_find(commonFields_, ((_w1) => {
 return _w1.mutable_
-}))).at_, "Only classes and capabilities can have mutable fields"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+}))).at_, "Only classes and capabilities can have mutable fields"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 };
 const generics_ = [...effectParameter_, ...poly_.generics_];
 const result_ = ff_compiler_Syntax.DType(ff_compiler_Token.Token_at(nameToken_), newtype_, (!allowMutable_), ff_compiler_Token.Token_raw(nameToken_), generics_, poly_.constraints_, commonFields_, variants_);
@@ -640,7 +673,10 @@ const token_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(sel
 do {
 const _1 = ff_compiler_Token.Token_raw(token_);
 if(_1 === "node" && targets_.node_) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Duplicate target name"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Duplicate target name"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 break
 }
 if(_1 === "node") {
@@ -650,7 +686,10 @@ return ff_compiler_Syntax.TargetNames(true, _c.browser_)
 break
 }
 if(_1 === "browser" && targets_.browser_) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Duplicate target name"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Duplicate target name"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 break
 }
 if(_1 === "browser") {
@@ -661,7 +700,10 @@ break
 }
 {
 const t_ = _1;
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), ("Unexpected target: " + t_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), ("Unexpected target: " + t_)); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 }
 } while(false)
 };
@@ -708,14 +750,20 @@ part_ = ((part_ + "-") + readPart_())
 if(ff_core_String.String_any(part_, ((_w1) => {
 return ff_core_Char.Char_isAsciiUpper(_w1)
 }))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, ("Package names and paths must not contain upper case letters: " + part_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(at_, ("Package names and paths must not contain upper case letters: " + part_)); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 };
 if((ff_core_String.String_any(part_, ((_w1) => {
 return (_w1 === 95)
 })) || ff_core_String.String_any(part_, ((_w1) => {
 return (_w1 === 46)
 })))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, ("Package names and paths must not contain underscores or dots: " + part_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(at_, ("Package names and paths must not contain underscores or dots: " + part_)); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 };
 return part_
 }
@@ -1132,7 +1180,11 @@ const e_ = _1;
 return ff_compiler_Syntax.EAssignField(e_.at_, operator_, e_.record_, e_.field_, value_)
 }
 {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Only variables and fields are assignable"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Only variables and fields are assignable"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
+return
 }
 }
 }
@@ -1352,7 +1404,10 @@ let result_ = ff_compiler_Syntax.ECall(record_.at_, objectTarget_, effect_, [], 
 for(let for_a = arguments_.first_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const argument_ = for_a[for_i];
 if(ff_core_Option.Option_isEmpty(argument_.name_)) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(argument_.at_, "Expected a named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(argument_.at_, "Expected a named argument"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 };
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, result_, "with"), false);
 result_ = ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(argument_.at_, ff_core_Option.None(), ff_compiler_Syntax.EString(argument_.at_, (("\"" + ff_core_Option.Option_grab(argument_.name_)) + "\""))), ff_compiler_Syntax.Argument(argument_.value_.at_, ff_core_Option.None(), argument_.value_)], [])
@@ -1361,7 +1416,11 @@ return result_
 }
 {
 const i_ = _1.value_;
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError((arguments_.first_[i_] ?? ff_core_List.List_grab(arguments_.first_, i_)).at_, "Unexpected named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError((arguments_.first_[i_] ?? ff_core_List.List_grab(arguments_.first_, i_)).at_, "Unexpected named argument"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
+return
 }
 }
 } else if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")) {
@@ -1387,7 +1446,10 @@ return (!ff_core_Option.Option_isEmpty(_w1.name_))
 }))
 if(if_o.Some) {
 const argument_ = if_o.value_;
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(argument_.at_, "Unexpected named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(argument_.at_, "Unexpected named argument"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 }
 };
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
@@ -1471,7 +1533,10 @@ return result_
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LWildcard());
 return ff_compiler_Syntax.EWildcard(ff_compiler_Token.Token_at(token_), 0)
 } else {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), ("Expected atom, got " + ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_current(self_)))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), ("Expected atom, got " + ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_current(self_)))); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 }
 }
 
@@ -1594,7 +1659,11 @@ return p_
 }
 {
 const p_ = items_a[0].first_;
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(p_.at_, "Invalid pattern: ... is only allowed for the last element in a list"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(p_.at_, "Invalid pattern: ... is only allowed for the last element in a list"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
+return
 }
 }
 const items_ = ff_core_Array.new_();
@@ -1679,7 +1748,10 @@ if(ff_core_Equal.notEquals_(c_.kind_, kind_, ff_compiler_Token.ff_core_Equal_Equ
 if(((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(kind_, ff_compiler_Token.LUpper())) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(c_.kind_, ff_compiler_Token.LLower()))) {
 
 } else {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + ", got ") + ff_compiler_Token.Token_raw(c_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + ", got ") + ff_compiler_Token.Token_raw(c_))); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 }
 };
 self_.offset_ += 1;
@@ -1692,14 +1764,20 @@ if(ff_core_Equal.notEquals_(c_.kind_, kind_, ff_compiler_Token.ff_core_Equal_Equ
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (((value_ === ")") || (value_ === "]")) || (value_ === "}")))) {
 
 } else {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + " ") + value_) + ", got ") + ff_compiler_Token.Token_raw(c_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + " ") + value_) + ", got ") + ff_compiler_Token.Token_raw(c_))); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 }
 };
 if((!ff_compiler_Token.Token_rawIs(c_, value_))) {
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (((value_ === ")") || (value_ === "]")) || (value_ === "}")))) {
 self_.offset_ -= 1
 } else {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((("Expected " + value_) + " got ") + ff_compiler_Token.Token_raw(c_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((("Expected " + value_) + " got ") + ff_compiler_Token.Token_raw(c_))); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 }
 };
 self_.offset_ += 1;
@@ -1730,7 +1808,10 @@ const moduleWithPackageInfo_ = ff_compiler_Parser.Parser_parseModuleWithPackageI
 const if_o = moduleWithPackageInfo_.packageInfo_
 if(if_o.Some) {
 const info_ = if_o.value_;
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(info_.package_.at_, "Package and dependencies already declared in package.ff"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(info_.package_.at_, "Package and dependencies already declared in package.ff"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 }
 };
 return moduleWithPackageInfo_.module_
@@ -1756,7 +1837,10 @@ return p_
 })())
 : ff_compiler_Syntax.DPackage(location_, self_.moduleKey_.packagePair_, ff_compiler_Syntax.Version(location_, 0, 0, 0), ff_compiler_Syntax.TargetNames(self_.targetIsNode_, (!self_.targetIsNode_))));
 if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "package"))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Duplicate package definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Duplicate package definition"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 };
 const dependencies_ = ff_core_Array.new_();
 while((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "dependency"))) {
@@ -1804,11 +1888,20 @@ ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower())
 imports_.array.push(ff_compiler_Parser.Parser_parseImportDefinition(self_, self_.moduleKey_.packagePair_))
 }
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "include"))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Includes must be at the top of the file or below 'package'"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Includes must be at the top of the file or below 'package'"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "dependency"))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Dependencies must be at the top of the file or below 'package'"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Dependencies must be at the top of the file or below 'package'"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "package"))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Package definition must be at the top of the file"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Package definition must be at the top of the file"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 } else {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LEnd())
 };
@@ -2052,9 +2145,12 @@ const variantFields_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parse
 if(((!allowMutable_) && ff_core_List.List_any(variantFields_, ((_w1) => {
 return _w1.mutable_
 })))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_core_Option.Option_grab(ff_core_List.List_find(variantFields_, ((_w1) => {
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_core_Option.Option_grab(ff_core_List.List_find(variantFields_, ((_w1) => {
 return _w1.mutable_
-}))).at_, "Only classes can have mutable fields"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+}))).at_, "Only classes can have mutable fields"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 };
 variantsBuilder_.array.push(ff_compiler_Syntax.Variant(ff_compiler_Token.Token_at(variantNameToken_), ff_compiler_Token.Token_raw(variantNameToken_), variantFields_));
 if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
@@ -2069,14 +2165,20 @@ return ff_core_Array.Array_toList(variantsBuilder_, 0, 9007199254740991)
 })()));
 if((newtype_ && (commonFields_.length !== 1))) {
 ff_core_Log.show_(commonFields_, ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Parameter));
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(nameToken_), "Newtypes must have exactly one field"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(nameToken_), "Newtypes must have exactly one field"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 };
 if(((!allowMutable_) && ff_core_List.List_any(commonFields_, ((_w1) => {
 return _w1.mutable_
 })))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_core_Option.Option_grab(ff_core_List.List_find(commonFields_, ((_w1) => {
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_core_Option.Option_grab(ff_core_List.List_find(commonFields_, ((_w1) => {
 return _w1.mutable_
-}))).at_, "Only classes and capabilities can have mutable fields"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+}))).at_, "Only classes and capabilities can have mutable fields"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 };
 const generics_ = [...effectParameter_, ...poly_.generics_];
 const result_ = ff_compiler_Syntax.DType(ff_compiler_Token.Token_at(nameToken_), newtype_, (!allowMutable_), ff_compiler_Token.Token_raw(nameToken_), generics_, poly_.constraints_, commonFields_, variants_);
@@ -2151,7 +2253,10 @@ const token_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(sel
 do {
 const _1 = ff_compiler_Token.Token_raw(token_);
 if(_1 === "node" && targets_.node_) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Duplicate target name"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Duplicate target name"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 break
 }
 if(_1 === "node") {
@@ -2161,7 +2266,10 @@ return ff_compiler_Syntax.TargetNames(true, _c.browser_)
 break
 }
 if(_1 === "browser" && targets_.browser_) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Duplicate target name"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Duplicate target name"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 break
 }
 if(_1 === "browser") {
@@ -2172,7 +2280,10 @@ break
 }
 {
 const t_ = _1;
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), ("Unexpected target: " + t_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), ("Unexpected target: " + t_)); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 }
 } while(false)
 };
@@ -2219,14 +2330,20 @@ part_ = ((part_ + "-") + readPart_())
 if(ff_core_String.String_any(part_, ((_w1) => {
 return ff_core_Char.Char_isAsciiUpper(_w1)
 }))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, ("Package names and paths must not contain upper case letters: " + part_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(at_, ("Package names and paths must not contain upper case letters: " + part_)); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 };
 if((ff_core_String.String_any(part_, ((_w1) => {
 return (_w1 === 95)
 })) || ff_core_String.String_any(part_, ((_w1) => {
 return (_w1 === 46)
 })))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, ("Package names and paths must not contain underscores or dots: " + part_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(at_, ("Package names and paths must not contain underscores or dots: " + part_)); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 };
 return part_
 }
@@ -2643,7 +2760,11 @@ const e_ = _1;
 return ff_compiler_Syntax.EAssignField(e_.at_, operator_, e_.record_, e_.field_, value_)
 }
 {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Only variables and fields are assignable"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Only variables and fields are assignable"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
+return
 }
 }
 }
@@ -2863,7 +2984,10 @@ let result_ = ff_compiler_Syntax.ECall(record_.at_, objectTarget_, effect_, [], 
 for(let for_a = arguments_.first_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const argument_ = for_a[for_i];
 if(ff_core_Option.Option_isEmpty(argument_.name_)) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(argument_.at_, "Expected a named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(argument_.at_, "Expected a named argument"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 };
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, result_, "with"), false);
 result_ = ff_compiler_Syntax.ECall(record_.at_, target_, effect_, [], [ff_compiler_Syntax.Argument(argument_.at_, ff_core_Option.None(), ff_compiler_Syntax.EString(argument_.at_, (("\"" + ff_core_Option.Option_grab(argument_.name_)) + "\""))), ff_compiler_Syntax.Argument(argument_.value_.at_, ff_core_Option.None(), argument_.value_)], [])
@@ -2872,7 +2996,11 @@ return result_
 }
 {
 const i_ = _1.value_;
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError((arguments_.first_[i_] ?? ff_core_List.List_grab(arguments_.first_, i_)).at_, "Unexpected named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError((arguments_.first_[i_] ?? ff_core_List.List_grab(arguments_.first_, i_)).at_, "Unexpected named argument"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
+return
 }
 }
 } else if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")) {
@@ -2898,7 +3026,10 @@ return (!ff_core_Option.Option_isEmpty(_w1.name_))
 }))
 if(if_o.Some) {
 const argument_ = if_o.value_;
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(argument_.at_, "Unexpected named argument"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(argument_.at_, "Unexpected named argument"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 }
 };
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, record_.at_);
@@ -2982,7 +3113,10 @@ return result_
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LWildcard());
 return ff_compiler_Syntax.EWildcard(ff_compiler_Token.Token_at(token_), 0)
 } else {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), ("Expected atom, got " + ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_current(self_)))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), ("Expected atom, got " + ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_current(self_)))); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 }
 }
 
@@ -3105,7 +3239,11 @@ return p_
 }
 {
 const p_ = items_a[0].first_;
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(p_.at_, "Invalid pattern: ... is only allowed for the last element in a list"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+{
+const _exception = ff_compiler_Syntax.CompileError(p_.at_, "Invalid pattern: ... is only allowed for the last element in a list"); 
+throw Object.assign(new Error(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
+return
 }
 }
 const items_ = ff_core_Array.new_();
@@ -3263,7 +3401,11 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Parser.Poly(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Constraint).deserializeUsing_(serialization_))
 }
 {
-return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
+{
+const _exception = ff_core_Serializable.DeserializationChecksumException(); 
+throw Object.assign(new Error(ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
+}
+return
 }
 }
 },
@@ -3291,7 +3433,11 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Parser.Poly(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Constraint).deserializeUsing_(serialization_))
 }
 {
-return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
+{
+const _exception = ff_core_Serializable.DeserializationChecksumException(); 
+throw Object.assign(new Error(ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException.show_(_exception)), {ffException: ff_core_Any.toAny_(_exception, ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
+}
+return
 }
 }
 },
