@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -104,12 +102,6 @@ export function True() {
 return True$;
 }
 
-
-
-
-
-
-
 export function Bool_toInt(self_) {
 {
 const _1 = self_;
@@ -140,5 +132,8 @@ return ff_core_Any.internalAnyTag_((("ff:core/Bool.Bool" + "[") + "]"))
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:core/Bool.Bool" + "[") + "]"))
-}
+},
 };
+
+
+//# sourceMappingURL=Bool.mjs.map

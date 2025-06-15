@@ -53,7 +53,8 @@ nodeMain(system: NodeSystem): Unit {
 
 buildMain(system: BuildSystem) {
     mutable assets = AssetSystem.create()
-    let browserAssets = system.bundleForBrowser(Router.modulesWithBrowserMain().map {_ + ".ff"})
+    let browserAssets = system.bundleForBrowser(Router.modulesWithBrowserMain().map {_ + ".ff"}, sourceMaps = True)
+    //let browserAssets = system.compileForBrowser(Router.modulesWithBrowserMain().map {_ + ".ff"})
     assets = assets.addAssets("/js/", browserAssets)
     assets = assets.addAssets("/assets/", system.packageAssets().assets("/assets/"))
     system.setAssets(assets)

@@ -16,7 +16,9 @@ extend self: BuildSystem {
         let runPaths = internalListPath(browserOutputPath).filter {_.base().endsWith(".run.mjs")}.toList()
         let outputPath = runPaths.grabFirst().parent().grab()
         internalBrowserCallEsBuild(self, runPaths.map {_.absolute()}, outputPath.absolute(), minify, sourceMaps)
-        let bundlePaths = internalListPath(browserOutputPath).filter {_.base().endsWith(".bundle.js")}.toList()
+        let bundlePaths = internalListPath(browserOutputPath).filter {p => 
+            p.base().endsWith(".bundle.js") || p.base().endsWith(".bundle.js.map")
+        }.toList()
         AssetSystem(bundlePaths.map {p => 
             Pair("/" + p.relativeTo(browserOutputPath).replace("\\", "/"), {p.readStream()})
         }.toMap())

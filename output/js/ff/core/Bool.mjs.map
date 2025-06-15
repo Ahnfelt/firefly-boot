@@ -1,0 +1,19 @@
+{
+    "version": 3,
+    "sources": [
+        "../../../../../core/Bool.ff"
+    ],
+    "sourcesContent": [
+        "data Bool {\r\n    False\r\n    True\r\n}\r\n\r\nextend self: Bool {\r\n    toInt(): Int {\r\n        self.{\r\n            | False => 0\r\n            | True => 1\r\n        }\r\n    }\r\n}\r\n"
+    ],
+    "names": [
+        "False",
+        "True",
+        "toInt",
+        "self",
+        "Bool",
+        "anyTag",
+        "internalAnyTag"
+    ],
+    "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;AAAK;AACD,MAAAA,MAAA,IAAAA,KAAA;AAAA,gBAAAA,KAAA,CAAA;AAAA,OAAAA,MAAA;AAAA;AACA,MAAAC,KAAA,IAAAA,IAAA;AAAA,gBAAAA,IAAA,CAAA;AAAA,OAAAA,KAAA;AAAA;;AAGG,OACH,SAAAC,UAAA,CADGC,KACH,CAAA;AACS;AAAA,WAALA,KAAK;AACD,GAAE,CAAF,EAAA;AAAW,OAAA;AAAX;AACA;AAAU,OAAA;AAAV;AAFC;AADT;;AADG,OACH,eAAAD,WAAA,CADGC,K,EACH,KAAA,CAAA;AACS;AAAA,WAALA,KAAK;AACD,GAAE,CAAF,EAAA;AAAW,OAAA;AAAX;AACA;AAAU,OAAA;AAAV;AAFC;AADT;;AANC,aAAAC,uCAAA,GAAA;AAAA,AAAAC,OAAA,CAAA,CAAA;AAAA,OAAAC,2BAAA,CAAA,CAAA,CAAA,mBAAA,CAAA,CAAA,CAAA,GAAA,CAAA,CAAA,CAAA,CAAA,GAAA,CAAA;AAAA,CAAA;AAAA,MAAAD,QAAA,CAAA,KAAA,CAAA;AAAA,OAAAC,2BAAA,CAAA,CAAA,CAAA,mBAAA,CAAA,CAAA,CAAA,GAAA,CAAA,CAAA,CAAA,CAAA,GAAA,CAAA;AAAA,CAAA;AAAA,CAAA"
+}

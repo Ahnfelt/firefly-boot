@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -98,8 +96,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 export function AssetSystem(files_) {
 return {files_};
 }
-
-
 
 export function create_() {
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap([], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
@@ -266,3 +262,4 @@ return (await ff_core_Stream.Stream_toString$((await ff_core_AssetSystem.AssetSy
 }
 
 
+//# sourceMappingURL=AssetSystem.mjs.map

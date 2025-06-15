@@ -1,5 +1,3 @@
-
-
 import * as ff_compiler_Wildcards from "../../ff/compiler/Wildcards.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
@@ -102,8 +100,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 export function Wildcards(seenWildcards_) {
 return {seenWildcards_};
 }
-
-
 
 export function new_() {
 return ff_compiler_Wildcards.Wildcards(0)
@@ -524,3 +520,4 @@ return term_
 }
 
 
+//# sourceMappingURL=Wildcards.mjs.map

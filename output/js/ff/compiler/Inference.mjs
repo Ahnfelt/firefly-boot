@@ -1,5 +1,3 @@
-
-
 import * as ff_compiler_Inference from "../../ff/compiler/Inference.mjs"
 
 import * as ff_compiler_Environment from "../../ff/compiler/Environment.mjs"
@@ -111,14 +109,12 @@ export function Inference(unification_, missing_, lspHook_) {
 return {unification_, missing_, lspHook_};
 }
 
-
-
 export function new_(modules_, lspHook_) {
 return ff_compiler_Inference.Inference(ff_compiler_Unification.new_(modules_, ff_compiler_LspHook.LspHook_isEnabled(lspHook_)), ff_core_StringMap.new_(), lspHook_)
 }
 
 export function fail_(at_, message_) {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 
 export function core_(name_) {
@@ -147,7 +143,7 @@ return ff_compiler_Inference.Inference(ff_compiler_Unification.new_(modules_, ff
 }
 
 export async function fail_$(at_, message_, $task) {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 
 export async function core_$(name_, $task) {
@@ -202,7 +198,7 @@ break
 }
 {
 const allErrors_ = _1;
-ff_core_Core.throw_(ff_compiler_Syntax.CompileErrors(ff_core_List.List_map(allErrors_, ((_w1) => {
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileErrors(ff_core_List.List_map(allErrors_, ((_w1) => {
 return _w1.first_
 }))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
 }
@@ -232,10 +228,10 @@ const instances_ = ff_compiler_Inference.constraintsToInstances_(definition_.con
 return ff_compiler_Unification.Unification_withLocalInstances(self_.unification_, instances_, (() => {
 const traitName_ = definition_.traitName_;
 const traitDefinition_ = ff_core_Option.Option_else(ff_core_Map.Map_get(environment_.traits_, traitName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(definition_.at_, ("No such trait: " + traitName_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(definition_.at_, ("No such trait: " + traitName_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }));
 if((traitDefinition_.generics_.length !== definition_.typeArguments_.length)) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(definition_.at_, ((((("Wrong number of type arguments for " + traitName_) + ", expected ") + (traitDefinition_.generics_.length - 1)) + ", got ") + (definition_.typeArguments_.length - 1))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(definition_.at_, ((((("Wrong number of type arguments for " + traitName_) + ", expected ") + (traitDefinition_.generics_.length - 1)) + ", got ") + (definition_.typeArguments_.length - 1))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 const instantiationMap_ = ff_core_List.List_toMap(ff_core_List.List_zip(traitDefinition_.generics_, definition_.typeArguments_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 for(let for_a = traitDefinition_.methods_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
@@ -244,11 +240,11 @@ const found_ = ff_core_List.List_filter(definition_.methods_, ((_w1) => {
 return (_w1.signature_.name_ === traitMethod_.name_)
 }));
 if(ff_core_List.List_isEmpty(found_)) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(definition_.at_, ("Missing instance method: " + traitMethod_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(definition_.at_, ("Missing instance method: " + traitMethod_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 for(let for_a = found_, for_i = 1, for_l = for_a.length; for_i < for_l; for_i++) {
 const duplicateMethod_ = for_a[for_i];
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(duplicateMethod_.at_, ("Duplicated instance method: " + traitMethod_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(duplicateMethod_.at_, ("Duplicated instance method: " + traitMethod_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 };
 {
@@ -261,7 +257,7 @@ const traitMethodName_ = (ff_core_String.String_reverse(ff_core_String.String_dr
 return (_w1 !== 46)
 }))) + methodName_);
 const traitMethodScheme_ = ff_core_Option.Option_else(ff_core_Map.Map_get(environment_.symbols_, traitMethodName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(instanceFunction_.at_, ((("Trait " + traitName_) + " has no such method: ") + methodName_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(instanceFunction_.at_, ((("Trait " + traitName_) + " has no such method: ") + methodName_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }));
 const parameters_ = ff_core_List.List_map(traitMethodScheme_.signature_.parameters_, ((p_) => {
 {
@@ -275,11 +271,11 @@ return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_U
 const returnType_ = ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, traitMethodScheme_.signature_.returnType_);
 for(let for_a = instanceFunction_.signature_.parameters_, for_i = Math.max(parameters_.length, 0), for_l = for_a.length; for_i < for_l; for_i++) {
 const instanceParameter_ = for_a[for_i];
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(instanceParameter_.at_, ("Unexpected parameter: " + instanceParameter_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(instanceParameter_.at_, ("Unexpected parameter: " + instanceParameter_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 for(let for_a = parameters_, for_i = Math.max(instanceFunction_.signature_.parameters_.length, 0), for_l = for_a.length; for_i < for_l; for_i++) {
 const traitParameter_ = for_a[for_i];
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(instanceFunction_.at_, ("Missing parameter: " + traitParameter_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(instanceFunction_.at_, ("Missing parameter: " + traitParameter_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 for(let for_a = parameters_, for_i = 0, for_l = for_a.length, for_a2 = instanceFunction_.signature_.parameters_, for_i2 = 0, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
 const traitParameter_ = for_a[for_i];
@@ -546,10 +542,10 @@ const name_ = _1.name_;
 const variableAt_ = _1.variableAt_;
 const variableOption_ = _1.variable_;
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, at_, name_, [], ff_core_Option.None()), (() => {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }));
 if(instantiated_.scheme_.isNewtype_) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, "This kind of pattern is not allowed for newtypes"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, "This kind of pattern is not allowed for newtypes"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, instantiated_.scheme_.signature_.returnType_);
 const parameters_ = ff_core_List.List_sortBy(instantiated_.scheme_.signature_.parameters_, ((_w1) => {
@@ -613,11 +609,11 @@ const at_ = _1.at_;
 const name_ = _1.name_;
 const patterns_ = _1.patterns_;
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, at_, name_, [], ff_core_Option.None()), (() => {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }));
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, instantiated_.scheme_.signature_.returnType_);
 if(((patterns_.length !== instantiated_.scheme_.signature_.parameters_.length) && (!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, (((("Wrong number of subpatterns, expected " + instantiated_.scheme_.signature_.parameters_.length) + ", got ") + patterns_.length) + ".")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, (((("Wrong number of subpatterns, expected " + instantiated_.scheme_.signature_.parameters_.length) + ", got ") + patterns_.length) + ".")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 return ff_core_List.List_foldLeft(ff_core_List.List_map(ff_core_List.List_zip(patterns_, instantiated_.scheme_.signature_.parameters_), ((_1) => {
 {
@@ -669,7 +665,7 @@ return term_
 return ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, instantiated_.scheme_.signature_, term_)
 }
 })), (() => {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }))
 return
 }
@@ -730,7 +726,7 @@ return ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)
 }), (() => {
 return term_
 })), (() => {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }))
 return
 }
@@ -766,7 +762,7 @@ return ff_compiler_Syntax.EField(_c.at_, instantiated_.scheme_.isNewtype_, recor
 return
 }
 {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 return
@@ -776,7 +772,7 @@ return term_
 }
 {
 const index_ = _1.index_;
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 return
@@ -1022,7 +1018,7 @@ return ff_compiler_Syntax.ELambda(at_, lambda_)
 if(_1.EVariant) {
 const e_ = _1;
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, e_.typeArguments_, e_.arguments_), (() => {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }));
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
 const arguments_ = ff_core_Option.Option_map(e_.arguments_, ((_w1) => {
@@ -1043,7 +1039,7 @@ return
 if(_1.EVariantIs) {
 const e_ = _1;
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, e_.typeArguments_, ff_core_Option.None()), (() => {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }));
 const parameters_ = ff_core_List.List_sortBy(instantiated_.scheme_.signature_.parameters_, ((_w1) => {
 return _w1.name_
@@ -1070,10 +1066,10 @@ return
 if(_1.ECopy) {
 const e_ = _1;
 const scheme_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, [], ff_core_Option.None()), (() => {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 })).scheme_;
 if(scheme_.isNewtype_) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, "Newtypes can't be copied"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, "Newtypes can't be copied"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 const signature_ = scheme_.signature_;
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
@@ -1111,8 +1107,7 @@ return (_w1 === a_.name_)
 const at_ = _1.at_;
 const name_ = _1.name_;
 const value_ = _1.value_;
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, ("Unknown parameter: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ("Unknown parameter: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }));
 const arguments_ = ff_core_List.List_map(parameterNames_, ((name_) => {
@@ -1168,7 +1163,7 @@ const call_ = (((_1) => {
 if(_1.DynamicCall) {
 const call_ = _1;
 return {
-function_: call_.function_,
+function_: call_.function_, 
 tailCall_: call_.tailCall_
 }
 return
@@ -1200,7 +1195,7 @@ return ff_compiler_Inference.Inference_inferFunctionCall(self_, environment_, ex
 return
 }
 {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(variableAt_, ("No such function: " + x_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(variableAt_, ("No such function: " + x_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 }
@@ -1246,7 +1241,7 @@ const instantiated_ = _1.value_;
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, e2_)
 }
 {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 return
@@ -1256,7 +1251,7 @@ return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expe
 }
 {
 const index_ = _1.index_;
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 return
@@ -1333,10 +1328,10 @@ return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, value_)
 }
 }
 } else {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol is not mutable: " + e_.variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ("Symbol is not mutable: " + e_.variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 })), (() => {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }))
 return
 }
@@ -1351,7 +1346,7 @@ const t_ = _1;
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 if(ff_core_String.String_startsWith(name_, "Record$", 0)) {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ("Can't assign fields of anonymous records: " + e_.field_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ("Can't assign fields of anonymous records: " + e_.field_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 if(_1.TConstructor) {
@@ -1377,10 +1372,10 @@ return
 }
 if(_1.Some) {
 const instantiated_ = _1.value_;
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ((("Can't assign an immutable field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ((("Can't assign an immutable field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 return
@@ -1390,7 +1385,7 @@ return term_
 }
 {
 const index_ = _1.index_;
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 return
@@ -1416,7 +1411,7 @@ ff_compiler_Unification.Unification_unify(self_.unification_, at_, t_, ff_compil
 }
 } while(false)
 } else if((operator_ !== "")) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, (("Only +=, -=, *=, /= and = assignments are supported. Got: " + operator_) + "=")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, (("Only +=, -=, *=, /= and = assignments are supported. Got: " + operator_) + "=")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 } else {};
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), []));
 return newValue_
@@ -1523,14 +1518,14 @@ if(_1.DynamicCall) {
 const call_ = _1;
 if((!call_.tailCall_)) {
 return {
-function_: call_.function_,
+function_: call_.function_, 
 tailCall_: call_.tailCall_
 }
 return
 }
 }
 if(_1.DynamicCall) {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, "Tailcalls not supported on lambda functions"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, "Tailcalls not supported on lambda functions"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferLambdaCall")
@@ -1550,7 +1545,7 @@ const t_ = _1.second_;
 const if_o = argument_.name_
 if(if_o.Some) {
 const name_ = if_o.value_;
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(argument_.at_, ("Named argument not allowed here: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(argument_.at_, ("Named argument not allowed here: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 };
 {
@@ -1567,7 +1562,7 @@ return
 const if_o = ff_core_List.List_first(e_.typeArguments_)
 if(if_o.Some) {
 const typeArgument_ = if_o.value_;
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(typeArgument_.at_, "Type arguments not allowed here"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(typeArgument_.at_, "Type arguments not allowed here"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 };
 ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, effect_, environment_.effect_);
@@ -1642,7 +1637,7 @@ if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 break
 }
 {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on unknown types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, "Operators on unknown types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 } while(false);
 {
@@ -1843,12 +1838,10 @@ if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return
 }
 if(_1.Some && _2.Some) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on these types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, "Operators on these types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on unknown types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, "Operators on unknown types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 });
 chooseType_(magic_(t1_), magic_(t2_));
@@ -2034,7 +2027,7 @@ return (_w1 === "Q$")
 : typeArguments_);
 if(((scheme_.signature_.generics_.length !== newTypeArguments_.length) && (!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)))) {
 const extra_ = (newTypeArguments_.length - typeArguments_.length);
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, ((((("Wrong number of type arguments for " + symbol_) + ", expected ") + (scheme_.signature_.generics_.length - extra_)) + ", got ") + (newTypeArguments_.length - extra_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ((((("Wrong number of type arguments for " + symbol_) + ", expected ") + (scheme_.signature_.generics_.length - extra_)) + ", got ") + (newTypeArguments_.length - extra_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 return ff_core_List.List_zip(scheme_.signature_.generics_, newTypeArguments_)
 })()
@@ -2122,7 +2115,7 @@ break
 }
 {
 const allErrors_ = _1;
-ff_core_Core.throw_(ff_compiler_Syntax.CompileErrors(ff_core_List.List_map(allErrors_, ((_w1) => {
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileErrors(ff_core_List.List_map(allErrors_, ((_w1) => {
 return _w1.first_
 }))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
 }
@@ -2152,10 +2145,10 @@ const instances_ = ff_compiler_Inference.constraintsToInstances_(definition_.con
 return ff_compiler_Unification.Unification_withLocalInstances(self_.unification_, instances_, (() => {
 const traitName_ = definition_.traitName_;
 const traitDefinition_ = ff_core_Option.Option_else(ff_core_Map.Map_get(environment_.traits_, traitName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(definition_.at_, ("No such trait: " + traitName_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(definition_.at_, ("No such trait: " + traitName_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }));
 if((traitDefinition_.generics_.length !== definition_.typeArguments_.length)) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(definition_.at_, ((((("Wrong number of type arguments for " + traitName_) + ", expected ") + (traitDefinition_.generics_.length - 1)) + ", got ") + (definition_.typeArguments_.length - 1))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(definition_.at_, ((((("Wrong number of type arguments for " + traitName_) + ", expected ") + (traitDefinition_.generics_.length - 1)) + ", got ") + (definition_.typeArguments_.length - 1))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 const instantiationMap_ = ff_core_List.List_toMap(ff_core_List.List_zip(traitDefinition_.generics_, definition_.typeArguments_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 for(let for_a = traitDefinition_.methods_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
@@ -2164,11 +2157,11 @@ const found_ = ff_core_List.List_filter(definition_.methods_, ((_w1) => {
 return (_w1.signature_.name_ === traitMethod_.name_)
 }));
 if(ff_core_List.List_isEmpty(found_)) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(definition_.at_, ("Missing instance method: " + traitMethod_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(definition_.at_, ("Missing instance method: " + traitMethod_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 for(let for_a = found_, for_i = 1, for_l = for_a.length; for_i < for_l; for_i++) {
 const duplicateMethod_ = for_a[for_i];
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(duplicateMethod_.at_, ("Duplicated instance method: " + traitMethod_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(duplicateMethod_.at_, ("Duplicated instance method: " + traitMethod_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 };
 {
@@ -2181,7 +2174,7 @@ const traitMethodName_ = (ff_core_String.String_reverse(ff_core_String.String_dr
 return (_w1 !== 46)
 }))) + methodName_);
 const traitMethodScheme_ = ff_core_Option.Option_else(ff_core_Map.Map_get(environment_.symbols_, traitMethodName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(instanceFunction_.at_, ((("Trait " + traitName_) + " has no such method: ") + methodName_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(instanceFunction_.at_, ((("Trait " + traitName_) + " has no such method: ") + methodName_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }));
 const parameters_ = ff_core_List.List_map(traitMethodScheme_.signature_.parameters_, ((p_) => {
 {
@@ -2195,11 +2188,11 @@ return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_U
 const returnType_ = ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, traitMethodScheme_.signature_.returnType_);
 for(let for_a = instanceFunction_.signature_.parameters_, for_i = Math.max(parameters_.length, 0), for_l = for_a.length; for_i < for_l; for_i++) {
 const instanceParameter_ = for_a[for_i];
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(instanceParameter_.at_, ("Unexpected parameter: " + instanceParameter_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(instanceParameter_.at_, ("Unexpected parameter: " + instanceParameter_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 for(let for_a = parameters_, for_i = Math.max(instanceFunction_.signature_.parameters_.length, 0), for_l = for_a.length; for_i < for_l; for_i++) {
 const traitParameter_ = for_a[for_i];
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(instanceFunction_.at_, ("Missing parameter: " + traitParameter_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(instanceFunction_.at_, ("Missing parameter: " + traitParameter_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 for(let for_a = parameters_, for_i = 0, for_l = for_a.length, for_a2 = instanceFunction_.signature_.parameters_, for_i2 = 0, for_l2 = for_a2.length; for_i < for_l && for_i2 < for_l2; for_i++, for_i2++) {
 const traitParameter_ = for_a[for_i];
@@ -2466,10 +2459,10 @@ const name_ = _1.name_;
 const variableAt_ = _1.variableAt_;
 const variableOption_ = _1.variable_;
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, at_, name_, [], ff_core_Option.None()), (() => {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }));
 if(instantiated_.scheme_.isNewtype_) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, "This kind of pattern is not allowed for newtypes"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, "This kind of pattern is not allowed for newtypes"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, instantiated_.scheme_.signature_.returnType_);
 const parameters_ = ff_core_List.List_sortBy(instantiated_.scheme_.signature_.parameters_, ((_w1) => {
@@ -2533,11 +2526,11 @@ const at_ = _1.at_;
 const name_ = _1.name_;
 const patterns_ = _1.patterns_;
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, at_, name_, [], ff_core_Option.None()), (() => {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }));
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, instantiated_.scheme_.signature_.returnType_);
 if(((patterns_.length !== instantiated_.scheme_.signature_.parameters_.length) && (!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, (((("Wrong number of subpatterns, expected " + instantiated_.scheme_.signature_.parameters_.length) + ", got ") + patterns_.length) + ".")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, (((("Wrong number of subpatterns, expected " + instantiated_.scheme_.signature_.parameters_.length) + ", got ") + patterns_.length) + ".")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 return ff_core_List.List_foldLeft(ff_core_List.List_map(ff_core_List.List_zip(patterns_, instantiated_.scheme_.signature_.parameters_), ((_1) => {
 {
@@ -2589,7 +2582,7 @@ return term_
 return ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, instantiated_.scheme_.signature_, term_)
 }
 })), (() => {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }))
 return
 }
@@ -2650,7 +2643,7 @@ return ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)
 }), (() => {
 return term_
 })), (() => {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }))
 return
 }
@@ -2686,7 +2679,7 @@ return ff_compiler_Syntax.EField(_c.at_, instantiated_.scheme_.isNewtype_, recor
 return
 }
 {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 return
@@ -2696,7 +2689,7 @@ return term_
 }
 {
 const index_ = _1.index_;
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 return
@@ -2942,7 +2935,7 @@ return ff_compiler_Syntax.ELambda(at_, lambda_)
 if(_1.EVariant) {
 const e_ = _1;
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, e_.typeArguments_, e_.arguments_), (() => {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }));
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
 const arguments_ = ff_core_Option.Option_map(e_.arguments_, ((_w1) => {
@@ -2963,7 +2956,7 @@ return
 if(_1.EVariantIs) {
 const e_ = _1;
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, e_.typeArguments_, ff_core_Option.None()), (() => {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }));
 const parameters_ = ff_core_List.List_sortBy(instantiated_.scheme_.signature_.parameters_, ((_w1) => {
 return _w1.name_
@@ -2990,10 +2983,10 @@ return
 if(_1.ECopy) {
 const e_ = _1;
 const scheme_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.name_, [], ff_core_Option.None()), (() => {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 })).scheme_;
 if(scheme_.isNewtype_) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, "Newtypes can't be copied"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, "Newtypes can't be copied"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 const signature_ = scheme_.signature_;
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
@@ -3031,8 +3024,7 @@ return (_w1 === a_.name_)
 const at_ = _1.at_;
 const name_ = _1.name_;
 const value_ = _1.value_;
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, ("Unknown parameter: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ("Unknown parameter: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }));
 const arguments_ = ff_core_List.List_map(parameterNames_, ((name_) => {
@@ -3088,7 +3080,7 @@ const call_ = (((_1) => {
 if(_1.DynamicCall) {
 const call_ = _1;
 return {
-function_: call_.function_,
+function_: call_.function_, 
 tailCall_: call_.tailCall_
 }
 return
@@ -3120,7 +3112,7 @@ return ff_compiler_Inference.Inference_inferFunctionCall(self_, environment_, ex
 return
 }
 {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(variableAt_, ("No such function: " + x_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(variableAt_, ("No such function: " + x_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 }
@@ -3166,7 +3158,7 @@ const instantiated_ = _1.value_;
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, e2_)
 }
 {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 return
@@ -3176,7 +3168,7 @@ return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expe
 }
 {
 const index_ = _1.index_;
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 return
@@ -3253,10 +3245,10 @@ return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, value_)
 }
 }
 } else {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol is not mutable: " + e_.variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ("Symbol is not mutable: " + e_.variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 })), (() => {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }))
 return
 }
@@ -3271,7 +3263,7 @@ const t_ = _1;
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 if(ff_core_String.String_startsWith(name_, "Record$", 0)) {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ("Can't assign fields of anonymous records: " + e_.field_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ("Can't assign fields of anonymous records: " + e_.field_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 if(_1.TConstructor) {
@@ -3297,10 +3289,10 @@ return
 }
 if(_1.Some) {
 const instantiated_ = _1.value_;
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ((("Can't assign an immutable field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ((("Can't assign an immutable field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_, []))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 return
@@ -3310,7 +3302,7 @@ return term_
 }
 {
 const index_ = _1.index_;
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 return
@@ -3336,7 +3328,7 @@ ff_compiler_Unification.Unification_unify(self_.unification_, at_, t_, ff_compil
 }
 } while(false)
 } else if((operator_ !== "")) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, (("Only +=, -=, *=, /= and = assignments are supported. Got: " + operator_) + "=")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, (("Only +=, -=, *=, /= and = assignments are supported. Got: " + operator_) + "=")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 } else {};
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), []));
 return newValue_
@@ -3443,14 +3435,14 @@ if(_1.DynamicCall) {
 const call_ = _1;
 if((!call_.tailCall_)) {
 return {
-function_: call_.function_,
+function_: call_.function_, 
 tailCall_: call_.tailCall_
 }
 return
 }
 }
 if(_1.DynamicCall) {
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, "Tailcalls not supported on lambda functions"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, "Tailcalls not supported on lambda functions"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 {
 return ff_compiler_Inference.fail_(e_.at_, "Internal error: Static calls not expected in inferLambdaCall")
@@ -3470,7 +3462,7 @@ const t_ = _1.second_;
 const if_o = argument_.name_
 if(if_o.Some) {
 const name_ = if_o.value_;
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(argument_.at_, ("Named argument not allowed here: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(argument_.at_, ("Named argument not allowed here: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 };
 {
@@ -3487,7 +3479,7 @@ return
 const if_o = ff_core_List.List_first(e_.typeArguments_)
 if(if_o.Some) {
 const typeArgument_ = if_o.value_;
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(typeArgument_.at_, "Type arguments not allowed here"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(typeArgument_.at_, "Type arguments not allowed here"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 };
 ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, effect_, environment_.effect_);
@@ -3562,7 +3554,7 @@ if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 break
 }
 {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on unknown types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, "Operators on unknown types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 } while(false);
 {
@@ -3763,12 +3755,10 @@ if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return
 }
 if(_1.Some && _2.Some) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on these types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, "Operators on these types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on unknown types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
-return
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, "Operators on unknown types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 });
 chooseType_(magic_(t1_), magic_(t2_));
@@ -3954,7 +3944,7 @@ return (_w1 === "Q$")
 : typeArguments_);
 if(((scheme_.signature_.generics_.length !== newTypeArguments_.length) && (!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)))) {
 const extra_ = (newTypeArguments_.length - typeArguments_.length);
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, ((((("Wrong number of type arguments for " + symbol_) + ", expected ") + (scheme_.signature_.generics_.length - extra_)) + ", got ") + (newTypeArguments_.length - extra_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ((((("Wrong number of type arguments for " + symbol_) + ", expected ") + (scheme_.signature_.generics_.length - extra_)) + ", got ") + (newTypeArguments_.length - extra_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 return ff_core_List.List_zip(scheme_.signature_.generics_, newTypeArguments_)
 })()
@@ -4012,3 +4002,4 @@ return instantiated_
 }
 
 
+//# sourceMappingURL=Inference.mjs.map

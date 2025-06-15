@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -94,16 +92,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-
-
-
-
-
-
-
-
-
-
 export const ff_core_Show_Show$ff_core_Bool_Bool = {
 show_(value_) {
 const value_a = value_;
@@ -122,7 +110,7 @@ return "False"
 {
 return "True"
 }
-}
+},
 };
 
 export const ff_core_Show_Show$ff_core_Nothing_Nothing = {
@@ -131,7 +119,7 @@ return ""
 },
 async show_$(value_, $task) {
 return ""
-}
+},
 };
 
 export const ff_core_Show_Show$ff_core_Char_Char = {
@@ -140,7 +128,7 @@ return ff_core_Char.Char_toString(value_)
 },
 async show_$(value_, $task) {
 return ff_core_Char.Char_toString(value_)
-}
+},
 };
 
 export const ff_core_Show_Show$ff_core_Int_Int = {
@@ -149,7 +137,7 @@ return ("" + value_)
 },
 async show_$(value_, $task) {
 return ("" + value_)
-}
+},
 };
 
 export const ff_core_Show_Show$ff_core_Float_Float = {
@@ -158,7 +146,7 @@ return ("" + value_)
 },
 async show_$(value_, $task) {
 return ("" + value_)
-}
+},
 };
 
 export const ff_core_Show_Show$ff_core_String_String = {
@@ -167,7 +155,7 @@ return JSON.stringify(value_)
 },
 async show_$(value_, $task) {
 return JSON.stringify(value_)
-}
+},
 };
 
 export function ff_core_Show_Show$ff_core_List_List(ff_core_Show_Show$T) { return {
@@ -180,7 +168,7 @@ async show_$(value_, $task) {
 return (("[" + ff_core_List.List_join(ff_core_List.List_map(value_, ((value_) => {
 return ff_core_Show_Show$T.show_(value_)
 })), ", ")) + "]")
-}
+},
 }}
 
 export function ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show_Show$A, ff_core_Show_Show$B) { return {
@@ -189,5 +177,8 @@ return (((("Pair(" + ff_core_Show_Show$A.show_(value_.first_)) + ", ") + ff_core
 },
 async show_$(value_, $task) {
 return (((("Pair(" + ff_core_Show_Show$A.show_(value_.first_)) + ", ") + ff_core_Show_Show$B.show_(value_.second_)) + ")")
-}
+},
 }}
+
+
+//# sourceMappingURL=Show.mjs.map

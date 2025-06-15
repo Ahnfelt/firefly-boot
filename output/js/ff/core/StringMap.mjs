@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -97,8 +95,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 // type StringMap
 
 
-
-
 export function new_() {
 return (new Map())
 }
@@ -117,7 +113,7 @@ return ff_core_Option.Some(result_)
 export function StringMap_grab(self_, key_) {
 const result_ = self_.get(key_);
 if((ff_core_JsValue.JsValue_isUndefined(result_) && (!ff_core_StringMap.StringMap_has(self_, key_)))) {
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return result_
 }
@@ -225,7 +221,7 @@ return ff_core_Option.Some(result_)
 export async function StringMap_grab$(self_, key_, $task) {
 const result_ = self_.get(key_);
 if((ff_core_JsValue.JsValue_isUndefined(result_) && (!ff_core_StringMap.StringMap_has(self_, key_)))) {
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return result_
 }
@@ -354,3 +350,4 @@ return
 }
 
 
+//# sourceMappingURL=StringMap.mjs.map

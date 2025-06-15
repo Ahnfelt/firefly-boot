@@ -1,5 +1,3 @@
-
-
 import * as ff_compiler_DependencyLock from "../../ff/compiler/DependencyLock.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
@@ -101,8 +99,6 @@ export function DependencyLock(doneLocks_, task_) {
 return {doneLocks_, task_};
 }
 
-
-
 export function new_(task_) {
 return ff_compiler_DependencyLock.DependencyLock(ff_core_StringMap.new_(), task_)
 }
@@ -130,3 +126,4 @@ return (await body_($task))
 }
 
 
+//# sourceMappingURL=DependencyLock.mjs.map

@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -95,8 +93,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Float
-
-
 
 
 export function hypot_(a_, b_, c_ = 0.0, d_ = 0.0) {
@@ -509,5 +505,8 @@ return ff_core_Any.internalAnyTag_((("ff:core/Float.Float" + "[") + "]"))
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:core/Float.Float" + "[") + "]"))
-}
+},
 };
+
+
+//# sourceMappingURL=Float.mjs.map

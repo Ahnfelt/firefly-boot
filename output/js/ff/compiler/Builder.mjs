@@ -1,5 +1,3 @@
-import * as import$0 from 'pkg';
-
 import * as ff_compiler_Builder from "../../ff/compiler/Builder.mjs"
 
 import * as ff_compiler_Compiler from "../../ff/compiler/Compiler.mjs"
@@ -116,14 +114,13 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
+import * as import$0 from 'pkg';
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type PackageFiles
 export function PackageFiles(root_, packageFile_, files_) {
 return {root_, packageFile_, files_};
 }
-
-
 
 export function build_(system_, emitTarget_, mainModules_, resolvedDependencies_, compilerModulePath_, tempPath_, jsOutputPath_, printMeasurements_, moduleCache_) {
 if(ff_core_Path.Path_exists(tempPath_, false, false, false)) {
@@ -380,25 +377,7 @@ ff_core_Path.Path_writeStream(p_, makeStream_(), false)
 return
 }
 }));
-const json_ = `{
-        "name": "main",
-        "bin": {
-            "firefly-main": "Main.bundle.js"
-        },
-        "devDependencies": {
-            "pkg": "^5.8.0"
-        },
-        "pkg": {
-            "scripts": "Main.bundle.js",
-            "outputPath": "bin",
-            "assets": ["../assets/**/*"],
-            "targets": [
-                "node18-linux-x64",
-                "node18-macos-x64",
-                "node18-win-x64"
-            ]
-        }
-    }`;
+const json_ = "{\r\n        \"name\": \"main\",\r\n        \"bin\": {\r\n            \"firefly-main\": \"Main.bundle.js\"\r\n        },\r\n        \"devDependencies\": {\r\n            \"pkg\": \"^5.8.0\"\r\n        },\r\n        \"pkg\": {\r\n            \"scripts\": \"Main.bundle.js\",\r\n            \"outputPath\": \"bin\",\r\n            \"assets\": [\"../assets/**/*\"],\r\n            \"targets\": [\r\n                \"node18-linux-x64\",\r\n                \"node18-macos-x64\",\r\n                \"node18-win-x64\"\r\n            ]\r\n        }\r\n    }";
 const packageFile_ = ff_core_Path.Path_slash(outputPath_, "executable/package.json");
 ff_core_Path.Path_writeText(packageFile_, json_);
 ff_compiler_Builder.internalCallPkg_(self_, packageFile_, outputPath_, targets_)
@@ -664,25 +643,7 @@ const p_ = (await ff_core_Path.Path_slash$(assetOutputPath_, path_, $task));
 return
 }
 }), $task));
-const json_ = `{
-        "name": "main",
-        "bin": {
-            "firefly-main": "Main.bundle.js"
-        },
-        "devDependencies": {
-            "pkg": "^5.8.0"
-        },
-        "pkg": {
-            "scripts": "Main.bundle.js",
-            "outputPath": "bin",
-            "assets": ["../assets/**/*"],
-            "targets": [
-                "node18-linux-x64",
-                "node18-macos-x64",
-                "node18-win-x64"
-            ]
-        }
-    }`;
+const json_ = "{\r\n        \"name\": \"main\",\r\n        \"bin\": {\r\n            \"firefly-main\": \"Main.bundle.js\"\r\n        },\r\n        \"devDependencies\": {\r\n            \"pkg\": \"^5.8.0\"\r\n        },\r\n        \"pkg\": {\r\n            \"scripts\": \"Main.bundle.js\",\r\n            \"outputPath\": \"bin\",\r\n            \"assets\": [\"../assets/**/*\"],\r\n            \"targets\": [\r\n                \"node18-linux-x64\",\r\n                \"node18-macos-x64\",\r\n                \"node18-win-x64\"\r\n            ]\r\n        }\r\n    }";
 const packageFile_ = (await ff_core_Path.Path_slash$(outputPath_, "executable/package.json", $task));
 (await ff_core_Path.Path_writeText$(packageFile_, json_, $task));
 (await ff_compiler_Builder.internalCallPkg_$(self_, packageFile_, outputPath_, targets_, $task))
@@ -694,5 +655,4 @@ const pkg_ = import$0;
 }
 
 
-
-
+//# sourceMappingURL=Builder.mjs.map

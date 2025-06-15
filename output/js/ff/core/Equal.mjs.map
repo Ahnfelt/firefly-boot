@@ -1,0 +1,22 @@
+{
+    "version": 3,
+    "sources": [
+        "../../../../../core/Equal.ff"
+    ],
+    "sourcesContent": [
+        "trait T: Equal {\r\n    equals(x: T, y: T): Bool\r\n}\r\n\r\nnotEquals[T: Equal](x: T, y: T): Bool {\r\n    !equals(x, y)\r\n}\r\n\r\ninstance Nothing: Equal {\r\n    equals(x: Nothing, y: Nothing): Bool {True}\r\n}\r\n\r\ninstance Bool: Equal {\r\n    equals(x: Bool, y: Bool): Bool {\r\n        x!.equals(y)\r\n    }\r\n}\r\n\r\ninstance Char: Equal {\r\n    equals(x: Char, y: Char): Bool {\r\n        x!.equals(y)\r\n    }\r\n}\r\n\r\ninstance Int: Equal {\r\n    equals(x: Int, y: Int): Bool {\r\n        x!.equals(y)\r\n    }\r\n}\r\n\r\ninstance Float: Equal {\r\n    equals(x: Float, y: Float): Bool {\r\n        x!.equals(y)\r\n    }\r\n}\r\n\r\ninstance String: Equal {\r\n    equals(x: String, y: String): Bool {\r\n        x!.equals(y)\r\n    }\r\n}\r\n"
+    ],
+    "names": [
+        "notEquals",
+        "x",
+        "y",
+        "equals",
+        "Nothing",
+        "Bool",
+        "Char",
+        "Int",
+        "Float",
+        "String"
+    ],
+    "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A,OAIA,SAAAA,UAAA,CAAoBC,E,EAAMC,E,EAAb,qBAAb,CAAA;AACI,OAAA,CAAA,CAAC,qBAAA,CAAAC,OAAA,CAAOF,E,EAAGC,EAAV,CAAD;AADJ;;A,OAAA,eAAAF,WAAA,CAAoBC,E,EAAMC,E,EAAb,qB,EAAb,KAAA,CAAA;AACI,OAAA,CAAA,CAAC,qBAAA,CAAAC,OAAA,CAAOF,E,EAAGC,EAAV,CAAD;AADJ;;AAIkB,aAAAE,2CAAA,GAAA;AACd,AAAAD,OAAA,CAAOF,E,EAAYC,EAAnB,CAAA;AAAsC,OAAA;AAAtC,CADc;AACd,MAAAC,QAAA,CAAOF,E,EAAYC,E,EAAnB,KAAA,CAAA;AAAsC,OAAA;AAAtC,CADc;AAAA,CAAA;;AAIH,aAAAG,qCAAA,GAAA;AACX,AAAAF,OAAA,CAAOF,E,EAASC,EAAhB,CAAA;AACO,OAAA,CAAHD,EAAG,KAAOC,EAAP;AADP,CADW;AACX,MAAAC,QAAA,CAAOF,E,EAASC,E,EAAhB,KAAA,CAAA;AACO,OAAA,CAAHD,EAAG,KAAOC,EAAP;AADP,CADW;AAAA,CAAA;;AAMA,aAAAI,qCAAA,GAAA;AACX,AAAAH,OAAA,CAAOF,E,EAASC,EAAhB,CAAA;AACO,OAAA,CAAHD,EAAG,KAAOC,EAAP;AADP,CADW;AACX,MAAAC,QAAA,CAAOF,E,EAASC,E,EAAhB,KAAA,CAAA;AACO,OAAA,CAAHD,EAAG,KAAOC,EAAP;AADP,CADW;AAAA,CAAA;;AAMD,aAAAK,mCAAA,GAAA;AACV,AAAAJ,OAAA,CAAOF,E,EAAQC,EAAf,CAAA;AACO,OAAA,CAAHD,EAAG,KAAOC,EAAP;AADP,CADU;AACV,MAAAC,QAAA,CAAOF,E,EAAQC,E,EAAf,KAAA,CAAA;AACO,OAAA,CAAHD,EAAG,KAAOC,EAAP;AADP,CADU;AAAA,CAAA;;AAME,aAAAM,uCAAA,GAAA;AACZ,AAAAL,OAAA,CAAOF,E,EAAUC,EAAjB,CAAA;AACO,OAAA,CAAHD,EAAG,KAAOC,EAAP;AADP,CADY;AACZ,MAAAC,QAAA,CAAOF,E,EAAUC,E,EAAjB,KAAA,CAAA;AACO,OAAA,CAAHD,EAAG,KAAOC,EAAP;AADP,CADY;AAAA,CAAA;;AAMC,aAAAO,yCAAA,GAAA;AACb,AAAAN,OAAA,CAAOF,E,EAAWC,EAAlB,CAAA;AACO,OAAA,CAAHD,EAAG,KAAOC,EAAP;AADP,CADa;AACb,MAAAC,QAAA,CAAOF,E,EAAWC,E,EAAlB,KAAA,CAAA;AACO,OAAA,CAAHD,EAAG,KAAOC,EAAP;AADP,CADa;AAAA,CAAA"
+}

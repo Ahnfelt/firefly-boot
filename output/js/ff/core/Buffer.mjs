@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -95,8 +93,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Buffer
-
-
 
 
 export function new_(size_, shared_ = false) {
@@ -218,7 +214,7 @@ const low_ = self_.getUint32((byteOffset_ + (littleEndian_
 : 4)), littleEndian_);
 const result_ = ((high_ * 0x100000000) + low_);
 if((!Number.isSafeInteger(result_))) {
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return result_
 }
@@ -232,7 +228,7 @@ const low_ = self_.getUint32((byteOffset_ + (littleEndian_
 : 4)), littleEndian_);
 const result_ = ((high_ * 0x100000000) + low_);
 if((!Number.isSafeInteger(result_))) {
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return result_
 }
@@ -346,9 +342,10 @@ if((encoding_ === "utf8")) {
 if(((typeof TextDecoder.ffSingleton) === "undefined")) {
 TextDecoder.ffSingleton = (new TextDecoder())
 };
-TextDecoder.ffSingleton.decode(self_)
-};
+return TextDecoder.ffSingleton.decode(self_)
+} else {
 return (new TextDecoder()).decode(self_)
+}
 }
 
 export function Buffer_toByteList(self_) {
@@ -391,7 +388,7 @@ const low_ = self_.getUint32((byteOffset_ + (littleEndian_
 : 4)), littleEndian_);
 const result_ = ((high_ * 0x100000000) + low_);
 if((!Number.isSafeInteger(result_))) {
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return result_
 }
@@ -405,7 +402,7 @@ const low_ = self_.getUint32((byteOffset_ + (littleEndian_
 : 4)), littleEndian_);
 const result_ = ((high_ * 0x100000000) + low_);
 if((!Number.isSafeInteger(result_))) {
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return result_
 }
@@ -519,9 +516,10 @@ if((encoding_ === "utf8")) {
 if(((typeof TextDecoder.ffSingleton) === "undefined")) {
 TextDecoder.ffSingleton = (new TextDecoder())
 };
-TextDecoder.ffSingleton.decode(self_)
-};
+return TextDecoder.ffSingleton.decode(self_)
+} else {
 return (new TextDecoder()).decode(self_)
+}
 }
 
 export async function Buffer_toByteList$(self_, $task) {
@@ -557,11 +555,11 @@ return ff_core_Buffer.Buffer_toString(result_, "utf8")
 
 export const ff_core_Show_Show$ff_core_Buffer_Buffer = {
 show_(value_) {
-return ((`Buffer.fromHex("` + ff_core_Buffer.Buffer_toHex(value_)) + `")`)
+return (("Buffer.fromHex(\"" + ff_core_Buffer.Buffer_toHex(value_)) + "\")")
 },
 async show_$(value_, $task) {
-return ((`Buffer.fromHex("` + ff_core_Buffer.Buffer_toHex(value_)) + `")`)
-}
+return (("Buffer.fromHex(\"" + ff_core_Buffer.Buffer_toHex(value_)) + "\")")
+},
 };
 
 export const ff_core_Equal_Equal$ff_core_Buffer_Buffer = {
@@ -616,7 +614,7 @@ return same_
 }
 }
 }
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_core_Buffer_Buffer = {
@@ -663,5 +661,8 @@ return ff_core_Ordering.fromInt_((ff_core_Buffer.Buffer_size(x_) - ff_core_Buffe
 return ordering_
 }
 }
-}
+},
 };
+
+
+//# sourceMappingURL=Buffer.mjs.map

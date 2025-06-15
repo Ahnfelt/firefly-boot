@@ -1,0 +1,49 @@
+{
+    "version": 3,
+    "sources": [
+        "../../../../../core/Int.ff"
+    ],
+    "sourcesContent": [
+        "data Int {}\r\n\r\nextend self: Int {\r\n\r\n    abs(): Int {\r\n        Js->Math->abs(self)?\r\n    }\r\n\r\n    toFloat(): Float {\r\n        self!?\r\n    }\r\n\r\n    bitNot(): Int {\r\n        Js.unaryOperator(\"~\", self)?\r\n    }\r\n\r\n    bitOr(that: Int): Int {\r\n        Js.binaryOperator(\"|\", self, that)?\r\n    }\r\n\r\n    bitAnd(that: Int): Int {\r\n        Js.binaryOperator(\"&\", self, that)?\r\n    }\r\n\r\n    bitXor(that: Int): Int {\r\n        Js.binaryOperator(\"^\", self, that)?\r\n    }\r\n\r\n    bitLeft(bits: Int): Int {\r\n        Js.binaryOperator(\"<<\", self, bits)?\r\n    }\r\n\r\n    bitRight(bits: Int): Int {\r\n        Js.binaryOperator(\">>\", self, bits)?\r\n    }\r\n\r\n    bitRightUnsigned(bits: Int): Int {\r\n        Js.binaryOperator(\">>>\", self, bits)?\r\n    }\r\n    \r\n    bitLeadingZeros(): Int {\r\n        Js->Math->clz32(self)?\r\n    }\r\n\r\n    to(inclusiveEnd: Int): List[Int] {\r\n        let result = Array.new()\r\n        mutable n = self\r\n        while {n <= inclusiveEnd} {\r\n            result.push(n)\r\n            n += 1\r\n        }\r\n        result.drain()\r\n    }\r\n\r\n    until(exclusiveEnd: Int): List[Int] {\r\n        let result = Array.new()\r\n        mutable n = self\r\n        while {n < exclusiveEnd} {\r\n            result.push(n)\r\n            n += 1\r\n        }\r\n        result.drain()\r\n    }\r\n\r\n    min(that: Int): Int {\r\n        Js->Math->min(self, that)?\r\n    }\r\n\r\n    max(that: Int): Int {\r\n        Js->Math->max(self, that)?\r\n    }\r\n\r\n    clamp(from: Int, to: Int): Int {\r\n        self.max(from).min(to)\r\n    }\r\n    \r\n    pad(padding: String): String {\r\n        (\"\" + self).padStart(padding.size(), padding)\r\n    }\r\n    \r\n    div(divisor: Int): Int {\r\n        (self / divisor).toInt()\r\n    }\r\n\r\n    rem(divisor: Int): Int {\r\n        (self % divisor).toInt()\r\n    }\r\n\r\n}\r\n"
+    ],
+    "names": [
+        "abs",
+        "self",
+        "\"Math\"",
+        "toFloat",
+        "bitNot",
+        "bitOr",
+        "that",
+        "bitAnd",
+        "bitXor",
+        "bitLeft",
+        "bits",
+        "bitRight",
+        "bitRightUnsigned",
+        "bitLeadingZeros",
+        "clz32",
+        "to",
+        "inclusiveEnd",
+        "result",
+        "new",
+        "n",
+        "drain",
+        "until",
+        "exclusiveEnd",
+        "min",
+        "max",
+        "clamp",
+        "from",
+        "pad",
+        "padding",
+        "padStart",
+        "div",
+        "divisor",
+        "toInt",
+        "rem",
+        "Int",
+        "anyTag",
+        "internalAnyTag"
+    ],
+    "mappings": "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"
+}

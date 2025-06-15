@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -95,8 +93,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // newtype SourceLocation
-
-
 
 export function here_(location_ = ff_core_SourceLocation.callSite_()) {
 return location_
@@ -248,7 +244,7 @@ return self_
 },
 async show_$(self_, $task) {
 return self_
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_core_SourceLocation_SourceLocation = {
@@ -257,7 +253,7 @@ return (a_ === b_)
 },
 async equals_$(a_, b_, $task) {
 return (a_ === b_)
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_core_SourceLocation_SourceLocation = {
@@ -266,7 +262,7 @@ return ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(a_
 },
 async compare_$(a_, b_, $task) {
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(a_, b_)
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_core_SourceLocation_SourceLocation = {
@@ -281,5 +277,8 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 },
 async deserializeUsing_$(serialization_, $task) {
 return ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_)
-}
+},
 };
+
+
+//# sourceMappingURL=SourceLocation.mjs.map

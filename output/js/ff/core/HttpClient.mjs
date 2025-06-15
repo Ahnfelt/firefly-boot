@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -121,8 +119,6 @@ return RedirectManual$;
 export function FetchOptions(redirect_, referrer_, integrity_, mode_, credentials_, cache_) {
 return {redirect_, referrer_, integrity_, mode_, credentials_, cache_};
 }
-
-
 
 export function internalCheck_(fetchResponse_) {
 if(ff_core_JsValue.JsValue_isNull(fetchResponse_.response)) {
@@ -415,3 +411,4 @@ return (new DataView((await self_.response.arrayBuffer())))
 }
 
 
+//# sourceMappingURL=HttpClient.mjs.map

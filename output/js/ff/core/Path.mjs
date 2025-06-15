@@ -1,11 +1,3 @@
-import * as import$0 from 'fs';
-
-import * as import$1 from 'fs/promises';
-
-import * as import$2 from 'path';
-
-import * as import$3 from 'url';
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -98,6 +90,10 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
+import * as import$0 from 'fs';
+import * as import$1 from 'fs/promises';
+import * as import$2 from 'path';
+import * as import$3 from 'url';
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Path
@@ -106,8 +102,6 @@ return {absolutePath_};
 }
 
 // type PathEntry
-
-
 
 
 export function internalReadStream_(createReadStream_) {
@@ -174,8 +168,6 @@ return signal_.addEventListener("abort", jsDoReject_)
 return promise_
 }));
 {
-
-
 continue _tailcall
 }
 }
@@ -293,8 +285,6 @@ return signal_.addEventListener("abort", jsDoReject_)
 return (await promise_)
 }), $task));
 {
-
-
 continue _tailcall
 }
 }
@@ -1011,3 +1001,4 @@ return self_.isSymbolicLink()
 }
 
 
+//# sourceMappingURL=Path.mjs.map

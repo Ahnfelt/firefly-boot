@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -100,21 +98,13 @@ export function Unit() {
 return Unit$;
 }
 
-
-
-
-
-
-
-
-
 export const ff_core_Any_HasAnyTag$ff_core_Unit_Unit = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:core/Unit.Unit" + "[") + "]"))
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:core/Unit.Unit" + "[") + "]"))
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_core_Unit_Unit = {
@@ -137,5 +127,8 @@ return true
 {
 return true
 }
-}
+},
 };
+
+
+//# sourceMappingURL=Unit.mjs.map

@@ -1,5 +1,3 @@
-
-
 import * as ff_compiler_Substitution from "../../ff/compiler/Substitution.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
@@ -102,8 +100,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 export function Substitution(substitution_) {
 return {substitution_};
 }
-
-
 
 export function core_(name_) {
 return ((("ff:core/" + name_) + ".") + name_)
@@ -988,3 +984,4 @@ return ff_core_Map.Map_contains(self_.substitution_, index_, ff_core_Ordering.ff
 }
 
 
+//# sourceMappingURL=Substitution.mjs.map

@@ -1,5 +1,3 @@
-
-
 import * as ff_compiler_Compiler from "../../ff/compiler/Compiler.mjs"
 
 import * as ff_compiler_Dependencies from "../../ff/compiler/Dependencies.mjs"
@@ -177,7 +175,7 @@ const if_o = importedAt_
 if(if_o.Some) {
 const at_ = if_o.value_;
 if((!ff_core_Path.Path_exists(path_, false, false, false))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, ("Imported module not found: " + ff_compiler_Syntax.ModuleKey_importName(moduleKey_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ("Imported module not found: " + ff_compiler_Syntax.ModuleKey_importName(moduleKey_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 };
@@ -203,7 +201,7 @@ export function Compiler_imports(self_, module_) {
 return ff_core_List.List_map(module_.imports_, ((import_) => {
 const newPackagePair_ = import_.moduleKey_.packagePair_;
 if((!ff_core_Map.Map_contains(self_.packagePaths_, newPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(import_.at_, ("Missing dependency declaration for: " + ff_compiler_Syntax.PackagePair_groupName(newPackagePair_, ":"))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(import_.at_, ("Missing dependency declaration for: " + ff_compiler_Syntax.PackagePair_groupName(newPackagePair_, ":"))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 return ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch(ff_core_Core.try_((() => {
 return ff_compiler_Compiler.Compiler_parse(self_, import_.moduleKey_, ff_core_Option.Some(import_.at_))
@@ -212,14 +210,14 @@ return ff_compiler_Compiler.Compiler_parse(self_, import_.moduleKey_, ff_core_Op
 const e_ = _1;
 const error_ = _2;
 const newError_ = ff_compiler_Syntax.CompileError(import_.at_, ("Parse error in imported module: " + ff_compiler_Syntax.ModuleKey_importName(import_.moduleKey_)));
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileErrors([e_, newError_]), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileErrors([e_, newError_]), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
 }
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
 {
 const compileErrors_ = _1.errors_;
 const error_ = _2;
 const newError_ = ff_compiler_Syntax.CompileError(import_.at_, ("Parse errors in imported module: " + ff_compiler_Syntax.ModuleKey_importName(import_.moduleKey_)));
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileErrors([...compileErrors_, newError_]), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileErrors([...compileErrors_, newError_]), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
 }
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
 }))
@@ -271,17 +269,21 @@ const allModules_ = [module_, ...otherModules_];
 const emitter_ = ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMainModule_, ff_core_Option.Option_map(self_.compilerModulePath_, ((_w1) => {
 return ff_core_Path.Path_url(_w1)
 })), moduleKey_);
-const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(emitter_, module_);
+ff_compiler_JsEmitter.JsEmitter_emitModule(emitter_, module_);
 const packagePath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(self_.jsOutputPath_, moduleKey_.packagePair_.group_), moduleKey_.packagePair_.name_);
 const jsPath_ = ff_core_List.List_foldLeft(moduleKey_.folders_, packagePath_, ((p_, f_) => {
 return ff_core_Path.Path_slash(p_, f_)
 }));
 const jsFile_ = ff_core_Path.Path_slash(jsPath_, (moduleKey_.name_ + ".mjs"));
+const sourceMapFile_ = ff_core_Path.Path_slash(jsPath_, (moduleKey_.name_ + ".mjs.map"));
+const source_ = ff_core_Option.Some(ff_core_Path.Path_readText(path_));
+const jsAndSourceMap_ = ff_compiler_JsEmitter.JsEmitter_makeOutputAndSourceMap(emitter_, ff_core_List.List_join(ff_core_Path.Path_relativeListTo(path_, jsPath_), "/"), source_);
 ff_core_Path.Path_createDirectory(jsPath_, true);
-ff_core_Path.Path_writeText(jsFile_, js_);
+ff_core_Path.Path_writeText(jsFile_, ((jsAndSourceMap_.first_ + "\n\n//# sourceMappingURL=") + ff_core_Path.Path_base(sourceMapFile_)));
+ff_core_Path.Path_writeText(sourceMapFile_, ff_core_Json.Json_write(jsAndSourceMap_.second_, ff_core_Option.Some("    ")));
 if(isMainModule_) {
 return ff_core_Option.Some((function() {
-const runJs_ = ff_compiler_JsEmitter.JsEmitter_emitRun(emitter_, moduleKey_.name_, module_.functions_, moduleKey_.packagePair_, ((moduleKey_.packagePair_.group_ === "ff") && (moduleKey_.packagePair_.name_ === "compiler")));
+const runJs_ = ff_compiler_JsEmitter.JsEmitter_makeRun(emitter_, moduleKey_.name_, module_.functions_, moduleKey_.packagePair_, ((moduleKey_.packagePair_.group_ === "ff") && (moduleKey_.packagePair_.name_ === "compiler")));
 const jsRunFile_ = ff_core_Path.Path_slash(jsPath_, (moduleKey_.name_ + ".run.mjs"));
 return ff_core_Path.Path_writeText(jsRunFile_, ff_core_List.List_join(ff_core_List.List_map(runJs_, ((_w1) => {
 return (_w1 + "\n")
@@ -326,7 +328,7 @@ const if_o = importedAt_
 if(if_o.Some) {
 const at_ = if_o.value_;
 if((!(await ff_core_Path.Path_exists$(path_, false, false, false, $task)))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(at_, ("Imported module not found: " + ff_compiler_Syntax.ModuleKey_importName(moduleKey_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ("Imported module not found: " + ff_compiler_Syntax.ModuleKey_importName(moduleKey_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 };
@@ -352,7 +354,7 @@ export async function Compiler_imports$(self_, module_, $task) {
 return (await ff_core_List.List_map$(module_.imports_, (async (import_, $task) => {
 const newPackagePair_ = import_.moduleKey_.packagePair_;
 if((!ff_core_Map.Map_contains(self_.packagePaths_, newPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair))) {
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(import_.at_, ("Missing dependency declaration for: " + ff_compiler_Syntax.PackagePair_groupName(newPackagePair_, ":"))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(import_.at_, ("Missing dependency declaration for: " + ff_compiler_Syntax.PackagePair_groupName(newPackagePair_, ":"))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 return ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch((await ff_core_Core.try_$((async ($task) => {
 return (await ff_compiler_Compiler.Compiler_parse$(self_, import_.moduleKey_, ff_core_Option.Some(import_.at_), $task))
@@ -361,14 +363,14 @@ return (await ff_compiler_Compiler.Compiler_parse$(self_, import_.moduleKey_, ff
 const e_ = _1;
 const error_ = _2;
 const newError_ = ff_compiler_Syntax.CompileError(import_.at_, ("Parse error in imported module: " + ff_compiler_Syntax.ModuleKey_importName(import_.moduleKey_)));
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileErrors([e_, newError_]), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileErrors([e_, newError_]), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
 }
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
 {
 const compileErrors_ = _1.errors_;
 const error_ = _2;
 const newError_ = ff_compiler_Syntax.CompileError(import_.at_, ("Parse errors in imported module: " + ff_compiler_Syntax.ModuleKey_importName(import_.moduleKey_)));
-return ff_core_Core.throw_(ff_compiler_Syntax.CompileErrors([...compileErrors_, newError_]), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileErrors([...compileErrors_, newError_]), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
 }
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
 }), $task))
@@ -420,17 +422,21 @@ const allModules_ = [module_, ...otherModules_];
 const emitter_ = ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMainModule_, (await ff_core_Option.Option_map$(self_.compilerModulePath_, (async (_w1, $task) => {
 return (await ff_core_Path.Path_url$(_w1, $task))
 }), $task)), moduleKey_);
-const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(emitter_, module_);
+ff_compiler_JsEmitter.JsEmitter_emitModule(emitter_, module_);
 const packagePath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(self_.jsOutputPath_, moduleKey_.packagePair_.group_, $task)), moduleKey_.packagePair_.name_, $task));
 const jsPath_ = (await ff_core_List.List_foldLeft$(moduleKey_.folders_, packagePath_, (async (p_, f_, $task) => {
 return (await ff_core_Path.Path_slash$(p_, f_, $task))
 }), $task));
 const jsFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleKey_.name_ + ".mjs"), $task));
+const sourceMapFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleKey_.name_ + ".mjs.map"), $task));
+const source_ = ff_core_Option.Some((await ff_core_Path.Path_readText$(path_, $task)));
+const jsAndSourceMap_ = ff_compiler_JsEmitter.JsEmitter_makeOutputAndSourceMap(emitter_, ff_core_List.List_join((await ff_core_Path.Path_relativeListTo$(path_, jsPath_, $task)), "/"), source_);
 (await ff_core_Path.Path_createDirectory$(jsPath_, true, $task));
-(await ff_core_Path.Path_writeText$(jsFile_, js_, $task));
+(await ff_core_Path.Path_writeText$(jsFile_, ((jsAndSourceMap_.first_ + "\n\n//# sourceMappingURL=") + (await ff_core_Path.Path_base$(sourceMapFile_, $task))), $task));
+(await ff_core_Path.Path_writeText$(sourceMapFile_, ff_core_Json.Json_write(jsAndSourceMap_.second_, ff_core_Option.Some("    ")), $task));
 if(isMainModule_) {
 return ff_core_Option.Some((await (async function() {
-const runJs_ = ff_compiler_JsEmitter.JsEmitter_emitRun(emitter_, moduleKey_.name_, module_.functions_, moduleKey_.packagePair_, ((moduleKey_.packagePair_.group_ === "ff") && (moduleKey_.packagePair_.name_ === "compiler")));
+const runJs_ = ff_compiler_JsEmitter.JsEmitter_makeRun(emitter_, moduleKey_.name_, module_.functions_, moduleKey_.packagePair_, ((moduleKey_.packagePair_.group_ === "ff") && (moduleKey_.packagePair_.name_ === "compiler")));
 const jsRunFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleKey_.name_ + ".run.mjs"), $task));
 return (await ff_core_Path.Path_writeText$(jsRunFile_, ff_core_List.List_join(ff_core_List.List_map(runJs_, ((_w1) => {
 return (_w1 + "\n")
@@ -442,3 +448,4 @@ return (_w1 + "\n")
 }
 
 
+//# sourceMappingURL=Compiler.mjs.map

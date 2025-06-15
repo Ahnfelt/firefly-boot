@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -96,12 +94,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // newtype Duration
 
-
-
-
-
-
-
 export function Duration_show(self_, digits_ = 3) {
 return (ff_core_Float.Float_toFixed(self_, digits_) + " s")
 }
@@ -116,5 +108,8 @@ return ff_core_Duration.Duration_show(value_, 3)
 },
 async show_$(value_, $task) {
 return ff_core_Duration.Duration_show(value_, 3)
-}
+},
 };
+
+
+//# sourceMappingURL=Duration.mjs.map

@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -98,8 +96,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 export function Stream(next_, close_) {
 return {next_, close_};
 }
-
-
 
 export function new_(next_, close_ = (() => {
 
@@ -1146,3 +1142,4 @@ return ff_core_Pair.Pair(ff_core_Array.Array_drain(buffers_), (await ff_core_Str
 }
 
 
+//# sourceMappingURL=Stream.mjs.map

@@ -1,11 +1,3 @@
-import * as import$0 from 'fs/promises';
-
-import * as import$3 from 'node:child_process';
-
-import * as import$1 from 'path';
-
-import * as import$2 from 'url';
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -98,6 +90,10 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
+import * as import$0 from 'fs/promises';
+import * as import$3 from 'node:child_process';
+import * as import$1 from 'path';
+import * as import$2 from 'url';
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type NodeSystem
@@ -113,8 +109,6 @@ export function ProcessException(problem_) {
 return {problem_};
 }
 
-
-
 export function internalListDirectoryWithoutOpendir_(system_, path_) {
 const fsPromises_ = import$0;
 const nodePath_ = import$1;
@@ -126,7 +120,7 @@ return ff_core_Path.Path(nodePath_.join(path_.absolutePath_, file_))
 
 export function internalProcessError_(problem_) {
 try {
-return ff_core_Core.throw_(ff_core_NodeSystem.ProcessException(problem_), ff_core_NodeSystem.ff_core_Any_HasAnyTag$ff_core_NodeSystem_ProcessException, ff_core_NodeSystem.ff_core_Show_Show$ff_core_NodeSystem_ProcessException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_NodeSystem.ProcessException(problem_), ff_core_NodeSystem.ff_core_Any_HasAnyTag$ff_core_NodeSystem_ProcessException, ff_core_NodeSystem.ff_core_Show_Show$ff_core_NodeSystem_ProcessException)
 } catch(error_) {
 return error_
 }
@@ -143,7 +137,7 @@ return ff_core_Path.Path(nodePath_.join(path_.absolutePath_, file_))
 
 export async function internalProcessError_$(problem_, $task) {
 try {
-return ff_core_Core.throw_(ff_core_NodeSystem.ProcessException(problem_), ff_core_NodeSystem.ff_core_Any_HasAnyTag$ff_core_NodeSystem_ProcessException, ff_core_NodeSystem.ff_core_Show_Show$ff_core_NodeSystem_ProcessException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_NodeSystem.ProcessException(problem_), ff_core_NodeSystem.ff_core_Any_HasAnyTag$ff_core_NodeSystem_ProcessException, ff_core_NodeSystem.ff_core_Show_Show$ff_core_NodeSystem_ProcessException)
 } catch(error_) {
 return error_
 }
@@ -521,7 +515,7 @@ return ff_core_Any.internalAnyTag_((("ff:core/NodeSystem.ProcessException" + "["
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:core/NodeSystem.ProcessException" + "[") + "]"))
-}
+},
 };
 
 export const ff_core_Show_Show$ff_core_NodeSystem_ProcessException = {
@@ -538,5 +532,8 @@ const value_a = value_;
 const z_ = value_a;
 return ((("ProcessException" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.problem_)) + ")")
 }
-}
+},
 };
+
+
+//# sourceMappingURL=NodeSystem.mjs.map

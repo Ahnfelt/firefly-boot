@@ -140,8 +140,9 @@ extend self: Buffer {
                 Js->TextDecoder->ffSingleton = Js->TextDecoder->()
             }
             Js->TextDecoder->ffSingleton->decode(self!)?
+        } else {
+            Js->TextDecoder->()->decode(self!)?
         }
-        Js->TextDecoder->()->decode(self!)?
     }
 
     toByteList(): List[Int] {

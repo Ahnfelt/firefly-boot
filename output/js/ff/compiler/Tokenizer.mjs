@@ -1,5 +1,3 @@
-
-
 import * as ff_compiler_Tokenizer from "../../ff/compiler/Tokenizer.mjs"
 
 import * as ff_compiler_LspHook from "../../ff/compiler/LspHook.mjs"
@@ -102,10 +100,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-
-
-
-
 export function tokenize_(file_, code_, completionAt_, attemptFixes_) {
 const completionLine_ = ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_filter(completionAt_, ((_w1) => {
 return (_w1.file_ === file_)
@@ -158,7 +152,7 @@ tokens_.array.push(ff_compiler_Token.Token(file_, code_, kind_, startLine_, star
 let i_ = 0;
 function throwError_(message_) {
 const column_ = ((i_ - startLineOffset_) + 1);
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, column_), message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, column_), message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 try {
 while((i_ < code_.length)) {
@@ -359,7 +353,7 @@ if(!_exception.Some) throw _error
 {
 const e_ = _exception.value_;
 const error_ = _error;
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (i_ - lineOffset_)), "Unexpected end of file"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (i_ - lineOffset_)), "Unexpected end of file"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 };
 for(let for_a = ff_core_List.range_(5), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
@@ -420,7 +414,7 @@ tokens_.array.push(ff_compiler_Token.Token(file_, code_, kind_, startLine_, star
 let i_ = 0;
 function throwError_(message_) {
 const column_ = ((i_ - startLineOffset_) + 1);
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, column_), message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, column_), message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 try {
 while((i_ < code_.length)) {
@@ -621,7 +615,7 @@ if(!_exception.Some) throw _error
 {
 const e_ = _exception.value_;
 const error_ = _error;
-ff_core_Core.throw_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (i_ - lineOffset_)), "Unexpected end of file"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (i_ - lineOffset_)), "Unexpected end of file"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 };
 for(let for_a = ff_core_List.range_(5), for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
@@ -631,5 +625,4 @@ return ff_core_Array.Array_drain(tokens_)
 }
 
 
-
-
+//# sourceMappingURL=Tokenizer.mjs.map

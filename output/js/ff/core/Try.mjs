@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -102,14 +100,12 @@ export function Failure(error_) {
 return {Failure: true, error_};
 }
 
-
-
 export function internalThrowGrabException_() {
-return ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 }
 
 export async function internalThrowGrabException_$($task) {
-return ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 }
 
 export function Try_map(self_, body_) {
@@ -499,3 +495,4 @@ return ff_core_Try.Failure(error_)
 }
 
 
+//# sourceMappingURL=Try.mjs.map

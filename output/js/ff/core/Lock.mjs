@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -104,12 +102,6 @@ export function LockCondition(lock_, queue_) {
 return {lock_, queue_};
 }
 
-
-
-
-
-
-
 export function Lock_condition(self_) {
 return ff_core_Lock.LockCondition(self_, ff_core_Queue.new_())
 }
@@ -130,7 +122,7 @@ ff_core_Queue.Queue_remove(self_.queue_, key_)
 
 export function Lock_release(self_) {
 if((self_.owner_ !== $task)) {
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 } else if((self_.level_ > 1)) {
 self_.level_ -= 1
 } else {
@@ -174,7 +166,7 @@ ff_core_Queue.Queue_remove(self_.queue_, key_)
 
 export async function Lock_release$(self_, $task) {
 if((self_.owner_ !== $task)) {
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 } else if((self_.level_ > 1)) {
 self_.level_ -= 1
 } else {
@@ -200,7 +192,7 @@ return (await body_($task))
 
 export function LockCondition_sleep(self_) {
 if((self_.lock_.owner_ !== $task)) {
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 ;
 const level_ = self_.lock_.level_;
@@ -214,7 +206,7 @@ ff_core_Queue.Queue_remove(self_.queue_, key_)
 }))
 }))
 } finally {
-let error_;
+let error_ = (void 0);
 let acquired_ = false;
 while((!acquired_)) {
 try {
@@ -274,7 +266,7 @@ ff_core_Queue.Queue_clear(self_.queue_)
 
 export async function LockCondition_sleep$(self_, $task) {
 if((self_.lock_.owner_ !== $task)) {
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 ff_core_Task.Task_throwIfAborted($task);
 const level_ = self_.lock_.level_;
@@ -288,7 +280,7 @@ ff_core_Queue.Queue_remove(self_.queue_, key_)
 }), $task))
 }), $task))
 } finally {
-let error_;
+let error_ = (void 0);
 let acquired_ = false;
 while((!acquired_)) {
 try {
@@ -347,3 +339,4 @@ ff_core_Queue.Queue_clear(self_.queue_)
 }
 
 
+//# sourceMappingURL=Lock.mjs.map

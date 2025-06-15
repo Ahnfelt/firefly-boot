@@ -1,5 +1,3 @@
-
-
 import * as ff_compiler_ModuleCache from "../../ff/compiler/ModuleCache.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
@@ -102,8 +100,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 export function ModuleCache(version_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_) {
 return {version_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_};
 }
-
-
 
 export function new_(version_) {
 return ff_compiler_ModuleCache.ModuleCache(version_, ff_core_Map.new_(), ff_core_Map.new_(), ff_core_Map.new_(), ff_core_Map.new_(), ff_core_Map.new_())
@@ -496,3 +492,4 @@ ff_core_Error.Error_rethrow(error_)
 }
 
 
+//# sourceMappingURL=ModuleCache.mjs.map

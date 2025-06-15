@@ -1,0 +1,149 @@
+makeOutputAndSourceMap(
+    fireflyFile: String
+    fireflySource: Option[String]
+    writtenStrings: Array[Array[String]]
+    writtenSegments: Array[Array[List[Int]]]
+    writtenAnchors: IntMap[List[String]]
+    writtenNames: StringMap[Int]
+): Pair[String, Json] {
+    let lines = Array.new()
+    let output = Array.new()
+    mutable index = 0
+    mutable lastSource = 0
+    mutable lastLine = 0
+    mutable lastColumn = 0
+    mutable lastName = 0
+    writtenStrings.drain().zip(writtenSegments.drain()).each {| Pair(strings, segments) =>
+        writtenAnchors.get(index).each {anchorLines =>
+            anchorLines.each {l =>
+                lines.push([])
+                output.push(l)
+                output.push("\n")
+            }
+        }
+        mutable lastOutputColumn = 0
+        let line = Array.new()
+        segments.each {segment =>
+            let relative = Array.new()
+            let newOutputColumn = segment.grab(0)
+            relative.push(newOutputColumn - lastOutputColumn)
+            lastOutputColumn = newOutputColumn
+            if(segment.size() > 1) {
+                let newSource = segment.grab(1)
+                relative.push(newSource - lastSource)
+                lastSource = newSource
+                let newLine = segment.grab(2)
+                relative.push(newLine - lastLine)
+                lastLine = newLine
+                let newColumn = segment.grab(3)
+                relative.push(newColumn - lastColumn)
+                lastColumn = newColumn
+                if(segment.size() == 5) {
+                    let newName = segment.grab(4)
+                    relative.push(newName - lastName)
+                    lastName = newName
+                }
+            }
+            line.push(relative.drain())
+        }
+        lines.push(line.drain())
+        strings.each {output.push(_)}
+        output.push("\n")
+        index += 1
+    }
+    let sourceMap = sourceMap([fireflyFile], [fireflySource], writtenNames.keys(), lines.drain())
+    Pair(output.join(), sourceMap)
+}
+
+makeOutput(
+    writtenStrings: Array[Array[String]]
+    writtenAnchors: IntMap[List[String]]
+): String {
+    let output = Array.new()
+    writtenStrings.drain().pairs().each {| Pair(index, strings) =>
+        writtenAnchors.get(index).each {anchorLines =>
+            anchorLines.each {l =>
+                output.push(l)
+            }
+        }
+        output.push(strings.join())
+    }
+    output.join("\n")
+}
+
+sourceMap(
+    sources: List[String]
+    contents: List[Option[String]]
+    names: List[String]
+    lines: List[List[List[Int]]]
+): Json {
+    Json->(
+        version = 3
+        sources = sources
+        sourcesContent = contents.map {_.map {Json.string(_)}.else {Json.null()}}
+        names = names
+        mappings = toMappings(lines)
+    )
+}
+
+toMappings(lines: List[List[List[Int]]]): String {
+    let vlq = Array.new()
+    mutable firstLine = True
+    lines.each {line =>
+        if(firstLine) {
+            firstLine = False
+        } else {
+            vlq.push(semicolonIndex)
+        }
+        mutable firstSegment = True
+        line.each {segment =>
+            if(firstSegment) {
+                firstSegment = False
+            } else {
+                vlq.push(commaIndex)
+            }
+            segment.each {field =>
+                internalToVlq(vlq, field)
+            }
+        }
+    }
+    toBase64Vlq(vlq.drain())
+}
+
+toBase64Vlq(vlq: List[Int]): String {
+    let result = Buffer.new(vlq.size())
+
+    0.until(vlq.size()).each {i =>
+        result.setUint8(i, base64Characters.grab(vlq.grab(i)).codeUnit)
+    }
+
+    result.toString()
+}
+
+internalToVlq(vlq: Array[Int], value: Int) {
+    mutable digit = 0
+    mutable v = value
+
+    if(v < 0) {
+        v = v.abs().bitLeft(1).bitOr(1)
+    } else {
+        v = v.bitLeft(1)
+    }
+
+    doWhile {
+        digit = v.bitAnd(vlqBaseMask)
+        v = v.bitRightUnsigned(vlqBaseShift)
+        if(v > 0) {
+            digit = digit.bitOr(vlqContinuationBit)
+        }
+        vlq.push(digit)
+        v > 0
+    }
+}
+
+vlqBaseShift = 5
+vlqBaseMask = 1.bitLeft(vlqBaseShift) - 1
+vlqContinuationBit = 1.bitLeft(vlqBaseShift)
+base64Characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/;,"
+semicolonIndex = base64Characters.indexOf(";").grab()
+commaIndex = base64Characters.indexOf(",").grab()

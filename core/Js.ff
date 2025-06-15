@@ -156,6 +156,12 @@ throw[T](value: JsValue): T {
     panic("This call should have been eliminated by the compiler")
 }
 
+initializeError[E: HasAnyTag: Show, T](error: JsValue, exception: E): JsValue {
+    error->message = Show.show(exception)!
+    error->ffException = Any.toAny(exception)!
+    error
+}
+
 unaryOperator[T1: IsJsValue](operator: String, a1: T1): JsValue {
     panic("This call should have been eliminated by the compiler")
 }

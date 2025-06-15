@@ -1,0 +1,21 @@
+{
+    "version": 3,
+    "sources": [
+        "../../../../../core/Char.ff"
+    ],
+    "sourcesContent": [
+        "newtype Char(codeUnit: Int)\r\n\r\nextend self: Char {\r\n\r\n    isAsciiLetter(): Bool {self.isAsciiUpper() || self.isAsciiLower()}\r\n\r\n    isAsciiLetterOrDigit(): Bool {self.isAsciiLetter() || self.isAsciiDigit()}\r\n\r\n    isAsciiUpper(): Bool {self >= 'A' && self <= 'Z'}\r\n\r\n    isAsciiLower(): Bool {self >= 'a' && self <= 'z'}\r\n\r\n    isAsciiDigit(): Bool {self >= '0' && self <= '9'}\r\n\r\n    toString(): String {\r\n        Js->String->fromCharCode(self)?\r\n    }\r\n\r\n}\r\n"
+    ],
+    "names": [
+        "isAsciiLetter",
+        "self",
+        "isAsciiUpper",
+        "isAsciiLower",
+        "isAsciiLetterOrDigit",
+        "isAsciiDigit",
+        "toString",
+        "\"String\"",
+        "fromCharCode"
+    ],
+    "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;AAAQ;;AAED,OAEH,SAAAA,kBAAA,CAFGC,KAEH,CAAA;AAA2C,OAAA,CAAfC,8BAAA,CAALD,KAAK,CAAe,CAAA,EAAA,CAAQE,8BAAA,CAALF,KAAK,CAAR;AAA3C;;AAFG,OAIH,SAAAG,yBAAA,CAJGH,KAIH,CAAA;AAAmD,OAAA,CAAhBD,+BAAA,CAALC,KAAK,CAAgB,CAAA,EAAA,CAAQI,8BAAA,CAALJ,KAAK,CAAR;AAAnD;;AAJG,OAMH,SAAAC,iBAAA,CANGD,KAMH,CAAA;AAAkC,OAAA,CAAP,CAALA,KAAK,IAAG,EAAH,CAAO,CAAA,EAAA,CAAQ,CAALA,KAAK,IAAG,EAAH,CAAR;AAAlC;;AANG,OAQH,SAAAE,iBAAA,CARGF,KAQH,CAAA;AAAkC,OAAA,CAAP,CAALA,KAAK,IAAG,EAAH,CAAO,CAAA,EAAA,CAAQ,CAALA,KAAK,IAAG,GAAH,CAAR;AAAlC;;AARG,OAUH,SAAAI,iBAAA,CAVGJ,KAUH,CAAA;AAAkC,OAAA,CAAP,CAALA,KAAK,IAAG,EAAH,CAAO,CAAA,EAAA,CAAQ,CAALA,KAAK,IAAG,EAAH,CAAR;AAAlC;;AAVG,OAYH,SAAAK,aAAA,CAZGL,KAYH,CAAA;AACkC,OAA1BM,MAAQ,CAAAC,YAAZ,CAAyBP,KAAzB;AADJ;;AAZG,OAEH,eAAAD,mBAAA,CAFGC,K,EAEH,KAAA,CAAA;AAA2C,OAAA,CAAfC,8BAAA,CAALD,KAAK,CAAe,CAAA,EAAA,CAAQE,8BAAA,CAALF,KAAK,CAAR;AAA3C;;AAFG,OAIH,eAAAG,0BAAA,CAJGH,K,EAIH,KAAA,CAAA;AAAmD,OAAA,CAAhBD,+BAAA,CAALC,KAAK,CAAgB,CAAA,EAAA,CAAQI,8BAAA,CAALJ,KAAK,CAAR;AAAnD;;AAJG,OAMH,eAAAC,kBAAA,CANGD,K,EAMH,KAAA,CAAA;AAAkC,OAAA,CAAP,CAALA,KAAK,IAAG,EAAH,CAAO,CAAA,EAAA,CAAQ,CAALA,KAAK,IAAG,EAAH,CAAR;AAAlC;;AANG,OAQH,eAAAE,kBAAA,CARGF,K,EAQH,KAAA,CAAA;AAAkC,OAAA,CAAP,CAALA,KAAK,IAAG,EAAH,CAAO,CAAA,EAAA,CAAQ,CAALA,KAAK,IAAG,GAAH,CAAR;AAAlC;;AARG,OAUH,eAAAI,kBAAA,CAVGJ,K,EAUH,KAAA,CAAA;AAAkC,OAAA,CAAP,CAALA,KAAK,IAAG,EAAH,CAAO,CAAA,EAAA,CAAQ,CAALA,KAAK,IAAG,EAAH,CAAR;AAAlC;;AAVG,OAYH,eAAAK,cAAA,CAZGL,K,EAYH,KAAA,CAAA;AACkC,OAA1BM,MAAQ,CAAAC,YAAZ,CAAyBP,KAAzB;AADJ"
+}

@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -96,12 +94,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // newtype Char
 
-
-
-
-
-
-
 export function Char_isAsciiLetter(self_) {
 return (ff_core_Char.Char_isAsciiUpper(self_) || ff_core_Char.Char_isAsciiLower(self_))
 }
@@ -151,3 +143,4 @@ return String.fromCharCode(self_)
 }
 
 
+//# sourceMappingURL=Char.mjs.map

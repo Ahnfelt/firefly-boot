@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -100,8 +98,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 // type AnyTag
 
 
-
-
 export function toAny_(value_, ff_core_Any_HasAnyTag$T) {
 const anyTag_ = ff_core_Any_HasAnyTag$T.anyTag_();
 return {anyTag: anyTag_, value: value_}
@@ -143,3 +139,4 @@ return self_
 }
 
 
+//# sourceMappingURL=Any.mjs.map

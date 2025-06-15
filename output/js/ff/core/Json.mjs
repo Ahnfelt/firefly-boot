@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -95,8 +93,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // newtype Json
-
-
 
 export function read_(json_) {
 try {
@@ -648,19 +644,19 @@ return ff_core_Option.Some(Object.keys(self_))
 
 export function Json_grabField(self_, key_) {
 return ff_core_Option.Option_else(ff_core_Json.Json_getField(self_, key_), (() => {
-return ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 }))
 }
 
 export function Json_grabIndex(self_, key_) {
 return ff_core_Option.Option_else(ff_core_Json.Json_getIndex(self_, key_), (() => {
-return ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 }))
 }
 
 export function Json_grabFields(self_) {
 return ff_core_Option.Option_else(ff_core_Json.Json_getFields(self_), (() => {
-return ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 }))
 }
 
@@ -682,7 +678,7 @@ return ff_core_Array.Array_drain(array_)
 
 export function Json_each(self_, body_) {
 if((!ff_core_Json.Json_isObject(self_))) {
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 ff_core_JsValue.JsValue_each(Object.entries(self_), ((p_) => {
 body_(p_[0], p_[1])
@@ -691,7 +687,7 @@ body_(p_[0], p_[1])
 
 export function Json_eachWhile(self_, body_) {
 if((!ff_core_Json.Json_isObject(self_))) {
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 ff_core_JsValue.JsValue_eachWhile(Object.entries(self_), ((p_) => {
 return body_(p_[0], p_[1])
@@ -870,19 +866,19 @@ return ff_core_Option.Some(Object.keys(self_))
 
 export async function Json_grabField$(self_, key_, $task) {
 return ff_core_Option.Option_else(ff_core_Json.Json_getField(self_, key_), (() => {
-return ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 }))
 }
 
 export async function Json_grabIndex$(self_, key_, $task) {
 return ff_core_Option.Option_else(ff_core_Json.Json_getIndex(self_, key_), (() => {
-return ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 }))
 }
 
 export async function Json_grabFields$(self_, $task) {
 return ff_core_Option.Option_else(ff_core_Json.Json_getFields(self_), (() => {
-return ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 }))
 }
 
@@ -904,7 +900,7 @@ return ff_core_Array.Array_drain(array_)
 
 export async function Json_each$(self_, body_, $task) {
 if((!ff_core_Json.Json_isObject(self_))) {
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 (await ff_core_JsValue.JsValue_each$(Object.entries(self_), (async (p_, $task) => {
 (await body_(p_[0], p_[1], $task))
@@ -913,7 +909,7 @@ ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAn
 
 export async function Json_eachWhile$(self_, body_, $task) {
 if((!ff_core_Json.Json_isObject(self_))) {
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 (await ff_core_JsValue.JsValue_eachWhile$(Object.entries(self_), (async (p_, $task) => {
 return (await body_(p_[0], p_[1], $task))
@@ -932,7 +928,7 @@ return value_
 },
 async fromJson_$(json_, $task) {
 return ff_core_Option.Some(json_)
-}
+},
 };
 
 export const ff_core_Json_JsonLike$ff_core_String_String = {
@@ -955,7 +951,7 @@ const json_a = json_;
 const _w1 = json_a;
 return ff_core_Json.Json_getString(_w1)
 }
-}
+},
 };
 
 export const ff_core_Json_JsonLike$ff_core_Int_Int = {
@@ -978,7 +974,7 @@ const json_a = json_;
 const _w1 = json_a;
 return ff_core_Json.Json_getInt(_w1)
 }
-}
+},
 };
 
 export const ff_core_Json_JsonLike$ff_core_Float_Float = {
@@ -1001,7 +997,7 @@ const json_a = json_;
 const _w1 = json_a;
 return ff_core_Json.Json_getFloat(_w1)
 }
-}
+},
 };
 
 export const ff_core_Json_JsonLike$ff_core_Bool_Bool = {
@@ -1024,7 +1020,7 @@ const json_a = json_;
 const _w1 = json_a;
 return ff_core_Json.Json_getBool(_w1)
 }
-}
+},
 };
 
 export function ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json_JsonLike$T) { return {
@@ -1085,7 +1081,7 @@ if(convertible_) {
 return ff_core_Option.Some(ff_core_Array.Array_drain(result_))
 } else return ff_core_Option.None()
 }))
-}
+},
 }}
 
 export function ff_core_Json_JsonLike$ff_core_StringMap_StringMap(ff_core_Json_JsonLike$T) { return {
@@ -1152,7 +1148,7 @@ return ff_core_Option.Some(map_)
 } else return ff_core_Option.None()
 })()))
 : ff_core_Option.None()))
-}
+},
 }}
 
 export const ff_core_Any_HasAnyTag$ff_core_Json_Json = {
@@ -1161,7 +1157,7 @@ return ff_core_Any.internalAnyTag_("ff:core/Json.Json[]")
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_("ff:core/Json.Json[]")
-}
+},
 };
 
 export const ff_core_Show_Show$ff_core_Json_Json = {
@@ -1170,7 +1166,7 @@ return ff_core_Json.Json_write(value_, ff_core_Option.Some("    "))
 },
 async show_$(value_, $task) {
 return ff_core_Json.Json_write(value_, ff_core_Option.Some("    "))
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_core_Json_Json = {
@@ -1179,7 +1175,7 @@ return ff_core_Json.internalEquals_(a_, b_)
 },
 async equals_$(a_, b_, $task) {
 return ff_core_Json.internalEquals_(a_, b_)
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_core_Json_Json = {
@@ -1188,7 +1184,7 @@ return ff_core_Ordering.fromInt_(ff_core_Json.internalCompare_(a_, b_))
 },
 async compare_$(a_, b_, $task) {
 return ff_core_Ordering.fromInt_(ff_core_Json.internalCompare_(a_, b_))
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_core_Json_Json = {
@@ -1203,5 +1199,8 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 },
 async deserializeUsing_$(serialization_, $task) {
 return ff_core_Option.Option_grab(ff_core_Json.read_(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_)))
-}
+},
 };
+
+
+//# sourceMappingURL=Json.mjs.map

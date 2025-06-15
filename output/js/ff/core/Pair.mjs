@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -98,12 +96,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 export function Pair(first_, second_) {
 return {first_, second_};
 }
-
-
-
-
-
-
 
 export function Pair_mapFirst(self_, body_) {
 {
@@ -219,7 +211,7 @@ return ff_core_Any.internalAnyTag_(((((("ff:core/Pair.Pair" + "[") + ff_core_Any
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_(((((("ff:core/Pair.Pair" + "[") + ff_core_Any.AnyTag_show(ff_core_Any_HasAnyTag$A.anyTag_())) + ",") + ff_core_Any.AnyTag_show(ff_core_Any_HasAnyTag$B.anyTag_())) + "]"))
-}
+},
 }}
 
 export function ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal_Equal$A, ff_core_Equal_Equal$B) { return {
@@ -242,7 +234,7 @@ return true
 {
 return (ff_core_Equal_Equal$A.equals_(x_.first_, y_.first_) && ff_core_Equal_Equal$B.equals_(x_.second_, y_.second_))
 }
-}
+},
 }}
 
 export function ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$A, ff_core_Serializable_Serializable$B) { return {
@@ -270,7 +262,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_core_Pair.Pair(ff_core_Serializable_Serializable$A.deserializeUsing_(serialization_), ff_core_Serializable_Serializable$B.deserializeUsing_(serialization_))
 }
 {
-return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },
@@ -298,8 +290,11 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_core_Pair.Pair(ff_core_Serializable_Serializable$A.deserializeUsing_(serialization_), ff_core_Serializable_Serializable$B.deserializeUsing_(serialization_))
 }
 {
-return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
-}
+},
 }}
+
+
+//# sourceMappingURL=Pair.mjs.map

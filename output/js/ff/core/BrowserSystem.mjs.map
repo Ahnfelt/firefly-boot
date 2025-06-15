@@ -1,0 +1,47 @@
+{
+    "version": 3,
+    "sources": [
+        "../../../../../core/BrowserSystem.ff"
+    ],
+    "sourcesContent": [
+        "capability BrowserSystem {}\r\n\r\nextend self: BrowserSystem {\r\n\r\n    httpClient(): HttpClient {\r\n        Js.globalThis()?\r\n    }\r\n    \r\n    mainTask(): Task {\r\n        self!->\"task_\"?\r\n    }\r\n\r\n    crypto(): Crypto {\r\n        Js->crypto?\r\n    }\r\n        \r\n    js(): JsSystem {\r\n        Js.globalThis()?\r\n    }\r\n        \r\n    date(timeZoneId: Option[String] = None, calendarId: String = Date.isoCalendarId): Date {\r\n        let date = Date(Js->Temporal->Now->zonedDateTimeISO(timeZoneId.map {_!}.else {Js.undefined()}))\r\n        if(calendarId == Date.isoCalendarId) {date} else {date.withCalendar(calendarId)}\r\n    }\r\n\r\n    url(): String {\r\n        Js->location->href?\r\n    }\r\n    \r\n    urlPath(): String {\r\n        Js->location->pathname?\r\n    }\r\n\r\n    urlQuery(name: String): Option[String] {\r\n        let param = Js->URLSearchParams->(Js->location->search)->get(name)\r\n        if(param.isNullOrUndefined()) {None} else:\r\n        Some(param?)\r\n    }\r\n\r\n    urlFragment(): Option[String] {\r\n        if(!Js->location->hash->startsWith(\"#\")?) {None} else:\r\n        Some(Js->location->hash->slice(1)?)\r\n    }\r\n                 \r\n}\r\n"
+    ],
+    "names": [
+        "httpClient",
+        "self",
+        "mainTask",
+        "crypto",
+        "\"crypto\"",
+        "js",
+        "date",
+        "timeZoneId",
+        "None",
+        "calendarId",
+        "isoCalendarId",
+        "\"Temporal\"",
+        "Now",
+        "zonedDateTimeISO",
+        "else",
+        "map",
+        "w1",
+        "withCalendar",
+        "url",
+        "\"location\"",
+        "href",
+        "urlPath",
+        "pathname",
+        "urlQuery",
+        "name",
+        "param",
+        "\"URLSearchParams\"",
+        "search",
+        "get",
+        "isNullOrUndefined",
+        "Some",
+        "urlFragment",
+        "hash",
+        "startsWith",
+        "slice"
+    ],
+    "mappings": "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"
+}

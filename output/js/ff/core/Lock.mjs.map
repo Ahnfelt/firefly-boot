@@ -1,0 +1,52 @@
+{
+    "version": 3,
+    "sources": [
+        "../../../../../core/Lock.ff"
+    ],
+    "sourcesContent": [
+        "capability Lock(\r\n    mutable owner: JsValue\r\n    mutable level: Int\r\n    queue: Queue[Pair[JsValue, Unit => Unit]]\r\n)\r\n\r\ncapability LockCondition(\r\n    lock: Lock\r\n    queue: Queue[Unit => Unit]\r\n)\r\n\r\nextend self: Lock {\r\n\r\n    condition(): LockCondition {\r\n        LockCondition(self, Queue.new())\r\n    }\r\n    \r\n    acquire(): Unit {\r\n        if(self.level == 0 || self.owner === Js.currentTask()!) {\r\n            self.owner = Js.currentTask()!\r\n            self.level += 1\r\n        } else {\r\n            Js.awaitCancellablePromise {resolve, reject, onSettle =>\r\n                let key = self.queue.push(Pair(Js.currentTask()!, resolve))\r\n                onSettle {_ => self.queue.remove(key)}\r\n            }\r\n        }\r\n    }\r\n    \r\n    release(): Unit {\r\n        if(self.owner !== Js.currentTask()!) {\r\n            throw(GrabException)\r\n        } elseIf {self.level > 1} {\r\n            self.level -= 1\r\n        } else {\r\n            self.owner = Js.undefined()\r\n            self.level = 0\r\n            if(!self.queue.isEmpty()) {\r\n                let pending = self.queue.pop().grab()\r\n                self.owner = pending.first\r\n                self.level = 1\r\n                pending.second(Unit)\r\n            }\r\n        }\r\n    }\r\n    \r\n    do[T](body: () => T): T {\r\n        self.acquire()\r\n        try {\r\n            body()\r\n        } finally {\r\n            self.release()\r\n        }\r\n    }\r\n\r\n}\r\n\r\nextend self: LockCondition {\r\n\r\n    sleep(): Unit {\r\n        if(self.lock.owner !== Js.currentTask()!) {\r\n            throw(GrabException)\r\n        }\r\n        Js.throwIfCancelled()\r\n        let level = self.lock.level\r\n        self.lock.level = 1\r\n        self.lock.release()\r\n        try {\r\n            Js.awaitCancellablePromise {resolve, reject, onSettle =>\r\n                let key = self.queue.push(resolve)\r\n                onSettle {_ => self.queue.remove(key)}\r\n            }\r\n        } finally {\r\n            mutable error = Js.undefined()\r\n            mutable acquired = False\r\n            while {!acquired} {\r\n                try {\r\n                    self.lock.acquire()\r\n                    self.lock.level = level\r\n                    acquired = True\r\n                } catchAny {e =>\r\n                    error = e!\r\n                }\r\n            }\r\n            if(!error.isUndefined()) {Js.throw(error)}\r\n        }\r\n    }\r\n\r\n    sleepUntil[T](body: () => Option[T]): T {\r\n        body().{\r\n            | Some(value) =>\r\n                value\r\n            | None =>\r\n                self.sleep()\r\n                tailcall self.sleepUntil(body)\r\n        }\r\n    }\r\n\r\n    wakeOne(): Unit {\r\n        self.queue.pop().each {resolve => resolve(Unit)}\r\n    }\r\n\r\n    wakeAll(): Unit {\r\n        self.queue.each {_, resolve => resolve(Unit)}\r\n        self.queue.clear()\r\n    }\r\n\r\n}\r\n"
+    ],
+    "names": [
+        "Lock",
+        "owner",
+        "level",
+        "queue",
+        "LockCondition",
+        "lock",
+        "condition",
+        "self",
+        "new",
+        "acquire",
+        "awaitCancellablePromise",
+        "resolve",
+        "reject",
+        "onSettle",
+        "key",
+        "push",
+        "Pair",
+        "remove",
+        "release",
+        "GrabException",
+        "isEmpty",
+        "pending",
+        "grab",
+        "pop",
+        "first",
+        "second",
+        "do",
+        "body",
+        "sleep",
+        "error",
+        "acquired",
+        "e",
+        "isUndefined",
+        "sleepUntil",
+        "Some",
+        "value",
+        "wakeOne",
+        "wakeAll",
+        "each",
+        "clear"
+    ],
+    "mappings": "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"
+}

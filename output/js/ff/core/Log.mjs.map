@@ -1,0 +1,26 @@
+{
+    "version": 3,
+    "sources": [
+        "../../../../../core/Log.ff"
+    ],
+    "sourcesContent": [
+        "show[T: Show](value: T): Unit {\r\n    trace(Show.show(value))\r\n}\r\n\r\ndebugDynamic[T](value: T): Unit {\r\n    Js->console->debug(value!)\r\n}\r\n\r\ndebug(value: String): Unit {\r\n    Js->console->debug(value)\r\n}\r\n\r\nverbose(value: String): Unit {\r\n    Js->console->log(value)\r\n}\r\n\r\ninfo(value: String): Unit {\r\n    Js->console->info(value)\r\n}\r\n\r\nwarn(value: String): Unit {\r\n    Js->console->warn(value)\r\n}\r\n\r\nerror(value: Error): Unit {\r\n    Js->console->error(value)\r\n}\r\n\r\ntrace(value: String): Unit {\r\n    if(Js.inBrowser()) {\r\n        Js->console->debug(value)\r\n    } else {\r\n        Js->process->stderr->write(value + \"\\n\")\r\n    }\r\n}\r\n"
+    ],
+    "names": [
+        "show",
+        "value",
+        "trace",
+        "debugDynamic",
+        "\"console\"",
+        "debug",
+        "verbose",
+        "log",
+        "info",
+        "warn",
+        "error",
+        "\"process\"",
+        "stderr",
+        "write"
+    ],
+    "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A,OAAA,SAAAA,KAAA,CAAcC,M,EAAN,mBAAR,CAAA;AACIC,kBAAA,CAAW,mBAAA,CAAAF,KAAA,CAAKC,MAAL,CAAX;AADJ;;A,OAIA,SAAAE,aAAA,CAAgBF,MAAhB,CAAA;AACQG,OAAS,CAAAC,KAAb,CAAmBJ,MAAnB;AADJ;;A,OAIA,SAAAI,MAAA,CAAMJ,MAAN,CAAA;AACQG,OAAS,CAAAC,KAAb,CAAmBJ,MAAnB;AADJ;;A,OAIA,SAAAK,QAAA,CAAQL,MAAR,CAAA;AACQG,OAAS,CAAAG,GAAb,CAAiBN,MAAjB;AADJ;;A,OAIA,SAAAO,KAAA,CAAKP,MAAL,CAAA;AACQG,OAAS,CAAAI,IAAb,CAAkBP,MAAlB;AADJ;;A,OAIA,SAAAQ,KAAA,CAAKR,MAAL,CAAA;AACQG,OAAS,CAAAK,IAAb,CAAkBR,MAAlB;AADJ;;A,OAIA,SAAAS,MAAA,CAAMT,MAAN,CAAA;AACQG,OAAS,CAAAM,KAAb,CAAmBT,MAAnB;AADJ;;A,OAIA,SAAAC,MAAA,CAAMD,MAAN,CAAA;AACU,GAAA,KAAA;AACEG,OAAS,CAAAC,KAAb,CAAmBJ,MAAnB;AADE,OAEJ;AACMU,OAAS,CAAAC,MAAQ,CAAAC,KAArB,CAAiC,CAANZ,MAAM,CAAA,CAAA,CAAE,IAAF,CAAjC;AADF;AAHN;;A,OA5BA,eAAAD,MAAA,CAAcC,M,EAAN,mB,EAAR,KAAA,CAAA;AACIC,kBAAA,CAAW,mBAAA,CAAAF,KAAA,CAAKC,MAAL,CAAX;AADJ;;A,OAIA,eAAAE,cAAA,CAAgBF,M,EAAhB,KAAA,CAAA;AACQG,OAAS,CAAAC,KAAb,CAAmBJ,MAAnB;AADJ;;A,OAIA,eAAAI,OAAA,CAAMJ,M,EAAN,KAAA,CAAA;AACQG,OAAS,CAAAC,KAAb,CAAmBJ,MAAnB;AADJ;;A,OAIA,eAAAK,SAAA,CAAQL,M,EAAR,KAAA,CAAA;AACQG,OAAS,CAAAG,GAAb,CAAiBN,MAAjB;AADJ;;A,OAIA,eAAAO,MAAA,CAAKP,M,EAAL,KAAA,CAAA;AACQG,OAAS,CAAAI,IAAb,CAAkBP,MAAlB;AADJ;;A,OAIA,eAAAQ,MAAA,CAAKR,M,EAAL,KAAA,CAAA;AACQG,OAAS,CAAAK,IAAb,CAAkBR,MAAlB;AADJ;;A,OAIA,eAAAS,OAAA,CAAMT,M,EAAN,KAAA,CAAA;AACQG,OAAS,CAAAM,KAAb,CAAmBT,MAAnB;AADJ;;A,OAIA,eAAAC,OAAA,CAAMD,M,EAAN,KAAA,CAAA;AACU,GAAA,KAAA;AACEG,OAAS,CAAAC,KAAb,CAAmBJ,MAAnB;AADE,OAEJ;AACMU,OAAS,CAAAC,MAAQ,CAAAC,KAArB,CAAiC,CAANZ,MAAM,CAAA,CAAA,CAAE,IAAF,CAAjC;AADF;AAHN"
+}

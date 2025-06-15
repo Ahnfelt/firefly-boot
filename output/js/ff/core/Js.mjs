@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -93,10 +91,6 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-
-
-
 
 export function jsSystem_() {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
@@ -266,6 +260,12 @@ return ff_core_Core.panic_("This call should have been eliminated by the compile
 
 export function throw_(value_) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
+export function initializeError_(error_, exception_, ff_core_Any_HasAnyTag$E, ff_core_Show_Show$E) {
+error_.message = ff_core_Show_Show$E.show_(exception_);
+error_.ffException = ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyTag$E);
+return error_
 }
 
 export function unaryOperator_(operator_, a1_, ff_core_JsValue_IsJsValue$T1) {
@@ -591,6 +591,12 @@ export async function throw_$(value_, $task) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
+export async function initializeError_$(error_, exception_, ff_core_Any_HasAnyTag$E, ff_core_Show_Show$E, $task) {
+error_.message = ff_core_Show_Show$E.show_(exception_);
+error_.ffException = ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyTag$E);
+return error_
+}
+
 export async function unaryOperator_$(operator_, a1_, ff_core_JsValue_IsJsValue$T1, $task) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
@@ -745,5 +751,4 @@ return ff_core_Core.panic_("This call should have been eliminated by the compile
 }
 
 
-
-
+//# sourceMappingURL=Js.mjs.map

@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -94,10 +92,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-
-
-
-
 export function show_(value_, ff_core_Show_Show$T) {
 ff_core_Log.trace_(ff_core_Show_Show$T.show_(value_))
 }
@@ -171,5 +165,4 @@ process.stderr.write((value_ + "\n"))
 }
 
 
-
-
+//# sourceMappingURL=Log.mjs.map

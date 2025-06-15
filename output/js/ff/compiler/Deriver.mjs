@@ -1,5 +1,3 @@
-
-
 import * as ff_compiler_Deriver from "../../ff/compiler/Deriver.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
@@ -103,8 +101,6 @@ const Deriver$ = {Deriver: true};
 export function Deriver() {
 return Deriver$;
 }
-
-
 
 export function new_() {
 return ff_compiler_Deriver.Deriver()
@@ -932,7 +928,7 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Deriver.Deriver" + "[") + "]")
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Deriver.Deriver" + "[") + "]"))
-}
+},
 };
 
 export const ff_core_Show_Show$ff_compiler_Deriver_Deriver = {
@@ -949,7 +945,7 @@ const value_a = value_;
 const z_ = value_a;
 return "Deriver"
 }
-}
+},
 };
 
 export const ff_core_Equal_Equal$ff_compiler_Deriver_Deriver = {
@@ -972,7 +968,7 @@ return true
 {
 return true
 }
-}
+},
 };
 
 export const ff_core_Ordering_Order$ff_compiler_Deriver_Deriver = {
@@ -995,7 +991,7 @@ return ff_core_Ordering.OrderingSame()
 {
 return ff_core_Ordering.OrderingSame()
 }
-}
+},
 };
 
 export const ff_core_Serializable_Serializable$ff_compiler_Deriver_Deriver = {
@@ -1021,7 +1017,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Deriver.Deriver()
 }
 {
-return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },
@@ -1047,8 +1043,11 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Deriver.Deriver()
 }
 {
-return ff_core_Core.throw_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
-}
+},
 };
+
+
+//# sourceMappingURL=Deriver.mjs.map

@@ -1,0 +1,11 @@
+{
+    "version": 3,
+    "sources": [
+        "../../../../../core/Nothing.ff"
+    ],
+    "sourcesContent": [
+        "data Nothing {}\r\n"
+    ],
+    "names": [],
+    "mappings": "A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;A;;AAAK;"
+}

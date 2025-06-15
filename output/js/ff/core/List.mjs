@@ -1,5 +1,3 @@
-
-
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -97,8 +95,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 // type List
 
 
-
-
 export function new_() {
 return []
 }
@@ -179,7 +175,7 @@ return ff_core_Option.None()
 
 export function List_grab(self_, index_) {
 if(((index_ < 0) || (index_ >= self_.length))) {
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_[index_]
 }
@@ -304,7 +300,7 @@ return value_
 
 export function List_modify(self_, index_, body_) {
 if(((index_ < 0) || (index_ >= self_.length))) {
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 const result_ = self_.slice();
 result_[index_] = body_(result_[index_]);
@@ -571,7 +567,7 @@ return ff_core_Option.None()
 
 export async function List_grab$(self_, index_, $task) {
 if(((index_ < 0) || (index_ >= self_.length))) {
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_[index_]
 }
@@ -696,7 +692,7 @@ return value_
 
 export async function List_modify$(self_, index_, body_, $task) {
 if(((index_ < 0) || (index_ >= self_.length))) {
-ff_core_Core.throw_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 const result_ = self_.slice();
 result_[index_] = (await body_(result_[index_], $task));
@@ -1131,7 +1127,7 @@ array_.array.push(ff_core_Show_Show$T.show_(x_))
 };
 array_.array.push("]");
 return ff_core_Array.Array_join(array_, "")
-}
+},
 }}
 
 export function ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal_Equal$T) { return {
@@ -1164,7 +1160,7 @@ return ff_core_Equal_Equal$T.equals_(l_, (y_[i_] ?? ff_core_List.List_grab(y_, i
 }))
 }
 }
-}
+},
 }}
 
 export function ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering_Order$T) { return {
@@ -1203,7 +1199,7 @@ return ordering_
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.length, y_.length)
 }
 }
-}
+},
 }}
 
 export function ff_core_Any_HasAnyTag$ff_core_List_List(ff_core_Any_HasAnyTag$T) { return {
@@ -1212,5 +1208,8 @@ return ff_core_Any.internalAnyTag_(((("ff:core/List.List" + "[") + ff_core_Any.A
 },
 async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_(((("ff:core/List.List" + "[") + ff_core_Any.AnyTag_show(ff_core_Any_HasAnyTag$T.anyTag_())) + "]"))
-}
+},
 }}
+
+
+//# sourceMappingURL=List.mjs.map
