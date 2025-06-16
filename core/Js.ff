@@ -158,7 +158,10 @@ throw[T](value: JsValue): T {
 
 initializeError[E: HasAnyTag: Show, T](error: JsValue, exception: E): JsValue {
     error->message = Show.show(exception)!
-    error->ffException = Any.toAny(exception)!
+    Js->Object->defineProperty(error, "ffException", Js->(
+        value = Any.toAny(exception)!
+        enumerable = False
+    ))
     error
 }
 
