@@ -1713,12 +1713,21 @@ extend self: JsEmitter {
                 if(last) {self.writeMapped(term.at, " else return ff_core_Option.None()")}
                 True
             | "ff:core/Core.throw" {term | ECall c} {c.arguments | [argument]} {dictionaries | [hasAnyTag, show]} =>
-                self.writeMapped(term.at, "throw ff_core_Js.initializeError_(new Error(), ")
+                self.writeMapped(term.at, "throw ff_core_Js.initializeError_(")
                 self.emitArgument(term.at, argument, async)
-                self.writeMapped(term.at, ", ")
+                self.writeMapped(term.at, ", new Error(), ")
                 self.writeMapped(term.at, self.makeDictionary(hasAnyTag))
                 self.writeMapped(term.at, ", ")
                 self.writeMapped(term.at, self.makeDictionary(show))
+                self.writeMapped(term.at, ")")
+                True
+            | "ff:core/Core.throwWithMessage" {term | ECall c} {c.arguments | [argument, message]} {dictionaries | [hasAnyTag]} =>
+                self.writeMapped(term.at, "throw ff_core_Js.initializeErrorKeepMessage_(")
+                self.emitArgument(term.at, argument, async)
+                self.writeMapped(term.at, ", new Error(")
+                self.emitArgument(term.at, message, async)
+                self.writeMapped(term.at, "), ")
+                self.writeMapped(term.at, self.makeDictionary(hasAnyTag))
                 self.writeMapped(term.at, ")")
                 True
             | "ff:core/Try.Try_catch" {self.emitTryCatchFinally(term, last, async)} =>

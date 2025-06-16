@@ -214,7 +214,7 @@ const low_ = self_.getUint32((byteOffset_ + (littleEndian_
 : 4)), littleEndian_);
 const result_ = ((high_ * 0x100000000) + low_);
 if((!Number.isSafeInteger(result_))) {
-throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(ff_core_Core.GrabException(), new Error(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return result_
 }
@@ -228,7 +228,7 @@ const low_ = self_.getUint32((byteOffset_ + (littleEndian_
 : 4)), littleEndian_);
 const result_ = ((high_ * 0x100000000) + low_);
 if((!Number.isSafeInteger(result_))) {
-throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(ff_core_Core.GrabException(), new Error(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return result_
 }
@@ -388,7 +388,7 @@ const low_ = self_.getUint32((byteOffset_ + (littleEndian_
 : 4)), littleEndian_);
 const result_ = ((high_ * 0x100000000) + low_);
 if((!Number.isSafeInteger(result_))) {
-throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(ff_core_Core.GrabException(), new Error(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return result_
 }
@@ -402,7 +402,7 @@ const low_ = self_.getUint32((byteOffset_ + (littleEndian_
 : 4)), littleEndian_);
 const result_ = ((high_ * 0x100000000) + low_);
 if((!Number.isSafeInteger(result_))) {
-throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(ff_core_Core.GrabException(), new Error(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return result_
 }

@@ -262,9 +262,17 @@ export function throw_(value_) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
-export function initializeError_(error_, exception_, ff_core_Any_HasAnyTag$E, ff_core_Show_Show$E) {
+export function initializeError_(exception_, error_, ff_core_Any_HasAnyTag$E, ff_core_Show_Show$E) {
 error_.message = ff_core_Show_Show$E.show_(exception_);
-error_.ffException = ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyTag$E);
+return ff_core_Js.initializeErrorKeepMessage_(exception_, error_, ff_core_Any_HasAnyTag$E)
+}
+
+export function initializeErrorKeepMessage_(exception_, error_, ff_core_Any_HasAnyTag$E) {
+if(true) {
+Object.defineProperty(error_, "ffException", {value: ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyTag$E), enumerable: false})
+} else {
+error_.ffException = ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyTag$E)
+};
 return error_
 }
 
@@ -591,9 +599,17 @@ export async function throw_$(value_, $task) {
 return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
-export async function initializeError_$(error_, exception_, ff_core_Any_HasAnyTag$E, ff_core_Show_Show$E, $task) {
+export async function initializeError_$(exception_, error_, ff_core_Any_HasAnyTag$E, ff_core_Show_Show$E, $task) {
 error_.message = ff_core_Show_Show$E.show_(exception_);
-error_.ffException = ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyTag$E);
+return ff_core_Js.initializeErrorKeepMessage_(exception_, error_, ff_core_Any_HasAnyTag$E)
+}
+
+export async function initializeErrorKeepMessage_$(exception_, error_, ff_core_Any_HasAnyTag$E, $task) {
+if(true) {
+Object.defineProperty(error_, "ffException", {value: ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyTag$E), enumerable: false})
+} else {
+error_.ffException = ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyTag$E)
+};
 return error_
 }
 

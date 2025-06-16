@@ -149,7 +149,7 @@ return ff_core_Pair.Pair(ff_compiler_Syntax.ModuleKey_qualifiedName(m_.moduleKey
 }
 
 export function fail_(at_, message_) {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, message_), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 
 export function rawJs_(at_, rawIdentifier_) {
@@ -406,7 +406,7 @@ return ff_core_Pair.Pair(ff_compiler_Syntax.ModuleKey_qualifiedName(m_.moduleKey
 }
 
 export async function fail_$(at_, message_, $task) {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, message_), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 
 export async function rawJs_$(at_, rawIdentifier_, $task) {
@@ -1295,7 +1295,7 @@ ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, patternAt_, "_")
 return
 }
 {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, "Internal compiler error"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, "Internal compiler error"), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }));
 if(newAsync_) {
@@ -1763,7 +1763,7 @@ const instanceCall_ = _1.target_.instanceCall_;
 const effect_ = _1.effect_;
 const arguments_ = _1.arguments_;
 if(instanceCall_) {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, "Not yet implemented: Tail calls on trait methods."), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, "Not yet implemented: Tail calls on trait methods."), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 self_.tailCallUsed_ = true;
 ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, "{");
@@ -2522,7 +2522,7 @@ return true
 {
 const name_ = _1;
 if(ff_core_String.String_startsWith(name_, "ff:core/Js.async", 0)) {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(term_.at_, "JS async functions must take a simple parameter list"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(term_.at_, "JS async functions must take a simple parameter list"), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 if(_1 === "ff:core/Js.cancelled") {
@@ -3555,12 +3555,35 @@ const _guard1 = dictionaries_;
 if(_guard1.length === 2) {
 const hasAnyTag_ = _guard1[0];
 const show_ = _guard1[1];
-ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, "throw ff_core_Js.initializeError_(new Error(), ");
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, "throw ff_core_Js.initializeError_(");
 ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, term_.at_, argument_, async_);
-ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, ", ");
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, ", new Error(), ");
 ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, ff_compiler_JsEmitter.JsEmitter_makeDictionary(self_, hasAnyTag_));
 ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, ", ");
 ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, ff_compiler_JsEmitter.JsEmitter_makeDictionary(self_, show_));
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, ")");
+return true
+}
+}
+}
+}
+if(_1 === "ff:core/Core.throwWithMessage") {
+const _guard3 = term_;
+if(_guard3.ECall) {
+const c_ = _guard3;
+const _guard2 = c_.arguments_;
+if(_guard2.length === 2) {
+const argument_ = _guard2[0];
+const message_ = _guard2[1];
+const _guard1 = dictionaries_;
+if(_guard1.length === 1) {
+const hasAnyTag_ = _guard1[0];
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, "throw ff_core_Js.initializeErrorKeepMessage_(");
+ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, term_.at_, argument_, async_);
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, ", new Error(");
+ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, term_.at_, message_, async_);
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, "), ");
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, ff_compiler_JsEmitter.JsEmitter_makeDictionary(self_, hasAnyTag_));
 ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, ")");
 return true
 }
@@ -4884,7 +4907,7 @@ ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, patternAt_, "_")
 return
 }
 {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, "Internal compiler error"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, "Internal compiler error"), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }));
 if(newAsync_) {
@@ -5352,7 +5375,7 @@ const instanceCall_ = _1.target_.instanceCall_;
 const effect_ = _1.effect_;
 const arguments_ = _1.arguments_;
 if(instanceCall_) {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, "Not yet implemented: Tail calls on trait methods."), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, "Not yet implemented: Tail calls on trait methods."), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 self_.tailCallUsed_ = true;
 ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, "{");
@@ -6111,7 +6134,7 @@ return true
 {
 const name_ = _1;
 if(ff_core_String.String_startsWith(name_, "ff:core/Js.async", 0)) {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(term_.at_, "JS async functions must take a simple parameter list"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(term_.at_, "JS async functions must take a simple parameter list"), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 if(_1 === "ff:core/Js.cancelled") {
@@ -7144,12 +7167,35 @@ const _guard1 = dictionaries_;
 if(_guard1.length === 2) {
 const hasAnyTag_ = _guard1[0];
 const show_ = _guard1[1];
-ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, "throw ff_core_Js.initializeError_(new Error(), ");
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, "throw ff_core_Js.initializeError_(");
 ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, term_.at_, argument_, async_);
-ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, ", ");
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, ", new Error(), ");
 ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, ff_compiler_JsEmitter.JsEmitter_makeDictionary(self_, hasAnyTag_));
 ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, ", ");
 ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, ff_compiler_JsEmitter.JsEmitter_makeDictionary(self_, show_));
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, ")");
+return true
+}
+}
+}
+}
+if(_1 === "ff:core/Core.throwWithMessage") {
+const _guard3 = term_;
+if(_guard3.ECall) {
+const c_ = _guard3;
+const _guard2 = c_.arguments_;
+if(_guard2.length === 2) {
+const argument_ = _guard2[0];
+const message_ = _guard2[1];
+const _guard1 = dictionaries_;
+if(_guard1.length === 1) {
+const hasAnyTag_ = _guard1[0];
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, "throw ff_core_Js.initializeErrorKeepMessage_(");
+ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, term_.at_, argument_, async_);
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, ", new Error(");
+ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, term_.at_, message_, async_);
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, "), ");
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, ff_compiler_JsEmitter.JsEmitter_makeDictionary(self_, hasAnyTag_));
 ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, ")");
 return true
 }
@@ -8057,7 +8103,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_JsEmitter.EmitExecutable()
 }
 {
-throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
+throw ff_core_Js.initializeError_(ff_core_Serializable.DeserializationChecksumException(), new Error(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },
@@ -8119,7 +8165,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_JsEmitter.EmitExecutable()
 }
 {
-throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
+throw ff_core_Js.initializeError_(ff_core_Serializable.DeserializationChecksumException(), new Error(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },

@@ -122,7 +122,7 @@ let seen_ = ff_core_Map.new_();
 ff_core_List.List_map(items_, ((item_) => {
 const n_ = name_(item_);
 if(ff_core_Map.Map_contains(seen_, n_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_(item_), ("Duplicate definition: " + n_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_(item_), ("Duplicate definition: " + n_)), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 seen_ = ff_core_Map.Map_add(seen_, n_, item_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }));
@@ -138,7 +138,7 @@ let seen_ = ff_core_Map.new_();
 (await ff_core_List.List_map$(items_, (async (item_, $task) => {
 const n_ = (await name_(item_, $task));
 if(ff_core_Map.Map_contains(seen_, n_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError((await at_(item_, $task)), ("Duplicate definition: " + n_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError((await at_(item_, $task)), ("Duplicate definition: " + n_)), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 seen_ = ff_core_Map.Map_add(seen_, n_, item_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }), $task));
@@ -183,9 +183,9 @@ break
 }
 {
 const allErrors_ = _1;
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileErrors(ff_core_List.List_map(allErrors_, ((_w1) => {
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileErrors(ff_core_List.List_map(allErrors_, ((_w1) => {
 return _w1.first_
-}))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
+}))), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
 }
 } while(false);
 ff_compiler_Resolver.checkDuplicates_(module2_.types_, ((_w1) => {
@@ -239,7 +239,7 @@ if(_1.TConstructor) {
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 if(ff_core_Set.Set_contains(self_.asyncTypes_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(type_.at_, "Traits must not be instantiated for capability types"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(type_.at_, "Traits must not be instantiated for capability types"), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 for(let for_a = typeArguments_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const _w1 = for_a[for_i];
@@ -268,7 +268,7 @@ resolver_ = ff_compiler_Resolver.Resolver_processDefinitions(resolver_, module_,
 break
 }
 {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(import_.at_, ("No such module: " + ff_compiler_Syntax.ModuleKey_importName(import_.moduleKey_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(import_.at_, ("No such module: " + ff_compiler_Syntax.ModuleKey_importName(import_.moduleKey_))), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 } while(false)
 };
@@ -396,7 +396,7 @@ return _w1.fields_
 }))], for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const f_ = for_a[for_i];
 if(ff_compiler_Resolver.Resolver_containsAsyncType(self2_, f_.valueType_)) {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(f_.at_, "Only capabilities can contain fields of concrete capability types"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(f_.at_, "Only capabilities can contain fields of concrete capability types"), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 };
@@ -520,7 +520,7 @@ const self2_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(_c.variables_, _c.variableLocations_, _c.variants_, ff_core_Map.Map_addAll(self_.types_, generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.typeGenerics_, _c.typeLocations_, ff_core_Set.Set_removeAll(self_.asyncTypes_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addAll(self_.typeParameters_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.traitLocations_, _c.state_, _c.lspHook_)
 }))(self_);
 const traitName_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self2_.traits_, definition_.traitName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(definition_.at_, ("No such trait: " + definition_.traitName_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(definition_.at_, ("No such trait: " + definition_.traitName_)), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }));
 {
 const _1 = definition_;
@@ -653,7 +653,7 @@ const at_ = _1.at_;
 const name_ = _1.name_;
 const typeArguments_ = _1.typeArguments_;
 return ff_compiler_Syntax.EVariantIs(at_, ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 })), ff_core_List.List_map(typeArguments_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveType(self_, _w1, topLevel_)
 })))
@@ -729,7 +729,7 @@ return
 }
 if(_1.ECall && _1.target_.StaticCall) {
 const at_ = _1.at_;
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, "Internal error: Static calls not expected in the Resolver phase"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, "Internal error: Static calls not expected in the Resolver phase"), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 if(_1.ERecord) {
 const at_ = _1.at_;
@@ -748,7 +748,7 @@ return
 if(_1.EWildcard) {
 const e_ = _1;
 if((e_.index_ === 0)) {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, "Unbound wildcard"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(e_.at_, "Unbound wildcard"), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 {
 const _1 = e_;
@@ -812,7 +812,7 @@ const operator_ = _1.operator_;
 const variable_ = _1.variable_;
 const value_ = _1.value_;
 return ff_compiler_Syntax.EAssign(at_, operator_, ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variables_, variable_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ("No such variable: " + variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, ("No such variable: " + variable_)), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 })), ff_compiler_Resolver.Resolver_resolveTerm(self_, value_, topLevel_, false))
 return
 }
@@ -848,7 +848,7 @@ const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
 ? constructor_.name_
 : ff_core_Option.Option_else(ff_core_Map.Map_get(self_.types_, constructor_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 if((!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_))) {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(constructor_.at_, ("No such type: " + constructor_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(constructor_.at_, ("No such type: " + constructor_.name_)), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 } else {
 return constructor_.name_
 }
@@ -903,7 +903,7 @@ if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, constraint_.at_) || ff_comp
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveConstraintHook(ff_compiler_LspHook.SymbolHook(constraint_.name_, constraint_.at_, traitDefinedAt_), constraint_))
 };
 const name_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.traits_, constraint_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(constraint_.at_, ("No such trait: " + constraint_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(constraint_.at_, ("No such trait: " + constraint_.name_)), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }));
 {
 const _1 = constraint_;
@@ -945,7 +945,7 @@ return ff_core_Set.Set_contains(self_.typeParameters_, name_, ff_core_Ordering.f
 }))
 if(if_o.Some) {
 const name_ = if_o.value_;
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(signature_.at_, (("Type parameter " + name_) + " is already in scope")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(signature_.at_, (("Type parameter " + name_) + " is already in scope")), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 };
 const self2_ = ff_compiler_Resolver.Resolver_withSignature(self_, newSignature_);
@@ -1131,7 +1131,7 @@ const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return constructor_.name_
 } else {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(constructor_.at_, ("No such type: " + constructor_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(constructor_.at_, ("No such type: " + constructor_.name_)), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 })));
 const isFunctionType_ = ff_core_String.String_startsWith(name_, "Function$", 0);
@@ -1180,9 +1180,9 @@ break
 }
 {
 const allErrors_ = _1;
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileErrors(ff_core_List.List_map(allErrors_, ((_w1) => {
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileErrors(ff_core_List.List_map(allErrors_, ((_w1) => {
 return _w1.first_
-}))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
+}))), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
 }
 } while(false);
 ff_compiler_Resolver.checkDuplicates_(module2_.types_, ((_w1) => {
@@ -1236,7 +1236,7 @@ if(_1.TConstructor) {
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 if(ff_core_Set.Set_contains(self_.asyncTypes_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(type_.at_, "Traits must not be instantiated for capability types"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(type_.at_, "Traits must not be instantiated for capability types"), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 for(let for_a = typeArguments_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const _w1 = for_a[for_i];
@@ -1265,7 +1265,7 @@ resolver_ = ff_compiler_Resolver.Resolver_processDefinitions(resolver_, module_,
 break
 }
 {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(import_.at_, ("No such module: " + ff_compiler_Syntax.ModuleKey_importName(import_.moduleKey_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(import_.at_, ("No such module: " + ff_compiler_Syntax.ModuleKey_importName(import_.moduleKey_))), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 } while(false)
 };
@@ -1393,7 +1393,7 @@ return _w1.fields_
 }))], for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const f_ = for_a[for_i];
 if(ff_compiler_Resolver.Resolver_containsAsyncType(self2_, f_.valueType_)) {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(f_.at_, "Only capabilities can contain fields of concrete capability types"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(f_.at_, "Only capabilities can contain fields of concrete capability types"), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 };
@@ -1517,7 +1517,7 @@ const self2_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(_c.variables_, _c.variableLocations_, _c.variants_, ff_core_Map.Map_addAll(self_.types_, generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.typeGenerics_, _c.typeLocations_, ff_core_Set.Set_removeAll(self_.asyncTypes_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addAll(self_.typeParameters_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.traitLocations_, _c.state_, _c.lspHook_)
 }))(self_);
 const traitName_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self2_.traits_, definition_.traitName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(definition_.at_, ("No such trait: " + definition_.traitName_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(definition_.at_, ("No such trait: " + definition_.traitName_)), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }));
 {
 const _1 = definition_;
@@ -1650,7 +1650,7 @@ const at_ = _1.at_;
 const name_ = _1.name_;
 const typeArguments_ = _1.typeArguments_;
 return ff_compiler_Syntax.EVariantIs(at_, ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 })), ff_core_List.List_map(typeArguments_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveType(self_, _w1, topLevel_)
 })))
@@ -1726,7 +1726,7 @@ return
 }
 if(_1.ECall && _1.target_.StaticCall) {
 const at_ = _1.at_;
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, "Internal error: Static calls not expected in the Resolver phase"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, "Internal error: Static calls not expected in the Resolver phase"), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 if(_1.ERecord) {
 const at_ = _1.at_;
@@ -1745,7 +1745,7 @@ return
 if(_1.EWildcard) {
 const e_ = _1;
 if((e_.index_ === 0)) {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(e_.at_, "Unbound wildcard"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(e_.at_, "Unbound wildcard"), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 {
 const _1 = e_;
@@ -1809,7 +1809,7 @@ const operator_ = _1.operator_;
 const variable_ = _1.variable_;
 const value_ = _1.value_;
 return ff_compiler_Syntax.EAssign(at_, operator_, ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variables_, variable_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ("No such variable: " + variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, ("No such variable: " + variable_)), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 })), ff_compiler_Resolver.Resolver_resolveTerm(self_, value_, topLevel_, false))
 return
 }
@@ -1845,7 +1845,7 @@ const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
 ? constructor_.name_
 : ff_core_Option.Option_else(ff_core_Map.Map_get(self_.types_, constructor_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 if((!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_))) {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(constructor_.at_, ("No such type: " + constructor_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(constructor_.at_, ("No such type: " + constructor_.name_)), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 } else {
 return constructor_.name_
 }
@@ -1900,7 +1900,7 @@ if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, constraint_.at_) || ff_comp
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveConstraintHook(ff_compiler_LspHook.SymbolHook(constraint_.name_, constraint_.at_, traitDefinedAt_), constraint_))
 };
 const name_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.traits_, constraint_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(constraint_.at_, ("No such trait: " + constraint_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(constraint_.at_, ("No such trait: " + constraint_.name_)), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }));
 {
 const _1 = constraint_;
@@ -1942,7 +1942,7 @@ return ff_core_Set.Set_contains(self_.typeParameters_, name_, ff_core_Ordering.f
 }))
 if(if_o.Some) {
 const name_ = if_o.value_;
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(signature_.at_, (("Type parameter " + name_) + " is already in scope")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(signature_.at_, (("Type parameter " + name_) + " is already in scope")), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 };
 const self2_ = ff_compiler_Resolver.Resolver_withSignature(self_, newSignature_);
@@ -2128,7 +2128,7 @@ const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 return constructor_.name_
 } else {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(constructor_.at_, ("No such type: " + constructor_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(constructor_.at_, ("No such type: " + constructor_.name_)), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 })));
 const isFunctionType_ = ff_core_String.String_startsWith(name_, "Function$", 0);
@@ -2269,7 +2269,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Resolver.CaseVariable(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 }
 {
-throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
+throw ff_core_Js.initializeError_(ff_core_Serializable.DeserializationChecksumException(), new Error(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },
@@ -2298,7 +2298,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_Resolver.CaseVariable(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 }
 {
-throw ff_core_Js.initializeError_(new Error(), ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
+throw ff_core_Js.initializeError_(ff_core_Serializable.DeserializationChecksumException(), new Error(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
 }
 }
 },

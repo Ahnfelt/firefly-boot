@@ -156,12 +156,20 @@ throw[T](value: JsValue): T {
     panic("This call should have been eliminated by the compiler")
 }
 
-initializeError[E: HasAnyTag: Show, T](error: JsValue, exception: E): JsValue {
+initializeError[E: HasAnyTag: Show, T](exception: E, error: JsValue): JsValue {
     error->message = Show.show(exception)!
-    Js->Object->defineProperty(error, "ffException", Js->(
-        value = Any.toAny(exception)!
-        enumerable = False
-    ))
+    initializeErrorKeepMessage(exception, error)
+}
+
+initializeErrorKeepMessage[E: HasAnyTag, T](exception: E, error: JsValue): JsValue {
+    if(inNode()) {
+        Js->Object->defineProperty(error, "ffException", Js->(
+            value = Any.toAny(exception)!
+            enumerable = False
+        ))
+    } else {
+        error->ffException = Any.toAny(exception)!
+    }
     error
 }
 

@@ -175,7 +175,7 @@ const if_o = importedAt_
 if(if_o.Some) {
 const at_ = if_o.value_;
 if((!ff_core_Path.Path_exists(path_, false, false, false))) {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ("Imported module not found: " + ff_compiler_Syntax.ModuleKey_importName(moduleKey_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, ("Imported module not found: " + ff_compiler_Syntax.ModuleKey_importName(moduleKey_))), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 };
@@ -201,7 +201,7 @@ export function Compiler_imports(self_, module_) {
 return ff_core_List.List_map(module_.imports_, ((import_) => {
 const newPackagePair_ = import_.moduleKey_.packagePair_;
 if((!ff_core_Map.Map_contains(self_.packagePaths_, newPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair))) {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(import_.at_, ("Missing dependency declaration for: " + ff_compiler_Syntax.PackagePair_groupName(newPackagePair_, ":"))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(import_.at_, ("Missing dependency declaration for: " + ff_compiler_Syntax.PackagePair_groupName(newPackagePair_, ":"))), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 return ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch(ff_core_Core.try_((() => {
 return ff_compiler_Compiler.Compiler_parse(self_, import_.moduleKey_, ff_core_Option.Some(import_.at_))
@@ -210,14 +210,14 @@ return ff_compiler_Compiler.Compiler_parse(self_, import_.moduleKey_, ff_core_Op
 const e_ = _1;
 const error_ = _2;
 const newError_ = ff_compiler_Syntax.CompileError(import_.at_, ("Parse error in imported module: " + ff_compiler_Syntax.ModuleKey_importName(import_.moduleKey_)));
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileErrors([e_, newError_]), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileErrors([e_, newError_]), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
 }
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
 {
 const compileErrors_ = _1.errors_;
 const error_ = _2;
 const newError_ = ff_compiler_Syntax.CompileError(import_.at_, ("Parse errors in imported module: " + ff_compiler_Syntax.ModuleKey_importName(import_.moduleKey_)));
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileErrors([...compileErrors_, newError_]), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileErrors([...compileErrors_, newError_]), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
 }
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
 }))
@@ -328,7 +328,7 @@ const if_o = importedAt_
 if(if_o.Some) {
 const at_ = if_o.value_;
 if((!(await ff_core_Path.Path_exists$(path_, false, false, false, $task)))) {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(at_, ("Imported module not found: " + ff_compiler_Syntax.ModuleKey_importName(moduleKey_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, ("Imported module not found: " + ff_compiler_Syntax.ModuleKey_importName(moduleKey_))), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 }
 }
 };
@@ -354,7 +354,7 @@ export async function Compiler_imports$(self_, module_, $task) {
 return (await ff_core_List.List_map$(module_.imports_, (async (import_, $task) => {
 const newPackagePair_ = import_.moduleKey_.packagePair_;
 if((!ff_core_Map.Map_contains(self_.packagePaths_, newPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair))) {
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileError(import_.at_, ("Missing dependency declaration for: " + ff_compiler_Syntax.PackagePair_groupName(newPackagePair_, ":"))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(import_.at_, ("Missing dependency declaration for: " + ff_compiler_Syntax.PackagePair_groupName(newPackagePair_, ":"))), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
 };
 return ff_core_Try.Try_catch(ff_core_Try.Try_tryCatch((await ff_core_Core.try_$((async ($task) => {
 return (await ff_compiler_Compiler.Compiler_parse$(self_, import_.moduleKey_, ff_core_Option.Some(import_.at_), $task))
@@ -363,14 +363,14 @@ return (await ff_compiler_Compiler.Compiler_parse$(self_, import_.moduleKey_, ff
 const e_ = _1;
 const error_ = _2;
 const newError_ = ff_compiler_Syntax.CompileError(import_.at_, ("Parse error in imported module: " + ff_compiler_Syntax.ModuleKey_importName(import_.moduleKey_)));
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileErrors([e_, newError_]), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileErrors([e_, newError_]), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
 }
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
 {
 const compileErrors_ = _1.errors_;
 const error_ = _2;
 const newError_ = ff_compiler_Syntax.CompileError(import_.at_, ("Parse errors in imported module: " + ff_compiler_Syntax.ModuleKey_importName(import_.moduleKey_)));
-throw ff_core_Js.initializeError_(new Error(), ff_compiler_Syntax.CompileErrors([...compileErrors_, newError_]), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileErrors([...compileErrors_, newError_]), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
 }
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
 }), $task))

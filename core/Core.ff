@@ -39,13 +39,13 @@ try[T](body: () => T): Try[T] {
 }
 
 throw[E: HasAnyTag: Show, T](exception: E): T {
-    throwWithMessage(exception, Show.show(exception))
+    // Special cased by the compiler
+    throw(exception)
 }
 
 throwWithMessage[E: HasAnyTag, T](exception: E, message: String): T {
-    let e = Js->Error->(message)
-    e->ffException = Any.toAny(exception)!
-    Js.throw(e)
+    // Special cased by the compiler
+    throwWithMessage(exception, message)
 }
 
 panic[T](message: String): T {

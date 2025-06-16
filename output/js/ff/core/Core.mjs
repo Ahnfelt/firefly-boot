@@ -174,13 +174,11 @@ return ff_core_Try.Failure(e_)
 }
 
 export function throw_(exception_, ff_core_Any_HasAnyTag$E, ff_core_Show_Show$E) {
-return ff_core_Core.throwWithMessage_(exception_, ff_core_Show_Show$E.show_(exception_), ff_core_Any_HasAnyTag$E)
+throw ff_core_Js.initializeError_(exception_, new Error(), ff_core_Any_HasAnyTag$E, ff_core_Show_Show$E)
 }
 
 export function throwWithMessage_(exception_, message_, ff_core_Any_HasAnyTag$E) {
-const e_ = (new Error(message_));
-e_.ffException = ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyTag$E);
-throw e_
+throw ff_core_Js.initializeErrorKeepMessage_(exception_, new Error(message_), ff_core_Any_HasAnyTag$E)
 }
 
 export function panic_(message_) {
@@ -263,13 +261,11 @@ return ff_core_Try.Failure(e_)
 }
 
 export async function throw_$(exception_, ff_core_Any_HasAnyTag$E, ff_core_Show_Show$E, $task) {
-return ff_core_Core.throwWithMessage_(exception_, ff_core_Show_Show$E.show_(exception_), ff_core_Any_HasAnyTag$E)
+throw ff_core_Js.initializeError_(exception_, new Error(), ff_core_Any_HasAnyTag$E, ff_core_Show_Show$E)
 }
 
 export async function throwWithMessage_$(exception_, message_, ff_core_Any_HasAnyTag$E, $task) {
-const e_ = (new Error(message_));
-e_.ffException = ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyTag$E);
-throw e_
+throw ff_core_Js.initializeErrorKeepMessage_(exception_, new Error(message_), ff_core_Any_HasAnyTag$E)
 }
 
 export async function panic_$(message_, $task) {

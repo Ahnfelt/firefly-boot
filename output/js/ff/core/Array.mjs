@@ -201,7 +201,7 @@ return ff_core_Option.None()
 
 export function Array_grab(self_, index_) {
 if(((index_ < 0) || (index_ >= self_.array.length))) {
-throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(ff_core_Core.GrabException(), new Error(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_.array[index_]
 }
@@ -247,14 +247,14 @@ return ff_core_Option.Some(self_.array.pop())
 
 export function Array_set(self_, index_, value_) {
 if(((index_ < 0) || (index_ >= self_.array.length))) {
-throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(ff_core_Core.GrabException(), new Error(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 self_.array[index_] = value_
 }
 
 export function Array_modify(self_, index_, body_) {
 if(((index_ < 0) || (index_ >= self_.array.length))) {
-throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(ff_core_Core.GrabException(), new Error(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 self_.array[index_] = body_(self_.array[index_])
 }
@@ -281,11 +281,11 @@ ff_core_Array.Array_insertList(self_, start_, array_.array, deleteCount_)
 
 export function Array_insertList(self_, start_, list_, deleteCount_ = 0) {
 if(((start_ < 0) || (start_ > self_.array.length))) {
-throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(ff_core_Core.GrabException(), new Error(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 const deleteEnd_ = (start_ + deleteCount_);
 if(((deleteEnd_ < 0) || (deleteEnd_ > self_.array.length))) {
-throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(ff_core_Core.GrabException(), new Error(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 const insertCount_ = list_.length;
 const delta_ = (insertCount_ - deleteCount_);
@@ -437,7 +437,7 @@ return ff_core_Option.None()
 
 export async function Array_grab$(self_, index_, $task) {
 if(((index_ < 0) || (index_ >= self_.array.length))) {
-throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(ff_core_Core.GrabException(), new Error(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 return self_.array[index_]
 }
@@ -483,14 +483,14 @@ return ff_core_Option.Some(self_.array.pop())
 
 export async function Array_set$(self_, index_, value_, $task) {
 if(((index_ < 0) || (index_ >= self_.array.length))) {
-throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(ff_core_Core.GrabException(), new Error(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 self_.array[index_] = value_
 }
 
 export async function Array_modify$(self_, index_, body_, $task) {
 if(((index_ < 0) || (index_ >= self_.array.length))) {
-throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(ff_core_Core.GrabException(), new Error(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 self_.array[index_] = (await body_(self_.array[index_], $task))
 }
@@ -517,11 +517,11 @@ ff_core_Array.Array_insertList(self_, start_, array_.array, deleteCount_)
 
 export async function Array_insertList$(self_, start_, list_, deleteCount_ = 0, $task) {
 if(((start_ < 0) || (start_ > self_.array.length))) {
-throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(ff_core_Core.GrabException(), new Error(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 const deleteEnd_ = (start_ + deleteCount_);
 if(((deleteEnd_ < 0) || (deleteEnd_ > self_.array.length))) {
-throw ff_core_Js.initializeError_(new Error(), ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
+throw ff_core_Js.initializeError_(ff_core_Core.GrabException(), new Error(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException, ff_core_Core.ff_core_Show_Show$ff_core_Core_GrabException)
 };
 const insertCount_ = list_.length;
 const delta_ = (insertCount_ - deleteCount_);
