@@ -19,7 +19,6 @@
     "main": "./vscode/client/out/extension",
     "icon": "./vscode/icons/firefly-logo.png",
     "dependencies": {
-        "pkg": "^5.8.0",
         "tar": "^6.1.11",
         "esbuild": "^0.21.3"
     },

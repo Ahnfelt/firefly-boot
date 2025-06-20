@@ -303,7 +303,7 @@ internalCallPkg(
     outputPath: Path
     targets: List[String]
 ): Unit {
-    let pkg = Js.import("pkg")
+    let pkg = Js.null() //Js.import("pkg")
     Js.await(pkg->exec([
         packageFile.absolutePath
         "--out-path", outputPath.absolutePath

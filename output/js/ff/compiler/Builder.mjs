@@ -114,7 +114,6 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
-import * as import$0 from 'pkg';
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type PackageFiles
@@ -384,7 +383,7 @@ ff_compiler_Builder.internalCallPkg_(self_, packageFile_, outputPath_, targets_)
 }
 
 export function internalCallPkg_(self_, packageFile_, outputPath_, targets_) {
-const pkg_ = import$0;
+const pkg_ = null;
 pkg_.exec([packageFile_.absolutePath_, "--out-path", outputPath_.absolutePath_, "--target", ff_core_List.List_join(targets_, ",")])
 }
 
@@ -650,7 +649,7 @@ const packageFile_ = (await ff_core_Path.Path_slash$(outputPath_, "executable/pa
 }
 
 export async function internalCallPkg_$(self_, packageFile_, outputPath_, targets_, $task) {
-const pkg_ = import$0;
+const pkg_ = null;
 (await pkg_.exec([packageFile_.absolutePath_, "--out-path", outputPath_.absolutePath_, "--target", ff_core_List.List_join(targets_, ",")]))
 }
 
