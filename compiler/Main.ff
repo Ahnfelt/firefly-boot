@@ -289,7 +289,7 @@ importAndRun(
         try {
             Js.await(main->"$run$"(fireflyPath.absolutePath, arguments))
         } catchAny {error =>
-            Js->console->error(error)
+            Js->console->error(error.stack())
             Js->process->exit(1)
         }
         True

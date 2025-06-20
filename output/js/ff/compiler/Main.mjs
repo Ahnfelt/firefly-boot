@@ -443,17 +443,13 @@ const runFilePath_ = (ff_core_String.String_contains(runFile_, "://")
 ? ff_core_NodeSystem.NodeSystem_pathFromUrl(system_, runFile_)
 : ff_core_NodeSystem.NodeSystem_path(system_, runFile_));
 if(ff_core_Path.Path_exists(runFilePath_, false, false, false)) {
-console.log("importAndRun 1");
-try {
 const main_ = import(runFile_);
-console.log("importAndRun 2");
+try {
 main_["$run$"](fireflyPath_.absolutePath_, arguments_)
 } catch(error_) {
-console.log("importAndRun 3");
-console.error(error_);
+console.error(ff_core_Error.Error_stack(error_));
 process.exit(1)
 };
-console.log("importAndRun 4");
 return true
 } else {
 return false
@@ -856,17 +852,13 @@ const runFilePath_ = (ff_core_String.String_contains(runFile_, "://")
 ? (await ff_core_NodeSystem.NodeSystem_pathFromUrl$(system_, runFile_, $task))
 : (await ff_core_NodeSystem.NodeSystem_path$(system_, runFile_, $task)));
 if((await ff_core_Path.Path_exists$(runFilePath_, false, false, false, $task))) {
-console.log("importAndRun 1");
-try {
 const main_ = (await import(runFile_));
-console.log("importAndRun 2");
+try {
 (await main_["$run$"](fireflyPath_.absolutePath_, arguments_))
 } catch(error_) {
-console.log("importAndRun 3");
-console.error(error_);
+console.error(ff_core_Error.Error_stack(error_));
 process.exit(1)
 };
-console.log("importAndRun 4");
 return true
 } else {
 return false

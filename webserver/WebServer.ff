@@ -170,7 +170,7 @@ extend self: WebServer {
                             }
                         }
                     } catchAny {e =>
-                        if(!abortedByUws) {Js->console->error(e)}
+                        if(!abortedByUws) {Js->console->error(e.stack())}
                         if(!abortedByUws && context.nullish()) {
                             res->cork(Js->{
                                 if(!abortedByUws) {res->writeStatus("500 Internal Server Error")}

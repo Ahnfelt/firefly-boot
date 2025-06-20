@@ -108,7 +108,14 @@ return ff_core_JsValue.JsValue_coalesce(self_.message, "", ff_core_JsValue.ff_co
 }
 
 export function Error_stack(self_) {
-return ff_core_JsValue.JsValue_coalesce(self_.stack, "", ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_String_String)
+const stacktrace_ = ff_core_JsValue.JsValue_coalesce(self_.stack, "", ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_String_String);
+if((!true)) {
+return stacktrace_
+} else {
+return ff_core_List.List_join(ff_core_List.List_takeWhile(ff_core_String.String_lines(stacktrace_), ((_w1) => {
+return (!ff_core_String.String_contains(_w1, "$run$"))
+})), "\n")
+}
 }
 
 export function Error_exception(self_) {
@@ -130,7 +137,14 @@ return ff_core_JsValue.JsValue_coalesce(self_.message, "", ff_core_JsValue.ff_co
 }
 
 export async function Error_stack$(self_, $task) {
-return ff_core_JsValue.JsValue_coalesce(self_.stack, "", ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_String_String)
+const stacktrace_ = ff_core_JsValue.JsValue_coalesce(self_.stack, "", ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_String_String);
+if((!true)) {
+return stacktrace_
+} else {
+return ff_core_List.List_join(ff_core_List.List_takeWhile(ff_core_String.String_lines(stacktrace_), ((_w1) => {
+return (!ff_core_String.String_contains(_w1, "$run$"))
+})), "\n")
+}
 }
 
 export async function Error_exception$(self_, $task) {
