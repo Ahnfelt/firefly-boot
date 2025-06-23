@@ -17,7 +17,11 @@ extend self: Error {
     stack(): String {
         let stacktrace = self!->stack.coalesce("")?
         if(!Js.inNode()) {stacktrace} else:
-        stacktrace.lines().takeWhile {!_.contains("$run$")}.join("\n")
+        stacktrace.lines().takeWhile {!_.contains("$run$")}.map {line =>
+            line.removeFirst("    at ").map {line =>
+                "    at " + line.dropWhile {_ != '('}.dropFirst().dropLast()
+            }.else {line}
+        }.join("\n")
     }
 
     exception(): Option[Any] {
