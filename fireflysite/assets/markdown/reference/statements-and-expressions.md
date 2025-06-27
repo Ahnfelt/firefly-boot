@@ -6,7 +6,7 @@ When `;` is the last token on a line, it can be omitted.
 
 A statement is either a [local function definition](functions-and-methods), a local variable definition, an assignment or an expression.
 
-Field assignments were covered in [user defined types](user-defined types).
+Field assignments were covered in [user defined types](user-defined-types).
 
 
 # Local variables
