@@ -1,6 +1,6 @@
 nodeMain(system: NodeSystem) {
     let net = Js.import("node:net")
-    let targetServer = "localhost"
+    let targetServer = "127.0.0.1"
     let targetPort = 8080
     
     function parseHeaders(headerData: JsValue): JsValue {
