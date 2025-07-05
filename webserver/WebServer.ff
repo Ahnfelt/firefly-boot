@@ -142,14 +142,17 @@ extend self: WebServer {
                             internalResolveFlush = Js.null()
                             internalContentSize = -1
                             internalResponded = False
-                        );
+                        )
                         handler(webRequest)
                         task.throwIfAborted()
-                        if(context.nullish() && !webRequest.internalResponded && webRequest.internalContentSize >= 0) {
+                        if(
+                            context.nullish() && 
+                            !webRequest.internalResponded && webRequest.internalContentSize >= 0 && !abortedByUws
+                        ) {
                             webRequest.flush()
                             task.throwIfAborted()
                         }
-                        if(context.nullish() && !webRequest.internalResponded) {
+                        if(context.nullish() && !webRequest.internalResponded && !abortedByUws) {
                             Js.awaitCancellablePromise {resolve, reject, onSettle => 
                                 res->cork(Js->{
                                     try {
