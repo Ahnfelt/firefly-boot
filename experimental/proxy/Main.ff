@@ -6,15 +6,16 @@ nodeMain(system: NodeSystem) {
     function parseHeaders(headerData: JsValue): JsValue {
         let headers = Js->()
         let lines = headerData->split("\r\n")
-
-        lines->forEach(Js->{line =>
-            let index = line->indexOf(":")
-            if(index !== -1) {
-                let key = line->substring(0, index)->trim()->toLowerCase()
-                let value = line->substring(index + 1!)->trim()
-                headers.set(key, value)
-            }
-        })
+        if(lines.get(0)->endsWith(" HTTP/1.1")? || lines.get(0)->endsWith(" HTTP/1.0")?) {
+            lines->forEach(Js->{line =>
+                let index = line->indexOf(":")
+                if(index !== -1) {
+                    let key = line->substring(0, index)->trim()->toLowerCase()
+                    let value = line->substring(index + 1!)->trim()
+                    headers.set(key, value)
+                }
+            })
+        }
         headers
     }
     
@@ -24,7 +25,7 @@ nodeMain(system: NodeSystem) {
         clientSocket->on("data", Js->{data =>
             buffer = Js->Buffer->concat([buffer, data])
             let headerEnd = buffer->indexOf("\r\n\r\n")
-            if(headerEnd !== -1) {
+            if(headerEnd !== -1 || buffer->length? >= 64 * 1024) {
                 let headerData = buffer->subarray(0, headerEnd)->toString()
                 let headers = parseHeaders(headerData)
                 
