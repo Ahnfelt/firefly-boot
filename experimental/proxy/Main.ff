@@ -8,10 +8,10 @@ nodeMain(system: NodeSystem) {
         let lines = headerData->split("\r\n")
 
         lines->forEach(Js->{line =>
-            let index = line->indexOf(':')
+            let index = line->indexOf(":")
             if(index !== -1) {
-                let key = line->substring(0, index)->trim();
-                let value = line->substring(index + 1!)->trim();
+                let key = line->substring(0, index)->trim()->toLowerCase()
+                let value = line->substring(index + 1!)->trim()
                 headers.set(key, value)
             }
         })
@@ -28,9 +28,9 @@ nodeMain(system: NodeSystem) {
                 let headerData = buffer->subarray(0, headerEnd)->toString()
                 let headers = parseHeaders(headerData)
                 
-                if(headers.get("sec-fetch-mode") === "navigate") {
+                if(headers.hasOwn("sec-fetch-user")) {
                     isHttpNavigateRequest = True
-                    Js->console->log("Detected HTTP request with Sec-Fetch-Mode: navigate")
+                    Js->console->log("Detected HTTP request with Sec-Fetch-User")
                 }
                 
                 mutable targetSocket = Js.undefined()
