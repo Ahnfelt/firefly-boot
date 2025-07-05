@@ -54,6 +54,6 @@ nodeMain(system: NodeSystem) {
     })
     
     proxyServer->listen(8081, Js->{
-        Js->console->log("Proxy server running on port 8080")
+        Js->console->log("Proxy server running on port 8081")
     })
 }
