@@ -28,7 +28,7 @@ nodeMain(system: NodeSystem) {
                 let headerData = buffer->subarray(0, headerEnd)->toString()
                 let headers = parseHeaders(headerData)
                 
-                if(headers.hasOwn("sec-fetch-user")) {
+                if(headers.get("sec-fetch-user") === "?1") {
                     isHttpNavigateRequest = True
                     Js->console->log("Detected HTTP request with Sec-Fetch-User")
                 }
