@@ -63,7 +63,7 @@ extend self: TcpServer {
                 }
             })
             Js.awaitCancellablePromise {resolve, reject, cleanup => 
-                self.jsValue->on("close", Js->{jsError => 
+                self.jsValue->on("close", Js->{
                     resolve(Unit)
                 })
                 self.jsValue->on("error", Js->{jsError => 
