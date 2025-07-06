@@ -1,0 +1,86 @@
+capability TcpServer(
+    system: NodeSystem
+    jsValue: JsValue
+    host: Option[String]
+    port: Option[Int]
+    path: Option[String]
+    backlog: Int
+    exclusive: Bool
+    ipv6Only: Bool
+    reusePort: Bool
+    readableAll: Bool
+    writeableAll: Bool
+)
+capability TcpSocket(jsValue: JsValue)
+
+newServer(
+    system: NodeSystem
+    host: Option[String] = None
+    port: Option[Int] = None
+    path: Option[String] = None
+    exclusive: Bool = False
+    allowHalfOpen: Bool = False 
+    highWaterMark: Int = 65536
+    keepAlive: Bool = False
+    noDelay: Bool = False
+    backlog: Int = 511
+    ipv6Only: Bool = False
+    reusePort: Bool = False
+    readableAll: Bool = False
+    writeableAll: Bool = False
+): TcpServer {
+    let net = Js.import("node:net")
+    let jsValue = net->createServer(Js->(
+        allowHalfOpen = allowHalfOpen
+        highWaterMark = highWaterMark
+        keepAlive = keepAlive
+        noDelay = noDelay
+    ))
+    TcpServer(system, jsValue, host, port, path, backlog, exclusive, ipv6Only, reusePort, readableAll, writeableAll)
+}
+
+extend self: TcpServer {
+    
+    listen(body: TcpSocket => Unit) {
+        Js.withSignal {signal =>
+            self.jsValue->listen(Js->(
+                host = Js.orUndefined(self.host)
+                port = Js.orUndefined(self.port)
+                path = Js.orUndefined(self.path)
+                backlog = self.backlog
+                exclusive = self.exclusive
+                ipv6Only = self.ipv6Only
+                reusePort = self.reusePort
+                readableAll = self.readableAll
+                writeableAll = self.writeableAll
+                signal = signal
+            ))
+            self.jsValue->on("connection", Js->{jsSocket =>
+                try {
+                    body(TcpSocket(jsSocket)) // What to do if this throws?
+                } finally {
+                    jsSocket->destroySoon()
+                }
+            })
+            Js.awaitCancellablePromise {resolve, reject, cleanup => 
+                self.jsValue->on("close", Js->{jsError => 
+                    resolve(Unit)
+                })
+                self.jsValue->on("error", Js->{jsError => 
+                    reject(jsError?)
+                })
+            }
+        }
+    }
+    
+    close() {
+        Js.await(self.jsValue->close())
+    }
+    
+}
+
+nodeMain(system: NodeSystem) {
+    newServer(system, port = Some(8080)).listen {connection =>
+        system.writeLine("Connected!")
+    }
+}
