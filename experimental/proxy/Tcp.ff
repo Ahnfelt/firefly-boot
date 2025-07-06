@@ -80,7 +80,7 @@ extend self: TcpServer {
 }
 
 nodeMain(system: NodeSystem) {
-    newServer(system, port = Some(8080)).listen {connection =>
+    newServer(system, port = Some(8080)).listen {socket =>
         system.writeLine("Connected!")
     }
 }
