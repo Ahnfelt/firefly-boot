@@ -1,3 +1,5 @@
+import Tcp
+
 capability TcpServer(
     system: NodeSystem
     jsValue: JsValue
@@ -11,7 +13,19 @@ capability TcpServer(
     readableAll: Bool
     writeableAll: Bool
 )
-capability TcpSocket(jsValue: JsValue)
+
+capability TcpSocket(system: NodeSystem, jsValue: JsValue)
+
+new(
+    system: NodeSystem
+    port: Int // TODO
+): TcpSocket {
+    let net = Js.import("node:net")
+    let jsValue = net->createConnection(Js->(
+        port = port
+    ))
+    TcpSocket(system, jsValue)    
+}
 
 newServer(
     system: NodeSystem
@@ -57,7 +71,7 @@ extend self: TcpServer {
             ))
             self.jsValue->on("connection", Js->{jsSocket =>
                 try {
-                    body(TcpSocket(jsSocket)) // What to do if this throws?
+                    body(TcpSocket(self.system, jsSocket)) // What to do if this throws?
                 } finally {
                     jsSocket->destroySoon()
                 }
@@ -79,8 +93,50 @@ extend self: TcpServer {
     
 }
 
+extend self: TcpSocket {
+    
+    readStream(): Stream[Buffer] {
+        Path.internalReadStream({self.jsValue}, close = False)
+    }
+    
+    writeStream(stream: Stream[Buffer]) {
+        stream.each {self.writeBuffer(_)}
+    }
+
+    writeBuffer(buffer: Buffer): Unit {
+        if(!self.jsValue->write(Js->Uint8Array->(buffer!->buffer, buffer!->byteOffset, buffer!->byteLength))?) {
+            Js.withSignal {signal =>
+                Js.await(Js->Promise->(Js->{resolve, reject =>
+                    let jsDoReject = Js->{_ => reject->callValue1(signal->reason?)}
+                    signal->addEventListener("abort", jsDoReject)
+                    self.jsValue->once("drain", Js->{
+                        signal->removeEventListener("abort", jsDoReject)
+                        resolve.callValue0()
+                    })
+                }))
+            }
+        }
+    }
+    
+    writeText(text: String): Unit {
+        self.writeBuffer(text.toBuffer())
+    }
+
+    writeLine(text: String): Unit {
+        self.writeText(text + "\n")
+    }
+
+}
+
 nodeMain(system: NodeSystem) {
-    newServer(system, port = Some(8080)).listen {socket =>
+    let targetSocket = Tcp.new(system, 8080)
+    Tcp.newServer(system, port = Some(8081)).listen {socket =>
         system.writeLine("Connected!")
+        system.mainTask().all([
+            {targetSocket.writeStream(socket.readStream())}
+            {socket.writeStream(targetSocket.readStream())}
+        ])
     }
 }
+
+

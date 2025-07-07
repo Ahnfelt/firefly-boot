@@ -299,7 +299,7 @@ extend self: PathEntry {
 
 }
 
-internalReadStream(createReadStream: () => JsValue): Stream[Buffer] {
+internalReadStream(createReadStream: () => JsValue, close: Bool = True): Stream[Buffer] {
     mutable readable = None
     mutable seenError = Js.null()
     let emptyResolve = {}
@@ -357,7 +357,7 @@ internalReadStream(createReadStream: () => JsValue): Stream[Buffer] {
         }
         go()
     } {
-        readable.each {_->destroy()}
+        if(close) {readable.each {_->destroy()}}
     }
 }
 
