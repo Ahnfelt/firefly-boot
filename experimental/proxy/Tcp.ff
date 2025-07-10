@@ -69,14 +69,20 @@ extend self: TcpServer {
                 writeableAll = self.writeableAll
                 signal = signal
             ))
-            self.jsValue->on("connection", Js->{jsSocket =>
-                try {
-                    body(TcpSocket(self.system, jsSocket)) // What to do if this throws?
-                } finally {
-                    jsSocket->destroySoon()
-                }
-            })
             Js.awaitCancellablePromise {resolve, reject, cleanup => 
+                self.jsValue->on("connection", Js->{jsSocket =>
+                    jsSocket->on("error", Js->{jsError => 
+                        jsSocket->destroySoon()
+                        reject(jsError?)
+                    })
+                    try {
+                        body(TcpSocket(self.system, jsSocket))
+                    } tryFinally {
+                        jsSocket->destroySoon()
+                    } catchAny {error =>
+                        reject(error)
+                    }
+                })
                 self.jsValue->on("close", Js->{
                     resolve(Unit)
                 })
@@ -133,10 +139,24 @@ nodeMain(system: NodeSystem) {
     Tcp.newServer(system, port = Some(8081)).listen {socket =>
         system.writeLine("Connected!")
         system.mainTask().all([
-            {targetSocket.writeStream(socket.readStream())}
-            {socket.writeStream(targetSocket.readStream())}
+            {
+                try {
+                    targetSocket.writeStream(socket.readStream())
+                } catchAny {error =>
+                    
+                }
+            }
+            {
+                try {
+                    socket.writeStream(targetSocket.readStream())
+                } catchAny {error =>
+                    
+                }
+            }
         ])
+        system.writeLine("Disconnected!")
     }
+    system.writeLine("Done!")
 }
 
 
