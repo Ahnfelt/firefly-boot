@@ -1,0 +1,11 @@
+data Runner(
+    state: RunnerState
+    changedSinceCompilationStarted: Set[String]
+)
+
+data RunnerState {
+    Compiling
+    CompileError(output: String)
+    AppRunning(output: String)
+    AppCrashed(output: String)
+}
