@@ -11,6 +11,7 @@ import Inference
 import ModuleCache
 import LspHook
 import DependencyLock
+import ModuleCache from ff:compiler
 
 data MainCommand {
     BootstrapCommand
@@ -33,6 +34,7 @@ main(system: NodeSystem): Unit {
         mainPackagePair: PackagePair
         emitTarget: EmitTarget
         resolvedDependencies: ResolvedDependencies
+        moduleCache: ModuleCache = ModuleCache.new(0)
     ): ModuleKey {
         let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
             resolvedDependencies.packagePaths
@@ -60,7 +62,7 @@ main(system: NodeSystem): Unit {
             tempPath = system.path(".firefly").slash("temporary")
             jsOutputPath = system.path(".firefly").path("output").path(targetName)
             printMeasurements = False
-            moduleCache = ModuleCache.new(0)
+            moduleCache = moduleCache
         )
         moduleKey
     }
@@ -81,17 +83,27 @@ main(system: NodeSystem): Unit {
             }
 
         | DevelopCommand(mainFile, arguments) =>
-            let resolvedDependencies = Dependencies.process(
-                system.httpClient()
-                DependencyLock.new(system.mainTask())
-                system.path(mainFile)
-            )
             prepareFireflyDirectory(system.path("."))
-            let mainPath = system.path(mainFile)
-            let moduleKey = buildScript(mainPath, resolvedDependencies.mainPackagePair, EmitNode, resolvedDependencies)
-            if(!importAndRun(system, fireflyPath, "node", moduleKey, arguments)) {
-                let at = Location(system.path(mainFile).absolute(), 1, 1)
-                throw(CompileError(at, "This module does not contain a 'nodeMain' function"))
+            let moduleCache = ModuleCache.new(0)
+            // Move to DevelopMode
+            // Protect DevelopMode data with a mutex and condition variable and share it with file listener and proxy
+            // Start file listener task
+            // Start Proxy in task
+            while {True} {
+                // Compile or wait for proxy signal
+                let resolvedDependencies = Dependencies.process(
+                    system.httpClient()
+                    DependencyLock.new(system.mainTask())
+                    system.path(mainFile)
+                )
+                let mainPath = system.path(mainFile)
+                let moduleKey = buildScript(mainPath, resolvedDependencies.mainPackagePair, EmitNode, resolvedDependencies, moduleCache)
+                // Start in separate task + process
+                if(!importAndRun(system, fireflyPath, "node", moduleKey, arguments)) {
+                    let at = Location(system.path(mainFile).absolute(), 1, 1)
+                    throw(CompileError(at, "This module does not contain a 'nodeMain' function"))
+                }
+                // Wait for restart condition from proxy
             }
             
         | BrowserCommand(mainFile) =>
