@@ -15,6 +15,7 @@ import DependencyLock
 data MainCommand {
     BootstrapCommand
     RunCommand(mainPath: String, argument: List[String])
+    DevelopCommand(mainPath: String, argument: List[String])
     BrowserCommand(mainPath: String)
     BuildCommand(mainPath: String)
     CheckCommand(filePath: String)
@@ -79,6 +80,20 @@ main(system: NodeSystem): Unit {
                 throw(CompileError(at, "This module does not contain a 'nodeMain' function"))
             }
 
+        | DevelopCommand(mainFile, arguments) =>
+            let resolvedDependencies = Dependencies.process(
+                system.httpClient()
+                DependencyLock.new(system.mainTask())
+                system.path(mainFile)
+            )
+            prepareFireflyDirectory(system.path("."))
+            let mainPath = system.path(mainFile)
+            let moduleKey = buildScript(mainPath, resolvedDependencies.mainPackagePair, EmitNode, resolvedDependencies)
+            if(!importAndRun(system, fireflyPath, "node", moduleKey, arguments)) {
+                let at = Location(system.path(mainFile).absolute(), 1, 1)
+                throw(CompileError(at, "This module does not contain a 'nodeMain' function"))
+            }
+            
         | BrowserCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(
                 system.httpClient()
@@ -184,12 +199,13 @@ usageString = """
 usage: firefly <main-file> [<main-arguments>] | <command> [<command-arguments>]
 
 These are the commands:
-   run <main-file> [<main-arguments>]    Run the main file with the provided arguments
-   browser <main-file>                   Compile the main file for the browser
-   build <main-file>                     Build the main file
-   check <firefly-file>                  Check the firefly source file for errors
-   symbols <out-file> <firefly-file>     Print a .tsv with the symbols of a firefly source file
-   bootstrap                             Bootstrap the compiler
+   run <main-file> [<main-arguments>]       Run the main file with the provided arguments
+   develop <main-file> [<main-arguments>]   Develop the main file with the provided arguments
+   browser <main-file>                      Compile the main file for the browser
+   build <main-file>                        Build the main file
+   check <firefly-file>                     Check the firefly source file for errors
+   symbols <out-file> <firefly-file>        Print a .tsv with the symbols of a firefly source file
+   bootstrap                                Bootstrap the compiler
 """
 
 parseCommandLine(arguments: List[String]): MainCommand {
@@ -201,6 +217,14 @@ parseCommandLine(arguments: List[String]): MainCommand {
                 RunCommand(mainFile, mainArguments)
             | _ => throw(CommandLineError(
                 "You must specify a Firefly file (.ff) as first argument to run." + usageString
+            ))
+        }
+    | ["develop", ...runArguments] =>
+        runArguments.{
+            | [mainFile, ...mainArguments] {mainFile.removeLast(".ff") | Some(mainName)} =>
+                DevelopCommand(mainFile, mainArguments)
+            | _ => throw(CommandLineError(
+                "You must specify a Firefly file (.ff) as first argument to develop." + usageString
             ))
         }
     | ["browser", ...browserArguments] =>

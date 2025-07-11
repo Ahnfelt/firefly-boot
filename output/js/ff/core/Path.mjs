@@ -104,7 +104,7 @@ return {absolutePath_};
 // type PathEntry
 
 
-export function internalReadStream_(createReadStream_) {
+export function internalReadStream_(createReadStream_, close_ = true) {
 let readable_ = ff_core_Option.None();
 let seenError_ = null;
 const emptyResolve_ = (() => {
@@ -178,11 +178,13 @@ return
 }
 return go_()
 }), (() => {
+if(close_) {
 {
 const if_o = readable_
 if(if_o.Some) {
 const _w1 = if_o.value_;
 _w1.destroy()
+}
 }
 }
 }))
@@ -221,7 +223,7 @@ return resolve_()
 }
 }
 
-export async function internalReadStream_$(createReadStream_, $task) {
+export async function internalReadStream_$(createReadStream_, close_ = true, $task) {
 let readable_ = ff_core_Option.None();
 let seenError_ = null;
 const emptyResolve_ = (() => {
@@ -295,11 +297,13 @@ return
 }
 return (await go_$($task))
 }), (async ($task) => {
+if(close_) {
 {
 const if_o = readable_
 if(if_o.Some) {
 const _w1 = if_o.value_;
 _w1.destroy()
+}
 }
 }
 }))
@@ -612,7 +616,7 @@ export function Path_readStream(self_) {
 const fs_ = import$0;
 return ff_core_Path.internalReadStream_((() => {
 return fs_.createReadStream(self_.absolutePath_)
-}))
+}), true)
 }
 
 export function Path_writeStream(self_, stream_, createOnly_ = false) {
@@ -926,7 +930,7 @@ export async function Path_readStream$(self_, $task) {
 const fs_ = import$0;
 return (await ff_core_Path.internalReadStream_$((async ($task) => {
 return fs_.createReadStream(self_.absolutePath_)
-}), $task))
+}), true, $task))
 }
 
 export async function Path_writeStream$(self_, stream_, createOnly_ = false, $task) {

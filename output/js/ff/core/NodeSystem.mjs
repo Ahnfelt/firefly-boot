@@ -213,7 +213,7 @@ return process.exit(exitCode_)
 export function NodeSystem_readStream(self_) {
 return ff_core_Path.internalReadStream_((() => {
 return process.stdin
-}))
+}), true)
 }
 
 export function NodeSystem_writeBuffer(self_, buffer_) {
@@ -396,7 +396,7 @@ return process.exit(exitCode_)
 export async function NodeSystem_readStream$(self_, $task) {
 return (await ff_core_Path.internalReadStream_$((async ($task) => {
 return process.stdin
-}), $task))
+}), true, $task))
 }
 
 export async function NodeSystem_writeBuffer$(self_, buffer_, $task) {

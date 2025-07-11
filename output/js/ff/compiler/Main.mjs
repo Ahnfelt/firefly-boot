@@ -129,6 +129,9 @@ return BootstrapCommand$;
 export function RunCommand(mainPath_, argument_) {
 return {RunCommand: true, mainPath_, argument_};
 }
+export function DevelopCommand(mainPath_, argument_) {
+return {DevelopCommand: true, mainPath_, argument_};
+}
 export function BrowserCommand(mainPath_) {
 return {BrowserCommand: true, mainPath_};
 }
@@ -147,7 +150,7 @@ export function CommandLineError(problem_) {
 return {problem_};
 }
 
-export const usageString_ = "\r\nusage: firefly <main-file> [<main-arguments>] | <command> [<command-arguments>]\r\n\r\nThese are the commands:\r\n   run <main-file> [<main-arguments>]    Run the main file with the provided arguments\r\n   browser <main-file>                   Compile the main file for the browser\r\n   build <main-file>                     Build the main file\r\n   check <firefly-file>                  Check the firefly source file for errors\r\n   symbols <out-file> <firefly-file>     Print a .tsv with the symbols of a firefly source file\r\n   bootstrap                             Bootstrap the compiler\r\n";
+export const usageString_ = "\r\nusage: firefly <main-file> [<main-arguments>] | <command> [<command-arguments>]\r\n\r\nThese are the commands:\r\n   run <main-file> [<main-arguments>]       Run the main file with the provided arguments\r\n   develop <main-file> [<main-arguments>]   Develop the main file with the provided arguments\r\n   browser <main-file>                      Compile the main file for the browser\r\n   build <main-file>                        Build the main file\r\n   check <firefly-file>                     Check the firefly source file for errors\r\n   symbols <out-file> <firefly-file>        Print a .tsv with the symbols of a firefly source file\r\n   bootstrap                                Bootstrap the compiler\r\n";
 
 export function main_(system_) {
 const fireflyPath_ = ff_compiler_Main.detectFireflyPath_(system_);
@@ -183,6 +186,19 @@ return moduleKey_
 function runCommand_(command_) {
 const command_a = command_;
 if(command_a.RunCommand) {
+const mainFile_ = command_a.mainPath_;
+const arguments_ = command_a.argument_;
+const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), ff_compiler_DependencyLock.new_(ff_core_NodeSystem.NodeSystem_mainTask(system_)), ff_core_NodeSystem.NodeSystem_path(system_, mainFile_));
+ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_path(system_, "."));
+const mainPath_ = ff_core_NodeSystem.NodeSystem_path(system_, mainFile_);
+const moduleKey_ = buildScript_(mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_);
+if((!ff_compiler_Main.importAndRun_(system_, fireflyPath_, "node", moduleKey_, arguments_))) {
+const at_ = ff_compiler_Syntax.Location(ff_core_Path.Path_absolute(ff_core_NodeSystem.NodeSystem_path(system_, mainFile_)), 1, 1);
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, "This module does not contain a 'nodeMain' function"), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+}
+return
+}
+if(command_a.DevelopCommand) {
 const mainFile_ = command_a.mainPath_;
 const arguments_ = command_a.argument_;
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), ff_compiler_DependencyLock.new_(ff_core_NodeSystem.NodeSystem_mainTask(system_)), ff_core_NodeSystem.NodeSystem_path(system_, mainFile_));
@@ -321,6 +337,25 @@ return ff_compiler_Main.RunCommand(mainFile_, mainArguments_)
 }
 {
 throw ff_core_Js.initializeError_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as first argument to run." + ff_compiler_Main.usageString_)), new Error(), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
+}
+}
+return
+}
+if(arguments_a.length >= 1 && arguments_a[0] === "develop") {
+const runArguments_ = arguments_a.slice(1);
+{
+const _1 = runArguments_;
+if(_1.length >= 1) {
+const mainFile_ = _1[0];
+const mainArguments_ = _1.slice(1);
+const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
+if(_guard1.Some) {
+const mainName_ = _guard1.value_;
+return ff_compiler_Main.DevelopCommand(mainFile_, mainArguments_)
+}
+}
+{
+throw ff_core_Js.initializeError_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as first argument to develop." + ff_compiler_Main.usageString_)), new Error(), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 }
 return
@@ -604,6 +639,19 @@ throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, "This mod
 }
 return
 }
+if(command_a.DevelopCommand) {
+const mainFile_ = command_a.mainPath_;
+const arguments_ = command_a.argument_;
+const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (await ff_compiler_DependencyLock.new_$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task)), (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task));
+(await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
+const mainPath_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task));
+const moduleKey_ = (await buildScript_$(mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, $task));
+if((!(await ff_compiler_Main.importAndRun_$(system_, fireflyPath_, "node", moduleKey_, arguments_, $task)))) {
+const at_ = ff_compiler_Syntax.Location((await ff_core_Path.Path_absolute$((await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task)), 1, 1);
+throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, "This module does not contain a 'nodeMain' function"), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+}
+return
+}
 if(command_a.BrowserCommand) {
 const mainFile_ = command_a.mainPath_;
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (await ff_compiler_DependencyLock.new_$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task)), (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task));
@@ -730,6 +778,25 @@ return ff_compiler_Main.RunCommand(mainFile_, mainArguments_)
 }
 {
 throw ff_core_Js.initializeError_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as first argument to run." + ff_compiler_Main.usageString_)), new Error(), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
+}
+}
+return
+}
+if(arguments_a.length >= 1 && arguments_a[0] === "develop") {
+const runArguments_ = arguments_a.slice(1);
+{
+const _1 = runArguments_;
+if(_1.length >= 1) {
+const mainFile_ = _1[0];
+const mainArguments_ = _1.slice(1);
+const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
+if(_guard1.Some) {
+const mainName_ = _guard1.value_;
+return ff_compiler_Main.DevelopCommand(mainFile_, mainArguments_)
+}
+}
+{
+throw ff_core_Js.initializeError_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as first argument to develop." + ff_compiler_Main.usageString_)), new Error(), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 }
 return
@@ -996,6 +1063,10 @@ if(value_a.RunCommand) {
 const z_ = value_a;
 return ((((("RunCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.argument_)) + ")")
 }
+if(value_a.DevelopCommand) {
+const z_ = value_a;
+return ((((("DevelopCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.argument_)) + ")")
+}
 if(value_a.BrowserCommand) {
 const z_ = value_a;
 return ((("BrowserCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ")")
@@ -1022,6 +1093,10 @@ return "BootstrapCommand"
 if(value_a.RunCommand) {
 const z_ = value_a;
 return ((((("RunCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.argument_)) + ")")
+}
+if(value_a.DevelopCommand) {
+const z_ = value_a;
+return ((((("DevelopCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.argument_)) + ")")
 }
 if(value_a.BrowserCommand) {
 const z_ = value_a;
@@ -1071,6 +1146,11 @@ const x_ = x_a;
 const y_ = y_a;
 return ((x_.mainPath_ === y_.mainPath_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.argument_, y_.argument_))
 }
+if(x_a.DevelopCommand && y_a.DevelopCommand) {
+const x_ = x_a;
+const y_ = y_a;
+return ((x_.mainPath_ === y_.mainPath_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.argument_, y_.argument_))
+}
 if(x_a.BrowserCommand && y_a.BrowserCommand) {
 const x_ = x_a;
 const y_ = y_a;
@@ -1102,6 +1182,11 @@ if((x_ === y_)) {
 return true
 }
 if(x_a.RunCommand && y_a.RunCommand) {
+const x_ = x_a;
+const y_ = y_a;
+return ((x_.mainPath_ === y_.mainPath_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.argument_, y_.argument_))
+}
+if(x_a.DevelopCommand && y_a.DevelopCommand) {
 const x_ = x_a;
 const y_ = y_a;
 return ((x_.mainPath_ === y_.mainPath_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.argument_, y_.argument_))
@@ -1178,87 +1263,7 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-if(x_a.BrowserCommand && y_a.BrowserCommand) {
-const x_ = x_a;
-const y_ = y_a;
-const mainPathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.mainPath_, y_.mainPath_);
-if((mainPathOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return mainPathOrdering_
-} else {
-return ff_core_Ordering.OrderingSame()
-}
-return
-}
-if(x_a.BuildCommand && y_a.BuildCommand) {
-const x_ = x_a;
-const y_ = y_a;
-const mainPathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.mainPath_, y_.mainPath_);
-if((mainPathOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return mainPathOrdering_
-} else {
-return ff_core_Ordering.OrderingSame()
-}
-return
-}
-if(x_a.CheckCommand && y_a.CheckCommand) {
-const x_ = x_a;
-const y_ = y_a;
-const filePathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.filePath_, y_.filePath_);
-if((filePathOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return filePathOrdering_
-} else {
-return ff_core_Ordering.OrderingSame()
-}
-return
-}
-if(x_a.SymbolsCommand && y_a.SymbolsCommand) {
-const x_ = x_a;
-const y_ = y_a;
-const outPathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.outPath_, y_.outPath_);
-if((outPathOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return outPathOrdering_
-} else {
-const filePathsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.filePaths_, y_.filePaths_);
-if((filePathsOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return filePathsOrdering_
-} else {
-return ff_core_Ordering.OrderingSame()
-}
-}
-return
-}
-{
-function number_(z_) {
-const z_a = z_;
-if(z_a.BootstrapCommand) {
-return 0
-}
-if(z_a.RunCommand) {
-return 1
-}
-if(z_a.BrowserCommand) {
-return 2
-}
-if(z_a.BuildCommand) {
-return 3
-}
-if(z_a.CheckCommand) {
-return 4
-}
-{
-return 5
-}
-}
-return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
-}
-},
-async compare_$(x_, y_, $task) {
-const x_a = x_;
-const y_a = y_;
-if((x_ === y_)) {
-return ff_core_Ordering.OrderingSame()
-}
-if(x_a.RunCommand && y_a.RunCommand) {
+if(x_a.DevelopCommand && y_a.DevelopCommand) {
 const x_ = x_a;
 const y_ = y_a;
 const mainPathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.mainPath_, y_.mainPath_);
@@ -1332,17 +1337,135 @@ return 0
 if(z_a.RunCommand) {
 return 1
 }
-if(z_a.BrowserCommand) {
+if(z_a.DevelopCommand) {
 return 2
 }
-if(z_a.BuildCommand) {
+if(z_a.BrowserCommand) {
 return 3
 }
-if(z_a.CheckCommand) {
+if(z_a.BuildCommand) {
 return 4
 }
-{
+if(z_a.CheckCommand) {
 return 5
+}
+{
+return 6
+}
+}
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
+}
+},
+async compare_$(x_, y_, $task) {
+const x_a = x_;
+const y_a = y_;
+if((x_ === y_)) {
+return ff_core_Ordering.OrderingSame()
+}
+if(x_a.RunCommand && y_a.RunCommand) {
+const x_ = x_a;
+const y_ = y_a;
+const mainPathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.mainPath_, y_.mainPath_);
+if((mainPathOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return mainPathOrdering_
+} else {
+const argumentOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.argument_, y_.argument_);
+if((argumentOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return argumentOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+return
+}
+if(x_a.DevelopCommand && y_a.DevelopCommand) {
+const x_ = x_a;
+const y_ = y_a;
+const mainPathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.mainPath_, y_.mainPath_);
+if((mainPathOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return mainPathOrdering_
+} else {
+const argumentOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.argument_, y_.argument_);
+if((argumentOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return argumentOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+return
+}
+if(x_a.BrowserCommand && y_a.BrowserCommand) {
+const x_ = x_a;
+const y_ = y_a;
+const mainPathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.mainPath_, y_.mainPath_);
+if((mainPathOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return mainPathOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+return
+}
+if(x_a.BuildCommand && y_a.BuildCommand) {
+const x_ = x_a;
+const y_ = y_a;
+const mainPathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.mainPath_, y_.mainPath_);
+if((mainPathOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return mainPathOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+return
+}
+if(x_a.CheckCommand && y_a.CheckCommand) {
+const x_ = x_a;
+const y_ = y_a;
+const filePathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.filePath_, y_.filePath_);
+if((filePathOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return filePathOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+return
+}
+if(x_a.SymbolsCommand && y_a.SymbolsCommand) {
+const x_ = x_a;
+const y_ = y_a;
+const outPathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.outPath_, y_.outPath_);
+if((outPathOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return outPathOrdering_
+} else {
+const filePathsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.filePaths_, y_.filePaths_);
+if((filePathsOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return filePathsOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+return
+}
+{
+function number_(z_) {
+const z_a = z_;
+if(z_a.BootstrapCommand) {
+return 0
+}
+if(z_a.RunCommand) {
+return 1
+}
+if(z_a.DevelopCommand) {
+return 2
+}
+if(z_a.BrowserCommand) {
+return 3
+}
+if(z_a.BuildCommand) {
+return 4
+}
+if(z_a.CheckCommand) {
+return 5
+}
+{
+return 6
 }
 }
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
@@ -1407,11 +1530,21 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.argument_)
 return
 }
-if(value_a.BrowserCommand) {
+if(value_a.DevelopCommand) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2);
+serialization_.offset_ += 1;
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.argument_)
+return
+}
+if(value_a.BrowserCommand) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 3);
 serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_)
 return
@@ -1420,7 +1553,7 @@ if(value_a.BuildCommand) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 3);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 4);
 serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_)
 return
@@ -1429,7 +1562,7 @@ if(value_a.CheckCommand) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 4);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 5);
 serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.filePath_)
 return
@@ -1438,7 +1571,7 @@ return
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 5);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 6);
 serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.outPath_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.filePaths_)
@@ -1460,17 +1593,21 @@ return ff_compiler_Main.RunCommand(ff_core_Serializable.ff_core_Serializable_Ser
 }
 if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-return ff_compiler_Main.BrowserCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+return ff_compiler_Main.DevelopCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 }
 if(_1 === 3) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
-return ff_compiler_Main.BuildCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
+return ff_compiler_Main.BrowserCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 }
 if(_1 === 4) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
-return ff_compiler_Main.CheckCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+return ff_compiler_Main.BuildCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 }
 if(_1 === 5) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
+return ff_compiler_Main.CheckCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+}
+if(_1 === 6) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 return ff_compiler_Main.SymbolsCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 }
@@ -1500,11 +1637,21 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.argument_)
 return
 }
-if(value_a.BrowserCommand) {
+if(value_a.DevelopCommand) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2);
+serialization_.offset_ += 1;
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.argument_)
+return
+}
+if(value_a.BrowserCommand) {
+const v_ = value_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
+ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 3);
 serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_)
 return
@@ -1513,7 +1660,7 @@ if(value_a.BuildCommand) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 3);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 4);
 serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_)
 return
@@ -1522,7 +1669,7 @@ if(value_a.CheckCommand) {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 4);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 5);
 serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.filePath_)
 return
@@ -1531,7 +1678,7 @@ return
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 5);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 6);
 serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.outPath_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.filePaths_)
@@ -1553,17 +1700,21 @@ return ff_compiler_Main.RunCommand(ff_core_Serializable.ff_core_Serializable_Ser
 }
 if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-return ff_compiler_Main.BrowserCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+return ff_compiler_Main.DevelopCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 }
 if(_1 === 3) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
-return ff_compiler_Main.BuildCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
+return ff_compiler_Main.BrowserCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 }
 if(_1 === 4) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
-return ff_compiler_Main.CheckCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+return ff_compiler_Main.BuildCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 }
 if(_1 === 5) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
+return ff_compiler_Main.CheckCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+}
+if(_1 === 6) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 return ff_compiler_Main.SymbolsCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 }
