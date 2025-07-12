@@ -121,12 +121,12 @@ return CompilingState$;
 export function CompileErrorState(output_) {
 return {CompileErrorState: true, output_};
 }
-const AppRunningState$ = {AppRunningState: true};
-export function AppRunningState() {
-return AppRunningState$;
+const ApplicationRunningState$ = {ApplicationRunningState: true};
+export function ApplicationRunningState() {
+return ApplicationRunningState$;
 }
-export function AppCrashedState(output_) {
-return {AppCrashedState: true, output_};
+export function ApplicationCrashedState(output_) {
+return {ApplicationCrashedState: true, output_};
 }
 
 export const waiterHtml_ = "<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <meta http-equiv=\"refresh\" content=\"1\">\r\n    <title>Firefly develop mode</title>\r\n</head>\r\n<body>\r\n    <h1>Firefly develop mode</h1>\r\n    <p>[STATUS]</p>\r\n</body>\r\n</html>\r\n";
@@ -154,7 +154,7 @@ return
 const key_ = _1.value_;
 ff_core_Log.debug_("Running...");
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
-runner_.state_ = ff_compiler_DevelopMode.AppRunningState()
+runner_.state_ = ff_compiler_DevelopMode.ApplicationRunningState()
 }));
 return ff_compiler_DevelopMode.startApp_(system_, fireflyPath_, key_, mainFile_, arguments_, ((exitCode_, standardOut_, standardError_) => {
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
@@ -163,8 +163,8 @@ if((exitCode_ !== (-1))) {
 ff_core_Log.debug_(((((("Exited with code: " + exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_));
 do {
 const _1 = runner_.state_;
-if(_1.AppRunningState && (taskIteration_ === iteration_)) {
-runner_.state_ = ff_compiler_DevelopMode.AppCrashedState(((((("Exited with code: " + exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_))
+if(_1.ApplicationRunningState && (taskIteration_ === iteration_)) {
+runner_.state_ = ff_compiler_DevelopMode.ApplicationCrashedState(((((("Exited with code: " + exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_))
 break
 }
 {
@@ -327,7 +327,7 @@ return true
 } else {
 {
 const _1 = runner_.state_;
-if(_1.AppRunningState) {
+if(_1.ApplicationRunningState) {
 return runner_.recompile_
 }
 {
@@ -354,12 +354,12 @@ const status_ = (((_1) => {
 if(runner_.recompile_) {
 return "Restarting..."
 }
-if(_1.AppCrashedState) {
+if(_1.ApplicationCrashedState) {
 const output_ = _1.output_;
-return "App crashed!"
+return "Application crashed!"
 }
-if(_1.AppRunningState) {
-return "Starting app..."
+if(_1.ApplicationRunningState) {
+return "Starting application..."
 }
 if(_1.CompileErrorState) {
 const output_ = _1.output_;
@@ -435,7 +435,7 @@ return
 const key_ = _1.value_;
 ff_core_Log.debug_("Running...");
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
-runner_.state_ = ff_compiler_DevelopMode.AppRunningState()
+runner_.state_ = ff_compiler_DevelopMode.ApplicationRunningState()
 }), $task));
 return (await ff_compiler_DevelopMode.startApp_$(system_, fireflyPath_, key_, mainFile_, arguments_, (async (exitCode_, standardOut_, standardError_, $task) => {
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
@@ -444,8 +444,8 @@ if((exitCode_ !== (-1))) {
 ff_core_Log.debug_(((((("Exited with code: " + exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_));
 do {
 const _1 = runner_.state_;
-if(_1.AppRunningState && (taskIteration_ === iteration_)) {
-runner_.state_ = ff_compiler_DevelopMode.AppCrashedState(((((("Exited with code: " + exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_))
+if(_1.ApplicationRunningState && (taskIteration_ === iteration_)) {
+runner_.state_ = ff_compiler_DevelopMode.ApplicationCrashedState(((((("Exited with code: " + exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_))
 break
 }
 {
@@ -608,7 +608,7 @@ return true
 } else {
 {
 const _1 = runner_.state_;
-if(_1.AppRunningState) {
+if(_1.ApplicationRunningState) {
 return runner_.recompile_
 }
 {
@@ -635,12 +635,12 @@ const status_ = (((_1) => {
 if(runner_.recompile_) {
 return "Restarting..."
 }
-if(_1.AppCrashedState) {
+if(_1.ApplicationCrashedState) {
 const output_ = _1.output_;
-return "App crashed!"
+return "Application crashed!"
 }
-if(_1.AppRunningState) {
-return "Starting app..."
+if(_1.ApplicationRunningState) {
+return "Starting application..."
 }
 if(_1.CompileErrorState) {
 const output_ = _1.output_;
@@ -713,13 +713,13 @@ if(value_a.CompileErrorState) {
 const z_ = value_a;
 return ((("CompileErrorState" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.output_)) + ")")
 }
-if(value_a.AppRunningState) {
+if(value_a.ApplicationRunningState) {
 const z_ = value_a;
-return "AppRunningState"
+return "ApplicationRunningState"
 }
 {
 const z_ = value_a;
-return ((("AppCrashedState" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.output_)) + ")")
+return ((("ApplicationCrashedState" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.output_)) + ")")
 }
 },
 async show_$(value_, $task) {
@@ -732,13 +732,13 @@ if(value_a.CompileErrorState) {
 const z_ = value_a;
 return ((("CompileErrorState" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.output_)) + ")")
 }
-if(value_a.AppRunningState) {
+if(value_a.ApplicationRunningState) {
 const z_ = value_a;
-return "AppRunningState"
+return "ApplicationRunningState"
 }
 {
 const z_ = value_a;
-return ((("AppCrashedState" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.output_)) + ")")
+return ((("ApplicationCrashedState" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.output_)) + ")")
 }
 },
 };
@@ -755,7 +755,7 @@ const x_ = x_a;
 const y_ = y_a;
 return (x_.output_ === y_.output_)
 }
-if(x_a.AppCrashedState && y_a.AppCrashedState) {
+if(x_a.ApplicationCrashedState && y_a.ApplicationCrashedState) {
 const x_ = x_a;
 const y_ = y_a;
 return (x_.output_ === y_.output_)
@@ -775,7 +775,7 @@ const x_ = x_a;
 const y_ = y_a;
 return (x_.output_ === y_.output_)
 }
-if(x_a.AppCrashedState && y_a.AppCrashedState) {
+if(x_a.ApplicationCrashedState && y_a.ApplicationCrashedState) {
 const x_ = x_a;
 const y_ = y_a;
 return (x_.output_ === y_.output_)
@@ -804,7 +804,7 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-if(x_a.AppCrashedState && y_a.AppCrashedState) {
+if(x_a.ApplicationCrashedState && y_a.ApplicationCrashedState) {
 const x_ = x_a;
 const y_ = y_a;
 const outputOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.output_, y_.output_);
@@ -824,7 +824,7 @@ return 0
 if(z_a.CompileErrorState) {
 return 1
 }
-if(z_a.AppRunningState) {
+if(z_a.ApplicationRunningState) {
 return 2
 }
 {
@@ -851,7 +851,7 @@ return ff_core_Ordering.OrderingSame()
 }
 return
 }
-if(x_a.AppCrashedState && y_a.AppCrashedState) {
+if(x_a.ApplicationCrashedState && y_a.ApplicationCrashedState) {
 const x_ = x_a;
 const y_ = y_a;
 const outputOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.output_, y_.output_);
@@ -871,7 +871,7 @@ return 0
 if(z_a.CompileErrorState) {
 return 1
 }
-if(z_a.AppRunningState) {
+if(z_a.ApplicationRunningState) {
 return 2
 }
 {
@@ -904,9 +904,9 @@ serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.output_)
 return
 }
-if(value_a.AppRunningState) {
+if(value_a.ApplicationRunningState) {
 const v_ = value_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 39), 0);
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 47), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2);
 serialization_.offset_ += 1
@@ -914,7 +914,7 @@ return
 }
 {
 const v_ = value_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 39), 0);
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 47), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 3);
 serialization_.offset_ += 1;
@@ -936,12 +936,12 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_DevelopMode.CompileErrorState(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 }
 if(_1 === 2) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 39), 0);
-return ff_compiler_DevelopMode.AppRunningState()
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 47), 0);
+return ff_compiler_DevelopMode.ApplicationRunningState()
 }
 if(_1 === 3) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 39), 0);
-return ff_compiler_DevelopMode.AppCrashedState(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 47), 0);
+return ff_compiler_DevelopMode.ApplicationCrashedState(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 }
 {
 throw ff_core_Js.initializeError_(ff_core_Serializable.DeserializationChecksumException(), new Error(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
@@ -968,9 +968,9 @@ serialization_.offset_ += 1;
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.output_)
 return
 }
-if(value_a.AppRunningState) {
+if(value_a.ApplicationRunningState) {
 const v_ = value_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 39), 0);
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 47), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2);
 serialization_.offset_ += 1
@@ -978,7 +978,7 @@ return
 }
 {
 const v_ = value_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 39), 0);
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 47), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 3);
 serialization_.offset_ += 1;
@@ -1000,12 +1000,12 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_DevelopMode.CompileErrorState(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 }
 if(_1 === 2) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 39), 0);
-return ff_compiler_DevelopMode.AppRunningState()
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 47), 0);
+return ff_compiler_DevelopMode.ApplicationRunningState()
 }
 if(_1 === 3) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 39), 0);
-return ff_compiler_DevelopMode.AppCrashedState(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 47), 0);
+return ff_compiler_DevelopMode.ApplicationCrashedState(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 }
 {
 throw ff_core_Js.initializeError_(ff_core_Serializable.DeserializationChecksumException(), new Error(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException, ff_core_Serializable.ff_core_Show_Show$ff_core_Serializable_DeserializationChecksumException)
