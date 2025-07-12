@@ -1,11 +1,44 @@
+import Main
+import ModuleCache
+import Dependencies
+import DependencyLock
+import Syntax
+import JsEmitter
+
 data Runner(
     state: RunnerState
     changedSinceCompilationStarted: Set[String]
 )
 
 data RunnerState {
-    Compiling
-    CompileError(output: String)
-    AppRunning(output: String)
-    AppCrashed(output: String)
+    CompilingState
+    CompileErrorState(output: String)
+    AppRunningState(output: String)
+    AppCrashedState(output: String)
+}
+
+run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[String]) {
+    Main.prepareFireflyDirectory(system.path("."))
+    let moduleCache = ModuleCache.new(0)
+    // Move to DevelopMode
+    // Protect DevelopMode data with a mutex and condition variable and share it with file listener and proxy
+    // Start file listener task
+    // Start Proxy in task
+    while {True} {
+        // Compile or wait for proxy signal
+        let resolvedDependencies = Dependencies.process(
+            system.httpClient()
+            DependencyLock.new(system.mainTask())
+            system.path(mainFile)
+        )
+        let mainPath = system.path(mainFile)
+        let moduleKey = Main.buildScript(system, mainPath, resolvedDependencies.mainPackagePair, EmitNode, resolvedDependencies, moduleCache)
+        // Start in separate task + process
+        if(!Main.importAndRun(system, fireflyPath, "node", moduleKey, arguments)) {
+            let at = Location(system.path(mainFile).absolute(), 1, 1)
+            throw(CompileError(at, "This module does not contain a 'nodeMain' function"))
+        }
+        // Wait for restart condition from proxy
+    }
+    
 }

@@ -11,7 +11,7 @@ import Inference
 import ModuleCache
 import LspHook
 import DependencyLock
-import ModuleCache from ff:compiler
+import DevelopMode
 
 data MainCommand {
     BootstrapCommand
@@ -29,44 +29,6 @@ main(system: NodeSystem): Unit {
 
     let fireflyPath = detectFireflyPath(system)
 
-    function buildScript(
-        mainPath: Path
-        mainPackagePair: PackagePair
-        emitTarget: EmitTarget
-        resolvedDependencies: ResolvedDependencies
-        moduleCache: ModuleCache = ModuleCache.new(0)
-    ): ModuleKey {
-        let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
-            resolvedDependencies.packagePaths
-        } else {
-            resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath.slash("core"))
-        }
-        let compilerModulePath = if(emitTarget != EmitBrowser && emitTarget != EmitExecutable) {
-            fireflyPath.slash("output").slash("js").slash("ff").slash("compiler/Builder.mjs")
-        }
-        let targetName = emitTarget.{
-            | EmitBuild => "build"
-            | EmitNode => "node"
-            | EmitBrowser => "browser"
-            | EmitExecutable => "executable"
-        }
-        let folders = mainPath.parent().grab().relativeListTo(fixedPackagePaths.grab(mainPackagePair))
-        let name = mainPath.base().removeLast(".ff").grab()
-        let moduleKey = ModuleKey(mainPackagePair, folders, name)
-        Builder.build(
-            system = system
-            emitTarget = emitTarget
-            mainModules = [moduleKey]
-            resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
-            compilerModulePath = compilerModulePath
-            tempPath = system.path(".firefly").slash("temporary")
-            jsOutputPath = system.path(".firefly").path("output").path(targetName)
-            printMeasurements = False
-            moduleCache = moduleCache
-        )
-        moduleKey
-    }
-
     function runCommand(command: MainCommand) {
         | RunCommand(mainFile, arguments) =>
             let resolvedDependencies = Dependencies.process(
@@ -76,35 +38,14 @@ main(system: NodeSystem): Unit {
             )
             prepareFireflyDirectory(system.path("."))
             let mainPath = system.path(mainFile)
-            let moduleKey = buildScript(mainPath, resolvedDependencies.mainPackagePair, EmitNode, resolvedDependencies)
+            let moduleKey = buildScript(system, mainPath, resolvedDependencies.mainPackagePair, EmitNode, resolvedDependencies)
             if(!importAndRun(system, fireflyPath, "node", moduleKey, arguments)) {
                 let at = Location(system.path(mainFile).absolute(), 1, 1)
                 throw(CompileError(at, "This module does not contain a 'nodeMain' function"))
             }
 
         | DevelopCommand(mainFile, arguments) =>
-            prepareFireflyDirectory(system.path("."))
-            let moduleCache = ModuleCache.new(0)
-            // Move to DevelopMode
-            // Protect DevelopMode data with a mutex and condition variable and share it with file listener and proxy
-            // Start file listener task
-            // Start Proxy in task
-            while {True} {
-                // Compile or wait for proxy signal
-                let resolvedDependencies = Dependencies.process(
-                    system.httpClient()
-                    DependencyLock.new(system.mainTask())
-                    system.path(mainFile)
-                )
-                let mainPath = system.path(mainFile)
-                let moduleKey = buildScript(mainPath, resolvedDependencies.mainPackagePair, EmitNode, resolvedDependencies, moduleCache)
-                // Start in separate task + process
-                if(!importAndRun(system, fireflyPath, "node", moduleKey, arguments)) {
-                    let at = Location(system.path(mainFile).absolute(), 1, 1)
-                    throw(CompileError(at, "This module does not contain a 'nodeMain' function"))
-                }
-                // Wait for restart condition from proxy
-            }
+            DevelopMode.run(system, fireflyPath, mainFile, arguments)
             
         | BrowserCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(
@@ -115,7 +56,7 @@ main(system: NodeSystem): Unit {
             prepareFireflyDirectory(system.path("."))
             let mainPath = system.path(mainFile)
             let moduleKey = 
-                buildScript(mainPath, resolvedDependencies.mainPackagePair, EmitBrowser, resolvedDependencies)
+                buildScript(system, mainPath, resolvedDependencies.mainPackagePair, EmitBrowser, resolvedDependencies)
             bundleForBrowser(system, resolvedDependencies.mainPackagePair, moduleKey)
 
         | BuildCommand(mainFile) =>
@@ -126,8 +67,8 @@ main(system: NodeSystem): Unit {
             )
             prepareFireflyDirectory(system.path("."))
             let mainPath = system.path(mainFile)
-            let moduleKey = buildScript(mainPath, resolvedDependencies.mainPackagePair, EmitBuild, resolvedDependencies)
-            buildScript(mainPath, resolvedDependencies.mainPackagePair, EmitExecutable, resolvedDependencies)
+            let moduleKey = buildScript(system, mainPath, resolvedDependencies.mainPackagePair, EmitBuild, resolvedDependencies)
+            buildScript(system, mainPath, resolvedDependencies.mainPackagePair, EmitExecutable, resolvedDependencies)
             bundleForPkg(system, resolvedDependencies.mainPackagePair, mainPath.base())
             importAndRun(system, fireflyPath, "build", moduleKey, [])
 
@@ -219,6 +160,46 @@ These are the commands:
    symbols <out-file> <firefly-file>        Print a .tsv with the symbols of a firefly source file
    bootstrap                                Bootstrap the compiler
 """
+
+buildScript(
+    system: NodeSystem
+    mainPath: Path
+    mainPackagePair: PackagePair
+    emitTarget: EmitTarget
+    resolvedDependencies: ResolvedDependencies
+    moduleCache: ModuleCache = ModuleCache.new(0)
+): ModuleKey {
+    let fireflyPath = detectFireflyPath(system)
+    let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
+        resolvedDependencies.packagePaths
+    } else {
+        resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath.slash("core"))
+    }
+    let compilerModulePath = if(emitTarget != EmitBrowser && emitTarget != EmitExecutable) {
+        fireflyPath.slash("output").slash("js").slash("ff").slash("compiler/Builder.mjs")
+    }
+    let targetName = emitTarget.{
+        | EmitBuild => "build"
+        | EmitNode => "node"
+        | EmitBrowser => "browser"
+        | EmitExecutable => "executable"
+    }
+    let folders = mainPath.parent().grab().relativeListTo(fixedPackagePaths.grab(mainPackagePair))
+    let name = mainPath.base().removeLast(".ff").grab()
+    let moduleKey = ModuleKey(mainPackagePair, folders, name)
+    Builder.build(
+        system = system
+        emitTarget = emitTarget
+        mainModules = [moduleKey]
+        resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
+        compilerModulePath = compilerModulePath
+        tempPath = system.path(".firefly").slash("temporary")
+        jsOutputPath = system.path(".firefly").path("output").path(targetName)
+        printMeasurements = False
+        moduleCache = moduleCache
+    )
+    moduleKey
+}
 
 parseCommandLine(arguments: List[String]): MainCommand {
     | [mainFile, ...mainArguments] {mainFile.removeLast(".ff") | Some(mainName)} =>

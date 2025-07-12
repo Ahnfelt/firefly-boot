@@ -8,6 +8,8 @@ import * as ff_compiler_Dependencies from "../../ff/compiler/Dependencies.mjs"
 
 import * as ff_compiler_DependencyLock from "../../ff/compiler/DependencyLock.mjs"
 
+import * as ff_compiler_DevelopMode from "../../ff/compiler/DevelopMode.mjs"
+
 import * as ff_compiler_Inference from "../../ff/compiler/Inference.mjs"
 
 import * as ff_compiler_JsEmitter from "../../ff/compiler/JsEmitter.mjs"
@@ -154,35 +156,6 @@ export const usageString_ = "\r\nusage: firefly <main-file> [<main-arguments>] |
 
 export function main_(system_) {
 const fireflyPath_ = ff_compiler_Main.detectFireflyPath_(system_);
-function buildScript_(mainPath_, mainPackagePair_, emitTarget_, resolvedDependencies_) {
-const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
-? resolvedDependencies_.packagePaths_
-: ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_core_Path.Path_slash(fireflyPath_, "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-const compilerModulePath_ = ((ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget) && ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitExecutable(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget))
-? ff_core_Option.Some(ff_core_Path.Path_slash(ff_core_Path.Path_slash(ff_core_Path.Path_slash(ff_core_Path.Path_slash(fireflyPath_, "output"), "js"), "ff"), "compiler/Builder.mjs"))
-: ff_core_Option.None());
-const targetName_ = (((_1) => {
-if(_1.EmitBuild) {
-return "build"
-}
-if(_1.EmitNode) {
-return "node"
-}
-if(_1.EmitBrowser) {
-return "browser"
-}
-{
-return "executable"
-}
-}))(emitTarget_);
-const folders_ = ff_core_Path.Path_relativeListTo(ff_core_Option.Option_grab(ff_core_Path.Path_parent(mainPath_)), ff_core_Map.Map_grab(fixedPackagePaths_, mainPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-const name_ = ff_core_Option.Option_grab(ff_core_String.String_removeLast(ff_core_Path.Path_base(mainPath_), ".ff"));
-const moduleKey_ = ff_compiler_Syntax.ModuleKey(mainPackagePair_, folders_, name_);
-ff_compiler_Builder.build_(system_, emitTarget_, [moduleKey_], (((_c) => {
-return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
-}))(resolvedDependencies_), compilerModulePath_, ff_core_Path.Path_slash(ff_core_NodeSystem.NodeSystem_path(system_, ".firefly"), "temporary"), ff_core_Path.Path_path(ff_core_Path.Path_path(ff_core_NodeSystem.NodeSystem_path(system_, ".firefly"), "output"), targetName_), false, ff_compiler_ModuleCache.new_(0));
-return moduleKey_
-}
 function runCommand_(command_) {
 const command_a = command_;
 if(command_a.RunCommand) {
@@ -191,7 +164,7 @@ const arguments_ = command_a.argument_;
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), ff_compiler_DependencyLock.new_(ff_core_NodeSystem.NodeSystem_mainTask(system_)), ff_core_NodeSystem.NodeSystem_path(system_, mainFile_));
 ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_path(system_, "."));
 const mainPath_ = ff_core_NodeSystem.NodeSystem_path(system_, mainFile_);
-const moduleKey_ = buildScript_(mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_);
+const moduleKey_ = ff_compiler_Main.buildScript_(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, ff_compiler_ModuleCache.new_(0));
 if((!ff_compiler_Main.importAndRun_(system_, fireflyPath_, "node", moduleKey_, arguments_))) {
 const at_ = ff_compiler_Syntax.Location(ff_core_Path.Path_absolute(ff_core_NodeSystem.NodeSystem_path(system_, mainFile_)), 1, 1);
 throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, "This module does not contain a 'nodeMain' function"), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
@@ -201,14 +174,7 @@ return
 if(command_a.DevelopCommand) {
 const mainFile_ = command_a.mainPath_;
 const arguments_ = command_a.argument_;
-const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), ff_compiler_DependencyLock.new_(ff_core_NodeSystem.NodeSystem_mainTask(system_)), ff_core_NodeSystem.NodeSystem_path(system_, mainFile_));
-ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_path(system_, "."));
-const mainPath_ = ff_core_NodeSystem.NodeSystem_path(system_, mainFile_);
-const moduleKey_ = buildScript_(mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_);
-if((!ff_compiler_Main.importAndRun_(system_, fireflyPath_, "node", moduleKey_, arguments_))) {
-const at_ = ff_compiler_Syntax.Location(ff_core_Path.Path_absolute(ff_core_NodeSystem.NodeSystem_path(system_, mainFile_)), 1, 1);
-throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, "This module does not contain a 'nodeMain' function"), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
-}
+ff_compiler_DevelopMode.run_(system_, fireflyPath_, mainFile_, arguments_)
 return
 }
 if(command_a.BrowserCommand) {
@@ -216,7 +182,7 @@ const mainFile_ = command_a.mainPath_;
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), ff_compiler_DependencyLock.new_(ff_core_NodeSystem.NodeSystem_mainTask(system_)), ff_core_NodeSystem.NodeSystem_path(system_, mainFile_));
 ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_path(system_, "."));
 const mainPath_ = ff_core_NodeSystem.NodeSystem_path(system_, mainFile_);
-const moduleKey_ = buildScript_(mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBrowser(), resolvedDependencies_);
+const moduleKey_ = ff_compiler_Main.buildScript_(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBrowser(), resolvedDependencies_, ff_compiler_ModuleCache.new_(0));
 ff_compiler_Main.bundleForBrowser_(system_, resolvedDependencies_.mainPackagePair_, moduleKey_)
 return
 }
@@ -225,8 +191,8 @@ const mainFile_ = command_a.mainPath_;
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), ff_compiler_DependencyLock.new_(ff_core_NodeSystem.NodeSystem_mainTask(system_)), ff_core_NodeSystem.NodeSystem_path(system_, (mainFile_ + ".ff")));
 ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_path(system_, "."));
 const mainPath_ = ff_core_NodeSystem.NodeSystem_path(system_, mainFile_);
-const moduleKey_ = buildScript_(mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBuild(), resolvedDependencies_);
-buildScript_(mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitExecutable(), resolvedDependencies_);
+const moduleKey_ = ff_compiler_Main.buildScript_(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBuild(), resolvedDependencies_, ff_compiler_ModuleCache.new_(0));
+ff_compiler_Main.buildScript_(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitExecutable(), resolvedDependencies_, ff_compiler_ModuleCache.new_(0));
 ff_compiler_Main.bundleForPkg_(system_, resolvedDependencies_.mainPackagePair_, ff_core_Path.Path_base(mainPath_));
 ff_compiler_Main.importAndRun_(system_, fireflyPath_, "build", moduleKey_, [])
 return
@@ -309,6 +275,37 @@ return ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_,
 return
 }
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
+}
+
+export function buildScript_(system_, mainPath_, mainPackagePair_, emitTarget_, resolvedDependencies_, moduleCache_ = ff_compiler_ModuleCache.new_(0)) {
+const fireflyPath_ = ff_compiler_Main.detectFireflyPath_(system_);
+const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
+? resolvedDependencies_.packagePaths_
+: ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_core_Path.Path_slash(fireflyPath_, "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
+const compilerModulePath_ = ((ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget) && ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitExecutable(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget))
+? ff_core_Option.Some(ff_core_Path.Path_slash(ff_core_Path.Path_slash(ff_core_Path.Path_slash(ff_core_Path.Path_slash(fireflyPath_, "output"), "js"), "ff"), "compiler/Builder.mjs"))
+: ff_core_Option.None());
+const targetName_ = (((_1) => {
+if(_1.EmitBuild) {
+return "build"
+}
+if(_1.EmitNode) {
+return "node"
+}
+if(_1.EmitBrowser) {
+return "browser"
+}
+{
+return "executable"
+}
+}))(emitTarget_);
+const folders_ = ff_core_Path.Path_relativeListTo(ff_core_Option.Option_grab(ff_core_Path.Path_parent(mainPath_)), ff_core_Map.Map_grab(fixedPackagePaths_, mainPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
+const name_ = ff_core_Option.Option_grab(ff_core_String.String_removeLast(ff_core_Path.Path_base(mainPath_), ".ff"));
+const moduleKey_ = ff_compiler_Syntax.ModuleKey(mainPackagePair_, folders_, name_);
+ff_compiler_Builder.build_(system_, emitTarget_, [moduleKey_], (((_c) => {
+return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
+}))(resolvedDependencies_), compilerModulePath_, ff_core_Path.Path_slash(ff_core_NodeSystem.NodeSystem_path(system_, ".firefly"), "temporary"), ff_core_Path.Path_path(ff_core_Path.Path_path(ff_core_NodeSystem.NodeSystem_path(system_, ".firefly"), "output"), targetName_), false, moduleCache_);
+return moduleKey_
 }
 
 export function parseCommandLine_(arguments_) {
@@ -595,35 +592,6 @@ return [header_, ...ff_core_List.List_sort(r_.symbols_, ff_core_Ordering.ff_core
 
 export async function main_$(system_, $task) {
 const fireflyPath_ = (await ff_compiler_Main.detectFireflyPath_$(system_, $task));
-async function buildScript_$(mainPath_, mainPackagePair_, emitTarget_, resolvedDependencies_, $task) {
-const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
-? resolvedDependencies_.packagePaths_
-: ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (await ff_core_Path.Path_slash$(fireflyPath_, "core", $task)), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-const compilerModulePath_ = ((ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget) && ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitExecutable(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget))
-? ff_core_Option.Some((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(fireflyPath_, "output", $task)), "js", $task)), "ff", $task)), "compiler/Builder.mjs", $task)))
-: ff_core_Option.None());
-const targetName_ = (((_1) => {
-if(_1.EmitBuild) {
-return "build"
-}
-if(_1.EmitNode) {
-return "node"
-}
-if(_1.EmitBrowser) {
-return "browser"
-}
-{
-return "executable"
-}
-}))(emitTarget_);
-const folders_ = (await ff_core_Path.Path_relativeListTo$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(mainPath_, $task))), ff_core_Map.Map_grab(fixedPackagePaths_, mainPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), $task));
-const name_ = ff_core_Option.Option_grab(ff_core_String.String_removeLast((await ff_core_Path.Path_base$(mainPath_, $task)), ".ff"));
-const moduleKey_ = ff_compiler_Syntax.ModuleKey(mainPackagePair_, folders_, name_);
-(await ff_compiler_Builder.build_$(system_, emitTarget_, [moduleKey_], (((_c) => {
-return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
-}))(resolvedDependencies_), compilerModulePath_, (await ff_core_Path.Path_slash$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".firefly", $task)), "temporary", $task)), (await ff_core_Path.Path_path$((await ff_core_Path.Path_path$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".firefly", $task)), "output", $task)), targetName_, $task)), false, ff_compiler_ModuleCache.new_(0), $task));
-return moduleKey_
-}
 async function runCommand_$(command_, $task) {
 const command_a = command_;
 if(command_a.RunCommand) {
@@ -632,7 +600,7 @@ const arguments_ = command_a.argument_;
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (await ff_compiler_DependencyLock.new_$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task)), (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task));
 (await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
 const mainPath_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task));
-const moduleKey_ = (await buildScript_$(mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, $task));
+const moduleKey_ = (await ff_compiler_Main.buildScript_$(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, ff_compiler_ModuleCache.new_(0), $task));
 if((!(await ff_compiler_Main.importAndRun_$(system_, fireflyPath_, "node", moduleKey_, arguments_, $task)))) {
 const at_ = ff_compiler_Syntax.Location((await ff_core_Path.Path_absolute$((await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task)), 1, 1);
 throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, "This module does not contain a 'nodeMain' function"), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
@@ -642,14 +610,7 @@ return
 if(command_a.DevelopCommand) {
 const mainFile_ = command_a.mainPath_;
 const arguments_ = command_a.argument_;
-const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (await ff_compiler_DependencyLock.new_$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task)), (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task));
-(await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
-const mainPath_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task));
-const moduleKey_ = (await buildScript_$(mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, $task));
-if((!(await ff_compiler_Main.importAndRun_$(system_, fireflyPath_, "node", moduleKey_, arguments_, $task)))) {
-const at_ = ff_compiler_Syntax.Location((await ff_core_Path.Path_absolute$((await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task)), 1, 1);
-throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, "This module does not contain a 'nodeMain' function"), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
-}
+(await ff_compiler_DevelopMode.run_$(system_, fireflyPath_, mainFile_, arguments_, $task))
 return
 }
 if(command_a.BrowserCommand) {
@@ -657,7 +618,7 @@ const mainFile_ = command_a.mainPath_;
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (await ff_compiler_DependencyLock.new_$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task)), (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task));
 (await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
 const mainPath_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task));
-const moduleKey_ = (await buildScript_$(mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBrowser(), resolvedDependencies_, $task));
+const moduleKey_ = (await ff_compiler_Main.buildScript_$(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBrowser(), resolvedDependencies_, ff_compiler_ModuleCache.new_(0), $task));
 (await ff_compiler_Main.bundleForBrowser_$(system_, resolvedDependencies_.mainPackagePair_, moduleKey_, $task))
 return
 }
@@ -666,8 +627,8 @@ const mainFile_ = command_a.mainPath_;
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (await ff_compiler_DependencyLock.new_$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task)), (await ff_core_NodeSystem.NodeSystem_path$(system_, (mainFile_ + ".ff"), $task)), $task));
 (await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
 const mainPath_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task));
-const moduleKey_ = (await buildScript_$(mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBuild(), resolvedDependencies_, $task));
-(await buildScript_$(mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitExecutable(), resolvedDependencies_, $task));
+const moduleKey_ = (await ff_compiler_Main.buildScript_$(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBuild(), resolvedDependencies_, ff_compiler_ModuleCache.new_(0), $task));
+(await ff_compiler_Main.buildScript_$(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitExecutable(), resolvedDependencies_, ff_compiler_ModuleCache.new_(0), $task));
 (await ff_compiler_Main.bundleForPkg_$(system_, resolvedDependencies_.mainPackagePair_, (await ff_core_Path.Path_base$(mainPath_, $task)), $task));
 (await ff_compiler_Main.importAndRun_$(system_, fireflyPath_, "build", moduleKey_, [], $task))
 return
@@ -750,6 +711,37 @@ return ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_,
 return
 }
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors)
+}
+
+export async function buildScript_$(system_, mainPath_, mainPackagePair_, emitTarget_, resolvedDependencies_, moduleCache_ = ff_compiler_ModuleCache.new_(0), $task) {
+const fireflyPath_ = (await ff_compiler_Main.detectFireflyPath_$(system_, $task));
+const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
+? resolvedDependencies_.packagePaths_
+: ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (await ff_core_Path.Path_slash$(fireflyPath_, "core", $task)), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
+const compilerModulePath_ = ((ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget) && ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitExecutable(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget))
+? ff_core_Option.Some((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(fireflyPath_, "output", $task)), "js", $task)), "ff", $task)), "compiler/Builder.mjs", $task)))
+: ff_core_Option.None());
+const targetName_ = (((_1) => {
+if(_1.EmitBuild) {
+return "build"
+}
+if(_1.EmitNode) {
+return "node"
+}
+if(_1.EmitBrowser) {
+return "browser"
+}
+{
+return "executable"
+}
+}))(emitTarget_);
+const folders_ = (await ff_core_Path.Path_relativeListTo$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(mainPath_, $task))), ff_core_Map.Map_grab(fixedPackagePaths_, mainPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), $task));
+const name_ = ff_core_Option.Option_grab(ff_core_String.String_removeLast((await ff_core_Path.Path_base$(mainPath_, $task)), ".ff"));
+const moduleKey_ = ff_compiler_Syntax.ModuleKey(mainPackagePair_, folders_, name_);
+(await ff_compiler_Builder.build_$(system_, emitTarget_, [moduleKey_], (((_c) => {
+return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
+}))(resolvedDependencies_), compilerModulePath_, (await ff_core_Path.Path_slash$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".firefly", $task)), "temporary", $task)), (await ff_core_Path.Path_path$((await ff_core_Path.Path_path$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".firefly", $task)), "output", $task)), targetName_, $task)), false, moduleCache_, $task));
+return moduleKey_
 }
 
 export async function parseCommandLine_$(arguments_, $task) {
