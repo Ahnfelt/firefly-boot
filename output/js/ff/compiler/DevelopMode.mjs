@@ -307,13 +307,14 @@ headers_[key_] = value_
 return headers_
 }
 const proxyServer_ = net_.createServer(((clientSocket_) => {
+return ff_core_Task.Task_spawn(ff_core_NodeSystem.NodeSystem_mainTask(system_), ((task_) => {
 let buffer_ = Buffer.alloc(0);
 let isHttpNavigateRequest_ = false;
-return clientSocket_.on("data", ((data_) => {
-return ff_core_Task.Task_spawn(ff_core_NodeSystem.NodeSystem_mainTask(system_), ((task_) => {
+clientSocket_.on("data", ((data_) => {
 buffer_ = Buffer.concat([buffer_, data_]);
 const headerEnd_ = buffer_.indexOf("\r\n\r\n");
 if(((headerEnd_ !== (-1)) || (buffer_.length >= (64 * 1024)))) {
+return ff_core_Option.Some((function() {
 const headerData_ = buffer_.subarray(0, headerEnd_).toString();
 const headers_ = parseHeaders_(headerData_);
 const refreshLike_ = (headers_["sec-fetch-dest"] === "document");
@@ -359,7 +360,7 @@ clientSocket_.write(waiterBuffer_);
 clientSocket_.end()
 }
 if(serveWaiter_) {
-serveWaiterHtml_()
+return serveWaiterHtml_()
 } else {
 let connectedToTarget_ = false;
 targetSocket_ = net_.createConnection(targetPort_, targetServer_, (() => {
@@ -382,7 +383,8 @@ return serveWaiterHtml_()
 }
 }))
 }
-}
+})())
+} else return ff_core_Option.None()
 }))
 }))
 }));
@@ -567,13 +569,14 @@ headers_[key_] = value_
 return headers_
 }
 const proxyServer_ = net_.createServer((async (a_1) => await (async (clientSocket_, $task) => {
+return (await ff_core_Task.Task_spawn$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), (async (task_, $task) => {
 let buffer_ = Buffer.alloc(0);
 let isHttpNavigateRequest_ = false;
-return clientSocket_.on("data", (async (a_1) => await (async (data_, $task) => {
-return (await ff_core_Task.Task_spawn$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), (async (task_, $task) => {
+clientSocket_.on("data", (async (a_1) => await (async (data_, $task) => {
 buffer_ = Buffer.concat([buffer_, data_]);
 const headerEnd_ = buffer_.indexOf("\r\n\r\n");
 if(((headerEnd_ !== (-1)) || (buffer_.length >= (64 * 1024)))) {
+return ff_core_Option.Some((await (async function() {
 const headerData_ = buffer_.subarray(0, headerEnd_).toString();
 const headers_ = parseHeaders_(headerData_);
 const refreshLike_ = (headers_["sec-fetch-dest"] === "document");
@@ -619,7 +622,7 @@ clientSocket_.write(waiterBuffer_);
 clientSocket_.end()
 }
 if(serveWaiter_) {
-serveWaiterHtml_()
+return serveWaiterHtml_()
 } else {
 let connectedToTarget_ = false;
 targetSocket_ = net_.createConnection(targetPort_, targetServer_, (() => {
@@ -642,9 +645,10 @@ return serveWaiterHtml_()
 }
 }))
 }
-}
-}), $task))
+})()))
+} else return ff_core_Option.None()
 })(a_1, $task)))
+}), $task))
 })(a_1, $task)));
 proxyServer_.listen(proxyPort_, (() => {
 return console.log(("Proxy server running on port " + proxyPort_))

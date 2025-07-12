@@ -200,10 +200,10 @@ startProxy(
     }
     
     let proxyServer = net->createServer(Js->{clientSocket =>
-        mutable buffer = Js->Buffer->alloc(0)
-        mutable isHttpNavigateRequest = False
-        clientSocket->on("data", Js->{data =>
-            system.mainTask().spawn {task =>
+        system.mainTask().spawn {task =>
+            mutable buffer = Js->Buffer->alloc(0)
+            mutable isHttpNavigateRequest = False
+            clientSocket->on("data", Js->{data =>
                 buffer = Js->Buffer->concat([buffer, data])
                 let headerEnd = buffer->indexOf("\r\n\r\n")
                 if(headerEnd !== -1 || buffer->length? >= 64 * 1024) {
@@ -274,8 +274,8 @@ startProxy(
                         })
                     }
                 }
-            }
-        })
+            })
+        }
     })
     
     proxyServer->listen(proxyPort, Js->{
