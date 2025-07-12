@@ -140,64 +140,66 @@ startProxy(
         mutable buffer = Js->Buffer->alloc(0)
         mutable isHttpNavigateRequest = False
         clientSocket->on("data", Js->{data =>
-            buffer = Js->Buffer->concat([buffer, data])
-            let headerEnd = buffer->indexOf("\r\n\r\n")
-            if(headerEnd !== -1 || buffer->length? >= 64 * 1024) {
-                let headerData = buffer->subarray(0, headerEnd)->toString()
-                let headers = parseHeaders(headerData)
-                
-                mutable serveWaiter = False
-                if(headers.get("sec-fetch-user") === "?1") {
-                    isHttpNavigateRequest = True
-                    runner.lock.do {
-                        if(runner.changedSinceCompilationStarted.size() != 0) {
-                            runner.recompile = True
-                            runner.lockCondition.wakeAll()
-                            serveWaiter = True
-                        } else {
-                            serveWaiter = runner.state.{
-                                | AppRunningState => False
-                                | _ => True
+            system.mainTask().spawn {task =>
+                buffer = Js->Buffer->concat([buffer, data])
+                let headerEnd = buffer->indexOf("\r\n\r\n")
+                if(headerEnd !== -1 || buffer->length? >= 64 * 1024) {
+                    let headerData = buffer->subarray(0, headerEnd)->toString()
+                    let headers = parseHeaders(headerData)
+                    
+                    mutable serveWaiter = False
+                    if(headers.get("sec-fetch-user") === "?1") {
+                        isHttpNavigateRequest = True
+                        runner.lock.do {
+                            if(runner.changedSinceCompilationStarted.size() != 0) {
+                                runner.recompile = True
+                                runner.lockCondition.wakeAll()
+                                serveWaiter = True
+                            } else {
+                                serveWaiter = runner.state.{
+                                    | AppRunningState => False
+                                    | _ => True
+                                }
                             }
                         }
                     }
-                }
-                
-                mutable targetSocket = Js.undefined()
-                clientSocket->on("error", Js->{err =>
-                    Js->console->error("Client socket error:", err)
-                    if(!targetSocket.isUndefined()) {targetSocket->end()}
-                })
-
-                function serveWaiterHtml() {
-                    let waiterBuffer = waiterHtml.toBuffer()
-                    clientSocket->write("HTTP/1.1 200 OK\r\n")
-                    clientSocket->write("Content-Type: text/html\r\n")
-                    clientSocket->write("Content-Length: " + waiterBuffer.size() + "\r\n")
-                    clientSocket->write("Connection: close\r\n")
-                    clientSocket->write("\r\n")
-                    clientSocket->write(waiterBuffer)
-                    clientSocket->end()
-                }
-                
-                if(serveWaiter) {
-                    serveWaiterHtml()
-                } else {
-                    mutable connectedToTarget = False
-                    targetSocket = net->createConnection(targetPort, targetServer, Js->{
-                        connectedToTarget = True
-                        targetSocket->write(buffer)
-                        clientSocket->pipe(targetSocket)->pipe(clientSocket)
+                    
+                    mutable targetSocket = Js.undefined()
+                    clientSocket->on("error", Js->{err =>
+                        Js->console->error("Client socket error:", err)
+                        if(!targetSocket.isUndefined()) {targetSocket->end()}
                     })
 
-                    targetSocket->on("error", Js->{err =>
-                        if(connectedToTarget) {
-                            Js->console->error("Target socket error:", err)
-                            clientSocket->end()?
-                        } else {
-                            serveWaiterHtml()
-                        }
-                    })
+                    function serveWaiterHtml() {
+                        let waiterBuffer = waiterHtml.toBuffer()
+                        clientSocket->write("HTTP/1.1 200 OK\r\n")
+                        clientSocket->write("Content-Type: text/html\r\n")
+                        clientSocket->write("Content-Length: " + waiterBuffer.size() + "\r\n")
+                        clientSocket->write("Connection: close\r\n")
+                        clientSocket->write("\r\n")
+                        clientSocket->write(waiterBuffer)
+                        clientSocket->end()
+                    }
+                    
+                    if(serveWaiter) {
+                        serveWaiterHtml()
+                    } else {
+                        mutable connectedToTarget = False
+                        targetSocket = net->createConnection(targetPort, targetServer, Js->{
+                            connectedToTarget = True
+                            targetSocket->write(buffer)
+                            clientSocket->pipe(targetSocket)->pipe(clientSocket)
+                        })
+
+                        targetSocket->on("error", Js->{err =>
+                            if(connectedToTarget) {
+                                Js->console->error("Target socket error:", err)
+                                clientSocket->end()?
+                            } else {
+                                serveWaiterHtml()
+                            }
+                        })
+                    }
                 }
             }
         })

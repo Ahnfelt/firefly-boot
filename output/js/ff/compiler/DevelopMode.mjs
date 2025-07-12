@@ -227,16 +227,15 @@ const proxyServer_ = net_.createServer(((clientSocket_) => {
 let buffer_ = Buffer.alloc(0);
 let isHttpNavigateRequest_ = false;
 return clientSocket_.on("data", ((data_) => {
+return ff_core_Task.Task_spawn(ff_core_NodeSystem.NodeSystem_mainTask(system_), ((task_) => {
 buffer_ = Buffer.concat([buffer_, data_]);
 const headerEnd_ = buffer_.indexOf("\r\n\r\n");
 if(((headerEnd_ !== (-1)) || (buffer_.length >= (64 * 1024)))) {
-return ff_core_Option.Some((function() {
 const headerData_ = buffer_.subarray(0, headerEnd_).toString();
 const headers_ = parseHeaders_(headerData_);
 let serveWaiter_ = false;
 if((headers_["sec-fetch-user"] === "?1")) {
 isHttpNavigateRequest_ = true;
-console.log("Detected HTTP request with Sec-Fetch-User");
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
 if((ff_core_Set.Set_size(runner_.changedSinceCompilationStarted_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) !== 0)) {
 runner_.recompile_ = true;
@@ -272,7 +271,7 @@ clientSocket_.write(waiterBuffer_);
 clientSocket_.end()
 }
 if(serveWaiter_) {
-return serveWaiterHtml_()
+serveWaiterHtml_()
 } else {
 let connectedToTarget_ = false;
 targetSocket_ = net_.createConnection(targetPort_, targetServer_, (() => {
@@ -289,8 +288,8 @@ return serveWaiterHtml_()
 }
 }))
 }
-})())
-} else return ff_core_Option.None()
+}
+}))
 }))
 }));
 proxyServer_.listen(proxyPort_, (() => {
@@ -394,16 +393,15 @@ const proxyServer_ = net_.createServer((async (a_1) => await (async (clientSocke
 let buffer_ = Buffer.alloc(0);
 let isHttpNavigateRequest_ = false;
 return clientSocket_.on("data", (async (a_1) => await (async (data_, $task) => {
+return (await ff_core_Task.Task_spawn$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), (async (task_, $task) => {
 buffer_ = Buffer.concat([buffer_, data_]);
 const headerEnd_ = buffer_.indexOf("\r\n\r\n");
 if(((headerEnd_ !== (-1)) || (buffer_.length >= (64 * 1024)))) {
-return ff_core_Option.Some((await (async function() {
 const headerData_ = buffer_.subarray(0, headerEnd_).toString();
 const headers_ = parseHeaders_(headerData_);
 let serveWaiter_ = false;
 if((headers_["sec-fetch-user"] === "?1")) {
 isHttpNavigateRequest_ = true;
-console.log("Detected HTTP request with Sec-Fetch-User");
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
 if((ff_core_Set.Set_size(runner_.changedSinceCompilationStarted_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) !== 0)) {
 runner_.recompile_ = true;
@@ -439,7 +437,7 @@ clientSocket_.write(waiterBuffer_);
 clientSocket_.end()
 }
 if(serveWaiter_) {
-return serveWaiterHtml_()
+serveWaiterHtml_()
 } else {
 let connectedToTarget_ = false;
 targetSocket_ = net_.createConnection(targetPort_, targetServer_, (() => {
@@ -456,8 +454,8 @@ return serveWaiterHtml_()
 }
 }))
 }
-})()))
-} else return ff_core_Option.None()
+}
+}), $task))
 })(a_1, $task)))
 })(a_1, $task)));
 proxyServer_.listen(proxyPort_, (() => {
