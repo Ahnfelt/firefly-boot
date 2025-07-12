@@ -98,7 +98,17 @@ startChangeListener(
     runner: Runner
     path: Path
 ) {
-    // Listen for file changes
+    let fs = Js.import("node:fs")
+    fs->watch(path.absolute(), Js->(recursive = True), Js->{eventType, fileName =>
+        let file: String = fileName?
+        if(file.endsWith(".ff") || file.endsWith(".firefly-workspace")) {
+            let key = system.path(file).url()
+            runner.lock.do {
+                // Probably we should also listen for other files, e.g. resources
+                runner.changedSinceCompilationStarted = runner.changedSinceCompilationStarted.add(key)
+            }
+        }
+    })
 }
 
 startProxy(
