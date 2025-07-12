@@ -24,9 +24,9 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
     mutable runner = Runner(CompilingState, refreshed = False, changedSinceCompilationStarted = Set.new())
     Main.prepareFireflyDirectory(system.path("."))
     let moduleCache = ModuleCache.new(0)
-    // Start file listener task
-    // Start Proxy in task
     mutable iteration = 0
+    startChangeListener(system, system.path("."))
+    startProxy(system, 8081, 8080)
     while {True} {
         let resolvedDependencies = Dependencies.process(
             system.httpClient()
@@ -87,4 +87,75 @@ startApp(
             throw(CompileError(at, "This module does not contain a 'nodeMain' function"))
         }
     }
+}
+
+startChangeListener(
+    system: NodeSystem
+    path: Path
+) {
+    // Listen for file changes
+}
+
+startProxy(
+    system: NodeSystem
+    proxyPort: Int
+    targetPort: Int
+) {
+    let net = Js.import("node:net")
+    let targetServer = "localhost" // 127.0.0.1
+    
+    function parseHeaders(headerData: JsValue): JsValue {
+        let headers = Js->()
+        let lines = headerData->split("\r\n")
+        if(lines.get(0)->endsWith(" HTTP/1.1")? || lines.get(0)->endsWith(" HTTP/1.0")?) {
+            lines->forEach(Js->{line =>
+                let index = line->indexOf(":")
+                if(index !== -1) {
+                    let key = line->substring(0, index)->trim()->toLowerCase()
+                    let value = line->substring(index + 1!)->trim()
+                    headers.set(key, value)
+                }
+            })
+        }
+        headers
+    }
+    
+    let proxyServer = net->createServer(Js->{clientSocket =>
+        mutable buffer = Js->Buffer->alloc(0)
+        mutable isHttpNavigateRequest = False
+        clientSocket->on("data", Js->{data =>
+            buffer = Js->Buffer->concat([buffer, data])
+            let headerEnd = buffer->indexOf("\r\n\r\n")
+            if(headerEnd !== -1 || buffer->length? >= 64 * 1024) {
+                let headerData = buffer->subarray(0, headerEnd)->toString()
+                let headers = parseHeaders(headerData)
+                
+                if(headers.get("sec-fetch-user") === "?1") {
+                    isHttpNavigateRequest = True
+                    Js->console->log("Detected HTTP request with Sec-Fetch-User")
+                }
+                
+                mutable targetSocket = Js.undefined()
+                targetSocket = net->createConnection(targetPort, targetServer, Js->{
+                    Js->console->log("Connected to target server")
+                    targetSocket->write(buffer)
+                    clientSocket->pipe(targetSocket)->pipe(clientSocket)
+                })
+
+                clientSocket->on("error", Js->{err =>
+                    Js->console->error("Client socket error:", err)
+                    targetSocket->end()
+                })
+
+                targetSocket->on("error", Js->{err =>
+                    Js->console->error("Target socket error:", err)
+                    clientSocket->end()
+                })
+            }
+        })
+    })
+    
+    proxyServer->listen(proxyPort, Js->{
+        Js->console->log("Proxy server running on port " + proxyPort)
+    })
 }
