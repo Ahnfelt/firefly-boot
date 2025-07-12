@@ -30,34 +30,63 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
     Main.prepareFireflyDirectory(system.path("."))
     startChangeListener(system, runner, system.path("."))
     while {True} {
-        let resolvedDependencies = Dependencies.process(
-            system.httpClient()
-            DependencyLock.new(system.mainTask())
-            system.path(mainFile)
-        )
-        let mainPath = system.path(mainFile)
-        let moduleKey = Main.buildScript(
-            system
-            mainPath
-            resolvedDependencies.mainPackagePair
-            EmitNode
-            resolvedDependencies
-            moduleCache
-        )
+        let moduleKey = try {
+            let resolvedDependencies = Dependencies.process(
+                system.httpClient()
+                DependencyLock.new(system.mainTask())
+                system.path(mainFile)
+            )
+            let mainPath = system.path(mainFile)
+            Some(Main.buildScript(
+                system
+                mainPath
+                resolvedDependencies.mainPackagePair
+                EmitNode
+                resolvedDependencies
+                moduleCache
+            ))
+        } tryCatch {| CompileError(at, message), error =>
+            Log.debug(message)
+            Log.debug(" at " + at.file.replace("./", "") + ":" + at.line + ":" + at.column)
+            runner.lock.do {
+                runner.state = CompileErrorState(message)
+            }
+            None
+        } tryCatch {| CompileErrors(compileErrors), error =>
+            compileErrors.each {| CompileError(at, message) =>
+                Log.debug(message)
+                Log.debug(" at " + at.file.replace("./", "") + ":" + at.line + ":" + at.column)
+                runner.lock.do {
+                    runner.state = CompileErrorState(message)
+                }
+            }
+            None
+        } catchAny {error =>
+            Log.debug(error.message())
+            runner.lock.do {
+                runner.state = CompileErrorState(error.message())
+            }
+            None
+        }
         runner.lock.do {
             runner.state = AppRunningState
         }
         let taskIteration = iteration
-        let task = startApp(system, fireflyPath, moduleKey, mainFile, arguments) {exitCode, standardOut, standardError =>
-            runner.lock.do {
-                runner.state.{
-                    | AppRunningState {taskIteration == iteration} => 
-                        runner.state = AppCrashedState(
-                            "Exited with code: " + exitCode + "\n\n" + standardOut + "\n\n" + standardError
-                        )
-                    | _ => 
-                }
-            }
+        let task = moduleKey.{
+            | None => 
+                system.mainTask().spawn {_ => }
+            | Some(key) => 
+                startApp(system, fireflyPath, key, mainFile, arguments) {exitCode, standardOut, standardError =>
+                    runner.lock.do {
+                        runner.state.{
+                            | AppRunningState {taskIteration == iteration} => 
+                                runner.state = AppCrashedState(
+                                    "Exited with code: " + exitCode + "\n\n" + standardOut + "\n\n" + standardError
+                                )
+                            | _ => 
+                        }
+                    }
+                }                
         }
         runner.lock.do {
             while {!runner.recompile} {
@@ -166,7 +195,6 @@ startProxy(
                     
                     mutable targetSocket = Js.undefined()
                     clientSocket->on("error", Js->{err =>
-                        Js->console->error("Client socket error:", err)
                         if(!targetSocket.isUndefined()) {targetSocket->end()}
                     })
 
@@ -215,6 +243,7 @@ waiterHtml = """<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="1">
     <title>Firefly develop mode</title>
 </head>
 <body>
