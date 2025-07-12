@@ -238,7 +238,13 @@ startProxy(
                     })
 
                     function serveWaiterHtml() {
-                        let waiterBuffer = waiterHtml.toBuffer()
+                        let status = runner.state.{
+                            | AppCrashedState(output) => "Crashed!"
+                            | AppRunningState => "Starting..."
+                            | CompileErrorState(output) => "Error!"
+                            | CompilingState => "Compiling..."
+                        }
+                        let waiterBuffer = waiterHtml.replace("[STATUS]", status).toBuffer()
                         clientSocket->write("HTTP/1.1 200 OK\r\n")
                         clientSocket->write("Content-Type: text/html\r\n")
                         clientSocket->write("Content-Length: " + waiterBuffer.size() + "\r\n")
@@ -293,7 +299,7 @@ waiterHtml = """<!DOCTYPE html>
 </head>
 <body>
     <h1>Firefly develop mode</h1>
-    <p>Refreshing...</p>
+    <p>[STATUS]</p>
 </body>
 </html>
 """

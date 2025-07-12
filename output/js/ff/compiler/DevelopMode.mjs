@@ -129,7 +129,7 @@ export function AppCrashedState(output_) {
 return {AppCrashedState: true, output_};
 }
 
-export const waiterHtml_ = "<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <meta http-equiv=\"refresh\" content=\"1\">\r\n    <title>Firefly develop mode</title>\r\n</head>\r\n<body>\r\n    <h1>Firefly develop mode</h1>\r\n    <p>Refreshing...</p>\r\n</body>\r\n</html>\r\n";
+export const waiterHtml_ = "<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <meta http-equiv=\"refresh\" content=\"1\">\r\n    <title>Firefly develop mode</title>\r\n</head>\r\n<body>\r\n    <h1>Firefly develop mode</h1>\r\n    <p>[STATUS]</p>\r\n</body>\r\n</html>\r\n";
 
 export function run_(system_, fireflyPath_, mainFile_, arguments_) {
 const lock_ = ff_core_Task.Task_lock(ff_core_NodeSystem.NodeSystem_mainTask(system_));
@@ -350,7 +350,23 @@ return ff_core_Option.Some(targetSocket_.end())
 } else return ff_core_Option.None()
 }));
 function serveWaiterHtml_() {
-const waiterBuffer_ = ff_core_String.String_toBuffer(ff_compiler_DevelopMode.waiterHtml_);
+const status_ = (((_1) => {
+if(_1.AppCrashedState) {
+const output_ = _1.output_;
+return "Crashed!"
+}
+if(_1.AppRunningState) {
+return "Starting..."
+}
+if(_1.CompileErrorState) {
+const output_ = _1.output_;
+return "Error!"
+}
+{
+return "Compiling..."
+}
+}))(runner_.state_);
+const waiterBuffer_ = ff_core_String.String_toBuffer(ff_core_String.String_replace(ff_compiler_DevelopMode.waiterHtml_, "[STATUS]", status_));
 clientSocket_.write("HTTP/1.1 200 OK\r\n");
 clientSocket_.write("Content-Type: text/html\r\n");
 clientSocket_.write((("Content-Length: " + ff_core_Buffer.Buffer_size(waiterBuffer_)) + "\r\n"));
@@ -612,7 +628,23 @@ return ff_core_Option.Some(targetSocket_.end())
 } else return ff_core_Option.None()
 }));
 function serveWaiterHtml_() {
-const waiterBuffer_ = ff_core_String.String_toBuffer(ff_compiler_DevelopMode.waiterHtml_);
+const status_ = (((_1) => {
+if(_1.AppCrashedState) {
+const output_ = _1.output_;
+return "Crashed!"
+}
+if(_1.AppRunningState) {
+return "Starting..."
+}
+if(_1.CompileErrorState) {
+const output_ = _1.output_;
+return "Error!"
+}
+{
+return "Compiling..."
+}
+}))(runner_.state_);
+const waiterBuffer_ = ff_core_String.String_toBuffer(ff_core_String.String_replace(ff_compiler_DevelopMode.waiterHtml_, "[STATUS]", status_));
 clientSocket_.write("HTTP/1.1 200 OK\r\n");
 clientSocket_.write("Content-Type: text/html\r\n");
 clientSocket_.write((("Content-Length: " + ff_core_Buffer.Buffer_size(waiterBuffer_)) + "\r\n"));
