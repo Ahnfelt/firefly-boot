@@ -140,10 +140,8 @@ ff_compiler_DevelopMode.startChangeListener_(system_, runner_, ff_core_NodeSyste
 const moduleCache_ = ff_compiler_ModuleCache.new_(0);
 let iteration_ = 0;
 while(true) {
+ff_core_Log.debug_("Compiling...");
 const moduleKey_ = ff_compiler_DevelopMode.build_(system_, runner_, mainFile_, moduleCache_);
-ff_core_Lock.Lock_do(runner_.lock_, (() => {
-runner_.state_ = ff_compiler_DevelopMode.AppRunningState()
-}));
 const taskIteration_ = iteration_;
 const task_ = (((_1) => {
 if(_1.None) {
@@ -154,6 +152,10 @@ return
 }
 {
 const key_ = _1.value_;
+ff_core_Log.debug_("Running...");
+ff_core_Lock.Lock_do(runner_.lock_, (() => {
+runner_.state_ = ff_compiler_DevelopMode.AppRunningState()
+}));
 return ff_compiler_DevelopMode.startApp_(system_, fireflyPath_, key_, mainFile_, arguments_, ((exitCode_, standardOut_, standardError_) => {
 ff_core_Log.debug_(((((("Exited with code: " + exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_));
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
@@ -174,9 +176,11 @@ return
 }
 }))(moduleKey_);
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
+ff_core_Log.debug_("Waiting...");
 while((!runner_.recompile_)) {
 ff_core_Lock.LockCondition_sleep(runner_.lockCondition_)
 };
+ff_core_Log.debug_("Aborting...");
 ff_core_Task.Task_abort(task_);
 ff_core_Set.Set_each(runner_.changedSinceCompilationStarted_, ((key_) => {
 ff_compiler_ModuleCache.ModuleCache_invalidate(moduleCache_, key_);
@@ -263,6 +267,7 @@ if((ff_core_String.String_endsWith(file_, ".ff") || ff_core_String.String_endsWi
 return ff_core_Option.Some((function() {
 const key_ = ff_core_Path.Path_absolute(ff_core_NodeSystem.NodeSystem_path(system_, file_));
 return ff_core_Lock.Lock_do(runner_.lock_, (() => {
+ff_core_Log.debug_(("Changed! " + key_));
 runner_.changedSinceCompilationStarted_ = ff_core_Set.Set_add(runner_.changedSinceCompilationStarted_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }))
 })())
@@ -373,10 +378,8 @@ const runner_ = ff_compiler_DevelopMode.Runner(lock_, lockCondition_, ff_compile
 const moduleCache_ = ff_compiler_ModuleCache.new_(0);
 let iteration_ = 0;
 while(true) {
+ff_core_Log.debug_("Compiling...");
 const moduleKey_ = (await ff_compiler_DevelopMode.build_$(system_, runner_, mainFile_, moduleCache_, $task));
-(await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
-runner_.state_ = ff_compiler_DevelopMode.AppRunningState()
-}), $task));
 const taskIteration_ = iteration_;
 const task_ = (await ((async (_1, $task) => {
 if(_1.None) {
@@ -387,6 +390,10 @@ return
 }
 {
 const key_ = _1.value_;
+ff_core_Log.debug_("Running...");
+(await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
+runner_.state_ = ff_compiler_DevelopMode.AppRunningState()
+}), $task));
 return (await ff_compiler_DevelopMode.startApp_$(system_, fireflyPath_, key_, mainFile_, arguments_, (async (exitCode_, standardOut_, standardError_, $task) => {
 ff_core_Log.debug_(((((("Exited with code: " + exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_));
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
@@ -407,9 +414,11 @@ return
 }
 }))(moduleKey_, $task));
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
+ff_core_Log.debug_("Waiting...");
 while((!runner_.recompile_)) {
 (await ff_core_Lock.LockCondition_sleep$(runner_.lockCondition_, $task))
 };
+ff_core_Log.debug_("Aborting...");
 (await ff_core_Task.Task_abort$(task_, $task));
 ff_core_Set.Set_each(runner_.changedSinceCompilationStarted_, ((key_) => {
 ff_compiler_ModuleCache.ModuleCache_invalidate(moduleCache_, key_);
@@ -496,6 +505,7 @@ if((ff_core_String.String_endsWith(file_, ".ff") || ff_core_String.String_endsWi
 return ff_core_Option.Some((await (async function() {
 const key_ = (await ff_core_Path.Path_absolute$((await ff_core_NodeSystem.NodeSystem_path$(system_, file_, $task)), $task));
 return (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
+ff_core_Log.debug_(("Changed! " + key_));
 runner_.changedSinceCompilationStarted_ = ff_core_Set.Set_add(runner_.changedSinceCompilationStarted_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }), $task))
 })()))

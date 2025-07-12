@@ -2,7 +2,7 @@ import Guide
 
 sections(): List[Section] {
     [
-        Section("The full-stack programming language!!", [
+        Section("The full-stack programming language", [
             Paragraph([
                 Text("Firefly code runs in the browser and on the server, or even at build time. ")
                 Text("You can implement highly interactive webapps without resorting to JavaScript. ")
