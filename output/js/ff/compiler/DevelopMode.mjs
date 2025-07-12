@@ -135,53 +135,12 @@ export function run_(system_, fireflyPath_, mainFile_, arguments_) {
 const lock_ = ff_core_Task.Task_lock(ff_core_NodeSystem.NodeSystem_mainTask(system_));
 const lockCondition_ = ff_core_Lock.Lock_condition(lock_);
 const runner_ = ff_compiler_DevelopMode.Runner(lock_, lockCondition_, ff_compiler_DevelopMode.CompilingState(), false, ff_core_Set.new_());
+ff_compiler_DevelopMode.startProxy_(system_, runner_, 8081, 8080);
+ff_compiler_DevelopMode.startChangeListener_(system_, runner_, ff_core_NodeSystem.NodeSystem_path(system_, "."));
 const moduleCache_ = ff_compiler_ModuleCache.new_(0);
 let iteration_ = 0;
-ff_compiler_DevelopMode.startProxy_(system_, runner_, 8081, 8080);
-ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_path(system_, "."));
-ff_compiler_DevelopMode.startChangeListener_(system_, runner_, ff_core_NodeSystem.NodeSystem_path(system_, "."));
 while(true) {
-const moduleKey_ = ff_core_Try.Try_catchAny(ff_core_Try.Try_tryCatch(ff_core_Try.Try_tryCatch(ff_core_Core.try_((() => {
-const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), ff_compiler_DependencyLock.new_(ff_core_NodeSystem.NodeSystem_mainTask(system_)), ff_core_NodeSystem.NodeSystem_path(system_, mainFile_));
-const mainPath_ = ff_core_NodeSystem.NodeSystem_path(system_, mainFile_);
-return ff_core_Option.Some(ff_compiler_Main.buildScript_(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, moduleCache_))
-})), ((_1, _2) => {
-{
-const at_ = _1.at_;
-const message_ = _1.message_;
-const error_ = _2;
-ff_core_Log.debug_(message_);
-ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_));
-ff_core_Lock.Lock_do(runner_.lock_, (() => {
-runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(message_)
-}));
-return ff_core_Option.None()
-}
-}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
-{
-const compileErrors_ = _1.errors_;
-const error_ = _2;
-ff_core_List.List_each(compileErrors_, ((_1) => {
-{
-const at_ = _1.at_;
-const message_ = _1.message_;
-ff_core_Log.debug_(message_);
-ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_));
-ff_core_Lock.Lock_do(runner_.lock_, (() => {
-runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(message_)
-}))
-return
-}
-}));
-return ff_core_Option.None()
-}
-}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors), ((error_) => {
-ff_core_Log.debug_(ff_core_Error.Error_message(error_));
-ff_core_Lock.Lock_do(runner_.lock_, (() => {
-runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Error.Error_message(error_))
-}));
-return ff_core_Option.None()
-}));
+const moduleKey_ = ff_compiler_DevelopMode.build_(system_, runner_, mainFile_, moduleCache_);
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
 runner_.state_ = ff_compiler_DevelopMode.AppRunningState()
 }));
@@ -227,6 +186,51 @@ runner_.changedSinceCompilationStarted_ = ff_core_Set.new_();
 iteration_ += 1
 }))
 }
+}
+
+export function build_(system_, runner_, mainFile_, moduleCache_) {
+return ff_core_Try.Try_catchAny(ff_core_Try.Try_tryCatch(ff_core_Try.Try_tryCatch(ff_core_Core.try_((() => {
+ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_path(system_, "."));
+const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), ff_compiler_DependencyLock.new_(ff_core_NodeSystem.NodeSystem_mainTask(system_)), ff_core_NodeSystem.NodeSystem_path(system_, mainFile_));
+const mainPath_ = ff_core_NodeSystem.NodeSystem_path(system_, mainFile_);
+return ff_core_Option.Some(ff_compiler_Main.buildScript_(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, moduleCache_))
+})), ((_1, _2) => {
+{
+const at_ = _1.at_;
+const message_ = _1.message_;
+const error_ = _2;
+ff_core_Log.debug_(message_);
+ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_));
+ff_core_Lock.Lock_do(runner_.lock_, (() => {
+runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(message_)
+}));
+return ff_core_Option.None()
+}
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
+{
+const compileErrors_ = _1.errors_;
+const error_ = _2;
+ff_core_List.List_each(compileErrors_, ((_1) => {
+{
+const at_ = _1.at_;
+const message_ = _1.message_;
+ff_core_Log.debug_(message_);
+ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_));
+ff_core_Lock.Lock_do(runner_.lock_, (() => {
+runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(message_)
+}))
+return
+}
+}));
+return ff_core_Option.None()
+}
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors), ((error_) => {
+ff_core_Log.debug_(ff_core_Error.Error_message(error_));
+ff_core_Lock.Lock_do(runner_.lock_, (() => {
+runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Error.Error_message(error_))
+}));
+return ff_core_Option.None()
+}))
 }
 
 export function startApp_(system_, fireflyPath_, moduleKey_, mainFile_, arguments_, onExit_) {
@@ -350,53 +354,12 @@ export async function run_$(system_, fireflyPath_, mainFile_, arguments_, $task)
 const lock_ = (await ff_core_Task.Task_lock$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task));
 const lockCondition_ = (await ff_core_Lock.Lock_condition$(lock_, $task));
 const runner_ = ff_compiler_DevelopMode.Runner(lock_, lockCondition_, ff_compiler_DevelopMode.CompilingState(), false, ff_core_Set.new_());
+(await ff_compiler_DevelopMode.startProxy_$(system_, runner_, 8081, 8080, $task));
+(await ff_compiler_DevelopMode.startChangeListener_$(system_, runner_, (await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
 const moduleCache_ = ff_compiler_ModuleCache.new_(0);
 let iteration_ = 0;
-(await ff_compiler_DevelopMode.startProxy_$(system_, runner_, 8081, 8080, $task));
-(await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
-(await ff_compiler_DevelopMode.startChangeListener_$(system_, runner_, (await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
 while(true) {
-const moduleKey_ = (await ff_core_Try.Try_catchAny$((await ff_core_Try.Try_tryCatch$((await ff_core_Try.Try_tryCatch$((await ff_core_Core.try_$((async ($task) => {
-const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (await ff_compiler_DependencyLock.new_$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task)), (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task));
-const mainPath_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task));
-return ff_core_Option.Some((await ff_compiler_Main.buildScript_$(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, moduleCache_, $task)))
-}), $task)), (async (_1, _2, $task) => {
-{
-const at_ = _1.at_;
-const message_ = _1.message_;
-const error_ = _2;
-ff_core_Log.debug_(message_);
-ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_));
-(await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
-runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(message_)
-}), $task));
-return ff_core_Option.None()
-}
-}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, $task)), (async (_1, _2, $task) => {
-{
-const compileErrors_ = _1.errors_;
-const error_ = _2;
-(await ff_core_List.List_each$(compileErrors_, (async (_1, $task) => {
-{
-const at_ = _1.at_;
-const message_ = _1.message_;
-ff_core_Log.debug_(message_);
-ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_));
-(await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
-runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(message_)
-}), $task))
-return
-}
-}), $task));
-return ff_core_Option.None()
-}
-}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, $task)), (async (error_, $task) => {
-ff_core_Log.debug_(ff_core_Error.Error_message(error_));
-(await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
-runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Error.Error_message(error_))
-}), $task));
-return ff_core_Option.None()
-}), $task));
+const moduleKey_ = (await ff_compiler_DevelopMode.build_$(system_, runner_, mainFile_, moduleCache_, $task));
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
 runner_.state_ = ff_compiler_DevelopMode.AppRunningState()
 }), $task));
@@ -442,6 +405,51 @@ runner_.changedSinceCompilationStarted_ = ff_core_Set.new_();
 iteration_ += 1
 }), $task))
 }
+}
+
+export async function build_$(system_, runner_, mainFile_, moduleCache_, $task) {
+return (await ff_core_Try.Try_catchAny$((await ff_core_Try.Try_tryCatch$((await ff_core_Try.Try_tryCatch$((await ff_core_Core.try_$((async ($task) => {
+(await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
+const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (await ff_compiler_DependencyLock.new_$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task)), (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task));
+const mainPath_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task));
+return ff_core_Option.Some((await ff_compiler_Main.buildScript_$(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, moduleCache_, $task)))
+}), $task)), (async (_1, _2, $task) => {
+{
+const at_ = _1.at_;
+const message_ = _1.message_;
+const error_ = _2;
+ff_core_Log.debug_(message_);
+ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_));
+(await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
+runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(message_)
+}), $task));
+return ff_core_Option.None()
+}
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, $task)), (async (_1, _2, $task) => {
+{
+const compileErrors_ = _1.errors_;
+const error_ = _2;
+(await ff_core_List.List_each$(compileErrors_, (async (_1, $task) => {
+{
+const at_ = _1.at_;
+const message_ = _1.message_;
+ff_core_Log.debug_(message_);
+ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_));
+(await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
+runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(message_)
+}), $task))
+return
+}
+}), $task));
+return ff_core_Option.None()
+}
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, $task)), (async (error_, $task) => {
+ff_core_Log.debug_(ff_core_Error.Error_message(error_));
+(await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
+runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Error.Error_message(error_))
+}), $task));
+return ff_core_Option.None()
+}), $task))
 }
 
 export async function startApp_$(system_, fireflyPath_, moduleKey_, mainFile_, arguments_, onExit_, $task) {

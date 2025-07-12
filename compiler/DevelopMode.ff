@@ -24,50 +24,12 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
     let lock = system.mainTask().lock()
     let lockCondition = lock.condition()
     let runner = Runner(lock, lockCondition, CompilingState, False, Set.new())
+    startProxy(system, runner, 8081, 8080)
+    startChangeListener(system, runner, system.path("."))
     let moduleCache = ModuleCache.new(0)
     mutable iteration = 0
-    startProxy(system, runner, 8081, 8080)
-    Main.prepareFireflyDirectory(system.path("."))
-    startChangeListener(system, runner, system.path("."))
     while {True} {
-        let moduleKey = try {
-            let resolvedDependencies = Dependencies.process(
-                system.httpClient()
-                DependencyLock.new(system.mainTask())
-                system.path(mainFile)
-            )
-            let mainPath = system.path(mainFile)
-            Some(Main.buildScript(
-                system
-                mainPath
-                resolvedDependencies.mainPackagePair
-                EmitNode
-                resolvedDependencies
-                moduleCache
-            ))
-        } tryCatch {| CompileError(at, message), error =>
-            Log.debug(message)
-            Log.debug(" at " + at.file.replace("./", "") + ":" + at.line + ":" + at.column)
-            runner.lock.do {
-                runner.state = CompileErrorState(message)
-            }
-            None
-        } tryCatch {| CompileErrors(compileErrors), error =>
-            compileErrors.each {| CompileError(at, message) =>
-                Log.debug(message)
-                Log.debug(" at " + at.file.replace("./", "") + ":" + at.line + ":" + at.column)
-                runner.lock.do {
-                    runner.state = CompileErrorState(message)
-                }
-            }
-            None
-        } catchAny {error =>
-            Log.debug(error.message())
-            runner.lock.do {
-                runner.state = CompileErrorState(error.message())
-            }
-            None
-        }
+        let moduleKey = build(system, runner, mainFile, moduleCache)
         runner.lock.do {
             runner.state = AppRunningState
         }
@@ -105,6 +67,48 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
     }
 }
 
+build(system: NodeSystem, runner: Runner, mainFile: String, moduleCache: ModuleCache): Option[ModuleKey] {
+    try {
+        Main.prepareFireflyDirectory(system.path("."))
+        let resolvedDependencies = Dependencies.process(
+            system.httpClient()
+            DependencyLock.new(system.mainTask())
+            system.path(mainFile)
+        )
+        let mainPath = system.path(mainFile)
+        Some(Main.buildScript(
+            system
+            mainPath
+            resolvedDependencies.mainPackagePair
+            EmitNode
+            resolvedDependencies
+            moduleCache
+        ))
+    } tryCatch {| CompileError(at, message), error =>
+        Log.debug(message)
+        Log.debug(" at " + at.file.replace("./", "") + ":" + at.line + ":" + at.column)
+        runner.lock.do {
+            runner.state = CompileErrorState(message)
+        }
+        None
+    } tryCatch {| CompileErrors(compileErrors), error =>
+        compileErrors.each {| CompileError(at, message) =>
+            Log.debug(message)
+            Log.debug(" at " + at.file.replace("./", "") + ":" + at.line + ":" + at.column)
+            runner.lock.do {
+                runner.state = CompileErrorState(message)
+            }
+        }
+        None
+    } catchAny {error =>
+        Log.debug(error.message())
+        runner.lock.do {
+            runner.state = CompileErrorState(error.message())
+        }
+        None
+    }    
+}
+
 startApp(
     system: NodeSystem
     fireflyPath: Path
@@ -113,7 +117,7 @@ startApp(
     arguments: List[String]
     onExit: (Int, String, String) => Unit
 ): Task {
-    // Start in separate task + process
+    // Start in separate process
     system.mainTask().spawn {task =>
         if(!Main.importAndRun(system, fireflyPath, "node", moduleKey, arguments)) {
             let at = Location(system.path(mainFile).absolute(), 1, 1)
