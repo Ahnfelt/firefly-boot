@@ -139,6 +139,12 @@ startProxy(
                 if(headers.get("sec-fetch-user") === "?1") {
                     isHttpNavigateRequest = True
                     Js->console->log("Detected HTTP request with Sec-Fetch-User")
+                    runner.lock.do {
+                        if(runner.changedSinceCompilationStarted.size() != 0) {
+                            runner.recompile = True
+                            runner.lockCondition.wakeAll()
+                        }
+                    }
                 }
                 
                 mutable targetSocket = Js.undefined()
