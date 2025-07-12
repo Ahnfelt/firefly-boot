@@ -229,7 +229,7 @@ startProxy(
                         False
                     }
                     if(refreshLike) {
-                        Log.debug("Refreshed! Waiter: " + if(serveWaiter) {"true"} else {"false"})
+                        Log.debug("Refreshed!")
                     }
                     
                     mutable targetSocket = Js.undefined()
@@ -260,7 +260,7 @@ startProxy(
 
                         targetSocket->on("error", Js->{err =>
                             if(connectedToTarget) {
-                                Js->console->error("Target socket error:", err)
+                                Log.debug("Target socket error:" + err?)
                                 clientSocket->end()?
                             } elseIf {!refreshLike} {
                                 clientSocket->write("HTTP/1.1 503 Service Unavailable\r\n")
@@ -268,6 +268,7 @@ startProxy(
                                 clientSocket->write("\r\n")
                                 clientSocket->end()?
                             } else {
+                                Log.debug("Fallback!")
                                 serveWaiterHtml()
                             }
                         })

@@ -340,9 +340,7 @@ const j_ = headers_["sec-fetch-dest"];
 return false
 })());
 if(refreshLike_) {
-ff_core_Log.debug_(("Refreshed! Waiter: " + (serveWaiter_
-? "true"
-: "false")))
+ff_core_Log.debug_("Refreshed!")
 };
 let targetSocket_ = (void 0);
 clientSocket_.on("error", ((err_) => {
@@ -371,7 +369,7 @@ return clientSocket_.pipe(targetSocket_).pipe(clientSocket_)
 }));
 targetSocket_.on("error", ((err_) => {
 if(connectedToTarget_) {
-console.error("Target socket error:", err_);
+ff_core_Log.debug_(("Target socket error:" + err_));
 return clientSocket_.end()
 } else if((!refreshLike_)) {
 clientSocket_.write("HTTP/1.1 503 Service Unavailable\r\n");
@@ -379,6 +377,7 @@ clientSocket_.write("Connection: close\r\n");
 clientSocket_.write("\r\n");
 return clientSocket_.end()
 } else {
+ff_core_Log.debug_("Fallback!");
 return serveWaiterHtml_()
 }
 }))
@@ -601,9 +600,7 @@ const j_ = headers_["sec-fetch-dest"];
 return false
 })()));
 if(refreshLike_) {
-ff_core_Log.debug_(("Refreshed! Waiter: " + (serveWaiter_
-? "true"
-: "false")))
+ff_core_Log.debug_("Refreshed!")
 };
 let targetSocket_ = (void 0);
 clientSocket_.on("error", ((err_) => {
@@ -632,7 +629,7 @@ return clientSocket_.pipe(targetSocket_).pipe(clientSocket_)
 }));
 targetSocket_.on("error", ((err_) => {
 if(connectedToTarget_) {
-console.error("Target socket error:", err_);
+ff_core_Log.debug_(("Target socket error:" + err_));
 return clientSocket_.end()
 } else if((!refreshLike_)) {
 clientSocket_.write("HTTP/1.1 503 Service Unavailable\r\n");
@@ -640,6 +637,7 @@ clientSocket_.write("Connection: close\r\n");
 clientSocket_.write("\r\n");
 return clientSocket_.end()
 } else {
+ff_core_Log.debug_("Fallback!");
 return serveWaiterHtml_()
 }
 }))
