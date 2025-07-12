@@ -276,7 +276,7 @@ return serveWaiterHtml_()
 } else {
 let connectedToTarget_ = false;
 targetSocket_ = net_.createConnection(targetPort_, targetServer_, (() => {
-console.log("Connected to target server");
+connectedToTarget_ = true;
 targetSocket_.write(buffer_);
 return clientSocket_.pipe(targetSocket_).pipe(clientSocket_)
 }));
@@ -443,7 +443,7 @@ return serveWaiterHtml_()
 } else {
 let connectedToTarget_ = false;
 targetSocket_ = net_.createConnection(targetPort_, targetServer_, (() => {
-console.log("Connected to target server");
+connectedToTarget_ = true;
 targetSocket_.write(buffer_);
 return clientSocket_.pipe(targetSocket_).pipe(clientSocket_)
 }));

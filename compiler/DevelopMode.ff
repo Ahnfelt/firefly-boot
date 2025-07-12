@@ -149,7 +149,6 @@ startProxy(
                 mutable serveWaiter = False
                 if(headers.get("sec-fetch-user") === "?1") {
                     isHttpNavigateRequest = True
-                    Js->console->log("Detected HTTP request with Sec-Fetch-User")
                     runner.lock.do {
                         if(runner.changedSinceCompilationStarted.size() != 0) {
                             runner.recompile = True
@@ -186,7 +185,7 @@ startProxy(
                 } else {
                     mutable connectedToTarget = False
                     targetSocket = net->createConnection(targetPort, targetServer, Js->{
-                        Js->console->log("Connected to target server")
+                        connectedToTarget = True
                         targetSocket->write(buffer)
                         clientSocket->pipe(targetSocket)->pipe(clientSocket)
                     })
