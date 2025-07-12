@@ -25,8 +25,8 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
     Main.prepareFireflyDirectory(system.path("."))
     let moduleCache = ModuleCache.new(0)
     mutable iteration = 0
-    startChangeListener(system, system.path("."))
     startProxy(system, 8081, 8080)
+    startChangeListener(system, system.path("."))
     while {True} {
         let resolvedDependencies = Dependencies.process(
             system.httpClient()
