@@ -7,6 +7,7 @@ import JsEmitter
 
 capability Runner(
     lock: Lock
+    lockCondition: LockCondition
     mutable state: RunnerState
     mutable refreshed: Bool
     mutable changedSinceCompilationStarted: Set[String]
@@ -21,8 +22,8 @@ data RunnerState {
 
 run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[String]) {
     let lock = system.mainTask().lock()
-    let condition = lock.condition()
-    let runner = Runner(lock, CompilingState, refreshed = False, changedSinceCompilationStarted = Set.new())
+    let lockCondition = lock.condition()
+    let runner = Runner(lock, lockCondition, CompilingState, False, Set.new())
     let moduleCache = ModuleCache.new(0)
     mutable iteration = 0
     startProxy(system, runner, 8081, 8080)
@@ -43,12 +44,12 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
             resolvedDependencies
             moduleCache
         )
-        lock.do {
+        runner.lock.do {
             runner.state = AppRunningState
         }
         let taskIteration = iteration
         let task = startApp(system, fireflyPath, moduleKey, mainFile, arguments) {exitCode, standardOut, standardError =>
-            lock.do {
+            runner.lock.do {
                 runner.state.{
                     | AppRunningState {taskIteration == iteration} => 
                         runner.state = AppCrashedState(
@@ -58,9 +59,9 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
                 }
             }
         }
-        lock.do {
+        runner.lock.do {
             while {!runner.refreshed} {
-                condition.sleep()
+                runner.lockCondition.sleep()
             }
             task.abort()
             runner.changedSinceCompilationStarted.each {key =>
