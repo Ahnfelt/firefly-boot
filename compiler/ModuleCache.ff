@@ -32,12 +32,13 @@ extend self: ModuleCache {
     }
     
     invalidate(key: String) {
-        //Log.trace("Invalidate: " + uri)
+        //Log.trace("Invalidate: " + key + " in " + self.parsedModules.keys().toList().join(" "))
         self.parsedModules.get(key).each: | Pair(module, _) =>
+        //Log.trace("Invalidated: " + key)
         self.remove([key])
         self.parsedModules.each {| k, Pair(m, _) =>
             if(m.imports.any {i => i.moduleKey == module.moduleKey}) {
-                //Log.trace("Invalidating due to import of invalidated module: " + m.packagePair.groupName() + "/" + m.file)
+                //Log.trace("Invalidating due to import of invalidated module: " + m.moduleKey.importName())
                 self.remove([k])
             }
         }

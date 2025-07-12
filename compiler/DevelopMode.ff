@@ -30,6 +30,7 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
     mutable iteration = 0
     while {True} {
         let moduleKey = build(system, runner, mainFile, moduleCache)
+        // Rebuild if changedSinceCompilationStarted
         runner.lock.do {
             runner.state = AppRunningState
         }
@@ -39,6 +40,8 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
                 system.mainTask().spawn {_ => }
             | Some(key) => 
                 startApp(system, fireflyPath, key, mainFile, arguments) {exitCode, standardOut, standardError =>
+                    // Move this into starApp
+                    Log.debug("Exited with code: " + exitCode + "\n\n" + standardOut + "\n\n" + standardError)
                     runner.lock.do {
                         runner.state.{
                             | AppRunningState {taskIteration == iteration} => 
@@ -57,6 +60,7 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
             task.abort()
             runner.changedSinceCompilationStarted.each {key =>
                 moduleCache.invalidate(key)
+                moduleCache.emittedModules = Map.new() // Since we currenly delete all files each build
                 // Invalidate dependent files as well (only one layer though, and only if the file defines traits)
             }
             runner.state = CompilingState
@@ -117,11 +121,20 @@ startApp(
     arguments: List[String]
     onExit: (Int, String, String) => Unit
 ): Task {
-    // Start in separate process
     system.mainTask().spawn {task =>
-        if(!Main.importAndRun(system, fireflyPath, "node", moduleKey, arguments)) {
-            let at = Location(system.path(mainFile).absolute(), 1, 1)
-            throw(CompileError(at, "This module does not contain a 'nodeMain' function"))
+        try {
+            let runFile = Main.locateRunFile(system, "node", moduleKey)
+            let runFilePath = if(runFile.contains("://")) {system.pathFromUrl(runFile)} else {system.path(runFile)}
+            let startPath = runFilePath.parent().grab().slash(runFilePath.base() + ".start.mjs")
+            startPath.writeText(
+                "import * as run from " + Json.string(runFilePath.url()).write() + "\n" + 
+                "await run.$run$(" + Json.string(fireflyPath.absolute()).write() + ", " + Json.toJson(arguments).write() + ")"
+            )
+            let relativeStartFile = startPath.relativeTo(system.path("."))
+            let result = system.execute(relativeStartFile, arguments, node = True)
+            onExit(result.exitCode, result.standardOut.toString(), result.standardError.toString())
+        } catchAny {error =>
+            onExit(-1, "", "App aborted: " + error.message())
         }
     }
 }
@@ -133,9 +146,10 @@ startChangeListener(
 ) {
     let fs = Js.import("node:fs")
     fs->watch(path.absolute(), Js->(recursive = True), Js->{eventType, fileName =>
+        if(!fileName.isNullOrUndefined()):
         let file: String = fileName?
         if(file.endsWith(".ff") || file.endsWith(".firefly-workspace")) {
-            let key = system.path(file).url()
+            let key = system.path(file).absolute()
             runner.lock.do {
                 // Probably we should also listen for other files, e.g. resources
                 runner.changedSinceCompilationStarted = runner.changedSinceCompilationStarted.add(key)
@@ -180,21 +194,22 @@ startProxy(
                     let headerData = buffer->subarray(0, headerEnd)->toString()
                     let headers = parseHeaders(headerData)
                     
-                    mutable serveWaiter = False
-                    if(headers.get("sec-fetch-user") === "?1") {
+                    let serveWaiter = if(headers.get("sec-fetch-user") === "?1") {
                         isHttpNavigateRequest = True
                         runner.lock.do {
                             if(runner.changedSinceCompilationStarted.size() != 0) {
                                 runner.recompile = True
                                 runner.lockCondition.wakeAll()
-                                serveWaiter = True
+                                True
                             } else {
-                                serveWaiter = runner.state.{
-                                    | AppRunningState => False
+                                runner.state.{
+                                    | AppRunningState => !runner.recompile
                                     | _ => True
                                 }
                             }
                         }
+                    } else {
+                        False
                     }
                     
                     mutable targetSocket = Js.undefined()

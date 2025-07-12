@@ -260,7 +260,7 @@ result_ = ff_core_Map.Map_add(result_, key_, process.env[key_], ff_core_Ordering
 return result_
 }
 
-export function NodeSystem_execute(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, shell_ = false) {
+export function NodeSystem_execute(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, shell_ = false, node_ = false) {
 const childProcess_ = import$3;
 const env_ = ff_core_Option.Option_else(ff_core_Option.Option_map(environment_, ((e_) => {
 const o_ = {};
@@ -273,11 +273,17 @@ return process.env
 }));
 return ff_core_Js.withSignal_(((signal_) => {
 return ff_core_Js.awaitCancellablePromise_(((resolve_, reject_, onSettle_) => {
-const newProcess_ = childProcess_.spawn(command_, arguments_, {cwd: ff_core_Option.Option_else(ff_core_Option.Option_map(directory_, ((_w1) => {
+const newProcess_ = (node_
+? childProcess_.fork(command_, arguments_, {cwd: ff_core_Option.Option_else(ff_core_Option.Option_map(directory_, ((_w1) => {
 return _w1.absolutePath_
 })), (() => {
 return (void 0)
-})), windowsHide: true, signal: signal_, killSignal: killSignal_, env: env_, shell: shell_});
+})), signal: signal_, killSignal: killSignal_, env: env_, silent: true})
+: childProcess_.spawn(command_, arguments_, {cwd: ff_core_Option.Option_else(ff_core_Option.Option_map(directory_, ((_w1) => {
+return _w1.absolutePath_
+})), (() => {
+return (void 0)
+})), windowsHide: true, signal: signal_, killSignal: killSignal_, env: env_, shell: shell_}));
 let size_ = 0;
 const out_ = ff_core_Array.new_();
 const err_ = ff_core_Array.new_();
@@ -443,7 +449,7 @@ result_ = ff_core_Map.Map_add(result_, key_, process.env[key_], ff_core_Ordering
 return result_
 }
 
-export async function NodeSystem_execute$(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, shell_ = false, $task) {
+export async function NodeSystem_execute$(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, shell_ = false, node_ = false, $task) {
 const childProcess_ = import$3;
 const env_ = ff_core_Option.Option_else(ff_core_Option.Option_map(environment_, ((e_) => {
 const o_ = {};
@@ -456,11 +462,17 @@ return process.env
 }));
 return (await ff_core_Js.withSignal_$((async (signal_, $task) => {
 return (await ff_core_Js.awaitCancellablePromise_$(((resolve_, reject_, onSettle_) => {
-const newProcess_ = childProcess_.spawn(command_, arguments_, {cwd: ff_core_Option.Option_else(ff_core_Option.Option_map(directory_, ((_w1) => {
+const newProcess_ = (node_
+? childProcess_.fork(command_, arguments_, {cwd: ff_core_Option.Option_else(ff_core_Option.Option_map(directory_, ((_w1) => {
 return _w1.absolutePath_
 })), (() => {
 return (void 0)
-})), windowsHide: true, signal: signal_, killSignal: killSignal_, env: env_, shell: shell_});
+})), signal: signal_, killSignal: killSignal_, env: env_, silent: true})
+: childProcess_.spawn(command_, arguments_, {cwd: ff_core_Option.Option_else(ff_core_Option.Option_map(directory_, ((_w1) => {
+return _w1.absolutePath_
+})), (() => {
+return (void 0)
+})), windowsHide: true, signal: signal_, killSignal: killSignal_, env: env_, shell: shell_}));
 let size_ = 0;
 const out_ = ff_core_Array.new_();
 const err_ = ff_core_Array.new_();

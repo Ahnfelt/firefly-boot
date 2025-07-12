@@ -116,6 +116,7 @@ extend self: NodeSystem {
         maxBuffer: Int = 16777216
         killSignal: Int = 9
         shell: Bool = False
+        node: Bool = False
     ): ProcessResult {
         let childProcess = Js.import("node:child_process")
         let env = environment.map {e =>
@@ -124,14 +125,24 @@ extend self: NodeSystem {
             o
         }.else {Js->process->env}
         Js.withSignal {signal => Js.awaitCancellablePromise {resolve, reject, onSettle =>
-            let newProcess = childProcess->spawn(command, arguments, Js->(
-                cwd = directory.map {_.absolutePath!}.else {Js.undefined()}
-                windowsHide = True
-                signal = signal
-                killSignal = killSignal
-                env = env
-                shell = shell
-            ))
+            let newProcess = if(node) {
+                childProcess->fork(command, arguments, Js->(
+                    cwd = directory.map {_.absolutePath!}.else {Js.undefined()}
+                    signal = signal
+                    killSignal = killSignal
+                    env = env
+                    silent = True
+                ))
+            } else {
+                childProcess->spawn(command, arguments, Js->(
+                    cwd = directory.map {_.absolutePath!}.else {Js.undefined()}
+                    windowsHide = True
+                    signal = signal
+                    killSignal = killSignal
+                    env = env
+                    shell = shell
+                ))
+            }
             mutable size = 0
             let out = Array.new()
             let err = Array.new()

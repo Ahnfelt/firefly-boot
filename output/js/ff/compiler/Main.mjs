@@ -464,13 +464,7 @@ ff_core_BuildSystem.internalBrowserCallEsBuild_(system_, [ff_core_Path.Path_abso
 }
 
 export function importAndRun_(system_, fireflyPath_, target_, moduleKey_, arguments_) {
-const process_ = import("process");
-const cwd_ = process_.cwd();
-const workingDirectory_ = ((cwd_.indexOf(":") === 1)
-? ("file:///" + cwd_)
-: cwd_);
-const packagePath_ = ff_compiler_Syntax.PackagePair_groupName(moduleKey_.packagePair_, "/");
-const runFile_ = (((((((workingDirectory_ + "/.firefly/output/") + target_) + "/") + packagePath_) + "/") + ff_compiler_Syntax.ModuleKey_importName(moduleKey_)) + ".run.mjs");
+const runFile_ = ff_compiler_Main.locateRunFile_(system_, target_, moduleKey_);
 const runFilePath_ = (ff_core_String.String_contains(runFile_, "://")
 ? ff_core_NodeSystem.NodeSystem_pathFromUrl(system_, runFile_)
 : ff_core_NodeSystem.NodeSystem_path(system_, runFile_));
@@ -486,6 +480,16 @@ return true
 } else {
 return false
 }
+}
+
+export function locateRunFile_(system_, target_, moduleKey_) {
+const process_ = import("process");
+const cwd_ = process_.cwd();
+const workingDirectory_ = ((cwd_.indexOf(":") === 1)
+? ("file:///" + cwd_)
+: cwd_);
+const packagePath_ = ff_compiler_Syntax.PackagePair_groupName(moduleKey_.packagePair_, "/");
+return (((((((workingDirectory_ + "/.firefly/output/") + target_) + "/") + packagePath_) + "/") + ff_compiler_Syntax.ModuleKey_importName(moduleKey_)) + ".run.mjs")
 }
 
 export function prepareFireflyDirectory_(path_) {
@@ -900,13 +904,7 @@ ff_core_BuildSystem.internalBrowserCallEsBuild_(system_, [(await ff_core_Path.Pa
 }
 
 export async function importAndRun_$(system_, fireflyPath_, target_, moduleKey_, arguments_, $task) {
-const process_ = (await import("process"));
-const cwd_ = process_.cwd();
-const workingDirectory_ = ((cwd_.indexOf(":") === 1)
-? ("file:///" + cwd_)
-: cwd_);
-const packagePath_ = ff_compiler_Syntax.PackagePair_groupName(moduleKey_.packagePair_, "/");
-const runFile_ = (((((((workingDirectory_ + "/.firefly/output/") + target_) + "/") + packagePath_) + "/") + ff_compiler_Syntax.ModuleKey_importName(moduleKey_)) + ".run.mjs");
+const runFile_ = (await ff_compiler_Main.locateRunFile_$(system_, target_, moduleKey_, $task));
 const runFilePath_ = (ff_core_String.String_contains(runFile_, "://")
 ? (await ff_core_NodeSystem.NodeSystem_pathFromUrl$(system_, runFile_, $task))
 : (await ff_core_NodeSystem.NodeSystem_path$(system_, runFile_, $task)));
@@ -922,6 +920,16 @@ return true
 } else {
 return false
 }
+}
+
+export async function locateRunFile_$(system_, target_, moduleKey_, $task) {
+const process_ = (await import("process"));
+const cwd_ = process_.cwd();
+const workingDirectory_ = ((cwd_.indexOf(":") === 1)
+? ("file:///" + cwd_)
+: cwd_);
+const packagePath_ = ff_compiler_Syntax.PackagePair_groupName(moduleKey_.packagePair_, "/");
+return (((((((workingDirectory_ + "/.firefly/output/") + target_) + "/") + packagePath_) + "/") + ff_compiler_Syntax.ModuleKey_importName(moduleKey_)) + ".run.mjs")
 }
 
 export async function prepareFireflyDirectory_$(path_, $task) {

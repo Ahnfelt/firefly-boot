@@ -155,6 +155,7 @@ return
 {
 const key_ = _1.value_;
 return ff_compiler_DevelopMode.startApp_(system_, fireflyPath_, key_, mainFile_, arguments_, ((exitCode_, standardOut_, standardError_) => {
+ff_core_Log.debug_(((((("Exited with code: " + exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_));
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
 {
 const _1 = runner_.state_;
@@ -178,7 +179,8 @@ ff_core_Lock.LockCondition_sleep(runner_.lockCondition_)
 };
 ff_core_Task.Task_abort(task_);
 ff_core_Set.Set_each(runner_.changedSinceCompilationStarted_, ((key_) => {
-ff_compiler_ModuleCache.ModuleCache_invalidate(moduleCache_, key_)
+ff_compiler_ModuleCache.ModuleCache_invalidate(moduleCache_, key_);
+moduleCache_.emittedModules_ = ff_core_Map.new_()
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 runner_.state_ = ff_compiler_DevelopMode.CompilingState();
 runner_.recompile_ = false;
@@ -235,9 +237,18 @@ return ff_core_Option.None()
 
 export function startApp_(system_, fireflyPath_, moduleKey_, mainFile_, arguments_, onExit_) {
 return ff_core_Task.Task_spawn(ff_core_NodeSystem.NodeSystem_mainTask(system_), ((task_) => {
-if((!ff_compiler_Main.importAndRun_(system_, fireflyPath_, "node", moduleKey_, arguments_))) {
-const at_ = ff_compiler_Syntax.Location(ff_core_Path.Path_absolute(ff_core_NodeSystem.NodeSystem_path(system_, mainFile_)), 1, 1);
-throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, "This module does not contain a 'nodeMain' function"), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+try {
+const runFile_ = ff_compiler_Main.locateRunFile_(system_, "node", moduleKey_);
+const runFilePath_ = (ff_core_String.String_contains(runFile_, "://")
+? ff_core_NodeSystem.NodeSystem_pathFromUrl(system_, runFile_)
+: ff_core_NodeSystem.NodeSystem_path(system_, runFile_));
+const startPath_ = ff_core_Path.Path_slash(ff_core_Option.Option_grab(ff_core_Path.Path_parent(runFilePath_)), (ff_core_Path.Path_base(runFilePath_) + ".start.mjs"));
+ff_core_Path.Path_writeText(startPath_, ((((((("import * as run from " + ff_core_Json.Json_write(ff_core_Path.Path_url(runFilePath_), ff_core_Option.None())) + "\n") + "await run.$run$(") + ff_core_Json.Json_write(ff_core_Path.Path_absolute(fireflyPath_), ff_core_Option.None())) + ", ") + ff_core_Json.Json_write(ff_core_Json.ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json.ff_core_Json_JsonLike$ff_core_String_String).toJson_(arguments_), ff_core_Option.None())) + ")"));
+const relativeStartFile_ = ff_core_Path.Path_relativeTo(startPath_, ff_core_NodeSystem.NodeSystem_path(system_, "."));
+const result_ = ff_core_NodeSystem.NodeSystem_execute(system_, relativeStartFile_, arguments_, ff_core_Buffer.new_(0, false), ff_core_Option.None(), ff_core_Option.None(), 16777216, 9, false, true);
+onExit_(result_.exitCode_, ff_core_Buffer.Buffer_toString(result_.standardOut_, "utf8"), ff_core_Buffer.Buffer_toString(result_.standardError_, "utf8"))
+} catch(error_) {
+onExit_((-1), "", ("App aborted: " + ff_core_Error.Error_message(error_)))
 }
 }))
 }
@@ -245,13 +256,17 @@ throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, "This mod
 export function startChangeListener_(system_, runner_, path_) {
 const fs_ = import$0;
 fs_.watch(ff_core_Path.Path_absolute(path_), {recursive: true}, ((eventType_, fileName_) => {
+if((!ff_core_JsValue.JsValue_isNullOrUndefined(fileName_))) {
+return ff_core_Option.Some((function() {
 const file_ = fileName_;
 if((ff_core_String.String_endsWith(file_, ".ff") || ff_core_String.String_endsWith(file_, ".firefly-workspace"))) {
 return ff_core_Option.Some((function() {
-const key_ = ff_core_Path.Path_url(ff_core_NodeSystem.NodeSystem_path(system_, file_));
+const key_ = ff_core_Path.Path_absolute(ff_core_NodeSystem.NodeSystem_path(system_, file_));
 return ff_core_Lock.Lock_do(runner_.lock_, (() => {
 runner_.changedSinceCompilationStarted_ = ff_core_Set.Set_add(runner_.changedSinceCompilationStarted_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }))
+})())
+} else return ff_core_Option.None()
 })())
 } else return ff_core_Option.None()
 }))
@@ -287,26 +302,25 @@ const headerEnd_ = buffer_.indexOf("\r\n\r\n");
 if(((headerEnd_ !== (-1)) || (buffer_.length >= (64 * 1024)))) {
 const headerData_ = buffer_.subarray(0, headerEnd_).toString();
 const headers_ = parseHeaders_(headerData_);
-let serveWaiter_ = false;
-if((headers_["sec-fetch-user"] === "?1")) {
-isHttpNavigateRequest_ = true;
-ff_core_Lock.Lock_do(runner_.lock_, (() => {
+const serveWaiter_ = ((headers_["sec-fetch-user"] === "?1")
+? (isHttpNavigateRequest_ = true, ff_core_Lock.Lock_do(runner_.lock_, (() => {
 if((ff_core_Set.Set_size(runner_.changedSinceCompilationStarted_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) !== 0)) {
 runner_.recompile_ = true;
 ff_core_Lock.LockCondition_wakeAll(runner_.lockCondition_);
-serveWaiter_ = true
+return true
 } else {
-serveWaiter_ = (((_1) => {
+{
+const _1 = runner_.state_;
 if(_1.AppRunningState) {
-return false
+return (!runner_.recompile_)
 }
 {
 return true
 }
-}))(runner_.state_)
 }
-}))
-};
+}
+})))
+: false);
 let targetSocket_ = (void 0);
 clientSocket_.on("error", ((err_) => {
 if((!ff_core_JsValue.JsValue_isUndefined(targetSocket_))) {
@@ -374,6 +388,7 @@ return
 {
 const key_ = _1.value_;
 return (await ff_compiler_DevelopMode.startApp_$(system_, fireflyPath_, key_, mainFile_, arguments_, (async (exitCode_, standardOut_, standardError_, $task) => {
+ff_core_Log.debug_(((((("Exited with code: " + exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_));
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
 {
 const _1 = runner_.state_;
@@ -397,7 +412,8 @@ while((!runner_.recompile_)) {
 };
 (await ff_core_Task.Task_abort$(task_, $task));
 ff_core_Set.Set_each(runner_.changedSinceCompilationStarted_, ((key_) => {
-ff_compiler_ModuleCache.ModuleCache_invalidate(moduleCache_, key_)
+ff_compiler_ModuleCache.ModuleCache_invalidate(moduleCache_, key_);
+moduleCache_.emittedModules_ = ff_core_Map.new_()
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 runner_.state_ = ff_compiler_DevelopMode.CompilingState();
 runner_.recompile_ = false;
@@ -454,9 +470,18 @@ return ff_core_Option.None()
 
 export async function startApp_$(system_, fireflyPath_, moduleKey_, mainFile_, arguments_, onExit_, $task) {
 return (await ff_core_Task.Task_spawn$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), (async (task_, $task) => {
-if((!(await ff_compiler_Main.importAndRun_$(system_, fireflyPath_, "node", moduleKey_, arguments_, $task)))) {
-const at_ = ff_compiler_Syntax.Location((await ff_core_Path.Path_absolute$((await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task)), 1, 1);
-throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, "This module does not contain a 'nodeMain' function"), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileError)
+try {
+const runFile_ = (await ff_compiler_Main.locateRunFile_$(system_, "node", moduleKey_, $task));
+const runFilePath_ = (ff_core_String.String_contains(runFile_, "://")
+? (await ff_core_NodeSystem.NodeSystem_pathFromUrl$(system_, runFile_, $task))
+: (await ff_core_NodeSystem.NodeSystem_path$(system_, runFile_, $task)));
+const startPath_ = (await ff_core_Path.Path_slash$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(runFilePath_, $task))), ((await ff_core_Path.Path_base$(runFilePath_, $task)) + ".start.mjs"), $task));
+(await ff_core_Path.Path_writeText$(startPath_, ((((((("import * as run from " + ff_core_Json.Json_write((await ff_core_Path.Path_url$(runFilePath_, $task)), ff_core_Option.None())) + "\n") + "await run.$run$(") + ff_core_Json.Json_write((await ff_core_Path.Path_absolute$(fireflyPath_, $task)), ff_core_Option.None())) + ", ") + ff_core_Json.Json_write(ff_core_Json.ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json.ff_core_Json_JsonLike$ff_core_String_String).toJson_(arguments_), ff_core_Option.None())) + ")"), $task));
+const relativeStartFile_ = (await ff_core_Path.Path_relativeTo$(startPath_, (await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
+const result_ = (await ff_core_NodeSystem.NodeSystem_execute$(system_, relativeStartFile_, arguments_, ff_core_Buffer.new_(0, false), ff_core_Option.None(), ff_core_Option.None(), 16777216, 9, false, true, $task));
+(await onExit_(result_.exitCode_, ff_core_Buffer.Buffer_toString(result_.standardOut_, "utf8"), ff_core_Buffer.Buffer_toString(result_.standardError_, "utf8"), $task))
+} catch(error_) {
+(await onExit_((-1), "", ("App aborted: " + ff_core_Error.Error_message(error_)), $task))
 }
 }), $task))
 }
@@ -464,13 +489,17 @@ throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, "This mod
 export async function startChangeListener_$(system_, runner_, path_, $task) {
 const fs_ = import$0;
 fs_.watch((await ff_core_Path.Path_absolute$(path_, $task)), {recursive: true}, (async (a_1, a_2) => await (async (eventType_, fileName_, $task) => {
+if((!ff_core_JsValue.JsValue_isNullOrUndefined(fileName_))) {
+return ff_core_Option.Some((await (async function() {
 const file_ = fileName_;
 if((ff_core_String.String_endsWith(file_, ".ff") || ff_core_String.String_endsWith(file_, ".firefly-workspace"))) {
 return ff_core_Option.Some((await (async function() {
-const key_ = (await ff_core_Path.Path_url$((await ff_core_NodeSystem.NodeSystem_path$(system_, file_, $task)), $task));
+const key_ = (await ff_core_Path.Path_absolute$((await ff_core_NodeSystem.NodeSystem_path$(system_, file_, $task)), $task));
 return (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
 runner_.changedSinceCompilationStarted_ = ff_core_Set.Set_add(runner_.changedSinceCompilationStarted_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }), $task))
+})()))
+} else return ff_core_Option.None()
 })()))
 } else return ff_core_Option.None()
 })(a_1, a_2, $task)))
@@ -506,26 +535,25 @@ const headerEnd_ = buffer_.indexOf("\r\n\r\n");
 if(((headerEnd_ !== (-1)) || (buffer_.length >= (64 * 1024)))) {
 const headerData_ = buffer_.subarray(0, headerEnd_).toString();
 const headers_ = parseHeaders_(headerData_);
-let serveWaiter_ = false;
-if((headers_["sec-fetch-user"] === "?1")) {
-isHttpNavigateRequest_ = true;
-(await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
+const serveWaiter_ = ((headers_["sec-fetch-user"] === "?1")
+? (isHttpNavigateRequest_ = true, (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
 if((ff_core_Set.Set_size(runner_.changedSinceCompilationStarted_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) !== 0)) {
 runner_.recompile_ = true;
 (await ff_core_Lock.LockCondition_wakeAll$(runner_.lockCondition_, $task));
-serveWaiter_ = true
+return true
 } else {
-serveWaiter_ = (((_1) => {
+{
+const _1 = runner_.state_;
 if(_1.AppRunningState) {
-return false
+return (!runner_.recompile_)
 }
 {
 return true
 }
-}))(runner_.state_)
 }
-}), $task))
-};
+}
+}), $task)))
+: false);
 let targetSocket_ = (void 0);
 clientSocket_.on("error", ((err_) => {
 if((!ff_core_JsValue.JsValue_isUndefined(targetSocket_))) {

@@ -295,11 +295,7 @@ importAndRun(
     moduleKey: ModuleKey
     arguments: List[String]
 ): Bool {
-    let process = Js.await(Js.dynamicImport("process"))
-    let cwd = process->cwd()
-    let workingDirectory = if(cwd->indexOf(":") === 1) {"file:///" + cwd?} else {cwd?}
-    let packagePath = moduleKey.packagePair.groupName("/")
-    let runFile = workingDirectory + "/.firefly/output/" + target + "/" + packagePath + "/" + moduleKey.importName() + ".run.mjs"
+    let runFile = locateRunFile(system, target, moduleKey)
     let runFilePath = if(runFile.contains("://")) {system.pathFromUrl(runFile)} else {system.path(runFile)}
     if(runFilePath.exists()) {
         let main = Js.await(Js.dynamicImport(runFile))
@@ -313,6 +309,14 @@ importAndRun(
     } else {
         False
     }
+}
+
+locateRunFile(system: NodeSystem, target: String, moduleKey: ModuleKey): String {
+    let process = Js.await(Js.dynamicImport("process"))
+    let cwd = process->cwd()
+    let workingDirectory = if(cwd->indexOf(":") === 1) {"file:///" + cwd?} else {cwd?}
+    let packagePath = moduleKey.packagePair.groupName("/")
+    workingDirectory + "/.firefly/output/" + target + "/" + packagePath + "/" + moduleKey.importName() + ".run.mjs"
 }
 
 prepareFireflyDirectory(path: Path) {
