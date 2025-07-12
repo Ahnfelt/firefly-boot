@@ -9,7 +9,7 @@ capability Runner(
     lock: Lock
     lockCondition: LockCondition
     mutable state: RunnerState
-    mutable refreshed: Bool
+    mutable recompile: Bool
     mutable changedSinceCompilationStarted: Set[String]
 )
 
@@ -60,7 +60,7 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
             }
         }
         runner.lock.do {
-            while {!runner.refreshed} {
+            while {!runner.recompile} {
                 runner.lockCondition.sleep()
             }
             task.abort()
@@ -69,7 +69,7 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
                 // Invalidate dependent files as well (only one layer though, and only if the file defines traits)
             }
             runner.state = CompilingState
-            runner.refreshed = False
+            runner.recompile = False
             runner.changedSinceCompilationStarted = Set.new()
             iteration += 1
         }
