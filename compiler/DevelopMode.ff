@@ -22,10 +22,10 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
     let lock = system.mainTask().lock()
     let condition = lock.condition()
     mutable runner = Runner(CompilingState, refreshed = False, changedSinceCompilationStarted = Set.new())
-    Main.prepareFireflyDirectory(system.path("."))
     let moduleCache = ModuleCache.new(0)
     mutable iteration = 0
     startProxy(system, 8081, 8080)
+    Main.prepareFireflyDirectory(system.path("."))
     startChangeListener(system, system.path("."))
     while {True} {
         let resolvedDependencies = Dependencies.process(
