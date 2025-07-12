@@ -5,10 +5,11 @@ import DependencyLock
 import Syntax
 import JsEmitter
 
-data Runner(
-    state: RunnerState
-    refreshed: Bool
-    changedSinceCompilationStarted: Set[String]
+capability Runner(
+    lock: Lock
+    mutable state: RunnerState
+    mutable refreshed: Bool
+    mutable changedSinceCompilationStarted: Set[String]
 )
 
 data RunnerState {
@@ -21,12 +22,12 @@ data RunnerState {
 run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[String]) {
     let lock = system.mainTask().lock()
     let condition = lock.condition()
-    mutable runner = Runner(CompilingState, refreshed = False, changedSinceCompilationStarted = Set.new())
+    let runner = Runner(lock, CompilingState, refreshed = False, changedSinceCompilationStarted = Set.new())
     let moduleCache = ModuleCache.new(0)
     mutable iteration = 0
-    startProxy(system, 8081, 8080)
+    startProxy(system, runner, 8081, 8080)
     Main.prepareFireflyDirectory(system.path("."))
-    startChangeListener(system, system.path("."))
+    startChangeListener(system, runner, system.path("."))
     while {True} {
         let resolvedDependencies = Dependencies.process(
             system.httpClient()
@@ -43,16 +44,16 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
             moduleCache
         )
         lock.do {
-            runner = runner.Runner(state = AppRunningState)
+            runner.state = AppRunningState
         }
         let taskIteration = iteration
         let task = startApp(system, fireflyPath, moduleKey, mainFile, arguments) {exitCode, standardOut, standardError =>
             lock.do {
                 runner.state.{
                     | AppRunningState {taskIteration == iteration} => 
-                        runner = runner.Runner(state = AppCrashedState(
+                        runner.state = AppCrashedState(
                             "Exited with code: " + exitCode + "\n" + standardOut + "\n" + standardError
-                        ))
+                        )
                     | _ => 
                 }
             }
@@ -66,7 +67,9 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
                 moduleCache.invalidate(key)
                 // Invalidate dependent files as well (only one layer though, and only if the file defines traits)
             }
-            runner = Runner(state = CompilingState, refreshed = False, changedSinceCompilationStarted = Set.new())
+            runner.state = CompilingState
+            runner.refreshed = False
+            runner.changedSinceCompilationStarted = Set.new()
             iteration += 1
         }
     }
@@ -91,6 +94,7 @@ startApp(
 
 startChangeListener(
     system: NodeSystem
+    runner: Runner
     path: Path
 ) {
     // Listen for file changes
@@ -98,6 +102,7 @@ startChangeListener(
 
 startProxy(
     system: NodeSystem
+    runner: Runner
     proxyPort: Int
     targetPort: Int
 ) {
