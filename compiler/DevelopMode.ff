@@ -20,7 +20,6 @@ data RunnerState {
 run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[String]) {
     Main.prepareFireflyDirectory(system.path("."))
     let moduleCache = ModuleCache.new(0)
-    // Move to DevelopMode
     // Protect DevelopMode data with a mutex and condition variable and share it with file listener and proxy
     // Start file listener task
     // Start Proxy in task
