@@ -214,11 +214,11 @@ waiterHtml = """<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Example Page</title>
+    <title>Firefly develop mode</title>
 </head>
 <body>
-    <h1>Hello, World!</h1>
-    <p>This is an example HTML page.</p>
+    <h1>Develop mode</h1>
+    <p>Waiting...</p>
 </body>
 </html>
 """
