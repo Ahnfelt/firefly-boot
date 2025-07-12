@@ -351,16 +351,19 @@ return ff_core_Option.Some(targetSocket_.end())
 }));
 function serveWaiterHtml_() {
 const status_ = (((_1) => {
+if(runner_.recompile_) {
+return "Restarting..."
+}
 if(_1.AppCrashedState) {
 const output_ = _1.output_;
-return "Crashed!"
+return "App crashed!"
 }
 if(_1.AppRunningState) {
-return "Starting..."
+return "Starting app..."
 }
 if(_1.CompileErrorState) {
 const output_ = _1.output_;
-return "Error!"
+return "Compile error!"
 }
 {
 return "Compiling..."
@@ -629,16 +632,19 @@ return ff_core_Option.Some(targetSocket_.end())
 }));
 function serveWaiterHtml_() {
 const status_ = (((_1) => {
+if(runner_.recompile_) {
+return "Restarting..."
+}
 if(_1.AppCrashedState) {
 const output_ = _1.output_;
-return "Crashed!"
+return "App crashed!"
 }
 if(_1.AppRunningState) {
-return "Starting..."
+return "Starting app..."
 }
 if(_1.CompileErrorState) {
 const output_ = _1.output_;
-return "Error!"
+return "Compile error!"
 }
 {
 return "Compiling..."

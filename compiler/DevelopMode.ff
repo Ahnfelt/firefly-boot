@@ -239,9 +239,10 @@ startProxy(
 
                     function serveWaiterHtml() {
                         let status = runner.state.{
-                            | AppCrashedState(output) => "Crashed!"
-                            | AppRunningState => "Starting..."
-                            | CompileErrorState(output) => "Error!"
+                            | _ {runner.recompile} => "Restarting..."
+                            | AppCrashedState(output) => "App crashed!"
+                            | AppRunningState => "Starting app..."
+                            | CompileErrorState(output) => "Compile error!"
                             | CompilingState => "Compiling..."
                         }
                         let waiterBuffer = waiterHtml.replace("[STATUS]", status).toBuffer()
