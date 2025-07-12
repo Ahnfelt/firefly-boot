@@ -24,12 +24,10 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
     mutable runner = Runner(CompilingState, refreshed = False, changedSinceCompilationStarted = Set.new())
     Main.prepareFireflyDirectory(system.path("."))
     let moduleCache = ModuleCache.new(0)
-    // Protect DevelopMode data with a mutex and condition variable and share it with file listener and proxy
     // Start file listener task
     // Start Proxy in task
     mutable iteration = 0
     while {True} {
-        // Compile or wait for proxy signal
         let resolvedDependencies = Dependencies.process(
             system.httpClient()
             DependencyLock.new(system.mainTask())
