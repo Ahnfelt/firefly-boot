@@ -143,6 +143,7 @@ startProxy(
                         if(runner.changedSinceCompilationStarted.size() != 0) {
                             runner.recompile = True
                             runner.lockCondition.wakeAll()
+                            // Serve response instead of piping to backend
                         }
                     }
                 }
