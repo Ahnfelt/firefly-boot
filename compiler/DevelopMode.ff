@@ -40,5 +40,4 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
         }
         // Wait for restart condition from proxy
     }
-    
 }
