@@ -247,8 +247,8 @@ waiterHtml = """<!DOCTYPE html>
     <title>Firefly develop mode</title>
 </head>
 <body>
-    <h1>Develop mode</h1>
-    <p>Waiting...</p>
+    <h1>Firefly develop mode</h1>
+    <p>Refreshing...</p>
 </body>
 </html>
 """
