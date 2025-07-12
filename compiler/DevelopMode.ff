@@ -9,8 +9,9 @@ capability Runner(
     lock: Lock
     lockCondition: LockCondition
     mutable state: RunnerState
-    mutable recompile: Bool
     mutable changedSinceCompilationStarted: Set[String]
+    mutable recompile: Bool
+    mutable appRunning: Bool
 )
 
 data RunnerState {
@@ -23,7 +24,7 @@ data RunnerState {
 run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[String]) {
     let lock = system.mainTask().lock()
     let lockCondition = lock.condition()
-    let runner = Runner(lock, lockCondition, CompilingState, False, Set.new())
+    let runner = Runner(lock, lockCondition, CompilingState, Set.new(), False, False)
     startProxy(system, runner, 8081, 8080)
     startChangeListener(system, runner, system.path("."))
     let moduleCache = ModuleCache.new(0)
@@ -42,25 +43,35 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
                     runner.state = AppRunningState
                 }
                 startApp(system, fireflyPath, key, mainFile, arguments) {exitCode, standardOut, standardError =>
-                    // Move this into starApp
-                    Log.debug("Exited with code: " + exitCode + "\n\n" + standardOut + "\n\n" + standardError)
                     runner.lock.do {
-                        runner.state.{
-                            | AppRunningState {taskIteration == iteration} => 
-                                runner.state = AppCrashedState(
-                                    "Exited with code: " + exitCode + "\n\n" + standardOut + "\n\n" + standardError
-                                )
-                            | _ => 
+                        runner.appRunning = False
+                        // Move this into starApp
+                        if(exitCode != -1) {
+                            Log.debug("Exited with code: " + exitCode + "\n\n" + standardOut + "\n\n" + standardError)
+                            runner.state.{
+                                | AppRunningState {taskIteration == iteration} => 
+                                    runner.state = AppCrashedState(
+                                        "Exited with code: " + exitCode + "\n\n" + standardOut + "\n\n" + standardError
+                                    )
+                                | _ => 
+                            }
                         }
+                        runner.lockCondition.wakeAll()
                     }
-                }                
+                }
         }
         runner.lock.do {
+            if(runner.appRunning) {
+                Log.debug("Still shutting down app...")
+                while {!runner.appRunning} {
+                    runner.lockCondition.sleep()
+                }
+            }
             Log.debug("Waiting...")
             while {!runner.recompile} {
                 runner.lockCondition.sleep()
             }
-            Log.debug("Aborting...")
+            Log.debug("Shutting down app...")
             task.abort()
             runner.changedSinceCompilationStarted.each {key =>
                 moduleCache.invalidate(key)
@@ -199,8 +210,8 @@ startProxy(
                     let headerData = buffer->subarray(0, headerEnd)->toString()
                     let headers = parseHeaders(headerData)
                     
-                    let serveWaiter = if(headers.get("sec-fetch-user") === "?1") {
-                        isHttpNavigateRequest = True
+                    let refreshLike = headers.get("sec-fetch-dest") === "document"
+                    let serveWaiter = if(refreshLike) {
                         runner.lock.do {
                             if(runner.changedSinceCompilationStarted.size() != 0) {
                                 runner.recompile = True
@@ -208,13 +219,18 @@ startProxy(
                                 True
                             } else {
                                 runner.state.{
-                                    | AppRunningState => !runner.recompile
+                                    | AppRunningState => runner.recompile
                                     | _ => True
                                 }
                             }
                         }
                     } else {
+                        let j: Json = headers.get("sec-fetch-dest")?
+                        Log.debug("Non-refresh " + j.write())
                         False
+                    }
+                    if(refreshLike) {
+                        Log.debug("Refreshed! Waiter: " + if(serveWaiter) {"true"} else {"false"})
                     }
                     
                     mutable targetSocket = Js.undefined()
@@ -246,6 +262,11 @@ startProxy(
                         targetSocket->on("error", Js->{err =>
                             if(connectedToTarget) {
                                 Js->console->error("Target socket error:", err)
+                                clientSocket->end()?
+                            } elseIf {!refreshLike} {
+                                clientSocket->write("HTTP/1.1 503 Service Unavailable\r\n")
+                                clientSocket->write("Connection: close\r\n")
+                                clientSocket->write("\r\n")
                                 clientSocket->end()?
                             } else {
                                 serveWaiterHtml()

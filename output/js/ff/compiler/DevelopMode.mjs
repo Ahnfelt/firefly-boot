@@ -109,8 +109,8 @@ import * as import$1 from 'node:net';
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Runner
-export function Runner(lock_, lockCondition_, state_, recompile_, changedSinceCompilationStarted_) {
-return {lock_, lockCondition_, state_, recompile_, changedSinceCompilationStarted_};
+export function Runner(lock_, lockCondition_, state_, changedSinceCompilationStarted_, recompile_, appRunning_) {
+return {lock_, lockCondition_, state_, changedSinceCompilationStarted_, recompile_, appRunning_};
 }
 
 // type RunnerState
@@ -134,7 +134,7 @@ export const waiterHtml_ = "<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n 
 export function run_(system_, fireflyPath_, mainFile_, arguments_) {
 const lock_ = ff_core_Task.Task_lock(ff_core_NodeSystem.NodeSystem_mainTask(system_));
 const lockCondition_ = ff_core_Lock.Lock_condition(lock_);
-const runner_ = ff_compiler_DevelopMode.Runner(lock_, lockCondition_, ff_compiler_DevelopMode.CompilingState(), false, ff_core_Set.new_());
+const runner_ = ff_compiler_DevelopMode.Runner(lock_, lockCondition_, ff_compiler_DevelopMode.CompilingState(), ff_core_Set.new_(), false, false);
 ff_compiler_DevelopMode.startProxy_(system_, runner_, 8081, 8080);
 ff_compiler_DevelopMode.startChangeListener_(system_, runner_, ff_core_NodeSystem.NodeSystem_path(system_, "."));
 const moduleCache_ = ff_compiler_ModuleCache.new_(0);
@@ -157,30 +157,39 @@ ff_core_Lock.Lock_do(runner_.lock_, (() => {
 runner_.state_ = ff_compiler_DevelopMode.AppRunningState()
 }));
 return ff_compiler_DevelopMode.startApp_(system_, fireflyPath_, key_, mainFile_, arguments_, ((exitCode_, standardOut_, standardError_) => {
-ff_core_Log.debug_(((((("Exited with code: " + exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_));
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
-{
+runner_.appRunning_ = false;
+if((exitCode_ !== (-1))) {
+ff_core_Log.debug_(((((("Exited with code: " + exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_));
+do {
 const _1 = runner_.state_;
 if(_1.AppRunningState && (taskIteration_ === iteration_)) {
 runner_.state_ = ff_compiler_DevelopMode.AppCrashedState(((((("Exited with code: " + exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_))
-return
+break
 }
 {
 
-return
 }
-}
+} while(false)
+};
+return ff_core_Lock.LockCondition_wakeAll(runner_.lockCondition_)
 }))
 }))
 return
 }
 }))(moduleKey_);
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
+if(runner_.appRunning_) {
+ff_core_Log.debug_("Still shutting down app...");
+while((!runner_.appRunning_)) {
+ff_core_Lock.LockCondition_sleep(runner_.lockCondition_)
+}
+};
 ff_core_Log.debug_("Waiting...");
 while((!runner_.recompile_)) {
 ff_core_Lock.LockCondition_sleep(runner_.lockCondition_)
 };
-ff_core_Log.debug_("Aborting...");
+ff_core_Log.debug_("Shutting down app...");
 ff_core_Task.Task_abort(task_);
 ff_core_Set.Set_each(runner_.changedSinceCompilationStarted_, ((key_) => {
 ff_compiler_ModuleCache.ModuleCache_invalidate(moduleCache_, key_);
@@ -307,8 +316,9 @@ const headerEnd_ = buffer_.indexOf("\r\n\r\n");
 if(((headerEnd_ !== (-1)) || (buffer_.length >= (64 * 1024)))) {
 const headerData_ = buffer_.subarray(0, headerEnd_).toString();
 const headers_ = parseHeaders_(headerData_);
-const serveWaiter_ = ((headers_["sec-fetch-user"] === "?1")
-? (isHttpNavigateRequest_ = true, ff_core_Lock.Lock_do(runner_.lock_, (() => {
+const refreshLike_ = (headers_["sec-fetch-dest"] === "document");
+const serveWaiter_ = (refreshLike_
+? ff_core_Lock.Lock_do(runner_.lock_, (() => {
 if((ff_core_Set.Set_size(runner_.changedSinceCompilationStarted_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) !== 0)) {
 runner_.recompile_ = true;
 ff_core_Lock.LockCondition_wakeAll(runner_.lockCondition_);
@@ -317,15 +327,24 @@ return true
 {
 const _1 = runner_.state_;
 if(_1.AppRunningState) {
-return (!runner_.recompile_)
+return runner_.recompile_
 }
 {
 return true
 }
 }
 }
-})))
-: false);
+}))
+: (function() {
+const j_ = headers_["sec-fetch-dest"];
+ff_core_Log.debug_(("Non-refresh " + ff_core_Json.Json_write(j_, ff_core_Option.None())));
+return false
+})());
+if(refreshLike_) {
+ff_core_Log.debug_(("Refreshed! Waiter: " + (serveWaiter_
+? "true"
+: "false")))
+};
 let targetSocket_ = (void 0);
 clientSocket_.on("error", ((err_) => {
 if((!ff_core_JsValue.JsValue_isUndefined(targetSocket_))) {
@@ -355,6 +374,11 @@ targetSocket_.on("error", ((err_) => {
 if(connectedToTarget_) {
 console.error("Target socket error:", err_);
 return clientSocket_.end()
+} else if((!refreshLike_)) {
+clientSocket_.write("HTTP/1.1 503 Service Unavailable\r\n");
+clientSocket_.write("Connection: close\r\n");
+clientSocket_.write("\r\n");
+return clientSocket_.end()
 } else {
 return serveWaiterHtml_()
 }
@@ -372,7 +396,7 @@ return console.log(("Proxy server running on port " + proxyPort_))
 export async function run_$(system_, fireflyPath_, mainFile_, arguments_, $task) {
 const lock_ = (await ff_core_Task.Task_lock$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task));
 const lockCondition_ = (await ff_core_Lock.Lock_condition$(lock_, $task));
-const runner_ = ff_compiler_DevelopMode.Runner(lock_, lockCondition_, ff_compiler_DevelopMode.CompilingState(), false, ff_core_Set.new_());
+const runner_ = ff_compiler_DevelopMode.Runner(lock_, lockCondition_, ff_compiler_DevelopMode.CompilingState(), ff_core_Set.new_(), false, false);
 (await ff_compiler_DevelopMode.startProxy_$(system_, runner_, 8081, 8080, $task));
 (await ff_compiler_DevelopMode.startChangeListener_$(system_, runner_, (await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
 const moduleCache_ = ff_compiler_ModuleCache.new_(0);
@@ -395,30 +419,39 @@ ff_core_Log.debug_("Running...");
 runner_.state_ = ff_compiler_DevelopMode.AppRunningState()
 }), $task));
 return (await ff_compiler_DevelopMode.startApp_$(system_, fireflyPath_, key_, mainFile_, arguments_, (async (exitCode_, standardOut_, standardError_, $task) => {
-ff_core_Log.debug_(((((("Exited with code: " + exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_));
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
-{
+runner_.appRunning_ = false;
+if((exitCode_ !== (-1))) {
+ff_core_Log.debug_(((((("Exited with code: " + exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_));
+do {
 const _1 = runner_.state_;
 if(_1.AppRunningState && (taskIteration_ === iteration_)) {
 runner_.state_ = ff_compiler_DevelopMode.AppCrashedState(((((("Exited with code: " + exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_))
-return
+break
 }
 {
 
-return
 }
-}
+} while(false)
+};
+return (await ff_core_Lock.LockCondition_wakeAll$(runner_.lockCondition_, $task))
 }), $task))
 }), $task))
 return
 }
 }))(moduleKey_, $task));
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
+if(runner_.appRunning_) {
+ff_core_Log.debug_("Still shutting down app...");
+while((!runner_.appRunning_)) {
+(await ff_core_Lock.LockCondition_sleep$(runner_.lockCondition_, $task))
+}
+};
 ff_core_Log.debug_("Waiting...");
 while((!runner_.recompile_)) {
 (await ff_core_Lock.LockCondition_sleep$(runner_.lockCondition_, $task))
 };
-ff_core_Log.debug_("Aborting...");
+ff_core_Log.debug_("Shutting down app...");
 (await ff_core_Task.Task_abort$(task_, $task));
 ff_core_Set.Set_each(runner_.changedSinceCompilationStarted_, ((key_) => {
 ff_compiler_ModuleCache.ModuleCache_invalidate(moduleCache_, key_);
@@ -545,8 +578,9 @@ const headerEnd_ = buffer_.indexOf("\r\n\r\n");
 if(((headerEnd_ !== (-1)) || (buffer_.length >= (64 * 1024)))) {
 const headerData_ = buffer_.subarray(0, headerEnd_).toString();
 const headers_ = parseHeaders_(headerData_);
-const serveWaiter_ = ((headers_["sec-fetch-user"] === "?1")
-? (isHttpNavigateRequest_ = true, (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
+const refreshLike_ = (headers_["sec-fetch-dest"] === "document");
+const serveWaiter_ = (refreshLike_
+? (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
 if((ff_core_Set.Set_size(runner_.changedSinceCompilationStarted_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) !== 0)) {
 runner_.recompile_ = true;
 (await ff_core_Lock.LockCondition_wakeAll$(runner_.lockCondition_, $task));
@@ -555,15 +589,24 @@ return true
 {
 const _1 = runner_.state_;
 if(_1.AppRunningState) {
-return (!runner_.recompile_)
+return runner_.recompile_
 }
 {
 return true
 }
 }
 }
-}), $task)))
-: false);
+}), $task))
+: (await (async function() {
+const j_ = headers_["sec-fetch-dest"];
+ff_core_Log.debug_(("Non-refresh " + ff_core_Json.Json_write(j_, ff_core_Option.None())));
+return false
+})()));
+if(refreshLike_) {
+ff_core_Log.debug_(("Refreshed! Waiter: " + (serveWaiter_
+? "true"
+: "false")))
+};
 let targetSocket_ = (void 0);
 clientSocket_.on("error", ((err_) => {
 if((!ff_core_JsValue.JsValue_isUndefined(targetSocket_))) {
@@ -592,6 +635,11 @@ return clientSocket_.pipe(targetSocket_).pipe(clientSocket_)
 targetSocket_.on("error", ((err_) => {
 if(connectedToTarget_) {
 console.error("Target socket error:", err_);
+return clientSocket_.end()
+} else if((!refreshLike_)) {
+clientSocket_.write("HTTP/1.1 503 Service Unavailable\r\n");
+clientSocket_.write("Connection: close\r\n");
+clientSocket_.write("\r\n");
 return clientSocket_.end()
 } else {
 return serveWaiterHtml_()
