@@ -48,7 +48,7 @@ build(
                     try {
                         processIncludes(jsPathFile, packagePath, packageInfo)
                     } catchAny {error => // TODO: Why does this sometimes fail
-                        Log.debug("Internal error: processIncludes" + error.message())
+                        Log.debug("Internal error in processIncludes: " + error.message())
                     }
                 }
             }

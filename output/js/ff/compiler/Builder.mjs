@@ -147,7 +147,7 @@ if(ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff
 try {
 ff_compiler_Builder.processIncludes_(jsPathFile_, packagePath_, packageInfo_)
 } catch(error_) {
-ff_core_Log.debug_(("Internal error: processIncludes" + ff_core_Error.Error_message(error_)))
+ff_core_Log.debug_(("Internal error in processIncludes: " + ff_core_Error.Error_message(error_)))
 }
 }
 }
@@ -417,7 +417,7 @@ if(ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff
 try {
 (await ff_compiler_Builder.processIncludes_$(jsPathFile_, packagePath_, packageInfo_, $task))
 } catch(error_) {
-ff_core_Log.debug_(("Internal error: processIncludes" + ff_core_Error.Error_message(error_)))
+ff_core_Log.debug_(("Internal error in processIncludes: " + ff_core_Error.Error_message(error_)))
 }
 }
 }
