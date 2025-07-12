@@ -7,22 +7,27 @@ import JsEmitter
 
 data Runner(
     state: RunnerState
+    refreshed: Bool
     changedSinceCompilationStarted: Set[String]
 )
 
 data RunnerState {
     CompilingState
     CompileErrorState(output: String)
-    AppRunningState(output: String)
+    AppRunningState
     AppCrashedState(output: String)
 }
 
 run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[String]) {
+    let lock = system.mainTask().lock()
+    let condition = lock.condition()
+    mutable runner = Runner(CompilingState, refreshed = False, changedSinceCompilationStarted = Set.new())
     Main.prepareFireflyDirectory(system.path("."))
     let moduleCache = ModuleCache.new(0)
     // Protect DevelopMode data with a mutex and condition variable and share it with file listener and proxy
     // Start file listener task
     // Start Proxy in task
+    mutable iteration = 0
     while {True} {
         // Compile or wait for proxy signal
         let resolvedDependencies = Dependencies.process(
@@ -31,12 +36,57 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
             system.path(mainFile)
         )
         let mainPath = system.path(mainFile)
-        let moduleKey = Main.buildScript(system, mainPath, resolvedDependencies.mainPackagePair, EmitNode, resolvedDependencies, moduleCache)
-        // Start in separate task + process
+        let moduleKey = Main.buildScript(
+            system
+            mainPath
+            resolvedDependencies.mainPackagePair
+            EmitNode
+            resolvedDependencies
+            moduleCache
+        )
+        lock.do {
+            runner = runner.Runner(state = AppRunningState)
+        }
+        let taskIteration = iteration
+        let task = startApp(system, fireflyPath, moduleKey, mainFile, arguments) {exitCode, standardOut, standardError =>
+            lock.do {
+                runner.state.{
+                    | AppRunningState {taskIteration == iteration} => 
+                        runner = runner.Runner(state = AppCrashedState(
+                            "Exited with code: " + exitCode + "\n" + standardOut + "\n" + standardError
+                        ))
+                    | _ => 
+                }
+            }
+        }
+        lock.do {
+            while {!runner.refreshed} {
+                condition.sleep()
+            }
+            task.abort()
+            runner.changedSinceCompilationStarted.each {key =>
+                moduleCache.invalidate(key)
+                // Invalidate dependent files as well (only one layer though, and only if the file defines traits)
+            }
+            runner = Runner(state = CompilingState, refreshed = False, changedSinceCompilationStarted = Set.new())
+            iteration += 1
+        }
+    }
+}
+
+startApp(
+    system: NodeSystem
+    fireflyPath: Path
+    moduleKey: ModuleKey
+    mainFile: String
+    arguments: List[String]
+    onExit: (Int, String, String) => Unit
+): Task {
+    // Start in separate task + process
+    system.mainTask().spawn {task =>
         if(!Main.importAndRun(system, fireflyPath, "node", moduleKey, arguments)) {
             let at = Location(system.path(mainFile).absolute(), 1, 1)
             throw(CompileError(at, "This module does not contain a 'nodeMain' function"))
         }
-        // Wait for restart condition from proxy
     }
 }
