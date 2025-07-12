@@ -226,7 +226,6 @@ startProxy(
                         }
                     } else {
                         let j: Json = headers.get("sec-fetch-dest")?
-                        Log.debug("Non-refresh " + j.write())
                         False
                     }
                     if(refreshLike) {

@@ -337,7 +337,6 @@ return true
 }))
 : (function() {
 const j_ = headers_["sec-fetch-dest"];
-ff_core_Log.debug_(("Non-refresh " + ff_core_Json.Json_write(j_, ff_core_Option.None())));
 return false
 })());
 if(refreshLike_) {
@@ -599,7 +598,6 @@ return true
 }), $task))
 : (await (async function() {
 const j_ = headers_["sec-fetch-dest"];
-ff_core_Log.debug_(("Non-refresh " + ff_core_Json.Json_write(j_, ff_core_Option.None())));
 return false
 })()));
 if(refreshLike_) {
