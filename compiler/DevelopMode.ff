@@ -17,8 +17,8 @@ capability Runner(
 data RunnerState {
     CompilingState
     CompileErrorState(output: String)
-    AppRunningState
-    AppCrashedState(output: String)
+    ApplicationRunningState
+    ApplicationCrashedState(output: String)
 }
 
 run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[String]) {
@@ -40,7 +40,7 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
             | Some(key) => 
                 Log.debug("Running...")
                 runner.lock.do {
-                    runner.state = AppRunningState
+                    runner.state = ApplicationRunningState
                 }
                 startApp(system, fireflyPath, key, mainFile, arguments) {exitCode, standardOut, standardError =>
                     runner.lock.do {
@@ -49,8 +49,8 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
                         if(exitCode != -1) {
                             Log.debug("Exited with code: " + exitCode + "\n\n" + standardOut + "\n\n" + standardError)
                             runner.state.{
-                                | AppRunningState {taskIteration == iteration} => 
-                                    runner.state = AppCrashedState(
+                                | ApplicationRunningState {taskIteration == iteration} => 
+                                    runner.state = ApplicationCrashedState(
                                         "Exited with code: " + exitCode + "\n\n" + standardOut + "\n\n" + standardError
                                     )
                                 | _ => 
@@ -219,7 +219,7 @@ startProxy(
                                 True
                             } else {
                                 runner.state.{
-                                    | AppRunningState => runner.recompile
+                                    | ApplicationRunningState => runner.recompile
                                     | _ => True
                                 }
                             }
@@ -240,8 +240,8 @@ startProxy(
                     function serveWaiterHtml() {
                         let status = runner.state.{
                             | _ {runner.recompile} => "Restarting..."
-                            | AppCrashedState(output) => "App crashed!"
-                            | AppRunningState => "Starting app..."
+                            | ApplicationCrashedState(output) => "Application crashed!"
+                            | ApplicationRunningState => "Starting application..."
                             | CompileErrorState(output) => "Compile error!"
                             | CompilingState => "Compiling..."
                         }
