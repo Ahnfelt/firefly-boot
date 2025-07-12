@@ -144,7 +144,11 @@ if(if_o.Some) {
 const packageInfo_ = if_o.value_;
 ff_compiler_Builder.processNodeModules_(system_, jsPathFile_, packagePath_, packageInfo_);
 if(ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)) {
+try {
 ff_compiler_Builder.processIncludes_(jsPathFile_, packagePath_, packageInfo_)
+} catch(error_) {
+ff_core_Log.debug_(("Internal error: processIncludes" + ff_core_Error.Error_message(error_)))
+}
 }
 }
 }
@@ -410,7 +414,11 @@ if(if_o.Some) {
 const packageInfo_ = if_o.value_;
 (await ff_compiler_Builder.processNodeModules_$(system_, jsPathFile_, packagePath_, packageInfo_, $task));
 if(ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)) {
+try {
 (await ff_compiler_Builder.processIncludes_$(jsPathFile_, packagePath_, packageInfo_, $task))
+} catch(error_) {
+ff_core_Log.debug_(("Internal error: processIncludes" + ff_core_Error.Error_message(error_)))
+}
 }
 }
 }

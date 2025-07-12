@@ -45,7 +45,11 @@ build(
             resolvedDependencies.packages.get(packagePair).each {packageInfo =>
                 processNodeModules(system, jsPathFile, packagePath, packageInfo)
                 if(emitTarget != EmitBrowser) {
-                    processIncludes(jsPathFile, packagePath, packageInfo)
+                    try {
+                        processIncludes(jsPathFile, packagePath, packageInfo)
+                    } catchAny {error => // TODO: Why does this sometimes fail
+                        Log.debug("Internal error: processIncludes" + error.message())
+                    }
                 }
             }
         }
