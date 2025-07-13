@@ -45,7 +45,7 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
         runner.lock.do {
             if(runner.appRunning) {
                 Log.debug("Still shutting down app...")
-                while {!runner.appRunning} {
+                while {runner.appRunning} {
                     runner.lockCondition.sleep()
                 }
             }

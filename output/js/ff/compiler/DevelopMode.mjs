@@ -160,7 +160,7 @@ return ff_compiler_DevelopMode.startApp_(system_, runner_, fireflyPath_, key_, m
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
 if(runner_.appRunning_) {
 ff_core_Log.debug_("Still shutting down app...");
-while((!runner_.appRunning_)) {
+while(runner_.appRunning_) {
 ff_core_Lock.LockCondition_sleep(runner_.lockCondition_)
 }
 };
@@ -440,7 +440,7 @@ return (await ff_compiler_DevelopMode.startApp_$(system_, runner_, fireflyPath_,
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
 if(runner_.appRunning_) {
 ff_core_Log.debug_("Still shutting down app...");
-while((!runner_.appRunning_)) {
+while(runner_.appRunning_) {
 (await ff_core_Lock.LockCondition_sleep$(runner_.lockCondition_, $task))
 }
 };
