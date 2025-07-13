@@ -32,7 +32,6 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
     while {True} {
         Log.debug("Compiling...")
         let moduleKey = build(system, runner, mainFile, moduleCache)
-        // Rebuild if changedSinceCompilationStarted
         let taskIteration = iteration
         let task = moduleKey.{
             | None => 
@@ -42,23 +41,7 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
                 runner.lock.do {
                     runner.state = ApplicationRunningState
                 }
-                startApp(system, fireflyPath, key, mainFile, arguments) {exitCode, standardOut, standardError =>
-                    runner.lock.do {
-                        runner.appRunning = False
-                        // Move this into starApp
-                        if(exitCode != -1) {
-                            Log.debug("Exited with code: " + exitCode + "\n\n" + standardOut + "\n\n" + standardError)
-                            runner.state.{
-                                | ApplicationRunningState {taskIteration == iteration} => 
-                                    runner.state = ApplicationCrashedState(
-                                        "Exited with code: " + exitCode + "\n\n" + standardOut + "\n\n" + standardError
-                                    )
-                                | _ => 
-                            }
-                        }
-                        runner.lockCondition.wakeAll()
-                    }
-                }
+                startApp(system, runner, fireflyPath, key, mainFile, arguments)
         }
         runner.lock.do {
             if(runner.appRunning) {
@@ -130,11 +113,11 @@ build(system: NodeSystem, runner: Runner, mainFile: String, moduleCache: ModuleC
 
 startApp(
     system: NodeSystem
+    runner: Runner
     fireflyPath: Path
     moduleKey: ModuleKey
     mainFile: String
     arguments: List[String]
-    onExit: (Int, String, String) => Unit
 ): Task {
     system.mainTask().spawn {task =>
         try {
@@ -147,9 +130,22 @@ startApp(
             )
             let relativeStartFile = startPath.relativeTo(system.path("."))
             let result = system.execute(relativeStartFile, arguments, node = True)
-            onExit(result.exitCode, result.standardOut.toString(), result.standardError.toString())
+            let standardOut = result.standardOut.toString()
+            let standardOut = result.standardError.toString()
+            runner.lock.do {
+                runner.appRunning = False
+                Log.debug("Exited with code: " + result.exitCode + "\n\n" + standardOut + "\n\n" + standardError)
+                runner.state.{
+                    | ApplicationRunningState {taskIteration == iteration} => 
+                        runner.state = ApplicationCrashedState(
+                            "Exited with code: " + result.exitCode + "\n\n" + standardOut + "\n\n" + standardError
+                        )
+                    | _ => 
+                }
+                runner.lockCondition.wakeAll()
+            }
         } catchAny {error =>
-            onExit(-1, "", "App aborted: " + error.message())
+            // App aborted
         }
     }
 }
