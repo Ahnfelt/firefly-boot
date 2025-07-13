@@ -164,7 +164,7 @@ while(runner_.appRunning_) {
 ff_core_Lock.LockCondition_sleep(runner_.lockCondition_)
 }
 };
-ff_core_Log.debug_("Waiting...");
+ff_core_Log.debug_("Waiting for refresh...");
 while((!runner_.recompile_)) {
 ff_core_Lock.LockCondition_sleep(runner_.lockCondition_)
 };
@@ -444,7 +444,7 @@ while(runner_.appRunning_) {
 (await ff_core_Lock.LockCondition_sleep$(runner_.lockCondition_, $task))
 }
 };
-ff_core_Log.debug_("Waiting...");
+ff_core_Log.debug_("Waiting for refresh...");
 while((!runner_.recompile_)) {
 (await ff_core_Lock.LockCondition_sleep$(runner_.lockCondition_, $task))
 };
