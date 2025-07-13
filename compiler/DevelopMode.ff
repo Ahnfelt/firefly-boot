@@ -49,7 +49,7 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
                     runner.lockCondition.sleep()
                 }
             }
-            Log.debug("Waiting...")
+            Log.debug("Waiting for refresh...")
             while {!runner.recompile} {
                 runner.lockCondition.sleep()
             }
