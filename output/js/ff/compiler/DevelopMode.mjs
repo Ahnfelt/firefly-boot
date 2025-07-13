@@ -290,8 +290,8 @@ const net_ = import$1;
 const targetServer_ = "localhost";
 function parseHeaders_(headerData_) {
 const headers_ = {};
-const lines_ = headerData_.split("\r\n");
-if((lines_[0].endsWith(" HTTP/1.1") || lines_[0].endsWith(" HTTP/1.0"))) {
+const lines_ = headerData_.split("\n");
+if((lines_[0].startsWith("GET ") && lines_[0].endsWith(" HTTP/1.1\r"))) {
 lines_.forEach(((line_) => {
 const index_ = line_.indexOf(":");
 if((index_ !== (-1))) {
@@ -308,11 +308,10 @@ return headers_
 const proxyServer_ = net_.createServer(((clientSocket_) => {
 return ff_core_Task.Task_spawn(ff_core_NodeSystem.NodeSystem_mainTask(system_), ((task_) => {
 let buffer_ = Buffer.alloc(0);
-let isHttpNavigateRequest_ = false;
 clientSocket_.on("data", ((data_) => {
 buffer_ = Buffer.concat([buffer_, data_]);
 const headerEnd_ = buffer_.indexOf("\r\n\r\n");
-if(((headerEnd_ !== (-1)) || (buffer_.length >= (64 * 1024)))) {
+if((((headerEnd_ !== (-1)) || (buffer_.length >= (64 * 1024))) || (!buffer_.starsWith("GET ")))) {
 return ff_core_Option.Some((function() {
 const headerData_ = buffer_.subarray(0, headerEnd_).toString();
 const headers_ = parseHeaders_(headerData_);
@@ -335,10 +334,7 @@ return true
 }
 }
 }))
-: (function() {
-const j_ = headers_["sec-fetch-dest"];
-return false
-})());
+: false);
 if(refreshLike_) {
 ff_core_Log.debug_("Refreshed!")
 };
@@ -570,8 +566,8 @@ const net_ = import$1;
 const targetServer_ = "localhost";
 function parseHeaders_(headerData_) {
 const headers_ = {};
-const lines_ = headerData_.split("\r\n");
-if((lines_[0].endsWith(" HTTP/1.1") || lines_[0].endsWith(" HTTP/1.0"))) {
+const lines_ = headerData_.split("\n");
+if((lines_[0].startsWith("GET ") && lines_[0].endsWith(" HTTP/1.1\r"))) {
 lines_.forEach(((line_) => {
 const index_ = line_.indexOf(":");
 if((index_ !== (-1))) {
@@ -588,11 +584,10 @@ return headers_
 const proxyServer_ = net_.createServer((async (a_1) => await (async (clientSocket_, $task) => {
 return (await ff_core_Task.Task_spawn$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), (async (task_, $task) => {
 let buffer_ = Buffer.alloc(0);
-let isHttpNavigateRequest_ = false;
 clientSocket_.on("data", (async (a_1) => await (async (data_, $task) => {
 buffer_ = Buffer.concat([buffer_, data_]);
 const headerEnd_ = buffer_.indexOf("\r\n\r\n");
-if(((headerEnd_ !== (-1)) || (buffer_.length >= (64 * 1024)))) {
+if((((headerEnd_ !== (-1)) || (buffer_.length >= (64 * 1024))) || (!buffer_.starsWith("GET ")))) {
 return ff_core_Option.Some((await (async function() {
 const headerData_ = buffer_.subarray(0, headerEnd_).toString();
 const headers_ = parseHeaders_(headerData_);
@@ -615,10 +610,7 @@ return true
 }
 }
 }), $task))
-: (await (async function() {
-const j_ = headers_["sec-fetch-dest"];
-return false
-})()));
+: false);
 if(refreshLike_) {
 ff_core_Log.debug_("Refreshed!")
 };

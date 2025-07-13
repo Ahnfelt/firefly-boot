@@ -184,8 +184,8 @@ startProxy(
     
     function parseHeaders(headerData: JsValue): JsValue {
         let headers = Js->()
-        let lines = headerData->split("\r\n")
-        if(lines.get(0)->endsWith(" HTTP/1.1")? || lines.get(0)->endsWith(" HTTP/1.0")?) {
+        let lines = headerData->split("\n")
+        if(lines.get(0)->startsWith("GET ")? && lines.get(0)->endsWith(" HTTP/1.1\r")?) {
             lines->forEach(Js->{line =>
                 let index = line->indexOf(":")
                 if(index !== -1) {
@@ -201,11 +201,10 @@ startProxy(
     let proxyServer = net->createServer(Js->{clientSocket =>
         system.mainTask().spawn {task =>
             mutable buffer = Js->Buffer->alloc(0)
-            mutable isHttpNavigateRequest = False
             clientSocket->on("data", Js->{data =>
                 buffer = Js->Buffer->concat([buffer, data])
                 let headerEnd = buffer->indexOf("\r\n\r\n")
-                if(headerEnd !== -1 || buffer->length? >= 64 * 1024) {
+                if(headerEnd !== -1 || buffer->length? >= 64 * 1024 || !buffer->starsWith("GET ")?) {
                     let headerData = buffer->subarray(0, headerEnd)->toString()
                     let headers = parseHeaders(headerData)
                     
@@ -224,7 +223,6 @@ startProxy(
                             }
                         }
                     } else {
-                        let j: Json = headers.get("sec-fetch-dest")?
                         False
                     }
                     if(refreshLike) {
