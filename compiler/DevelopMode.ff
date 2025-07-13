@@ -145,7 +145,10 @@ startApp(
                 runner.lockCondition.wakeAll()
             }
         } catchAny {error =>
-            // App aborted
+            runner.lock.do {
+                runner.appRunning = False
+                runner.lockCondition.wakeAll()
+            }
         }
     }
 }
