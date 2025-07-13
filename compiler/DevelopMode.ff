@@ -8,6 +8,7 @@ import JsEmitter
 capability Runner(
     lock: Lock
     lockCondition: LockCondition
+    mutable iteration: Int
     mutable state: RunnerState
     mutable changedSinceCompilationStarted: Set[String]
     mutable recompile: Bool
@@ -24,15 +25,13 @@ data RunnerState {
 run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[String]) {
     let lock = system.mainTask().lock()
     let lockCondition = lock.condition()
-    let runner = Runner(lock, lockCondition, CompilingState, Set.new(), False, False)
+    let runner = Runner(lock, lockCondition, 1, CompilingState, Set.new(), False, False)
     startProxy(system, runner, 8081, 8080)
     startChangeListener(system, runner, system.path("."))
     let moduleCache = ModuleCache.new(0)
-    mutable iteration = 0
     while {True} {
         Log.debug("Compiling...")
         let moduleKey = build(system, runner, mainFile, moduleCache)
-        let taskIteration = iteration
         let task = moduleKey.{
             | None => 
                 system.mainTask().spawn {_ => }
@@ -64,7 +63,7 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
             runner.state = CompilingState
             runner.recompile = False
             runner.changedSinceCompilationStarted = Set.new()
-            iteration += 1
+            runner.iteration += 1
         }
     }
 }
@@ -119,6 +118,7 @@ startApp(
     mainFile: String
     arguments: List[String]
 ): Task {
+    let taskIteration = runner.iteration
     system.mainTask().spawn {task =>
         try {
             let runFile = Main.locateRunFile(system, "node", moduleKey)
@@ -131,12 +131,12 @@ startApp(
             let relativeStartFile = startPath.relativeTo(system.path("."))
             let result = system.execute(relativeStartFile, arguments, node = True)
             let standardOut = result.standardOut.toString()
-            let standardOut = result.standardError.toString()
+            let standardError = result.standardError.toString()
             runner.lock.do {
                 runner.appRunning = False
                 Log.debug("Exited with code: " + result.exitCode + "\n\n" + standardOut + "\n\n" + standardError)
                 runner.state.{
-                    | ApplicationRunningState {taskIteration == iteration} => 
+                    | ApplicationRunningState {taskIteration == runner.iteration} => 
                         runner.state = ApplicationCrashedState(
                             "Exited with code: " + result.exitCode + "\n\n" + standardOut + "\n\n" + standardError
                         )

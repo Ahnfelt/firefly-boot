@@ -109,8 +109,8 @@ import * as import$1 from 'node:net';
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Runner
-export function Runner(lock_, lockCondition_, state_, changedSinceCompilationStarted_, recompile_, appRunning_) {
-return {lock_, lockCondition_, state_, changedSinceCompilationStarted_, recompile_, appRunning_};
+export function Runner(lock_, lockCondition_, iteration_, state_, changedSinceCompilationStarted_, recompile_, appRunning_) {
+return {lock_, lockCondition_, iteration_, state_, changedSinceCompilationStarted_, recompile_, appRunning_};
 }
 
 // type RunnerState
@@ -134,15 +134,13 @@ export const waiterHtml_ = "<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n 
 export function run_(system_, fireflyPath_, mainFile_, arguments_) {
 const lock_ = ff_core_Task.Task_lock(ff_core_NodeSystem.NodeSystem_mainTask(system_));
 const lockCondition_ = ff_core_Lock.Lock_condition(lock_);
-const runner_ = ff_compiler_DevelopMode.Runner(lock_, lockCondition_, ff_compiler_DevelopMode.CompilingState(), ff_core_Set.new_(), false, false);
+const runner_ = ff_compiler_DevelopMode.Runner(lock_, lockCondition_, 1, ff_compiler_DevelopMode.CompilingState(), ff_core_Set.new_(), false, false);
 ff_compiler_DevelopMode.startProxy_(system_, runner_, 8081, 8080);
 ff_compiler_DevelopMode.startChangeListener_(system_, runner_, ff_core_NodeSystem.NodeSystem_path(system_, "."));
 const moduleCache_ = ff_compiler_ModuleCache.new_(0);
-let iteration_ = 0;
 while(true) {
 ff_core_Log.debug_("Compiling...");
 const moduleKey_ = ff_compiler_DevelopMode.build_(system_, runner_, mainFile_, moduleCache_);
-const taskIteration_ = iteration_;
 const task_ = (((_1) => {
 if(_1.None) {
 return ff_core_Task.Task_spawn(ff_core_NodeSystem.NodeSystem_mainTask(system_), ((_) => {
@@ -156,26 +154,7 @@ ff_core_Log.debug_("Running...");
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
 runner_.state_ = ff_compiler_DevelopMode.ApplicationRunningState()
 }));
-return ff_compiler_DevelopMode.startApp_(system_, fireflyPath_, key_, mainFile_, arguments_, ((exitCode_, standardOut_, standardError_) => {
-ff_core_Lock.Lock_do(runner_.lock_, (() => {
-runner_.appRunning_ = false;
-if((exitCode_ !== (-1))) {
-ff_core_Log.debug_(((((("Exited with code: " + exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_));
-do {
-const _1 = runner_.state_;
-if(_1.ApplicationRunningState && (taskIteration_ === iteration_)) {
-runner_.state_ = ff_compiler_DevelopMode.ApplicationCrashedState(((((("Exited with code: " + exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_))
-break
-}
-{
-
-}
-} while(false)
-};
-return ff_core_Lock.LockCondition_wakeAll(runner_.lockCondition_)
-}))
-}))
-return
+return ff_compiler_DevelopMode.startApp_(system_, runner_, fireflyPath_, key_, mainFile_, arguments_)
 }
 }))(moduleKey_);
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
@@ -198,7 +177,7 @@ moduleCache_.emittedModules_ = ff_core_Map.new_()
 runner_.state_ = ff_compiler_DevelopMode.CompilingState();
 runner_.recompile_ = false;
 runner_.changedSinceCompilationStarted_ = ff_core_Set.new_();
-iteration_ += 1
+runner_.iteration_ += 1
 }))
 }
 }
@@ -248,7 +227,8 @@ return ff_core_Option.None()
 }))
 }
 
-export function startApp_(system_, fireflyPath_, moduleKey_, mainFile_, arguments_, onExit_) {
+export function startApp_(system_, runner_, fireflyPath_, moduleKey_, mainFile_, arguments_) {
+const taskIteration_ = runner_.iteration_;
 return ff_core_Task.Task_spawn(ff_core_NodeSystem.NodeSystem_mainTask(system_), ((task_) => {
 try {
 const runFile_ = ff_compiler_Main.locateRunFile_(system_, "node", moduleKey_);
@@ -259,9 +239,28 @@ const startPath_ = ff_core_Path.Path_slash(ff_core_Option.Option_grab(ff_core_Pa
 ff_core_Path.Path_writeText(startPath_, ((((((("import * as run from " + ff_core_Json.Json_write(ff_core_Path.Path_url(runFilePath_), ff_core_Option.None())) + "\n") + "await run.$run$(") + ff_core_Json.Json_write(ff_core_Path.Path_absolute(fireflyPath_), ff_core_Option.None())) + ", ") + ff_core_Json.Json_write(ff_core_Json.ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json.ff_core_Json_JsonLike$ff_core_String_String).toJson_(arguments_), ff_core_Option.None())) + ")"));
 const relativeStartFile_ = ff_core_Path.Path_relativeTo(startPath_, ff_core_NodeSystem.NodeSystem_path(system_, "."));
 const result_ = ff_core_NodeSystem.NodeSystem_execute(system_, relativeStartFile_, arguments_, ff_core_Buffer.new_(0, false), ff_core_Option.None(), ff_core_Option.None(), 16777216, 9, false, true);
-onExit_(result_.exitCode_, ff_core_Buffer.Buffer_toString(result_.standardOut_, "utf8"), ff_core_Buffer.Buffer_toString(result_.standardError_, "utf8"))
+const standardOut_ = ff_core_Buffer.Buffer_toString(result_.standardOut_, "utf8");
+const standardError_ = ff_core_Buffer.Buffer_toString(result_.standardError_, "utf8");
+ff_core_Lock.Lock_do(runner_.lock_, (() => {
+runner_.appRunning_ = false;
+ff_core_Log.debug_(((((("Exited with code: " + result_.exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_));
+do {
+const _1 = runner_.state_;
+if(_1.ApplicationRunningState && (taskIteration_ === runner_.iteration_)) {
+runner_.state_ = ff_compiler_DevelopMode.ApplicationCrashedState(((((("Exited with code: " + result_.exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_))
+break
+}
+{
+
+}
+} while(false);
+return ff_core_Lock.LockCondition_wakeAll(runner_.lockCondition_)
+}))
 } catch(error_) {
-onExit_((-1), "", ("App aborted: " + ff_core_Error.Error_message(error_)))
+ff_core_Lock.Lock_do(runner_.lock_, (() => {
+runner_.appRunning_ = false;
+return ff_core_Lock.LockCondition_wakeAll(runner_.lockCondition_)
+}))
 }
 }))
 }
@@ -415,15 +414,13 @@ return console.log(("Proxy server running on port " + proxyPort_))
 export async function run_$(system_, fireflyPath_, mainFile_, arguments_, $task) {
 const lock_ = (await ff_core_Task.Task_lock$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task));
 const lockCondition_ = (await ff_core_Lock.Lock_condition$(lock_, $task));
-const runner_ = ff_compiler_DevelopMode.Runner(lock_, lockCondition_, ff_compiler_DevelopMode.CompilingState(), ff_core_Set.new_(), false, false);
+const runner_ = ff_compiler_DevelopMode.Runner(lock_, lockCondition_, 1, ff_compiler_DevelopMode.CompilingState(), ff_core_Set.new_(), false, false);
 (await ff_compiler_DevelopMode.startProxy_$(system_, runner_, 8081, 8080, $task));
 (await ff_compiler_DevelopMode.startChangeListener_$(system_, runner_, (await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
 const moduleCache_ = ff_compiler_ModuleCache.new_(0);
-let iteration_ = 0;
 while(true) {
 ff_core_Log.debug_("Compiling...");
 const moduleKey_ = (await ff_compiler_DevelopMode.build_$(system_, runner_, mainFile_, moduleCache_, $task));
-const taskIteration_ = iteration_;
 const task_ = (await ((async (_1, $task) => {
 if(_1.None) {
 return (await ff_core_Task.Task_spawn$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), (async (_, $task) => {
@@ -437,26 +434,7 @@ ff_core_Log.debug_("Running...");
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
 runner_.state_ = ff_compiler_DevelopMode.ApplicationRunningState()
 }), $task));
-return (await ff_compiler_DevelopMode.startApp_$(system_, fireflyPath_, key_, mainFile_, arguments_, (async (exitCode_, standardOut_, standardError_, $task) => {
-(await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
-runner_.appRunning_ = false;
-if((exitCode_ !== (-1))) {
-ff_core_Log.debug_(((((("Exited with code: " + exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_));
-do {
-const _1 = runner_.state_;
-if(_1.ApplicationRunningState && (taskIteration_ === iteration_)) {
-runner_.state_ = ff_compiler_DevelopMode.ApplicationCrashedState(((((("Exited with code: " + exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_))
-break
-}
-{
-
-}
-} while(false)
-};
-return (await ff_core_Lock.LockCondition_wakeAll$(runner_.lockCondition_, $task))
-}), $task))
-}), $task))
-return
+return (await ff_compiler_DevelopMode.startApp_$(system_, runner_, fireflyPath_, key_, mainFile_, arguments_, $task))
 }
 }))(moduleKey_, $task));
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
@@ -479,7 +457,7 @@ moduleCache_.emittedModules_ = ff_core_Map.new_()
 runner_.state_ = ff_compiler_DevelopMode.CompilingState();
 runner_.recompile_ = false;
 runner_.changedSinceCompilationStarted_ = ff_core_Set.new_();
-iteration_ += 1
+runner_.iteration_ += 1
 }), $task))
 }
 }
@@ -529,7 +507,8 @@ return ff_core_Option.None()
 }), $task))
 }
 
-export async function startApp_$(system_, fireflyPath_, moduleKey_, mainFile_, arguments_, onExit_, $task) {
+export async function startApp_$(system_, runner_, fireflyPath_, moduleKey_, mainFile_, arguments_, $task) {
+const taskIteration_ = runner_.iteration_;
 return (await ff_core_Task.Task_spawn$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), (async (task_, $task) => {
 try {
 const runFile_ = (await ff_compiler_Main.locateRunFile_$(system_, "node", moduleKey_, $task));
@@ -540,9 +519,28 @@ const startPath_ = (await ff_core_Path.Path_slash$(ff_core_Option.Option_grab((a
 (await ff_core_Path.Path_writeText$(startPath_, ((((((("import * as run from " + ff_core_Json.Json_write((await ff_core_Path.Path_url$(runFilePath_, $task)), ff_core_Option.None())) + "\n") + "await run.$run$(") + ff_core_Json.Json_write((await ff_core_Path.Path_absolute$(fireflyPath_, $task)), ff_core_Option.None())) + ", ") + ff_core_Json.Json_write(ff_core_Json.ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json.ff_core_Json_JsonLike$ff_core_String_String).toJson_(arguments_), ff_core_Option.None())) + ")"), $task));
 const relativeStartFile_ = (await ff_core_Path.Path_relativeTo$(startPath_, (await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
 const result_ = (await ff_core_NodeSystem.NodeSystem_execute$(system_, relativeStartFile_, arguments_, ff_core_Buffer.new_(0, false), ff_core_Option.None(), ff_core_Option.None(), 16777216, 9, false, true, $task));
-(await onExit_(result_.exitCode_, ff_core_Buffer.Buffer_toString(result_.standardOut_, "utf8"), ff_core_Buffer.Buffer_toString(result_.standardError_, "utf8"), $task))
+const standardOut_ = ff_core_Buffer.Buffer_toString(result_.standardOut_, "utf8");
+const standardError_ = ff_core_Buffer.Buffer_toString(result_.standardError_, "utf8");
+(await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
+runner_.appRunning_ = false;
+ff_core_Log.debug_(((((("Exited with code: " + result_.exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_));
+do {
+const _1 = runner_.state_;
+if(_1.ApplicationRunningState && (taskIteration_ === runner_.iteration_)) {
+runner_.state_ = ff_compiler_DevelopMode.ApplicationCrashedState(((((("Exited with code: " + result_.exitCode_) + "\n\n") + standardOut_) + "\n\n") + standardError_))
+break
+}
+{
+
+}
+} while(false);
+return (await ff_core_Lock.LockCondition_wakeAll$(runner_.lockCondition_, $task))
+}), $task))
 } catch(error_) {
-(await onExit_((-1), "", ("App aborted: " + ff_core_Error.Error_message(error_)), $task))
+(await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
+runner_.appRunning_ = false;
+return (await ff_core_Lock.LockCondition_wakeAll$(runner_.lockCondition_, $task))
+}), $task))
 }
 }), $task))
 }
