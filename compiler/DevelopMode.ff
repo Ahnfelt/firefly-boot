@@ -213,7 +213,12 @@ startProxy(
         headers
     }
     
-    let proxyServer = net->createServer(Js->{clientSocket =>
+    let proxyServer = net->createServer(Js->(pauseOnConnect = True), Js->{clientSocket =>
+        mutable targetSocket = Js.undefined()
+        clientSocket->on("error", Js->{err =>
+            if(!targetSocket.isUndefined()) {targetSocket->end()}
+            Log.debugDynamic(err)
+        })
         system.mainTask().spawn {task =>
             mutable buffer = Js->Buffer->alloc(0)
             clientSocket->on("data", Js->{data =>
@@ -244,11 +249,6 @@ startProxy(
                         Log.debug("Refreshed!")
                     }
                     
-                    mutable targetSocket = Js.undefined()
-                    clientSocket->on("error", Js->{err =>
-                        if(!targetSocket.isUndefined()) {targetSocket->end()}
-                    })
-
                     function serveWaiterHtml() {
                         let status = runner.state.{
                             | _ {runner.recompile} => "Restarting..."
@@ -294,6 +294,7 @@ startProxy(
                     }
                 }
             })
+            clientSocket->resume()
         }
     })
     

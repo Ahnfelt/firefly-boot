@@ -326,7 +326,10 @@ headers_[key_] = value_
 };
 return headers_
 }
-const proxyServer_ = net_.createServer(((clientSocket_) => {
+const proxyServer_ = net_.createServer({pauseOnConnect: true}, ((clientSocket_) => {
+clientSocket_.on("error", ((err_) => {
+return ff_core_Log.debugDynamic_(err_)
+}));
 return ff_core_Task.Task_spawn(ff_core_NodeSystem.NodeSystem_mainTask(system_), ((task_) => {
 let buffer_ = Buffer.alloc(0);
 clientSocket_.on("data", ((data_) => {
@@ -420,7 +423,8 @@ return serveWaiterHtml_()
 }
 })())
 } else return ff_core_Option.None()
-}))
+}));
+clientSocket_.resume()
 }))
 }));
 proxyServer_.listen(proxyPort_, (() => {
@@ -621,7 +625,10 @@ headers_[key_] = value_
 };
 return headers_
 }
-const proxyServer_ = net_.createServer((async (a_1) => await (async (clientSocket_, $task) => {
+const proxyServer_ = net_.createServer({pauseOnConnect: true}, (async (a_1) => await (async (clientSocket_, $task) => {
+clientSocket_.on("error", ((err_) => {
+return ff_core_Log.debugDynamic_(err_)
+}));
 return (await ff_core_Task.Task_spawn$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), (async (task_, $task) => {
 let buffer_ = Buffer.alloc(0);
 clientSocket_.on("data", (async (a_1) => await (async (data_, $task) => {
@@ -715,7 +722,8 @@ return serveWaiterHtml_()
 }
 })()))
 } else return ff_core_Option.None()
-})(a_1, $task)))
+})(a_1, $task)));
+clientSocket_.resume()
 }), $task))
 })(a_1, $task)));
 proxyServer_.listen(proxyPort_, (() => {
