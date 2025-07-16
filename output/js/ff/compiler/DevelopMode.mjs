@@ -327,7 +327,11 @@ headers_[key_] = value_
 return headers_
 }
 const proxyServer_ = net_.createServer({pauseOnConnect: true}, ((clientSocket_) => {
+let targetSocket_ = (void 0);
 clientSocket_.on("error", ((err_) => {
+if((!ff_core_JsValue.JsValue_isUndefined(targetSocket_))) {
+targetSocket_.end()
+};
 return ff_core_Log.debugDynamic_(err_)
 }));
 return ff_core_Task.Task_spawn(ff_core_NodeSystem.NodeSystem_mainTask(system_), ((task_) => {
@@ -362,12 +366,6 @@ return true
 if(refreshLike_) {
 ff_core_Log.debug_("Refreshed!")
 };
-let targetSocket_ = (void 0);
-clientSocket_.on("error", ((err_) => {
-if((!ff_core_JsValue.JsValue_isUndefined(targetSocket_))) {
-return ff_core_Option.Some(targetSocket_.end())
-} else return ff_core_Option.None()
-}));
 function serveWaiterHtml_() {
 const status_ = (((_1) => {
 if(runner_.recompile_) {
@@ -626,7 +624,11 @@ headers_[key_] = value_
 return headers_
 }
 const proxyServer_ = net_.createServer({pauseOnConnect: true}, (async (a_1) => await (async (clientSocket_, $task) => {
+let targetSocket_ = (void 0);
 clientSocket_.on("error", ((err_) => {
+if((!ff_core_JsValue.JsValue_isUndefined(targetSocket_))) {
+targetSocket_.end()
+};
 return ff_core_Log.debugDynamic_(err_)
 }));
 return (await ff_core_Task.Task_spawn$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), (async (task_, $task) => {
@@ -661,12 +663,6 @@ return true
 if(refreshLike_) {
 ff_core_Log.debug_("Refreshed!")
 };
-let targetSocket_ = (void 0);
-clientSocket_.on("error", ((err_) => {
-if((!ff_core_JsValue.JsValue_isUndefined(targetSocket_))) {
-return ff_core_Option.Some(targetSocket_.end())
-} else return ff_core_Option.None()
-}));
 function serveWaiterHtml_() {
 const status_ = (((_1) => {
 if(runner_.recompile_) {
