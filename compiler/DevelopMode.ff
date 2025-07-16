@@ -4,6 +4,7 @@ import Dependencies
 import DependencyLock
 import Syntax
 import JsEmitter
+import Builder from ff:compiler
 
 capability Runner(
     lock: Lock
@@ -40,7 +41,7 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
                 runner.lock.do {
                     runner.state = ApplicationRunningState
                 }
-                startApp(system, runner, fireflyPath, key, mainFile, arguments)
+                startApp(system, runner, fireflyPath, moduleCache, key, mainFile, arguments)
         }
         runner.lock.do {
             if(runner.appRunning) {
@@ -114,6 +115,7 @@ startApp(
     system: NodeSystem
     runner: Runner
     fireflyPath: Path
+    moduleCache: ModuleCache
     moduleKey: ModuleKey
     mainFile: String
     arguments: List[String]
@@ -126,10 +128,20 @@ startApp(
             let startPath = runFilePath.parent().grab().slash(runFilePath.base() + ".start.mjs")
             startPath.writeText(
                 "import * as run from " + Json.string(runFilePath.url()).write() + "\n" + 
+                "globalThis.ffDevelopMode = true\n" + 
                 "await run.$run$(" + Json.string(fireflyPath.absolute()).write() + ", " + Json.toJson(arguments).write() + ")"
             )
             let relativeStartFile = startPath.relativeTo(system.path("."))
-            let result = system.execute(relativeStartFile, arguments, node = True)
+            let result = system.execute(relativeStartFile, arguments, node = Some({message, forkedProcess =>
+                if(message->ffDevelopMode === "internalCompile") {
+                    let mainFiles: List[String] = message->mainFiles?
+                    let mainPaths = mainFiles.map {system.path(_)}
+                    let target: String = message->target?
+                    let newModuleCache = moduleCache.ModuleCache(emittedModules = Map.new())
+                    Builder.buildViaBuildSystem(system, fireflyPath, mainPaths, target, newModuleCache)
+                    forkedProcess->send(Js->(ffDevelopMode = "internalCompile"))
+                }
+            }))
             let standardOut = result.standardOut.toString()
             let standardError = result.standardError.toString()
             runner.lock.do {

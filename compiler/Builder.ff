@@ -90,7 +90,13 @@ processNodeModules(system: NodeSystem, jsPathFile: Path, packagePath: Path, info
     }
 }
 
-buildViaBuildSystem(system: NodeSystem, fireflyPath: Path, mainFiles: List[Path], target: String) {
+buildViaBuildSystem(
+    system: NodeSystem
+    fireflyPath: Path
+    mainFiles: List[Path]
+    target: String
+    moduleCache: ModuleCache = ModuleCache.new(0)
+) {
     let resolvedDependencies = Dependencies.process(
         system.httpClient()
         DependencyLock.new(system.mainTask())
@@ -122,7 +128,7 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: Path, mainFiles: List[Path]
         tempPath = system.path(".firefly/temporary")
         jsOutputPath = system.path(".firefly/output").slash(target)
         printMeasurements = False
-        moduleCache = ModuleCache.new(0)
+        moduleCache = moduleCache
     )
 }
 

@@ -1,5 +1,7 @@
 import * as ff_compiler_DevelopMode from "../../ff/compiler/DevelopMode.mjs"
 
+import * as ff_compiler_Builder from "../../ff/compiler/Builder.mjs"
+
 import * as ff_compiler_Dependencies from "../../ff/compiler/Dependencies.mjs"
 
 import * as ff_compiler_DependencyLock from "../../ff/compiler/DependencyLock.mjs"
@@ -154,7 +156,7 @@ ff_core_Log.debug_("Running...");
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
 runner_.state_ = ff_compiler_DevelopMode.ApplicationRunningState()
 }));
-return ff_compiler_DevelopMode.startApp_(system_, runner_, fireflyPath_, key_, mainFile_, arguments_)
+return ff_compiler_DevelopMode.startApp_(system_, runner_, fireflyPath_, moduleCache_, key_, mainFile_, arguments_)
 }
 }))(moduleKey_);
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
@@ -227,7 +229,7 @@ return ff_core_Option.None()
 }))
 }
 
-export function startApp_(system_, runner_, fireflyPath_, moduleKey_, mainFile_, arguments_) {
+export function startApp_(system_, runner_, fireflyPath_, moduleCache_, moduleKey_, mainFile_, arguments_) {
 const taskIteration_ = runner_.iteration_;
 return ff_core_Task.Task_spawn(ff_core_NodeSystem.NodeSystem_mainTask(system_), ((task_) => {
 try {
@@ -236,9 +238,22 @@ const runFilePath_ = (ff_core_String.String_contains(runFile_, "://")
 ? ff_core_NodeSystem.NodeSystem_pathFromUrl(system_, runFile_)
 : ff_core_NodeSystem.NodeSystem_path(system_, runFile_));
 const startPath_ = ff_core_Path.Path_slash(ff_core_Option.Option_grab(ff_core_Path.Path_parent(runFilePath_)), (ff_core_Path.Path_base(runFilePath_) + ".start.mjs"));
-ff_core_Path.Path_writeText(startPath_, ((((((("import * as run from " + ff_core_Json.Json_write(ff_core_Path.Path_url(runFilePath_), ff_core_Option.None())) + "\n") + "await run.$run$(") + ff_core_Json.Json_write(ff_core_Path.Path_absolute(fireflyPath_), ff_core_Option.None())) + ", ") + ff_core_Json.Json_write(ff_core_Json.ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json.ff_core_Json_JsonLike$ff_core_String_String).toJson_(arguments_), ff_core_Option.None())) + ")"));
+ff_core_Path.Path_writeText(startPath_, (((((((("import * as run from " + ff_core_Json.Json_write(ff_core_Path.Path_url(runFilePath_), ff_core_Option.None())) + "\n") + "globalThis.ffDevelopMode = true\n") + "await run.$run$(") + ff_core_Json.Json_write(ff_core_Path.Path_absolute(fireflyPath_), ff_core_Option.None())) + ", ") + ff_core_Json.Json_write(ff_core_Json.ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json.ff_core_Json_JsonLike$ff_core_String_String).toJson_(arguments_), ff_core_Option.None())) + ")"));
 const relativeStartFile_ = ff_core_Path.Path_relativeTo(startPath_, ff_core_NodeSystem.NodeSystem_path(system_, "."));
-const result_ = ff_core_NodeSystem.NodeSystem_execute(system_, relativeStartFile_, arguments_, ff_core_Buffer.new_(0, false), ff_core_Option.None(), ff_core_Option.None(), 16777216, 9, false, true);
+const result_ = ff_core_NodeSystem.NodeSystem_execute(system_, relativeStartFile_, arguments_, ff_core_Buffer.new_(0, false), ff_core_Option.None(), ff_core_Option.None(), 16777216, 9, false, ff_core_Option.Some(((message_, forkedProcess_) => {
+if((message_.ffDevelopMode === "internalCompile")) {
+const mainFiles_ = message_.mainFiles;
+const mainPaths_ = ff_core_List.List_map(mainFiles_, ((_w1) => {
+return ff_core_NodeSystem.NodeSystem_path(system_, _w1)
+}));
+const target_ = message_.target;
+const newModuleCache_ = (((_c) => {
+return ff_compiler_ModuleCache.ModuleCache(_c.version_, _c.parsedModules_, _c.resolvedModules_, _c.derivedModules_, _c.inferredModules_, ff_core_Map.new_())
+}))(moduleCache_);
+ff_compiler_Builder.buildViaBuildSystem_(system_, fireflyPath_, mainPaths_, target_, newModuleCache_);
+forkedProcess_.send({ffDevelopMode: "internalCompile"})
+}
+})));
 const standardOut_ = ff_core_Buffer.Buffer_toString(result_.standardOut_, "utf8");
 const standardError_ = ff_core_Buffer.Buffer_toString(result_.standardError_, "utf8");
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
@@ -430,7 +445,7 @@ ff_core_Log.debug_("Running...");
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
 runner_.state_ = ff_compiler_DevelopMode.ApplicationRunningState()
 }), $task));
-return (await ff_compiler_DevelopMode.startApp_$(system_, runner_, fireflyPath_, key_, mainFile_, arguments_, $task))
+return (await ff_compiler_DevelopMode.startApp_$(system_, runner_, fireflyPath_, moduleCache_, key_, mainFile_, arguments_, $task))
 }
 }))(moduleKey_, $task));
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
@@ -503,7 +518,7 @@ return ff_core_Option.None()
 }), $task))
 }
 
-export async function startApp_$(system_, runner_, fireflyPath_, moduleKey_, mainFile_, arguments_, $task) {
+export async function startApp_$(system_, runner_, fireflyPath_, moduleCache_, moduleKey_, mainFile_, arguments_, $task) {
 const taskIteration_ = runner_.iteration_;
 return (await ff_core_Task.Task_spawn$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), (async (task_, $task) => {
 try {
@@ -512,9 +527,22 @@ const runFilePath_ = (ff_core_String.String_contains(runFile_, "://")
 ? (await ff_core_NodeSystem.NodeSystem_pathFromUrl$(system_, runFile_, $task))
 : (await ff_core_NodeSystem.NodeSystem_path$(system_, runFile_, $task)));
 const startPath_ = (await ff_core_Path.Path_slash$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(runFilePath_, $task))), ((await ff_core_Path.Path_base$(runFilePath_, $task)) + ".start.mjs"), $task));
-(await ff_core_Path.Path_writeText$(startPath_, ((((((("import * as run from " + ff_core_Json.Json_write((await ff_core_Path.Path_url$(runFilePath_, $task)), ff_core_Option.None())) + "\n") + "await run.$run$(") + ff_core_Json.Json_write((await ff_core_Path.Path_absolute$(fireflyPath_, $task)), ff_core_Option.None())) + ", ") + ff_core_Json.Json_write(ff_core_Json.ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json.ff_core_Json_JsonLike$ff_core_String_String).toJson_(arguments_), ff_core_Option.None())) + ")"), $task));
+(await ff_core_Path.Path_writeText$(startPath_, (((((((("import * as run from " + ff_core_Json.Json_write((await ff_core_Path.Path_url$(runFilePath_, $task)), ff_core_Option.None())) + "\n") + "globalThis.ffDevelopMode = true\n") + "await run.$run$(") + ff_core_Json.Json_write((await ff_core_Path.Path_absolute$(fireflyPath_, $task)), ff_core_Option.None())) + ", ") + ff_core_Json.Json_write(ff_core_Json.ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json.ff_core_Json_JsonLike$ff_core_String_String).toJson_(arguments_), ff_core_Option.None())) + ")"), $task));
 const relativeStartFile_ = (await ff_core_Path.Path_relativeTo$(startPath_, (await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
-const result_ = (await ff_core_NodeSystem.NodeSystem_execute$(system_, relativeStartFile_, arguments_, ff_core_Buffer.new_(0, false), ff_core_Option.None(), ff_core_Option.None(), 16777216, 9, false, true, $task));
+const result_ = (await ff_core_NodeSystem.NodeSystem_execute$(system_, relativeStartFile_, arguments_, ff_core_Buffer.new_(0, false), ff_core_Option.None(), ff_core_Option.None(), 16777216, 9, false, ff_core_Option.Some((async (message_, forkedProcess_, $task) => {
+if((message_.ffDevelopMode === "internalCompile")) {
+const mainFiles_ = message_.mainFiles;
+const mainPaths_ = (await ff_core_List.List_map$(mainFiles_, (async (_w1, $task) => {
+return (await ff_core_NodeSystem.NodeSystem_path$(system_, _w1, $task))
+}), $task));
+const target_ = message_.target;
+const newModuleCache_ = (((_c) => {
+return ff_compiler_ModuleCache.ModuleCache(_c.version_, _c.parsedModules_, _c.resolvedModules_, _c.derivedModules_, _c.inferredModules_, ff_core_Map.new_())
+}))(moduleCache_);
+(await ff_compiler_Builder.buildViaBuildSystem_$(system_, fireflyPath_, mainPaths_, target_, newModuleCache_, $task));
+forkedProcess_.send({ffDevelopMode: "internalCompile"})
+}
+})), $task));
 const standardOut_ = ff_core_Buffer.Buffer_toString(result_.standardOut_, "utf8");
 const standardError_ = ff_core_Buffer.Buffer_toString(result_.standardError_, "utf8");
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {

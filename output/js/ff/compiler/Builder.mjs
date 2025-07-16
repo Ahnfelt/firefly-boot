@@ -181,7 +181,7 @@ const nodeModules_ = ff_core_Path.Path_slash(includePath_, "node_modules");
 const packageJson_ = ff_core_Path.Path_slash(includePath_, "package.json");
 if(((!ff_core_Path.Path_exists(nodeModules_, false, false, false)) && ff_core_Path.Path_exists(packageJson_, false, false, false))) {
 ff_core_NodeSystem.NodeSystem_writeErrorLine(system_, ("Running npm install --no-bin-links in " + ff_core_Path.Path_absolute(includePath_)));
-const result_ = ff_core_NodeSystem.NodeSystem_execute(system_, "npm", ["install", "--no-bin-links"], ff_core_Buffer.new_(0, false), ff_core_Option.Some(includePath_), ff_core_Option.None(), 16777216, 9, true, false);
+const result_ = ff_core_NodeSystem.NodeSystem_execute(system_, "npm", ["install", "--no-bin-links"], ff_core_Buffer.new_(0, false), ff_core_Option.Some(includePath_), ff_core_Option.None(), 16777216, 9, true, ff_core_Option.None());
 if((result_.exitCode_ !== 0)) {
 ff_core_NodeSystem.NodeSystem_writeErrorLine(system_, (("Running npm failed with exit code " + result_.exitCode_) + ":"));
 ff_core_NodeSystem.NodeSystem_writeErrorBuffer(system_, result_.standardOut_);
@@ -191,7 +191,7 @@ ff_core_NodeSystem.NodeSystem_writeErrorBuffer(system_, result_.standardError_)
 }
 }
 
-export function buildViaBuildSystem_(system_, fireflyPath_, mainFiles_, target_) {
+export function buildViaBuildSystem_(system_, fireflyPath_, mainFiles_, target_, moduleCache_ = ff_compiler_ModuleCache.new_(0)) {
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), ff_compiler_DependencyLock.new_(ff_core_NodeSystem.NodeSystem_mainTask(system_)), ff_core_List.List_grabFirst(mainFiles_));
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
@@ -207,7 +207,7 @@ ff_core_Core.panic_("buildViaBuildSystem is currently limited to browser target 
 };
 ff_compiler_Builder.build_(system_, ff_compiler_JsEmitter.EmitBrowser(), mainModuleKeys_, (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
-}))(resolvedDependencies_), ff_core_Option.None(), ff_core_NodeSystem.NodeSystem_path(system_, ".firefly/temporary"), ff_core_Path.Path_slash(ff_core_NodeSystem.NodeSystem_path(system_, ".firefly/output"), target_), false, ff_compiler_ModuleCache.new_(0))
+}))(resolvedDependencies_), ff_core_Option.None(), ff_core_NodeSystem.NodeSystem_path(system_, ".firefly/temporary"), ff_core_Path.Path_slash(ff_core_NodeSystem.NodeSystem_path(system_, ".firefly/output"), target_), false, moduleCache_)
 }
 
 export function check_(system_, fireflyPath_, path_, mustContain_, skipFiles_, virtualFiles_, cache_, dependencyLock_, newVersion_, lspHook_, infer_) {
@@ -451,7 +451,7 @@ const nodeModules_ = (await ff_core_Path.Path_slash$(includePath_, "node_modules
 const packageJson_ = (await ff_core_Path.Path_slash$(includePath_, "package.json", $task));
 if(((!(await ff_core_Path.Path_exists$(nodeModules_, false, false, false, $task))) && (await ff_core_Path.Path_exists$(packageJson_, false, false, false, $task)))) {
 (await ff_core_NodeSystem.NodeSystem_writeErrorLine$(system_, ("Running npm install --no-bin-links in " + (await ff_core_Path.Path_absolute$(includePath_, $task))), $task));
-const result_ = (await ff_core_NodeSystem.NodeSystem_execute$(system_, "npm", ["install", "--no-bin-links"], ff_core_Buffer.new_(0, false), ff_core_Option.Some(includePath_), ff_core_Option.None(), 16777216, 9, true, false, $task));
+const result_ = (await ff_core_NodeSystem.NodeSystem_execute$(system_, "npm", ["install", "--no-bin-links"], ff_core_Buffer.new_(0, false), ff_core_Option.Some(includePath_), ff_core_Option.None(), 16777216, 9, true, ff_core_Option.None(), $task));
 if((result_.exitCode_ !== 0)) {
 (await ff_core_NodeSystem.NodeSystem_writeErrorLine$(system_, (("Running npm failed with exit code " + result_.exitCode_) + ":"), $task));
 (await ff_core_NodeSystem.NodeSystem_writeErrorBuffer$(system_, result_.standardOut_, $task));
@@ -461,7 +461,7 @@ if((result_.exitCode_ !== 0)) {
 }
 }
 
-export async function buildViaBuildSystem_$(system_, fireflyPath_, mainFiles_, target_, $task) {
+export async function buildViaBuildSystem_$(system_, fireflyPath_, mainFiles_, target_, moduleCache_ = ff_compiler_ModuleCache.new_(0), $task) {
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (await ff_compiler_DependencyLock.new_$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task)), ff_core_List.List_grabFirst(mainFiles_), $task));
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
@@ -477,7 +477,7 @@ ff_core_Core.panic_("buildViaBuildSystem is currently limited to browser target 
 };
 (await ff_compiler_Builder.build_$(system_, ff_compiler_JsEmitter.EmitBrowser(), mainModuleKeys_, (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
-}))(resolvedDependencies_), ff_core_Option.None(), (await ff_core_NodeSystem.NodeSystem_path$(system_, ".firefly/temporary", $task)), (await ff_core_Path.Path_slash$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".firefly/output", $task)), target_, $task)), false, ff_compiler_ModuleCache.new_(0), $task))
+}))(resolvedDependencies_), ff_core_Option.None(), (await ff_core_NodeSystem.NodeSystem_path$(system_, ".firefly/temporary", $task)), (await ff_core_Path.Path_slash$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".firefly/output", $task)), target_, $task)), false, moduleCache_, $task))
 }
 
 export async function check_$(system_, fireflyPath_, path_, mustContain_, skipFiles_, virtualFiles_, cache_, dependencyLock_, newVersion_, lspHook_, infer_, $task) {

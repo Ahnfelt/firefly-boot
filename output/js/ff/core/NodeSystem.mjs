@@ -260,7 +260,7 @@ result_ = ff_core_Map.Map_add(result_, key_, process.env[key_], ff_core_Ordering
 return result_
 }
 
-export function NodeSystem_execute(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, shell_ = false, node_ = false) {
+export function NodeSystem_execute(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, shell_ = false, node_ = ff_core_Option.None()) {
 const childProcess_ = import$3;
 const env_ = ff_core_Option.Option_else(ff_core_Option.Option_map(environment_, ((e_) => {
 const o_ = {};
@@ -273,12 +273,18 @@ return process.env
 }));
 return ff_core_Js.withSignal_(((signal_) => {
 return ff_core_Js.awaitCancellablePromise_(((resolve_, reject_, onSettle_) => {
-const newProcess_ = (node_
-? childProcess_.fork(command_, arguments_, {cwd: ff_core_Option.Option_else(ff_core_Option.Option_map(directory_, ((_w1) => {
+const newProcess_ = ((!ff_core_Option.Option_isEmpty(node_))
+? (function() {
+const p_ = childProcess_.fork(command_, arguments_, {cwd: ff_core_Option.Option_else(ff_core_Option.Option_map(directory_, ((_w1) => {
 return _w1.absolutePath_
 })), (() => {
 return (void 0)
-})), signal: signal_, killSignal: killSignal_, env: env_, silent: true})
+})), signal: signal_, killSignal: killSignal_, env: env_, silent: true});
+p_.on("message", ((message_) => {
+return ff_core_Option.Option_grab(node_)(message_, p_)
+}));
+return p_
+})()
 : childProcess_.spawn(command_, arguments_, {cwd: ff_core_Option.Option_else(ff_core_Option.Option_map(directory_, ((_w1) => {
 return _w1.absolutePath_
 })), (() => {
@@ -449,7 +455,7 @@ result_ = ff_core_Map.Map_add(result_, key_, process.env[key_], ff_core_Ordering
 return result_
 }
 
-export async function NodeSystem_execute$(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, shell_ = false, node_ = false, $task) {
+export async function NodeSystem_execute$(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, shell_ = false, node_ = ff_core_Option.None(), $task) {
 const childProcess_ = import$3;
 const env_ = ff_core_Option.Option_else(ff_core_Option.Option_map(environment_, ((e_) => {
 const o_ = {};
@@ -461,13 +467,19 @@ return o_
 return process.env
 }));
 return (await ff_core_Js.withSignal_$((async (signal_, $task) => {
-return (await ff_core_Js.awaitCancellablePromise_$(((resolve_, reject_, onSettle_) => {
-const newProcess_ = (node_
-? childProcess_.fork(command_, arguments_, {cwd: ff_core_Option.Option_else(ff_core_Option.Option_map(directory_, ((_w1) => {
+return (await ff_core_Js.awaitCancellablePromise_$((async (resolve_, reject_, onSettle_, $task) => {
+const newProcess_ = ((!ff_core_Option.Option_isEmpty(node_))
+? (await (async function() {
+const p_ = childProcess_.fork(command_, arguments_, {cwd: ff_core_Option.Option_else(ff_core_Option.Option_map(directory_, ((_w1) => {
 return _w1.absolutePath_
 })), (() => {
 return (void 0)
-})), signal: signal_, killSignal: killSignal_, env: env_, silent: true})
+})), signal: signal_, killSignal: killSignal_, env: env_, silent: true});
+p_.on("message", (async (a_1) => await (async (message_, $task) => {
+return (await ff_core_Option.Option_grab(node_)(message_, p_, $task))
+})(a_1, $task)));
+return p_
+})())
 : childProcess_.spawn(command_, arguments_, {cwd: ff_core_Option.Option_else(ff_core_Option.Option_map(directory_, ((_w1) => {
 return _w1.absolutePath_
 })), (() => {
@@ -500,23 +512,23 @@ if((standardIn_.byteLength !== 0)) {
 newProcess_.stdin.write(standardIn_)
 };
 newProcess_.stdin.end();
-newProcess_.on("error", ((error_) => {
+newProcess_.on("error", (async (a_1) => await (async (error_, $task) => {
 if((size_ > maxBuffer_)) {
-return reject_(ff_core_NodeSystem.internalProcessError_("maxBuffer exceeded"))
+return (await reject_(ff_core_NodeSystem.internalProcessError_("maxBuffer exceeded"), $task))
 } else {
-reject_(ff_core_NodeSystem.internalProcessError_(error_.message))
+(await reject_(ff_core_NodeSystem.internalProcessError_(error_.message), $task))
 }
-}));
-newProcess_.on("close", ((code_) => {
+})(a_1, $task)));
+newProcess_.on("close", (async (a_1) => await (async (code_, $task) => {
 const o_ = Buffer.concat(ff_core_Array.Array_drain(out_));
 const e_ = Buffer.concat(ff_core_Array.Array_drain(err_));
-return resolve_(ff_core_NodeSystem.ProcessResult(code_, (new DataView(o_.buffer, o_.byteOffset, o_.byteLength)), (new DataView(e_.buffer, e_.byteOffset, e_.byteLength))))
-}));
-onSettle_(((fulfilled_) => {
+return (await resolve_(ff_core_NodeSystem.ProcessResult(code_, (new DataView(o_.buffer, o_.byteOffset, o_.byteLength)), (new DataView(e_.buffer, e_.byteOffset, e_.byteLength))), $task))
+})(a_1, $task)));
+(await onSettle_((async (fulfilled_, $task) => {
 if((!fulfilled_)) {
 newProcess_.kill(killSignal_)
 }
-}))
+}), $task))
 }), $task))
 }), $task))
 }

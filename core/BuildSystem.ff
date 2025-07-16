@@ -125,6 +125,20 @@ internalPath(buildSystem: BuildSystem, absoluteOrRelative: String): Path {
 }
 
 internalCompile(buildSystem: BuildSystem, mainFiles: List[Path], target: String): Unit {
+    if(Js.globalThis()->ffDevelopMode.typeof() != "undefined") {
+        Js->process->send(Js->(
+            ffDevelopMode = "internalCompile"
+            mainFiles = mainFiles.map {_.absolute()}
+            target = target
+        ))
+        Js.awaitCancellablePromise {resolve, reject, cleanup =>
+            Js->process->on("message", Js->{message => 
+                if(message->ffDevelopMode === "internalCompile") {
+                    resolve(Unit) // Handle errors?
+                }
+            })
+        }
+    } else:
     // Ported from the old FFI. It's quite fragile w.r.t. changes in code generation.
     Js.await(Js.rawIdentifier("$firefly_compiler")->"buildViaBuildSystem_$"(
         buildSystem! 

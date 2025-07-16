@@ -140,7 +140,20 @@ return ff_core_Path.Path(nodePath_.resolve(absoluteOrRelative_))
 }
 
 export function internalCompile_(buildSystem_, mainFiles_, target_) {
+if(((typeof globalThis.ffDevelopMode) !== "undefined")) {
+process.send({ffDevelopMode: "internalCompile", mainFiles: ff_core_List.List_map(mainFiles_, ((_w1) => {
+return ff_core_Path.Path_absolute(_w1)
+})), target: target_});
+ff_core_Js.awaitCancellablePromise_(((resolve_, reject_, cleanup_) => {
+process.on("message", ((message_) => {
+if((message_.ffDevelopMode === "internalCompile")) {
+return ff_core_Option.Some(resolve_((void 0)))
+} else return ff_core_Option.None()
+}))
+}))
+} else {
 $firefly_compiler["buildViaBuildSystem_$"](buildSystem_, ff_core_BuildSystem.internalPath_(buildSystem_, buildSystem_["fireflyPath_"]), mainFiles_, target_, $task)
+}
 }
 
 export function internalMainPackagePair_(buildSystem_) {
@@ -190,7 +203,20 @@ return ff_core_Path.Path(nodePath_.resolve(absoluteOrRelative_))
 }
 
 export async function internalCompile_$(buildSystem_, mainFiles_, target_, $task) {
+if(((typeof globalThis.ffDevelopMode) !== "undefined")) {
+process.send({ffDevelopMode: "internalCompile", mainFiles: (await ff_core_List.List_map$(mainFiles_, (async (_w1, $task) => {
+return (await ff_core_Path.Path_absolute$(_w1, $task))
+}), $task)), target: target_});
+(await ff_core_Js.awaitCancellablePromise_$(((resolve_, reject_, cleanup_) => {
+process.on("message", ((message_) => {
+if((message_.ffDevelopMode === "internalCompile")) {
+return ff_core_Option.Some(resolve_((void 0)))
+} else return ff_core_Option.None()
+}))
+}), $task))
+} else {
 (await $firefly_compiler["buildViaBuildSystem_$"](buildSystem_, (await ff_core_BuildSystem.internalPath_$(buildSystem_, buildSystem_["fireflyPath_"], $task)), mainFiles_, target_, $task))
+}
 }
 
 export async function internalMainPackagePair_$(buildSystem_, $task) {
