@@ -137,9 +137,12 @@ startApp(
                     let mainFiles: List[String] = message->mainFiles?
                     let mainPaths = mainFiles.map {system.path(_)}
                     let target: String = message->target?
-                    let newModuleCache = moduleCache.ModuleCache(emittedModules = Map.new())
-                    Builder.buildViaBuildSystem(system, fireflyPath, mainPaths, target, newModuleCache)
-                    forkedProcess->send(Js->(ffDevelopMode = "internalCompile"))
+                    runner.lock.do {
+                        if(taskIteration == runner.iteration):
+                        let newModuleCache = moduleCache.ModuleCache(emittedModules = Map.new())
+                        Builder.buildViaBuildSystem(system, fireflyPath, mainPaths, target, newModuleCache)
+                        forkedProcess->send(Js->(ffDevelopMode = "internalCompile"))
+                    }
                 }
             }))
             let standardOut = result.standardOut.toString()

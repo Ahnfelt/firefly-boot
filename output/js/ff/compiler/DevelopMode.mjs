@@ -247,11 +247,17 @@ const mainPaths_ = ff_core_List.List_map(mainFiles_, ((_w1) => {
 return ff_core_NodeSystem.NodeSystem_path(system_, _w1)
 }));
 const target_ = message_.target;
+ff_core_Lock.Lock_do(runner_.lock_, (() => {
+if((taskIteration_ === runner_.iteration_)) {
+return ff_core_Option.Some((function() {
 const newModuleCache_ = (((_c) => {
 return ff_compiler_ModuleCache.ModuleCache(_c.version_, _c.parsedModules_, _c.resolvedModules_, _c.derivedModules_, _c.inferredModules_, ff_core_Map.new_())
 }))(moduleCache_);
 ff_compiler_Builder.buildViaBuildSystem_(system_, fireflyPath_, mainPaths_, target_, newModuleCache_);
-forkedProcess_.send({ffDevelopMode: "internalCompile"})
+return forkedProcess_.send({ffDevelopMode: "internalCompile"})
+})())
+} else return ff_core_Option.None()
+}))
 }
 })));
 const standardOut_ = ff_core_Buffer.Buffer_toString(result_.standardOut_, "utf8");
@@ -536,11 +542,17 @@ const mainPaths_ = (await ff_core_List.List_map$(mainFiles_, (async (_w1, $task)
 return (await ff_core_NodeSystem.NodeSystem_path$(system_, _w1, $task))
 }), $task));
 const target_ = message_.target;
+(await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
+if((taskIteration_ === runner_.iteration_)) {
+return ff_core_Option.Some((await (async function() {
 const newModuleCache_ = (((_c) => {
 return ff_compiler_ModuleCache.ModuleCache(_c.version_, _c.parsedModules_, _c.resolvedModules_, _c.derivedModules_, _c.inferredModules_, ff_core_Map.new_())
 }))(moduleCache_);
 (await ff_compiler_Builder.buildViaBuildSystem_$(system_, fireflyPath_, mainPaths_, target_, newModuleCache_, $task));
-forkedProcess_.send({ffDevelopMode: "internalCompile"})
+return forkedProcess_.send({ffDevelopMode: "internalCompile"})
+})()))
+} else return ff_core_Option.None()
+}), $task))
 }
 })), $task));
 const standardOut_ = ff_core_Buffer.Buffer_toString(result_.standardOut_, "utf8");
