@@ -198,8 +198,8 @@ startProxy(
     let targetServer = "localhost" // 127.0.0.1
     
     function parseHeaders(headerData: JsValue): JsValue {
-        let headers = Js->()
         let lines = headerData->split("\n")
+        let headers = Js->(firstLine = lines.get(0))
         if(lines.get(0)->startsWith("GET ")? && lines.get(0)->endsWith(" HTTP/1.1\r")?) {
             lines->forEach(Js->{line =>
                 let index = line->indexOf(":")
@@ -272,6 +272,7 @@ startProxy(
                     } else {
                         mutable connectedToTarget = False
                         targetSocket = net->createConnection(targetPort, targetServer, Js->{
+                            Log.debug("Piping: " + headers->firstLine?)
                             connectedToTarget = True
                             targetSocket->write(buffer)
                             clientSocket->pipe(targetSocket)->pipe(clientSocket)
@@ -279,7 +280,7 @@ startProxy(
 
                         targetSocket->on("error", Js->{err =>
                             if(connectedToTarget) {
-                                Log.debug("Target socket error:" + err?)
+                                Log.debug("Target socket error :" + err?)
                                 clientSocket->end()?
                             } elseIf {!refreshLike} {
                                 clientSocket->write("HTTP/1.1 503 Service Unavailable\r\n")

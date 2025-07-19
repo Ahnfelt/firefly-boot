@@ -310,8 +310,8 @@ export function startProxy_(system_, runner_, proxyPort_, targetPort_) {
 const net_ = import$1;
 const targetServer_ = "localhost";
 function parseHeaders_(headerData_) {
-const headers_ = {};
 const lines_ = headerData_.split("\n");
+const headers_ = {firstLine: lines_[0]};
 if((lines_[0].startsWith("GET ") && lines_[0].endsWith(" HTTP/1.1\r"))) {
 lines_.forEach(((line_) => {
 const index_ = line_.indexOf(":");
@@ -400,13 +400,14 @@ return serveWaiterHtml_()
 } else {
 let connectedToTarget_ = false;
 targetSocket_ = net_.createConnection(targetPort_, targetServer_, (() => {
+ff_core_Log.debug_(("Piping: " + headers_.firstLine));
 connectedToTarget_ = true;
 targetSocket_.write(buffer_);
 return clientSocket_.pipe(targetSocket_).pipe(clientSocket_)
 }));
 targetSocket_.on("error", ((err_) => {
 if(connectedToTarget_) {
-ff_core_Log.debug_(("Target socket error:" + err_));
+ff_core_Log.debug_(("Target socket error :" + err_));
 return clientSocket_.end()
 } else if((!refreshLike_)) {
 clientSocket_.write("HTTP/1.1 503 Service Unavailable\r\n");
@@ -607,8 +608,8 @@ export async function startProxy_$(system_, runner_, proxyPort_, targetPort_, $t
 const net_ = import$1;
 const targetServer_ = "localhost";
 function parseHeaders_(headerData_) {
-const headers_ = {};
 const lines_ = headerData_.split("\n");
+const headers_ = {firstLine: lines_[0]};
 if((lines_[0].startsWith("GET ") && lines_[0].endsWith(" HTTP/1.1\r"))) {
 lines_.forEach(((line_) => {
 const index_ = line_.indexOf(":");
@@ -697,13 +698,14 @@ return serveWaiterHtml_()
 } else {
 let connectedToTarget_ = false;
 targetSocket_ = net_.createConnection(targetPort_, targetServer_, (() => {
+ff_core_Log.debug_(("Piping: " + headers_.firstLine));
 connectedToTarget_ = true;
 targetSocket_.write(buffer_);
 return clientSocket_.pipe(targetSocket_).pipe(clientSocket_)
 }));
 targetSocket_.on("error", ((err_) => {
 if(connectedToTarget_) {
-ff_core_Log.debug_(("Target socket error:" + err_));
+ff_core_Log.debug_(("Target socket error :" + err_));
 return clientSocket_.end()
 } else if((!refreshLike_)) {
 clientSocket_.write("HTTP/1.1 503 Service Unavailable\r\n");
