@@ -224,7 +224,7 @@ startProxy(
             clientSocket->on("data", Js->{data =>
                 buffer = Js->Buffer->concat([buffer, data])
                 let headerEnd = buffer->indexOf("\r\n\r\n")
-                if(headerEnd !== -1 || buffer->length? >= 64 * 1024 || !buffer->starsWith("GET ")?) {
+                if(headerEnd !== -1 || buffer->length? >= 64 * 1024 || !buffer->startsWith("GET ")?) {
                     let headerData = buffer->subarray(0, headerEnd)->toString()
                     let headers = parseHeaders(headerData)
                     

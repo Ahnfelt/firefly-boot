@@ -339,7 +339,7 @@ let buffer_ = Buffer.alloc(0);
 clientSocket_.on("data", ((data_) => {
 buffer_ = Buffer.concat([buffer_, data_]);
 const headerEnd_ = buffer_.indexOf("\r\n\r\n");
-if((((headerEnd_ !== (-1)) || (buffer_.length >= (64 * 1024))) || (!buffer_.starsWith("GET ")))) {
+if((((headerEnd_ !== (-1)) || (buffer_.length >= (64 * 1024))) || (!buffer_.startsWith("GET ")))) {
 return ff_core_Option.Some((function() {
 const headerData_ = buffer_.subarray(0, headerEnd_).toString();
 const headers_ = parseHeaders_(headerData_);
@@ -636,7 +636,7 @@ let buffer_ = Buffer.alloc(0);
 clientSocket_.on("data", (async (a_1) => await (async (data_, $task) => {
 buffer_ = Buffer.concat([buffer_, data_]);
 const headerEnd_ = buffer_.indexOf("\r\n\r\n");
-if((((headerEnd_ !== (-1)) || (buffer_.length >= (64 * 1024))) || (!buffer_.starsWith("GET ")))) {
+if((((headerEnd_ !== (-1)) || (buffer_.length >= (64 * 1024))) || (!buffer_.startsWith("GET ")))) {
 return ff_core_Option.Some((await (async function() {
 const headerData_ = buffer_.subarray(0, headerEnd_).toString();
 const headers_ = parseHeaders_(headerData_);
