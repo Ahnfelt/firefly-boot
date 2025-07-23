@@ -18,7 +18,7 @@ capability Runner(
 
 data RunnerState {
     CompilingState
-    CompileErrorState(output: String)
+    CompileErrorState(at: Option[Location], output: String)
     ApplicationRunningState
     ApplicationCrashedState(output: String)
 }
@@ -90,7 +90,7 @@ build(system: NodeSystem, runner: Runner, mainFile: String, moduleCache: ModuleC
         Log.debug(message)
         Log.debug(" at " + at.file.replace("./", "") + ":" + at.line + ":" + at.column)
         runner.lock.do {
-            runner.state = CompileErrorState(message)
+            runner.state = CompileErrorState(Some(at), message)
         }
         None
     } tryCatch {| CompileErrors(compileErrors), error =>
@@ -98,14 +98,14 @@ build(system: NodeSystem, runner: Runner, mainFile: String, moduleCache: ModuleC
             Log.debug(message)
             Log.debug(" at " + at.file.replace("./", "") + ":" + at.line + ":" + at.column)
             runner.lock.do {
-                runner.state = CompileErrorState(message)
+                runner.state = CompileErrorState(Some(at), message)
             }
         }
         None
     } catchAny {error =>
         Log.debug(error.message())
         runner.lock.do {
-            runner.state = CompileErrorState(error.message())
+            runner.state = CompileErrorState(None, error.message())
         }
         None
     }    
@@ -254,10 +254,15 @@ startProxy(
                             | _ {runner.recompile} => "Restarting..."
                             | ApplicationCrashedState(output) => "Application crashed!"
                             | ApplicationRunningState => "Starting application..."
-                            | CompileErrorState(output) => "Compile error!"
+                            | CompileErrorState(Some(at), output) => 
+                                let location =  at.file + ":" + at.line + ":" + at.column
+                                let link = "<a href='vscode://file/" + location + "'>" + location + "</a>"
+                                "Compile error! <pre>" + output + "\n" + link + "</pre>"
+                            | CompileErrorState(None, output) => "Compiler crashed!" + output
                             | CompilingState => "Compiling..."
                         }
-                        let waiterBuffer = waiterHtml.replace("[STATUS]", status).toBuffer()
+                        
+                        let waiterBuffer = waiterHtml.replace("[STATUS]", status)//.toBuffer()
                         clientSocket->write("HTTP/1.1 200 OK\r\n")
                         clientSocket->write("Content-Type: text/html\r\n")
                         clientSocket->write("Content-Length: " + waiterBuffer.size() + "\r\n")

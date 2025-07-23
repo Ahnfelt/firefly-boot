@@ -120,8 +120,8 @@ const CompilingState$ = {CompilingState: true};
 export function CompilingState() {
 return CompilingState$;
 }
-export function CompileErrorState(output_) {
-return {CompileErrorState: true, output_};
+export function CompileErrorState(at_, output_) {
+return {CompileErrorState: true, at_, output_};
 }
 const ApplicationRunningState$ = {ApplicationRunningState: true};
 export function ApplicationRunningState() {
@@ -131,7 +131,7 @@ export function ApplicationCrashedState(output_) {
 return {ApplicationCrashedState: true, output_};
 }
 
-export const waiterHtml_ = "<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <meta http-equiv=\"refresh\" content=\"1\">\r\n    <title>Firefly develop mode</title>\r\n</head>\r\n<body>\r\n    <h1>Firefly develop mode</h1>\r\n    <p>[STATUS]</p>\r\n</body>\r\n</html>\r\n";
+export const waiterHtml_ = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta http-equiv=\"refresh\" content=\"1\">\n    <title>Firefly develop mode</title>\n</head>\n<body>\n    <h1>Firefly develop mode</h1>\n    <p>[STATUS]</p>\n</body>\n</html>\n";
 
 export function run_(system_, fireflyPath_, mainFile_, arguments_) {
 const lock_ = ff_core_Task.Task_lock(ff_core_NodeSystem.NodeSystem_mainTask(system_));
@@ -198,7 +198,7 @@ const error_ = _2;
 ff_core_Log.debug_(message_);
 ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_));
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
-runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(message_)
+runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.Some(at_), message_)
 }));
 return ff_core_Option.None()
 }
@@ -213,7 +213,7 @@ const message_ = _1.message_;
 ff_core_Log.debug_(message_);
 ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_));
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
-runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(message_)
+runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.Some(at_), message_)
 }))
 return
 }
@@ -223,7 +223,7 @@ return ff_core_Option.None()
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors), ((error_) => {
 ff_core_Log.debug_(ff_core_Error.Error_message(error_));
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
-runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Error.Error_message(error_))
+runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.None(), ff_core_Error.Error_message(error_))
 }));
 return ff_core_Option.None()
 }))
@@ -378,18 +378,25 @@ return "Application crashed!"
 if(_1.ApplicationRunningState) {
 return "Starting application..."
 }
-if(_1.CompileErrorState) {
+if(_1.CompileErrorState && _1.at_.Some) {
+const at_ = _1.at_.value_;
 const output_ = _1.output_;
-return "Compile error!"
+const location_ = ((((at_.file_ + ":") + at_.line_) + ":") + at_.column_);
+const link_ = (((("<a href='vscode://file/" + location_) + "'>") + location_) + "</a>");
+return (((("Compile error! <pre>" + output_) + "\n") + link_) + "</pre>")
+}
+if(_1.CompileErrorState && _1.at_.None) {
+const output_ = _1.output_;
+return ("Compiler crashed!" + output_)
 }
 {
 return "Compiling..."
 }
 }))(runner_.state_);
-const waiterBuffer_ = ff_core_String.String_toBuffer(ff_core_String.String_replace(ff_compiler_DevelopMode.waiterHtml_, "[STATUS]", status_));
+const waiterBuffer_ = ff_core_String.String_replace(ff_compiler_DevelopMode.waiterHtml_, "[STATUS]", status_);
 clientSocket_.write("HTTP/1.1 200 OK\r\n");
 clientSocket_.write("Content-Type: text/html\r\n");
-clientSocket_.write((("Content-Length: " + ff_core_Buffer.Buffer_size(waiterBuffer_)) + "\r\n"));
+clientSocket_.write((("Content-Length: " + waiterBuffer_.length) + "\r\n"));
 clientSocket_.write("Connection: close\r\n");
 clientSocket_.write("\r\n");
 clientSocket_.write(waiterBuffer_);
@@ -496,7 +503,7 @@ const error_ = _2;
 ff_core_Log.debug_(message_);
 ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_));
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
-runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(message_)
+runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.Some(at_), message_)
 }), $task));
 return ff_core_Option.None()
 }
@@ -511,7 +518,7 @@ const message_ = _1.message_;
 ff_core_Log.debug_(message_);
 ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_));
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
-runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(message_)
+runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.Some(at_), message_)
 }), $task))
 return
 }
@@ -521,7 +528,7 @@ return ff_core_Option.None()
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, $task)), (async (error_, $task) => {
 ff_core_Log.debug_(ff_core_Error.Error_message(error_));
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
-runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Error.Error_message(error_))
+runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.None(), ff_core_Error.Error_message(error_))
 }), $task));
 return ff_core_Option.None()
 }), $task))
@@ -676,18 +683,25 @@ return "Application crashed!"
 if(_1.ApplicationRunningState) {
 return "Starting application..."
 }
-if(_1.CompileErrorState) {
+if(_1.CompileErrorState && _1.at_.Some) {
+const at_ = _1.at_.value_;
 const output_ = _1.output_;
-return "Compile error!"
+const location_ = ((((at_.file_ + ":") + at_.line_) + ":") + at_.column_);
+const link_ = (((("<a href='vscode://file/" + location_) + "'>") + location_) + "</a>");
+return (((("Compile error! <pre>" + output_) + "\n") + link_) + "</pre>")
+}
+if(_1.CompileErrorState && _1.at_.None) {
+const output_ = _1.output_;
+return ("Compiler crashed!" + output_)
 }
 {
 return "Compiling..."
 }
 }))(runner_.state_);
-const waiterBuffer_ = ff_core_String.String_toBuffer(ff_core_String.String_replace(ff_compiler_DevelopMode.waiterHtml_, "[STATUS]", status_));
+const waiterBuffer_ = ff_core_String.String_replace(ff_compiler_DevelopMode.waiterHtml_, "[STATUS]", status_);
 clientSocket_.write("HTTP/1.1 200 OK\r\n");
 clientSocket_.write("Content-Type: text/html\r\n");
-clientSocket_.write((("Content-Length: " + ff_core_Buffer.Buffer_size(waiterBuffer_)) + "\r\n"));
+clientSocket_.write((("Content-Length: " + waiterBuffer_.length) + "\r\n"));
 clientSocket_.write("Connection: close\r\n");
 clientSocket_.write("\r\n");
 clientSocket_.write(waiterBuffer_);
@@ -747,7 +761,7 @@ return "CompilingState"
 }
 if(value_a.CompileErrorState) {
 const z_ = value_a;
-return ((("CompileErrorState" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.output_)) + ")")
+return ((((("CompileErrorState" + "(") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location).show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.output_)) + ")")
 }
 if(value_a.ApplicationRunningState) {
 const z_ = value_a;
@@ -766,7 +780,7 @@ return "CompilingState"
 }
 if(value_a.CompileErrorState) {
 const z_ = value_a;
-return ((("CompileErrorState" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.output_)) + ")")
+return ((((("CompileErrorState" + "(") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location).show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.output_)) + ")")
 }
 if(value_a.ApplicationRunningState) {
 const z_ = value_a;
@@ -789,7 +803,7 @@ return true
 if(x_a.CompileErrorState && y_a.CompileErrorState) {
 const x_ = x_a;
 const y_ = y_a;
-return (x_.output_ === y_.output_)
+return (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location).equals_(x_.at_, y_.at_) && (x_.output_ === y_.output_))
 }
 if(x_a.ApplicationCrashedState && y_a.ApplicationCrashedState) {
 const x_ = x_a;
@@ -809,7 +823,7 @@ return true
 if(x_a.CompileErrorState && y_a.CompileErrorState) {
 const x_ = x_a;
 const y_ = y_a;
-return (x_.output_ === y_.output_)
+return (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location).equals_(x_.at_, y_.at_) && (x_.output_ === y_.output_))
 }
 if(x_a.ApplicationCrashedState && y_a.ApplicationCrashedState) {
 const x_ = x_a;
@@ -832,11 +846,16 @@ return ff_core_Ordering.OrderingSame()
 if(x_a.CompileErrorState && y_a.CompileErrorState) {
 const x_ = x_a;
 const y_ = y_a;
+const atOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Location).compare_(x_.at_, y_.at_);
+if((atOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return atOrdering_
+} else {
 const outputOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.output_, y_.output_);
 if((outputOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return outputOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
 }
 return
 }
@@ -879,11 +898,16 @@ return ff_core_Ordering.OrderingSame()
 if(x_a.CompileErrorState && y_a.CompileErrorState) {
 const x_ = x_a;
 const y_ = y_a;
+const atOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Location).compare_(x_.at_, y_.at_);
+if((atOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return atOrdering_
+} else {
 const outputOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.output_, y_.output_);
 if((outputOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return outputOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
 }
 return
 }
@@ -937,6 +961,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1);
 serialization_.offset_ += 1;
+ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).serializeUsing_(serialization_, v_.at_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.output_)
 return
 }
@@ -969,7 +994,7 @@ return ff_compiler_DevelopMode.CompilingState()
 }
 if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 41), 0);
-return ff_compiler_DevelopMode.CompileErrorState(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+return ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 }
 if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 47), 0);
@@ -1001,6 +1026,7 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1);
 serialization_.offset_ += 1;
+ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).serializeUsing_(serialization_, v_.at_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.output_)
 return
 }
@@ -1033,7 +1059,7 @@ return ff_compiler_DevelopMode.CompilingState()
 }
 if(_1 === 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 41), 0);
-return ff_compiler_DevelopMode.CompileErrorState(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+return ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 }
 if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 47), 0);
