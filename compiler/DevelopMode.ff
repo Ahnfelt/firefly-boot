@@ -204,23 +204,30 @@ startProxy(
             Log.debugDynamic(err)
         })
         function serveWaiterHtml() {
+            function escapeHtml(html: String): String {
+                html.replace("&", "&amp;")
+                    .replace("'", "&#039;")
+                    .replace("\"", "&quot;")
+                    .replace("<", "&lt;")
+                    .replace(">", "&gt;")
+            }
             let status = runner.state.{
                 | _ {runner.recompile} => "Restarting..."
-                | ApplicationCrashedState(output) => "Application crashed!"
+                | ApplicationCrashedState(output) => "Application crashed!<br>" + escapeHtml(output)
                 | ApplicationRunningState => "Starting application..."
                 | CompileErrorState(Some(at), output) => 
-                    let location =  at.file + ":" + at.line + ":" + at.column
-                    let link = "<a href='vscode://file/" + location + "'>" + location + "</a>"
-                    "Compile error! <pre>" + output + "\n" + link + "</pre>"
-                | CompileErrorState(None, output) => "Compiler crashed!" + output
+                    let location = escapeHtml(at.file + ":" + at.line + ":" + at.column)
+                    let link = "<a href='vscode://file/" + escapeHtml(location) + "'>" + location + "</a>"
+                    escapeHtml(output) + "<br>" + link
+                | CompileErrorState(None, output) => "Compiler crashed!<br>" + escapeHtml(output)
                 | CompilingState => "Compiling..."
             }
             
-            let escapedStatus = status.replace("&", "&amp;").replace("<", "&lt;")
-            let waiterBuffer = waiterHtml.replace("[STATUS]", escapedStatus).toBuffer()
+            let waiterBuffer = waiterHtml.replace("[STATUS]", status).toBuffer()
             clientSocket->write("HTTP/1.1 200 OK\r\n")
             clientSocket->write("Content-Type: text/html\r\n")
             clientSocket->write("Content-Length: " + waiterBuffer.size() + "\r\n")
+            clientSocket->write("x-firefly-develop-mode: true\r\n")
             clientSocket->write("Connection: close\r\n")
             clientSocket->write("\r\n")
             clientSocket->write(
@@ -268,8 +275,104 @@ waiterHtml = """<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="1">
     <title>Firefly develop mode</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: radial-gradient(circle at center, #1a1a2e, #121212);
+        }
+
+        h1 {
+            color: #00f2ff;
+            text-shadow: 0 0 10px #00f2ff;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        p {
+            background-color: #1a1a2e;
+            color: #00f2ff;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            border: 2px solid #00f2ff;
+            box-shadow: 0 0 15px #00f2ff;
+            animation: pulse 1.5s infinite;
+        }
+            
+        a {
+            color: #00f2ff;
+        }
+
+        @media only screen and (max-width: 600px) {
+            h1 {
+                font-size: 1.7rem;
+            }
+            p {
+                padding: 10px 20px;
+                border-radius: 50px;
+                font-size: 1.1rem;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+        }
+                    
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #00f2ff;
+            }
+            to {
+                text-shadow: 0 0 20px #00f2ff, 0 0 30px #00f2ff;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(0, 242, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 242, 255, 0);
+            }
+        }
+    </style>
+    <script>
+        let delay = 100
+        let poll = async () => {
+            delay *= 1.1
+            try {
+                let response = await fetch(".", {cache: 'no-store'})
+                if(!response.headers.has('x-firefly-develop-mode')) {
+                    window.location.reload(true)
+                    return
+                } else {
+                    let html = await response.text()
+                    let parser = new DOMParser()
+                    let d = parser.parseFromString(html, 'text/html')
+                    let bodyHtml = d.body.innerHTML
+                    if(document.body.innerHTML !== bodyHtml) {
+                        document.body.innerHTML = bodyHtml
+                    }
+                    setTimeout(poll, delay)
+                }
+            } catch (error) {
+                console.error("Polling error:", error)
+                setTimeout(poll, delay)
+            }
+        }
+        setTimeout(poll, delay)
+    </script>
 </head>
 <body>
     <h1>Firefly develop mode</h1>
