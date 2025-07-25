@@ -204,6 +204,14 @@ startProxy(
             Log.debugDynamic(err)
         })
         function serveWaiterHtml() {
+            if(runner.changedSinceCompilationStarted.size() != 0) {
+                runner.recompile = True
+                system.mainTask().spawn {task =>
+                    runner.lock.do {
+                        runner.lockCondition.wakeAll()
+                    }
+                }
+            }
             function escapeHtml(html: String): String {
                 html.replace("&", "&amp;")
                     .replace("'", "&#039;")
@@ -247,14 +255,6 @@ startProxy(
                 clientSocket->pipe(targetSocket)->pipe(clientSocket)
                 clientSocket->resume()?
             } else {
-                if(runner.changedSinceCompilationStarted.size() != 0) {
-                    runner.recompile = True
-                    system.mainTask().spawn {task =>
-                        runner.lock.do {
-                            runner.lockCondition.wakeAll()
-                        }
-                    }
-                }
                 serveWaiterHtml()
             }
         })

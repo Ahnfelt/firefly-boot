@@ -319,6 +319,14 @@ targetSocket_.end()
 return ff_core_Log.debugDynamic_(err_)
 }));
 function serveWaiterHtml_() {
+if((ff_core_Set.Set_size(runner_.changedSinceCompilationStarted_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) !== 0)) {
+runner_.recompile_ = true;
+ff_core_Task.Task_spawn(ff_core_NodeSystem.NodeSystem_mainTask(system_), ((task_) => {
+ff_core_Lock.Lock_do(runner_.lock_, (() => {
+return ff_core_Lock.LockCondition_wakeAll(runner_.lockCondition_)
+}))
+}))
+};
 function escapeHtml_(html_) {
 return ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(html_, "&", "&amp;"), "'", "&#039;"), "\"", "&quot;"), "<", "&lt;"), ">", "&gt;")
 }
@@ -374,14 +382,6 @@ if(direct_) {
 clientSocket_.pipe(targetSocket_).pipe(clientSocket_);
 return clientSocket_.resume()
 } else {
-if((ff_core_Set.Set_size(runner_.changedSinceCompilationStarted_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) !== 0)) {
-runner_.recompile_ = true;
-ff_core_Task.Task_spawn(ff_core_NodeSystem.NodeSystem_mainTask(system_), ((task_) => {
-ff_core_Lock.Lock_do(runner_.lock_, (() => {
-return ff_core_Lock.LockCondition_wakeAll(runner_.lockCondition_)
-}))
-}))
-};
 return serveWaiterHtml_()
 }
 }));
@@ -584,6 +584,14 @@ targetSocket_.end()
 return ff_core_Log.debugDynamic_(err_)
 }));
 async function serveWaiterHtml_$($task) {
+if((ff_core_Set.Set_size(runner_.changedSinceCompilationStarted_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) !== 0)) {
+runner_.recompile_ = true;
+(await ff_core_Task.Task_spawn$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), (async (task_, $task) => {
+(await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
+return (await ff_core_Lock.LockCondition_wakeAll$(runner_.lockCondition_, $task))
+}), $task))
+}), $task))
+};
 function escapeHtml_(html_) {
 return ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(html_, "&", "&amp;"), "'", "&#039;"), "\"", "&quot;"), "<", "&lt;"), ">", "&gt;")
 }
@@ -639,14 +647,6 @@ if(direct_) {
 clientSocket_.pipe(targetSocket_).pipe(clientSocket_);
 return clientSocket_.resume()
 } else {
-if((ff_core_Set.Set_size(runner_.changedSinceCompilationStarted_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) !== 0)) {
-runner_.recompile_ = true;
-(await ff_core_Task.Task_spawn$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), (async (task_, $task) => {
-(await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
-return (await ff_core_Lock.LockCondition_wakeAll$(runner_.lockCondition_, $task))
-}), $task))
-}), $task))
-};
 return (await serveWaiterHtml_$($task))
 }
 })($task)));
