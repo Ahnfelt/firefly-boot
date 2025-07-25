@@ -345,13 +345,14 @@ return ("Compiler crashed!" + output_)
 return "Compiling..."
 }
 }))(runner_.state_);
-const waiterBuffer_ = ff_core_String.String_replace(ff_compiler_DevelopMode.waiterHtml_, "[STATUS]", status_);
+const escapedStatus_ = ff_core_String.String_replace(ff_core_String.String_replace(status_, "&", "&amp;"), "<", "&lt;");
+const waiterBuffer_ = ff_core_String.String_toBuffer(ff_core_String.String_replace(ff_compiler_DevelopMode.waiterHtml_, "[STATUS]", escapedStatus_));
 clientSocket_.write("HTTP/1.1 200 OK\r\n");
 clientSocket_.write("Content-Type: text/html\r\n");
-clientSocket_.write((("Content-Length: " + waiterBuffer_.length) + "\r\n"));
+clientSocket_.write((("Content-Length: " + ff_core_Buffer.Buffer_size(waiterBuffer_)) + "\r\n"));
 clientSocket_.write("Connection: close\r\n");
 clientSocket_.write("\r\n");
-clientSocket_.write(waiterBuffer_);
+clientSocket_.write(Buffer.from(waiterBuffer_.buffer, waiterBuffer_.byteOffset, waiterBuffer_.byteLength));
 clientSocket_.end()
 }
 targetSocket_ = net_.createConnection(targetPort_, targetServer_, (() => {
@@ -604,13 +605,14 @@ return ("Compiler crashed!" + output_)
 return "Compiling..."
 }
 }))(runner_.state_);
-const waiterBuffer_ = ff_core_String.String_replace(ff_compiler_DevelopMode.waiterHtml_, "[STATUS]", status_);
+const escapedStatus_ = ff_core_String.String_replace(ff_core_String.String_replace(status_, "&", "&amp;"), "<", "&lt;");
+const waiterBuffer_ = ff_core_String.String_toBuffer(ff_core_String.String_replace(ff_compiler_DevelopMode.waiterHtml_, "[STATUS]", escapedStatus_));
 clientSocket_.write("HTTP/1.1 200 OK\r\n");
 clientSocket_.write("Content-Type: text/html\r\n");
-clientSocket_.write((("Content-Length: " + waiterBuffer_.length) + "\r\n"));
+clientSocket_.write((("Content-Length: " + ff_core_Buffer.Buffer_size(waiterBuffer_)) + "\r\n"));
 clientSocket_.write("Connection: close\r\n");
 clientSocket_.write("\r\n");
-clientSocket_.write(waiterBuffer_);
+clientSocket_.write(Buffer.from(waiterBuffer_.buffer, waiterBuffer_.byteOffset, waiterBuffer_.byteLength));
 clientSocket_.end()
 }
 targetSocket_ = net_.createConnection(targetPort_, targetServer_, (async () => await (async ($task) => {
