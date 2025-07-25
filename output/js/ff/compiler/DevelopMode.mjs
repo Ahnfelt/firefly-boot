@@ -131,7 +131,7 @@ export function ApplicationCrashedState(output_) {
 return {ApplicationCrashedState: true, output_};
 }
 
-export const waiterHtml_ = "<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <title>Firefly develop mode</title>\r\n    <style>\r\n        body {\r\n            background-color: #121212;\r\n            color: #e0e0e0;\r\n            font-family: 'Courier New', monospace;\r\n            display: flex;\r\n            flex-direction: column;\r\n            justify-content: center;\r\n            align-items: center;\r\n            height: 100vh;\r\n            margin: 0;\r\n            background-image: radial-gradient(circle at center, #1a1a2e, #121212);\r\n        }\r\n\r\n        h1 {\r\n            color: #00f2ff;\r\n            text-shadow: 0 0 10px #00f2ff;\r\n            font-size: 3rem;\r\n            margin-bottom: 20px;\r\n            animation: glow 2s ease-in-out infinite alternate;\r\n        }\r\n\r\n        p {\r\n            background-color: #1a1a2e;\r\n            color: #00f2ff;\r\n            padding: 15px 30px;\r\n            border-radius: 50px;\r\n            font-size: 1.2rem;\r\n            border: 2px solid #00f2ff;\r\n            box-shadow: 0 0 15px #00f2ff;\r\n            animation: pulse 1.5s infinite;\r\n        }\r\n            \r\n        a {\r\n            color: #00f2ff;\r\n        }\r\n\r\n        @media only screen and (max-width: 600px) {\r\n            h1 {\r\n                font-size: 1.7rem;\r\n            }\r\n            p {\r\n                padding: 10px 20px;\r\n                border-radius: 50px;\r\n                font-size: 1.1rem;\r\n                max-width: 100%;\r\n                box-sizing: border-box;\r\n            }\r\n        }\r\n                    \r\n        @keyframes glow {\r\n            from {\r\n                text-shadow: 0 0 10px #00f2ff;\r\n            }\r\n            to {\r\n                text-shadow: 0 0 20px #00f2ff, 0 0 30px #00f2ff;\r\n            }\r\n        }\r\n\r\n        @keyframes pulse {\r\n            0% {\r\n                box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.7);\r\n            }\r\n            70% {\r\n                box-shadow: 0 0 0 10px rgba(0, 242, 255, 0);\r\n            }\r\n            100% {\r\n                box-shadow: 0 0 0 0 rgba(0, 242, 255, 0);\r\n            }\r\n        }\r\n    </style>\r\n    <script>\r\n        let delay = 100\r\n        let poll = async () => {\r\n            delay *= 1.1\r\n            try {\r\n                let response = await fetch(\".\", {cache: 'no-store'})\r\n                if(!response.headers.has('x-firefly-develop-mode')) {\r\n                    window.location.reload(true)\r\n                    return\r\n                } else {\r\n                    let html = await response.text()\r\n                    let parser = new DOMParser()\r\n                    let d = parser.parseFromString(html, 'text/html')\r\n                    let bodyHtml = d.body.innerHTML\r\n                    if(document.body.innerHTML !== bodyHtml) {\r\n                        document.body.innerHTML = bodyHtml\r\n                    }\r\n                    setTimeout(poll, delay)\r\n                }\r\n            } catch (error) {\r\n                console.error(\"Polling error:\", error)\r\n                setTimeout(poll, delay)\r\n            }\r\n        }\r\n        setTimeout(poll, delay)\r\n    </script>\r\n</head>\r\n<body>\r\n    <h1>Firefly develop mode</h1>\r\n    <p>[STATUS]</p>\r\n</body>\r\n</html>\r\n";
+export const waiterHtml_ = "<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <title>Firefly develop mode</title>\r\n    <style>\r\n        body {\r\n            background-color: #121212;\r\n            color: #e0e0e0;\r\n            font-family: 'Courier New', monospace;\r\n            display: flex;\r\n            flex-direction: column;\r\n            justify-content: center;\r\n            align-items: center;\r\n            height: 100vh;\r\n            margin: 0;\r\n            background-image: radial-gradient(circle at center, #1a1a2e, #121212);\r\n        }\r\n\r\n        h1 {\r\n            color: #00f2ff;\r\n            text-shadow: 0 0 10px #00f2ff;\r\n            font-size: 3rem;\r\n            margin-bottom: 20px;\r\n            animation: glow 2s ease-in-out infinite alternate;\r\n        }\r\n\r\n        p {\r\n            background-color: #1a1a2e;\r\n            color: #00f2ff;\r\n            padding: 15px 30px;\r\n            border-radius: 25px;\r\n            font-size: 1.2rem;\r\n            border: 2px solid #00f2ff;\r\n            box-shadow: 0 0 15px #00f2ff;\r\n            animation: pulse 1.5s infinite;\r\n        }\r\n            \r\n        a {\r\n            color: #00f2ff;\r\n        }\r\n\r\n        @media only screen and (max-width: 600px) {\r\n            h1 {\r\n                font-size: 1.7rem;\r\n            }\r\n            p {\r\n                padding: 10px 20px;\r\n                border-radius: 50px;\r\n                font-size: 1.1rem;\r\n                max-width: 100%;\r\n                box-sizing: border-box;\r\n            }\r\n        }\r\n                    \r\n        @keyframes glow {\r\n            from {\r\n                text-shadow: 0 0 10px #00f2ff;\r\n            }\r\n            to {\r\n                text-shadow: 0 0 20px #00f2ff, 0 0 30px #00f2ff;\r\n            }\r\n        }\r\n\r\n        @keyframes pulse {\r\n            0% {\r\n                box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.7);\r\n            }\r\n            70% {\r\n                box-shadow: 0 0 0 10px rgba(0, 242, 255, 0);\r\n            }\r\n            100% {\r\n                box-shadow: 0 0 0 0 rgba(0, 242, 255, 0);\r\n            }\r\n        }\r\n    </style>\r\n    <script>\r\n        let delay = 100\r\n        let poll = async () => {\r\n            delay *= 1.1\r\n            try {\r\n                let response = await fetch(\".\", {cache: 'no-store'})\r\n                if(!response.headers.has('x-firefly-develop-mode')) {\r\n                    window.location.reload(true)\r\n                    return\r\n                } else {\r\n                    let html = await response.text()\r\n                    let parser = new DOMParser()\r\n                    let d = parser.parseFromString(html, 'text/html')\r\n                    let bodyHtml = d.body.innerHTML\r\n                    if(document.body.innerHTML !== bodyHtml) {\r\n                        document.body.innerHTML = bodyHtml\r\n                    }\r\n                    setTimeout(poll, delay)\r\n                }\r\n            } catch (error) {\r\n                console.error(\"Polling error:\", error)\r\n                setTimeout(poll, delay)\r\n            }\r\n        }\r\n        setTimeout(poll, delay)\r\n    </script>\r\n</head>\r\n<body>\r\n    <h1>Firefly develop mode</h1>\r\n    <p>[STATUS]</p>\r\n</body>\r\n</html>\r\n";
 
 export function run_(system_, fireflyPath_, mainFile_, arguments_) {
 const lock_ = ff_core_Task.Task_lock(ff_core_NodeSystem.NodeSystem_mainTask(system_));
@@ -337,8 +337,10 @@ if(_1.CompileErrorState && _1.at_.Some) {
 const at_ = _1.at_.value_;
 const output_ = _1.output_;
 const location_ = escapeHtml_(((((at_.file_ + ":") + at_.line_) + ":") + at_.column_));
-const link_ = (((("<a href='vscode://file/" + escapeHtml_(location_)) + "'>") + location_) + "</a>");
-return ((escapeHtml_(output_) + "<br>") + link_)
+const relativeFile_ = ff_core_Path.Path_relativeTo(ff_core_NodeSystem.NodeSystem_path(system_, at_.file_), ff_core_NodeSystem.NodeSystem_path(system_, "."));
+const relativeLocation_ = escapeHtml_(((((relativeFile_ + ":") + at_.line_) + ":") + at_.column_));
+const link_ = (((("<a href='vscode://file/" + escapeHtml_(location_)) + "'>") + relativeLocation_) + "</a>");
+return ((escapeHtml_(output_) + "<br><br>at ") + link_)
 }
 if(_1.CompileErrorState && _1.at_.None) {
 const output_ = _1.output_;
@@ -581,11 +583,11 @@ targetSocket_.end()
 };
 return ff_core_Log.debugDynamic_(err_)
 }));
-function serveWaiterHtml_() {
+async function serveWaiterHtml_$($task) {
 function escapeHtml_(html_) {
 return ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(html_, "&", "&amp;"), "'", "&#039;"), "\"", "&quot;"), "<", "&lt;"), ">", "&gt;")
 }
-const status_ = (((_1) => {
+const status_ = (await ((async (_1, $task) => {
 if(runner_.recompile_) {
 return "Restarting..."
 }
@@ -600,8 +602,10 @@ if(_1.CompileErrorState && _1.at_.Some) {
 const at_ = _1.at_.value_;
 const output_ = _1.output_;
 const location_ = escapeHtml_(((((at_.file_ + ":") + at_.line_) + ":") + at_.column_));
-const link_ = (((("<a href='vscode://file/" + escapeHtml_(location_)) + "'>") + location_) + "</a>");
-return ((escapeHtml_(output_) + "<br>") + link_)
+const relativeFile_ = (await ff_core_Path.Path_relativeTo$((await ff_core_NodeSystem.NodeSystem_path$(system_, at_.file_, $task)), (await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
+const relativeLocation_ = escapeHtml_(((((relativeFile_ + ":") + at_.line_) + ":") + at_.column_));
+const link_ = (((("<a href='vscode://file/" + escapeHtml_(location_)) + "'>") + relativeLocation_) + "</a>");
+return ((escapeHtml_(output_) + "<br><br>at ") + link_)
 }
 if(_1.CompileErrorState && _1.at_.None) {
 const output_ = _1.output_;
@@ -610,7 +614,7 @@ return ("Compiler crashed!<br>" + escapeHtml_(output_))
 {
 return "Compiling..."
 }
-}))(runner_.state_);
+}))(runner_.state_, $task));
 const waiterBuffer_ = ff_core_String.String_toBuffer(ff_core_String.String_replace(ff_compiler_DevelopMode.waiterHtml_, "[STATUS]", status_));
 clientSocket_.write("HTTP/1.1 200 OK\r\n");
 clientSocket_.write("Content-Type: text/html\r\n");
@@ -643,16 +647,16 @@ return (await ff_core_Lock.LockCondition_wakeAll$(runner_.lockCondition_, $task)
 }), $task))
 }), $task))
 };
-return serveWaiterHtml_()
+return (await serveWaiterHtml_$($task))
 }
 })($task)));
-return targetSocket_.on("error", ((err_) => {
+return targetSocket_.on("error", (async (a_1) => await (async (err_, $task) => {
 if(connected_) {
 return clientSocket_.end()
 } else {
-return serveWaiterHtml_()
+return (await serveWaiterHtml_$($task))
 }
-}))
+})(a_1, $task)))
 })(a_1, $task)));
 proxyServer_.listen(proxyPort_, (() => {
 return console.log(("Proxy server running on port " + proxyPort_))

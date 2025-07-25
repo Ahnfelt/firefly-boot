@@ -217,8 +217,10 @@ startProxy(
                 | ApplicationRunningState => "Starting application..."
                 | CompileErrorState(Some(at), output) => 
                     let location = escapeHtml(at.file + ":" + at.line + ":" + at.column)
-                    let link = "<a href='vscode://file/" + escapeHtml(location) + "'>" + location + "</a>"
-                    escapeHtml(output) + "<br>" + link
+                    let relativeFile = system.path(at.file).relativeTo(system.path("."))
+                    let relativeLocation = escapeHtml(relativeFile + ":" + at.line + ":" + at.column)
+                    let link = "<a href='vscode://file/" + escapeHtml(location) + "'>" + relativeLocation + "</a>"
+                    escapeHtml(output) + "<br><br>at " + link
                 | CompileErrorState(None, output) => "Compiler crashed!<br>" + escapeHtml(output)
                 | CompilingState => "Compiling..."
             }
@@ -302,7 +304,7 @@ waiterHtml = """<!DOCTYPE html>
             background-color: #1a1a2e;
             color: #00f2ff;
             padding: 15px 30px;
-            border-radius: 50px;
+            border-radius: 25px;
             font-size: 1.2rem;
             border: 2px solid #00f2ff;
             box-shadow: 0 0 15px #00f2ff;
