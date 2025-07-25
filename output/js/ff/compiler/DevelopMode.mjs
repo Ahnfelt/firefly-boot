@@ -131,13 +131,13 @@ export function ApplicationCrashedState(output_) {
 return {ApplicationCrashedState: true, output_};
 }
 
-export const waiterHtml_ = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta http-equiv=\"refresh\" content=\"1\">\n    <title>Firefly develop mode</title>\n</head>\n<body>\n    <h1>Firefly develop mode</h1>\n    <p>[STATUS]</p>\n</body>\n</html>\n";
+export const waiterHtml_ = "<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <meta http-equiv=\"refresh\" content=\"1\">\r\n    <title>Firefly develop mode</title>\r\n</head>\r\n<body>\r\n    <h1>Firefly develop mode</h1>\r\n    <p>[STATUS]</p>\r\n</body>\r\n</html>\r\n";
 
 export function run_(system_, fireflyPath_, mainFile_, arguments_) {
 const lock_ = ff_core_Task.Task_lock(ff_core_NodeSystem.NodeSystem_mainTask(system_));
 const lockCondition_ = ff_core_Lock.Lock_condition(lock_);
 const runner_ = ff_compiler_DevelopMode.Runner(lock_, lockCondition_, 1, ff_compiler_DevelopMode.CompilingState(), ff_core_Set.new_(), false, false);
-ff_compiler_DevelopMode.startProxy_(system_, runner_, 8081, 8080);
+ff_compiler_DevelopMode.startProxy2_(system_, runner_, 8081, 8080);
 ff_compiler_DevelopMode.startChangeListener_(system_, runner_, ff_core_NodeSystem.NodeSystem_path(system_, "."));
 const moduleCache_ = ff_compiler_ModuleCache.new_(0);
 while(true) {
@@ -438,11 +438,97 @@ return console.log(("Proxy server running on port " + proxyPort_))
 }))
 }
 
+export function startProxy2_(system_, runner_, proxyPort_, targetPort_) {
+const net_ = import$1;
+const targetServer_ = "localhost";
+const proxyServer_ = net_.createServer({pauseOnConnect: true}, ((clientSocket_) => {
+let targetSocket_ = (void 0);
+let connected_ = false;
+clientSocket_.on("error", ((err_) => {
+if((!ff_core_JsValue.JsValue_isUndefined(targetSocket_))) {
+targetSocket_.end()
+};
+return ff_core_Log.debugDynamic_(err_)
+}));
+function serveWaiterHtml_() {
+const status_ = (((_1) => {
+if(runner_.recompile_) {
+return "Restarting..."
+}
+if(_1.ApplicationCrashedState) {
+const output_ = _1.output_;
+return "Application crashed!"
+}
+if(_1.ApplicationRunningState) {
+return "Starting application..."
+}
+if(_1.CompileErrorState && _1.at_.Some) {
+const at_ = _1.at_.value_;
+const output_ = _1.output_;
+const location_ = ((((at_.file_ + ":") + at_.line_) + ":") + at_.column_);
+const link_ = (((("<a href='vscode://file/" + location_) + "'>") + location_) + "</a>");
+return (((("Compile error! <pre>" + output_) + "\n") + link_) + "</pre>")
+}
+if(_1.CompileErrorState && _1.at_.None) {
+const output_ = _1.output_;
+return ("Compiler crashed!" + output_)
+}
+{
+return "Compiling..."
+}
+}))(runner_.state_);
+const waiterBuffer_ = ff_core_String.String_replace(ff_compiler_DevelopMode.waiterHtml_, "[STATUS]", status_);
+clientSocket_.write("HTTP/1.1 200 OK\r\n");
+clientSocket_.write("Content-Type: text/html\r\n");
+clientSocket_.write((("Content-Length: " + waiterBuffer_.length) + "\r\n"));
+clientSocket_.write("Connection: close\r\n");
+clientSocket_.write("\r\n");
+clientSocket_.write(waiterBuffer_);
+clientSocket_.end()
+}
+targetSocket_ = net_.createConnection(targetPort_, targetServer_, (() => {
+connected_ = true;
+const direct_ = (((_1) => {
+if(_1.ApplicationRunningState) {
+return ((!runner_.recompile_) && (ff_core_Set.Set_size(runner_.changedSinceCompilationStarted_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) === 0))
+}
+{
+return false
+}
+}))(runner_.state_);
+if(direct_) {
+clientSocket_.pipe(targetSocket_).pipe(clientSocket_);
+return clientSocket_.resume()
+} else {
+if((ff_core_Set.Set_size(runner_.changedSinceCompilationStarted_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) !== 0)) {
+runner_.recompile_ = true;
+ff_core_Task.Task_spawn(ff_core_NodeSystem.NodeSystem_mainTask(system_), ((task_) => {
+ff_core_Lock.Lock_do(runner_.lock_, (() => {
+return ff_core_Lock.LockCondition_wakeAll(runner_.lockCondition_)
+}))
+}))
+};
+return serveWaiterHtml_()
+}
+}));
+return targetSocket_.on("error", ((err_) => {
+if(connected_) {
+return clientSocket_.end()
+} else {
+return serveWaiterHtml_()
+}
+}))
+}));
+proxyServer_.listen(proxyPort_, (() => {
+return console.log(("Proxy server running on port " + proxyPort_))
+}))
+}
+
 export async function run_$(system_, fireflyPath_, mainFile_, arguments_, $task) {
 const lock_ = (await ff_core_Task.Task_lock$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task));
 const lockCondition_ = (await ff_core_Lock.Lock_condition$(lock_, $task));
 const runner_ = ff_compiler_DevelopMode.Runner(lock_, lockCondition_, 1, ff_compiler_DevelopMode.CompilingState(), ff_core_Set.new_(), false, false);
-(await ff_compiler_DevelopMode.startProxy_$(system_, runner_, 8081, 8080, $task));
+(await ff_compiler_DevelopMode.startProxy2_$(system_, runner_, 8081, 8080, $task));
 (await ff_compiler_DevelopMode.startChangeListener_$(system_, runner_, (await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
 const moduleCache_ = ff_compiler_ModuleCache.new_(0);
 while(true) {
@@ -737,6 +823,92 @@ return serveWaiterHtml_()
 })(a_1, $task)));
 clientSocket_.resume()
 }), $task))
+})(a_1, $task)));
+proxyServer_.listen(proxyPort_, (() => {
+return console.log(("Proxy server running on port " + proxyPort_))
+}))
+}
+
+export async function startProxy2_$(system_, runner_, proxyPort_, targetPort_, $task) {
+const net_ = import$1;
+const targetServer_ = "localhost";
+const proxyServer_ = net_.createServer({pauseOnConnect: true}, (async (a_1) => await (async (clientSocket_, $task) => {
+let targetSocket_ = (void 0);
+let connected_ = false;
+clientSocket_.on("error", ((err_) => {
+if((!ff_core_JsValue.JsValue_isUndefined(targetSocket_))) {
+targetSocket_.end()
+};
+return ff_core_Log.debugDynamic_(err_)
+}));
+function serveWaiterHtml_() {
+const status_ = (((_1) => {
+if(runner_.recompile_) {
+return "Restarting..."
+}
+if(_1.ApplicationCrashedState) {
+const output_ = _1.output_;
+return "Application crashed!"
+}
+if(_1.ApplicationRunningState) {
+return "Starting application..."
+}
+if(_1.CompileErrorState && _1.at_.Some) {
+const at_ = _1.at_.value_;
+const output_ = _1.output_;
+const location_ = ((((at_.file_ + ":") + at_.line_) + ":") + at_.column_);
+const link_ = (((("<a href='vscode://file/" + location_) + "'>") + location_) + "</a>");
+return (((("Compile error! <pre>" + output_) + "\n") + link_) + "</pre>")
+}
+if(_1.CompileErrorState && _1.at_.None) {
+const output_ = _1.output_;
+return ("Compiler crashed!" + output_)
+}
+{
+return "Compiling..."
+}
+}))(runner_.state_);
+const waiterBuffer_ = ff_core_String.String_replace(ff_compiler_DevelopMode.waiterHtml_, "[STATUS]", status_);
+clientSocket_.write("HTTP/1.1 200 OK\r\n");
+clientSocket_.write("Content-Type: text/html\r\n");
+clientSocket_.write((("Content-Length: " + waiterBuffer_.length) + "\r\n"));
+clientSocket_.write("Connection: close\r\n");
+clientSocket_.write("\r\n");
+clientSocket_.write(waiterBuffer_);
+clientSocket_.end()
+}
+targetSocket_ = net_.createConnection(targetPort_, targetServer_, (async () => await (async ($task) => {
+connected_ = true;
+const direct_ = (((_1) => {
+if(_1.ApplicationRunningState) {
+return ((!runner_.recompile_) && (ff_core_Set.Set_size(runner_.changedSinceCompilationStarted_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) === 0))
+}
+{
+return false
+}
+}))(runner_.state_);
+if(direct_) {
+clientSocket_.pipe(targetSocket_).pipe(clientSocket_);
+return clientSocket_.resume()
+} else {
+if((ff_core_Set.Set_size(runner_.changedSinceCompilationStarted_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) !== 0)) {
+runner_.recompile_ = true;
+(await ff_core_Task.Task_spawn$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), (async (task_, $task) => {
+(await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
+return (await ff_core_Lock.LockCondition_wakeAll$(runner_.lockCondition_, $task))
+}), $task))
+}), $task))
+};
+return serveWaiterHtml_()
+}
+})($task)));
+return targetSocket_.on("error", ((err_) => {
+if(connected_) {
+return clientSocket_.end()
+} else {
+return serveWaiterHtml_()
+}
+}))
 })(a_1, $task)));
 proxyServer_.listen(proxyPort_, (() => {
 return console.log(("Proxy server running on port " + proxyPort_))

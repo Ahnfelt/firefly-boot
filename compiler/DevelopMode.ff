@@ -196,112 +196,63 @@ startProxy(
 ) {
     let net = Js.import("node:net")
     let targetServer = "localhost" // 127.0.0.1
-    
-    function parseHeaders(headerData: JsValue): JsValue {
-        let lines = headerData->split("\n")
-        let headers = Js->(firstLine = lines.get(0))
-        if(lines.get(0)->startsWith("GET ")? && lines.get(0)->endsWith(" HTTP/1.1\r")?) {
-            lines->forEach(Js->{line =>
-                let index = line->indexOf(":")
-                if(index !== -1) {
-                    let key = line->substring(0, index)->trim()->toLowerCase()
-                    let value = line->substring(index + 1!)->trim()
-                    headers.set(key, value)
-                }
-            })
-        }
-        headers
-    }
-    
     let proxyServer = net->createServer(Js->(pauseOnConnect = True), Js->{clientSocket =>
         mutable targetSocket = Js.undefined()
+        mutable connected = False
         clientSocket->on("error", Js->{err =>
             if(!targetSocket.isUndefined()) {targetSocket->end()}
             Log.debugDynamic(err)
         })
-        system.mainTask().spawn {task =>
-            mutable buffer = Js->Buffer->alloc(0)
-            clientSocket->on("data", Js->{data =>
-                buffer = Js->Buffer->concat([buffer, data])
-                let headerEnd = buffer->indexOf("\r\n\r\n")
-                if(headerEnd !== -1 || buffer->length? >= 64 * 1024 || !buffer->startsWith("GET ")?) {
-                    let headerData = buffer->subarray(0, headerEnd)->toString()
-                    let headers = parseHeaders(headerData)
-                    
-                    let refreshLike = headers.get("sec-fetch-dest") === "document"
-                    let serveWaiter = if(refreshLike) {
+        function serveWaiterHtml() {
+            let status = runner.state.{
+                | _ {runner.recompile} => "Restarting..."
+                | ApplicationCrashedState(output) => "Application crashed!"
+                | ApplicationRunningState => "Starting application..."
+                | CompileErrorState(Some(at), output) => 
+                    let location =  at.file + ":" + at.line + ":" + at.column
+                    let link = "<a href='vscode://file/" + location + "'>" + location + "</a>"
+                    "Compile error! <pre>" + output + "\n" + link + "</pre>"
+                | CompileErrorState(None, output) => "Compiler crashed!" + output
+                | CompilingState => "Compiling..."
+            }
+            
+            let waiterBuffer = waiterHtml.replace("[STATUS]", status)//.toBuffer()
+            clientSocket->write("HTTP/1.1 200 OK\r\n")
+            clientSocket->write("Content-Type: text/html\r\n")
+            clientSocket->write("Content-Length: " + waiterBuffer.size() + "\r\n")
+            clientSocket->write("Connection: close\r\n")
+            clientSocket->write("\r\n")
+            clientSocket->write(waiterBuffer)
+            clientSocket->end()
+        }
+        targetSocket = net->createConnection(targetPort, targetServer, Js->{
+            connected = True
+            let direct = runner.state.{
+                | ApplicationRunningState => !runner.recompile && runner.changedSinceCompilationStarted.size() == 0
+                | _ => False
+            }
+            if(direct) {
+                clientSocket->pipe(targetSocket)->pipe(clientSocket)
+                clientSocket->resume()?
+            } else {
+                if(runner.changedSinceCompilationStarted.size() != 0) {
+                    runner.recompile = True
+                    system.mainTask().spawn {task =>
                         runner.lock.do {
-                            if(runner.changedSinceCompilationStarted.size() != 0) {
-                                runner.recompile = True
-                                runner.lockCondition.wakeAll()
-                                True
-                            } else {
-                                runner.state.{
-                                    | ApplicationRunningState => runner.recompile
-                                    | _ => True
-                                }
-                            }
+                            runner.lockCondition.wakeAll()
                         }
-                    } else {
-                        False
-                    }
-                    if(refreshLike) {
-                        Log.debug("Refreshed!")
-                    }
-                    
-                    function serveWaiterHtml() {
-                        let status = runner.state.{
-                            | _ {runner.recompile} => "Restarting..."
-                            | ApplicationCrashedState(output) => "Application crashed!"
-                            | ApplicationRunningState => "Starting application..."
-                            | CompileErrorState(Some(at), output) => 
-                                let location =  at.file + ":" + at.line + ":" + at.column
-                                let link = "<a href='vscode://file/" + location + "'>" + location + "</a>"
-                                "Compile error! <pre>" + output + "\n" + link + "</pre>"
-                            | CompileErrorState(None, output) => "Compiler crashed!" + output
-                            | CompilingState => "Compiling..."
-                        }
-                        
-                        let waiterBuffer = waiterHtml.replace("[STATUS]", status)//.toBuffer()
-                        clientSocket->write("HTTP/1.1 200 OK\r\n")
-                        clientSocket->write("Content-Type: text/html\r\n")
-                        clientSocket->write("Content-Length: " + waiterBuffer.size() + "\r\n")
-                        clientSocket->write("Connection: close\r\n")
-                        clientSocket->write("\r\n")
-                        clientSocket->write(waiterBuffer)
-                        clientSocket->end()
-                    }
-                    
-                    if(serveWaiter) {
-                        serveWaiterHtml()
-                    } else {
-                        mutable connectedToTarget = False
-                        targetSocket = net->createConnection(targetPort, targetServer, Js->{
-                            Log.debug("Piping: " + headers->firstLine?)
-                            connectedToTarget = True
-                            targetSocket->write(buffer)
-                            clientSocket->pipe(targetSocket)->pipe(clientSocket)
-                        })
-
-                        targetSocket->on("error", Js->{err =>
-                            if(connectedToTarget) {
-                                Log.debug("Target socket error :" + err?)
-                                clientSocket->end()?
-                            } elseIf {!refreshLike} {
-                                clientSocket->write("HTTP/1.1 503 Service Unavailable\r\n")
-                                clientSocket->write("Connection: close\r\n")
-                                clientSocket->write("\r\n")
-                                clientSocket->end()?
-                            } else {
-                                Log.debug("Fallback!")
-                                serveWaiterHtml()
-                            }
-                        })
                     }
                 }
-            })
-            clientSocket->resume()
-        }
+                serveWaiterHtml()
+            }
+        })
+        targetSocket->on("error", Js->{err =>
+            if(connected) {
+                clientSocket->end()?
+            } else {
+                serveWaiterHtml()
+            }
+        })?
     })
     
     proxyServer->listen(proxyPort, Js->{
