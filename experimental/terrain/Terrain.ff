@@ -1,32 +1,93 @@
 generateAndDraw(context: JsValue) {
     let imageData = context->createImageData(width, height)
-    generate(imageData->data, 123, 10)
+    generate(imageData->data, 123, 2000)
+    //render(imageData->data)
     context->putImageData(imageData, 0, 0)
 }
 
 generate(data: JsValue, seed: Int, iterations: Int) {
+    initialize(data)
+    let directionsX = [-1, -1, -1,  1, 1, 1,  0, 0]
+    let directionsY = [-1,  0,  1, -1, 0, 1, -1, 1]
     let random = Random.newFromInt(seed)
     0.until(iterations).each {iteration =>
-        let x1 = random.nextInt(0, width).toFloat()
-        let x2 = random.nextInt(0, width).toFloat()
-        let y1 = random.nextInt(0, height).toFloat()
-        let y2 = random.nextInt(0, height).toFloat()
-        let a = y2 - y1
-        let b = x1 - x2
-        let c = x2 * y1 - x1 * y2
         mutable i = 0
         0.until(height).each {y =>
             0.until(width).each {x =>
-                if(a * x + b * y + c > 0.0):
-                data.set(i, data.get(i)? + 10)
-                i += 1
-                data.set(i, data.get(i)? + 10)
-                i += 1
-                data.set(i, data.get(i)? + 10)
-                i += 1
-                data.set(i, 255)
-                i += 1
+                mutable bestDirection = random.nextInt(0, 8)
+                mutable bestDifference = 0
+                0.until(8).each {direction =>
+                    let myWater: Int = data.get(i + 2)?
+                    let myGround: Int = data.get(i + 1)?
+                    let theirX = (width + x + directionsX.grab(direction)) % width
+                    let theirY = (height + y + directionsY.grab(direction)) % height
+                    let theirI = 4 * (theirX + width * theirY)
+                    let theirWater: Int = data.get(theirI + 2)?
+                    let theirGround: Int = data.get(theirI + 1)?
+                    let difference = (theirGround + theirWater) - (myGround + myWater)
+                    if(difference < bestDifference) {
+                        bestDifference = difference
+                        bestDirection = direction
+                    }
+                }
+                let myWater: Int = data.get(i + 2)?
+                let myGround: Int = data.get(i + 1)?
+                let theirX = (width + x + directionsX.grab(bestDirection)) % width
+                let theirY = (height + y + directionsY.grab(bestDirection)) % height
+                let theirI = 4 * (theirX + width * theirY)
+                let theirWater: Int = data.get(theirI + 2)?
+                let theirGround: Int = data.get(theirI + 1)?
+                if(bestDifference < 0 && myWater > theirWater) {
+                    let d = (myWater - theirWater).abs()
+                    let w = if(d < 2) {1} else {d.div(2)}
+                    let g = d.div(2)
+                    //data.set(i + 1, myGround + g)
+                    data.set(i + 2, myWater - w)
+                    data.set(theirI + 1, theirGround - g)
+                    data.set(theirI + 2, theirWater + w)
+                }
+                i += 4
             }
+        }
+    }
+}
+
+initialize(data: JsValue) {
+    let random = Random.newFromInt(12345)
+    mutable i = 0
+    0.until(height).each {y =>
+        0.until(width).each {x =>
+            //data.set(i, random.nextInt(0, 5) * random.nextInt(0, 5) * random.nextInt(0, 5) * random.nextInt(0, 4))
+            i += 1
+            data.set(i, if(x < 100 || y < 100) {0} else {random.nextInt(200, 255)})
+            i += 1
+            data.set(i, if(x < 100 || y < 100) {0} else {255})
+            i += 1
+            data.set(i, 255)
+            i += 1
+        }
+    }
+}
+
+render(data: JsValue) {
+    mutable i = 0
+    0.until(height).each {y =>
+        mutable light = 0
+        0.until(width).each {x =>
+            let sea: Int = data.get(i + 0)?
+            let ground: Int = data.get(i + 1)?
+            let water: Int = data.get(i + 2)?
+            if(ground > light) {light = ground} else {light -= 2}
+            //data.set(i, if(water < 100) {100 - (water - 100) * 15} else {0})
+            data.set(i, 0)
+            i += 1
+            data.set(i, ground) // if(ground < waterLevel) {0} else {ground})
+            i += 1
+            data.set(i, 0)
+            i += 1
+            let l = if(ground >= light) {255} else {255 - (light - ground) * 10}
+            //data.set(i, l)
+            i += 1
         }
     }
 }
