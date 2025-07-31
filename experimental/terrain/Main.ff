@@ -1,6 +1,6 @@
 dependency ff:webserver:0.0.0
 import WebServer from ff:webserver
-import Terrain
+import Terrain2
 
 browserMain(system: BrowserSystem): Unit {
     let document = system.js()->document
@@ -11,10 +11,11 @@ browserMain(system: BrowserSystem): Unit {
     canvas->style->position = "absolute"
     canvas->style->top = "calc(50% - 256px / 2)"
     canvas->style->left = "calc(50% - 256px / 2)"
+    canvas->style->"image-rendering" = "pixelated"
     document->body->appendChild(canvas)
     document->body->parentElement->style->background = "#000000"
     let context = canvas->getContext("2d")
-    Terrain.generateAndDraw(context)
+    Terrain2.generateAndDraw(context)
 }
 
 nodeMain(system: NodeSystem): Unit {

@@ -1,7 +1,7 @@
 generateAndDraw(context: JsValue) {
     let imageData = context->createImageData(width, height)
-    generate(imageData->data, 123, 2000)
-    //render(imageData->data)
+    generate(imageData->data, 123, 1000)
+    render(imageData->data)
     context->putImageData(imageData, 0, 0)
 }
 
@@ -19,31 +19,32 @@ generate(data: JsValue, seed: Int, iterations: Int) {
                 0.until(8).each {direction =>
                     let myWater: Int = data.get(i + 2)?
                     let myGround: Int = data.get(i + 1)?
+                    let myZ = myGround + myWater
                     let theirX = (width + x + directionsX.grab(direction)) % width
                     let theirY = (height + y + directionsY.grab(direction)) % height
                     let theirI = 4 * (theirX + width * theirY)
                     let theirWater: Int = data.get(theirI + 2)?
                     let theirGround: Int = data.get(theirI + 1)?
-                    let difference = (theirGround + theirWater) - (myGround + myWater)
-                    if(difference < bestDifference) {
-                        bestDifference = difference
+                    let theirZ = theirGround + theirWater
+                    if(myZ - theirZ > bestDifference) {
+                        bestDifference = myZ - theirZ
                         bestDirection = direction
                     }
                 }
                 let myWater: Int = data.get(i + 2)?
                 let myGround: Int = data.get(i + 1)?
+                let myZ = myGround + myWater
                 let theirX = (width + x + directionsX.grab(bestDirection)) % width
                 let theirY = (height + y + directionsY.grab(bestDirection)) % height
                 let theirI = 4 * (theirX + width * theirY)
                 let theirWater: Int = data.get(theirI + 2)?
                 let theirGround: Int = data.get(theirI + 1)?
-                if(bestDifference < 0 && myWater > theirWater) {
-                    let d = (myWater - theirWater).abs()
-                    let w = if(d < 2) {1} else {d.div(2)}
-                    let g = d.div(2)
-                    //data.set(i + 1, myGround + g)
+                let theirZ = theirGround + theirWater
+                if(myZ > theirZ) {
+                    let w = (myZ - theirZ).max(0).min(myWater).div(2)
+                    let g = (myGround - theirGround).div(4)
+                    data.set(i + 1, myGround - g)
                     data.set(i + 2, myWater - w)
-                    data.set(theirI + 1, theirGround - g)
                     data.set(theirI + 2, theirWater + w)
                 }
                 i += 4
