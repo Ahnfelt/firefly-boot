@@ -1,0 +1,39 @@
+dependency ff:webserver:0.0.0
+import WebServer from ff:webserver
+import Terrain
+
+browserMain(system: BrowserSystem): Unit {
+    let document = system.js()->document
+    let canvas = document->createElement("canvas")
+    canvas->width = "256"
+    canvas->height = "256"
+    canvas->style->scale = "3"
+    canvas->style->position = "absolute"
+    canvas->style->top = "calc(50% - 256px / 2)"
+    canvas->style->left = "calc(50% - 256px / 2)"
+    document->body->appendChild(canvas)
+    document->body->parentElement->style->background = "#000000"
+    let context = canvas->getContext("2d")
+    Terrain.generateAndDraw(context)
+}
+
+nodeMain(system: NodeSystem): Unit {
+    WebServer.new(system, "localhost", 8080).listen {request =>
+        if(request.readPath() == "/") {
+            request.writeHeader("Content-Type", "text/html; charset=UTF-8")
+            request.writeText("<!doctype html>")
+            request.writeText("<script type='module' src='/js/script/script/Main.run.mjs'></script>")
+        } elseIf {request.readPath().startsWith("/js/") && !request.readPath().contains("..")} {
+            request.writeHeader("Content-Type", "text/javascript; charset=UTF-8")
+            request.writeText(system.assets().readText(request.readPath()))
+        } else {
+            request.writeStatus("404 Not found")
+        }
+    }
+}
+
+buildMain(system: BuildSystem) {
+    let browserAssets = system.compileForBrowser(["Main.ff"])
+    let assets = AssetSystem.create().addAssets("/js", browserAssets)
+    system.setAssets(assets)
+}
