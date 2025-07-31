@@ -1,0 +1,105 @@
+generateAndDraw(context: JsValue) {
+    let imageData = context->createImageData(width, height)
+    initialize(imageData->data)
+    generate(imageData->data, 123, 100)
+    render(imageData->data)
+    context->putImageData(imageData, 0, 0)
+}
+
+generate(data: JsValue, seed: Int, iterations: Int) {
+    let directionsX = [-1, -1, -1,  1, 1, 1,  0, 0]
+    let directionsY = [-1,  0,  1, -1, 0, 1, -1, 1]
+    let random = Random.newFromInt(seed)
+    0.until(iterations).each {iteration =>
+        mutable i = 0
+        0.until(height).each {y =>
+            0.until(width).each {x =>
+                mutable bestDirection = random.nextInt(0, 8)
+                mutable bestDelta = 0
+                0.until(8).each {direction =>
+                    let myGround: Int = data.get(i + 1)?
+                    let myWater: Int = data.get(i + 2)?
+                    let myZ = myGround + myWater
+                    let theirX = (width + x + directionsX.grab(direction)) % width
+                    let theirY = (height + y + directionsY.grab(direction)) % height
+                    let theirI = 4 * (theirX + width * theirY)
+                    let theirGround: Int = data.get(theirI + 1)?
+                    let theirWater: Int = data.get(theirI + 2)?
+                    let theirZ = theirGround + theirWater
+                    let delta = myZ - theirZ
+                    if(delta > bestDelta) {
+                        bestDelta = delta
+                        bestDirection = direction
+                    }
+                    if(myGround > theirGround + 10) {
+                        data.set(i + 1, myGround - 1)
+                        data.set(theirI + 1, theirGround + 1)
+                    }
+                }
+                let myGround: Int = data.get(i + 1)?
+                let myWater: Int = data.get(i + 2)?
+                let theirX = (width + x + directionsX.grab(bestDirection)) % width
+                let theirY = (height + y + directionsY.grab(bestDirection)) % height
+                let theirI = 4 * (theirX + width * theirY)
+                let theirGround: Int = data.get(theirI + 1)?
+                let theirWater: Int = data.get(theirI + 2)?
+                if(bestDelta != 0 && myWater > 0) {
+                    if(bestDelta <= 2 && random.nextBool()) {
+                        data.set(i + 1, myGround - 1)
+                        data.set(theirI + 1, theirGround - 1)
+                    }
+                    data.set(i + 2, myWater - 1)
+                    data.set(theirI + 2, theirWater + 1)
+                }
+                if(random.nextBool()) {
+                    data.set(i + 2, data.get(i + 2)? + 1)
+                }
+                i += 4
+            }
+        }
+    }
+}
+
+initialize(data: JsValue) {
+    let random = Random.newFromInt(12345)
+    mutable i = 0
+    0.until(height).each {y =>
+        0.until(width).each {x =>
+            let cx = x - width.div(2)
+            let cy = y - height.div(2)
+            let m = 255 - (cx * cx + cy * cy).toFloat().sqrt().toInt()
+            data.set(i, 0)
+            i += 1
+            data.set(i, m + random.nextInt(0, 8))
+            i += 1
+            data.set(i, 0)
+            i += 1
+            data.set(i, 255)
+            i += 1
+        }
+    }
+}
+
+render(data: JsValue) {
+    mutable i = 0
+    0.until(height).each {y =>
+        mutable light = 0
+        0.until(width).each {x =>
+            let ground: Int = data.get(i + 1)?
+            let water: Int = data.get(i + 2)?
+            if(ground > light) {light = ground} else {light -= 1}
+            data.set(i, ground + ground - 128)
+            i += 1
+            data.set(i, ground)
+            i += 1
+            if(water > 70) {data.set(i, water + 100)}
+            i += 1
+            let l = if(ground >= light) {255} else {255 - (light - ground) * 5}
+            data.set(i, l)
+            i += 1
+        }
+    }
+}
+
+width: Int = 256
+height: Int = 256
