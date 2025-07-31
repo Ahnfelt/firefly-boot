@@ -1,21 +1,33 @@
 generateAndDraw(context: JsValue) {
     let imageData = context->createImageData(width, height)
-    generate(imageData->data)
+    generate(imageData->data, 142, 10)
     context->putImageData(imageData, 0, 0)
 }
 
-generate(data: JsValue) {
-    mutable i = 0
-    0.until(height).each {y =>
-        0.until(width).each {x =>
-            data.set(i, 255)
-            i += 1
-            data.set(i, 255)
-            i += 1
-            data.set(i, 255)
-            i += 1
-            data.set(i, x)
-            i += 1
+generate(data: JsValue, seed: Int, iterations: Int) {
+    let random = Random.newFromInt(seed)
+    0.until(iterations).each {iteration =>
+        let x1 = random.nextInt(0, width).toFloat()
+        let x2 = random.nextInt(0, width).toFloat()
+        let y1 = random.nextInt(0, height).toFloat()
+        let y2 = random.nextInt(0, height).toFloat()
+        let a = y2 - y1
+        let b = x1 - x2
+        let c = x2 * y1 - x1 * y2
+        Log.debug(x1 + " " + y1 + " : " + x2 + " " + y2)
+        mutable i = 0
+        0.until(height).each {y =>
+            0.until(width).each {x =>
+                if(a * x + b * y + c > 0.0):
+                data.set(i, data.get(i)? + 10)
+                i += 1
+                data.set(i, data.get(i)? + 10)
+                i += 1
+                data.set(i, data.get(i)? + 10)
+                i += 1
+                data.set(i, 255)
+                i += 1
+            }
         }
     }
 }
