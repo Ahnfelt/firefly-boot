@@ -1,6 +1,6 @@
 generateAndDraw(context: JsValue) {
     let imageData = context->createImageData(width, height)
-    generate(imageData->data, 142, 10)
+    generate(imageData->data, 123, 10)
     context->putImageData(imageData, 0, 0)
 }
 
@@ -14,7 +14,6 @@ generate(data: JsValue, seed: Int, iterations: Int) {
         let a = y2 - y1
         let b = x1 - x2
         let c = x2 * y1 - x1 * y2
-        Log.debug(x1 + " " + y1 + " : " + x2 + " " + y2)
         mutable i = 0
         0.until(height).each {y =>
             0.until(width).each {x =>
