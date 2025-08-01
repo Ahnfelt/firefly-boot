@@ -15,7 +15,7 @@ browserMain(system: BrowserSystem): Unit {
     document->body->appendChild(canvas)
     document->body->parentElement->style->background = "#000000"
     let context = canvas->getContext("2d")
-    Terrain2.generateAndDraw(context)
+    Terrain2.generateAndDraw(system, context)
 }
 
 nodeMain(system: NodeSystem): Unit {
