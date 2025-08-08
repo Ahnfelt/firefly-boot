@@ -1,0 +1,18 @@
+nodeMain(system: NodeSystem) {
+    let lines = system.readStream().toString().lines()
+    lines.{
+        | [line, ""] {line.split(' ') | [digits, times]} => 
+            mutable result = digits.repeat(times.grabInt()).grabInt()
+            while {result >= 10} {
+                let newDigits = "" + result
+                result = 0
+                newDigits.each {digit =>
+                    result += digit.toString().grabInt()
+                }
+            }
+            system.writeLine(Show.show(result))
+        | _ => 
+            system.writeErrorLine("Unexpected input: " + Show.show(lines))
+    }
+}
+
