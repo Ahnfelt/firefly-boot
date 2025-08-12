@@ -59,7 +59,6 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
             runner.changedSinceCompilationStarted.each {key =>
                 moduleCache.invalidate(key)
                 moduleCache.emittedModules = Map.new() // Since we currenly delete all files each build
-                // Invalidate dependent files as well (only one layer though, and only if the file defines traits)
             }
             runner.state = CompilingState
             runner.recompile = False

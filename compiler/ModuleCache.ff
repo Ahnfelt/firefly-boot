@@ -39,6 +39,7 @@ extend self: ModuleCache {
         self.parsedModules.each {| k, Pair(m, _) =>
             if(m.imports.any {i => i.moduleKey == module.moduleKey}) {
                 //Log.trace("Invalidating due to import of invalidated module: " + m.moduleKey.importName())
+                // TODO: There are no need to remove parser cache for k
                 self.remove([k])
             }
         }
