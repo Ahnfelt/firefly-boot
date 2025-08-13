@@ -135,7 +135,7 @@ const moduleKey_ = for_a[for_i];
 ff_compiler_Compiler.Compiler_emit(compiler_, moduleKey_, true)
 };
 if(printMeasurements_) {
-ff_compiler_Compiler.Compiler_printMeasurements(compiler_)
+ff_compiler_Compiler.Compiler_printMeasurementsPerPhase(compiler_)
 };
 ff_core_Map.Map_each(resolvedDependencies_.packagePaths_, ((packagePair_, packagePath_) => {
 {
@@ -191,7 +191,7 @@ ff_core_NodeSystem.NodeSystem_writeErrorBuffer(system_, result_.standardError_)
 }
 }
 
-export function buildViaBuildSystem_(system_, fireflyPath_, mainFiles_, target_, moduleCache_ = ff_compiler_ModuleCache.new_(0)) {
+export function buildViaBuildSystem_(system_, fireflyPath_, mainFiles_, target_, moduleCache_ = ff_compiler_ModuleCache.new_(0), printMeasurements_ = false) {
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), ff_compiler_DependencyLock.new_(ff_core_NodeSystem.NodeSystem_mainTask(system_)), ff_core_List.List_grabFirst(mainFiles_));
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
@@ -207,7 +207,7 @@ ff_core_Core.panic_("buildViaBuildSystem is currently limited to browser target 
 };
 ff_compiler_Builder.build_(system_, ff_compiler_JsEmitter.EmitBrowser(), mainModuleKeys_, (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
-}))(resolvedDependencies_), ff_core_Option.None(), ff_core_NodeSystem.NodeSystem_path(system_, ".firefly/temporary"), ff_core_Path.Path_slash(ff_core_NodeSystem.NodeSystem_path(system_, ".firefly/output"), target_), false, moduleCache_)
+}))(resolvedDependencies_), ff_core_Option.None(), ff_core_NodeSystem.NodeSystem_path(system_, ".firefly/temporary"), ff_core_Path.Path_slash(ff_core_NodeSystem.NodeSystem_path(system_, ".firefly/output"), target_), printMeasurements_, moduleCache_)
 }
 
 export function check_(system_, fireflyPath_, path_, mustContain_, skipFiles_, virtualFiles_, cache_, dependencyLock_, newVersion_, lspHook_, infer_) {
@@ -380,7 +380,7 @@ ff_core_Path.Path_writeStream(p_, makeStream_(), false)
 return
 }
 }));
-const json_ = "{\r\n        \"name\": \"main\",\r\n        \"bin\": {\r\n            \"firefly-main\": \"Main.bundle.js\"\r\n        },\r\n        \"devDependencies\": {\r\n            \"pkg\": \"^5.8.0\"\r\n        },\r\n        \"pkg\": {\r\n            \"scripts\": \"Main.bundle.js\",\r\n            \"outputPath\": \"bin\",\r\n            \"assets\": [\"../assets/**/*\"],\r\n            \"targets\": [\r\n                \"node18-linux-x64\",\r\n                \"node18-macos-x64\",\r\n                \"node18-win-x64\"\r\n            ]\r\n        }\r\n    }";
+const json_ = "{\n        \"name\": \"main\",\n        \"bin\": {\n            \"firefly-main\": \"Main.bundle.js\"\n        },\n        \"devDependencies\": {\n            \"pkg\": \"^5.8.0\"\n        },\n        \"pkg\": {\n            \"scripts\": \"Main.bundle.js\",\n            \"outputPath\": \"bin\",\n            \"assets\": [\"../assets/**/*\"],\n            \"targets\": [\n                \"node18-linux-x64\",\n                \"node18-macos-x64\",\n                \"node18-win-x64\"\n            ]\n        }\n    }";
 const packageFile_ = ff_core_Path.Path_slash(outputPath_, "executable/package.json");
 ff_core_Path.Path_writeText(packageFile_, json_);
 ff_compiler_Builder.internalCallPkg_(self_, packageFile_, outputPath_, targets_)
@@ -405,7 +405,7 @@ const moduleKey_ = for_a[for_i];
 (await ff_compiler_Compiler.Compiler_emit$(compiler_, moduleKey_, true, $task))
 };
 if(printMeasurements_) {
-(await ff_compiler_Compiler.Compiler_printMeasurements$(compiler_, $task))
+(await ff_compiler_Compiler.Compiler_printMeasurementsPerPhase$(compiler_, $task))
 };
 (await ff_core_Map.Map_each$(resolvedDependencies_.packagePaths_, (async (packagePair_, packagePath_, $task) => {
 {
@@ -461,7 +461,7 @@ if((result_.exitCode_ !== 0)) {
 }
 }
 
-export async function buildViaBuildSystem_$(system_, fireflyPath_, mainFiles_, target_, moduleCache_ = ff_compiler_ModuleCache.new_(0), $task) {
+export async function buildViaBuildSystem_$(system_, fireflyPath_, mainFiles_, target_, moduleCache_ = ff_compiler_ModuleCache.new_(0), printMeasurements_ = false, $task) {
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (await ff_compiler_DependencyLock.new_$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task)), ff_core_List.List_grabFirst(mainFiles_), $task));
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
@@ -477,7 +477,7 @@ ff_core_Core.panic_("buildViaBuildSystem is currently limited to browser target 
 };
 (await ff_compiler_Builder.build_$(system_, ff_compiler_JsEmitter.EmitBrowser(), mainModuleKeys_, (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
-}))(resolvedDependencies_), ff_core_Option.None(), (await ff_core_NodeSystem.NodeSystem_path$(system_, ".firefly/temporary", $task)), (await ff_core_Path.Path_slash$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".firefly/output", $task)), target_, $task)), false, moduleCache_, $task))
+}))(resolvedDependencies_), ff_core_Option.None(), (await ff_core_NodeSystem.NodeSystem_path$(system_, ".firefly/temporary", $task)), (await ff_core_Path.Path_slash$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".firefly/output", $task)), target_, $task)), printMeasurements_, moduleCache_, $task))
 }
 
 export async function check_$(system_, fireflyPath_, path_, mustContain_, skipFiles_, virtualFiles_, cache_, dependencyLock_, newVersion_, lspHook_, infer_, $task) {
@@ -650,7 +650,7 @@ const p_ = (await ff_core_Path.Path_slash$(assetOutputPath_, path_, $task));
 return
 }
 }), $task));
-const json_ = "{\r\n        \"name\": \"main\",\r\n        \"bin\": {\r\n            \"firefly-main\": \"Main.bundle.js\"\r\n        },\r\n        \"devDependencies\": {\r\n            \"pkg\": \"^5.8.0\"\r\n        },\r\n        \"pkg\": {\r\n            \"scripts\": \"Main.bundle.js\",\r\n            \"outputPath\": \"bin\",\r\n            \"assets\": [\"../assets/**/*\"],\r\n            \"targets\": [\r\n                \"node18-linux-x64\",\r\n                \"node18-macos-x64\",\r\n                \"node18-win-x64\"\r\n            ]\r\n        }\r\n    }";
+const json_ = "{\n        \"name\": \"main\",\n        \"bin\": {\n            \"firefly-main\": \"Main.bundle.js\"\n        },\n        \"devDependencies\": {\n            \"pkg\": \"^5.8.0\"\n        },\n        \"pkg\": {\n            \"scripts\": \"Main.bundle.js\",\n            \"outputPath\": \"bin\",\n            \"assets\": [\"../assets/**/*\"],\n            \"targets\": [\n                \"node18-linux-x64\",\n                \"node18-macos-x64\",\n                \"node18-win-x64\"\n            ]\n        }\n    }";
 const packageFile_ = (await ff_core_Path.Path_slash$(outputPath_, "executable/package.json", $task));
 (await ff_core_Path.Path_writeText$(packageFile_, json_, $task));
 (await ff_compiler_Builder.internalCallPkg_$(self_, packageFile_, outputPath_, targets_, $task))

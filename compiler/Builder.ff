@@ -40,7 +40,7 @@ build(
             lspHook = LspHook.disabled()
         )
         mainModules.each {moduleKey => compiler.emit(moduleKey, isMainModule = True)}
-        if(printMeasurements) {compiler.printMeasurements()}
+        if(printMeasurements) {compiler.printMeasurementsPerPhase()}
         resolvedDependencies.packagePaths.each {packagePair, packagePath =>
             resolvedDependencies.packages.get(packagePair).each {packageInfo =>
                 processNodeModules(system, jsPathFile, packagePath, packageInfo)
@@ -96,6 +96,7 @@ buildViaBuildSystem(
     mainFiles: List[Path]
     target: String
     moduleCache: ModuleCache = ModuleCache.new(0)
+    printMeasurements: Bool = False
 ) {
     let resolvedDependencies = Dependencies.process(
         system.httpClient()
@@ -127,7 +128,7 @@ buildViaBuildSystem(
         compilerModulePath = None
         tempPath = system.path(".firefly/temporary")
         jsOutputPath = system.path(".firefly/output").slash(target)
-        printMeasurements = False
+        printMeasurements = printMeasurements
         moduleCache = moduleCache
     )
 }

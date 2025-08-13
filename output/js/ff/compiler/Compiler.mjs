@@ -166,6 +166,33 @@ return
 }))
 }
 
+export function Compiler_printMeasurementsPerPhase(self_) {
+ff_core_Map.Map_each(ff_core_List.List_group(ff_core_List.List_map(ff_core_Array.Array_toList(self_.phaseDurations_, 0, 9007199254740991), ((_1) => {
+{
+const name_ = _1.first_;
+const d_ = _1.second_;
+const _guard1 = ff_core_String.String_split(name_, 32);
+if(_guard1.length === 2) {
+const phase_ = _guard1[0];
+const module_ = _guard1[1];
+return ff_core_Pair.Pair(phase_, d_)
+}
+}
+{
+const name_ = _1.first_;
+const d_ = _1.second_;
+return ff_core_Pair.Pair("Unknown", d_)
+}
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((phase_, durations_) => {
+const d_ = ff_core_List.List_foldLeft(ff_core_List.List_map(durations_, ((_w1) => {
+return _w1
+})), 0.0, ((_w1, _w2) => {
+return (_w1 + _w2)
+}));
+ff_core_Log.debug_(((((phase_ + " (") + durations_.length) + "):\t") + ff_core_Duration.Duration_show(d_, 3)))
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}
+
 export function Compiler_parse(self_, moduleKey_, importedAt_) {
 return ff_compiler_ModuleCache.ModuleCache_cacheParsedModule(self_.cache_, self_.packagePaths_, moduleKey_, ((path_) => {
 return ff_compiler_Compiler.Compiler_measure(self_, "Parse", moduleKey_, (() => {
@@ -317,6 +344,33 @@ ff_core_Log.debug_(((text_ + ":\t") + ff_core_Duration.Duration_show(duration_, 
 return
 }
 }))
+}
+
+export async function Compiler_printMeasurementsPerPhase$(self_, $task) {
+ff_core_Map.Map_each(ff_core_List.List_group(ff_core_List.List_map(ff_core_Array.Array_toList(self_.phaseDurations_, 0, 9007199254740991), ((_1) => {
+{
+const name_ = _1.first_;
+const d_ = _1.second_;
+const _guard1 = ff_core_String.String_split(name_, 32);
+if(_guard1.length === 2) {
+const phase_ = _guard1[0];
+const module_ = _guard1[1];
+return ff_core_Pair.Pair(phase_, d_)
+}
+}
+{
+const name_ = _1.first_;
+const d_ = _1.second_;
+return ff_core_Pair.Pair("Unknown", d_)
+}
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((phase_, durations_) => {
+const d_ = ff_core_List.List_foldLeft(ff_core_List.List_map(durations_, ((_w1) => {
+return _w1
+})), 0.0, ((_w1, _w2) => {
+return (_w1 + _w2)
+}));
+ff_core_Log.debug_(((((phase_ + " (") + durations_.length) + "):\t") + ff_core_Duration.Duration_show(d_, 3)))
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 
 export async function Compiler_parse$(self_, moduleKey_, importedAt_, $task) {

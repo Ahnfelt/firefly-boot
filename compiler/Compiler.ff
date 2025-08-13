@@ -132,6 +132,16 @@ extend self: Compiler {
         }
     }
 
+    printMeasurementsPerPhase(): Unit {
+        self.phaseDurations.toList().map {
+            | Pair(name, d) {name.split(' ') | [phase, module]} => Pair(phase, d)
+            | Pair(name, d) => Pair("Unknown", d)
+        }.group().each {phase, durations => 
+            let d = Duration(durations.map {_.seconds}.foldLeft(0.0, {_ + _}))
+            Log.debug(phase + " (" + durations.size() + "):\t" + d.show())
+        }
+    }
+    
     parse(moduleKey: ModuleKey, importedAt: Option[Location]): Module {
         self.cache.cacheParsedModule(self.packagePaths, moduleKey): path => 
         self.measure("Parse", moduleKey):

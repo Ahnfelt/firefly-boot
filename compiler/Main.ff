@@ -168,6 +168,7 @@ buildScript(
     emitTarget: EmitTarget
     resolvedDependencies: ResolvedDependencies
     moduleCache: ModuleCache = ModuleCache.new(0)
+    printMeasurements: Bool = False
 ): ModuleKey {
     let fireflyPath = detectFireflyPath(system)
     let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
@@ -195,7 +196,7 @@ buildScript(
         compilerModulePath = compilerModulePath
         tempPath = system.path(".firefly").slash("temporary")
         jsOutputPath = system.path(".firefly").path("output").path(targetName)
-        printMeasurements = False
+        printMeasurements = printMeasurements
         moduleCache = moduleCache
     )
     moduleKey
