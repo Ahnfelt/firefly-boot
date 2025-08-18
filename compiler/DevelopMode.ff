@@ -350,16 +350,23 @@ waiterHtml = """<!DOCTYPE html>
         }
     </style>
     <script>
-        let delay = 100
+        let start = Date.now()
+        let appStarted = null
+        let delay = 10
         let poll = async () => {
-            delay *= 1.1
+            //delay *= 1.1
             try {
                 let response = await fetch(".", {cache: 'no-store'})
                 if(!response.headers.has('x-firefly-develop-mode')) {
+                    let now = Date.now()
+                    let compiling = appStarted - start
+                    let appStarting = now - appStarted
+                    window.alert("Reloading after: " + (now - start) + " ms. Compiling: " + compiling + " ms. Starting application: " + appStarting + " ms.")
                     window.location.reload(true)
                     return
                 } else {
                     let html = await response.text()
+                    if(appStarted == null && html.includes("Starting application...")) appStarted = Date.now()
                     let parser = new DOMParser()
                     let d = parser.parseFromString(html, 'text/html')
                     let bodyHtml = d.body.innerHTML

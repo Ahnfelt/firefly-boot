@@ -15,7 +15,10 @@ extend self: BuildSystem {
         let browserOutputPath = internalPath(self, ".firefly/output/browser")
         let runPaths = internalListPath(browserOutputPath).filter {_.base().endsWith(".run.mjs")}.toList()
         let outputPath = runPaths.grabFirst().parent().grab()
+        //let start = self.mainTask().elapsed()
         internalBrowserCallEsBuild(self, runPaths.map {_.absolute()}, outputPath.absolute(), minify, sourceMaps)
+        //Log.debug(Show.show(Duration(self.mainTask().elapsed().seconds - start.seconds)))
+        //throw(GrabException)
         let bundlePaths = internalListPath(browserOutputPath).filter {p => 
             p.base().endsWith(".bundle.js") || p.base().endsWith(".bundle.js.map")
         }.toList()
@@ -145,6 +148,8 @@ internalCompile(buildSystem: BuildSystem, mainFiles: List[Path], target: String)
         internalPath(buildSystem, buildSystem!->"fireflyPath_"?)!
         mainFiles!
         target
+        Js.undefined()
+        Js.undefined()
         Js.currentTask()!
     ))
 }

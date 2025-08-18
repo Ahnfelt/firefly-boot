@@ -152,7 +152,7 @@ return ff_core_Option.Some(resolve_((void 0)))
 }))
 }))
 } else {
-$firefly_compiler["buildViaBuildSystem_$"](buildSystem_, ff_core_BuildSystem.internalPath_(buildSystem_, buildSystem_["fireflyPath_"]), mainFiles_, target_, $task)
+$firefly_compiler["buildViaBuildSystem_$"](buildSystem_, ff_core_BuildSystem.internalPath_(buildSystem_, buildSystem_["fireflyPath_"]), mainFiles_, target_, (void 0), (void 0), $task)
 }
 }
 
@@ -215,7 +215,7 @@ return ff_core_Option.Some(resolve_((void 0)))
 }))
 }), $task))
 } else {
-(await $firefly_compiler["buildViaBuildSystem_$"](buildSystem_, (await ff_core_BuildSystem.internalPath_$(buildSystem_, buildSystem_["fireflyPath_"], $task)), mainFiles_, target_, $task))
+(await $firefly_compiler["buildViaBuildSystem_$"](buildSystem_, (await ff_core_BuildSystem.internalPath_$(buildSystem_, buildSystem_["fireflyPath_"], $task)), mainFiles_, target_, (void 0), (void 0), $task))
 }
 }
 
