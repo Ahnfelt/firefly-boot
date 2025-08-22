@@ -118,6 +118,7 @@ extend self: NodeSystem {
         shell: Bool = False
         node: Option[(JsValue, JsValue) => Unit] = None
     ): ProcessResult {
+        let inheritStdio = !node.isEmpty()
         let childProcess = Js.import("node:child_process")
         let env = environment.map {e =>
             let o = Js.object()
@@ -132,6 +133,7 @@ extend self: NodeSystem {
                     killSignal = killSignal
                     env = env
                     silent = True
+                    stdio = if(inheritStdio) {"inherit"} else {"pipe"}
                 ))
                 p->on("message", Js->{message => node.grab()(message, p)})
                 p
@@ -148,32 +150,34 @@ extend self: NodeSystem {
             mutable size = 0
             let out = Array.new()
             let err = Array.new()
-            newProcess->stdout->on("data", Js->{data =>
-                if(size <= maxBuffer) {
-                    size += data->byteLength?
-                    if(size > maxBuffer) {
-                        newProcess->kill(killSignal)
-                    } else {
-                        out.push(data)
+            if(!inheritStdio) {
+                newProcess->stdout->on("data", Js->{data =>
+                    if(size <= maxBuffer) {
+                        size += data->byteLength?
+                        if(size > maxBuffer) {
+                            newProcess->kill(killSignal)
+                        } else {
+                            out.push(data)
+                        }
                     }
-                }
-                Unit
-            })
-            newProcess->stderr->on("data", Js->{data =>
-                if(size <= maxBuffer) {
-                    size += data->byteLength?
-                    if(size > maxBuffer) {
-                        newProcess->kill(killSignal)
-                    } else {
-                        err.push(data)
+                    Unit
+                })
+                newProcess->stderr->on("data", Js->{data =>
+                    if(size <= maxBuffer) {
+                        size += data->byteLength?
+                        if(size > maxBuffer) {
+                            newProcess->kill(killSignal)
+                        } else {
+                            err.push(data)
+                        }
                     }
+                    Unit
+                })
+                if(standardIn!->byteLength !== 0) {
+                    newProcess->stdin->write(standardIn!)
                 }
-                Unit
-            })
-            if(standardIn!->byteLength !== 0) {
-                newProcess->stdin->write(standardIn!)
+                newProcess->stdin->end()
             }
-            newProcess->stdin->end()
             newProcess->on("error", Js->{error =>
                 if(size > maxBuffer) {
                     reject(internalProcessError("maxBuffer exceeded"))

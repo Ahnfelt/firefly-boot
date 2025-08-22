@@ -261,6 +261,7 @@ return result_
 }
 
 export function NodeSystem_execute(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, shell_ = false, node_ = ff_core_Option.None()) {
+const inheritStdio_ = (!ff_core_Option.Option_isEmpty(node_));
 const childProcess_ = import$3;
 const env_ = ff_core_Option.Option_else(ff_core_Option.Option_map(environment_, ((e_) => {
 const o_ = {};
@@ -279,7 +280,9 @@ const p_ = childProcess_.fork(command_, arguments_, {cwd: ff_core_Option.Option_
 return _w1.absolutePath_
 })), (() => {
 return (void 0)
-})), signal: signal_, killSignal: killSignal_, env: env_, silent: true});
+})), signal: signal_, killSignal: killSignal_, env: env_, silent: true, stdio: (inheritStdio_
+? "inherit"
+: "pipe")});
 p_.on("message", ((message_) => {
 return ff_core_Option.Option_grab(node_)(message_, p_)
 }));
@@ -293,6 +296,7 @@ return (void 0)
 let size_ = 0;
 const out_ = ff_core_Array.new_();
 const err_ = ff_core_Array.new_();
+if((!inheritStdio_)) {
 newProcess_.stdout.on("data", ((data_) => {
 if((size_ <= maxBuffer_)) {
 size_ += data_.byteLength;
@@ -316,7 +320,8 @@ err_.array.push(data_)
 if((standardIn_.byteLength !== 0)) {
 newProcess_.stdin.write(standardIn_)
 };
-newProcess_.stdin.end();
+newProcess_.stdin.end()
+};
 newProcess_.on("error", ((error_) => {
 if((size_ > maxBuffer_)) {
 return reject_(ff_core_NodeSystem.internalProcessError_("maxBuffer exceeded"))
@@ -456,6 +461,7 @@ return result_
 }
 
 export async function NodeSystem_execute$(self_, command_, arguments_, standardIn_ = ff_core_Buffer.new_(0), directory_ = ff_core_Option.None(), environment_ = ff_core_Option.None(), maxBuffer_ = 16777216, killSignal_ = 9, shell_ = false, node_ = ff_core_Option.None(), $task) {
+const inheritStdio_ = (!ff_core_Option.Option_isEmpty(node_));
 const childProcess_ = import$3;
 const env_ = ff_core_Option.Option_else(ff_core_Option.Option_map(environment_, ((e_) => {
 const o_ = {};
@@ -474,7 +480,9 @@ const p_ = childProcess_.fork(command_, arguments_, {cwd: ff_core_Option.Option_
 return _w1.absolutePath_
 })), (() => {
 return (void 0)
-})), signal: signal_, killSignal: killSignal_, env: env_, silent: true});
+})), signal: signal_, killSignal: killSignal_, env: env_, silent: true, stdio: (inheritStdio_
+? "inherit"
+: "pipe")});
 p_.on("message", (async (a_1) => await (async (message_, $task) => {
 return (await ff_core_Option.Option_grab(node_)(message_, p_, $task))
 })(a_1, $task)));
@@ -488,6 +496,7 @@ return (void 0)
 let size_ = 0;
 const out_ = ff_core_Array.new_();
 const err_ = ff_core_Array.new_();
+if((!inheritStdio_)) {
 newProcess_.stdout.on("data", ((data_) => {
 if((size_ <= maxBuffer_)) {
 size_ += data_.byteLength;
@@ -511,7 +520,8 @@ err_.array.push(data_)
 if((standardIn_.byteLength !== 0)) {
 newProcess_.stdin.write(standardIn_)
 };
-newProcess_.stdin.end();
+newProcess_.stdin.end()
+};
 newProcess_.on("error", (async (a_1) => await (async (error_, $task) => {
 if((size_ > maxBuffer_)) {
 return (await reject_(ff_core_NodeSystem.internalProcessError_("maxBuffer exceeded"), $task))
