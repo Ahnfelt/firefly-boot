@@ -31,13 +31,13 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
     startChangeListener(system, runner, system.path("."))
     let moduleCache = ModuleCache.new(0)
     while {True} {
-        Log.debug("Compiling...")
+        print(system, "Compiling...")
         let moduleKey = build(system, runner, mainFile, moduleCache)
         let task = moduleKey.{
             | None => 
                 system.mainTask().spawn {_ => }
             | Some(key) => 
-                Log.debug("Running...")
+                print(system, "Running...")
                 runner.lock.do {
                     runner.state = ApplicationRunningState
                 }
@@ -45,16 +45,16 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
         }
         runner.lock.do {
             if(runner.appRunning) {
-                Log.debug("Still shutting down app...")
+                print(system, "Still shutting down app...")
                 while {runner.appRunning} {
                     runner.lockCondition.sleep()
                 }
             }
-            Log.debug("Waiting for refresh...")
+            print(system, "Waiting for refresh...")
             while {!runner.recompile} {
                 runner.lockCondition.sleep()
             }
-            Log.debug("Shutting down app...")
+            print(system, "Shutting down app...")
             task.abort()
             runner.changedSinceCompilationStarted.each {key =>
                 moduleCache.invalidate(key)
@@ -168,6 +168,11 @@ startApp(
     }
 }
 
+print(nodeSystem: NodeSystem, text: String) {
+    let now = nodeSystem.date().epochMilliseconds()
+    nodeSystem.writeErrorLine("Dev " + now + ": " + text)
+}
+
 startChangeListener(
     system: NodeSystem
     runner: Runner
@@ -181,7 +186,7 @@ startChangeListener(
             let key = system.path(file).absolute()
             runner.lock.do {
                 // Probably we should also listen for other files, e.g. resources
-                Log.debug("Changed! " + key)
+                print(system, "Changed! " + key)
                 runner.changedSinceCompilationStarted = runner.changedSinceCompilationStarted.add(key)
             }
         }
@@ -268,7 +273,7 @@ startProxy(
     })
     
     proxyServer->listen(proxyPort, Js->{
-        Js->console->log("Proxy server running on port " + proxyPort)
+        print(system, "Proxy server running on port " + proxyPort)
     })
 }
 
@@ -361,7 +366,7 @@ waiterHtml = """<!DOCTYPE html>
                     let now = Date.now()
                     let compiling = appStarted - start
                     let appStarting = now - appStarted
-                    window.alert("Reloading after: " + (now - start) + " ms. Compiling: " + compiling + " ms. Starting application: " + appStarting + " ms.")
+                    //window.alert("Reloading after: " + (now - start) + " ms. Compiling: " + compiling + " ms. Starting application: " + appStarting + " ms.")
                     window.location.reload(true)
                     return
                 } else {
