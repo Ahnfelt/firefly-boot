@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "../../../../../core/Show.ff"
+        "../../../../core/Show.ff"
     ],
     "sourcesContent": [
         "trait T: Show {\n    show(value: T): String\n}\n\ninstance Bool: Show {\n    show(value: Bool): String {\n        | False => \"False\"\n        | True => \"True\"\n    }\n}\n\ninstance Nothing: Show {\n    show(value: Nothing): String {\"\"}\n}\n\ninstance Char: Show {\n    show(value: Char): String {value.toString()}\n}\n\ninstance Int: Show {\n    show(value: Int): String {\"\" + value}\n}\n\ninstance Float: Show {\n    show(value: Float): String {\"\" + value}\n}\n\ninstance String: Show {\n    show(value: String): String {\n        Js->JSON->stringify(value)?\n    }\n}\n\ninstance List[T: Show]: Show {\n    show(value: List[T]): String {\n        \"[\" + value.map(show).join(\", \") + \"]\"\n    }\n}\n\ninstance Pair[A: Show, B: Show]: Show {\n    show(value: Pair[A, B]): String {\n        \"Pair(\" + show(value.first) + \", \" + show(value.second) + \")\"\n    }\n}\n"

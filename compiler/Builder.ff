@@ -16,58 +16,40 @@ build(
     mainModules: List[ModuleKey]
     resolvedDependencies: ResolvedDependencies
     compilerModulePath: Option[Path]
-    tempPath: Path
     jsOutputPath: Path
     printMeasurements: Bool
     moduleCache: ModuleCache
 ): Unit {
-
-    if(tempPath.exists()) {tempPath.delete()}
-    tempPath.createDirectory()
-
-    let jsPathFile = tempPath.slash("js")
-    jsPathFile.createDirectory(createParentDirectories = True)
-
-    let success = do {
-        let compiler = Compiler.new(
-            emitTarget
-            system.mainTask()
-            compilerModulePath
-            jsPathFile
-            resolvedDependencies
-            Map.new()
-            moduleCache
-            lspHook = LspHook.disabled()
-        )
-        mainModules.each {moduleKey => compiler.emit(moduleKey, isMainModule = True)}
-        if(printMeasurements) {compiler.printMeasurementsPerPhase()}
-        resolvedDependencies.packagePaths.each {packagePair, packagePath =>
-            resolvedDependencies.packages.get(packagePair).each {packageInfo =>
-                processNodeModules(system, jsPathFile, packagePath, packageInfo)
-                if(emitTarget != EmitBrowser) {
-                    try {
-                        processIncludes(jsPathFile, packagePath, packageInfo)
-                    } catchAny {error => // TODO: Why does this sometimes fail
-                        Log.debug("Internal error in processIncludes: " + error.message())
-                    }
-                }
+    jsOutputPath.createDirectory(createParentDirectories = True)
+    let compiler = Compiler.new(
+        emitTarget
+        system.mainTask()
+        compilerModulePath
+        jsOutputPath
+        resolvedDependencies
+        Map.new()
+        moduleCache
+        lspHook = LspHook.disabled()
+    )
+    mainModules.each {moduleKey => compiler.emit(moduleKey, isMainModule = True)}
+    if(printMeasurements) {compiler.printMeasurementsPerPhase()}
+    resolvedDependencies.packagePaths.each {packagePair, packagePath =>
+        resolvedDependencies.packages.get(packagePair).each {packageInfo =>
+            processNodeModules(system, jsOutputPath, packagePath, packageInfo)
+            if(emitTarget != EmitBrowser) {
+                processIncludes(jsOutputPath, packagePath, packageInfo)
             }
         }
-        True
     }
-
-    if(success) {
-        if(jsOutputPath.exists()) {jsOutputPath.delete()}
-        jsPathFile.renameTo(jsOutputPath)
-    }
-
 }
 
 processIncludes(jsPathFile: Path, packagePath: Path, info: PackageInfo) {
     info.includes.each {include =>
         let fromPath = packagePath.slash(".firefly").slash("include").slash(include.path)
         let toPath = jsPathFile.slash(info.package.packagePair.groupName("/")).slash(include.path)
-        toPath.createSymlinkTo(fromPath, junction = True)
+        if(!toPath.exists()) {
+            toPath.createSymlinkTo(fromPath, junction = True)
+        }
     }
 }
 
@@ -126,7 +108,6 @@ buildViaBuildSystem(
         mainModules = mainModuleKeys
         resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
         compilerModulePath = None
-        tempPath = system.path(".firefly/temporary")
         jsOutputPath = system.path(".firefly/output").slash(target)
         printMeasurements = printMeasurements
         moduleCache = moduleCache

@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "../../../../../core/Equal.ff"
+        "../../../../core/Equal.ff"
     ],
     "sourcesContent": [
         "trait T: Equal {\n    equals(x: T, y: T): Bool\n}\n\nnotEquals[T: Equal](x: T, y: T): Bool {\n    !equals(x, y)\n}\n\ninstance Nothing: Equal {\n    equals(x: Nothing, y: Nothing): Bool {True}\n}\n\ninstance Bool: Equal {\n    equals(x: Bool, y: Bool): Bool {\n        x!.equals(y)\n    }\n}\n\ninstance Char: Equal {\n    equals(x: Char, y: Char): Bool {\n        x!.equals(y)\n    }\n}\n\ninstance Int: Equal {\n    equals(x: Int, y: Int): Bool {\n        x!.equals(y)\n    }\n}\n\ninstance Float: Equal {\n    equals(x: Float, y: Float): Bool {\n        x!.equals(y)\n    }\n}\n\ninstance String: Equal {\n    equals(x: String, y: String): Bool {\n        x!.equals(y)\n    }\n}\n"

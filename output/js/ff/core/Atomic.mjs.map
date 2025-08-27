@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "../../../../../core/Atomic.ff"
+        "../../../../core/Atomic.ff"
     ],
     "sourcesContent": [
         "class Atomic[T] {}\n\nnew[T](value: T): Atomic[T] {\n    Js->(value = value!)?\n}\n\nextend self[T]: Atomic[T] {\n\n    modify(body: T => T): T {\n        if(Js.inAsync()) {\n            mutable currentValue = self!->value\n            mutable newValue = body(self!->value?)\n            while {currentValue !== self!->value} {\n                currentValue = self!->value\n                newValue = body(self!->value?)\n            }\n            self!->value = newValue!\n            newValue\n        } else {\n            let newValue = body(self!->value?)\n            self!->value = newValue!\n            newValue\n        }\n    }\n\n    getAndModify(body: T => T): T {\n        mutable currentValue = self!->value\n        if(Js.inAsync()) {\n            mutable newValue = body(self!->value?)\n            while {currentValue !== self!->value} {\n                currentValue = self!->value\n                newValue = body(self!->value?)\n            }\n            self!->value = newValue!\n            currentValue?\n        } else {\n            let newValue = body(self!->value?)\n            self!->value = newValue!\n            currentValue?\n        }\n    }\n\n    get(): T {\n        self!->value?\n    }\n\n    set(value: T): Unit {\n        self!->value = value!\n    }\n\n    getAndSet(newValue: T): T {\n        let currentValue = self!->value\n        self!->value = newValue!\n        currentValue?\n    }\n\n    compareAndSet(currentValue: T, newValue: T): Bool {\n        if(self!->value !== currentValue!) {False} else:\n        self!->value = newValue!\n        True\n    }\n\n}\n"

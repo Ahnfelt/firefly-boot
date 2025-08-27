@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "../../../../../core/Error.ff"
+        "../../../../core/Error.ff"
     ],
     "sourcesContent": [
         "data Error {}\n\nextend self: Error {\n\n    rethrow[T](): T {\n        Js.throw(self!)\n    }\n\n    name(): String {\n        self!->name.coalesce(\"\")?\n    }\n\n    message(): String {\n        self!->message.coalesce(\"\")?\n    }\n\n    stack(): String {\n        let stacktrace = self!->stack.coalesce(\"\")?\n        if(!Js.inNode()) {stacktrace} else:\n        stacktrace.lines().takeWhile {!_.contains(\"$run$\")}.map {line =>\n            line.removeFirst(\"    at \").map {line =>\n                \"    at \" + line.dropWhile {_ != '('}.dropFirst().dropLast()\n            }.else {line}\n        }.join(\"\\n\")\n    }\n\n    exception(): Option[Any] {\n        if(!self!->ffException.isNullOrUndefined()) {self!->ffException?}\n    }\n    \n}\n"

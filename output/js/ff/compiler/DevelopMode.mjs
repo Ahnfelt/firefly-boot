@@ -173,8 +173,7 @@ ff_core_Lock.LockCondition_sleep(runner_.lockCondition_)
 ff_compiler_DevelopMode.print_(system_, "Shutting down app...");
 ff_core_Task.Task_abort(task_);
 ff_core_Set.Set_each(runner_.changedSinceCompilationStarted_, ((key_) => {
-ff_compiler_ModuleCache.ModuleCache_invalidate(moduleCache_, key_);
-moduleCache_.emittedModules_ = ff_core_Map.new_()
+ff_compiler_ModuleCache.ModuleCache_invalidate(moduleCache_, key_)
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 runner_.state_ = ff_compiler_DevelopMode.CompilingState();
 runner_.recompile_ = false;
@@ -249,13 +248,7 @@ return ff_core_NodeSystem.NodeSystem_path(system_, _w1)
 const target_ = message_.target;
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
 if((taskIteration_ === runner_.iteration_)) {
-return ff_core_Option.Some((function() {
-const newModuleCache_ = (((_c) => {
-return ff_compiler_ModuleCache.ModuleCache(_c.version_, _c.parsedModules_, _c.resolvedModules_, _c.derivedModules_, _c.inferredModules_, ff_core_Map.new_())
-}))(moduleCache_);
-ff_compiler_Builder.buildViaBuildSystem_(system_, fireflyPath_, mainPaths_, target_, newModuleCache_, true);
-return forkedProcess_.send({ffDevelopMode: "internalCompile"})
-})())
+return ff_core_Option.Some((ff_compiler_Builder.buildViaBuildSystem_(system_, fireflyPath_, mainPaths_, target_, moduleCache_, true), forkedProcess_.send({ffDevelopMode: "internalCompile"})))
 } else return ff_core_Option.None()
 }))
 }
@@ -443,8 +436,7 @@ while((!runner_.recompile_)) {
 (await ff_compiler_DevelopMode.print_$(system_, "Shutting down app...", $task));
 (await ff_core_Task.Task_abort$(task_, $task));
 ff_core_Set.Set_each(runner_.changedSinceCompilationStarted_, ((key_) => {
-ff_compiler_ModuleCache.ModuleCache_invalidate(moduleCache_, key_);
-moduleCache_.emittedModules_ = ff_core_Map.new_()
+ff_compiler_ModuleCache.ModuleCache_invalidate(moduleCache_, key_)
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 runner_.state_ = ff_compiler_DevelopMode.CompilingState();
 runner_.recompile_ = false;
@@ -519,13 +511,7 @@ return (await ff_core_NodeSystem.NodeSystem_path$(system_, _w1, $task))
 const target_ = message_.target;
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
 if((taskIteration_ === runner_.iteration_)) {
-return ff_core_Option.Some((await (async function() {
-const newModuleCache_ = (((_c) => {
-return ff_compiler_ModuleCache.ModuleCache(_c.version_, _c.parsedModules_, _c.resolvedModules_, _c.derivedModules_, _c.inferredModules_, ff_core_Map.new_())
-}))(moduleCache_);
-(await ff_compiler_Builder.buildViaBuildSystem_$(system_, fireflyPath_, mainPaths_, target_, newModuleCache_, true, $task));
-return forkedProcess_.send({ffDevelopMode: "internalCompile"})
-})()))
+return ff_core_Option.Some(((await ff_compiler_Builder.buildViaBuildSystem_$(system_, fireflyPath_, mainPaths_, target_, moduleCache_, true, $task)), forkedProcess_.send({ffDevelopMode: "internalCompile"})))
 } else return ff_core_Option.None()
 }), $task))
 }

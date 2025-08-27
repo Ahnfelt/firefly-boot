@@ -58,7 +58,6 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
             task.abort()
             runner.changedSinceCompilationStarted.each {key =>
                 moduleCache.invalidate(key)
-                moduleCache.emittedModules = Map.new() // Since we currenly delete all files each build
             }
             runner.state = CompilingState
             runner.recompile = False
@@ -139,8 +138,7 @@ startApp(
                     let target: String = message->target?
                     runner.lock.do {
                         if(taskIteration == runner.iteration):
-                        let newModuleCache = moduleCache.ModuleCache(emittedModules = Map.new())
-                        Builder.buildViaBuildSystem(system, fireflyPath, mainPaths, target, newModuleCache, printMeasurements = True)
+                        Builder.buildViaBuildSystem(system, fireflyPath, mainPaths, target, moduleCache, printMeasurements = True)
                         forkedProcess->send(Js->(ffDevelopMode = "internalCompile"))
                     }
                 }

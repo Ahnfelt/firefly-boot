@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "../../../../../core/Core.ff"
+        "../../../../core/Core.ff"
     ],
     "sourcesContent": [
         "if[T](condition: Bool, body: () => T): Option[T] {\r\n    condition.{\r\n        | False => None\r\n        | True => Some(body())\r\n    }\r\n}\r\n\r\nwhile(condition: () => Bool, body: () => Unit): Unit {\r\n    condition().{\r\n        | False =>\r\n        | True =>\r\n            body()\r\n            tailcall while(condition, body)\r\n    }\r\n}\r\n\r\ndoWhile(body: () => Bool): Unit {\r\n    while {body()} {}\r\n}\r\n\r\ndoUntil[T](body: () => Option[T]): T {\r\n    body().{\r\n        | Some(v) => v\r\n        | None => tailcall doUntil(body)\r\n    }\r\n}\r\n\r\ndo[T](body: () => T): T {\r\n    body()\r\n}\r\n\r\ntry[T](body: () => T): Try[T] {\r\n    // Special cased by the compiler\r\n    try {\r\n        Success(body())\r\n    } catchAny {e =>\r\n        Failure(e)\r\n    }\r\n}\r\n\r\nthrow[E: HasAnyTag: Show, T](exception: E): T {\r\n    // Special cased by the compiler\r\n    throw(exception)\r\n}\r\n\r\nthrowWithMessage[E: HasAnyTag, T](exception: E, message: String): T {\r\n    // Special cased by the compiler\r\n    throwWithMessage(exception, message)\r\n}\r\n\r\npanic[T](message: String): T {\r\n    Js.throw(Js->Error->(message))\r\n}\r\n\r\ndata GrabException()\r\n"

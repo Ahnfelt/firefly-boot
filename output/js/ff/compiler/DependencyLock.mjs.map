@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "../../../../../compiler/DependencyLock.ff"
+        "../../../../compiler/DependencyLock.ff"
     ],
     "sourcesContent": [
         "capability DependencyLock(\n    doneLocks: StringMap[Lock]\n    task: Task\n)\n\nnew(task: Task): DependencyLock {\n    DependencyLock(StringMap.new(), task)\n}\n\nextend self: DependencyLock {\n    do[T](doneFile: String, body: () => T): T {\n        let lock = self.doneLocks.getOrSet(doneFile) {self.task.lock()}\n        lock.do {\n            body()\n        }\n    }\n}\n"

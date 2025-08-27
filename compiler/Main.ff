@@ -109,7 +109,6 @@ main(system: NodeSystem): Unit {
                     singleFilePackages = [].toSet()
                 )
                 compilerModulePath = None
-                tempPath = workingDirectory.slash("output").slash("temporary")
                 jsOutputPath = workingDirectory.slash("output").slash("js")
                 printMeasurements = True
                 moduleCache = ModuleCache.new(0)
@@ -194,7 +193,6 @@ buildScript(
         mainModules = [moduleKey]
         resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
         compilerModulePath = compilerModulePath
-        tempPath = system.path(".firefly").slash("temporary")
         jsOutputPath = system.path(".firefly").path("output").path(targetName)
         printMeasurements = printMeasurements
         moduleCache = moduleCache

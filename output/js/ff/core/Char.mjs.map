@@ -1,7 +1,7 @@
 {
     "version": 3,
     "sources": [
-        "../../../../../core/Char.ff"
+        "../../../../core/Char.ff"
     ],
     "sourcesContent": [
         "newtype Char(codeUnit: Int)\r\n\r\nextend self: Char {\r\n\r\n    isAsciiLetter(): Bool {self.isAsciiUpper() || self.isAsciiLower()}\r\n\r\n    isAsciiLetterOrDigit(): Bool {self.isAsciiLetter() || self.isAsciiDigit()}\r\n\r\n    isAsciiUpper(): Bool {self >= 'A' && self <= 'Z'}\r\n\r\n    isAsciiLower(): Bool {self >= 'a' && self <= 'z'}\r\n\r\n    isAsciiDigit(): Bool {self >= '0' && self <= '9'}\r\n\r\n    toString(): String {\r\n        Js->String->fromCharCode(self)?\r\n    }\r\n\r\n}\r\n"
