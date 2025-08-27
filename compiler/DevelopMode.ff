@@ -127,10 +127,12 @@ startApp(
             let startPath = runFilePath.parent().grab().slash(runFilePath.base() + ".start.mjs")
             startPath.writeText(
                 "import * as run from " + Json.string(runFilePath.url()).write() + "\n" + 
+                "console.log('Nod ' + Date.now() + ': Run (after import)')\n" +
                 "globalThis.ffDevelopMode = true\n" + 
                 "await run.$run$(" + Json.string(fireflyPath.absolute()).write() + ", " + Json.toJson(arguments).write() + ")"
             )
             let relativeStartFile = startPath.relativeTo(system.path("."))
+            print(system, "Execute with node")
             let result = system.execute(relativeStartFile, arguments, node = Some({message, forkedProcess =>
                 if(message->ffDevelopMode === "internalCompile") {
                     let mainFiles: List[String] = message->mainFiles?

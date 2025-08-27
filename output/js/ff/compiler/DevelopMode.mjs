@@ -237,8 +237,9 @@ const runFilePath_ = (ff_core_String.String_contains(runFile_, "://")
 ? ff_core_NodeSystem.NodeSystem_pathFromUrl(system_, runFile_)
 : ff_core_NodeSystem.NodeSystem_path(system_, runFile_));
 const startPath_ = ff_core_Path.Path_slash(ff_core_Option.Option_grab(ff_core_Path.Path_parent(runFilePath_)), (ff_core_Path.Path_base(runFilePath_) + ".start.mjs"));
-ff_core_Path.Path_writeText(startPath_, (((((((("import * as run from " + ff_core_Json.Json_write(ff_core_Path.Path_url(runFilePath_), ff_core_Option.None())) + "\n") + "globalThis.ffDevelopMode = true\n") + "await run.$run$(") + ff_core_Json.Json_write(ff_core_Path.Path_absolute(fireflyPath_), ff_core_Option.None())) + ", ") + ff_core_Json.Json_write(ff_core_Json.ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json.ff_core_Json_JsonLike$ff_core_String_String).toJson_(arguments_), ff_core_Option.None())) + ")"));
+ff_core_Path.Path_writeText(startPath_, ((((((((("import * as run from " + ff_core_Json.Json_write(ff_core_Path.Path_url(runFilePath_), ff_core_Option.None())) + "\n") + "console.log('Nod ' + Date.now() + ': Run (after import)')\n") + "globalThis.ffDevelopMode = true\n") + "await run.$run$(") + ff_core_Json.Json_write(ff_core_Path.Path_absolute(fireflyPath_), ff_core_Option.None())) + ", ") + ff_core_Json.Json_write(ff_core_Json.ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json.ff_core_Json_JsonLike$ff_core_String_String).toJson_(arguments_), ff_core_Option.None())) + ")"));
 const relativeStartFile_ = ff_core_Path.Path_relativeTo(startPath_, ff_core_NodeSystem.NodeSystem_path(system_, "."));
+ff_compiler_DevelopMode.print_(system_, "Execute with node");
 const result_ = ff_core_NodeSystem.NodeSystem_execute(system_, relativeStartFile_, arguments_, ff_core_Buffer.new_(0, false), ff_core_Option.None(), ff_core_Option.None(), 16777216, 9, false, ff_core_Option.Some(((message_, forkedProcess_) => {
 if((message_.ffDevelopMode === "internalCompile")) {
 const mainFiles_ = message_.mainFiles;
@@ -500,8 +501,9 @@ const runFilePath_ = (ff_core_String.String_contains(runFile_, "://")
 ? (await ff_core_NodeSystem.NodeSystem_pathFromUrl$(system_, runFile_, $task))
 : (await ff_core_NodeSystem.NodeSystem_path$(system_, runFile_, $task)));
 const startPath_ = (await ff_core_Path.Path_slash$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(runFilePath_, $task))), ((await ff_core_Path.Path_base$(runFilePath_, $task)) + ".start.mjs"), $task));
-(await ff_core_Path.Path_writeText$(startPath_, (((((((("import * as run from " + ff_core_Json.Json_write((await ff_core_Path.Path_url$(runFilePath_, $task)), ff_core_Option.None())) + "\n") + "globalThis.ffDevelopMode = true\n") + "await run.$run$(") + ff_core_Json.Json_write((await ff_core_Path.Path_absolute$(fireflyPath_, $task)), ff_core_Option.None())) + ", ") + ff_core_Json.Json_write(ff_core_Json.ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json.ff_core_Json_JsonLike$ff_core_String_String).toJson_(arguments_), ff_core_Option.None())) + ")"), $task));
+(await ff_core_Path.Path_writeText$(startPath_, ((((((((("import * as run from " + ff_core_Json.Json_write((await ff_core_Path.Path_url$(runFilePath_, $task)), ff_core_Option.None())) + "\n") + "console.log('Nod ' + Date.now() + ': Run (after import)')\n") + "globalThis.ffDevelopMode = true\n") + "await run.$run$(") + ff_core_Json.Json_write((await ff_core_Path.Path_absolute$(fireflyPath_, $task)), ff_core_Option.None())) + ", ") + ff_core_Json.Json_write(ff_core_Json.ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json.ff_core_Json_JsonLike$ff_core_String_String).toJson_(arguments_), ff_core_Option.None())) + ")"), $task));
 const relativeStartFile_ = (await ff_core_Path.Path_relativeTo$(startPath_, (await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
+(await ff_compiler_DevelopMode.print_$(system_, "Execute with node", $task));
 const result_ = (await ff_core_NodeSystem.NodeSystem_execute$(system_, relativeStartFile_, arguments_, ff_core_Buffer.new_(0, false), ff_core_Option.None(), ff_core_Option.None(), 16777216, 9, false, ff_core_Option.Some((async (message_, forkedProcess_, $task) => {
 if((message_.ffDevelopMode === "internalCompile")) {
 const mainFiles_ = message_.mainFiles;
