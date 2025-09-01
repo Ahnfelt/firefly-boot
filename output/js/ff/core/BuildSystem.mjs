@@ -104,7 +104,7 @@ esbuild_.build({entryPoints: mainJsFiles_, bundle: true, minify: minify_, source
 
 export function internalNodeCallEsBuild_(self_, mainJsFile_, outputPath_, minify_) {
 const esbuild_ = import$0;
-esbuild_.build({entryPoints: [mainJsFile_], bundle: true, minify: minify_, sourcemap: true, platform: "node", target: "es2017", external: ["../../../node_modules/*"], outfile: outputPath_})
+esbuild_.build({entryPoints: [mainJsFile_], bundle: true, minify: minify_, sourcemap: true, platform: "node", target: "es2017", external: ["esbuild", "uws.js"], loader: {[".node"]: "copy"}, outfile: outputPath_})
 }
 
 export function internalListDirectory_(path_) {
@@ -167,7 +167,7 @@ const esbuild_ = import$0;
 
 export async function internalNodeCallEsBuild_$(self_, mainJsFile_, outputPath_, minify_, $task) {
 const esbuild_ = import$0;
-esbuild_.build({entryPoints: [mainJsFile_], bundle: true, minify: minify_, sourcemap: true, platform: "node", target: "es2017", external: ["../../../node_modules/*"], outfile: outputPath_})
+(await esbuild_.build({entryPoints: [mainJsFile_], bundle: true, minify: minify_, sourcemap: true, platform: "node", target: "es2017", external: ["esbuild", "uws.js"], loader: {[".node"]: "copy"}, outfile: outputPath_}))
 }
 
 export async function internalListDirectory_$(path_, $task) {

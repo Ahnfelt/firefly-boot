@@ -17,8 +17,7 @@ extend self: BuildSystem {
         let outputPath = runPaths.grabFirst().parent().grab()
         //let start = self.mainTask().elapsed()
         internalBrowserCallEsBuild(self, runPaths.map {_.absolute()}, outputPath.absolute(), minify, sourceMaps)
-        //Log.debug(Show.show(Duration(self.mainTask().elapsed().seconds - start.seconds)))
-        //throw(GrabException)
+        //Log.debug(runPaths.map {_.absolute()}.join(" ") + ": " + Show.show(Duration(self.mainTask().elapsed().seconds - start.seconds)))
         let bundlePaths = internalListPath(browserOutputPath).filter {p => 
             p.base().endsWith(".bundle.js") || p.base().endsWith(".bundle.js.map")
         }.toList()
@@ -85,16 +84,17 @@ internalNodeCallEsBuild(
     minify: Bool
 ): Unit {
     let esbuild = Js.import("esbuild")
-    esbuild->build(Js->(
+    Js.await(esbuild->build(Js->(
         entryPoints = [mainJsFile]
         bundle = True
         minify = minify
         sourcemap = True
         platform = "node"
         target = "es2017"
-        external = ["../../../node_modules/*"] // TODO
+        external = ["esbuild", "uws.js"]
+        loader = Js.object().with(".node", "copy")
         outfile = outputPath
-    ))
+    )))    
 }
 
 internalListDirectory(path: Path): List[Pair[String, () => Stream[Buffer]]] {

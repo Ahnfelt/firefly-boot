@@ -224,17 +224,17 @@ extend self: Compiler {
             self.infer(i.moduleKey)
         }
 
+        let packagePath = self.jsOutputPath.slash(moduleKey.packagePair.group).slash(moduleKey.packagePair.name)
+        let jsPath = moduleKey.folders.foldLeft(packagePath) {p, f => p.slash(f)}
         let allModules = [module, ...otherModules]
         let emitter = JsEmitter.new(
             otherModules = allModules
             emitTarget = self.emitTarget
             isMainModule = isMainModule
-            compilerModuleFileUrl = self.compilerModulePath.map {_.url()}
+            compilerModuleFileUrl = self.compilerModulePath.map {_.relativeTo(jsPath)}.map {"./" + _}
             moduleKey = moduleKey
         )
         emitter.emitModule(module)
-        let packagePath = self.jsOutputPath.slash(moduleKey.packagePair.group).slash(moduleKey.packagePair.name)
-        let jsPath = moduleKey.folders.foldLeft(packagePath) {p, f => p.slash(f)}
         let jsFile = jsPath.slash(moduleKey.name + ".mjs")
         let sourceMapFile = jsPath.slash(moduleKey.name + ".mjs.map")
         let source = Some(path.readText())

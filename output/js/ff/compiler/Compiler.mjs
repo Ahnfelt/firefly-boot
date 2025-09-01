@@ -292,15 +292,17 @@ const otherModules_ = ff_core_List.List_map(ff_compiler_Compiler.Compiler_import
 ff_compiler_Compiler.Compiler_emit(self_, i_.moduleKey_, false);
 return ff_compiler_Compiler.Compiler_infer(self_, i_.moduleKey_)
 }));
-const allModules_ = [module_, ...otherModules_];
-const emitter_ = ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMainModule_, ff_core_Option.Option_map(self_.compilerModulePath_, ((_w1) => {
-return ff_core_Path.Path_url(_w1)
-})), moduleKey_);
-ff_compiler_JsEmitter.JsEmitter_emitModule(emitter_, module_);
 const packagePath_ = ff_core_Path.Path_slash(ff_core_Path.Path_slash(self_.jsOutputPath_, moduleKey_.packagePair_.group_), moduleKey_.packagePair_.name_);
 const jsPath_ = ff_core_List.List_foldLeft(moduleKey_.folders_, packagePath_, ((p_, f_) => {
 return ff_core_Path.Path_slash(p_, f_)
 }));
+const allModules_ = [module_, ...otherModules_];
+const emitter_ = ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMainModule_, ff_core_Option.Option_map(ff_core_Option.Option_map(self_.compilerModulePath_, ((_w1) => {
+return ff_core_Path.Path_relativeTo(_w1, jsPath_)
+})), ((_w1) => {
+return ("./" + _w1)
+})), moduleKey_);
+ff_compiler_JsEmitter.JsEmitter_emitModule(emitter_, module_);
 const jsFile_ = ff_core_Path.Path_slash(jsPath_, (moduleKey_.name_ + ".mjs"));
 const sourceMapFile_ = ff_core_Path.Path_slash(jsPath_, (moduleKey_.name_ + ".mjs.map"));
 const source_ = ff_core_Option.Some(ff_core_Path.Path_readText(path_));
@@ -472,15 +474,17 @@ const otherModules_ = (await ff_core_List.List_map$((await ff_compiler_Compiler.
 (await ff_compiler_Compiler.Compiler_emit$(self_, i_.moduleKey_, false, $task));
 return (await ff_compiler_Compiler.Compiler_infer$(self_, i_.moduleKey_, $task))
 }), $task));
-const allModules_ = [module_, ...otherModules_];
-const emitter_ = ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMainModule_, (await ff_core_Option.Option_map$(self_.compilerModulePath_, (async (_w1, $task) => {
-return (await ff_core_Path.Path_url$(_w1, $task))
-}), $task)), moduleKey_);
-ff_compiler_JsEmitter.JsEmitter_emitModule(emitter_, module_);
 const packagePath_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(self_.jsOutputPath_, moduleKey_.packagePair_.group_, $task)), moduleKey_.packagePair_.name_, $task));
 const jsPath_ = (await ff_core_List.List_foldLeft$(moduleKey_.folders_, packagePath_, (async (p_, f_, $task) => {
 return (await ff_core_Path.Path_slash$(p_, f_, $task))
 }), $task));
+const allModules_ = [module_, ...otherModules_];
+const emitter_ = ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMainModule_, ff_core_Option.Option_map((await ff_core_Option.Option_map$(self_.compilerModulePath_, (async (_w1, $task) => {
+return (await ff_core_Path.Path_relativeTo$(_w1, jsPath_, $task))
+}), $task)), ((_w1) => {
+return ("./" + _w1)
+})), moduleKey_);
+ff_compiler_JsEmitter.JsEmitter_emitModule(emitter_, module_);
 const jsFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleKey_.name_ + ".mjs"), $task));
 const sourceMapFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleKey_.name_ + ".mjs.map"), $task));
 const source_ = ff_core_Option.Some((await ff_core_Path.Path_readText$(path_, $task)));
