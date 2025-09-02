@@ -97,6 +97,26 @@ internalNodeCallEsBuild(
     )))    
 }
 
+internalNodeCallEsBuildContext(
+    self: NodeSystem
+    mainJsFile: String
+    outputPath: String
+    minify: Bool
+): JsValue {
+    let esbuild = Js.import("esbuild")
+    Js.await(esbuild->context(Js->(
+        entryPoints = [mainJsFile]
+        bundle = True
+        minify = minify
+        sourcemap = True
+        platform = "node"
+        target = "es2017"
+        external = ["esbuild", "uws.js"]
+        loader = Js.object().with(".node", "copy")
+        outfile = outputPath
+    )))    
+}
+
 internalListDirectory(path: Path): List[Pair[String, () => Stream[Buffer]]] {
     function go(currentPath: Path): Stream[Path] {
         currentPath.entries().flatMap {file =>

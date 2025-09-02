@@ -23,7 +23,10 @@ data RunnerState {
     ApplicationCrashedState(output: String)
 }
 
+class EsbuildContext(mutable jsValue: Option[JsValue])
+
 run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[String]) {
+    let esbuildContext = EsbuildContext(None)
     let lock = system.mainTask().lock()
     let lockCondition = lock.condition()
     let runner = Runner(lock, lockCondition, 1, CompilingState, Set.new(), False, False)
@@ -41,7 +44,7 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
                 runner.lock.do {
                     runner.state = ApplicationRunningState
                 }
-                startApp(system, runner, fireflyPath, moduleCache, key, mainFile, arguments)
+                startApp(system, runner, fireflyPath, esbuildContext, moduleCache, key, mainFile, arguments)
         }
         runner.lock.do {
             if(runner.appRunning) {
@@ -114,6 +117,7 @@ startApp(
     system: NodeSystem
     runner: Runner
     fireflyPath: Path
+    esbuildContext: EsbuildContext
     moduleCache: ModuleCache
     moduleKey: ModuleKey
     mainFile: String
@@ -133,7 +137,13 @@ startApp(
                 "run.$run$(" + Json.string(fireflyPath.absolute()).write() + ", " + Json.toJson(arguments).write() + ")"
             )
             let esBuildPath = runFilePath.parent().grab().slash(runFilePath.base() + ".minified.js")
-            BuildSystem.internalNodeCallEsBuild(system, startPath.absolute(), esBuildPath.absolute(), minify = True)
+            print(system, "Bundling with esbuild for node")
+            let context = esbuildContext.jsValue.else {
+                let jsValue = BuildSystem.internalNodeCallEsBuildContext(system, startPath.absolute(), esBuildPath.absolute(), minify = True)
+                esbuildContext.jsValue = Some(jsValue)
+                jsValue
+            }
+            Js.await(context->rebuild())
             let relativeStartFile = esBuildPath.relativeTo(system.path("."))
             print(system, "Execute with node")
             let result = system.execute(relativeStartFile, arguments, node = Some({message, forkedProcess =>
