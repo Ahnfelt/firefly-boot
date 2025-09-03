@@ -298,7 +298,7 @@ return ff_core_Path.Path_slash(p_, f_)
 }));
 const allModules_ = [module_, ...otherModules_];
 const emitter_ = ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMainModule_, ff_core_Option.Option_map(ff_core_Option.Option_map(self_.compilerModulePath_, ((_w1) => {
-return ff_core_Path.Path_relativeTo(_w1, jsPath_)
+return ff_core_List.List_join(ff_core_Path.Path_relativeListTo(_w1, jsPath_), "/")
 })), ((_w1) => {
 return ("./" + _w1)
 })), moduleKey_);
@@ -480,7 +480,7 @@ return (await ff_core_Path.Path_slash$(p_, f_, $task))
 }), $task));
 const allModules_ = [module_, ...otherModules_];
 const emitter_ = ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMainModule_, ff_core_Option.Option_map((await ff_core_Option.Option_map$(self_.compilerModulePath_, (async (_w1, $task) => {
-return (await ff_core_Path.Path_relativeTo$(_w1, jsPath_, $task))
+return ff_core_List.List_join((await ff_core_Path.Path_relativeListTo$(_w1, jsPath_, $task)), "/")
 }), $task)), ((_w1) => {
 return ("./" + _w1)
 })), moduleKey_);

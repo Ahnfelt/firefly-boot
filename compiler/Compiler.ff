@@ -231,7 +231,7 @@ extend self: Compiler {
             otherModules = allModules
             emitTarget = self.emitTarget
             isMainModule = isMainModule
-            compilerModuleFileUrl = self.compilerModulePath.map {_.relativeTo(jsPath)}.map {"./" + _}
+            compilerModuleFileUrl = self.compilerModulePath.map {_.relativeListTo(jsPath).join("/")}.map {"./" + _}
             moduleKey = moduleKey
         )
         emitter.emitModule(module)
