@@ -297,16 +297,14 @@ const jsPath_ = ff_core_List.List_foldLeft(moduleKey_.folders_, packagePath_, ((
 return ff_core_Path.Path_slash(p_, f_)
 }));
 const allModules_ = [module_, ...otherModules_];
-const emitter_ = ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMainModule_, ff_core_Option.Option_map(ff_core_Option.Option_map(self_.compilerModulePath_, ((_w1) => {
-return ff_core_List.List_join(ff_core_Path.Path_relativeListTo(_w1, jsPath_), "/")
-})), ((_w1) => {
-return ("./" + _w1)
+const emitter_ = ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMainModule_, ff_core_Option.Option_map(self_.compilerModulePath_, ((_w1) => {
+return ff_core_Path.Path_relativeUrlTo(_w1, jsPath_)
 })), moduleKey_);
 ff_compiler_JsEmitter.JsEmitter_emitModule(emitter_, module_);
 const jsFile_ = ff_core_Path.Path_slash(jsPath_, (moduleKey_.name_ + ".mjs"));
 const sourceMapFile_ = ff_core_Path.Path_slash(jsPath_, (moduleKey_.name_ + ".mjs.map"));
 const source_ = ff_core_Option.Some(ff_core_Path.Path_readText(path_));
-const jsAndSourceMap_ = ff_compiler_JsEmitter.JsEmitter_makeOutputAndSourceMap(emitter_, ff_core_List.List_join(ff_core_Path.Path_relativeListTo(path_, jsPath_), "/"), source_);
+const jsAndSourceMap_ = ff_compiler_JsEmitter.JsEmitter_makeOutputAndSourceMap(emitter_, ff_core_Path.Path_relativeUrlTo(path_, jsPath_), source_);
 ff_core_Path.Path_createDirectory(jsPath_, true);
 ff_core_Path.Path_writeText(jsFile_, ((jsAndSourceMap_.first_ + "\n\n//# sourceMappingURL=") + ff_core_Path.Path_base(sourceMapFile_)));
 ff_core_Path.Path_writeText(sourceMapFile_, ff_core_Json.Json_write(jsAndSourceMap_.second_, ff_core_Option.Some("    ")));
@@ -479,16 +477,14 @@ const jsPath_ = (await ff_core_List.List_foldLeft$(moduleKey_.folders_, packageP
 return (await ff_core_Path.Path_slash$(p_, f_, $task))
 }), $task));
 const allModules_ = [module_, ...otherModules_];
-const emitter_ = ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMainModule_, ff_core_Option.Option_map((await ff_core_Option.Option_map$(self_.compilerModulePath_, (async (_w1, $task) => {
-return ff_core_List.List_join((await ff_core_Path.Path_relativeListTo$(_w1, jsPath_, $task)), "/")
-}), $task)), ((_w1) => {
-return ("./" + _w1)
-})), moduleKey_);
+const emitter_ = ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMainModule_, (await ff_core_Option.Option_map$(self_.compilerModulePath_, (async (_w1, $task) => {
+return (await ff_core_Path.Path_relativeUrlTo$(_w1, jsPath_, $task))
+}), $task)), moduleKey_);
 ff_compiler_JsEmitter.JsEmitter_emitModule(emitter_, module_);
 const jsFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleKey_.name_ + ".mjs"), $task));
 const sourceMapFile_ = (await ff_core_Path.Path_slash$(jsPath_, (moduleKey_.name_ + ".mjs.map"), $task));
 const source_ = ff_core_Option.Some((await ff_core_Path.Path_readText$(path_, $task)));
-const jsAndSourceMap_ = ff_compiler_JsEmitter.JsEmitter_makeOutputAndSourceMap(emitter_, ff_core_List.List_join((await ff_core_Path.Path_relativeListTo$(path_, jsPath_, $task)), "/"), source_);
+const jsAndSourceMap_ = ff_compiler_JsEmitter.JsEmitter_makeOutputAndSourceMap(emitter_, (await ff_core_Path.Path_relativeUrlTo$(path_, jsPath_, $task)), source_);
 (await ff_core_Path.Path_createDirectory$(jsPath_, true, $task));
 (await ff_core_Path.Path_writeText$(jsFile_, ((jsAndSourceMap_.first_ + "\n\n//# sourceMappingURL=") + (await ff_core_Path.Path_base$(sourceMapFile_, $task))), $task));
 (await ff_core_Path.Path_writeText$(sourceMapFile_, ff_core_Json.Json_write(jsAndSourceMap_.second_, ff_core_Option.Some("    ")), $task));

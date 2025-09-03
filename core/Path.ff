@@ -104,6 +104,11 @@ extend self: Path {
         let nodePath = Js.import("path")
         nodePath->relative(path.absolutePath, self.absolutePath)?
     }
+
+    relativeUrlTo(path: Path): String {
+        let relative = self.relativeListTo(path)
+        if(relative.first().any {_ == ".."}) {relative.join("/")} else {"./" + relative.join("/")}
+    }
     
     relativeListTo(path: Path): List[String] {
         let nodePath = Js.import("path")

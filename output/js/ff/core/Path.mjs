@@ -446,6 +446,17 @@ const nodePath_ = import$2;
 return nodePath_.relative(path_.absolutePath_, self_.absolutePath_)
 }
 
+export function Path_relativeUrlTo(self_, path_) {
+const relative_ = ff_core_Path.Path_relativeListTo(self_, path_);
+if(ff_core_Option.Option_any(ff_core_List.List_first(relative_), ((_w1) => {
+return (_w1 === "..")
+}))) {
+return ff_core_List.List_join(relative_, "/")
+} else {
+return ("./" + ff_core_List.List_join(relative_, "/"))
+}
+}
+
 export function Path_relativeListTo(self_, path_) {
 const nodePath_ = import$2;
 const relative_ = ff_core_Path.Path_relativeTo(self_, path_);
@@ -758,6 +769,17 @@ return self_.absolutePath_
 export async function Path_relativeTo$(self_, path_, $task) {
 const nodePath_ = import$2;
 return nodePath_.relative(path_.absolutePath_, self_.absolutePath_)
+}
+
+export async function Path_relativeUrlTo$(self_, path_, $task) {
+const relative_ = (await ff_core_Path.Path_relativeListTo$(self_, path_, $task));
+if(ff_core_Option.Option_any(ff_core_List.List_first(relative_), ((_w1) => {
+return (_w1 === "..")
+}))) {
+return ff_core_List.List_join(relative_, "/")
+} else {
+return ("./" + ff_core_List.List_join(relative_, "/"))
+}
 }
 
 export async function Path_relativeListTo$(self_, path_, $task) {
