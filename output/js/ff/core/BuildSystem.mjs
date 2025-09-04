@@ -250,18 +250,54 @@ const browserOutputPath_ = ff_core_BuildSystem.internalPath_(self_, ".firefly/ou
 const runPaths_ = ff_core_Stream.Stream_toList(ff_core_Stream.Stream_filter(ff_core_BuildSystem.internalListPath_(browserOutputPath_), ((_w1) => {
 return ff_core_String.String_endsWith(ff_core_Path.Path_base(_w1), ".run.mjs")
 })));
+if(((typeof globalThis.ffDevelopMode) === "undefined")) {
 const outputPath_ = ff_core_Option.Option_grab(ff_core_Path.Path_parent(ff_core_List.List_grabFirst(runPaths_)));
+const start_ = ff_core_Task.Task_elapsed(ff_core_BuildSystem.BuildSystem_mainTask(self_));
 ff_core_BuildSystem.internalBrowserCallEsBuild_(self_, ff_core_List.List_map(runPaths_, ((_w1) => {
 return ff_core_Path.Path_absolute(_w1)
 })), ff_core_Path.Path_absolute(outputPath_), minify_, sourceMaps_);
-const bundlePaths_ = ff_core_Stream.Stream_toList(ff_core_Stream.Stream_filter(ff_core_BuildSystem.internalListPath_(browserOutputPath_), ((p_) => {
-return (ff_core_String.String_endsWith(ff_core_Path.Path_base(p_), ".bundle.js") || ff_core_String.String_endsWith(ff_core_Path.Path_base(p_), ".bundle.js.map"))
-})));
+const bundlePaths_ = ff_core_List.List_flatMap(runPaths_, ((p_) => {
+const outputPath_ = ff_core_Option.Option_grab(ff_core_Path.Path_parent(p_));
+const bundlePath_ = ff_core_Path.Path_slash(outputPath_, (ff_core_Option.Option_grab(ff_core_String.String_removeLast(ff_core_Path.Path_base(p_), ".mjs")) + ".bundle.js"));
+const mapPath_ = ff_core_Path.Path_slash(outputPath_, (ff_core_Option.Option_grab(ff_core_String.String_removeLast(ff_core_Path.Path_base(p_), ".mjs")) + ".bundle.js.map"));
+return [bundlePath_, mapPath_]
+}));
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.List_map(bundlePaths_, ((p_) => {
-return ff_core_Pair.Pair(("/" + ff_core_String.String_replace(ff_core_Path.Path_relativeTo(p_, browserOutputPath_), "\\", "/")), (() => {
+return ff_core_Pair.Pair(("/" + ff_core_List.List_join(ff_core_Path.Path_relativeListTo(p_, browserOutputPath_), "/")), (() => {
 return ff_core_Path.Path_readStream(p_)
 }))
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+} else {
+let built_ = ff_core_Set.new_();
+const lock_ = ff_core_Task.Task_lock(ff_core_BuildSystem.BuildSystem_mainTask(self_));
+return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.List_flatMap(runPaths_, ((p_) => {
+const outputPath_ = ff_core_Option.Option_grab(ff_core_Path.Path_parent(p_));
+const bundlePath_ = ff_core_Path.Path_slash(outputPath_, (ff_core_Option.Option_grab(ff_core_String.String_removeLast(ff_core_Path.Path_base(p_), ".mjs")) + ".bundle.js"));
+const mapPath_ = ff_core_Path.Path_slash(outputPath_, (ff_core_Option.Option_grab(ff_core_String.String_removeLast(ff_core_Path.Path_base(p_), ".mjs")) + ".bundle.js.map"));
+const bundleAssetPath_ = ("/" + ff_core_List.List_join(ff_core_Path.Path_relativeListTo(bundlePath_, browserOutputPath_), "/"));
+const mapAssetPath_ = ("/" + ff_core_List.List_join(ff_core_Path.Path_relativeListTo(mapPath_, browserOutputPath_), "/"));
+function bundle_() {
+ff_core_Lock.Lock_do(lock_, (() => {
+if((!ff_core_Set.Set_contains(built_, ff_core_Path.Path_absolute(p_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
+const start_ = ff_core_Task.Task_elapsed(ff_core_BuildSystem.BuildSystem_mainTask(self_));
+ff_core_BuildSystem.internalBrowserCallEsBuild_(self_, [ff_core_Path.Path_absolute(p_)], ff_core_Path.Path_absolute(outputPath_), minify_, sourceMaps_);
+ff_core_Log.debug_(((("bundle " + ff_core_Path.Path_absolute(p_)) + ": ") + ff_core_Duration.ff_core_Show_Show$ff_core_Duration_Duration.show_((ff_core_Task.Task_elapsed(ff_core_BuildSystem.BuildSystem_mainTask(self_)) - start_))));
+built_ = ff_core_Set.Set_add(built_, ff_core_Path.Path_absolute(p_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+};
+return ff_core_Path.Path_readStream(bundlePath_)
+}))
+}
+const bundleEntry_ = ff_core_Pair.Pair(bundleAssetPath_, (() => {
+bundle_();
+return ff_core_Path.Path_readStream(bundlePath_)
+}));
+const mapEntry_ = ff_core_Pair.Pair(mapAssetPath_, (() => {
+bundle_();
+return ff_core_Path.Path_readStream(mapPath_)
+}));
+return [bundleEntry_, mapEntry_]
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+}
 }
 
 export function BuildSystem_buildMode(self_) {
@@ -310,18 +346,54 @@ const browserOutputPath_ = (await ff_core_BuildSystem.internalPath_$(self_, ".fi
 const runPaths_ = (await ff_core_Stream.Stream_toList$((await ff_core_Stream.Stream_filter$((await ff_core_BuildSystem.internalListPath_$(browserOutputPath_, $task)), (async (_w1, $task) => {
 return ff_core_String.String_endsWith((await ff_core_Path.Path_base$(_w1, $task)), ".run.mjs")
 }), $task)), $task));
+if(((typeof globalThis.ffDevelopMode) === "undefined")) {
 const outputPath_ = ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(ff_core_List.List_grabFirst(runPaths_), $task)));
+const start_ = (await ff_core_Task.Task_elapsed$((await ff_core_BuildSystem.BuildSystem_mainTask$(self_, $task)), $task));
 (await ff_core_BuildSystem.internalBrowserCallEsBuild_$(self_, (await ff_core_List.List_map$(runPaths_, (async (_w1, $task) => {
 return (await ff_core_Path.Path_absolute$(_w1, $task))
 }), $task)), (await ff_core_Path.Path_absolute$(outputPath_, $task)), minify_, sourceMaps_, $task));
-const bundlePaths_ = (await ff_core_Stream.Stream_toList$((await ff_core_Stream.Stream_filter$((await ff_core_BuildSystem.internalListPath_$(browserOutputPath_, $task)), (async (p_, $task) => {
-return (ff_core_String.String_endsWith((await ff_core_Path.Path_base$(p_, $task)), ".bundle.js") || ff_core_String.String_endsWith((await ff_core_Path.Path_base$(p_, $task)), ".bundle.js.map"))
-}), $task)), $task));
+const bundlePaths_ = (await ff_core_List.List_flatMap$(runPaths_, (async (p_, $task) => {
+const outputPath_ = ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(p_, $task)));
+const bundlePath_ = (await ff_core_Path.Path_slash$(outputPath_, (ff_core_Option.Option_grab(ff_core_String.String_removeLast((await ff_core_Path.Path_base$(p_, $task)), ".mjs")) + ".bundle.js"), $task));
+const mapPath_ = (await ff_core_Path.Path_slash$(outputPath_, (ff_core_Option.Option_grab(ff_core_String.String_removeLast((await ff_core_Path.Path_base$(p_, $task)), ".mjs")) + ".bundle.js.map"), $task));
+return [bundlePath_, mapPath_]
+}), $task));
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap((await ff_core_List.List_map$(bundlePaths_, (async (p_, $task) => {
-return ff_core_Pair.Pair(("/" + ff_core_String.String_replace((await ff_core_Path.Path_relativeTo$(p_, browserOutputPath_, $task)), "\\", "/")), (async ($task) => {
+return ff_core_Pair.Pair(("/" + ff_core_List.List_join((await ff_core_Path.Path_relativeListTo$(p_, browserOutputPath_, $task)), "/")), (async ($task) => {
 return (await ff_core_Path.Path_readStream$(p_, $task))
 }))
 }), $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+} else {
+let built_ = ff_core_Set.new_();
+const lock_ = (await ff_core_Task.Task_lock$((await ff_core_BuildSystem.BuildSystem_mainTask$(self_, $task)), $task));
+return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap((await ff_core_List.List_flatMap$(runPaths_, (async (p_, $task) => {
+const outputPath_ = ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(p_, $task)));
+const bundlePath_ = (await ff_core_Path.Path_slash$(outputPath_, (ff_core_Option.Option_grab(ff_core_String.String_removeLast((await ff_core_Path.Path_base$(p_, $task)), ".mjs")) + ".bundle.js"), $task));
+const mapPath_ = (await ff_core_Path.Path_slash$(outputPath_, (ff_core_Option.Option_grab(ff_core_String.String_removeLast((await ff_core_Path.Path_base$(p_, $task)), ".mjs")) + ".bundle.js.map"), $task));
+const bundleAssetPath_ = ("/" + ff_core_List.List_join((await ff_core_Path.Path_relativeListTo$(bundlePath_, browserOutputPath_, $task)), "/"));
+const mapAssetPath_ = ("/" + ff_core_List.List_join((await ff_core_Path.Path_relativeListTo$(mapPath_, browserOutputPath_, $task)), "/"));
+async function bundle_$($task) {
+(await ff_core_Lock.Lock_do$(lock_, (async ($task) => {
+if((!ff_core_Set.Set_contains(built_, (await ff_core_Path.Path_absolute$(p_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
+const start_ = (await ff_core_Task.Task_elapsed$((await ff_core_BuildSystem.BuildSystem_mainTask$(self_, $task)), $task));
+(await ff_core_BuildSystem.internalBrowserCallEsBuild_$(self_, [(await ff_core_Path.Path_absolute$(p_, $task))], (await ff_core_Path.Path_absolute$(outputPath_, $task)), minify_, sourceMaps_, $task));
+ff_core_Log.debug_(((("bundle " + (await ff_core_Path.Path_absolute$(p_, $task))) + ": ") + ff_core_Duration.ff_core_Show_Show$ff_core_Duration_Duration.show_(((await ff_core_Task.Task_elapsed$((await ff_core_BuildSystem.BuildSystem_mainTask$(self_, $task)), $task)) - start_))));
+built_ = ff_core_Set.Set_add(built_, (await ff_core_Path.Path_absolute$(p_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+};
+return (await ff_core_Path.Path_readStream$(bundlePath_, $task))
+}), $task))
+}
+const bundleEntry_ = ff_core_Pair.Pair(bundleAssetPath_, (async ($task) => {
+(await bundle_$($task));
+return (await ff_core_Path.Path_readStream$(bundlePath_, $task))
+}));
+const mapEntry_ = ff_core_Pair.Pair(mapAssetPath_, (async ($task) => {
+(await bundle_$($task));
+return (await ff_core_Path.Path_readStream$(mapPath_, $task))
+}));
+return [bundleEntry_, mapEntry_]
+}), $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+}
 }
 
 export async function BuildSystem_buildMode$(self_, $task) {
