@@ -155,6 +155,7 @@ startApp(
                         if(taskIteration == runner.iteration):
                         try {
                             Builder.buildViaBuildSystem(system, fireflyPath, mainPaths, target, moduleCache, printMeasurements = True)
+                            forkedProcess->send(Js->(ffDevelopMode = "internalCompile"))
                             Unit
                         } tryCatch {| CompileError(at, message), error =>
                             runner.state = CompileErrorState(Some(at), message)
