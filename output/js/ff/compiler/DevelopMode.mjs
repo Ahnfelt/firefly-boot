@@ -263,7 +263,33 @@ return ff_core_NodeSystem.NodeSystem_path(system_, _w1)
 const target_ = message_.target;
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
 if((taskIteration_ === runner_.iteration_)) {
-return ff_core_Option.Some((ff_compiler_Builder.buildViaBuildSystem_(system_, fireflyPath_, mainPaths_, target_, moduleCache_, true), forkedProcess_.send({ffDevelopMode: "internalCompile"})))
+return ff_core_Option.Some(ff_core_Try.Try_catchAny(ff_core_Try.Try_tryCatch(ff_core_Try.Try_tryCatch(ff_core_Core.try_((() => {
+ff_compiler_Builder.buildViaBuildSystem_(system_, fireflyPath_, mainPaths_, target_, moduleCache_, true)
+})), ((_1, _2) => {
+{
+const at_ = _1.at_;
+const message_ = _1.message_;
+const error_ = _2;
+runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.Some(at_), message_)
+return
+}
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
+{
+const compileErrors_ = _1.errors_;
+const error_ = _2;
+ff_core_List.List_each(compileErrors_, ((_1) => {
+{
+const at_ = _1.at_;
+const message_ = _1.message_;
+runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.Some(at_), message_)
+return
+}
+}))
+return
+}
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors), ((error_) => {
+runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.None(), ff_core_Error.Error_message(error_))
+})))
 } else return ff_core_Option.None()
 }))
 }
@@ -536,7 +562,33 @@ return (await ff_core_NodeSystem.NodeSystem_path$(system_, _w1, $task))
 const target_ = message_.target;
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
 if((taskIteration_ === runner_.iteration_)) {
-return ff_core_Option.Some(((await ff_compiler_Builder.buildViaBuildSystem_$(system_, fireflyPath_, mainPaths_, target_, moduleCache_, true, $task)), forkedProcess_.send({ffDevelopMode: "internalCompile"})))
+return ff_core_Option.Some(ff_core_Try.Try_catchAny(ff_core_Try.Try_tryCatch(ff_core_Try.Try_tryCatch((await ff_core_Core.try_$((async ($task) => {
+(await ff_compiler_Builder.buildViaBuildSystem_$(system_, fireflyPath_, mainPaths_, target_, moduleCache_, true, $task))
+}), $task)), ((_1, _2) => {
+{
+const at_ = _1.at_;
+const message_ = _1.message_;
+const error_ = _2;
+runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.Some(at_), message_)
+return
+}
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError), ((_1, _2) => {
+{
+const compileErrors_ = _1.errors_;
+const error_ = _2;
+ff_core_List.List_each(compileErrors_, ((_1) => {
+{
+const at_ = _1.at_;
+const message_ = _1.message_;
+runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.Some(at_), message_)
+return
+}
+}))
+return
+}
+}), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors), ((error_) => {
+runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.None(), ff_core_Error.Error_message(error_))
+})))
 } else return ff_core_Option.None()
 }), $task))
 }

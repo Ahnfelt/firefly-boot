@@ -110,7 +110,7 @@ build(system: NodeSystem, runner: Runner, mainFile: String, moduleCache: ModuleC
             runner.state = CompileErrorState(None, error.message())
         }
         None
-    }    
+    }
 }
 
 startApp(
@@ -153,8 +153,18 @@ startApp(
                     let target: String = message->target?
                     runner.lock.do {
                         if(taskIteration == runner.iteration):
-                        Builder.buildViaBuildSystem(system, fireflyPath, mainPaths, target, moduleCache, printMeasurements = True)
-                        forkedProcess->send(Js->(ffDevelopMode = "internalCompile"))
+                        try {
+                            Builder.buildViaBuildSystem(system, fireflyPath, mainPaths, target, moduleCache, printMeasurements = True)
+                            Unit
+                        } tryCatch {| CompileError(at, message), error =>
+                            runner.state = CompileErrorState(Some(at), message)
+                        } tryCatch {| CompileErrors(compileErrors), error =>
+                            compileErrors.each {| CompileError(at, message) =>
+                                runner.state = CompileErrorState(Some(at), message)
+                            }
+                        } catchAny {error =>
+                            runner.state = CompileErrorState(None, error.message())
+                        }
                     }
                 }
             }))
