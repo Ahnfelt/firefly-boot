@@ -22,9 +22,11 @@ new(version: Int): ModuleCache {
 
 extend self: ModuleCache {
     
-    remove(keys: List[String]) {
+    remove(keys: List[String], removeParsed: Bool = True) {
         if(!keys.isEmpty()):
-        self.parsedModules = self.parsedModules.removeList(keys)
+        if(removeParsed) {
+            self.parsedModules = self.parsedModules.removeList(keys)
+        }
         self.resolvedModules = self.resolvedModules.removeList(keys)
         self.derivedModules = self.derivedModules.removeList(keys)
         self.inferredModules = self.inferredModules.removeList(keys)
@@ -32,15 +34,11 @@ extend self: ModuleCache {
     }
     
     invalidate(key: String) {
-        //Log.trace("Invalidate: " + key + " in " + self.parsedModules.keys().toList().join(" "))
         self.parsedModules.get(key).each: | Pair(module, _) =>
-        //Log.trace("Invalidated: " + key)
         self.remove([key])
         self.parsedModules.each {| k, Pair(m, _) =>
             if(m.imports.any {i => i.moduleKey == module.moduleKey}) {
-                //Log.trace("Invalidating due to import of invalidated module: " + m.moduleKey.importName())
-                // TODO: There are no need to remove parser cache for k
-                self.remove([k])
+                self.remove([k], removeParsed = False)
             }
         }
     }

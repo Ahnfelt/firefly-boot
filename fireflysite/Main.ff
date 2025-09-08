@@ -18,12 +18,7 @@ nodeMain(system: NodeSystem): Unit {
     let handlers = WebRouteHandler(Array.new())
     Router.handlers(handlers)
     let cacheSalt = system.crypto().randomBuffer(16)
-    mutable gotRequest = False
     WebServer.new(system, host, port).listen {request =>
-        if(!gotRequest) {
-            gotRequest = True
-        }
-
         let path = request.readPath()
         let segments = path.split('/').filter {s => s != "" && s != "." && s != ".."}
         segments.{

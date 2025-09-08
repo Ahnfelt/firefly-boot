@@ -147,9 +147,11 @@ return ff_core_Core.panic_(("Internal error - package path missing: " + ff_compi
 return (await ff_compiler_Syntax.ModuleKey_path$(moduleKey_, packagePath_, $task))
 }
 
-export function ModuleCache_remove(self_, keys_) {
+export function ModuleCache_remove(self_, keys_, removeParsed_ = true) {
 if((!ff_core_List.List_isEmpty(keys_))) {
-self_.parsedModules_ = ff_core_Map.Map_removeList(self_.parsedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+if(removeParsed_) {
+self_.parsedModules_ = ff_core_Map.Map_removeList(self_.parsedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+};
 self_.resolvedModules_ = ff_core_Map.Map_removeList(self_.resolvedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 self_.derivedModules_ = ff_core_Map.Map_removeList(self_.derivedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 self_.inferredModules_ = ff_core_Map.Map_removeList(self_.inferredModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -161,7 +163,7 @@ export function ModuleCache_invalidate(self_, key_) {
 ff_core_Option.Option_each(ff_core_Map.Map_get(self_.parsedModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
 {
 const module_ = _1.first_;
-ff_compiler_ModuleCache.ModuleCache_remove(self_, [key_]);
+ff_compiler_ModuleCache.ModuleCache_remove(self_, [key_], true);
 ff_core_Map.Map_each(self_.parsedModules_, ((_1, _2) => {
 {
 const k_ = _1;
@@ -169,7 +171,7 @@ const m_ = _2.first_;
 if(ff_core_List.List_any(m_.imports_, ((i_) => {
 return ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_ModuleKey.equals_(i_.moduleKey_, module_.moduleKey_)
 }))) {
-ff_compiler_ModuleCache.ModuleCache_remove(self_, [k_])
+ff_compiler_ModuleCache.ModuleCache_remove(self_, [k_], false)
 }
 return
 }
@@ -319,9 +321,11 @@ ff_core_Error.Error_rethrow(error_)
 }
 }
 
-export async function ModuleCache_remove$(self_, keys_, $task) {
+export async function ModuleCache_remove$(self_, keys_, removeParsed_ = true, $task) {
 if((!ff_core_List.List_isEmpty(keys_))) {
-self_.parsedModules_ = ff_core_Map.Map_removeList(self_.parsedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+if(removeParsed_) {
+self_.parsedModules_ = ff_core_Map.Map_removeList(self_.parsedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+};
 self_.resolvedModules_ = ff_core_Map.Map_removeList(self_.resolvedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 self_.derivedModules_ = ff_core_Map.Map_removeList(self_.derivedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 self_.inferredModules_ = ff_core_Map.Map_removeList(self_.inferredModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -333,7 +337,7 @@ export async function ModuleCache_invalidate$(self_, key_, $task) {
 ff_core_Option.Option_each(ff_core_Map.Map_get(self_.parsedModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
 {
 const module_ = _1.first_;
-ff_compiler_ModuleCache.ModuleCache_remove(self_, [key_]);
+ff_compiler_ModuleCache.ModuleCache_remove(self_, [key_], true);
 ff_core_Map.Map_each(self_.parsedModules_, ((_1, _2) => {
 {
 const k_ = _1;
@@ -341,7 +345,7 @@ const m_ = _2.first_;
 if(ff_core_List.List_any(m_.imports_, ((i_) => {
 return ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_ModuleKey.equals_(i_.moduleKey_, module_.moduleKey_)
 }))) {
-ff_compiler_ModuleCache.ModuleCache_remove(self_, [k_])
+ff_compiler_ModuleCache.ModuleCache_remove(self_, [k_], false)
 }
 return
 }
