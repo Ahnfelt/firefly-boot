@@ -81,7 +81,7 @@ build(system: NodeSystem, runner: Runner, mainFile: String, moduleCache: ModuleC
             EmitNode
             resolvedDependencies
             moduleCache
-            printMeasurements = True
+            printMeasurements = False
         ))
     } tryCatch {| CompileError(at, message), error =>
         Log.debug(message)
@@ -146,7 +146,7 @@ startApp(
                     runner.lock.do {
                         if(taskIteration == runner.iteration):
                         try {
-                            Builder.buildViaBuildSystem(system, fireflyPath, mainPaths, target, moduleCache, printMeasurements = True)
+                            Builder.buildViaBuildSystem(system, fireflyPath, mainPaths, target, moduleCache, printMeasurements = False)
                             forkedProcess->send(Js->(ffDevelopMode = "internalCompile"))
                             Unit
                         } tryCatch {| CompileError(at, message), error =>
