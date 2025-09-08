@@ -189,7 +189,7 @@ return ff_core_Try.Try_catchAny(ff_core_Try.Try_tryCatch(ff_core_Try.Try_tryCatc
 ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_path(system_, "."));
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), ff_compiler_DependencyLock.new_(ff_core_NodeSystem.NodeSystem_mainTask(system_)), ff_core_NodeSystem.NodeSystem_path(system_, mainFile_));
 const mainPath_ = ff_core_NodeSystem.NodeSystem_path(system_, mainFile_);
-return ff_core_Option.Some(ff_compiler_Main.buildScript_(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, moduleCache_, true))
+return ff_core_Option.Some(ff_compiler_Main.buildScript_(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, moduleCache_, false))
 })), ((_1, _2) => {
 {
 const at_ = _1.at_;
@@ -257,7 +257,7 @@ const target_ = message_.target;
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
 if((taskIteration_ === runner_.iteration_)) {
 return ff_core_Option.Some(ff_core_Try.Try_catchAny(ff_core_Try.Try_tryCatch(ff_core_Try.Try_tryCatch(ff_core_Core.try_((() => {
-ff_compiler_Builder.buildViaBuildSystem_(system_, fireflyPath_, mainPaths_, target_, moduleCache_, true);
+ff_compiler_Builder.buildViaBuildSystem_(system_, fireflyPath_, mainPaths_, target_, moduleCache_, false);
 forkedProcess_.send({ffDevelopMode: "internalCompile"})
 })), ((_1, _2) => {
 {
@@ -476,7 +476,7 @@ return (await ff_core_Try.Try_catchAny$((await ff_core_Try.Try_tryCatch$((await 
 (await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (await ff_compiler_DependencyLock.new_$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task)), (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task));
 const mainPath_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task));
-return ff_core_Option.Some((await ff_compiler_Main.buildScript_$(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, moduleCache_, true, $task)))
+return ff_core_Option.Some((await ff_compiler_Main.buildScript_$(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, moduleCache_, false, $task)))
 }), $task)), (async (_1, _2, $task) => {
 {
 const at_ = _1.at_;
@@ -544,7 +544,7 @@ const target_ = message_.target;
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
 if((taskIteration_ === runner_.iteration_)) {
 return ff_core_Option.Some(ff_core_Try.Try_catchAny(ff_core_Try.Try_tryCatch(ff_core_Try.Try_tryCatch((await ff_core_Core.try_$((async ($task) => {
-(await ff_compiler_Builder.buildViaBuildSystem_$(system_, fireflyPath_, mainPaths_, target_, moduleCache_, true, $task));
+(await ff_compiler_Builder.buildViaBuildSystem_$(system_, fireflyPath_, mainPaths_, target_, moduleCache_, false, $task));
 forkedProcess_.send({ffDevelopMode: "internalCompile"})
 }), $task)), ((_1, _2) => {
 {
