@@ -12,18 +12,15 @@ import Styles
 import Router
 
 nodeMain(system: NodeSystem): Unit {
-    print(system, "Started")
     let host = system.arguments().grab(0)
     let port = system.arguments().grab(1).grabInt()
     let context = RouteContext(system)
     let handlers = WebRouteHandler(Array.new())
     Router.handlers(handlers)
     let cacheSalt = system.crypto().randomBuffer(16)
-    print(system, "Listening on " + host + ":" + port)
     mutable gotRequest = False
     WebServer.new(system, host, port).listen {request =>
         if(!gotRequest) {
-            print(system, "First request")
             gotRequest = True
         }
 
@@ -58,20 +55,13 @@ nodeMain(system: NodeSystem): Unit {
     }    
 }
 
-print(nodeSystem: NodeSystem, text: String) {
-    let now = nodeSystem.date().epochMilliseconds()
-    nodeSystem.writeErrorLine("App " + now + ": " + text)
-}
-
 buildMain(system: BuildSystem) {
-    print(1!?, "buildMain")
     mutable assets = AssetSystem.create()
     let browserAssets = system.bundleForBrowser(Router.modulesWithBrowserMain().map {_ + ".ff"}, sourceMaps = True)
     //let browserAssets = system.compileForBrowser(Router.modulesWithBrowserMain().map {_ + ".ff"})
     assets = assets.addAssets("/js/", browserAssets)
     assets = assets.addAssets("/assets/", system.packageAssets().assets("/assets/"))
     system.setAssets(assets)
-    print(1!?, "buildMain done")
 }
 
 serveAssets(system: NodeSystem, salt: Buffer, request: WebRequest[WebResponse], segments: List[String]): Unit {

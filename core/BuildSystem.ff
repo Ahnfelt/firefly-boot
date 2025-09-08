@@ -39,9 +39,7 @@ extend self: BuildSystem {
                 function bundle() {
                     lock.do {
                         if(!built.contains(p.absolute())) {
-                            let start = self.mainTask().elapsed()
                             internalBrowserCallEsBuild(self, [p.absolute()], outputPath.absolute(), minify, sourceMaps)
-                            Log.debug("bundle " + p.absolute() + ": " + Show.show(Duration(self.mainTask().elapsed().seconds - start.seconds)))
                             built = built.add(p.absolute())
                         }
                         bundlePath.readStream()

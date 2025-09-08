@@ -279,9 +279,7 @@ const mapAssetPath_ = ("/" + ff_core_List.List_join(ff_core_Path.Path_relativeLi
 function bundle_() {
 ff_core_Lock.Lock_do(lock_, (() => {
 if((!ff_core_Set.Set_contains(built_, ff_core_Path.Path_absolute(p_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
-const start_ = ff_core_Task.Task_elapsed(ff_core_BuildSystem.BuildSystem_mainTask(self_));
 ff_core_BuildSystem.internalBrowserCallEsBuild_(self_, [ff_core_Path.Path_absolute(p_)], ff_core_Path.Path_absolute(outputPath_), minify_, sourceMaps_);
-ff_core_Log.debug_(((("bundle " + ff_core_Path.Path_absolute(p_)) + ": ") + ff_core_Duration.ff_core_Show_Show$ff_core_Duration_Duration.show_((ff_core_Task.Task_elapsed(ff_core_BuildSystem.BuildSystem_mainTask(self_)) - start_))));
 built_ = ff_core_Set.Set_add(built_, ff_core_Path.Path_absolute(p_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 };
 return ff_core_Path.Path_readStream(bundlePath_)
@@ -375,9 +373,7 @@ const mapAssetPath_ = ("/" + ff_core_List.List_join((await ff_core_Path.Path_rel
 async function bundle_$($task) {
 (await ff_core_Lock.Lock_do$(lock_, (async ($task) => {
 if((!ff_core_Set.Set_contains(built_, (await ff_core_Path.Path_absolute$(p_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
-const start_ = (await ff_core_Task.Task_elapsed$((await ff_core_BuildSystem.BuildSystem_mainTask$(self_, $task)), $task));
 (await ff_core_BuildSystem.internalBrowserCallEsBuild_$(self_, [(await ff_core_Path.Path_absolute$(p_, $task))], (await ff_core_Path.Path_absolute$(outputPath_, $task)), minify_, sourceMaps_, $task));
-ff_core_Log.debug_(((("bundle " + (await ff_core_Path.Path_absolute$(p_, $task))) + ": ") + ff_core_Duration.ff_core_Show_Show$ff_core_Duration_Duration.show_(((await ff_core_Task.Task_elapsed$((await ff_core_BuildSystem.BuildSystem_mainTask$(self_, $task)), $task)) - start_))));
 built_ = ff_core_Set.Set_add(built_, (await ff_core_Path.Path_absolute$(p_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 };
 return (await ff_core_Path.Path_readStream$(bundlePath_, $task))

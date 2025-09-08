@@ -136,7 +136,7 @@ export function EsbuildContext(jsValue_) {
 return {jsValue_};
 }
 
-export const waiterHtml_ = "<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <title>Firefly develop mode</title>\r\n    <style>\r\n        body {\r\n            background-color: #121212;\r\n            color: #e0e0e0;\r\n            font-family: 'Courier New', monospace;\r\n            display: flex;\r\n            flex-direction: column;\r\n            justify-content: center;\r\n            align-items: center;\r\n            height: 100vh;\r\n            margin: 0;\r\n            background-image: radial-gradient(circle at center, #1a1a2e, #121212);\r\n        }\r\n\r\n        h1 {\r\n            color: #00f2ff;\r\n            text-shadow: 0 0 10px #00f2ff;\r\n            font-size: 3rem;\r\n            margin-bottom: 20px;\r\n            animation: glow 2s ease-in-out infinite alternate;\r\n        }\r\n\r\n        p {\r\n            background-color: #1a1a2e;\r\n            color: #00f2ff;\r\n            padding: 15px 30px;\r\n            border-radius: 25px;\r\n            font-size: 1.2rem;\r\n            border: 2px solid #00f2ff;\r\n            box-shadow: 0 0 15px #00f2ff;\r\n            animation: pulse 1.5s infinite;\r\n        }\r\n            \r\n        a {\r\n            color: #00f2ff;\r\n        }\r\n\r\n        @media only screen and (max-width: 600px) {\r\n            h1 {\r\n                font-size: 1.7rem;\r\n            }\r\n            p {\r\n                padding: 10px 20px;\r\n                border-radius: 50px;\r\n                font-size: 1.1rem;\r\n                max-width: 100%;\r\n                box-sizing: border-box;\r\n            }\r\n        }\r\n                    \r\n        @keyframes glow {\r\n            from {\r\n                text-shadow: 0 0 10px #00f2ff;\r\n            }\r\n            to {\r\n                text-shadow: 0 0 20px #00f2ff, 0 0 30px #00f2ff;\r\n            }\r\n        }\r\n\r\n        @keyframes pulse {\r\n            0% {\r\n                box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.7);\r\n            }\r\n            70% {\r\n                box-shadow: 0 0 0 10px rgba(0, 242, 255, 0);\r\n            }\r\n            100% {\r\n                box-shadow: 0 0 0 0 rgba(0, 242, 255, 0);\r\n            }\r\n        }\r\n    </style>\r\n    <script>\r\n        let start = Date.now()\r\n        let appStarted = null\r\n        let delay = 10\r\n        let poll = async () => {\r\n            //delay *= 1.1\r\n            try {\r\n                let response = await fetch(\".\", {cache: 'no-store'})\r\n                if(!response.headers.has('x-firefly-develop-mode')) {\r\n                    let now = Date.now()\r\n                    let compiling = appStarted - start\r\n                    let appStarting = now - appStarted\r\n                    //window.alert(\"Reloading after: \" + (now - start) + \" ms. Compiling: \" + compiling + \" ms. Starting application: \" + appStarting + \" ms.\")\r\n                    window.location.reload(true)\r\n                    return\r\n                } else {\r\n                    let html = await response.text()\r\n                    if(appStarted == null && html.includes(\"Starting application...\")) appStarted = Date.now()\r\n                    let parser = new DOMParser()\r\n                    let d = parser.parseFromString(html, 'text/html')\r\n                    let bodyHtml = d.body.innerHTML\r\n                    if(document.body.innerHTML !== bodyHtml) {\r\n                        document.body.innerHTML = bodyHtml\r\n                    }\r\n                    setTimeout(poll, delay)\r\n                }\r\n            } catch (error) {\r\n                console.error(\"Polling error:\", error)\r\n                setTimeout(poll, delay)\r\n            }\r\n        }\r\n        setTimeout(poll, delay)\r\n    </script>\r\n</head>\r\n<body>\r\n    <h1>Firefly develop mode</h1>\r\n    <p>[STATUS]</p>\r\n</body>\r\n</html>\r\n";
+export const waiterHtml_ = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Firefly develop mode</title>\n    <style>\n        body {\n            background-color: #121212;\n            color: #e0e0e0;\n            font-family: 'Courier New', monospace;\n            display: flex;\n            flex-direction: column;\n            justify-content: center;\n            align-items: center;\n            height: 100vh;\n            margin: 0;\n            background-image: radial-gradient(circle at center, #1a1a2e, #121212);\n        }\n\n        h1 {\n            color: #00f2ff;\n            text-shadow: 0 0 10px #00f2ff;\n            font-size: 3rem;\n            margin-bottom: 20px;\n            animation: glow 2s ease-in-out infinite alternate;\n        }\n\n        p {\n            background-color: #1a1a2e;\n            color: #00f2ff;\n            padding: 15px 30px;\n            border-radius: 25px;\n            font-size: 1.2rem;\n            border: 2px solid #00f2ff;\n            box-shadow: 0 0 15px #00f2ff;\n            animation: pulse 1.5s infinite;\n        }\n            \n        a {\n            color: #00f2ff;\n        }\n\n        @media only screen and (max-width: 600px) {\n            h1 {\n                font-size: 1.7rem;\n            }\n            p {\n                padding: 10px 20px;\n                border-radius: 50px;\n                font-size: 1.1rem;\n                max-width: 100%;\n                box-sizing: border-box;\n            }\n        }\n                    \n        @keyframes glow {\n            from {\n                text-shadow: 0 0 10px #00f2ff;\n            }\n            to {\n                text-shadow: 0 0 20px #00f2ff, 0 0 30px #00f2ff;\n            }\n        }\n\n        @keyframes pulse {\n            0% {\n                box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.7);\n            }\n            70% {\n                box-shadow: 0 0 0 10px rgba(0, 242, 255, 0);\n            }\n            100% {\n                box-shadow: 0 0 0 0 rgba(0, 242, 255, 0);\n            }\n        }\n    </style>\n    <script>\n        let start = Date.now()\n        let appStarted = null\n        let delay = 10\n        let poll = async () => {\n            //delay *= 1.1\n            try {\n                let response = await fetch(\".\", {cache: 'no-store'})\n                if(!response.headers.has('x-firefly-develop-mode')) {\n                    let now = Date.now()\n                    let compiling = appStarted - start\n                    let appStarting = now - appStarted\n                    //window.alert(\"Reloading after: \" + (now - start) + \" ms. Compiling: \" + compiling + \" ms. Starting application: \" + appStarting + \" ms.\")\n                    window.location.reload(true)\n                    return\n                } else {\n                    let html = await response.text()\n                    if(appStarted == null && html.includes(\"Starting application...\")) appStarted = Date.now()\n                    let parser = new DOMParser()\n                    let d = parser.parseFromString(html, 'text/html')\n                    let bodyHtml = d.body.innerHTML\n                    if(document.body.innerHTML !== bodyHtml) {\n                        document.body.innerHTML = bodyHtml\n                    }\n                    setTimeout(poll, delay)\n                }\n            } catch (error) {\n                console.error(\"Polling error:\", error)\n                setTimeout(poll, delay)\n            }\n        }\n        setTimeout(poll, delay)\n    </script>\n</head>\n<body>\n    <h1>Firefly develop mode</h1>\n    <p>[STATUS]</p>\n</body>\n</html>\n";
 
 export function run_(system_, fireflyPath_, mainFile_, arguments_) {
 const esbuildContext_ = ff_compiler_DevelopMode.EsbuildContext(ff_core_Option.None());
@@ -147,7 +147,6 @@ ff_compiler_DevelopMode.startProxy_(system_, runner_, 8081, 8080);
 ff_compiler_DevelopMode.startChangeListener_(system_, runner_, ff_core_NodeSystem.NodeSystem_path(system_, "."));
 const moduleCache_ = ff_compiler_ModuleCache.new_(0);
 while(true) {
-ff_compiler_DevelopMode.print_(system_, "Compiling...");
 const moduleKey_ = ff_compiler_DevelopMode.build_(system_, runner_, mainFile_, moduleCache_);
 const task_ = (((_1) => {
 if(_1.None) {
@@ -158,7 +157,6 @@ return
 }
 {
 const key_ = _1.value_;
-ff_compiler_DevelopMode.print_(system_, "Running...");
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
 runner_.state_ = ff_compiler_DevelopMode.ApplicationRunningState()
 }));
@@ -167,16 +165,13 @@ return ff_compiler_DevelopMode.startApp_(system_, runner_, fireflyPath_, esbuild
 }))(moduleKey_);
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
 if(runner_.appRunning_) {
-ff_compiler_DevelopMode.print_(system_, "Still shutting down app...");
 while(runner_.appRunning_) {
 ff_core_Lock.LockCondition_sleep(runner_.lockCondition_)
 }
 };
-ff_compiler_DevelopMode.print_(system_, "Waiting for refresh...");
 while((!runner_.recompile_)) {
 ff_core_Lock.LockCondition_sleep(runner_.lockCondition_)
 };
-ff_compiler_DevelopMode.print_(system_, "Shutting down app...");
 ff_core_Task.Task_abort(task_);
 ff_core_Set.Set_each(runner_.changedSinceCompilationStarted_, ((key_) => {
 ff_compiler_ModuleCache.ModuleCache_invalidate(moduleCache_, key_)
@@ -194,7 +189,7 @@ return ff_core_Try.Try_catchAny(ff_core_Try.Try_tryCatch(ff_core_Try.Try_tryCatc
 ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_path(system_, "."));
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), ff_compiler_DependencyLock.new_(ff_core_NodeSystem.NodeSystem_mainTask(system_)), ff_core_NodeSystem.NodeSystem_path(system_, mainFile_));
 const mainPath_ = ff_core_NodeSystem.NodeSystem_path(system_, mainFile_);
-return ff_core_Option.Some(ff_compiler_Main.buildScript_(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, moduleCache_, true))
+return ff_core_Option.Some(ff_compiler_Main.buildScript_(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, moduleCache_, false))
 })), ((_1, _2) => {
 {
 const at_ = _1.at_;
@@ -243,9 +238,8 @@ const runFilePath_ = (ff_core_String.String_contains(runFile_, "://")
 ? ff_core_NodeSystem.NodeSystem_pathFromUrl(system_, runFile_)
 : ff_core_NodeSystem.NodeSystem_path(system_, runFile_));
 const startPath_ = ff_core_Path.Path_slash(ff_core_Option.Option_grab(ff_core_Path.Path_parent(runFilePath_)), (ff_core_Path.Path_base(runFilePath_) + ".start.mjs"));
-ff_core_Path.Path_writeText(startPath_, ((((((((("import * as run from " + ff_core_Json.Json_write(("./" + ff_core_Path.Path_base(runFilePath_)), ff_core_Option.None())) + "\n") + "console.log('Nod ' + Date.now() + ': Run (after import)')\n") + "globalThis.ffDevelopMode = true\n") + "run.$run$(") + ff_core_Json.Json_write(ff_core_Path.Path_absolute(fireflyPath_), ff_core_Option.None())) + ", ") + ff_core_Json.Json_write(ff_core_Json.ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json.ff_core_Json_JsonLike$ff_core_String_String).toJson_(arguments_), ff_core_Option.None())) + ")"));
+ff_core_Path.Path_writeText(startPath_, (((((((("import * as run from " + ff_core_Json.Json_write(("./" + ff_core_Path.Path_base(runFilePath_)), ff_core_Option.None())) + "\n") + "globalThis.ffDevelopMode = true\n") + "run.$run$(") + ff_core_Json.Json_write(ff_core_Path.Path_absolute(fireflyPath_), ff_core_Option.None())) + ", ") + ff_core_Json.Json_write(ff_core_Json.ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json.ff_core_Json_JsonLike$ff_core_String_String).toJson_(arguments_), ff_core_Option.None())) + ")"));
 const esBuildPath_ = ff_core_Path.Path_slash(ff_core_Option.Option_grab(ff_core_Path.Path_parent(runFilePath_)), (ff_core_Path.Path_base(runFilePath_) + ".minified.js"));
-ff_compiler_DevelopMode.print_(system_, "Bundling with esbuild for node");
 const context_ = ff_core_Option.Option_else(esbuildContext_.jsValue_, (() => {
 const jsValue_ = ff_core_BuildSystem.internalNodeCallEsBuildContext_(system_, ff_core_Path.Path_absolute(startPath_), ff_core_Path.Path_absolute(esBuildPath_), true);
 esbuildContext_.jsValue_ = ff_core_Option.Some(jsValue_);
@@ -253,7 +247,6 @@ return jsValue_
 }));
 context_.rebuild();
 const relativeStartFile_ = ff_core_Path.Path_relativeTo(esBuildPath_, ff_core_NodeSystem.NodeSystem_path(system_, "."));
-ff_compiler_DevelopMode.print_(system_, "Execute with node");
 const result_ = ff_core_NodeSystem.NodeSystem_execute(system_, relativeStartFile_, arguments_, ff_core_Buffer.new_(0, false), ff_core_Option.None(), ff_core_Option.None(), 16777216, 9, false, ff_core_Option.Some(((message_, forkedProcess_) => {
 if((message_.ffDevelopMode === "internalCompile")) {
 const mainFiles_ = message_.mainFiles;
@@ -264,7 +257,7 @@ const target_ = message_.target;
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
 if((taskIteration_ === runner_.iteration_)) {
 return ff_core_Option.Some(ff_core_Try.Try_catchAny(ff_core_Try.Try_tryCatch(ff_core_Try.Try_tryCatch(ff_core_Core.try_((() => {
-ff_compiler_Builder.buildViaBuildSystem_(system_, fireflyPath_, mainPaths_, target_, moduleCache_, true);
+ff_compiler_Builder.buildViaBuildSystem_(system_, fireflyPath_, mainPaths_, target_, moduleCache_, false);
 forkedProcess_.send({ffDevelopMode: "internalCompile"})
 })), ((_1, _2) => {
 {
@@ -321,11 +314,6 @@ return ff_core_Lock.LockCondition_wakeAll(runner_.lockCondition_)
 }))
 }
 
-export function print_(nodeSystem_, text_) {
-const now_ = ff_core_Date.Date_epochMilliseconds(ff_core_NodeSystem.NodeSystem_date(nodeSystem_, ff_core_Option.None(), ff_core_Date.isoCalendarId_));
-ff_core_NodeSystem.NodeSystem_writeErrorLine(nodeSystem_, ((("Dev " + now_) + ": ") + text_))
-}
-
 export function startChangeListener_(system_, runner_, path_) {
 const fs_ = import$0;
 fs_.watch(ff_core_Path.Path_absolute(path_), {recursive: true}, ((eventType_, fileName_) => {
@@ -336,7 +324,6 @@ if((ff_core_String.String_endsWith(file_, ".ff") || ff_core_String.String_endsWi
 return ff_core_Option.Some((function() {
 const key_ = ff_core_Path.Path_absolute(ff_core_NodeSystem.NodeSystem_path(system_, file_));
 return ff_core_Lock.Lock_do(runner_.lock_, (() => {
-ff_compiler_DevelopMode.print_(system_, ("Changed! " + key_));
 runner_.changedSinceCompilationStarted_ = ff_core_Set.Set_add(runner_.changedSinceCompilationStarted_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }))
 })())
@@ -434,7 +421,7 @@ return serveWaiterHtml_()
 }))
 }));
 proxyServer_.listen(proxyPort_, (() => {
-return ff_compiler_DevelopMode.print_(system_, ("Proxy server running on port " + proxyPort_))
+
 }))
 }
 
@@ -447,7 +434,6 @@ const runner_ = ff_compiler_DevelopMode.Runner(lock_, lockCondition_, 1, ff_comp
 (await ff_compiler_DevelopMode.startChangeListener_$(system_, runner_, (await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
 const moduleCache_ = ff_compiler_ModuleCache.new_(0);
 while(true) {
-(await ff_compiler_DevelopMode.print_$(system_, "Compiling...", $task));
 const moduleKey_ = (await ff_compiler_DevelopMode.build_$(system_, runner_, mainFile_, moduleCache_, $task));
 const task_ = (await ((async (_1, $task) => {
 if(_1.None) {
@@ -458,7 +444,6 @@ return
 }
 {
 const key_ = _1.value_;
-(await ff_compiler_DevelopMode.print_$(system_, "Running...", $task));
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
 runner_.state_ = ff_compiler_DevelopMode.ApplicationRunningState()
 }), $task));
@@ -467,16 +452,13 @@ return (await ff_compiler_DevelopMode.startApp_$(system_, runner_, fireflyPath_,
 }))(moduleKey_, $task));
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
 if(runner_.appRunning_) {
-(await ff_compiler_DevelopMode.print_$(system_, "Still shutting down app...", $task));
 while(runner_.appRunning_) {
 (await ff_core_Lock.LockCondition_sleep$(runner_.lockCondition_, $task))
 }
 };
-(await ff_compiler_DevelopMode.print_$(system_, "Waiting for refresh...", $task));
 while((!runner_.recompile_)) {
 (await ff_core_Lock.LockCondition_sleep$(runner_.lockCondition_, $task))
 };
-(await ff_compiler_DevelopMode.print_$(system_, "Shutting down app...", $task));
 (await ff_core_Task.Task_abort$(task_, $task));
 ff_core_Set.Set_each(runner_.changedSinceCompilationStarted_, ((key_) => {
 ff_compiler_ModuleCache.ModuleCache_invalidate(moduleCache_, key_)
@@ -494,7 +476,7 @@ return (await ff_core_Try.Try_catchAny$((await ff_core_Try.Try_tryCatch$((await 
 (await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (await ff_compiler_DependencyLock.new_$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task)), (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task));
 const mainPath_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task));
-return ff_core_Option.Some((await ff_compiler_Main.buildScript_$(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, moduleCache_, true, $task)))
+return ff_core_Option.Some((await ff_compiler_Main.buildScript_$(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, moduleCache_, false, $task)))
 }), $task)), (async (_1, _2, $task) => {
 {
 const at_ = _1.at_;
@@ -543,9 +525,8 @@ const runFilePath_ = (ff_core_String.String_contains(runFile_, "://")
 ? (await ff_core_NodeSystem.NodeSystem_pathFromUrl$(system_, runFile_, $task))
 : (await ff_core_NodeSystem.NodeSystem_path$(system_, runFile_, $task)));
 const startPath_ = (await ff_core_Path.Path_slash$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(runFilePath_, $task))), ((await ff_core_Path.Path_base$(runFilePath_, $task)) + ".start.mjs"), $task));
-(await ff_core_Path.Path_writeText$(startPath_, ((((((((("import * as run from " + ff_core_Json.Json_write(("./" + (await ff_core_Path.Path_base$(runFilePath_, $task))), ff_core_Option.None())) + "\n") + "console.log('Nod ' + Date.now() + ': Run (after import)')\n") + "globalThis.ffDevelopMode = true\n") + "run.$run$(") + ff_core_Json.Json_write((await ff_core_Path.Path_absolute$(fireflyPath_, $task)), ff_core_Option.None())) + ", ") + ff_core_Json.Json_write(ff_core_Json.ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json.ff_core_Json_JsonLike$ff_core_String_String).toJson_(arguments_), ff_core_Option.None())) + ")"), $task));
+(await ff_core_Path.Path_writeText$(startPath_, (((((((("import * as run from " + ff_core_Json.Json_write(("./" + (await ff_core_Path.Path_base$(runFilePath_, $task))), ff_core_Option.None())) + "\n") + "globalThis.ffDevelopMode = true\n") + "run.$run$(") + ff_core_Json.Json_write((await ff_core_Path.Path_absolute$(fireflyPath_, $task)), ff_core_Option.None())) + ", ") + ff_core_Json.Json_write(ff_core_Json.ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json.ff_core_Json_JsonLike$ff_core_String_String).toJson_(arguments_), ff_core_Option.None())) + ")"), $task));
 const esBuildPath_ = (await ff_core_Path.Path_slash$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(runFilePath_, $task))), ((await ff_core_Path.Path_base$(runFilePath_, $task)) + ".minified.js"), $task));
-(await ff_compiler_DevelopMode.print_$(system_, "Bundling with esbuild for node", $task));
 const context_ = (await ff_core_Option.Option_else$(esbuildContext_.jsValue_, (async ($task) => {
 const jsValue_ = (await ff_core_BuildSystem.internalNodeCallEsBuildContext_$(system_, (await ff_core_Path.Path_absolute$(startPath_, $task)), (await ff_core_Path.Path_absolute$(esBuildPath_, $task)), true, $task));
 esbuildContext_.jsValue_ = ff_core_Option.Some(jsValue_);
@@ -553,7 +534,6 @@ return jsValue_
 }), $task));
 (await context_.rebuild());
 const relativeStartFile_ = (await ff_core_Path.Path_relativeTo$(esBuildPath_, (await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
-(await ff_compiler_DevelopMode.print_$(system_, "Execute with node", $task));
 const result_ = (await ff_core_NodeSystem.NodeSystem_execute$(system_, relativeStartFile_, arguments_, ff_core_Buffer.new_(0, false), ff_core_Option.None(), ff_core_Option.None(), 16777216, 9, false, ff_core_Option.Some((async (message_, forkedProcess_, $task) => {
 if((message_.ffDevelopMode === "internalCompile")) {
 const mainFiles_ = message_.mainFiles;
@@ -564,7 +544,7 @@ const target_ = message_.target;
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
 if((taskIteration_ === runner_.iteration_)) {
 return ff_core_Option.Some(ff_core_Try.Try_catchAny(ff_core_Try.Try_tryCatch(ff_core_Try.Try_tryCatch((await ff_core_Core.try_$((async ($task) => {
-(await ff_compiler_Builder.buildViaBuildSystem_$(system_, fireflyPath_, mainPaths_, target_, moduleCache_, true, $task));
+(await ff_compiler_Builder.buildViaBuildSystem_$(system_, fireflyPath_, mainPaths_, target_, moduleCache_, false, $task));
 forkedProcess_.send({ffDevelopMode: "internalCompile"})
 }), $task)), ((_1, _2) => {
 {
@@ -621,11 +601,6 @@ return (await ff_core_Lock.LockCondition_wakeAll$(runner_.lockCondition_, $task)
 }), $task))
 }
 
-export async function print_$(nodeSystem_, text_, $task) {
-const now_ = ff_core_Date.Date_epochMilliseconds((await ff_core_NodeSystem.NodeSystem_date$(nodeSystem_, ff_core_Option.None(), ff_core_Date.isoCalendarId_, $task)));
-(await ff_core_NodeSystem.NodeSystem_writeErrorLine$(nodeSystem_, ((("Dev " + now_) + ": ") + text_), $task))
-}
-
 export async function startChangeListener_$(system_, runner_, path_, $task) {
 const fs_ = import$0;
 fs_.watch((await ff_core_Path.Path_absolute$(path_, $task)), {recursive: true}, (async (a_1, a_2) => await (async (eventType_, fileName_, $task) => {
@@ -636,7 +611,6 @@ if((ff_core_String.String_endsWith(file_, ".ff") || ff_core_String.String_endsWi
 return ff_core_Option.Some((await (async function() {
 const key_ = (await ff_core_Path.Path_absolute$((await ff_core_NodeSystem.NodeSystem_path$(system_, file_, $task)), $task));
 return (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
-(await ff_compiler_DevelopMode.print_$(system_, ("Changed! " + key_), $task));
 runner_.changedSinceCompilationStarted_ = ff_core_Set.Set_add(runner_.changedSinceCompilationStarted_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }), $task))
 })()))
@@ -733,9 +707,9 @@ return (await serveWaiterHtml_$($task))
 }
 })(a_1, $task)))
 })(a_1, $task)));
-proxyServer_.listen(proxyPort_, (async () => await (async ($task) => {
-return (await ff_compiler_DevelopMode.print_$(system_, ("Proxy server running on port " + proxyPort_), $task))
-})($task)))
+proxyServer_.listen(proxyPort_, (() => {
+
+}))
 }
 
 export const ff_core_Any_HasAnyTag$ff_compiler_DevelopMode_RunnerState = {

@@ -34,13 +34,11 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
     startChangeListener(system, runner, system.path("."))
     let moduleCache = ModuleCache.new(0)
     while {True} {
-        print(system, "Compiling...")
         let moduleKey = build(system, runner, mainFile, moduleCache)
         let task = moduleKey.{
             | None => 
                 system.mainTask().spawn {_ => }
             | Some(key) => 
-                print(system, "Running...")
                 runner.lock.do {
                     runner.state = ApplicationRunningState
                 }
@@ -48,16 +46,13 @@ run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[Str
         }
         runner.lock.do {
             if(runner.appRunning) {
-                print(system, "Still shutting down app...")
                 while {runner.appRunning} {
                     runner.lockCondition.sleep()
                 }
             }
-            print(system, "Waiting for refresh...")
             while {!runner.recompile} {
                 runner.lockCondition.sleep()
             }
-            print(system, "Shutting down app...")
             task.abort()
             runner.changedSinceCompilationStarted.each {key =>
                 moduleCache.invalidate(key)
@@ -86,7 +81,7 @@ build(system: NodeSystem, runner: Runner, mainFile: String, moduleCache: ModuleC
             EmitNode
             resolvedDependencies
             moduleCache
-            printMeasurements = True
+            printMeasurements = False
         ))
     } tryCatch {| CompileError(at, message), error =>
         Log.debug(message)
@@ -131,13 +126,11 @@ startApp(
             let startPath = runFilePath.parent().grab().slash(runFilePath.base() + ".start.mjs")
             startPath.writeText(
                 "import * as run from " + Json.string("./" + runFilePath.base()).write() + "\n" + 
-                "console.log('Nod ' + Date.now() + ': Run (after import)')\n" +
                 "globalThis.ffDevelopMode = true\n" + 
-                //"await run.$run$(" + Json.string(fireflyPath.absolute()).write() + ", " + Json.toJson(arguments).write() + ")"
+                // The following should be awaited, but esbuild doesn't support top level await - still seems to work though
                 "run.$run$(" + Json.string(fireflyPath.absolute()).write() + ", " + Json.toJson(arguments).write() + ")"
             )
             let esBuildPath = runFilePath.parent().grab().slash(runFilePath.base() + ".minified.js")
-            print(system, "Bundling with esbuild for node")
             let context = esbuildContext.jsValue.else {
                 let jsValue = BuildSystem.internalNodeCallEsBuildContext(system, startPath.absolute(), esBuildPath.absolute(), minify = True)
                 esbuildContext.jsValue = Some(jsValue)
@@ -145,7 +138,6 @@ startApp(
             }
             Js.await(context->rebuild())
             let relativeStartFile = esBuildPath.relativeTo(system.path("."))
-            print(system, "Execute with node")
             let result = system.execute(relativeStartFile, arguments, node = Some({message, forkedProcess =>
                 if(message->ffDevelopMode === "internalCompile") {
                     let mainFiles: List[String] = message->mainFiles?
@@ -154,7 +146,7 @@ startApp(
                     runner.lock.do {
                         if(taskIteration == runner.iteration):
                         try {
-                            Builder.buildViaBuildSystem(system, fireflyPath, mainPaths, target, moduleCache, printMeasurements = True)
+                            Builder.buildViaBuildSystem(system, fireflyPath, mainPaths, target, moduleCache, printMeasurements = False)
                             forkedProcess->send(Js->(ffDevelopMode = "internalCompile"))
                             Unit
                         } tryCatch {| CompileError(at, message), error =>
@@ -192,11 +184,6 @@ startApp(
     }
 }
 
-print(nodeSystem: NodeSystem, text: String) {
-    let now = nodeSystem.date().epochMilliseconds()
-    nodeSystem.writeErrorLine("Dev " + now + ": " + text)
-}
-
 startChangeListener(
     system: NodeSystem
     runner: Runner
@@ -210,7 +197,6 @@ startChangeListener(
             let key = system.path(file).absolute()
             runner.lock.do {
                 // Probably we should also listen for other files, e.g. resources
-                print(system, "Changed! " + key)
                 runner.changedSinceCompilationStarted = runner.changedSinceCompilationStarted.add(key)
             }
         }
@@ -297,7 +283,7 @@ startProxy(
     })
     
     proxyServer->listen(proxyPort, Js->{
-        print(system, "Proxy server running on port " + proxyPort)
+        //print(system, "Proxy server running on port " + proxyPort)
     })
 }
 
