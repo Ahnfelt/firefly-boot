@@ -206,6 +206,7 @@ extend self: JsEmitter {
                 "import {" + escapeKeyword(buildMain.signature.name) + "$} from './" + moduleName + ".mjs'"
             }.toList()
             "import {" + escapeKeyword(mainName) + "$} from './" + moduleName + ".mjs'"
+            self.emitImport(ModuleKey(PackagePair("ff", "core"), [], "Error"))
             "export async function $run$(fireflyPath_, arguments_) {"
             "Error.stackTraceLimit = 50"
             "const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}"
@@ -230,6 +231,11 @@ extend self: JsEmitter {
             ...if(self.emitTarget == EmitBuild) {[
                 "await $firefly_compiler.internalCreateExecutable_$(system, '.firefly/output/executable/Main.bundle.js', '.firefly/output', ['host'], system.assets_, $task)"
             ]} else {[]}
+            ...if(!willRunOnNode) {[]} else {[
+                "} catch(error) {"
+                "console.error(ff_core_Error.Error_stack(error))"
+                "process.exit(1)"
+            ]}
             "} finally {"
             ...if(self.emitTarget != EmitBrowser) {[
                 "$task.controller_.abort()"

@@ -165,7 +165,6 @@ startApp(
             let standardError = result.standardError.toString()
             runner.lock.do {
                 runner.appRunning = False
-                Log.debug("Exited with code: " + result.exitCode + "\n\n" + standardOut + "\n\n" + standardError)
                 runner.state.{
                     | ApplicationRunningState {taskIteration == runner.iteration} => 
                         runner.state = ApplicationCrashedState(

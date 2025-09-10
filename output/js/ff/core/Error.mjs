@@ -112,8 +112,8 @@ const stacktrace_ = ff_core_JsValue.JsValue_coalesce(self_.stack, "", ff_core_Js
 if((!true)) {
 return stacktrace_
 } else {
-return ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_takeWhile(ff_core_String.String_lines(stacktrace_), ((_w1) => {
-return (!ff_core_String.String_contains(_w1, "$run$"))
+return ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_takeWhile(ff_core_String.String_lines(stacktrace_), ((l_) => {
+return ((!ff_core_String.String_contains(l_, "$run$")) && (!ff_core_String.String_contains(l_, ".run.mjs:")))
 })), ((line_) => {
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_String.String_removeFirst(line_, "    at "), ((line_) => {
 return ("    at " + ff_core_String.String_dropLast(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(line_, ((_w1) => {
@@ -149,8 +149,8 @@ const stacktrace_ = ff_core_JsValue.JsValue_coalesce(self_.stack, "", ff_core_Js
 if((!true)) {
 return stacktrace_
 } else {
-return ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_takeWhile(ff_core_String.String_lines(stacktrace_), ((_w1) => {
-return (!ff_core_String.String_contains(_w1, "$run$"))
+return ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_takeWhile(ff_core_String.String_lines(stacktrace_), ((l_) => {
+return ((!ff_core_String.String_contains(l_, "$run$")) && (!ff_core_String.String_contains(l_, ".run.mjs:")))
 })), ((line_) => {
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_String.String_removeFirst(line_, "    at "), ((line_) => {
 return ("    at " + ff_core_String.String_dropLast(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(line_, ((_w1) => {

@@ -298,12 +298,7 @@ importAndRun(
     let runFilePath = if(runFile.contains("://")) {system.pathFromUrl(runFile)} else {system.path(runFile)}
     if(runFilePath.exists()) {
         let main = Js.await(Js.dynamicImport(runFile))
-        try {
-            Js.await(main->"$run$"(fireflyPath.absolutePath, arguments))
-        } catchAny {error =>
-            Js->console->error(error.stack())
-            Js->process->exit(1)
-        }
+        Js.await(main->"$run$"(fireflyPath.absolutePath, arguments))
         True
     } else {
         False

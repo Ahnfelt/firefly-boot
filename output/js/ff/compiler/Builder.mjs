@@ -364,7 +364,7 @@ ff_core_Path.Path_writeStream(p_, makeStream_(), false)
 return
 }
 }));
-const json_ = "{\r\n        \"name\": \"main\",\r\n        \"bin\": {\r\n            \"firefly-main\": \"Main.bundle.js\"\r\n        },\r\n        \"devDependencies\": {\r\n            \"pkg\": \"^5.8.0\"\r\n        },\r\n        \"pkg\": {\r\n            \"scripts\": \"Main.bundle.js\",\r\n            \"outputPath\": \"bin\",\r\n            \"assets\": [\"../assets/**/*\"],\r\n            \"targets\": [\r\n                \"node18-linux-x64\",\r\n                \"node18-macos-x64\",\r\n                \"node18-win-x64\"\r\n            ]\r\n        }\r\n    }";
+const json_ = "{\n        \"name\": \"main\",\n        \"bin\": {\n            \"firefly-main\": \"Main.bundle.js\"\n        },\n        \"devDependencies\": {\n            \"pkg\": \"^5.8.0\"\n        },\n        \"pkg\": {\n            \"scripts\": \"Main.bundle.js\",\n            \"outputPath\": \"bin\",\n            \"assets\": [\"../assets/**/*\"],\n            \"targets\": [\n                \"node18-linux-x64\",\n                \"node18-macos-x64\",\n                \"node18-win-x64\"\n            ]\n        }\n    }";
 const packageFile_ = ff_core_Path.Path_slash(outputPath_, "executable/package.json");
 ff_core_Path.Path_writeText(packageFile_, json_);
 ff_compiler_Builder.internalCallPkg_(self_, packageFile_, outputPath_, targets_)
@@ -618,7 +618,7 @@ const p_ = (await ff_core_Path.Path_slash$(assetOutputPath_, path_, $task));
 return
 }
 }), $task));
-const json_ = "{\r\n        \"name\": \"main\",\r\n        \"bin\": {\r\n            \"firefly-main\": \"Main.bundle.js\"\r\n        },\r\n        \"devDependencies\": {\r\n            \"pkg\": \"^5.8.0\"\r\n        },\r\n        \"pkg\": {\r\n            \"scripts\": \"Main.bundle.js\",\r\n            \"outputPath\": \"bin\",\r\n            \"assets\": [\"../assets/**/*\"],\r\n            \"targets\": [\r\n                \"node18-linux-x64\",\r\n                \"node18-macos-x64\",\r\n                \"node18-win-x64\"\r\n            ]\r\n        }\r\n    }";
+const json_ = "{\n        \"name\": \"main\",\n        \"bin\": {\n            \"firefly-main\": \"Main.bundle.js\"\n        },\n        \"devDependencies\": {\n            \"pkg\": \"^5.8.0\"\n        },\n        \"pkg\": {\n            \"scripts\": \"Main.bundle.js\",\n            \"outputPath\": \"bin\",\n            \"assets\": [\"../assets/**/*\"],\n            \"targets\": [\n                \"node18-linux-x64\",\n                \"node18-macos-x64\",\n                \"node18-win-x64\"\n            ]\n        }\n    }";
 const packageFile_ = (await ff_core_Path.Path_slash$(outputPath_, "executable/package.json", $task));
 (await ff_core_Path.Path_writeText$(packageFile_, json_, $task));
 (await ff_compiler_Builder.internalCallPkg_$(self_, packageFile_, outputPath_, targets_, $task))
