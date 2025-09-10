@@ -116,9 +116,11 @@ return ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_takeWhile(
 return ((!ff_core_String.String_contains(l_, "$run$")) && (!ff_core_String.String_contains(l_, ".run.mjs:")))
 })), ((line_) => {
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_String.String_removeFirst(line_, "    at "), ((line_) => {
-return ("    at " + ff_core_String.String_dropLast(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(line_, ((_w1) => {
+return ("    at " + (ff_core_String.String_endsWith(line_, ")")
+? ff_core_String.String_dropLast(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(line_, ((_w1) => {
 return (_w1 !== 40)
-})), 1), 1))
+})), 1), 1)
+: line_))
 })), (() => {
 return line_
 }))
@@ -153,9 +155,11 @@ return ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_takeWhile(
 return ((!ff_core_String.String_contains(l_, "$run$")) && (!ff_core_String.String_contains(l_, ".run.mjs:")))
 })), ((line_) => {
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_String.String_removeFirst(line_, "    at "), ((line_) => {
-return ("    at " + ff_core_String.String_dropLast(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(line_, ((_w1) => {
+return ("    at " + (ff_core_String.String_endsWith(line_, ")")
+? ff_core_String.String_dropLast(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(line_, ((_w1) => {
 return (_w1 !== 40)
-})), 1), 1))
+})), 1), 1)
+: line_))
 })), (() => {
 return line_
 }))

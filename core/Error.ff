@@ -19,7 +19,7 @@ extend self: Error {
         if(!Js.inNode()) {stacktrace} else:
         stacktrace.lines().takeWhile {l => !l.contains("$run$") && !l.contains(".run.mjs:")}.map {line =>
             line.removeFirst("    at ").map {line =>
-                "    at " + line.dropWhile {_ != '('}.dropFirst().dropLast()
+                "    at " + if(line.endsWith(")")) {line.dropWhile {_ != '('}.dropFirst().dropLast()} else {line}
             }.else {line}
         }.join("\n")
     }
