@@ -131,8 +131,8 @@ return BootstrapCommand$;
 export function RunCommand(mainPath_, argument_) {
 return {RunCommand: true, mainPath_, argument_};
 }
-export function DevelopCommand(mainPath_, argument_) {
-return {DevelopCommand: true, mainPath_, argument_};
+export function DevelopCommand(proxyPort_, targetPort_, mainPath_, argument_) {
+return {DevelopCommand: true, proxyPort_, targetPort_, mainPath_, argument_};
 }
 export function BrowserCommand(mainPath_) {
 return {BrowserCommand: true, mainPath_};
@@ -152,7 +152,7 @@ export function CommandLineError(problem_) {
 return {problem_};
 }
 
-export const usageString_ = "\r\nusage: firefly <main-file> [<main-arguments>] | <command> [<command-arguments>]\r\n\r\nThese are the commands:\r\n   run <main-file> [<main-arguments>]       Run the main file with the provided arguments\r\n   develop <main-file> [<main-arguments>]   Develop the main file with the provided arguments\r\n   browser <main-file>                      Compile the main file for the browser\r\n   build <main-file>                        Build the main file\r\n   check <firefly-file>                     Check the firefly source file for errors\r\n   symbols <out-file> <firefly-file>        Print a .tsv with the symbols of a firefly source file\r\n   bootstrap                                Bootstrap the compiler\r\n";
+export const usageString_ = "\r\nusage: firefly <main-file> [<main-arguments>] | <command> [<command-arguments>]\r\n\r\nThese are the commands:\r\n  run <main-file> [<main-arguments>]       Run the main file with the provided arguments\r\n  develop [<proxy-port> <target-port>] \r\n    <main-file> [<main-arguments>]         Develop the main file with the provided arguments\r\n  browser <main-file>                      Compile the main file for the browser\r\n  build <main-file>                        Build the main file\r\n  check <firefly-file>                     Check the firefly source file for errors\r\n  symbols <out-file> <firefly-file>        Print a .tsv with the symbols of a firefly source file\r\n  bootstrap                                Bootstrap the compiler\r\n";
 
 export function main_(system_) {
 const fireflyPath_ = ff_compiler_Main.detectFireflyPath_(system_);
@@ -172,9 +172,11 @@ throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, "This mod
 return
 }
 if(command_a.DevelopCommand) {
+const proxyPort_ = command_a.proxyPort_;
+const targetPort_ = command_a.targetPort_;
 const mainFile_ = command_a.mainPath_;
 const arguments_ = command_a.argument_;
-ff_compiler_DevelopMode.run_(system_, fireflyPath_, mainFile_, arguments_)
+ff_compiler_DevelopMode.run_(system_, fireflyPath_, proxyPort_, targetPort_, mainFile_, arguments_)
 return
 }
 if(command_a.BrowserCommand) {
@@ -342,17 +344,36 @@ if(arguments_a.length >= 1 && arguments_a[0] === "develop") {
 const runArguments_ = arguments_a.slice(1);
 {
 const _1 = runArguments_;
+if(_1.length >= 3) {
+const proxyPort_ = _1[0];
+const targetPort_ = _1[1];
+const mainFile_ = _1[2];
+const mainArguments_ = _1.slice(3);
+const _guard3 = ff_core_String.String_getInt(proxyPort_);
+if(_guard3.Some) {
+const proxy_ = _guard3.value_;
+const _guard2 = ff_core_String.String_getInt(targetPort_);
+if(_guard2.Some) {
+const target_ = _guard2.value_;
+const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
+if(_guard1.Some) {
+const mainName_ = _guard1.value_;
+return ff_compiler_Main.DevelopCommand(proxy_, target_, mainFile_, mainArguments_)
+}
+}
+}
+}
 if(_1.length >= 1) {
 const mainFile_ = _1[0];
 const mainArguments_ = _1.slice(1);
 const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
 if(_guard1.Some) {
 const mainName_ = _guard1.value_;
-return ff_compiler_Main.DevelopCommand(mainFile_, mainArguments_)
+return ff_compiler_Main.DevelopCommand(8081, 8080, mainFile_, mainArguments_)
 }
 }
 {
-throw ff_core_Js.initializeError_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as first argument to develop." + ff_compiler_Main.usageString_)), new Error(), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
+throw ff_core_Js.initializeError_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) or proxy+target port as first argument(s) to develop." + ff_compiler_Main.usageString_)), new Error(), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 }
 return
@@ -607,9 +628,11 @@ throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileError(at_, "This mod
 return
 }
 if(command_a.DevelopCommand) {
+const proxyPort_ = command_a.proxyPort_;
+const targetPort_ = command_a.targetPort_;
 const mainFile_ = command_a.mainPath_;
 const arguments_ = command_a.argument_;
-(await ff_compiler_DevelopMode.run_$(system_, fireflyPath_, mainFile_, arguments_, $task))
+(await ff_compiler_DevelopMode.run_$(system_, fireflyPath_, proxyPort_, targetPort_, mainFile_, arguments_, $task))
 return
 }
 if(command_a.BrowserCommand) {
@@ -777,17 +800,36 @@ if(arguments_a.length >= 1 && arguments_a[0] === "develop") {
 const runArguments_ = arguments_a.slice(1);
 {
 const _1 = runArguments_;
+if(_1.length >= 3) {
+const proxyPort_ = _1[0];
+const targetPort_ = _1[1];
+const mainFile_ = _1[2];
+const mainArguments_ = _1.slice(3);
+const _guard3 = ff_core_String.String_getInt(proxyPort_);
+if(_guard3.Some) {
+const proxy_ = _guard3.value_;
+const _guard2 = ff_core_String.String_getInt(targetPort_);
+if(_guard2.Some) {
+const target_ = _guard2.value_;
+const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
+if(_guard1.Some) {
+const mainName_ = _guard1.value_;
+return ff_compiler_Main.DevelopCommand(proxy_, target_, mainFile_, mainArguments_)
+}
+}
+}
+}
 if(_1.length >= 1) {
 const mainFile_ = _1[0];
 const mainArguments_ = _1.slice(1);
 const _guard1 = ff_core_String.String_removeLast(mainFile_, ".ff");
 if(_guard1.Some) {
 const mainName_ = _guard1.value_;
-return ff_compiler_Main.DevelopCommand(mainFile_, mainArguments_)
+return ff_compiler_Main.DevelopCommand(8081, 8080, mainFile_, mainArguments_)
 }
 }
 {
-throw ff_core_Js.initializeError_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as first argument to develop." + ff_compiler_Main.usageString_)), new Error(), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
+throw ff_core_Js.initializeError_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) or proxy+target port as first argument(s) to develop." + ff_compiler_Main.usageString_)), new Error(), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError, ff_compiler_Main.ff_core_Show_Show$ff_compiler_Main_CommandLineError)
 }
 }
 return
@@ -1055,7 +1097,7 @@ return ((((("RunCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_
 }
 if(value_a.DevelopCommand) {
 const z_ = value_a;
-return ((((("DevelopCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.argument_)) + ")")
+return ((((((((("DevelopCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.proxyPort_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.targetPort_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.argument_)) + ")")
 }
 if(value_a.BrowserCommand) {
 const z_ = value_a;
@@ -1086,7 +1128,7 @@ return ((((("RunCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_
 }
 if(value_a.DevelopCommand) {
 const z_ = value_a;
-return ((((("DevelopCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.argument_)) + ")")
+return ((((((((("DevelopCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.proxyPort_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.targetPort_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.argument_)) + ")")
 }
 if(value_a.BrowserCommand) {
 const z_ = value_a;
@@ -1139,7 +1181,7 @@ return ((x_.mainPath_ === y_.mainPath_) && ff_core_List.ff_core_Equal_Equal$ff_c
 if(x_a.DevelopCommand && y_a.DevelopCommand) {
 const x_ = x_a;
 const y_ = y_a;
-return ((x_.mainPath_ === y_.mainPath_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.argument_, y_.argument_))
+return ((x_.proxyPort_ === y_.proxyPort_) && ((x_.targetPort_ === y_.targetPort_) && ((x_.mainPath_ === y_.mainPath_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.argument_, y_.argument_))))
 }
 if(x_a.BrowserCommand && y_a.BrowserCommand) {
 const x_ = x_a;
@@ -1179,7 +1221,7 @@ return ((x_.mainPath_ === y_.mainPath_) && ff_core_List.ff_core_Equal_Equal$ff_c
 if(x_a.DevelopCommand && y_a.DevelopCommand) {
 const x_ = x_a;
 const y_ = y_a;
-return ((x_.mainPath_ === y_.mainPath_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.argument_, y_.argument_))
+return ((x_.proxyPort_ === y_.proxyPort_) && ((x_.targetPort_ === y_.targetPort_) && ((x_.mainPath_ === y_.mainPath_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.argument_, y_.argument_))))
 }
 if(x_a.BrowserCommand && y_a.BrowserCommand) {
 const x_ = x_a;
@@ -1256,6 +1298,14 @@ return
 if(x_a.DevelopCommand && y_a.DevelopCommand) {
 const x_ = x_a;
 const y_ = y_a;
+const proxyPortOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.proxyPort_, y_.proxyPort_);
+if((proxyPortOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return proxyPortOrdering_
+} else {
+const targetPortOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.targetPort_, y_.targetPort_);
+if((targetPortOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return targetPortOrdering_
+} else {
 const mainPathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.mainPath_, y_.mainPath_);
 if((mainPathOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return mainPathOrdering_
@@ -1265,6 +1315,8 @@ if((argumentOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return argumentOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
+}
 }
 }
 return
@@ -1371,6 +1423,14 @@ return
 if(x_a.DevelopCommand && y_a.DevelopCommand) {
 const x_ = x_a;
 const y_ = y_a;
+const proxyPortOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.proxyPort_, y_.proxyPort_);
+if((proxyPortOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return proxyPortOrdering_
+} else {
+const targetPortOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.targetPort_, y_.targetPort_);
+if((targetPortOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return targetPortOrdering_
+} else {
 const mainPathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.mainPath_, y_.mainPath_);
 if((mainPathOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return mainPathOrdering_
@@ -1380,6 +1440,8 @@ if((argumentOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return argumentOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
+}
 }
 }
 return
@@ -1526,6 +1588,8 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2);
 serialization_.offset_ += 1;
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.proxyPort_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.targetPort_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.argument_)
 return
@@ -1583,7 +1647,7 @@ return ff_compiler_Main.RunCommand(ff_core_Serializable.ff_core_Serializable_Ser
 }
 if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-return ff_compiler_Main.DevelopCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
+return ff_compiler_Main.DevelopCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 }
 if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
@@ -1633,6 +1697,8 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2);
 serialization_.offset_ += 1;
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.proxyPort_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, v_.targetPort_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, v_.mainPath_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, v_.argument_)
 return
@@ -1690,7 +1756,7 @@ return ff_compiler_Main.RunCommand(ff_core_Serializable.ff_core_Serializable_Ser
 }
 if(_1 === 2) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-return ff_compiler_Main.DevelopCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
+return ff_compiler_Main.DevelopCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 }
 if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);

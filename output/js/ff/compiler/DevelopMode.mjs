@@ -138,12 +138,12 @@ return {jsValue_};
 
 export const waiterHtml_ = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Firefly develop mode</title>\n    <style>\n        body {\n            background-color: #121212;\n            color: #e0e0e0;\n            font-family: 'Courier New', monospace;\n            display: flex;\n            flex-direction: column;\n            justify-content: center;\n            align-items: center;\n            height: 100vh;\n            margin: 0;\n            background-image: radial-gradient(circle at center, #1a1a2e, #121212);\n        }\n\n        h1 {\n            color: #00f2ff;\n            text-shadow: 0 0 10px #00f2ff;\n            font-size: 3rem;\n            margin-bottom: 20px;\n            animation: glow 2s ease-in-out infinite alternate;\n        }\n\n        p {\n            background-color: #1a1a2e;\n            color: #00f2ff;\n            padding: 15px 30px;\n            border-radius: 25px;\n            font-size: 1.2rem;\n            border: 2px solid #00f2ff;\n            box-shadow: 0 0 15px #00f2ff;\n            animation: pulse 1.5s infinite;\n        }\n            \n        a {\n            color: #00f2ff;\n        }\n\n        @media only screen and (max-width: 600px) {\n            h1 {\n                font-size: 1.7rem;\n            }\n            p {\n                padding: 10px 20px;\n                border-radius: 50px;\n                font-size: 1.1rem;\n                max-width: 100%;\n                box-sizing: border-box;\n            }\n        }\n                    \n        @keyframes glow {\n            from {\n                text-shadow: 0 0 10px #00f2ff;\n            }\n            to {\n                text-shadow: 0 0 20px #00f2ff, 0 0 30px #00f2ff;\n            }\n        }\n\n        @keyframes pulse {\n            0% {\n                box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.7);\n            }\n            70% {\n                box-shadow: 0 0 0 10px rgba(0, 242, 255, 0);\n            }\n            100% {\n                box-shadow: 0 0 0 0 rgba(0, 242, 255, 0);\n            }\n        }\n    </style>\n    <script>\n        let start = Date.now()\n        let appStarted = null\n        let delay = 10\n        let poll = async () => {\n            //delay *= 1.1\n            try {\n                let response = await fetch(\".\", {cache: 'no-store'})\n                if(!response.headers.has('x-firefly-develop-mode')) {\n                    let now = Date.now()\n                    let compiling = appStarted - start\n                    let appStarting = now - appStarted\n                    //window.alert(\"Reloading after: \" + (now - start) + \" ms. Compiling: \" + compiling + \" ms. Starting application: \" + appStarting + \" ms.\")\n                    window.location.reload(true)\n                    return\n                } else {\n                    let html = await response.text()\n                    if(appStarted == null && html.includes(\"Starting application...\")) appStarted = Date.now()\n                    let parser = new DOMParser()\n                    let d = parser.parseFromString(html, 'text/html')\n                    let bodyHtml = d.body.innerHTML\n                    if(document.body.innerHTML !== bodyHtml) {\n                        document.body.innerHTML = bodyHtml\n                    }\n                    setTimeout(poll, delay)\n                }\n            } catch (error) {\n                console.error(\"Polling error:\", error)\n                setTimeout(poll, delay)\n            }\n        }\n        setTimeout(poll, delay)\n    </script>\n</head>\n<body>\n    <h1>Firefly develop mode</h1>\n    <p>[STATUS]</p>\n</body>\n</html>\n";
 
-export function run_(system_, fireflyPath_, mainFile_, arguments_) {
+export function run_(system_, fireflyPath_, proxyPort_, targetPort_, mainFile_, arguments_) {
 const esbuildContext_ = ff_compiler_DevelopMode.EsbuildContext(ff_core_Option.None());
 const lock_ = ff_core_Task.Task_lock(ff_core_NodeSystem.NodeSystem_mainTask(system_));
 const lockCondition_ = ff_core_Lock.Lock_condition(lock_);
 const runner_ = ff_compiler_DevelopMode.Runner(lock_, lockCondition_, 1, ff_compiler_DevelopMode.CompilingState(), ff_core_Set.new_(), false, false);
-ff_compiler_DevelopMode.startProxy_(system_, runner_, 8081, 8080);
+ff_compiler_DevelopMode.startProxy_(system_, runner_, proxyPort_, targetPort_);
 ff_compiler_DevelopMode.startChangeListener_(system_, runner_, ff_core_NodeSystem.NodeSystem_path(system_, "."));
 const moduleCache_ = ff_compiler_ModuleCache.new_(0);
 while(true) {
@@ -428,12 +428,12 @@ proxyServer_.listen(proxyPort_, (() => {
 }))
 }
 
-export async function run_$(system_, fireflyPath_, mainFile_, arguments_, $task) {
+export async function run_$(system_, fireflyPath_, proxyPort_, targetPort_, mainFile_, arguments_, $task) {
 const esbuildContext_ = ff_compiler_DevelopMode.EsbuildContext(ff_core_Option.None());
 const lock_ = (await ff_core_Task.Task_lock$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task));
 const lockCondition_ = (await ff_core_Lock.Lock_condition$(lock_, $task));
 const runner_ = ff_compiler_DevelopMode.Runner(lock_, lockCondition_, 1, ff_compiler_DevelopMode.CompilingState(), ff_core_Set.new_(), false, false);
-(await ff_compiler_DevelopMode.startProxy_$(system_, runner_, 8081, 8080, $task));
+(await ff_compiler_DevelopMode.startProxy_$(system_, runner_, proxyPort_, targetPort_, $task));
 (await ff_compiler_DevelopMode.startChangeListener_$(system_, runner_, (await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
 const moduleCache_ = ff_compiler_ModuleCache.new_(0);
 while(true) {

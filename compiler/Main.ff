@@ -16,7 +16,7 @@ import DevelopMode
 data MainCommand {
     BootstrapCommand
     RunCommand(mainPath: String, argument: List[String])
-    DevelopCommand(mainPath: String, argument: List[String])
+    DevelopCommand(proxyPort: Int, targetPort: Int, mainPath: String, argument: List[String])
     BrowserCommand(mainPath: String)
     BuildCommand(mainPath: String)
     CheckCommand(filePath: String)
@@ -44,8 +44,8 @@ main(system: NodeSystem): Unit {
                 throw(CompileError(at, "This module does not contain a 'nodeMain' function"))
             }
 
-        | DevelopCommand(mainFile, arguments) =>
-            DevelopMode.run(system, fireflyPath, mainFile, arguments)
+        | DevelopCommand(proxyPort, targetPort, mainFile, arguments) =>
+            DevelopMode.run(system, fireflyPath, proxyPort, targetPort, mainFile, arguments)
             
         | BrowserCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(
@@ -151,13 +151,14 @@ usageString = """
 usage: firefly <main-file> [<main-arguments>] | <command> [<command-arguments>]
 
 These are the commands:
-   run <main-file> [<main-arguments>]       Run the main file with the provided arguments
-   develop <main-file> [<main-arguments>]   Develop the main file with the provided arguments
-   browser <main-file>                      Compile the main file for the browser
-   build <main-file>                        Build the main file
-   check <firefly-file>                     Check the firefly source file for errors
-   symbols <out-file> <firefly-file>        Print a .tsv with the symbols of a firefly source file
-   bootstrap                                Bootstrap the compiler
+  run <main-file> [<main-arguments>]       Run the main file with the provided arguments
+  develop [<proxy-port> <target-port>] 
+    <main-file> [<main-arguments>]         Develop the main file with the provided arguments
+  browser <main-file>                      Compile the main file for the browser
+  build <main-file>                        Build the main file
+  check <firefly-file>                     Check the firefly source file for errors
+  symbols <out-file> <firefly-file>        Print a .tsv with the symbols of a firefly source file
+  bootstrap                                Bootstrap the compiler
 """
 
 buildScript(
@@ -213,10 +214,18 @@ parseCommandLine(arguments: List[String]): MainCommand {
         }
     | ["develop", ...runArguments] =>
         runArguments.{
+            | [proxyPort, targetPort, mainFile, ...mainArguments] {
+                proxyPort.getInt() | Some(proxy)
+            }  {
+                targetPort.getInt() | Some(target)
+            } {
+                mainFile.removeLast(".ff") | Some(mainName)
+            } =>
+                DevelopCommand(proxy, target, mainFile, mainArguments)
             | [mainFile, ...mainArguments] {mainFile.removeLast(".ff") | Some(mainName)} =>
-                DevelopCommand(mainFile, mainArguments)
+                DevelopCommand(8081, 8080, mainFile, mainArguments)
             | _ => throw(CommandLineError(
-                "You must specify a Firefly file (.ff) as first argument to develop." + usageString
+                "You must specify a Firefly file (.ff) or proxy+target port as first argument(s) to develop." + usageString
             ))
         }
     | ["browser", ...browserArguments] =>

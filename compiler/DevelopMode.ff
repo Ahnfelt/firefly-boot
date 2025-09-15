@@ -25,12 +25,19 @@ data RunnerState {
 
 class EsbuildContext(mutable jsValue: Option[JsValue])
 
-run(system: NodeSystem, fireflyPath: Path, mainFile: String, arguments: List[String]) {
+run(
+    system: NodeSystem
+    fireflyPath: Path
+    proxyPort: Int
+    targetPort: Int
+    mainFile: String
+    arguments: List[String]
+) {
     let esbuildContext = EsbuildContext(None)
     let lock = system.mainTask().lock()
     let lockCondition = lock.condition()
     let runner = Runner(lock, lockCondition, 1, CompilingState, Set.new(), False, False)
-    startProxy(system, runner, 8081, 8080)
+    startProxy(system, runner, proxyPort, targetPort)
     startChangeListener(system, runner, system.path("."))
     let moduleCache = ModuleCache.new(0)
     while {True} {
@@ -260,6 +267,7 @@ startProxy(
                 )
                 clientSocket->end()
             } catchAny {_ =>
+                // TODO: The above prints the error instead of throwing
                 // Mute "Error: write EPIPE" and other errors that happen while writing a custom response to the client
             }
         }
