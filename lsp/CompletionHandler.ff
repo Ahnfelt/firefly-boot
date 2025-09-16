@@ -870,7 +870,7 @@ toplevelCompletion(lspHook: LspHook): List[CompletionInfo] {
                 "        if(request.readPath() == \"/\") {"
                 "            request.writeHeader(\"Content-Type\", \"text/html; charset=UTF-8\")"
                 "            request.writeText(\"<!doctype html>\")"
-                "            request.writeText(\"<script type='module' src='/js/script/script/$TM_FILENAME_BASE.mjs'></script>\")"
+                "            request.writeText(\"<script type='module' src='/js/script/script/$TM_FILENAME_BASE.run.mjs'></script>\")"
                 "        } elseIf {request.readPath() == \"/hello\"} {"
                 "            request.writeHeader(\"Content-Type\", \"text/plain; charset=UTF-8\")"
                 "            request.writeText(\"Hello from server!\")"
