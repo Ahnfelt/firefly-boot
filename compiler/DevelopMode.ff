@@ -222,7 +222,8 @@ startProxy(
         mutable connected = False
         clientSocket->on("error", Js->{err =>
             if(!targetSocket.isUndefined()) {targetSocket->end()}
-            Log.debugDynamic(err)
+            // Mute "Error: write EPIPE" and other errors that happen while writing a custom response to the client
+            //Log.debugDynamic(err)
         })
         function serveWaiterHtml() {
             if(runner.changedSinceCompilationStarted.size() != 0) {
@@ -255,21 +256,16 @@ startProxy(
             }
             
             let waiterBuffer = waiterHtml.replace("[STATUS]", status).toBuffer()
-            try {
-                clientSocket->write("HTTP/1.1 200 OK\r\n")
-                clientSocket->write("Content-Type: text/html\r\n")
-                clientSocket->write("Content-Length: " + waiterBuffer.size() + "\r\n")
-                clientSocket->write("x-firefly-develop-mode: true\r\n")
-                clientSocket->write("Connection: close\r\n")
-                clientSocket->write("\r\n")
-                clientSocket->write(
-                    Js->Buffer->from(waiterBuffer!->buffer, waiterBuffer!->byteOffset, waiterBuffer!->byteLength)
-                )
-                clientSocket->end()
-            } catchAny {_ =>
-                // TODO: The above prints the error instead of throwing
-                // Mute "Error: write EPIPE" and other errors that happen while writing a custom response to the client
-            }
+            clientSocket->write("HTTP/1.1 200 OK\r\n")
+            clientSocket->write("Content-Type: text/html\r\n")
+            clientSocket->write("Content-Length: " + waiterBuffer.size() + "\r\n")
+            clientSocket->write("x-firefly-develop-mode: true\r\n")
+            clientSocket->write("Connection: close\r\n")
+            clientSocket->write("\r\n")
+            clientSocket->write(
+                Js->Buffer->from(waiterBuffer!->buffer, waiterBuffer!->byteOffset, waiterBuffer!->byteLength)
+            )
+            clientSocket->end()
         }
         targetSocket = net->createConnection(targetPort, targetServer, Js->{
             connected = True

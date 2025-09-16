@@ -340,9 +340,8 @@ let targetSocket_ = (void 0);
 let connected_ = false;
 clientSocket_.on("error", ((err_) => {
 if((!ff_core_JsValue.JsValue_isUndefined(targetSocket_))) {
-targetSocket_.end()
-};
-return ff_core_Log.debugDynamic_(err_)
+return ff_core_Option.Some(targetSocket_.end())
+} else return ff_core_Option.None()
 }));
 function serveWaiterHtml_() {
 if((ff_core_Set.Set_size(runner_.changedSinceCompilationStarted_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) !== 0)) {
@@ -385,7 +384,6 @@ return "Compiling..."
 }
 }))(runner_.state_);
 const waiterBuffer_ = ff_core_String.String_toBuffer(ff_core_String.String_replace(ff_compiler_DevelopMode.waiterHtml_, "[STATUS]", status_));
-try {
 clientSocket_.write("HTTP/1.1 200 OK\r\n");
 clientSocket_.write("Content-Type: text/html\r\n");
 clientSocket_.write((("Content-Length: " + ff_core_Buffer.Buffer_size(waiterBuffer_)) + "\r\n"));
@@ -394,9 +392,6 @@ clientSocket_.write("Connection: close\r\n");
 clientSocket_.write("\r\n");
 clientSocket_.write(Buffer.from(waiterBuffer_.buffer, waiterBuffer_.byteOffset, waiterBuffer_.byteLength));
 clientSocket_.end()
-} catch {
-
-}
 }
 targetSocket_ = net_.createConnection(targetPort_, targetServer_, (() => {
 connected_ = true;
@@ -630,9 +625,8 @@ let targetSocket_ = (void 0);
 let connected_ = false;
 clientSocket_.on("error", ((err_) => {
 if((!ff_core_JsValue.JsValue_isUndefined(targetSocket_))) {
-targetSocket_.end()
-};
-return ff_core_Log.debugDynamic_(err_)
+return ff_core_Option.Some(targetSocket_.end())
+} else return ff_core_Option.None()
 }));
 async function serveWaiterHtml_$($task) {
 if((ff_core_Set.Set_size(runner_.changedSinceCompilationStarted_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) !== 0)) {
@@ -675,7 +669,6 @@ return "Compiling..."
 }
 }))(runner_.state_, $task));
 const waiterBuffer_ = ff_core_String.String_toBuffer(ff_core_String.String_replace(ff_compiler_DevelopMode.waiterHtml_, "[STATUS]", status_));
-try {
 clientSocket_.write("HTTP/1.1 200 OK\r\n");
 clientSocket_.write("Content-Type: text/html\r\n");
 clientSocket_.write((("Content-Length: " + ff_core_Buffer.Buffer_size(waiterBuffer_)) + "\r\n"));
@@ -684,9 +677,6 @@ clientSocket_.write("Connection: close\r\n");
 clientSocket_.write("\r\n");
 clientSocket_.write(Buffer.from(waiterBuffer_.buffer, waiterBuffer_.byteOffset, waiterBuffer_.byteLength));
 clientSocket_.end()
-} catch {
-
-}
 }
 targetSocket_ = net_.createConnection(targetPort_, targetServer_, (async () => await (async ($task) => {
 connected_ = true;
