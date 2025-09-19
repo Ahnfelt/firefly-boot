@@ -18,6 +18,7 @@ nodeMain(system: NodeSystem): Unit {
     let handlers = WebRouteHandler(Array.new())
     Router.handlers(handlers)
     let cacheSalt = system.crypto().randomBuffer(16)
+    Log.debug("Starting server on " + host + ":" + port)
     WebServer.new(system, host, port).listen {request =>
         let path = request.readPath()
         let segments = path.split('/').filter {s => s != "" && s != "." && s != ".."}

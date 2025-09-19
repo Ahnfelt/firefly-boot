@@ -9,7 +9,7 @@ COPY --chown=node:node . .
 # This fetches Firefly packages but we should also do their npm install --no-bin-links
 RUN [ "/home/node/firefly/node_modules/.bin/firefly", "check", "Main.ff" ]
 EXPOSE 8080
-ENTRYPOINT [ "/home/node/firefly/node_modules/.bin/firefly", "Main.ff", "localhost", "8080" ]
+ENTRYPOINT [ "/home/node/firefly/node_modules/.bin/firefly", "Main.ff", "0.0.0.0", "8080" ]
 
 # Test it with
 # podman build -t fireflysite .
