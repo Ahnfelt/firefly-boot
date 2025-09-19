@@ -1,0 +1,10 @@
+**/.firefly/output/
+**/.firefly/temporary/
+**/.firefly/dependencies/
+**/.firefly/include/package-lock.json
+**/node_modules/
+**/*_?_?_?.tar.gz
+**/.DS_Store
+
+Dockerfile
+.dockerignore
