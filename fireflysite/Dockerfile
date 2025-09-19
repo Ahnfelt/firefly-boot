@@ -1,7 +1,7 @@
-FROM node:24
-RUN mkdir /home/node/app && chown -R node:node /home/node/app
-RUN mkdir /home/node/firefly && chown -R node:node /home/node/firefly
+FROM node:22
 USER node
+RUN mkdir /home/node/app
+RUN mkdir /home/node/firefly
 WORKDIR /home/node/firefly
 RUN npm install firefly-compiler
 WORKDIR /home/node/app
@@ -13,4 +13,4 @@ ENTRYPOINT [ "/home/node/firefly/node_modules/.bin/firefly", "Main.ff", "localho
 
 # Test it with
 # podman build -t fireflysite .
-# podman run --rm -it fireflysite
+# podman run -p 8080:8080 --rm -it fireflysite
