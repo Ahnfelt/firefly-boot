@@ -67,8 +67,7 @@ main(system: NodeSystem): Unit {
             )
             prepareFireflyDirectory(system.path("."))
             let mainPath = system.path(mainFile)
-            let moduleKey = buildScript(system, mainPath, resolvedDependencies.mainPackagePair, EmitBuild, resolvedDependencies)
-            buildScript(system, mainPath, resolvedDependencies.mainPackagePair, EmitExecutable, resolvedDependencies)
+            let moduleKey = buildScript(system, mainPath, resolvedDependencies.mainPackagePair, EmitExecutable, resolvedDependencies)
             bundleForExecutable(system, resolvedDependencies.mainPackagePair, moduleKey)
             importAndRun(system, fireflyPath, "build", moduleKey, [])
 

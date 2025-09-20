@@ -193,8 +193,7 @@ const mainFile_ = command_a.mainPath_;
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_httpClient(system_), ff_compiler_DependencyLock.new_(ff_core_NodeSystem.NodeSystem_mainTask(system_)), ff_core_NodeSystem.NodeSystem_path(system_, mainFile_));
 ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_path(system_, "."));
 const mainPath_ = ff_core_NodeSystem.NodeSystem_path(system_, mainFile_);
-const moduleKey_ = ff_compiler_Main.buildScript_(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBuild(), resolvedDependencies_, ff_compiler_ModuleCache.new_(0), false);
-ff_compiler_Main.buildScript_(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitExecutable(), resolvedDependencies_, ff_compiler_ModuleCache.new_(0), false);
+const moduleKey_ = ff_compiler_Main.buildScript_(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitExecutable(), resolvedDependencies_, ff_compiler_ModuleCache.new_(0), false);
 ff_compiler_Main.bundleForExecutable_(system_, resolvedDependencies_.mainPackagePair_, moduleKey_);
 ff_compiler_Main.importAndRun_(system_, fireflyPath_, "build", moduleKey_, [])
 return
@@ -649,8 +648,7 @@ const mainFile_ = command_a.mainPath_;
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (await ff_compiler_DependencyLock.new_$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task)), (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task)), $task));
 (await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), $task));
 const mainPath_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task));
-const moduleKey_ = (await ff_compiler_Main.buildScript_$(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBuild(), resolvedDependencies_, ff_compiler_ModuleCache.new_(0), false, $task));
-(await ff_compiler_Main.buildScript_$(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitExecutable(), resolvedDependencies_, ff_compiler_ModuleCache.new_(0), false, $task));
+const moduleKey_ = (await ff_compiler_Main.buildScript_$(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitExecutable(), resolvedDependencies_, ff_compiler_ModuleCache.new_(0), false, $task));
 (await ff_compiler_Main.bundleForExecutable_$(system_, resolvedDependencies_.mainPackagePair_, moduleKey_, $task));
 (await ff_compiler_Main.importAndRun_$(system_, fireflyPath_, "build", moduleKey_, [], $task))
 return
