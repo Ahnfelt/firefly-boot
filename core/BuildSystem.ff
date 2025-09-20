@@ -209,3 +209,18 @@ internalCompile(buildSystem: BuildSystem, mainFiles: List[Path], target: String)
 internalMainPackagePair(buildSystem: BuildSystem): Pair[String, String] {
     Pair(buildSystem!->"mainPackagePair_"->"group_"?, buildSystem!->"mainPackagePair_"->"name_"?)
 }
+
+internalWriteAssets(system: NodeSystem, assetSystem: AssetSystem): Unit {
+    let path = system.path(".").slash(".firefly").path("output").slash("assets")
+    if(path.exists()) {path.delete()}
+    path.createDirectory()
+    Log.debug("Writing assets to " + path.absolute())
+    assetSystem.files.each {p, s =>
+        Log.debug(p)
+        if(!p.contains("..")) {
+            let assetPath = path.slash(p)
+            assetPath.parent().grab().createDirectory(createParentDirectories = True)
+            assetPath.writeStream(s())
+        }
+    }
+}

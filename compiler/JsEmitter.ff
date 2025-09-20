@@ -164,11 +164,11 @@ extend self: JsEmitter {
             liner.writeLines()
             self.emitInstanceDefinition(_)
         }
-        let ignoreJsImports = if(self.emitTarget == EmitExecutable && self.moduleKey.packagePair.isCore()) {
+        let ignoreJsImports = [] /* if(self.emitTarget == EmitExecutable && self.moduleKey.packagePair.isCore()) {
             ["esbuild"]
         } else {
             []
-        }
+        }*/
         let jsImports = self.jsImporter.generateImports(ignoreJsImports.toSet())
         if(!jsImports.isEmpty()) {
             self.writeAnchorLines(anchor, jsImports)
@@ -195,7 +195,7 @@ extend self: JsEmitter {
 
     makeRun(moduleName: String, functions: List[DFunction], mainPackagePair: PackagePair, bootstrapping: Bool): List[String] {
         let buildMainFunction = functions.find {_.signature.name == "buildMain"}.filter {_ =>
-            self.emitTarget != EmitBrowser && self.emitTarget != EmitExecutable
+            self.emitTarget != EmitBrowser
         }
         let willRunOnNode = self.emitTarget != EmitBrowser
         let targetMain = if(willRunOnNode) {"nodeMain"} else {"browserMain"}
@@ -207,6 +207,7 @@ extend self: JsEmitter {
             }.toList()
             "import {" + escapeKeyword(mainName) + "$} from './" + moduleName + ".mjs'"
             self.emitImport(ModuleKey(PackagePair("ff", "core"), [], "Error"))
+            self.emitImport(ModuleKey(PackagePair("ff", "core"), [], "BuildSystem"))
             "export async function $run$(fireflyPath_, arguments_) {"
             "Error.stackTraceLimit = 50"
             "const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}"
@@ -225,11 +226,11 @@ extend self: JsEmitter {
             ...if(!buildMainFunction.isEmpty()) {[
                 "await buildMain_$(system, $task)"]
             } else {[]}
-            ...if(self.emitTarget != EmitBuild) {[
+            ...if(self.emitTarget != EmitBuild && self.emitTarget != EmitExecutable) {[
                 "await " + mainName + "_$(system, $task)"
             ]} else {[]}
-            ...if(self.emitTarget == EmitBuild) {[
-                // "await $firefly_compiler.internalCreateExecutable_$(system, '.firefly/output/executable/Main.bundle.js', '.firefly/output', ['host'], system.assets_, $task)"
+            ...if(self.emitTarget == EmitExecutable) {[
+                "if(system.assets_) await ff_core_BuildSystem.internalWriteAssets_$(system, system.assets_, $task)"
             ]} else {[]}
             ...if(!willRunOnNode) {[]} else {[
                 "} catch(error) {"
@@ -256,11 +257,11 @@ extend self: JsEmitter {
                     "await $run$(fireflyPath_, process.argv.slice(2))"
                     "})"
                 ]
-                | EmitExecutable => [
+                /*| EmitExecutable => [
                     "queueMicrotask(async () => {"
                     "await $run$(null, process.argv.slice(2))"
                     "})"
-                ]
+                ]*/
                 | _ => []
             }
         ].join("\n")]}.else {[]}

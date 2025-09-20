@@ -763,9 +763,7 @@ const _w1 = for_a[for_i];
 ff_compiler_JsEmitter.Liner_writeLines(liner_);
 ff_compiler_JsEmitter.JsEmitter_emitInstanceDefinition(self_, _w1)
 };
-const ignoreJsImports_ = ((ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable()) && ff_compiler_Syntax.PackagePair_isCore(self_.moduleKey_.packagePair_))
-? ["esbuild"]
-: []);
+const ignoreJsImports_ = [];
 const jsImports_ = ff_compiler_JsImporter.JsImporter_generateImports(self_.jsImporter_, ff_core_List.List_toSet(ignoreJsImports_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
 if((!ff_core_List.List_isEmpty(jsImports_))) {
 ff_compiler_JsEmitter.JsEmitter_writeAnchorLines(self_, anchor_, jsImports_)
@@ -796,7 +794,7 @@ export function JsEmitter_makeRun(self_, moduleName_, functions_, mainPackagePai
 const buildMainFunction_ = ff_core_Option.Option_filter(ff_core_List.List_find(functions_, ((_w1) => {
 return (_w1.signature_.name_ === "buildMain")
 })), ((_) => {
-return (ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget) && ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget))
+return ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
 }));
 const willRunOnNode_ = ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget);
 const targetMain_ = (willRunOnNode_
@@ -814,7 +812,7 @@ return _w1.signature_.name_
 })), ((mainName_) => {
 return [ff_core_List.List_join([...ff_core_Option.Option_toList(ff_core_Option.Option_map(buildMainFunction_, ((buildMain_) => {
 return (((("import {" + ff_compiler_JsEmitter.escapeKeyword_(buildMain_.signature_.name_)) + "$} from './") + moduleName_) + ".mjs'")
-}))), (((("import {" + ff_compiler_JsEmitter.escapeKeyword_(mainName_)) + "$} from './") + moduleName_) + ".mjs'"), ff_compiler_JsEmitter.JsEmitter_emitImport(self_, ff_compiler_Syntax.ModuleKey(ff_compiler_Syntax.PackagePair("ff", "core"), [], "Error")), "export async function $run$(fireflyPath_, arguments_) {", "Error.stackTraceLimit = 50", "const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}", ...(ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
+}))), (((("import {" + ff_compiler_JsEmitter.escapeKeyword_(mainName_)) + "$} from './") + moduleName_) + ".mjs'"), ff_compiler_JsEmitter.JsEmitter_emitImport(self_, ff_compiler_Syntax.ModuleKey(ff_compiler_Syntax.PackagePair("ff", "core"), [], "Error")), ff_compiler_JsEmitter.JsEmitter_emitImport(self_, ff_compiler_Syntax.ModuleKey(ff_compiler_Syntax.PackagePair("ff", "core"), [], "BuildSystem")), "export async function $run$(fireflyPath_, arguments_) {", "Error.stackTraceLimit = 50", "const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}", ...(ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
 ? ["let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)"]
 : []), "let system = {", "task_: $task,", "array_: arguments_,", "fireflyPath_: fireflyPath_,", (((("mainPackagePair_: {group_: \"" + mainPackagePair_.group_) + "\", name_: \"") + mainPackagePair_.name_) + "\"},"), (("executableMode_: " + (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable())
 ? "true"
@@ -822,10 +820,10 @@ return (((("import {" + ff_compiler_JsEmitter.escapeKeyword_(buildMain_.signatur
 ? "true"
 : "false")), "}", "try {", ...((!ff_core_Option.Option_isEmpty(buildMainFunction_))
 ? ["await buildMain_$(system, $task)"]
-: []), ...(ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
+: []), ...((ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget) && ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget))
 ? [(("await " + mainName_) + "_$(system, $task)")]
-: []), ...(ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild())
-? []
+: []), ...(ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable())
+? ["if(system.assets_) await ff_core_BuildSystem.internalWriteAssets_$(system, system.assets_, $task)"]
 : []), ...((!willRunOnNode_)
 ? []
 : ["} catch(error) {", "console.error(ff_core_Error.Error_stack(error))", "process.exit(1)"]), "} finally {", ...(ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
@@ -836,9 +834,6 @@ return ["queueMicrotask(async () => {", "await $run$(null, [])", "})"]
 }
 if(_1.EmitNode && bootstrapping_) {
 return ["import * as path from 'node:path'", "queueMicrotask(async () => {", "let fireflyPath_ = path.dirname(path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))))", "await $run$(fireflyPath_, process.argv.slice(2))", "})"]
-}
-if(_1.EmitExecutable) {
-return ["queueMicrotask(async () => {", "await $run$(null, process.argv.slice(2))", "})"]
 }
 {
 return []
@@ -4377,9 +4372,7 @@ const _w1 = for_a[for_i];
 ff_compiler_JsEmitter.Liner_writeLines(liner_);
 ff_compiler_JsEmitter.JsEmitter_emitInstanceDefinition(self_, _w1)
 };
-const ignoreJsImports_ = ((ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable()) && ff_compiler_Syntax.PackagePair_isCore(self_.moduleKey_.packagePair_))
-? ["esbuild"]
-: []);
+const ignoreJsImports_ = [];
 const jsImports_ = ff_compiler_JsImporter.JsImporter_generateImports(self_.jsImporter_, ff_core_List.List_toSet(ignoreJsImports_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
 if((!ff_core_List.List_isEmpty(jsImports_))) {
 ff_compiler_JsEmitter.JsEmitter_writeAnchorLines(self_, anchor_, jsImports_)
@@ -4410,7 +4403,7 @@ export async function JsEmitter_makeRun$(self_, moduleName_, functions_, mainPac
 const buildMainFunction_ = ff_core_Option.Option_filter(ff_core_List.List_find(functions_, ((_w1) => {
 return (_w1.signature_.name_ === "buildMain")
 })), ((_) => {
-return (ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget) && ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget))
+return ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
 }));
 const willRunOnNode_ = ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget);
 const targetMain_ = (willRunOnNode_
@@ -4428,7 +4421,7 @@ return _w1.signature_.name_
 })), ((mainName_) => {
 return [ff_core_List.List_join([...ff_core_Option.Option_toList(ff_core_Option.Option_map(buildMainFunction_, ((buildMain_) => {
 return (((("import {" + ff_compiler_JsEmitter.escapeKeyword_(buildMain_.signature_.name_)) + "$} from './") + moduleName_) + ".mjs'")
-}))), (((("import {" + ff_compiler_JsEmitter.escapeKeyword_(mainName_)) + "$} from './") + moduleName_) + ".mjs'"), ff_compiler_JsEmitter.JsEmitter_emitImport(self_, ff_compiler_Syntax.ModuleKey(ff_compiler_Syntax.PackagePair("ff", "core"), [], "Error")), "export async function $run$(fireflyPath_, arguments_) {", "Error.stackTraceLimit = 50", "const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}", ...(ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
+}))), (((("import {" + ff_compiler_JsEmitter.escapeKeyword_(mainName_)) + "$} from './") + moduleName_) + ".mjs'"), ff_compiler_JsEmitter.JsEmitter_emitImport(self_, ff_compiler_Syntax.ModuleKey(ff_compiler_Syntax.PackagePair("ff", "core"), [], "Error")), ff_compiler_JsEmitter.JsEmitter_emitImport(self_, ff_compiler_Syntax.ModuleKey(ff_compiler_Syntax.PackagePair("ff", "core"), [], "BuildSystem")), "export async function $run$(fireflyPath_, arguments_) {", "Error.stackTraceLimit = 50", "const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}", ...(ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
 ? ["let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)"]
 : []), "let system = {", "task_: $task,", "array_: arguments_,", "fireflyPath_: fireflyPath_,", (((("mainPackagePair_: {group_: \"" + mainPackagePair_.group_) + "\", name_: \"") + mainPackagePair_.name_) + "\"},"), (("executableMode_: " + (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable())
 ? "true"
@@ -4436,10 +4429,10 @@ return (((("import {" + ff_compiler_JsEmitter.escapeKeyword_(buildMain_.signatur
 ? "true"
 : "false")), "}", "try {", ...((!ff_core_Option.Option_isEmpty(buildMainFunction_))
 ? ["await buildMain_$(system, $task)"]
-: []), ...(ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
+: []), ...((ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget) && ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget))
 ? [(("await " + mainName_) + "_$(system, $task)")]
-: []), ...(ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild())
-? []
+: []), ...(ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable())
+? ["if(system.assets_) await ff_core_BuildSystem.internalWriteAssets_$(system, system.assets_, $task)"]
 : []), ...((!willRunOnNode_)
 ? []
 : ["} catch(error) {", "console.error(ff_core_Error.Error_stack(error))", "process.exit(1)"]), "} finally {", ...(ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
@@ -4450,9 +4443,6 @@ return ["queueMicrotask(async () => {", "await $run$(null, [])", "})"]
 }
 if(_1.EmitNode && bootstrapping_) {
 return ["import * as path from 'node:path'", "queueMicrotask(async () => {", "let fireflyPath_ = path.dirname(path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))))", "await $run$(fireflyPath_, process.argv.slice(2))", "})"]
-}
-if(_1.EmitExecutable) {
-return ["queueMicrotask(async () => {", "await $run$(null, process.argv.slice(2))", "})"]
 }
 {
 return []

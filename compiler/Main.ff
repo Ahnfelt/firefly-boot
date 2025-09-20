@@ -70,7 +70,7 @@ main(system: NodeSystem): Unit {
             let moduleKey = 
                 buildScript(system, mainPath, resolvedDependencies.mainPackagePair, EmitExecutable, resolvedDependencies)
             bundleForExecutable(system, resolvedDependencies.mainPackagePair, moduleKey)
-            importAndRun(system, fireflyPath, "build", moduleKey, [])
+            importAndRun(system, fireflyPath, "executable", moduleKey, [])
 
         | CheckCommand(filePath) => 
             let errors = Builder.check(
@@ -176,7 +176,7 @@ buildScript(
     } else {
         resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath.slash("core"))
     }
-    let compilerModulePath = if(emitTarget != EmitBrowser && emitTarget != EmitExecutable) {
+    let compilerModulePath = if(emitTarget != EmitBrowser) {
         fireflyPath.slash("output").slash("js").slash("ff").slash("compiler/Builder.mjs")
     }
     let targetName = emitTarget.{

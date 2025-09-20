@@ -165,6 +165,23 @@ export function internalMainPackagePair_(buildSystem_) {
 return ff_core_Pair.Pair(buildSystem_["mainPackagePair_"]["group_"], buildSystem_["mainPackagePair_"]["name_"])
 }
 
+export function internalWriteAssets_(system_, assetSystem_) {
+const path_ = ff_core_Path.Path_slash(ff_core_Path.Path_path(ff_core_Path.Path_slash(ff_core_NodeSystem.NodeSystem_path(system_, "."), ".firefly"), "output"), "assets");
+if(ff_core_Path.Path_exists(path_, false, false, false)) {
+ff_core_Path.Path_delete(path_, 0, 100)
+};
+ff_core_Path.Path_createDirectory(path_, false);
+ff_core_Log.debug_(("Writing assets to " + ff_core_Path.Path_absolute(path_)));
+ff_core_Map.Map_each(assetSystem_.files_, ((p_, s_) => {
+ff_core_Log.debug_(p_);
+if((!ff_core_String.String_contains(p_, ".."))) {
+const assetPath_ = ff_core_Path.Path_slash(path_, p_);
+ff_core_Path.Path_createDirectory(ff_core_Option.Option_grab(ff_core_Path.Path_parent(assetPath_)), true);
+ff_core_Path.Path_writeStream(assetPath_, s_(), false)
+}
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}
+
 export async function internalBrowserCallEsBuild_$(self_, mainJsFiles_, outputPath_, minify_, sourceMap_, $task) {
 const esbuild_ = import$0;
 (await esbuild_.build({entryPoints: mainJsFiles_, bundle: true, minify: minify_, sourcemap: sourceMap_, platform: "browser", target: "es2017", outdir: outputPath_, outExtension: {[".js"]: ".bundle.js"}}))
@@ -231,6 +248,23 @@ return ff_core_Option.Some(resolve_((void 0)))
 
 export async function internalMainPackagePair_$(buildSystem_, $task) {
 return ff_core_Pair.Pair(buildSystem_["mainPackagePair_"]["group_"], buildSystem_["mainPackagePair_"]["name_"])
+}
+
+export async function internalWriteAssets_$(system_, assetSystem_, $task) {
+const path_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_path$((await ff_core_Path.Path_slash$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), ".firefly", $task)), "output", $task)), "assets", $task));
+if((await ff_core_Path.Path_exists$(path_, false, false, false, $task))) {
+(await ff_core_Path.Path_delete$(path_, 0, 100, $task))
+};
+(await ff_core_Path.Path_createDirectory$(path_, false, $task));
+ff_core_Log.debug_(("Writing assets to " + (await ff_core_Path.Path_absolute$(path_, $task))));
+(await ff_core_Map.Map_each$(assetSystem_.files_, (async (p_, s_, $task) => {
+ff_core_Log.debug_(p_);
+if((!ff_core_String.String_contains(p_, ".."))) {
+const assetPath_ = (await ff_core_Path.Path_slash$(path_, p_, $task));
+(await ff_core_Path.Path_createDirectory$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(assetPath_, $task))), true, $task));
+(await ff_core_Path.Path_writeStream$(assetPath_, (await s_($task)), false, $task))
+}
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, $task))
 }
 
 export function BuildSystem_compileForBrowser(self_, mainFiles_) {

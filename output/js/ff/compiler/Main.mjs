@@ -195,7 +195,7 @@ ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_path(sys
 const mainPath_ = ff_core_NodeSystem.NodeSystem_path(system_, mainFile_);
 const moduleKey_ = ff_compiler_Main.buildScript_(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitExecutable(), resolvedDependencies_, ff_compiler_ModuleCache.new_(0), false);
 ff_compiler_Main.bundleForExecutable_(system_, resolvedDependencies_.mainPackagePair_, moduleKey_);
-ff_compiler_Main.importAndRun_(system_, fireflyPath_, "build", moduleKey_, [])
+ff_compiler_Main.importAndRun_(system_, fireflyPath_, "executable", moduleKey_, [])
 return
 }
 if(command_a.CheckCommand) {
@@ -283,7 +283,7 @@ const fireflyPath_ = ff_compiler_Main.detectFireflyPath_(system_);
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
 : ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_core_Path.Path_slash(fireflyPath_, "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-const compilerModulePath_ = ((ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget) && ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitExecutable(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget))
+const compilerModulePath_ = (ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
 ? ff_core_Option.Some(ff_core_Path.Path_slash(ff_core_Path.Path_slash(ff_core_Path.Path_slash(ff_core_Path.Path_slash(fireflyPath_, "output"), "js"), "ff"), "compiler/Builder.mjs"))
 : ff_core_Option.None());
 const targetName_ = (((_1) => {
@@ -650,7 +650,7 @@ const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await f
 const mainPath_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, mainFile_, $task));
 const moduleKey_ = (await ff_compiler_Main.buildScript_$(system_, mainPath_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitExecutable(), resolvedDependencies_, ff_compiler_ModuleCache.new_(0), false, $task));
 (await ff_compiler_Main.bundleForExecutable_$(system_, resolvedDependencies_.mainPackagePair_, moduleKey_, $task));
-(await ff_compiler_Main.importAndRun_$(system_, fireflyPath_, "build", moduleKey_, [], $task))
+(await ff_compiler_Main.importAndRun_$(system_, fireflyPath_, "executable", moduleKey_, [], $task))
 return
 }
 if(command_a.CheckCommand) {
@@ -738,7 +738,7 @@ const fireflyPath_ = (await ff_compiler_Main.detectFireflyPath_$(system_, $task)
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
 : ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (await ff_core_Path.Path_slash$(fireflyPath_, "core", $task)), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-const compilerModulePath_ = ((ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget) && ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitExecutable(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget))
+const compilerModulePath_ = (ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
 ? ff_core_Option.Some((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(fireflyPath_, "output", $task)), "js", $task)), "ff", $task)), "compiler/Builder.mjs", $task)))
 : ff_core_Option.None());
 const targetName_ = (((_1) => {

@@ -1,4 +1,4 @@
-FROM node:22
+FROM node:22-slim
 RUN apt update && apt install dumb-init
 USER node
 RUN mkdir /home/node/firefly && mkdir /home/node/app
@@ -13,3 +13,4 @@ ENTRYPOINT [ "dumb-init", "node", "--harmony-temporal", ".firefly/output/executa
 # Test it with
 # podman build -t fireflysite .
 # podman run -p 8080:8080 --rm -it fireflysite
+# podman run --entrypoint /bin/bash --rm -it fireflysite

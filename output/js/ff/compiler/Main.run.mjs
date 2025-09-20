@@ -1,5 +1,6 @@
 import {main_$} from './Main.mjs'
 import * as ff_core_Error from "../../ff/core/Error.mjs"
+import * as ff_core_BuildSystem from "../../ff/core/BuildSystem.mjs"
 export async function $run$(fireflyPath_, arguments_) {
 Error.stackTraceLimit = 50
 const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}
