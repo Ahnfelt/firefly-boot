@@ -229,7 +229,7 @@ extend self: JsEmitter {
                 "await " + mainName + "_$(system, $task)"
             ]} else {[]}
             ...if(self.emitTarget == EmitBuild) {[
-                "await $firefly_compiler.internalCreateExecutable_$(system, '.firefly/output/executable/Main.bundle.js', '.firefly/output', ['host'], system.assets_, $task)"
+                // "await $firefly_compiler.internalCreateExecutable_$(system, '.firefly/output/executable/Main.bundle.js', '.firefly/output', ['host'], system.assets_, $task)"
             ]} else {[]}
             ...if(!willRunOnNode) {[]} else {[
                 "} catch(error) {"

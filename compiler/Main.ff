@@ -63,13 +63,13 @@ main(system: NodeSystem): Unit {
             let resolvedDependencies = Dependencies.process(
                 system.httpClient()
                 DependencyLock.new(system.mainTask())
-                system.path(mainFile + ".ff")
+                system.path(mainFile)
             )
             prepareFireflyDirectory(system.path("."))
             let mainPath = system.path(mainFile)
             let moduleKey = buildScript(system, mainPath, resolvedDependencies.mainPackagePair, EmitBuild, resolvedDependencies)
             buildScript(system, mainPath, resolvedDependencies.mainPackagePair, EmitExecutable, resolvedDependencies)
-            bundleForPkg(system, resolvedDependencies.mainPackagePair, mainPath.base())
+            bundleForExecutable(system, resolvedDependencies.mainPackagePair, moduleKey)
             importAndRun(system, fireflyPath, "build", moduleKey, [])
 
         | CheckCommand(filePath) => 
@@ -276,11 +276,16 @@ parseCommandLine(arguments: List[String]): MainCommand {
     | [s, ...] => throw(CommandLineError("Unknown command '" + s + "'" + usageString))
 }
 
-bundleForPkg(system: NodeSystem, packagePair: PackagePair, mainFile: String) {
-    let prefix = ".firefly/output/executable/"
-    let mainJsFile = prefix + packagePair.groupName("/") + "/" + mainFile + ".mjs"
-    let file = prefix + "Main.bundle.js"
-    BuildSystem.internalNodeCallEsBuild(system, mainJsFile, outputPath = file, minify = False)
+bundleForExecutable(system: NodeSystem, packagePair: PackagePair, moduleKey: ModuleKey) {
+    let packagePath = moduleKey.packagePair.groupName("/")
+    let outputPath = system.path(".firefly/output/executable/" + packagePath + "/")
+    let runFile = outputPath.slash(moduleKey.importName() + ".run.mjs")
+    BuildSystem.internalNodeCallEsBuild(
+        system, 
+        runFile.absolute(), 
+        outputPath.absolute(), 
+        minify = True
+    )
 }
 
 bundleForBrowser(system: NodeSystem, packagePair: PackagePair, moduleKey: ModuleKey) {

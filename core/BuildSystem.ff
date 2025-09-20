@@ -125,8 +125,8 @@ internalNodeCallEsBuild(
         target = "es2017"
         external = ["esbuild", "uws.js"]
         loader = Js.object().with(".node", "copy")
-        outfile = outputPath
-    )))    
+        outdir = outputPath
+    )))
 }
 
 internalNodeCallEsBuildContext(

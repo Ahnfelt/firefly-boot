@@ -8,11 +8,11 @@ RUN mkdir /home/node/firefly
 WORKDIR /home/node/firefly
 RUN npm install firefly-compiler
 WORKDIR /home/node/app
-COPY --chown=node:node . .
-# This fetches Firefly packages but we should also do their npm install --no-bin-links
-RUN [ "/home/node/firefly/node_modules/.bin/firefly", "check", "Main.ff" ]
+RUN mkdir -p .firefly/output/executable
+COPY --chown=node:node .firefly/output/executable .firefly/output/executable
+RUN [ "/home/node/firefly/node_modules/.bin/firefly", "build", "Main.ff" ]
 EXPOSE 8080
-ENTRYPOINT [ "dumb-init", "/home/node/firefly/node_modules/.bin/firefly", "Main.ff", "0.0.0.0", "8080" ]
+ENTRYPOINT [ "dumb-init", "node", ".firefly/output/executable/Main.bundle.js", "0.0.0.0", "8080" ]
 
 # Test it with
 # podman build -t fireflysite .
