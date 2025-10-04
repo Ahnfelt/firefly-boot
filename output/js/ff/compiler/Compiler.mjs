@@ -285,7 +285,7 @@ return ff_compiler_Dictionaries.Dictionaries_processModule(ff_compiler_Dictionar
 }
 
 export function Compiler_emit(self_, moduleKey_, isMainModule_) {
-ff_compiler_ModuleCache.ModuleCache_cacheEmittedModule(self_.cache_, self_.packagePaths_, moduleKey_, isMainModule_, ((path_) => {
+ff_compiler_ModuleCache.ModuleCache_cacheEmittedModule(self_.cache_, self_.packagePaths_, moduleKey_, self_.emitTarget_, isMainModule_, ((path_) => {
 ff_compiler_Compiler.Compiler_measure(self_, "Emit", moduleKey_, (() => {
 const module_ = ff_compiler_Compiler.Compiler_infer(self_, moduleKey_);
 const otherModules_ = ff_core_List.List_map(ff_compiler_Compiler.Compiler_imports(self_, module_), ((i_) => {
@@ -465,7 +465,7 @@ return ff_compiler_Dictionaries.Dictionaries_processModule(ff_compiler_Dictionar
 }
 
 export async function Compiler_emit$(self_, moduleKey_, isMainModule_, $task) {
-(await ff_compiler_ModuleCache.ModuleCache_cacheEmittedModule$(self_.cache_, self_.packagePaths_, moduleKey_, isMainModule_, (async (path_, $task) => {
+(await ff_compiler_ModuleCache.ModuleCache_cacheEmittedModule$(self_.cache_, self_.packagePaths_, moduleKey_, self_.emitTarget_, isMainModule_, (async (path_, $task) => {
 (await ff_compiler_Compiler.Compiler_measure$(self_, "Emit", moduleKey_, (async ($task) => {
 const module_ = (await ff_compiler_Compiler.Compiler_infer$(self_, moduleKey_, $task));
 const otherModules_ = (await ff_core_List.List_map$((await ff_compiler_Compiler.Compiler_imports$(self_, module_, $task)), (async (i_, $task) => {

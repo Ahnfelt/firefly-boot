@@ -215,7 +215,7 @@ extend self: Compiler {
     }
 
     emit(moduleKey: ModuleKey, isMainModule: Bool): Unit {
-        self.cache.cacheEmittedModule(self.packagePaths, moduleKey, isMainModule): path => 
+        self.cache.cacheEmittedModule(self.packagePaths, moduleKey, self.emitTarget, isMainModule): path => 
         self.measure("Emit", moduleKey):
 
         let module = self.infer(moduleKey)

@@ -1,5 +1,7 @@
 import * as ff_compiler_ModuleCache from "../../ff/compiler/ModuleCache.mjs"
 
+import * as ff_compiler_JsEmitter from "../../ff/compiler/JsEmitter.mjs"
+
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
@@ -155,7 +157,9 @@ self_.parsedModules_ = ff_core_Map.Map_removeList(self_.parsedModules_, keys_, f
 self_.resolvedModules_ = ff_core_Map.Map_removeList(self_.resolvedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 self_.derivedModules_ = ff_core_Map.Map_removeList(self_.derivedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 self_.inferredModules_ = ff_core_Map.Map_removeList(self_.inferredModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-self_.emittedModules_ = ff_core_Map.Map_removeList(self_.emittedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+self_.emittedModules_ = ff_core_Map.Map_mapValues(self_.emittedModules_, ((_, v_) => {
+return ff_core_Map.Map_removeList(v_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}), ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget)
 }
 }
 
@@ -203,7 +207,10 @@ if(ff_core_Path.Path_isFile(path_)) {
 const _1 = self_;
 {
 const _c = _1;
-return ff_compiler_ModuleCache.ModuleCache(newVersion_, ff_core_Map.Map_remove(self_.parsedModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_remove(self_.resolvedModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_remove(self_.derivedModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_remove(self_.inferredModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_remove(self_.emittedModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+return ff_compiler_ModuleCache.ModuleCache(newVersion_, ff_core_Map.Map_remove(self_.parsedModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_remove(self_.resolvedModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_remove(self_.derivedModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_remove(self_.inferredModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_mapValues(self_.emittedModules_, ((_, v_) => {
+return ff_core_Map.Map_remove(v_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}), ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget))
+return
 }
 }
 } else {
@@ -234,12 +241,14 @@ return (!invalidated_(p_))
 const p_ = _1.first_;
 return (!invalidated_(p_))
 }
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(ff_core_List.List_filter(ff_core_Map.Map_toList(self_.emittedModules_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_mapValues(self_.emittedModules_, ((_, v_) => {
+return ff_core_List.List_toMap(ff_core_List.List_filter(ff_core_Map.Map_toList(v_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
 {
 const p_ = _1.first_;
 return (!invalidated_(p_))
 }
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}), ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget))
 return
 }
 }
@@ -259,9 +268,31 @@ return _w1.second_
 self_.inferredModules_ = ff_compiler_ModuleCache.mergeVersionedMap_(self_.inferredModules_, cache_.inferredModules_, ((_w1) => {
 return _w1.second_
 }));
-self_.emittedModules_ = ff_compiler_ModuleCache.mergeVersionedMap_(self_.emittedModules_, cache_.emittedModules_, ((_w1) => {
+const targets_ = ff_core_Set.Set_toList(ff_core_Set.Set_addAll(ff_core_Map.Map_keys(self_.emittedModules_, ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget), ff_core_Map.Map_keys(cache_.emittedModules_, ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget), ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget), ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget);
+self_.emittedModules_ = ff_core_List.List_toMap(ff_core_List.List_map(targets_, ((target_) => {
+const emittedModules_ = (((_1) => {
+if(_1.first_.Some && _1.second_.Some) {
+const a_ = _1.first_.value_;
+const b_ = _1.second_.value_;
+return ff_compiler_ModuleCache.mergeVersionedMap_(a_, b_, ((_w1) => {
 return _w1
 }))
+return
+}
+if(_1.first_.Some && _1.second_.None) {
+const a_ = _1.first_.value_;
+return a_
+}
+if(_1.first_.None && _1.second_.Some) {
+const b_ = _1.second_.value_;
+return b_
+}
+{
+return ff_core_Map.new_()
+}
+}))(ff_core_Pair.Pair(ff_core_Map.Map_get(self_.emittedModules_, target_, ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget), ff_core_Map.Map_get(cache_.emittedModules_, target_, ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget)));
+return ff_core_Pair.Pair(target_, emittedModules_)
+})), ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget)
 }
 
 export function ModuleCache_cacheParsedModule(self_, packagePaths_, moduleKey_, body_) {
@@ -308,14 +339,22 @@ return result_
 }))
 }
 
-export function ModuleCache_cacheEmittedModule(self_, packagePaths_, moduleKey_, isMainModule_, body_) {
+export function ModuleCache_cacheEmittedModule(self_, packagePaths_, moduleKey_, emitTarget_, isMainModule_, body_) {
 const path_ = ff_compiler_ModuleCache.modulePath_(packagePaths_, moduleKey_);
-if((isMainModule_ || (!ff_core_Map.Map_contains(self_.emittedModules_, ff_core_Path.Path_absolute(path_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))) {
-self_.emittedModules_ = ff_core_Map.Map_add(self_.emittedModules_, ff_core_Path.Path_absolute(path_), self_.version_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+let targetEmittedModules_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.emittedModules_, emitTarget_, ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget), (() => {
+return ff_core_Map.new_()
+}));
+if((isMainModule_ || (!ff_core_Map.Map_contains(targetEmittedModules_, ff_core_Path.Path_absolute(path_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))) {
+targetEmittedModules_ = ff_core_Map.Map_add(targetEmittedModules_, ff_core_Path.Path_absolute(path_), self_.version_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+self_.emittedModules_ = ff_core_Map.Map_add(self_.emittedModules_, emitTarget_, targetEmittedModules_, ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget);
 try {
 body_(path_)
 } catch(error_) {
-self_.emittedModules_ = ff_core_Map.Map_remove(self_.emittedModules_, ff_core_Path.Path_absolute(path_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+let targetEmittedModules2_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.emittedModules_, emitTarget_, ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget), (() => {
+return ff_core_Map.new_()
+}));
+targetEmittedModules2_ = ff_core_Map.Map_remove(targetEmittedModules2_, ff_core_Path.Path_absolute(path_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+self_.emittedModules_ = ff_core_Map.Map_add(self_.emittedModules_, emitTarget_, targetEmittedModules2_, ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget);
 ff_core_Error.Error_rethrow(error_)
 }
 }
@@ -329,7 +368,9 @@ self_.parsedModules_ = ff_core_Map.Map_removeList(self_.parsedModules_, keys_, f
 self_.resolvedModules_ = ff_core_Map.Map_removeList(self_.resolvedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 self_.derivedModules_ = ff_core_Map.Map_removeList(self_.derivedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 self_.inferredModules_ = ff_core_Map.Map_removeList(self_.inferredModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-self_.emittedModules_ = ff_core_Map.Map_removeList(self_.emittedModules_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+self_.emittedModules_ = ff_core_Map.Map_mapValues(self_.emittedModules_, ((_, v_) => {
+return ff_core_Map.Map_removeList(v_, keys_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}), ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget)
 }
 }
 
@@ -377,7 +418,10 @@ if((await ff_core_Path.Path_isFile$(path_, $task))) {
 const _1 = self_;
 {
 const _c = _1;
-return ff_compiler_ModuleCache.ModuleCache(newVersion_, ff_core_Map.Map_remove(self_.parsedModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_remove(self_.resolvedModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_remove(self_.derivedModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_remove(self_.inferredModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_remove(self_.emittedModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+return ff_compiler_ModuleCache.ModuleCache(newVersion_, ff_core_Map.Map_remove(self_.parsedModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_remove(self_.resolvedModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_remove(self_.derivedModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_remove(self_.inferredModules_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_mapValues(self_.emittedModules_, ((_, v_) => {
+return ff_core_Map.Map_remove(v_, key_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}), ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget))
+return
 }
 }
 } else {
@@ -408,12 +452,14 @@ return (!invalidated_(p_))
 const p_ = _1.first_;
 return (!invalidated_(p_))
 }
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(ff_core_List.List_filter(ff_core_Map.Map_toList(self_.emittedModules_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_mapValues(self_.emittedModules_, ((_, v_) => {
+return ff_core_List.List_toMap(ff_core_List.List_filter(ff_core_Map.Map_toList(v_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
 {
 const p_ = _1.first_;
 return (!invalidated_(p_))
 }
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}), ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget))
 return
 }
 }
@@ -433,9 +479,31 @@ return _w1.second_
 self_.inferredModules_ = ff_compiler_ModuleCache.mergeVersionedMap_(self_.inferredModules_, cache_.inferredModules_, ((_w1) => {
 return _w1.second_
 }));
-self_.emittedModules_ = ff_compiler_ModuleCache.mergeVersionedMap_(self_.emittedModules_, cache_.emittedModules_, ((_w1) => {
+const targets_ = ff_core_Set.Set_toList(ff_core_Set.Set_addAll(ff_core_Map.Map_keys(self_.emittedModules_, ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget), ff_core_Map.Map_keys(cache_.emittedModules_, ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget), ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget), ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget);
+self_.emittedModules_ = ff_core_List.List_toMap(ff_core_List.List_map(targets_, ((target_) => {
+const emittedModules_ = (((_1) => {
+if(_1.first_.Some && _1.second_.Some) {
+const a_ = _1.first_.value_;
+const b_ = _1.second_.value_;
+return ff_compiler_ModuleCache.mergeVersionedMap_(a_, b_, ((_w1) => {
 return _w1
 }))
+return
+}
+if(_1.first_.Some && _1.second_.None) {
+const a_ = _1.first_.value_;
+return a_
+}
+if(_1.first_.None && _1.second_.Some) {
+const b_ = _1.second_.value_;
+return b_
+}
+{
+return ff_core_Map.new_()
+}
+}))(ff_core_Pair.Pair(ff_core_Map.Map_get(self_.emittedModules_, target_, ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget), ff_core_Map.Map_get(cache_.emittedModules_, target_, ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget)));
+return ff_core_Pair.Pair(target_, emittedModules_)
+})), ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget)
 }
 
 export async function ModuleCache_cacheParsedModule$(self_, packagePaths_, moduleKey_, body_, $task) {
@@ -482,14 +550,22 @@ return result_
 }), $task))
 }
 
-export async function ModuleCache_cacheEmittedModule$(self_, packagePaths_, moduleKey_, isMainModule_, body_, $task) {
+export async function ModuleCache_cacheEmittedModule$(self_, packagePaths_, moduleKey_, emitTarget_, isMainModule_, body_, $task) {
 const path_ = (await ff_compiler_ModuleCache.modulePath_$(packagePaths_, moduleKey_, $task));
-if((isMainModule_ || (!ff_core_Map.Map_contains(self_.emittedModules_, (await ff_core_Path.Path_absolute$(path_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))) {
-self_.emittedModules_ = ff_core_Map.Map_add(self_.emittedModules_, (await ff_core_Path.Path_absolute$(path_, $task)), self_.version_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+let targetEmittedModules_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.emittedModules_, emitTarget_, ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget), (() => {
+return ff_core_Map.new_()
+}));
+if((isMainModule_ || (!ff_core_Map.Map_contains(targetEmittedModules_, (await ff_core_Path.Path_absolute$(path_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))) {
+targetEmittedModules_ = ff_core_Map.Map_add(targetEmittedModules_, (await ff_core_Path.Path_absolute$(path_, $task)), self_.version_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+self_.emittedModules_ = ff_core_Map.Map_add(self_.emittedModules_, emitTarget_, targetEmittedModules_, ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget);
 try {
 (await body_(path_, $task))
 } catch(error_) {
-self_.emittedModules_ = ff_core_Map.Map_remove(self_.emittedModules_, (await ff_core_Path.Path_absolute$(path_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+let targetEmittedModules2_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.emittedModules_, emitTarget_, ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget), (() => {
+return ff_core_Map.new_()
+}));
+targetEmittedModules2_ = ff_core_Map.Map_remove(targetEmittedModules2_, (await ff_core_Path.Path_absolute$(path_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+self_.emittedModules_ = ff_core_Map.Map_add(self_.emittedModules_, emitTarget_, targetEmittedModules2_, ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget);
 ff_core_Error.Error_rethrow(error_)
 }
 }

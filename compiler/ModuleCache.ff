@@ -1,4 +1,5 @@
 import Syntax
+import JsEmitter from ff:compiler
 
 class ModuleCache(
     version: Int
@@ -6,7 +7,7 @@ class ModuleCache(
     mutable resolvedModules: Map[String, Pair[Module, Int]]
     mutable derivedModules: Map[String, Pair[Module, Int]]
     mutable inferredModules: Map[String, Pair[Module, Int]]
-    mutable emittedModules: Map[String, Int]
+    mutable emittedModules: Map[EmitTarget, Map[String, Int]]
 )
 
 new(version: Int): ModuleCache {
@@ -30,7 +31,7 @@ extend self: ModuleCache {
         self.resolvedModules = self.resolvedModules.removeList(keys)
         self.derivedModules = self.derivedModules.removeList(keys)
         self.inferredModules = self.inferredModules.removeList(keys)
-        self.emittedModules = self.emittedModules.removeList(keys)
+        self.emittedModules = self.emittedModules.mapValues {_, v => v.removeList(keys)}
     }
     
     invalidate(key: String) {
@@ -58,7 +59,7 @@ extend self: ModuleCache {
                 resolvedModules = self.resolvedModules.remove(key)
                 derivedModules = self.derivedModules.remove(key)
                 inferredModules = self.inferredModules.remove(key)
-                emittedModules = self.emittedModules.remove(key)
+                emittedModules = self.emittedModules.mapValues {_, v => v.remove(key)}
             )
         } else {
             function invalidated(p: String): Bool {
@@ -70,7 +71,9 @@ extend self: ModuleCache {
                 resolvedModules = self.resolvedModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
                 derivedModules = self.derivedModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
                 inferredModules = self.inferredModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
-                emittedModules = self.emittedModules.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
+                emittedModules = self.emittedModules.mapValues {_, v => 
+                    v.toList().filter {| Pair(p, _) => !invalidated(p)}.toMap()
+                }
             )
         }
     }
@@ -80,7 +83,16 @@ extend self: ModuleCache {
         self.resolvedModules = mergeVersionedMap(self.resolvedModules, cache.resolvedModules) {_.second}
         self.derivedModules = mergeVersionedMap(self.derivedModules, cache.derivedModules) {_.second}
         self.inferredModules = mergeVersionedMap(self.inferredModules, cache.inferredModules) {_.second}
-        self.emittedModules = mergeVersionedMap(self.emittedModules, cache.emittedModules) {_}
+        let targets = self.emittedModules.keys().addAll(cache.emittedModules.keys()).toList()
+        self.emittedModules = targets.map {target =>
+            let emittedModules = Pair(self.emittedModules.get(target), cache.emittedModules.get(target)).{
+                | Pair(Some(a), Some(b)) => mergeVersionedMap(a, b) {_}
+                | Pair(Some(a), None) => a
+                | Pair(None, Some(b)) => b
+                | Pair(None, None) => Map.new()
+            }
+            Pair(target, emittedModules)
+        }.toMap()
     }
     
     cacheParsedModule(
@@ -134,16 +146,21 @@ extend self: ModuleCache {
     cacheEmittedModule(
         packagePaths: Map[PackagePair, Path]
         moduleKey: ModuleKey
+        emitTarget: EmitTarget
         isMainModule: Bool
         body: Path => Unit
     ): Unit {
         let path = modulePath(packagePaths, moduleKey)
-        if(isMainModule || !self.emittedModules.contains(path.absolute())):
-        self.emittedModules = self.emittedModules.add(path.absolute(), self.version)
+        mutable targetEmittedModules = self.emittedModules.get(emitTarget).else {Map.new()}
+        if(isMainModule || !targetEmittedModules.contains(path.absolute())):
+        targetEmittedModules = targetEmittedModules.add(path.absolute(), self.version)
+        self.emittedModules = self.emittedModules.add(emitTarget, targetEmittedModules)
         try {
             body(path)
         } catchAny {error =>
-            self.emittedModules = self.emittedModules.remove(path.absolute())
+            mutable targetEmittedModules2 = self.emittedModules.get(emitTarget).else {Map.new()}
+            targetEmittedModules2 = targetEmittedModules2.remove(path.absolute())
+            self.emittedModules = self.emittedModules.add(emitTarget, targetEmittedModules2)
             error.rethrow()
         }
     }
