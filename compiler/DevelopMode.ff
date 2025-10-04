@@ -153,8 +153,7 @@ startApp(
                     runner.lock.do {
                         if(taskIteration == runner.iteration):
                         try {
-                            let moduleCacheAlreadyEmittedWorkaround = moduleCache.ModuleCache(emittedModules = Map.new())
-                            Builder.buildViaBuildSystem(system, fireflyPath, mainPaths, target, moduleCacheAlreadyEmittedWorkaround, printMeasurements = False)
+                            Builder.buildViaBuildSystem(system, fireflyPath, mainPaths, target, moduleCache, printMeasurements = False)
                             forkedProcess->send(Js->(ffDevelopMode = "internalCompile"))
                             Unit
                         } tryCatch {| CompileError(at, message), error =>

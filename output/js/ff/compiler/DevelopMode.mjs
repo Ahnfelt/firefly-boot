@@ -257,10 +257,7 @@ const target_ = message_.target;
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
 if((taskIteration_ === runner_.iteration_)) {
 return ff_core_Option.Some(ff_core_Try.Try_catchAny(ff_core_Try.Try_tryCatch(ff_core_Try.Try_tryCatch(ff_core_Core.try_((() => {
-const moduleCacheAlreadyEmittedWorkaround_ = (((_c) => {
-return ff_compiler_ModuleCache.ModuleCache(_c.version_, _c.parsedModules_, _c.resolvedModules_, _c.derivedModules_, _c.inferredModules_, ff_core_Map.new_())
-}))(moduleCache_);
-ff_compiler_Builder.buildViaBuildSystem_(system_, fireflyPath_, mainPaths_, target_, moduleCacheAlreadyEmittedWorkaround_, false);
+ff_compiler_Builder.buildViaBuildSystem_(system_, fireflyPath_, mainPaths_, target_, moduleCache_, false);
 forkedProcess_.send({ffDevelopMode: "internalCompile"})
 })), ((_1, _2) => {
 {
@@ -545,10 +542,7 @@ const target_ = message_.target;
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
 if((taskIteration_ === runner_.iteration_)) {
 return ff_core_Option.Some(ff_core_Try.Try_catchAny(ff_core_Try.Try_tryCatch(ff_core_Try.Try_tryCatch((await ff_core_Core.try_$((async ($task) => {
-const moduleCacheAlreadyEmittedWorkaround_ = (((_c) => {
-return ff_compiler_ModuleCache.ModuleCache(_c.version_, _c.parsedModules_, _c.resolvedModules_, _c.derivedModules_, _c.inferredModules_, ff_core_Map.new_())
-}))(moduleCache_);
-(await ff_compiler_Builder.buildViaBuildSystem_$(system_, fireflyPath_, mainPaths_, target_, moduleCacheAlreadyEmittedWorkaround_, false, $task));
+(await ff_compiler_Builder.buildViaBuildSystem_$(system_, fireflyPath_, mainPaths_, target_, moduleCache_, false, $task));
 forkedProcess_.send({ffDevelopMode: "internalCompile"})
 }), $task)), ((_1, _2) => {
 {
