@@ -345,6 +345,7 @@ let targetEmittedModules_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_
 return ff_core_Map.new_()
 }));
 if((isMainModule_ || (!ff_core_Map.Map_contains(targetEmittedModules_, ff_core_Path.Path_absolute(path_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))) {
+ff_core_Log.debug_(((("cacheEmittedModule " + ff_compiler_JsEmitter.ff_core_Show_Show$ff_compiler_JsEmitter_EmitTarget.show_(emitTarget_)) + " ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_ModuleKey.show_(moduleKey_)));
 targetEmittedModules_ = ff_core_Map.Map_add(targetEmittedModules_, ff_core_Path.Path_absolute(path_), self_.version_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 self_.emittedModules_ = ff_core_Map.Map_add(self_.emittedModules_, emitTarget_, targetEmittedModules_, ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget);
 try {
@@ -556,6 +557,7 @@ let targetEmittedModules_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_
 return ff_core_Map.new_()
 }));
 if((isMainModule_ || (!ff_core_Map.Map_contains(targetEmittedModules_, (await ff_core_Path.Path_absolute$(path_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))) {
+ff_core_Log.debug_(((("cacheEmittedModule " + ff_compiler_JsEmitter.ff_core_Show_Show$ff_compiler_JsEmitter_EmitTarget.show_(emitTarget_)) + " ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_ModuleKey.show_(moduleKey_)));
 targetEmittedModules_ = ff_core_Map.Map_add(targetEmittedModules_, (await ff_core_Path.Path_absolute$(path_, $task)), self_.version_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 self_.emittedModules_ = ff_core_Map.Map_add(self_.emittedModules_, emitTarget_, targetEmittedModules_, ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget);
 try {

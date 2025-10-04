@@ -153,6 +153,7 @@ extend self: ModuleCache {
         let path = modulePath(packagePaths, moduleKey)
         mutable targetEmittedModules = self.emittedModules.get(emitTarget).else {Map.new()}
         if(isMainModule || !targetEmittedModules.contains(path.absolute())):
+        // Log.debug("cacheEmittedModule " + Show.show(emitTarget) + " " + Show.show(moduleKey))
         targetEmittedModules = targetEmittedModules.add(path.absolute(), self.version)
         self.emittedModules = self.emittedModules.add(emitTarget, targetEmittedModules)
         try {
