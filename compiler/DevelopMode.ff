@@ -406,7 +406,7 @@ waiterHtml = """<!DOCTYPE html>
     </script>
 </head>
 <body>
-    <h1>Firefly develop mode</h1>
+    <!--h1>Firefly develop mode</h1-->
     <p>[STATUS]</p>
 </body>
 </html>

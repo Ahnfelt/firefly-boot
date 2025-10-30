@@ -91,6 +91,7 @@ main(system: NodeSystem): Unit {
         | BootstrapCommand =>
             let workingDirectory = system.path(".")
             let fakeLocation = Location("<core>", 0, 0)
+            let esbuildPath = workingDirectory.slash("node_modules").slash("esbuild").slash("lib").slash("main.js")
             Builder.build(
                 system = system
                 emitTarget = EmitNode
@@ -109,6 +110,7 @@ main(system: NodeSystem): Unit {
                     singleFilePackages = [].toSet()
                 )
                 compilerModulePath = None
+                esbuildPath = Some(esbuildPath)
                 jsOutputPath = workingDirectory.slash("output").slash("js")
                 printMeasurements = True
                 moduleCache = ModuleCache.new(0)
@@ -179,6 +181,9 @@ buildScript(
     let compilerModulePath = if(emitTarget != EmitBrowser) {
         fireflyPath.slash("output").slash("js").slash("ff").slash("compiler/Builder.mjs")
     }
+    let esbuildPath = if(emitTarget != EmitBrowser) {
+        fireflyPath.slash("node_modules").slash("esbuild").slash("lib").slash("main.js")
+    }
     let targetName = emitTarget.{
         | EmitBuild => "build"
         | EmitNode => "node"
@@ -194,6 +199,7 @@ buildScript(
         mainModules = [moduleKey]
         resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
         compilerModulePath = compilerModulePath
+        esbuildPath = esbuildPath
         jsOutputPath = system.path(".firefly").path("output").path(targetName)
         printMeasurements = printMeasurements
         moduleCache = moduleCache

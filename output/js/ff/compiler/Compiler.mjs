@@ -117,24 +117,24 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Compiler
-export function Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, cache_, lspHook_, phaseDurationDelta_, phaseDurations_) {
-return {emitTarget_, task_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, cache_, lspHook_, phaseDurationDelta_, phaseDurations_};
+export function Compiler(emitTarget_, task_, compilerModulePath_, esbuildPath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, cache_, lspHook_, phaseDurationDelta_, phaseDurations_) {
+return {emitTarget_, task_, compilerModulePath_, esbuildPath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, cache_, lspHook_, phaseDurationDelta_, phaseDurations_};
 }
 
 export const coreImports_ = ff_core_List.List_map(["Any", "Array", "AssetSystem", "Atomic", "Bool", "BrowserSystem", "Buffer", "BuildSystem", "Channel", "Char", "Core", "Crypto", "Date", "Duration", "Equal", "Error", "FileHandle", "Float", "HttpClient", "Int", "IntMap", "Json", "JsValue", "JsSystem", "List", "Lock", "Log", "Map", "NodeSystem", "Nothing", "Option", "Ordering", "Pair", "Path", "Queue", "Random", "Serializable", "Set", "Show", "SourceLocation", "Stream", "String", "StringMap", "Task", "Try", "Unit", "Js"], ((moduleName_) => {
 return ff_compiler_Syntax.DImport(ff_compiler_Syntax.Location("<prelude>", 1, 1), moduleName_, ff_compiler_Syntax.ModuleKey(ff_compiler_Syntax.PackagePair("ff", "core"), [], moduleName_))
 }));
 
-export function new_(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_, virtualFiles_, cache_, lspHook_) {
-return ff_compiler_Compiler.Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, cache_, lspHook_, 0.0, ff_core_List.List_toArray([]))
+export function new_(emitTarget_, task_, compilerModulePath_, esbuildPath_, jsOutputPath_, resolvedDependencies_, virtualFiles_, cache_, lspHook_) {
+return ff_compiler_Compiler.Compiler(emitTarget_, task_, compilerModulePath_, esbuildPath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, cache_, lspHook_, 0.0, ff_core_List.List_toArray([]))
 }
 
 export function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function new_$(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_, virtualFiles_, cache_, lspHook_, $task) {
-return ff_compiler_Compiler.Compiler(emitTarget_, task_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, cache_, lspHook_, 0.0, ff_core_List.List_toArray([]))
+export async function new_$(emitTarget_, task_, compilerModulePath_, esbuildPath_, jsOutputPath_, resolvedDependencies_, virtualFiles_, cache_, lspHook_, $task) {
+return ff_compiler_Compiler.Compiler(emitTarget_, task_, compilerModulePath_, esbuildPath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, cache_, lspHook_, 0.0, ff_core_List.List_toArray([]))
 }
 
 export async function fail_$(at_, message_, $task) {
@@ -298,6 +298,8 @@ return ff_core_Path.Path_slash(p_, f_)
 }));
 const allModules_ = [module_, ...otherModules_];
 const emitter_ = ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMainModule_, ff_core_Option.Option_map(self_.compilerModulePath_, ((_w1) => {
+return ff_core_Path.Path_relativeUrlTo(_w1, jsPath_)
+})), ff_core_Option.Option_map(self_.esbuildPath_, ((_w1) => {
 return ff_core_Path.Path_relativeUrlTo(_w1, jsPath_)
 })), moduleKey_);
 ff_compiler_JsEmitter.JsEmitter_emitModule(emitter_, module_);
@@ -478,6 +480,8 @@ return (await ff_core_Path.Path_slash$(p_, f_, $task))
 }), $task));
 const allModules_ = [module_, ...otherModules_];
 const emitter_ = ff_compiler_JsEmitter.new_(allModules_, self_.emitTarget_, isMainModule_, (await ff_core_Option.Option_map$(self_.compilerModulePath_, (async (_w1, $task) => {
+return (await ff_core_Path.Path_relativeUrlTo$(_w1, jsPath_, $task))
+}), $task)), (await ff_core_Option.Option_map$(self_.esbuildPath_, (async (_w1, $task) => {
 return (await ff_core_Path.Path_relativeUrlTo$(_w1, jsPath_, $task))
 }), $task)), moduleKey_);
 ff_compiler_JsEmitter.JsEmitter_emitModule(emitter_, module_);

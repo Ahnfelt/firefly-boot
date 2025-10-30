@@ -90,7 +90,7 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
-import * as import$0 from 'esbuild';
+import * as import$0 from '../../../../node_modules/esbuild/lib/main.js';
 import * as import$1 from 'path';
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
@@ -104,12 +104,12 @@ esbuild_.build({entryPoints: mainJsFiles_, bundle: true, minify: minify_, source
 
 export function internalNodeCallEsBuild_(self_, mainJsFile_, outputPath_, minify_) {
 const esbuild_ = import$0;
-esbuild_.build({entryPoints: [mainJsFile_], bundle: true, minify: minify_, sourcemap: true, platform: "node", target: "es2017", external: ["esbuild", "uws.js"], loader: {[".node"]: "copy"}, outdir: outputPath_})
+esbuild_.build({entryPoints: [mainJsFile_], bundle: true, minify: minify_, sourcemap: true, platform: "node", target: "es2017", external: ["../../../../node_modules/esbuild/lib/main.js", "uws.js"], loader: {[".node"]: "copy"}, outdir: outputPath_})
 }
 
 export function internalNodeCallEsBuildContext_(self_, mainJsFile_, outputPath_, minify_) {
 const esbuild_ = import$0;
-return esbuild_.context({entryPoints: [mainJsFile_], bundle: true, minify: minify_, sourcemap: true, platform: "node", target: "es2017", external: ["esbuild", "uws.js"], loader: {[".node"]: "copy"}, outfile: outputPath_})
+return esbuild_.context({entryPoints: [mainJsFile_], bundle: true, minify: minify_, sourcemap: true, platform: "node", target: "es2017", external: ["../../../../node_modules/esbuild/lib/main.js", "uws.js"], loader: {[".node"]: "copy"}, outfile: outputPath_})
 }
 
 export function internalListDirectory_(path_) {
@@ -182,6 +182,10 @@ ff_core_Path.Path_writeStream(assetPath_, s_(), false)
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 
+export function internalEsbuildPath_() {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
+}
+
 export async function internalBrowserCallEsBuild_$(self_, mainJsFiles_, outputPath_, minify_, sourceMap_, $task) {
 const esbuild_ = import$0;
 (await esbuild_.build({entryPoints: mainJsFiles_, bundle: true, minify: minify_, sourcemap: sourceMap_, platform: "browser", target: "es2017", outdir: outputPath_, outExtension: {[".js"]: ".bundle.js"}}))
@@ -189,12 +193,12 @@ const esbuild_ = import$0;
 
 export async function internalNodeCallEsBuild_$(self_, mainJsFile_, outputPath_, minify_, $task) {
 const esbuild_ = import$0;
-(await esbuild_.build({entryPoints: [mainJsFile_], bundle: true, minify: minify_, sourcemap: true, platform: "node", target: "es2017", external: ["esbuild", "uws.js"], loader: {[".node"]: "copy"}, outdir: outputPath_}))
+(await esbuild_.build({entryPoints: [mainJsFile_], bundle: true, minify: minify_, sourcemap: true, platform: "node", target: "es2017", external: ["../../../../node_modules/esbuild/lib/main.js", "uws.js"], loader: {[".node"]: "copy"}, outdir: outputPath_}))
 }
 
 export async function internalNodeCallEsBuildContext_$(self_, mainJsFile_, outputPath_, minify_, $task) {
 const esbuild_ = import$0;
-return (await esbuild_.context({entryPoints: [mainJsFile_], bundle: true, minify: minify_, sourcemap: true, platform: "node", target: "es2017", external: ["esbuild", "uws.js"], loader: {[".node"]: "copy"}, outfile: outputPath_}))
+return (await esbuild_.context({entryPoints: [mainJsFile_], bundle: true, minify: minify_, sourcemap: true, platform: "node", target: "es2017", external: ["../../../../node_modules/esbuild/lib/main.js", "uws.js"], loader: {[".node"]: "copy"}, outfile: outputPath_}))
 }
 
 export async function internalListDirectory_$(path_, $task) {
@@ -265,6 +269,10 @@ const assetPath_ = (await ff_core_Path.Path_slash$(path_, p_, $task));
 (await ff_core_Path.Path_writeStream$(assetPath_, (await s_($task)), false, $task))
 }
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, $task))
+}
+
+export async function internalEsbuildPath_$($task) {
+return ff_core_Core.panic_("This call should have been eliminated by the compiler")
 }
 
 export function BuildSystem_compileForBrowser(self_, mainFiles_) {

@@ -103,8 +103,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type JsEmitter
-export function JsEmitter(otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_, emittingAsync_, tailCallUsed_, writtenColumn_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_) {
-return {otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_, emittingAsync_, tailCallUsed_, writtenColumn_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_};
+export function JsEmitter(otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModuleFileUrl_, esbuildFileUrl_, moduleKey_, emittingAsync_, tailCallUsed_, writtenColumn_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_) {
+return {otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModuleFileUrl_, esbuildFileUrl_, moduleKey_, emittingAsync_, tailCallUsed_, writtenColumn_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_};
 }
 
 // type EmitTarget
@@ -142,10 +142,10 @@ return {emitter_, first_, delimiter_};
 
 export const primitiveTypes_ = ff_core_List.List_toSet(["ff:core/Bool.Bool", "ff:core/Char.Char", "ff:core/Int.Int", "ff:core/Float.Float", "ff:core/String.String"], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 
-export function new_(otherModules_, emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_) {
+export function new_(otherModules_, emitTarget_, isMainModule_, compilerModuleFileUrl_, esbuildFileUrl_, moduleKey_) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 return ff_core_Pair.Pair(ff_compiler_Syntax.ModuleKey_qualifiedName(m_.moduleKey_), m_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.new_(), emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_, false, false, 0, ff_core_List.List_toArray([ff_core_List.List_toArray([])]), ff_core_List.List_toArray([ff_core_List.List_toArray([])]), ff_core_IntMap.new_(), ff_core_StringMap.new_())
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.new_(), emitTarget_, isMainModule_, compilerModuleFileUrl_, esbuildFileUrl_, moduleKey_, false, false, 0, ff_core_List.List_toArray([ff_core_List.List_toArray([])]), ff_core_List.List_toArray([ff_core_List.List_toArray([])]), ff_core_IntMap.new_(), ff_core_StringMap.new_())
 }
 
 export function fail_(at_, message_) {
@@ -399,10 +399,10 @@ return false
 }
 }
 
-export async function new_$(otherModules_, emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_, $task) {
+export async function new_$(otherModules_, emitTarget_, isMainModule_, compilerModuleFileUrl_, esbuildFileUrl_, moduleKey_, $task) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 return ff_core_Pair.Pair(ff_compiler_Syntax.ModuleKey_qualifiedName(m_.moduleKey_), m_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.new_(), emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_, false, false, 0, ff_core_List.List_toArray([ff_core_List.List_toArray([])]), ff_core_List.List_toArray([ff_core_List.List_toArray([])]), ff_core_IntMap.new_(), ff_core_StringMap.new_())
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.new_(), emitTarget_, isMainModule_, compilerModuleFileUrl_, esbuildFileUrl_, moduleKey_, false, false, 0, ff_core_List.List_toArray([ff_core_List.List_toArray([])]), ff_core_List.List_toArray([ff_core_List.List_toArray([])]), ff_core_IntMap.new_(), ff_core_StringMap.new_())
 }
 
 export async function fail_$(at_, message_, $task) {
@@ -2406,6 +2406,41 @@ ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, "})())");
 return true
 }
 }
+}
+}
+if(_1 === "ff:core/BuildSystem.internalEsbuildPath") {
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, ff_core_Option.Option_else(ff_core_Option.Option_map(self_.esbuildFileUrl_, ((_w1) => {
+return ff_core_Json.Json_write(_w1, ff_core_Option.None())
+})), (() => {
+return "null"
+})));
+return true
+}
+if(_1 === "ff:core/Js.import") {
+const _guard1 = arguments_;
+if(_guard1.length === 1 && _guard1[0].ECall && _guard1[0].target_.StaticCall && _guard1[0].target_.name_ === "ff:core/BuildSystem.internalEsbuildPath" && !_guard1[0].target_.tailCall_ && !_guard1[0].target_.instanceCall_) {
+const at_ = _guard1[0].at_;
+do {
+const _1 = self_.emitTarget_;
+if(_1.EmitBrowser) {
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, at_, "(() => {throw new Error('Node.js imports are not supported in the browser')})()")
+break
+}
+{
+do {
+const _1 = self_.esbuildFileUrl_;
+if(_1.Some) {
+const url_ = _1.value_;
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, at_, ff_compiler_JsImporter.JsImporter_add(self_.jsImporter_, ff_core_String.String_replace(url_, "\"", "")))
+break
+}
+{
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, at_, "null")
+}
+} while(false)
+}
+} while(false);
+return true
 }
 }
 if(_1 === "ff:core/Js.import") {
@@ -6015,6 +6050,41 @@ ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, "})())");
 return true
 }
 }
+}
+}
+if(_1 === "ff:core/BuildSystem.internalEsbuildPath") {
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, ff_core_Option.Option_else(ff_core_Option.Option_map(self_.esbuildFileUrl_, ((_w1) => {
+return ff_core_Json.Json_write(_w1, ff_core_Option.None())
+})), (() => {
+return "null"
+})));
+return true
+}
+if(_1 === "ff:core/Js.import") {
+const _guard1 = arguments_;
+if(_guard1.length === 1 && _guard1[0].ECall && _guard1[0].target_.StaticCall && _guard1[0].target_.name_ === "ff:core/BuildSystem.internalEsbuildPath" && !_guard1[0].target_.tailCall_ && !_guard1[0].target_.instanceCall_) {
+const at_ = _guard1[0].at_;
+do {
+const _1 = self_.emitTarget_;
+if(_1.EmitBrowser) {
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, at_, "(() => {throw new Error('Node.js imports are not supported in the browser')})()")
+break
+}
+{
+do {
+const _1 = self_.esbuildFileUrl_;
+if(_1.Some) {
+const url_ = _1.value_;
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, at_, ff_compiler_JsImporter.JsImporter_add(self_.jsImporter_, ff_core_String.String_replace(url_, "\"", "")))
+break
+}
+{
+ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, at_, "null")
+}
+} while(false)
+}
+} while(false);
+return true
 }
 }
 if(_1 === "ff:core/Js.import") {

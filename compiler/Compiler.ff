@@ -14,6 +14,7 @@ capability Compiler(
     emitTarget: EmitTarget
     task: Task
     compilerModulePath: Option[Path]
+    esbuildPath: Option[Path]
     jsOutputPath: Path
     packagePaths: Map[PackagePair, Path]
     singleFilePackages: Set[PackagePair]
@@ -28,6 +29,7 @@ new(
     emitTarget: EmitTarget
     task: Task
     compilerModulePath: Option[Path]
+    esbuildPath: Option[Path]
     jsOutputPath: Path
     resolvedDependencies: ResolvedDependencies
     virtualFiles: Map[String, String]
@@ -38,6 +40,7 @@ new(
         emitTarget = emitTarget
         task = task
         compilerModulePath = compilerModulePath
+        esbuildPath = esbuildPath
         jsOutputPath = jsOutputPath
         packagePaths = resolvedDependencies.packagePaths
         singleFilePackages = resolvedDependencies.singleFilePackages
@@ -232,6 +235,7 @@ extend self: Compiler {
             emitTarget = self.emitTarget
             isMainModule = isMainModule
             compilerModuleFileUrl = self.compilerModulePath.map {_.relativeUrlTo(jsPath)}
+            esbuildFileUrl = self.esbuildPath.map {_.relativeUrlTo(jsPath)}
             moduleKey = moduleKey
         )
         emitter.emitModule(module)

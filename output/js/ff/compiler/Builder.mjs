@@ -121,9 +121,9 @@ export function PackageFiles(root_, packageFile_, files_) {
 return {root_, packageFile_, files_};
 }
 
-export function build_(system_, emitTarget_, mainModules_, resolvedDependencies_, compilerModulePath_, jsOutputPath_, printMeasurements_, moduleCache_) {
+export function build_(system_, emitTarget_, mainModules_, resolvedDependencies_, compilerModulePath_, esbuildPath_, jsOutputPath_, printMeasurements_, moduleCache_) {
 ff_core_Path.Path_createDirectory(jsOutputPath_, true);
-const compiler_ = ff_compiler_Compiler.new_(emitTarget_, ff_core_NodeSystem.NodeSystem_mainTask(system_), compilerModulePath_, jsOutputPath_, resolvedDependencies_, ff_core_Map.new_(), moduleCache_, ff_compiler_LspHook.disabled_());
+const compiler_ = ff_compiler_Compiler.new_(emitTarget_, ff_core_NodeSystem.NodeSystem_mainTask(system_), compilerModulePath_, esbuildPath_, jsOutputPath_, resolvedDependencies_, ff_core_Map.new_(), moduleCache_, ff_compiler_LspHook.disabled_());
 for(let for_a = mainModules_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const moduleKey_ = for_a[for_i];
 ff_compiler_Compiler.Compiler_emit(compiler_, moduleKey_, true)
@@ -191,7 +191,7 @@ ff_core_Core.panic_("buildViaBuildSystem is currently limited to browser target 
 };
 ff_compiler_Builder.build_(system_, ff_compiler_JsEmitter.EmitBrowser(), mainModuleKeys_, (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
-}))(resolvedDependencies_), ff_core_Option.None(), ff_core_Path.Path_slash(ff_core_NodeSystem.NodeSystem_path(system_, ".firefly/output"), target_), printMeasurements_, moduleCache_)
+}))(resolvedDependencies_), ff_core_Option.None(), ff_core_Option.None(), ff_core_Path.Path_slash(ff_core_NodeSystem.NodeSystem_path(system_, ".firefly/output"), target_), printMeasurements_, moduleCache_)
 }
 
 export function check_(system_, fireflyPath_, path_, mustContain_, skipFiles_, virtualFiles_, cache_, dependencyLock_, newVersion_, lspHook_, infer_) {
@@ -242,7 +242,7 @@ const fixedResolvedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_);
 const newCache_ = ff_compiler_ModuleCache.ModuleCache_without(cache_, newVersion_, path_);
-const compiler_ = ff_compiler_Compiler.new_(ff_compiler_JsEmitter.EmitBuild(), ff_core_NodeSystem.NodeSystem_mainTask(system_), ff_core_Option.None(), ff_core_Path.Path_slash(ff_core_Path.Path_slash(package_.root_, ".firefly"), "temporary"), fixedResolvedDependencies_, virtualFiles_, newCache_, lspHook_);
+const compiler_ = ff_compiler_Compiler.new_(ff_compiler_JsEmitter.EmitBuild(), ff_core_NodeSystem.NodeSystem_mainTask(system_), ff_core_Option.None(), ff_core_Option.None(), ff_core_Path.Path_slash(ff_core_Path.Path_slash(package_.root_, ".firefly"), "temporary"), fixedResolvedDependencies_, virtualFiles_, newCache_, lspHook_);
 for(let for_a = package_.files_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const file_ = for_a[for_i];
 const packagePair_ = resolvedDependencies_.mainPackagePair_;
@@ -375,9 +375,9 @@ const pkg_ = null;
 pkg_.exec([packageFile_.absolutePath_, "--out-path", outputPath_.absolutePath_, "--target", ff_core_List.List_join(targets_, ",")])
 }
 
-export async function build_$(system_, emitTarget_, mainModules_, resolvedDependencies_, compilerModulePath_, jsOutputPath_, printMeasurements_, moduleCache_, $task) {
+export async function build_$(system_, emitTarget_, mainModules_, resolvedDependencies_, compilerModulePath_, esbuildPath_, jsOutputPath_, printMeasurements_, moduleCache_, $task) {
 (await ff_core_Path.Path_createDirectory$(jsOutputPath_, true, $task));
-const compiler_ = (await ff_compiler_Compiler.new_$(emitTarget_, (await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), compilerModulePath_, jsOutputPath_, resolvedDependencies_, ff_core_Map.new_(), moduleCache_, ff_compiler_LspHook.disabled_(), $task));
+const compiler_ = (await ff_compiler_Compiler.new_$(emitTarget_, (await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), compilerModulePath_, esbuildPath_, jsOutputPath_, resolvedDependencies_, ff_core_Map.new_(), moduleCache_, ff_compiler_LspHook.disabled_(), $task));
 for(let for_a = mainModules_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const moduleKey_ = for_a[for_i];
 (await ff_compiler_Compiler.Compiler_emit$(compiler_, moduleKey_, true, $task))
@@ -445,7 +445,7 @@ ff_core_Core.panic_("buildViaBuildSystem is currently limited to browser target 
 };
 (await ff_compiler_Builder.build_$(system_, ff_compiler_JsEmitter.EmitBrowser(), mainModuleKeys_, (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
-}))(resolvedDependencies_), ff_core_Option.None(), (await ff_core_Path.Path_slash$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".firefly/output", $task)), target_, $task)), printMeasurements_, moduleCache_, $task))
+}))(resolvedDependencies_), ff_core_Option.None(), ff_core_Option.None(), (await ff_core_Path.Path_slash$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".firefly/output", $task)), target_, $task)), printMeasurements_, moduleCache_, $task))
 }
 
 export async function check_$(system_, fireflyPath_, path_, mustContain_, skipFiles_, virtualFiles_, cache_, dependencyLock_, newVersion_, lspHook_, infer_, $task) {
@@ -496,7 +496,7 @@ const fixedResolvedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_);
 const newCache_ = (await ff_compiler_ModuleCache.ModuleCache_without$(cache_, newVersion_, path_, $task));
-const compiler_ = (await ff_compiler_Compiler.new_$(ff_compiler_JsEmitter.EmitBuild(), (await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), ff_core_Option.None(), (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(package_.root_, ".firefly", $task)), "temporary", $task)), fixedResolvedDependencies_, virtualFiles_, newCache_, lspHook_, $task));
+const compiler_ = (await ff_compiler_Compiler.new_$(ff_compiler_JsEmitter.EmitBuild(), (await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), ff_core_Option.None(), ff_core_Option.None(), (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(package_.root_, ".firefly", $task)), "temporary", $task)), fixedResolvedDependencies_, virtualFiles_, newCache_, lspHook_, $task));
 for(let for_a = package_.files_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const file_ = for_a[for_i];
 const packagePair_ = resolvedDependencies_.mainPackagePair_;

@@ -9,6 +9,7 @@ class JsEmitter(
     emitTarget: EmitTarget
     isMainModule: Bool
     compilerModuleFileUrl: Option[String]
+    esbuildFileUrl: Option[String]
     moduleKey: ModuleKey
     mutable emittingAsync: Bool
     mutable tailCallUsed: Bool
@@ -31,6 +32,7 @@ new(
     emitTarget: EmitTarget
     isMainModule: Bool
     compilerModuleFileUrl: Option[String]
+    esbuildFileUrl: Option[String]
     moduleKey: ModuleKey
 ): JsEmitter {
     JsEmitter(
@@ -41,6 +43,7 @@ new(
         emitTarget = emitTarget
         isMainModule = isMainModule
         compilerModuleFileUrl = compilerModuleFileUrl
+        esbuildFileUrl = esbuildFileUrl
         moduleKey = moduleKey
         emittingAsync = False
         tailCallUsed = False
@@ -1157,6 +1160,20 @@ extend self: JsEmitter {
                 self.writeMapped(term.at, "return result;")
                 self.writeLine()
                 self.writeMapped(term.at, "})())")
+                True
+            | "ff:core/BuildSystem.internalEsbuildPath" =>
+                self.writeMapped(term.at, self.esbuildFileUrl.map {Json.string(_).write()}.else {"null"})
+                True
+            | "ff:core/Js.import" {arguments | [ECall(at, StaticCall("ff:core/BuildSystem.internalEsbuildPath", False, False), _, _, _, _)]} =>
+                self.emitTarget.{
+                    | EmitBrowser => 
+                        self.writeMapped(at, "(() => {throw new Error('Node.js imports are not supported in the browser')})()")
+                    | _ => 
+                        self.esbuildFileUrl.{
+                            | Some(url) => self.writeMapped(at, self.jsImporter.add(url.replace("\"", "")))
+                            | None => self.writeMapped(at, "null")
+                        }
+                }
                 True
             | "ff:core/Js.import" {arguments | [EString(at, url)]} =>
                 self.emitTarget.{
