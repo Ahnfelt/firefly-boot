@@ -100,7 +100,7 @@ main(system: NodeSystem): Unit {
                     packages = [Pair(
                         PackagePair("ff", "core"), PackageInfo(DPackage(
                             fakeLocation, PackagePair("ff", "core"), Version(fakeLocation, 0, 0, 0), TargetNames(True, False)
-                        ), [], [DInclude(fakeLocation, "node_modules")])
+                        ), [], [])
                     )].toMap() // Only used for includes currently
                     packagePaths = [
                         Pair(PackagePair("ff", "compiler"), workingDirectory.slash("compiler"))
