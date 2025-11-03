@@ -23,6 +23,6 @@
         "esbuild": "^0.21.3"
     },
     "bin": {
-        "firefly": "./bin/firefly"
+        "firefly": "./bin/firefly.js"
     }
 }
