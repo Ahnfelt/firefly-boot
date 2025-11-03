@@ -11,7 +11,7 @@ const env = {
 const args = process.argv.slice(2);
 const compilerPath = path.join(fireflyLink, 'output/js/ff/compiler/Main.run.mjs');
 
-//try {
+try {
     spawnSync('node', [
         '--enable-source-maps',
         '--harmony-temporal',
@@ -21,6 +21,6 @@ const compilerPath = path.join(fireflyLink, 'output/js/ff/compiler/Main.run.mjs'
         stdio: 'inherit',
         env: env,
     });
-/*} catch (error) {
+} catch (error) {
     process.exit(error.status || 1);
-}*/
+}
