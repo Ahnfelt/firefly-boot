@@ -216,7 +216,7 @@ startProxy(
     targetPort: Int
 ) {
     let net = Js.import("node:net")
-    let targetServer = "localhost" // 127.0.0.1
+    let targetServer = "127.0.0.1" // localhost
     let proxyServer = net->createServer(Js->(pauseOnConnect = True), Js->{clientSocket =>
         mutable targetSocket = Js.undefined()
         mutable connected = False

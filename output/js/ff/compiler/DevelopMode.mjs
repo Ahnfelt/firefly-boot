@@ -334,7 +334,7 @@ runner_.changedSinceCompilationStarted_ = ff_core_Set.Set_add(runner_.changedSin
 
 export function startProxy_(system_, runner_, proxyPort_, targetPort_) {
 const net_ = import$1;
-const targetServer_ = "localhost";
+const targetServer_ = "127.0.0.1";
 const proxyServer_ = net_.createServer({pauseOnConnect: true}, ((clientSocket_) => {
 let targetSocket_ = (void 0);
 let connected_ = false;
@@ -619,7 +619,7 @@ runner_.changedSinceCompilationStarted_ = ff_core_Set.Set_add(runner_.changedSin
 
 export async function startProxy_$(system_, runner_, proxyPort_, targetPort_, $task) {
 const net_ = import$1;
-const targetServer_ = "localhost";
+const targetServer_ = "127.0.0.1";
 const proxyServer_ = net_.createServer({pauseOnConnect: true}, (async (a_1) => await (async (clientSocket_, $task) => {
 let targetSocket_ = (void 0);
 let connected_ = false;
