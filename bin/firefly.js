@@ -3,16 +3,14 @@ const path = require('path');
 const fs = require('fs');
 const { spawnSync } = require('child_process');
 
-const fireflyLink = path.resolve(__dirname, '../');
-const globalNodeModules = path.join(fireflyLink, 'node_modules');
-const localNodeModules = path.join(fireflyLink, '../../node_modules');
 const env = {
     ...process.env,
-    NODE_PATH: fs.existsSync(globalNodeModules) ? globalNodeModules : localNodeModules,
+    NODE_PATH: path.join(require.resolve('esbuild'), '../../..'),
 }
 
-const args = process.argv.slice(2);
+const fireflyLink = path.resolve(__dirname, '../');
 const compilerPath = path.join(fireflyLink, 'output/js/ff/compiler/Main.run.mjs');
+const args = process.argv.slice(2);
 
 try {
     spawnSync('node', [
