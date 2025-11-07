@@ -153,7 +153,7 @@ usage: firefly <main-file> [<main-arguments>] | <command> [<command-arguments>]
 These are the commands:
   run <main-file> [<main-arguments>]       Run the main file with the provided arguments
   develop [<proxy-port> <target-port>] 
-    <main-file> [<main-arguments>]         Develop the main file with the provided arguments
+    <main-file> [<main-arguments>]         Starts a devserver (default ports 8081 8080)
   browser <main-file>                      Compile the main file for the browser
   build <main-file>                        Build the main file
   check <firefly-file>                     Check the firefly source file for errors
