@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 const path = require('path');
+const fs = require('fs');
 const { spawnSync } = require('child_process');
 
 const fireflyLink = path.resolve(__dirname, '../');
+const globalNodeModules = path.join(fireflyLink, 'node_modules');
+const localNodeModules = path.join(fireflyLink, '../../node_modules');
 const env = {
     ...process.env,
-    NODE_PATH: path.join(fireflyLink, 'node_modules'),
+    NODE_PATH: fs.existsSync(globalNodeModules) ? globalNodeModules : localNodeModules,
 }
 
 const args = process.argv.slice(2);
