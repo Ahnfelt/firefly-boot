@@ -8,6 +8,8 @@ const env = {
     NODE_PATH: path.join(require.resolve('esbuild'), '../../..'),
 }
 
+console.log(env.NODE_PATH);
+
 const fireflyLink = path.resolve(__dirname, '../');
 const compilerPath = path.join(fireflyLink, 'output/js/ff/compiler/Main.run.mjs');
 const args = process.argv.slice(2);
