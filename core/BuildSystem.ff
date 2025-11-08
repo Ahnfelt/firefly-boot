@@ -96,7 +96,7 @@ internalBrowserCallEsBuild(
     minify: Bool
     sourceMap: Bool
 ): Unit {
-    let esbuild = Js.import("esbuild")
+    let esbuild = Js.import("esbuild/lib/main.js")
     Js.await(esbuild->build(Js->(
         entryPoints = mainJsFiles
         bundle = True
@@ -115,7 +115,7 @@ internalNodeCallEsBuild(
     outputPath: String
     minify: Bool
 ): Unit {
-    let esbuild = Js.import("esbuild")
+    let esbuild = Js.import("esbuild/lib/main.js")
     Js.await(esbuild->build(Js->(
         entryPoints = [mainJsFile]
         bundle = True
@@ -135,7 +135,7 @@ internalNodeCallEsBuildContext(
     outputPath: String
     minify: Bool
 ): JsValue {
-    let esbuild = Js.import("esbuild")
+    let esbuild = Js.import("esbuild/lib/main.js")
     Js.await(esbuild->context(Js->(
         entryPoints = [mainJsFile]
         bundle = True

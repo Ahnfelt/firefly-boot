@@ -90,7 +90,7 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
-import * as import$0 from 'esbuild';
+import * as import$0 from 'esbuild/lib/main.js';
 import * as import$1 from 'path';
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
