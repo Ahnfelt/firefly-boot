@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 const path = require('path');
-const fs = require('fs');
 const { spawnSync } = require('child_process');
 
 const env = {
     ...process.env,
-    NODE_PATH: path.join(require.resolve('esbuild'), '../../..'),
+    NODE_PATH: path.resolve(require.resolve('esbuild'), '../../..'),
 }
 
 const fireflyLink = path.resolve(__dirname, '../');
