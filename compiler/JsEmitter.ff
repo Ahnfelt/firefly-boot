@@ -201,6 +201,49 @@ extend self: JsEmitter {
         let targetMain = if(willRunOnNode) {"nodeMain"} else {"browserMain"}
         let mainFunction =
             functions.find {_.signature.name == targetMain}.orElse {functions.find {_.signature.name == "main"}}
+        function makeRunFunction(rawName: String, mainName: String, build: Bool, run: Bool): List[String] {
+            [
+                "export async function " + rawName + "(fireflyPath_, arguments_) {"
+                "Error.stackTraceLimit = 50"
+                "const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}"
+                ...if(self.emitTarget != EmitBrowser) {[
+                    "let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)" // To prevent deadlocks from exiting node
+                ]} else {[]}
+                "let system = {"
+                "task_: $task,"
+                "array_: arguments_,"
+                "fireflyPath_: fireflyPath_,"
+                "mainPackagePair_: {group_: \"" + mainPackagePair.group + "\", name_: \"" + mainPackagePair.name + "\"},"
+                "executableMode_: " + if(self.emitTarget == EmitExecutable) {"true"} else {"false"} + ","
+                "buildMode_: " + if(self.emitTarget == EmitBuild) {"true"} else {"false"}
+                "}"
+                "try {"
+                ...if(build && !buildMainFunction.isEmpty()) {[
+                    "await buildMain_$(system, $task)"]
+                } else {[]}
+                ...if(build && self.emitTarget == EmitExecutable) {[
+                    "if(system.assets_) await ff_core_BuildSystem.internalWriteAssets_$(system, system.assets_, $task)"
+                ]} else {[]}
+                ...if(run && self.emitTarget != EmitBuild) {[
+                    ...if(self.emitTarget == EmitExecutable) {[
+                        "system.assets_ = await ff_core_BuildSystem.internalReadAssets_$(system, $task)"
+                    ]} else {[]}
+                    "await " + mainName + "_$(system, $task)"
+                ]} else {[]}
+                ...if(!willRunOnNode) {[]} else {[
+                    "} catch(error) {"
+                    "console.error(ff_core_Error.Error_stack(error))"
+                    "process.exit(1)"
+                ]}
+                "} finally {"
+                ...if(self.emitTarget != EmitBrowser) {[
+                    "$task.controller_.abort()"
+                    "clearInterval(interval)"
+                ]} else {[]}
+                "}"
+                "}"
+            ]
+        }
         mainFunction.map {_.signature.name}.map {mainName => [[
             ...buildMainFunction.map {buildMain =>
                 "import {" + escapeKeyword(buildMain.signature.name) + "$} from './" + moduleName + ".mjs'"
@@ -208,42 +251,13 @@ extend self: JsEmitter {
             "import {" + escapeKeyword(mainName) + "$} from './" + moduleName + ".mjs'"
             self.emitImport(ModuleKey(PackagePair("ff", "core"), [], "Error"))
             self.emitImport(ModuleKey(PackagePair("ff", "core"), [], "BuildSystem"))
-            "export async function $run$(fireflyPath_, arguments_) {"
-            "Error.stackTraceLimit = 50"
-            "const $task = {controller_: new AbortController(), subtasks_: new Set(), promise_: new Promise(() => {}), started_: performance.now() * 0.001}"
-            ...if(self.emitTarget != EmitBrowser) {[
-                "let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)" // To prevent deadlocks from exiting node
-            ]} else {[]}
-            "let system = {"
-            "task_: $task,"
-            "array_: arguments_,"
-            "fireflyPath_: fireflyPath_,"
-            "mainPackagePair_: {group_: \"" + mainPackagePair.group + "\", name_: \"" + mainPackagePair.name + "\"},"
-            "executableMode_: " + if(self.emitTarget == EmitExecutable) {"true"} else {"false"} + ","
-            "buildMode_: " + if(self.emitTarget == EmitBuild) {"true"} else {"false"}
-            "}"
-            "try {"
-            ...if(!buildMainFunction.isEmpty()) {[
-                "await buildMain_$(system, $task)"]
-            } else {[]}
-            ...if(self.emitTarget != EmitBuild && self.emitTarget != EmitExecutable) {[
-                "await " + mainName + "_$(system, $task)"
-            ]} else {[]}
-            ...if(self.emitTarget == EmitExecutable) {[
-                "if(system.assets_) await ff_core_BuildSystem.internalWriteAssets_$(system, system.assets_, $task)"
-            ]} else {[]}
-            ...if(!willRunOnNode) {[]} else {[
-                "} catch(error) {"
-                "console.error(ff_core_Error.Error_stack(error))"
-                "process.exit(1)"
-            ]}
-            "} finally {"
-            ...if(self.emitTarget != EmitBrowser) {[
-                "$task.controller_.abort()"
-                "clearInterval(interval)"
-            ]} else {[]}
-            "}"
-            "}"
+            ...self.emitTarget.{
+                | EmitExecutable => [
+                    ...makeRunFunction("$build$", mainName = mainName, build = True, run = False)
+                    ...makeRunFunction("$run$", mainName = mainName, build = False, run = True)
+                ]
+                | _ => makeRunFunction("$run$", mainName = mainName, build = True, run = True)
+            }
             ...self.emitTarget.{
                 | EmitBrowser => [
                     "queueMicrotask(async () => {"

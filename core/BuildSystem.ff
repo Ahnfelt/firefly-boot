@@ -224,3 +224,10 @@ internalWriteAssets(system: NodeSystem, assetSystem: AssetSystem): Unit {
         }
     }
 }
+
+internalReadAssets(system: NodeSystem): AssetSystem {
+    let path = system.path(".").slash(".firefly").path("output").slash("assets")
+    Log.debug("Reading assets from " + path.absolute())
+    let streams = internalListDirectory(path)
+    AssetSystem(streams.toMap())
+}

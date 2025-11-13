@@ -70,7 +70,7 @@ main(system: NodeSystem): Unit {
             let moduleKey = 
                 buildScript(system, mainPath, resolvedDependencies.mainPackagePair, EmitExecutable, resolvedDependencies)
             bundleForExecutable(system, resolvedDependencies.mainPackagePair, moduleKey)
-            importAndRun(system, fireflyPath, "executable", moduleKey, [])
+            importAndRun(system, fireflyPath, "executable", moduleKey, [], buildMode = True)
 
         | CheckCommand(filePath) => 
             let errors = Builder.check(
@@ -280,9 +280,16 @@ bundleForExecutable(system: NodeSystem, packagePair: PackagePair, moduleKey: Mod
     let packagePath = moduleKey.packagePair.groupName("/")
     let outputPath = system.path(".firefly/output/executable/" + packagePath + "/")
     let runFile = outputPath.slash(moduleKey.importName() + ".run.mjs")
+    let startPath = runFile.parent().grab().slash(runFile.base() + ".start.mjs")
+    startPath.writeText(
+        "import * as run from " + Json.string("./" + runFile.base()).write() + "\n" + 
+        "globalThis.ffDevelopMode = true\n" + 
+        // The following should be awaited, but esbuild doesn't support top level await - still seems to work though
+        "run.$run$(null, process.argv.slice(2))"
+    )
     BuildSystem.internalNodeCallEsBuild(
         system, 
-        runFile.absolute(), 
+        startPath.absolute(), 
         outputPath.absolute(), 
         minify = True
     )
@@ -307,12 +314,17 @@ importAndRun(
     target: String
     moduleKey: ModuleKey
     arguments: List[String]
+    buildMode: Bool = False
 ): Bool {
     let runFile = locateRunFile(system, target, moduleKey)
     let runFilePath = if(runFile.contains("://")) {system.pathFromUrl(runFile)} else {system.path(runFile)}
     if(runFilePath.exists()) {
         let main = Js.await(Js.dynamicImport(runFile))
-        Js.await(main->"$run$"(fireflyPath.absolutePath, arguments))
+        if(buildMode) {
+            Js.await(main->"$build$"(fireflyPath.absolutePath, arguments))
+        } else {
+            Js.await(main->"$run$"(fireflyPath.absolutePath, arguments))
+        }
         True
     } else {
         False

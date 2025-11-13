@@ -4,7 +4,7 @@
         "../../../../core/Any.ff"
     ],
     "sourcesContent": [
-        "data Any {}\r\ndata AnyTag[T] {}\r\n\r\ntrait T: HasAnyTag {\r\n    anyTag(): AnyTag[T]\r\n}\r\n\r\ntoAny[T: HasAnyTag](value: T): Any {\r\n    let anyTag: AnyTag[T] = anyTag()\r\n    Js->(anyTag = anyTag!, value = value!)?\r\n}\r\n\r\nfromAny[T: HasAnyTag](any: Any): Option[T] {\r\n    let anyTag: AnyTag[T] = anyTag()\r\n    if(any!->anyTag.equals(anyTag!)) {any!->value?}\r\n}\r\n\r\nextend self[T]: AnyTag[T] {\r\n    show(): String {\r\n        self!?\r\n    }\r\n}\r\n\r\ninternalAnyTag[T](tag: String): AnyTag[T] {\r\n    tag!?\r\n}"
+        "data Any {}\ndata AnyTag[T] {}\n\ntrait T: HasAnyTag {\n    anyTag(): AnyTag[T]\n}\n\ntoAny[T: HasAnyTag](value: T): Any {\n    let anyTag: AnyTag[T] = anyTag()\n    Js->(anyTag = anyTag!, value = value!)?\n}\n\nfromAny[T: HasAnyTag](any: Any): Option[T] {\n    let anyTag: AnyTag[T] = anyTag()\n    if(any!->anyTag.equals(anyTag!)) {any!->value?}\n}\n\nextend self[T]: AnyTag[T] {\n    show(): String {\n        self!?\n    }\n}\n\ninternalAnyTag[T](tag: String): AnyTag[T] {\n    tag!?\n}"
     ],
     "names": [
         "toAny",

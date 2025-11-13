@@ -182,6 +182,13 @@ ff_core_Path.Path_writeStream(assetPath_, s_(), false)
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 
+export function internalReadAssets_(system_) {
+const path_ = ff_core_Path.Path_slash(ff_core_Path.Path_path(ff_core_Path.Path_slash(ff_core_NodeSystem.NodeSystem_path(system_, "."), ".firefly"), "output"), "assets");
+ff_core_Log.debug_(("Reading assets from " + ff_core_Path.Path_absolute(path_)));
+const streams_ = ff_core_BuildSystem.internalListDirectory_(path_);
+return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+}
+
 export async function internalBrowserCallEsBuild_$(self_, mainJsFiles_, outputPath_, minify_, sourceMap_, $task) {
 const esbuild_ = import$0;
 (await esbuild_.build({entryPoints: mainJsFiles_, bundle: true, minify: minify_, sourcemap: sourceMap_, platform: "browser", target: "es2017", outdir: outputPath_, outExtension: {[".js"]: ".bundle.js"}}))
@@ -265,6 +272,13 @@ const assetPath_ = (await ff_core_Path.Path_slash$(path_, p_, $task));
 (await ff_core_Path.Path_writeStream$(assetPath_, (await s_($task)), false, $task))
 }
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, $task))
+}
+
+export async function internalReadAssets_$(system_, $task) {
+const path_ = (await ff_core_Path.Path_slash$((await ff_core_Path.Path_path$((await ff_core_Path.Path_slash$((await ff_core_NodeSystem.NodeSystem_path$(system_, ".", $task)), ".firefly", $task)), "output", $task)), "assets", $task));
+ff_core_Log.debug_(("Reading assets from " + (await ff_core_Path.Path_absolute$(path_, $task))));
+const streams_ = (await ff_core_BuildSystem.internalListDirectory_$(path_, $task));
+return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
 export function BuildSystem_compileForBrowser(self_, mainFiles_) {
