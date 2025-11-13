@@ -21,6 +21,8 @@ EXPOSE 8080
 ENTRYPOINT [ "dumb-init", "node", "--harmony-temporal", "--enable-source-maps", ".firefly/output/executable/ff/fireflysite/Main.run.mjs.start.js", "0.0.0.0", "8080" ]
 
 # Test it with
-# podman build --no-cache -t fireflysite .
-# podman run -p 8080:8080 --rm -it fireflysite
-# podman run --entrypoint /bin/bash --rm -it fireflysite
+# podman build --no-cache -t ghcr.io/ahnfelt/fireflysite:test .
+# podman run -p 8080:8080 --rm -it ghcr.io/ahnfelt/fireflysite:test
+# podman run --entrypoint /bin/bash --rm -it ghcr.io/ahnfelt/fireflysite:test
+# podman login ghcr.io -u ahnfelt # 
+# podman push ghcr.io/ahnfelt/fireflysite:test
