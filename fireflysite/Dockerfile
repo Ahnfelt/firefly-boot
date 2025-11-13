@@ -12,7 +12,7 @@ WORKDIR /home/node/firefly
 RUN npm install --production firefly-compiler
 WORKDIR /home/node/app
 RUN [ "/home/node/firefly/node_modules/.bin/firefly", "build", "Main.ff" ]
-RUN rm -r /home/node/firefly && rm -r /home/node/app/.firefly/dependencies && rm -r /home/node/app/routes/.firefly/dependencies
+RUN rm -r /home/node/app/.firefly/dependencies && rm -r /home/node/app/routes/.firefly/dependencies
 
 FROM system-layer
 COPY --from=build-layer /home/node/app /home/node/app
