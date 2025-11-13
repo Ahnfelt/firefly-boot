@@ -9,9 +9,9 @@ COPY --chown=node:node . .
 RUN npm install esbuild
 RUN [ "/home/node/firefly/node_modules/.bin/firefly", "build", "Main.ff" ]
 EXPOSE 8080
-ENTRYPOINT [ "dumb-init", "node", "--harmony-temporal", ".firefly/output/executable/ff/fireflysite/Main.run.js", "0.0.0.0", "8080" ]
+ENTRYPOINT [ "dumb-init", "node", "--harmony-temporal", "--enable-source-maps", ".firefly/output/executable/ff/fireflysite/Main.run.mjs.start.js", "0.0.0.0", "8080" ]
 
 # Test it with
-# podman build -t fireflysite .
+# podman build --no-cache -t fireflysite .
 # podman run -p 8080:8080 --rm -it fireflysite
 # podman run --entrypoint /bin/bash --rm -it fireflysite
