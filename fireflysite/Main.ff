@@ -23,15 +23,6 @@ nodeMain(system: NodeSystem): Unit {
         let path = request.readPath()
         let segments = path.split('/').filter {s => s != "" && s != "." && s != ".."}
         segments.{
-            | _ {
-                !request.readHeader("host").contains("www.firefly-lang.org") &&
-                !request.readHeader("host").any {_.startsWith("localhost")}
-            } =>
-                let parameters = if(request.readRawQueryString().size() == 0) {""} else {
-                    "?" + request.readRawQueryString()
-                }
-                request.writeHeader("Location", "https://www.firefly-lang.org" + path + parameters)
-                request.writeStatus("302 Found")
             | ["js", ...] => 
                 let asset = path.removeLast(".run.mjs").map {_ + ".run.bundle.js"}
                     .filter {system.assets().exists(_)}.else {path}
