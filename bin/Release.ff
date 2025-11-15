@@ -1,20 +1,16 @@
-dependency ff:s3:0.0.0
-import S3 from ff:s3
-
 nodeMain(system: NodeSystem) {
     system.arguments().{
-        | [accessKeyId, secretAccessKey] => 
-            release(system, accessKeyId, secretAccessKey)
+        | [packageStorageKey] => 
+            release(system, packageStorageKey)
         | _ => 
-            system.writeErrorLine("Usage: aws-access-key-id aws-secret-access-key")
+            system.writeErrorLine("Usage: BUNNY_STORAGE_API_KEY")
             system.exit(1)            
     }
 }
 
 release(
     system: NodeSystem
-    accessKeyId: String
-    secretAccessKey: String
+    packageStorageKey: String
 ): Unit {
     if(!system.path("Release.ff").isFile()) {
         system.writeErrorLine("You need to be in the directory of Release.ff")
@@ -29,14 +25,14 @@ release(
     bumpMinorVersion(system, system.path("../vscode/package.json"))
     runSuccessful(system, "npm", ["publish"], system.path(".."))
     runSuccessful(system, "vsce", ["publish"], system.path("../vscode"))
-    releaseFireflyPackage(system, accessKeyId, secretAccessKey, "compiler")
-    releaseFireflyPackage(system, accessKeyId, secretAccessKey, "core")
-    releaseFireflyPackage(system, accessKeyId, secretAccessKey, "lux")
-    releaseFireflyPackage(system, accessKeyId, secretAccessKey, "postgresql")
-    releaseFireflyPackage(system, accessKeyId, secretAccessKey, "rpc")
-    releaseFireflyPackage(system, accessKeyId, secretAccessKey, "s3")
-    releaseFireflyPackage(system, accessKeyId, secretAccessKey, "webserver")
-    releaseFireflyPackage(system, accessKeyId, secretAccessKey, "websocket")
+    releaseFireflyPackage(system, packageStorageKey, "compiler")
+    releaseFireflyPackage(system, packageStorageKey, "core")
+    releaseFireflyPackage(system, packageStorageKey, "lux")
+    releaseFireflyPackage(system, packageStorageKey, "postgresql")
+    releaseFireflyPackage(system, packageStorageKey, "rpc")
+    releaseFireflyPackage(system, packageStorageKey, "s3")
+    releaseFireflyPackage(system, packageStorageKey, "webserver")
+    releaseFireflyPackage(system, packageStorageKey, "websocket")
     runSuccessful(system, "git", ["commit", "-a", "-m", "Autorelease_v" + version], system.path(".."))
     runSuccessful(system, "git", ["push"], system.path(".."))
     runSuccessful(system, "npm", ["install", "-g", "firefly-compiler"], system.path(".."))
@@ -44,8 +40,7 @@ release(
 
 releaseFireflyPackage(
     system: NodeSystem
-    accessKeyId: String
-    secretAccessKey: String
+    packageStorageKey: String
     packageName: String
 ): Unit {
     system.writeLine("")
@@ -57,18 +52,15 @@ releaseFireflyPackage(
         tarGz.delete()
     }
     internalMakeTarGz(tarGz, system.path("../" + packageName))
-    S3.put(
-        system
-        accessKeyId
-        secretAccessKey
-        "eu-central-1" 
-        "firefly-site"
-        "site/packages/ff/" + packageName + "/" + tarGz.base()
-        tarGz.readBuffer()
+    system.httpClient().put(
+        url = "https://storage.bunnycdn.com/test-aeough5739tugh534/packages/ff/" + packageName + "/" + tarGz.base()
         headers = [
-            Pair("Content-Type", "application/x-gzip")
+            Pair("AccessKey", packageStorageKey)
+            Pair("Content-Type", "application/octet-stream")
+            Pair("Accept", "application/json")
         ]
-    )
+        payload = tarGz.readBuffer()
+    ) {Log.debug(_.readText())}
 }
 
 requireNpmLoggedIn(system: NodeSystem, directory: Path) {
