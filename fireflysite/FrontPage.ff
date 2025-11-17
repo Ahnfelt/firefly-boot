@@ -143,7 +143,7 @@ sections(): List[Section] {
                 Text("can have simply by looking at what arguments it receives.")
             ])
             CodeBlock("""
-                nodeMain(system: NodeSytem) {
+                nodeMain(system: NodeSystem) {
                     let html = fetchSite(system.httpClient())
                     system.writeLine(html)
                 }
