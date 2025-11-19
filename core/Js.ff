@@ -71,10 +71,6 @@ inBrowser(): Bool {
 inNode(): Bool {
     panic("This call should have been eliminated by the compiler")
 }
-    
-inBuild(): Bool {
-    panic("This call should have been eliminated by the compiler")
-}
 
 currentTask(): Task {
     panic("This call should have been eliminated by the compiler")

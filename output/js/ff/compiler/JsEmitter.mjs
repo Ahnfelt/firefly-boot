@@ -116,10 +116,6 @@ const EmitBrowser$ = {EmitBrowser: true};
 export function EmitBrowser() {
 return EmitBrowser$;
 }
-const EmitBuild$ = {EmitBuild: true};
-export function EmitBuild() {
-return EmitBuild$;
-}
 const EmitExecutable$ = {EmitExecutable: true};
 export function EmitExecutable() {
 return EmitExecutable$;
@@ -812,13 +808,11 @@ return [(("export async function " + rawName_) + "(fireflyPath_, arguments_) {")
 ? ["let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)"]
 : []), "let system = {", "task_: $task,", "array_: arguments_,", "fireflyPath_: fireflyPath_,", (((("mainPackagePair_: {group_: \"" + mainPackagePair_.group_) + "\", name_: \"") + mainPackagePair_.name_) + "\"},"), (("executableMode_: " + (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable())
 ? "true"
-: "false")) + ","), ("buildMode_: " + (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild())
-? "true"
-: "false")), "}", "try {", ...((build_ && (!ff_core_Option.Option_isEmpty(buildMainFunction_)))
+: "false")) + ","), "}", "try {", ...((build_ && (!ff_core_Option.Option_isEmpty(buildMainFunction_)))
 ? ["await buildMain_$(system, $task)"]
 : []), ...((build_ && ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable()))
 ? ["if(system.assets_) await ff_core_BuildSystem.internalWriteAssets_$(system, system.assets_, $task)"]
-: []), ...((run_ && ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget))
+: []), ...(run_
 ? [...(ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable())
 ? ["system.assets_ = await ff_core_BuildSystem.internalReadAssets_$(system, $task)"]
 : []), (("await " + mainName_) + "_$(system, $task)")]
@@ -2578,12 +2572,6 @@ return true
 }
 if(_1 === "ff:core/Js.inNode") {
 ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitNode())
-? "true"
-: "false"));
-return true
-}
-if(_1 === "ff:core/Js.inBuild") {
-ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild())
 ? "true"
 : "false"));
 return true
@@ -4433,13 +4421,11 @@ return [(("export async function " + rawName_) + "(fireflyPath_, arguments_) {")
 ? ["let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)"]
 : []), "let system = {", "task_: $task,", "array_: arguments_,", "fireflyPath_: fireflyPath_,", (((("mainPackagePair_: {group_: \"" + mainPackagePair_.group_) + "\", name_: \"") + mainPackagePair_.name_) + "\"},"), (("executableMode_: " + (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable())
 ? "true"
-: "false")) + ","), ("buildMode_: " + (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild())
-? "true"
-: "false")), "}", "try {", ...((build_ && (!ff_core_Option.Option_isEmpty(buildMainFunction_)))
+: "false")) + ","), "}", "try {", ...((build_ && (!ff_core_Option.Option_isEmpty(buildMainFunction_)))
 ? ["await buildMain_$(system, $task)"]
 : []), ...((build_ && ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable()))
 ? ["if(system.assets_) await ff_core_BuildSystem.internalWriteAssets_$(system, system.assets_, $task)"]
-: []), ...((run_ && ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget))
+: []), ...(run_
 ? [...(ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable())
 ? ["system.assets_ = await ff_core_BuildSystem.internalReadAssets_$(system, $task)"]
 : []), (("await " + mainName_) + "_$(system, $task)")]
@@ -6203,12 +6189,6 @@ ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, (ff_compiler_JsEmi
 : "false"));
 return true
 }
-if(_1 === "ff:core/Js.inBuild") {
-ff_compiler_JsEmitter.JsEmitter_writeMapped(self_, term_.at_, (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild())
-? "true"
-: "false"));
-return true
-}
 if(_1 === "ff:core/Js.value") {
 const _guard1 = arguments_;
 if(_guard1.length === 1) {
@@ -7956,10 +7936,6 @@ if(value_a.EmitBrowser) {
 const z_ = value_a;
 return "EmitBrowser"
 }
-if(value_a.EmitBuild) {
-const z_ = value_a;
-return "EmitBuild"
-}
 {
 const z_ = value_a;
 return "EmitExecutable"
@@ -7974,10 +7950,6 @@ return "EmitNode"
 if(value_a.EmitBrowser) {
 const z_ = value_a;
 return "EmitBrowser"
-}
-if(value_a.EmitBuild) {
-const z_ = value_a;
-return "EmitBuild"
 }
 {
 const z_ = value_a;
@@ -8025,11 +7997,8 @@ return 0
 if(z_a.EmitBrowser) {
 return 1
 }
-if(z_a.EmitBuild) {
-return 2
-}
 {
-return 3
+return 2
 }
 }
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
@@ -8050,11 +8019,8 @@ return 0
 if(z_a.EmitBrowser) {
 return 1
 }
-if(z_a.EmitBuild) {
-return 2
-}
 {
-return 3
+return 2
 }
 }
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
@@ -8082,19 +8048,11 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-if(value_a.EmitBuild) {
-const v_ = value_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2);
-serialization_.offset_ += 1
-return
-}
 {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 36), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 3);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2);
 serialization_.offset_ += 1
 return
 }
@@ -8113,10 +8071,6 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_JsEmitter.EmitBrowser()
 }
 if(_1 === 2) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-return ff_compiler_JsEmitter.EmitBuild()
-}
-if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 36), 0);
 return ff_compiler_JsEmitter.EmitExecutable()
 }
@@ -8144,19 +8098,11 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1
 serialization_.offset_ += 1
 return
 }
-if(value_a.EmitBuild) {
-const v_ = value_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2);
-serialization_.offset_ += 1
-return
-}
 {
 const v_ = value_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 36), 0);
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 3);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2);
 serialization_.offset_ += 1
 return
 }
@@ -8175,10 +8121,6 @@ serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_
 return ff_compiler_JsEmitter.EmitBrowser()
 }
 if(_1 === 2) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-return ff_compiler_JsEmitter.EmitBuild()
-}
-if(_1 === 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 36), 0);
 return ff_compiler_JsEmitter.EmitExecutable()
 }

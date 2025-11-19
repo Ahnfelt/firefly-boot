@@ -346,10 +346,6 @@ return [bundleEntry_, mapEntry_]
 }
 }
 
-export function BuildSystem_buildMode(self_) {
-return (!(!self_["buildMode_"]))
-}
-
 export function BuildSystem_setAssets(self_, assetSystem_) {
 self_["assets_"] = assetSystem_
 }
@@ -438,10 +434,6 @@ return (await ff_core_Path.Path_readStream$(mapPath_, $task))
 return [bundleEntry_, mapEntry_]
 }), $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
-}
-
-export async function BuildSystem_buildMode$(self_, $task) {
-return (!(!self_["buildMode_"]))
 }
 
 export async function BuildSystem_setAssets$(self_, assetSystem_, $task) {

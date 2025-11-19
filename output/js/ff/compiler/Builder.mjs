@@ -242,7 +242,7 @@ const fixedResolvedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_);
 const newCache_ = ff_compiler_ModuleCache.ModuleCache_without(cache_, newVersion_, path_);
-const compiler_ = ff_compiler_Compiler.new_(ff_compiler_JsEmitter.EmitBuild(), ff_core_NodeSystem.NodeSystem_mainTask(system_), ff_core_Option.None(), ff_core_Path.Path_slash(ff_core_Path.Path_slash(package_.root_, ".firefly"), "temporary"), fixedResolvedDependencies_, virtualFiles_, newCache_, lspHook_);
+const compiler_ = ff_compiler_Compiler.new_(ff_compiler_JsEmitter.EmitNode(), ff_core_NodeSystem.NodeSystem_mainTask(system_), ff_core_Option.None(), ff_core_Path.Path_slash(ff_core_Path.Path_slash(package_.root_, ".firefly"), "temporary"), fixedResolvedDependencies_, virtualFiles_, newCache_, lspHook_);
 for(let for_a = package_.files_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const file_ = for_a[for_i];
 const packagePair_ = resolvedDependencies_.mainPackagePair_;
@@ -364,7 +364,7 @@ ff_core_Path.Path_writeStream(p_, makeStream_(), false)
 return
 }
 }));
-const json_ = "{\r\n        \"name\": \"main\",\r\n        \"bin\": {\r\n            \"firefly-main\": \"Main.bundle.js\"\r\n        },\r\n        \"devDependencies\": {\r\n            \"pkg\": \"^5.8.0\"\r\n        },\r\n        \"pkg\": {\r\n            \"scripts\": \"Main.bundle.js\",\r\n            \"outputPath\": \"bin\",\r\n            \"assets\": [\"../assets/**/*\"],\r\n            \"targets\": [\r\n                \"node18-linux-x64\",\r\n                \"node18-macos-x64\",\r\n                \"node18-win-x64\"\r\n            ]\r\n        }\r\n    }";
+const json_ = "{\n        \"name\": \"main\",\n        \"bin\": {\n            \"firefly-main\": \"Main.bundle.js\"\n        },\n        \"devDependencies\": {\n            \"pkg\": \"^5.8.0\"\n        },\n        \"pkg\": {\n            \"scripts\": \"Main.bundle.js\",\n            \"outputPath\": \"bin\",\n            \"assets\": [\"../assets/**/*\"],\n            \"targets\": [\n                \"node18-linux-x64\",\n                \"node18-macos-x64\",\n                \"node18-win-x64\"\n            ]\n        }\n    }";
 const packageFile_ = ff_core_Path.Path_slash(outputPath_, "executable/package.json");
 ff_core_Path.Path_writeText(packageFile_, json_);
 ff_compiler_Builder.internalCallPkg_(self_, packageFile_, outputPath_, targets_)
@@ -496,7 +496,7 @@ const fixedResolvedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_);
 const newCache_ = (await ff_compiler_ModuleCache.ModuleCache_without$(cache_, newVersion_, path_, $task));
-const compiler_ = (await ff_compiler_Compiler.new_$(ff_compiler_JsEmitter.EmitBuild(), (await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), ff_core_Option.None(), (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(package_.root_, ".firefly", $task)), "temporary", $task)), fixedResolvedDependencies_, virtualFiles_, newCache_, lspHook_, $task));
+const compiler_ = (await ff_compiler_Compiler.new_$(ff_compiler_JsEmitter.EmitNode(), (await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), ff_core_Option.None(), (await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(package_.root_, ".firefly", $task)), "temporary", $task)), fixedResolvedDependencies_, virtualFiles_, newCache_, lspHook_, $task));
 for(let for_a = package_.files_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const file_ = for_a[for_i];
 const packagePair_ = resolvedDependencies_.mainPackagePair_;
@@ -618,7 +618,7 @@ const p_ = (await ff_core_Path.Path_slash$(assetOutputPath_, path_, $task));
 return
 }
 }), $task));
-const json_ = "{\r\n        \"name\": \"main\",\r\n        \"bin\": {\r\n            \"firefly-main\": \"Main.bundle.js\"\r\n        },\r\n        \"devDependencies\": {\r\n            \"pkg\": \"^5.8.0\"\r\n        },\r\n        \"pkg\": {\r\n            \"scripts\": \"Main.bundle.js\",\r\n            \"outputPath\": \"bin\",\r\n            \"assets\": [\"../assets/**/*\"],\r\n            \"targets\": [\r\n                \"node18-linux-x64\",\r\n                \"node18-macos-x64\",\r\n                \"node18-win-x64\"\r\n            ]\r\n        }\r\n    }";
+const json_ = "{\n        \"name\": \"main\",\n        \"bin\": {\n            \"firefly-main\": \"Main.bundle.js\"\n        },\n        \"devDependencies\": {\n            \"pkg\": \"^5.8.0\"\n        },\n        \"pkg\": {\n            \"scripts\": \"Main.bundle.js\",\n            \"outputPath\": \"bin\",\n            \"assets\": [\"../assets/**/*\"],\n            \"targets\": [\n                \"node18-linux-x64\",\n                \"node18-macos-x64\",\n                \"node18-win-x64\"\n            ]\n        }\n    }";
 const packageFile_ = (await ff_core_Path.Path_slash$(outputPath_, "executable/package.json", $task));
 (await ff_core_Path.Path_writeText$(packageFile_, json_, $task));
 (await ff_compiler_Builder.internalCallPkg_$(self_, packageFile_, outputPath_, targets_, $task))

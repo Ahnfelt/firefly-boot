@@ -287,9 +287,6 @@ const compilerModulePath_ = (ff_core_Equal.notEquals_(emitTarget_, ff_compiler_J
 ? ff_core_Option.Some(ff_core_Path.Path_slash(ff_core_Path.Path_slash(ff_core_Path.Path_slash(ff_core_Path.Path_slash(fireflyPath_, "output"), "js"), "ff"), "compiler/Builder.mjs"))
 : ff_core_Option.None());
 const targetName_ = (((_1) => {
-if(_1.EmitBuild) {
-return "build"
-}
 if(_1.EmitNode) {
 return "node"
 }
@@ -748,9 +745,6 @@ const compilerModulePath_ = (ff_core_Equal.notEquals_(emitTarget_, ff_compiler_J
 ? ff_core_Option.Some((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$((await ff_core_Path.Path_slash$(fireflyPath_, "output", $task)), "js", $task)), "ff", $task)), "compiler/Builder.mjs", $task)))
 : ff_core_Option.None());
 const targetName_ = (((_1) => {
-if(_1.EmitBuild) {
-return "build"
-}
 if(_1.EmitNode) {
 return "node"
 }

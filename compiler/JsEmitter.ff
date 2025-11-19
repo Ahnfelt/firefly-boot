@@ -22,7 +22,6 @@ class JsEmitter(
 data EmitTarget {
     EmitNode
     EmitBrowser
-    EmitBuild
     EmitExecutable
 }
 
@@ -215,7 +214,6 @@ extend self: JsEmitter {
                 "fireflyPath_: fireflyPath_,"
                 "mainPackagePair_: {group_: \"" + mainPackagePair.group + "\", name_: \"" + mainPackagePair.name + "\"},"
                 "executableMode_: " + if(self.emitTarget == EmitExecutable) {"true"} else {"false"} + ","
-                "buildMode_: " + if(self.emitTarget == EmitBuild) {"true"} else {"false"}
                 "}"
                 "try {"
                 ...if(build && !buildMainFunction.isEmpty()) {[
@@ -224,7 +222,7 @@ extend self: JsEmitter {
                 ...if(build && self.emitTarget == EmitExecutable) {[
                     "if(system.assets_) await ff_core_BuildSystem.internalWriteAssets_$(system, system.assets_, $task)"
                 ]} else {[]}
-                ...if(run && self.emitTarget != EmitBuild) {[
+                ...if(run) {[
                     ...if(self.emitTarget == EmitExecutable) {[
                         "system.assets_ = await ff_core_BuildSystem.internalReadAssets_$(system, $task)"
                     ]} else {[]}
@@ -1244,9 +1242,6 @@ extend self: JsEmitter {
                 True
             | "ff:core/Js.inNode" =>
                 self.writeMapped(term.at, if(self.emitTarget == EmitNode) {"true"} else {"false"})
-                True
-            | "ff:core/Js.inBuild" =>
-                self.writeMapped(term.at, if(self.emitTarget == EmitBuild) {"true"} else {"false"})
                 True
             | "ff:core/Js.value" {arguments | [e]} =>
                 self.emitTerm(e, async)
