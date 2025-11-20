@@ -154,7 +154,7 @@ check(
         let fixedResolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
         let newCache = cache.without(newVersion, path)
         let compiler = Compiler.new(
-            EmitBuild
+            EmitNode
             system.mainTask() 
             None
             package.root.slash(".firefly").slash("temporary")

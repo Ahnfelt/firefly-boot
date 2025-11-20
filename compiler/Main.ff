@@ -180,7 +180,6 @@ buildScript(
         fireflyPath.slash("output").slash("js").slash("ff").slash("compiler/Builder.mjs")
     }
     let targetName = emitTarget.{
-        | EmitBuild => "build"
         | EmitNode => "node"
         | EmitBrowser => "browser"
         | EmitExecutable => "executable"

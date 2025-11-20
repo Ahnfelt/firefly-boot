@@ -11,7 +11,6 @@ array_: arguments_,
 fireflyPath_: fireflyPath_,
 mainPackagePair_: {group_: "ff", name_: "compiler"},
 executableMode_: false,
-buildMode_: false
 }
 try {
 await main_$(system, $task)

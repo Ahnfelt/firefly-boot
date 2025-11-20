@@ -57,10 +57,6 @@ extend self: BuildSystem {
             }.toMap())
         }
     }
-
-    buildMode(): Bool {
-        !!self!->"buildMode_"?
-    }
     
     setAssets(assetSystem: AssetSystem): Unit {
         self!->"assets_" = assetSystem!
