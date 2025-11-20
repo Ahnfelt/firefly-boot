@@ -1,4 +1,4 @@
-FROM node:22-slim AS system-stage
+FROM node:24-slim AS system-stage
 RUN apt update && apt install dumb-init && rm -rf /var/lib/apt/lists/* && rm -rf /var/cache/apt/archives/*
 USER node
 RUN mkdir /home/node/app
@@ -14,7 +14,7 @@ COPY --chown=node:node . .
 RUN [ "/home/node/firefly/node_modules/.bin/firefly", "build", "Main.ff" ]
 WORKDIR /home/node/app/.firefly/output/executable/ff/fireflysite/
 # Remove unnecessary uws files to save space - try omitting this if you get uws errors, the version might have changed
-RUN mkdir uws_temp && mv uws_linux_x64_127*.node uws_temp/. && rm uws_*.node && mv uws_temp/* . && rmdir uws_temp
+RUN mkdir uws_temp && mv uws_linux_x64_137*.node uws_temp/. && rm uws_*.node && mv uws_temp/* . && rmdir uws_temp
 
 FROM system-stage
 COPY --from=build-stage /home/node/app/.firefly/output/executable /home/node/app/.firefly/output/executable
