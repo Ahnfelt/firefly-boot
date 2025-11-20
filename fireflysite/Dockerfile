@@ -1,4 +1,4 @@
-FROM node:24-slim AS system-stage
+FROM node:24-trixie-slim AS system-stage
 RUN apt update && apt install dumb-init && rm -rf /var/lib/apt/lists/* && rm -rf /var/cache/apt/archives/*
 USER node
 RUN mkdir /home/node/app
