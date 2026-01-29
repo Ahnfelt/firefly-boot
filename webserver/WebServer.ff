@@ -545,11 +545,11 @@ extend self: WebSocketConnection {
     }
     
     publishBuffer(topic: String, message: Buffer) {
-        internalSend(self) {self.webSocket->publish(topic, message!->buffer, True).truthy()}
+        internalSend(self) {self.webSocket->publish(topic, message!->buffer, True); True}
     }
     
     publishText(topic: String, message: String) {
-        internalSend(self) {self.webSocket->publish(topic, message!, True).truthy()}
+        internalSend(self) {self.webSocket->publish(topic, message!, True); True}
     }
 
     subscribe(topic: String) {
