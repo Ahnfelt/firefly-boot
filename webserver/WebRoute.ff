@@ -75,7 +75,7 @@ extend self[P1: WebParameter]: WebRoute1[P1] {
 extend self[P1: WebParameter, P2: WebParameter]: WebRoute2[P1, P2] {
     toUrl(p1: P1, p2: P2): String {
         mutable result = ""
-        mutable parameter = 0
+        mutable parameter = 1
         self.segments.each {r =>
             if(r.startsWith("{")) {
                 let p = if(parameter == 1) {
