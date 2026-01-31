@@ -16,7 +16,7 @@ release(
         system.writeErrorLine("You need to be in the directory of Release.ff")
         system.exit(1)        
     }
-    //requireNpmLoggedIn(system, system.path(".."))
+    requireNpmLoggedIn(system, system.path(".."))
     requireVsceLoggedIn(system, system.path("../vscode"))
     runSuccessful(system, "node", ["output/js/ff/compiler/Main.run.mjs", "bootstrap"], system.path(".."))
     runSuccessful(system, "node", ["output/js/ff/compiler/Main.run.mjs", "bootstrap"], system.path(".."))
