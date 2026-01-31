@@ -36,7 +36,7 @@ release(
     runSuccessful(system, "git", ["commit", "-a", "-m", "Autorelease_v" + version], system.path(".."))
     runSuccessful(system, "git", ["push"], system.path(".."))
     system.writeLine("Due to 2FA requirements, you must now manually run:")
-    system.writeLine("npm publish && npm install -g firefly-compiler")
+    system.writeLine("cd ..; npm publish; npm install -g firefly-compiler")
     //runSuccessful(system, "npm", ["install", "-g", "firefly-compiler"], system.path(".."))
 }
 
