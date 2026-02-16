@@ -361,6 +361,50 @@ extend self: Lux {
         }
     }
     
+    useHook[T](body: LuxHook[T] => Unit) {
+        // if(!self.canHook) {throw(LuxHookException)}
+        // self.canHook = False
+        self.depth += 1
+        try {
+            self.element.element.set("_lux$C" + self.depth, {}!)
+            body(LuxHook(self))
+        } finally {
+            self.depth -= 1
+        }
+    }
+
+    useSuspense2(suspense: () => Unit, body: Lux => Unit) {
+        self.useHook[Option[JsValue]](None): hook =>
+        if(hook.dry) {suspense()}.else:
+        hook.cleanup()
+        let fragment = self.document.createFragment()
+        let luxCopy = self.Lux(element = self.element.LuxElement())
+        let subtask = self.task.spawn {task =>
+            let lux = luxCopy.Lux(
+                task = task
+                renderLock = task.lock()
+                renderQueue = Array.new()
+                element = luxCopy.element.LuxElement(element = fragment)
+            )
+            try {
+                body(lux)
+                task.throwIfAborted()
+                lux.copyFrom(luxCopy)
+                lux.renderLock.do {
+                    abortTasksOnElement(lux, lux.element.childAt(lux.element.child), onlyChildren = True)
+                    lux.element.removeAt(lux.element.child)
+                    lux.element.insertBefore(fragment, lux.jsSystem.null())
+                }
+            } catchAny {error =>
+                if(error.name() != "AbortError") {
+                    error.rethrow()
+                }
+            }
+        }
+        hook.setCleanup {forceAsyncAbort(self, subtask)}
+        suspense()
+    }
+
     useSuspense(suspense: () => Unit, body: Lux => Unit) {
         self.dry.map {_ => suspense()}.else:
         let oldSubtask = getTaskOnElement(self.element.element)
@@ -394,7 +438,125 @@ extend self: Lux {
         suspense()
         setTaskOnElement(self.element.childAt(self.element.child - 1), Some(subtask))
     }
+    
+    useWebSocket(
+        url: String
+        onMessage: Buffer => Unit
+        body: (Buffer => Unit) => Unit
+    ) {
+        self.useHook: hook =>
+        function createWebSocket(): JsValue {
+            let socket = Js->WebSocket->(url)
+            hook.setCleanup {socket->close()}
+            socket->binaryType = "arraybuffer"
+            Js.awaitCancellablePromise {resolve, reject, onSettle =>
+                socket->onopen = Js->{resolve(Unit)}
+                socket->onclose = Js->{reject(_?)}
+            }
+            socket->onopen = Js.null()
+            socket->onclose = Js.null()
+            socket->addEventListener("close", Js->{
+                Log.debug("Closed")
+            })
+            socket->addEventListener("message", Js->{m =>
+                let buffer = Js->DataView->(m->data).grabBuffer() // TODO: Handle text
+                onMessage(buffer)
+            })
+            socket->addEventListener("error", Js->{e =>
+                Log.debug("Error")
+            })
+            hook.setValue(socket)
+            socket
+        }
+        let socket = if(!hook.hasValue()) {
+            createWebSocket()
+        } else {
+            let oldSocket: JsValue = hook.grabValue()
+            if(oldSocket->url === url) {
+                oldSocket
+            } else {
+                oldSocket->close() // TODO: Also close when element is removed
+                createWebSocket()
+            }
+        }
+        let send: Buffer => Unit = {buffer => socket->send(buffer)}
+        body(send)
+    }
 
+}
+
+capability LuxHook[T](lux: Lux)
+
+extend self[T]: LuxHook[T] {
+    dry(): Bool {
+        !self.lux.dry.isEmpty()
+    }
+    setValue(value: T) {
+        self.lux.element.element.set("_lux$S" + self.lux.depth, value!)
+    }
+    hasValue(): Bool {
+        self.lux.element.element.hasOwn("_lux$S" + self.lux.depth)
+    }
+    grabValue(): T {
+        let value = self.lux.element.element.get("_lux$S" + self.lux.depth)
+        if(value.isUndefined() && !self.hasValue()) {
+            throw(GrabException)
+        }
+        value? // If value is an async function, will the effect type system see through this?
+    }
+    setCleanup(body: () => Unit) {
+        self.lux.element.element.set("_lux$C" + self.lux.depth, body!)
+    }
+    cleanup() {
+        let key = "_lux$C" + self.lux.depth
+        let cleanupFunction = self.lux.element.element.get(key)
+        self.lux.element.element.set(key, {}!)
+        cleanupFunction?() // Async cleanup is not waited for. Is that ok?
+    }
+    spawnRenderTask(body: (Task, Lux) => Unit): Task {
+        let luxCopy = self.Lux(element = self.element.LuxElement())
+        self.lux.task.spawn {task =>
+            let lux = luxCopy.Lux(
+                task = task
+                renderLock = task.lock()
+                renderQueue = Array.new()
+                element = luxCopy.element.LuxElement(element = fragment)
+            )
+            try {
+                body(task, lux)
+                task.throwIfAborted()
+                lux.copyFrom(luxCopy)
+                lux.renderLock.do {
+                    cleanupElement(lux.element.childAt(lux.element.child), onlyChildren = True)
+                    lux.element.removeAt(lux.element.child)
+                    lux.element.insertBefore(fragment, lux.jsSystem.null())
+                }
+            } catchAny {error =>
+                if(error.name() != "AbortError") {
+                    error.rethrow()
+                }
+            }
+        }        
+    }
+}
+
+cleanupElement(element: JsValue, onlyChildren: Bool) {
+    if(!onlyChildren) {
+        mutable depth = 0
+        doWhile {
+            depth += 1
+            let cleanupFunction = element.get("_lux$C" + depth)
+            if(cleanupFunction.isUndefined()) {
+                False
+            } else {
+                cleanupFunction?() // Async cleanup is not waited for. Is that ok?
+                True
+            }
+        }
+    }
+    element->children.each {child => 
+        cleanupElement(child, False)
+    }
 }
 
 processRenderQueue(self: Lux) {
@@ -443,6 +605,7 @@ setTaskOnElement(element: JsValue, task: Option[Task]): Unit {
 }
 
 abortTasksOnElement(lux: Lux, element: JsValue, onlyChildren: Bool): Unit {
+    cleanupElement(element, onlyChildren)
     if(!onlyChildren) {
         getTaskOnElement(element).each {task => forceAsyncAbort(lux, task)}
     }
