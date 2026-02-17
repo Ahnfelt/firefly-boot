@@ -300,15 +300,7 @@ extend self: Lux {
             self.renderQueue.push(RenderQueueItem(
                 luxCopy = hook.luxCopy
                 render = {
-                    let child = hook.luxCopy.element.child
-                    let element = hook.luxCopy.element.childAt(child)
                     body(newValue, {setState(_)})
-                    if(!element.equals(hook.luxCopy.element.childAt(child))) {
-                        //throw(GrabException) // TODO: Is the following necessary:
-                        /*removeCurrentChild(hook.luxCopy.Lux(
-                            element = hook.luxCopy.element.LuxElement(child = hook.luxCopy.element.child + 1)
-                        ))*/
-                    }
                 }
             ))
         }
