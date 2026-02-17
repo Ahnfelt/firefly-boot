@@ -169,7 +169,7 @@ extend self: Lux {
         } finally {
             patchText(self)
             if(!self.element.keepChildren) {
-                doWhile {removeCurrentChild(self)}
+                doWhile {removeCurrentChild(self, self.depth)}
             }
             patchAttributes(self)
             self.depth -= 1
@@ -268,10 +268,24 @@ extend self: Lux {
     onClick(handler: LuxEvent => Unit) {self.on("click", handler)}
     onInput(handler: LuxEvent => Unit) {self.on("input", handler)}
 
-    useState[T: HasAnyTag](initialValue: T, body: (T, T => Unit) => Unit) {
-        self.dry.map {_ => body(initialValue, {_ => })}.else:
+    useHook[T](body: LuxHook[T] => Unit) {
+        // if(!self.canHook) {throw(LuxHookException)}
+        // self.canHook = False
         self.depth += 1
-        let value = getStateOnElement(self.element.element, self.depth, initialValue)
+        try {
+            if(self.dry.isEmpty()) {
+                self.element.element.set("_lux$C" + self.depth, {}!)
+            }
+            body(LuxHook(self.Lux(element = self.element.LuxElement())))
+        } finally {
+            self.depth -= 1
+        }
+    }
+
+    useState[T: HasAnyTag](initialValue: T, body: (T, T => Unit) => Unit) {
+        self.useHook: hook =>
+        if(hook.dry()) {body(initialValue, {_ => })} else:
+        let value = if(hook.hasValue()) {hook.grabValue()} else {initialValue}
         mutable i = 0
         while {i < self.renderQueue.size()} {
             let item = self.renderQueue.grab(i)
@@ -281,126 +295,87 @@ extend self: Lux {
                 i += 1
             }
         }
-        let luxCopy = self.Lux(element = self.element.LuxElement())
         function setState(newValue: T): Unit {
-            setStateOnElement(luxCopy.element.element, luxCopy.depth, newValue)
+            hook.setValue(newValue)
             self.renderQueue.push(RenderQueueItem(
-                luxCopy = luxCopy
+                luxCopy = hook.luxCopy
                 render = {
-                    let child = luxCopy.element.child
-                    let element = luxCopy.element.childAt(child)
+                    let child = hook.luxCopy.element.child
+                    let element = hook.luxCopy.element.childAt(child)
                     body(newValue, {setState(_)})
-                    if(!element.equals(luxCopy.element.childAt(child))) {
-                        removeCurrentChild(luxCopy.Lux(
-                            element = luxCopy.element.LuxElement(child = luxCopy.element.child + 1)
-                        ))
+                    if(!element.equals(hook.luxCopy.element.childAt(child))) {
+                        //throw(GrabException) // TODO: Is the following necessary:
+                        /*removeCurrentChild(hook.luxCopy.Lux(
+                            element = hook.luxCopy.element.LuxElement(child = hook.luxCopy.element.child + 1)
+                        ))*/
                     }
                 }
             ))
         }
-        try {
-            body(value, {setState(_)})
-        } finally {
-            self.depth -= 1
-        }
+        body(value, {setState(_)})
     }
 
     useCallback1[A1](callback: A1 => Unit, body: (A1 => Unit) => Unit) {
-        self.dry.map {_ => body(callback)}.else:
-        self.depth += 1
-        setStateOnElement(self.element.element, self.depth, callback)
-        let element = self.element.element
-        let depth = self.depth
-        try {
-            body {a1 =>
-                let latestCallback = getStateOnElement(element, depth, callback)
-                self.renderLock.do {
-                    latestCallback(a1)
-                    processRenderQueue(self)
-                }
+        self.useHook: hook =>
+        if(hook.dry()) {body(callback)} else:
+        hook.setValue(callback)
+        body {a1 =>
+            let latestCallback = hook.grabValue()
+            self.renderLock.do {
+                latestCallback(a1)
+                processRenderQueue(self)
             }
-        } finally {
-            self.depth -= 1
         }
     }
 
     useLazy1[A1: Equal: HasAnyTag](a1: A1, body: A1 => Unit = {_ => }) {
-        self.dry.map {_ => body(a1)}.else:
-        self.depth += 1
-        try {
-            let old = getStateOnElement(self.element.element, self.depth, None)
-            old.{
-                | Some(o1) {a1 == o1} =>
-                    self.element.keepChildren = True
-                | _ =>
-                    setStateOnElement(self.element.element, self.depth, Some(a1))
-                    body(a1)
-            }
-        } finally {
-            self.depth -= 1
+        self.useHook: hook =>
+        if(hook.dry()) {body(a1)} else:
+        if(!hook.hasValue() || hook.grabValue() != a1) {
+            hook.setValue(a1)
+            body(a1)
+        } else {
+            self.element.keepChildren = True
         }
     }
 
     useMemo1[A1: Equal: HasAnyTag, T: HasAnyTag](a1: A1, compute: A1 => T, body: T => Unit) {
-        self.dry.map {_ => body(compute(a1))}.else:
-        self.depth += 1
-        try {
-            let old = getStateOnElement(self.element.element, self.depth, Pair(a1, None))
-            let computed = old.{
-                | Pair(o1, _) {a1 != o1} => 
-                    let v = compute(a1)
-                    setStateOnElement(self.element.element, self.depth, Pair(a1, Some(v)))
-                    v
-                | Pair(_, Some(v)) => 
-                    v
-                | Pair(_, None) =>
-                    let v = compute(a1)
-                    setStateOnElement(self.element.element, self.depth, Pair(a1, Some(v)))
-                    v
+        self.useHook: hook =>
+        if(hook.dry()) {body(compute(a1))} else:
+        if(hook.hasValue()) {
+            let pair: Pair[A1, T] = hook.grabValue()
+            if(pair.first == a1) {
+                body(pair.second)
+            } else {
+                let value = compute(a1)
+                hook.setValue(Pair(a1, value))
+                body(value)
             }
-            body(computed)
-        } finally {
-            self.depth -= 1
-        }
-    }
-    
-    useHook[T](body: LuxHook[T] => Unit) {
-        // if(!self.canHook) {throw(LuxHookException)}
-        // self.canHook = False
-        self.depth += 1
-        try {
-            if(self.dry.isEmpty()) {
-                self.element.element.set("_lux$C" + self.depth, {}!)
-            }
-            body(LuxHook(self))
-        } finally {
-            self.depth -= 1
+        } else {
+            let value = compute(a1)
+            hook.setValue(Pair(a1, value))
+            body(value)
         }
     }
 
     useSuspense(suspense: () => Unit, body: Lux => Unit) {
-        self.dry.map {_ => suspense()}.else:
-        let oldSubtask = getTaskOnElement(self.element.element)
-        oldSubtask.each {task =>
-            forceAsyncAbort(self, task)
-        }
-        let fragment = self.document.createFragment()
-        let luxCopy = self.Lux(element = self.element.LuxElement())
-        let subtask = self.task.spawn {task =>
-            let lux = luxCopy.Lux(
+        self.useHook: hook =>
+        if(hook.dry()) {suspense()} else:
+        hook.cleanup()
+        let fragment = hook.luxCopy.document.createFragment()
+        let subtask = hook.luxCopy.task.spawn {task =>
+            let lux = hook.luxCopy.Lux(
                 task = task
                 renderLock = task.lock()
                 renderQueue = Array.new()
-                element = luxCopy.element.LuxElement(element = fragment)
+                element = hook.luxCopy.element.LuxElement(element = fragment)
             )
             try {
                 body(lux)
                 task.throwIfAborted()
-                lux.copyFrom(luxCopy)
+                lux.copyFrom(hook.luxCopy)
                 lux.renderLock.do {
-                    abortTasksOnElement(lux, lux.element.childAt(lux.element.child), onlyChildren = True)
-                    lux.element.removeAt(lux.element.child)
-                    lux.element.insertBefore(fragment, lux.jsSystem.null())
+                    replaceWithFragment(lux.element.element, fragment, lux.depth)
                 }
             } catchAny {error =>
                 if(error.name() != "AbortError") {
@@ -408,10 +383,10 @@ extend self: Lux {
                 }
             }
         }
+        hook.setCleanup {subtask.abort()}
         suspense()
-        setTaskOnElement(self.element.childAt(self.element.child - 1), Some(subtask))
     }
-    
+
     useWebSocket(
         url: String
         onMessage: Buffer => Unit
@@ -424,6 +399,7 @@ extend self: Lux {
         }: onMessage =>
         function createWebSocket(): JsValue {
             let socket = Js->WebSocket->(url)
+            hook.setValue(Pair(socket, url))
             hook.setCleanup {
                 socket->close()
             }
@@ -444,7 +420,6 @@ extend self: Lux {
             socket->addEventListener("error", Js->{e =>
                 Log.debug("Error")
             })
-            hook.setValue(Pair(socket, url))
             socket
         }
         let socket = if(!hook.hasValue()) {
@@ -456,7 +431,7 @@ extend self: Lux {
             if(oldUrl == url) {
                 oldSocket
             } else {
-                oldSocket->close()
+                hook.cleanup()
                 createWebSocket()
             }
         }
@@ -466,79 +441,70 @@ extend self: Lux {
 
 }
 
-capability LuxHook[T](lux: Lux)
+capability LuxHook[T](luxCopy: Lux)
 
 extend self[T]: LuxHook[T] {
     dry(): Bool {
-        !self.lux.dry.isEmpty()
+        !self.luxCopy.dry.isEmpty()
     }
     setValue(value: T) {
-        self.lux.element.element.set("_lux$S" + self.lux.depth, value!)
+        self.luxCopy.element.element.set("_lux$S" + self.luxCopy.depth, value!)
     }
     hasValue(): Bool {
-        self.lux.element.element.hasOwn("_lux$S" + self.lux.depth)
+        self.luxCopy.element.element.hasOwn("_lux$S" + self.luxCopy.depth)
     }
     grabValue(): T {
-        let value = self.lux.element.element.get("_lux$S" + self.lux.depth)
+        let value = self.luxCopy.element.element.get("_lux$S" + self.luxCopy.depth)
         if(value.isUndefined() && !self.hasValue()) {
             throw(GrabException)
         }
         value? // If value is an async function, will the effect type system see through this?
     }
     setCleanup(body: () => Unit) {
-        self.lux.element.element.set("_lux$C" + self.lux.depth, body!)
+        self.luxCopy.element.element.set("_lux$C" + self.luxCopy.depth, body!)
     }
     cleanup() {
-        let key = "_lux$C" + self.lux.depth
-        let cleanupFunction = self.lux.element.element.get(key)
-        self.lux.element.element.set(key, {}!)
+        let key = "_lux$C" + self.luxCopy.depth
+        let cleanupFunction = self.luxCopy.element.element.get(key)
+        self.luxCopy.element.element.set(key, {}!)
         cleanupFunction?() // Async cleanup is not waited for. Is that ok?
-    }
-    spawnRenderTask(body: (Task, Lux) => Unit): Task {
-        let fragment = self.lux.document.createFragment()
-        let luxCopy = self.lux.Lux(element = self.lux.element.LuxElement())
-        self.lux.task.spawn {task =>
-            let lux = luxCopy.Lux(
-                task = task
-                renderLock = task.lock()
-                renderQueue = Array.new()
-                element = luxCopy.element.LuxElement(element = fragment)
-            )
-            try {
-                body(task, lux)
-                task.throwIfAborted()
-                lux.copyFrom(luxCopy)
-                lux.renderLock.do {
-                    cleanupElement(lux.element.childAt(lux.element.child), onlyChildren = True)
-                    lux.element.removeAt(lux.element.child)
-                    lux.element.insertBefore(fragment, lux.jsSystem.null())
-                }
-            } catchAny {error =>
-                if(error.name() != "AbortError") {
-                    error.rethrow()
-                }
-            }
-        }        
     }
 }
 
-cleanupElement(element: JsValue, onlyChildren: Bool) {
-    if(!onlyChildren) {
-        mutable depth = 0
-        doWhile {
-            depth += 1
-            let cleanupFunction = element.get("_lux$C" + depth)
-            if(cleanupFunction.isUndefined()) {
-                False
-            } else {
-                cleanupFunction?() // Async cleanup is not waited for. Is that ok?
-                True
-            }
+cleanupElement(element: JsValue, depth: Int) {
+    mutable d = depth
+    doWhile {
+        let cleanupFunction = element.get("_lux$C" + d)
+        if(cleanupFunction.isUndefined()) {
+            False
+        } else {
+            Js->Reflect->deleteProperty(element, "_lux$C" + d)
+            Js->Reflect->deleteProperty(element, "_lux$S" + d)
+            cleanupFunction?() // Async cleanup is not waited for. Is that ok?
+            d += 1
+            True
         }
     }
     element->children.each {child => 
-        cleanupElement(child, False)
+        cleanupElement(child, d + 1)
     }
+}
+
+replaceWithFragment(element: JsValue, fragment: JsValue, depth: Int) {
+    cleanupElement(element, depth) // Assumes that hooks have no siblings
+    mutable d = depth
+    doWhile {
+        let cleanupFunction = fragment.get("_lux$C" + d)
+        if(cleanupFunction.isUndefined()) {
+            False
+        } else {
+            element.set("_lux$C" + d, cleanupFunction)
+            if(fragment.hasOwn("_lux$S" + d)) {element.set("_lux$S" + d, fragment.get("_lux$S" + d))}
+            d += 1
+            True
+        }
+    }
+    element->replaceChildren(fragment)
 }
 
 processRenderQueue(self: Lux) {
@@ -555,10 +521,10 @@ processRenderQueue(self: Lux) {
     }
 }
 
-removeCurrentChild(self: Lux): Bool {
+removeCurrentChild(self: Lux, depth: Int): Bool {
     let child = self.element.childAt(self.element.child)
     if(!child.isNullOrUndefined() && !child->children.isNullOrUndefined()) {
-        abortTasksOnElement(self, child, False)
+        cleanupElement(child, depth)
     }
     self.element.removeAt(self.element.child)
 }
@@ -584,16 +550,6 @@ getTaskOnElement(element: JsValue): Option[Task] {
 
 setTaskOnElement(element: JsValue, task: Option[Task]): Unit {
     element->luxTask = task!
-}
-
-abortTasksOnElement(lux: Lux, element: JsValue, onlyChildren: Bool): Unit {
-    cleanupElement(element, onlyChildren)
-    if(!onlyChildren) {
-        getTaskOnElement(element).each {task => forceAsyncAbort(lux, task)}
-    }
-    element->children.each {child => 
-        abortTasksOnElement(lux, child, False)
-    }
 }
 
 forceAsyncAbort(self: Lux, task: Task): Unit {
