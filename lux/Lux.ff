@@ -305,7 +305,7 @@ extend self: Lux {
         }
     }
 
-    useCallback1[A1: Equal: HasAnyTag](callback: A1 => Unit, body: (A1 => Unit) => Unit) {
+    useCallback1[A1](callback: A1 => Unit, body: (A1 => Unit) => Unit) {
         self.dry.map {_ => body(callback)}.else:
         self.depth += 1
         setStateOnElement(self.element.element, self.depth, callback)
@@ -314,7 +314,10 @@ extend self: Lux {
         try {
             body {a1 =>
                 let latestCallback = getStateOnElement(element, depth, callback)
-                latestCallback(a1)
+                self.renderLock.do {
+                    latestCallback(a1)
+                    processRenderQueue(self)
+                }
             }
         } finally {
             self.depth -= 1
@@ -366,43 +369,13 @@ extend self: Lux {
         // self.canHook = False
         self.depth += 1
         try {
-            self.element.element.set("_lux$C" + self.depth, {}!)
+            if(self.dry.isEmpty()) {
+                self.element.element.set("_lux$C" + self.depth, {}!)
+            }
             body(LuxHook(self))
         } finally {
             self.depth -= 1
         }
-    }
-
-    useSuspense2(suspense: () => Unit, body: Lux => Unit) {
-        self.useHook[Option[JsValue]](None): hook =>
-        if(hook.dry) {suspense()}.else:
-        hook.cleanup()
-        let fragment = self.document.createFragment()
-        let luxCopy = self.Lux(element = self.element.LuxElement())
-        let subtask = self.task.spawn {task =>
-            let lux = luxCopy.Lux(
-                task = task
-                renderLock = task.lock()
-                renderQueue = Array.new()
-                element = luxCopy.element.LuxElement(element = fragment)
-            )
-            try {
-                body(lux)
-                task.throwIfAborted()
-                lux.copyFrom(luxCopy)
-                lux.renderLock.do {
-                    abortTasksOnElement(lux, lux.element.childAt(lux.element.child), onlyChildren = True)
-                    lux.element.removeAt(lux.element.child)
-                    lux.element.insertBefore(fragment, lux.jsSystem.null())
-                }
-            } catchAny {error =>
-                if(error.name() != "AbortError") {
-                    error.rethrow()
-                }
-            }
-        }
-        hook.setCleanup {forceAsyncAbort(self, subtask)}
-        suspense()
     }
 
     useSuspense(suspense: () => Unit, body: Lux => Unit) {
@@ -445,9 +418,15 @@ extend self: Lux {
         body: (Buffer => Unit) => Unit
     ) {
         self.useHook: hook =>
+        if(hook.dry()) {} else:
+        self.useCallback1 {buffer => 
+            onMessage(buffer)
+        }: onMessage =>
         function createWebSocket(): JsValue {
             let socket = Js->WebSocket->(url)
-            hook.setCleanup {socket->close()}
+            hook.setCleanup {
+                socket->close()
+            }
             socket->binaryType = "arraybuffer"
             Js.awaitCancellablePromise {resolve, reject, onSettle =>
                 socket->onopen = Js->{resolve(Unit)}
@@ -465,17 +444,19 @@ extend self: Lux {
             socket->addEventListener("error", Js->{e =>
                 Log.debug("Error")
             })
-            hook.setValue(socket)
+            hook.setValue(Pair(socket, url))
             socket
         }
         let socket = if(!hook.hasValue()) {
             createWebSocket()
         } else {
-            let oldSocket: JsValue = hook.grabValue()
-            if(oldSocket->url === url) {
+            let pair = hook.grabValue()
+            let oldSocket: JsValue = pair.first
+            let oldUrl: String = pair.second
+            if(oldUrl == url) {
                 oldSocket
             } else {
-                oldSocket->close() // TODO: Also close when element is removed
+                oldSocket->close()
                 createWebSocket()
             }
         }
@@ -514,7 +495,8 @@ extend self[T]: LuxHook[T] {
         cleanupFunction?() // Async cleanup is not waited for. Is that ok?
     }
     spawnRenderTask(body: (Task, Lux) => Unit): Task {
-        let luxCopy = self.Lux(element = self.element.LuxElement())
+        let fragment = self.lux.document.createFragment()
+        let luxCopy = self.lux.Lux(element = self.lux.element.LuxElement())
         self.lux.task.spawn {task =>
             let lux = luxCopy.Lux(
                 task = task
