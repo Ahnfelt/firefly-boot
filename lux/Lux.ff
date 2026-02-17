@@ -529,33 +529,6 @@ removeCurrentChild(self: Lux, depth: Int): Bool {
     self.element.removeAt(self.element.child)
 }
 
-getStateOnElement[T /*: HasAnyTag*/](element: JsValue, depth: Int, fallback: T): T {
-    let value = element.get("lux" + depth)
-    if(value.isNullOrUndefined()) {fallback} else {
-        value?
-    }
-}
-
-setStateOnElement[T /*: HasAnyTag*/](element: JsValue, depth: Int, value: T): Unit {
-    element.set("lux" + depth, value!)
-}
-
-
-getTaskOnElement(element: JsValue): Option[Task] {
-    let value = element->luxTask
-    if(value.isNullOrUndefined()) {None} else {
-        value?
-    }
-}
-
-setTaskOnElement(element: JsValue, task: Option[Task]): Unit {
-    element->luxTask = task!
-}
-
-forceAsyncAbort(self: Lux, task: Task): Unit {
-    task.abort()
-}
-
 patchText(self: Lux) {
     if(!self.texts.isEmpty()):
     let value = self.texts.drain().join()
