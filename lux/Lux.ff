@@ -296,6 +296,11 @@ extend self: Lux {
             }
         }
         function setState(newValue: T): Unit {
+            if(hook.luxCopy.element.element.hasOwn("_lux$R")) {
+                hook.luxCopy.element = hook.luxCopy.element.LuxElement(
+                    element = hook.luxCopy.element.element->"_lux$R"
+                )
+            }
             hook.setValue(newValue)
             self.renderQueue.push(RenderQueueItem(
                 luxCopy = hook.luxCopy
@@ -354,6 +359,7 @@ extend self: Lux {
         self.useHook: hook =>
         if(hook.dry()) {suspense()} else:
         hook.cleanup()
+        suspense()
         let fragment = hook.luxCopy.document.createFragment()
         let subtask = hook.luxCopy.task.spawn {task =>
             let lux = hook.luxCopy.Lux(
@@ -376,7 +382,6 @@ extend self: Lux {
             }
         }
         hook.setCleanup {subtask.abort()}
-        suspense()
     }
 
     useWebSocket(
@@ -496,6 +501,7 @@ replaceWithFragment(element: JsValue, fragment: JsValue, depth: Int) {
             True
         }
     }
+    fragment->"_lux$R" = element
     element->replaceChildren(fragment)
 }
 
