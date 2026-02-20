@@ -306,6 +306,7 @@ extend self: Lux {
                 luxCopy = hook.luxCopy
                 render = {
                     body(newValue, {setState(_)})
+                    doWhile {removeCurrentChild(self, self.depth)}
                 }
             ))
         }
