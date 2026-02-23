@@ -334,7 +334,7 @@ internalRunStatement(statement: PgStatement, body: Option[PgRow => Bool]): Int {
     let result = Js.await(statement.connection.grab().jsValue->query(pair.first, parameters))
     body.{
         | None =>
-            result.get("rowCount").grabInt()
+            if(!result.get("rowCount").isNullOrUndefined()) {result.get("rowCount").grabInt()} else {-1}
         | Some(f) =>
             let all = result.get("rows").grabArray().all {row =>
                 f(PgRow(row))
