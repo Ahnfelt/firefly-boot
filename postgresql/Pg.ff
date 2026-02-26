@@ -22,6 +22,7 @@ newPool(
 ): PgPool {
     Js.throwIfCancelled()
     let pg = Js.import("pg").get("default")
+    internalTypeParsers(pg)
     PgPool(pg.get("Pool").new1(Js.object()
         .with("user", user)
         .with("host", host)
@@ -45,6 +46,7 @@ newPoolFromConnectionString(
 ): PgPool {
     Js.throwIfCancelled()
     let pg = Js.import("pg").get("default")
+    internalTypeParsers(pg)
     PgPool(pg.get("Pool").new1(Js.object()
         .with("connectionString", connectionString)
         .with("connectionTimeoutMillis", connectionTimeout.seconds * 1000)
@@ -52,6 +54,13 @@ newPoolFromConnectionString(
         .with("max", maxConnections)
         .with("allowExitOnIdle", allowExitOnIdle)
     ))
+}
+
+internalTypeParsers(pg: JsValue) {
+    let types = pg->types
+    types->setTypeParser(types->builtins->TIMESTAMPTZ, Js->{v => 
+        Date(Js->Temporal->Instant->from(v)->toZonedDateTimeISO("UTC"))
+    })
 }
 
 extend self: PgPool {
@@ -185,6 +194,16 @@ extend self: PgStatement {
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
+    withDate(name: String, value: Date): PgStatement {
+        let p = Js.jsSystem().value(value.toRfc9557())
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withNullableDate(name: String, value: Option[Date]): PgStatement {
+        let p = value.map {_.toRfc9557()}.map(Js.jsSystem().value).else {Js.null()}
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
     withBuffer(name: String, value: Buffer): PgStatement {
         let p = Js.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
@@ -292,6 +311,10 @@ extend self: PgRow {
 
     getString(name: String, lower: Bool = True): Option[String] {
         internalGet(self, name, lower) {"" + _.grabString()}
+    }
+
+    getDate(name: String, lower: Bool = True): Option[Date] {
+        internalGet(self, name, lower) {_?}
     }
 
     getBuffer(name: String, lower: Bool = True): Option[Buffer] {
