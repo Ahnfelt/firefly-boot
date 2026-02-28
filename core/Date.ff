@@ -318,6 +318,49 @@ extend self: Date {
         ))?
     }
     
+    toLocaleString(
+        locales: List[String]
+        localeMatcher: Option[String] = None
+        dateStyle: Option[String] = None
+        timeStyle: Option[String] = None
+        numberingSystem: Option[String] = None
+        hour12: Option[Bool] = None
+        hourCycle: Option[String] = None
+        weekday: Option[String] = None
+        era: Option[String] = None
+        year: Option[String] = None
+        month: Option[String] = None
+        day: Option[String] = None
+        dayPeriod: Option[String] = None
+        hour: Option[String] = None
+        minute: Option[String] = None
+        second: Option[String] = None
+        fractionalSecondDigits: Option[Int] = None
+        timeZoneName: Option[String] = None
+        formatMatcher: Option[String] = None
+    ): String {
+        let options = Js->(calendar = self.calendarId())
+        localeMatcher.each {options->localeMatcher = _}
+        dateStyle.each {options->dateStyle = _}
+        timeStyle.each {options->timeStyle = _}
+        numberingSystem.each {options->numberingSystem = _}
+        hour12.each {options->hour12 = _}
+        hourCycle.each {options->hourCycle = _}
+        weekday.each {options->weekday = _}
+        era.each {options->era = _}
+        year.each {options->year = _}
+        month.each {options->month = _}
+        day.each {options->day = _}
+        dayPeriod.each {options->dayPeriod = _}
+        hour.each {options->hour = _}
+        minute.each {options->minute = _}
+        second.each {options->second = _}
+        fractionalSecondDigits.each {options->fractionalSecondDigits = _}
+        timeZoneName.each {options->timeZoneName = _}
+        formatMatcher.each {options->formatMatcher = _}
+        self.jsValue->toLocaleString(locales!, options)?
+    }
+    
     withCalendar(calendarId: String): Date {
         Date(self.jsValue->withCalendar(calendarId))
     }
