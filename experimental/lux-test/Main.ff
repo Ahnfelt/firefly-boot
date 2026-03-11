@@ -3,20 +3,37 @@ dependency ff:lux:0.0.0
 
 import WebServer from ff:webserver
 import Lux from ff:lux
+import LuxEvent from ff:lux
 
 browserMain(system: BrowserSystem): Unit {
     Lux.renderById(system, "main") {lux =>
-        lux.div {
-            lux.useState("A"): letter, setLetter => 
-            lux.useSuspense {lux.add("button") {}}: lux => 
-            lux.add("select") {lux.add("option") {lux.text("select")}}
+        let webSocketUrl = "/_websocket"
+        lux.useSuspense {lux.div {lux.text("Loading...")}}: lux =>
+        lux.useState(0): count, setCount =>
+        lux.useWebSocket(webSocketUrl) {buffer =>
+            Js->console->log("websocket message received")
+            setCount(count + 1)
+        }: sendOnWebSocket =>
+        lux.button {
+            lux.on("click") {event => 
+                event.preventDefault()
+                sendOnWebSocket(Buffer.new(0))
+            }
+            lux.text(count + "")
         }
     }
 }
 
 nodeMain(system: NodeSystem): Unit {
-    WebServer.new(system, "localhost", 8080).listen {request =>
-        if(request.readPath() == "/") {
+    let server = WebServer.new(system, "localhost", 8080)
+    server.enableWebSockets()
+    server.listen {request =>
+        if(request.needsWebSocket()) {
+            let webSocket = request.openWebSocket()
+            webSocket.readStream().each {buffer =>
+                webSocket.writeBuffer(Buffer.new(0))
+            }
+        } elseIf {request.readPath() == "/"} {
             request.writeHeader("Content-Type", "text/html; charset=UTF-8")
             request.writeText("<!doctype html>")
             request.writeText("<script type='module' src='/js/script/script/Main.run.mjs'></script>")
