@@ -7,9 +7,9 @@ capability Lux(
     jsSystem: JsSystem
     mutable dry: Option[Array[DryNode]]
     mutable cssClasses: StringMap[CssClass]
-    mutable renderLock: Lock
+    renderLock: Lock
     mutable task: Task
-    mutable renderQueue: Array[RenderQueueItem]
+    renderQueue: Array[RenderQueueItem]
     mutable element: LuxElement
     mutable depth: Int
     mutable keys: Option[StringMap[JsValue]]
@@ -104,8 +104,6 @@ extend self: LuxDocument {
 extend self: Lux {
     
     copyFrom(lux: Lux) {
-        self.renderLock = lux.renderLock
-        self.renderQueue = lux.renderQueue
         self.element = lux.element.LuxElement()
         self.depth = lux.depth
         self.keys = lux.keys
@@ -365,8 +363,6 @@ extend self: Lux {
         let subtask = hook.luxCopy.task.spawn {task =>
             let lux = hook.luxCopy.Lux(
                 task = task
-                renderLock = task.lock()
-                renderQueue = Array.new()
                 element = hook.luxCopy.element.LuxElement(element = fragment)
             )
             try {
@@ -376,6 +372,7 @@ extend self: Lux {
                 lux.renderLock.do {
                     replaceWithFragment(lux.element.element, fragment, lux.depth)
                 }
+                Channel.readOr(task.channel(), {_ => }).wait()
             } catchAny {error =>
                 if(error.name() != "AbortError") {
                     error.rethrow()
@@ -409,7 +406,6 @@ extend self: Lux {
             socket->onopen = Js.null()
             socket->onclose = Js.null()
             socket->addEventListener("close", Js->{
-                Log.debug("Closed")
             })
             socket->addEventListener("message", Js->{m =>
                 let buffer = Js->DataView->(m->data).grabBuffer() // TODO: Handle text
@@ -470,7 +466,7 @@ extend self[T]: LuxHook[T] {
 }
 
 cleanupElement(element: JsValue, depth: Int) {
-    mutable d = depth
+    mutable d = depth + 1
     doWhile {
         let cleanupFunction = element.get("_lux$C" + d)
         if(cleanupFunction.isUndefined()) {
@@ -484,20 +480,22 @@ cleanupElement(element: JsValue, depth: Int) {
         }
     }
     element->children.each {child => 
-        cleanupElement(child, d + 1)
+        cleanupElement(child, d)
     }
 }
 
 replaceWithFragment(element: JsValue, fragment: JsValue, depth: Int) {
     cleanupElement(element, depth) // Assumes that hooks have no siblings
-    mutable d = depth
+    mutable d = depth + 1
     doWhile {
         let cleanupFunction = fragment.get("_lux$C" + d)
         if(cleanupFunction.isUndefined()) {
             False
         } else {
             element.set("_lux$C" + d, cleanupFunction)
-            if(fragment.hasOwn("_lux$S" + d)) {element.set("_lux$S" + d, fragment.get("_lux$S" + d))}
+            if(fragment.hasOwn("_lux$S" + d)) {
+                element.set("_lux$S" + d, fragment.get("_lux$S" + d))
+            }
             d += 1
             True
         }
