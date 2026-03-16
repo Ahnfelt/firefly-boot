@@ -23,7 +23,9 @@ capability RenderQueueItem(
     render: () => Unit
 )
 
-class LuxElement(element: JsValue, mutable child: Int, mutable keepChildren: Bool)
+class LuxElement(box: LuxElementBox, mutable child: Int, mutable keepChildren: Bool)
+
+class LuxElementBox(mutable element: JsValue)
 
 class LuxDocument(document: JsValue)
 
@@ -72,16 +74,16 @@ extend self: DryNode {
 
 extend self: LuxElement {
     childAt(index: Int): JsValue {
-        self.element->childNodes.get(index)
+        self.box.element->childNodes.get(index)
     }
     insertBefore(newNode: JsValue, referenceNode: JsValue): JsValue {
-        self.element->insertBefore(newNode, referenceNode)
+        self.box.element->insertBefore(newNode, referenceNode)
     }
     removeAt(index: Int): Bool {
         let node = self.childAt(index)
         let remove = !node.isNullOrUndefined()
         if(remove) {
-            self.element->removeChild(node)
+            self.box.element->removeChild(node)
         }
         remove
     }
@@ -157,7 +159,7 @@ extend self: Lux {
             attributes.set("data-lux-key", tagName.upper() + ">" + self.key)
             attributes
         }
-        self.element = LuxElement(node, 0, keepChildren = False)
+        self.element = LuxElement(LuxElementBox(node), 0, keepChildren = False)
         //self.element.element->classList->value = ""
         self.keys = None
         self.key = ""
@@ -218,7 +220,7 @@ extend self: Lux {
     
     setValue(value: String) { // TODO: Not an attribute
         self.dry.map {_ => self.set("value", value)}.else:
-        self.element.element->value = value
+        self.element.box.element->value = value
     }
     
     css(style: Css) {
@@ -254,11 +256,11 @@ extend self: Lux {
                 processRenderQueue(self)!
             }
         }
-        self.element.element->addEventListener(event, jsHandler)
-        if(self.element.element->luxHandlers.isNullOrUndefined()) {
-            self.element.element->luxHandlers = self.jsSystem.array([])
+        self.element.box.element->addEventListener(event, jsHandler)
+        if(self.element.box.element->luxHandlers.isNullOrUndefined()) {
+            self.element.box.element->luxHandlers = self.jsSystem.array([])
         }
-        self.element.element->luxHandlers->push(
+        self.element.box.element->luxHandlers->push(
             self.jsSystem.object().with("event", event).with("handler", jsHandler)
         )
     }
@@ -272,7 +274,7 @@ extend self: Lux {
         self.depth += 1
         try {
             if(self.dry.isEmpty()) {
-                self.element.element.set("_lux$C" + self.depth, {}!)
+                self.element.box.element.set("_lux$C" + self.depth, {}!)
             }
             body(LuxHook(self.Lux(element = self.element.LuxElement())))
         } finally {
@@ -287,17 +289,15 @@ extend self: Lux {
         mutable i = 0
         while {i < self.renderQueue.size()} {
             let item = self.renderQueue.grab(i)
-            if(item.luxCopy.element.element.equals(self.element.element) && item.luxCopy.depth == self.depth) {
+            if(item.luxCopy.element.box.element.equals(self.element.box.element) && item.luxCopy.depth == self.depth) {
                 self.renderQueue.delete(i, 1)
             } else {
                 i += 1
             }
         }
         function setState(newValue: T): Unit {
-            if(hook.luxCopy.element.element.hasOwn("_lux$R")) {
-                hook.luxCopy.element = hook.luxCopy.element.LuxElement(
-                    element = hook.luxCopy.element.element->"_lux$R"
-                )
+            if(hook.luxCopy.element.box.element.hasOwn("_lux$R")) {
+                hook.luxCopy.element.box.element = hook.luxCopy.element.box.element->"_lux$R"
             }
             hook.setValue(newValue)
             self.renderQueue.push(RenderQueueItem(
@@ -316,6 +316,7 @@ extend self: Lux {
         if(hook.dry()) {body(callback)} else:
         hook.setValue(callback)
         body {a1 =>
+            Log.debug(hook.luxCopy.element.box.element?)
             let latestCallback = hook.grabValue()
             self.renderLock.do {
                 latestCallback(a1)
@@ -363,14 +364,14 @@ extend self: Lux {
         let subtask = hook.luxCopy.task.spawn {task =>
             let lux = hook.luxCopy.Lux(
                 task = task
-                element = hook.luxCopy.element.LuxElement(element = fragment)
+                element = hook.luxCopy.element.LuxElement(box = LuxElementBox(fragment))
             )
             try {
                 body(lux)
                 task.throwIfAborted()
                 lux.copyFrom(hook.luxCopy)
                 lux.renderLock.do {
-                    replaceWithFragment(lux.element.element, fragment, lux.depth)
+                    replaceWithFragment(lux.element.box.element, fragment, lux.depth)
                 }
                 Channel.readOr(task.channel(), {_ => }).wait()
             } catchAny {error =>
@@ -442,25 +443,25 @@ extend self[T]: LuxHook[T] {
         !self.luxCopy.dry.isEmpty()
     }
     setValue(value: T) {
-        self.luxCopy.element.element.set("_lux$S" + self.luxCopy.depth, value!)
+        self.luxCopy.element.box.element.set("_lux$S" + self.luxCopy.depth, value!)
     }
     hasValue(): Bool {
-        self.luxCopy.element.element.hasOwn("_lux$S" + self.luxCopy.depth)
+        self.luxCopy.element.box.element.hasOwn("_lux$S" + self.luxCopy.depth)
     }
     grabValue(): T {
-        let value = self.luxCopy.element.element.get("_lux$S" + self.luxCopy.depth)
+        let value = self.luxCopy.element.box.element.get("_lux$S" + self.luxCopy.depth)
         if(value.isUndefined() && !self.hasValue()) {
             throw(GrabException)
         }
         value? // If value is an async function, will the effect type system see through this?
     }
     setCleanup(body: () => Unit) {
-        self.luxCopy.element.element.set("_lux$C" + self.luxCopy.depth, body!)
+        self.luxCopy.element.box.element.set("_lux$C" + self.luxCopy.depth, body!)
     }
     cleanup() {
         let key = "_lux$C" + self.luxCopy.depth
-        let cleanupFunction = self.luxCopy.element.element.get(key)
-        self.luxCopy.element.element.set(key, {}!)
+        let cleanupFunction = self.luxCopy.element.box.element.get(key)
+        self.luxCopy.element.box.element.set(key, {}!)
         cleanupFunction?() // Async cleanup is not waited for. Is that ok?
     }
 }
@@ -589,13 +590,13 @@ patchElement(self: Lux, tagName: String): JsValue {
 }
 
 patchAttributes(self: Lux) {
-    let attributes = self.element.element->attributes
+    let attributes = self.element.box.element->attributes
     self.attributes.{
         | None => 
             mutable i = attributes->length.grabInt() - 1
             while {i >= 0} {
                 let attribute = attributes.get(i)
-                self.element.element->removeAttribute(attribute->name)
+                self.element.box.element->removeAttribute(attribute->name)
                 i -= 1
             }
         | Some(map) => 
@@ -603,14 +604,14 @@ patchAttributes(self: Lux) {
             while {i >= 0} {
                 let attribute = attributes.get(i)
                 if(!map.has(attribute->name.grabString())) {
-                    self.element.element->removeAttribute(attribute->name)
+                    self.element.box.element->removeAttribute(attribute->name)
                 }
                 i -= 1
             }
             map.each {name, value =>
-                let oldValue = self.element.element->getAttribute(name)
+                let oldValue = self.element.box.element->getAttribute(name)
                 if(oldValue.isNullOrUndefined() || !oldValue.equals(value)) {
-                    self.element.element->setAttribute(name, value)
+                    self.element.box.element->setAttribute(name, value)
                 }
             }
     }    
@@ -635,7 +636,7 @@ render(browserSystem: BrowserSystem, element: JsValue, body: Lux => Unit) {
         task = browserSystem.mainTask()
         depth = 0
         document = LuxDocument(document)
-        element = LuxElement(element, 0, keepChildren = False)
+        element = LuxElement(LuxElementBox(element), 0, keepChildren = False)
         keys = None
         key = ""
         attributes = None
@@ -663,7 +664,7 @@ renderToString(nodeSystem: NodeSystem, body: Lux => Unit): Pair[String, String] 
         task = nodeSystem.mainTask()
         depth = 0
         document = LuxDocument(nodeSystem.js().null())
-        element = LuxElement(nodeSystem.js().null(), 0, keepChildren = False)
+        element = LuxElement(LuxElementBox(nodeSystem.js().null()), 0, keepChildren = False)
         keys = None
         key = ""
         attributes = None
