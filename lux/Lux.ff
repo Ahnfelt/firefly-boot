@@ -296,9 +296,6 @@ extend self: Lux {
             }
         }
         function setState(newValue: T): Unit {
-            if(hook.luxCopy.element.box.element.hasOwn("_lux$R")) {
-                hook.luxCopy.element.box.element = hook.luxCopy.element.box.element->"_lux$R"
-            }
             hook.setValue(newValue)
             self.renderQueue.push(RenderQueueItem(
                 luxCopy = hook.luxCopy
@@ -362,9 +359,10 @@ extend self: Lux {
         suspense()
         let fragment = hook.luxCopy.document.createFragment()
         let subtask = hook.luxCopy.task.spawn {task =>
+            let elementBox = LuxElementBox(fragment)
             let lux = hook.luxCopy.Lux(
                 task = task
-                element = hook.luxCopy.element.LuxElement(box = LuxElementBox(fragment))
+                element = hook.luxCopy.element.LuxElement(box = elementBox)
             )
             try {
                 body(lux)
@@ -372,6 +370,7 @@ extend self: Lux {
                 lux.copyFrom(hook.luxCopy)
                 lux.renderLock.do {
                     replaceWithFragment(lux.element.box.element, fragment, lux.depth)
+                    elementBox.element = lux.element.box.element
                 }
                 Channel.readOr(task.channel(), {_ => }).wait()
             } catchAny {error =>
@@ -501,7 +500,6 @@ replaceWithFragment(element: JsValue, fragment: JsValue, depth: Int) {
             True
         }
     }
-    fragment->"_lux$R" = element
     element->replaceChildren(fragment)
 }
 
