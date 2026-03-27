@@ -406,6 +406,137 @@ return (void 0)
 : "never")})
 }
 
+export function Date_toLocaleString(self_, locales_, localeMatcher_ = ff_core_Option.None(), dateStyle_ = ff_core_Option.None(), timeStyle_ = ff_core_Option.None(), numberingSystem_ = ff_core_Option.None(), hour12_ = ff_core_Option.None(), hourCycle_ = ff_core_Option.None(), weekday_ = ff_core_Option.None(), era_ = ff_core_Option.None(), year_ = ff_core_Option.None(), month_ = ff_core_Option.None(), day_ = ff_core_Option.None(), dayPeriod_ = ff_core_Option.None(), hour_ = ff_core_Option.None(), minute_ = ff_core_Option.None(), second_ = ff_core_Option.None(), fractionalSecondDigits_ = ff_core_Option.None(), timeZoneName_ = ff_core_Option.None(), formatMatcher_ = ff_core_Option.None()) {
+const options_ = {calendar: ff_core_Date.Date_calendarId(self_)};
+{
+const if_o = localeMatcher_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.localeMatcher = _w1
+}
+};
+{
+const if_o = dateStyle_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.dateStyle = _w1
+}
+};
+{
+const if_o = timeStyle_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.timeStyle = _w1
+}
+};
+{
+const if_o = numberingSystem_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.numberingSystem = _w1
+}
+};
+{
+const if_o = hour12_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.hour12 = _w1
+}
+};
+{
+const if_o = hourCycle_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.hourCycle = _w1
+}
+};
+{
+const if_o = weekday_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.weekday = _w1
+}
+};
+{
+const if_o = era_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.era = _w1
+}
+};
+{
+const if_o = year_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.year = _w1
+}
+};
+{
+const if_o = month_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.month = _w1
+}
+};
+{
+const if_o = day_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.day = _w1
+}
+};
+{
+const if_o = dayPeriod_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.dayPeriod = _w1
+}
+};
+{
+const if_o = hour_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.hour = _w1
+}
+};
+{
+const if_o = minute_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.minute = _w1
+}
+};
+{
+const if_o = second_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.second = _w1
+}
+};
+{
+const if_o = fractionalSecondDigits_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.fractionalSecondDigits = _w1
+}
+};
+{
+const if_o = timeZoneName_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.timeZoneName = _w1
+}
+};
+{
+const if_o = formatMatcher_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.formatMatcher = _w1
+}
+};
+return self_.toLocaleString(locales_, options_)
+}
+
 export function Date_withCalendar(self_, calendarId_) {
 return self_.withCalendar(calendarId_)
 }
@@ -743,6 +874,137 @@ return (void 0)
 : "never"), offset: (offset_
 ? "auto"
 : "never")})
+}
+
+export async function Date_toLocaleString$(self_, locales_, localeMatcher_ = ff_core_Option.None(), dateStyle_ = ff_core_Option.None(), timeStyle_ = ff_core_Option.None(), numberingSystem_ = ff_core_Option.None(), hour12_ = ff_core_Option.None(), hourCycle_ = ff_core_Option.None(), weekday_ = ff_core_Option.None(), era_ = ff_core_Option.None(), year_ = ff_core_Option.None(), month_ = ff_core_Option.None(), day_ = ff_core_Option.None(), dayPeriod_ = ff_core_Option.None(), hour_ = ff_core_Option.None(), minute_ = ff_core_Option.None(), second_ = ff_core_Option.None(), fractionalSecondDigits_ = ff_core_Option.None(), timeZoneName_ = ff_core_Option.None(), formatMatcher_ = ff_core_Option.None(), $task) {
+const options_ = {calendar: ff_core_Date.Date_calendarId(self_)};
+{
+const if_o = localeMatcher_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.localeMatcher = _w1
+}
+};
+{
+const if_o = dateStyle_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.dateStyle = _w1
+}
+};
+{
+const if_o = timeStyle_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.timeStyle = _w1
+}
+};
+{
+const if_o = numberingSystem_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.numberingSystem = _w1
+}
+};
+{
+const if_o = hour12_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.hour12 = _w1
+}
+};
+{
+const if_o = hourCycle_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.hourCycle = _w1
+}
+};
+{
+const if_o = weekday_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.weekday = _w1
+}
+};
+{
+const if_o = era_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.era = _w1
+}
+};
+{
+const if_o = year_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.year = _w1
+}
+};
+{
+const if_o = month_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.month = _w1
+}
+};
+{
+const if_o = day_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.day = _w1
+}
+};
+{
+const if_o = dayPeriod_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.dayPeriod = _w1
+}
+};
+{
+const if_o = hour_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.hour = _w1
+}
+};
+{
+const if_o = minute_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.minute = _w1
+}
+};
+{
+const if_o = second_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.second = _w1
+}
+};
+{
+const if_o = fractionalSecondDigits_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.fractionalSecondDigits = _w1
+}
+};
+{
+const if_o = timeZoneName_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.timeZoneName = _w1
+}
+};
+{
+const if_o = formatMatcher_
+if(if_o.Some) {
+const _w1 = if_o.value_;
+options_.formatMatcher = _w1
+}
+};
+return self_.toLocaleString(locales_, options_)
 }
 
 export async function Date_withCalendar$(self_, calendarId_, $task) {
