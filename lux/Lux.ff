@@ -37,6 +37,7 @@ capability LuxEffect[I, O](
     mutable result: Option[O], 
     mutable loading: Bool, 
     mutable error: Bool, 
+    mutable internalEffect: I => O
     mutable internalInput: Option[I]
 )
 
@@ -414,7 +415,7 @@ extend self: Lux {
         let luxEffect = if(!hook.dry() && hook.hasValue()) {
             hook.grabValue()
         } else {
-            let luxEffect = LuxEffect({_ => }, {}, None, False, False, None)
+            let luxEffect = LuxEffect({_ => }, {}, None, False, False, effect, None)
             luxEffect.cancel = {
                 luxEffect.loading = False
                 luxEffect.error = False
@@ -431,7 +432,7 @@ extend self: Lux {
                 update(Unit)
                 let subtask = hook.luxCopy.task.spawn {task =>
                     try {
-                        let newResult = effect(input)
+                        let newResult = luxEffect.internalEffect(input)
                         luxEffect.loading = False
                         luxEffect.error = False
                         luxEffect.result = Some(newResult)
@@ -447,6 +448,7 @@ extend self: Lux {
             if(!hook.dry()) {hook.setValue(luxEffect)}
             luxEffect
         }
+        luxEffect.internalEffect = effect
         body(luxEffect)
     }
 
