@@ -32,12 +32,12 @@ class LuxDocument(document: JsValue)
 data LuxInvaldNameException(name: String)
 
 capability LuxEffect[I, O](
-    reload: I => Unit, 
-    cancel: () => Unit, 
-    result: Option[O], 
-    loading: Bool, 
-    error: Bool, 
-    internalInput: Option[I]
+    mutable reload: I => Unit, 
+    mutable cancel: () => Unit, 
+    mutable result: Option[O], 
+    mutable loading: Bool, 
+    mutable error: Bool, 
+    mutable internalInput: Option[I]
 )
 
 extend self[I: Equal, O]: LuxEffect[I, O] {
@@ -408,34 +408,46 @@ extend self: Lux {
     }
 
     useEffect[I, O](effect: I => O, body: LuxEffect[I, O] => Unit) {
+        self.useState(False): flip, setFlip =>
+        self.useCallback1 {_ => setFlip(!flip)}: update =>
         self.useHook: hook =>
-        if(!hook.dry() && !hook.hasValue()) {hook.setValue(Pair[Option[I], Option[O]](None, None))}
-        self.useState(Pair(False, False)): | Pair(loading, error), setState =>
-        let cancel: () => Unit = {
-            if(hook.dry()) {setState(Pair(False, False))} else:
-            hook.cleanup()
-            setState(Pair(False, False))
-        }
-        self.useCallback1 {input =>
-            if(hook.dry()) {setState(Pair(True, False))} else:
-            hook.cleanup()
-            hook.setValue(Pair(Some(input), hook.grabValue().second))
-            setState(Pair(True, error))
-            let subtask = hook.luxCopy.task.spawn {task =>
-                try {
-                    let newResult = effect(input)
-                    hook.setValue(Pair(Some(input), Some(newResult)))
-                    setState(Pair(False, False))
-                } catchAny {error =>
-                    if(error.name() != "AbortError") {
-                        setState(Pair(False, True))
+        let luxEffect = if(!hook.dry() && hook.hasValue()) {
+            hook.grabValue()
+        } else {
+            let luxEffect = LuxEffect({_ => }, {}, None, False, False, None)
+            luxEffect.cancel = {
+                luxEffect.loading = False
+                luxEffect.error = False
+                if(!hook.dry()):
+                hook.cleanup()
+                update(Unit)
+            }
+            luxEffect.reload = {input =>
+                luxEffect.loading = True
+                luxEffect.error = False
+                luxEffect.internalInput = Some(input)
+                if(!hook.dry()):
+                hook.cleanup()
+                update(Unit)
+                let subtask = hook.luxCopy.task.spawn {task =>
+                    try {
+                        let newResult = effect(input)
+                        luxEffect.loading = False
+                        luxEffect.error = False
+                        luxEffect.result = Some(newResult)
+                        update(Unit)
+                    } catchAny {error =>
+                        luxEffect.loading = False
+                        luxEffect.error = error.name() != "AbortError"
+                        update(Unit)
                     }
                 }
+                hook.setCleanup {subtask.abort()}
             }
-            hook.setCleanup {subtask.abort()}
-        }: reload =>
-        let pair = if(hook.dry()) {Pair(None, None)} else {hook.grabValue()}
-        body(LuxEffect(reload, cancel, pair.second, loading, error, pair.first))
+            if(!hook.dry()) {hook.setValue(luxEffect)}
+            luxEffect
+        }
+        body(luxEffect)
     }
 
     useWebSocket(
