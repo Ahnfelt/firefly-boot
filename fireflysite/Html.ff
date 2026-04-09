@@ -55,7 +55,7 @@ renderAndServe[T: Serializable](
     render: Lux => Unit
 ) {
     let serialized = Serializable.serialize(pageData)
-    let htmlAndCss = Lux.renderToString(system, render)
+    let htmlAndCss = Lux.renderToString(system, {lux, _ => render(lux)})
     serveHtml(moduleName, title, serialized, htmlAndCss.first, htmlAndCss.second, request)
 }
 

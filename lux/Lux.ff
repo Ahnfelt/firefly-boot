@@ -60,11 +60,12 @@ extend self[I, O]: LuxEffect[I, O] {
 class DryNode {
     DryElement(tagName: String, attributes: StringMap[String], children: Array[DryNode])
     DryFragment(children: Array[DryNode])
+    DryStyleTags()
     DryText(text: String)
 }
 
 extend self: DryNode {
-    toHtml(): String {
+    toHtml(styleTags: String): String {
         // https://www.w3.org/TR/xml/ - wrt. checkXmmlName, we only accept the ASCII subset
         function checkXmlName(name: String): String {
             if(name.size() == 0) {throw(LuxInvaldNameException(name))}
@@ -91,6 +92,8 @@ extend self: DryNode {
                 "<" + checkXmlName(tagName) + attributeHtml + ">" + childrenHtml + endHtml
             | DryFragment(children) => 
                 children.toList().map {toHtml(_)}.join()
+            | DryStyleTags =>
+                styleTags
             | DryText(text) => 
                 escapeText(text)
         }
@@ -722,7 +725,7 @@ renderById(browserSystem: BrowserSystem, id: String, body: Lux => Unit) {
     render(browserSystem, element, body)
 }
 
-renderToString(nodeSystem: NodeSystem, body: Lux => Unit): Pair[String, String] {
+renderToString(nodeSystem: NodeSystem, body: (Lux, () => Unit) => Unit): Pair[String, String] {
     let children = [].toArray()
     let lux = Lux(
         jsSystem = nodeSystem.js()
@@ -739,10 +742,11 @@ renderToString(nodeSystem: NodeSystem, body: Lux => Unit): Pair[String, String] 
         texts = Array.new()
         renderQueue = Array.new()
     )
-    body(lux)
+    let insertStyleTags = {lux.dry.each {_.push(DryStyleTags)}}
+    body(lux, insertStyleTags)
     patchText(lux)
     let styleTags = lux.cssClasses.values().map {c => 
         "<style lux-class=\"" + c.name() + "\">" + c.show() + "</style>"
     }.join()
-    Pair(children.toList().map {_.toHtml()}.join(), styleTags)
+    Pair(children.toList().map {_.toHtml(styleTags)}.join(), styleTags)
 }
