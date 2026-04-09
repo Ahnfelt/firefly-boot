@@ -4,35 +4,77 @@ import Lux from ff:lux
 import Menu
 
 serveHtml(
+    system: NodeSystem
     moduleName: String
     title: String
     pageData: Buffer
-    contentHtml: String
-    styleTags: String
     request: WebRequest[WebResponse]
+    body: Lux => Unit
 ): Unit {
+    let html = Lux.renderToString(system) {lux, insertStyleTags =>
+        lux.add("html") {
+            lux.set("lang", "en")
+            lux.set("style", "background-color: #ffffff; color: #333333; width: 100%; height: 100%; color-scheme: light;")
+            lux.add("head") {
+                lux.add("title") {lux.text(title)}
+                lux.add("meta") {
+                    lux.set("name", "viewport")
+                    lux.set("content", "width=device-width, initial-scale=1.0")
+                }
+                lux.add("meta") {
+                    lux.set("name", "theme-color")
+                    lux.set("content", "#ecc45e")
+                }
+                lux.add("link") {
+                    lux.set("rel", "modulepreload")
+                    lux.set("href", "/js/ff/fireflysite/" + moduleName + ".run.mjs")
+                }
+                lux.add("link") {
+                    lux.set("rel", "preload")
+                    lux.set("href", "/assets/font/firefly-mono.woff2")
+                    lux.set("as", "font")
+                    lux.set("crossorigin", "anonymous")
+                }
+                lux.add("link") {
+                    lux.set("rel", "preload")
+                    lux.set("href", "/assets/font/firefly-sans.woff2")
+                    lux.set("as", "font")
+                    lux.set("crossorigin", "anonymous")
+                }
+                lux.add("link") {
+                    lux.set("rel", "preload")
+                    lux.set("href", "/assets/image/firefly-logo-yellow.webp")
+                    lux.set("as", "image")
+                }
+                lux.add("style") {lux.text("@font-face { font-family: 'Firefly Mono'; font-display: fallback; src: url('/assets/font/firefly-mono.woff2'); }")}
+                lux.add("style") {lux.text("@font-face { font-family: 'Firefly Sans'; font-display: fallback; src: url('/assets/font/firefly-sans.woff2'); }")}
+                insertStyleTags()
+                lux.add("script") {
+                    lux.set("type", "module")
+                    lux.set("src", "/js/ff/fireflysite/" + moduleName + ".run.mjs")
+                }
+                lux.add("script") {
+                    lux.set("type", "text/plain")
+                    lux.set("id", "data")
+                    lux.text(pageData.toLetter16())
+                }
+                lux.add("script") {
+                    lux.set("type", "speculationrules")
+                    lux.text(speculationRules)
+                }
+            }
+            lux.add("body") {
+                lux.set("style", "margin: 0; padding: 0; width: 100%; height: 100%; touch-action: manipulation;")
+                lux.add("div") {
+                    lux.set("id", "main")
+                    body(lux)
+                }
+            }
+        }
+    }
     request.writeHeader("Content-Type", "text/html; charset=UTF-8")
     request.writeText("<!doctype html>")
-    request.writeText("<html lang='en' style='background-color: #ffffff; color: #333333; width: 100%; height: 100%; color-scheme: light;'>")
-    request.writeText("<head>")
-    request.writeText("<title>" + title + "</title>")
-    request.writeText("<meta name='viewport' content='width=device-width, initial-scale=1.0'>")
-    request.writeText("<meta name='theme-color' content='#ecc45e'>")
-    request.writeText("<link rel='modulepreload' href='/js/ff/fireflysite/" + moduleName + ".run.mjs'>")
-    request.writeText("<link rel='preload' href='/assets/font/firefly-mono.woff2' as='font' crossorigin='anonymous'>")
-    request.writeText("<link rel='preload' href='/assets/font/firefly-sans.woff2' as='font' crossorigin='anonymous'>")
-    request.writeText("<link rel='preload' href='/assets/image/firefly-logo-yellow.webp' as='image'>")
-    request.writeText("<style>@font-face { font-family: 'Firefly Mono'; font-display: fallback; src: url('/assets/font/firefly-mono.woff2'); }</style>")
-    request.writeText("<style>@font-face { font-family: 'Firefly Sans'; font-display: fallback; src: url('/assets/font/firefly-sans.woff2'); }</style>")
-    request.writeText(styleTags)
-    request.writeText("<script type='module' src='/js/ff/fireflysite/" + moduleName + ".run.mjs'></script>")
-    request.writeText("<script type='text/plain' id='data'>" + pageData.toLetter16() + "</script>")
-    request.writeText(speculationRules)
-    request.writeText("</head>")
-    request.writeText("<body style='margin: 0; padding: 0; width: 100%; height: 100%; touch-action: manipulation;'>")
-    request.writeText("<div id='main'>" + contentHtml + "</div>")
-    request.writeText("</body>")
-    request.writeText("</html>")
+    request.writeText(html.first)
 }
 
 serve404(
@@ -55,8 +97,7 @@ renderAndServe[T: Serializable](
     render: Lux => Unit
 ) {
     let serialized = Serializable.serialize(pageData)
-    let htmlAndCss = Lux.renderToString(system, {lux, _ => render(lux)})
-    serveHtml(moduleName, title, serialized, htmlAndCss.first, htmlAndCss.second, request)
+    serveHtml(system, moduleName, title, serialized, request, render)
 }
 
 renderToMain[T: Serializable](system: BrowserSystem, render: (Lux, T) => Unit) {
@@ -67,13 +108,11 @@ renderToMain[T: Serializable](system: BrowserSystem, render: (Lux, T) => Unit) {
     }
 }
 
-speculationRules: String = """<script type="speculationrules">
-{
+speculationRules: String = """{
   "prerender": [{
     "where": {
       "href_matches": "/*"
     },
     "eagerness": "moderate"
   }]
-}
-</script>"""
+}"""
