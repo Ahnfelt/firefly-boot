@@ -11,7 +11,7 @@ serveHtml(
     request: WebRequest[WebResponse]
     body: Lux => Unit
 ): Unit {
-    let html = Lux.renderToString(system) {lux, insertStyleTags =>
+    let html = Lux.renderToString {lux, insertStyleTags =>
         lux.add("html") {
             lux.set("lang", "en")
             lux.set("style", "background-color: #ffffff; color: #333333; width: 100%; height: 100%; color-scheme: light;")

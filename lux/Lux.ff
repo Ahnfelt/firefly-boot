@@ -725,17 +725,17 @@ renderById(browserSystem: BrowserSystem, id: String, body: Lux => Unit) {
     render(browserSystem, element, body)
 }
 
-renderToString(nodeSystem: NodeSystem, body: (Lux, () => Unit) => Unit): Pair[String, String] {
+renderToString(body: (Lux, () => Unit) => Unit): Pair[String, String] {
     let children = [].toArray()
     let lux = Lux(
-        jsSystem = nodeSystem.js()
-        renderLock = nodeSystem.mainTask().lock()
+        jsSystem = Js.jsSystem()
+        renderLock = Js.null()?
         dry = Some(children)
         cssClasses = StringMap.new()
-        task = nodeSystem.mainTask()
+        task = Js.null()?
         depth = 0
-        document = LuxDocument(nodeSystem.js().null())
-        element = LuxElement(LuxElementBox(nodeSystem.js().null()), 0, keepChildren = False)
+        document = LuxDocument(Js.null())
+        element = LuxElement(LuxElementBox(Js.null()), 0, keepChildren = False)
         keys = None
         key = ""
         attributes = None
