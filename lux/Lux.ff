@@ -5,6 +5,7 @@ import Css
 capability Lux(
     document: LuxDocument
     jsSystem: JsSystem
+    browserSystem: Option[BrowserSystem]
     mutable dry: Option[Array[DryNode]]
     mutable cssClasses: StringMap[CssClass]
     renderLock: Lock
@@ -31,28 +32,29 @@ class LuxDocument(document: JsValue)
 
 data LuxInvaldNameException(name: String)
 
-capability LuxEffect[I, O](
-    mutable reload: I => Unit, 
-    mutable cancel: () => Unit, 
-    mutable result: Option[O], 
-    mutable loading: Bool, 
-    mutable error: Bool, 
-    mutable internalEffect: I => O
+capability LuxJob[I, O](
+    mutable rerun: I => Unit
+    mutable cancel: () => Unit
+    mutable generation: Int
+    mutable result: Option[O]
+    mutable running: Bool
+    mutable error: Bool
+    mutable internalEffect: (BrowserSystem, I) => O
     mutable internalInput: Option[I]
 )
 
-extend self[I: Equal, O]: LuxEffect[I, O] {
-    load(input: I) {
+extend self[I: Equal, O]: LuxJob[I, O] {
+    run(input: I) {
         if(!self.internalInput.contains(input)) {
-            self.reload(input)
+            self.rerun(input)
         }
     }
 }
 
-extend self[I, O]: LuxEffect[I, O] {
+extend self[I, O]: LuxJob[I, O] {
     retry() {
         self.internalInput.each {input =>
-            self.reload(input)
+            self.rerun(input)
         }
     }
 }
@@ -342,7 +344,6 @@ extend self: Lux {
         if(hook.dry()) {body(callback)} else:
         hook.setValue(callback)
         body {a1 =>
-            Log.debug(hook.luxCopy.element.box.element?)
             let latestCallback = hook.grabValue()
             self.renderLock.do {
                 latestCallback(a1)
@@ -411,48 +412,57 @@ extend self: Lux {
         hook.setCleanup {subtask.abort()}
     }
 
-    useEffect[I, O](effect: I => O, body: LuxEffect[I, O] => Unit) {
+    useJob[I, O](effect: (BrowserSystem, I) => O, body: LuxJob[I, O] => Unit) {
         self.useState(False): flip, setFlip =>
         self.useCallback1 {_ => setFlip(!flip)}: update =>
         self.useHook: hook =>
-        let luxEffect = if(!hook.dry() && hook.hasValue()) {
+        let luxJob = if(!hook.dry() && hook.hasValue()) {
             hook.grabValue()
         } else {
-            let luxEffect = LuxEffect({_ => }, {}, None, False, False, effect, None)
-            luxEffect.cancel = {
-                luxEffect.loading = False
-                luxEffect.error = False
+            let luxJob = LuxJob({_ => }, {}, 0, None, False, False, effect, None)
+            luxJob.cancel = {
+                luxJob.generation += 1
+                luxJob.running = False
+                luxJob.error = False
                 if(!hook.dry()):
                 hook.cleanup()
                 update(Unit)
             }
-            luxEffect.reload = {input =>
-                luxEffect.loading = True
-                luxEffect.error = False
-                luxEffect.internalInput = Some(input)
+            luxJob.rerun = {input =>
+                luxJob.generation += 1
+                luxJob.running = True
+                luxJob.error = False
+                luxJob.internalInput = Some(input)
                 if(!hook.dry()):
                 hook.cleanup()
                 update(Unit)
+                let generation = luxJob.generation
                 let subtask = hook.luxCopy.task.spawn {task =>
                     try {
-                        let newResult = luxEffect.internalEffect(input)
-                        luxEffect.loading = False
-                        luxEffect.error = False
-                        luxEffect.result = Some(newResult)
-                        update(Unit)
+                        let newResult = luxJob.internalEffect(hook.luxCopy.browserSystem.grab(), input)
+                        if(generation == luxJob.generation) {
+                            luxJob.running = False
+                            luxJob.error = False
+                            luxJob.result = Some(newResult)
+                            update(Unit)
+                        }
                     } catchAny {error =>
-                        luxEffect.loading = False
-                        luxEffect.error = error.name() != "AbortError"
-                        update(Unit)
+                        if(generation == luxJob.generation) {
+                            luxJob.running = False
+                            luxJob.error = error.name() != "AbortError"
+                            update(Unit)
+                        }
                     }
                 }
-                hook.setCleanup {subtask.abort()}
+                hook.setCleanup {
+                    subtask.abort()
+                }
             }
-            if(!hook.dry()) {hook.setValue(luxEffect)}
-            luxEffect
+            if(!hook.dry()) {hook.setValue(luxJob)}
+            luxJob
         }
-        luxEffect.internalEffect = effect
-        body(luxEffect)
+        luxJob.internalEffect = effect
+        body(luxJob)
     }
 
     useWebSocket(
@@ -534,7 +544,7 @@ extend self[T]: LuxHook[T] {
         let key = "_lux$C" + self.luxCopy.depth
         let cleanupFunction = self.luxCopy.element.box.element.get(key)
         self.luxCopy.element.box.element.set(key, {}!)
-        cleanupFunction?() // Async cleanup is not waited for. Is that ok?
+        Js.await(cleanupFunction?())
     }
 }
 
@@ -701,6 +711,7 @@ render(browserSystem: BrowserSystem, element: JsValue, body: Lux => Unit) {
     }
     let lux = Lux(
         jsSystem = browserSystem.js()
+        browserSystem = Some(browserSystem)
         renderLock = browserSystem.mainTask().lock()
         dry = None
         cssClasses = staticCssClasses
@@ -729,6 +740,7 @@ renderToString(body: (Lux, () => Unit) => Unit): Pair[String, String] {
     let children = [].toArray()
     let lux = Lux(
         jsSystem = Js.jsSystem()
+        browserSystem = None
         renderLock = Js.null()?
         dry = Some(children)
         cssClasses = StringMap.new()
