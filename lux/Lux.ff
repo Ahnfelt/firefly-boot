@@ -35,7 +35,7 @@ data LuxInvaldNameException(name: String)
 capability LuxJob[I, O](
     mutable rerun: I => Unit
     mutable cancel: () => Unit
-    mutable generation: Int
+    mutable cleanups: Int
     mutable result: Option[O]
     mutable running: Bool
     mutable error: Bool
@@ -421,33 +421,30 @@ extend self: Lux {
         } else {
             let luxJob = LuxJob({_ => }, {}, 0, None, False, False, effect, None)
             luxJob.cancel = {
-                luxJob.generation += 1
+                if(!hook.dry()) {hook.cleanup()}
                 luxJob.running = False
                 luxJob.error = False
-                if(!hook.dry()):
-                hook.cleanup()
-                update(Unit)
+                if(!hook.dry()) {update(Unit)}
             }
             luxJob.rerun = {input =>
-                luxJob.generation += 1
+                if(!hook.dry()) {hook.cleanup()}
                 luxJob.running = True
                 luxJob.error = False
                 luxJob.internalInput = Some(input)
                 if(!hook.dry()):
-                hook.cleanup()
                 update(Unit)
-                let generation = luxJob.generation
+                let cleanups = luxJob.cleanups
                 let subtask = hook.luxCopy.task.spawn {task =>
                     try {
                         let newResult = luxJob.internalEffect(hook.luxCopy.browserSystem.grab(), input)
-                        if(generation == luxJob.generation) {
+                        if(cleanups == luxJob.cleanups) {
                             luxJob.running = False
                             luxJob.error = False
                             luxJob.result = Some(newResult)
                             update(Unit)
                         }
                     } catchAny {error =>
-                        if(generation == luxJob.generation) {
+                        if(cleanups == luxJob.cleanups) {
                             luxJob.running = False
                             luxJob.error = error.name() != "AbortError"
                             update(Unit)
@@ -455,6 +452,7 @@ extend self: Lux {
                     }
                 }
                 hook.setCleanup {
+                    luxJob.cleanups += 1
                     subtask.abort()
                 }
             }
