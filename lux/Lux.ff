@@ -424,7 +424,8 @@ extend self: Lux {
                 if(!hook.dry()) {hook.cleanup()}
                 luxJob.running = False
                 luxJob.error = False
-                if(!hook.dry()) {update(Unit)}
+                if(!hook.dry()):
+                update(Unit)
             }
             luxJob.rerun = {input =>
                 if(!hook.dry()) {hook.cleanup()}
