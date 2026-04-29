@@ -109,7 +109,6 @@ main(system: NodeSystem): Unit {
                     ].toMap()
                     singleFilePackages = [].toSet()
                 )
-                compilerModulePath = None
                 jsOutputPath = workingDirectory.slash("output").slash("js")
                 printMeasurements = True
                 moduleCache = ModuleCache.new(0)
@@ -177,9 +176,6 @@ buildScript(
     } else {
         resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath.slash("core"))
     }
-    let compilerModulePath = if(emitTarget != EmitBrowser) {
-        fireflyPath.slash("output").slash("js").slash("ff").slash("compiler/Builder.mjs")
-    }
     let targetName = emitTarget.{
         | EmitNode => "node"
         | EmitBrowser => "browser"
@@ -193,7 +189,6 @@ buildScript(
         emitTarget = emitTarget
         mainModules = [moduleKey]
         resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
-        compilerModulePath = compilerModulePath
         jsOutputPath = system.path(".firefly").path("output").path(targetName)
         printMeasurements = printMeasurements
         moduleCache = moduleCache

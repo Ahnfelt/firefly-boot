@@ -8,7 +8,6 @@ class JsEmitter(
     jsImporter: JsImporter
     emitTarget: EmitTarget
     isMainModule: Bool
-    compilerModuleFileUrl: Option[String]
     moduleKey: ModuleKey
     mutable emittingAsync: Bool
     mutable tailCallUsed: Bool
@@ -29,7 +28,6 @@ new(
     otherModules: List[Module]
     emitTarget: EmitTarget
     isMainModule: Bool
-    compilerModuleFileUrl: Option[String]
     moduleKey: ModuleKey
 ): JsEmitter {
     JsEmitter(
@@ -39,7 +37,6 @@ new(
         jsImporter = JsImporter.new()
         emitTarget = emitTarget
         isMainModule = isMainModule
-        compilerModuleFileUrl = compilerModuleFileUrl
         moduleKey = moduleKey
         emittingAsync = False
         tailCallUsed = False

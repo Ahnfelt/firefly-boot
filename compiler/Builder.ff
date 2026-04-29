@@ -15,7 +15,6 @@ build(
     emitTarget: EmitTarget
     mainModules: List[ModuleKey]
     resolvedDependencies: ResolvedDependencies
-    compilerModulePath: Option[Path]
     jsOutputPath: Path
     printMeasurements: Bool
     moduleCache: ModuleCache
@@ -24,7 +23,6 @@ build(
     let compiler = Compiler.new(
         emitTarget
         system.mainTask()
-        compilerModulePath
         jsOutputPath
         resolvedDependencies
         Map.new()
@@ -107,7 +105,6 @@ buildViaBuildSystem(
         emitTarget = EmitBrowser
         mainModules = mainModuleKeys
         resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
-        compilerModulePath = None
         jsOutputPath = system.path(".firefly/output").slash(target)
         printMeasurements = printMeasurements
         moduleCache = moduleCache
@@ -156,7 +153,6 @@ check(
         let compiler = Compiler.new(
             EmitNode
             system.mainTask() 
-            None
             package.root.slash(".firefly").slash("temporary")
             fixedResolvedDependencies
             virtualFiles

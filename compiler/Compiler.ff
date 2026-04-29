@@ -13,7 +13,6 @@ import LspHook
 capability Compiler(
     emitTarget: EmitTarget
     task: Task
-    compilerModulePath: Option[Path]
     jsOutputPath: Path
     packagePaths: Map[PackagePair, Path]
     singleFilePackages: Set[PackagePair]
@@ -27,7 +26,6 @@ capability Compiler(
 new(
     emitTarget: EmitTarget
     task: Task
-    compilerModulePath: Option[Path]
     jsOutputPath: Path
     resolvedDependencies: ResolvedDependencies
     virtualFiles: Map[String, String]
@@ -37,7 +35,6 @@ new(
     Compiler(
         emitTarget = emitTarget
         task = task
-        compilerModulePath = compilerModulePath
         jsOutputPath = jsOutputPath
         packagePaths = resolvedDependencies.packagePaths
         singleFilePackages = resolvedDependencies.singleFilePackages
@@ -231,7 +228,6 @@ extend self: Compiler {
             otherModules = allModules
             emitTarget = self.emitTarget
             isMainModule = isMainModule
-            compilerModuleFileUrl = self.compilerModulePath.map {_.relativeUrlTo(jsPath)}
             moduleKey = moduleKey
         )
         emitter.emitModule(module)

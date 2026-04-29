@@ -103,8 +103,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type JsEmitter
-export function JsEmitter(otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_, emittingAsync_, tailCallUsed_, writtenColumn_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_) {
-return {otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_, emittingAsync_, tailCallUsed_, writtenColumn_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_};
+export function JsEmitter(otherModules_, jsImporter_, emitTarget_, isMainModule_, moduleKey_, emittingAsync_, tailCallUsed_, writtenColumn_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_) {
+return {otherModules_, jsImporter_, emitTarget_, isMainModule_, moduleKey_, emittingAsync_, tailCallUsed_, writtenColumn_, writtenStrings_, writtenSegments_, writtenAnchors_, writtenNames_};
 }
 
 // type EmitTarget
@@ -138,10 +138,10 @@ return {emitter_, first_, delimiter_};
 
 export const primitiveTypes_ = ff_core_List.List_toSet(["ff:core/Bool.Bool", "ff:core/Char.Char", "ff:core/Int.Int", "ff:core/Float.Float", "ff:core/String.String"], ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 
-export function new_(otherModules_, emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_) {
+export function new_(otherModules_, emitTarget_, isMainModule_, moduleKey_) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 return ff_core_Pair.Pair(ff_compiler_Syntax.ModuleKey_qualifiedName(m_.moduleKey_), m_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.new_(), emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_, false, false, 0, ff_core_List.List_toArray([ff_core_List.List_toArray([])]), ff_core_List.List_toArray([ff_core_List.List_toArray([])]), ff_core_IntMap.new_(), ff_core_StringMap.new_())
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.new_(), emitTarget_, isMainModule_, moduleKey_, false, false, 0, ff_core_List.List_toArray([ff_core_List.List_toArray([])]), ff_core_List.List_toArray([ff_core_List.List_toArray([])]), ff_core_IntMap.new_(), ff_core_StringMap.new_())
 }
 
 export function fail_(at_, message_) {
@@ -395,10 +395,10 @@ return false
 }
 }
 
-export async function new_$(otherModules_, emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_, $task) {
+export async function new_$(otherModules_, emitTarget_, isMainModule_, moduleKey_, $task) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 return ff_core_Pair.Pair(ff_compiler_Syntax.ModuleKey_qualifiedName(m_.moduleKey_), m_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.new_(), emitTarget_, isMainModule_, compilerModuleFileUrl_, moduleKey_, false, false, 0, ff_core_List.List_toArray([ff_core_List.List_toArray([])]), ff_core_List.List_toArray([ff_core_List.List_toArray([])]), ff_core_IntMap.new_(), ff_core_StringMap.new_())
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.new_(), emitTarget_, isMainModule_, moduleKey_, false, false, 0, ff_core_List.List_toArray([ff_core_List.List_toArray([])]), ff_core_List.List_toArray([ff_core_List.List_toArray([])]), ff_core_IntMap.new_(), ff_core_StringMap.new_())
 }
 
 export async function fail_$(at_, message_, $task) {
