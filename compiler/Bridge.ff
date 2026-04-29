@@ -1,0 +1,182 @@
+setGlobalBridge(nodeSystem: NodeSystem) {
+    nodeSystem.js().globalThis()->"$firefly_bridge" = BuildSystemBridge(
+        compileForBrowser = {internalCompileForBrowser(_, _)}
+        bundleForBrowser = {internalBundleForBrowser(_, _, _, _)}
+    )!
+}
+
+internalCompileForBrowser(system: BuildSystem, mainFiles: List[String]): AssetSystem {
+    // TODO: Check that the mainFile is in the current package directory
+    internalCompile(system, mainFiles.map {internalPath(system, _)}, "browser")
+    let streams = internalListDirectory(internalPath(system, ".firefly/output/browser"))
+    let mainPackagePair = internalMainPackagePair(system)
+    AssetSystem(streams.toMap())
+}
+
+internalBundleForBrowser(system: BuildSystem, mainFiles: List[String], minify: Bool = True, sourceMaps: Bool = False): AssetSystem {
+    internalCompile(system, mainFiles.map {internalPath(system, _)}, "browser")
+    let browserOutputPath = internalPath(system, ".firefly/output/browser")
+    let runPaths = internalListPath(browserOutputPath).filter {_.base().endsWith(".run.mjs")}.toList()
+    if(Js.globalThis()->ffDevelopMode.typeof() == "undefined") {
+        let outputPath = runPaths.grabFirst().parent().grab()
+        internalBrowserCallEsBuild(system, runPaths.map {_.absolute()}, outputPath.absolute(), minify, sourceMaps)
+        let bundlePaths = runPaths.flatMap {p =>
+            let outputPath = p.parent().grab()
+            let bundlePath = outputPath.slash(p.base().removeLast(".mjs").grab() + ".bundle.js")
+            let mapPath = outputPath.slash(p.base().removeLast(".mjs").grab() + ".bundle.js.map")
+            [bundlePath, mapPath]
+        }
+        AssetSystem(bundlePaths.map {p => 
+            Pair("/" + p.relativeListTo(browserOutputPath).join("/"), {p.readStream()})
+        }.toMap())
+    } else {
+        mutable built = Set.new()
+        let lock = system.mainTask().lock()
+        AssetSystem(runPaths.flatMap {p =>
+            let outputPath = p.parent().grab()
+            let bundlePath = outputPath.slash(p.base().removeLast(".mjs").grab() + ".bundle.js")
+            let mapPath = outputPath.slash(p.base().removeLast(".mjs").grab() + ".bundle.js.map")
+            let bundleAssetPath = "/" + bundlePath.relativeListTo(browserOutputPath).join("/")
+            let mapAssetPath = "/" + mapPath.relativeListTo(browserOutputPath).join("/")
+            function bundle() {
+                lock.do {
+                    if(!built.contains(p.absolute())) {
+                        internalBrowserCallEsBuild(system, [p.absolute()], outputPath.absolute(), minify, sourceMaps)
+                        built = built.add(p.absolute())
+                    }
+                    bundlePath.readStream()
+                }
+            }
+            let bundleEntry = Pair(bundleAssetPath, {
+                bundle()
+                bundlePath.readStream()
+            })
+            let mapEntry = Pair(mapAssetPath, {
+                bundle()
+                mapPath.readStream()
+            })
+            [bundleEntry, mapEntry]
+        }.toMap())
+    }
+}
+
+internalCompile(buildSystem: BuildSystem, mainFiles: List[Path], target: String): Unit {
+    if(Js.globalThis()->ffDevelopMode.typeof() != "undefined") {
+        Js->process->send(Js->(
+            ffDevelopMode = "internalCompile"
+            mainFiles = mainFiles.map {_.absolute()}
+            target = target
+        ))
+        Js.awaitCancellablePromise {resolve, reject, cleanup =>
+            Js->process->on("message", Js->{message => 
+                if(message->ffDevelopMode === "internalCompile") {
+                    resolve(Unit) // Handle errors?
+                }
+            })
+        }
+    } else:
+    // Ported from the old FFI. It's quite fragile w.r.t. changes in code generation.
+    Js.await(Js.rawIdentifier("$firefly_compiler")->"buildViaBuildSystem_$"(
+        buildSystem! 
+        internalPath(buildSystem, buildSystem!->"fireflyPath_"?)!
+        mainFiles!
+        target
+        Js.undefined()
+        Js.undefined()
+        Js.currentTask()!
+    ))
+}
+
+internalBrowserCallEsBuild(
+    self: BuildSystem
+    mainJsFiles: List[String]
+    outputPath: String
+    minify: Bool
+    sourceMap: Bool
+): Unit {
+    let esbuild = Js.import("esbuild")
+    Js.await(esbuild->build(Js->(
+        entryPoints = mainJsFiles
+        bundle = True
+        minify = minify
+        sourcemap = sourceMap
+        platform = "browser"
+        target = "es2017"
+        outdir = outputPath
+        outExtension = Js.object().with(".js", ".bundle.js")
+    )))
+}
+
+internalNodeCallEsBuild(
+    self: NodeSystem
+    mainJsFile: String
+    outputPath: String
+    minify: Bool
+): Unit {
+    let esbuild = Js.import("esbuild")
+    Js.await(esbuild->build(Js->(
+        entryPoints = [mainJsFile]
+        bundle = True
+        minify = minify
+        sourcemap = True
+        platform = "node"
+        target = "es2017"
+        external = ["esbuild", "uws.js"]
+        loader = Js.object().with(".node", "copy")
+        outdir = outputPath
+    )))
+}
+
+internalNodeCallEsBuildContext(
+    self: NodeSystem
+    mainJsFile: String
+    outputPath: String
+    minify: Bool
+): JsValue {
+    let esbuild = Js.import("esbuild")
+    Js.await(esbuild->context(Js->(
+        entryPoints = [mainJsFile]
+        bundle = True
+        minify = minify
+        sourcemap = True
+        platform = "node"
+        target = "es2017"
+        external = ["esbuild", "uws.js"]
+        loader = Js.object().with(".node", "copy")
+        outfile = outputPath
+    )))    
+}
+
+internalPath(buildSystem: BuildSystem, absoluteOrRelative: String): Path {
+    let nodePath = Js.import("path")
+    Path(nodePath->resolve(absoluteOrRelative)?)
+}
+
+internalListPath(path: Path): Stream[Path] {
+    path.entries().flatMap {file =>
+        if(file.isDirectory()) {
+            internalListPath(file.path())
+        } else {
+            [file.path()].toStream()
+        }
+    }
+}
+
+internalListDirectory(path: Path): List[Pair[String, () => Stream[Buffer]]] {
+    function go(currentPath: Path): Stream[Path] {
+        currentPath.entries().flatMap {file =>
+            if(file.isDirectory()) {
+                go(file.path())
+            } else {
+                [file.path()].toStream()
+            }
+        }
+    }
+    go(path).map {file =>
+        Pair("/" + file.relativeTo(path).replace("\\", "/"), {file.readStream()})
+    }.toList()
+}
+
+internalMainPackagePair(buildSystem: BuildSystem): Pair[String, String] {
+    Pair(buildSystem!->"mainPackagePair_"->"group_"?, buildSystem!->"mainPackagePair_"->"name_"?)
+}
