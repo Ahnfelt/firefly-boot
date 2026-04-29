@@ -704,9 +704,7 @@ return ff_compiler_SourceMap.makeOutputAndSourceMap_(fireflyFile_, fireflySource
 
 export function JsEmitter_emitModule(self_, module_) {
 const selfImport_ = ff_compiler_JsEmitter.JsEmitter_emitImport(self_, self_.moduleKey_);
-const imports_ = ff_core_List.List_flatten([ff_core_Option.Option_toList(ff_core_Option.Option_map(self_.compilerModuleFileUrl_, ((_w1) => {
-return (("import * as $firefly_compiler from '" + _w1) + "'")
-}))), ff_core_List.List_map(ff_core_List.List_sortBy(module_.imports_, ((_w1) => {
+const imports_ = ff_core_List.List_flatten([ff_core_List.List_map(ff_core_List.List_sortBy(module_.imports_, ((_w1) => {
 return _w1.moduleKey_
 }), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_ModuleKey), ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitImport(self_, _w1.moduleKey_)
@@ -4317,9 +4315,7 @@ return ff_compiler_SourceMap.makeOutputAndSourceMap_(fireflyFile_, fireflySource
 
 export async function JsEmitter_emitModule$(self_, module_, $task) {
 const selfImport_ = ff_compiler_JsEmitter.JsEmitter_emitImport(self_, self_.moduleKey_);
-const imports_ = ff_core_List.List_flatten([ff_core_Option.Option_toList(ff_core_Option.Option_map(self_.compilerModuleFileUrl_, ((_w1) => {
-return (("import * as $firefly_compiler from '" + _w1) + "'")
-}))), ff_core_List.List_map(ff_core_List.List_sortBy(module_.imports_, ((_w1) => {
+const imports_ = ff_core_List.List_flatten([ff_core_List.List_map(ff_core_List.List_sortBy(module_.imports_, ((_w1) => {
 return _w1.moduleKey_
 }), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_ModuleKey), ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitImport(self_, _w1.moduleKey_)

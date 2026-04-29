@@ -1,20 +1,23 @@
+import Builder
+import ModuleCache
+
 setGlobalBridge(nodeSystem: NodeSystem) {
     nodeSystem.js().globalThis()->"$firefly_bridge" = BuildSystemBridge(
-        compileForBrowser = {internalCompileForBrowser(_, _)}
-        bundleForBrowser = {internalBundleForBrowser(_, _, _, _)}
+        compileForBrowser = {internalCompileForBrowser(nodeSystem, _, _)}
+        bundleForBrowser = {internalBundleForBrowser(nodeSystem, _, _, _, _)}
     )!
 }
 
-internalCompileForBrowser(system: BuildSystem, mainFiles: List[String]): AssetSystem {
+internalCompileForBrowser(nodeSystem: NodeSystem, system: BuildSystem, mainFiles: List[String]): AssetSystem {
     // TODO: Check that the mainFile is in the current package directory
-    internalCompile(system, mainFiles.map {internalPath(system, _)}, "browser")
+    internalCompile(nodeSystem, system, mainFiles.map {internalPath(system, _)}, "browser")
     let streams = internalListDirectory(internalPath(system, ".firefly/output/browser"))
     let mainPackagePair = internalMainPackagePair(system)
     AssetSystem(streams.toMap())
 }
 
-internalBundleForBrowser(system: BuildSystem, mainFiles: List[String], minify: Bool = True, sourceMaps: Bool = False): AssetSystem {
-    internalCompile(system, mainFiles.map {internalPath(system, _)}, "browser")
+internalBundleForBrowser(nodeSystem: NodeSystem, system: BuildSystem, mainFiles: List[String], minify: Bool = True, sourceMaps: Bool = False): AssetSystem {
+    internalCompile(nodeSystem, system, mainFiles.map {internalPath(system, _)}, "browser")
     let browserOutputPath = internalPath(system, ".firefly/output/browser")
     let runPaths = internalListPath(browserOutputPath).filter {_.base().endsWith(".run.mjs")}.toList()
     if(Js.globalThis()->ffDevelopMode.typeof() == "undefined") {
@@ -60,7 +63,7 @@ internalBundleForBrowser(system: BuildSystem, mainFiles: List[String], minify: B
     }
 }
 
-internalCompile(buildSystem: BuildSystem, mainFiles: List[Path], target: String): Unit {
+internalCompile(nodeSystem: NodeSystem, buildSystem: BuildSystem, mainFiles: List[Path], target: String): Unit {
     if(Js.globalThis()->ffDevelopMode.typeof() != "undefined") {
         Js->process->send(Js->(
             ffDevelopMode = "internalCompile"
@@ -75,16 +78,12 @@ internalCompile(buildSystem: BuildSystem, mainFiles: List[Path], target: String)
             })
         }
     } else:
-    // Ported from the old FFI. It's quite fragile w.r.t. changes in code generation.
-    Js.await(Js.rawIdentifier("$firefly_compiler")->"buildViaBuildSystem_$"(
-        buildSystem! 
-        internalPath(buildSystem, buildSystem!->"fireflyPath_"?)!
-        mainFiles!
+    Builder.buildViaBuildSystem(
+        nodeSystem
+        internalPath(buildSystem, buildSystem!->"fireflyPath_"?)
+        mainFiles
         target
-        Js.undefined()
-        Js.undefined()
-        Js.currentTask()!
-    ))
+    )
 }
 
 internalBrowserCallEsBuild(

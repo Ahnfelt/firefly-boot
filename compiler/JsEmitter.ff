@@ -121,7 +121,6 @@ extend self: JsEmitter {
     emitModule(module: Module) {
         let selfImport = self.emitImport(self.moduleKey)
         let imports = [
-            self.compilerModuleFileUrl.map {"import * as $firefly_compiler from '" + _ + "'"}.toList()
             module.imports.sortBy {_.moduleKey}.map {self.emitImport(_.moduleKey)}
         ].flatten()
         let liner = Liner(self, True)

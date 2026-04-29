@@ -1,5 +1,9 @@
 import * as ff_compiler_Bridge from "../../ff/compiler/Bridge.mjs"
 
+import * as ff_compiler_Builder from "../../ff/compiler/Builder.mjs"
+
+import * as ff_compiler_ModuleCache from "../../ff/compiler/ModuleCache.mjs"
+
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -98,14 +102,14 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 export function setGlobalBridge_(nodeSystem_) {
 ff_core_JsSystem.JsSystem_globalThis(globalThis)["$firefly_bridge"] = ff_core_BuildSystem.BuildSystemBridge(((_w1, _w2) => {
-return ff_compiler_Bridge.internalCompileForBrowser_(_w1, _w2)
+return ff_compiler_Bridge.internalCompileForBrowser_(nodeSystem_, _w1, _w2)
 }), ((_w1, _w2, _w3, _w4) => {
-return ff_compiler_Bridge.internalBundleForBrowser_(_w1, _w2, _w3, _w4)
+return ff_compiler_Bridge.internalBundleForBrowser_(nodeSystem_, _w1, _w2, _w3, _w4)
 }))
 }
 
-export function internalCompileForBrowser_(system_, mainFiles_) {
-ff_compiler_Bridge.internalCompile_(system_, ff_core_List.List_map(mainFiles_, ((_w1) => {
+export function internalCompileForBrowser_(nodeSystem_, system_, mainFiles_) {
+ff_compiler_Bridge.internalCompile_(nodeSystem_, system_, ff_core_List.List_map(mainFiles_, ((_w1) => {
 return ff_compiler_Bridge.internalPath_(system_, _w1)
 })), "browser");
 const streams_ = ff_compiler_Bridge.internalListDirectory_(ff_compiler_Bridge.internalPath_(system_, ".firefly/output/browser"));
@@ -113,8 +117,8 @@ const mainPackagePair_ = ff_compiler_Bridge.internalMainPackagePair_(system_);
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
-export function internalBundleForBrowser_(system_, mainFiles_, minify_ = true, sourceMaps_ = false) {
-ff_compiler_Bridge.internalCompile_(system_, ff_core_List.List_map(mainFiles_, ((_w1) => {
+export function internalBundleForBrowser_(nodeSystem_, system_, mainFiles_, minify_ = true, sourceMaps_ = false) {
+ff_compiler_Bridge.internalCompile_(nodeSystem_, system_, ff_core_List.List_map(mainFiles_, ((_w1) => {
 return ff_compiler_Bridge.internalPath_(system_, _w1)
 })), "browser");
 const browserOutputPath_ = ff_compiler_Bridge.internalPath_(system_, ".firefly/output/browser");
@@ -168,7 +172,7 @@ return [bundleEntry_, mapEntry_]
 }
 }
 
-export function internalCompile_(buildSystem_, mainFiles_, target_) {
+export function internalCompile_(nodeSystem_, buildSystem_, mainFiles_, target_) {
 if(((typeof globalThis.ffDevelopMode) !== "undefined")) {
 process.send({ffDevelopMode: "internalCompile", mainFiles: ff_core_List.List_map(mainFiles_, ((_w1) => {
 return ff_core_Path.Path_absolute(_w1)
@@ -181,7 +185,7 @@ return ff_core_Option.Some(resolve_((void 0)))
 }))
 }))
 } else {
-$firefly_compiler["buildViaBuildSystem_$"](buildSystem_, ff_compiler_Bridge.internalPath_(buildSystem_, buildSystem_["fireflyPath_"]), mainFiles_, target_, (void 0), (void 0), $task)
+ff_compiler_Builder.buildViaBuildSystem_(nodeSystem_, ff_compiler_Bridge.internalPath_(buildSystem_, buildSystem_["fireflyPath_"]), mainFiles_, target_, ff_compiler_ModuleCache.new_(0), false)
 }
 }
 
@@ -237,15 +241,15 @@ return ff_core_Pair.Pair(buildSystem_["mainPackagePair_"]["group_"], buildSystem
 }
 
 export async function setGlobalBridge_$(nodeSystem_, $task) {
-ff_core_JsSystem.JsSystem_globalThis(globalThis)["$firefly_bridge"] = ff_core_BuildSystem.BuildSystemBridge(((_w1, _w2) => {
-return ff_compiler_Bridge.internalCompileForBrowser_(_w1, _w2)
-}), ((_w1, _w2, _w3, _w4) => {
-return ff_compiler_Bridge.internalBundleForBrowser_(_w1, _w2, _w3, _w4)
+ff_core_JsSystem.JsSystem_globalThis(globalThis)["$firefly_bridge"] = ff_core_BuildSystem.BuildSystemBridge((async (_w1, _w2, $task) => {
+return (await ff_compiler_Bridge.internalCompileForBrowser_$(nodeSystem_, _w1, _w2, $task))
+}), (async (_w1, _w2, _w3, _w4, $task) => {
+return (await ff_compiler_Bridge.internalBundleForBrowser_$(nodeSystem_, _w1, _w2, _w3, _w4, $task))
 }))
 }
 
-export async function internalCompileForBrowser_$(system_, mainFiles_, $task) {
-(await ff_compiler_Bridge.internalCompile_$(system_, (await ff_core_List.List_map$(mainFiles_, (async (_w1, $task) => {
+export async function internalCompileForBrowser_$(nodeSystem_, system_, mainFiles_, $task) {
+(await ff_compiler_Bridge.internalCompile_$(nodeSystem_, system_, (await ff_core_List.List_map$(mainFiles_, (async (_w1, $task) => {
 return (await ff_compiler_Bridge.internalPath_$(system_, _w1, $task))
 }), $task)), "browser", $task));
 const streams_ = (await ff_compiler_Bridge.internalListDirectory_$((await ff_compiler_Bridge.internalPath_$(system_, ".firefly/output/browser", $task)), $task));
@@ -253,8 +257,8 @@ const mainPackagePair_ = (await ff_compiler_Bridge.internalMainPackagePair_$(sys
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
-export async function internalBundleForBrowser_$(system_, mainFiles_, minify_ = true, sourceMaps_ = false, $task) {
-(await ff_compiler_Bridge.internalCompile_$(system_, (await ff_core_List.List_map$(mainFiles_, (async (_w1, $task) => {
+export async function internalBundleForBrowser_$(nodeSystem_, system_, mainFiles_, minify_ = true, sourceMaps_ = false, $task) {
+(await ff_compiler_Bridge.internalCompile_$(nodeSystem_, system_, (await ff_core_List.List_map$(mainFiles_, (async (_w1, $task) => {
 return (await ff_compiler_Bridge.internalPath_$(system_, _w1, $task))
 }), $task)), "browser", $task));
 const browserOutputPath_ = (await ff_compiler_Bridge.internalPath_$(system_, ".firefly/output/browser", $task));
@@ -308,7 +312,7 @@ return [bundleEntry_, mapEntry_]
 }
 }
 
-export async function internalCompile_$(buildSystem_, mainFiles_, target_, $task) {
+export async function internalCompile_$(nodeSystem_, buildSystem_, mainFiles_, target_, $task) {
 if(((typeof globalThis.ffDevelopMode) !== "undefined")) {
 process.send({ffDevelopMode: "internalCompile", mainFiles: (await ff_core_List.List_map$(mainFiles_, (async (_w1, $task) => {
 return (await ff_core_Path.Path_absolute$(_w1, $task))
@@ -321,7 +325,7 @@ return ff_core_Option.Some(resolve_((void 0)))
 }))
 }), $task))
 } else {
-(await $firefly_compiler["buildViaBuildSystem_$"](buildSystem_, (await ff_compiler_Bridge.internalPath_$(buildSystem_, buildSystem_["fireflyPath_"], $task)), mainFiles_, target_, (void 0), (void 0), $task))
+(await ff_compiler_Builder.buildViaBuildSystem_$(nodeSystem_, (await ff_compiler_Bridge.internalPath_$(buildSystem_, buildSystem_["fireflyPath_"], $task)), mainFiles_, target_, ff_compiler_ModuleCache.new_(0), false, $task))
 }
 }
 
