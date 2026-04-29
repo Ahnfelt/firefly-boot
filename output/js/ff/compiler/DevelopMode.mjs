@@ -1,5 +1,7 @@
 import * as ff_compiler_DevelopMode from "../../ff/compiler/DevelopMode.mjs"
 
+import * as ff_compiler_Bridge from "../../ff/compiler/Bridge.mjs"
+
 import * as ff_compiler_Builder from "../../ff/compiler/Builder.mjs"
 
 import * as ff_compiler_Dependencies from "../../ff/compiler/Dependencies.mjs"
@@ -241,7 +243,7 @@ const startPath_ = ff_core_Path.Path_slash(ff_core_Option.Option_grab(ff_core_Pa
 ff_core_Path.Path_writeText(startPath_, (((((((("import * as run from " + ff_core_Json.Json_write(("./" + ff_core_Path.Path_base(runFilePath_)), ff_core_Option.None())) + "\n") + "globalThis.ffDevelopMode = true\n") + "run.$run$(") + ff_core_Json.Json_write(ff_core_Path.Path_absolute(fireflyPath_), ff_core_Option.None())) + ", ") + ff_core_Json.Json_write(ff_core_Json.ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json.ff_core_Json_JsonLike$ff_core_String_String).toJson_(arguments_), ff_core_Option.None())) + ")"));
 const esBuildPath_ = ff_core_Path.Path_slash(ff_core_Option.Option_grab(ff_core_Path.Path_parent(runFilePath_)), (ff_core_Path.Path_base(runFilePath_) + ".minified.js"));
 const context_ = ff_core_Option.Option_else(esbuildContext_.jsValue_, (() => {
-const jsValue_ = ff_core_BuildSystem.internalNodeCallEsBuildContext_(system_, ff_core_Path.Path_absolute(startPath_), ff_core_Path.Path_absolute(esBuildPath_), true);
+const jsValue_ = ff_compiler_Bridge.internalNodeCallEsBuildContext_(system_, ff_core_Path.Path_absolute(startPath_), ff_core_Path.Path_absolute(esBuildPath_), true);
 esbuildContext_.jsValue_ = ff_core_Option.Some(jsValue_);
 return jsValue_
 }));
@@ -526,7 +528,7 @@ const startPath_ = (await ff_core_Path.Path_slash$(ff_core_Option.Option_grab((a
 (await ff_core_Path.Path_writeText$(startPath_, (((((((("import * as run from " + ff_core_Json.Json_write(("./" + (await ff_core_Path.Path_base$(runFilePath_, $task))), ff_core_Option.None())) + "\n") + "globalThis.ffDevelopMode = true\n") + "run.$run$(") + ff_core_Json.Json_write((await ff_core_Path.Path_absolute$(fireflyPath_, $task)), ff_core_Option.None())) + ", ") + ff_core_Json.Json_write(ff_core_Json.ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json.ff_core_Json_JsonLike$ff_core_String_String).toJson_(arguments_), ff_core_Option.None())) + ")"), $task));
 const esBuildPath_ = (await ff_core_Path.Path_slash$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(runFilePath_, $task))), ((await ff_core_Path.Path_base$(runFilePath_, $task)) + ".minified.js"), $task));
 const context_ = (await ff_core_Option.Option_else$(esbuildContext_.jsValue_, (async ($task) => {
-const jsValue_ = (await ff_core_BuildSystem.internalNodeCallEsBuildContext_$(system_, (await ff_core_Path.Path_absolute$(startPath_, $task)), (await ff_core_Path.Path_absolute$(esBuildPath_, $task)), true, $task));
+const jsValue_ = (await ff_compiler_Bridge.internalNodeCallEsBuildContext_$(system_, (await ff_core_Path.Path_absolute$(startPath_, $task)), (await ff_core_Path.Path_absolute$(esBuildPath_, $task)), true, $task));
 esbuildContext_.jsValue_ = ff_core_Option.Some(jsValue_);
 return jsValue_
 }), $task));

@@ -12,6 +12,7 @@ import ModuleCache
 import LspHook
 import DependencyLock
 import DevelopMode
+import Bridge
 
 data MainCommand {
     BootstrapCommand
@@ -286,7 +287,7 @@ bundleForExecutable(system: NodeSystem, packagePair: PackagePair, moduleKey: Mod
         // The following should be awaited, but esbuild doesn't support top level await - still seems to work though
         "run.$run$(null, process.argv.slice(2))"
     )
-    BuildSystem.internalNodeCallEsBuild(
+    Bridge.internalNodeCallEsBuild(
         system, 
         startPath.absolute(), 
         outputPath.absolute(), 
@@ -298,7 +299,7 @@ bundleForBrowser(system: NodeSystem, packagePair: PackagePair, moduleKey: Module
     let packagePath = moduleKey.packagePair.groupName("/")
     let outputPath = system.path(".firefly/output/browser/" + packagePath + "/")
     let runFile = outputPath.slash(moduleKey.importName() + ".run.mjs")
-    BuildSystem.internalBrowserCallEsBuild(
+    Bridge.internalBrowserCallEsBuild(
         system!? 
         [runFile.absolute()]
         outputPath.absolute()
@@ -315,6 +316,7 @@ importAndRun(
     arguments: List[String]
     buildMode: Bool = False
 ): Bool {
+    Bridge.setGlobalBridge(system)
     let runFile = locateRunFile(system, target, moduleKey)
     let runFilePath = if(runFile.contains("://")) {system.pathFromUrl(runFile)} else {system.path(runFile)}
     if(runFilePath.exists()) {

@@ -4,7 +4,8 @@ import Dependencies
 import DependencyLock
 import Syntax
 import JsEmitter
-import Builder from ff:compiler
+import Bridge
+import Builder
 
 capability Runner(
     lock: Lock
@@ -139,7 +140,7 @@ startApp(
             )
             let esBuildPath = runFilePath.parent().grab().slash(runFilePath.base() + ".minified.js")
             let context = esbuildContext.jsValue.else {
-                let jsValue = BuildSystem.internalNodeCallEsBuildContext(system, startPath.absolute(), esBuildPath.absolute(), minify = True)
+                let jsValue = Bridge.internalNodeCallEsBuildContext(system, startPath.absolute(), esBuildPath.absolute(), minify = True)
                 esbuildContext.jsValue = Some(jsValue)
                 jsValue
             }

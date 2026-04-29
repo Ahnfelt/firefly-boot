@@ -1,5 +1,7 @@
 import * as ff_compiler_Main from "../../ff/compiler/Main.mjs"
 
+import * as ff_compiler_Bridge from "../../ff/compiler/Bridge.mjs"
+
 import * as ff_compiler_Builder from "../../ff/compiler/Builder.mjs"
 
 import * as ff_compiler_Compiler from "../../ff/compiler/Compiler.mjs"
@@ -472,17 +474,18 @@ const outputPath_ = ff_core_NodeSystem.NodeSystem_path(system_, ((".firefly/outp
 const runFile_ = ff_core_Path.Path_slash(outputPath_, (ff_compiler_Syntax.ModuleKey_importName(moduleKey_) + ".run.mjs"));
 const startPath_ = ff_core_Path.Path_slash(ff_core_Option.Option_grab(ff_core_Path.Path_parent(runFile_)), (ff_core_Path.Path_base(runFile_) + ".start.mjs"));
 ff_core_Path.Path_writeText(startPath_, (((("import * as run from " + ff_core_Json.Json_write(("./" + ff_core_Path.Path_base(runFile_)), ff_core_Option.None())) + "\n") + "globalThis.ffDevelopMode = true\n") + "run.$run$(null, process.argv.slice(2))"));
-ff_core_BuildSystem.internalNodeCallEsBuild_(system_, ff_core_Path.Path_absolute(startPath_), ff_core_Path.Path_absolute(outputPath_), true)
+ff_compiler_Bridge.internalNodeCallEsBuild_(system_, ff_core_Path.Path_absolute(startPath_), ff_core_Path.Path_absolute(outputPath_), true)
 }
 
 export function bundleForBrowser_(system_, packagePair_, moduleKey_) {
 const packagePath_ = ff_compiler_Syntax.PackagePair_groupName(moduleKey_.packagePair_, "/");
 const outputPath_ = ff_core_NodeSystem.NodeSystem_path(system_, ((".firefly/output/browser/" + packagePath_) + "/"));
 const runFile_ = ff_core_Path.Path_slash(outputPath_, (ff_compiler_Syntax.ModuleKey_importName(moduleKey_) + ".run.mjs"));
-ff_core_BuildSystem.internalBrowserCallEsBuild_(system_, [ff_core_Path.Path_absolute(runFile_)], ff_core_Path.Path_absolute(outputPath_), true, true)
+ff_compiler_Bridge.internalBrowserCallEsBuild_(system_, [ff_core_Path.Path_absolute(runFile_)], ff_core_Path.Path_absolute(outputPath_), true, true)
 }
 
 export function importAndRun_(system_, fireflyPath_, target_, moduleKey_, arguments_, buildMode_ = false) {
+ff_compiler_Bridge.setGlobalBridge_(system_);
 const runFile_ = ff_compiler_Main.locateRunFile_(system_, target_, moduleKey_);
 const runFilePath_ = (ff_core_String.String_contains(runFile_, "://")
 ? ff_core_NodeSystem.NodeSystem_pathFromUrl(system_, runFile_)
@@ -930,17 +933,18 @@ const outputPath_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, ((".fire
 const runFile_ = (await ff_core_Path.Path_slash$(outputPath_, (ff_compiler_Syntax.ModuleKey_importName(moduleKey_) + ".run.mjs"), $task));
 const startPath_ = (await ff_core_Path.Path_slash$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(runFile_, $task))), ((await ff_core_Path.Path_base$(runFile_, $task)) + ".start.mjs"), $task));
 (await ff_core_Path.Path_writeText$(startPath_, (((("import * as run from " + ff_core_Json.Json_write(("./" + (await ff_core_Path.Path_base$(runFile_, $task))), ff_core_Option.None())) + "\n") + "globalThis.ffDevelopMode = true\n") + "run.$run$(null, process.argv.slice(2))"), $task));
-(await ff_core_BuildSystem.internalNodeCallEsBuild_$(system_, (await ff_core_Path.Path_absolute$(startPath_, $task)), (await ff_core_Path.Path_absolute$(outputPath_, $task)), true, $task))
+(await ff_compiler_Bridge.internalNodeCallEsBuild_$(system_, (await ff_core_Path.Path_absolute$(startPath_, $task)), (await ff_core_Path.Path_absolute$(outputPath_, $task)), true, $task))
 }
 
 export async function bundleForBrowser_$(system_, packagePair_, moduleKey_, $task) {
 const packagePath_ = ff_compiler_Syntax.PackagePair_groupName(moduleKey_.packagePair_, "/");
 const outputPath_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, ((".firefly/output/browser/" + packagePath_) + "/"), $task));
 const runFile_ = (await ff_core_Path.Path_slash$(outputPath_, (ff_compiler_Syntax.ModuleKey_importName(moduleKey_) + ".run.mjs"), $task));
-ff_core_BuildSystem.internalBrowserCallEsBuild_(system_, [(await ff_core_Path.Path_absolute$(runFile_, $task))], (await ff_core_Path.Path_absolute$(outputPath_, $task)), true, true)
+ff_compiler_Bridge.internalBrowserCallEsBuild_(system_, [(await ff_core_Path.Path_absolute$(runFile_, $task))], (await ff_core_Path.Path_absolute$(outputPath_, $task)), true, true)
 }
 
 export async function importAndRun_$(system_, fireflyPath_, target_, moduleKey_, arguments_, buildMode_ = false, $task) {
+(await ff_compiler_Bridge.setGlobalBridge_$(system_, $task));
 const runFile_ = (await ff_compiler_Main.locateRunFile_$(system_, target_, moduleKey_, $task));
 const runFilePath_ = (ff_core_String.String_contains(runFile_, "://")
 ? (await ff_core_NodeSystem.NodeSystem_pathFromUrl$(system_, runFile_, $task))
