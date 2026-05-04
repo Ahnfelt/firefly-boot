@@ -288,7 +288,18 @@ runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.None()
 })))
 } else return ff_core_Option.None()
 }))
-}
+} else if((message_.ffDevelopMode === "internalBrowserCallEsBuild")) {
+ff_core_Lock.Lock_do(runner_.lock_, (() => {
+if((taskIteration_ === runner_.iteration_)) {
+return ff_core_Option.Some(ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+ff_compiler_Bridge.internalBrowserCallEsBuild_(system_, message_.mainJsFiles, message_.outputPath, message_.minify, message_.sourceMap);
+forkedProcess_.send({ffDevelopMode: "internalBrowserCallEsBuild"})
+})), ((error_) => {
+runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.None(), ff_core_Error.Error_message(error_))
+})))
+} else return ff_core_Option.None()
+}))
+} else {}
 })));
 const standardOut_ = ff_core_Buffer.Buffer_toString(result_.standardOut_, "utf8");
 const standardError_ = ff_core_Buffer.Buffer_toString(result_.standardError_, "utf8");
@@ -573,7 +584,18 @@ runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.None()
 })))
 } else return ff_core_Option.None()
 }), $task))
-}
+} else if((message_.ffDevelopMode === "internalBrowserCallEsBuild")) {
+(await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
+if((taskIteration_ === runner_.iteration_)) {
+return ff_core_Option.Some(ff_core_Try.Try_catchAny((await ff_core_Core.try_$((async ($task) => {
+(await ff_compiler_Bridge.internalBrowserCallEsBuild_$(system_, message_.mainJsFiles, message_.outputPath, message_.minify, message_.sourceMap, $task));
+forkedProcess_.send({ffDevelopMode: "internalBrowserCallEsBuild"})
+}), $task)), ((error_) => {
+runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.None(), ff_core_Error.Error_message(error_))
+})))
+} else return ff_core_Option.None()
+}), $task))
+} else {}
 })), $task));
 const standardOut_ = ff_core_Buffer.Buffer_toString(result_.standardOut_, "utf8");
 const standardError_ = ff_core_Buffer.Buffer_toString(result_.standardError_, "utf8");

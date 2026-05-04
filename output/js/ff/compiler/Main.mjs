@@ -934,7 +934,7 @@ export async function bundleForBrowser_$(system_, packagePair_, moduleKey_, $tas
 const packagePath_ = ff_compiler_Syntax.PackagePair_groupName(moduleKey_.packagePair_, "/");
 const outputPath_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, ((".firefly/output/browser/" + packagePath_) + "/"), $task));
 const runFile_ = (await ff_core_Path.Path_slash$(outputPath_, (ff_compiler_Syntax.ModuleKey_importName(moduleKey_) + ".run.mjs"), $task));
-ff_compiler_Bridge.internalBrowserCallEsBuild_(system_, [(await ff_core_Path.Path_absolute$(runFile_, $task))], (await ff_core_Path.Path_absolute$(outputPath_, $task)), true, true)
+(await ff_compiler_Bridge.internalBrowserCallEsBuild_$(system_, [(await ff_core_Path.Path_absolute$(runFile_, $task))], (await ff_core_Path.Path_absolute$(outputPath_, $task)), true, true, $task))
 }
 
 export async function importAndRun_$(system_, fireflyPath_, target_, moduleKey_, arguments_, buildMode_ = false, $task) {

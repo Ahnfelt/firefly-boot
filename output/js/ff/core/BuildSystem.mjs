@@ -97,8 +97,8 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 // type BuildSystemBridge
-export function BuildSystemBridge(compileForBrowser_, bundleForBrowser_) {
-return {compileForBrowser_, bundleForBrowser_};
+export function BuildSystemBridge(internalCompile_, internalBrowserCallEsBuild_) {
+return {internalCompile_, internalBrowserCallEsBuild_};
 }
 
 export function internalListDirectory_(path_) {
@@ -162,7 +162,34 @@ return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core
 }
 
 export function internalBridge_(self_) {
-return globalThis["$firefly_bridge"]
+const bridge_ = globalThis["$firefly_bridge"];
+if((!ff_core_JsValue.JsValue_nullish(bridge_))) {
+return bridge_
+} else {
+function delegate_(job_, message_) {
+process.send({...message_, ffDevelopMode: job_});
+ff_core_Js.awaitCancellablePromise_(((resolve_, reject_, cleanup_) => {
+const callback_ = ((message_) => {
+if((message_.ffDevelopMode === job_)) {
+return ff_core_Option.Some(resolve_((void 0)))
+} else return ff_core_Option.None()
+});
+cleanup_(((_) => {
+process.off("message", callback_)
+}));
+process.on("message", callback_)
+}))
+}
+return ff_core_BuildSystem.BuildSystemBridge(((mainFiles_, target_) => {
+const message_ = {mainFiles: ff_core_List.List_map(mainFiles_, ((_w1) => {
+return ff_core_Path.Path_absolute(_w1)
+})), target: target_};
+delegate_("internalCompile", message_)
+}), ((mainJsFiles_, outputPath_, minify_, sourceMap_) => {
+const message_ = {mainJsFiles: mainJsFiles_, outputPath: outputPath_, minify: minify_, sourceMap: sourceMap_};
+delegate_("internalBrowserCallEsBuild", message_)
+}))
+}
 }
 
 export async function internalListDirectory_$(path_, $task) {
@@ -226,17 +253,100 @@ return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core
 }
 
 export async function internalBridge_$(self_, $task) {
-return globalThis["$firefly_bridge"]
+const bridge_ = globalThis["$firefly_bridge"];
+if((!ff_core_JsValue.JsValue_nullish(bridge_))) {
+return bridge_
+} else {
+async function delegate_$(job_, message_, $task) {
+process.send({...message_, ffDevelopMode: job_});
+(await ff_core_Js.awaitCancellablePromise_$(((resolve_, reject_, cleanup_) => {
+const callback_ = ((message_) => {
+if((message_.ffDevelopMode === job_)) {
+return ff_core_Option.Some(resolve_((void 0)))
+} else return ff_core_Option.None()
+});
+cleanup_(((_) => {
+process.off("message", callback_)
+}));
+process.on("message", callback_)
+}), $task))
+}
+return ff_core_BuildSystem.BuildSystemBridge((async (mainFiles_, target_, $task) => {
+const message_ = {mainFiles: (await ff_core_List.List_map$(mainFiles_, (async (_w1, $task) => {
+return (await ff_core_Path.Path_absolute$(_w1, $task))
+}), $task)), target: target_};
+(await delegate_$("internalCompile", message_, $task))
+}), (async (mainJsFiles_, outputPath_, minify_, sourceMap_, $task) => {
+const message_ = {mainJsFiles: mainJsFiles_, outputPath: outputPath_, minify: minify_, sourceMap: sourceMap_};
+(await delegate_$("internalBrowserCallEsBuild", message_, $task))
+}))
+}
 }
 
 export function BuildSystem_compileForBrowser(self_, mainFiles_) {
 const bridge_ = ff_core_BuildSystem.internalBridge_(self_);
-return bridge_.compileForBrowser_(self_, mainFiles_)
+bridge_.internalCompile_(ff_core_List.List_map(mainFiles_, ((_w1) => {
+return ff_core_BuildSystem.internalPath_(self_, _w1)
+})), "browser");
+const streams_ = ff_core_BuildSystem.internalListDirectory_(ff_core_BuildSystem.internalPath_(self_, ".firefly/output/browser"));
+const mainPackagePair_ = ff_core_BuildSystem.internalMainPackagePair_(self_);
+return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
 export function BuildSystem_bundleForBrowser(self_, mainFiles_, minify_ = true, sourceMaps_ = false) {
 const bridge_ = ff_core_BuildSystem.internalBridge_(self_);
-return bridge_.bundleForBrowser_(self_, mainFiles_, minify_, sourceMaps_)
+bridge_.internalCompile_(ff_core_List.List_map(mainFiles_, ((_w1) => {
+return ff_core_BuildSystem.internalPath_(self_, _w1)
+})), "browser");
+const browserOutputPath_ = ff_core_BuildSystem.internalPath_(self_, ".firefly/output/browser");
+const runPaths_ = ff_core_Stream.Stream_toList(ff_core_Stream.Stream_filter(ff_core_BuildSystem.internalListPath_(browserOutputPath_), ((_w1) => {
+return ff_core_String.String_endsWith(ff_core_Path.Path_base(_w1), ".run.mjs")
+})));
+if(((typeof globalThis.ffDevelopMode) === "undefined")) {
+const outputPath_ = ff_core_Option.Option_grab(ff_core_Path.Path_parent(ff_core_List.List_grabFirst(runPaths_)));
+bridge_.internalBrowserCallEsBuild_(ff_core_List.List_map(runPaths_, ((_w1) => {
+return ff_core_Path.Path_absolute(_w1)
+})), ff_core_Path.Path_absolute(outputPath_), minify_, sourceMaps_);
+const bundlePaths_ = ff_core_List.List_flatMap(runPaths_, ((p_) => {
+const outputPath_ = ff_core_Option.Option_grab(ff_core_Path.Path_parent(p_));
+const bundlePath_ = ff_core_Path.Path_slash(outputPath_, (ff_core_Option.Option_grab(ff_core_String.String_removeLast(ff_core_Path.Path_base(p_), ".mjs")) + ".bundle.js"));
+const mapPath_ = ff_core_Path.Path_slash(outputPath_, (ff_core_Option.Option_grab(ff_core_String.String_removeLast(ff_core_Path.Path_base(p_), ".mjs")) + ".bundle.js.map"));
+return [bundlePath_, mapPath_]
+}));
+return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.List_map(bundlePaths_, ((p_) => {
+return ff_core_Pair.Pair(("/" + ff_core_List.List_join(ff_core_Path.Path_relativeListTo(p_, browserOutputPath_), "/")), (() => {
+return ff_core_Path.Path_readStream(p_)
+}))
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+} else {
+let built_ = ff_core_Set.new_();
+const lock_ = ff_core_Task.Task_lock(ff_core_BuildSystem.BuildSystem_mainTask(self_));
+return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.List_flatMap(runPaths_, ((p_) => {
+const outputPath_ = ff_core_Option.Option_grab(ff_core_Path.Path_parent(p_));
+const bundlePath_ = ff_core_Path.Path_slash(outputPath_, (ff_core_Option.Option_grab(ff_core_String.String_removeLast(ff_core_Path.Path_base(p_), ".mjs")) + ".bundle.js"));
+const mapPath_ = ff_core_Path.Path_slash(outputPath_, (ff_core_Option.Option_grab(ff_core_String.String_removeLast(ff_core_Path.Path_base(p_), ".mjs")) + ".bundle.js.map"));
+const bundleAssetPath_ = ("/" + ff_core_List.List_join(ff_core_Path.Path_relativeListTo(bundlePath_, browserOutputPath_), "/"));
+const mapAssetPath_ = ("/" + ff_core_List.List_join(ff_core_Path.Path_relativeListTo(mapPath_, browserOutputPath_), "/"));
+function bundle_() {
+ff_core_Lock.Lock_do(lock_, (() => {
+if((!ff_core_Set.Set_contains(built_, ff_core_Path.Path_absolute(p_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
+bridge_.internalBrowserCallEsBuild_([ff_core_Path.Path_absolute(p_)], ff_core_Path.Path_absolute(outputPath_), minify_, sourceMaps_);
+built_ = ff_core_Set.Set_add(built_, ff_core_Path.Path_absolute(p_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+};
+return ff_core_Path.Path_readStream(bundlePath_)
+}))
+}
+const bundleEntry_ = ff_core_Pair.Pair(bundleAssetPath_, (() => {
+bundle_();
+return ff_core_Path.Path_readStream(bundlePath_)
+}));
+const mapEntry_ = ff_core_Pair.Pair(mapAssetPath_, (() => {
+bundle_();
+return ff_core_Path.Path_readStream(mapPath_)
+}));
+return [bundleEntry_, mapEntry_]
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+}
 }
 
 export function BuildSystem_setAssets(self_, assetSystem_) {
@@ -266,12 +376,68 @@ return crypto
 
 export async function BuildSystem_compileForBrowser$(self_, mainFiles_, $task) {
 const bridge_ = (await ff_core_BuildSystem.internalBridge_$(self_, $task));
-return (await bridge_.compileForBrowser_(self_, mainFiles_, $task))
+(await bridge_.internalCompile_((await ff_core_List.List_map$(mainFiles_, (async (_w1, $task) => {
+return (await ff_core_BuildSystem.internalPath_$(self_, _w1, $task))
+}), $task)), "browser", $task));
+const streams_ = (await ff_core_BuildSystem.internalListDirectory_$((await ff_core_BuildSystem.internalPath_$(self_, ".firefly/output/browser", $task)), $task));
+const mainPackagePair_ = (await ff_core_BuildSystem.internalMainPackagePair_$(self_, $task));
+return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
 export async function BuildSystem_bundleForBrowser$(self_, mainFiles_, minify_ = true, sourceMaps_ = false, $task) {
 const bridge_ = (await ff_core_BuildSystem.internalBridge_$(self_, $task));
-return (await bridge_.bundleForBrowser_(self_, mainFiles_, minify_, sourceMaps_, $task))
+(await bridge_.internalCompile_((await ff_core_List.List_map$(mainFiles_, (async (_w1, $task) => {
+return (await ff_core_BuildSystem.internalPath_$(self_, _w1, $task))
+}), $task)), "browser", $task));
+const browserOutputPath_ = (await ff_core_BuildSystem.internalPath_$(self_, ".firefly/output/browser", $task));
+const runPaths_ = (await ff_core_Stream.Stream_toList$((await ff_core_Stream.Stream_filter$((await ff_core_BuildSystem.internalListPath_$(browserOutputPath_, $task)), (async (_w1, $task) => {
+return ff_core_String.String_endsWith((await ff_core_Path.Path_base$(_w1, $task)), ".run.mjs")
+}), $task)), $task));
+if(((typeof globalThis.ffDevelopMode) === "undefined")) {
+const outputPath_ = ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(ff_core_List.List_grabFirst(runPaths_), $task)));
+(await bridge_.internalBrowserCallEsBuild_((await ff_core_List.List_map$(runPaths_, (async (_w1, $task) => {
+return (await ff_core_Path.Path_absolute$(_w1, $task))
+}), $task)), (await ff_core_Path.Path_absolute$(outputPath_, $task)), minify_, sourceMaps_, $task));
+const bundlePaths_ = (await ff_core_List.List_flatMap$(runPaths_, (async (p_, $task) => {
+const outputPath_ = ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(p_, $task)));
+const bundlePath_ = (await ff_core_Path.Path_slash$(outputPath_, (ff_core_Option.Option_grab(ff_core_String.String_removeLast((await ff_core_Path.Path_base$(p_, $task)), ".mjs")) + ".bundle.js"), $task));
+const mapPath_ = (await ff_core_Path.Path_slash$(outputPath_, (ff_core_Option.Option_grab(ff_core_String.String_removeLast((await ff_core_Path.Path_base$(p_, $task)), ".mjs")) + ".bundle.js.map"), $task));
+return [bundlePath_, mapPath_]
+}), $task));
+return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap((await ff_core_List.List_map$(bundlePaths_, (async (p_, $task) => {
+return ff_core_Pair.Pair(("/" + ff_core_List.List_join((await ff_core_Path.Path_relativeListTo$(p_, browserOutputPath_, $task)), "/")), (async ($task) => {
+return (await ff_core_Path.Path_readStream$(p_, $task))
+}))
+}), $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+} else {
+let built_ = ff_core_Set.new_();
+const lock_ = (await ff_core_Task.Task_lock$((await ff_core_BuildSystem.BuildSystem_mainTask$(self_, $task)), $task));
+return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap((await ff_core_List.List_flatMap$(runPaths_, (async (p_, $task) => {
+const outputPath_ = ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(p_, $task)));
+const bundlePath_ = (await ff_core_Path.Path_slash$(outputPath_, (ff_core_Option.Option_grab(ff_core_String.String_removeLast((await ff_core_Path.Path_base$(p_, $task)), ".mjs")) + ".bundle.js"), $task));
+const mapPath_ = (await ff_core_Path.Path_slash$(outputPath_, (ff_core_Option.Option_grab(ff_core_String.String_removeLast((await ff_core_Path.Path_base$(p_, $task)), ".mjs")) + ".bundle.js.map"), $task));
+const bundleAssetPath_ = ("/" + ff_core_List.List_join((await ff_core_Path.Path_relativeListTo$(bundlePath_, browserOutputPath_, $task)), "/"));
+const mapAssetPath_ = ("/" + ff_core_List.List_join((await ff_core_Path.Path_relativeListTo$(mapPath_, browserOutputPath_, $task)), "/"));
+async function bundle_$($task) {
+(await ff_core_Lock.Lock_do$(lock_, (async ($task) => {
+if((!ff_core_Set.Set_contains(built_, (await ff_core_Path.Path_absolute$(p_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
+(await bridge_.internalBrowserCallEsBuild_([(await ff_core_Path.Path_absolute$(p_, $task))], (await ff_core_Path.Path_absolute$(outputPath_, $task)), minify_, sourceMaps_, $task));
+built_ = ff_core_Set.Set_add(built_, (await ff_core_Path.Path_absolute$(p_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+};
+return (await ff_core_Path.Path_readStream$(bundlePath_, $task))
+}), $task))
+}
+const bundleEntry_ = ff_core_Pair.Pair(bundleAssetPath_, (async ($task) => {
+(await bundle_$($task));
+return (await ff_core_Path.Path_readStream$(bundlePath_, $task))
+}));
+const mapEntry_ = ff_core_Pair.Pair(mapAssetPath_, (async ($task) => {
+(await bundle_$($task));
+return (await ff_core_Path.Path_readStream$(mapPath_, $task))
+}));
+return [bundleEntry_, mapEntry_]
+}), $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+}
 }
 
 export async function BuildSystem_setAssets$(self_, assetSystem_, $task) {

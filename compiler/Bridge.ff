@@ -3,91 +3,22 @@ import ModuleCache
 
 setGlobalBridge(nodeSystem: NodeSystem) {
     nodeSystem.js().globalThis()->"$firefly_bridge" = BuildSystemBridge(
-        compileForBrowser = {internalCompileForBrowser(nodeSystem, _, _)}
-        bundleForBrowser = {internalBundleForBrowser(nodeSystem, _, _, _, _)}
+        internalCompile = {internalCompile(nodeSystem, _, _)}
+        internalBrowserCallEsBuild = {internalBrowserCallEsBuild(nodeSystem, _, _, _, _)}
     )!
 }
 
-internalCompileForBrowser(nodeSystem: NodeSystem, system: BuildSystem, mainFiles: List[String]): AssetSystem {
-    // TODO: Check that the mainFile is in the current package directory
-    internalCompile(nodeSystem, system, mainFiles.map {internalPath(system, _)}, "browser")
-    let streams = internalListDirectory(internalPath(system, ".firefly/output/browser"))
-    let mainPackagePair = internalMainPackagePair(system)
-    AssetSystem(streams.toMap())
-}
-
-internalBundleForBrowser(nodeSystem: NodeSystem, system: BuildSystem, mainFiles: List[String], minify: Bool = True, sourceMaps: Bool = False): AssetSystem {
-    internalCompile(nodeSystem, system, mainFiles.map {internalPath(system, _)}, "browser")
-    let browserOutputPath = internalPath(system, ".firefly/output/browser")
-    let runPaths = internalListPath(browserOutputPath).filter {_.base().endsWith(".run.mjs")}.toList()
-    if(Js.globalThis()->ffDevelopMode.typeof() == "undefined") {
-        let outputPath = runPaths.grabFirst().parent().grab()
-        internalBrowserCallEsBuild(system, runPaths.map {_.absolute()}, outputPath.absolute(), minify, sourceMaps)
-        let bundlePaths = runPaths.flatMap {p =>
-            let outputPath = p.parent().grab()
-            let bundlePath = outputPath.slash(p.base().removeLast(".mjs").grab() + ".bundle.js")
-            let mapPath = outputPath.slash(p.base().removeLast(".mjs").grab() + ".bundle.js.map")
-            [bundlePath, mapPath]
-        }
-        AssetSystem(bundlePaths.map {p => 
-            Pair("/" + p.relativeListTo(browserOutputPath).join("/"), {p.readStream()})
-        }.toMap())
-    } else {
-        mutable built = Set.new()
-        let lock = system.mainTask().lock()
-        AssetSystem(runPaths.flatMap {p =>
-            let outputPath = p.parent().grab()
-            let bundlePath = outputPath.slash(p.base().removeLast(".mjs").grab() + ".bundle.js")
-            let mapPath = outputPath.slash(p.base().removeLast(".mjs").grab() + ".bundle.js.map")
-            let bundleAssetPath = "/" + bundlePath.relativeListTo(browserOutputPath).join("/")
-            let mapAssetPath = "/" + mapPath.relativeListTo(browserOutputPath).join("/")
-            function bundle() {
-                lock.do {
-                    if(!built.contains(p.absolute())) {
-                        internalBrowserCallEsBuild(system, [p.absolute()], outputPath.absolute(), minify, sourceMaps)
-                        built = built.add(p.absolute())
-                    }
-                    bundlePath.readStream()
-                }
-            }
-            let bundleEntry = Pair(bundleAssetPath, {
-                bundle()
-                bundlePath.readStream()
-            })
-            let mapEntry = Pair(mapAssetPath, {
-                bundle()
-                mapPath.readStream()
-            })
-            [bundleEntry, mapEntry]
-        }.toMap())
-    }
-}
-
-internalCompile(nodeSystem: NodeSystem, buildSystem: BuildSystem, mainFiles: List[Path], target: String): Unit {
-    if(Js.globalThis()->ffDevelopMode.typeof() != "undefined") {
-        Js->process->send(Js->(
-            ffDevelopMode = "internalCompile"
-            mainFiles = mainFiles.map {_.absolute()}
-            target = target
-        ))
-        Js.awaitCancellablePromise {resolve, reject, cleanup =>
-            Js->process->on("message", Js->{message => 
-                if(message->ffDevelopMode === "internalCompile") {
-                    resolve(Unit) // Handle errors?
-                }
-            })
-        }
-    } else:
+internalCompile(nodeSystem: NodeSystem, mainFiles: List[Path], target: String): Unit {
     Builder.buildViaBuildSystem(
         nodeSystem
-        internalPath(buildSystem, buildSystem!->"fireflyPath_"?)
+        internalPath(nodeSystem, nodeSystem!->"fireflyPath_"?)
         mainFiles
         target
     )
 }
 
 internalBrowserCallEsBuild(
-    self: BuildSystem
+    nodeSystem: NodeSystem
     mainJsFiles: List[String]
     outputPath: String
     minify: Bool
@@ -146,7 +77,7 @@ internalNodeCallEsBuildContext(
     )))    
 }
 
-internalPath(buildSystem: BuildSystem, absoluteOrRelative: String): Path {
+internalPath(nodeSystem: NodeSystem, absoluteOrRelative: String): Path {
     let nodePath = Js.import("path")
     Path(nodePath->resolve(absoluteOrRelative)?)
 }

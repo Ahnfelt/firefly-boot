@@ -295,7 +295,7 @@ bundleForBrowser(system: NodeSystem, packagePair: PackagePair, moduleKey: Module
     let outputPath = system.path(".firefly/output/browser/" + packagePath + "/")
     let runFile = outputPath.slash(moduleKey.importName() + ".run.mjs")
     Bridge.internalBrowserCallEsBuild(
-        system!? 
+        system
         [runFile.absolute()]
         outputPath.absolute()
         minify = True

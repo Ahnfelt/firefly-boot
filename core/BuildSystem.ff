@@ -1,20 +1,67 @@
 capability BuildSystem {}
 
 capability BuildSystemBridge(
-    compileForBrowser: (BuildSystem, List[String]) => AssetSystem
-    bundleForBrowser: (BuildSystem, List[String], Bool, Bool) => AssetSystem
+    internalCompile: (List[Path], String) => Unit
+    internalBrowserCallEsBuild: (List[String], String, Bool, Bool) => Unit
 )
 
 extend self: BuildSystem {
 
     compileForBrowser(mainFiles: List[String]): AssetSystem {
         let bridge = internalBridge(self)
-        bridge.compileForBrowser(self, mainFiles)
+        // TODO: Check that the mainFile is in the current package directory
+        bridge.internalCompile(mainFiles.map {internalPath(self, _)}, "browser")
+        let streams = internalListDirectory(internalPath(self, ".firefly/output/browser"))
+        let mainPackagePair = internalMainPackagePair(self)
+        AssetSystem(streams.toMap())
     }
 
     bundleForBrowser(mainFiles: List[String], minify: Bool = True, sourceMaps: Bool = False): AssetSystem {
         let bridge = internalBridge(self)
-        bridge.bundleForBrowser(self, mainFiles, minify, sourceMaps)
+        bridge.internalCompile(mainFiles.map {internalPath(self, _)}, "browser")
+        let browserOutputPath = internalPath(self, ".firefly/output/browser")
+        let runPaths = internalListPath(browserOutputPath).filter {_.base().endsWith(".run.mjs")}.toList()
+        if(Js.globalThis()->ffDevelopMode.typeof() == "undefined") {
+            let outputPath = runPaths.grabFirst().parent().grab()
+            bridge.internalBrowserCallEsBuild(runPaths.map {_.absolute()}, outputPath.absolute(), minify, sourceMaps)
+            let bundlePaths = runPaths.flatMap {p =>
+                let outputPath = p.parent().grab()
+                let bundlePath = outputPath.slash(p.base().removeLast(".mjs").grab() + ".bundle.js")
+                let mapPath = outputPath.slash(p.base().removeLast(".mjs").grab() + ".bundle.js.map")
+                [bundlePath, mapPath]
+            }
+            AssetSystem(bundlePaths.map {p => 
+                Pair("/" + p.relativeListTo(browserOutputPath).join("/"), {p.readStream()})
+            }.toMap())
+        } else {
+            mutable built = Set.new()
+            let lock = self.mainTask().lock()
+            AssetSystem(runPaths.flatMap {p =>
+                let outputPath = p.parent().grab()
+                let bundlePath = outputPath.slash(p.base().removeLast(".mjs").grab() + ".bundle.js")
+                let mapPath = outputPath.slash(p.base().removeLast(".mjs").grab() + ".bundle.js.map")
+                let bundleAssetPath = "/" + bundlePath.relativeListTo(browserOutputPath).join("/")
+                let mapAssetPath = "/" + mapPath.relativeListTo(browserOutputPath).join("/")
+                function bundle() {
+                    lock.do {
+                        if(!built.contains(p.absolute())) {
+                            bridge.internalBrowserCallEsBuild([p.absolute()], outputPath.absolute(), minify, sourceMaps)
+                            built = built.add(p.absolute())
+                        }
+                        bundlePath.readStream()
+                    }
+                }
+                let bundleEntry = Pair(bundleAssetPath, {
+                    bundle()
+                    bundlePath.readStream()
+                })
+                let mapEntry = Pair(mapAssetPath, {
+                    bundle()
+                    mapPath.readStream()
+                })
+                [bundleEntry, mapEntry]
+            }.toMap())
+        }
     }
     
     setAssets(assetSystem: AssetSystem): Unit {
@@ -100,8 +147,39 @@ internalReadAssets(system: NodeSystem): AssetSystem {
     AssetSystem(streams.toMap())
 }
 
-
 internalBridge(self: BuildSystem): BuildSystemBridge {
-    Js->"$firefly_bridge"?
+    let bridge = Js->"$firefly_bridge"
+    if(!bridge.nullish()) {bridge?} else {
+        function delegate(job: String, message: JsValue): Unit {
+            Js->process->send(message.with("ffDevelopMode", job))
+            Js.awaitCancellablePromise {resolve, reject, cleanup =>
+                let callback = Js->{message => 
+                    if(message->ffDevelopMode === job) {
+                        resolve(Unit) // Handle errors?
+                    }
+                }
+                cleanup {_ => Js->process->off("message", callback)}
+                Js->process->on("message", callback)
+            }
+        }
+        BuildSystemBridge(
+            internalCompile = {mainFiles, target => 
+                let message = Js->(
+                    mainFiles = mainFiles.map {_.absolute()}
+                    target = target
+                )
+                delegate("internalCompile", message)
+            }
+            internalBrowserCallEsBuild = {mainJsFiles, outputPath, minify, sourceMap => 
+                let message = Js->(
+                    mainJsFiles = mainJsFiles
+                    outputPath = outputPath
+                    minify = minify
+                    sourceMap = sourceMap
+                )
+                delegate("internalBrowserCallEsBuild", message)
+            }
+        )
+    }
 }
 

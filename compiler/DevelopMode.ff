@@ -167,6 +167,17 @@ startApp(
                             runner.state = CompileErrorState(None, error.message())
                         }
                     }
+                } elseIf {message->ffDevelopMode === "internalBrowserCallEsBuild"} {
+                    runner.lock.do {
+                        if(taskIteration == runner.iteration):
+                        try {
+                            Bridge.internalBrowserCallEsBuild(system, message->mainJsFiles?, message->outputPath?, message->minify?, message->sourceMap?)
+                            forkedProcess->send(Js->(ffDevelopMode = "internalBrowserCallEsBuild"))
+                            Unit
+                        } catchAny {error =>
+                            runner.state = CompileErrorState(None, error.message())
+                        }
+                    }
                 }
             }))
             let standardOut = result.standardOut.toString()
