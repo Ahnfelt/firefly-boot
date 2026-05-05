@@ -162,7 +162,7 @@ return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core
 }
 
 export function internalBridge_(self_) {
-const bridge_ = globalThis["$firefly_bridge"];
+const bridge_ = ff_core_JsSystem.JsSystem_globalThis(globalThis)["$firefly_bridge"];
 if((!ff_core_JsValue.JsValue_nullish(bridge_))) {
 return bridge_
 } else {
@@ -253,7 +253,7 @@ return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core
 }
 
 export async function internalBridge_$(self_, $task) {
-const bridge_ = globalThis["$firefly_bridge"];
+const bridge_ = ff_core_JsSystem.JsSystem_globalThis(globalThis)["$firefly_bridge"];
 if((!ff_core_JsValue.JsValue_nullish(bridge_))) {
 return bridge_
 } else {

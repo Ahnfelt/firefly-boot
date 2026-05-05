@@ -148,7 +148,7 @@ internalReadAssets(system: NodeSystem): AssetSystem {
 }
 
 internalBridge(self: BuildSystem): BuildSystemBridge {
-    let bridge = Js->"$firefly_bridge"
+    let bridge = Js.jsSystem().globalThis()->"$firefly_bridge"
     if(!bridge.nullish()) {bridge?} else {
         function delegate(job: String, message: JsValue): Unit {
             Js->process->send(message.with("ffDevelopMode", job))
