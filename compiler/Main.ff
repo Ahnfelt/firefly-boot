@@ -282,7 +282,7 @@ bundleForExecutable(system: NodeSystem, packagePair: PackagePair, moduleKey: Mod
         // The following should be awaited, but esbuild doesn't support top level await - still seems to work though
         "run.$run$(null, process.argv.slice(2))"
     )
-    Bridge.internalNodeCallEsBuild(
+    Bridge.callEsBuildForNode(
         system, 
         startPath.absolute(), 
         outputPath.absolute(), 
@@ -294,7 +294,7 @@ bundleForBrowser(system: NodeSystem, packagePair: PackagePair, moduleKey: Module
     let packagePath = moduleKey.packagePair.groupName("/")
     let outputPath = system.path(".firefly/output/browser/" + packagePath + "/")
     let runFile = outputPath.slash(moduleKey.importName() + ".run.mjs")
-    Bridge.internalBrowserCallEsBuild(
+    Bridge.callEsBuildForBrowser(
         system
         [runFile.absolute()]
         outputPath.absolute()

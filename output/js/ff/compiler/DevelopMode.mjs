@@ -243,7 +243,7 @@ const startPath_ = ff_core_Path.Path_slash(ff_core_Option.Option_grab(ff_core_Pa
 ff_core_Path.Path_writeText(startPath_, (((((((("import * as run from " + ff_core_Json.Json_write(("./" + ff_core_Path.Path_base(runFilePath_)), ff_core_Option.None())) + "\n") + "globalThis.ffDevelopMode = true\n") + "run.$run$(") + ff_core_Json.Json_write(ff_core_Path.Path_absolute(fireflyPath_), ff_core_Option.None())) + ", ") + ff_core_Json.Json_write(ff_core_Json.ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json.ff_core_Json_JsonLike$ff_core_String_String).toJson_(arguments_), ff_core_Option.None())) + ")"));
 const esBuildPath_ = ff_core_Path.Path_slash(ff_core_Option.Option_grab(ff_core_Path.Path_parent(runFilePath_)), (ff_core_Path.Path_base(runFilePath_) + ".minified.js"));
 const context_ = ff_core_Option.Option_else(esbuildContext_.jsValue_, (() => {
-const jsValue_ = ff_compiler_Bridge.internalNodeCallEsBuildContext_(system_, ff_core_Path.Path_absolute(startPath_), ff_core_Path.Path_absolute(esBuildPath_), true);
+const jsValue_ = ff_compiler_Bridge.callEsBuildContextForNode_(system_, ff_core_Path.Path_absolute(startPath_), ff_core_Path.Path_absolute(esBuildPath_), true);
 esbuildContext_.jsValue_ = ff_core_Option.Some(jsValue_);
 return jsValue_
 }));
@@ -292,7 +292,7 @@ runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.None()
 ff_core_Lock.Lock_do(runner_.lock_, (() => {
 if((taskIteration_ === runner_.iteration_)) {
 return ff_core_Option.Some(ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
-ff_compiler_Bridge.internalBrowserCallEsBuild_(system_, message_.mainJsFiles, message_.outputPath, message_.minify, message_.sourceMap);
+ff_compiler_Bridge.callEsBuildForBrowser_(system_, message_.mainJsFiles, message_.outputPath, message_.minify, message_.sourceMap);
 forkedProcess_.send({ffDevelopMode: "internalBrowserCallEsBuild"})
 })), ((error_) => {
 runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.None(), ff_core_Error.Error_message(error_))
@@ -539,7 +539,7 @@ const startPath_ = (await ff_core_Path.Path_slash$(ff_core_Option.Option_grab((a
 (await ff_core_Path.Path_writeText$(startPath_, (((((((("import * as run from " + ff_core_Json.Json_write(("./" + (await ff_core_Path.Path_base$(runFilePath_, $task))), ff_core_Option.None())) + "\n") + "globalThis.ffDevelopMode = true\n") + "run.$run$(") + ff_core_Json.Json_write((await ff_core_Path.Path_absolute$(fireflyPath_, $task)), ff_core_Option.None())) + ", ") + ff_core_Json.Json_write(ff_core_Json.ff_core_Json_JsonLike$ff_core_List_List(ff_core_Json.ff_core_Json_JsonLike$ff_core_String_String).toJson_(arguments_), ff_core_Option.None())) + ")"), $task));
 const esBuildPath_ = (await ff_core_Path.Path_slash$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(runFilePath_, $task))), ((await ff_core_Path.Path_base$(runFilePath_, $task)) + ".minified.js"), $task));
 const context_ = (await ff_core_Option.Option_else$(esbuildContext_.jsValue_, (async ($task) => {
-const jsValue_ = (await ff_compiler_Bridge.internalNodeCallEsBuildContext_$(system_, (await ff_core_Path.Path_absolute$(startPath_, $task)), (await ff_core_Path.Path_absolute$(esBuildPath_, $task)), true, $task));
+const jsValue_ = (await ff_compiler_Bridge.callEsBuildContextForNode_$(system_, (await ff_core_Path.Path_absolute$(startPath_, $task)), (await ff_core_Path.Path_absolute$(esBuildPath_, $task)), true, $task));
 esbuildContext_.jsValue_ = ff_core_Option.Some(jsValue_);
 return jsValue_
 }), $task));
@@ -588,7 +588,7 @@ runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.None()
 (await ff_core_Lock.Lock_do$(runner_.lock_, (async ($task) => {
 if((taskIteration_ === runner_.iteration_)) {
 return ff_core_Option.Some(ff_core_Try.Try_catchAny((await ff_core_Core.try_$((async ($task) => {
-(await ff_compiler_Bridge.internalBrowserCallEsBuild_$(system_, message_.mainJsFiles, message_.outputPath, message_.minify, message_.sourceMap, $task));
+(await ff_compiler_Bridge.callEsBuildForBrowser_$(system_, message_.mainJsFiles, message_.outputPath, message_.minify, message_.sourceMap, $task));
 forkedProcess_.send({ffDevelopMode: "internalBrowserCallEsBuild"})
 }), $task)), ((error_) => {
 runner_.state_ = ff_compiler_DevelopMode.CompileErrorState(ff_core_Option.None(), ff_core_Error.Error_message(error_))

@@ -2,22 +2,24 @@ import Builder
 import ModuleCache
 
 setGlobalBridge(nodeSystem: NodeSystem) {
+    // To avoid having the generated code for buildMain depend on the Firefly compiler,
+    // we provide the bridge through a global symbol that is read by BuildSystem.internalBridge.
     nodeSystem.js().globalThis()->"$firefly_bridge" = BuildSystemBridge(
         internalCompile = {internalCompile(nodeSystem, _, _)}
-        internalBrowserCallEsBuild = {internalBrowserCallEsBuild(nodeSystem, _, _, _, _)}
+        internalBrowserCallEsBuild = {callEsBuildForBrowser(nodeSystem, _, _, _, _)}
     )!
 }
 
 internalCompile(nodeSystem: NodeSystem, mainFiles: List[Path], target: String): Unit {
     Builder.buildViaBuildSystem(
         nodeSystem
-        internalPath(nodeSystem, nodeSystem!->"fireflyPath_"?)
+        nodeSystem.path(nodeSystem!->"fireflyPath_"?)
         mainFiles
         target
     )
 }
 
-internalBrowserCallEsBuild(
+callEsBuildForBrowser(
     nodeSystem: NodeSystem
     mainJsFiles: List[String]
     outputPath: String
@@ -37,7 +39,7 @@ internalBrowserCallEsBuild(
     )))
 }
 
-internalNodeCallEsBuild(
+callEsBuildForNode(
     self: NodeSystem
     mainJsFile: String
     outputPath: String
@@ -57,7 +59,7 @@ internalNodeCallEsBuild(
     )))
 }
 
-internalNodeCallEsBuildContext(
+callEsBuildContextForNode(
     self: NodeSystem
     mainJsFile: String
     outputPath: String
@@ -75,38 +77,4 @@ internalNodeCallEsBuildContext(
         loader = Js.object().with(".node", "copy")
         outfile = outputPath
     )))    
-}
-
-internalPath(nodeSystem: NodeSystem, absoluteOrRelative: String): Path {
-    let nodePath = Js.import("path")
-    Path(nodePath->resolve(absoluteOrRelative)?)
-}
-
-internalListPath(path: Path): Stream[Path] {
-    path.entries().flatMap {file =>
-        if(file.isDirectory()) {
-            internalListPath(file.path())
-        } else {
-            [file.path()].toStream()
-        }
-    }
-}
-
-internalListDirectory(path: Path): List[Pair[String, () => Stream[Buffer]]] {
-    function go(currentPath: Path): Stream[Path] {
-        currentPath.entries().flatMap {file =>
-            if(file.isDirectory()) {
-                go(file.path())
-            } else {
-                [file.path()].toStream()
-            }
-        }
-    }
-    go(path).map {file =>
-        Pair("/" + file.relativeTo(path).replace("\\", "/"), {file.readStream()})
-    }.toList()
-}
-
-internalMainPackagePair(buildSystem: BuildSystem): Pair[String, String] {
-    Pair(buildSystem!->"mainPackagePair_"->"group_"?, buildSystem!->"mainPackagePair_"->"name_"?)
 }

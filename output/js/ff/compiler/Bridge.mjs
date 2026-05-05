@@ -97,133 +97,60 @@ import * as ff_core_Task from "../../ff/core/Task.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as import$0 from 'esbuild';
-import * as import$1 from 'path';
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 export function setGlobalBridge_(nodeSystem_) {
 ff_core_JsSystem.JsSystem_globalThis(globalThis)["$firefly_bridge"] = ff_core_BuildSystem.BuildSystemBridge(((_w1, _w2) => {
 ff_compiler_Bridge.internalCompile_(nodeSystem_, _w1, _w2)
 }), ((_w1, _w2, _w3, _w4) => {
-ff_compiler_Bridge.internalBrowserCallEsBuild_(nodeSystem_, _w1, _w2, _w3, _w4)
+ff_compiler_Bridge.callEsBuildForBrowser_(nodeSystem_, _w1, _w2, _w3, _w4)
 }))
 }
 
 export function internalCompile_(nodeSystem_, mainFiles_, target_) {
-ff_compiler_Builder.buildViaBuildSystem_(nodeSystem_, ff_compiler_Bridge.internalPath_(nodeSystem_, nodeSystem_["fireflyPath_"]), mainFiles_, target_, ff_compiler_ModuleCache.new_(0), false)
+ff_compiler_Builder.buildViaBuildSystem_(nodeSystem_, ff_core_NodeSystem.NodeSystem_path(nodeSystem_, nodeSystem_["fireflyPath_"]), mainFiles_, target_, ff_compiler_ModuleCache.new_(0), false)
 }
 
-export function internalBrowserCallEsBuild_(nodeSystem_, mainJsFiles_, outputPath_, minify_, sourceMap_) {
+export function callEsBuildForBrowser_(nodeSystem_, mainJsFiles_, outputPath_, minify_, sourceMap_) {
 const esbuild_ = import$0;
 esbuild_.build({entryPoints: mainJsFiles_, bundle: true, minify: minify_, sourcemap: sourceMap_, platform: "browser", target: "es2017", outdir: outputPath_, outExtension: {[".js"]: ".bundle.js"}})
 }
 
-export function internalNodeCallEsBuild_(self_, mainJsFile_, outputPath_, minify_) {
+export function callEsBuildForNode_(self_, mainJsFile_, outputPath_, minify_) {
 const esbuild_ = import$0;
 esbuild_.build({entryPoints: [mainJsFile_], bundle: true, minify: minify_, sourcemap: true, platform: "node", target: "es2017", external: ["esbuild", "uws.js"], loader: {[".node"]: "copy"}, outdir: outputPath_})
 }
 
-export function internalNodeCallEsBuildContext_(self_, mainJsFile_, outputPath_, minify_) {
+export function callEsBuildContextForNode_(self_, mainJsFile_, outputPath_, minify_) {
 const esbuild_ = import$0;
 return esbuild_.context({entryPoints: [mainJsFile_], bundle: true, minify: minify_, sourcemap: true, platform: "node", target: "es2017", external: ["esbuild", "uws.js"], loader: {[".node"]: "copy"}, outfile: outputPath_})
-}
-
-export function internalPath_(nodeSystem_, absoluteOrRelative_) {
-const nodePath_ = import$1;
-return ff_core_Path.Path(nodePath_.resolve(absoluteOrRelative_))
-}
-
-export function internalListPath_(path_) {
-return ff_core_Stream.Stream_flatMap(ff_core_Path.Path_entries(path_), ((file_) => {
-if(ff_core_Path.PathEntry_isDirectory(file_)) {
-return ff_compiler_Bridge.internalListPath_(ff_core_Path.PathEntry_path(file_))
-} else {
-return ff_core_List.List_toStream([ff_core_Path.PathEntry_path(file_)], false)
-}
-}))
-}
-
-export function internalListDirectory_(path_) {
-function go_(currentPath_) {
-return ff_core_Stream.Stream_flatMap(ff_core_Path.Path_entries(currentPath_), ((file_) => {
-if(ff_core_Path.PathEntry_isDirectory(file_)) {
-return go_(ff_core_Path.PathEntry_path(file_))
-} else {
-return ff_core_List.List_toStream([ff_core_Path.PathEntry_path(file_)], false)
-}
-}))
-}
-return ff_core_Stream.Stream_toList(ff_core_Stream.Stream_map(go_(path_), ((file_) => {
-return ff_core_Pair.Pair(("/" + ff_core_String.String_replace(ff_core_Path.Path_relativeTo(file_, path_), "\\", "/")), (() => {
-return ff_core_Path.Path_readStream(file_)
-}))
-})))
-}
-
-export function internalMainPackagePair_(buildSystem_) {
-return ff_core_Pair.Pair(buildSystem_["mainPackagePair_"]["group_"], buildSystem_["mainPackagePair_"]["name_"])
 }
 
 export async function setGlobalBridge_$(nodeSystem_, $task) {
 ff_core_JsSystem.JsSystem_globalThis(globalThis)["$firefly_bridge"] = ff_core_BuildSystem.BuildSystemBridge((async (_w1, _w2, $task) => {
 (await ff_compiler_Bridge.internalCompile_$(nodeSystem_, _w1, _w2, $task))
 }), (async (_w1, _w2, _w3, _w4, $task) => {
-(await ff_compiler_Bridge.internalBrowserCallEsBuild_$(nodeSystem_, _w1, _w2, _w3, _w4, $task))
+(await ff_compiler_Bridge.callEsBuildForBrowser_$(nodeSystem_, _w1, _w2, _w3, _w4, $task))
 }))
 }
 
 export async function internalCompile_$(nodeSystem_, mainFiles_, target_, $task) {
-(await ff_compiler_Builder.buildViaBuildSystem_$(nodeSystem_, (await ff_compiler_Bridge.internalPath_$(nodeSystem_, nodeSystem_["fireflyPath_"], $task)), mainFiles_, target_, ff_compiler_ModuleCache.new_(0), false, $task))
+(await ff_compiler_Builder.buildViaBuildSystem_$(nodeSystem_, (await ff_core_NodeSystem.NodeSystem_path$(nodeSystem_, nodeSystem_["fireflyPath_"], $task)), mainFiles_, target_, ff_compiler_ModuleCache.new_(0), false, $task))
 }
 
-export async function internalBrowserCallEsBuild_$(nodeSystem_, mainJsFiles_, outputPath_, minify_, sourceMap_, $task) {
+export async function callEsBuildForBrowser_$(nodeSystem_, mainJsFiles_, outputPath_, minify_, sourceMap_, $task) {
 const esbuild_ = import$0;
 (await esbuild_.build({entryPoints: mainJsFiles_, bundle: true, minify: minify_, sourcemap: sourceMap_, platform: "browser", target: "es2017", outdir: outputPath_, outExtension: {[".js"]: ".bundle.js"}}))
 }
 
-export async function internalNodeCallEsBuild_$(self_, mainJsFile_, outputPath_, minify_, $task) {
+export async function callEsBuildForNode_$(self_, mainJsFile_, outputPath_, minify_, $task) {
 const esbuild_ = import$0;
 (await esbuild_.build({entryPoints: [mainJsFile_], bundle: true, minify: minify_, sourcemap: true, platform: "node", target: "es2017", external: ["esbuild", "uws.js"], loader: {[".node"]: "copy"}, outdir: outputPath_}))
 }
 
-export async function internalNodeCallEsBuildContext_$(self_, mainJsFile_, outputPath_, minify_, $task) {
+export async function callEsBuildContextForNode_$(self_, mainJsFile_, outputPath_, minify_, $task) {
 const esbuild_ = import$0;
 return (await esbuild_.context({entryPoints: [mainJsFile_], bundle: true, minify: minify_, sourcemap: true, platform: "node", target: "es2017", external: ["esbuild", "uws.js"], loader: {[".node"]: "copy"}, outfile: outputPath_}))
-}
-
-export async function internalPath_$(nodeSystem_, absoluteOrRelative_, $task) {
-const nodePath_ = import$1;
-return ff_core_Path.Path(nodePath_.resolve(absoluteOrRelative_))
-}
-
-export async function internalListPath_$(path_, $task) {
-return (await ff_core_Stream.Stream_flatMap$((await ff_core_Path.Path_entries$(path_, $task)), (async (file_, $task) => {
-if((await ff_core_Path.PathEntry_isDirectory$(file_, $task))) {
-return (await ff_compiler_Bridge.internalListPath_$((await ff_core_Path.PathEntry_path$(file_, $task)), $task))
-} else {
-return (await ff_core_List.List_toStream$([(await ff_core_Path.PathEntry_path$(file_, $task))], false, $task))
-}
-}), $task))
-}
-
-export async function internalListDirectory_$(path_, $task) {
-async function go_$(currentPath_, $task) {
-return (await ff_core_Stream.Stream_flatMap$((await ff_core_Path.Path_entries$(currentPath_, $task)), (async (file_, $task) => {
-if((await ff_core_Path.PathEntry_isDirectory$(file_, $task))) {
-return (await go_$((await ff_core_Path.PathEntry_path$(file_, $task)), $task))
-} else {
-return (await ff_core_List.List_toStream$([(await ff_core_Path.PathEntry_path$(file_, $task))], false, $task))
-}
-}), $task))
-}
-return (await ff_core_Stream.Stream_toList$((await ff_core_Stream.Stream_map$((await go_$(path_, $task)), (async (file_, $task) => {
-return ff_core_Pair.Pair(("/" + ff_core_String.String_replace((await ff_core_Path.Path_relativeTo$(file_, path_, $task)), "\\", "/")), (async ($task) => {
-return (await ff_core_Path.Path_readStream$(file_, $task))
-}))
-}), $task)), $task))
-}
-
-export async function internalMainPackagePair_$(buildSystem_, $task) {
-return ff_core_Pair.Pair(buildSystem_["mainPackagePair_"]["group_"], buildSystem_["mainPackagePair_"]["name_"])
 }
 
 

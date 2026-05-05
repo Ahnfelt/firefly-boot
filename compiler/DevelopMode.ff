@@ -140,7 +140,7 @@ startApp(
             )
             let esBuildPath = runFilePath.parent().grab().slash(runFilePath.base() + ".minified.js")
             let context = esbuildContext.jsValue.else {
-                let jsValue = Bridge.internalNodeCallEsBuildContext(system, startPath.absolute(), esBuildPath.absolute(), minify = True)
+                let jsValue = Bridge.callEsBuildContextForNode(system, startPath.absolute(), esBuildPath.absolute(), minify = True)
                 esbuildContext.jsValue = Some(jsValue)
                 jsValue
             }
@@ -171,7 +171,7 @@ startApp(
                     runner.lock.do {
                         if(taskIteration == runner.iteration):
                         try {
-                            Bridge.internalBrowserCallEsBuild(system, message->mainJsFiles?, message->outputPath?, message->minify?, message->sourceMap?)
+                            Bridge.callEsBuildForBrowser(system, message->mainJsFiles?, message->outputPath?, message->minify?, message->sourceMap?)
                             forkedProcess->send(Js->(ffDevelopMode = "internalBrowserCallEsBuild"))
                             Unit
                         } catchAny {error =>

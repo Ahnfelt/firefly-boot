@@ -471,14 +471,14 @@ const outputPath_ = ff_core_NodeSystem.NodeSystem_path(system_, ((".firefly/outp
 const runFile_ = ff_core_Path.Path_slash(outputPath_, (ff_compiler_Syntax.ModuleKey_importName(moduleKey_) + ".run.mjs"));
 const startPath_ = ff_core_Path.Path_slash(ff_core_Option.Option_grab(ff_core_Path.Path_parent(runFile_)), (ff_core_Path.Path_base(runFile_) + ".start.mjs"));
 ff_core_Path.Path_writeText(startPath_, (((("import * as run from " + ff_core_Json.Json_write(("./" + ff_core_Path.Path_base(runFile_)), ff_core_Option.None())) + "\n") + "globalThis.ffDevelopMode = true\n") + "run.$run$(null, process.argv.slice(2))"));
-ff_compiler_Bridge.internalNodeCallEsBuild_(system_, ff_core_Path.Path_absolute(startPath_), ff_core_Path.Path_absolute(outputPath_), true)
+ff_compiler_Bridge.callEsBuildForNode_(system_, ff_core_Path.Path_absolute(startPath_), ff_core_Path.Path_absolute(outputPath_), true)
 }
 
 export function bundleForBrowser_(system_, packagePair_, moduleKey_) {
 const packagePath_ = ff_compiler_Syntax.PackagePair_groupName(moduleKey_.packagePair_, "/");
 const outputPath_ = ff_core_NodeSystem.NodeSystem_path(system_, ((".firefly/output/browser/" + packagePath_) + "/"));
 const runFile_ = ff_core_Path.Path_slash(outputPath_, (ff_compiler_Syntax.ModuleKey_importName(moduleKey_) + ".run.mjs"));
-ff_compiler_Bridge.internalBrowserCallEsBuild_(system_, [ff_core_Path.Path_absolute(runFile_)], ff_core_Path.Path_absolute(outputPath_), true, true)
+ff_compiler_Bridge.callEsBuildForBrowser_(system_, [ff_core_Path.Path_absolute(runFile_)], ff_core_Path.Path_absolute(outputPath_), true, true)
 }
 
 export function importAndRun_(system_, fireflyPath_, target_, moduleKey_, arguments_, buildMode_ = false) {
@@ -927,14 +927,14 @@ const outputPath_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, ((".fire
 const runFile_ = (await ff_core_Path.Path_slash$(outputPath_, (ff_compiler_Syntax.ModuleKey_importName(moduleKey_) + ".run.mjs"), $task));
 const startPath_ = (await ff_core_Path.Path_slash$(ff_core_Option.Option_grab((await ff_core_Path.Path_parent$(runFile_, $task))), ((await ff_core_Path.Path_base$(runFile_, $task)) + ".start.mjs"), $task));
 (await ff_core_Path.Path_writeText$(startPath_, (((("import * as run from " + ff_core_Json.Json_write(("./" + (await ff_core_Path.Path_base$(runFile_, $task))), ff_core_Option.None())) + "\n") + "globalThis.ffDevelopMode = true\n") + "run.$run$(null, process.argv.slice(2))"), $task));
-(await ff_compiler_Bridge.internalNodeCallEsBuild_$(system_, (await ff_core_Path.Path_absolute$(startPath_, $task)), (await ff_core_Path.Path_absolute$(outputPath_, $task)), true, $task))
+(await ff_compiler_Bridge.callEsBuildForNode_$(system_, (await ff_core_Path.Path_absolute$(startPath_, $task)), (await ff_core_Path.Path_absolute$(outputPath_, $task)), true, $task))
 }
 
 export async function bundleForBrowser_$(system_, packagePair_, moduleKey_, $task) {
 const packagePath_ = ff_compiler_Syntax.PackagePair_groupName(moduleKey_.packagePair_, "/");
 const outputPath_ = (await ff_core_NodeSystem.NodeSystem_path$(system_, ((".firefly/output/browser/" + packagePath_) + "/"), $task));
 const runFile_ = (await ff_core_Path.Path_slash$(outputPath_, (ff_compiler_Syntax.ModuleKey_importName(moduleKey_) + ".run.mjs"), $task));
-(await ff_compiler_Bridge.internalBrowserCallEsBuild_$(system_, [(await ff_core_Path.Path_absolute$(runFile_, $task))], (await ff_core_Path.Path_absolute$(outputPath_, $task)), true, true, $task))
+(await ff_compiler_Bridge.callEsBuildForBrowser_$(system_, [(await ff_core_Path.Path_absolute$(runFile_, $task))], (await ff_core_Path.Path_absolute$(outputPath_, $task)), true, true, $task))
 }
 
 export async function importAndRun_$(system_, fireflyPath_, target_, moduleKey_, arguments_, buildMode_ = false, $task) {
