@@ -126,6 +126,9 @@ extend self: Handler {
                 self.printTime(system.mainTask(), "handleWorkspaceSymbol") {
                     self.handleWorkspaceSymbol(system, parameters)
                 }
+            | "textDocument/semanticTokens/full" =>
+                system.writeErrorLine("Semantic tokens parameters: " + Show.show(parameters))
+                Result(Json.null().write())
             | "shutdown" => 
                 Result(Json.null().write())
             | _ => 
@@ -212,6 +215,15 @@ extend self: Handler {
                     )
                 )*/
                 .with("renameProvider", True)
+                .with("semanticTokensProvider", Json.object()
+                    .with("legend", Json.object()
+                        .with("tokenTypes", ["keyword"])
+                        .with("tokenModifiers", Json.array([]))
+                    )
+                    .with("full", Json.object()
+                        .with("delta", False)
+                    )
+                )
             )
             .with("serverInfo", Json.object()
                 .with("name", "Firefly Language Server")
