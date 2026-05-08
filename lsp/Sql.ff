@@ -1,0 +1,767 @@
+import Token from ff:compiler
+data SqlTokenKind {
+    SqlKeyword
+    SqlIdentifier
+    SqlNumber
+    SqlString
+    SqlOperator
+    SqlPunctuation
+    SqlComment
+}
+
+data Location(
+    file: String
+    line: Int
+    column: Int
+)
+
+data SqlToken(
+    file: String
+    code: String
+    codeUpper: String
+    kind: SqlTokenKind
+    startLine: Int
+    startLineOffset: Int
+    startOffset: Int
+    stopLine: Int
+    stopLineOffset: Int
+    stopOffset: Int
+)
+
+extend token: SqlToken {
+
+    at(): Location {
+        Location(token.file, token.startLine, (token.startOffset - token.startLineOffset) + 1)
+    }
+
+    end(): Location {
+        Location(token.file, token.stopLine, (token.stopOffset - token.stopLineOffset) + 1)
+    }
+
+    raw(): String {
+        token.code.slice(token.startOffset, token.stopOffset)
+    }
+
+    is(kind: SqlTokenKind): Bool {
+        token.kind == kind
+    }
+
+    is2(kind1: SqlTokenKind, kind2: SqlTokenKind): Bool {
+        token.kind == kind1 || token.kind == kind2
+    }
+
+    is3(kind1: SqlTokenKind, kind2: SqlTokenKind, kind3: SqlTokenKind): Bool {
+        token.kind == kind1 || token.kind == kind2 || token.kind == kind3
+    }
+
+    rawIs(value: String): Bool {
+        token.stopOffset - token.startOffset == value.size() &&
+        token.codeUpper.startsWith(value, token.startOffset)
+    }
+}
+
+isSqlKeyword(word: String): Bool {
+    let upper = word.upper()
+    sqlKeywords.any {k => k == upper}
+}
+
+tokenize(sql: String): List[SqlToken] {
+    let sqlUpper = sql.upper()
+    let tokens = Array.new()
+    mutable offset = 0
+    mutable line = 1
+    mutable lineOffset = 0
+    let length = sql.size()
+    
+    function emitToken(startOffset: Int, kind: SqlTokenKind) {
+        tokens.push(SqlToken(".", sql, sqlUpper, kind, line, lineOffset, startOffset, line, lineOffset, offset))
+    }
+    
+    while {offset < length} {
+        let char = sql.grab(offset)
+        let startOffset = offset
+
+        if(char == ' ' || char == '\t' || char == '\r') {
+            offset += 1
+        } elseIf {char == '\n'} {
+            offset += 1
+            line += 1
+            lineOffset = offset
+        } elseIf {char == '-' && offset + 1 < length && sql.grab(offset + 1) == '-'} {
+            offset += 2
+            while {offset < length && sql.grab(offset) != '\n'} {
+                offset += 1
+            }
+            emitToken(startOffset, SqlComment)
+        } elseIf {char == '/' && offset + 1 < length && sql.grab(offset + 1) == '*'} {
+            offset += 2
+            while {offset < length && !(sql.grab(offset) == '*' && offset + 1 < length && sql.grab(offset + 1) == '/')} {
+                if(sql.grab(offset) == '\n') {
+                    line += 1
+                    lineOffset = offset + 1
+                }
+                offset += 1
+            }
+            offset += 2
+            emitToken(startOffset, SqlComment)
+        } elseIf {char == '\''} {
+            offset += 1
+            while {offset < length && sql.grab(offset) != '\''} {
+                if(sql.grab(offset) == '\\' && offset + 1 < length) {
+                    offset += 2
+                } else {
+                    if(sql.grab(offset) == '\n') {
+                        line += 1
+                        lineOffset = offset + 1
+                    }
+                    offset += 1
+                }
+            }
+            offset += 1
+            emitToken(startOffset, SqlString)
+        } elseIf {char.isAsciiDigit()} {
+            while {offset < length && sql.grab(offset).isAsciiDigit()} {
+                offset += 1
+            }
+            if(offset < length && sql.grab(offset) == '.') {
+                offset += 1
+                while {offset < length && sql.grab(offset).isAsciiDigit()} {
+                    offset += 1
+                }
+            }
+            emitToken(startOffset, SqlNumber)
+        } elseIf {char.isAsciiLetter() || char == '_' || char == '"'} {
+            let isQuoted = (char == '"')
+            if(isQuoted) {
+                offset += 1
+            }
+            while {offset < length && (sql.grab(offset).isAsciiLetterOrDigit() || sql.grab(offset) == '_' || (isQuoted && sql.grab(offset) != '"'))} {
+                offset += 1
+            }
+            if(isQuoted && offset < length && sql.grab(offset) == '"') {
+                offset += 1
+            }
+            let word = sql.slice(startOffset, offset)
+            if(!isQuoted && isSqlKeyword(word)) {
+                emitToken(startOffset, SqlKeyword)
+            } else {
+                emitToken(startOffset, SqlIdentifier)
+            }
+        } else {
+            let twoChar = if(offset + 1 < length) {sql.slice(offset, offset + 2)} else {""}
+
+            if(twoChar == "<>" || twoChar == "<=" || twoChar == ">=" || twoChar == "!=") {
+                offset += 2
+                emitToken(startOffset, SqlOperator)
+            } else {
+                let c = char.toString()
+                offset += 1
+                if(c == "(" || c == ")" || c == "," || c == ";" || c == ".") {
+                    emitToken(startOffset, SqlPunctuation)
+                } else {
+                    emitToken(startOffset, SqlOperator)
+                }
+            }
+        }
+    }
+
+    tokens.drain()
+}
+
+class SqlScope(
+    symbols: Array[SqlSymbol]
+)
+
+data SqlSymbol {
+    SqlQuery(alias: String, columns: List[String])
+    SqlTable(alias: Option[String], schema: Option[String], table: String)
+}
+
+complete(tokens: List[SqlToken], cursor: Int): SqlScope {
+    let scopes = Array.new[SqlScope]()
+    mutable offset = 0
+    function rawIs(o: Int, raw: String): Bool {
+        o < tokens.size() && tokens.grab(o).rawIs(raw)
+    }
+    function is(o: Int, kind: SqlTokenKind): Bool {
+        o < tokens.size() && tokens.grab(o).is(kind)
+    }
+    function parseScope() {
+        let scope = SqlScope(Array.new())
+        scopes.push(scope)
+        while {rawIs(offset, "WITH") || rawIs(offset, ",")} {
+            offset += 1
+            if(offset < tokens.size()):
+            let alias = tokens.grab(offset)
+            while {offset < tokens.size() && !rawIs(offset, "AS")} {offset += 1}
+            while {offset < tokens.size() && !rawIs(offset, "(")} {offset += 1}
+            if(rawIs(offset, "(")) {
+                offset += 1
+                parseScope()
+                if(rawIs(offset, ")")) {offset += 1}
+            }
+            scope.symbols.push(SqlQuery(alias.code, []))
+        }
+        while {offset < tokens.size() && !rawIs(offset, "FROM") && !rawIs(offset, "JOIN")} {
+            if(rawIs(offset, "(")) {
+                offset += 1
+                parseScope()
+                if(rawIs(offset, ")")) {offset += 1}
+            }
+            if(rawIs(offset, "AS") && offset + 1 < tokens.size()) {
+                offset += 2
+            }
+        }
+        while {offset < tokens.size()} {
+            if(rawIs(offset, "(")) {
+                offset += 1
+                parseScope()
+                if(rawIs(offset, ")")) {offset += 1}
+            } elseIf {rawIs(offset, "FROM") || rawIs(offset, "JOIN")} {
+                offset += 1
+                if(rawIs(offset, "LATERAL")) {offset += 1}
+                
+            }
+        }
+        scopes.pop()
+    }
+    parseScope()
+    SqlScope(Array.new())
+}
+
+showToken(token: SqlToken): String {
+    let typeName = token.kind.{
+        | SqlKeyword => "SqlKeyword"
+        | SqlIdentifier => "SqlIdentifier"
+        | SqlNumber => "SqlNumber"
+        | SqlString => "SqlString"
+        | SqlOperator => "SqlOperator"
+        | SqlPunctuation => "SqlPunctuation"
+        | SqlComment => "SqlComment"
+    }
+    "Token(" + typeName + ", \"" + token.raw() + "\", at: " + token.at().line + ":" + token.at().column + ")"
+}
+
+nodeMain(system: NodeSystem) {
+    tokenize("SELECT * FROM t1 a WHERE ((SELECT * FROM t2 b WHERE a.id = b.id))").each {token =>
+        system.writeLine(showToken(token))
+    }
+    
+}
+
+
+// Source: PostgreSQL 16 source code, src/include/parser/kwlist.h
+sqlKeywords: List[String] = [
+    "ABORT"
+    "ABSENT"
+    "ABSOLUTE"
+    "ACCESS"
+    "ACTION"
+    "ADD"
+    "ADMIN"
+    "AFTER"
+    "AGGREGATE"
+    "ALL"
+    "ALSO"
+    "ALTER"
+    "ALWAYS"
+    "ANALYSE"
+    "ANALYZE"
+    "AND"
+    "ANY"
+    "ARRAY"
+    "AS"
+    "ASC"
+    "ASENSITIVE"
+    "ASSERTION"
+    "ASSIGNMENT"
+    "ASYMMETRIC"
+    "AT"
+    "ATOMIC"
+    "ATTACH"
+    "ATTRIBUTE"
+    "AUTHORIZATION"
+    "BACKWARD"
+    "BEFORE"
+    "BEGIN"
+    "BETWEEN"
+    "BIGINT"
+    "BINARY"
+    "BIT"
+    "BOOLEAN"
+    "BOTH"
+    "BREADTH"
+    "BY"
+    "CACHE"
+    "CALL"
+    "CALLED"
+    "CASCADE"
+    "CASCaded"
+    "CASE"
+    "CAST"
+    "CATALOG"
+    "CHAIN"
+    "CHAR"
+    "CHARACTER"
+    "CHARACTERISTICS"
+    "CHECK"
+    "CHECKPOINT"
+    "CLASS"
+    "CLOSE"
+    "CLUSTER"
+    "COALESCE"
+    "COLLATE"
+    "COLLATION"
+    "COLUMN"
+    "COLUMNS"
+    "COMMENT"
+    "COMMENTS"
+    "COMMIT"
+    "COMMITTED"
+    "COMPRESSION"
+    "CONCURRENTLY"
+    "CONDITIONAL"
+    "CONFIGURATION"
+    "CONFLICT"
+    "CONNECTION"
+    "CONSTRAINT"
+    "CONSTRAINTS"
+    "CONTENT"
+    "CONTINUE"
+    "CONVERSION"
+    "COPY"
+    "COST"
+    "CREATE"
+    "CROSS"
+    "CSV"
+    "CUBE"
+    "CURRENT"
+    "CURRENT_CATALOG"
+    "CURRENT_DATE"
+    "CURRENT_ROLE"
+    "CURRENT_SCHEMA"
+    "CURRENT_TIME"
+    "CURRENT_TIMESTAMP"
+    "CURRENT_USER"
+    "CURSOR"
+    "CYCLE"
+    "DATA"
+    "DATABASE"
+    "DAY"
+    "DEALLOCATE"
+    "DEC"
+    "DECIMAL"
+    "DECLARE"
+    "DEFAULT"
+    "DEFAULTS"
+    "DEFERRABLE"
+    "DEFERRED"
+    "DEFINER"
+    "DELETE"
+    "DELIMITER"
+    "DELIMITERS"
+    "DEPENDS"
+    "DEPTH"
+    "DESC"
+    "DESTINATION"
+    "DETACH"
+    "DICTIONARY"
+    "DISABLE"
+    "DISCARD"
+    "DISTINCT"
+    "DO"
+    "DOCUMENT"
+    "DOMAIN"
+    "DOUBLE"
+    "DROP"
+    "EACH"
+    "EDGE"
+    "ELSE"
+    "EMPTY"
+    "ENABLE"
+    "ENCODING"
+    "ENCRYPTED"
+    "END"
+    "ENFORCED"
+    "ENUM"
+    "ERROR"
+    "ESCAPE"
+    "EVENT"
+    "EXCEPT"
+    "EXCLUDE"
+    "EXCLUDING"
+    "EXCLUSIVE"
+    "EXECUTE"
+    "EXISTS"
+    "EXPLAIN"
+    "EXPRESSION"
+    "EXTENSION"
+    "EXTERNAL"
+    "EXTRACT"
+    "FALSE"
+    "FAMILY"
+    "FETCH"
+    "FILTER"
+    "FINALIZE"
+    "FIRST"
+    "FLOAT"
+    "FOLLOWING"
+    "FOR"
+    "FORCE"
+    "FOREIGN"
+    "FORMAT"
+    "FORWARD"
+    "FREEZE"
+    "FROM"
+    "FULL"
+    "FUNCTION"
+    "FUNCTIONS"
+    "GENERATED"
+    "GLOBAL"
+    "GRANT"
+    "GRANTED"
+    "GRAPH"
+    "GRAPH_TABLE"
+    "GREATEST"
+    "GROUP"
+    "GROUPING"
+    "GROUPS"
+    "HANDLER"
+    "HAVING"
+    "HEADER"
+    "HOLD"
+    "HOUR"
+    "IDENTITY"
+    "IF"
+    "IGNORE"
+    "ILIKE"
+    "IMMEDIATE"
+    "IMMUTABLE"
+    "IMPLICIT"
+    "IMPORT"
+    "IN"
+    "INCLUDE"
+    "INCLUDING"
+    "INCREMENT"
+    "INDENT"
+    "INDEX"
+    "INDEXES"
+    "INHERIT"
+    "INHERITS"
+    "INITIALLY"
+    "INLINE"
+    "INNER"
+    "INOUT"
+    "INPUT"
+    "SENSITIVE"
+    "INSERT"
+    "INSTEAD"
+    "INT"
+    "INTEGER"
+    "INTERSECT"
+    "INTERVAL"
+    "INTO"
+    "INVOKER"
+    "IS"
+    "ISNULL"
+    "ISOLATION"
+    "JOIN"
+    "JSON"
+    "JSON_ARRAY"
+    "JSON_ARRAYAGG"
+    "JSON_EXISTS"
+    "JSON_OBJECT"
+    "JSON_OBJECTAGG"
+    "JSON_QUERY"
+    "JSON_SCALAR"
+    "JSON_SERIALIZE"
+    "JSON_TABLE"
+    "JSON_VALUE"
+    "KEEP"
+    "KEY"
+    "KEYS"
+    "LABEL"
+    "LANGUAGE"
+    "LARGE"
+    "LAST"
+    "LATERAL"
+    "LEADING"
+    "LEAKPROOF"
+    "LEAST"
+    "LEFT"
+    "LEVEL"
+    "LIKE"
+    "LIMIT"
+    "LISTEN"
+    "LOAD"
+    "LOCAL"
+    "LOCALTIME"
+    "LOCALTIMESTAMP"
+    "LOCATION"
+    "LOCK"
+    "LOCKED"
+    "LOGGED"
+    "LSN"
+    "MAPPING"
+    "MATCH"
+    "MATCHED"
+    "MATERIALIZED"
+    "MAXVALUE"
+    "MERGE"
+    "MERGE_ACTION"
+    "METHOD"
+    "MINUTE"
+    "MINVALUE"
+    "MODE"
+    "MONTH"
+    "MOVE"
+    "NAME"
+    "NAMES"
+    "NATIONAL"
+    "NATURAL"
+    "NCHAR"
+    "NESTED"
+    "NEW"
+    "NEXT"
+    "NFC"
+    "NFD"
+    "NFKC"
+    "NFKD"
+    "NO"
+    "NODE"
+    "NONE"
+    "NORMALIZE"
+    "NORMALIZED"
+    "NOT"
+    "NOTHING"
+    "NOTIFY"
+    "NOTNULL"
+    "NOWAIT"
+    "NULL"
+    "NULLIF"
+    "NULLS"
+    "NUMERIC"
+    "OBJECT"
+    "OBJECTS"
+    "OF"
+    "OFF"
+    "OFFSET"
+    "OIDS"
+    "OLD"
+    "OMIT"
+    "ON"
+    "ONLY"
+    "OPERATOR"
+    "OPTION"
+    "OPTIONS"
+    "OR"
+    "ORDER"
+    "ORDINALITY"
+    "OTHERS"
+    "OUT"
+    "OUTER"
+    "OVER"
+    "OVERLAPS"
+    "OVERLAY"
+    "OVERRIDING"
+    "OWNED"
+    "OWNER"
+    "PARALLEL"
+    "PARAMETER"
+    "PARSER"
+    "PARTIAL"
+    "PARTITION"
+    "PARTITIONS"
+    "PASSING"
+    "PASSWORD"
+    "PATH"
+    "PERIOD"
+    "PLACING"
+    "PLAN"
+    "PLANS"
+    "POLICY"
+    "PORTION"
+    "POSITION"
+    "PRECEDING"
+    "PRECISION"
+    "PREPARE"
+    "PREPARED"
+    "PRESERVE"
+    "PRIMARY"
+    "PRIOR"
+    "PRIVILEGES"
+    "PROCEDURAL"
+    "PROCEDURE"
+    "PROCEDURES"
+    "PROGRAM"
+    "PROPERTIES"
+    "PROPERTY"
+    "PUBLICATION"
+    "QUOTE"
+    "QUOTES"
+    "RANGE"
+    "READ"
+    "RECHECK"
+    "REAL"
+    "REASSIGN"
+    "RECURSIVE"
+    "REF"
+    "REFERENCES"
+    "REFERENCING"
+    "REFRESH"
+    "REINDEX"
+    "RELATIONSHIP"
+    "RELATIVE"
+    "RELEASE"
+    "RENAME"
+    "REPACK"
+    "REPEATABLE"
+    "REPLACE"
+    "REPLICA"
+    "RESET"
+    "RESPECT"
+    "RESTART"
+    "RESTRICT"
+    "RETURN"
+    "RETURNING"
+    "RETURNS"
+    "REVOKE"
+    "RIGHT"
+    "ROLE"
+    "ROLLBACK"
+    "ROLLUP"
+    "ROUTINE"
+    "ROUTINES"
+    "ROW"
+    "ROWS"
+    "RULE"
+    "SAVEPOINT"
+    "SCALAR"
+    "SCHEMA"
+    "SCHEMAS"
+    "SCROLL"
+    "SEARCH"
+    "SECOND"
+    "SECURITY"
+    "SELECT"
+    "SEQUENCE"
+    "SEQUENCES"
+    "SERIALIZABLE"
+    "SERVER"
+    "SESSION"
+    "SESSION_USER"
+    "SET"
+    "SETOF"
+    "SETS"
+    "SHARE"
+    "SHOW"
+    "SIMILAR"
+    "SIMPLE"
+    "SKIP"
+    "SMALLINT"
+    "SNAPSHOT"
+    "SOME"
+    "SOURCE"
+    "SPLIT"
+    "SQL"
+    "STABLE"
+    "STANDALONE"
+    "START"
+    "STATEMENT"
+    "STATISTICS"
+    "STDIN"
+    "STDOUT"
+    "STORAGE"
+    "STORED"
+    "STRICT"
+    "STRING"
+    "STRIP"
+    "SUBSCRIPTION"
+    "SUBSTRING"
+    "SUPPORT"
+    "SYMMETRIC"
+    "SYSID"
+    "SYSTEM"
+    "SYSTEM_USER"
+    "TABLE"
+    "TABLES"
+    "TABLESAMPLE"
+    "TABLESPACE"
+    "TARGET"
+    "TEMP"
+    "TEMPLATE"
+    "TEMPORARY"
+    "TEXT"
+    "THEN"
+    "TIES"
+    "TIME"
+    "TIMESTAMP"
+    "TO"
+    "TRAILING"
+    "TRANSACTION"
+    "TRANSFORM"
+    "TREAT"
+    "TRIGGER"
+    "TRIM"
+    "TRUE"
+    "TRUNCATE"
+    "TRUSTED"
+    "TYPE"
+    "TYPES"
+    "UESCAPE"
+    "UNBOUNDED"
+    "UNCOMMITTED"
+    "UNCONDITIONAL"
+    "UNENCRYPTED"
+    "UNION"
+    "UNIQUE"
+    "UNKNOWN"
+    "UNLISTEN"
+    "UNLOGGED"
+    "UNTIL"
+    "UPDATE"
+    "USER"
+    "USING"
+    "VACUUM"
+    "VALID"
+    "VALIDATE"
+    "VALIDATOR"
+    "VALUE"
+    "VALUES"
+    "VARCHAR"
+    "VARIADIC"
+    "VARYING"
+    "VERBOSE"
+    "VERSION"
+    "VERTEX"
+    "VIEW"
+    "VIEWS"
+    "VIRTUAL"
+    "VOLATILE"
+    "WAIT"
+    "WHEN"
+    "WHERE"
+    "WHITESPACE"
+    "WINDOW"
+    "WITH"
+    "WITHIN"
+    "WITHOUT"
+    "WORK"
+    "WRAPPER"
+    "WRITE"
+    "XML"
+    "XMLATTRIBUTES"
+    "XMLCONCAT"
+    "XMLELEMENT"
+    "XMLEXISTS"
+    "XMLFOREST"
+    "XMLNAMESPACES"
+    "XMLPARSE"
+    "XMLPI"
+    "XMLROOT"
+    "XMLSERIALIZE"
+    "XMLTABLE"
+    "YEAR"
+    "YES"
+    "ZONE"
+]
