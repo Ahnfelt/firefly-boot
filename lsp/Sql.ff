@@ -269,34 +269,38 @@ complete(tokens: List[SqlToken], cursor: Int): List[SqlSymbol] {
                 rawIs(offset, "UPDATE") || rawIs(offset, "INTO") ||
                 rawIs(offset, "ONLY") || rawIs(offset, "NATURAL")
             } {
-                offset += 1
-                if(rawIs(offset, "LATERAL")) {offset += 1}
-                if(rawIs(offset, "(")) {
+                let isFrom = rawIs(offset, "FROM")
+                doWhile {
                     offset += 1
-                    let columns = parseScope()
-                    if(rawIs(offset, ")")) {offset += 1}
-                    if(rawIs(offset, "AS")) {offset += 1}
-                    if(is(offset, SqlIdentifier) || is(offset, SqlKeyword)) {
-                        let alias = tokens.grab(offset)
-                        scope.symbols.push(SqlQuery(alias.raw(), columns))
-                    }
-                } elseIf {is(offset, SqlIdentifier) || is(offset, SqlKeyword)} {
-                    let schema = if(rawIs(offset + 1, ".")) {
-                        let schema = tokens.grab(offset)
-                        offset += 2
-                        schema
-                    }
-                    if(is(offset, SqlIdentifier) || is(offset, SqlKeyword)) {
-                        let relation = tokens.grab(offset)
+                    if(rawIs(offset, "LATERAL")) {offset += 1}
+                    if(rawIs(offset, "(")) {
                         offset += 1
+                        let columns = parseScope()
+                        if(rawIs(offset, ")")) {offset += 1}
                         if(rawIs(offset, "AS")) {offset += 1}
-                        let alias = if(is(offset, SqlIdentifier) || is(offset, SqlKeyword)) {
+                        if(is(offset, SqlIdentifier) || is(offset, SqlKeyword)) {
                             let alias = tokens.grab(offset)
-                            offset += 1
-                            alias
+                            scope.symbols.push(SqlQuery(alias.raw(), columns))
                         }
-                        scope.symbols.push(SqlTable(alias.map {_.raw()}, schema.map {_.raw()}, relation.raw()))
+                    } elseIf {is(offset, SqlIdentifier) || is(offset, SqlKeyword)} {
+                        let schema = if(rawIs(offset + 1, ".")) {
+                            let schema = tokens.grab(offset)
+                            offset += 2
+                            schema
+                        }
+                        if(is(offset, SqlIdentifier) || is(offset, SqlKeyword)) {
+                            let relation = tokens.grab(offset)
+                            offset += 1
+                            if(rawIs(offset, "AS")) {offset += 1}
+                            let alias = if(is(offset, SqlIdentifier) || is(offset, SqlKeyword)) {
+                                let alias = tokens.grab(offset)
+                                offset += 1
+                                alias
+                            }
+                            scope.symbols.push(SqlTable(alias.map {_.raw()}, schema.map {_.raw()}, relation.raw()))
+                        }
                     }
+                    isFrom && rawIs(offset, ",")
                 }
             } else {
                 offset += 1
@@ -333,7 +337,7 @@ showToken(token: SqlToken): String {
 }
 
 nodeMain(system: NodeSystem) {
-    let sql = "WITH c as (select x, y z from q.w) SELECT * FROM t1 a WHERE ((SELECT * FROM t2 b WHERE a.id = b.id))"
+    let sql = "WITH c as (select x, y z from p, q.w) SELECT * FROM t1 a WHERE ((SELECT * FROM t2 b WHERE a.id = b.id))"
     system.writeLine("")
     system.writeLine("Tokenize:")
     tokenize(sql).each {token =>
