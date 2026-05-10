@@ -179,6 +179,7 @@ data SqlSymbol {
 
 complete(tokens: List[SqlToken], cursor: Int): SqlScope {
     let scopes = Array.new[SqlScope]()
+    mutable foundScopes = None
     mutable offset = 0
     function rawIs(o: Int, raw: String): Bool {
         o < tokens.size() && tokens.grab(o).rawIs(raw)
@@ -200,8 +201,11 @@ complete(tokens: List[SqlToken], cursor: Int): SqlScope {
         scopes.push(scope)
         if(rawIs(offset, "EXPLAIN")) {offset += 1}
         if(rawIs(offset, "ANALYZE")) {offset += 1}
-        while {(rawIs(offset, "WITH") || rawIs(offset, ","))} {
+        while {rawIs(offset, "WITH") || rawIs(offset, ",")} {
             offset += 1
+            if(foundScopes.isEmpty() && (offset >= tokens.size() || tokens.grab(offset).stopOffset >= cursor)) {
+                foundScopes = Some(scopes.toList())
+            }
             if(is(offset, SqlIdentifier) || (is(offset, SqlKeyword) &&
                 !rawIs(offset, "SELECT") && !rawIs(offset, "INSERT") && !rawIs(offset, "UPDATE") && 
                 !rawIs(offset, "DELETE") && !rawIs(offset, "MERGE")
@@ -223,11 +227,14 @@ complete(tokens: List[SqlToken], cursor: Int): SqlScope {
                 if(rawIs(offset, ")")) {offset += 1}
                 columns
             } else {[]}
-            scope.symbols.push(SqlQuery(alias.code, columns))
+            scope.symbols.push(SqlQuery(alias.raw(), columns))
         }
         if(rawIs(offset, "SELECT")) {
             offset += 1
             while {offset < tokens.size() && !selectEnd(offset)} {
+                if(foundScopes.isEmpty() && (offset >= tokens.size() || tokens.grab(offset).stopOffset >= cursor)) {
+                    foundScopes = Some(scopes.toList())
+                }
                 if(rawIs(offset, "(")) {
                     offset += 1
                     parseScope()
@@ -237,7 +244,7 @@ complete(tokens: List[SqlToken], cursor: Int): SqlScope {
                     (rawIs(offset + 1, ",") || selectEnd(offset + 1))
                 } {
                     let alias = tokens.grab(offset)
-                    scopeColumns.push(alias.code)
+                    scopeColumns.push(alias.raw())
                     offset += 1
                 } else {
                     offset += 1
@@ -248,6 +255,9 @@ complete(tokens: List[SqlToken], cursor: Int): SqlScope {
             offset < tokens.size() && !rawIs(offset, "RETURNING") && 
             !rawIs(offset, "UNION") && !rawIs(offset, "INTERSECT") && !rawIs(offset, "EXCEPT")
         } {
+            if(foundScopes.isEmpty() && (offset >= tokens.size() || tokens.grab(offset).stopOffset >= cursor)) {
+                foundScopes = Some(scopes.toList())
+            }
             if(rawIs(offset, "(")) {
                 offset += 1
                 parseScope()
@@ -266,7 +276,7 @@ complete(tokens: List[SqlToken], cursor: Int): SqlScope {
                     if(rawIs(offset, "AS")) {offset += 1}
                     if(is(offset, SqlIdentifier) || is(offset, SqlKeyword)) {
                         let alias = tokens.grab(offset)
-                        scope.symbols.push(SqlQuery(alias.code, columns))
+                        scope.symbols.push(SqlQuery(alias.raw(), columns))
                     }
                 } elseIf {is(offset, SqlIdentifier) || is(offset, SqlKeyword)} {
                     let schema = if(rawIs(offset + 1, ".")) {
@@ -283,19 +293,31 @@ complete(tokens: List[SqlToken], cursor: Int): SqlScope {
                             offset += 1
                             alias
                         }
-                        scope.symbols.push(SqlTable(alias.map {_.code}, schema.map {_.code}, relation.code))
+                        scope.symbols.push(SqlTable(alias.map {_.raw()}, schema.map {_.raw()}, relation.raw()))
                     }
                 }
+            } else {
+                offset += 1
             }
+        }
+        if(rawIs(offset, "RETURNING")) {
+            // TODO
         }
         scopes.pop()
         while {rawIs(offset, "UNION") || rawIs(offset, "INTERSECT") || rawIs(offset, "EXCEPT")} {
+            offset += 1
+            if(foundScopes.isEmpty() && (offset >= tokens.size() || tokens.grab(offset).stopOffset >= cursor)) {
+                foundScopes = Some(scopes.toList())
+            }
             parseScope()
+        }
+        if(foundScopes.isEmpty() && (offset >= tokens.size() || tokens.grab(offset).stopOffset >= cursor)) {
+            foundScopes = Some(scopes.toList())
         }
         scopeColumns.drain()
     }
     parseScope()
-    SqlScope(Array.new())
+    SqlScope(foundScopes.toList().flatten().flatMap {_.symbols.toList()}.toArray())
 }
 
 showToken(token: SqlToken): String {
@@ -312,10 +334,17 @@ showToken(token: SqlToken): String {
 }
 
 nodeMain(system: NodeSystem) {
-    tokenize("SELECT * FROM t1 a WHERE ((SELECT * FROM t2 b WHERE a.id = b.id))").each {token =>
+    let sql = "SELECT * FROM t1 a WHERE ((SELECT * FROM t2 b WHERE a.id = b.id))"
+    system.writeLine("")
+    system.writeLine("Tokenize:")
+    tokenize(sql).each {token =>
         system.writeLine(showToken(token))
     }
-    
+    system.writeLine("")
+    system.writeLine("Complete:")
+    complete(tokenize(sql), sql.indexOf("a.id").grab()).symbols.each {symbol =>
+        system.writeLine(Show.show(symbol))
+    }
 }
 
 
