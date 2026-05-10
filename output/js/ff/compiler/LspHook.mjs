@@ -101,8 +101,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type LspHook
-export function LspHook(at_, definedAt_, insertIdentifier_, trackSymbols_, arrayOfResults_) {
-return {at_, definedAt_, insertIdentifier_, trackSymbols_, arrayOfResults_};
+export function LspHook(at_, definedAt_, insertIdentifier_, trackSymbols_, arrayOfResults_, sqlStrings_) {
+return {at_, definedAt_, insertIdentifier_, trackSymbols_, arrayOfResults_, sqlStrings_};
 }
 
 // type SymbolHook
@@ -214,7 +214,7 @@ return ff_compiler_LspHook.LspHook(ff_core_Option.Option_else(at_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
 })), ff_core_Option.Option_else(definedAt_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
-})), insertIdentifier_, trackSymbols_, ff_core_List.List_toArray([]))
+})), insertIdentifier_, trackSymbols_, ff_core_Array.new_(), ff_core_Array.new_())
 }
 
 export function strictlyBetween_(afterAt_, beforeAt_, at_, extraColumns_) {
@@ -350,7 +350,7 @@ return ff_compiler_LspHook.LspHook(ff_core_Option.Option_else(at_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
 })), ff_core_Option.Option_else(definedAt_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
-})), insertIdentifier_, trackSymbols_, ff_core_List.List_toArray([]))
+})), insertIdentifier_, trackSymbols_, ff_core_Array.new_(), ff_core_Array.new_())
 }
 
 export async function strictlyBetween_$(afterAt_, beforeAt_, at_, extraColumns_, $task) {

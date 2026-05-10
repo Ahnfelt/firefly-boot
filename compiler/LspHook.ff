@@ -8,6 +8,7 @@ class LspHook(
     insertIdentifier: Bool
     trackSymbols: Bool
     arrayOfResults: Array[ResultHook]
+    sqlStrings: Array[Term]
 )
 
 disabled(): LspHook {
@@ -20,7 +21,8 @@ new(at: Option[Location], definedAt: Option[Location], insertIdentifier: Bool, t
         definedAt = definedAt.else {Location("^lsp", -7, -7)}
         insertIdentifier = insertIdentifier
         trackSymbols = trackSymbols
-        arrayOfResults = [].toArray()
+        arrayOfResults = Array.new()
+        sqlStrings = Array.new()
     )
 }
 
