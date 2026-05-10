@@ -18,7 +18,7 @@ data Location(
 data SqlToken(
     file: String
     code: String
-    codeUpper: String
+    codeLower: String
     kind: SqlTokenKind
     startLine: Int
     startLineOffset: Int
@@ -56,17 +56,17 @@ extend token: SqlToken {
 
     rawIs(value: String): Bool {
         token.stopOffset - token.startOffset == value.size() &&
-        token.codeUpper.startsWith(value, token.startOffset)
+        token.codeLower.startsWith(value, token.startOffset)
     }
 }
 
 isSqlKeyword(word: String): Bool {
-    let upper = word.upper()
-    sqlKeywords.any {k => k == upper}
+    let lower = word.lower()
+    sqlKeywords.any {k => k == lower}
 }
 
 tokenize(sql: String): List[SqlToken] {
-    let sqlUpper = sql.upper()
+    let sqlLower = sql.lower()
     let tokens = Array.new()
     mutable offset = 0
     mutable line = 1
@@ -74,7 +74,7 @@ tokenize(sql: String): List[SqlToken] {
     let length = sql.size()
     
     function emitToken(startOffset: Int, kind: SqlTokenKind) {
-        tokens.push(SqlToken(".", sql, sqlUpper, kind, line, lineOffset, startOffset, line, lineOffset, offset))
+        tokens.push(SqlToken(".", sql, sqlLower, kind, line, lineOffset, startOffset, line, lineOffset, offset))
     }
     
     while {offset < length} {
