@@ -303,6 +303,9 @@ complete(tokens: List[SqlToken], cursor: Int): SqlScope {
         if(rawIs(offset, "RETURNING")) {
             // TODO
         }
+        if(foundScopes.isEmpty() && (offset >= tokens.size() || tokens.grab(offset).stopOffset >= cursor)) {
+            foundScopes = Some(scopes.toList())
+        }
         scopes.pop()
         while {rawIs(offset, "UNION") || rawIs(offset, "INTERSECT") || rawIs(offset, "EXCEPT")} {
             offset += 1
@@ -310,9 +313,6 @@ complete(tokens: List[SqlToken], cursor: Int): SqlScope {
                 foundScopes = Some(scopes.toList())
             }
             parseScope()
-        }
-        if(foundScopes.isEmpty() && (offset >= tokens.size() || tokens.grab(offset).stopOffset >= cursor)) {
-            foundScopes = Some(scopes.toList())
         }
         scopeColumns.drain()
     }
