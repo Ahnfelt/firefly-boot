@@ -342,11 +342,16 @@ nodeMain(system: NodeSystem) {
     }
     system.writeLine("")
     system.writeLine("Complete 1:")
-    complete(tokenize(sql), sql.indexOf("*").grab()).symbols.each {symbol =>
+    complete(tokenize(sql), sql.indexOf("x").grab()).symbols.each {symbol =>
         system.writeLine(Show.show(symbol))
     }
     system.writeLine("")
     system.writeLine("Complete 2:")
+    complete(tokenize(sql), sql.indexOf("*").grab()).symbols.each {symbol =>
+        system.writeLine(Show.show(symbol))
+    }
+    system.writeLine("")
+    system.writeLine("Complete 3:")
     complete(tokenize(sql), sql.indexOf("a.id").grab()).symbols.each {symbol =>
         system.writeLine(Show.show(symbol))
     }
