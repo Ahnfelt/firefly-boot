@@ -202,6 +202,25 @@ complete(tokens: List[SqlToken], cursor: Int): SqlScope {
     }
     function parseScope(): List[String] {
         let scopeColumns = Array.new()
+        function parseSelect() {
+            while {offset < tokens.size() && !selectEnd(offset)} {
+                checkCursor()
+                if(rawIs(offset, "(")) {
+                    offset += 1
+                    parseScope()
+                    if(rawIs(offset, ")")) {offset += 1}
+                } elseIf {
+                    (is(offset, SqlIdentifier) || is(offset, SqlKeyword)) &&
+                    (rawIs(offset + 1, ",") || selectEnd(offset + 1))
+                } {
+                    let alias = tokens.grab(offset)
+                    scopeColumns.push(alias.raw())
+                    offset += 1
+                } else {
+                    offset += 1
+                }
+            }        
+        }
         let scope = SqlScope(Array.new())
         scopes.push(scope)
         if(rawIs(offset, "EXPLAIN")) {offset += 1}
@@ -234,23 +253,7 @@ complete(tokens: List[SqlToken], cursor: Int): SqlScope {
         }
         if(rawIs(offset, "SELECT")) {
             offset += 1
-            while {offset < tokens.size() && !selectEnd(offset)} {
-                checkCursor()
-                if(rawIs(offset, "(")) {
-                    offset += 1
-                    parseScope()
-                    if(rawIs(offset, ")")) {offset += 1}
-                } elseIf {
-                    (is(offset, SqlIdentifier) || is(offset, SqlKeyword)) &&
-                    (rawIs(offset + 1, ",") || selectEnd(offset + 1))
-                } {
-                    let alias = tokens.grab(offset)
-                    scopeColumns.push(alias.raw())
-                    offset += 1
-                } else {
-                    offset += 1
-                }
-            }
+            parseSelect()
         }
         while {
             offset < tokens.size() && !rawIs(offset, ")") && !rawIs(offset, "RETURNING") && 
@@ -300,7 +303,8 @@ complete(tokens: List[SqlToken], cursor: Int): SqlScope {
             }
         }
         if(rawIs(offset, "RETURNING")) {
-            // TODO
+            offset += 1
+            parseSelect()
         }
         checkCursor()
         scopes.pop()
