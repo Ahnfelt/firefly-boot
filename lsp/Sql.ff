@@ -142,7 +142,7 @@ tokenize(sql: String): List[SqlToken] {
                 offset += 1
             }
             let word = sql.slice(startOffset, offset)
-            if(!isQuoted && isSqlKeyword(word)) {
+            if(!isQuoted && (tokens.isEmpty() || !tokens.grabLast().rawIs("as")) && isSqlKeyword(word)) {
                 emitToken(startOffset, SqlKeyword)
             } else {
                 emitToken(startOffset, SqlIdentifier)
@@ -188,12 +188,12 @@ complete(tokens: List[SqlToken], cursor: Int): List[SqlSymbol] {
         o < tokens.size() && tokens.grab(o).is(kind)
     }
     function selectEnd(o: Int): Bool {
-        rawIs(o, "FROM") || rawIs(o, "JOIN") || 
-        rawIs(o, "WHERE") || rawIs(o, "GROUP") || 
-        rawIs(o, "HAVING") || rawIs(o, "WINDOW") ||
-        rawIs(o, "UNION") || rawIs(o, "INTERSECT") || rawIs(o, "EXCEPT") ||
-        rawIs(o, "ORDER") || rawIs(o, "LIMIT") || rawIs(o, "OFFSET") ||
-        rawIs(o, "FETCH") || rawIs(o, "FOR") || rawIs(o, ")")
+        rawIs(o, "from") || rawIs(o, "join") || 
+        rawIs(o, "where") || rawIs(o, "group") || 
+        rawIs(o, "having") || rawIs(o, "window") ||
+        rawIs(o, "union") || rawIs(o, "intersect") || rawIs(o, "except") ||
+        rawIs(o, "order") || rawIs(o, "limit") || rawIs(o, "offset") ||
+        rawIs(o, "fetch") || rawIs(o, "for") || rawIs(o, ")")
     }
     function checkCursor(): Unit {
         if(foundScopes.isEmpty() && (offset >= tokens.size() || tokens.grab(offset).stopOffset >= cursor)) {
@@ -223,18 +223,18 @@ complete(tokens: List[SqlToken], cursor: Int): List[SqlSymbol] {
         }
         let scope = SqlScope(Array.new())
         scopes.push(scope)
-        if(rawIs(offset, "EXPLAIN")) {offset += 1}
-        if(rawIs(offset, "ANALYZE")) {offset += 1}
-        while {rawIs(offset, "WITH") || rawIs(offset, ",")} {
+        if(rawIs(offset, "explain")) {offset += 1}
+        if(rawIs(offset, "analyze")) {offset += 1}
+        while {rawIs(offset, "with") || rawIs(offset, ",")} {
             offset += 1
             checkCursor()
             if(is(offset, SqlIdentifier) || (is(offset, SqlKeyword) &&
-                !rawIs(offset, "SELECT") && !rawIs(offset, "INSERT") && !rawIs(offset, "UPDATE") && 
-                !rawIs(offset, "DELETE") && !rawIs(offset, "MERGE")
+                !rawIs(offset, "select") && !rawIs(offset, "insert") && !rawIs(offset, "update") && 
+                !rawIs(offset, "delete") && !rawIs(offset, "merge")
             )):
             let alias = tokens.grab(offset)
             offset += 1
-            if(rawIs(offset, "RECURSIVE")) {
+            if(rawIs(offset, "recursive")) {
                 offset += 1
                 if(rawIs(offset, "(")) {
                     offset += 1
@@ -242,7 +242,7 @@ complete(tokens: List[SqlToken], cursor: Int): List[SqlSymbol] {
                     if(rawIs(offset, ")")) {offset += 1}
                 }
             }
-            if(rawIs(offset, "AS")) {offset += 1}
+            if(rawIs(offset, "as")) {offset += 1}
             let columns = if(rawIs(offset, "(")) {
                 offset += 1
                 let columns = parseScope()
@@ -251,13 +251,13 @@ complete(tokens: List[SqlToken], cursor: Int): List[SqlSymbol] {
             } else {[]}
             scope.symbols.push(SqlQuery(alias.raw(), columns))
         }
-        if(rawIs(offset, "SELECT")) {
+        if(rawIs(offset, "select")) {
             offset += 1
             parseColumns()
         }
         while {
-            offset < tokens.size() && !rawIs(offset, ")") && !rawIs(offset, "RETURNING") && 
-            !rawIs(offset, "UNION") && !rawIs(offset, "INTERSECT") && !rawIs(offset, "EXCEPT")
+            offset < tokens.size() && !rawIs(offset, ")") && !rawIs(offset, "returning") && 
+            !rawIs(offset, "union") && !rawIs(offset, "intersect") && !rawIs(offset, "except")
         } {
             checkCursor()
             if(rawIs(offset, "(")) {
@@ -265,19 +265,19 @@ complete(tokens: List[SqlToken], cursor: Int): List[SqlSymbol] {
                 parseScope()
                 if(rawIs(offset, ")")) {offset += 1}
             } elseIf {
-                rawIs(offset, "FROM") || rawIs(offset, "JOIN") || 
-                rawIs(offset, "UPDATE") || rawIs(offset, "INTO") ||
-                rawIs(offset, "ONLY") || rawIs(offset, "NATURAL")
+                rawIs(offset, "from") || rawIs(offset, "join") || 
+                rawIs(offset, "update") || rawIs(offset, "into") ||
+                rawIs(offset, "only") || rawIs(offset, "natural")
             } {
-                let isFrom = rawIs(offset, "FROM")
+                let isFrom = rawIs(offset, "from")
                 doWhile {
                     offset += 1
-                    if(rawIs(offset, "LATERAL")) {offset += 1}
+                    if(rawIs(offset, "lateral")) {offset += 1}
                     if(rawIs(offset, "(")) {
                         offset += 1
                         let columns = parseScope()
                         if(rawIs(offset, ")")) {offset += 1}
-                        if(rawIs(offset, "AS")) {offset += 1}
+                        if(rawIs(offset, "as")) {offset += 1}
                         if(is(offset, SqlIdentifier) || is(offset, SqlKeyword)) {
                             let alias = tokens.grab(offset)
                             scope.symbols.push(SqlQuery(alias.raw(), columns))
@@ -291,7 +291,7 @@ complete(tokens: List[SqlToken], cursor: Int): List[SqlSymbol] {
                         if(is(offset, SqlIdentifier) || is(offset, SqlKeyword)) {
                             let relation = tokens.grab(offset)
                             offset += 1
-                            if(rawIs(offset, "AS")) {offset += 1}
+                            if(rawIs(offset, "as")) {offset += 1}
                             let alias = if(is(offset, SqlIdentifier) || is(offset, SqlKeyword)) {
                                 let alias = tokens.grab(offset)
                                 offset += 1
@@ -306,13 +306,13 @@ complete(tokens: List[SqlToken], cursor: Int): List[SqlSymbol] {
                 offset += 1
             }
         }
-        if(rawIs(offset, "RETURNING")) {
+        if(rawIs(offset, "returning")) {
             offset += 1
             parseColumns()
         }
         checkCursor()
         scopes.pop()
-        while {rawIs(offset, "UNION") || rawIs(offset, "INTERSECT") || rawIs(offset, "EXCEPT")} {
+        while {rawIs(offset, "union") || rawIs(offset, "intersect") || rawIs(offset, "except")} {
             offset += 1
             checkCursor()
             parseScope()
