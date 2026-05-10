@@ -142,7 +142,7 @@ tokenize(sql: String): List[SqlToken] {
                 offset += 1
             }
             let word = sql.slice(startOffset, offset)
-            if(!isQuoted && (tokens.isEmpty() || !tokens.grabLast().rawIs("as")) && isSqlKeyword(word)) {
+            if(!isQuoted && isSqlKeyword(word) && (tokens.isEmpty() || !tokens.grabLast().rawIs("as"))) {
                 emitToken(startOffset, SqlKeyword)
             } else {
                 emitToken(startOffset, SqlIdentifier)
