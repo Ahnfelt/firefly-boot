@@ -62,7 +62,7 @@ extend token: SqlToken {
 
 isSqlKeyword(word: String): Bool {
     let lower = word.lower()
-    sqlKeywords.any {k => k == lower}
+    sqlKeywords.any {_ == lower}
 }
 
 tokenize(sql: String): List[SqlToken] {
