@@ -127,8 +127,6 @@ extend self: Handler {
                     self.handleWorkspaceSymbol(system, parameters)
                 }
             | "textDocument/semanticTokens/full" =>
-                system.writeErrorLine("Semantic tokens parameters: " + Show.show(parameters))
-                Result(Json.null().write())
                 self.handlesSmanticTokensFull(system, parameters)
             | "shutdown" => 
                 Result(Json.null().write())
@@ -218,7 +216,17 @@ extend self: Handler {
                 .with("renameProvider", True)
                 .with("semanticTokensProvider", Json.object()
                     .with("legend", Json.object()
-                        .with("tokenTypes", ["keyword"])
+                        .with("tokenTypes", [
+                            "keyword"
+                            "type"
+                            "property"
+                            "string"
+                            "number"
+                            "function"
+                            "operator"
+                            "comment"
+                            "parameter"                            
+                        ])
                         .with("tokenModifiers", Json.array([]))
                     )
                     .with("full", Json.object()
@@ -326,7 +334,17 @@ extend self: Handler {
     
     handlesSmanticTokensFull(system: NodeSystem, parameters: Map[String, Json]): ResultOrError {
         let o = Json.object()
-            .with("data", Json.array([0, 0, 10, 0, 0].map(Json.int)))
+            .with("data", Json.array([
+                0,  0, 10, 0, 0
+                1,  1, 10, 1, 0
+                1,  2, 10, 2, 0
+                1,  3, 10, 3, 0
+                1,  4, 10, 4, 0
+                1,  5, 10, 5, 0
+                1,  6, 10, 6, 0
+                1,  7, 10, 7, 0
+                1,  8, 10, 8, 0
+            ].map(Json.int)))
         Result(o.write())
     }
 
