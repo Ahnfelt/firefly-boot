@@ -177,7 +177,7 @@ data SqlSymbol {
     SqlTable(alias: Option[String], schema: Option[String], table: String)
 }
 
-complete(tokens: List[SqlToken], cursor: Int): SqlScope {
+complete(tokens: List[SqlToken], cursor: Int): List[SqlSymbol] {
     let scopes = Array.new[SqlScope]()
     mutable foundScopes = None
     mutable offset = 0
@@ -316,7 +316,7 @@ complete(tokens: List[SqlToken], cursor: Int): SqlScope {
         scopeColumns.drain()
     }
     parseScope()
-    SqlScope(foundScopes.toList().flatten().flatMap {_.symbols.toList()}.toArray())
+    foundScopes.toList().flatten().flatMap {_.symbols.toList()}
 }
 
 showToken(token: SqlToken): String {
@@ -343,17 +343,17 @@ nodeMain(system: NodeSystem) {
     system.writeLine("SQL: " + sql)
     system.writeLine("")
     system.writeLine("Complete @ x:")
-    complete(tokenize(sql), sql.indexOf("x").grab()).symbols.each {symbol =>
+    complete(tokenize(sql), sql.indexOf("x").grab()).each {symbol =>
         system.writeLine(Show.show(symbol))
     }
     system.writeLine("")
     system.writeLine("Complete @ *:")
-    complete(tokenize(sql), sql.indexOf("*").grab()).symbols.each {symbol =>
+    complete(tokenize(sql), sql.indexOf("*").grab()).each {symbol =>
         system.writeLine(Show.show(symbol))
     }
     system.writeLine("")
     system.writeLine("Complete @ a.id:")
-    complete(tokenize(sql), sql.indexOf("a.id").grab()).symbols.each {symbol =>
+    complete(tokenize(sql), sql.indexOf("a.id").grab()).each {symbol =>
         system.writeLine(Show.show(symbol))
     }
 }
