@@ -202,7 +202,7 @@ complete(tokens: List[SqlToken], cursor: Int): List[SqlSymbol] {
     }
     function parseScope(): List[String] {
         let scopeColumns = Array.new()
-        function parseSelect() {
+        function parseColumns() {
             while {offset < tokens.size() && !selectEnd(offset)} {
                 checkCursor()
                 if(rawIs(offset, "(")) {
@@ -253,7 +253,7 @@ complete(tokens: List[SqlToken], cursor: Int): List[SqlSymbol] {
         }
         if(rawIs(offset, "SELECT")) {
             offset += 1
-            parseSelect()
+            parseColumns()
         }
         while {
             offset < tokens.size() && !rawIs(offset, ")") && !rawIs(offset, "RETURNING") && 
@@ -308,7 +308,7 @@ complete(tokens: List[SqlToken], cursor: Int): List[SqlSymbol] {
         }
         if(rawIs(offset, "RETURNING")) {
             offset += 1
-            parseSelect()
+            parseColumns()
         }
         checkCursor()
         scopes.pop()
