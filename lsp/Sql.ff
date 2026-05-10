@@ -186,44 +186,113 @@ complete(tokens: List[SqlToken], cursor: Int): SqlScope {
     function is(o: Int, kind: SqlTokenKind): Bool {
         o < tokens.size() && tokens.grab(o).is(kind)
     }
-    function parseScope() {
+    function selectEnd(o: Int): Bool {
+        rawIs(o, "FROM") || rawIs(o, "JOIN") || 
+        rawIs(o, "WHERE") || rawIs(o, "GROUP") || 
+        rawIs(o, "HAVING") || rawIs(o, "WINDOW") ||
+        rawIs(o, "UNION") || rawIs(o, "INTERSECT") || rawIs(o, "EXCEPT") ||
+        rawIs(o, "ORDER") || rawIs(o, "LIMIT") || rawIs(o, "OFFSET") ||
+        rawIs(o, "FETCH") || rawIs(o, "FOR")
+    }
+    function parseScope(): List[String] {
+        let scopeColumns = Array.new()
         let scope = SqlScope(Array.new())
         scopes.push(scope)
-        while {rawIs(offset, "WITH") || rawIs(offset, ",")} {
+        if(rawIs(offset, "EXPLAIN")) {offset += 1}
+        if(rawIs(offset, "ANALYZE")) {offset += 1}
+        while {(rawIs(offset, "WITH") || rawIs(offset, ","))} {
             offset += 1
-            if(offset < tokens.size()):
+            if(is(offset, SqlIdentifier) || (is(offset, SqlKeyword) &&
+                !rawIs(offset, "SELECT") && !rawIs(offset, "INSERT") && !rawIs(offset, "UPDATE") && 
+                !rawIs(offset, "DELETE") && !rawIs(offset, "MERGE")
+            )):
             let alias = tokens.grab(offset)
-            while {offset < tokens.size() && !rawIs(offset, "AS")} {offset += 1}
-            while {offset < tokens.size() && !rawIs(offset, "(")} {offset += 1}
-            if(rawIs(offset, "(")) {
+            offset += 1
+            if(rawIs(offset, "RECURSIVE")) {
                 offset += 1
-                parseScope()
-                if(rawIs(offset, ")")) {offset += 1}
+                if(rawIs(offset, "(")) {
+                    offset += 1
+                    parseScope()
+                    if(rawIs(offset, ")")) {offset += 1}
+                }
             }
-            scope.symbols.push(SqlQuery(alias.code, []))
+            if(rawIs(offset, "AS")) {offset += 1}
+            let columns = if(rawIs(offset, "(")) {
+                offset += 1
+                let columns = parseScope()
+                if(rawIs(offset, ")")) {offset += 1}
+                columns
+            } else {[]}
+            scope.symbols.push(SqlQuery(alias.code, columns))
         }
-        while {offset < tokens.size() && !rawIs(offset, "FROM") && !rawIs(offset, "JOIN")} {
-            if(rawIs(offset, "(")) {
-                offset += 1
-                parseScope()
-                if(rawIs(offset, ")")) {offset += 1}
-            }
-            if(rawIs(offset, "AS") && offset + 1 < tokens.size()) {
-                offset += 2
+        if(rawIs(offset, "SELECT")) {
+            offset += 1
+            while {offset < tokens.size() && !selectEnd(offset)} {
+                if(rawIs(offset, "(")) {
+                    offset += 1
+                    parseScope()
+                    if(rawIs(offset, ")")) {offset += 1}
+                } elseIf {
+                    (is(offset, SqlIdentifier) || is(offset, SqlKeyword)) &&
+                    (rawIs(offset + 1, ",") || selectEnd(offset + 1))
+                } {
+                    let alias = tokens.grab(offset)
+                    scopeColumns.push(alias.code)
+                    offset += 1
+                } else {
+                    offset += 1
+                }
             }
         }
-        while {offset < tokens.size()} {
+        while {
+            offset < tokens.size() && !rawIs(offset, "RETURNING") && 
+            !rawIs(offset, "UNION") && !rawIs(offset, "INTERSECT") && !rawIs(offset, "EXCEPT")
+        } {
             if(rawIs(offset, "(")) {
                 offset += 1
                 parseScope()
                 if(rawIs(offset, ")")) {offset += 1}
-            } elseIf {rawIs(offset, "FROM") || rawIs(offset, "JOIN")} {
+            } elseIf {
+                rawIs(offset, "FROM") || rawIs(offset, "JOIN") || 
+                rawIs(offset, "UPDATE") || rawIs(offset, "INTO") ||
+                rawIs(offset, "ONLY") || rawIs(offset, "NATURAL")
+            } {
                 offset += 1
                 if(rawIs(offset, "LATERAL")) {offset += 1}
-                
+                if(rawIs(offset, "(")) {
+                    offset += 1
+                    let columns = parseScope()
+                    if(rawIs(offset, ")")) {offset += 1}
+                    if(rawIs(offset, "AS")) {offset += 1}
+                    if(is(offset, SqlIdentifier) || is(offset, SqlKeyword)) {
+                        let alias = tokens.grab(offset)
+                        scope.symbols.push(SqlQuery(alias.code, columns))
+                    }
+                } elseIf {is(offset, SqlIdentifier) || is(offset, SqlKeyword)} {
+                    let schema = if(rawIs(offset + 1, ".")) {
+                        let schema = tokens.grab(offset)
+                        offset += 2
+                        schema
+                    }
+                    if(is(offset, SqlIdentifier) || is(offset, SqlKeyword)) {
+                        let relation = tokens.grab(offset)
+                        offset += 1
+                        if(rawIs(offset, "AS")) {offset += 1}
+                        let alias = if(is(offset, SqlIdentifier) || is(offset, SqlKeyword)) {
+                            let alias = tokens.grab(offset)
+                            offset += 1
+                            alias
+                        }
+                        scope.symbols.push(SqlTable(alias.map {_.code}, schema.map {_.code}, relation.code))
+                    }
+                }
             }
         }
         scopes.pop()
+        while {rawIs(offset, "UNION") || rawIs(offset, "INTERSECT") || rawIs(offset, "EXCEPT")} {
+            parseScope()
+        }
+        scopeColumns.drain()
     }
     parseScope()
     SqlScope(Array.new())
