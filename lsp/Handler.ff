@@ -129,6 +129,7 @@ extend self: Handler {
             | "textDocument/semanticTokens/full" =>
                 system.writeErrorLine("Semantic tokens parameters: " + Show.show(parameters))
                 Result(Json.null().write())
+                self.handlesSmanticTokensFull(system, parameters)
             | "shutdown" => 
                 Result(Json.null().write())
             | _ => 
@@ -321,6 +322,12 @@ extend self: Handler {
                 self.fileSymbolsCache = self.fileSymbolsCache.add(file.absolute(), symbols)
                 symbols
         }
+    }
+    
+    handlesSmanticTokensFull(system: NodeSystem, parameters: Map[String, Json]): ResultOrError {
+        let o = Json.object()
+            .with("data", Json.array([0, 0, 10, 0, 0].map(Json.int)))
+        Result(o.write())
     }
 
     handleWorkspaceSymbol(system: NodeSystem, parameters: Map[String, Json]): ResultOrError {
