@@ -341,7 +341,12 @@ nodeMain(system: NodeSystem) {
         system.writeLine(showToken(token))
     }
     system.writeLine("")
-    system.writeLine("Complete:")
+    system.writeLine("Complete 1:")
+    complete(tokenize(sql), sql.indexOf("*").grab()).symbols.each {symbol =>
+        system.writeLine(Show.show(symbol))
+    }
+    system.writeLine("")
+    system.writeLine("Complete 2:")
     complete(tokenize(sql), sql.indexOf("a.id").grab()).symbols.each {symbol =>
         system.writeLine(Show.show(symbol))
     }
