@@ -341,17 +341,19 @@ nodeMain(system: NodeSystem) {
         system.writeLine(showToken(token))
     }
     system.writeLine("")
-    system.writeLine("Complete 1:")
+    system.writeLine("SQL: " + sql)
+    system.writeLine("")
+    system.writeLine("Complete @ x:")
     complete(tokenize(sql), sql.indexOf("x").grab()).symbols.each {symbol =>
         system.writeLine(Show.show(symbol))
     }
     system.writeLine("")
-    system.writeLine("Complete 2:")
+    system.writeLine("Complete @ *:")
     complete(tokenize(sql), sql.indexOf("*").grab()).symbols.each {symbol =>
         system.writeLine(Show.show(symbol))
     }
     system.writeLine("")
-    system.writeLine("Complete 3:")
+    system.writeLine("Complete @ a.id:")
     complete(tokenize(sql), sql.indexOf("a.id").grab()).symbols.each {symbol =>
         system.writeLine(Show.show(symbol))
     }
