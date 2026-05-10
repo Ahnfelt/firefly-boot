@@ -193,7 +193,12 @@ complete(tokens: List[SqlToken], cursor: Int): SqlScope {
         rawIs(o, "HAVING") || rawIs(o, "WINDOW") ||
         rawIs(o, "UNION") || rawIs(o, "INTERSECT") || rawIs(o, "EXCEPT") ||
         rawIs(o, "ORDER") || rawIs(o, "LIMIT") || rawIs(o, "OFFSET") ||
-        rawIs(o, "FETCH") || rawIs(o, "FOR")
+        rawIs(o, "FETCH") || rawIs(o, "FOR") || rawIs(o, ")")
+    }
+    function checkCursor(): Unit {
+        if(foundScopes.isEmpty() && (offset >= tokens.size() || tokens.grab(offset).stopOffset >= cursor)) {
+            foundScopes = Some(scopes.toList())
+        }
     }
     function parseScope(): List[String] {
         let scopeColumns = Array.new()
@@ -203,9 +208,7 @@ complete(tokens: List[SqlToken], cursor: Int): SqlScope {
         if(rawIs(offset, "ANALYZE")) {offset += 1}
         while {rawIs(offset, "WITH") || rawIs(offset, ",")} {
             offset += 1
-            if(foundScopes.isEmpty() && (offset >= tokens.size() || tokens.grab(offset).stopOffset >= cursor)) {
-                foundScopes = Some(scopes.toList())
-            }
+            checkCursor()
             if(is(offset, SqlIdentifier) || (is(offset, SqlKeyword) &&
                 !rawIs(offset, "SELECT") && !rawIs(offset, "INSERT") && !rawIs(offset, "UPDATE") && 
                 !rawIs(offset, "DELETE") && !rawIs(offset, "MERGE")
@@ -232,9 +235,7 @@ complete(tokens: List[SqlToken], cursor: Int): SqlScope {
         if(rawIs(offset, "SELECT")) {
             offset += 1
             while {offset < tokens.size() && !selectEnd(offset)} {
-                if(foundScopes.isEmpty() && (offset >= tokens.size() || tokens.grab(offset).stopOffset >= cursor)) {
-                    foundScopes = Some(scopes.toList())
-                }
+                checkCursor()
                 if(rawIs(offset, "(")) {
                     offset += 1
                     parseScope()
@@ -252,12 +253,10 @@ complete(tokens: List[SqlToken], cursor: Int): SqlScope {
             }
         }
         while {
-            offset < tokens.size() && !rawIs(offset, "RETURNING") && 
+            offset < tokens.size() && !rawIs(offset, ")") && !rawIs(offset, "RETURNING") && 
             !rawIs(offset, "UNION") && !rawIs(offset, "INTERSECT") && !rawIs(offset, "EXCEPT")
         } {
-            if(foundScopes.isEmpty() && (offset >= tokens.size() || tokens.grab(offset).stopOffset >= cursor)) {
-                foundScopes = Some(scopes.toList())
-            }
+            checkCursor()
             if(rawIs(offset, "(")) {
                 offset += 1
                 parseScope()
@@ -303,15 +302,11 @@ complete(tokens: List[SqlToken], cursor: Int): SqlScope {
         if(rawIs(offset, "RETURNING")) {
             // TODO
         }
-        if(foundScopes.isEmpty() && (offset >= tokens.size() || tokens.grab(offset).stopOffset >= cursor)) {
-            foundScopes = Some(scopes.toList())
-        }
+        checkCursor()
         scopes.pop()
         while {rawIs(offset, "UNION") || rawIs(offset, "INTERSECT") || rawIs(offset, "EXCEPT")} {
             offset += 1
-            if(foundScopes.isEmpty() && (offset >= tokens.size() || tokens.grab(offset).stopOffset >= cursor)) {
-                foundScopes = Some(scopes.toList())
-            }
+            checkCursor()
             parseScope()
         }
         scopeColumns.drain()
