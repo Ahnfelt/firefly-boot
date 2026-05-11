@@ -819,8 +819,8 @@ extend self: Inference {
                 self.unification.unify(term.at, selfParameter.valueType, recordType)
                 let arguments = self.inferArguments(term.at, name, environment, signature.parameters.dropFirst(), e.arguments)
                 self.unification.affect(term.at, signature.effect, environment.effect)
-                if(self.lspHook.isEnabled() && name == "ff:postgresql/PgConnection.statement") {
-                    self.lspHook.sqlStrings.push(arguments.grabFirst().value)
+                if(self.lspHook.isEnabled() && name == "ff:postgresql/Pg.PgConnection_statement") {
+                    arguments.first().each {self.lspHook.sqlStrings.push(_.value)}
                 }
                 e.ECall(
                     target = StaticCall(name, instanceCall = False, tailCall = tailCall)
