@@ -14,6 +14,8 @@ import HoverHandler
 import CompletionHandler
 import SignatureHelpHandler
 import SymbolHandler
+import Sql
+
 
 capability Handler(
     fireflyPath: Path
@@ -219,13 +221,14 @@ extend self: Handler {
                         .with("tokenTypes", [
                             "keyword"
                             "type"
-                            "property"
-                            "string"
                             "number"
-                            "function"
+                            "string"
                             "operator"
                             "comment"
-                            "parameter"                            
+                            "comment"
+                            //"property"
+                            //"function"
+                            //"parameter"                            
                         ])
                         .with("tokenModifiers", Json.array([]))
                     )
@@ -341,23 +344,38 @@ extend self: Handler {
         self.check(system, fireflyPath, path, None, Set.new(), self.virtualFiles, version, lspHook, True)
         let sqlStrings = lspHook.sqlStrings.toList()
         system.writeErrorLine("sqlStrings:")
-        sqlStrings.each {
-            | EString(_, value) => system.writeErrorLine(value)
-            | _ =>
+        mutable lastAbsoluteLine = -1
+        mutable lastAbsoluteColumn = 0
+        let tokens = sqlStrings.flatMap {
+            | EString(at, s) {s.removeFirst("\"\"\"") | Some(s)} {s.removeLast("\"\"\"") | Some(sql)} => 
+                system.writeErrorLine(sql)
+                let tokens = Sql.tokenize(sql)
+                tokens.map {token => 
+                    system.writeErrorLine(Show.show(token))
+                    let absoluteLine = at.line - 1 + token.startLine - 1
+                    let absoluteColumn = token.startOffset - 1
+                    let length = token.stopOffset - token.startOffset
+                    let relativeLine = if(lastAbsoluteLine != -1) {absoluteLine - lastAbsoluteLine} else {absoluteLine}
+                    let relativeColumn = if(lastAbsoluteLine == absoluteLine) {absoluteColumn - lastAbsoluteColumn} else {absoluteColumn}
+                    let tokenType = token.kind.{
+                        | SqlKeyword => 0
+                        | SqlIdentifier => 1
+                        | SqlNumber => 2
+                        | SqlString => 3
+                        | SqlOperator => 4
+                        | SqlPunctuation => 5
+                        | SqlComment => 6
+                    }
+                    let tokenModifiers = 0
+                    lastAbsoluteLine = absoluteLine
+                    lastAbsoluteColumn = absoluteColumn
+                    [relativeLine, relativeColumn, length, tokenType, tokenModifiers]
+                }
+            | _ => []
         }
                 
         let o = Json.object()
-            .with("data", Json.array([
-                0,  0, 10, 0, 0
-                1,  1, 10, 1, 0
-                1,  2, 10, 2, 0
-                1,  3, 10, 3, 0
-                1,  4, 10, 4, 0
-                1,  5, 10, 5, 0
-                1,  6, 10, 6, 0
-                1,  7, 10, 7, 0
-                1,  8, 10, 8, 0
-            ].map(Json.int)))
+            .with("data", Json.array(tokens.flatten().map(Json.int)))
         Result(o.write())
     }
 

@@ -1,4 +1,6 @@
 import Token from ff:compiler
+import Syntax from ff:compiler
+
 data SqlTokenKind {
     SqlKeyword
     SqlIdentifier
@@ -8,12 +10,6 @@ data SqlTokenKind {
     SqlPunctuation
     SqlComment
 }
-
-data Location(
-    file: String
-    line: Int
-    column: Int
-)
 
 data SqlToken(
     file: String
