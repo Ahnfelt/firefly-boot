@@ -150,7 +150,6 @@ tokenize(sql: String): List[SqlToken] {
             }
         } else {
             let twoChar = if(offset + 1 < length) {sql.slice(offset, offset + 2)} else {""}
-
             if(twoChar == "<>" || twoChar == "<=" || twoChar == ">=" || twoChar == "!=") {
                 offset += 2
                 emitToken(startOffset, SqlOperator)
@@ -178,7 +177,7 @@ data SqlSymbol {
     SqlTable(alias: Option[String], schema: Option[String], table: String)
 }
 
-complete(tokens: List[SqlToken], cursor: Int): List[SqlSymbol] {
+complete(tokens: List[SqlToken], line: Int, column: Int): List[SqlSymbol] {
     let scopes = Array.new[SqlScope]()
     mutable foundScopes = None
     mutable offset = 0
@@ -197,7 +196,12 @@ complete(tokens: List[SqlToken], cursor: Int): List[SqlSymbol] {
         rawIs(o, "fetch") || rawIs(o, "for") || rawIs(o, ")")
     }
     function checkCursor(): Unit {
-        if(foundScopes.isEmpty() && (offset >= tokens.size() || tokens.grab(offset).stopOffset >= cursor)) {
+        if(!foundScopes.isEmpty()) {} else:
+        if(offset >= tokens.size()) {foundScopes = Some(scopes.toList())} else:
+        let token = tokens.grab(offset)
+        if(token.startLine > line || (
+            token.startLine == line && token.startOffset - token.startLineOffset >= column
+        )) {
             foundScopes = Some(scopes.toList())
         }
     }
@@ -347,17 +351,17 @@ nodeMain(system: NodeSystem) {
     system.writeLine("SQL: " + sql)
     system.writeLine("")
     system.writeLine("Complete @ x:")
-    complete(tokenize(sql), sql.indexOf("x").grab()).each {symbol =>
+    complete(tokenize(sql), 1, 1 + sql.indexOf("x").grab()).each {symbol =>
         system.writeLine(Show.show(symbol))
     }
     system.writeLine("")
     system.writeLine("Complete @ *:")
-    complete(tokenize(sql), sql.indexOf("*").grab()).each {symbol =>
+    complete(tokenize(sql), 1, 1 + sql.indexOf("*").grab()).each {symbol =>
         system.writeLine(Show.show(symbol))
     }
     system.writeLine("")
     system.writeLine("Complete @ a.id:")
-    complete(tokenize(sql), sql.indexOf("a.id").grab()).each {symbol =>
+    complete(tokenize(sql), 1, 1 + sql.indexOf("a.id").grab()).each {symbol =>
         system.writeLine(Show.show(symbol))
     }
 }

@@ -246,7 +246,7 @@ sqlCompletion(at: Location, sqlString: Term): List[CompletionInfo] {
         | _ => None
     }.or {[]}: sql =>
     let tokens = Sql.tokenize(sql)
-    let scope = Sql.complete(tokens, 10)
+    let scope = Sql.complete(tokens, at.line, at.column)
     let label = scope.collectFirst {
         | SqlQuery(alias, columns) => 
             Some(Pair(alias, "(" + columns.join(", ") + ")"))
