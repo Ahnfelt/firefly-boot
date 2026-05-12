@@ -38,6 +38,7 @@ handleCompletion(
     importSymbols: ImportSymbolsInfo
     sqlString: Option[Term]
 ): Json {
+    sqlString.map {completionsToJson(sqlCompletion(lspHook.at, _))}.else:
     let topLevelCompletions = if(!toplevel) {[]} else {toplevelCompletion(lspHook)}
     let patternCompletions = lspHook.results().collectFirst {
         | InferPatternHook h =>
@@ -181,8 +182,7 @@ handleCompletion(
     }
     let importCompletions = 
         importCompletion(importSymbols.importSymbols.filter {_ => importSymbols.import}.map {_.moduleKey})
-    let sqlCompletions = sqlString.map {sqlCompletion(lspHook.at, _)}.else {[]}
-    completionsToJson([...sqlCompletions, ...fixedCompletions, ...fixedTypeCompletions, ...topLevelCompletions, ...importCompletions])
+    completionsToJson([...fixedCompletions, ...fixedTypeCompletions, ...topLevelCompletions, ...importCompletions])
 }
 
 completionsToJson(completions: List[CompletionInfo]): Json {
