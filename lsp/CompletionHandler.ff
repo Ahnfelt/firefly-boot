@@ -36,9 +36,9 @@ handleCompletion(
     toplevel: Bool
     followedByOpenBracket: Bool
     importSymbols: ImportSymbolsInfo
-    sqlString: Option[Term]
+    sqlString: Option[Pair[Location, Term]]
 ): Json {
-    sqlString.map {completionsToJson(sqlCompletion(lspHook.at, _))}.else:
+    sqlString.map {| Pair(l, s) => completionsToJson(sqlCompletion(l, s))}.else:
     let topLevelCompletions = if(!toplevel) {[]} else {toplevelCompletion(lspHook)}
     let patternCompletions = lspHook.results().collectFirst {
         | InferPatternHook h =>

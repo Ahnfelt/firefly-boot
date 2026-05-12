@@ -494,7 +494,7 @@ extend self: Handler {
                 importSymbols = importSymbols.first
                 importLine = importSymbols.second
             )
-            sqlString = sqlString
+            sqlString = sqlString.map {Pair(location, _)}
         )
         Result(o.write())
     }
