@@ -9,6 +9,7 @@ data SqlTokenKind {
     SqlOperator
     SqlPunctuation
     SqlComment
+    SqlPlaceholder
 }
 
 data SqlToken(
@@ -115,6 +116,12 @@ tokenize(sql: String): List[SqlToken] {
             }
             offset += 1
             emitToken(startOffset, SqlString)
+        } elseIf {char == '$'} {
+            offset += 1
+            while {offset < length && sql.grab(offset).isAsciiLetterOrDigit()} {
+                offset += 1
+            }
+            emitToken(startOffset, SqlPlaceholder)
         } elseIf {char.isAsciiDigit()} {
             while {offset < length && sql.grab(offset).isAsciiDigit()} {
                 offset += 1
@@ -327,6 +334,7 @@ showToken(token: SqlToken): String {
         | SqlString => "SqlString"
         | SqlOperator => "SqlOperator"
         | SqlPunctuation => "SqlPunctuation"
+        | SqlPlaceholder => "SqlPlaceholder"
         | SqlComment => "SqlComment"
     }
     "Token(" + typeName + ", \"" + token.raw() + "\", at: " + token.at().line + ":" + token.at().column + ")"

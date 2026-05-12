@@ -226,7 +226,7 @@ extend self: Handler {
                             "operator"
                             "comment"
                             "comment"
-                            //"property"
+                            "property"
                             //"function"
                             //"parameter"                            
                         ])
@@ -365,6 +365,7 @@ extend self: Handler {
                         | SqlOperator => 4
                         | SqlPunctuation => 5
                         | SqlComment => 6
+                        | SqlPlaceholder => 7
                     }
                     let tokenModifiers = 0
                     lastAbsoluteLine = absoluteLine
