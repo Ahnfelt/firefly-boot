@@ -250,7 +250,7 @@ sqlCompletion(at: Location, sqlString: Term): List[CompletionInfo] {
     let scope = Sql.complete(tokens, 10)
     let label = scope.collectFirst {
         | SqlQuery(alias, columns) => 
-            Some(Pair(alias, columns.join(", ")))
+            Some(Pair(alias, "(" + columns.join(", ") + ")"))
         | SqlTable(Some(alias), schema, table) => 
             Some(Pair(alias, schema.map {_ + "."}.else {""} + table))
         | _ => None
