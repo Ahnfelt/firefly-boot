@@ -241,11 +241,10 @@ completionsToJson(completions: List[CompletionInfo]): Json {
 }
 
 sqlCompletion(at: Location, sqlString: Term): List[CompletionInfo] {
-    let sql = sqlString.{
+    sqlString.{
         | EString(_, s) {s.removeFirst("\"\"\"") | Some(s)} => s.removeLast("\"\"\"")
         | _ => None
-    }
-    sql.or {[]}: sql =>
+    }.or {[]}: sql =>
     let tokens = Sql.tokenize(sql)
     let scope = Sql.complete(tokens, 10)
     let label = scope.collectFirst {
