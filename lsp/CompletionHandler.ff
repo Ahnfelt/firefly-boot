@@ -248,23 +248,26 @@ sqlCompletion(at: Location, sqlString: Term): List[CompletionInfo] {
     sql.or {[]}: sql =>
     let tokens = Sql.tokenize(sql)
     let scope = Sql.complete(tokens, 10)
-    [
+    let label = scope.collectFirst {
+        | SqlQuery(alias, columns) => 
+            Some(Pair(alias, columns.join(", ")))
+        | SqlTable(Some(alias), schema, table) => 
+            Some(Pair(alias, schema.map {_ + "."}.else {""} + table))
+        | _ => None
+    }
+    label.toList().map {| Pair(l, extra) =>
         CompletionInfo(
-            label = scope.collectFirst {
-                | SqlQuery(alias, columns) => Some(alias)
-                | SqlTable(Some(alias), schema, table) => Some(alias)
-                | _ => None
-            }.else {"nothing"}
+            label = l
             extra = ""
-            more = ""
-            snippet = "quux"
+            more = extra
+            snippet = l
             member = False
             type = TConstructor(Location("", 0, 0), "", [])
-            documentation = "// Imports this module", 
+            documentation = "", 
             expectedType = None
             secondarySort = 1
         )
-    ]
+    }
 }
 
 importCompletion(moduleKeys: List[ModuleKey]): List[CompletionInfo] {
