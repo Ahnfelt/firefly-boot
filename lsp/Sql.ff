@@ -2,7 +2,8 @@ import Token from ff:compiler
 import Syntax from ff:compiler
 
 data SqlTokenKind {
-    SqlKeyword
+    SqlReserved
+    SqlUnreserved
     SqlIdentifier
     SqlNumber
     SqlString
@@ -55,11 +56,6 @@ extend token: SqlToken {
         token.stopOffset - token.startOffset == value.size() &&
         token.codeLower.startsWith(value, token.startOffset)
     }
-}
-
-isSqlKeyword(word: String): Bool {
-    let lower = word.lower()
-    sqlKeywords.any {_ == lower}
 }
 
 tokenize(sql: String): List[SqlToken] {
@@ -144,9 +140,11 @@ tokenize(sql: String): List[SqlToken] {
             if(isQuoted && offset < length && sql.grab(offset) == '"') {
                 offset += 1
             }
-            let word = sql.slice(startOffset, offset)
-            if(!isQuoted && isSqlKeyword(word) && (tokens.isEmpty() || !tokens.grabLast().rawIs("as"))) {
-                emitToken(startOffset, SqlKeyword)
+            let word = sqlLower.slice(startOffset, offset)
+            if(!isQuoted && sqlReserved.contains(word) && (tokens.isEmpty() || !tokens.grabLast().rawIs("as"))) {
+                emitToken(startOffset, SqlReserved)
+            } elseIf {!isQuoted && sqlUnreserved.contains(word) && (tokens.isEmpty() || !tokens.grabLast().rawIs("as"))} {
+                emitToken(startOffset, SqlUnreserved)
             } else {
                 emitToken(startOffset, SqlIdentifier)
             }
@@ -213,7 +211,7 @@ complete(tokens: List[SqlToken], cursor: Int): List[SqlSymbol] {
                     parseScope()
                     if(rawIs(offset, ")")) {offset += 1}
                 } elseIf {
-                    (is(offset, SqlIdentifier) || is(offset, SqlKeyword)) &&
+                    (is(offset, SqlIdentifier) || is(offset, SqlUnreserved)) &&
                     (rawIs(offset + 1, ",") || selectEnd(offset + 1))
                 } {
                     let alias = tokens.grab(offset)
@@ -231,10 +229,7 @@ complete(tokens: List[SqlToken], cursor: Int): List[SqlSymbol] {
         while {rawIs(offset, "with") || rawIs(offset, ",")} {
             offset += 1
             checkCursor()
-            if(is(offset, SqlIdentifier) || (is(offset, SqlKeyword) &&
-                !rawIs(offset, "select") && !rawIs(offset, "insert") && !rawIs(offset, "update") && 
-                !rawIs(offset, "delete") && !rawIs(offset, "merge")
-            )):
+            if(is(offset, SqlIdentifier) || is(offset, SqlUnreserved)):
             let alias = tokens.grab(offset)
             offset += 1
             if(rawIs(offset, "recursive")) {
@@ -281,21 +276,21 @@ complete(tokens: List[SqlToken], cursor: Int): List[SqlSymbol] {
                         let columns = parseScope()
                         if(rawIs(offset, ")")) {offset += 1}
                         if(rawIs(offset, "as")) {offset += 1}
-                        if(is(offset, SqlIdentifier) || is(offset, SqlKeyword)) {
+                        if(is(offset, SqlIdentifier) || is(offset, SqlUnreserved)) {
                             let alias = tokens.grab(offset)
                             scope.symbols.push(SqlQuery(alias.raw(), columns))
                         }
-                    } elseIf {is(offset, SqlIdentifier) || is(offset, SqlKeyword)} {
+                    } elseIf {is(offset, SqlIdentifier) || is(offset, SqlUnreserved)} {
                         let schema = if(rawIs(offset + 1, ".")) {
                             let schema = tokens.grab(offset)
                             offset += 2
                             schema
                         }
-                        if(is(offset, SqlIdentifier) || is(offset, SqlKeyword)) {
+                        if(is(offset, SqlIdentifier) || is(offset, SqlUnreserved)) {
                             let relation = tokens.grab(offset)
                             offset += 1
                             if(rawIs(offset, "as")) {offset += 1}
-                            let alias = if(is(offset, SqlIdentifier) || is(offset, SqlKeyword)) {
+                            let alias = if(is(offset, SqlIdentifier) || is(offset, SqlUnreserved)) {
                                 let alias = tokens.grab(offset)
                                 offset += 1
                                 alias
@@ -328,7 +323,8 @@ complete(tokens: List[SqlToken], cursor: Int): List[SqlSymbol] {
 
 showToken(token: SqlToken): String {
     let typeName = token.kind.{
-        | SqlKeyword => "SqlKeyword"
+        | SqlReserved => "SqlReserved"
+        | SqlUnreserved => "SqlUnreserved"
         | SqlIdentifier => "SqlIdentifier"
         | SqlNumber => "SqlNumber"
         | SqlString => "SqlString"
@@ -367,8 +363,89 @@ nodeMain(system: NodeSystem) {
 }
 
 
-// Source: PostgreSQL 16 source code, src/include/parser/kwlist.h
-sqlKeywords: List[String] = [
+// Source: https://github.com/postgres/postgres/blob/master/src/include/parser/kwlist.h
+sqlReserved: Set[String] = [
+    "all"
+    "analyse"
+    "analyze"
+    "and"
+    "any"
+    "array"
+    "as"
+    "asc"
+    "asymmetric"
+    "both"
+    "case"
+    "cast"
+    "check"
+    "collate"
+    "column"
+    "constraint"
+    "create"
+    "current_catalog"
+    "current_date"
+    "current_role"
+    "current_time"
+    "current_timestamp"
+    "current_user"
+    "default"
+    "deferrable"
+    "desc"
+    "distinct"
+    "do"
+    "else"
+    "end"
+    "except"
+    "false"
+    "fetch"
+    "for"
+    "foreign"
+    "from"
+    "grant"
+    "group"
+    "having"
+    "in"
+    "initially"
+    "intersect"
+    "into"
+    "lateral"
+    "leading"
+    "limit"
+    "localtime"
+    "localtimestamp"
+    "not"
+    "null"
+    "offset"
+    "on"
+    "only"
+    "or"
+    "order"
+    "placing"
+    "primary"
+    "references"
+    "returning"
+    "select"
+    "session_user"
+    "some"
+    "symmetric"
+    "system_user"
+    "table"
+    "then"
+    "to"
+    "trailing"
+    "true"
+    "union"
+    "unique"
+    "user"
+    "using"
+    "variadic"
+    "when"
+    "where"
+    "window"
+    "with"
+].toSet()
+
+sqlUnreserved: Set[String] = [
     "abort"
     "absent"
     "absolute"
@@ -378,21 +455,12 @@ sqlKeywords: List[String] = [
     "admin"
     "after"
     "aggregate"
-    "all"
     "also"
     "alter"
     "always"
-    "analyse"
-    "analyze"
-    "and"
-    "any"
-    "array"
-    "as"
-    "asc"
     "asensitive"
     "assertion"
     "assignment"
-    "asymmetric"
     "at"
     "atomic"
     "attach"
@@ -406,7 +474,6 @@ sqlKeywords: List[String] = [
     "binary"
     "bit"
     "boolean"
-    "both"
     "breadth"
     "by"
     "cache"
@@ -414,22 +481,17 @@ sqlKeywords: List[String] = [
     "called"
     "cascade"
     "cascaded"
-    "case"
-    "cast"
     "catalog"
     "chain"
     "char"
     "character"
     "characteristics"
-    "check"
     "checkpoint"
     "class"
     "close"
     "cluster"
     "coalesce"
-    "collate"
     "collation"
-    "column"
     "columns"
     "comment"
     "comments"
@@ -441,25 +503,17 @@ sqlKeywords: List[String] = [
     "configuration"
     "conflict"
     "connection"
-    "constraint"
     "constraints"
     "content"
     "continue"
     "conversion"
     "copy"
     "cost"
-    "create"
     "cross"
     "csv"
     "cube"
     "current"
-    "current_catalog"
-    "current_date"
-    "current_role"
     "current_schema"
-    "current_time"
-    "current_timestamp"
-    "current_user"
     "cursor"
     "cycle"
     "data"
@@ -469,9 +523,7 @@ sqlKeywords: List[String] = [
     "dec"
     "decimal"
     "declare"
-    "default"
     "defaults"
-    "deferrable"
     "deferred"
     "definer"
     "delete"
@@ -479,32 +531,26 @@ sqlKeywords: List[String] = [
     "delimiters"
     "depends"
     "depth"
-    "desc"
     "destination"
     "detach"
     "dictionary"
     "disable"
     "discard"
-    "distinct"
-    "do"
     "document"
     "domain"
     "double"
     "drop"
     "each"
     "edge"
-    "else"
     "empty"
     "enable"
     "encoding"
     "encrypted"
-    "end"
     "enforced"
     "enum"
     "error"
     "escape"
     "event"
-    "except"
     "exclude"
     "excluding"
     "exclusive"
@@ -515,36 +561,28 @@ sqlKeywords: List[String] = [
     "extension"
     "external"
     "extract"
-    "false"
     "family"
-    "fetch"
     "filter"
     "finalize"
     "first"
     "float"
     "following"
-    "for"
     "force"
-    "foreign"
     "format"
     "forward"
     "freeze"
-    "from"
     "full"
     "function"
     "functions"
     "generated"
     "global"
-    "grant"
     "granted"
     "graph"
     "graph_table"
     "greatest"
-    "group"
     "grouping"
     "groups"
     "handler"
-    "having"
     "header"
     "hold"
     "hour"
@@ -556,7 +594,6 @@ sqlKeywords: List[String] = [
     "immutable"
     "implicit"
     "import"
-    "in"
     "include"
     "including"
     "increment"
@@ -565,19 +602,16 @@ sqlKeywords: List[String] = [
     "indexes"
     "inherit"
     "inherits"
-    "initially"
     "inline"
     "inner"
     "inout"
     "input"
-    "sensitive"
+    "insensitive"
     "insert"
     "instead"
     "int"
     "integer"
-    "intersect"
     "interval"
-    "into"
     "invoker"
     "is"
     "isnull"
@@ -601,19 +635,14 @@ sqlKeywords: List[String] = [
     "language"
     "large"
     "last"
-    "lateral"
-    "leading"
     "leakproof"
     "least"
     "left"
     "level"
     "like"
-    "limit"
     "listen"
     "load"
     "local"
-    "localtime"
-    "localtimestamp"
     "location"
     "lock"
     "locked"
@@ -649,12 +678,10 @@ sqlKeywords: List[String] = [
     "none"
     "normalize"
     "normalized"
-    "not"
     "nothing"
     "notify"
     "notnull"
     "nowait"
-    "null"
     "nullif"
     "nulls"
     "numeric"
@@ -662,17 +689,12 @@ sqlKeywords: List[String] = [
     "objects"
     "of"
     "off"
-    "offset"
     "oids"
     "old"
     "omit"
-    "on"
-    "only"
     "operator"
     "option"
     "options"
-    "or"
-    "order"
     "ordinality"
     "others"
     "out"
@@ -693,7 +715,6 @@ sqlKeywords: List[String] = [
     "password"
     "path"
     "period"
-    "placing"
     "plan"
     "plans"
     "policy"
@@ -704,7 +725,6 @@ sqlKeywords: List[String] = [
     "prepare"
     "prepared"
     "preserve"
-    "primary"
     "prior"
     "privileges"
     "procedural"
@@ -718,12 +738,10 @@ sqlKeywords: List[String] = [
     "quotes"
     "range"
     "read"
-    "recheck"
     "real"
     "reassign"
     "recursive"
     "ref"
-    "references"
     "referencing"
     "refresh"
     "reindex"
@@ -740,7 +758,6 @@ sqlKeywords: List[String] = [
     "restart"
     "restrict"
     "return"
-    "returning"
     "returns"
     "revoke"
     "right"
@@ -760,13 +777,11 @@ sqlKeywords: List[String] = [
     "search"
     "second"
     "security"
-    "select"
     "sequence"
     "sequences"
     "serializable"
     "server"
     "session"
-    "session_user"
     "set"
     "setof"
     "sets"
@@ -777,7 +792,6 @@ sqlKeywords: List[String] = [
     "skip"
     "smallint"
     "snapshot"
-    "some"
     "source"
     "split"
     "sql"
@@ -796,11 +810,8 @@ sqlKeywords: List[String] = [
     "subscription"
     "substring"
     "support"
-    "symmetric"
     "sysid"
     "system"
-    "system_user"
-    "table"
     "tables"
     "tablesample"
     "tablespace"
@@ -809,18 +820,14 @@ sqlKeywords: List[String] = [
     "template"
     "temporary"
     "text"
-    "then"
     "ties"
     "time"
     "timestamp"
-    "to"
-    "trailing"
     "transaction"
     "transform"
     "treat"
     "trigger"
     "trim"
-    "true"
     "truncate"
     "trusted"
     "type"
@@ -830,15 +837,11 @@ sqlKeywords: List[String] = [
     "uncommitted"
     "unconditional"
     "unencrypted"
-    "union"
-    "unique"
     "unknown"
     "unlisten"
     "unlogged"
     "until"
     "update"
-    "user"
-    "using"
     "vacuum"
     "valid"
     "validate"
@@ -846,7 +849,6 @@ sqlKeywords: List[String] = [
     "value"
     "values"
     "varchar"
-    "variadic"
     "varying"
     "verbose"
     "version"
@@ -856,11 +858,7 @@ sqlKeywords: List[String] = [
     "virtual"
     "volatile"
     "wait"
-    "when"
-    "where"
     "whitespace"
-    "window"
-    "with"
     "within"
     "without"
     "work"
@@ -881,4 +879,4 @@ sqlKeywords: List[String] = [
     "year"
     "yes"
     "zone"
-]
+].toSet()

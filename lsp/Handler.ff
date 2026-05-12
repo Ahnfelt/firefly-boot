@@ -220,15 +220,13 @@ extend self: Handler {
                     .with("legend", Json.object()
                         .with("tokenTypes", [
                             "keyword"
+                            "macro"
                             "type"
                             "number"
                             "string"
                             "operator"
                             "comment"
-                            "comment"
                             "property"
-                            //"function"
-                            //"parameter"                            
                         ])
                         .with("tokenModifiers", Json.array([]))
                     )
@@ -358,11 +356,12 @@ extend self: Handler {
                     let relativeLine = if(lastAbsoluteLine != -1) {absoluteLine - lastAbsoluteLine} else {absoluteLine}
                     let relativeColumn = if(lastAbsoluteLine == absoluteLine) {absoluteColumn - lastAbsoluteColumn} else {absoluteColumn}
                     let tokenType = token.kind.{
-                        | SqlKeyword => 0
-                        | SqlIdentifier => 1
-                        | SqlNumber => 2
-                        | SqlString => 3
-                        | SqlOperator => 4
+                        | SqlReserved => 0
+                        | SqlUnreserved => 1
+                        | SqlIdentifier => 2
+                        | SqlNumber => 3
+                        | SqlString => 4
+                        | SqlOperator => 5
                         | SqlPunctuation => 5
                         | SqlComment => 6
                         | SqlPlaceholder => 7
