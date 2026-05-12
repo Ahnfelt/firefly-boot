@@ -35,6 +35,7 @@ handleCompletion(
     toplevel: Bool
     followedByOpenBracket: Bool
     importSymbols: ImportSymbolsInfo
+    sqlString: Option[Term]
 ): Json {
     let topLevelCompletions = if(!toplevel) {[]} else {toplevelCompletion(lspHook)}
     let patternCompletions = lspHook.results().collectFirst {
@@ -179,7 +180,8 @@ handleCompletion(
     }
     let importCompletions = 
         importCompletion(importSymbols.importSymbols.filter {_ => importSymbols.import}.map {_.moduleKey})
-    completionsToJson([...fixedCompletions, ...fixedTypeCompletions, ...topLevelCompletions, ...importCompletions])
+    let sqlCompletions = sqlString.map {sqlCompletion(lspHook.at, _)}.else {[]}
+    completionsToJson([...sqlCompletions, ...fixedCompletions, ...fixedTypeCompletions, ...topLevelCompletions, ...importCompletions])
 }
 
 completionsToJson(completions: List[CompletionInfo]): Json {
@@ -235,6 +237,22 @@ completionsToJson(completions: List[CompletionInfo]): Json {
                     .with("newText", text)
                 })
         })
+}
+
+sqlCompletion(at: Location, sqlString: Term): List[CompletionInfo] {
+    [
+        CompletionInfo(
+            label = "foo"
+            extra = "bar"
+            more = "baz"
+            snippet = "quux"
+            member = False
+            type = TConstructor(Location("", 0, 0), "", [])
+            documentation = "// Imports this module", 
+            expectedType = None
+            secondarySort = 1
+        )
+    ]
 }
 
 importCompletion(moduleKeys: List[ModuleKey]): List[CompletionInfo] {

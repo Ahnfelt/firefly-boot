@@ -485,6 +485,7 @@ extend self: Handler {
         let importSymbols = self.printTime(system.mainTask(), "findModulesToImport") {
             self.findModulesToImport(system, path, lspHook)
         }
+        let sqlString = lspHook.sqlStrings.find {_.at == completionAt}
         let o = CompletionHandler.handleCompletion(
             lspHook = lspHook
             toplevel = completionAt.column == 1
@@ -494,6 +495,7 @@ extend self: Handler {
                 importSymbols = importSymbols.first
                 importLine = importSymbols.second
             )
+            sqlString = sqlString
         )
         Result(o.write())
     }
