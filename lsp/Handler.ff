@@ -353,7 +353,7 @@ extend self: Handler {
                 tokens.map {token => 
                     system.writeErrorLine(Show.show(token))
                     let absoluteLine = at.line - 1 + token.startLine - 1
-                    let absoluteColumn = token.startOffset - 1
+                    let absoluteColumn = token.startOffset - token.startLineOffset
                     let length = token.stopOffset - token.startOffset
                     let relativeLine = if(lastAbsoluteLine != -1) {absoluteLine - lastAbsoluteLine} else {absoluteLine}
                     let relativeColumn = if(lastAbsoluteLine == absoluteLine) {absoluteColumn - lastAbsoluteColumn} else {absoluteColumn}
