@@ -246,7 +246,9 @@ sqlCompletion(at: Location, sqlString: Term): List[CompletionInfo] {
         | _ => None
     }.or {[]}: sql =>
     let tokens = Sql.tokenize(sql)
-    let scope = Sql.complete(tokens, at.line, at.column)
+    let line = 1 + at.line - sqlString.at.line
+    let column = if(at.line == sqlString.at.line) {1 + at.column - (sqlString.at.column + 3)} else {at.column}
+    let scope = Sql.complete(tokens, line, column)
     let label = scope.collectFirst {
         | SqlQuery(alias, columns) => 
             Some(Pair(alias, "(" + columns.join(", ") + ")"))
