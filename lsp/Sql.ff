@@ -397,8 +397,8 @@ load(nodeSystem: NodeSystem, connectionString: String): List[SqlRelation] {
         let relations = pool.transaction {connection =>
             loadRelations(connection)
         }
-        nodeSystem.writeErrorLine("SQL Relations:")
-        relations.each {nodeSystem.writeErrorLine(Show.show(_))}
+        //nodeSystem.writeErrorLine("SQL Relations:")
+        //relations.each {nodeSystem.writeErrorLine(Show.show(_))}
         relations
     } finally {
         pool.close()
