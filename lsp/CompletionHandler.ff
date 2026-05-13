@@ -267,6 +267,12 @@ sqlCompletion(at: Location, sqlString: Term, relations: List[SqlRelation]): List
                 [Pair(alias, "(" + columns.join(", ") + ")")]
             | SqlTable(Some(alias), schema, table) => 
                 [Pair(alias, schema.map {_ + "."}.else {""} + table)]
+            | SqlTable(None, schema, table) =>
+                relations.filter {r => schema.all {_ == r.schema} && table == r.name}.flatMap {r =>
+                    r.columns.map {c => 
+                        Pair(c.name, c.type.replace("\"", "") + " " + if(c.notNull) {"not null"} else {"null"})
+                    }
+                }
             | _ => 
                 []
         }
