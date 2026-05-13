@@ -331,18 +331,7 @@ complete(tokens: List[SqlToken], line: Int, column: Int): List[SqlSymbol] {
 }
 
 showToken(token: SqlToken): String {
-    let typeName = token.kind.{
-        | SqlReserved => "SqlReserved"
-        | SqlUnreserved => "SqlUnreserved"
-        | SqlIdentifier => "SqlIdentifier"
-        | SqlNumber => "SqlNumber"
-        | SqlString => "SqlString"
-        | SqlOperator => "SqlOperator"
-        | SqlPunctuation => "SqlPunctuation"
-        | SqlPlaceholder => "SqlPlaceholder"
-        | SqlComment => "SqlComment"
-    }
-    "Token(" + typeName + ", \"" + token.raw() + "\", at: " + token.at().line + ":" + token.at().column + ")"
+    "Token(" + Show.show(token.kind) + ", \"" + token.raw() + "\", at: " + token.at().line + ":" + token.at().column + ")"
 }
 
 nodeMain(system: NodeSystem) {
