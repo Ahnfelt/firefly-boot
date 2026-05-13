@@ -178,10 +178,18 @@ data SqlSymbol {
     SqlTable(alias: Option[String], schema: Option[String], table: String)
 }
 
-completionScope(tokens: List[SqlToken], line: Int, column: Int): List[SqlSymbol] {
+data SqlCompletionScope(
+    expectingTable: Bool
+    beforeDot: Option[String]
+    symbols: List[SqlSymbol]
+)
+
+completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionScope {
     let scopes = Array.new[SqlScope]()
     mutable foundScopes = None
     mutable offset = 0
+    mutable beforeDot = None
+    mutable expectingTable = False
     function rawIs(o: Int, raw: String): Bool {
         o < tokens.size() && tokens.grab(o).rawIs(raw)
     }
@@ -196,17 +204,25 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): List[SqlSymbol]
         rawIs(o, "order") || rawIs(o, "limit") || rawIs(o, "offset") ||
         rawIs(o, "fetch") || rawIs(o, "for") || rawIs(o, ")")
     }
-    function checkCursor(): Unit {
+    function findBeforeDot(): Option[String] {
+        if(tokens.size() >= 2 && rawIs(offset - 1, ".") && (
+            is(offset - 2, SqlIdentifier) || is(offset - 2, SqlUnreserved)
+        )):
+        tokens.grab(offset - 2).raw()
+    }
+    function checkCursor(table: Bool): Unit {
         if(!foundScopes.isEmpty()) {} else:
         if(offset >= tokens.size()) {
-            Log.trace("checkCursor: PAST END")
+            expectingTable = table
+            beforeDot = findBeforeDot()
             foundScopes = Some(scopes.toList())
         } else:
         let token = tokens.grab(offset)
         if(token.startLine > line || (
             token.startLine == line && token.startOffset - token.startLineOffset >= column
         )) {
-            Log.trace("checkCursor: " + showToken(token))
+            expectingTable = table
+            beforeDot = findBeforeDot()
             foundScopes = Some(scopes.toList())
         }
     }
@@ -214,7 +230,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): List[SqlSymbol]
         let scopeColumns = Array.new()
         function parseColumns() {
             while {offset < tokens.size() && !selectEnd(offset)} {
-                checkCursor()
+                checkCursor(False)
                 if(rawIs(offset, "(")) {
                     offset += 1
                     parseScope()
@@ -237,7 +253,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): List[SqlSymbol]
         if(rawIs(offset, "analyze")) {offset += 1}
         while {rawIs(offset, "with") || rawIs(offset, ",")} {
             offset += 1
-            checkCursor()
+            checkCursor(False)
             if(is(offset, SqlIdentifier) || is(offset, SqlUnreserved)):
             let alias = tokens.grab(offset)
             offset += 1
@@ -266,7 +282,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): List[SqlSymbol]
             offset < tokens.size() && !rawIs(offset, ")") && !rawIs(offset, "returning") && 
             !rawIs(offset, "union") && !rawIs(offset, "intersect") && !rawIs(offset, "except")
         } {
-            checkCursor()
+            checkCursor(True)
             if(rawIs(offset, "(")) {
                 offset += 1
                 parseScope()
@@ -317,17 +333,18 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): List[SqlSymbol]
             offset += 1
             parseColumns()
         }
-        checkCursor()
+        checkCursor(False)
         scopes.pop()
         while {rawIs(offset, "union") || rawIs(offset, "intersect") || rawIs(offset, "except")} {
             offset += 1
-            checkCursor()
+            checkCursor(False)
             parseScope()
         }
         scopeColumns.drain()
     }
     parseScope()
-    foundScopes.toList().flatten().flatMap {_.symbols.toList()}
+    let symbols = foundScopes.toList().flatten().flatMap {_.symbols.toList()}
+    SqlCompletionScope(expectingTable, beforeDot, symbols)
 }
 
 showToken(token: SqlToken): String {
@@ -345,17 +362,17 @@ nodeMain(system: NodeSystem) {
     system.writeLine("SQL: " + sql)
     system.writeLine("")
     system.writeLine("Complete @ x:")
-    completionScope(tokenize(sql), 1, 1 + sql.indexOf("x").grab()).each {symbol =>
+    completionScope(tokenize(sql), 1, 1 + sql.indexOf("x").grab()).symbols.each {symbol =>
         system.writeLine(Show.show(symbol))
     }
     system.writeLine("")
     system.writeLine("Complete @ *:")
-    completionScope(tokenize(sql), 1, 1 + sql.indexOf("*").grab()).each {symbol =>
+    completionScope(tokenize(sql), 1, 1 + sql.indexOf("*").grab()).symbols.each {symbol =>
         system.writeLine(Show.show(symbol))
     }
     system.writeLine("")
     system.writeLine("Complete @ a.id:")
-    completionScope(tokenize(sql), 1, 1 + sql.indexOf("a.id").grab()).each {symbol =>
+    completionScope(tokenize(sql), 1, 1 + sql.indexOf("a.id").grab()).symbols.each {symbol =>
         system.writeLine(Show.show(symbol))
     }
 }

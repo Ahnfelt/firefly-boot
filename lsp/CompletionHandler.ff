@@ -250,7 +250,7 @@ sqlCompletion(at: Location, sqlString: Term, relations: List[SqlRelation]): List
     let line = 1 + at.line - sqlString.at.line
     let column = if(at.line == sqlString.at.line) {1 + at.column - (sqlString.at.column + 3)} else {at.column}
     let scope = Sql.completionScope(tokens, line, column)
-    let label = scope.collect {
+    let label = scope.symbols.collect {
         | SqlQuery(alias, columns) => 
             Some(Pair(alias, "(" + columns.join(", ") + ")"))
         | SqlTable(Some(alias), schema, table) => 
