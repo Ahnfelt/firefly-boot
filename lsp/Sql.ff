@@ -1,5 +1,6 @@
 import Token from ff:compiler
 import Syntax from ff:compiler
+import Pg from ff:postgresql
 
 data SqlTokenKind {
     SqlReserved
@@ -368,6 +369,56 @@ nodeMain(system: NodeSystem) {
     complete(tokenize(sql), 1, 1 + sql.indexOf("a.id").grab()).each {symbol =>
         system.writeLine(Show.show(symbol))
     }
+}
+
+data SqlRelation(
+    kind: String
+    schema: String
+    name: String
+    columns: List[SqlColumn]
+)
+
+data SqlColumn(
+    name: String
+    notNull: Bool
+    type: String
+    description: String
+)
+
+loadRelations(connection: PgConnection): List[SqlRelation] {
+    let relations = connection.statement("""
+        select
+            c.relkind as kind,
+            n.nspname as schema_name,
+            c.relname as relation_name,
+            a.attname as column_name,
+            a.attnotnull as not_null,
+            pg_catalog.format_type(a.atttypid, a.atttypmod) as data_type,
+            col_description(c.oid, a.attnum) as column_description
+        from pg_class c
+        join pg_namespace n on c.relnamespace = n.oid
+        left join pg_attribute a on a.attrelid = c.oid and a.attnum > 0 and and not a.attisdropped
+        where n.nspname not like 'pg_%' and n.nspname != 'information_schema'
+        order by n.nspname, c.relname, a.attnum
+    """).map {row =>
+        SqlRelation(
+            kind = row.getString("kind").grab()
+            schema = row.getString("schema_name").grab()
+            name = row.getString("relation_name").grab()
+            columns = row.getString("column_name").toList().map {columnName =>
+                SqlColumn(
+                    name = columnName
+                    notNull = row.getBool("not_null").grab()
+                    type = row.getString("data_type").grab()
+                    description = row.getString("column_description").grab()
+                )
+            }
+        )
+    }
+    let groups = relations.map {r => Pair(Pair(r.schema, r.name), r)}.group().toList()
+    groups.map {| Pair(_, rs) =>
+        rs.grabFirst().SqlRelation(columns = rs.flatMap {_.columns})
+    }.sortBy {r => Pair(r.schema, r.name)}
 }
 
 
