@@ -335,13 +335,6 @@ extend self: Handler {
     }
     
     handleSemanticTokensFull(system: NodeSystem, parameters: Map[String, Json], version: Int): ResultOrError {
-        if(self.sqlRelations.isEmpty()) {
-            self.sqlRelations = Some([])
-            system.mainTask().spawn {_ =>
-                let relations = Sql.load(system, "TODO")
-                self.sqlRelations = Some(relations)
-            }
-        }
         let js = system.js()
         let uri = parameters.grab("textDocument").field("uri").grabString()
         let path = system.pathFromUrl(uri)
@@ -349,7 +342,17 @@ extend self: Handler {
         let lspHook = LspHook.new(at = None, definedAt = None, insertIdentifier = True, trackSymbols = True) // TODO: Boolean for sqlStrings
         self.check(system, fireflyPath, path, None, Set.new(), self.virtualFiles, version, lspHook, True)
         let sqlStrings = lspHook.sqlStrings.toList()
-        system.writeErrorLine("sqlStrings:")
+        if(!sqlStrings.isEmpty() && self.sqlRelations.isEmpty()) {
+            self.sqlRelations = Some([])
+            system.mainTask().spawn {_ =>
+                try {
+                    let relations = Sql.load(system, "TODO")
+                    self.sqlRelations = Some(relations)
+                } catchAny {error =>
+                    system.writeErrorLine("Error while running Sql.load: " + error.message())
+                }
+            }
+        }
         mutable lastAbsoluteLine = -1
         mutable lastAbsoluteColumn = 0
         let tokens = sqlStrings.flatMap {
