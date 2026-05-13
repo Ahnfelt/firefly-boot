@@ -346,7 +346,9 @@ extend self: Handler {
             self.sqlRelations = Some([])
             system.mainTask().spawn {_ =>
                 try {
-                    let relations = Sql.load(system, "TODO")
+                    let connectionStringPath = system.path("../../LSP_CONNECTION_STRING.txt") // TODO
+                    let connectionString = connectionStringPath.readText().trim()
+                    let relations = Sql.load(system, connectionString)
                     self.sqlRelations = Some(relations)
                 } catchAny {error =>
                     system.writeErrorLine("Error while running Sql.load: " + error.message())

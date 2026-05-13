@@ -382,16 +382,20 @@ data SqlColumn(
     name: String
     notNull: Bool
     type: String
-    description: String
+    description: Option[String]
 )
 
 load(nodeSystem: NodeSystem, connectionString: String): List[SqlRelation] {
     let pool = Pg.newPoolFromConnectionString(nodeSystem, connectionString)
-    pool.transaction {connection =>
-        let relations = loadRelations(connection)
+    try {
+        let relations = pool.transaction {connection =>
+            loadRelations(connection)
+        }
         nodeSystem.writeErrorLine("SQL Relations:")
         relations.each {nodeSystem.writeErrorLine(Show.show(_))}
         relations
+    } finally {
+        pool.close()
     }
 }
 
@@ -407,7 +411,7 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
             col_description(c.oid, a.attnum) column_description
         from pg_class c
         join pg_namespace n on c.relnamespace = n.oid
-        left join pg_attribute a on a.attrelid = c.oid and a.attnum > 0 and and not a.attisdropped
+        left join pg_attribute a on a.attrelid = c.oid and a.attnum > 0 and not a.attisdropped
         where n.nspname not like 'pg_%' and n.nspname != 'information_schema'
         order by n.nspname, c.relname, a.attnum
     """).map {row =>
@@ -420,7 +424,7 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
                     name = columnName
                     notNull = row.getBool("not_null").grab()
                     type = row.getString("data_type").grab()
-                    description = row.getString("column_description").grab()
+                    description = row.getString("column_description")
                 )
             }
         )
