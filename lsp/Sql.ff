@@ -388,13 +388,13 @@ data SqlColumn(
 loadRelations(connection: PgConnection): List[SqlRelation] {
     let relations = connection.statement("""
         select
-            c.relkind as kind,
-            n.nspname as schema_name,
-            c.relname as relation_name,
-            a.attname as column_name,
-            a.attnotnull as not_null,
-            pg_catalog.format_type(a.atttypid, a.atttypmod) as data_type,
-            col_description(c.oid, a.attnum) as column_description
+            c.relkind kind,
+            n.nspname schema_name,
+            c.relname relation_name,
+            a.attname column_name,
+            a.attnotnull not_null,
+            pg_catalog.format_type(a.atttypid, a.atttypmod) data_type,
+            col_description(c.oid, a.attnum) column_description
         from pg_class c
         join pg_namespace n on c.relnamespace = n.oid
         left join pg_attribute a on a.attrelid = c.oid and a.attnum > 0 and and not a.attisdropped
