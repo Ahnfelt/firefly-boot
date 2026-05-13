@@ -250,12 +250,27 @@ sqlCompletion(at: Location, sqlString: Term, relations: List[SqlRelation]): List
     let line = 1 + at.line - sqlString.at.line
     let column = if(at.line == sqlString.at.line) {1 + at.column - (sqlString.at.column + 3)} else {at.column}
     let scope = Sql.completionScope(tokens, line, column)
-    let label = scope.symbols.collect {
-        | SqlQuery(alias, columns) => 
-            Some(Pair(alias, "(" + columns.join(", ") + ")"))
-        | SqlTable(Some(alias), schema, table) => 
-            Some(Pair(alias, schema.map {_ + "."}.else {""} + table))
-        | _ => None
+    Log.trace(Show.show(scope))
+    let label = scope.beforeDot.map {beforeDot =>
+        scope.symbols.flatMap {
+            | SqlTable(Some(alias), schema, table) {alias == beforeDot} => 
+                relations.filter {r => schema.all {_ == r.schema} && r.name == table}.flatMap {r => 
+                    r.columns.map {c => 
+                        Pair(c.name, c.type.replace("\"", "") + " " + if(c.notNull) {"not null"} else {"null"})
+                    }
+                }
+            | _ => 
+                []
+        }
+    }.else {
+        scope.symbols.flatMap {
+            | SqlQuery(alias, columns) => 
+                [Pair(alias, "(" + columns.join(", ") + ")")]
+            | SqlTable(Some(alias), schema, table) => 
+                [Pair(alias, schema.map {_ + "."}.else {""} + table)]
+            | _ => 
+                []
+        }
     }
     label.map {| Pair(l, extra) =>
         CompletionInfo(

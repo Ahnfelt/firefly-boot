@@ -210,10 +210,10 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
         )):
         tokens.grab(offset - 2).raw()
     }
-    function checkCursor(table: Bool): Unit {
+    function checkCursor(expectTable: Bool): Unit {
         if(!foundScopes.isEmpty()) {} else:
         if(offset >= tokens.size()) {
-            expectingTable = table
+            expectingTable = expectTable
             beforeDot = findBeforeDot()
             foundScopes = Some(scopes.toList())
         } else:
@@ -221,7 +221,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
         if(token.startLine > line || (
             token.startLine == line && token.startOffset - token.startLineOffset >= column
         )) {
-            expectingTable = table
+            expectingTable = expectTable
             beforeDot = findBeforeDot()
             foundScopes = Some(scopes.toList())
         }
@@ -418,7 +418,6 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
         from pg_class c
         join pg_namespace n on c.relnamespace = n.oid
         left join pg_attribute a on a.attrelid = c.oid and a.attnum > 0 and not a.attisdropped
-        where n.nspname not like 'pg_%' and n.nspname != 'information_schema'
         order by n.nspname, c.relname, a.attnum
     """).map {row =>
         SqlRelation(
