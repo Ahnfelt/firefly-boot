@@ -25,6 +25,7 @@ capability Handler(
     mutable responseCache: Map[TokenRequestCacheKey, ResultOrError]
     mutable fileSymbolsCache: Map[String, List[DocumentSymbol]]
     mutable importSymbolsCache: Pair[String, List[ImportSymbolInfo]]
+    mutable sqlRelations: Option[List[SqlRelation]]
     moduleCache: ModuleCache
     dependencyLock: DependencyLock
 )
@@ -129,7 +130,7 @@ extend self: Handler {
                     self.handleWorkspaceSymbol(system, parameters)
                 }
             | "textDocument/semanticTokens/full" =>
-                self.handleSmanticTokensFull(system, parameters, version)
+                self.handleSemanticTokensFull(system, parameters, version)
             | "shutdown" => 
                 Result(Json.null().write())
             | _ => 
@@ -333,7 +334,14 @@ extend self: Handler {
         }
     }
     
-    handleSmanticTokensFull(system: NodeSystem, parameters: Map[String, Json], version: Int): ResultOrError {
+    handleSemanticTokensFull(system: NodeSystem, parameters: Map[String, Json], version: Int): ResultOrError {
+        if(self.sqlRelations.isEmpty()) {
+            self.sqlRelations = Some([])
+            system.mainTask().spawn {_ =>
+                let relations = Sql.load(system, "TODO")
+                self.sqlRelations = Some(relations)
+            }
+        }
         let js = system.js()
         let uri = parameters.grab("textDocument").field("uri").grabString()
         let path = system.pathFromUrl(uri)

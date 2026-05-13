@@ -385,6 +385,16 @@ data SqlColumn(
     description: String
 )
 
+load(nodeSystem: NodeSystem, connectionString: String): List[SqlRelation] {
+    let pool = Pg.newPoolFromConnectionString(nodeSystem, connectionString)
+    pool.transaction {connection =>
+        let relations = loadRelations(connection)
+        nodeSystem.writeErrorLine("SQL Relations:")
+        relations.each {nodeSystem.writeErrorLine(Show.show(_))}
+        relations
+    }
+}
+
 loadRelations(connection: PgConnection): List[SqlRelation] {
     let relations = connection.statement("""
         select
