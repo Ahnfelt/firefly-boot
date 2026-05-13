@@ -178,7 +178,7 @@ data SqlSymbol {
     SqlTable(alias: Option[String], schema: Option[String], table: String)
 }
 
-complete(tokens: List[SqlToken], line: Int, column: Int): List[SqlSymbol] {
+completionScope(tokens: List[SqlToken], line: Int, column: Int): List[SqlSymbol] {
     let scopes = Array.new[SqlScope]()
     mutable foundScopes = None
     mutable offset = 0
@@ -345,17 +345,17 @@ nodeMain(system: NodeSystem) {
     system.writeLine("SQL: " + sql)
     system.writeLine("")
     system.writeLine("Complete @ x:")
-    complete(tokenize(sql), 1, 1 + sql.indexOf("x").grab()).each {symbol =>
+    completionScope(tokenize(sql), 1, 1 + sql.indexOf("x").grab()).each {symbol =>
         system.writeLine(Show.show(symbol))
     }
     system.writeLine("")
     system.writeLine("Complete @ *:")
-    complete(tokenize(sql), 1, 1 + sql.indexOf("*").grab()).each {symbol =>
+    completionScope(tokenize(sql), 1, 1 + sql.indexOf("*").grab()).each {symbol =>
         system.writeLine(Show.show(symbol))
     }
     system.writeLine("")
     system.writeLine("Complete @ a.id:")
-    complete(tokenize(sql), 1, 1 + sql.indexOf("a.id").grab()).each {symbol =>
+    completionScope(tokenize(sql), 1, 1 + sql.indexOf("a.id").grab()).each {symbol =>
         system.writeLine(Show.show(symbol))
     }
 }

@@ -509,6 +509,7 @@ extend self: Handler {
                 importLine = importSymbols.second
             )
             sqlString = sqlString.map {Pair(location, _)}
+            relations = self.sqlRelations.else {[]}
         )
         Result(o.write())
     }
