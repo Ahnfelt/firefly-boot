@@ -353,6 +353,16 @@ showToken(token: SqlToken): String {
 }
 
 nodeMain(system: NodeSystem) {
+    function showCompletionScope(sql: String, find: String) {
+        let scope = completionScope(tokenize(sql), 1, 1 + sql.indexOf("x").grab())
+        system.writeLine("")
+        system.writeLine(
+            "Complete @ " + find + ": " + Show.show(scope.expectingTable) + " " + Show.show(scope.beforeDot)
+        )
+        scope.symbols.each {symbol =>
+            system.writeLine(Show.show(symbol))
+        }
+    }
     let sql = "WITH c as (select x, y z from p, q.w) SELECT * FROM t1 a WHERE ((SELECT * FROM t2 b WHERE a.id = b.id))"
     system.writeLine("")
     system.writeLine("Tokenize:")
@@ -361,21 +371,10 @@ nodeMain(system: NodeSystem) {
     }
     system.writeLine("")
     system.writeLine("SQL: " + sql)
-    system.writeLine("")
-    system.writeLine("Complete @ x:")
-    completionScope(tokenize(sql), 1, 1 + sql.indexOf("x").grab()).symbols.each {symbol =>
-        system.writeLine(Show.show(symbol))
-    }
-    system.writeLine("")
-    system.writeLine("Complete @ *:")
-    completionScope(tokenize(sql), 1, 1 + sql.indexOf("*").grab()).symbols.each {symbol =>
-        system.writeLine(Show.show(symbol))
-    }
-    system.writeLine("")
-    system.writeLine("Complete @ a.id:")
-    completionScope(tokenize(sql), 1, 1 + sql.indexOf("a.id").grab()).symbols.each {symbol =>
-        system.writeLine(Show.show(symbol))
-    }
+    showCompletionScope(sql, "x")
+    showCompletionScope(sql, "*")
+    showCompletionScope(sql, "a.id")
+    showCompletionScope(sql, "t1 a")
 }
 
 data SqlRelation(
