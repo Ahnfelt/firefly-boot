@@ -369,6 +369,11 @@ nodeMain(system: NodeSystem) {
         }
     }
     let sql = "WITH c as (select x, y z from p, q.w) SELECT *, f.g(h) i FROM t1 a WHERE ((SELECT * FROM t2 b WHERE a.id = b.id))"
+    function bogus(connection: PgConnection) {
+        connection.statement(
+            """WITH c as (select x, y z from p, q.w) SELECT *, f.g(h) i FROM t1 a WHERE ((SELECT * FROM t2 b WHERE a.id = b.id))"""
+        )
+    }
     system.writeLine("")
     system.writeLine("Tokenize:")
     tokenize(sql).each {token =>
