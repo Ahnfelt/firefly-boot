@@ -250,24 +250,26 @@ sqlCompletion(at: Location, sqlString: Term, relations: List[SqlRelation]): List
     let line = 1 + at.line - sqlString.at.line
     let column = if(at.line == sqlString.at.line) {1 + at.column - (sqlString.at.column + 3)} else {at.column}
     let scope = Sql.completionScope(tokens, line, column)
+    function showColumnType(column: SqlColumn): String {
+        column.type.replace("\"", "") + " " + if(column.notNull) {"not null"} else {"null"}
+    }
+    function showColumn(column: SqlColumn): String {
+        let name = if(column.name.startsWith("\"")) {column.name} else {"\"" + column.name + "\""}
+        name + " " + showColumnType(column)
+    }
     let label = scope.beforeDot.map {beforeDot =>
         scope.symbols.flatMap {
             | SqlTable(Some(alias), schema, table) {!scope.expectingTable && alias == beforeDot} => 
                 relations.filter {r => schema.all {_ == r.schema} && r.name == table}.flatMap {r => 
                     r.columns.map {c => 
                         let typeText = c.type.replace("\"", "") + " " + if(c.notNull) {"not null"} else {"null"}
-                        Pair(c.name, Pair(typeText, c.description.else {""}))
+                        Pair(c.name, Pair(typeText, showColumn(c) + "\n\n" + c.description.else {""}))
                     }
                 }
             | _ => 
                 []
         }
     }.else {
-        function showColumn(column: SqlColumn): String {
-            let name = if(column.name.startsWith("\"")) {column.name} else {"\"" + column.name + "\""}
-            let typeText = column.type.replace("\"", "") + " " + if(column.notNull) {"not null"} else {"null"}
-            name + " " + typeText
-        }
         scope.symbols.flatMap {
             | SqlQuery(alias, columns) => 
                 [Pair(alias, Pair("(" + columns.join(", ") + ")", "Selected columns: " + columns.join(", ")))]
@@ -279,8 +281,7 @@ sqlCompletion(at: Location, sqlString: Term, relations: List[SqlRelation]): List
             | SqlTable(None, schema, table) =>
                 relations.filter {r => schema.all {_ == r.schema} && table == r.name}.flatMap {r =>
                     r.columns.map {c => 
-                        let typeText = c.type.replace("\"", "") + " " + if(c.notNull) {"not null"} else {"null"}
-                        Pair(c.name, Pair(typeText, showColumn(c)))
+                        Pair(c.name, Pair(showColumnType(c), showColumn(c)))
                     }
                 }
             | _ => 
