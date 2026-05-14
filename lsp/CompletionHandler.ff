@@ -266,13 +266,17 @@ sqlCompletion(at: Location, sqlString: Term, relations: List[SqlRelation]): List
                         Pair(c.name, Pair(typeText, showColumn(c) + "\n\n" + c.description.else {""}))
                     }
                 }
+            | SqlQuery(alias, columns) {!scope.expectingTable && alias == beforeDot} =>
+                columns.map {c =>
+                    Pair(c, Pair("from subquery", c))
+                }
             | _ => 
                 []
         }
     }.else {
         scope.symbols.flatMap {
             | SqlQuery(alias, columns) => 
-                [Pair(alias, Pair("(" + columns.join(", ") + ")", "Selected columns: " + columns.join(", ")))]
+                [Pair(alias, Pair("(" + columns.join(", ") + ")", "(" + columns.join(", ") + ")"))]
             | SqlTable(Some(alias), schema, table) => 
                 let tableText = relations.filter {r => schema.all {_ == r.schema} && table == r.name}.flatMap {r =>
                     r.columns.map {showColumn(_)}
