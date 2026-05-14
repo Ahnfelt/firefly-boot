@@ -255,22 +255,32 @@ sqlCompletion(at: Location, sqlString: Term, relations: List[SqlRelation]): List
             | SqlTable(Some(alias), schema, table) {!scope.expectingTable && alias == beforeDot} => 
                 relations.filter {r => schema.all {_ == r.schema} && r.name == table}.flatMap {r => 
                     r.columns.map {c => 
-                        Pair(c.name, c.type.replace("\"", "") + " " + if(c.notNull) {"not null"} else {"null"})
+                        let typeText = c.type.replace("\"", "") + " " + if(c.notNull) {"not null"} else {"null"}
+                        Pair(c.name, Pair(typeText, c.description.else {""}))
                     }
                 }
             | _ => 
                 []
         }
     }.else {
+        function showColumn(column: SqlColumn): String {
+            let name = if(column.name.startsWith("\"")) {column.name} else {"\"" + column.name + "\""}
+            let typeText = column.type.replace("\"", "") + " " + if(column.notNull) {"not null"} else {"null"}
+            name + " " + typeText
+        }
         scope.symbols.flatMap {
             | SqlQuery(alias, columns) => 
-                [Pair(alias, "(" + columns.join(", ") + ")")]
+                [Pair(alias, Pair("(" + columns.join(", ") + ")", "Selected columns: " + columns.join(", ")))]
             | SqlTable(Some(alias), schema, table) => 
-                [Pair(alias, schema.map {_ + "."}.else {""} + table)]
+                let tableText = relations.filter {r => schema.all {_ == r.schema} && table == r.name}.flatMap {r =>
+                    r.columns.map {showColumn(_)}
+                }.join("\n")
+                [Pair(alias, Pair(schema.map {_ + "."}.else {""} + table, tableText))]
             | SqlTable(None, schema, table) =>
                 relations.filter {r => schema.all {_ == r.schema} && table == r.name}.flatMap {r =>
                     r.columns.map {c => 
-                        Pair(c.name, c.type.replace("\"", "") + " " + if(c.notNull) {"not null"} else {"null"})
+                        let typeText = c.type.replace("\"", "") + " " + if(c.notNull) {"not null"} else {"null"}
+                        Pair(c.name, Pair(typeText, showColumn(c)))
                     }
                 }
             | _ => 
@@ -281,11 +291,11 @@ sqlCompletion(at: Location, sqlString: Term, relations: List[SqlRelation]): List
         CompletionInfo(
             label = l
             extra = ""
-            more = extra
+            more = extra.first
             snippet = l
             member = False
             type = TConstructor(Location("", 0, 0), "", [])
-            documentation = "", 
+            documentation = extra.second, 
             expectedType = None
             secondarySort = 1
         )
