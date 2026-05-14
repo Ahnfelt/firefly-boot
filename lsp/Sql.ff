@@ -296,6 +296,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                 doWhile {
                     offset += 1
                     if(rawIs(offset, "lateral")) {offset += 1}
+                    checkCursor(True)
                     if(rawIs(offset, "(")) {
                         offset += 1
                         let columns = parseScope()

@@ -359,10 +359,8 @@ extend self: Handler {
         mutable lastAbsoluteColumn = 0
         let tokens = sqlStrings.flatMap {
             | EString(at, s) {s.removeFirst("\"\"\"") | Some(s)} {s.removeLast("\"\"\"") | Some(sql)} => 
-                system.writeErrorLine(sql)
                 let tokens = Sql.tokenize(sql)
                 tokens.map {token => 
-                    system.writeErrorLine(Show.show(token))
                     let absoluteLine = at.line - 1 + token.startLine - 1
                     let absoluteColumnExtra = if(token.at().line == 1) {(at.column - 1) + 3} else {0} 
                     let absoluteColumn = token.startOffset - token.startLineOffset + absoluteColumnExtra
