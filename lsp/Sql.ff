@@ -219,7 +219,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
         } else:
         let token = tokens.grab(offset)
         if(token.startLine > line || (
-            token.startLine == line && token.startOffset - token.startLineOffset >= column
+            token.startLine == line && token.startOffset - token.startLineOffset >= column - 1
         )) {
             expectingTable = expectTable
             beforeDot = findBeforeDot()
@@ -250,7 +250,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
         let scope = SqlScope(Array.new())
         scopes.push(scope)
         if(rawIs(offset, "explain")) {offset += 1}
-        if(rawIs(offset, "analyze")) {offset += 1}
+        if(rawIs(offset, "analyze") || rawIs(offset, "analyse")) {offset += 1}
         while {rawIs(offset, "with") || rawIs(offset, ",")} {
             offset += 1
             checkCursor(False)
@@ -274,6 +274,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
             } else {[]}
             scope.symbols.push(SqlQuery(alias.raw(), columns))
         }
+        checkCursor(False)
         if(rawIs(offset, "select")) {
             offset += 1
             parseColumns()
@@ -330,6 +331,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                 offset += 1
             }
         }
+        checkCursor(True)
         if(rawIs(offset, "returning")) {
             offset += 1
             parseColumns()
@@ -354,10 +356,13 @@ showToken(token: SqlToken): String {
 
 nodeMain(system: NodeSystem) {
     function showCompletionScope(sql: String, find: String) {
-        let scope = completionScope(tokenize(sql), 1, 1 + sql.indexOf("x").grab())
         system.writeLine("")
+        let foundIndex = sql.indexOf(find).grab()
+        let scope = completionScope(tokenize(sql), 1, 1 + foundIndex)
+        system.writeLine(sql)
         system.writeLine(
-            "Complete @ " + find + ": " + Show.show(scope.expectingTable) + " " + Show.show(scope.beforeDot)
+            " ".repeat(foundIndex) + "^ " + 
+            Show.show(scope.expectingTable) + " " + Show.show(scope.beforeDot)
         )
         scope.symbols.each {symbol =>
             system.writeLine(Show.show(symbol))
@@ -369,8 +374,6 @@ nodeMain(system: NodeSystem) {
     tokenize(sql).each {token =>
         system.writeLine(showToken(token))
     }
-    system.writeLine("")
-    system.writeLine("SQL: " + sql)
     showCompletionScope(sql, "x")
     showCompletionScope(sql, "*")
     showCompletionScope(sql, "a.id")
