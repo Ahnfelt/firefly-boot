@@ -352,8 +352,10 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
             documentation = extra.second, 
             expectedType = None
             secondarySort = if(extra.first.endsWith(" table") || extra.first.endsWith(" tables")) {
-                if(l.startsWith("pg_") || l == "information_schema") {3} else {2}
-            } else {1}
+                if(l.startsWith("pg_") || l == "information_schema") {4} else {3}
+            } else {
+                if(extra.first.startsWith("(") || extra.first.contains(".")) {2} else {1}
+            }
         )
     }
 }

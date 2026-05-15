@@ -247,7 +247,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                     (rawIs(offset + 1, ",") || selectEnd(offset + 1))
                 } {
                     let alias = tokens.grab(offset)
-                    scopeColumns.push(alias.raw())
+                    scopeColumns.push(unquote(alias.raw()))
                     offset += 1
                 } else {
                     offset += 1
@@ -279,7 +279,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                 if(rawIs(offset, ")")) {offset += 1}
                 columns
             } else {[]}
-            scope.symbols.push(SqlQuery(alias.raw(), columns))
+            scope.symbols.push(SqlQuery(unquote(alias.raw()), columns))
         }
         checkCursor(False)
         if(rawIs(offset, "select")) {
@@ -312,7 +312,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                         if(rawIs(offset, "as")) {offset += 1}
                         if(is(offset, SqlIdentifier) || is(offset, SqlUnreserved)) {
                             let alias = tokens.grab(offset)
-                            scope.symbols.push(SqlQuery(alias.raw(), columns))
+                            scope.symbols.push(SqlQuery(unquote(alias.raw()), columns))
                         }
                     } elseIf {is(offset, SqlIdentifier) || is(offset, SqlUnreserved)} {
                         let schema = if(rawIs(offset + 1, ".")) {
@@ -331,7 +331,9 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                                 offset += 1
                                 alias
                             }
-                            scope.symbols.push(SqlTable(alias.map {_.raw()}, schema.map {_.raw()}, relation.raw()))
+                            scope.symbols.push(SqlTable(
+                                alias.map {unquote(_.raw())}, schema.map {unquote(_.raw())}, unquote(relation.raw())
+                            ))
                         }
                     }
                     isFrom && rawIs(offset, ",")
@@ -510,6 +512,13 @@ quote(identifier: String, force: Bool = False): String {
     }
 }
 
+unquote(identifier: String): String {
+    if(identifier.startsWith("\"")) {
+        identifier.dropFirst().dropLast().replace("\"\"", "\"")
+    } else {
+        identifier
+    }
+}
 
 // Source: https://github.com/postgres/postgres/blob/master/src/include/parser/kwlist.h
 sqlReserved: Set[String] = [
