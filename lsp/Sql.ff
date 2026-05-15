@@ -385,6 +385,11 @@ nodeMain(system: NodeSystem) {
     showCompletionScope(sql, "t1 a")
 }
 
+data SqlData(
+    searchPathSchemas: List[String]
+    relations: List[SqlRelation]
+)
+
 data SqlRelation(
     kind: String 
     schema: String
@@ -420,18 +425,29 @@ extend self: SqlRelation {
     }
 }
 
-load(nodeSystem: NodeSystem, connectionString: String): List[SqlRelation] {
+load(nodeSystem: NodeSystem, connectionString: String): SqlData {
     let pool = Pg.newPoolFromConnectionString(nodeSystem, connectionString)
     try {
-        let relations = pool.transaction {connection =>
-            loadRelations(connection)
+        let data = pool.transaction {connection =>
+            let s = loadSearchPath(connection)
+            let rs = loadRelations(connection)
+            SqlData(s, rs)
         }
+        nodeSystem.writeErrorLine("SQL searchPath: " + Show.show(data.searchPathSchemas))
         //nodeSystem.writeErrorLine("SQL Relations:")
         //relations.each {nodeSystem.writeErrorLine(Show.show(_))}
-        relations
+        data
     } finally {
         pool.close()
     }
+}
+
+loadSearchPath(connection: PgConnection): List[String] {
+    connection.statement("""
+        select pg_catalog.current_schemas(true) search_path_schemas
+    """).map {row =>
+        row.getStringArray("search_path_schemas").grab()
+    }.grabFirst()
 }
 
 loadRelations(connection: PgConnection): List[SqlRelation] {

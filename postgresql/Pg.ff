@@ -61,6 +61,7 @@ internalTypeParsers(pg: JsValue) {
     types->setTypeParser(types->builtins->TIMESTAMPTZ, Js->{v => 
         Date(Js->Temporal->Instant->from(v)->toZonedDateTimeISO("UTC"))
     })
+    types->setTypeParser(1003, types->getTypeParser(1009)) // handle name[]
 }
 
 extend self: PgPool {
