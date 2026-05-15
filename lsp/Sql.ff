@@ -475,12 +475,11 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
             pg_catalog.col_description(c.oid, a.attnum) column_description,
             exists (
                 select 1 from pg_catalog.pg_index i
-                where i.indrelid = a.attrelid and i.indisprimary and a.attnum = ANY(i.indkey)
+                where i.indrelid = a.attrelid and i.indisprimary and a.attnum = any(i.indkey)
             ) primary_key
         from pg_catalog.pg_class c
         join pg_catalog.pg_namespace n on n.oid = c.relnamespace
         left join pg_catalog.pg_attribute a on a.attrelid = c.oid and a.attnum > 0 and not a.attisdropped
-        left join pg_catalog.pg_index i on i.indrelid = a.attrelid and i.indisprimary and a.attnum = ANY(i.indkey)
         order by n.nspname, c.relname, a.attnum
     """).map {row =>
         SqlRelation(
