@@ -214,7 +214,11 @@ completionsToJson(completions: List[CompletionInfo]): Json {
             Json.object()
                 // Namespace or Property or Constructor or EnumMember or Constructor or Method/Function or Field/Variable
                 .with("kind"
-                    if(i.extra == "<<SQL>>") {5} else:
+                    if(i.extra == "<<SQL>>") {
+                        if(i.secondarySort == 1) {7} else:
+                        if(i.secondarySort == 2) {5} else:
+                        if(i.secondarySort == 3) {6} else {9}
+                    } else:
                     if(isImport) {2} else:
                     if(shownType == "") {3} else:
                     if(isParameter) {10} else:
@@ -352,9 +356,10 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
             documentation = extra.second, 
             expectedType = None
             secondarySort = if(extra.first.endsWith(" table") || extra.first.endsWith(" tables")) {
-                if(l.startsWith("pg_") || l == "information_schema") {4} else {3}
+                if(l.startsWith("pg_") || l == "information_schema") {5} else {4}
             } else {
-                if(extra.first.startsWith("(") || extra.first.contains(".")) {2} else {1}
+                if(extra.first.startsWith("(") || extra.first.contains(".")) {3} else: 
+                if(extra.first.endsWith(" null") || extra.first.endsWith(" key")) {2} else {1}
             }
         )
     }
