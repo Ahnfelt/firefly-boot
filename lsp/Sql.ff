@@ -459,10 +459,10 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
             a.attname column_name,
             a.attnotnull not_null,
             pg_catalog.format_type(a.atttypid, a.atttypmod) data_type,
-            col_description(c.oid, a.attnum) column_description
-        from pg_class c
-        join pg_namespace n on c.relnamespace = n.oid
-        left join pg_attribute a on a.attrelid = c.oid and a.attnum > 0 and not a.attisdropped
+            pg_catalog.col_description(c.oid, a.attnum) column_description
+        from pg_catalog.pg_class c
+        join pg_catalog.pg_namespace n on c.relnamespace = n.oid
+        left join pg_catalog.pg_attribute a on a.attrelid = c.oid and a.attnum > 0 and not a.attisdropped
         order by n.nspname, c.relname, a.attnum
     """).map {row =>
         SqlRelation(
