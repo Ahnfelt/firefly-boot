@@ -433,7 +433,6 @@ load(nodeSystem: NodeSystem, connectionString: String): SqlData {
             let rs = loadRelations(connection)
             SqlData(s, rs)
         }
-        nodeSystem.writeErrorLine("SQL searchPath: " + Show.show(data.searchPathSchemas))
         //nodeSystem.writeErrorLine("SQL Relations:")
         //relations.each {nodeSystem.writeErrorLine(Show.show(_))}
         data

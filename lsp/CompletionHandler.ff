@@ -37,9 +37,9 @@ handleCompletion(
     followedByOpenBracket: Bool
     importSymbols: ImportSymbolsInfo
     sqlString: Option[Pair[Location, Term]]
-    relations: List[SqlRelation]
+    sqlData: SqlData
 ): Json {
-    sqlString.map {| Pair(l, s) => completionsToJson(sqlCompletion(l, s, relations))}.else:
+    sqlString.map {| Pair(l, s) => completionsToJson(sqlCompletion(l, s, sqlData))}.else:
     let topLevelCompletions = if(!toplevel) {[]} else {toplevelCompletion(lspHook)}
     let patternCompletions = lspHook.results().collectFirst {
         | InferPatternHook h =>
@@ -199,10 +199,14 @@ completionsToJson(completions: List[CompletionInfo]): Json {
             let isDefinition = ["let ", "mutable ", "function "].any {i.snippet.startsWith(_)}
             let isParameter = i.snippet.endsWith(" = ")
             let isImport = i.documentation == "// Imports this module"
-            let sortText = if(isParameter || isDefinition || isImport) {0} else {9 - (
-                isVariable.toInt() + isUnqualified.toInt() +
-                isAlpha.toInt() + isLower.toInt() + isMember.toInt()
-            )} + if(isMember) {"1"} else {"0"} + i.secondarySort + i.label.lower()
+            let sortText = if(i.extra == "<<SQL>>") {
+                i.secondarySort + i.label.lower()
+            } else {
+                if(isParameter || isDefinition || isImport) {0} else {9 - (
+                    isVariable.toInt() + isUnqualified.toInt() +
+                    isAlpha.toInt() + isLower.toInt() + isMember.toInt()
+                )} + if(isMember) {"1"} else {"0"} + i.secondarySort + i.label.lower()
+            }
             let preselect = !isDefinition && Pair(i.type, i.expectedType).{
                 | Pair(TConstructor(_, n1, _), Some(TConstructor(_, n2, _))) => n1 == n2
                 | _ => False
@@ -210,6 +214,7 @@ completionsToJson(completions: List[CompletionInfo]): Json {
             Json.object()
                 // Namespace or Property or Constructor or EnumMember or Constructor or Method/Function or Field/Variable
                 .with("kind"
+                    if(i.extra == "<<SQL>>") {5} else:
                     if(isImport) {2} else:
                     if(shownType == "") {3} else:
                     if(isParameter) {10} else:
@@ -222,7 +227,9 @@ completionsToJson(completions: List[CompletionInfo]): Json {
                 .with("preselect", preselect)
                 .with("label", i.label)
                 .with("labelDetails", Json.object()
-                    .with("detail", i.extra + if(shownType == "") {""} else {": " + shownType})
+                    .with("detail", if(i.extra == "<<SQL>>") {""} else {
+                        i.extra + if(shownType == "") {""} else {": " + shownType}
+                    })
                     .with("description", i.more)
                 )
                 .with("insertText", i.snippet)
@@ -241,7 +248,7 @@ completionsToJson(completions: List[CompletionInfo]): Json {
         })
 }
 
-sqlCompletion(at: Location, sqlString: Term, relations: List[SqlRelation]): List[CompletionInfo] {
+sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo] {
     sqlString.{
         | EString(_, s) {s.removeFirst("\"\"\"") | Some(s)} => s.removeLast("\"\"\"")
         | _ => None
@@ -260,7 +267,7 @@ sqlCompletion(at: Location, sqlString: Term, relations: List[SqlRelation]): List
     let label = scope.beforeDot.map {beforeDot =>
         scope.symbols.flatMap {
             | SqlTable(Some(alias), schema, table) {!scope.expectingTable && alias == beforeDot} => 
-                relations.filter {r => schema.all {_ == r.schema} && r.name == table}.flatMap {r => 
+                data.relations.filter {r => schema.all {_ == r.schema} && r.name == table}.flatMap {r => 
                     r.columns.map {c => 
                         let typeText = c.type.replace("\"", "") + " " + if(c.notNull) {"not null"} else {"null"}
                         Pair(c.name, Pair(typeText, showColumn(c) + "\n\n" + c.description.else {""}))
@@ -273,7 +280,7 @@ sqlCompletion(at: Location, sqlString: Term, relations: List[SqlRelation]): List
             | _ => 
                 []
         }.addAll(if(!scope.expectingTable) {[]} else {
-            relations.filter {_.schema == beforeDot}.map {r => 
+            data.relations.filter {_.schema == beforeDot}.map {r => 
                 Pair(r.name, Pair(r.schema, r.columns.map {showColumn(_)}.join("\n")))
             }
         })
@@ -283,11 +290,12 @@ sqlCompletion(at: Location, sqlString: Term, relations: List[SqlRelation]): List
                 [Pair(alias, Pair("(" + columns.join(", ") + ")", "(" + columns.join(", ") + ")"))]
             | _ =>
                 []
-        }.addAll(
-            relations.filter {r => r.tableLike()}.map {r => 
+        }.addAll(do {
+            let searchPathSchemas = data.searchPathSchemas.filter {_ != "pg_catalog"}.toSet()
+            data.relations.filter {r => searchPathSchemas.contains(r.schema) && r.tableLike()}.map {r => 
                 Pair(r.name, Pair(r.schema, r.columns.map {showColumn(_)}.join("\n")))
             }.addAll(
-                relations.map {r => Pair(r.schema, r)}.group().toList().map {| Pair(schema, rs) => 
+                data.relations.map {r => Pair(r.schema, r)}.group().toList().map {| Pair(schema, rs) => 
                     let ordered = rs.sortBy {r => 
                         let kindName = r.kindName()
                         if(kindName.contains("table")) {
@@ -300,21 +308,23 @@ sqlCompletion(at: Location, sqlString: Term, relations: List[SqlRelation]): List
                             4
                         }
                     }
-                    Pair(schema, Pair("schema", ordered.map {r => r.kindName() + " " + r.name}.join("\n")))
+                    let tables = ordered.count {r => r.kindName().contains("table")}
+                    let text = if(tables == 1) {tables + " table"} else {tables + " tables"}
+                    Pair(schema, Pair(text, ordered.map {r => r.kindName() + " \"" + r.name + "\""}.join("\n")))
                 }
             )
-        )
+        })
     } else {
         scope.symbols.flatMap {
             | SqlQuery(alias, columns) => 
                 [Pair(alias, Pair("(" + columns.join(", ") + ")", "(" + columns.join(", ") + ")"))]
             | SqlTable(Some(alias), schema, table) => 
-                let tableText = relations.filter {r => schema.all {_ == r.schema} && table == r.name}.flatMap {r =>
-                    r.columns.map {showColumn(_)}
-                }.join("\n")
+                let tableText = data.relations.filter {
+                    r => schema.all {_ == r.schema} && table == r.name
+                }.flatMap {_.columns.map {showColumn(_)}}.join("\n")
                 [Pair(alias, Pair(schema.map {_ + "."}.else {""} + table, tableText))]
             | SqlTable(None, schema, table) =>
-                relations.filter {r => schema.all {_ == r.schema} && table == r.name}.flatMap {r =>
+                data.relations.filter {r => schema.all {_ == r.schema} && table == r.name}.flatMap {r =>
                     r.columns.map {c => 
                         Pair(c.name, Pair(showColumnType(c), showColumn(c)))
                     }
@@ -326,14 +336,16 @@ sqlCompletion(at: Location, sqlString: Term, relations: List[SqlRelation]): List
     label.map {| Pair(l, extra) =>
         CompletionInfo(
             label = l
-            extra = ""
+            extra = "<<SQL>>"
             more = extra.first
             snippet = l
             member = False
             type = TConstructor(Location("", 0, 0), "", [])
             documentation = extra.second, 
             expectedType = None
-            secondarySort = 1
+            secondarySort = if(extra.first.endsWith(" table") || extra.first.endsWith(" tables")) {
+                if(l.startsWith("pg_") || l == "information_schema") {3} else {2}
+            } else {1}
         )
     }
 }
