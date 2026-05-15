@@ -279,7 +279,10 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
             | _ => 
                 []
         }.addAll(if(!scope.expectingTable) {[]} else {
-            data.relations.filter {_.schema == beforeDot}.map {r => 
+            data.relations.filter {r => 
+                let kindName = r.kindName()
+                r.schema == beforeDot && (kindName.contains("table") || kindName.contains("view"))
+            }.map {r => 
                 Pair(r.name, Pair(r.schema, r.columns.map {showColumn(_)}.join("\n")))
             }
         })
