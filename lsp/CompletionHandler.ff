@@ -258,7 +258,8 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
     let column = if(at.line == sqlString.at.line) {1 + at.column - (sqlString.at.column + 3)} else {at.column}
     let scope = Sql.completionScope(tokens, line, column)
     function showColumnType(column: SqlColumn): String {
-        column.type.replace("\"", "") + " " + if(column.notNull) {"not null"} else {"null"}
+        column.type.replace("\"", "") + " " + 
+        if(column.primaryKey) {"primary key"} elseIf {column.notNull} {"not null"} else {"null"}
     }
     function showColumn(column: SqlColumn): String {
         Sql.quote(column.name, True) + " " + showColumnType(column)
@@ -269,8 +270,7 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
             | SqlTable(Some(alias), schema, table) {!scope.expectingTable && alias == beforeDot} => 
                 data.relations.filter {r => schema.all {_ == r.schema} && r.name == table}.flatMap {r => 
                     r.columns.map {c => 
-                        let typeText = c.type.replace("\"", "") + " " + if(c.notNull) {"not null"} else {"null"}
-                        Pair(c.name, Pair(typeText, showColumn(c) + "\n\n" + c.description.else {""}))
+                        Pair(c.name, Pair(showColumnType(c), showColumn(c) + "\n\n" + c.description.else {""}))
                     }
                 }
             | SqlQuery(alias, columns) {!scope.expectingTable && alias == beforeDot} =>

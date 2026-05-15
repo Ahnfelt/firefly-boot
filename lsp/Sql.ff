@@ -411,6 +411,7 @@ data SqlRelation(
 data SqlColumn(
     name: String
     notNull: Bool
+    primaryKey: Bool
     type: String
     description: Option[String]
 )
@@ -469,10 +470,15 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
             a.attname column_name,
             a.attnotnull not_null,
             pg_catalog.format_type(a.atttypid, a.atttypmod) data_type,
-            pg_catalog.col_description(c.oid, a.attnum) column_description
+            pg_catalog.col_description(c.oid, a.attnum) column_description,
+            exists (
+                select 1 from pg_catalog.pg_index i
+                where i.indrelid = a.attrelid and i.indisprimary and a.attnum = ANY(i.indkey)
+            ) primary_key
         from pg_catalog.pg_class c
-        join pg_catalog.pg_namespace n on c.relnamespace = n.oid
+        join pg_catalog.pg_namespace n on n.oid = c.relnamespace
         left join pg_catalog.pg_attribute a on a.attrelid = c.oid and a.attnum > 0 and not a.attisdropped
+        left join pg_catalog.pg_index i on i.indrelid = a.attrelid and i.indisprimary and a.attnum = ANY(i.indkey)
         order by n.nspname, c.relname, a.attnum
     """).map {row =>
         SqlRelation(
@@ -483,6 +489,7 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
                 SqlColumn(
                     name = columnName
                     notNull = row.getBool("not_null").grab()
+                    primaryKey = row.getBool("primary_key").grab()
                     type = row.getString("data_type").grab()
                     description = row.getString("column_description")
                 )
