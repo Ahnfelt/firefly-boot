@@ -401,6 +401,7 @@ nodeMain(system: NodeSystem) {
 data SqlData(
     searchPathSchemas: List[String]
     relations: List[SqlRelation]
+    functions: List[SqlFunction]
 )
 
 data SqlRelation(
@@ -459,7 +460,7 @@ load(nodeSystem: NodeSystem, connectionString: String): SqlData {
             fs.each {f =>
                 Log.trace(f.kind + " " + f.schema + "." + f.name + "(" + f.argumentTypes.join(", ") + ") " + f.returnType + " " + f.description.else {""})
             }
-            SqlData(s, rs)
+            SqlData(s, rs, fs)
         }
         //nodeSystem.writeErrorLine("SQL Relations:")
         //relations.each {nodeSystem.writeErrorLine(Show.show(_))}
