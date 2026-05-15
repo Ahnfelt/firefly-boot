@@ -311,7 +311,7 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
                     let tables = ordered.count {r => r.kindName().contains("table")}
                     let text = if(tables == 1) {tables + " table"} else {tables + " tables"}
                     Pair(schema, Pair(text, ordered.map {r => r.kindName() + " \"" + r.name + "\""}.join("\n")))
-                }
+                }.filter {| Pair(schema, _) => schema != "information_schema" && schema != "pg_toast"}
             )
         })
     } else {
