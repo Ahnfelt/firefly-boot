@@ -263,6 +263,7 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
     function showColumn(column: SqlColumn): String {
         Sql.quote(column.name, True) + " " + showColumnType(column)
     }
+    let suggestTable = scope.expectingTable && !scope.avoidTables
     let label = scope.beforeDot.map {beforeDot =>
         scope.symbols.flatMap {
             | SqlTable(Some(alias), schema, table) {!scope.expectingTable && alias == beforeDot} => 
@@ -278,7 +279,7 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
                 }
             | _ => 
                 []
-        }.addAll(if(!scope.expectingTable) {[]} else {
+        }.addAll(if(!suggestTable) {[]} else {
             data.relations.filter {r => 
                 let kindName = r.kindName()
                 r.schema == beforeDot && (kindName.contains("table") || kindName.contains("view"))
@@ -287,6 +288,7 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
             }
         })
     }.elseIf {scope.expectingTable} {
+        if(!suggestTable) {[]} else:
         scope.symbols.flatMap {
             | SqlQuery(alias, columns) => 
                 [Pair(alias, Pair("(" + columns.join(", ") + ")", "(" + columns.join(", ") + ")"))]
