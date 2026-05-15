@@ -340,7 +340,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                 offset += 1
             }
         }
-        checkCursor(True)
+        checkCursor(False)
         if(rawIs(offset, "returning")) {
             offset += 1
             parseColumns()
