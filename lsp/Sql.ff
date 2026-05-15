@@ -418,6 +418,16 @@ data SqlColumn(
     description: Option[String]
 )
 
+data SqlFunction(
+    kind: String
+    schema: String
+    name: String
+    argumentNames: List[String]
+    argumentTypes: List[String]
+    returnType: String
+    description: Option[String]
+)
+
 extend self: SqlRelation {
     tableLike(): Bool {
         self.kind == "r" || self.kind == "v" || self.kind == "m" || self.kind == "f" || self.kind == "p"
@@ -445,6 +455,10 @@ load(nodeSystem: NodeSystem, connectionString: String): SqlData {
         let data = pool.transaction {connection =>
             let s = loadSearchPath(connection)
             let rs = loadRelations(connection)
+            let fs = loadFunctions(connection)
+            fs.each {f =>
+                Log.trace(f.kind + " " + f.schema + "." + f.name + "(" + f.argumentTypes.join(", ") + ") " + f.returnType + " " + f.description.else {""})
+            }
             SqlData(s, rs)
         }
         //nodeSystem.writeErrorLine("SQL Relations:")
@@ -461,6 +475,40 @@ loadSearchPath(connection: PgConnection): List[String] {
     """).map {row =>
         row.getStringArray("search_path_schemas").grab()
     }.grabFirst()
+}
+
+loadFunctions(connection: PgConnection): List[SqlFunction] {
+    connection.statement("""
+        select
+            p.prokind as kind,
+            n.nspname as schema_name,
+            p.proname as function_name,
+            p.proargnames argument_names,
+            (select array_agg(pg_catalog.format_type(t, null)) from unnest(p.proargtypes) t) argument_types,
+            pg_catalog.format_type(p.prorettype, null) as return_type,
+            d.description as function_description
+        from pg_catalog.pg_proc p
+        join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+        left join pg_catalog.pg_description d on d.objoid = p.oid and d.classoid = 'pg_proc'::regclass
+        order by n.nspname, p.proname
+    """).map {row =>
+        SqlFunction(
+            kind = row.getString("kind").grab().{
+                | "p" => "procedure"
+                | "a" => "aggregate"
+                | "w" => "window"
+                | _ => "function"
+            }
+            schema = row.getString("schema_name").grab()
+            name = row.getString("function_name").grab()
+            argumentNames = row.getStringArray("argument_names").else {[]}
+            argumentTypes = row.getStringArray("argument_types").map {_.map {
+                _.replace("timestamp with time zone", "timestamptz").replace("timestamp without time zone", "timestamp")
+            }}.else {[]}
+            returnType = row.getString("return_type").grab()
+            description = row.getString("function_description")
+        )
+    }
 }
 
 loadRelations(connection: PgConnection): List[SqlRelation] {
