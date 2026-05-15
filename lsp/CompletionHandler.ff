@@ -261,8 +261,7 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
         column.type.replace("\"", "") + " " + if(column.notNull) {"not null"} else {"null"}
     }
     function showColumn(column: SqlColumn): String {
-        let name = if(column.name.startsWith("\"")) {column.name} else {"\"" + column.name + "\""}
-        name + " " + showColumnType(column)
+        Sql.quote(column.name, True) + " " + showColumnType(column)
     }
     let label = scope.beforeDot.map {beforeDot =>
         scope.symbols.flatMap {
@@ -310,9 +309,11 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
                     }
                     let tables = ordered.count {r => r.kindName().contains("table")}
                     let text = if(tables == 1) {tables + " table"} else {tables + " tables"}
-                    let documentation = ordered.map {r => r.kindName() + " \"" + r.name + "\""}.join("\n")
-                    let comment = if(schema == "pg_catalog") {"// See also: information_schema, pg_toast\n"}
-                    Pair(schema, Pair(text, comment.else {""} + documentation))
+                    let documentation = ordered.map {r => r.kindName() + " " + Sql.quote(r.name, True)}.join("\n")
+                    let comment = if(schema == "pg_catalog") {
+                        "// Schemas omitted from autocomplete:\n// information_schema, pg_toast\n"
+                    } else {""}
+                    Pair(schema, Pair(text, comment + documentation))
                 }.filter {| Pair(schema, _) => schema != "information_schema" && schema != "pg_toast"}
             )
         })
@@ -340,7 +341,7 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
             label = l
             extra = "<<SQL>>"
             more = extra.first
-            snippet = l
+            snippet = Sql.quote(l)
             member = False
             type = TConstructor(Location("", 0, 0), "", [])
             documentation = extra.second, 

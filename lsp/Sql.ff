@@ -484,6 +484,14 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
     }.sortBy {r => Pair(r.schema, r.name)}
 }
 
+quote(identifier: String, force: Bool = False): String {
+    if(!force && identifier.first().any {_.isAsciiLower()} && identifier.all {c => 
+        c.isAsciiLower() || c.isAsciiDigit() || c == '_'
+    }) {identifier} else {
+        "\"" + identifier.replace("\"", "\"\"") + "\""
+    }
+}
+
 
 // Source: https://github.com/postgres/postgres/blob/master/src/include/parser/kwlist.h
 sqlReserved: Set[String] = [
