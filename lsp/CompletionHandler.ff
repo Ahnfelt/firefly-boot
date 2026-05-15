@@ -272,8 +272,39 @@ sqlCompletion(at: Location, sqlString: Term, relations: List[SqlRelation]): List
                 }
             | _ => 
                 []
-        }
-    }.else {
+        }.addAll(if(!scope.expectingTable) {[]} else {
+            relations.filter {_.schema == beforeDot}.map {r => 
+                Pair(r.name, Pair(r.schema, r.columns.map {showColumn(_)}.join("\n")))
+            }
+        })
+    }.elseIf {scope.expectingTable} {
+        scope.symbols.flatMap {
+            | SqlQuery(alias, columns) => 
+                [Pair(alias, Pair("(" + columns.join(", ") + ")", "(" + columns.join(", ") + ")"))]
+            | _ =>
+                []
+        }.addAll(
+            relations.filter {r => r.tableLike()}.map {r => 
+                Pair(r.name, Pair(r.schema, r.columns.map {showColumn(_)}.join("\n")))
+            }.addAll(
+                relations.map {r => Pair(r.schema, r)}.group().toList().map {| Pair(schema, rs) => 
+                    let ordered = rs.sortBy {r => 
+                        let kindName = r.kindName()
+                        if(kindName.contains("table")) {
+                            1
+                        } elseIf {kindName.contains("view")} {
+                            2
+                        } elseIf {kindName.contains("index")} {
+                            3
+                        } else {
+                            4
+                        }
+                    }
+                    Pair(schema, Pair("schema", ordered.map {r => r.kindName() + " " + r.name}.join("\n")))
+                }
+            )
+        )
+    } else {
         scope.symbols.flatMap {
             | SqlQuery(alias, columns) => 
                 [Pair(alias, Pair("(" + columns.join(", ") + ")", "(" + columns.join(", ") + ")"))]

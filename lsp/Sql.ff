@@ -381,12 +381,12 @@ nodeMain(system: NodeSystem) {
     }
     showCompletionScope(sql, "x")
     showCompletionScope(sql, "*")
-    showCompletionScope(sql, "a.id")
+    showCompletionScope(sql, "id")
     showCompletionScope(sql, "t1 a")
 }
 
 data SqlRelation(
-    kind: String
+    kind: String 
     schema: String
     name: String
     columns: List[SqlColumn]
@@ -398,6 +398,27 @@ data SqlColumn(
     type: String
     description: Option[String]
 )
+
+extend self: SqlRelation {
+    tableLike(): Bool {
+        self.kind == "r" || self.kind == "v" || self.kind == "m" || self.kind == "f" || self.kind == "p"
+    }
+    kindName(): String {
+        self.kind.{
+            | "r" => "table"
+            | "v" => "view"
+            | "m" => "materialized view"
+            | "f" => "foreign table"
+            | "p" => "partitioned table"
+            | "i" => "index"
+            | "I" => "partitioned index"
+            | "S" => "sequence"
+            | "t" => "toast table"
+            | "c" => "composite type"
+            | _ => "other"
+        }
+    }
+}
 
 load(nodeSystem: NodeSystem, connectionString: String): List[SqlRelation] {
     let pool = Pg.newPoolFromConnectionString(nodeSystem, connectionString)
