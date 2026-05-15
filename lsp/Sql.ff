@@ -208,9 +208,18 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
     }
     function foundCursor(expectTable: Bool): Unit {
         expectingTable = expectTable
-        beforeDot = if(tokens.size() >= 2 && rawIs(offset - 1, ".") && (
+        beforeDot = if(offset < tokens.size() && offset >= 1 && rawIs(offset, ".") && (
+            is(offset - 1, SqlIdentifier) || is(offset - 1, SqlUnreserved)
+        )) {
+            let token = tokens.grab(offset)
+            if(token.stopLine == line && token.stopOffset - token.stopLineOffset >= column - 1) {
+                tokens.grab(offset - 1).raw()
+            }
+        } elseIf {offset >= 2 && rawIs(offset - 1, ".") && (
             is(offset - 2, SqlIdentifier) || is(offset - 2, SqlUnreserved)
-        )) {tokens.grab(offset - 2).raw()}
+        )} {Some(tokens.grab(offset - 2).raw())} else {
+            None
+        }
         avoidTables = offset > 0 && (
             is(offset - 1, SqlIdentifier) || is(offset - 1, SqlUnreserved) || rawIs(offset - 1, ")")
         )
@@ -221,7 +230,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
         if(offset >= tokens.size()) {foundCursor(expectTable)} else:
         let token = tokens.grab(offset)
         if(token.stopLine > line || (
-            token.stopLine == line && token.stopOffset - token.startLineOffset >= column - 1
+            token.stopLine == line && token.stopOffset - token.stopLineOffset >= column - 1
         )) {foundCursor(expectTable)}
     }
     function parseScope(): List[String] {
@@ -281,7 +290,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
             offset < tokens.size() && !rawIs(offset, ")") && !rawIs(offset, "returning") && 
             !rawIs(offset, "union") && !rawIs(offset, "intersect") && !rawIs(offset, "except")
         } {
-            checkCursor(True)
+            checkCursor(False)
             if(rawIs(offset, "(")) {
                 offset += 1
                 parseScope()
@@ -289,7 +298,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
             } elseIf {
                 rawIs(offset, "from") || rawIs(offset, "join") || 
                 rawIs(offset, "update") || rawIs(offset, "into") ||
-                rawIs(offset, "only") || rawIs(offset, "natural")
+                rawIs(offset, "only")
             } {
                 let isFrom = rawIs(offset, "from")
                 doWhile {
@@ -311,10 +320,12 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                             offset += 2
                             schema
                         }
+                        checkCursor(True)
                         if(is(offset, SqlIdentifier) || is(offset, SqlUnreserved)) {
                             let relation = tokens.grab(offset)
                             offset += 1
                             if(rawIs(offset, "as")) {offset += 1}
+                            checkCursor(True)
                             let alias = if(is(offset, SqlIdentifier) || is(offset, SqlUnreserved)) {
                                 let alias = tokens.grab(offset)
                                 offset += 1
@@ -366,10 +377,10 @@ nodeMain(system: NodeSystem) {
             system.writeLine(Show.show(symbol))
         }
     }
-    let sql = "WITH c as (select x, y z from p, q.w) SELECT *, f.g(h) i FROM t1 a WHERE ((SELECT * FROM t2 b WHERE a.id = b.id))"
+    let sql = "WITH c as (select x, y z from p, q.w) SELECT *, f.g(h) i FROM s.t1 a WHERE ((SELECT * FROM t2 b WHERE a.id = b.id))"
     function bogus(connection: PgConnection) {
         connection.statement(
-            """WITH c as (select x, y z from p, q.w) SELECT *, f.g(h) i FROM t1 a WHERE ((SELECT * FROM t2 b WHERE a.id = b.id))"""
+            """WITH c as (select x, y z from p, q.w) SELECT *, f.g(h) i FROM s.t1 a WHERE ((SELECT * FROM t2 b WHERE a.id = b.id))"""
         )
     }
     system.writeLine("")
@@ -381,6 +392,8 @@ nodeMain(system: NodeSystem) {
     showCompletionScope(sql, "*")
     showCompletionScope(sql, "id")
     showCompletionScope(sql, "t1 a")
+    showCompletionScope(sql, "1 a")
+    showCompletionScope(sql, " a WHERE")
 }
 
 data SqlData(
