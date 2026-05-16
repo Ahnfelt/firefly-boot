@@ -401,6 +401,7 @@ nodeMain(system: NodeSystem) {
 data SqlData(
     searchPathSchemas: List[String]
     relations: List[SqlRelation]
+    foreignKeys: List[SqlForeignKey]
     functions: List[SqlFunction]
 )
 
@@ -427,6 +428,14 @@ data SqlFunction(
     argumentTypes: List[String]
     returnType: String
     description: Option[String]
+)
+
+data SqlForeignKey(
+    schema: String
+    name: String
+    foreignSchema: String
+    foreignName: String
+    columns: List[Pair[String, String]]
 )
 
 extend self: SqlRelation {
@@ -457,7 +466,8 @@ load(nodeSystem: NodeSystem, connectionString: String): SqlData {
             let s = loadSearchPath(connection)
             let rs = loadRelations(connection)
             let fs = loadFunctions(connection)
-            SqlData(s, rs, fs)
+            let ks = loadForeignKeys(connection)
+            SqlData(s, rs, ks, fs)
         }
     } finally {
         pool.close()
@@ -472,19 +482,54 @@ loadSearchPath(connection: PgConnection): List[String] {
     }.grabFirst()
 }
 
+loadForeignKeys(connection: PgConnection): List[SqlForeignKey] {
+    connection.statement("""
+        select
+            n1.nspname schema_name,
+            c.conrelid::regclass table_name,
+            array_agg(a1.attname) column_names,
+            n2.nspname foreign_schema_name,
+            c.confrelid::regclass foreign_table_name,
+            array_agg(a2.attname) foreign_column_names
+        from pg_constraint c
+        join pg_attribute a1 on a1.attrelid = c.conrelid and a1.attnum = any(c.conkey)
+        join pg_attribute a2 on a2.attrelid = c.confrelid and a2.attnum = any(c.confkey)
+        join pg_class cl1 on cl1.oid = c.conrelid
+        join pg_class cl2 on cl2.oid = c.confrelid
+        join pg_namespace n1 on n1.oid = cl1.relnamespace
+        join pg_namespace n2 on n2.oid = cl2.relnamespace
+        where c.contype = 'f'
+        group by n1.nspname, c.conrelid, n2.nspname, c.confrelid, c.conname
+    """).map {row =>
+        let schema = row.getString("schema_name").grab()
+        let table = row.getString("table_name").grab()
+        let foreignSchema = row.getString("foreign_schema_name").grab()
+        let foreignTable = row.getString("foreign_table_name").grab()
+        let columns = row.getStringArray("column_names").else {[]}
+        let foreignColumns = row.getStringArray("foreign_column_names").else {[]}
+        SqlForeignKey(
+            schema = unquote(schema)
+            name = unquote(table)
+            foreignSchema = unquote(foreignSchema)
+            foreignName = unquote(foreignTable)
+            columns = columns.map {unquote(_)}.zip(foreignColumns.map {unquote(_)})
+        )
+    }
+}
+
 loadFunctions(connection: PgConnection): List[SqlFunction] {
     connection.statement("""
         select
-            p.prokind as kind,
-            n.nspname as schema_name,
-            p.proname as function_name,
+            p.prokind kind,
+            n.nspname schema_name,
+            p.proname function_name,
             p.proargnames argument_names,
             (
                 select pg_catalog.array_agg(pg_catalog.format_type(t, null)) 
                 from pg_catalog.unnest(p.proargtypes) t
             ) argument_types,
-            pg_catalog.format_type(p.prorettype, null) as return_type,
-            d.description as function_description
+            pg_catalog.format_type(p.prorettype, null) return_type,
+            d.description function_description
         from pg_catalog.pg_proc p
         join pg_catalog.pg_namespace n on n.oid = p.pronamespace
         left join pg_catalog.pg_description d on d.objoid = p.oid and d.classoid = 'pg_proc'::regclass

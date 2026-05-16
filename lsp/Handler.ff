@@ -343,7 +343,7 @@ extend self: Handler {
         self.check(system, fireflyPath, path, None, Set.new(), self.virtualFiles, version, lspHook, True)
         let sqlStrings = lspHook.sqlStrings.toList()
         if(!sqlStrings.isEmpty() && self.sqlData.isEmpty()) {
-            self.sqlData = Some(SqlData([], [], []))
+            self.sqlData = Some(SqlData([], [], [], []))
             system.mainTask().spawn {_ =>
                 try {
                     let connectionStringPath = system.path("../../LSP_CONNECTION_STRING.txt") // TODO
@@ -507,7 +507,7 @@ extend self: Handler {
                 importLine = importSymbols.second
             )
             sqlString = sqlString.map {Pair(location, _)}
-            sqlData = self.sqlData.else {SqlData([], [], [])}
+            sqlData = self.sqlData.else {SqlData([], [], [], [])}
         )
         Result(o.write())
     }
