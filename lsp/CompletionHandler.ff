@@ -354,7 +354,9 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
             let tables = ordered.count {r => r.kindName().contains("table")}
             let text = if(tables == 1) {tables + " table"} else {tables + " tables"}
             let documentation = ordered.map {r => r.kindName() + " " + Sql.quote(r.name, True)}.join("\n")
-            Pair(schema, Pair(text, documentation))
+            let functionCount = data.functions.count {_.schema == schema}
+            let functions = if(functionCount == 1) {functionCount + " function"} else {functionCount + " functions"}
+            Pair(schema, Pair(text, documentation + "\n-- and " + functions))
         }
     })
     label.map {| Pair(l, extra) =>
