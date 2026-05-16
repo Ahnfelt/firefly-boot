@@ -269,7 +269,8 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
         if(column.primaryKey) {"primary key"} elseIf {column.notNull} {"not null"} else {"null"}
     }
     function showColumn(column: SqlColumn): String {
-        Sql.quote(column.name, True) + " " + showColumnType(column)
+        Sql.quote(column.name, True) + " " + showColumnType(column) + 
+        column.default.map {" default " + _}.else {""}
     }
     function documentFunction(f: SqlFunction): String {
         let names = f.argumentNames.pairs().filter {_.second != ""}.toMap()

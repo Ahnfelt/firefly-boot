@@ -417,6 +417,7 @@ data SqlColumn(
     notNull: Bool
     primaryKey: Bool
     type: String
+    default: Option[String]
     description: Option[String]
 )
 
@@ -565,22 +566,36 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
             exists (
                 select 1 from pg_catalog.pg_index i
                 where i.indrelid = a.attrelid and i.indisprimary and a.attnum = any(i.indkey)
-            ) primary_key
+            ) primary_key,
+            pg_catalog.pg_get_expr(d.adbin, d.adrelid) default_value
         from pg_catalog.pg_class c
         join pg_catalog.pg_namespace n on n.oid = c.relnamespace
         left join pg_catalog.pg_attribute a on a.attrelid = c.oid and a.attnum > 0 and not a.attisdropped
+        left join pg_catalog.pg_attrdef d on d.adrelid = a.attrelid and d.adnum = a.attnum and c.relkind = 'r'
         order by n.nspname, c.relname, a.attnum
     """).map {row =>
+        let tableName = unquote(row.getString("relation_name").grab())
         SqlRelation(
             kind = row.getString("kind").grab()
-            schema = row.getString("schema_name").grab()
-            name = row.getString("relation_name").grab()
-            columns = row.getString("column_name").toList().map {columnName =>
+            schema = unquote(row.getString("schema_name").grab())
+            name = tableName
+            columns = row.getString("column_name").toList().map {unquote(_)}.map {columnName =>
+                let type = unquote(shortenType(row.getString("data_type").grab()))
+                let default = row.getString("default_value")
+                let serialType = if(default.isEmpty()) {type} else {
+                    let serialDefault = "nextval('" + quote(tableName + "_" + columnName + "_seq") + "'::regclass)"
+                    let unquotedSerialDefault = serialDefault.replace("\"", "")
+                    if(!default.contains(serialDefault) && !default.contains(unquotedSerialDefault)) {type} else:
+                    if(type == "bigint") {"bigserial"} else:
+                    if(type == "integer") {"serial"} else:
+                    type
+                }
                 SqlColumn(
                     name = columnName
                     notNull = row.getBool("not_null").grab()
                     primaryKey = row.getBool("primary_key").grab()
-                    type = unquote(shortenType(row.getString("data_type").grab()))
+                    type = serialType
+                    default = default.filter {_ => type == serialType}
                     description = row.getString("column_description")
                 )
             }
