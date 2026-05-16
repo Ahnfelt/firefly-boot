@@ -365,7 +365,7 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
             label = l
             extra = "<<SQL>>" + if(extra.first.startsWith("\\")) {extra.first.dropFirst()} else {""}
             more = if(extra.first.startsWith("\\")) {""} else {extra.first}
-            snippet = Sql.quote(l)
+            snippet = Sql.quote(l) + if(extra.first.startsWith("\\")) {"($0)"} else {""}
             member = False
             type = TConstructor(Location("", 0, 0), "", [])
             documentation = extra.second, 
