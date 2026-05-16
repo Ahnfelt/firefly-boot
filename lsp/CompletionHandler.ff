@@ -214,10 +214,11 @@ completionsToJson(completions: List[CompletionInfo]): Json {
             Json.object()
                 // Namespace or Property or Constructor or EnumMember or Constructor or Method/Function or Field/Variable
                 .with("kind"
-                    if(i.extra == "<<SQL>>") {
+                    if(i.extra.startsWith("<<SQL>>")) {
                         if(i.secondarySort == 1) {7} else:
                         if(i.secondarySort == 2) {5} else:
-                        if(i.secondarySort == 3) {6} else {9}
+                        if(i.secondarySort == 3) {6} else:
+                        if(i.secondarySort == 6) {3} else {9}
                     } else:
                     if(isImport) {2} else:
                     if(shownType == "") {3} else:
@@ -231,7 +232,7 @@ completionsToJson(completions: List[CompletionInfo]): Json {
                 .with("preselect", preselect)
                 .with("label", i.label)
                 .with("labelDetails", Json.object()
-                    .with("detail", if(i.extra == "<<SQL>>") {""} else {
+                    .with("detail", if(i.extra.startsWith("<<SQL>>")) {i.extra.dropFirst("<<SQL>>".size())} else {
                         i.extra + if(shownType == "") {""} else {": " + shownType}
                     })
                     .with("description", i.more)
@@ -240,7 +241,9 @@ completionsToJson(completions: List[CompletionInfo]): Json {
                 .with("insertTextFormat", 2 /* Snippet */)
                 .with("documentation", Json.object()
                     .with("kind", "markdown")
-                    .with("value", "```\n" + i.documentation + "\n```")
+                    .with("value", 
+                        if(i.extra.startsWith("<<SQL>>")) {"```sql\n"} else {"```\n"} + i.documentation + "\n```"
+                    )
                 )
                 .with("additionalTextEdits", i.insertion.toList().map {| Pair(line, text) => Json.object()
                     .with("range", Json->(
@@ -268,6 +271,14 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
     function showColumn(column: SqlColumn): String {
         Sql.quote(column.name, True) + " " + showColumnType(column)
     }
+    function documentFunction(f: SqlFunction): String {
+        let names = f.argumentNames.pairs().filter {_.second != ""}.toMap()
+        f.description.map {_.lines().map {("-- " + _).trim() + "\n"}.join()}.else {""} +
+        f.kind + " " + f.schema + "." + f.name + "(" + 
+        f.argumentTypes.pairs().map {| Pair(i, t) => 
+            "\n    " + names.get(i).map {Sql.quote(_, True) + " "}.else {""} + t
+        }.join(",") + "\n) " + f.returnType
+    }
     let suggestTable = scope.expectingTable && !scope.avoidTables
     let label = scope.beforeDot.map {beforeDot =>
         scope.symbols.flatMap {
@@ -290,6 +301,8 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
             }.map {r => 
                 Pair(r.name, Pair(r.schema, r.columns.map {showColumn(_)}.join("\n")))
             }
+        }).addAll(data.functions.filter {_.schema == beforeDot}.map {f =>
+            Pair(f.name, Pair("\\(" + f.argumentTypes.join(", ") + ") " + f.returnType, documentFunction(f)))
         })
     }.elseIf {scope.expectingTable} {
         if(!suggestTable) {[]} else:
@@ -343,19 +356,23 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
                 }
             | _ => 
                 []
-        }
+        }.addAll(data.functions.filter {f => data.searchPathSchemas.any {_ == f.schema}}.map {f =>
+            Pair(f.name, Pair("\\(" + f.argumentTypes.join(", ") + ") " + f.returnType, documentFunction(f)))
+        })
     }
     label.map {| Pair(l, extra) =>
         CompletionInfo(
             label = l
-            extra = "<<SQL>>"
-            more = extra.first
+            extra = "<<SQL>>" + if(extra.first.startsWith("\\")) {extra.first.dropFirst()} else {""}
+            more = if(extra.first.startsWith("\\")) {""} else {extra.first}
             snippet = Sql.quote(l)
             member = False
             type = TConstructor(Location("", 0, 0), "", [])
             documentation = extra.second, 
             expectedType = None
-            secondarySort = if(extra.first.endsWith(" table") || extra.first.endsWith(" tables")) {
+            secondarySort = if(extra.first.startsWith("\\")) {6} elseIf {
+                extra.first.endsWith(" table") || extra.first.endsWith(" tables")
+            } {
                 if(l.startsWith("pg_") || l == "information_schema") {5} else {4}
             } else {
                 if(extra.first.startsWith("(") || extra.first.contains(".")) {3} else: 

@@ -219,7 +219,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
             is(offset - 2, SqlIdentifier) || is(offset - 2, SqlUnreserved)
         )} {Some(tokens.grab(offset - 2).raw())} else {
             None
-        }
+        }.map {unquote(_)}
         avoidTables = offset > 0 && (
             is(offset - 1, SqlIdentifier) || is(offset - 1, SqlUnreserved) || rawIs(offset - 1, ")")
         )
@@ -453,18 +453,12 @@ extend self: SqlRelation {
 load(nodeSystem: NodeSystem, connectionString: String): SqlData {
     let pool = Pg.newPoolFromConnectionString(nodeSystem, connectionString)
     try {
-        let data = pool.transaction {connection =>
+        pool.transaction {connection =>
             let s = loadSearchPath(connection)
             let rs = loadRelations(connection)
             let fs = loadFunctions(connection)
-            fs.each {f =>
-                Log.trace(f.kind + " " + f.schema + "." + f.name + "(" + f.argumentTypes.join(", ") + ") " + f.returnType + " " + f.description.else {""})
-            }
             SqlData(s, rs, fs)
         }
-        //nodeSystem.writeErrorLine("SQL Relations:")
-        //relations.each {nodeSystem.writeErrorLine(Show.show(_))}
-        data
     } finally {
         pool.close()
     }
@@ -485,7 +479,10 @@ loadFunctions(connection: PgConnection): List[SqlFunction] {
             n.nspname as schema_name,
             p.proname as function_name,
             p.proargnames argument_names,
-            (select array_agg(pg_catalog.format_type(t, null)) from unnest(p.proargtypes) t) argument_types,
+            (
+                select pg_catalog.array_agg(pg_catalog.format_type(t, null)) 
+                from pg_catalog.unnest(p.proargtypes) t
+            ) argument_types,
             pg_catalog.format_type(p.prorettype, null) as return_type,
             d.description as function_description
         from pg_catalog.pg_proc p
@@ -502,11 +499,9 @@ loadFunctions(connection: PgConnection): List[SqlFunction] {
             }
             schema = row.getString("schema_name").grab()
             name = row.getString("function_name").grab()
-            argumentNames = row.getStringArray("argument_names").else {[]}
-            argumentTypes = row.getStringArray("argument_types").map {_.map {
-                _.replace("timestamp with time zone", "timestamptz").replace("timestamp without time zone", "timestamp")
-            }}.else {[]}
-            returnType = row.getString("return_type").grab()
+            argumentNames = row.getStringArray("argument_names").else {[]}.map {unquote(_)}
+            argumentTypes = row.getStringArray("argument_types").else {[]}.map {unquote(shortenType(_))}
+            returnType = unquote(shortenType(row.getString("return_type").grab()))
             description = row.getString("function_description")
         )
     }
@@ -540,7 +535,7 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
                     name = columnName
                     notNull = row.getBool("not_null").grab()
                     primaryKey = row.getBool("primary_key").grab()
-                    type = row.getString("data_type").grab()
+                    type = unquote(shortenType(row.getString("data_type").grab()))
                     description = row.getString("column_description")
                 )
             }
@@ -550,6 +545,10 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
     groups.map {| Pair(_, rs) =>
         rs.grabFirst().SqlRelation(columns = rs.flatMap {_.columns})
     }.sortBy {r => Pair(r.schema, r.name)}
+}
+
+shortenType(fullType: String): String {
+    fullType.replace("timestamp with time zone", "timestamptz").replace("timestamp without time zone", "timestamp")
 }
 
 quote(identifier: String, force: Bool = False): String {
