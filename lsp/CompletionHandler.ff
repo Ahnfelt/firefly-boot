@@ -306,39 +306,17 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
         })
     }.elseIf {scope.expectingTable} {
         if(!suggestTable) {[]} else:
+        let searchPathSchemas = data.searchPathSchemas.filter {_ != "pg_catalog"}.toSet()
         scope.symbols.flatMap {
             | SqlQuery(alias, columns) => 
                 [Pair(alias, Pair("(" + columns.join(", ") + ")", "(" + columns.join(", ") + ")"))]
             | _ =>
                 []
-        }.addAll(do {
-            let searchPathSchemas = data.searchPathSchemas.filter {_ != "pg_catalog"}.toSet()
+        }.addAll(
             data.relations.filter {r => searchPathSchemas.contains(r.schema) && r.tableLike()}.map {r => 
                 Pair(r.name, Pair(r.schema, r.columns.map {showColumn(_)}.join("\n")))
-            }.addAll(
-                data.relations.map {r => Pair(r.schema, r)}.group().toList().map {| Pair(schema, rs) => 
-                    let ordered = rs.sortBy {r => 
-                        let kindName = r.kindName()
-                        if(kindName.contains("table")) {
-                            1
-                        } elseIf {kindName.contains("view")} {
-                            2
-                        } elseIf {kindName.contains("index")} {
-                            3
-                        } else {
-                            4
-                        }
-                    }
-                    let tables = ordered.count {r => r.kindName().contains("table")}
-                    let text = if(tables == 1) {tables + " table"} else {tables + " tables"}
-                    let documentation = ordered.map {r => r.kindName() + " " + Sql.quote(r.name, True)}.join("\n")
-                    let comment = if(schema == "pg_catalog") {
-                        "// Schemas omitted from autocomplete:\n// information_schema, pg_toast\n"
-                    } else {""}
-                    Pair(schema, Pair(text, comment + documentation))
-                }.filter {| Pair(schema, _) => schema != "information_schema" && schema != "pg_toast"}
-            )
-        })
+            }
+        )
     } else {
         scope.symbols.flatMap {
             | SqlQuery(alias, columns) => 
@@ -359,7 +337,29 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
         }.addAll(data.functions.filter {f => data.searchPathSchemas.any {_ == f.schema}}.map {f =>
             Pair(f.name, Pair("\\(" + f.argumentTypes.join(", ") + ") " + f.returnType, documentFunction(f)))
         })
-    }
+    }.addAll(if(!scope.beforeDot.isEmpty()) {[]} else {
+        data.relations.map {r => Pair(r.schema, r)}.group().toList().map {| Pair(schema, rs) => 
+            let ordered = rs.sortBy {r => 
+                let kindName = r.kindName()
+                if(kindName.contains("table")) {
+                    1
+                } elseIf {kindName.contains("view")} {
+                    2
+                } elseIf {kindName.contains("index")} {
+                    3
+                } else {
+                    4
+                }
+            }
+            let tables = ordered.count {r => r.kindName().contains("table")}
+            let text = if(tables == 1) {tables + " table"} else {tables + " tables"}
+            let documentation = ordered.map {r => r.kindName() + " " + Sql.quote(r.name, True)}.join("\n")
+            let comment = if(schema == "pg_catalog") {
+                "// Schemas omitted from autocomplete:\n// information_schema, pg_toast\n"
+            } else {""}
+            Pair(schema, Pair(text, comment + documentation))
+        }.filter {| Pair(schema, _) => schema != "information_schema" && schema != "pg_toast"}
+    })
     label.map {| Pair(l, extra) =>
         CompletionInfo(
             label = l
