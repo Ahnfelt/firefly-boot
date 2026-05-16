@@ -354,11 +354,8 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
             let tables = ordered.count {r => r.kindName().contains("table")}
             let text = if(tables == 1) {tables + " table"} else {tables + " tables"}
             let documentation = ordered.map {r => r.kindName() + " " + Sql.quote(r.name, True)}.join("\n")
-            let comment = if(schema == "pg_catalog") {
-                "// Schemas omitted from autocomplete:\n// information_schema, pg_toast\n"
-            } else {""}
-            Pair(schema, Pair(text, comment + documentation))
-        }.filter {| Pair(schema, _) => schema != "information_schema" && schema != "pg_toast"}
+            Pair(schema, Pair(text, documentation))
+        }
     })
     label.map {| Pair(l, extra) =>
         CompletionInfo(
