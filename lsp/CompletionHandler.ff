@@ -272,6 +272,26 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
         Sql.quote(column.name, True) + " " + showColumnType(column) + 
         column.default.map {" default " + _}.else {""}
     }
+    function showForeignKeys(schema: String, table: String, column: String): String {
+        data.foreignKeys.filter {k => 
+            k.schema == schema && k.name == table && k.columns.any {_.first == column}
+        }.map {k =>
+            if(k.columns.size() == 1) {""} else {"(" + k.columns.map {Sql.quote(_.first)}.join(", ") + ") "} + 
+            "references " +
+            if(k.foreignSchema != schema) {Sql.quote(k.foreignSchema) + "."} else {""} +
+            if(k.foreignName != table) {Sql.quote(k.foreignName)} else {""} +
+            "(" + k.columns.map {_.second}.map {Sql.quote(_)}.join(", ") + ")"
+        }.sortBy {t => if(t.startsWith("references ")) {1} else {2}}.map {"\n" + _}.join() +
+        data.foreignKeys.filter {k => 
+            k.foreignSchema == schema && k.foreignName == table && k.columns.any {_.second == column}
+        }.map {k =>
+            if(k.schema != schema) {Sql.quote(k.schema) + "."} else {""} +
+            if(k.name != table) {Sql.quote(k.name)} else {""} +
+            "(" + k.columns.map {_.first}.map {Sql.quote(_)}.join(", ") + ") " +
+            "references " +
+            "(" + k.columns.map {_.second}.map {Sql.quote(_)}.join(", ") + ")"
+        }.map {"\n" + _}.join()
+    }
     function documentFunction(f: SqlFunction): String {
         let names = f.argumentNames.pairs().filter {_.second != ""}.toMap()
         f.description.map {_.lines().map {("-- " + _).trim() + "\n"}.join()}.else {""} +
@@ -286,7 +306,10 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
             | SqlTable(Some(alias), schema, table) {!scope.expectingTable && alias == beforeDot} => 
                 data.relations.filter {r => schema.all {_ == r.schema} && r.name == table}.flatMap {r => 
                     r.columns.map {c => 
-                        Pair(c.name, Pair(showColumnType(c), showColumn(c) + "\n\n" + c.description.else {""}))
+                        let description = 
+                            c.description.map {_.lines().map {("-- " + _).trim() + "\n"}.join()}.else {""}
+                        let foreignKeys = showForeignKeys(r.schema, r.name, c.name)
+                        Pair(c.name, Pair(showColumnType(c), description + showColumn(c) + foreignKeys))
                     }
                 }
             | SqlQuery(alias, columns) {!scope.expectingTable && alias == beforeDot} =>
@@ -330,7 +353,8 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
             | SqlTable(None, schema, table) =>
                 data.relations.filter {r => schema.all {_ == r.schema} && table == r.name}.flatMap {r =>
                     r.columns.map {c => 
-                        Pair(c.name, Pair(showColumnType(c), showColumn(c)))
+                        let foreignKeys = showForeignKeys(r.schema, r.name, c.name)
+                        Pair(c.name, Pair(showColumnType(c), showColumn(c) + foreignKeys))
                     }
                 }
             | _ => 
