@@ -603,7 +603,9 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
     }
     let groups = relations.map {r => Pair(Pair(r.schema, r.name), r)}.group().toList()
     groups.map {| Pair(_, rs) =>
-        rs.grabFirst().SqlRelation(columns = rs.flatMap {_.columns})
+        rs.grabFirst().SqlRelation(
+            columns = rs.flatMap {_.columns}.sortBy {c => Pair(if(c.primaryKey) {1} else {2}, c.name)}
+        )
     }.sortBy {r => Pair(r.schema, r.name)}
 }
 
