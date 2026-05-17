@@ -301,6 +301,7 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
         }.join(",") + "\n) " + f.returnType
     }
     let suggestTable = scope.expectingTable && !scope.avoidTables
+    let searchPathSchemas = data.searchPathSchemas.filter {_ != "pg_catalog"}.toSet()
     let label = scope.beforeDot.map {beforeDot =>
         scope.symbols.flatMap {
             | SqlTable(Some(alias), schema, table) {!scope.expectingTable && alias == beforeDot} => 
@@ -330,7 +331,6 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
         })
     }.elseIf {scope.expectingTable} {
         if(!suggestTable) {[]} else:
-        let searchPathSchemas = data.searchPathSchemas.filter {_ != "pg_catalog"}.toSet()
         scope.symbols.flatMap {
             | SqlQuery(alias, columns) => 
                 [Pair(alias, Pair("(" + columns.join(", ") + ")", "(" + columns.join(", ") + ")"))]
@@ -383,13 +383,52 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
             let functions = if(functionCount == 1) {functionCount + " function"} else {functionCount + " functions"}
             Pair(schema, Pair(text, documentation + "\n-- and " + functions))
         }
+    }).addAll(if(!scope.expectingJoin) {[]} else {
+        let symbols = scope.symbols.collect {
+            | SqlTable(alias, schema, name) => 
+                data.relations.find {r => schema.all {_ == r.schema} && r.name == name}.map {r =>
+                    Pair(Pair(r.schema, name), alias)
+                }
+            | _ => None
+        }.toMap()
+        data.foreignKeys.flatMap {k =>
+            symbols.get(Pair(k.schema, k.name)).map {alias =>
+                let newAlias = alias.flatMap {_ => k.foreignName.first()}.map {_.toString().lower()}
+                let snippet = 
+                    if(searchPathSchemas.contains(k.foreignSchema)) {""} else {Sql.quote(k.foreignSchema) + "."} +
+                    Sql.quote(k.foreignName) + newAlias.map {" ${1:" + _ + "}"}.else {""} + 
+                    " on " + k.columns.map {c => 
+                    newAlias.map {"${1:" + _ + "}."}.else {""} + Sql.quote(c.second) + 
+                    " = " + alias.map {Sql.quote(_) + "."}.else {""} + Sql.quote(c.first)
+                }.join(" and ")
+                Pair(k.foreignName + " on " + k.columns.map {c => 
+                    c.second + " = " + alias.map {_ + "."}.else {""} + c.first
+                }.join(" and "), Pair("@" + k.foreignSchema, snippet))
+            }.toList().addAll(symbols.get(Pair(k.foreignSchema, k.foreignName)).map {alias =>
+                let newAlias = alias.flatMap {_ => k.name.first()}.map {_.toString().lower()}
+                let snippet = 
+                    if(searchPathSchemas.contains(k.schema)) {""} else {Sql.quote(k.schema) + "."} +
+                    Sql.quote(k.name) + newAlias.map {" ${1:" + _ + "}"}.else {""} + 
+                    " on " + k.columns.map {c => 
+                    newAlias.map {"${1:" + _ + "}."}.else {""} + Sql.quote(c.first) + 
+                    " = " + alias.map {Sql.quote(_) + "."}.else {""} + Sql.quote(c.second)
+                }.join(" and ")
+                Pair(k.name + " on " + k.columns.map {c => 
+                    c.first + " = " + alias.map {_ + "."}.else {""} + c.second
+                }.join(" and "), Pair("@" + k.schema, snippet))
+            }.toList())
+        }
     })
     label.map {| Pair(l, extra) =>
         CompletionInfo(
             label = l
             extra = "<<SQL>>" + if(extra.first.startsWith("\\")) {extra.first.dropFirst()} else {""}
-            more = if(extra.first.startsWith("\\")) {""} else {extra.first}
-            snippet = Sql.quote(l) + if(extra.first.startsWith("\\")) {"($0)"} else {""}
+            more = if(extra.first.startsWith("\\")) {""} elseIf {extra.first.startsWith("@")} {
+                extra.first.dropFirst()
+            } else {extra.first}
+            snippet = if(extra.first.startsWith("@")) {extra.second} else {
+                Sql.quote(l) + if(extra.first.startsWith("\\")) {"($0)"} else {""}
+            }
             member = False
             type = TConstructor(Location("", 0, 0), "", [])
             documentation = extra.second, 

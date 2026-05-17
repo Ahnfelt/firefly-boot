@@ -179,6 +179,7 @@ data SqlSymbol {
 }
 
 data SqlCompletionScope(
+    expectingJoin: Bool
     expectingTable: Bool
     avoidTables: Bool
     beforeDot: Option[String]
@@ -189,6 +190,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
     let scopes = Array.new[SqlScope]()
     mutable foundScopes = None
     mutable offset = 0
+    mutable expectingJoin = False
     mutable expectingTable = False
     mutable avoidTables = False
     mutable beforeDot = None
@@ -207,6 +209,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
         rawIs(o, "fetch") || rawIs(o, "for") || rawIs(o, ")")
     }
     function foundCursor(expectTable: Bool): Unit {
+        expectingJoin = offset > 0 && rawIs(offset - 1, "join")
         expectingTable = expectTable
         beforeDot = if(offset < tokens.size() && offset >= 1 && rawIs(offset, ".") && (
             is(offset - 1, SqlIdentifier) || is(offset - 1, SqlUnreserved)
@@ -358,7 +361,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
     }
     parseScope()
     let symbols = foundScopes.toList().flatten().flatMap {_.symbols.toList()}
-    SqlCompletionScope(expectingTable, avoidTables, beforeDot, symbols)
+    SqlCompletionScope(expectingJoin, expectingTable, avoidTables, beforeDot, symbols)
 }
 
 showToken(token: SqlToken): String {
