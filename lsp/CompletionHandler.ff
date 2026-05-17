@@ -219,7 +219,7 @@ completionsToJson(completions: List[CompletionInfo]): Json {
                         if(i.secondarySort == 2) {7} else:
                         if(i.secondarySort == 3) {5} else:
                         if(i.secondarySort == 4) {6} else:
-                        if(i.secondarySort == 5) {3} else {9}
+                        if(i.secondarySort == 7) {3} else {9}
                     } else:
                     if(isImport) {2} else:
                     if(shownType == "") {3} else:
