@@ -281,7 +281,7 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
             if(k.foreignSchema != schema) {Sql.quote(k.foreignSchema) + "."} else {""} +
             if(k.foreignName != table) {Sql.quote(k.foreignName)} else {""} +
             "(" + k.columns.map {_.second}.map {Sql.quote(_)}.join(", ") + ")"
-        }.sortBy {t => if(t.startsWith("references ")) {1} else {2}}.map {"\n" + _}.join() +
+        }.sortBy {t => Pair(if(t.startsWith("references ")) {1} else {2}, t)}.map {"\n" + _}.join() +
         data.foreignKeys.filter {k => 
             k.foreignSchema == schema && k.foreignName == table && k.columns.any {_.second == column}
         }.map {k =>
@@ -290,7 +290,7 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
             "(" + k.columns.map {_.first}.map {Sql.quote(_)}.join(", ") + ") " +
             "references " +
             "(" + k.columns.map {_.second}.map {Sql.quote(_)}.join(", ") + ")"
-        }.map {"\n" + _}.join()
+        }.sort().map {"\n" + _}.join()
     }
     function documentFunction(f: SqlFunction): String {
         let names = f.argumentNames.pairs().filter {_.second != ""}.toMap()
