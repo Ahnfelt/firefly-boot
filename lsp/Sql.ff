@@ -455,6 +455,12 @@ data SqlForeignKey(
     columns: List[Pair[String, String]]
 )
 
+extend self: SqlForeignKey {
+    swap(): SqlForeignKey {
+        SqlForeignKey(self.foreignSchema, self.foreignName, self.schema, self.name, self.columns.map {_.swap()})
+    }
+}
+
 extend self: SqlRelation {
     tableLike(): Bool {
         self.kind == "r" || self.kind == "v" || self.kind == "m" || self.kind == "f" || self.kind == "p"
