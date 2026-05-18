@@ -503,10 +503,10 @@ loadForeignKeys(connection: PgConnection): List[SqlForeignKey] {
     connection.statement("""
         select
             n1.nspname schema_name,
-            c.conrelid::regclass table_name,
+            cl1.relname table_name,
             array_agg(a1.attname) column_names,
             n2.nspname foreign_schema_name,
-            c.confrelid::regclass foreign_table_name,
+            cl2.relname foreign_table_name,
             array_agg(a2.attname) foreign_column_names
         from pg_constraint c
         join pg_attribute a1 on a1.attrelid = c.conrelid and a1.attnum = any(c.conkey)
@@ -516,7 +516,7 @@ loadForeignKeys(connection: PgConnection): List[SqlForeignKey] {
         join pg_namespace n1 on n1.oid = cl1.relnamespace
         join pg_namespace n2 on n2.oid = cl2.relnamespace
         where c.contype = 'f'
-        group by n1.nspname, c.conrelid, n2.nspname, c.confrelid, c.conname
+        group by n1.nspname, cl1.relname, n2.nspname, cl2.relname, c.conname
     """).map {row =>
         let schema = row.getString("schema_name").grab()
         let table = row.getString("table_name").grab()

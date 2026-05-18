@@ -9,7 +9,7 @@ testSql(connection: PgConnection): List[String] {
             g.benefit,
             g.created
         from guide."Guide" g
-        join guide."Inquiry" i on i.guideid = g.id
+        join guide."InquiryHistory" i on i.guideid = g.id
     """).map {row => 
         row.getString("name").grab()
     }

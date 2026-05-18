@@ -317,7 +317,9 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
                     r.columns.map {c => 
                         let description = 
                             c.description.map {_.lines().map {("-- " + _).trim() + "\n"}.join()}.else {""}
-                        let foreignKeys = showForeignKeys(r.schema, r.name, c.name)
+                        let foreignKeys = if(r.kind == "v") {
+                            r.simpleView.flatMap {v => v.schema.map {showForeignKeys(_, v.table, c.name)}}.else {""}
+                        } else {showForeignKeys(r.schema, r.name, c.name)}
                         Pair(c.name, Pair(showColumnType(c), description + showColumn(c) + foreignKeys))
                     }
                 }
@@ -361,7 +363,9 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
             | SqlTable(None, schema, table) =>
                 data.relations.filter {r => schema.all {_ == r.schema} && table == r.name}.flatMap {r =>
                     r.columns.map {c => 
-                        let foreignKeys = showForeignKeys(r.schema, r.name, c.name)
+                        let foreignKeys = if(r.kind == "v") {
+                            r.simpleView.flatMap {v => v.schema.map {showForeignKeys(_, v.table, c.name)}}.else {""}
+                        } else {showForeignKeys(r.schema, r.name, c.name)}
                         Pair(c.name, Pair(showColumnType(c), showColumn(c) + foreignKeys))
                     }
                 }
@@ -394,8 +398,12 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
     }).addAll(if(!scope.expectingJoin) {[]} else {
         let symbols = scope.symbols.collect {
             | SqlTable(alias, schema, name) => 
-                data.relations.find {r => schema.all {_ == r.schema} && r.name == name}.map {r =>
-                    Pair(Pair(r.schema, name), alias)
+                data.relations.find {r => schema.all {_ == r.schema} && r.name == name}.flatMap {r =>
+                    if(r.kind == "v") {
+                        r.simpleView.flatMap {v => v.schema.map {Pair(Pair(_, v.table), alias)}}
+                    } else {
+                        Some(Pair(Pair(r.schema, name), alias))
+                    }
                 }
             | _ => None
         }.toMap()
