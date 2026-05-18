@@ -1,6 +1,7 @@
 import Token from ff:compiler
 import Syntax from ff:compiler
 import Pg from ff:postgresql
+import Environment from ff:compiler
 
 data SqlTokenKind {
     SqlReserved
@@ -178,12 +179,15 @@ data SqlSymbol {
     SqlTable(alias: Option[String], schema: Option[String], table: String)
 }
 
+data SqlSimpleView(schema: Option[String], table: String, columns: List[String])
+
 data SqlCompletionScope(
     expectingJoin: Bool
     expectingTable: Bool
     avoidTables: Bool
     beforeDot: Option[String]
     symbols: List[SqlSymbol]
+    columns: List[String]
 )
 
 completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionScope {
@@ -236,23 +240,31 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
             token.stopLine == line && token.stopOffset - token.stopLineOffset >= column - 1
         )) {foundCursor(expectTable)}
     }
-    function parseScope(): List[String] {
+    function parseScope(): List[Pair[String, Bool]] {
         let scopeColumns = Array.new()
         function parseColumns() {
+            mutable simple = True
             while {offset < tokens.size() && !selectEnd(offset)} {
                 checkCursor(False)
                 if(rawIs(offset, "(")) {
                     offset += 1
                     parseScope()
                     if(rawIs(offset, ")")) {offset += 1}
+                    simple = False
                 } elseIf {
                     (is(offset, SqlIdentifier) || is(offset, SqlUnreserved)) &&
                     (rawIs(offset + 1, ",") || selectEnd(offset + 1))
                 } {
                     let alias = tokens.grab(offset)
-                    scopeColumns.push(unquote(alias.raw()))
+                    scopeColumns.push(Pair(unquote(alias.raw()), simple))
+                    simple = True
                     offset += 1
+                    if(rawIs(offset, ",")) {
+                        checkCursor(False)
+                        offset += 1
+                    }
                 } else {
+                    simple = False
                     offset += 1
                 }
             }        
@@ -282,7 +294,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                 if(rawIs(offset, ")")) {offset += 1}
                 columns
             } else {[]}
-            scope.symbols.push(SqlQuery(unquote(alias.raw()), columns))
+            scope.symbols.push(SqlQuery(unquote(alias.raw()), columns.map {_.first}))
         }
         checkCursor(False)
         if(rawIs(offset, "select")) {
@@ -315,7 +327,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                         if(rawIs(offset, "as")) {offset += 1}
                         if(is(offset, SqlIdentifier) || is(offset, SqlUnreserved)) {
                             let alias = tokens.grab(offset)
-                            scope.symbols.push(SqlQuery(unquote(alias.raw()), columns))
+                            scope.symbols.push(SqlQuery(unquote(alias.raw()), columns.map {_.first}))
                         }
                     } elseIf {is(offset, SqlIdentifier) || is(offset, SqlUnreserved)} {
                         let schema = if(rawIs(offset + 1, ".")) {
@@ -359,9 +371,9 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
         }
         scopeColumns.drain()
     }
-    parseScope()
+    let columns = parseScope().filter {_.second}.map {_.first}
     let symbols = foundScopes.toList().flatten().flatMap {_.symbols.toList()}
-    SqlCompletionScope(expectingJoin, expectingTable, avoidTables, beforeDot, symbols)
+    SqlCompletionScope(expectingJoin, expectingTable, avoidTables, beforeDot, symbols, columns)
 }
 
 showToken(token: SqlToken): String {
@@ -413,6 +425,7 @@ data SqlRelation(
     schema: String
     name: String
     columns: List[SqlColumn]
+    simpleView: Option[SqlSimpleView]
 )
 
 data SqlColumn(
@@ -557,7 +570,7 @@ loadFunctions(connection: PgConnection): List[SqlFunction] {
 }
 
 loadRelations(connection: PgConnection): List[SqlRelation] {
-    let relations = connection.statement("""
+    let results = connection.statement("""
         select
             c.relkind kind,
             n.nspname schema_name,
@@ -570,25 +583,36 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
                 select 1 from pg_catalog.pg_index i
                 where i.indrelid = a.attrelid and i.indisprimary and a.attnum = any(i.indkey)
             ) primary_key,
-            pg_catalog.pg_get_expr(d.adbin, d.adrelid) default_value
+            pg_catalog.pg_get_expr(d.adbin, d.adrelid) default_value,
+            case when c.relkind = 'v' and a.attnum = 1 then pg_catalog.pg_get_viewdef(c.oid) end view_definition
         from pg_catalog.pg_class c
         join pg_catalog.pg_namespace n on n.oid = c.relnamespace
         left join pg_catalog.pg_attribute a on a.attrelid = c.oid and a.attnum > 0 and not a.attisdropped
         left join pg_catalog.pg_attrdef d on d.adrelid = a.attrelid and d.adnum = a.attnum and c.relkind = 'r'
         order by n.nspname, c.relname, a.attnum
     """).map {row =>
+        let schemaName = unquote(row.getString("schema_name").grab())
         let tableName = unquote(row.getString("relation_name").grab())
+        let simpleView = row.getString("view_definition").flatMap {d =>
+            let tokens = tokenize(d)
+            let scope = completionScope(tokens, 1, 1)
+            scope.symbols.{
+                | [SqlTable(_, schema, table)] => Some(SqlSimpleView(schema, table, scope.columns))
+                | _ => None
+            }
+        }
         SqlRelation(
             kind = row.getString("kind").grab()
-            schema = unquote(row.getString("schema_name").grab())
+            schema = schemaName
             name = tableName
             columns = row.getString("column_name").toList().map {unquote(_)}.map {columnName =>
                 let type = unquote(shortenType(row.getString("data_type").grab()))
                 let default = row.getString("default_value")
-                let serialType = if(default.isEmpty()) {type} else {
-                    let serialDefault = "nextval('" + quote(tableName + "_" + columnName + "_seq") + "'::regclass)"
-                    let unquotedSerialDefault = serialDefault.replace("\"", "")
-                    if(!default.contains(serialDefault) && !default.contains(unquotedSerialDefault)) {type} else:
+                let serialType = if(!default.any {_.endsWith("::regclass)")}) {type} else {
+                    if(!default.map {_.replace("\"", "")}.any {d => 
+                        d == "nextval('" + tableName + "_" + columnName + "_seq'::regclass)" || 
+                        d == "nextval('" + schemaName + "." + tableName + "_" + columnName + "_seq'::regclass)"
+                    }) {type} else:
                     if(type == "bigint") {"bigserial"} else:
                     if(type == "integer") {"serial"} else:
                     type
@@ -602,14 +626,28 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
                     description = row.getString("column_description")
                 )
             }
+            simpleView = simpleView
         )
     }
-    let groups = relations.map {r => Pair(Pair(r.schema, r.name), r)}.group().toList()
-    groups.map {| Pair(_, rs) =>
+    let groups = results.map {r => Pair(Pair(r.schema, r.name), r)}.group().toList()
+    let relations = groups.map {| Pair(_, rs) =>
         rs.grabFirst().SqlRelation(
             columns = rs.flatMap {_.columns}.sortBy {c => Pair(if(c.primaryKey) {1} else {2}, c.name)}
         )
     }.sortBy {r => Pair(r.schema, r.name)}
+    let tables = relations.filter {_.kind == "r"}.map {r => Pair(Pair(r.schema, r.name), r)}.toMap()
+    relations.map {r =>
+        r.simpleView.flatMap {v =>
+            v.schema.flatMap {tables.get(Pair(_, v.table))}.map {t =>
+                let simpleColumns = v.columns.toSet()
+                r.SqlRelation(columns = r.columns.map {c =>
+                    if(!simpleColumns.contains(c.name)) {c} else {
+                        t.columns.find {c2 => c2.name == c.name}.else {c}
+                    }
+                })
+            }
+        }.else {r}
+    }
 }
 
 shortenType(fullType: String): String {
