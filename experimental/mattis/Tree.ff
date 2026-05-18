@@ -1,0 +1,44 @@
+nodeMain(system: NodeSystem) {
+    
+    let x: Float = 123.0
+    let s: String = "Hi"
+    let p = s + x
+    let r1: Int = 123.8.round().toInt()
+    Log.show(p)
+    
+    let player = Human("RawFood23", None)
+    let bot = Bot(42)
+    
+    let players: List[Player] = [
+        Human("RawFood23", None)
+        Human("Nokoline123", Some(system.date()))
+        bot
+        
+    ]
+        
+    players.each {
+        | Human(name, None) => 
+            Log.trace(name + " is in lobby")
+        | Human(name, Some(joined)) => 
+            Log.trace(name + " joined at " + Show.show(joined))
+        | Bot(n) =>
+            Log.trace("Bot nr. " + n)
+    }
+    
+    let player2 =  (name = "Jogn", age = 11)
+
+}
+
+addPlayer(player: Player) {
+    
+}
+
+data Player {
+    Human(
+        name: String
+        joined: Option[Date]
+    )
+    Bot(
+        number: Int
+    )
+}

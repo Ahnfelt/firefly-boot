@@ -5,8 +5,11 @@ import Pg from ff:postgresql
 
 loadChannels(connection: PgConnection): List[String] {
     connection.statement("""
-        select name
-        from "Channel"
+        select 
+            g.benefit,
+            g.created,
+        from guide."Guide" g
+        join guide."Inquiry" i on i.guideid = g.id
     """).map {row => 
         row.getString("name").grab()
     }

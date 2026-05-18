@@ -8,20 +8,28 @@ class LspHook(
     insertIdentifier: Bool
     trackSymbols: Bool
     arrayOfResults: Array[ResultHook]
+    sql: Bool
     sqlStrings: Array[Term]
 )
 
-disabled(): LspHook {
-    new(None, None, False, False)
+disabled(sql: Bool = False): LspHook {
+    new(None, None, False, False, sql)
 }
 
-new(at: Option[Location], definedAt: Option[Location], insertIdentifier: Bool, trackSymbols: Bool): LspHook {
+new(
+    at: Option[Location]
+    definedAt: Option[Location]
+    insertIdentifier: Bool
+    trackSymbols: Bool
+    sql: Bool = False
+): LspHook {
     LspHook( // Default dummy values instead of Option[Location] to speed up location hit check
         at = at.else {Location("^lsp", -7, -7)}
         definedAt = definedAt.else {Location("^lsp", -7, -7)}
         insertIdentifier = insertIdentifier
         trackSymbols = trackSymbols
         arrayOfResults = Array.new()
+        sql = sql
         sqlStrings = Array.new()
     )
 }
