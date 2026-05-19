@@ -67,18 +67,13 @@ tokenize(sql: String): List[SqlToken] {
     mutable line = 1
     mutable lineOffset = 0
     let length = sql.size()
-    
     function emitToken(startOffset: Int, kind: SqlTokenKind) {
         tokens.push(SqlToken(".", sql, sqlLower, kind, line, lineOffset, startOffset, line, lineOffset, offset))
     }
-    
     while {offset < length} {
         let char = sql.grab(offset)
         let startOffset = offset
-
-        if(char == ' ' || char == '\t' || char == '\r') {
-            offset += 1
-        } elseIf {char == '\n'} {
+        if(char == '\n') {
             offset += 1
             line += 1
             lineOffset = offset
@@ -132,11 +127,14 @@ tokenize(sql: String): List[SqlToken] {
             }
             emitToken(startOffset, SqlNumber)
         } elseIf {char.isAsciiLetter() || char == '_' || char == '"'} {
-            let isQuoted = (char == '"')
+            let isQuoted = char == '"'
             if(isQuoted) {
                 offset += 1
             }
-            while {offset < length && (sql.grab(offset).isAsciiLetterOrDigit() || sql.grab(offset) == '_' || (isQuoted && sql.grab(offset) != '"'))} {
+            while {offset < length && (
+                sql.grab(offset).isAsciiLetterOrDigit() || sql.grab(offset) == '_' || 
+                (isQuoted && sql.grab(offset) != '"')
+            )} {
                 offset += 1
             }
             if(isQuoted && offset < length && sql.grab(offset) == '"') {
@@ -145,28 +143,39 @@ tokenize(sql: String): List[SqlToken] {
             let word = sqlLower.slice(startOffset, offset)
             if(!isQuoted && sqlReserved.contains(word) && (tokens.isEmpty() || !tokens.grabLast().rawIs("as"))) {
                 emitToken(startOffset, SqlReserved)
-            } elseIf {!isQuoted && sqlUnreserved.contains(word) && (tokens.isEmpty() || !tokens.grabLast().rawIs("as"))} {
+            } elseIf {
+                !isQuoted && sqlUnreserved.contains(word) && (tokens.isEmpty() || !tokens.grabLast().rawIs("as"))
+            } {
                 emitToken(startOffset, SqlUnreserved)
             } else {
                 emitToken(startOffset, SqlIdentifier)
             }
+        } elseIf {char == '(' || char == ')' || char == ',' || char == ';' || char == '.'} {
+            offset += 1
+            emitToken(startOffset, SqlPunctuation)
         } else {
-            let twoChar = if(offset + 1 < length) {sql.slice(offset, offset + 2)} else {""}
-            if(twoChar == "<>" || twoChar == "<=" || twoChar == ">=" || twoChar == "!=") {
-                offset += 2
-                emitToken(startOffset, SqlOperator)
-            } else {
-                let c = char.toString()
+            mutable operator = False
+            mutable c = char
+            while {(
+                c == '+' || c == '-' || c == '*' || c == '/' || c == '<' || c == '>' || c == '=' || 
+                c == '~' || c == '!' || c == '@' || c == '#' || c == '%' || c == '^' || c == '&' || 
+                c == '|' || c == '`' || c == '?'
+            ) && !(
+                c == '-' && offset + 1 < length && sql.grab(offset + 1) == '-'
+            ) && !(
+                c == '/' && offset + 1 < length && sql.grab(offset + 1) == '*'
+            )} {
+                operator = True
                 offset += 1
-                if(c == "(" || c == ")" || c == "," || c == ";" || c == ".") {
-                    emitToken(startOffset, SqlPunctuation)
-                } else {
-                    emitToken(startOffset, SqlOperator)
-                }
+                c = if(offset < length) {sql.grab(offset)} else {' '}
+            }
+            if(operator) {
+                emitToken(startOffset, SqlOperator)
+            } elseIf {offset < length} {
+                offset += 1
             }
         }
     }
-
     tokens.drain()
 }
 
