@@ -388,43 +388,6 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
     SqlCompletionScope(expectingJoin, expectingTable, avoidTables, beforeDot, symbols, columns)
 }
 
-showToken(token: SqlToken): String {
-    "Token(" + Show.show(token.kind) + ", \"" + token.raw() + "\", at: " + token.at().line + ":" + token.at().column + ")"
-}
-
-nodeMain(system: NodeSystem) {
-    function showCompletionScope(sql: String, find: String) {
-        system.writeLine("")
-        let foundIndex = sql.indexOf(find).grab()
-        let scope = completionScope(tokenize(sql), 1, 1 + foundIndex)
-        system.writeLine(sql)
-        system.writeLine(
-            " ".repeat(foundIndex) + "^ " + 
-            Show.show(scope.expectingTable) + " " + Show.show(scope.beforeDot)
-        )
-        scope.symbols.each {symbol =>
-            system.writeLine(Show.show(symbol))
-        }
-    }
-    let sql = "WITH c as (select x, y z from p, q.w) SELECT *, f.g(h) i FROM s.t1 a WHERE ((SELECT * FROM t2 b WHERE a.id = b.id))"
-    function bogus(connection: PgConnection) {
-        connection.statement(
-            """WITH c as (select x, y z from p, q.w) SELECT *, f.g(h) i FROM s.t1 a WHERE ((SELECT * FROM t2 b WHERE a.id = b.id))"""
-        )
-    }
-    system.writeLine("")
-    system.writeLine("Tokenize:")
-    tokenize(sql).each {token =>
-        system.writeLine(showToken(token))
-    }
-    showCompletionScope(sql, "x")
-    showCompletionScope(sql, "*")
-    showCompletionScope(sql, "id")
-    showCompletionScope(sql, "t1 a")
-    showCompletionScope(sql, "1 a")
-    showCompletionScope(sql, " a WHERE")
-}
-
 data SqlData(
     searchPathSchemas: List[String]
     relations: List[SqlRelation]
@@ -1205,3 +1168,40 @@ sqlUnreserved: Set[String] = [
     "yes"
     "zone"
 ].toSet()
+
+nodeMain(system: NodeSystem) {
+    function showToken(token: SqlToken): String {
+        "Token(" + Show.show(token.kind) + ", \"" + token.raw() + "\", at: " + 
+        token.at().line + ":" + token.at().column + ")"
+    }
+    function showCompletionScope(sql: String, find: String) {
+        system.writeLine("")
+        let foundIndex = sql.indexOf(find).grab()
+        let scope = completionScope(tokenize(sql), 1, 1 + foundIndex)
+        system.writeLine(sql)
+        system.writeLine(
+            " ".repeat(foundIndex) + "^ " + 
+            Show.show(scope.expectingTable) + " " + Show.show(scope.beforeDot)
+        )
+        scope.symbols.each {symbol =>
+            system.writeLine(Show.show(symbol))
+        }
+    }
+    let sql = "WITH c as (select x, y z from p, q.w) SELECT *, f.g(h) i FROM s.t1 a WHERE ((SELECT * FROM t2 b WHERE a.id = b.id))"
+    function bogus(connection: PgConnection) {
+        connection.statement(
+            """WITH c as (select x, y z from p, q.w) SELECT *, f.g(h) i FROM s.t1 a WHERE ((SELECT * FROM t2 b WHERE a.id = b.id))"""
+        )
+    }
+    system.writeLine("")
+    system.writeLine("Tokenize:")
+    tokenize(sql).each {token =>
+        system.writeLine(showToken(token))
+    }
+    showCompletionScope(sql, "x")
+    showCompletionScope(sql, "*")
+    showCompletionScope(sql, "id")
+    showCompletionScope(sql, "t1 a")
+    showCompletionScope(sql, "1 a")
+    showCompletionScope(sql, " a WHERE")
+}
