@@ -8,7 +8,7 @@ testSql(connection: PgConnection): List[String] {
         select 
             g.benefit,
             g.created
-        from guide."InquiryHistory" i
+        from guide."Inquiry" i
         join 
     """).map {row => 
         row.getString("name").grab()
