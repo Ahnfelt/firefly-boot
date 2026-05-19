@@ -299,7 +299,7 @@ extend self: Handler {
                                     //system.writeErrorLine(Json(e!).write())
                                     let errorPosition = e!->position.grabString().grabInt() - "explain ".size()
                                     let tokens = Sql.tokenize(sql)
-                                    let t = tokens.find {_.startOffset >= errorPosition}.else {tokens.grabLast()} // TODO
+                                    let t = tokens.find {_.startOffset >= errorPosition - 1}.else {tokens.grabLast()} // TODO
                                     let absoluteLine = at.line - 1 + t.startLine - 1 + 1
                                     let absoluteColumnExtra = if(t.at().line == 1) {(at.column - 1) + 3} else {0} 
                                     let absoluteColumn = t.startOffset - t.startLineOffset + absoluteColumnExtra + 1

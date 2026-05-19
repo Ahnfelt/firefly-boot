@@ -7,7 +7,7 @@ testSql(connection: PgConnection): List[String] {
     connection.statement("""
         select 
             g.benefit,
-            g.created,
+            g.created
         from guide."Inquiry" i
         join guide."Guide" g on g.id = i.guideid
         where g.deleted isnull
