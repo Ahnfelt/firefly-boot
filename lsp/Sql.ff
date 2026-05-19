@@ -171,7 +171,7 @@ tokenize(sql: String): List[SqlToken] {
             }
             if(operator) {
                 emitToken(startOffset, SqlOperator)
-            } elseIf {offset < length} {
+            } else {
                 offset += 1
             }
         }
