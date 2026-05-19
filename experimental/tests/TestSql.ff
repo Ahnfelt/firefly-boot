@@ -9,9 +9,7 @@ testSql(connection: PgConnection): List[String] {
             g.benefit,
             g.created
         from guide."Inquiry" i
-        join guide."Guide" g on g.id = i.guideid
-        where g.deleted isnull
-        order by g.created desc
+        join guide."Guide" g on g.id = i.guideId
     """).map {row => 
         row.getString("name").grab()
     }

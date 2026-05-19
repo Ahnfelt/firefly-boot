@@ -398,9 +398,10 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
         }
     }).addAll(if(!scope.expectingJoin) {[]} else {
         function showJoin(alias: Option[String], key: SqlForeignKey): Pair[String, Pair[String, String]] {
+            let schemaPrefix = scope.beforeDot.isEmpty() && !searchPathSchemas.contains(key.foreignSchema)
             let newAlias = alias.flatMap {_ => key.foreignName.first()}.map {_.toString().lower()}
             let snippet = 
-                if(searchPathSchemas.contains(key.foreignSchema)) {""} else {Sql.quote(key.foreignSchema) + "."} +
+                if(!schemaPrefix) {""} else {Sql.quote(key.foreignSchema) + "."} +
                 Sql.quote(key.foreignName) + newAlias.map {" ${1:" + _ + "}"}.else {""} + 
                 " on " + key.columns.map {c => 
                 newAlias.map {"${1:" + _ + "}."}.else {""} + Sql.quote(c.second) + 
@@ -425,11 +426,15 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
             Pair(Pair(_, v.table), r)
         }}}.toMap()
         data.foreignKeys.flatMap {k =>
-            symbols.get(Pair(k.schema, k.name)).toList().flatMap {alias =>
+            symbols.get(Pair(k.schema, k.name)).filter {_ => 
+                scope.beforeDot.all {_ == k.foreignSchema}
+            }.toList().flatMap {alias =>
                 [...views.get(Pair(k.foreignSchema, k.foreignName)).map {r =>
                     showJoin(alias, k.SqlForeignKey(foreignSchema = r.schema, foreignName = r.name))
                 }.toList(), showJoin(alias, k)]
-            }.addAll(symbols.get(Pair(k.foreignSchema, k.foreignName)).toList().flatMap {alias =>
+            }.addAll(symbols.get(Pair(k.foreignSchema, k.foreignName)).filter {_ => 
+                scope.beforeDot.all {_ == k.schema}
+            }.toList().flatMap {alias =>
                 [...views.get(Pair(k.schema, k.name)).map {r =>
                     showJoin(alias, k.SqlForeignKey(schema = r.schema, name = r.name).swap())
                 }.toList(), showJoin(alias, k.swap())]

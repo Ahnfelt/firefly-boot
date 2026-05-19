@@ -213,7 +213,10 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
         rawIs(o, "fetch") || rawIs(o, "for") || rawIs(o, ")")
     }
     function foundCursor(expectTable: Bool): Unit {
-        expectingJoin = offset > 0 && rawIs(offset - 1, "join")
+        expectingJoin = offset >= 3 && (rawIs(offset - 1, "join") || (
+            rawIs(offset - 3, "join") && (is(offset - 2, SqlIdentifier) || is(offset - 2, SqlUnreserved)) &&
+            rawIs(offset - 1, ".")
+        ))
         expectingTable = expectTable
         beforeDot = if(offset < tokens.size() && offset >= 1 && rawIs(offset, ".") && (
             is(offset - 1, SqlIdentifier) || is(offset - 1, SqlUnreserved)
