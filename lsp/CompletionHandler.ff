@@ -4,6 +4,7 @@ import Environment from ff:compiler
 import Syntax from ff:compiler
 import Handler
 import Sql
+import SqlSuggestion
 
 data CompletionInfo(
     label: String
@@ -16,6 +17,7 @@ data CompletionInfo(
     expectedType: Option[Type]
     secondarySort: Int = 5
     insertion: Option[Pair[Int, String]] = None
+    sql: Bool = False
 )
 
 data ImportSymbolsInfo(
@@ -199,7 +201,7 @@ completionsToJson(completions: List[CompletionInfo]): Json {
             let isDefinition = ["let ", "mutable ", "function "].any {i.snippet.startsWith(_)}
             let isParameter = i.snippet.endsWith(" = ")
             let isImport = i.documentation == "// Imports this module"
-            let sortText = if(i.extra == "<<SQL>>") {
+            let sortText = if(i.sql && i.extra == "") {
                 i.secondarySort + i.label.lower()
             } else {
                 if(isParameter || isDefinition || isImport) {0} else {9 - (
@@ -214,7 +216,7 @@ completionsToJson(completions: List[CompletionInfo]): Json {
             Json.object()
                 // Namespace or Property or Constructor or EnumMember or Constructor or Method/Function or Field/Variable
                 .with("kind"
-                    if(i.extra.startsWith("<<SQL>>")) {
+                    if(i.sql) {
                         if(i.secondarySort == 1) {15} else:
                         if(i.secondarySort == 2) {23} else:
                         if(i.secondarySort == 3) {7} else:
@@ -234,7 +236,7 @@ completionsToJson(completions: List[CompletionInfo]): Json {
                 .with("preselect", preselect)
                 .with("label", i.label)
                 .with("labelDetails", Json.object()
-                    .with("detail", if(i.extra.startsWith("<<SQL>>")) {i.extra.dropFirst("<<SQL>>".size())} else {
+                    .with("detail", if(i.sql) {i.extra} else {
                         i.extra + if(shownType == "") {""} else {": " + shownType}
                     })
                     .with("description", i.more)
@@ -244,7 +246,7 @@ completionsToJson(completions: List[CompletionInfo]): Json {
                 .with("documentation", Json.object()
                     .with("kind", "markdown")
                     .with("value", 
-                        if(i.extra.startsWith("<<SQL>>")) {"```sql\n"} else {"```\n"} + i.documentation + "\n```"
+                        if(i.sql) {"```sql\n"} else {"```\n"} + i.documentation + "\n```"
                     )
                 )
                 .with("additionalTextEdits", i.insertion.toList().map {| Pair(line, text) => Json.object()
@@ -266,206 +268,63 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
     let line = 1 + at.line - sqlString.at.line
     let column = if(at.line == sqlString.at.line) {1 + at.column - (sqlString.at.column + 3)} else {at.column}
     let scope = Sql.completionScope(tokens, line, column)
-    function showColumnType(column: SqlColumn): String {
-        column.type.replace("\"", "") + " " + 
-        if(column.primaryKey) {"primary key"} elseIf {column.notNull} {"not null"} else {"null"}
-    }
-    function showColumn(column: SqlColumn): String {
-        Sql.quote(column.name, True) + " " + showColumnType(column) + 
-        column.default.map {" default " + _}.else {""}
-    }
-    function showForeignKeys(schema: String, table: String, column: String): String {
-        data.foreignKeys.filter {k => 
-            k.schema == schema && k.name == table && k.columns.any {_.first == column}
-        }.map {k =>
-            if(k.columns.size() == 1) {""} else {"(" + k.columns.map {Sql.quote(_.first)}.join(", ") + ") "} + 
-            "references " +
-            if(k.foreignSchema != schema) {Sql.quote(k.foreignSchema) + "."} else {""} +
-            if(k.foreignName != table) {Sql.quote(k.foreignName)} else {""} +
-            "(" + k.columns.map {_.second}.map {Sql.quote(_)}.join(", ") + ")"
-        }.sortBy {t => Pair(if(t.startsWith("references ")) {1} else {2}, t)}.map {"\n" + _}.join() +
-        data.foreignKeys.filter {k => 
-            k.foreignSchema == schema && k.foreignName == table && k.columns.any {_.second == column}
-        }.map {k =>
-            if(k.schema != schema) {Sql.quote(k.schema) + "."} else {""} +
-            if(k.name != table) {Sql.quote(k.name)} else {""} +
-            "(" + k.columns.map {_.first}.map {Sql.quote(_)}.join(", ") + ") " +
-            "references " +
-            "(" + k.columns.map {_.second}.map {Sql.quote(_)}.join(", ") + ")"
-        }.sort().map {"\n" + _}.join()
-    }
-    function showView(r: SqlRelation): String {
-        if(r.kind != "v") {""} else:
-        "-- view" + r.simpleView.map {v => 
-            " of " + v.schema.map {Sql.quote(_) + "."}.else {""} + Sql.quote(v.table) +
-            "(" + [...v.columns.map {Sql.quote(_)}, "..."].join(", ") + ")"
-        }.else {""}
-    }
-    function documentFunction(f: SqlFunction): String {
-        let names = f.argumentNames.pairs().filter {_.second != ""}.toMap()
-        f.description.map {_.lines().map {("-- " + _).trim() + "\n"}.join()}.else {""} +
-        f.kind + " " + f.schema + "." + f.name + "(" + 
-        f.argumentTypes.pairs().map {| Pair(i, t) => 
-            "\n    " + names.get(i).map {Sql.quote(_, True) + " "}.else {""} + t
-        }.join(",") + "\n) " + f.returnType
-    }
     let suggestTable = scope.expectingTable && !scope.avoidTables
     let searchPathSchemas = data.searchPathSchemas.filter {_ != "pg_catalog"}.toSet()
-    let label = scope.beforeDot.map {beforeDot =>
-        scope.symbols.flatMap {
-            | SqlTable(Some(alias), schema, table) {!scope.expectingTable && alias == beforeDot} => 
-                data.relations.filter {r => schema.all {_ == r.schema} && r.name == table}.flatMap {r => 
-                    r.columns.map {c => 
-                        let description = 
-                            c.description.map {_.lines().map {("-- " + _).trim() + "\n"}.join()}.else {""}
-                        let foreignKeys = if(r.kind == "v") {
-                            r.simpleView.flatMap {v => v.schema.map {showForeignKeys(_, v.table, c.name)}}.else {""}
-                        } else {showForeignKeys(r.schema, r.name, c.name)}
-                        Pair(c.name, Pair(showColumnType(c), description + showColumn(c) + foreignKeys))
-                    }
-                }
-            | SqlQuery(alias, columns) {!scope.expectingTable && alias == beforeDot} =>
-                columns.map {c =>
-                    Pair(c, Pair("from subquery", c))
-                }
-            | _ => 
-                []
-        }.addAll(if(!suggestTable) {[]} else {
-            data.relations.filter {r => 
-                let kindName = r.kindName()
-                r.schema == beforeDot && (kindName.contains("table") || kindName.contains("view"))
-            }.map {r => 
-                Pair(r.name, Pair(r.schema, showView(r) + r.columns.map {showColumn(_)}.join("\n")))
-            }
-        }).addAll(data.functions.filter {_.schema == beforeDot}.map {f =>
-            Pair(f.name, Pair("\\(" + f.argumentTypes.join(", ") + ") " + f.returnType, documentFunction(f)))
+    let suggestions =
+        scope.beforeDot.map {beforeDot =>
+            SqlSuggestion.sqlBeforeDotSuggestions(beforeDot, scope, data, suggestTable)
+        }.elseIf {scope.expectingTable} {
+            SqlSuggestion.sqlExpectingTableSuggestions(scope, data, searchPathSchemas, suggestTable)
+        } else {
+            SqlSuggestion.sqlColumnSuggestions(scope, data)
+        }.addAll(if(!scope.beforeDot.isEmpty()) {[]} else {
+            SqlSuggestion.sqlSchemaSuggestions(data)
+        }).addAll(if(!scope.expectingJoin) {[]} else {
+            SqlSuggestion.sqlJoinSuggestions(scope, data, searchPathSchemas)
         })
-    }.elseIf {scope.expectingTable} {
-        if(!suggestTable) {[]} else:
-        scope.symbols.flatMap {
-            | SqlQuery(alias, columns) => 
-                [Pair(alias, Pair("(" + columns.join(", ") + ")", "(" + columns.join(", ") + ")"))]
-            | _ =>
-                []
-        }.addAll(
-            data.relations.filter {r => searchPathSchemas.contains(r.schema) && r.tableLike()}.map {r => 
-                Pair(r.name, Pair(r.schema, showView(r) + r.columns.map {showColumn(_)}.join("\n")))
-            }
-        )
-    } else {
-        scope.symbols.flatMap {
-            | SqlQuery(alias, columns) => 
-                [Pair(alias, Pair("(" + columns.join(", ") + ")", "(" + columns.join(", ") + ")"))]
-            | SqlTable(Some(alias), schema, table) => 
-                let tableText = data.relations.filter {
-                    r => schema.all {_ == r.schema} && table == r.name
-                }.flatMap {_.columns.map {showColumn(_)}}.join("\n")
-                [Pair(alias, Pair(schema.map {_ + "."}.else {""} + table, tableText))]
-            | SqlTable(None, schema, table) =>
-                data.relations.filter {r => schema.all {_ == r.schema} && table == r.name}.flatMap {r =>
-                    r.columns.map {c => 
-                        let foreignKeys = if(r.kind == "v") {
-                            r.simpleView.flatMap {v => v.schema.map {showForeignKeys(_, v.table, c.name)}}.else {""}
-                        } else {showForeignKeys(r.schema, r.name, c.name)}
-                        Pair(c.name, Pair(showColumnType(c), showColumn(c) + foreignKeys))
-                    }
-                }
-            | _ => 
-                []
-        }.addAll(data.functions.filter {f => data.searchPathSchemas.any {_ == f.schema}}.map {f =>
-            Pair(f.name, Pair("\\(" + f.argumentTypes.join(", ") + ") " + f.returnType, documentFunction(f)))
-        })
-    }.addAll(if(!scope.beforeDot.isEmpty()) {[]} else {
-        data.relations.map {r => Pair(r.schema, r)}.group().toList().map {| Pair(schema, rs) => 
-            let ordered = rs.sortBy {r => 
-                let kindName = r.kindName()
-                if(kindName.contains("table")) {
-                    1
-                } elseIf {kindName.contains("view")} {
-                    2
-                } elseIf {kindName.contains("index")} {
-                    3
-                } else {
-                    4
-                }
-            }
-            let tables = ordered.count {r => r.kindName().contains("table")}
-            let text = if(tables == 1) {tables + " table"} else {tables + " tables"}
-            let documentation = ordered.map {r => r.kindName() + " " + Sql.quote(r.name, True)}.join("\n")
-            let functionCount = data.functions.count {_.schema == schema}
-            let functions = if(functionCount == 1) {functionCount + " function"} else {functionCount + " functions"}
-            Pair(schema, Pair(text, documentation + "\n-- and " + functions))
+    suggestions.map {s =>
+        let sort = s.secondarySort()
+        s.{
+        | SqlSuggestionFunction(l, signature, documentation) =>
+            CompletionInfo(
+                label = l
+                extra = signature
+                more = ""
+                snippet = Sql.quote(l) + "($0)"
+                member = False
+                type = TConstructor(Location("", 0, 0), "", [])
+                documentation = documentation
+                expectedType = None
+                sql = True
+                secondarySort = sort
+            )
+        | SqlSuggestionJoin(l, schema, snippet) =>
+            CompletionInfo(
+                label = l
+                extra = ""
+                more = schema
+                snippet = snippet
+                member = False
+                type = TConstructor(Location("", 0, 0), "", [])
+                documentation = snippet
+                expectedType = None
+                sql = True
+                secondarySort = sort
+            )
+        | SqlSuggestionRegular(l, display, documentation) =>
+            CompletionInfo(
+                label = l
+                extra = ""
+                more = display
+                snippet = Sql.quote(l)
+                member = False
+                type = TConstructor(Location("", 0, 0), "", [])
+                documentation = documentation
+                expectedType = None
+                sql = True
+                secondarySort = sort
+            )
         }
-    }).addAll(if(!scope.expectingJoin) {[]} else {
-        function showJoin(alias: Option[String], key: SqlForeignKey): Pair[String, Pair[String, String]] {
-            let schemaPrefix = scope.beforeDot.isEmpty() && !searchPathSchemas.contains(key.foreignSchema)
-            let newAlias = alias.flatMap {_ => key.foreignName.first()}.map {_.toString().lower()}
-            let snippet = 
-                if(!schemaPrefix) {""} else {Sql.quote(key.foreignSchema) + "."} +
-                Sql.quote(key.foreignName) + newAlias.map {" ${1:" + _ + "}"}.else {""} + 
-                " on " + key.columns.map {c => 
-                newAlias.map {"${1:" + _ + "}."}.else {""} + Sql.quote(c.second) + 
-                " = " + alias.map {Sql.quote(_) + "."}.else {""} + Sql.quote(c.first)
-            }.join(" and ")
-            Pair(key.foreignName + " on " + key.columns.map {c => 
-                c.second + " = " + alias.map {_ + "."}.else {""} + c.first
-            }.join(" and "), Pair("@" + key.foreignSchema, snippet))
-        }
-        let symbols = scope.symbols.collect {
-            | SqlTable(alias, schema, name) => 
-                data.relations.find {r => schema.all {_ == r.schema} && r.name == name}.flatMap {r =>
-                    if(r.kind == "v") {
-                        r.simpleView.flatMap {v => v.schema.map {Pair(Pair(_, v.table), alias)}}
-                    } else {
-                        Some(Pair(Pair(r.schema, name), alias))
-                    }
-                }
-            | _ => None
-        }.toMap()
-        let views = data.relations.collect {r => r.simpleView.flatMap {v => v.schema.map {
-            Pair(Pair(_, v.table), r)
-        }}}.toMap()
-        data.foreignKeys.flatMap {k =>
-            symbols.get(Pair(k.schema, k.name)).filter {_ => 
-                scope.beforeDot.all {_ == k.foreignSchema}
-            }.toList().flatMap {alias =>
-                [...views.get(Pair(k.foreignSchema, k.foreignName)).map {r =>
-                    showJoin(alias, k.SqlForeignKey(foreignSchema = r.schema, foreignName = r.name))
-                }.toList(), showJoin(alias, k)]
-            }.addAll(symbols.get(Pair(k.foreignSchema, k.foreignName)).filter {_ => 
-                scope.beforeDot.all {_ == k.schema}
-            }.toList().flatMap {alias =>
-                [...views.get(Pair(k.schema, k.name)).map {r =>
-                    showJoin(alias, k.SqlForeignKey(schema = r.schema, name = r.name).swap())
-                }.toList(), showJoin(alias, k.swap())]
-            })
-        }
-    })
-    label.map {| Pair(l, extra) =>
-        CompletionInfo(
-            label = l
-            extra = "<<SQL>>" + if(extra.first.startsWith("\\")) {extra.first.dropFirst()} else {""}
-            more = if(extra.first.startsWith("\\")) {""} elseIf {extra.first.startsWith("@")} {
-                extra.first.dropFirst()
-            } else {extra.first}
-            snippet = if(extra.first.startsWith("@")) {extra.second} else {
-                Sql.quote(l) + if(extra.first.startsWith("\\")) {"($0)"} else {""}
-            }
-            member = False
-            type = TConstructor(Location("", 0, 0), "", [])
-            documentation = extra.second, 
-            expectedType = None
-            secondarySort = if(extra.first.startsWith("\\")) {8} elseIf {
-                extra.first.endsWith(" table") || extra.first.endsWith(" tables")
-            } {
-                if(l.startsWith("pg_") || l == "information_schema") {7} else {6}
-            } else {
-                if(extra.first.startsWith("@")) {1} else:
-                if(extra.first.startsWith("(") || extra.first.contains(".")) {5} else: 
-                if(extra.first.endsWith(" null") || extra.first.endsWith(" key")) {4} else: 
-                if(extra.second.startsWith("-- view")) {2} else {3}
-            }
-        )
     }
 }
 
