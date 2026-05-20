@@ -632,7 +632,11 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
 }
 
 shortenType(fullType: String): String {
-    fullType.replace("timestamp with time zone", "timestamptz").replace("timestamp without time zone", "timestamp")
+    fullType
+        .replace("timestamp with time zone", "timestamptz")
+        .replace("timestamp without time zone", "timestamp")
+        .replace("time without time zone", "time")
+        .replace("double precision", "float")
 }
 
 quote(identifier: String, force: Bool = False): String {
