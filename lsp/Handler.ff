@@ -291,7 +291,7 @@ extend self: Handler {
                                 let explainSql = "explain " + sql
                                 try {
                                     connection.statement(explainSql).map {row => 
-                                        row.getString("QUERY PLAN").grab()
+                                        //row.getString("QUERY PLAN").grab()
                                     }
                                     None
                                 } catchAny {e => 

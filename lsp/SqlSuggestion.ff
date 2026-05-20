@@ -23,6 +23,23 @@ extend self: SqlSuggestion {
     }
 }
 
+suggest(data: SqlData, tokens: List[SqlToken], line: Int, column: Int): List[SqlSuggestion] {
+    let scope = Sql.completionScope(tokens, line, column)
+    let suggestTable = scope.expectingTable && !scope.avoidTables
+    let searchPathSchemas = data.searchPathSchemas.filter {_ != "pg_catalog"}.toSet()
+    scope.beforeDot.map {beforeDot =>
+        sqlBeforeDotSuggestions(beforeDot, scope, data, suggestTable)
+    }.elseIf {scope.expectingTable} {
+        sqlExpectingTableSuggestions(scope, data, searchPathSchemas, suggestTable)
+    } else {
+        sqlColumnSuggestions(scope, data)
+    }.addAll(if(!scope.beforeDot.isEmpty()) {[]} else {
+        sqlSchemaSuggestions(data)
+    }).addAll(if(!scope.expectingJoin) {[]} else {
+        sqlJoinSuggestions(scope, data, searchPathSchemas)
+    })
+}
+
 showSqlColumnType(column: SqlColumn): String {
     column.type.replace("\"", "") + " " +
     if(column.primaryKey) {"primary key"} elseIf {column.notNull} {"not null"} else {"null"}

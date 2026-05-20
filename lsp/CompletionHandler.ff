@@ -267,25 +267,9 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
     let tokens = Sql.tokenize(sql)
     let line = 1 + at.line - sqlString.at.line
     let column = if(at.line == sqlString.at.line) {1 + at.column - (sqlString.at.column + 3)} else {at.column}
-    let scope = Sql.completionScope(tokens, line, column)
-    let suggestTable = scope.expectingTable && !scope.avoidTables
-    let searchPathSchemas = data.searchPathSchemas.filter {_ != "pg_catalog"}.toSet()
-    let suggestions =
-        scope.beforeDot.map {beforeDot =>
-            SqlSuggestion.sqlBeforeDotSuggestions(beforeDot, scope, data, suggestTable)
-        }.elseIf {scope.expectingTable} {
-            SqlSuggestion.sqlExpectingTableSuggestions(scope, data, searchPathSchemas, suggestTable)
-        } else {
-            SqlSuggestion.sqlColumnSuggestions(scope, data)
-        }.addAll(if(!scope.beforeDot.isEmpty()) {[]} else {
-            SqlSuggestion.sqlSchemaSuggestions(data)
-        }).addAll(if(!scope.expectingJoin) {[]} else {
-            SqlSuggestion.sqlJoinSuggestions(scope, data, searchPathSchemas)
-        })
-    suggestions.map {s =>
-        let sort = s.secondarySort()
-        s.{
-        | SqlSuggestionFunction(l, signature, documentation) =>
+    let suggestions = SqlSuggestion.suggest(data, tokens, line, column)
+    suggestions.map {
+        | SqlSuggestionFunction(l, signature, documentation)@suggestion =>
             CompletionInfo(
                 label = l
                 extra = signature
@@ -296,9 +280,9 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
                 documentation = documentation
                 expectedType = None
                 sql = True
-                secondarySort = sort
+                secondarySort = suggestion.secondarySort()
             )
-        | SqlSuggestionJoin(l, schema, snippet) =>
+        | SqlSuggestionJoin(l, schema, snippet)@suggestion =>
             CompletionInfo(
                 label = l
                 extra = ""
@@ -309,9 +293,9 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
                 documentation = snippet
                 expectedType = None
                 sql = True
-                secondarySort = sort
+                secondarySort = suggestion.secondarySort()
             )
-        | SqlSuggestionRegular(l, display, documentation) =>
+        | SqlSuggestionRegular(l, display, documentation)@suggestion =>
             CompletionInfo(
                 label = l
                 extra = ""
@@ -322,9 +306,8 @@ sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo
                 documentation = documentation
                 expectedType = None
                 sql = True
-                secondarySort = sort
+                secondarySort = suggestion.secondarySort()
             )
-        }
     }
 }
 
