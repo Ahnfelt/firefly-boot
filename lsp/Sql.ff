@@ -153,6 +153,9 @@ tokenize(sql: String): List[SqlToken] {
         } elseIf {char == '(' || char == ')' || char == ',' || char == ';' || char == '.'} {
             offset += 1
             emitToken(startOffset, SqlPunctuation)
+        } elseIf {char == ':' && offset + 1 < length && sql.grab(offset + 1) == ':'} {
+            offset += 2
+            emitToken(startOffset, SqlPunctuation)
         } else {
             mutable operator = False
             mutable c = char
@@ -588,7 +591,14 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
             name = tableName
             columns = row.getString("column_name").toList().map {unquote(_)}.map {columnName =>
                 let type = unquote(shortenType(row.getString("data_type").grab()))
-                let default = row.getString("default_value")
+                let default = row.getString("default_value").map {d =>
+                    tokenize(d).{
+                        | [a, b, c] {a.is(SqlString) && b.rawIs("::") && c.rawIs("text")} =>
+                            a.raw()
+                        | _ => 
+                            d
+                    }
+                }
                 let serialType = if(!default.any {_.endsWith("::regclass)")}) {type} else {
                     if(!default.map {_.replace("\"", "")}.any {d => 
                         d == "nextval('" + tableName + "_" + columnName + "_seq'::regclass)" || 
