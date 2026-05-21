@@ -643,11 +643,21 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
 
 buildExplainStatement(statement: String): Option[Pair[Int, String]] {
     let tokens = tokenize(statement)
-    if(tokens.first().any {t => 
+    let noInbetweenSemicolon = tokens.indexWhere {_.rawIs(";")}.all {_ >= tokens.size() - 1}
+    if(noInbetweenSemicolon && tokens.first().any {t => 
         t.rawIs("with") || t.rawIs("select") || t.rawIs("values") || 
         t.rawIs("insert") || t.rawIs("update") || t.rawIs("delete") || t.rawIs("merge")
-    } && tokens.indexWhere {_.rawIs(";")}.all {_ >= tokens.size() - 1}):
-    Pair("explain ".size(), "explain " + statement)
+    }) {
+        let prefix = "EXPLAIN "
+        Some(Pair(prefix.size(), prefix + statement))
+    } elseIf {noInbetweenSemicolon && tokens.first().any {t =>
+        t.rawIs("alter") || t.rawIs("create") || t.rawIs("drop")
+    }} {
+        let prefix = "SAVEPOINT firefly_lsp_savepoint; "
+        Some(Pair(prefix.size(), prefix + statement + "; ROLLBACK TO SAVEPOINT firefly_lsp_savepoint"))
+    } else {
+        None
+    }
 }
 
 shortenType(fullType: String): String {
