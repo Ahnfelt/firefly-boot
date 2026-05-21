@@ -641,6 +641,15 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
     }
 }
 
+buildExplainStatement(statement: String): Option[Pair[Int, String]] {
+    let tokens = tokenize(statement)
+    if(tokens.first().any {t => 
+        t.rawIs("with") || t.rawIs("select") || t.rawIs("values") || 
+        t.rawIs("insert") || t.rawIs("update") || t.rawIs("delete") || t.rawIs("merge")
+    } && tokens.indexWhere {_.rawIs(";")}.all {_ >= tokens.size() - 1}):
+    Pair("explain ".size(), "explain " + statement)
+}
+
 shortenType(fullType: String): String {
     fullType
         .replace("timestamp with time zone", "timestamptz")
