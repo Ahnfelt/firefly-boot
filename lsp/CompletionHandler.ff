@@ -38,7 +38,7 @@ handleCompletion(
     toplevel: Bool
     followedByOpenBracket: Bool
     importSymbols: ImportSymbolsInfo
-    sqlString: Option[Pair[Location, Term]]
+    sqlString: Option[Pair[Location, SqlStringHook]]
     sqlData: SqlData
 ): Json {
     sqlString.map {| Pair(l, s) => completionsToJson(sqlCompletion(l, s, sqlData))}.else:
@@ -259,14 +259,11 @@ completionsToJson(completions: List[CompletionInfo]): Json {
         })
 }
 
-sqlCompletion(at: Location, sqlString: Term, data: SqlData): List[CompletionInfo] {
-    sqlString.{
-        | EString(_, s) {s.removeFirst("\"\"\"") | Some(s)} => s.removeLast("\"\"\"")
-        | _ => None
-    }.or {[]}: sql =>
-    let tokens = Sql.tokenize(sql)
+sqlCompletion(at: Location, sqlString: SqlStringHook, data: SqlData): List[CompletionInfo] {
+
+    let tokens = Sql.tokenize(sqlString.string)
     let line = 1 + at.line - sqlString.at.line
-    let column = if(at.line == sqlString.at.line) {1 + at.column - (sqlString.at.column + 3)} else {at.column}
+    let column = if(at.line == sqlString.at.line) {1 + at.column - sqlString.at.column} else {at.column}
     let suggestions = SqlSuggestion.suggest(data, tokens, line, column)
     suggestions.map {
         | SqlSuggestionFunction(l, signature, documentation)@suggestion =>

@@ -9,7 +9,7 @@ class LspHook(
     trackSymbols: Bool
     arrayOfResults: Array[ResultHook]
     sql: Bool
-    sqlStrings: Array[Term]
+    sqlStrings: Array[SqlStringHook]
 )
 
 disabled(sql: Bool = False): LspHook {
@@ -211,3 +211,9 @@ showHook(hook: ResultHook): String {
     | ResolveTypeHook(types, typeGenerics, symbol, explicitType) => "ResolveTypeHook(...)"
     | ResolveVariantFieldHook(symbol, type, commonField) => "ResolveVariantFieldHook(...)"
 }
+
+data SqlStringHook(
+    termAt: Location
+    at: Location
+    string: String
+)

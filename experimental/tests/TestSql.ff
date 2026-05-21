@@ -8,6 +8,8 @@ testSql(connection: PgConnection): List[String] {
         select i.id, g.id guideId
         from guide."Inquiry" i
         join guide."GuideHistory" g on g.id = i.guideid
+        join guide."System" s on s.guideid = g.id
+        join guide."GuideHistory" gh on gh.id = i.guideid
     """).map {row => 
         row.getString("name").grab()
     }
