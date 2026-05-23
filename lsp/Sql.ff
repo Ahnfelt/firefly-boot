@@ -648,7 +648,7 @@ buildExplainStatement(statement: String): Option[Pair[String, String]] {
         t.rawIs("with") || t.rawIs("select") || t.rawIs("values") || 
         t.rawIs("insert") || t.rawIs("update") || t.rawIs("delete") || t.rawIs("merge")
     }):
-    let prefix = "EXPLAIN "
+    let prefix = "EXPLAIN (GENERIC_PLAN) "
     Pair(prefix, prefix + statement)
 }
 
