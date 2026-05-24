@@ -308,6 +308,8 @@ sqlCompletion(at: Location, sqlString: SqlStringHook, data: SqlData): List[Compl
                 secondarySort = suggestion.secondarySort()
             )
         | SqlSuggestionColumnNames(required, columns)@suggestion =>
+            let comment = 
+                if(required) {"-- required columns\n"} elseIf {columns.size() > 1} {"-- all columns\n"} else {""}
             CompletionInfo(
                 label = columns.map {_.first}.join(", ")
                 extra = ""
@@ -315,7 +317,7 @@ sqlCompletion(at: Location, sqlString: SqlStringHook, data: SqlData): List[Compl
                 snippet = columns.map {Sql.quote(_.first)}.join(", ")
                 member = False
                 type = TConstructor(Location("", 0, 0), "", [])
-                documentation = if(required) {"-- required columns\n"} else {""} + columns.map {_.second}.join("\n")
+                documentation = comment + columns.map {_.second}.join("\n")
                 expectedType = None
                 sql = True
                 secondarySort = suggestion.secondarySort()
