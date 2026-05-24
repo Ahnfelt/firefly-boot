@@ -13,7 +13,7 @@ extend self: SqlSuggestion {
             | SqlSuggestionFunction(_, _, _) => 8
             | SqlSuggestionJoin(_, _, _) => 1
             | SqlSuggestionColumnNames(required, columns) => 
-                if(required) {1} elseIf {columns.size() > 1} {9} else {3}
+                if(required) {1} elseIf {columns.size() > 1} {9} else {4}
             | SqlSuggestionRegular(l, display, documentation) =>
                 if(display.endsWith(" table") || display.endsWith(" tables")) {
                     if(l.startsWith("pg_") || l == "information_schema") {7} else {6}
