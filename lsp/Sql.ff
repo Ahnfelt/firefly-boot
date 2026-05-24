@@ -255,7 +255,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
             is(offset - 2, SqlIdentifier) || is(offset - 2, SqlUnreserved)
         )} {Some(tokens.grab(offset - 2).raw())} else {
             None
-        }.map {unquote(_)}
+        }.map {fromRaw(_)}
         avoidTables = offset > 0 && (
             is(offset - 1, SqlIdentifier) || is(offset - 1, SqlUnreserved) || rawIs(offset - 1, ")")
         )
@@ -290,7 +290,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                     (rawIs(offset + 1, ",") || selectEnd(offset + 1))
                 } {
                     let alias = tokens.grab(offset)
-                    scopeColumns.push(Pair(unquote(alias.raw()), simple))
+                    scopeColumns.push(Pair(fromRaw(alias.raw()), simple))
                     simple = True
                     offset += 1
                     if(rawIs(offset, ",")) {
@@ -310,7 +310,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                 if(is(offset, SqlIdentifier) || is(offset, SqlUnreserved)) {
                     offset += 1
                     checkCursor(False, expectColumnNames = Some(seen))
-                    seen = seen.add(unquote(tokens.grab(offset - 1).raw()))
+                    seen = seen.add(fromRaw(tokens.grab(offset - 1).raw()))
                 }
                 while {offset < tokens.size() && !rawIs(offset, ")") && !rawIs(offset, ",")} {
                     offset += 1
@@ -347,7 +347,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                 if(rawIs(offset, ")")) {offset += 1}
                 columns
             } else {[]}
-            scope.symbols.push(SqlQuery(unquote(alias.raw()), columns.map {_.first}))
+            scope.symbols.push(SqlQuery(fromRaw(alias.raw()), columns.map {_.first}))
         }
         checkCursor(False)
         if(rawIs(offset, "select")) {
@@ -380,7 +380,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                         if(rawIs(offset, "as")) {offset += 1}
                         if(is(offset, SqlIdentifier) || is(offset, SqlUnreserved)) {
                             let alias = tokens.grab(offset)
-                            scope.symbols.push(SqlQuery(unquote(alias.raw()), columns.map {_.first}))
+                            scope.symbols.push(SqlQuery(fromRaw(alias.raw()), columns.map {_.first}))
                         }
                     } elseIf {is(offset, SqlIdentifier) || is(offset, SqlUnreserved)} {
                         let isTarget = offset - 1 > 0 && (
@@ -403,10 +403,10 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                                 alias
                             }
                             if(isTarget) {
-                                scope.targetTable = Some(Pair(schema.map {unquote(_.raw())}, unquote(relation.raw())))
+                                scope.targetTable = Some(Pair(schema.map {fromRaw(_.raw())}, fromRaw(relation.raw())))
                             }
                             scope.symbols.push(SqlTable(
-                                alias.map {unquote(_.raw())}, schema.map {unquote(_.raw())}, unquote(relation.raw())
+                                alias.map {fromRaw(_.raw())}, schema.map {fromRaw(_.raw())}, fromRaw(relation.raw())
                             ))
                         }
                         if(rawIs(offset, "(")) {
@@ -734,6 +734,14 @@ unquote(identifier: String): String {
         identifier.dropFirst().dropLast().replace("\"\"", "\"")
     } else {
         identifier
+    }
+}
+
+fromRaw(identifier: String): String {
+    if(identifier.startsWith("\"")) {
+        identifier.dropFirst().dropLast().replace("\"\"", "\"")
+    } else {
+        identifier.lower()
     }
 }
 
