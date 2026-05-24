@@ -5,6 +5,7 @@ data SqlSuggestion {
     SqlSuggestionFunction(label: String, signature: String, documentation: String)
     SqlSuggestionJoin(label: String, schema: String, snippet: String)
     SqlSuggestionColumnNames(required: Bool, columns: List[Pair[String, String]])
+    SqlSuggestionColumnSetters(columns: List[Pair[String, String]])
 }
 
 extend self: SqlSuggestion {
@@ -12,6 +13,7 @@ extend self: SqlSuggestion {
         self.{
             | SqlSuggestionFunction(_, _, _) => 8
             | SqlSuggestionJoin(_, _, _) => 1
+            | SqlSuggestionColumnSetters(columns) => 4
             | SqlSuggestionColumnNames(required, columns) => 
                 if(required) {1} elseIf {columns.size() > 1} {9} else {4}
             | SqlSuggestionRegular(l, display, documentation) =>
@@ -32,6 +34,10 @@ suggest(data: SqlData, tokens: List[SqlToken], line: Int, column: Int): List[Sql
     let searchPathSchemas = data.searchPathSchemas.filter {_ != "pg_catalog"}.toSet()
     scope.expectingColumnNames.map {seen =>
         sqlColumnNameSuggestions(scope, data, seen)
+    } else:
+    scope.expectingColumnSetters.map {seen =>
+        Log.trace("sqlColumnSetterSuggestions")
+        sqlColumnSetterSuggestions(scope, data, seen)
     } else:
     scope.beforeDot.map {beforeDot =>
         sqlBeforeDotSuggestions(beforeDot, scope, data, suggestTable)
@@ -165,6 +171,15 @@ sqlColumnNameSuggestions(scope: SqlCompletionScope, data: SqlData, seen: Set[Str
                 allColumns.map {c => SqlSuggestionColumnNames(False, [Pair(c.name, showSqlColumn(c))])}
             } else {[]}
         ]
+    }
+}
+
+sqlColumnSetterSuggestions(scope: SqlCompletionScope, data: SqlData, seen: Set[String]): List[SqlSuggestion] {
+    scope.targetTable.toList().flatMap {| Pair(schema, table) =>
+        let allColumns = data.relations.filter {
+            r => schema.all {_ == r.schema} && table == r.name
+        }.flatMap {_.columns}.filter {!seen.contains(_.name)}
+        allColumns.map {c => SqlSuggestionColumnSetters([Pair(c.name, showSqlColumn(c))])}
     }
 }
 

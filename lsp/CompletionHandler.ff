@@ -322,6 +322,21 @@ sqlCompletion(at: Location, sqlString: SqlStringHook, data: SqlData): List[Compl
                 sql = True
                 secondarySort = suggestion.secondarySort()
             )
+        | SqlSuggestionColumnSetters(columns)@suggestion =>
+            CompletionInfo(
+                label = columns.map {_.first + " = "}.join(", ")
+                extra = ""
+                more = ""
+                snippet = columns.pairs().map {| Pair(i, c) => 
+                    Sql.quote(c.first) + " = " + if(i == 0) {"$0"} else {""}
+                }.join(",\n")
+                member = False
+                type = TConstructor(Location("", 0, 0), "", [])
+                documentation = columns.map {_.second}.join("\n")
+                expectedType = None
+                sql = True
+                secondarySort = suggestion.secondarySort()
+            )
     }
 }
 

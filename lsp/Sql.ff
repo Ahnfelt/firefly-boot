@@ -2,6 +2,7 @@ import Token from ff:compiler
 import Syntax from ff:compiler
 import Pg from ff:postgresql
 import Environment from ff:compiler
+import Sql
 
 data SqlTokenKind {
     SqlReserved
@@ -229,7 +230,8 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
         rawIs(o, "having") || rawIs(o, "window") ||
         rawIs(o, "union") || rawIs(o, "intersect") || rawIs(o, "except") ||
         rawIs(o, "order") || rawIs(o, "limit") || rawIs(o, "offset") ||
-        rawIs(o, "fetch") || rawIs(o, "for") || rawIs(o, ")")
+        rawIs(o, "fetch") || rawIs(o, "for") || 
+        rawIs(o, "returning") || rawIs(o, ")")
     }
     function foundCursor(
         expectTable: Bool
@@ -256,7 +258,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
         )} {Some(tokens.grab(offset - 2).raw())} else {
             None
         }.map {fromRaw(_)}
-        avoidTables = offset > 0 && (
+        avoidTables = offset - 1 >= 0 && (
             is(offset - 1, SqlIdentifier) || is(offset - 1, SqlUnreserved) || rawIs(offset - 1, ")")
         )
         foundScopes = Some(scopes.toList())
@@ -301,9 +303,9 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                     simple = False
                     offset += 1
                 }
-            }        
+            }
         }
-        function parseColumnNames() {
+        function parseColumnNames(): Set[String] {
             mutable seen = Set.new()
             checkCursor(False, expectColumnNames = Some(seen))
             while {offset < tokens.size() && !rawIs(offset, ")")} {
@@ -321,6 +323,37 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                 }
                 checkCursor(False, expectColumnNames = Some(seen))
             }
+            seen
+        }
+        function parseColumnSetters() {
+            mutable seen = Set.new()
+            mutable beforeEquals = True
+            while {offset < tokens.size() && !selectEnd(offset)} {
+                checkCursor(False, expectColumnSetters = if(beforeEquals) {seen})
+                if(rawIs(offset, "(")) {
+                    offset += 1
+                    if(beforeEquals) {
+                        seen = seen.addAll(parseColumnNames())
+                    } else {
+                        parseScope()
+                    }
+                    if(rawIs(offset, ")")) {offset += 1}
+                } elseIf {rawIs(offset, ",")} {
+                    offset += 1
+                    beforeEquals = True
+                } elseIf {rawIs(offset, "=")} {
+                    offset += 1
+                    beforeEquals = False
+                } elseIf {beforeEquals && (is(offset, SqlIdentifier) || is(offset, SqlUnreserved))} {
+                    offset += 1
+                    checkCursor(False, expectColumnSetters = if(beforeEquals) {seen})
+                    seen = seen.add(fromRaw(tokens.grab(offset - 1).raw()))
+                    beforeEquals = False
+                } else {
+                    offset += 1
+                }
+            }
+            checkCursor(False, expectColumnSetters = if(beforeEquals) {seen})
         }
         let scope = SqlScope(None, Array.new())
         scopes.push(scope)
@@ -369,6 +402,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                 rawIs(offset, "only")
             } {
                 let isFrom = rawIs(offset, "from")
+                let requireAs = rawIs(offset, "update") || rawIs(offset, "into") || rawIs(offset, "only")
                 doWhile {
                     offset += 1
                     if(rawIs(offset, "lateral")) {offset += 1}
@@ -383,7 +417,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                             scope.symbols.push(SqlQuery(fromRaw(alias.raw()), columns.map {_.first}))
                         }
                     } elseIf {is(offset, SqlIdentifier) || is(offset, SqlUnreserved)} {
-                        let isTarget = offset - 1 > 0 && (
+                        let isTarget = offset - 1 >= 0 && (
                             rawIs(offset - 1, "into") || rawIs(offset - 1, "update") || rawIs(offset - 1, "only")
                         )
                         let schema = if(rawIs(offset + 1, ".")) {
@@ -395,9 +429,9 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                         if(is(offset, SqlIdentifier) || is(offset, SqlUnreserved)) {
                             let relation = tokens.grab(offset)
                             offset += 1
-                            if(rawIs(offset, "as")) {offset += 1}
+                            let allowAlias = if(rawIs(offset, "as")) {offset += 1; True} else {!requireAs}
                             checkCursor(True)
-                            let alias = if(is(offset, SqlIdentifier) || is(offset, SqlUnreserved)) {
+                            let alias = if(allowAlias && (is(offset, SqlIdentifier) || is(offset, SqlUnreserved))) {
                                 let alias = tokens.grab(offset)
                                 offset += 1
                                 alias
@@ -409,12 +443,15 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                                 alias.map {fromRaw(_.raw())}, schema.map {fromRaw(_.raw())}, fromRaw(relation.raw())
                             ))
                         }
-                        if(rawIs(offset, "(")) {
+                        if(isTarget && rawIs(offset, "(")) {
                             offset += 1
                             parseColumnNames()
                             if(rawIs(offset, ")")) {
                                 offset += 1
                             }
+                        } elseIf {isTarget && rawIs(offset, "set")} {
+                            offset += 1
+                            parseColumnSetters()
                         }
                     }
                     isFrom && rawIs(offset, ",")
@@ -1305,4 +1342,7 @@ nodeMain(system: NodeSystem) {
     showCompletionScope(sql, " a WHERE")
     showCompletionScope("insert into foo (a[1], b.x, c, d)", "c,")
     showCompletionScope("insert into foo ()", ")")
+    showCompletionScope("update foo set --", "--")
+    showCompletionScope("update foo set x = 1, (y, z) = row (2, 3), w =", "w =")
+    showCompletionScope("update guide.\"Inquiry\" set answers = 1, --", "--")
 }
