@@ -416,6 +416,15 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                             let alias = tokens.grab(offset)
                             scope.symbols.push(SqlQuery(fromRaw(alias.raw()), columns.map {_.first}))
                         }
+                    } elseIf {!scope.targetTable.isEmpty() && rawIs(offset, "insert") && rawIs(offset + 1, "(")} {
+                        offset += 2
+                        parseColumnNames()
+                        if(rawIs(offset, ")")) {
+                            offset += 1
+                        }
+                    } elseIf {!scope.targetTable.isEmpty() && rawIs(offset, "update") && rawIs(offset + 1, "set")} {
+                        offset += 2
+                        parseColumnSetters()
                     } elseIf {is(offset, SqlIdentifier) || is(offset, SqlUnreserved)} {
                         let isTarget = offset - 1 >= 0 && (
                             rawIs(offset - 1, "into") || rawIs(offset - 1, "update") || rawIs(offset - 1, "only")
