@@ -4,6 +4,7 @@ data SqlSuggestion {
     SqlSuggestionRegular(label: String, display: String, documentation: String)
     SqlSuggestionFunction(label: String, signature: String, documentation: String)
     SqlSuggestionJoin(label: String, schema: String, snippet: String)
+    SqlSuggestionColumnNames(required: Bool, columns: List[Pair[String, String]])
 }
 
 extend self: SqlSuggestion {
@@ -11,6 +12,8 @@ extend self: SqlSuggestion {
         self.{
             | SqlSuggestionFunction(_, _, _) => 8
             | SqlSuggestionJoin(_, _, _) => 1
+            | SqlSuggestionColumnNames(required, columns) => 
+                if(required) {1} elseIf {columns.size() > 1} {9} else {3}
             | SqlSuggestionRegular(l, display, documentation) =>
                 if(display.endsWith(" table") || display.endsWith(" tables")) {
                     if(l.startsWith("pg_") || l == "information_schema") {7} else {6}
@@ -27,6 +30,9 @@ suggest(data: SqlData, tokens: List[SqlToken], line: Int, column: Int): List[Sql
     let scope = Sql.completionScope(tokens, line, column)
     let suggestTable = scope.expectingTable && !scope.avoidTables
     let searchPathSchemas = data.searchPathSchemas.filter {_ != "pg_catalog"}.toSet()
+    scope.expectingColumnNames.map {seen =>
+        sqlColumnNameSuggestions(scope, data, seen)
+    } else:
     scope.beforeDot.map {beforeDot =>
         sqlBeforeDotSuggestions(beforeDot, scope, data, suggestTable)
     }.elseIf {scope.expectingTable} {
@@ -139,6 +145,27 @@ sqlExpectingTableSuggestions(
             SqlSuggestionRegular(r.name, r.schema, showSqlView(r) + r.columns.map {showSqlColumn(_)}.join("\n"))
         }
     )
+}
+
+sqlColumnNameSuggestions(scope: SqlCompletionScope, data: SqlData, seen: Set[String]): List[SqlSuggestion] {
+    scope.targetTable.toList().flatMap {| Pair(schema, table) =>
+        let relation = data.relations.filter {
+            r => schema.all {_ == r.schema} && table == r.name
+        }
+        let requiredColumns = relation.flatMap {_.columns.filter {c => 
+            c.notNull && c.default.isEmpty() && c.type != "bigserial" && c.type != "serial"
+        }}.filter {!seen.contains(_.name)}
+        let allColumns = relation.flatMap {_.columns}.filter {!seen.contains(_.name)}
+        [
+            SqlSuggestionColumnNames(True, requiredColumns.map {c => Pair(c.name, showSqlColumn(c))})
+            ...if(allColumns != requiredColumns) {[
+                SqlSuggestionColumnNames(False, allColumns.map {c => Pair(c.name, showSqlColumn(c))})
+            ]} else {[]}
+            ...if(allColumns.size() > 1) {
+                allColumns.map {c => SqlSuggestionColumnNames(False, [Pair(c.name, showSqlColumn(c))])}
+            } else {[]}
+        ]
+    }
 }
 
 sqlColumnSuggestions(scope: SqlCompletionScope, data: SqlData): List[SqlSuggestion] {

@@ -222,7 +222,9 @@ completionsToJson(completions: List[CompletionInfo]): Json {
                         if(i.secondarySort == 3) {7} else:
                         if(i.secondarySort == 4) {5} else:
                         if(i.secondarySort == 5) {6} else:
-                        if(i.secondarySort == 8) {3} else {9}
+                        if(i.secondarySort == 8) {3} else:
+                        if(i.secondarySort == 9) {15} else:
+                        9
                     } else:
                     if(isImport) {2} else:
                     if(shownType == "") {3} else:
@@ -301,6 +303,19 @@ sqlCompletion(at: Location, sqlString: SqlStringHook, data: SqlData): List[Compl
                 member = False
                 type = TConstructor(Location("", 0, 0), "", [])
                 documentation = documentation
+                expectedType = None
+                sql = True
+                secondarySort = suggestion.secondarySort()
+            )
+        | SqlSuggestionColumnNames(required, columns)@suggestion =>
+            CompletionInfo(
+                label = columns.map {_.first}.join(", ")
+                extra = ""
+                more = ""
+                snippet = columns.map {Sql.quote(_.first)}.join(", ")
+                member = False
+                type = TConstructor(Location("", 0, 0), "", [])
+                documentation = if(required) {"-- required columns\n"} else {""} + columns.map {_.second}.join("\n")
                 expectedType = None
                 sql = True
                 secondarySort = suggestion.secondarySort()

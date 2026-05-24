@@ -269,8 +269,9 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
         if(!foundScopes.isEmpty()) {} else:
         if(offset >= tokens.size()) {foundCursor(expectTable, expectColumnNames, expectColumnSetters)} else:
         let token = tokens.grab(offset)
+        let grace = if(token.rawIs("(")) {0} else {1}
         if(token.stopLine > line || (
-            token.stopLine == line && token.stopOffset - token.stopLineOffset >= column - 1
+            token.stopLine == line && token.stopOffset - token.stopLineOffset >= column - grace
         )) {foundCursor(expectTable, expectColumnNames, expectColumnSetters)}
     }
     function parseScope(): List[Pair[String, Bool]] {
@@ -304,17 +305,21 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
         }
         function parseColumnNames() {
             mutable seen = Set.new()
+            checkCursor(False, expectColumnNames = Some(seen))
             while {offset < tokens.size() && !rawIs(offset, ")")} {
-                checkCursor(False)
                 if(is(offset, SqlIdentifier) || is(offset, SqlUnreserved)) {
-                    seen = seen.add(unquote(tokens.grab(offset).raw()))
                     offset += 1
-                    checkCursor(False)
+                    checkCursor(False, expectColumnNames = Some(seen))
+                    seen = seen.add(unquote(tokens.grab(offset - 1).raw()))
                 }
                 while {offset < tokens.size() && !rawIs(offset, ")") && !rawIs(offset, ",")} {
                     offset += 1
                     checkCursor(False)
                 }
+                if(rawIs(offset, ",")) {
+                    offset += 1
+                }
+                checkCursor(False, expectColumnNames = Some(seen))
             }
         }
         let scope = SqlScope(None, Array.new())
@@ -1262,18 +1267,23 @@ nodeMain(system: NodeSystem) {
         system.writeLine(sql)
         system.writeLine(
             " ".repeat(foundIndex) + "^ " + 
-            Show.show(scope.expectingTable) + " " + Show.show(scope.beforeDot)
+            if(!scope.targetTable.isEmpty()) {
+                let table = scope.targetTable.grab()
+                table.first.map {_ + "."}.else {""} + table.second +
+                if(!scope.expectingColumnNames.isEmpty()) {
+                    " (" + scope.expectingColumnNames.grab().toList().join(", ") + ")"
+                } elseIf {!scope.expectingColumnSetters.isEmpty()} {
+                    " SET " + scope.expectingColumnSetters.grab().toList().join(", ")
+                } else {""}
+            } else {
+                Show.show(scope.expectingTable) + " " + Show.show(scope.beforeDot)
+            }
         )
         scope.symbols.each {symbol =>
             system.writeLine(Show.show(symbol))
         }
     }
     let sql = "WITH c as (select x, y z from p, q.w) SELECT *, f.g(h) i FROM s.t1 a WHERE ((SELECT * FROM t2 b WHERE a.id = b.id))"
-    function bogus(connection: PgConnection) {
-        connection.statement(
-            """WITH c as (select x, y z from p, q.w) SELECT *, f.g(h) i FROM s.t1 a WHERE ((SELECT * FROM t2 b WHERE a.id = b.id))"""
-        )
-    }
     system.writeLine("")
     system.writeLine("Tokenize:")
     tokenize(sql).each {token =>
@@ -1285,4 +1295,6 @@ nodeMain(system: NodeSystem) {
     showCompletionScope(sql, "t1 a")
     showCompletionScope(sql, "1 a")
     showCompletionScope(sql, " a WHERE")
+    showCompletionScope("insert into foo (a[1], b.x, c, d)", "c,")
+    showCompletionScope("insert into foo ()", ")")
 }
