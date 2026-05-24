@@ -231,7 +231,8 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
         rawIs(o, "union") || rawIs(o, "intersect") || rawIs(o, "except") ||
         rawIs(o, "order") || rawIs(o, "limit") || rawIs(o, "offset") ||
         rawIs(o, "fetch") || rawIs(o, "for") || 
-        rawIs(o, "returning") || rawIs(o, ")")
+        rawIs(o, "returning") || rawIs(o, ")") ||
+        (rawIs(o, "when") && (rawIs(o + 1, "matched") || rawIs(o + 2, "matched")))
     }
     function foundCursor(
         expectTable: Bool
@@ -396,6 +397,15 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                 offset += 1
                 parseScope()
                 if(rawIs(offset, ")")) {offset += 1}
+            } elseIf {!scope.targetTable.isEmpty() && rawIs(offset, "insert") && rawIs(offset + 1, "(")} {
+                offset += 2
+                parseColumnNames()
+                if(rawIs(offset, ")")) {
+                    offset += 1
+                }
+            } elseIf {!scope.targetTable.isEmpty() && rawIs(offset, "update") && rawIs(offset + 1, "set")} {
+                offset += 2
+                parseColumnSetters()
             } elseIf {
                 rawIs(offset, "from") || rawIs(offset, "join") || 
                 rawIs(offset, "update") || rawIs(offset, "into") ||
@@ -416,15 +426,6 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                             let alias = tokens.grab(offset)
                             scope.symbols.push(SqlQuery(fromRaw(alias.raw()), columns.map {_.first}))
                         }
-                    } elseIf {!scope.targetTable.isEmpty() && rawIs(offset, "insert") && rawIs(offset + 1, "(")} {
-                        offset += 2
-                        parseColumnNames()
-                        if(rawIs(offset, ")")) {
-                            offset += 1
-                        }
-                    } elseIf {!scope.targetTable.isEmpty() && rawIs(offset, "update") && rawIs(offset + 1, "set")} {
-                        offset += 2
-                        parseColumnSetters()
                     } elseIf {is(offset, SqlIdentifier) || is(offset, SqlUnreserved)} {
                         let isTarget = offset - 1 >= 0 && (
                             rawIs(offset - 1, "into") || rawIs(offset - 1, "update") || rawIs(offset - 1, "only")
@@ -1353,5 +1354,6 @@ nodeMain(system: NodeSystem) {
     showCompletionScope("insert into foo ()", ")")
     showCompletionScope("update foo set --", "--")
     showCompletionScope("update foo set x = 1, (y, z) = row (2, 3), w =", "w =")
-    showCompletionScope("update guide.\"Inquiry\" set answers = 1, --", "--")
+    showCompletionScope("update foo set answers = 1, --", "--")
+    showCompletionScope("merge into foo using (values (1)) as s(id) on id when matched then update set x =", "x =")
 }
