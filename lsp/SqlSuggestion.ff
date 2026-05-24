@@ -106,30 +106,48 @@ sqlBeforeDotSuggestions(
     data: SqlData
     suggestTable: Bool
 ): List[SqlSuggestion] {
+    function suggestColumns(relation: SqlRelation): List[SqlSuggestion] {
+        relation.columns.map {c =>
+            let description =
+                c.description.map {_.lines().map {("-- " + _).trim() + "\n"}.join()}.else {""}
+            let foreignKeys = if(relation.kind == "v") {
+                relation.simpleView.flatMap {v => 
+                    v.schema.map {showSqlForeignKeys(_, v.table, c.name, data)}
+                }.else {""}
+            } else {showSqlForeignKeys(relation.schema, relation.name, c.name, data)}
+            SqlSuggestionRegular(c.name, showSqlColumnType(c), description + showSqlColumn(c) + foreignKeys)
+        }
+    }
     scope.symbols.flatMap {
         | SqlTable(Some(alias), schema, table) {!scope.expectingTable && alias == beforeDot} =>
             data.relations.filter {r => schema.all {_ == r.schema} && r.name == table}.flatMap {r =>
-                r.columns.map {c =>
-                    let description =
-                        c.description.map {_.lines().map {("-- " + _).trim() + "\n"}.join()}.else {""}
-                    let foreignKeys = if(r.kind == "v") {
-                        r.simpleView.flatMap {v => v.schema.map {showSqlForeignKeys(_, v.table, c.name, data)}}.else {""}
-                    } else {showSqlForeignKeys(r.schema, r.name, c.name, data)}
-                    SqlSuggestionRegular(c.name, showSqlColumnType(c), description + showSqlColumn(c) + foreignKeys)
-                }
+                suggestColumns(r)
             }
         | SqlQuery(alias, columns) {!scope.expectingTable && alias == beforeDot} =>
             columns.map {c => SqlSuggestionRegular(c, "from subquery", c)}
         | _ =>
             []
-    }.addAll(if(!suggestTable) {[]} else {
-        data.relations.filter {r =>
-            let kindName = r.kindName()
-            r.schema == beforeDot && (kindName.contains("table") || kindName.contains("view"))
-        }.map {r =>
-            SqlSuggestionRegular(r.name, r.schema, showSqlView(r) + r.columns.map {showSqlColumn(_)}.join("\n"))
+    }.addAll(
+        if(!suggestTable) {
+            if(scope.targetTable.isEmpty() || (beforeDot != "old" && beforeDot != "new")) {[]} else:
+            let aliases = scope.symbols.collect {_.{
+                | SqlQuery(alias, _) => Some(alias)
+                | SqlTable(alias, _, _) => alias
+            }}
+            if(aliases.any {_ == beforeDot}) {[]} else:
+            let table = scope.targetTable.grab()
+            data.relations.filter {r => table.first.all {_ == r.schema} && r.name == table.second}.flatMap {r =>
+                suggestColumns(r)
+            }
+        } else {
+            data.relations.filter {r =>
+                let kindName = r.kindName()
+                r.schema == beforeDot && (kindName.contains("table") || kindName.contains("view"))
+            }.map {r =>
+                SqlSuggestionRegular(r.name, r.schema, showSqlView(r) + r.columns.map {showSqlColumn(_)}.join("\n"))
+            }
         }
-    }).addAll(data.functions.filter {_.schema == beforeDot}.map {f =>
+    ).addAll(data.functions.filter {_.schema == beforeDot}.map {f =>
         SqlSuggestionFunction(f.name, "(" + f.argumentTypes.join(", ") + ") " + f.returnType, documentSqlFunction(f))
     })
 }
