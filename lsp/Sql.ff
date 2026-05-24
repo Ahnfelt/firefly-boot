@@ -183,6 +183,7 @@ tokenize(sql: String): List[SqlToken] {
 }
 
 class SqlScope(
+    mutable targetTable: Option[Pair[Option[String], String]]
     symbols: Array[SqlSymbol]
 )
 
@@ -194,6 +195,9 @@ data SqlSymbol {
 data SqlSimpleView(schema: Option[String], table: String, columns: List[String])
 
 data SqlCompletionScope(
+    targetTable: Option[Pair[Option[String], String]]
+    expectingColumnNames: Option[Set[String]] // Seen set
+    expectingColumnSetters: Option[Set[String]] // Seen set
     expectingJoin: Bool
     expectingTable: Bool
     avoidTables: Bool
@@ -206,6 +210,9 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
     let scopes = Array.new[SqlScope]()
     mutable foundScopes = None
     mutable offset = 0
+    mutable targetTable = None
+    mutable expectingColumnNames = None
+    mutable expectingColumnSetters = None
     mutable expectingJoin = False
     mutable expectingTable = False
     mutable avoidTables = False
@@ -224,7 +231,14 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
         rawIs(o, "order") || rawIs(o, "limit") || rawIs(o, "offset") ||
         rawIs(o, "fetch") || rawIs(o, "for") || rawIs(o, ")")
     }
-    function foundCursor(expectTable: Bool): Unit {
+    function foundCursor(
+        expectTable: Bool
+        expectColumnNames: Option[Set[String]]
+        expectColumnSetters: Option[Set[String]]
+    ): Unit {
+        targetTable = scopes.last().flatMap {_.targetTable}
+        expectingColumnNames = expectColumnNames
+        expectingColumnSetters = expectColumnSetters
         expectingJoin = offset >= 3 && (rawIs(offset - 1, "join") || (
             rawIs(offset - 3, "join") && (is(offset - 2, SqlIdentifier) || is(offset - 2, SqlUnreserved)) &&
             rawIs(offset - 1, ".")
@@ -247,13 +261,17 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
         )
         foundScopes = Some(scopes.toList())
     }
-    function checkCursor(expectTable: Bool): Unit {
+    function checkCursor(
+        expectTable: Bool, 
+        expectColumnNames: Option[Set[String]] = None
+        expectColumnSetters: Option[Set[String]] = None
+    ): Unit {
         if(!foundScopes.isEmpty()) {} else:
-        if(offset >= tokens.size()) {foundCursor(expectTable)} else:
+        if(offset >= tokens.size()) {foundCursor(expectTable, expectColumnNames, expectColumnSetters)} else:
         let token = tokens.grab(offset)
         if(token.stopLine > line || (
             token.stopLine == line && token.stopOffset - token.stopLineOffset >= column - 1
-        )) {foundCursor(expectTable)}
+        )) {foundCursor(expectTable, expectColumnNames, expectColumnSetters)}
     }
     function parseScope(): List[Pair[String, Bool]] {
         let scopeColumns = Array.new()
@@ -284,7 +302,22 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                 }
             }        
         }
-        let scope = SqlScope(Array.new())
+        function parseColumnNames() {
+            mutable seen = Set.new()
+            while {offset < tokens.size() && !rawIs(offset, ")")} {
+                checkCursor(False)
+                if(is(offset, SqlIdentifier) || is(offset, SqlUnreserved)) {
+                    seen = seen.add(unquote(tokens.grab(offset).raw()))
+                    offset += 1
+                    checkCursor(False)
+                }
+                while {offset < tokens.size() && !rawIs(offset, ")") && !rawIs(offset, ",")} {
+                    offset += 1
+                    checkCursor(False)
+                }
+            }
+        }
+        let scope = SqlScope(None, Array.new())
         scopes.push(scope)
         if(rawIs(offset, "explain")) {offset += 1}
         if(rawIs(offset, "analyze") || rawIs(offset, "analyse")) {offset += 1}
@@ -345,6 +378,9 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                             scope.symbols.push(SqlQuery(unquote(alias.raw()), columns.map {_.first}))
                         }
                     } elseIf {is(offset, SqlIdentifier) || is(offset, SqlUnreserved)} {
+                        let isTarget = offset - 1 > 0 && (
+                            rawIs(offset - 1, "into") || rawIs(offset - 1, "update") || rawIs(offset - 1, "only")
+                        )
                         let schema = if(rawIs(offset + 1, ".")) {
                             let schema = tokens.grab(offset)
                             offset += 2
@@ -361,9 +397,19 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
                                 offset += 1
                                 alias
                             }
+                            if(isTarget) {
+                                scope.targetTable = Some(Pair(schema.map {unquote(_.raw())}, unquote(relation.raw())))
+                            }
                             scope.symbols.push(SqlTable(
                                 alias.map {unquote(_.raw())}, schema.map {unquote(_.raw())}, unquote(relation.raw())
                             ))
+                        }
+                        if(rawIs(offset, "(")) {
+                            offset += 1
+                            parseColumnNames()
+                            if(rawIs(offset, ")")) {
+                                offset += 1
+                            }
                         }
                     }
                     isFrom && rawIs(offset, ",")
@@ -388,7 +434,17 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
     }
     let columns = parseScope().filter {_.second}.map {_.first}
     let symbols = foundScopes.toList().flatten().flatMap {_.symbols.toList()}
-    SqlCompletionScope(expectingJoin, expectingTable, avoidTables, beforeDot, symbols, columns)
+    SqlCompletionScope(
+        targetTable
+        expectingColumnNames
+        expectingColumnSetters
+        expectingJoin
+        expectingTable
+        avoidTables
+        beforeDot
+        symbols
+        columns
+    )
 }
 
 data SqlData(

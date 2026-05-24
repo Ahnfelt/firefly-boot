@@ -5,11 +5,7 @@ import Pg from ff:postgresql
 
 testSql(connection: PgConnection): List[String] {
     connection.statement("""
-        select i.id, g.id guideId
-        from guide."Inquiry" i
-        join guide."GuideHistory" g on g.id = i.guideid
-        join guide."System" s on s.guideid = g.id
-        join guide."GuideHistory" gh on gh.id = i.guideid
+        insert into guide."Guide" as g values ('')
     """).map {row => 
         row.getString("name").grab()
     }
