@@ -267,13 +267,16 @@ sqlCompletion(at: Location, sqlString: SqlStringHook, data: SqlData): List[Compl
     let line = 1 + at.line - sqlString.at.line
     let column = if(at.line == sqlString.at.line) {1 + at.column - sqlString.at.column} else {at.column}
     let suggestions = SqlSuggestion.suggest(data, tokens, line, column)
-    suggestions.map {
+    function fixQuotes(snippet: String): String {
+        if(suggestions.second) {snippet.replace("\"", "")} else {snippet}
+    }
+    suggestions.first.map {
         | SqlSuggestionFunction(l, signature, documentation)@suggestion =>
             CompletionInfo(
                 label = l
                 extra = signature
                 more = ""
-                snippet = Sql.quote(l) + "($0)"
+                snippet = fixQuotes(Sql.quote(l) + "($0)")
                 member = False
                 type = TConstructor(Location("", 0, 0), "", [])
                 documentation = documentation
@@ -286,7 +289,7 @@ sqlCompletion(at: Location, sqlString: SqlStringHook, data: SqlData): List[Compl
                 label = l
                 extra = ""
                 more = schema
-                snippet = snippet
+                snippet = fixQuotes(snippet)
                 member = False
                 type = TConstructor(Location("", 0, 0), "", [])
                 documentation = snippet
@@ -299,7 +302,7 @@ sqlCompletion(at: Location, sqlString: SqlStringHook, data: SqlData): List[Compl
                 label = l
                 extra = ""
                 more = display
-                snippet = Sql.quote(l)
+                snippet = fixQuotes(Sql.quote(l))
                 member = False
                 type = TConstructor(Location("", 0, 0), "", [])
                 documentation = documentation
@@ -314,7 +317,7 @@ sqlCompletion(at: Location, sqlString: SqlStringHook, data: SqlData): List[Compl
                 label = columns.map {_.first}.join(", ")
                 extra = ""
                 more = ""
-                snippet = columns.map {Sql.quote(_.first)}.join(", ")
+                snippet = fixQuotes(columns.map {Sql.quote(_.first)}.join(", "))
                 member = False
                 type = TConstructor(Location("", 0, 0), "", [])
                 documentation = comment + columns.map {_.second}.join("\n")
@@ -327,9 +330,9 @@ sqlCompletion(at: Location, sqlString: SqlStringHook, data: SqlData): List[Compl
                 label = columns.map {_.first + " = "}.join(", ")
                 extra = ""
                 more = ""
-                snippet = columns.pairs().map {| Pair(i, c) => 
+                snippet = fixQuotes(columns.pairs().map {| Pair(i, c) => 
                     Sql.quote(c.first) + " = " + if(i == 0) {"$0"} else {""}
-                }.join(",\n")
+                }.join(",\n"))
                 member = False
                 type = TConstructor(Location("", 0, 0), "", [])
                 documentation = columns.map {_.second}.join("\n")

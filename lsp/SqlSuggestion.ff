@@ -28,28 +28,30 @@ extend self: SqlSuggestion {
     }
 }
 
-suggest(data: SqlData, tokens: List[SqlToken], line: Int, column: Int): List[SqlSuggestion] {
+suggest(data: SqlData, tokens: List[SqlToken], line: Int, column: Int): Pair[List[SqlSuggestion], Bool] {
     let scope = Sql.completionScope(tokens, line, column)
     let suggestTable = scope.expectingTable && !scope.avoidTables
     let searchPathSchemas = data.searchPathSchemas.filter {_ != "pg_catalog"}.toSet()
-    scope.expectingColumnNames.map {seen =>
-        sqlColumnNameSuggestions(scope, data, seen)
-    } else:
-    scope.expectingColumnSetters.map {seen =>
-        Log.trace("sqlColumnSetterSuggestions")
-        sqlColumnSetterSuggestions(scope, data, seen)
-    } else:
-    scope.beforeDot.map {beforeDot =>
-        sqlBeforeDotSuggestions(beforeDot, scope, data, suggestTable)
-    }.elseIf {scope.expectingTable} {
-        sqlExpectingTableSuggestions(scope, data, searchPathSchemas, suggestTable)
-    } else {
-        sqlColumnSuggestions(scope, data)
-    }.addAll(if(!scope.beforeDot.isEmpty()) {[]} else {
-        sqlSchemaSuggestions(data)
-    }).addAll(if(!scope.expectingJoin) {[]} else {
-        sqlJoinSuggestions(scope, data, searchPathSchemas)
-    })
+    let suggestions = do {
+        scope.expectingColumnNames.map {seen =>
+            sqlColumnNameSuggestions(scope, data, seen)
+        } else:
+        scope.expectingColumnSetters.map {seen =>
+            sqlColumnSetterSuggestions(scope, data, seen)
+        } else:
+        scope.beforeDot.map {beforeDot =>
+            sqlBeforeDotSuggestions(beforeDot, scope, data, suggestTable)
+        }.elseIf {scope.expectingTable} {
+            sqlExpectingTableSuggestions(scope, data, searchPathSchemas, suggestTable)
+        } else {
+            sqlColumnSuggestions(scope, data)
+        }.addAll(if(!scope.beforeDot.isEmpty()) {[]} else {
+            sqlSchemaSuggestions(data)
+        }).addAll(if(!scope.expectingJoin) {[]} else {
+            sqlJoinSuggestions(scope, data, searchPathSchemas)
+        })
+    }
+    Pair(suggestions, scope.inQuotes)
 }
 
 showSqlColumnType(column: SqlColumn): String {

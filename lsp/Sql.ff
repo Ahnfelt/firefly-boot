@@ -202,6 +202,7 @@ data SqlCompletionScope(
     expectingJoin: Bool
     expectingTable: Bool
     avoidTables: Bool
+    inQuotes: Bool
     beforeDot: Option[String]
     symbols: List[SqlSymbol]
     columns: List[String]
@@ -216,6 +217,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
     mutable expectingColumnSetters = None
     mutable expectingJoin = False
     mutable expectingTable = False
+    mutable inQuotes = False
     mutable avoidTables = False
     mutable beforeDot = None
     function rawIs(o: Int, raw: String): Bool {
@@ -246,6 +248,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
             rawIs(offset - 3, "join") && (is(offset - 2, SqlIdentifier) || is(offset - 2, SqlUnreserved)) &&
             rawIs(offset - 1, ".")
         ))
+        inQuotes = offset < tokens.size() && tokens.grab(offset).raw().startsWith("\"")
         expectingTable = expectTable
         beforeDot = if(offset < tokens.size() && offset >= 1 && rawIs(offset, ".") && (
             is(offset - 1, SqlIdentifier) || is(offset - 1, SqlUnreserved)
@@ -493,6 +496,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
         expectingJoin
         expectingTable
         avoidTables
+        inQuotes
         beforeDot
         symbols
         columns
