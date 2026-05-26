@@ -275,7 +275,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
         if(!foundScopes.isEmpty()) {} else:
         if(offset >= tokens.size()) {foundCursor(expectTable, expectColumnNames, expectColumnSetters)} else:
         let token = tokens.grab(offset)
-        let grace = if(token.rawIs("(")) {0} else {1}
+        let grace = if(token.is(SqlPunctuation)) {0} else {1}
         if(token.stopLine > line || (
             token.stopLine == line && token.stopOffset - token.stopLineOffset >= column - grace
         )) {foundCursor(expectTable, expectColumnNames, expectColumnSetters)}
@@ -572,18 +572,13 @@ extend self: SqlRelation {
     }
 }
 
-load(nodeSystem: NodeSystem, connectionString: String): SqlData {
-    let pool = Pg.newPoolFromConnectionString(nodeSystem, connectionString)
-    try {
-        pool.transaction {connection =>
-            let s = loadSearchPath(connection)
-            let rs = loadRelations(connection)
-            let fs = loadFunctions(connection)
-            let ks = loadForeignKeys(connection)
-            SqlData(s, rs, ks, fs)
-        }
-    } finally {
-        pool.close()
+load(nodeSystem: NodeSystem, pool: PgPool): SqlData {
+    pool.transaction {connection =>
+        let s = loadSearchPath(connection)
+        let rs = loadRelations(connection)
+        let fs = loadFunctions(connection)
+        let ks = loadForeignKeys(connection)
+        SqlData(s, rs, ks, fs)
     }
 }
 

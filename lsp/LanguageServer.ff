@@ -40,6 +40,8 @@ main(system: NodeSystem) {
         fileSymbolsCache = Map.new()
         importSymbolsCache = Pair("", [])
         sqlData = None
+        sqlConnectionPool = None
+        sqlLock = system.mainTask().lock()
         moduleCache = cache
         dependencyLock = DependencyLock.new(system.mainTask())
     )

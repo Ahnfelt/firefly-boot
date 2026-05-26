@@ -27,6 +27,8 @@ capability Handler(
     mutable fileSymbolsCache: Map[String, List[DocumentSymbol]]
     mutable importSymbolsCache: Pair[String, List[ImportSymbolInfo]]
     mutable sqlData: Option[SqlData]
+    mutable sqlConnectionPool: Option[PgPool]
+    sqlLock: Lock
     moduleCache: ModuleCache
     dependencyLock: DependencyLock
 )
@@ -281,51 +283,45 @@ extend self: Handler {
         let sqlStrings = lspHook.sqlStrings.toList()
         let sqlDiagnistics = if(sqlStrings.isEmpty()) {[]} else {
             try {
-                let connectionStringPath = system.path("../../LSP_CONNECTION_STRING.txt") // TODO
-                let connectionString = connectionStringPath.readText().trim()
-                let pool = Pg.newPoolFromConnectionString(system, connectionString)
-                try {
-                    pool.transaction {connection =>
-                        sqlStrings.collect {
-                            | SqlStringHook(_, at, sql) {
-                                Sql.buildExplainStatement(sql) | Some(Pair(explainPrefix, explainSql))
-                            } => 
-                                try {
-                                    connection.statement(explainSql).map {row => 
-                                        //row.getString("QUERY PLAN").grab()
-                                    }
-                                    None
-                                } catchAny {e => 
-                                    let errorMessage = e.message()
-                                    //system.writeErrorLine(Json(e!).write())
-                                    let errorPosition = if(e!->position.nullish()) {0} else {
-                                        e!->position.grabString().grabInt() - explainPrefix.size()
-                                    }
-                                    let tokens = Sql.tokenize(sql)
-                                    let t = tokens.find {_.startOffset >= errorPosition - 1}.else {tokens.grabLast()} // TODO
-                                    let absoluteLine = at.line - 1 + t.startLine - 1 + 1
-                                    let absoluteColumnExtra = if(t.at().line == 1) {at.column - 1} else {0} 
-                                    let absoluteColumn = t.startOffset - t.startLineOffset + absoluteColumnExtra + 1
-                                    let tokenLocation = TokenLocation(
-                                        file = at.file
-                                        startLine = absoluteLine
-                                        startColumn = absoluteColumn
-                                        endLine = absoluteLine
-                                        endColumn = absoluteColumn + (t.stopOffset - t.startOffset)
-                                        raw = t.raw()
-                                        followedByLeftBracket = False
-                                    )
-                                    let issue = Json.object()
-                                        .with("range", self.tokenLocationToLspRange(tokenLocation))
-                                        .with("severity", 1)
-                                        .with("message", errorMessage)
-                                    Some(issue)
+                let pool = self.getSqlConnectionPool(system)
+                pool.transaction {connection =>
+                    sqlStrings.collect {
+                        | SqlStringHook(_, at, sql) {
+                            Sql.buildExplainStatement(sql) | Some(Pair(explainPrefix, explainSql))
+                        } => 
+                            try {
+                                connection.statement(explainSql).map {row => 
+                                    //row.getString("QUERY PLAN").grab()
                                 }
-                            | _ => None
-                        }
+                                None
+                            } catchAny {e => 
+                                let errorMessage = e.message()
+                                //system.writeErrorLine(Json(e!).write())
+                                let errorPosition = if(e!->position.nullish()) {0} else {
+                                    e!->position.grabString().grabInt() - explainPrefix.size()
+                                }
+                                let tokens = Sql.tokenize(sql)
+                                let t = tokens.find {_.startOffset >= errorPosition - 1}.else {tokens.grabLast()} // TODO
+                                let absoluteLine = at.line - 1 + t.startLine - 1 + 1
+                                let absoluteColumnExtra = if(t.at().line == 1) {at.column - 1} else {0} 
+                                let absoluteColumn = t.startOffset - t.startLineOffset + absoluteColumnExtra + 1
+                                let tokenLocation = TokenLocation(
+                                    file = at.file
+                                    startLine = absoluteLine
+                                    startColumn = absoluteColumn
+                                    endLine = absoluteLine
+                                    endColumn = absoluteColumn + (t.stopOffset - t.startOffset)
+                                    raw = t.raw()
+                                    followedByLeftBracket = False
+                                )
+                                let issue = Json.object()
+                                    .with("range", self.tokenLocationToLspRange(tokenLocation))
+                                    .with("severity", 1)
+                                    .with("message", errorMessage)
+                                Some(issue)
+                            }
+                        | _ => None
                     }
-                } finally {
-                    pool.close()
                 }
             } catchAny {error =>
                 system.writeErrorLine("Error while running SQL diagnostics: " + error.message())
@@ -405,9 +401,8 @@ extend self: Handler {
             self.sqlData = Some(SqlData([], [], [], []))
             system.mainTask().spawn {_ =>
                 try {
-                    let connectionStringPath = system.path("../../LSP_CONNECTION_STRING.txt") // TODO
-                    let connectionString = connectionStringPath.readText().trim()
-                    let data = Sql.load(system, connectionString)
+                    let pool = self.getSqlConnectionPool(system)
+                    let data = Sql.load(system, pool)
                     self.sqlData = Some(data)
                 } catchAny {error =>
                     system.writeErrorLine("Error while running Sql.load: " + error.message())
@@ -936,9 +931,17 @@ extend self: Handler {
             infer
         )
     }
+    
+    getSqlConnectionPool(system: NodeSystem): PgPool {
+        let connectionStringPath = system.path("../../LSP_CONNECTION_STRING.txt") // TODO
+        let connectionString = connectionStringPath.readText().trim()
+        self.sqlLock.do {
+            self.sqlConnectionPool.else {
+                let pool = Pg.newPoolFromConnectionString(system, connectionString)
+                self.sqlConnectionPool = Some(pool)
+                pool
+            }
+        }
+    }
 
-}
-
-foo(bb: Int): Int {
-    bb
 }
