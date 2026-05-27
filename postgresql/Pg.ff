@@ -1,5 +1,5 @@
 capability PgPool(jsValue: JsValue)
-capability PgConnection(jsValue: JsValue)
+capability PgConnection(mutable jsValue: Option[JsValue], mutable internalInitializer: Option[Pair[PgPool, String]])
 capability PgRow(jsValue: JsValue) // TODO: Should be a sync class, make deriver not touch those
 capability PgStatement(sql: String, parameters: Map[String, JsValue], connection: Option[PgConnection])
 data PgLevel {
@@ -68,7 +68,7 @@ extend self: PgPool {
 
     connect(): PgConnection {
         Js.throwIfCancelled()
-        PgConnection(Js.await(self.jsValue->connect()))
+        PgConnection(Some(Js.await(self.jsValue->connect())), None)
     }
 
     close(): Unit {
@@ -87,22 +87,33 @@ extend self: PgPool {
         self.jsValue->waitingCount.grabInt()
     }
 
-    transaction[T](body: PgConnection => T, level: PgLevel = PgReadCommitted): T {
-        let connection = self.connect()
+    transaction[T](
+        body: PgConnection => T
+        level: PgLevel = PgReadCommitted
+        readOnly: Bool = False
+        deferrable: Bool = False
+        eager: Bool = False
+    ): T {
+        let connection = PgConnection(None, None)
         mutable done = False
         try {
-            connection.statement("begin").run()
-            level.{
-                | PgReadCommitted => 0 // Default level in PostgreSQL
-                | PgRepeatableRead => connection.statement("set transaction isolation level repeatable read").run()
-                | PgSerializable => connection.statement("set transaction isolation level serializable").run()
-            }
+            let transactionMode = [
+                Some(level.{
+                    | PgReadCommitted => " isolation level read committed"
+                    | PgRepeatableRead => " isolation level repeatable read"
+                    | PgSerializable => " isolation level serializable"
+                })
+                if(readOnly) {Some(" read only")} else {Some(" read write")}
+                if(deferrable) {" deferrable"}
+            ].collect {_}.join(",")
+            connection.internalInitializer = Some(Pair(self, "begin" + transactionMode))
+            if(eager) {internalEnsureConnected(connection)}
             let result = body(connection)
             done = True
-            connection.statement("commit").run()
+            if(!connection.jsValue.isEmpty()) {connection.statement("commit").run()}
             result
         } finally {
-            if(!done) {connection.statement("rollback").run()}
+            if(!done && !connection.jsValue.isEmpty()) {connection.statement("rollback").run()}
             connection.release()
         }
     }
@@ -113,10 +124,12 @@ extend self: PgConnection {
 
     release(): Unit {
         if(Js.cancelled()) {
-            self.jsValue->release(True)
+            self.jsValue.each {_->release(True)}
         } else {
-            self.jsValue->release()
+            self.jsValue.each {_->release()}
         }
+        self.jsValue = None
+        self.internalInitializer = None
     }
 
     statement(sql: String): PgStatement {
@@ -351,11 +364,21 @@ internalGet[T](row: PgRow, name: String, lower: Bool, body: JsValue => T): Optio
     if(!value.isNull()) {Some(body(value))} else {None}
 }
 
+internalEnsureConnected(connection: PgConnection) {
+    connection.internalInitializer.each {| Pair(pool, start) => 
+        connection.internalInitializer = None
+        connection.jsValue = Some(Js.await(pool.jsValue->connect()))
+        connection.jsValue.grab()->query(start)
+    }
+}
+
 internalRunStatement(statement: PgStatement, body: Option[PgRow => Bool]): Int {
     Js.throwIfCancelled()
     let pair = internalParseParameters(statement.sql)
     let parameters = internalCheckParameters(pair.second, statement.parameters)
-    let result = Js.await(statement.connection.grab().jsValue->query(pair.first, parameters))
+    let connection = statement.connection.grab()
+    internalEnsureConnected(connection)
+    let result = Js.await(connection.jsValue.grab()->query(pair.first, parameters))
     body.{
         | None =>
             if(!result.get("rowCount").isNullOrUndefined()) {result.get("rowCount").grabInt()} else {-1}
@@ -385,6 +408,7 @@ internalBatchStatements(
         }
         Pair(sql, (newSql = pair.first, parameterNames = pair.second, prepared = prepared))
     }
+    if(!statements.isEmpty()) {internalEnsureConnected(connection)}
     let promises = statements.map {statement =>
         Js.throwIfCancelled()
         let record = sqlCache.grab(statement.sql)
@@ -392,7 +416,7 @@ internalBatchStatements(
         let query = Js.object()
             .with("text", record.newSql)
             .with("values", parameters)
-        connection.jsValue->query(record.prepared.map {query.with("name", _)}.else {query})
+        connection.jsValue.grab()->query(record.prepared.map {query.with("name", _)}.else {query})
     }
     let results = promises.map {promise =>
         Js.throwIfCancelled()

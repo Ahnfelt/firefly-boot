@@ -293,48 +293,48 @@ extend self: Handler {
                 mutable seenSql = Set.new()
                 let issues = try {
                     let pool = self.getSqlConnectionPool(system)
-                    sqlStrings.collect {
-                        | SqlStringHook(_, at, sql) => 
-                            seenSql = seenSql.add(sql)
-                            let sqlError = sqlCache.getOrSet(sql) {
-                                Sql.buildExplainStatement(sql).flatMap {| Pair(explainPrefix, explainSql) =>
-                                    try {
-                                        pool.transaction {connection =>
+                    pool.transaction(readOnly = True, body = {connection =>
+                        sqlStrings.collect {
+                            | SqlStringHook(_, at, sql) => 
+                                seenSql = seenSql.add(sql)
+                                let sqlError = sqlCache.getOrSet(sql) {
+                                    Sql.buildExplainStatement(sql).flatMap {| Pair(explainPrefix, explainSql) =>
+                                        try {
                                             connection.statement(explainSql).map {_ => }
+                                            None
+                                        } catchAny {e => 
+                                            let errorMessage = e.message()
+                                            //system.writeErrorLine(Json(e!).write())
+                                            let errorPosition = if(e!->position.nullish()) {0} else {
+                                                e!->position.grabString().grabInt() - explainPrefix.size()
+                                            }
+                                            let tokens = Sql.tokenize(sql)
+                                            let t = tokens.find {_.startOffset >= errorPosition - 1}.else {tokens.grabLast()} // TODO
+                                            Some(SqlError(t, errorMessage))
                                         }
-                                        None
-                                    } catchAny {e => 
-                                        let errorMessage = e.message()
-                                        //system.writeErrorLine(Json(e!).write())
-                                        let errorPosition = if(e!->position.nullish()) {0} else {
-                                            e!->position.grabString().grabInt() - explainPrefix.size()
-                                        }
-                                        let tokens = Sql.tokenize(sql)
-                                        let t = tokens.find {_.startOffset >= errorPosition - 1}.else {tokens.grabLast()} // TODO
-                                        Some(SqlError(t, errorMessage))
                                     }
                                 }
-                            }
-                            sqlError.map {e =>
-                                let absoluteLine = at.line - 1 + e.token.startLine - 1 + 1
-                                let absoluteColumnExtra = if(e.token.at().line == 1) {at.column - 1} else {0} 
-                                let absoluteColumn = e.token.startOffset - e.token.startLineOffset + absoluteColumnExtra + 1
-                                let tokenLocation = TokenLocation(
-                                    file = at.file
-                                    startLine = absoluteLine
-                                    startColumn = absoluteColumn
-                                    endLine = absoluteLine
-                                    endColumn = absoluteColumn + (e.token.stopOffset - e.token.startOffset)
-                                    raw = e.token.raw()
-                                    followedByLeftBracket = False
-                                )
-                                Json.object()
-                                    .with("range", self.tokenLocationToLspRange(tokenLocation))
-                                    .with("severity", 1)
-                                    .with("message", e.message)
-                            }
-                        | _ => None
-                    }
+                                sqlError.map {e =>
+                                    let absoluteLine = at.line - 1 + e.token.startLine - 1 + 1
+                                    let absoluteColumnExtra = if(e.token.at().line == 1) {at.column - 1} else {0} 
+                                    let absoluteColumn = e.token.startOffset - e.token.startLineOffset + absoluteColumnExtra + 1
+                                    let tokenLocation = TokenLocation(
+                                        file = at.file
+                                        startLine = absoluteLine
+                                        startColumn = absoluteColumn
+                                        endLine = absoluteLine
+                                        endColumn = absoluteColumn + (e.token.stopOffset - e.token.startOffset)
+                                        raw = e.token.raw()
+                                        followedByLeftBracket = False
+                                    )
+                                    Json.object()
+                                        .with("range", self.tokenLocationToLspRange(tokenLocation))
+                                        .with("severity", 1)
+                                        .with("message", e.message)
+                                }
+                            | _ => None
+                        }
+                    })
                 } catchAny {error =>
                     system.writeErrorLine("Error while running SQL diagnostics: " + error.message())
                     system.writeErrorLine(error.stack())
