@@ -28,6 +28,7 @@ capability Handler(
     mutable importSymbolsCache: Pair[String, List[ImportSymbolInfo]]
     mutable sqlData: Option[SqlData]
     mutable sqlConnectionPool: Option[PgPool]
+    sqlDiagnosticsCache: StringMap[StringMap[Option[SqlError]]]
     sqlLock: Lock
     moduleCache: ModuleCache
     dependencyLock: DependencyLock
@@ -63,6 +64,7 @@ data TokenLocation(
 
 data Definition(at: Location, name: String, local: Bool)
 
+data SqlError(token: SqlToken, message: String)
 
 extend self: Handler {
 
@@ -282,51 +284,67 @@ extend self: Handler {
         
         let sqlStrings = lspHook.sqlStrings.toList()
         let sqlDiagnistics = if(sqlStrings.isEmpty()) {[]} else {
-            try {
-                let pool = self.getSqlConnectionPool(system)
-                pool.transaction {connection =>
+            self.sqlLock.do {
+                let sqlCache = self.sqlDiagnosticsCache.getOrSet(path.absolute()) {StringMap.new()}
+                mutable seenSql = Set.new()
+                let issues = try {
+                    let pool = self.getSqlConnectionPool(system)
                     sqlStrings.collect {
-                        | SqlStringHook(_, at, sql) {
-                            Sql.buildExplainStatement(sql) | Some(Pair(explainPrefix, explainSql))
-                        } => 
-                            try {
-                                connection.statement(explainSql).map {row => 
-                                    //row.getString("QUERY PLAN").grab()
+                        | SqlStringHook(_, at, sql) => 
+                            seenSql = seenSql.add(sql)
+                            let sqlError = sqlCache.getOrSet(sql) {
+                                Sql.buildExplainStatement(sql).flatMap {| Pair(explainPrefix, explainSql) =>
+                                    try {
+                                        pool.transaction {connection =>
+                                            connection.statement(explainSql).map {_ => }
+                                        }
+                                        None
+                                    } catchAny {e => 
+                                        let errorMessage = e.message()
+                                        //system.writeErrorLine(Json(e!).write())
+                                        let errorPosition = if(e!->position.nullish()) {0} else {
+                                            e!->position.grabString().grabInt() - explainPrefix.size()
+                                        }
+                                        let tokens = Sql.tokenize(sql)
+                                        let t = tokens.find {_.startOffset >= errorPosition - 1}.else {tokens.grabLast()} // TODO
+                                        Some(SqlError(t, errorMessage))
+                                    }
                                 }
-                                None
-                            } catchAny {e => 
-                                let errorMessage = e.message()
-                                //system.writeErrorLine(Json(e!).write())
-                                let errorPosition = if(e!->position.nullish()) {0} else {
-                                    e!->position.grabString().grabInt() - explainPrefix.size()
-                                }
-                                let tokens = Sql.tokenize(sql)
-                                let t = tokens.find {_.startOffset >= errorPosition - 1}.else {tokens.grabLast()} // TODO
-                                let absoluteLine = at.line - 1 + t.startLine - 1 + 1
-                                let absoluteColumnExtra = if(t.at().line == 1) {at.column - 1} else {0} 
-                                let absoluteColumn = t.startOffset - t.startLineOffset + absoluteColumnExtra + 1
+                            }
+                            sqlError.map {e =>
+                                let absoluteLine = at.line - 1 + e.token.startLine - 1 + 1
+                                let absoluteColumnExtra = if(e.token.at().line == 1) {at.column - 1} else {0} 
+                                let absoluteColumn = e.token.startOffset - e.token.startLineOffset + absoluteColumnExtra + 1
                                 let tokenLocation = TokenLocation(
                                     file = at.file
                                     startLine = absoluteLine
                                     startColumn = absoluteColumn
                                     endLine = absoluteLine
-                                    endColumn = absoluteColumn + (t.stopOffset - t.startOffset)
-                                    raw = t.raw()
+                                    endColumn = absoluteColumn + (e.token.stopOffset - e.token.startOffset)
+                                    raw = e.token.raw()
                                     followedByLeftBracket = False
                                 )
-                                let issue = Json.object()
+                                Json.object()
                                     .with("range", self.tokenLocationToLspRange(tokenLocation))
                                     .with("severity", 1)
-                                    .with("message", errorMessage)
-                                Some(issue)
+                                    .with("message", e.message)
                             }
                         | _ => None
                     }
+                } catchAny {error =>
+                    system.writeErrorLine("Error while running SQL diagnostics: " + error.message())
+                    system.writeErrorLine(error.stack())
+                    []
                 }
-            } catchAny {error =>
-                system.writeErrorLine("Error while running SQL diagnostics: " + error.message())
-                system.writeErrorLine(error.stack())
-                []
+                if(seenSql.size() == 0) {
+                    self.sqlDiagnosticsCache.remove(path.absolute())
+                } else {
+                    sqlCache.keys().each {
+                        | cachedSql {!seenSql.contains(cachedSql)} => sqlCache.remove(cachedSql)
+                        | _ => 
+                    }
+                }
+                issues
             }
         }
         
