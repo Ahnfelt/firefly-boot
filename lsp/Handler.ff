@@ -15,6 +15,7 @@ import HoverHandler
 import CompletionHandler
 import SignatureHelpHandler
 import SymbolHandler
+import SemanticTokenType
 import Sql
 
 
@@ -67,6 +68,9 @@ data Definition(at: Location, name: String, local: Bool)
 data SqlError(token: SqlToken, message: String)
 
 extend self: Handler {
+    
+    
+
 
     handleNotification(system: NodeSystem, method: String, parameters: Map[String, Json], version: Int): List[Pair[String, Json]] {
         method.{
@@ -226,13 +230,13 @@ extend self: Handler {
                     .with("legend", Json.object()
                         .with("tokenTypes", [
                             "keyword"
-                            "macro"
-                            "type"
+                            "modifier"
+                            "variable"
                             "number"
                             "string"
                             "operator"
                             "comment"
-                            "property"
+                            "parameter"
                         ])
                         .with("tokenModifiers", Json.array([]))
                     )
@@ -440,15 +444,15 @@ extend self: Handler {
                     let relativeLine = if(lastAbsoluteLine != -1) {absoluteLine - lastAbsoluteLine} else {absoluteLine}
                     let relativeColumn = if(lastAbsoluteLine == absoluteLine) {absoluteColumn - lastAbsoluteColumn} else {absoluteColumn}
                     let tokenType = token.kind.{
-                        | SqlReserved => 0
-                        | SqlUnreserved => 1
-                        | SqlIdentifier => 2
-                        | SqlNumber => 3
-                        | SqlString => 4
-                        | SqlOperator => 5
-                        | SqlPunctuation => 5
-                        | SqlComment => 6
-                        | SqlPlaceholder => 7
+                        | SqlReserved => SemanticTokenType.keyword
+                        | SqlUnreserved => SemanticTokenType.modifier
+                        | SqlIdentifier => SemanticTokenType.variable
+                        | SqlNumber => SemanticTokenType.number
+                        | SqlString => SemanticTokenType.string
+                        | SqlOperator => SemanticTokenType.operator
+                        | SqlPunctuation => SemanticTokenType.operator
+                        | SqlComment => SemanticTokenType.comment
+                        | SqlPlaceholder => SemanticTokenType.parameter
                     }
                     let tokenModifiers = 0
                     lastAbsoluteLine = absoluteLine
@@ -961,5 +965,6 @@ extend self: Handler {
             }
         }
     }
+    
 
 }
