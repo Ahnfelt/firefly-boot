@@ -753,13 +753,24 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
 
 buildExplainStatement(statement: String): Option[Pair[String, String]] {
     let tokens = tokenize(statement)
+    let placeholders = tokens.filter {token => 
+        token.kind.{
+            | SqlPlaceholder => True
+            | _ => False
+        }
+    }
+    let groups = placeholders.map {p => Pair(p.raw(), p)}.group().toList()
+    mutable fixedStatement = statement
+    groups.pairs().each {| Pair(index, Pair(raw, tokens)) => 
+        fixedStatement = fixedStatement.replace(raw, "$" + index)
+    }
     let noInbetweenSemicolon = tokens.indexWhere {_.rawIs(";")}.all {_ >= tokens.size() - 1}
     if(noInbetweenSemicolon && tokens.first().any {t => 
         t.rawIs("with") || t.rawIs("select") || t.rawIs("values") || 
         t.rawIs("insert") || t.rawIs("update") || t.rawIs("delete") || t.rawIs("merge")
     }):
     let prefix = "EXPLAIN (GENERIC_PLAN) "
-    Pair(prefix, prefix + statement)
+    Pair(prefix, prefix + fixedStatement)
 }
 
 shortenType(fullType: String): String {

@@ -467,7 +467,7 @@ internalParseParameters(statementSql: String): Pair[String, List[String]] {
                     i += 1
                 }
                 let name = statementSql.slice(last, i)
-                if(name != "") {
+                if(name.first().any {_.isAsciiLetter()}) {
                     let index = parameterIndexes.get(name).else {
                         let newIndex = parameterIndexes.size() + 1
                         parameterIndexes = parameterIndexes.add(name, newIndex)
