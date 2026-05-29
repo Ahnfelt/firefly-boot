@@ -413,7 +413,8 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
             } elseIf {
                 rawIs(offset, "from") || rawIs(offset, "join") || 
                 rawIs(offset, "update") || rawIs(offset, "into") ||
-                rawIs(offset, "only") || (mergeUsing && rawIs(offset, "using"))
+                rawIs(offset, "only") || rawIs(offset, "table") || 
+                (mergeUsing && rawIs(offset, "using"))
             } {
                 if(rawIs(offset, "using")) {mergeUsing = False}
                 let isFrom = rawIs(offset, "from")
