@@ -387,6 +387,7 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
             scope.symbols.push(SqlQuery(fromRaw(alias.raw()), columns.map {_.first}))
         }
         checkCursor(False)
+        mutable mergeUsing = rawIs(offset, "merge")
         if(rawIs(offset, "select")) {
             offset += 1
             parseColumns()
@@ -412,8 +413,9 @@ completionScope(tokens: List[SqlToken], line: Int, column: Int): SqlCompletionSc
             } elseIf {
                 rawIs(offset, "from") || rawIs(offset, "join") || 
                 rawIs(offset, "update") || rawIs(offset, "into") ||
-                rawIs(offset, "only")
+                rawIs(offset, "only") || (mergeUsing && rawIs(offset, "using"))
             } {
+                if(rawIs(offset, "using")) {mergeUsing = False}
                 let isFrom = rawIs(offset, "from")
                 let requireAs = rawIs(offset, "update") || rawIs(offset, "into") || rawIs(offset, "only")
                 doWhile {
