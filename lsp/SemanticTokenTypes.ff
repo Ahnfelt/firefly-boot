@@ -1,0 +1,62 @@
+data SemanticTokenTypes(
+	namespace: Pair[String, Int]
+    type: Pair[String, Int]
+	class: Pair[String, Int]
+	enum: Pair[String, Int]
+	interface: Pair[String, Int]
+	struct: Pair[String, Int]
+	typeParameter: Pair[String, Int]
+	parameter: Pair[String, Int]
+	variable: Pair[String, Int]
+	property: Pair[String, Int]
+	enumMember: Pair[String, Int]
+	event: Pair[String, Int]
+	function: Pair[String, Int]
+	method: Pair[String, Int]
+	macro: Pair[String, Int]
+	keyword: Pair[String, Int]
+	modifier: Pair[String, Int]
+	comment: Pair[String, Int]
+	string: Pair[String, Int]
+	number: Pair[String, Int]
+	regexp: Pair[String, Int]
+	operator: Pair[String, Int]
+	decorator: Pair[String, Int]
+	label: Pair[String, Int]
+)
+
+new(): Pair[SemanticTokenTypes, List[String]] {
+    let names = Array.new()
+    function add(name: String): Pair[String, Int] {
+        let index = names.size()
+        names.push(name)
+        Pair(name, index)
+    }
+    let types = SemanticTokenTypes(
+        namespace = add("namespace")
+        type = add("type")
+        class = add("class")
+        enum = add("enum")
+        interface = add("interface")
+        struct = add("struct")
+        typeParameter = add("typeParameter")
+        parameter = add("parameter")
+        variable = add("variable")
+        property = add("property")
+        enumMember = add("enumMember")
+        event = add("event")
+        function = add("function")
+        method = add("method")
+        macro = add("macro")
+        keyword = add("keyword")
+        modifier = add("modifier")
+        comment = add("comment")
+        string = add("string")
+        number = add("number")
+        regexp = add("regexp")
+        operator = add("operator")
+        decorator = add("decorator")
+        label = add("label")
+    )
+    Pair(types, names.drain())
+}
