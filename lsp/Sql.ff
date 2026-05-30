@@ -762,7 +762,7 @@ buildExplainStatement(statement: String): Option[Pair[String, String]] {
     let groups = placeholders.map {p => Pair(p.raw(), p)}.group().toList()
     mutable fixedStatement = statement
     groups.pairs().each {| Pair(index, Pair(raw, tokens)) => 
-        fixedStatement = fixedStatement.replace(raw, "$" + index)
+        fixedStatement = fixedStatement.replace(raw, "$" + (index + 1))
     }
     let noInbetweenSemicolon = tokens.indexWhere {_.rawIs(";")}.all {_ >= tokens.size() - 1}
     if(noInbetweenSemicolon && tokens.first().any {t => 

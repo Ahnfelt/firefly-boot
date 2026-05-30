@@ -10,7 +10,7 @@ testSql(connection: PgConnection): List[String] {
         select *, benefit, g.deleted, (name), 'Fooo'
         from guide."GuideHistory" g
         join guide."GuideDepartment" GD on g.id = GD.guideid
-        where g.benefit is not null
+        where g.benefit is not null and $name is not null
     """).map {row => 
         row.getString("name").grab()
     }
