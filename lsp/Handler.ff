@@ -15,7 +15,7 @@ import HoverHandler
 import CompletionHandler
 import SignatureHelpHandler
 import SymbolHandler
-import SemanticTokenType
+import SemanticTokenTypes
 import Sql
 
 
@@ -228,16 +228,7 @@ extend self: Handler {
                 .with("renameProvider", True)
                 .with("semanticTokensProvider", Json.object()
                     .with("legend", Json.object()
-                        .with("tokenTypes", [
-                            "keyword"
-                            "modifier"
-                            "variable"
-                            "number"
-                            "string"
-                            "operator"
-                            "comment"
-                            "parameter"
-                        ])
+                        .with("tokenTypes", SemanticTokenTypes.new().second)
                         .with("tokenModifiers", Json.array([]))
                     )
                     .with("full", Json.object()
@@ -443,16 +434,17 @@ extend self: Handler {
                     let length = token.stopOffset - token.startOffset
                     let relativeLine = if(lastAbsoluteLine != -1) {absoluteLine - lastAbsoluteLine} else {absoluteLine}
                     let relativeColumn = if(lastAbsoluteLine == absoluteLine) {absoluteColumn - lastAbsoluteColumn} else {absoluteColumn}
+                    let tokenTypes = SemanticTokenTypes.new().first
                     let tokenType = token.kind.{
-                        | SqlReserved => SemanticTokenType.keyword
-                        | SqlUnreserved => SemanticTokenType.modifier
-                        | SqlIdentifier => SemanticTokenType.variable
-                        | SqlNumber => SemanticTokenType.number
-                        | SqlString => SemanticTokenType.string
-                        | SqlOperator => SemanticTokenType.operator
-                        | SqlPunctuation => SemanticTokenType.operator
-                        | SqlComment => SemanticTokenType.comment
-                        | SqlPlaceholder => SemanticTokenType.parameter
+                        | SqlReserved => tokenTypes.keyword.second
+                        | SqlUnreserved => tokenTypes.modifier.second
+                        | SqlIdentifier => tokenTypes.variable.second
+                        | SqlNumber => tokenTypes.number.second
+                        | SqlString => tokenTypes.string.second
+                        | SqlOperator => tokenTypes.operator.second
+                        | SqlPunctuation => tokenTypes.operator.second
+                        | SqlComment => tokenTypes.comment.second
+                        | SqlPlaceholder => tokenTypes.parameter.second
                     }
                     let tokenModifiers = 0
                     lastAbsoluteLine = absoluteLine
