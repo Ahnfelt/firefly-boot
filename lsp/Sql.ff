@@ -752,7 +752,7 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
 }
 
 buildExplainStatement(statement: String): Option[Pair[String, String]] {
-    let tokens = tokenize(statement)
+    let tokens = tokenize(statement).filter {_.kind != SqlComment}
     let placeholders = tokens.filter {token => 
         token.kind.{
             | SqlPlaceholder => True
