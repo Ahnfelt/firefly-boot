@@ -437,14 +437,14 @@ extend self: Handler {
                     let tokenTypes = SemanticTokenTypes.new().first
                     let tokenType = token.kind.{
                         | SqlReserved => tokenTypes.keyword.second
-                        | SqlUnreserved => tokenTypes.modifier.second
+                        | SqlUnreserved => tokenTypes.macro.second
                         | SqlIdentifier => tokenTypes.variable.second
                         | SqlNumber => tokenTypes.number.second
                         | SqlString => tokenTypes.string.second
                         | SqlOperator => tokenTypes.operator.second
                         | SqlPunctuation => tokenTypes.operator.second
                         | SqlComment => tokenTypes.comment.second
-                        | SqlPlaceholder => tokenTypes.parameter.second
+                        | SqlPlaceholder => tokenTypes.typeParameter.second
                     }
                     let tokenModifiers = 0
                     lastAbsoluteLine = absoluteLine
