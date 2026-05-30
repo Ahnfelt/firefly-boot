@@ -7,7 +7,7 @@ testSql(connection: PgConnection): List[String] {
     
     connection.statement("""
         -- Comment
-        select *, benefit, g.deleted, (name), 'Fooo'
+        select *, benefit, g.deleted, (name), 'Fooo', 123
         from guide."GuideHistory" g
         join guide."GuideDepartment" GD on g.id = GD.guideid
         where g.benefit is not null and $name is not null
