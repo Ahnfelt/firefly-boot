@@ -36,6 +36,7 @@ nodeMain(system: NodeSystem) {
             ))
         ]
     )
+    // To give a tool result: {"role": "tool", "content": "... e.g. encoded JSON", "tool_call_id": "call_123"}
     system.httpClient().post("https://api.inceptron.io/v1/chat/completions", [
         Pair("Content-Type", "application/json")
         Pair("Authorization", "Bearer " + secretKey)
