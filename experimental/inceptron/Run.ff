@@ -1,0 +1,46 @@
+nodeMain(system: NodeSystem) {
+    let secretKey = system.arguments().grab(0)
+    let json = Json->(
+        model = "moonshotai/Kimi-K2.6"
+        messages = [
+            Json->(role = "user", content = "Can you summerize firefly-lang.org for me.")
+        ]
+        tools = [
+            Json->(type = "function", function = Json->(
+                name = "web_search"
+                description = "Search the web for up-to-date information, images, or data based on a query."
+                parameters = Json->(
+                    type = "object"
+                    properties = Json->(
+                        query = Json->(
+                            type = "string"
+                            description = "The search query to look up on the web."
+                        )
+                    )
+                    required = ["query"]
+                )
+            ))
+            Json->(type = "function", function = Json->(
+                name = "web_fetch"
+                description = "Fetch the contents of a URL using a GET request."
+                parameters = Json->(
+                    type = "object"
+                    properties = Json->(
+                        url = Json->(
+                            type = "string"
+                            description = "The URL to fetch."
+                        )
+                    )
+                    required = ["url"]
+                )
+            ))
+        ]
+    )
+    system.httpClient().post("https://api.inceptron.io/v1/chat/completions", [
+        Pair("Content-Type", "application/json")
+        Pair("Authorization", "Bearer " + secretKey)
+    ], json.write().toBuffer()) {response =>
+        Log.debug("Response ok? " + Show.show(response.ok()))
+        Log.debug(response.readJson().write(Some("  ")))
+    }
+}
