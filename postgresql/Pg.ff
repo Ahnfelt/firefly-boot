@@ -456,7 +456,7 @@ internalParseParameters(statementSql: String): Pair[String, List[String]] {
     mutable last = 0
     mutable sql = ""
     while {i < statementSql.size()} {
-        if(statementSql.grab(i) == '$') {
+        if(statementSql.grab(i) == '$' && i + 1 < statementSql.size() && statementSql.grab(i + 1).isAsciiLetter()) {
             sql = sql + statementSql.slice(last, i)
             i += 1
             last = i
@@ -467,16 +467,14 @@ internalParseParameters(statementSql: String): Pair[String, List[String]] {
                     i += 1
                 }
                 let name = statementSql.slice(last, i)
-                if(name.first().any {_.isAsciiLetter()}) {
-                    let index = parameterIndexes.get(name).else {
-                        let newIndex = parameterIndexes.size() + 1
-                        parameterIndexes = parameterIndexes.add(name, newIndex)
-                        parameters = [name, ...parameters]
-                        newIndex
-                    }
-                    sql = sql + "$" + index
-                    last = i
+                let index = parameterIndexes.get(name).else {
+                    let newIndex = parameterIndexes.size() + 1
+                    parameterIndexes = parameterIndexes.add(name, newIndex)
+                    parameters = [name, ...parameters]
+                    newIndex
                 }
+                sql = sql + "$" + index
+                last = i
             }
         } else {
             i += 1
