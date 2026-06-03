@@ -289,7 +289,7 @@ extend self: Handler {
                             | SqlStringHook(_, at, sql) => 
                                 seenSql = seenSql.add(sql)
                                 let sqlError = sqlCache.getOrSet(sql) {
-                                    Sql.buildExplainStatement(sql).flatMap {| Pair(explainPrefix, explainSql) =>
+                                    Sql.buildExplainStatement(sql).flatMap {| ExplainedStatement(explainSql, deltas) =>
                                         try {
                                             connection.statement(explainSql).map {_ => }
                                             None
@@ -297,7 +297,8 @@ extend self: Handler {
                                             let errorMessage = e.message()
                                             //system.writeErrorLine(Json(e!).write())
                                             let errorPosition = if(e!->position.nullish()) {0} else {
-                                                e!->position.grabString().grabInt() - explainPrefix.size()
+                                                let position = e!->position.grabString().grabInt()
+                                                position - deltas.filter {_.first < position}.map {_.second}.foldLeft(0) {_ + _}
                                             }
                                             let tokens = Sql.tokenize(sql)
                                             let t = tokens.find {_.startOffset >= errorPosition - 1}.else {tokens.grabLast()} // TODO

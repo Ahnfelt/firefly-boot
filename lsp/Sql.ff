@@ -751,7 +751,12 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
     }
 }
 
-buildExplainStatement(statement: String): Option[Pair[String, String]] {
+data ExplainedStatement(
+    explainStatement: String
+    deltas: List[Pair[Int, Int]]
+)
+
+buildExplainStatement(statement: String): Option[ExplainedStatement] {
     let tokens = tokenize(statement).filter {_.kind != SqlComment}
     let placeholders = tokens.filter {token => 
         token.kind.{
@@ -759,18 +764,30 @@ buildExplainStatement(statement: String): Option[Pair[String, String]] {
             | _ => False
         }
     }
-    let groups = placeholders.map {p => Pair(p.raw(), p)}.group().toList()
-    mutable fixedStatement = statement
-    groups.pairs().each {| Pair(index, Pair(raw, tokens)) => 
-        fixedStatement = fixedStatement.replace(raw, "$" + (index + 1))
+    let replacements = placeholders.map {p => Pair(p.raw(), p)}.group().toList().pairs().flatMap {
+        | Pair(index, Pair(raw, tokens)) => tokens.map {token => Pair(token.startOffset, Pair(index, raw))}
     }
+    let prefix = "EXPLAIN (GENERIC_PLAN) "
+    mutable fixedStatement = prefix
+    let deltas = [Pair(0, -prefix.size())].toArray()
+    mutable position = 0
+    replacements.each {| Pair(offset, Pair(index, raw)) => 
+        let placeholder = "$" + (index + 1)
+        let part = statement.slice(position, offset)
+        fixedStatement += part + placeholder
+        position += part.size() + raw.size()
+        deltas.push(Pair(fixedStatement.size() - placeholder.size(), raw.size() - placeholder.size()))
+    }
+    fixedStatement += statement.slice(position, statement.size())
     let noInbetweenSemicolon = tokens.indexWhere {_.rawIs(";")}.all {_ >= tokens.size() - 1}
     if(noInbetweenSemicolon && tokens.first().any {t => 
         t.rawIs("with") || t.rawIs("select") || t.rawIs("values") || 
         t.rawIs("insert") || t.rawIs("update") || t.rawIs("delete") || t.rawIs("merge")
     }):
-    let prefix = "EXPLAIN (GENERIC_PLAN) "
-    Pair(prefix, prefix + fixedStatement)
+    Log.trace("fixedStatement" + ":")
+    Log.trace(fixedStatement)
+    Log.trace(Show.show(deltas))
+    ExplainedStatement(fixedStatement, deltas.drain())
 }
 
 shortenType(fullType: String): String {
