@@ -819,13 +819,18 @@ extend self: Inference {
                 self.unification.unify(term.at, selfParameter.valueType, recordType)
                 let arguments = self.inferArguments(term.at, name, environment, signature.parameters.dropFirst(), e.arguments)
                 self.unification.affect(term.at, signature.effect, environment.effect)
-                if(self.lspHook.sql && name == "ff:postgresql/Pg.PgConnection_statement") {
-                    arguments.first().map {_.value}.each {
-                        | EString(at, s) {s.removeFirst("\"\"\"") | Some(s)} {s.removeLast("\"\"\"") | Some(sql)} => 
-                            self.lspHook.sqlStrings.push(SqlStringHook(at, at.Location(column = at.column + 3), sql))
-                        | EString(at, s) {s.removeFirst("\"") | Some(s)} {s.removeLast("\"") | Some(sql)} => 
-                            self.lspHook.sqlStrings.push(SqlStringHook(at, at.Location(column = at.column + 1), sql))
-                        | _ =>
+                if(self.lspHook.sql) {
+                    if(name == "ff:postgresql/Pg.PgConnection_statement") {
+                        arguments.first().map {_.value}.each {
+                            | EString(at, s) {s.removeFirst("\"\"\"") | Some(s)} {s.removeLast("\"\"\"") | Some(sql)} => 
+                                self.lspHook.sqlStrings.push(SqlStringHook(at, at.Location(column = at.column + 3), sql))
+                            | EString(at, s) {s.removeFirst("\"") | Some(s)} {s.removeLast("\"") | Some(sql)} => 
+                                self.lspHook.sqlStrings.push(SqlStringHook(at, at.Location(column = at.column + 1), sql))
+                            | _ =>
+                        }
+                    } elseIf {name == "ff:postgresql/Pg.PgStatement_map"} {
+                        // selfArgument.value
+                        // find withString("placeholder", _)s until Pg.PgConnection_statement
                     }
                 }
                 e.ECall(
