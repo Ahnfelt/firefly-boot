@@ -819,26 +819,31 @@ extend self: Inference {
                 self.unification.unify(term.at, selfParameter.valueType, recordType)
                 let arguments = self.inferArguments(term.at, name, environment, signature.parameters.dropFirst(), e.arguments)
                 self.unification.affect(term.at, signature.effect, environment.effect)
-                if(self.lspHook.sql) {
-                    if(name == "ff:postgresql/Pg.PgConnection_statement") {
-                        arguments.first().map {_.value}.each {
-                            | EString(at, s) {s.removeFirst("\"\"\"") | Some(s)} {s.removeLast("\"\"\"") | Some(sql)} => 
-                                self.lspHook.sqlStrings.push(SqlStringHook(at, at.Location(column = at.column + 3), sql))
-                            | EString(at, s) {s.removeFirst("\"") | Some(s)} {s.removeLast("\"") | Some(sql)} => 
-                                self.lspHook.sqlStrings.push(SqlStringHook(at, at.Location(column = at.column + 1), sql))
-                            | _ =>
-                        }
-                    } elseIf {name == "ff:postgresql/Pg.PgStatement_map"} {
-                        // selfArgument.value
-                        // find withString("placeholder", _)s until Pg.PgConnection_statement
-                    }
-                }
-                e.ECall(
+                let result = e.ECall(
                     target = StaticCall(name, instanceCall = False, tailCall = tailCall)
                     typeArguments = instantiation.map {_.second}
                     arguments = [selfArgument, ...arguments]
                     effect = signature.effect
                 )
+                if(self.lspHook.sql) {
+                    if(name == "ff:postgresql/Pg.PgConnection_statement") {
+                        arguments.first().map {_.value}.each {
+                            | EString(at, _)@e => self.lspHook.sqlStrings.push(e)
+                            | _ =>
+                        }
+                    } elseIf {name == "ff:postgresql/Pg.PgStatement_map"} {
+                        self.lspHook.sqlStrings.push(result)
+                    } elseIf {name == "ff:postgresql/Pg.PgStatement_each"} {
+                        self.lspHook.sqlStrings.push(result)
+                    } elseIf {name == "ff:postgresql/Pg.PgStatement_any"} {
+                        self.lspHook.sqlStrings.push(result)
+                    } elseIf {name == "ff:postgresql/Pg.PgStatement_all"} {
+                        self.lspHook.sqlStrings.push(result)
+                    } elseIf {name == "ff:postgresql/Pg.PgStatement_run"} {
+                        self.lspHook.sqlStrings.push(result)
+                    }
+                }
+                result
             | _ => fail(term.at, "Call expected")
         }
     }

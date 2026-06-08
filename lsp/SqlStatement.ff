@@ -1,0 +1,30 @@
+import Syntax from ff:compiler
+
+data SqlParameter(name: String, sqlType: String)
+data SqlStatement(termAt: Location, at: Location, string: String, parameters: List[SqlParameter])
+
+extract(term: Term, parameters: List[SqlParameter]): Option[SqlStatement] {
+    term.{
+        | EString(at, value) => 
+            let prefix = if(value.startsWith("\"\"\"")) {3} else {1}
+            Some(SqlStatement(
+                termAt = at
+                at = at.Location(column = at.column + prefix)
+                string = value.dropFirst(prefix).dropLast(prefix) // TODO
+                parameters
+            ))
+        | ECall(_, StaticCall s, _, _, [a1, Argument(_, _, EString(_, n)), ...], _) {s.name.removeFirst("Pg.PgStatement_with") | Some(t)} => 
+            let sqlType = t.{
+                | "String" => "text"
+                | "Int" => "bigint"
+                | _ => "text"
+            }
+            let prefix = if(n.startsWith("\"\"\"")) {3} else {1}
+            let parameter = SqlParameter(n.dropFirst(prefix).dropLast(prefix), sqlType)
+            extract(a1.value, [...parameters, parameter])
+        | ECall(_, _, _, _, [a, ...], _) => 
+            extract(a.value, parameters)
+        | _ =>
+            None
+    }
+}

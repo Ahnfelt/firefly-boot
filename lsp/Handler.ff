@@ -17,6 +17,7 @@ import SignatureHelpHandler
 import SymbolHandler
 import SemanticTokenTypes
 import Sql
+import SqlStatement
 
 
 capability Handler(
@@ -286,7 +287,7 @@ extend self: Handler {
                     let pool = self.getSqlConnectionPool(system)
                     pool.transaction(readOnly = True, body = {connection =>
                         sqlStrings.collect {
-                            | SqlStringHook(_, at, sql) => 
+                            | SqlStatement(_, at, sql, _) => 
                                 seenSql = seenSql.add(sql)
                                 let sqlError = sqlCache.getOrSet(sql) {
                                     Sql.buildExplainStatement(sql).flatMap {| ExplainedStatement(explainSql, deltas) =>
@@ -426,7 +427,7 @@ extend self: Handler {
         mutable lastAbsoluteLine = -1
         mutable lastAbsoluteColumn = 0
         let tokens = sqlStrings.flatMap {
-            | SqlStringHook(_, at, sql) => 
+            | SqlStatement(_, at, sql, _) => 
                 let tokens = Sql.tokenize(sql)
                 tokens.map {token => 
                     let absoluteLine = at.line - 1 + token.startLine - 1
@@ -567,7 +568,7 @@ extend self: Handler {
         let importSymbols = self.printTime(system.mainTask(), "findModulesToImport") {
             self.findModulesToImport(system, path, lspHook)
         }
-        let sqlString = lspHook.sqlStrings.find {_.termAt == completionAt}
+        let sqlString = lspHook.sqlStrings.map({SqlStatement.extract(_, [])}).find {_.termAt == completionAt}
         let o = CompletionHandler.handleCompletion(
             lspHook = lspHook
             toplevel = completionAt.column == 1
