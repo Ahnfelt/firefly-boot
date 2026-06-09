@@ -5,6 +5,7 @@ import Syntax from ff:compiler
 import Handler
 import Sql
 import SqlSuggestion
+import SqlStatement
 
 data CompletionInfo(
     label: String
@@ -38,10 +39,10 @@ handleCompletion(
     toplevel: Bool
     followedByOpenBracket: Bool
     importSymbols: ImportSymbolsInfo
-    sqlString: Option[Pair[Location, SqlStringHook]]
+    sqlStatement: Option[Pair[Location, SqlStatement]]
     sqlData: SqlData
 ): Json {
-    sqlString.map {| Pair(l, s) => completionsToJson(sqlCompletion(l, s, sqlData))}.else:
+    sqlStatement.map {| Pair(l, s) => completionsToJson(sqlCompletion(l, s, sqlData))}.else:
     let topLevelCompletions = if(!toplevel) {[]} else {toplevelCompletion(lspHook)}
     let patternCompletions = lspHook.results().collectFirst {
         | InferPatternHook h =>
@@ -261,11 +262,10 @@ completionsToJson(completions: List[CompletionInfo]): Json {
         })
 }
 
-sqlCompletion(at: Location, sqlString: SqlStringHook, data: SqlData): List[CompletionInfo] {
-
-    let tokens = Sql.tokenize(sqlString.string)
-    let line = 1 + at.line - sqlString.at.line
-    let column = if(at.line == sqlString.at.line) {1 + at.column - sqlString.at.column} else {at.column}
+sqlCompletion(at: Location, sqlStatement: SqlStatement, data: SqlData): List[CompletionInfo] {
+    let tokens = Sql.tokenize(sqlStatement.string)
+    let line = 1 + at.line - sqlStatement.at.line
+    let column = if(at.line == sqlStatement.at.line) {1 + at.column - sqlStatement.at.column} else {at.column}
     let suggestions = SqlSuggestion.suggest(data, tokens, line, column)
     function fixQuotes(snippet: String): String {
         if(suggestions.second) {snippet.replace("\"", "")} else {snippet}

@@ -4,7 +4,6 @@ import Pg from ff:postgresql
 
 
 testSql(connection: PgConnection): List[String] {
-    
     connection.statement("""
         -- Comment
         select *, benefit, g.deleted, 'Fooo', 123
