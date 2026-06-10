@@ -3,6 +3,7 @@ import Syntax from ff:compiler
 import Pg from ff:postgresql
 import Environment from ff:compiler
 import Sql
+import SqlStatement
 
 data SqlTokenKind {
     SqlReserved
@@ -756,7 +757,7 @@ data ExplainedStatement(
     deltas: List[Pair[Int, Int]]
 )
 
-buildExplainStatement(statement: String): Option[ExplainedStatement] {
+buildExplainStatement(statement: String, parameters: Option[List[SqlParameter]]): Option[ExplainedStatement] {
     let tokens = tokenize(statement).filter {_.kind != SqlComment}
     let placeholders = tokens.filter {token => 
         token.kind.{
@@ -771,8 +772,12 @@ buildExplainStatement(statement: String): Option[ExplainedStatement] {
     mutable fixedStatement = prefix
     let deltas = [Pair(0, -prefix.size())].toArray()
     mutable position = 0
+    let types = parameters.toList().flatten().map {p => Pair(p.name, p.sqlType)}.toMap()
     replacements.each {| Pair(offset, Pair(index, raw)) => 
-        let placeholder = "$" + (index + 1)
+        let simplePlaceholder = "$" + (index + 1)
+        let placeholder = types.get(raw.dropFirst()).map {sqlType => 
+            "(" + simplePlaceholder + "::" + sqlType + ")"
+        }.else {simplePlaceholder}
         let part = statement.slice(position, offset)
         fixedStatement += part + placeholder
         position += part.size() + raw.size()
@@ -784,6 +789,7 @@ buildExplainStatement(statement: String): Option[ExplainedStatement] {
         t.rawIs("with") || t.rawIs("select") || t.rawIs("values") || 
         t.rawIs("insert") || t.rawIs("update") || t.rawIs("delete") || t.rawIs("merge")
     }):
+    Log.trace("fixedStatement parameters" + ":" + Show.show(parameters))
     Log.trace("fixedStatement" + ":")
     Log.trace(fixedStatement)
     Log.trace(Show.show(deltas))

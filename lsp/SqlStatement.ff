@@ -6,11 +6,12 @@ data SqlStatement(termAt: Location, at: Location, string: String, parameters: Op
 extractStatements(terms: List[Term]): List[SqlStatement] {
     let statements = terms.collect {extract(_, None)}
     let sorted = statements.sortBy {-_.parameters.map {_.size()}.else {-1}}
+    Log.trace("sorted" + ":" + Show.show(sorted))
     sorted.map {s => Pair(s.termAt, s)}.group().values().map {_.grabFirst()}
 }
 
 extract(term: Term, parameters: Option[List[SqlParameter]]): Option[SqlStatement] {
-    | EString(at, value), _ => 
+    | ECall(_, StaticCall s, _, _, [_, Argument(_, _, EString(at, value)), ...], _), _ {s.name == "ff:postgresql/Pg.PgConnection_statement"} => 
         let prefix = if(value.startsWith("\"\"\"")) {3} else {1}
         Some(SqlStatement(
             termAt = at
@@ -18,7 +19,8 @@ extract(term: Term, parameters: Option[List[SqlParameter]]): Option[SqlStatement
             string = value.dropFirst(prefix).dropLast(prefix) // TODO
             parameters
         ))
-    | ECall(_, StaticCall s, _, _, [a1, Argument(_, _, EString(_, n)), ...], _), _ {s.name.removeFirst("Pg.PgStatement_with") | Some(t)} => 
+    | ECall(_, StaticCall s, _, _, [a1, Argument(_, _, EString(_, n)), ...], _), _ {s.name.removeFirst("ff:postgresql/Pg.PgStatement_with") | Some(t)} => 
+        Log.trace("| ECall(_, StaticCall s ... => " + Show.show(term))
         let sqlType = t.{
             | "String" => "text"
             | "Int" => "bigint"
@@ -28,7 +30,9 @@ extract(term: Term, parameters: Option[List[SqlParameter]]): Option[SqlStatement
         let parameter = SqlParameter(n.dropFirst(prefix).dropLast(prefix), sqlType)
         extract(a1.value, Some([...parameters.toList().flatten(), parameter]))
     | ECall(_, _, _, _, [a, ...], _), _ => 
+        Log.trace("| ECall(_, _, _, _, [a, ...], _), _ => " + Show.show(term))
         extract(a.value, parameters)
     | _, _ =>
+        Log.trace("| _, _ => " + Show.show(term))
         None
 }

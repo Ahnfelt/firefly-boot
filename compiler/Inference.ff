@@ -827,10 +827,7 @@ extend self: Inference {
                 )
                 if(self.lspHook.sql) {
                     if(name == "ff:postgresql/Pg.PgConnection_statement") {
-                        arguments.first().map {_.value}.each {
-                            | EString(at, _)@e => self.lspHook.sqlStrings.push(e)
-                            | _ =>
-                        }
+                        self.lspHook.sqlStrings.push(result)
                     } elseIf {name == "ff:postgresql/Pg.PgStatement_map"} {
                         self.lspHook.sqlStrings.push(result)
                     } elseIf {name == "ff:postgresql/Pg.PgStatement_each"} {

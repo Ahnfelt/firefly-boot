@@ -287,10 +287,10 @@ extend self: Handler {
                     let pool = self.getSqlConnectionPool(system)
                     pool.transaction(readOnly = True, body = {connection =>
                         sqlStatements.collect {
-                            | SqlStatement(_, at, sql, _) => 
+                            | SqlStatement(_, at, sql, parameters) => 
                                 seenSql = seenSql.add(sql)
                                 let sqlError = sqlCache.getOrSet(sql) {
-                                    Sql.buildExplainStatement(sql).flatMap {| ExplainedStatement(explainSql, deltas) =>
+                                    Sql.buildExplainStatement(sql, parameters).flatMap {| ExplainedStatement(explainSql, deltas) =>
                                         try {
                                             connection.statement(explainSql).map {_ => }
                                             None
