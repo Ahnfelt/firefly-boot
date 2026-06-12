@@ -30,10 +30,15 @@ capability Handler(
     mutable importSymbolsCache: Pair[String, List[ImportSymbolInfo]]
     mutable sqlData: Option[SqlData]
     mutable sqlConnectionPool: Option[PgPool]
-    sqlDiagnosticsCache: StringMap[StringMap[Option[SqlError]]]
+    sqlDiagnosticsCache: StringMap[Map[SqlCacheKey, Option[SqlError]]]
     sqlLock: Lock
     moduleCache: ModuleCache
     dependencyLock: DependencyLock
+)
+
+data SqlCacheKey(
+    sql: String
+    parameters: Option[List[SqlParameter]]
 )
 
 data TokenRequestCacheKey(
@@ -281,31 +286,35 @@ extend self: Handler {
         let sqlStatements = SqlStatement.extractStatements(lspHook.sqlStrings.toList())
         let sqlDiagnistics = if(sqlStatements.isEmpty()) {[]} else {
             self.sqlLock.do {
-                let sqlCache = self.sqlDiagnosticsCache.getOrSet(path.absolute()) {StringMap.new()}
+                mutable sqlCache = self.sqlDiagnosticsCache.getOrSet(path.absolute()) {Map.new()}
                 mutable seenSql = Set.new()
                 let issues = try {
                     let pool = self.getSqlConnectionPool(system)
                     pool.transaction(readOnly = True, body = {connection =>
                         sqlStatements.collect {
                             | SqlStatement(_, at, sql, parameters) => 
-                                seenSql = seenSql.add(sql)
-                                let sqlError = sqlCache.getOrSet(sql) {
-                                    Sql.buildExplainStatement(sql, parameters).flatMap {| ExplainedStatement(explainSql, deltas) =>
-                                        try {
-                                            connection.statement(explainSql).map {_ => }
-                                            None
-                                        } catchAny {e => 
-                                            let errorMessage = e.message()
-                                            system.writeErrorLine(Json(e!).write())
-                                            let errorPosition = if(e!->position.nullish()) {0} else {
-                                                let position = e!->position.grabString().grabInt()
-                                                position + deltas.filter {_.first < position}.map {_.second}.foldLeft(0) {_ + _}
+                                let cacheKey = SqlCacheKey(sql, parameters)
+                                seenSql = seenSql.add(cacheKey)
+                                let sqlError = sqlCache.get(cacheKey).else {
+                                    let error = Sql.buildExplainStatement(sql, parameters).flatMap {
+                                        | ExplainedStatement(explainSql, deltas) =>
+                                            try {
+                                                connection.statement(explainSql).map {_ => }
+                                                None
+                                            } catchAny {e => 
+                                                let errorMessage = e.message()
+                                                system.writeErrorLine(Json(e!).write())
+                                                let errorPosition = if(e!->position.nullish()) {0} else {
+                                                    let position = e!->position.grabString().grabInt()
+                                                    position + deltas.filter {_.first < position}.map {_.second}.foldLeft(0) {_ + _}
+                                                }
+                                                let tokens = Sql.tokenize(sql)
+                                                let t = tokens.find {_.startOffset >= errorPosition - 1}.else {tokens.grabLast()} // TODO
+                                                Some(SqlError(t, errorMessage))
                                             }
-                                            let tokens = Sql.tokenize(sql)
-                                            let t = tokens.find {_.startOffset >= errorPosition - 1}.else {tokens.grabLast()} // TODO
-                                            Some(SqlError(t, errorMessage))
-                                        }
                                     }
+                                    sqlCache = sqlCache.add(cacheKey, error)
+                                    error
                                 }
                                 sqlError.map {e =>
                                     let absoluteLine = at.line - 1 + e.token.startLine - 1 + 1
@@ -337,9 +346,10 @@ extend self: Handler {
                     self.sqlDiagnosticsCache.remove(path.absolute())
                 } else {
                     sqlCache.keys().each {
-                        | cachedSql {!seenSql.contains(cachedSql)} => sqlCache.remove(cachedSql)
+                        | cachedSql {!seenSql.contains(cachedSql)} => sqlCache = sqlCache.remove(cachedSql)
                         | _ => 
                     }
+                    self.sqlDiagnosticsCache.set(path.absolute(), sqlCache)
                 }
                 issues
             }

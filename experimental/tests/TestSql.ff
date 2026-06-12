@@ -9,9 +9,9 @@ testSql(connection: PgConnection): List[String] {
         select *, benefit, g.deleted, 'Fooo', 123
         from guide."GuideHistory" g
         join guide."GuideDepartment" GD on g.id = GD.guideid
-        where g.benefit is not null and $name = 42 and true
+        where g.benefit is not null and $name = '0x42' and true
     """)
-    .withString("name", "Foo")
+    .withInt("name", 34)
     .map {row => 
         row.getString("name").grab()
     }
