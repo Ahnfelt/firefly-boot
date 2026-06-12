@@ -755,6 +755,7 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
 data ExplainedStatement(
     explainStatement: String
     deltas: List[Pair[Int, Int]]
+    //usedParameters: List[Pair[String, Location]]
 )
 
 buildExplainStatement(statement: String, parameters: Option[List[SqlParameter]]): Option[ExplainedStatement] {

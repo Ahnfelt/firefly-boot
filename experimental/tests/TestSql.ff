@@ -11,7 +11,7 @@ testSql(connection: PgConnection): List[String] {
         join guide."GuideDepartment" GD on g.id = GD.guideid
         where g.benefit is not null and $name = '0x42' and true
     """)
-    .withInt("name", 34)
+    .withInt("namexx", 34)
     .map {row => 
         row.getString("name").grab()
     }
