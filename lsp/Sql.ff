@@ -755,7 +755,7 @@ loadRelations(connection: PgConnection): List[SqlRelation] {
 data ExplainedStatement(
     explainStatement: String
     deltas: List[Pair[Int, Int]]
-    //usedParameters: List[Pair[String, Location]]
+    usedParameters: List[Pair[String, Int]]
 )
 
 buildExplainStatement(statement: String, parameters: Option[List[SqlParameter]]): Option[ExplainedStatement] {
@@ -773,6 +773,9 @@ buildExplainStatement(statement: String, parameters: Option[List[SqlParameter]])
     mutable fixedStatement = prefix
     let deltas = [Pair(0, -prefix.size())].toArray()
     mutable position = 0
+    let usedParameters = replacements.map {| Pair(offset, Pair(index, raw)) => 
+        Pair(raw.dropFirst(), offset)
+    }
     let types = parameters.toList().flatten().map {p => Pair(p.name, p.sqlType)}.toMap()
     replacements.each {| Pair(offset, Pair(index, raw)) => 
         let simplePlaceholder = "$" + (index + 1)
@@ -794,7 +797,7 @@ buildExplainStatement(statement: String, parameters: Option[List[SqlParameter]])
     Log.trace("fixedStatement" + ":")
     Log.trace(fixedStatement)
     Log.trace(Show.show(deltas))
-    ExplainedStatement(fixedStatement, deltas.drain())
+    ExplainedStatement(fixedStatement, deltas.drain(), usedParameters)
 }
 
 shortenType(fullType: String): String {

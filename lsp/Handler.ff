@@ -297,10 +297,17 @@ extend self: Handler {
                                 seenSql = seenSql.add(cacheKey)
                                 let sqlError = sqlCache.get(cacheKey).else {
                                     let error = Sql.buildExplainStatement(sql, parameters).flatMap {
-                                        | ExplainedStatement(explainSql, deltas) =>
+                                        | ExplainedStatement(explainSql, deltas, usedParameters) =>
+                                            let missingParameters = parameters.map {parsedParameters => 
+                                                usedParameters.filter {| Pair(used, o) => parsedParameters.all {passed => passed.name != used}}
+                                            }.else {[]}
                                             try {
                                                 connection.statement(explainSql).map {_ => }
-                                                None
+                                                missingParameters.first().map {| Pair(name, position) =>
+                                                    let tokens = Sql.tokenize(sql)
+                                                    let t = tokens.find {_.startOffset >= position - 1}.else {tokens.grabLast()} // TODO
+                                                    SqlError(t, "Parameter not defined: " + name)
+                                                }
                                             } catchAny {e => 
                                                 let errorMessage = e.message()
                                                 system.writeErrorLine(Json(e!).write())
