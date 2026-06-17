@@ -30,7 +30,7 @@ capability Handler(
     mutable importSymbolsCache: Pair[String, List[ImportSymbolInfo]]
     mutable sqlData: Option[SqlData]
     mutable sqlConnectionPool: Option[PgPool]
-    sqlDiagnosticsCache: StringMap[Map[SqlCacheKey, Option[SqlError]]]
+    sqlDiagnosticsCache: StringMap[Map[String, Option[SqlError]]]
     sqlLock: Lock
     moduleCache: ModuleCache
     dependencyLock: DependencyLock
@@ -293,9 +293,11 @@ extend self: Handler {
                     pool.transaction(readOnly = True, body = {connection =>
                         sqlStatements.collect {
                             | SqlStatement(_, at, sql, parameters) => 
-                                let cacheKey = SqlCacheKey(sql, parameters)
+                                let cacheKey = Show.show(SqlCacheKey(sql, parameters))
                                 seenSql = seenSql.add(cacheKey)
+                                Log.trace("Cache: " + Show.show(cacheKey))
                                 let sqlError = sqlCache.get(cacheKey).else {
+                                    Log.trace("Cache: " + "miss")
                                     let error = Sql.buildExplainStatement(sql, parameters).flatMap {
                                         | ExplainedStatement(explainSql, deltas, usedParameters) =>
                                             let missingParameters = parameters.map {parsedParameters => 
