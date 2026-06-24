@@ -101,8 +101,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type LspHook
-export function LspHook(at_, definedAt_, insertIdentifier_, trackSymbols_, arrayOfResults_, sqlStrings_) {
-return {at_, definedAt_, insertIdentifier_, trackSymbols_, arrayOfResults_, sqlStrings_};
+export function LspHook(at_, definedAt_, insertIdentifier_, trackSymbols_, arrayOfResults_, sql_, sqlStrings_) {
+return {at_, definedAt_, insertIdentifier_, trackSymbols_, arrayOfResults_, sql_, sqlStrings_};
 }
 
 // type SymbolHook
@@ -205,16 +205,16 @@ export function InferRecordFieldHook(usageAt_, unification_, environment_, expec
 return {InferRecordFieldHook: true, usageAt_, unification_, environment_, expected_, recordType_, fieldName_};
 }
 
-export function disabled_() {
-return ff_compiler_LspHook.new_(ff_core_Option.None(), ff_core_Option.None(), false, false)
+export function disabled_(sql_ = false) {
+return ff_compiler_LspHook.new_(ff_core_Option.None(), ff_core_Option.None(), false, false, sql_)
 }
 
-export function new_(at_, definedAt_, insertIdentifier_, trackSymbols_) {
+export function new_(at_, definedAt_, insertIdentifier_, trackSymbols_, sql_ = false) {
 return ff_compiler_LspHook.LspHook(ff_core_Option.Option_else(at_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
 })), ff_core_Option.Option_else(definedAt_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
-})), insertIdentifier_, trackSymbols_, ff_core_Array.new_(), ff_core_Array.new_())
+})), insertIdentifier_, trackSymbols_, ff_core_Array.new_(), sql_, ff_core_Array.new_())
 }
 
 export function strictlyBetween_(afterAt_, beforeAt_, at_, extraColumns_) {
@@ -341,16 +341,16 @@ return "ResolveVariantFieldHook(...)"
 }
 }
 
-export async function disabled_$($task) {
-return ff_compiler_LspHook.new_(ff_core_Option.None(), ff_core_Option.None(), false, false)
+export async function disabled_$(sql_ = false, $task) {
+return ff_compiler_LspHook.new_(ff_core_Option.None(), ff_core_Option.None(), false, false, sql_)
 }
 
-export async function new_$(at_, definedAt_, insertIdentifier_, trackSymbols_, $task) {
+export async function new_$(at_, definedAt_, insertIdentifier_, trackSymbols_, sql_ = false, $task) {
 return ff_compiler_LspHook.LspHook(ff_core_Option.Option_else(at_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
 })), ff_core_Option.Option_else(definedAt_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
-})), insertIdentifier_, trackSymbols_, ff_core_Array.new_(), ff_core_Array.new_())
+})), insertIdentifier_, trackSymbols_, ff_core_Array.new_(), sql_, ff_core_Array.new_())
 }
 
 export async function strictlyBetween_$(afterAt_, beforeAt_, at_, extraColumns_, $task) {

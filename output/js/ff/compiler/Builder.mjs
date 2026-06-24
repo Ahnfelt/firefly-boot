@@ -123,7 +123,7 @@ return {root_, packageFile_, files_};
 
 export function build_(system_, emitTarget_, mainModules_, resolvedDependencies_, jsOutputPath_, printMeasurements_, moduleCache_) {
 ff_core_Path.Path_createDirectory(jsOutputPath_, true);
-const compiler_ = ff_compiler_Compiler.new_(emitTarget_, ff_core_NodeSystem.NodeSystem_mainTask(system_), jsOutputPath_, resolvedDependencies_, ff_core_Map.new_(), moduleCache_, ff_compiler_LspHook.disabled_());
+const compiler_ = ff_compiler_Compiler.new_(emitTarget_, ff_core_NodeSystem.NodeSystem_mainTask(system_), jsOutputPath_, resolvedDependencies_, ff_core_Map.new_(), moduleCache_, ff_compiler_LspHook.disabled_(false));
 for(let for_a = mainModules_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const moduleKey_ = for_a[for_i];
 ff_compiler_Compiler.Compiler_emit(compiler_, moduleKey_, true)
@@ -377,7 +377,7 @@ pkg_.exec([packageFile_.absolutePath_, "--out-path", outputPath_.absolutePath_, 
 
 export async function build_$(system_, emitTarget_, mainModules_, resolvedDependencies_, jsOutputPath_, printMeasurements_, moduleCache_, $task) {
 (await ff_core_Path.Path_createDirectory$(jsOutputPath_, true, $task));
-const compiler_ = (await ff_compiler_Compiler.new_$(emitTarget_, (await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), jsOutputPath_, resolvedDependencies_, ff_core_Map.new_(), moduleCache_, ff_compiler_LspHook.disabled_(), $task));
+const compiler_ = (await ff_compiler_Compiler.new_$(emitTarget_, (await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), jsOutputPath_, resolvedDependencies_, ff_core_Map.new_(), moduleCache_, ff_compiler_LspHook.disabled_(false), $task));
 for(let for_a = mainModules_, for_i = 0, for_l = for_a.length; for_i < for_l; for_i++) {
 const moduleKey_ = for_a[for_i];
 (await ff_compiler_Compiler.Compiler_emit$(compiler_, moduleKey_, true, $task))

@@ -1437,20 +1437,27 @@ ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, expecte
 ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, selfParameter_.valueType_, recordType_);
 const arguments_ = ff_compiler_Inference.Inference_inferArguments(self_, term_.at_, name_, environment_, ff_core_List.List_dropFirst(signature_.parameters_, 1), e_.arguments_);
 ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, signature_.effect_, environment_.effect_);
-if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (name_ === "ff:postgresql/PgConnection.statement"))) {
-self_.lspHook_.sqlStrings_.array.push(ff_core_List.List_grabFirst(arguments_).value_)
-};
-{
-const _1 = e_;
-{
-const _c = _1;
+const result_ = (((_c) => {
 return ff_compiler_Syntax.ECall(_c.at_, ff_compiler_Syntax.StaticCall(name_, tailCall_, false), signature_.effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
 return _w1.second_
 })), [selfArgument_, ...arguments_], _c.dictionaries_)
-return
-}
-}
-return
+}))(e_);
+if(self_.lspHook_.sql_) {
+if((name_ === "ff:postgresql/Pg.PgConnection_statement")) {
+self_.lspHook_.sqlStrings_.array.push(result_)
+} else if((name_ === "ff:postgresql/Pg.PgStatement_map")) {
+self_.lspHook_.sqlStrings_.array.push(result_)
+} else if((name_ === "ff:postgresql/Pg.PgStatement_each")) {
+self_.lspHook_.sqlStrings_.array.push(result_)
+} else if((name_ === "ff:postgresql/Pg.PgStatement_any")) {
+self_.lspHook_.sqlStrings_.array.push(result_)
+} else if((name_ === "ff:postgresql/Pg.PgStatement_all")) {
+self_.lspHook_.sqlStrings_.array.push(result_)
+} else if((name_ === "ff:postgresql/Pg.PgStatement_run")) {
+self_.lspHook_.sqlStrings_.array.push(result_)
+} else {}
+};
+return result_
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
@@ -3357,20 +3364,27 @@ ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, expecte
 ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, selfParameter_.valueType_, recordType_);
 const arguments_ = ff_compiler_Inference.Inference_inferArguments(self_, term_.at_, name_, environment_, ff_core_List.List_dropFirst(signature_.parameters_, 1), e_.arguments_);
 ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, signature_.effect_, environment_.effect_);
-if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && (name_ === "ff:postgresql/PgConnection.statement"))) {
-self_.lspHook_.sqlStrings_.array.push(ff_core_List.List_grabFirst(arguments_).value_)
-};
-{
-const _1 = e_;
-{
-const _c = _1;
+const result_ = (((_c) => {
 return ff_compiler_Syntax.ECall(_c.at_, ff_compiler_Syntax.StaticCall(name_, tailCall_, false), signature_.effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
 return _w1.second_
 })), [selfArgument_, ...arguments_], _c.dictionaries_)
-return
-}
-}
-return
+}))(e_);
+if(self_.lspHook_.sql_) {
+if((name_ === "ff:postgresql/Pg.PgConnection_statement")) {
+self_.lspHook_.sqlStrings_.array.push(result_)
+} else if((name_ === "ff:postgresql/Pg.PgStatement_map")) {
+self_.lspHook_.sqlStrings_.array.push(result_)
+} else if((name_ === "ff:postgresql/Pg.PgStatement_each")) {
+self_.lspHook_.sqlStrings_.array.push(result_)
+} else if((name_ === "ff:postgresql/Pg.PgStatement_any")) {
+self_.lspHook_.sqlStrings_.array.push(result_)
+} else if((name_ === "ff:postgresql/Pg.PgStatement_all")) {
+self_.lspHook_.sqlStrings_.array.push(result_)
+} else if((name_ === "ff:postgresql/Pg.PgStatement_run")) {
+self_.lspHook_.sqlStrings_.array.push(result_)
+} else {}
+};
+return result_
 }
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")

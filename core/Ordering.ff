@@ -91,7 +91,7 @@ instance List[T: Order]: Order {
             ordering = compare(x.grab(i), y.grab(i))
             i += 1
         }
-        if(ordering != OrderingSame) {
+        if(ordering == OrderingSame) {
             fromInt(x.size() - y.size())
         } else {
             ordering

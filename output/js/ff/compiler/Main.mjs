@@ -202,7 +202,7 @@ return
 }
 if(command_a.CheckCommand) {
 const filePath_ = command_a.filePath_;
-const errors_ = ff_compiler_Builder.check_(system_, fireflyPath_, ff_core_NodeSystem.NodeSystem_path(system_, filePath_), ff_core_Option.None(), ff_core_Set.new_(), ff_core_Map.new_(), ff_compiler_ModuleCache.new_(1), ff_compiler_DependencyLock.new_(ff_core_NodeSystem.NodeSystem_mainTask(system_)), 0, ff_compiler_LspHook.disabled_(), true);
+const errors_ = ff_compiler_Builder.check_(system_, fireflyPath_, ff_core_NodeSystem.NodeSystem_path(system_, filePath_), ff_core_Option.None(), ff_core_Set.new_(), ff_core_Map.new_(), ff_compiler_ModuleCache.new_(1), ff_compiler_DependencyLock.new_(ff_core_NodeSystem.NodeSystem_mainTask(system_)), 0, ff_compiler_LspHook.disabled_(false), true);
 if((!ff_core_List.List_isEmpty(errors_))) {
 throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileErrors(ff_core_List.List_distinct(errors_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_CompileError)), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
 }
@@ -223,7 +223,7 @@ const code_ = ff_core_Path.Path_readText(path_);
 const packagePair_ = ff_compiler_Syntax.scriptPackagePair_;
 const moduleKey_ = ff_compiler_Syntax.ModuleKey(packagePair_, [], ff_core_Option.Option_grab(ff_core_String.String_removeLast(ff_core_Path.Path_base(path_), ".ff")));
 const tokens_ = ff_compiler_Tokenizer.tokenize_(ff_core_Path.Path_absolute(path_), code_, ff_core_Option.None(), false);
-const parser_ = ff_compiler_Parser.new_(moduleKey_, tokens_, true, ff_compiler_LspHook.disabled_());
+const parser_ = ff_compiler_Parser.new_(moduleKey_, tokens_, true, ff_compiler_LspHook.disabled_(false));
 const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
 return ff_compiler_Main.makeSymbolColumns_(module_)
 }));
@@ -658,7 +658,7 @@ return
 }
 if(command_a.CheckCommand) {
 const filePath_ = command_a.filePath_;
-const errors_ = (await ff_compiler_Builder.check_$(system_, fireflyPath_, (await ff_core_NodeSystem.NodeSystem_path$(system_, filePath_, $task)), ff_core_Option.None(), ff_core_Set.new_(), ff_core_Map.new_(), ff_compiler_ModuleCache.new_(1), (await ff_compiler_DependencyLock.new_$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task)), 0, ff_compiler_LspHook.disabled_(), true, $task));
+const errors_ = (await ff_compiler_Builder.check_$(system_, fireflyPath_, (await ff_core_NodeSystem.NodeSystem_path$(system_, filePath_, $task)), ff_core_Option.None(), ff_core_Set.new_(), ff_core_Map.new_(), ff_compiler_ModuleCache.new_(1), (await ff_compiler_DependencyLock.new_$((await ff_core_NodeSystem.NodeSystem_mainTask$(system_, $task)), $task)), 0, ff_compiler_LspHook.disabled_(false), true, $task));
 if((!ff_core_List.List_isEmpty(errors_))) {
 throw ff_core_Js.initializeError_(ff_compiler_Syntax.CompileErrors(ff_core_List.List_distinct(errors_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_CompileError)), new Error(), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileErrors, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompileErrors)
 }
@@ -679,7 +679,7 @@ const code_ = (await ff_core_Path.Path_readText$(path_, $task));
 const packagePair_ = ff_compiler_Syntax.scriptPackagePair_;
 const moduleKey_ = ff_compiler_Syntax.ModuleKey(packagePair_, [], ff_core_Option.Option_grab(ff_core_String.String_removeLast((await ff_core_Path.Path_base$(path_, $task)), ".ff")));
 const tokens_ = ff_compiler_Tokenizer.tokenize_((await ff_core_Path.Path_absolute$(path_, $task)), code_, ff_core_Option.None(), false);
-const parser_ = ff_compiler_Parser.new_(moduleKey_, tokens_, true, ff_compiler_LspHook.disabled_());
+const parser_ = ff_compiler_Parser.new_(moduleKey_, tokens_, true, ff_compiler_LspHook.disabled_(false));
 const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
 return ff_compiler_Main.makeSymbolColumns_(module_)
 }), $task));
