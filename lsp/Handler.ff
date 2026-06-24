@@ -295,9 +295,7 @@ extend self: Handler {
                             | SqlStatement(_, at, sql, parameters) => 
                                 let cacheKey = Show.show(SqlCacheKey(sql, parameters))
                                 seenSql = seenSql.add(cacheKey)
-                                Log.trace("Cache: " + Show.show(cacheKey))
                                 let sqlError = sqlCache.get(cacheKey).else {
-                                    Log.trace("Cache: " + "miss")
                                     let error = Sql.buildExplainStatement(sql, parameters).flatMap {
                                         | ExplainedStatement(explainSql, deltas, usedParameters) =>
                                             let missingParameters = parameters.map {parsedParameters => 

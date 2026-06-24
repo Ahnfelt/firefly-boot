@@ -793,10 +793,6 @@ buildExplainStatement(statement: String, parameters: Option[List[SqlParameter]])
         t.rawIs("with") || t.rawIs("select") || t.rawIs("values") || 
         t.rawIs("insert") || t.rawIs("update") || t.rawIs("delete") || t.rawIs("merge")
     }):
-    Log.trace("fixedStatement parameters" + ":" + Show.show(parameters))
-    Log.trace("fixedStatement" + ":")
-    Log.trace(fixedStatement)
-    Log.trace(Show.show(deltas))
     ExplainedStatement(fixedStatement, deltas.drain(), usedParameters)
 }
 
