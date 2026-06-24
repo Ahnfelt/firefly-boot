@@ -1,0 +1,4 @@
+nodeMain(system: NodeSystem) {
+    let result = Ordering.compare([1], [2])
+    Log.trace(Show.show(result.toInt()))
+}
