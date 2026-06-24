@@ -467,7 +467,7 @@ while((((i_ < x_.length) && (i_ < y_.length)) && (ordering_ === ff_core_Ordering
 ordering_ = ff_core_Ordering_Order$T.compare_((x_[i_] ?? ff_core_List.List_grab(x_, i_)), (y_[i_] ?? ff_core_List.List_grab(y_, i_)));
 i_ += 1
 };
-if((ordering_ !== ff_core_Ordering.OrderingSame())) {
+if((ordering_ === ff_core_Ordering.OrderingSame())) {
 return ff_core_Ordering.fromInt_((x_.length - y_.length))
 } else {
 return ordering_
@@ -480,7 +480,7 @@ while((((i_ < x_.length) && (i_ < y_.length)) && (ordering_ === ff_core_Ordering
 ordering_ = ff_core_Ordering_Order$T.compare_((x_[i_] ?? ff_core_List.List_grab(x_, i_)), (y_[i_] ?? ff_core_List.List_grab(y_, i_)));
 i_ += 1
 };
-if((ordering_ !== ff_core_Ordering.OrderingSame())) {
+if((ordering_ === ff_core_Ordering.OrderingSame())) {
 return ff_core_Ordering.fromInt_((x_.length - y_.length))
 } else {
 return ordering_
