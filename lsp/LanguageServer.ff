@@ -39,6 +39,7 @@ main(system: NodeSystem) {
         responseCache = Map.new()
         fileSymbolsCache = Map.new()
         importSymbolsCache = Pair("", [])
+        sqlConnectionString = None
         sqlData = None
         sqlConnectionPool = None
         sqlLock = system.mainTask().lock()

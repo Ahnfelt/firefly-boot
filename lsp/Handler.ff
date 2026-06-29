@@ -28,6 +28,7 @@ capability Handler(
     mutable responseCache: Map[TokenRequestCacheKey, ResultOrError]
     mutable fileSymbolsCache: Map[String, List[DocumentSymbol]]
     mutable importSymbolsCache: Pair[String, List[ImportSymbolInfo]]
+    mutable sqlConnectionString: Option[String]
     mutable sqlData: Option[SqlData]
     mutable sqlConnectionPool: Option[PgPool]
     sqlDiagnosticsCache: StringMap[Map[String, Option[SqlError]]]
@@ -180,6 +181,10 @@ extend self: Handler {
 
     handleInitialize(system: NodeSystem, parameters: Map[String, Json]): ResultOrError {
         self.rootPath = parameters.grab("rootUri").getString().map {system.pathFromUrl(_)}
+        self.sqlConnectionString = parameters.get("initializationOptions").{
+            | Some(opts) => opts.getField("sqlConnectionString").map {_.grabString()}.filter {_ != ""}
+            | None => None
+        }
 
         let anyFireflyFile = Json.object()
             .with("filters", [
@@ -285,6 +290,17 @@ extend self: Handler {
         
         let sqlStatements = SqlStatement.extractStatements(lspHook.sqlStrings.toList())
         let sqlDiagnistics = if(sqlStatements.isEmpty()) {[]} else {
+            if(self.sqlConnectionString.isEmpty()) {
+                sqlStatements.map {
+                    | SqlStatement(_, at, _, _) =>
+                        let tokenLocation = self.findToken(system, at)
+                        Json.object()
+                            .with("range", self.tokenLocationToLspRange(tokenLocation))
+                            .with("severity", 3)
+                            .with("message", "Configure firefly.sqlConnectionString to enable SQL diagnostics")
+                            .with("source", "firefly")
+                }
+            } else:
             self.sqlLock.do {
                 mutable sqlCache = self.sqlDiagnosticsCache.getOrSet(path.absolute()) {Map.new()}
                 mutable seenSql = Set.new()
@@ -966,8 +982,9 @@ extend self: Handler {
     }
     
     getSqlConnectionPool(system: NodeSystem): PgPool {
-        let connectionStringPath = system.path("../../LSP_CONNECTION_STRING.txt") // TODO
-        let connectionString = connectionStringPath.readText().trim()
+        let connectionString = self.sqlConnectionString.else {
+            throw(LanguageServerException("No SQL connection string configured. Set firefly.sqlConnectionString in VS Code settings."))
+        }
         self.sqlLock.do {
             self.sqlConnectionPool.else {
                 let pool = Pg.newPoolFromConnectionString(system, connectionString)

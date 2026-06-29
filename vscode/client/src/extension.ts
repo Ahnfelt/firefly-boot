@@ -67,8 +67,13 @@ export function activate(context: vscode.ExtensionContext) {
         debug: runOrDebug
     };  
 
+    const sqlConnectionString = vscode.workspace.getConfiguration('firefly').get<string>('sqlConnectionString', '');
+
     const clientOptions: LanguageClientOptions = {
         documentSelector: [{ scheme: 'file', language: 'firefly' }],
+        initializationOptions: {
+            sqlConnectionString
+        },
         synchronize: {
              // It would be more portable to send a client/registerCapability from the server for this
             fileEvents: vscode.workspace.createFileSystemWatcher('**/*.ff')

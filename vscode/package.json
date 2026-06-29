@@ -133,6 +133,12 @@
                     "type": "string",
                     "default": "charts.blue",
                     "description": "The color used for Firefly folder decorations."
+                },
+                "firefly.sqlConnectionString": {
+                    "type": "string",
+                    "default": "",
+                    "scope": "resource",
+                    "description": "PostgreSQL connection string for SQL diagnostics and completion (e.g. postgres://user:pass@localhost:5432/mydb)."
                 }
             }
         },
