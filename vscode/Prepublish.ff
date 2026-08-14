@@ -9,6 +9,7 @@ nodeMain(system: NodeSystem) {
     system.path("../compiler").copyTo(fireflyOutputPath.slash("compiler"))
     system.path("../core").copyTo(fireflyOutputPath.slash("core"))
     system.path("../lsp").copyTo(fireflyOutputPath.slash("lsp"))
+    system.path("../postgresql").copyTo(fireflyOutputPath.slash("postgresql"))
     system.path("../.firefly-workspace").copyTo(fireflyOutputPath.slash(".firefly-workspace"))
     system.path("../package.json").copyTo(fireflyOutputPath.slash("package.json"))
     system.path("../node_modules").copyTo(fireflyOutputPath.slash("node_modules"))
