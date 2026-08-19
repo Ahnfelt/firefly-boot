@@ -12,12 +12,28 @@ import {
 let client: LanguageClient;
 
 export function activate(context: vscode.ExtensionContext) {
+    const packagedFireflyPath = path.join(context.extensionPath, 'firefly');
+    const devFireflyPath = path.resolve(context.extensionPath, '..');
+    const preferredPaths = context.extensionMode === vscode.ExtensionMode.Production
+        ? [packagedFireflyPath, devFireflyPath]
+        : [devFireflyPath, packagedFireflyPath];
+    const fireflyPath = preferredPaths.find(candidate =>
+        fs.existsSync(path.join(candidate, 'output', 'js', 'ff', 'compiler', 'Main.run.mjs'))
+    );
 
-    const fireflyPath = fs.existsSync(path.join(context.extensionPath, '.vsixmanifest'))
-        ? path.join(context.extensionPath, 'firefly')
-        : path.join(context.extensionPath, '..')
-        
-    const fireflyCompiler = fireflyPath + '/output/js/ff/compiler/Main.run.mjs';
+    if(!fireflyPath) {
+        throw new Error("Unable to locate Firefly installation in any candidate path: " + preferredPaths.join(", "));
+    }
+
+    const fireflyCompiler = path.join(fireflyPath, 'output', 'js', 'ff', 'compiler', 'Main.run.mjs');
+    const lspWorkingDirectory = path.join(fireflyPath, 'lsp');
+
+    if(!fs.existsSync(fireflyCompiler)) {
+        throw new Error("Unable to locate Firefly compiler at " + fireflyCompiler);
+    }
+    if(!fs.existsSync(lspWorkingDirectory)) {
+        throw new Error("Unable to locate LSP working directory at " + lspWorkingDirectory);
+    }
 
     context.subscriptions.push(vscode.commands.registerCommand('extension.firefly-lang.getFireflyPath', config => {
         return fireflyPath;
@@ -58,7 +74,7 @@ export function activate(context: vscode.ExtensionContext) {
     const runOrDebug = {
         module: fireflyCompiler,
         args: ['LanguageServer.ff'],
-        options: {cwd: fireflyPath + '/lsp'},
+        options: {cwd: lspWorkingDirectory},
         transport: TransportKind.stdio // ipc
     };
 
